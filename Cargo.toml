@@ -1,0 +1,11 @@
+[package]
+name = "rapi"
+version = "0.1.0"
+authors = ["andy-thomason <andy@andythomason.com>"]
+edition = "2018"
+description = "Safe and ser friendly bindings to the R programming language."
+license = "Apache-2.0"
+documentation = "https://extendr.github.io/rapi/master/rapi/index.html"
+
+[dependencies]
+libR-sys = "0.1.1"
