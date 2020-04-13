@@ -23,9 +23,9 @@
 //! Example:
 //! 
 //! ```no-run
-//! let s = RObj::from("hello");
-//! let i = RObj::from(1);
-//! let r = RObj::from(1.0);
+//! let s = Robj::from("hello");
+//! let i = Robj::from(1);
+//! let r = Robj::from(1.0);
 //! ```
 //! 
 //! Provide iterator support for creation and consumption of r vectors.
@@ -33,7 +33,7 @@
 //! Example:
 //! 
 //! ```no-run
-//! let res = (1..=100).iter().collect::<RObj>();
+//! let res = (1..=100).iter().collect::<Robj>();
 //! for x in res {
 //!     print!(x);
 //! }
@@ -60,9 +60,27 @@
 //! 
 //! 
 
+mod robj;
+mod args;
+mod engine;
 
-use libR_sys::*;
+pub use robj::*;
+pub use args::*;
+pub use engine::*;
 
-#[cfg(test)]
-mod tests {
+// Generic dynamic error type.
+pub type AnyError = Box<dyn std::error::Error + Send + Sync>;
+
+#[macro_export]
+macro_rules! c {
+    () => {
+        Robj::Null
+    };
+    ($($($tok: tt)*),*) => {
+        let args = args!($($rest)*);
+        for (n, v) in args {
+
+        }
+    }
 }
+
