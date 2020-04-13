@@ -12,28 +12,34 @@ use libR_sys::{NILSXP,SYMSXP,LISTSXP,CLOSXP,ENVSXP,PROMSXP,LANGSXP,SPECIALSXP,BU
 use libR_sys::{EXPRSXP, BCODESXP, EXTPTRSXP, WEAKREFSXP, RAWSXP, S4SXP, NEWSXP, FREESXP};
 
 pub enum Robj<'a> {
-    // This object owns the SEXP and must free it.
+    /// This object owns the SEXP and must free it.
     Owned(SEXP),
 
-    // This object references a SEXP such as an input parameter.
-    // The borrow checker should ensure it does not outlive the
-    // underlying SEXP.
+    /// This object references a SEXP such as an input parameter.
+    /// The borrow checker should ensure it does not outlive the
+    /// underlying SEXP.
     Borrowed(&'a SEXP),
 
-    // This object references a SEXP owned by libR.
+    /// This object references a SEXP owned by libR.
     Sys(SEXP),
 }
 
-// Wrapper for creating symbols.
+pub const TRUE: bool = true;
+pub const FALSE: bool = false;
+pub const NULL: () = ();
+
+/// Wrapper for creating symbols.
 pub struct Symbol<'a>(&'a str);
 
-// Wrapper for creating logical vectors.
+/// Wrapper for creating logical vectors.
 pub struct Logical<'a>(&'a [i32]);
 
-// Wrapper for creating character objects.
+/// Wrapper for creating character objects.
 pub struct Character<'a>(&'a str);
 
 impl<'a> Robj<'a> {
+    /// Get a copy of the underlying SEXP.
+    /// Note: this is unsafe.
     unsafe fn get(&self) -> SEXP {
         match self {
             Robj::Owned(sexp) => *sexp,
@@ -42,14 +48,17 @@ impl<'a> Robj<'a> {
         }
     }
 
+    /// Get the XXXSXP type of the object.
     pub fn sexptype(&self) -> u32 {
         unsafe { TYPEOF(self.get()) as u32 }
     }
 
+    /// Get the extended length of the object.
     pub fn len(&self) -> usize {
         unsafe { Rf_xlength(self.get()) as usize }
     }
 
+    /// Get a read-only reference to the content of an integer or logical vector.
     pub fn as_i32_slice(&self) -> Option<&[i32]> {
         match self.sexptype() {
             LGLSXP | INTSXP => {
@@ -62,6 +71,7 @@ impl<'a> Robj<'a> {
         }
     }
 
+    /// Get a read-only reference to the content of a double vector.
     pub fn as_f64_slice(&self) -> Option<&[f64]> {
         match self.sexptype() {
             REALSXP => {
@@ -74,6 +84,7 @@ impl<'a> Robj<'a> {
         }
     }
 
+    /// Get a read-only reference to a char, symbol or string type.
     pub fn as_str(&self) -> Option<&str> {
         unsafe {
             match self.sexptype() {
@@ -93,9 +104,9 @@ impl<'a> Robj<'a> {
             }
         }
     }
-
 }
 
+/// Return true if two objects are equal.
 impl<'a> PartialEq for Robj<'a> {
     fn eq(&self, rhs: &Robj) -> bool {
         if self.sexptype() == rhs.sexptype() && self.len() == rhs.len() {
@@ -140,7 +151,7 @@ impl<'a> PartialEq for Robj<'a> {
 impl<'a> std::fmt::Debug for Robj<'a> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self.sexptype() {
-            NILSXP => write!(f, "()"),
+            NILSXP => write!(f, "NULL"),
             SYMSXP => write!(f, "Symbol({:?})", self.as_str().unwrap()),
             // LISTSXP => false,
             // CLOSXP => false,
@@ -153,7 +164,7 @@ impl<'a> std::fmt::Debug for Robj<'a> {
             LGLSXP => {
                 let slice = self.as_i32_slice().unwrap();
                 if slice.len() == 1 {
-                    write!(f, "{}", if slice[0] == 0 {false} else {true})
+                    write!(f, "{}", if slice[0] == 0 {"FALSE"} else {"TRUE"})
                 } else {
                     write!(f, "Logical(&{:?})", slice)
                 }
@@ -192,13 +203,15 @@ impl<'a> std::fmt::Debug for Robj<'a> {
     }
 }
 
-// Borrow an already protected SEXP SEXP
+/// Borrow an already protected SEXP
+/// Note that the SEXP must outlive the generated object.
 impl<'a> From<&'a SEXP> for Robj<'a> {
     fn from(sexp: &'a SEXP) -> Self {
         Robj::Borrowed(sexp)
     }
 }
 
+/// Release any owned objects.
 impl<'a> Drop for Robj<'a> {
     fn drop(&mut self) {
         unsafe {
@@ -296,6 +309,7 @@ impl<'a> From<&str> for Robj<'a> {
     }
 }
 
+/// Convert an integer slice to an integer object.
 impl<'a> From<&[i32]> for Robj<'a> {
     fn from(vals: &[i32]) -> Self {
         unsafe {
@@ -312,6 +326,7 @@ impl<'a> From<&[i32]> for Robj<'a> {
     }
 }
 
+/// Convert an integer slice to a logical object.
 impl<'a> From<Logical<'a>> for Robj<'a> {
     fn from(vals: Logical<'a>) -> Self {
         unsafe {
@@ -328,6 +343,7 @@ impl<'a> From<Logical<'a>> for Robj<'a> {
     }
 }
 
+/// Convert a bool slice to a logical object.
 impl<'a> From<&[bool]> for Robj<'a> {
     fn from(vals: &[bool]) -> Self {
         unsafe {
@@ -344,6 +360,7 @@ impl<'a> From<&[bool]> for Robj<'a> {
     }
 }
 
+/// Convert a double slice to a numeric object.
 impl<'a> From<&[f64]> for Robj<'a> {
     fn from(vals: &[f64]) -> Self {
         unsafe {
@@ -360,6 +377,7 @@ impl<'a> From<&[f64]> for Robj<'a> {
     }
 }
 
+/// Convert a string to a symbol.
 impl<'a> From<Symbol<'a>> for Robj<'a> {
     fn from(name: Symbol) -> Self {
         unsafe {
@@ -378,11 +396,11 @@ mod tests {
 
     #[test]
     fn test_debug() {
-        assert_eq!(format!("{:?}", Robj::from(())), "()");
+        assert_eq!(format!("{:?}", Robj::from(NULL)), "NULL");
         assert_eq!(format!("{:?}", Robj::from(Symbol("x"))), "Symbol(\"x\")");
         assert_eq!(format!("{:?}", Robj::from(Character("x"))), "Character(\"x\")");
-        assert_eq!(format!("{:?}", Robj::from(true)), "true");
-        assert_eq!(format!("{:?}", Robj::from(false)), "false");
+        assert_eq!(format!("{:?}", Robj::from(TRUE)), "TRUE");
+        assert_eq!(format!("{:?}", Robj::from(FALSE)), "FALSE");
         assert_eq!(format!("{:?}", Robj::from(Logical(&[1, 2]))), "Logical(&[1, 2])");
         assert_eq!(format!("{:?}", Robj::from(1)), "1");
         assert_eq!(format!("{:?}", Robj::from(1.)), "1.0");
