@@ -722,10 +722,26 @@
 <span id="722">722</span>
 <span id="723">723</span>
 <span id="724">724</span>
+<span id="725">725</span>
+<span id="726">726</span>
+<span id="727">727</span>
+<span id="728">728</span>
+<span id="729">729</span>
+<span id="730">730</span>
+<span id="731">731</span>
+<span id="732">732</span>
+<span id="733">733</span>
+<span id="734">734</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! R object handling.</span>
 <span class="doccomment">//! </span>
 <span class="doccomment">//! See. https://cran.r-project.org/doc/manuals/R-exts.html</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! Fundamental principals:</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! * Any function that can break the protection mechanism is unsafe.</span>
+<span class="doccomment">//! * Users should be able to do almost everything without using libR_sys.</span>
+<span class="doccomment">//! * The interface should be friendly to R users without Rust experience.</span>
 
 <span class="kw">use</span> <span class="ident">libR_sys</span>::{<span class="ident">SEXP</span>, <span class="ident">R_PreserveObject</span>, <span class="ident">R_ReleaseObject</span>, <span class="ident">R_NilValue</span>, <span class="ident">Rf_mkCharLen</span>};
 <span class="kw">use</span> <span class="ident">libR_sys</span>::{<span class="ident">Rf_ScalarInteger</span>, <span class="ident">Rf_ScalarReal</span>, <span class="ident">Rf_ScalarLogical</span>, <span class="ident">R_GlobalEnv</span>};
@@ -787,7 +803,7 @@
 
     <span class="doccomment">/// Get a copy of the underlying SEXP.</span>
     <span class="doccomment">/// Note: this is unsafe.</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">_get_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
+    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">get_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">Robj</span>::<span class="ident">Owned</span>(<span class="ident">sexp</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="ident">sexp</span>,
             <span class="ident">Robj</span>::<span class="ident">Borrowed</span>(<span class="ident">sexp</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="ident">sexp</span>,
@@ -901,6 +917,7 @@
         }
     }
 
+    <span class="comment">// Evaluate the expression and return an error or an R object.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">eval</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span>, <span class="ident">AnyError</span><span class="op">&gt;</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">error</span> : <span class="ident">raw</span>::<span class="ident">c_int</span> <span class="op">=</span> <span class="number">0</span>;
@@ -913,7 +930,22 @@
         }
     }
 
-    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">unprotected</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="comment">// Evaluate the expression and return NULL or an R object.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">eval_blind</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+        <span class="kw">unsafe</span> {
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">error</span> : <span class="ident">raw</span>::<span class="ident">c_int</span> <span class="op">=</span> <span class="number">0</span>;
+            <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">R_tryEval</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">R_GlobalEnv</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">error</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">raw</span>::<span class="ident">c_int</span>);
+            <span class="kw">if</span> <span class="ident">error</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
+                <span class="ident">Robj</span>::<span class="ident">from</span>(())
+            } <span class="kw">else</span> {
+                <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="ident">res</span>)
+            }
+        }
+    }
+
+    <span class="comment">// Unprotect an object - assumes a transfer of ownership.</span>
+    <span class="comment">// This is unsafe because the object pointer may be left dangling.</span>
+    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">unprotected</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">Robj</span>::<span class="ident">Owned</span>(<span class="ident">sexp</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="ident">R_ReleaseObject</span>(<span class="ident">sexp</span>);
@@ -923,20 +955,8 @@
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">and</span>(<span class="self">self</span>, <span class="ident">obj</span>: <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
-                <span class="ident">LISTSXP</span> <span class="op">|</span> <span class="ident">DOTSXP</span> <span class="op">|</span> <span class="ident">LANGSXP</span>  <span class="op">=</span><span class="op">&gt;</span> {
-                    <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get</span>();
-                    <span class="comment">// Tranfer ownership of object to the list.</span>
-                    <span class="ident">Rf_listAppend</span>(<span class="ident">obj</span>.<span class="ident">unprotected</span>().<span class="ident">get</span>(), <span class="ident">sexp</span>);
-                }
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> ()
-            }
-        }
-        <span class="self">self</span>
-    }
-
+    <span class="comment">// Return true if the object is owned by this wrapper.</span>
+    <span class="comment">// If so, it will be released when the wrapper drops.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_owned</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">Robj</span>::<span class="ident">Owned</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
