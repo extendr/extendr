@@ -3,13 +3,16 @@
 //! See. https://cran.r-project.org/doc/manuals/R-exts.html
 
 use libR_sys::{SEXP, R_PreserveObject, R_ReleaseObject, R_NilValue, Rf_mkCharLen};
-use libR_sys::{Rf_ScalarInteger, Rf_ScalarReal, Rf_ScalarLogical};
+use libR_sys::{Rf_ScalarInteger, Rf_ScalarReal, Rf_ScalarLogical, R_GlobalEnv};
 use libR_sys::{TYPEOF, INTEGER, REAL, PRINTNAME, R_CHAR, LOGICAL, STRING_PTR, RAW, VECTOR_ELT, STRING_ELT};
-use libR_sys::{Rf_xlength, Rf_install, Rf_allocVector, R_xlen_t};
+use libR_sys::{Rf_xlength, Rf_install, Rf_allocVector, R_xlen_t, Rf_lang1, R_tryEval, Rf_listAppend};
+use libR_sys::{CAR, CDR, SET_VECTOR_ELT};
 use std::os::raw;
 use std::ffi::{CString};
 use libR_sys::{NILSXP,SYMSXP,LISTSXP,CLOSXP,ENVSXP,PROMSXP,LANGSXP,SPECIALSXP,BUILTINSXP,CHARSXP,LGLSXP,INTSXP,REALSXP,CPLXSXP,STRSXP,DOTSXP,ANYSXP,VECSXP};
 use libR_sys::{EXPRSXP, BCODESXP, EXTPTRSXP, WEAKREFSXP, RAWSXP, S4SXP, NEWSXP, FREESXP};
+
+use crate::AnyError;
 
 pub enum Robj {
     /// This object owns the SEXP and must free it.
@@ -27,18 +30,39 @@ pub const FALSE: bool = false;
 pub const NULL: () = ();
 
 /// Wrapper for creating symbols.
-pub struct Symbol<'a>(&'a str);
+#[derive(Debug, PartialEq)]
+pub struct Symbol<'a>(pub &'a str);
 
 /// Wrapper for creating logical vectors.
-pub struct Logical<'a>(&'a [i32]);
+#[derive(Debug, PartialEq)]
+pub struct Logical<'a>(pub &'a [i32]);
 
 /// Wrapper for creating character objects.
-pub struct Character<'a>(&'a str);
+#[derive(Debug, PartialEq)]
+pub struct Character<'a>(pub &'a str);
+
+/// Wrapper for creating language objects.
+#[derive(Debug, PartialEq)]
+pub struct Lang<'a>(pub &'a str);
+
+/// Wrapper for creating list objects.
+#[derive(Debug, PartialEq)]
+pub struct List<'a>(pub &'a [Robj]);
 
 impl Robj {
     /// Get a copy of the underlying SEXP.
     /// Note: this is unsafe.
-    unsafe fn get(&self) -> SEXP {
+    pub unsafe fn get(&self) -> SEXP {
+        match self {
+            Robj::Owned(sexp) => *sexp,
+            Robj::Borrowed(sexp) => *sexp,
+            Robj::Sys(sexp) => *sexp,
+        }
+    }
+
+    /// Get a copy of the underlying SEXP.
+    /// Note: this is unsafe.
+    pub unsafe fn _get_mut(&mut self) -> SEXP {
         match self {
             Robj::Owned(sexp) => *sexp,
             Robj::Borrowed(sexp) => *sexp,
@@ -95,7 +119,18 @@ impl Robj {
         }
     }
 
-    pub fn vector_iter(&self) -> Option<VecIter> {
+    pub fn pairlist_iter(&self) -> Option<ListIter> {
+        match self.sexptype() {
+            LANGSXP => {
+                unsafe {
+                    Some(ListIter{ list_elem: self.get()})
+                }
+            }
+            _ => None
+        }
+    }
+
+    pub fn list_iter(&self) -> Option<VecIter> {
         match self.sexptype() {
             VECSXP => {
                 unsafe {
@@ -120,26 +155,106 @@ impl Robj {
     /// Get a read-only reference to a char, symbol or string type.
     pub fn as_str(&self) -> Option<&str> {
         unsafe {
+            unsafe fn to_str<'a>(ptr: *const u8) -> &'a str {
+                let mut len = 0;
+                loop {
+                    if *ptr.offset(len) == 0 {break}
+                    len += 1;
+                }
+                let slice = std::slice::from_raw_parts(ptr, len as usize);
+                std::str::from_utf8_unchecked(slice)
+            }
             match self.sexptype() {
                 CHARSXP => {
-                    let ptr = R_CHAR(self.get()) as *const u8;
-                    let slice = std::slice::from_raw_parts(ptr, self.len());
-                    // Technically we should cope with strings that are
-                    // not ASCII or UTF8. If you observe these in the wild...
-                    Some(std::str::from_utf8_unchecked(slice))
+                    Some(to_str(R_CHAR(self.get()) as *const u8))
                 }
                 SYMSXP => {
-                    let ptr = R_CHAR(PRINTNAME(self.get())) as *const u8;
-                    let slice = std::slice::from_raw_parts(ptr, self.len());
-                    Some(std::str::from_utf8_unchecked(slice))
+                    Some(to_str(R_CHAR(PRINTNAME(self.get())) as *const u8))
                 }
                 _ => None
             }
         }
     }
+
+    pub fn eval(&self) -> Result<Robj, AnyError> {
+        unsafe {
+            let mut error : raw::c_int = 0;
+            let res = R_tryEval(self.get(), R_GlobalEnv, &mut error as *mut raw::c_int);
+            if error != 0 {
+                Err(AnyError::from("R eval error"))
+            } else {
+                Ok(Robj::from(res))
+            }
+        }
+    }
+
+    unsafe fn unprotected(self) -> Robj {
+        match self {
+            Robj::Owned(sexp) => {
+                R_ReleaseObject(sexp);
+                Robj::Borrowed(sexp)
+            }
+            _ => self
+        }
+    }
+
+    pub fn and(self, obj: Robj) -> Robj {
+        unsafe {
+            match self.sexptype() {
+                LISTSXP | DOTSXP | LANGSXP  => {
+                    let sexp = self.get();
+                    // Tranfer ownership of object to the list.
+                    Rf_listAppend(obj.unprotected().get(), sexp);
+                }
+                _ => ()
+            }
+        }
+        self
+    }
+
+    pub fn is_owned(&self) -> bool {
+        match self {
+            Robj::Owned(_) => true,
+            _ => false,
+        }
+    }
 }
 
-/// Return true if two objects are equal.
+impl<'a> PartialEq<List<'a>> for Robj {
+    fn eq(&self, rhs: &List) -> bool {
+        match self.sexptype() {
+            VECSXP if self.len() == rhs.0.len() => {
+                for (l, r) in self.list_iter().unwrap().zip(rhs.0.iter()) {
+                    if !l.eq(r) {
+                        return false;
+                    }
+                }
+                true
+            }
+            _ => false
+        }
+    }
+}
+
+impl<'a> PartialEq<[i32]> for Robj {
+    fn eq(&self, rhs: &[i32]) -> bool {
+        self.as_i32_slice() == Some(rhs)
+    }
+}
+
+impl<'a> PartialEq<[f64]> for Robj {
+    fn eq(&self, rhs: &[f64]) -> bool {
+        self.as_f64_slice() == Some(rhs)
+    }
+}
+
+/// Compare equality with strings.
+impl PartialEq<str> for Robj {
+    fn eq(&self, rhs: &str) -> bool {
+        self.as_str() == Some(rhs)
+    }
+}
+
 impl PartialEq<Robj> for Robj {
     fn eq(&self, rhs: &Robj) -> bool {
         if self.sexptype() == rhs.sexptype() && self.len() == rhs.len() {
@@ -149,22 +264,18 @@ impl PartialEq<Robj> for Robj {
                 match self.sexptype() {
                     NILSXP => true,
                     SYMSXP => PRINTNAME(lsexp) == PRINTNAME(rsexp),
-                    LISTSXP => false,
+                    LISTSXP | LANGSXP | DOTSXP => self.pairlist_iter().unwrap().eq(rhs.pairlist_iter().unwrap()),
                     CLOSXP => false,
                     ENVSXP => false,
                     PROMSXP => false,
-                    LANGSXP => false,
                     SPECIALSXP => false,
                     BUILTINSXP => false,
                     CHARSXP => self.as_str() == rhs.as_str(),
                     LGLSXP | INTSXP => self.as_i32_slice() == rhs.as_i32_slice(),
                     REALSXP => self.as_f64_slice() == rhs.as_f64_slice(),
                     CPLXSXP => false,
-                    STRSXP => false,
-                    DOTSXP => false,
                     ANYSXP => false,
-                    VECSXP => false,
-                    EXPRSXP => false,
+                    VECSXP | EXPRSXP | STRSXP => self.list_iter().unwrap().eq(rhs.list_iter().unwrap()),
                     BCODESXP => false,
                     EXTPTRSXP => false,
                     WEAKREFSXP => false,
@@ -181,13 +292,6 @@ impl PartialEq<Robj> for Robj {
     }
 }
 
-/// Compare equality with strings.
-impl PartialEq<str> for Robj {
-    fn eq(&self, rhs: &str) -> bool {
-        self.as_str() == Some(rhs)
-    }
-}
-
 /// Implement {:?} formatting.
 impl std::fmt::Debug for Robj {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -198,7 +302,7 @@ impl std::fmt::Debug for Robj {
             // CLOSXP => false,
             // ENVSXP => false,
             // PROMSXP => false,
-            // LANGSXP => false,
+            LANGSXP => write!(f, "Lang({:?})", self.pairlist_iter().unwrap().collect::<Vec<Robj>>()),
             // SPECIALSXP => false,
             // BUILTINSXP => false,
             CHARSXP => write!(f, "Character({:?})", self.as_str().unwrap()),
@@ -230,7 +334,7 @@ impl std::fmt::Debug for Robj {
             VECSXP | EXPRSXP | WEAKREFSXP => {
                 write!(f, "[")?;
                 let mut sep = "";
-                for obj in self.vector_iter().unwrap() {
+                for obj in self.list_iter().unwrap() {
                     write!(f, "{}{:?}", sep, obj)?;
                     sep = ", ";
                 }
@@ -289,6 +393,8 @@ impl Drop for Robj {
     }
 }
 
+// TODO: convert many of these from "for Robj" to "for SEXP" and wrap that.
+
 /// Convert a null to an Robj.
 impl From<()> for Robj {
     fn from(_: ()) -> Self {
@@ -333,7 +439,8 @@ impl From<f64> for Robj {
 }
 
 /// Convert a length value to an Robj.
-/// Note: This is good only up to 2^53.
+/// Note: This is good only up to 2^53, but that exceeds the address space
+/// of current generation computers (8PiB)
 impl From<usize> for Robj {
     fn from(val: usize) -> Self {
         unsafe {
@@ -354,6 +461,33 @@ impl<'a> From<Character<'a>> for Robj {
         unsafe {
             let sexp = Rf_mkCharLen(val.0.as_ptr() as *const raw::c_char, val.0.len() as i32);
             R_PreserveObject(sexp);
+            Robj::Owned(sexp)
+        }
+    }
+}
+
+/// Convert a wrapped string ref to an Robj language object.
+impl<'a> From<Lang<'a>> for Robj {
+    fn from(val: Lang<'a>) -> Self {
+        unsafe {
+            let mut name = Vec::from(val.0.as_bytes());
+            name.push(0);
+            let sexp = Rf_lang1(Rf_install(name.as_ptr() as *const raw::c_char));
+            R_PreserveObject(sexp);
+            Robj::Owned(sexp)
+        }
+    }
+}
+
+/// Convert a wrapped string ref to an Robj language object.
+impl<'a> From<List<'a>> for Robj {
+    fn from(val: List<'a>) -> Self {
+        unsafe {
+            let sexp = Rf_allocVector(VECSXP, val.0.len() as R_xlen_t);
+            R_PreserveObject(sexp);
+            for i in 0..val.0.len() {
+                SET_VECTOR_ELT(sexp, i as R_xlen_t, val.0[i].get());
+            }
             Robj::Owned(sexp)
         }
     }
@@ -473,6 +607,7 @@ impl<'a> From<Symbol<'a>> for Robj {
 }
 
 // Iterator over the objects in a vector or string.
+#[derive(Clone)]
 pub struct VecIter {
     vector: SEXP,
     i: usize,
@@ -502,6 +637,29 @@ impl Iterator for VecIter {
     }
 }
 
+// Iterator over the objects in a vector or string.
+#[derive(Clone)]
+pub struct ListIter {
+    list_elem: SEXP,
+}
+
+impl Iterator for ListIter {
+    type Item = Robj;
+ 
+    fn next(&mut self) -> Option<Self::Item> {
+        unsafe {
+            let sexp = self.list_elem;
+            if sexp == R_NilValue {
+                None
+            } else {
+                self.list_elem = CDR(sexp);
+                Some(Robj::Borrowed(CAR(sexp)))
+            }
+        }
+    }
+}
+
+#[derive(Clone)]
 pub struct StrIter {
     vector: SEXP,
     i: usize,
@@ -561,5 +719,6 @@ mod tests {
         assert_eq!(format!("{:?}", Robj::from(Symbol("x"))), "Symbol(\"x\")");
         assert_eq!(format!("{:?}", Robj::from(Character("x"))), "Character(\"x\")");
         assert_eq!(format!("{:?}", Robj::from(Logical(&[1, 0]))), "Logical(&[1, 0])");
+        assert_eq!(format!("{:?}", Robj::from(Lang("x"))), "Lang([Symbol(\"x\")])");
     }
 }

@@ -40,11 +40,11 @@ pub fn start_r() {
 
         //let res = unsafe { Rf_initEmbeddedR(1, args.as_mut_ptr()) };
         // NOTE: R will crash if this is called twice in the same process.
-        Rf_initialize_R(1,
+        Rf_initialize_R(3,
             [
                 cstr_mut!("R"),
                 cstr_mut!("--slave"),
-                cstr_mut!("--no-restore"),
+                cstr_mut!("--no-save"),
             ].as_mut_ptr());
 
         // In case you are curious.
@@ -73,6 +73,8 @@ mod tests {
     #[test]
     fn test_engine() {
         start_r();
+        // Ending the interpreter is bad if we are running multiple threads.
+        // TODO: mutexes and other bad things?
         //end_r();
     }
 }

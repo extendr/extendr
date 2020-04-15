@@ -63,51 +63,23 @@
 mod robj;
 mod args;
 mod engine;
+mod rmacros;
 
 pub use robj::*;
 pub use args::*;
 pub use engine::*;
+pub use rmacros::*;
+
+use libR_sys::{R_BaseEnv, R_GlobalEnv};
 
 // Generic dynamic error type.
 pub type AnyError = Box<dyn std::error::Error + Send + Sync>;
 
-#[macro_export]
-macro_rules! c {
-    () => {
-        Robj::Null
-    };
-    ($($($tok: tt)*),*) => {
-        let args = args!($($rest)*);
-        for (n, v) in args {
-            match v.sexptype() {
-                NILSXP => true,
-                SYMSXP => PRINTNAME(lsexp) == PRINTNAME(rsexp),
-                LISTSXP => false,
-                CLOSXP => false,
-                ENVSXP => false,
-                PROMSXP => false,
-                LANGSXP => false,
-                SPECIALSXP => false,
-                BUILTINSXP => false,
-                CHARSXP => self.as_str() == rhs.as_str(),
-                LGLSXP | INTSXP => self.as_i32_slice() == rhs.as_i32_slice(),
-                REALSXP => self.as_f64_slice() == rhs.as_f64_slice(),
-                CPLXSXP => false,
-                STRSXP => false,
-                DOTSXP => false,
-                ANYSXP => false,
-                VECSXP => false,
-                EXPRSXP => false,
-                BCODESXP => false,
-                EXTPTRSXP => false,
-                WEAKREFSXP => false,
-                RAWSXP => self.as_u8_slice() == rhs.as_u8_slice(),
-                S4SXP => false,
-                NEWSXP => false,
-                FREESXP => false,
-                _ => false
-            }
-        }
-    }
+pub fn baseenv() -> Robj {
+    unsafe { Robj::Sys(R_BaseEnv) }
+}
+
+pub fn globalenv() -> Robj {
+    unsafe { Robj::Sys(R_GlobalEnv) }
 }
 
