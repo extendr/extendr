@@ -22,7 +22,7 @@ Example:
 ```
 let v = c!(1, 2, 3);
 let l = list!(a=1, b=2);
-print!(v, l);
+print!(paste0!("v=", v, " l=", l));
 ```
 
 Provide a wrapper for r objects.
@@ -30,9 +30,9 @@ Provide a wrapper for r objects.
 Example:
 
 ```
-let s = RObj::from("hello");
-let i = RObj::from(1);
-let r = RObj::from(1.0);
+let s = r!("hello");
+let i = r!(1);
+let r = r!(1.0);
 ```
 
 Provide iterator support for creation and consumption of r vectors.
@@ -41,8 +41,8 @@ Example:
 
 ```
 let res = (1..=100).iter().collect::<RObj>();
-for x in res {
-    print!(x);
+for x in res.as_i32_slice() {
+    println!("{}", x)?;
 }
 ```
 
@@ -51,7 +51,7 @@ Provide a procedural macro to adapt Rust functions to R
 Example:
 
 ```
-#[derive(RCallable)]
+#[r_bindgen]
 fn fred(a: i32) -> i32 {
     a + 1
 }

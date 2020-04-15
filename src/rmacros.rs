@@ -2,6 +2,23 @@
 //! rmacros - a set of macros to call actual R functions in a rusty way.
 //! 
 
+/// R object encapsulation operator.
+/// 
+/// Shorthand for Robj::from(x).
+/// 
+/// Example:
+/// ```
+/// use rapi::*;
+/// start_r();
+/// let fred = r!(1);
+/// assert_eq!(fred, Robj::from(1));
+/// ```
+#[macro_export]
+macro_rules! r {
+    ($e: expr) => {
+        Robj::from($e)
+    };
+}
 
 /// Concatenation operator.
 /// 
@@ -9,16 +26,16 @@
 /// ```
 /// use rapi::*;
 /// start_r();
-/// let fred = c!(1, 2, 3).unwrap();
+/// let fred = c!(1, 2, 3);
 /// assert_eq!(fred, Robj::from(&[1, 2, 3][..]));
 /// ```
 #[macro_export]
 macro_rules! c {
     () => {
-        lang!("c").eval()
+        lang!("c").eval_blind()
     };
     ($($rest: tt)*) => {
-        lang!("c", $($rest)*).eval()
+        lang!("c", $($rest)*).eval_blind()
     };
 }
 
@@ -44,16 +61,16 @@ macro_rules! read_table {
 /// ```
 /// use rapi::*;
 /// start_r();
-/// let mylist = list!(x=1, y=2).unwrap();
+/// let mylist = list!(x=1, y=2);
 /// assert_eq!(mylist, List(&[1.into(), 2.into()]));
 /// ```
 #[macro_export]
 macro_rules! list {
     () => {
-        lang!("list").eval()
+        lang!("list").eval_blind()
     };
     ($($rest: tt)*) => {
-        lang!("list", $($rest)*).eval()
+        lang!("list", $($rest)*).eval_blind()
     };
 }
 
@@ -63,26 +80,16 @@ macro_rules! list {
 /// ```
 /// use rapi::*;
 /// start_r();
-/// let mydata = data_frame!(x=1, y=2).unwrap();
+/// let mydata = data_frame!(x=1, y=2);
 /// assert_eq!(mydata, List(&[1.into(), 2.into()]));
 /// ```
 #[macro_export]
 macro_rules! data_frame {
     () => {
-        lang!("data.frame").eval()
+        lang!("data.frame").eval_blind()
     };
     ($($rest: tt)*) => {
-        lang!("data.frame", $($rest)*).eval()
+        lang!("data.frame", $($rest)*).eval_blind()
     };
 }
 
-#[cfg(test)]
-mod tests {
-    use crate::*;
-
-    #[test]
-    fn test_macros() {
-        start_r();
-        assert_eq!(c!(1, 2, 3).unwrap(), Robj::from(&[1, 2, 3][..]));
-    }
-}

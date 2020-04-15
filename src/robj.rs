@@ -1,6 +1,12 @@
 //! R object handling.
 //! 
 //! See. https://cran.r-project.org/doc/manuals/R-exts.html
+//! 
+//! Fundamental principals:
+//! 
+//! * Any function that can break the protection mechanism is unsafe.
+//! * Users should be able to do almost everything without using libR_sys.
+//! * The interface should be friendly to R users without Rust experience.
 
 use libR_sys::{SEXP, R_PreserveObject, R_ReleaseObject, R_NilValue, Rf_mkCharLen};
 use libR_sys::{Rf_ScalarInteger, Rf_ScalarReal, Rf_ScalarLogical, R_GlobalEnv};
@@ -62,7 +68,7 @@ impl Robj {
 
     /// Get a copy of the underlying SEXP.
     /// Note: this is unsafe.
-    pub unsafe fn _get_mut(&mut self) -> SEXP {
+    pub unsafe fn get_mut(&mut self) -> SEXP {
         match self {
             Robj::Owned(sexp) => *sexp,
             Robj::Borrowed(sexp) => *sexp,
@@ -176,6 +182,7 @@ impl Robj {
         }
     }
 
+    // Evaluate the expression and return an error or an R object.
     pub fn eval(&self) -> Result<Robj, AnyError> {
         unsafe {
             let mut error : raw::c_int = 0;
@@ -188,7 +195,22 @@ impl Robj {
         }
     }
 
-    unsafe fn unprotected(self) -> Robj {
+    // Evaluate the expression and return NULL or an R object.
+    pub fn eval_blind(&self) -> Robj {
+        unsafe {
+            let mut error : raw::c_int = 0;
+            let res = R_tryEval(self.get(), R_GlobalEnv, &mut error as *mut raw::c_int);
+            if error != 0 {
+                Robj::from(())
+            } else {
+                Robj::from(res)
+            }
+        }
+    }
+
+    // Unprotect an object - assumes a transfer of ownership.
+    // This is unsafe because the object pointer may be left dangling.
+    pub unsafe fn unprotected(self) -> Robj {
         match self {
             Robj::Owned(sexp) => {
                 R_ReleaseObject(sexp);
@@ -198,20 +220,8 @@ impl Robj {
         }
     }
 
-    pub fn and(self, obj: Robj) -> Robj {
-        unsafe {
-            match self.sexptype() {
-                LISTSXP | DOTSXP | LANGSXP  => {
-                    let sexp = self.get();
-                    // Tranfer ownership of object to the list.
-                    Rf_listAppend(obj.unprotected().get(), sexp);
-                }
-                _ => ()
-            }
-        }
-        self
-    }
-
+    // Return true if the object is owned by this wrapper.
+    // If so, it will be released when the wrapper drops.
     pub fn is_owned(&self) -> bool {
         match self {
             Robj::Owned(_) => true,
