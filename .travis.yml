@@ -1,0 +1,33 @@
+sudo: false
+
+language: rust
+
+rust:
+  - stable
+  - beta
+  - nightly
+
+matrix:
+  include:
+  - env: GHP_UPLOAD_VERSION=0.3.2
+    install:
+    - cargo install --version $GHP_UPLOAD_VERSION cargo-ghp-upload
+    script:
+    - cargo doc --verbose && cargo ghp-upload -vv
+  fast_finish: true
+  allow_failures:
+    - rust: nightly
+
+addons:
+  apt:
+    packages: # recommanded versions for rust-bindgen
+      - r-base-dev
+      - llvm-3.9-dev
+      - libclang-3.9-dev
+
+env: # specify the clang path for rust-bindgen
+  - LIBCLANG_PATH=/usr/lib/llvm-3.9/lib
+
+script:
+  - cargo build
+  - cargo test -- --nocapture --test-threads=1
