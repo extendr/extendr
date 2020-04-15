@@ -3,7 +3,7 @@
 Low-level R library bindings
 
 [![Travis Build Status](https://api.travis-ci.org/extendr/rapi.svg?branch=master)](https://travis-ci.org/extendr/rapi)
-[![Crates.io](http://meritbadge.herokuapp.com/rapi)](https://crates.io/crates/ndarray)
+[![Crates.io](http://meritbadge.herokuapp.com/rapi)](https://crates.io/crates/rapi)
 [![License: Apache-2.0](https://img.shields.io/crates/l/rustr.svg)](#License)
 
 [API Documentation](https://extendr.github.io/rapi/master/rapi/index.html)
