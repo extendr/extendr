@@ -83,6 +83,8 @@
 <span id="83">83</span>
 <span id="84">84</span>
 <span id="85">85</span>
+<span id="86">86</span>
+<span id="87">87</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! rapi - A safe and user friendly R extension interface.</span>
@@ -91,6 +93,9 @@
 <span class="doccomment">//! first-time users of Rust or indeed any compiled language.</span>
 <span class="doccomment">//! </span>
 <span class="doccomment">//! Anyone who knows the R library should be able to write R extensions.</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! See the `Robj` struct for much of the content of this crate.</span>
+<span class="doccomment">//! `Robj` provides a sae wrapper for the R object type.</span>
 <span class="doccomment">//! </span>
 <span class="doccomment">//! This library is just being born, but goals are:</span>
 <span class="doccomment">//! </span>
@@ -143,7 +148,6 @@
 <span class="doccomment">//! result &lt;- .Call(&quot;fred&quot;, 1)</span>
 <span class="doccomment">//! </span>
 <span class="doccomment">//! ```</span>
-<span class="doccomment">//! </span>
 <span class="doccomment">//! </span>
 
 <span class="kw">mod</span> <span class="ident">robj</span>;

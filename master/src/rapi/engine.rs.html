@@ -78,6 +78,9 @@
 <span id="78">78</span>
 <span id="79">79</span>
 <span id="80">80</span>
+<span id="81">81</span>
+<span id="82">82</span>
+<span id="83">83</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! A sigleton instance of the R interpreter.</span>
 <span class="doccomment">//! </span>
@@ -100,6 +103,7 @@
     };
 }
 
+<span class="comment">// TODO: use std::sync::Once</span>
 <span class="kw">static</span> <span class="kw-2">mut</span> <span class="ident">STARTED</span> : <span class="ident">bool</span> <span class="op">=</span> <span class="bool-val">false</span>;
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">start_r</span>() {
@@ -138,6 +142,8 @@
     }
 }
 
+<span class="doccomment">/// Close down the R interpreter. Note you won&#39;t be able to</span>
+<span class="doccomment">/// Restart it, so use with care or not at all.</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">end_r</span>() {
     <span class="kw">unsafe</span> {
         <span class="comment">//Rf_endEmbeddedR(0);</span>
