@@ -6,8 +6,8 @@
 //! 
 //! Anyone who knows the R library should be able to write R extensions.
 //! 
-//! See the `Robj` struct for much of the content of this crate.
-//! `Robj` provides a sae wrapper for the R object type.
+//! See the [Robj](../robj/struct.Robj.html) struct for much of the content of this crate.
+//! [Robj](../robj/struct.Robj.html) provides a safe wrapper for the R object type.
 //! 
 //! This library is just being born, but goals are:
 //! 
