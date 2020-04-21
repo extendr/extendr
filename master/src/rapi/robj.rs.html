@@ -1162,6 +1162,11 @@
 <span id="1162">1162</span>
 <span id="1163">1163</span>
 <span id="1164">1164</span>
+<span id="1165">1165</span>
+<span id="1166">1166</span>
+<span id="1167">1167</span>
+<span id="1168">1168</span>
+<span id="1169">1169</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! R object handling.</span>
 <span class="doccomment">//! </span>
@@ -1431,12 +1436,15 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unboundValue</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> { <span class="kw">unsafe</span> { <span class="ident">new_sys</span>(<span class="ident">R_UnboundValue</span>) }}
     <span class="doccomment">/// Missing argument marker</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">missingArg</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> { <span class="kw">unsafe</span> { <span class="ident">new_sys</span>(<span class="ident">R_MissingArg</span>) }}
-    <span class="doccomment">/// To be found in BC interp. state (marker)</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">inBCInterpreter</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> { <span class="kw">unsafe</span> { <span class="ident">new_sys</span>(<span class="ident">R_InBCInterpreter</span>) }}
-    <span class="doccomment">/// Use current expression (marker)</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">currentExpression</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> { <span class="kw">unsafe</span> { <span class="ident">new_sys</span>(<span class="ident">R_CurrentExpression</span>) }}
-    <span class="doccomment">/// character&quot;</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">asCharacterSymbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> { <span class="kw">unsafe</span> { <span class="ident">new_sys</span>(<span class="ident">R_AsCharacterSymbol</span>) }}
+
+    <span class="comment">/* Not supported by older R versions.
+    /// To be found in BC interp. state (marker)
+    pub fn inBCInterpreter() -&gt; Robj { unsafe { new_sys(R_InBCInterpreter) }}
+    /// Use current expression (marker)
+    pub fn currentExpression() -&gt; Robj { unsafe { new_sys(R_CurrentExpression) }}
+    /// character&quot;
+    pub fn asCharacterSymbol() -&gt; Robj { unsafe { new_sys(R_AsCharacterSymbol) }}
+    */</span>
     <span class="doccomment">/// &quot;base&quot;</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">baseSymbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> { <span class="kw">unsafe</span> { <span class="ident">new_sys</span>(<span class="ident">R_BaseSymbol</span>) }}
     <span class="doccomment">/// &quot;{&quot;</span>
@@ -1501,8 +1509,10 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dot_packageName</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> { <span class="kw">unsafe</span> { <span class="ident">new_sys</span>(<span class="ident">R_dot_packageName</span>) }}<span class="comment">//</span>
     <span class="doccomment">/// &quot;.target&quot;</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dot_target</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> { <span class="kw">unsafe</span> { <span class="ident">new_sys</span>(<span class="ident">R_dot_target</span>) }}
-    <span class="doccomment">/// &quot;.Generic&quot;</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dot_Generic</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> { <span class="kw">unsafe</span> { <span class="ident">new_sys</span>(<span class="ident">R_dot_Generic</span>) }}
+    <span class="comment">/* fix version issues.
+    /// &quot;.Generic&quot;
+    pub fn dot_Generic() -&gt; Robj { unsafe { new_sys(R_dot_Generic) }}
+    */</span>
     <span class="doccomment">/// NA_STRING as a CHARSXP</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">naString</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> { <span class="kw">unsafe</span> { <span class="ident">new_sys</span>(<span class="ident">R_NaString</span>) }}
     <span class="doccomment">/// &quot;&quot; as a CHARSXP</span>
