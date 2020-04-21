@@ -9,4 +9,4 @@ crate-type = ["dylib"]
 
 [dependencies]
 libR-sys = "0.1.1"
-
+rapi = {path = "../../../"}

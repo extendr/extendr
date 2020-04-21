@@ -6,6 +6,9 @@
 //! 
 //! Anyone who knows the R library should be able to write R extensions.
 //! 
+//! See the `Robj` struct for much of the content of this crate.
+//! `Robj` provides a sae wrapper for the R object type.
+//! 
 //! This library is just being born, but goals are:
 //! 
 //! Implement common R functions such as c() and print()
@@ -57,7 +60,6 @@
 //! result <- .Call("fred", 1)
 //! 
 //! ```
-//! 
 //! 
 
 mod robj;
