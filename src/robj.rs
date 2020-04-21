@@ -266,12 +266,15 @@ impl Robj {
     pub fn unboundValue() -> Robj { unsafe { new_sys(R_UnboundValue) }}
     /// Missing argument marker
     pub fn missingArg() -> Robj { unsafe { new_sys(R_MissingArg) }}
+
+    /* Not supported by older R versions.
     /// To be found in BC interp. state (marker)
     pub fn inBCInterpreter() -> Robj { unsafe { new_sys(R_InBCInterpreter) }}
     /// Use current expression (marker)
     pub fn currentExpression() -> Robj { unsafe { new_sys(R_CurrentExpression) }}
     /// character"
     pub fn asCharacterSymbol() -> Robj { unsafe { new_sys(R_AsCharacterSymbol) }}
+    */
     /// "base"
     pub fn baseSymbol() -> Robj { unsafe { new_sys(R_BaseSymbol) }}
     /// "{"
@@ -336,8 +339,10 @@ impl Robj {
     pub fn dot_packageName() -> Robj { unsafe { new_sys(R_dot_packageName) }}//
     /// ".target"
     pub fn dot_target() -> Robj { unsafe { new_sys(R_dot_target) }}
+    /* fix version issues.
     /// ".Generic"
     pub fn dot_Generic() -> Robj { unsafe { new_sys(R_dot_Generic) }}
+    */
     /// NA_STRING as a CHARSXP
     pub fn naString() -> Robj { unsafe { new_sys(R_NaString) }}
     /// "" as a CHARSXP
