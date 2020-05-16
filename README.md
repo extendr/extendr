@@ -1,4 +1,4 @@
-# rapi - A safe and user friendly R extension interface.
+# extendr - A safe and user friendly R extension interface using Rust.
 
 Low-level R library bindings
 
@@ -13,9 +13,11 @@ first-time users of Rust or indeed any compiled language.
 
 Anyone who knows the R library should be able to write R extensions.
 
+
 This library is just being born, but goals are:
 
-Implement common R functions such as c() and print()
+A macro-based interface to R internal functions and language
+features.
 
 Example:
 
@@ -25,7 +27,8 @@ let l = list!(a=1, b=2);
 print!(paste0!("v=", v, " l=", l));
 ```
 
-Provide a wrapper for r objects.
+Provide a safe wrapper for r objects with error handlng
+and panic-free execution.
 
 Example:
 
@@ -64,3 +67,30 @@ In R:
 result <- .Call("fred", 1)
 
 ```
+
+## extendr roadmap
+
+### Basic
+- [x] Be able to build simple rust extensions for R.
+- [x] Wrap the R SEXP object safely (Robj)
+- [ ] Iterator support for matrices and vectors.
+- [ ] Class support.
+
+### Documentation
+- [x] Begin documentation.
+- [ ] Begin book-form documentation.
+- [ ] Paper for Bioinformatics.
+- [ ] Build and publish CRAN R package.
+- [ ] Publish Use R! series book.
+
+### Automation
+- [ ] Auto-generate binding wrappers.
+- [ ] Auto-generate NAMESPACE and lib.R.
+
+### Features
+- [ ] Feature-gated support for ndarray.
+- [ ] Feature-gated support for rayon.
+
+### R packages
+- [ ] Bindings for rust-bio
+
