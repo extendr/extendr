@@ -42,11 +42,10 @@ macro_rules! c {
 /// Read a CSV file.
 /// 
 /// Example:
-/// ```no-run
+/// ```no_run
 /// use rapi::*;
 /// start_r();
 /// let mydata = read_table!("mydata.csv").unwrap();
-/// assert_eq!(mydata, NULL);
 /// ```
 #[macro_export]
 macro_rules! read_table {

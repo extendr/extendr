@@ -78,6 +78,7 @@ macro_rules! append_lang {
     };
 }
 
+/// A macro for constructing R langage objects.
 #[macro_export]
 macro_rules! lang {
     ($sym : expr) => {

@@ -15,7 +15,7 @@
 //! 
 //! Example:
 //! 
-//! ```no-run
+//! ```ignore
 //! let v = c!(1, 2, 3);
 //! let l = list!(a=1, b=2);
 //! print!(v, l);
@@ -25,7 +25,7 @@
 //! 
 //! Example:
 //! 
-//! ```no-run
+//! ```ignore
 //! let s = Robj::from("hello");
 //! let i = Robj::from(1);
 //! let r = Robj::from(1.0);
@@ -35,7 +35,7 @@
 //! 
 //! Example:
 //! 
-//! ```no-run
+//! ```ignore
 //! let res = (1..=100).iter().collect::<Robj>();
 //! for x in res {
 //!     print!(x);
@@ -46,7 +46,7 @@
 //! 
 //! Example:
 //! 
-//! ```no-run
+//! ```ignore
 //! #[derive(RCallable)]
 //! fn fred(a: i32) -> i32 {
 //!     a + 1
@@ -55,7 +55,7 @@
 //! 
 //! In R:
 //! 
-//! ```no-run
+//! ```ignore
 //! 
 //! result <- .Call("fred", 1)
 //! 
