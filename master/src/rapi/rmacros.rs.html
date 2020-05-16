@@ -92,7 +92,6 @@
 <span id="92">92</span>
 <span id="93">93</span>
 <span id="94">94</span>
-<span id="95">95</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! rmacros - a set of macros to call actual R functions in a rusty way.</span>
@@ -138,11 +137,10 @@
 <span class="doccomment">/// Read a CSV file.</span>
 <span class="doccomment">/// </span>
 <span class="doccomment">/// Example:</span>
-<span class="doccomment">/// ```no-run</span>
+<span class="doccomment">/// ```no_run</span>
 <span class="doccomment">/// use rapi::*;</span>
 <span class="doccomment">/// start_r();</span>
 <span class="doccomment">/// let mydata = read_table!(&quot;mydata.csv&quot;).unwrap();</span>
-<span class="doccomment">/// assert_eq!(mydata, NULL);</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">read_table</span> {

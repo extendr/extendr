@@ -7,40 +7,46 @@ first-time users of Rust or indeed any compiled language.</p>
 <p>This library is just being born, but goals are:</p>
 <p>Implement common R functions such as c() and print()</p>
 <p>Example:</p>
-<pre><code class="language-no-run">let v = c!(1, 2, 3);
-let l = list!(a=1, b=2);
-print!(v, l);
-</code></pre>
+
+<div class='information'><div class='tooltip ignore'>ⓘ<span class='tooltiptext'>This example is not tested</span></div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
+<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="macro">c</span><span class="macro">!</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>);
+<span class="kw">let</span> <span class="ident">l</span> <span class="op">=</span> <span class="macro">list</span><span class="macro">!</span>(<span class="ident">a</span><span class="op">=</span><span class="number">1</span>, <span class="ident">b</span><span class="op">=</span><span class="number">2</span>);
+<span class="macro">print</span><span class="macro">!</span>(<span class="ident">v</span>, <span class="ident">l</span>);</pre></div>
 <p>Provide a wrapper for r objects.</p>
 <p>Example:</p>
-<pre><code class="language-no-run">let s = Robj::from(&quot;hello&quot;);
-let i = Robj::from(1);
-let r = Robj::from(1.0);
-</code></pre>
+
+<div class='information'><div class='tooltip ignore'>ⓘ<span class='tooltiptext'>This example is not tested</span></div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
+<span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="string">&quot;hello&quot;</span>);
+<span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">1</span>);
+<span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">1.0</span>);</pre></div>
 <p>Provide iterator support for creation and consumption of r vectors.</p>
 <p>Example:</p>
-<pre><code class="language-no-run">let res = (1..=100).iter().collect::&lt;Robj&gt;();
-for x in res {
-    print!(x);
-}
-</code></pre>
+
+<div class='information'><div class='tooltip ignore'>ⓘ<span class='tooltiptext'>This example is not tested</span></div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
+<span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> (<span class="number">1</span>..<span class="op">=</span><span class="number">100</span>).<span class="ident">iter</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>();
+<span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> <span class="ident">res</span> {
+    <span class="macro">print</span><span class="macro">!</span>(<span class="ident">x</span>);
+}</pre></div>
 <p>Provide a procedural macro to adapt Rust functions to R</p>
 <p>Example:</p>
-<pre><code class="language-no-run">#[derive(RCallable)]
-fn fred(a: i32) -&gt; i32 {
-    a + 1
-}
-</code></pre>
+
+<div class='information'><div class='tooltip ignore'>ⓘ<span class='tooltiptext'>This example is not tested</span></div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">RCallable</span>)]</span>
+<span class="kw">fn</span> <span class="ident">fred</span>(<span class="ident">a</span>: <span class="ident">i32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">i32</span> {
+    <span class="ident">a</span> <span class="op">+</span> <span class="number">1</span>
+}</pre></div>
 <p>In R:</p>
-<pre><code class="language-no-run"> 
-result &lt;- .Call(&quot;fred&quot;, 1)
+
+<div class='information'><div class='tooltip ignore'>ⓘ<span class='tooltiptext'>This example is not tested</span></div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
  
-</code></pre>
+<span class="ident">result</span> <span class="op">&lt;</span><span class="op">-</span> .<span class="ident">Call</span>(<span class="string">&quot;fred&quot;</span>, <span class="number">1</span>)
+ </pre></div>
 </div><h2 id='macros' class='section-header'><a href="#macros">Macros</a></h2>
 <table><tr class='module-item'><td><a class="macro" href="macro.append_lang.html" title='rapi::append_lang macro'>append_lang</a></td><td class='docblock-short'><p>Convert a list of tokens to an array of tuples.</p>
 </td></tr><tr class='module-item'><td><a class="macro" href="macro.args.html" title='rapi::args macro'>args</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="macro" href="macro.c.html" title='rapi::c macro'>c</a></td><td class='docblock-short'><p>Concatenation operator.</p>
 </td></tr><tr class='module-item'><td><a class="macro" href="macro.data_frame.html" title='rapi::data_frame macro'>data_frame</a></td><td class='docblock-short'><p>Create a dataframe.</p>
-</td></tr><tr class='module-item'><td><a class="macro" href="macro.lang.html" title='rapi::lang macro'>lang</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="macro" href="macro.list.html" title='rapi::list macro'>list</a></td><td class='docblock-short'><p>Create a list.</p>
+</td></tr><tr class='module-item'><td><a class="macro" href="macro.lang.html" title='rapi::lang macro'>lang</a></td><td class='docblock-short'><p>A macro for constructing R langage objects.</p>
+</td></tr><tr class='module-item'><td><a class="macro" href="macro.list.html" title='rapi::list macro'>list</a></td><td class='docblock-short'><p>Create a list.</p>
 </td></tr><tr class='module-item'><td><a class="macro" href="macro.push_args.html" title='rapi::push_args macro'>push_args</a></td><td class='docblock-short'><p>Convert a list of tokens to an array of tuples.</p>
 </td></tr><tr class='module-item'><td><a class="macro" href="macro.r.html" title='rapi::r macro'>r</a></td><td class='docblock-short'><p>R object encapsulation operator.</p>
 </td></tr><tr class='module-item'><td><a class="macro" href="macro.read_table.html" title='rapi::read_table macro'>read_table</a></td><td class='docblock-short'><p>Read a CSV file.</p>
