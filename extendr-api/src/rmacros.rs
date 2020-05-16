@@ -8,7 +8,7 @@
 /// 
 /// Example:
 /// ```
-/// use rapi::*;
+/// use extendr_api::*;
 /// start_r();
 /// let fred = r!(1);
 /// assert_eq!(fred, Robj::from(1));
@@ -24,7 +24,7 @@ macro_rules! r {
 /// 
 /// Example:
 /// ```
-/// use rapi::*;
+/// use extendr_api::*;
 /// start_r();
 /// let fred = c!(1, 2, 3);
 /// assert_eq!(fred, Robj::from(&[1, 2, 3][..]));
@@ -43,7 +43,7 @@ macro_rules! c {
 /// 
 /// Example:
 /// ```no_run
-/// use rapi::*;
+/// use extendr_api::*;
 /// start_r();
 /// let mydata = read_table!("mydata.csv").unwrap();
 /// ```
@@ -58,7 +58,7 @@ macro_rules! read_table {
 /// 
 /// Example:
 /// ```
-/// use rapi::*;
+/// use extendr_api::*;
 /// start_r();
 /// let mylist = list!(x=1, y=2);
 /// assert_eq!(mylist, List(&[1.into(), 2.into()]));
@@ -77,7 +77,7 @@ macro_rules! list {
 /// 
 /// Example:
 /// ```
-/// use rapi::*;
+/// use extendr_api::*;
 /// start_r();
 /// let mydata = data_frame!(x=1, y=2);
 /// assert_eq!(mydata, List(&[1.into(), 2.into()]));

@@ -1,5 +1,5 @@
 //!
-//! rapi - A safe and user friendly R extension interface.
+//! extendr - A safe and user friendly R extension interface.
 //! 
 //! This library aims to provide an interface that will be familiar to
 //! first-time users of Rust or indeed any compiled language.

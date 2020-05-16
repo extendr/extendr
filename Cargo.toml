@@ -1,12 +1,6 @@
-[package]
-name = "rapi"
-version = "0.1.0"
-authors = ["andy-thomason <andy@andythomason.com>"]
-edition = "2018"
-description = "Safe and user friendly bindings to the R programming language."
-license = "Apache-2.0"
-documentation = "https://extendr.github.io/rapi/master/rapi/index.html"
-repository = "https://github.com/extendr/rapi"
+[workspace]
 
-[dependencies]
-libR-sys = "0.1.1"
+members = [
+	"extendr-api"
+]
+
