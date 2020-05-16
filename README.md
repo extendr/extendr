@@ -2,11 +2,10 @@
 
 Low-level R library bindings
 
-[![Travis Build Status](https://api.travis-ci.org/extendr/rapi.svg?branch=master)](https://travis-ci.org/extendr/rapi)
-[![Crates.io](http://meritbadge.herokuapp.com/rapi)](https://crates.io/crates/rapi)
-[![License: Apache-2.0](https://img.shields.io/crates/l/rustr.svg)](#License)
+[![Travis Build Status](https://api.travis-ci.org/extendr/extendr-api.svg?branch=master)](https://travis-ci.org/extendr/extendr-api)
+[![Crates.io](http://meritbadge.herokuapp.com/extendr-api)](https://crates.io/crates/extendr-api)
 
-[API Documentation](https://extendr.github.io/rapi/master/rapi/index.html)
+[API Documentation](https://extendr.github.io/extendr-api/master/extendr-api/index.html)
 
 This library aims to provide an interface that will be familiar to
 first-time users of Rust or indeed any compiled language.
