@@ -1,3 +1,3 @@
 (function() {var implementors = {};
-implementors["rapi"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/ops/drop/trait.Drop.html\" title=\"trait core::ops::drop::Drop\">Drop</a> for <a class=\"enum\" href=\"rapi/enum.Robj.html\" title=\"enum rapi::Robj\">Robj</a>","synthetic":false,"types":["rapi::robj::Robj"]}];
+implementors["extendr_api"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/ops/drop/trait.Drop.html\" title=\"trait core::ops::drop::Drop\">Drop</a> for <a class=\"enum\" href=\"extendr_api/enum.Robj.html\" title=\"enum extendr_api::Robj\">Robj</a>","synthetic":false,"types":["extendr_api::robj::Robj"]}];
 if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
