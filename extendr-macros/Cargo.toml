@@ -1,13 +1,17 @@
 [package]
-name = "extendr-api"
+name = "extendr-macros"
 version = "0.1.0"
 authors = ["andy-thomason <andy@andythomason.com>"]
 edition = "2018"
-description = "Safe and user friendly bindings to the R programming language."
+description = "Generate bindings from R to Rust."
 license = "MIT"
 documentation = "https://extendr.github.io/extendr/index.html"
 repository = "https://github.com/extendr/extendr"
 
+[lib]
+proc_macro = true
+
 [dependencies]
-libR-sys = "0.1.1"
-extendr-macros = { path="../extendr-macros" }
+syn = { version = "1.0.22", features = ["full", "extra-traits"] }
+quote = "1.0.6"
+

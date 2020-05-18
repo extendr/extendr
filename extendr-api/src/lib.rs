@@ -72,16 +72,22 @@ pub use args::*;
 pub use engine::*;
 pub use rmacros::*;
 
-use libR_sys::{R_BaseEnv, R_GlobalEnv};
-
-// Generic dynamic error type.
+/// Generic dynamic error type.
 pub type AnyError = Box<dyn std::error::Error + Send + Sync>;
 
-pub fn baseenv() -> Robj {
-    unsafe { Robj::Sys(R_BaseEnv) }
-}
+#[cfg(test)]
+mod tests {
+    use extendr_macros::export_function;
 
-pub fn globalenv() -> Robj {
-    unsafe { Robj::Sys(R_GlobalEnv) }
+    #[export_function]
+    pub fn im_a_function() {
+
+    }
+
+    #[test]
+    fn export_test() {
+        //im_a_function();
+        assert!(false);
+    }
 }
 
