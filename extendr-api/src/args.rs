@@ -2,7 +2,8 @@
 //! 
 
 use libR_sys::*;
-use crate::robj::*;
+//use crate::robj::*;
+use crate::robj::Robj;
 
 /// Convert a list of tokens to an array of tuples.
 #[macro_export]

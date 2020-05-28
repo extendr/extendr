@@ -64,6 +64,41 @@ pub struct Lang<'a>(pub &'a str);
 #[derive(Debug, PartialEq)]
 pub struct List<'a>(pub &'a [Robj]);
 
+pub trait FromSexp : Sized {
+    fn from_i32(_val: i32) -> Result<Self, &'static str> {
+        Err("unable to convert value from integer")
+    }
+
+    fn from_f64(_val: f64) -> Result<Self, &'static str> {
+        Err("unable to convert value from real")
+    }
+}
+
+macro_rules! impl_from_sexp {
+    ($t: ty) => {
+        impl FromSexp for $t {
+            fn from_i32(val: i32) -> Result<Self, &'static str> {
+                Ok(val as $t)
+            }
+
+            fn from_f64(val: f64) -> Result<Self, &'static str> {
+                Ok(val as $t)
+            }
+        }
+    }
+}
+
+impl_from_sexp!(u8);
+impl_from_sexp!(u16);
+impl_from_sexp!(u32);
+impl_from_sexp!(u64);
+impl_from_sexp!(i8);
+impl_from_sexp!(i16);
+impl_from_sexp!(i32);
+impl_from_sexp!(i64);
+impl_from_sexp!(f32);
+impl_from_sexp!(f64);
+
 impl Robj {
     /// Get a copy of the underlying SEXP.
     /// Note: this is unsafe.
@@ -83,6 +118,20 @@ impl Robj {
             Robj::Owned(sexp) => Some(*sexp),
             Robj::Borrowed(_) => None,
             Robj::Sys(_) => None,
+        }
+    }
+
+    /// Make our best attempt to get primitive values from a Robj.
+    /// Results my be translated.
+    /// This is used for input parameter conversion on exports.
+    pub fn get_as<T : FromSexp>(&self) -> Result<T, &'static str> {
+        unsafe {
+            let sexp = self.get();
+            match (Rf_xlength(sexp), TYPEOF(sexp) as u32) {
+                (1, INTSXP) => T::from_i32(*INTEGER(sexp)),
+                (1, REALSXP) => T::from_f64(*REAL(sexp)),
+                _ => Err("value must be a scalar integer")
+            }
         }
     }
 
@@ -404,11 +453,17 @@ impl Robj {
     /// Assign an integer to each unique string and return a "factor".
     pub fn asCharacterFactor(&self) -> Robj { unsafe{new_owned(Rf_asCharacterFactor(self.get()))}}
 
+    /// Get a scalar boolean value
+    pub fn asLogical(&self) -> bool { unsafe{ Rf_asLogical(self.get()) != 0 } }
+
+    /// Get a scalar 32 bit integer value
+    pub fn asInteger(&self) -> i32 { unsafe{ Rf_asInteger(self.get()) as i32 } }
+
+    /// Get a 64 bit double value
+    pub fn asReal(&self) -> f64 { unsafe{ Rf_asReal(self.get()) as f64 } }
+
     /* TODO:
-    int Rf_asLogical(SEXP x);
     int Rf_asLogical2(SEXP x, int checking, SEXP call, SEXP rho);
-    int Rf_asInteger(SEXP x);
-    double Rf_asReal(SEXP x);
     Rcomplex Rf_asComplex(SEXP x);
     void Rf_addMissingVarsToNewEnv(SEXP, SEXP);
     SEXP Rf_alloc3DArray(SEXPTYPE, int, int, int);
@@ -664,16 +719,16 @@ impl Robj {
     pub fn isVectorizable(&self) -> bool { unsafe { Rf_isVectorizable(self.get()) != 0}}
 }
 
-unsafe fn new_owned(sexp: SEXP) -> Robj {
+pub unsafe fn new_owned(sexp: SEXP) -> Robj {
     R_PreserveObject(sexp);
     Robj::Owned(sexp)
 }
 
-unsafe fn new_borrowed(sexp: SEXP) -> Robj {
+pub unsafe fn new_borrowed(sexp: SEXP) -> Robj {
     Robj::Borrowed(sexp)
 }
 
-unsafe fn new_sys(sexp: SEXP) -> Robj {
+pub unsafe fn new_sys(sexp: SEXP) -> Robj {
     Robj::Sys(sexp)
 }
 
@@ -1043,13 +1098,32 @@ impl<'a> From<Symbol<'a>> for Robj {
     fn from(name: Symbol) -> Self {
         unsafe {
             if let Ok(name) = CString::new(name.0) {
-                Robj::Sys(Rf_install(name.as_ptr()))
+                new_owned(Rf_install(name.as_ptr()))
             } else {
                 Robj::from(())
             }
         }
     }
 }
+
+/*impl<'a, T> TryFrom<Robj> for T {
+where T::TryFrom<i32>
+    type Error = &'static str;
+    fn try_from(obj: Robj) -> Result<Self,  Self::Error> {
+        unsafe {
+            let sexp = obj.get();
+            if TYPEOF(sexp) != INTSXP as i32 || Rf_xlength(sexp) != 1 {
+                Err("u8 requires scalar integer")
+            } else {
+                if let Ok(res) = Self::try_from(*INTEGER(sexp)) {
+                    Ok(res)
+                } else {
+                    Err("Parameter out of range")
+                }
+            }
+        }
+    }
+}*/
 
 // Iterator over the objects in a vector or string.
 #[derive(Clone)]
@@ -1139,6 +1213,7 @@ impl Iterator for StrIter {
     }
 }
 
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1165,5 +1240,19 @@ mod tests {
         assert_eq!(format!("{:?}", Robj::from(Character("x"))), "Character(\"x\")");
         assert_eq!(format!("{:?}", Robj::from(Logical(&[1, 0]))), "Logical(&[1, 0])");
         assert_eq!(format!("{:?}", Robj::from(Lang("x"))), "Lang([Symbol(\"x\")])");
+    }
+
+    #[test]
+    fn test_try_from() {
+        assert_eq!(Robj::from(1).get_as::<u8>(), Ok(1));
+        assert_eq!(Robj::from(1).get_as::<u16>(), Ok(1));
+        assert_eq!(Robj::from(1).get_as::<u32>(), Ok(1));
+        assert_eq!(Robj::from(1).get_as::<u64>(), Ok(1));
+        assert_eq!(Robj::from(1).get_as::<i8>(), Ok(1));
+        assert_eq!(Robj::from(1).get_as::<i16>(), Ok(1));
+        assert_eq!(Robj::from(1).get_as::<i32>(), Ok(1));
+        assert_eq!(Robj::from(1).get_as::<i64>(), Ok(1));
+        assert_eq!(Robj::from(1).get_as::<f32>(), Ok(1.));
+        assert_eq!(Robj::from(1).get_as::<f64>(), Ok(1.));
     }
 }
