@@ -64,7 +64,7 @@ pub struct Lang<'a>(pub &'a str);
 #[derive(Debug, PartialEq)]
 pub struct List<'a>(pub &'a [Robj]);
 
-pub trait FromSexp : Sized {
+pub trait FromSexp : Sized + Default {
     fn from_i32(_val: i32) -> Result<Self, &'static str> {
         Err("unable to convert value from integer")
     }
@@ -72,9 +72,13 @@ pub trait FromSexp : Sized {
     fn from_f64(_val: f64) -> Result<Self, &'static str> {
         Err("unable to convert value from real")
     }
+
+    fn from_asciiz(_val: *const u8) -> Result<Self, &'static str> {
+        Err("unable to convert from string")
+    }
 }
 
-macro_rules! impl_from_sexp {
+macro_rules! impl_prim_from_sexp {
     ($t: ty) => {
         impl FromSexp for $t {
             fn from_i32(val: i32) -> Result<Self, &'static str> {
@@ -88,16 +92,28 @@ macro_rules! impl_from_sexp {
     }
 }
 
-impl_from_sexp!(u8);
-impl_from_sexp!(u16);
-impl_from_sexp!(u32);
-impl_from_sexp!(u64);
-impl_from_sexp!(i8);
-impl_from_sexp!(i16);
-impl_from_sexp!(i32);
-impl_from_sexp!(i64);
-impl_from_sexp!(f32);
-impl_from_sexp!(f64);
+impl FromSexp for &str {
+    fn from_asciiz(val: *const u8) -> Result<Self, &'static str> {
+        Ok(unsafe { to_str(val) })
+    }
+}
+    
+impl FromSexp for String {
+    fn from_asciiz(val: *const u8) -> Result<Self, &'static str> {
+        Ok(unsafe { String::from(to_str(val)) })
+    }
+}
+    
+impl_prim_from_sexp!(u8);
+impl_prim_from_sexp!(u16);
+impl_prim_from_sexp!(u32);
+impl_prim_from_sexp!(u64);
+impl_prim_from_sexp!(i8);
+impl_prim_from_sexp!(i16);
+impl_prim_from_sexp!(i32);
+impl_prim_from_sexp!(i64);
+impl_prim_from_sexp!(f32);
+impl_prim_from_sexp!(f64);
 
 impl Robj {
     /// Get a copy of the underlying SEXP.
@@ -122,15 +138,20 @@ impl Robj {
     }
 
     /// Make our best attempt to get primitive values from a Robj.
-    /// Results my be translated.
+    /// Results may be translated.
     /// This is used for input parameter conversion on exports.
-    pub fn get_as<T : FromSexp>(&self) -> Result<T, &'static str> {
+    pub fn get_best<T : FromSexp>(&self) -> T {
         unsafe {
             let sexp = self.get();
-            match (Rf_xlength(sexp), TYPEOF(sexp) as u32) {
-                (1, INTSXP) => T::from_i32(*INTEGER(sexp)),
-                (1, REALSXP) => T::from_f64(*REAL(sexp)),
-                _ => Err("value must be a scalar integer")
+            if Rf_xlength(sexp) == 0 {
+                return T::default();
+            }
+            match TYPEOF(sexp) as u32 {
+                INTSXP => T::from_i32(*INTEGER(sexp)).unwrap_or_default(),
+                REALSXP => T::from_f64(*REAL(sexp)).unwrap_or_default(),
+                CHARSXP => T::from_asciiz(R_CHAR(sexp) as *const u8).unwrap_or_default(),
+                STRSXP => T::from_asciiz(R_CHAR(VECTOR_ELT(sexp, 0)) as *const u8).unwrap_or_default(),
+                _ => T::default()
             }
         }
     }
@@ -223,15 +244,6 @@ impl Robj {
     /// Get a read-only reference to a char, symbol or string type.
     pub fn as_str(&self) -> Option<&str> {
         unsafe {
-            unsafe fn to_str<'a>(ptr: *const u8) -> &'a str {
-                let mut len = 0;
-                loop {
-                    if *ptr.offset(len) == 0 {break}
-                    len += 1;
-                }
-                let slice = std::slice::from_raw_parts(ptr, len as usize);
-                std::str::from_utf8_unchecked(slice)
-            }
             match self.sexptype() {
                 CHARSXP => {
                     Some(to_str(R_CHAR(self.get()) as *const u8))
@@ -884,6 +896,19 @@ impl std::fmt::Debug for Robj {
     }
 }
 
+// Internal string to str conversion.
+// Lets not worry about non-ascii/unicode strings for now (or ever).
+unsafe fn to_str<'a>(ptr: *const u8) -> &'a str {
+    let mut len = 0;
+    loop {
+        if *ptr.offset(len) == 0 {break}
+        len += 1;
+    }
+    let slice = std::slice::from_raw_parts(ptr, len as usize);
+    std::str::from_utf8_unchecked(slice)
+}
+
+
 /// Borrow an already protected SEXP
 /// Note that the SEXP must outlive the generated object.
 impl From<SEXP> for Robj {
@@ -1244,15 +1269,15 @@ mod tests {
 
     #[test]
     fn test_try_from() {
-        assert_eq!(Robj::from(1).get_as::<u8>(), Ok(1));
-        assert_eq!(Robj::from(1).get_as::<u16>(), Ok(1));
-        assert_eq!(Robj::from(1).get_as::<u32>(), Ok(1));
-        assert_eq!(Robj::from(1).get_as::<u64>(), Ok(1));
-        assert_eq!(Robj::from(1).get_as::<i8>(), Ok(1));
-        assert_eq!(Robj::from(1).get_as::<i16>(), Ok(1));
-        assert_eq!(Robj::from(1).get_as::<i32>(), Ok(1));
-        assert_eq!(Robj::from(1).get_as::<i64>(), Ok(1));
-        assert_eq!(Robj::from(1).get_as::<f32>(), Ok(1.));
-        assert_eq!(Robj::from(1).get_as::<f64>(), Ok(1.));
+        assert_eq!(Robj::from(1).get_best::<u8>(), 1);
+        assert_eq!(Robj::from(1).get_best::<u16>(), 1);
+        assert_eq!(Robj::from(1).get_best::<u32>(), 1);
+        assert_eq!(Robj::from(1).get_best::<u64>(), 1);
+        assert_eq!(Robj::from(1).get_best::<i8>(), 1);
+        assert_eq!(Robj::from(1).get_best::<i16>(), 1);
+        assert_eq!(Robj::from(1).get_best::<i32>(), 1);
+        assert_eq!(Robj::from(1).get_best::<i64>(), 1);
+        assert_eq!(Robj::from(1).get_best::<f32>(), 1.0);
+        assert_eq!(Robj::from(1).get_best::<f64>(), 1.0);
     }
 }

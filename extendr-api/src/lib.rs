@@ -77,18 +77,8 @@ pub type AnyError = Box<dyn std::error::Error + Send + Sync>;
 
 #[cfg(test)]
 mod tests {
-    #![feature(concat_idents)]
     use extendr_macros::export_function;
     use crate as extendr_api;
-
-    macro_rules! gen_funcs {
-        ($type: ty) => {
-            #[export_function]
-            pub fn (p: $type) -> i32 {
-                p as i32
-            }
-        }
-    }
 
     #[export_function]
     pub fn inttypes(a: i8, b: u8, c:i16, d: u16, e: i32, f: u32, g: i64, h: u64) {
@@ -102,9 +92,21 @@ mod tests {
         assert_eq!(h, 8);
     }
 
+    #[export_function]
+    pub fn floattypes(a: f32, b: f64) {
+        assert_eq!(a, 1.);
+        assert_eq!(b, 2.);
+    }
 
     #[export_function]
-    pub fn u8_i32(fred: u8) -> i32 {
+    pub fn strtypes(a: &str, b: String) {
+        assert_eq!(a, "abc");
+        assert_eq!(b, "def");
+    }
+
+
+    #[export_function]
+    pub fn return_u8(fred: u8) -> i32 {
         fred as i32
     }
 
@@ -113,11 +115,14 @@ mod tests {
         use super::*;
         unsafe {
             __wrap__inttypes(Robj::from(1).get(), Robj::from(2).get(), Robj::from(3).get(), Robj::from(4).get(), Robj::from(5).get(), Robj::from(6).get(), Robj::from(7).get(), Robj::from(8).get());
+            __wrap__inttypes(Robj::from(1.).get(), Robj::from(2.).get(), Robj::from(3.).get(), Robj::from(4.).get(), Robj::from(5.).get(), Robj::from(6.).get(), Robj::from(7.).get(), Robj::from(8.).get());
+            __wrap__floattypes(Robj::from(1.).get(), Robj::from(2.).get());
+            __wrap__floattypes(Robj::from(1).get(), Robj::from(2).get());
+            __wrap__strtypes(Robj::from("abc").get(), Robj::from("def").get());
         }
 
-        //use libR_sys::SEXP;
-        assert_eq!(u8_i32(123), 123);
-        let res = unsafe { __wrap__u8_i32(Robj::from(123).get()) };
+        assert_eq!(return_u8(123), 123);
+        let res = unsafe { __wrap__return_u8(Robj::from(123).get()) };
         assert_eq!(Robj::from(res), Robj::from(123));
     }
 }

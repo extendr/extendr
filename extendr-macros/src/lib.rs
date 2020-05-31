@@ -10,7 +10,7 @@ use quote::{quote, format_ident};
 
 // All arguments are SEXP for .Call in R.
 fn translate_formal(input : &FnArg) -> FnArg {
-    //println!("arg={:?}", &input);
+    println!("arg={:?}", &input);
     match input {
         FnArg::Typed(ref pattype) => {
             let pat = &pattype.pat.as_ref();
@@ -23,7 +23,7 @@ fn translate_formal(input : &FnArg) -> FnArg {
         },
         _ => ()
     }
-    panic!("Exported function argument must be a primitive or Robj.");
+    panic!("#[export_function] argument must be a primitive or Robj.");
 }
 
 // Convert SEXP arguments into native types if we can.
@@ -36,7 +36,7 @@ fn translate_actual(input : &FnArg) -> Expr {
             match (pat, ty) {
                 (Pat::Ident(ref ident), Type::Path(ref path)) => {
                     //return parse_quote!{ #path :: try_from(extendr_api::new_borrowed(#ident)).unwrap() };
-                    return parse_quote!{ unsafe { extendr_api::new_borrowed(#ident).get_as::<#path>().unwrap() } };
+                    return parse_quote!{ unsafe { extendr_api::new_borrowed(#ident).get_best::<#path>() } };
                 }
                 _ => ()
             }
