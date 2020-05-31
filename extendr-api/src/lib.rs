@@ -79,6 +79,7 @@ pub type AnyError = Box<dyn std::error::Error + Send + Sync>;
 mod tests {
     use extendr_macros::export_function;
     use crate as extendr_api;
+    use super::Robj;
 
     #[export_function]
     pub fn inttypes(a: i8, b: u8, c:i16, d: u16, e: i32, f: u32, g: i64, h: u64) {
@@ -104,6 +105,16 @@ mod tests {
         assert_eq!(b, "def");
     }
 
+    #[export_function]
+    pub fn vectortypes(a: Vec::<i32>, b: Vec::<f64>) {
+        assert_eq!(a, [1, 2, 3]);
+        assert_eq!(b, [4., 5., 6.]);
+    }
+
+    #[export_function]
+    pub fn robjtype(a: Robj) {
+        assert_eq!(a, Robj::from(1))
+    }
 
     #[export_function]
     pub fn return_u8(fred: u8) -> i32 {
@@ -113,12 +124,15 @@ mod tests {
     #[test]
     fn export_test() {
         use super::*;
+        // Call the exported functions through their generated C wrappers.
         unsafe {
             __wrap__inttypes(Robj::from(1).get(), Robj::from(2).get(), Robj::from(3).get(), Robj::from(4).get(), Robj::from(5).get(), Robj::from(6).get(), Robj::from(7).get(), Robj::from(8).get());
             __wrap__inttypes(Robj::from(1.).get(), Robj::from(2.).get(), Robj::from(3.).get(), Robj::from(4.).get(), Robj::from(5.).get(), Robj::from(6.).get(), Robj::from(7.).get(), Robj::from(8.).get());
             __wrap__floattypes(Robj::from(1.).get(), Robj::from(2.).get());
             __wrap__floattypes(Robj::from(1).get(), Robj::from(2).get());
             __wrap__strtypes(Robj::from("abc").get(), Robj::from("def").get());
+            __wrap__vectortypes(Robj::from(&[1, 2, 3] as &[i32]).get(), Robj::from(&[4., 5., 6.] as &[f64]).get());
+            __wrap__robjtype(Robj::from(1).get());
         }
 
         assert_eq!(return_u8(123), 123);

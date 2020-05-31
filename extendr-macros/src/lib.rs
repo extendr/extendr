@@ -26,7 +26,7 @@ fn translate_actual(input : &FnArg) -> Expr {
         FnArg::Typed(ref pattype) => {
             let pat = &pattype.pat.as_ref();
             let ty = &pattype.ty.as_ref();
-            return parse_quote!{ unsafe { extendr_api::new_borrowed(#pat).get_best::<#ty>() } };
+            return parse_quote!{ from_robj::<#ty>(&new_borrowed(#pat)).unwrap_or_default() };
         },
         _ => ()
     }
@@ -57,7 +57,8 @@ pub fn export_function(_attr: TokenStream, item: TokenStream) -> TokenStream {
 
         #[no_mangle]
         pub extern "C" fn #wrap_name(#formal_args) -> ::libR_sys::SEXP {
-            let res = #func_name(#actual_args);
+            use extendr_api::{from_robj, new_borrowed};
+            let res = unsafe { #func_name(#actual_args) };
             unsafe { extendr_api::Robj::from(res).get() }
         }
     };

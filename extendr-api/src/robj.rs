@@ -64,76 +64,103 @@ pub struct Lang<'a>(pub &'a str);
 #[derive(Debug, PartialEq)]
 pub struct List<'a>(pub &'a [Robj]);
 
-pub trait FromSexp : Sized + Default {
-    fn from_i32(_val: &[i32]) -> Result<Self, &'static str> {
-        Err("unable to convert value from integer")
-    }
-
-    fn from_f64(_val: &[f64]) -> Result<Self, &'static str> {
-        Err("unable to convert value from real")
-    }
-
-    fn from_asciiz(_val: *const u8) -> Result<Self, &'static str> {
-        Err("unable to convert from string or character")
+impl Default for Robj {
+    fn default() -> Self {
+        Robj::from(())
     }
 }
 
-macro_rules! impl_prim_from_sexp {
-    ($t: ty) => {
-        impl FromSexp for $t {
-            fn from_i32(val: &[i32]) -> Result<Self, &'static str> {
-                if val.len() == 0 {
-                    Err("primitive requires non-zero length")
-                } else {
-                    Ok(val[0] as $t)
-                }
-            }
+pub trait FromRobj<'a> : Sized + Default {
+    fn from_robj(_robj: &'a Robj) -> Result<Self, &'static str> {
+        Err("unable to convert value from R object")
+    }
+}
 
-            fn from_f64(val: &[f64]) -> Result<Self, &'static str> {
-                if val.len() == 0 {
-                    Err("primitive requires non-zero length")
+pub fn from_robj<'a, T : 'a + FromRobj<'a>>(robj: &'a Robj) -> Result<T, &'static str> {
+    T::from_robj(robj)
+}
+
+macro_rules! impl_prim_from_robj {
+    ($t: ty) => {
+        impl<'a> FromRobj<'a> for $t {
+            fn from_robj(robj: &Robj) -> Result<Self, &'static str> {
+                if let Some(v) = robj.as_i32_slice() {
+                    if v.len() == 0 {
+                        Err("zero length vector")
+                    } else {
+                        Ok(v[0] as Self)
+                    }
+                } else if let Some(v) = robj.as_f64_slice() {
+                    if v.len() == 0 {
+                        Err("zero length vector")
+                    } else {
+                        Ok(v[0] as Self)
+                    }
                 } else {
-                    Ok(val[0] as $t)
+                    Err("unable to convert R object to primitive")
                 }
             }
         }
     }
 }
 
-impl FromSexp for &str {
-    fn from_asciiz(val: *const u8) -> Result<Self, &'static str> {
-        Ok(unsafe { to_str(val) })
+impl_prim_from_robj!(u8);
+impl_prim_from_robj!(u16);
+impl_prim_from_robj!(u32);
+impl_prim_from_robj!(u64);
+impl_prim_from_robj!(i8);
+impl_prim_from_robj!(i16);
+impl_prim_from_robj!(i32);
+impl_prim_from_robj!(i64);
+impl_prim_from_robj!(f32);
+impl_prim_from_robj!(f64);
+
+impl<'a> FromRobj<'a> for &'a str {
+    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+        println!("TYPE={}", robj.sexptype());
+        if let Some(s) = robj.as_str() {
+            Ok(s)
+        } else {
+            Err("not a string object")
+        }
     }
 }
     
-impl FromSexp for String {
-    fn from_asciiz(val: *const u8) -> Result<Self, &'static str> {
-        Ok(unsafe { String::from(to_str(val)) })
+impl<'a> FromRobj<'a> for String {
+    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+        if let Some(s) = robj.as_str() {
+            Ok(s.to_string())
+        } else {
+            Err("not a string object")
+        }
     }
 }
     
-impl FromSexp for Vec<i32> {
-    fn from_i32(val: &[i32]) -> Result<Self, &'static str> {
-        Ok(Vec::from(val))
+impl<'a> FromRobj<'a> for Vec<i32> {
+    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+        if let Some(v) = robj.as_i32_slice() {
+            Ok(Vec::from(v))
+        } else {
+            Err("not an integer or logical vector")
+        }
     }
 }
 
-impl FromSexp for Vec<f64> {
-    fn from_f64(val: &[f64]) -> Result<Self, &'static str> {
-        Ok(Vec::from(val))
+impl<'a> FromRobj<'a> for Vec<f64> {
+    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+        if let Some(v) = robj.as_f64_slice() {
+            Ok(Vec::from(v))
+        } else {
+            Err("not a floating point vector")
+        }
     }
 }
 
-impl_prim_from_sexp!(u8);
-impl_prim_from_sexp!(u16);
-impl_prim_from_sexp!(u32);
-impl_prim_from_sexp!(u64);
-impl_prim_from_sexp!(i8);
-impl_prim_from_sexp!(i16);
-impl_prim_from_sexp!(i32);
-impl_prim_from_sexp!(i64);
-impl_prim_from_sexp!(f32);
-impl_prim_from_sexp!(f64);
+impl<'a> FromRobj<'a> for Robj {
+    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+        Ok(unsafe { new_borrowed(robj.get()) })
+    }
+}
 
 impl Robj {
     /// Get a copy of the underlying SEXP.
@@ -154,33 +181,6 @@ impl Robj {
             Robj::Owned(sexp) => Some(*sexp),
             Robj::Borrowed(_) => None,
             Robj::Sys(_) => None,
-        }
-    }
-
-    /// Make our best attempt to get primitive values from a Robj.
-    /// Results may be translated.
-    /// This is used for input parameter conversion on exports.
-    pub fn get_best<T : FromSexp>(&self) -> T {
-        unsafe {
-            let sexp = self.get();
-            match TYPEOF(sexp) as u32 {
-                LGLSXP | INTSXP => {
-                    let ptr = INTEGER(sexp) as *const i32;
-                    T::from_i32(std::slice::from_raw_parts(ptr, self.len())).unwrap_or_default()
-                }
-                REALSXP => {
-                    let ptr = REAL(sexp) as *const f64;
-                    T::from_f64(std::slice::from_raw_parts(ptr, self.len())).unwrap_or_default()
-                }
-                CHARSXP => T::from_asciiz(R_CHAR(sexp) as *const u8).unwrap_or_default(),
-                STRSXP => {
-                    if Rf_xlength(sexp) == 0 {
-                        return T::default();
-                    }
-                    T::from_asciiz(R_CHAR(STRING_ELT(sexp, 0)) as *const u8).unwrap_or_default()
-                }
-                _ => T::default()
-            }
         }
     }
 
@@ -273,6 +273,13 @@ impl Robj {
     pub fn as_str(&self) -> Option<&str> {
         unsafe {
             match self.sexptype() {
+                STRSXP => {
+                    if self.len() == 0 {
+                        None
+                    } else {
+                        Some(to_str(R_CHAR(STRING_ELT(self.get(), 0)) as *const u8))
+                    }
+                }
                 CHARSXP => {
                     Some(to_str(R_CHAR(self.get()) as *const u8))
                 }
@@ -1296,16 +1303,21 @@ mod tests {
     }
 
     #[test]
-    fn test_try_from() {
-        assert_eq!(Robj::from(1).get_best::<u8>(), 1);
-        assert_eq!(Robj::from(1).get_best::<u16>(), 1);
-        assert_eq!(Robj::from(1).get_best::<u32>(), 1);
-        assert_eq!(Robj::from(1).get_best::<u64>(), 1);
-        assert_eq!(Robj::from(1).get_best::<i8>(), 1);
-        assert_eq!(Robj::from(1).get_best::<i16>(), 1);
-        assert_eq!(Robj::from(1).get_best::<i32>(), 1);
-        assert_eq!(Robj::from(1).get_best::<i64>(), 1);
-        assert_eq!(Robj::from(1).get_best::<f32>(), 1.0);
-        assert_eq!(Robj::from(1).get_best::<f64>(), 1.0);
+    fn test_from_robj() {
+        assert_eq!(u8::from_robj(&Robj::from(1)), Ok(1));
+        assert_eq!(u16::from_robj(&Robj::from(1)), Ok(1));
+        assert_eq!(u32::from_robj(&Robj::from(1)), Ok(1));
+        assert_eq!(u64::from_robj(&Robj::from(1)), Ok(1));
+        assert_eq!(i8::from_robj(&Robj::from(1)), Ok(1));
+        assert_eq!(i16::from_robj(&Robj::from(1)), Ok(1));
+        assert_eq!(i32::from_robj(&Robj::from(1)), Ok(1));
+        assert_eq!(i64::from_robj(&Robj::from(1)), Ok(1));
+        assert_eq!(f32::from_robj(&Robj::from(1)), Ok(1.));
+        assert_eq!(f64::from_robj(&Robj::from(1)), Ok(1.));
+        assert_eq!(from_robj::<Vec::<i32>>(&Robj::from(1)), Ok(vec![1]));
+        assert_eq!(from_robj::<Vec::<f64>>(&Robj::from(1.)), Ok(vec![1.]));
+
+        let hello = Robj::from("hello");
+        assert_eq!(from_robj::<&str>(&hello), Ok("hello"));
     }
 }
