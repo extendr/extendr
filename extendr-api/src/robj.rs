@@ -931,7 +931,7 @@ impl std::fmt::Debug for Robj {
     }
 }
 
-// Internal string to str conversion.
+// Internal utf8 to str conversion.
 // Lets not worry about non-ascii/unicode strings for now (or ever).
 unsafe fn to_str<'a>(ptr: *const u8) -> &'a str {
     let mut len = 0;
@@ -986,23 +986,41 @@ impl From<bool> for Robj {
     }
 }
 
-/// Convert a 32 bit integer to an Robj.
-impl From<i32> for Robj {
-    fn from(val: i32) -> Self {
-        unsafe {
-            new_owned(Rf_ScalarInteger(val as raw::c_int))
+macro_rules! impl_from_int_prim {
+    ($t : ty) => {
+        impl From<$t> for Robj {
+            fn from(val: $t) -> Self {
+                unsafe {
+                    new_owned(Rf_ScalarInteger(val as raw::c_int))
+                }
+            }
         }
     }
 }
 
-/// Convert a 64 bit float to an Robj.
-impl From<f64> for Robj {
-    fn from(val: f64) -> Self {
-        unsafe {
-            new_owned(Rf_ScalarReal(val as raw::c_double))
+impl_from_int_prim!(u8);
+impl_from_int_prim!(u16);
+impl_from_int_prim!(u32);
+impl_from_int_prim!(u64);
+impl_from_int_prim!(i8);
+impl_from_int_prim!(i16);
+impl_from_int_prim!(i32);
+impl_from_int_prim!(i64);
+
+macro_rules! impl_from_float_prim {
+    ($t : ty) => {
+        impl From<$t> for Robj {
+            fn from(val: $t) -> Self {
+                unsafe {
+                    new_owned(Rf_ScalarReal(val as raw::c_double))
+                }
+            }
         }
     }
 }
+
+impl_from_float_prim!(f32);
+impl_from_float_prim!(f64);
 
 /// Convert a length value to an Robj.
 /// Note: This is good only up to 2^53, but that exceeds the address space
@@ -1166,25 +1184,6 @@ impl<'a> From<Symbol<'a>> for Robj {
     }
 }
 
-/*impl<'a, T> TryFrom<Robj> for T {
-where T::TryFrom<i32>
-    type Error = &'static str;
-    fn try_from(obj: Robj) -> Result<Self,  Self::Error> {
-        unsafe {
-            let sexp = obj.get();
-            if TYPEOF(sexp) != INTSXP as i32 || Rf_xlength(sexp) != 1 {
-                Err("u8 requires scalar integer")
-            } else {
-                if let Ok(res) = Self::try_from(*INTEGER(sexp)) {
-                    Ok(res)
-                } else {
-                    Err("Parameter out of range")
-                }
-            }
-        }
-    }
-}*/
-
 // Iterator over the objects in a vector or string.
 #[derive(Clone)]
 pub struct VecIter {
@@ -1304,20 +1303,33 @@ mod tests {
 
     #[test]
     fn test_from_robj() {
-        assert_eq!(u8::from_robj(&Robj::from(1)), Ok(1));
-        assert_eq!(u16::from_robj(&Robj::from(1)), Ok(1));
-        assert_eq!(u32::from_robj(&Robj::from(1)), Ok(1));
-        assert_eq!(u64::from_robj(&Robj::from(1)), Ok(1));
-        assert_eq!(i8::from_robj(&Robj::from(1)), Ok(1));
-        assert_eq!(i16::from_robj(&Robj::from(1)), Ok(1));
-        assert_eq!(i32::from_robj(&Robj::from(1)), Ok(1));
-        assert_eq!(i64::from_robj(&Robj::from(1)), Ok(1));
-        assert_eq!(f32::from_robj(&Robj::from(1)), Ok(1.));
-        assert_eq!(f64::from_robj(&Robj::from(1)), Ok(1.));
+        assert_eq!(from_robj::<u8>(&Robj::from(1)), Ok(1));
+        assert_eq!(from_robj::<u16>(&Robj::from(1)), Ok(1));
+        assert_eq!(from_robj::<u32>(&Robj::from(1)), Ok(1));
+        assert_eq!(from_robj::<u64>(&Robj::from(1)), Ok(1));
+        assert_eq!(from_robj::<i8>(&Robj::from(1)), Ok(1));
+        assert_eq!(from_robj::<i16>(&Robj::from(1)), Ok(1));
+        assert_eq!(from_robj::<i32>(&Robj::from(1)), Ok(1));
+        assert_eq!(from_robj::<i64>(&Robj::from(1)), Ok(1));
+        assert_eq!(from_robj::<f32>(&Robj::from(1)), Ok(1.));
+        assert_eq!(from_robj::<f64>(&Robj::from(1)), Ok(1.));
         assert_eq!(from_robj::<Vec::<i32>>(&Robj::from(1)), Ok(vec![1]));
         assert_eq!(from_robj::<Vec::<f64>>(&Robj::from(1.)), Ok(vec![1.]));
 
         let hello = Robj::from("hello");
         assert_eq!(from_robj::<&str>(&hello), Ok("hello"));
+    }
+    #[test]
+    fn test_to_robj() {
+        assert_eq!(Robj::from(1_u8), Robj::from(1));
+        assert_eq!(Robj::from(1_u16), Robj::from(1));
+        assert_eq!(Robj::from(1_u32), Robj::from(1));
+        assert_eq!(Robj::from(1_u64), Robj::from(1));
+        assert_eq!(Robj::from(1_i8), Robj::from(1));
+        assert_eq!(Robj::from(1_i16), Robj::from(1));
+        assert_eq!(Robj::from(1_i32), Robj::from(1));
+        assert_eq!(Robj::from(1_i64), Robj::from(1));
+        assert_eq!(Robj::from(1.0_f32), Robj::from(1.));
+        assert_eq!(Robj::from(1.0_f64), Robj::from(1.));
     }
 }

@@ -58,8 +58,9 @@ pub fn export_function(_attr: TokenStream, item: TokenStream) -> TokenStream {
         #[no_mangle]
         pub extern "C" fn #wrap_name(#formal_args) -> ::libR_sys::SEXP {
             use extendr_api::{from_robj, new_borrowed};
-            let res = unsafe { #func_name(#actual_args) };
-            unsafe { extendr_api::Robj::from(res).get() }
+            unsafe {
+                extendr_api::Robj::from(#func_name(#actual_args)).get()
+            }
         }
     };
     

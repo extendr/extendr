@@ -117,8 +117,53 @@ mod tests {
     }
 
     #[export_function]
-    pub fn return_u8(fred: u8) -> i32 {
-        fred as i32
+    pub fn return_u8() -> u8 {
+        123
+    }
+
+    #[export_function]
+    pub fn return_u16() -> u16 {
+        123
+    }
+
+    #[export_function]
+    pub fn return_u32() -> u32 {
+        123
+    }
+
+    #[export_function]
+    pub fn return_u64() -> u64 {
+        123
+    }
+
+    #[export_function]
+    pub fn return_i8() -> i8 {
+        123
+    }
+
+    #[export_function]
+    pub fn return_i16() -> i16 {
+        123
+    }
+
+    #[export_function]
+    pub fn return_i32() -> i32 {
+        123
+    }
+
+    #[export_function]
+    pub fn return_i64() -> i64 {
+        123
+    }
+
+    #[export_function]
+    pub fn return_f32() -> f32 {
+        123.
+    }
+
+    #[export_function]
+    pub fn return_f64() -> f64 {
+        123.
     }
 
     #[test]
@@ -133,11 +178,17 @@ mod tests {
             __wrap__strtypes(Robj::from("abc").get(), Robj::from("def").get());
             __wrap__vectortypes(Robj::from(&[1, 2, 3] as &[i32]).get(), Robj::from(&[4., 5., 6.] as &[f64]).get());
             __wrap__robjtype(Robj::from(1).get());
+            assert_eq!(new_borrowed(__wrap__return_u8()), Robj::from(123));
+            assert_eq!(new_borrowed(__wrap__return_u16()), Robj::from(123));
+            assert_eq!(new_borrowed(__wrap__return_u32()), Robj::from(123));
+            assert_eq!(new_borrowed(__wrap__return_u64()), Robj::from(123));
+            assert_eq!(new_borrowed(__wrap__return_i8()), Robj::from(123));
+            assert_eq!(new_borrowed(__wrap__return_i16()), Robj::from(123));
+            assert_eq!(new_borrowed(__wrap__return_i32()), Robj::from(123));
+            assert_eq!(new_borrowed(__wrap__return_i64()), Robj::from(123));
+            assert_eq!(new_borrowed(__wrap__return_f32()), Robj::from(123.));
+            assert_eq!(new_borrowed(__wrap__return_f64()), Robj::from(123.));
         }
-
-        assert_eq!(return_u8(123), 123);
-        let res = unsafe { __wrap__return_u8(Robj::from(123).get()) };
-        assert_eq!(Robj::from(res), Robj::from(123));
     }
 }
 
