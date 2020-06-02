@@ -1,6 +1,7 @@
 [workspace]
 
 members = [
-	"extendr-api"
+	"extendr-api",
+	"extendr-macros",
 ]
 

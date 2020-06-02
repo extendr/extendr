@@ -47,7 +47,7 @@
 //! Example:
 //! 
 //! ```ignore
-//! #[derive(RCallable)]
+//! #[export_function]
 //! fn fred(a: i32) -> i32 {
 //!     a + 1
 //! }
@@ -72,16 +72,72 @@ pub use args::*;
 pub use engine::*;
 pub use rmacros::*;
 
-use libR_sys::{R_BaseEnv, R_GlobalEnv};
-
-// Generic dynamic error type.
+/// Generic dynamic error type.
 pub type AnyError = Box<dyn std::error::Error + Send + Sync>;
 
-pub fn baseenv() -> Robj {
-    unsafe { Robj::Sys(R_BaseEnv) }
-}
+#[cfg(test)]
+mod tests {
+    use extendr_macros::export_function;
+    use crate as extendr_api;
+    use super::Robj;
 
-pub fn globalenv() -> Robj {
-    unsafe { Robj::Sys(R_GlobalEnv) }
+    #[export_function]
+    pub fn inttypes(a: i8, b: u8, c:i16, d: u16, e: i32, f: u32, g: i64, h: u64) {
+        assert_eq!(a, 1);
+        assert_eq!(b, 2);
+        assert_eq!(c, 3);
+        assert_eq!(d, 4);
+        assert_eq!(e, 5);
+        assert_eq!(f, 6);
+        assert_eq!(g, 7);
+        assert_eq!(h, 8);
+    }
+
+    #[export_function]
+    pub fn floattypes(a: f32, b: f64) {
+        assert_eq!(a, 1.);
+        assert_eq!(b, 2.);
+    }
+
+    #[export_function]
+    pub fn strtypes(a: &str, b: String) {
+        assert_eq!(a, "abc");
+        assert_eq!(b, "def");
+    }
+
+    #[export_function]
+    pub fn vectortypes(a: Vec::<i32>, b: Vec::<f64>) {
+        assert_eq!(a, [1, 2, 3]);
+        assert_eq!(b, [4., 5., 6.]);
+    }
+
+    #[export_function]
+    pub fn robjtype(a: Robj) {
+        assert_eq!(a, Robj::from(1))
+    }
+
+    #[export_function]
+    pub fn return_u8(fred: u8) -> i32 {
+        fred as i32
+    }
+
+    #[test]
+    fn export_test() {
+        use super::*;
+        // Call the exported functions through their generated C wrappers.
+        unsafe {
+            __wrap__inttypes(Robj::from(1).get(), Robj::from(2).get(), Robj::from(3).get(), Robj::from(4).get(), Robj::from(5).get(), Robj::from(6).get(), Robj::from(7).get(), Robj::from(8).get());
+            __wrap__inttypes(Robj::from(1.).get(), Robj::from(2.).get(), Robj::from(3.).get(), Robj::from(4.).get(), Robj::from(5.).get(), Robj::from(6.).get(), Robj::from(7.).get(), Robj::from(8.).get());
+            __wrap__floattypes(Robj::from(1.).get(), Robj::from(2.).get());
+            __wrap__floattypes(Robj::from(1).get(), Robj::from(2).get());
+            __wrap__strtypes(Robj::from("abc").get(), Robj::from("def").get());
+            __wrap__vectortypes(Robj::from(&[1, 2, 3] as &[i32]).get(), Robj::from(&[4., 5., 6.] as &[f64]).get());
+            __wrap__robjtype(Robj::from(1).get());
+        }
+
+        assert_eq!(return_u8(123), 123);
+        let res = unsafe { __wrap__return_u8(Robj::from(123).get()) };
+        assert_eq!(Robj::from(res), Robj::from(123));
+    }
 }
 
