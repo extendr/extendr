@@ -54,7 +54,7 @@ Provide a procedural macro to adapt Rust functions to R
 Example:
 
 ```
-#[r_bindgen]
+#[export_function]
 fn fred(a: i32) -> i32 {
     a + 1
 }
@@ -84,7 +84,7 @@ result <- .Call("fred", 1)
 - [ ] Publish Use R! series book.
 
 ### Automation
-- [ ] Auto-generate binding wrappers.
+- [x] Auto-generate binding wrappers.
 - [ ] Auto-generate NAMESPACE and lib.R.
 
 ### Features
