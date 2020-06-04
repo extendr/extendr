@@ -1,1 +1,1 @@
-initSidebarItems({"attr":[["export_function",""]]});
+initSidebarItems({"attr":[["export_function","Generate bindings for a single function."]]});
