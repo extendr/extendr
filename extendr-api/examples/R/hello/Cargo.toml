@@ -9,4 +9,7 @@ crate-type = ["dylib"]
 
 [dependencies]
 libR-sys = "0.1.1"
-rapi = {path = "../../../"}
+extendr-api = {path = "../../../../extendr-api"}
+
+
+[workspace]
