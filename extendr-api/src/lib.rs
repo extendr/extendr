@@ -72,6 +72,9 @@ pub use args::*;
 pub use engine::*;
 pub use rmacros::*;
 
+pub use extendr_macros::*;
+pub use libR_sys::SEXP;
+
 /// Generic dynamic error type.
 pub type AnyError = Box<dyn std::error::Error + Send + Sync>;
 

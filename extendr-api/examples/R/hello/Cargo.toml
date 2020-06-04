@@ -8,8 +8,6 @@ edition = "2018"
 crate-type = ["dylib"]
 
 [dependencies]
-libR-sys = "0.1.1"
 extendr-api = {path = "../../../../extendr-api"}
-
 
 [workspace]

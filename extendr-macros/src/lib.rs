@@ -13,7 +13,7 @@ fn translate_formal(input : &FnArg) -> FnArg {
     match input {
         FnArg::Typed(ref pattype) => {
             let pat = &pattype.pat.as_ref();
-            return parse_quote!{ #pat : ::libR_sys::SEXP };
+            return parse_quote!{ #pat : extendr_api::SEXP };
         },
         _ => ()
     }
@@ -34,6 +34,7 @@ fn translate_actual(input : &FnArg) -> Expr {
 }
 
 #[proc_macro_attribute]
+/// Generate bindings for a single function.
 pub fn export_function(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let func = parse_macro_input!(item as ItemFn);
     let func_name = &func.sig.ident;
@@ -56,7 +57,7 @@ pub fn export_function(_attr: TokenStream, item: TokenStream) -> TokenStream {
         #func
 
         #[no_mangle]
-        pub extern "C" fn #wrap_name(#formal_args) -> ::libR_sys::SEXP {
+        pub extern "C" fn #wrap_name(#formal_args) -> extendr_api::SEXP {
             use extendr_api::{from_robj, new_borrowed};
             unsafe {
                 extendr_api::Robj::from(#func_name(#actual_args)).get()

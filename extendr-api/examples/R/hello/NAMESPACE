@@ -1,5 +1,5 @@
 
 export(hello)
-useDynLib(libhello, hello_wrapper)
+useDynLib(libhello, "__wrap__hello")
 
 
