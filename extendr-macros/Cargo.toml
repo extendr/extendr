@@ -6,7 +6,7 @@ edition = "2018"
 description = "Generate bindings from R to Rust."
 license = "MIT"
 documentation = "https://extendr.github.io/extendr/index.html"
-repository = "https://github.com/extendr/extendr"
+repository = "https://github.com/extendr/extendr-macros"
 
 [lib]
 proc_macro = true
