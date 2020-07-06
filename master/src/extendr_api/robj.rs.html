@@ -1306,33 +1306,6 @@
 <span id="1306">1306</span>
 <span id="1307">1307</span>
 <span id="1308">1308</span>
-<span id="1309">1309</span>
-<span id="1310">1310</span>
-<span id="1311">1311</span>
-<span id="1312">1312</span>
-<span id="1313">1313</span>
-<span id="1314">1314</span>
-<span id="1315">1315</span>
-<span id="1316">1316</span>
-<span id="1317">1317</span>
-<span id="1318">1318</span>
-<span id="1319">1319</span>
-<span id="1320">1320</span>
-<span id="1321">1321</span>
-<span id="1322">1322</span>
-<span id="1323">1323</span>
-<span id="1324">1324</span>
-<span id="1325">1325</span>
-<span id="1326">1326</span>
-<span id="1327">1327</span>
-<span id="1328">1328</span>
-<span id="1329">1329</span>
-<span id="1330">1330</span>
-<span id="1331">1331</span>
-<span id="1332">1332</span>
-<span id="1333">1333</span>
-<span id="1334">1334</span>
-<span id="1335">1335</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! R object handling.</span>
 <span class="doccomment">//! </span>
@@ -1351,11 +1324,11 @@
 <span class="comment">// use libR_sys::{Rf_xlength, Rf_install, Rf_allocVector, R_xlen_t, Rf_lang1, R_tryEval, Rf_listAppend, Rf_xlengthgets};</span>
 <span class="comment">// use libR_sys::{CAR, CDR, SET_VECTOR_ELT};</span>
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">os</span>::<span class="ident">raw</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ffi</span>::{<span class="ident">CString</span>};
 <span class="comment">// use libR_sys::{NILSXP,SYMSXP,LISTSXP,CLOSXP,ENVSXP,PROMSXP,LANGSXP,SPECIALSXP,BUILTINSXP,CHARSXP,LGLSXP,INTSXP,REALSXP,CPLXSXP,STRSXP,DOTSXP,ANYSXP,VECSXP};</span>
 <span class="comment">// use libR_sys::{EXPRSXP, BCODESXP, EXTPTRSXP, WEAKREFSXP, RAWSXP, S4SXP, NEWSXP, FREESXP};</span>
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">AnyError</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">wrapper</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// Wrapper for an R S-expression pointer (SEXP).</span>
 <span class="doccomment">/// </span>
@@ -1380,25 +1353,11 @@
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">FALSE</span>: <span class="ident">bool</span> <span class="op">=</span> <span class="bool-val">false</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">NULL</span>: () <span class="op">=</span> ();
 
-<span class="doccomment">/// Wrapper for creating symbols.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Symbol</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw">pub</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>);
-
-<span class="doccomment">/// Wrapper for creating logical vectors.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Logical</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw">pub</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">i32</span>]);
-
-<span class="doccomment">/// Wrapper for creating character objects.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Character</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw">pub</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>);
-
-<span class="doccomment">/// Wrapper for creating language objects.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Lang</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw">pub</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>);
-
-<span class="doccomment">/// Wrapper for creating list objects.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">List</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw">pub</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">Robj</span>]);
+<span class="kw">impl</span> <span class="ident">Clone</span> <span class="kw">for</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="self">self</span>.<span class="ident">duplicate</span>()
+    }
+}
 
 <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">Robj</span> {
     <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
@@ -1453,7 +1412,6 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">FromRobj</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span> {
     <span class="kw">fn</span> <span class="ident">from_robj</span>(<span class="ident">robj</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
-        <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;TYPE={}&quot;</span>, <span class="ident">robj</span>.<span class="ident">sexptype</span>());
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">s</span>) <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_str</span>() {
             <span class="prelude-val">Ok</span>(<span class="ident">s</span>)
         } <span class="kw">else</span> {
@@ -1563,6 +1521,45 @@
                 <span class="kw">unsafe</span> {
                     <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">RAW</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>;
                     <span class="prelude-val">Some</span>(<span class="ident">std</span>::<span class="ident">slice</span>::<span class="ident">from_raw_parts</span>(<span class="ident">ptr</span>, <span class="self">self</span>.<span class="ident">len</span>()))
+                }
+            }
+            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>
+        }
+    }
+
+    <span class="doccomment">/// Get a read-write reference to the content of an integer or logical vector.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_i32_slice_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">i32</span>]<span class="op">&gt;</span> {
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
+            <span class="ident">LGLSXP</span> <span class="op">|</span> <span class="ident">INTSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="kw">unsafe</span> {
+                    <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">INTEGER</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">i32</span>;
+                    <span class="prelude-val">Some</span>(<span class="ident">std</span>::<span class="ident">slice</span>::<span class="ident">from_raw_parts_mut</span>(<span class="ident">ptr</span>, <span class="self">self</span>.<span class="ident">len</span>()))
+                }
+            }
+            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>
+        }
+    }
+
+    <span class="doccomment">/// Get a read-write reference to the content of a double vector.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_f64_slice_mut</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">f64</span>]<span class="op">&gt;</span> {
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
+            <span class="ident">REALSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="kw">unsafe</span> {
+                    <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">REAL</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">f64</span>;
+                    <span class="prelude-val">Some</span>(<span class="ident">std</span>::<span class="ident">slice</span>::<span class="ident">from_raw_parts_mut</span>(<span class="ident">ptr</span>, <span class="self">self</span>.<span class="ident">len</span>()))
+                }
+            }
+            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>
+        }
+    }
+
+    <span class="doccomment">/// Get a read-write reference to the content of an integer or logical vector.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_u8_slice_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>]<span class="op">&gt;</span> {
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
+            <span class="ident">RAWSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="kw">unsafe</span> {
+                    <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">RAW</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>;
+                    <span class="prelude-val">Some</span>(<span class="ident">std</span>::<span class="ident">slice</span>::<span class="ident">from_raw_parts_mut</span>(<span class="ident">ptr</span>, <span class="self">self</span>.<span class="ident">len</span>()))
                 }
             }
             <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>
@@ -1878,7 +1875,15 @@
     SEXP Rf_dimgets(SEXP, SEXP);
     SEXP Rf_dimnamesgets(SEXP, SEXP);
     SEXP Rf_DropDims(SEXP);
-    SEXP Rf_duplicate(SEXP);
+    */</span>
+
+    <span class="doccomment">/// Compatible way to duplicate an object. Use obj.clone() instead</span>
+    <span class="doccomment">/// for Rust compaitibility.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">duplicate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="kw">unsafe</span> {<span class="ident">new_owned</span>(<span class="ident">Rf_duplicate</span>(<span class="self">self</span>.<span class="ident">get</span>()))}
+    }
+
+    <span class="comment">/*
     SEXP Rf_shallow_duplicate(SEXP);
     SEXP R_duplicate_attr(SEXP);
     SEXP R_shallow_duplicate_attr(SEXP);
@@ -2113,22 +2118,6 @@
 
 <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">new_sys</span>(<span class="ident">sexp</span>: <span class="ident">SEXP</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
     <span class="ident">Robj</span>::<span class="ident">Sys</span>(<span class="ident">sexp</span>)
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">PartialEq</span><span class="op">&lt;</span><span class="ident">List</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rhs</span>: <span class="kw-2">&amp;</span><span class="ident">List</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
-            <span class="ident">VECSXP</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">rhs</span>.<span class="number">0</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="kw">for</span> (<span class="ident">l</span>, <span class="ident">r</span>) <span class="kw">in</span> <span class="self">self</span>.<span class="ident">list_iter</span>().<span class="ident">unwrap</span>().<span class="ident">zip</span>(<span class="ident">rhs</span>.<span class="number">0</span>.<span class="ident">iter</span>()) {
-                    <span class="kw">if</span> <span class="op">!</span><span class="ident">l</span>.<span class="ident">eq</span>(<span class="ident">r</span>) {
-                        <span class="kw">return</span> <span class="bool-val">false</span>;
-                    }
-                }
-                <span class="bool-val">true</span>
-            }
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>
-        }
-    }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">PartialEq</span><span class="op">&lt;</span>[<span class="ident">i32</span>]<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
@@ -2393,19 +2382,6 @@
     }
 }
 
-<span class="doccomment">/// Make a list object from an array of Robjs.</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">List</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">val</span>: <span class="ident">List</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="ident">Rf_allocVector</span>(<span class="ident">VECSXP</span>, <span class="ident">val</span>.<span class="number">0</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">R_xlen_t</span>);
-            <span class="ident">R_PreserveObject</span>(<span class="ident">sexp</span>);
-            <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">val</span>.<span class="number">0</span>.<span class="ident">len</span>() {
-                <span class="ident">SET_VECTOR_ELT</span>(<span class="ident">sexp</span>, <span class="ident">i</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">val</span>.<span class="number">0</span>[<span class="ident">i</span>].<span class="ident">get</span>());
-            }
-            <span class="ident">Robj</span>::<span class="ident">Owned</span>(<span class="ident">sexp</span>)
-        }
-    }
-}
 
 <span class="doccomment">/// Convert a string ref to an Robj string array object.</span>
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
@@ -2432,23 +2408,6 @@
             <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">INTEGER</span>(<span class="ident">sexp</span>);
             <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">slice</span>::<span class="ident">from_raw_parts_mut</span>(<span class="ident">ptr</span>, <span class="ident">len</span>);
             <span class="kw">for</span> (<span class="ident">i</span>, <span class="kw-2">&amp;</span><span class="ident">v</span>) <span class="kw">in</span> <span class="ident">vals</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
-                <span class="ident">slice</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">v</span>;
-            }
-            <span class="ident">Robj</span>::<span class="ident">Owned</span>(<span class="ident">sexp</span>)
-        }
-    }
-}
-
-<span class="doccomment">/// Convert an integer slice to a logical object.</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Logical</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">vals</span>: <span class="ident">Logical</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">vals</span>.<span class="number">0</span>.<span class="ident">len</span>();
-            <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="ident">Rf_allocVector</span>(<span class="ident">LGLSXP</span>, <span class="ident">len</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>);
-            <span class="ident">R_PreserveObject</span>(<span class="ident">sexp</span>);
-            <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">LOGICAL</span>(<span class="ident">sexp</span>);
-            <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">slice</span>::<span class="ident">from_raw_parts_mut</span>(<span class="ident">ptr</span>, <span class="ident">len</span>);
-            <span class="kw">for</span> (<span class="ident">i</span>, <span class="kw-2">&amp;</span><span class="ident">v</span>) <span class="kw">in</span> <span class="ident">vals</span>.<span class="number">0</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
                 <span class="ident">slice</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">v</span>;
             }
             <span class="ident">Robj</span>::<span class="ident">Owned</span>(<span class="ident">sexp</span>)
@@ -2503,19 +2462,6 @@
                 <span class="ident">slice</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">v</span>;
             }
             <span class="ident">Robj</span>::<span class="ident">Owned</span>(<span class="ident">sexp</span>)
-        }
-    }
-}
-
-<span class="doccomment">/// Convert a string to a symbol.</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Symbol</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">name</span>: <span class="ident">Symbol</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">name</span>) <span class="op">=</span> <span class="ident">CString</span>::<span class="ident">new</span>(<span class="ident">name</span>.<span class="number">0</span>) {
-                <span class="ident">new_owned</span>(<span class="ident">Rf_install</span>(<span class="ident">name</span>.<span class="ident">as_ptr</span>()))
-            } <span class="kw">else</span> {
-                <span class="ident">Robj</span>::<span class="ident">from</span>(())
-            }
         }
     }
 }

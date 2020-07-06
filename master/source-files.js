@@ -1,5 +1,5 @@
 var N = null;var sourcesIndex = {};
-sourcesIndex["extendr_api"] = {"name":"","files":["args.rs","engine.rs","lib.rs","rmacros.rs","robj.rs"]};
+sourcesIndex["extendr_api"] = {"name":"","files":["args.rs","engine.rs","lib.rs","rmacros.rs","robj.rs","wrapper.rs"]};
 sourcesIndex["extendr_macros"] = {"name":"","files":["lib.rs"]};
 sourcesIndex["libR_sys"] = {"name":"","files":["lib.rs"]};
 sourcesIndex["proc_macro2"] = {"name":"","files":["detection.rs","fallback.rs","lib.rs","parse.rs","wrapper.rs"]};
