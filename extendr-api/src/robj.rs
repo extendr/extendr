@@ -15,11 +15,11 @@ use libR_sys::*;
 // use libR_sys::{Rf_xlength, Rf_install, Rf_allocVector, R_xlen_t, Rf_lang1, R_tryEval, Rf_listAppend, Rf_xlengthgets};
 // use libR_sys::{CAR, CDR, SET_VECTOR_ELT};
 use std::os::raw;
-use std::ffi::{CString};
 // use libR_sys::{NILSXP,SYMSXP,LISTSXP,CLOSXP,ENVSXP,PROMSXP,LANGSXP,SPECIALSXP,BUILTINSXP,CHARSXP,LGLSXP,INTSXP,REALSXP,CPLXSXP,STRSXP,DOTSXP,ANYSXP,VECSXP};
 // use libR_sys::{EXPRSXP, BCODESXP, EXTPTRSXP, WEAKREFSXP, RAWSXP, S4SXP, NEWSXP, FREESXP};
 
 use crate::AnyError;
+use crate::wrapper::*;
 
 /// Wrapper for an R S-expression pointer (SEXP).
 /// 
@@ -44,25 +44,11 @@ pub const TRUE: bool = true;
 pub const FALSE: bool = false;
 pub const NULL: () = ();
 
-/// Wrapper for creating symbols.
-#[derive(Debug, PartialEq)]
-pub struct Symbol<'a>(pub &'a str);
-
-/// Wrapper for creating logical vectors.
-#[derive(Debug, PartialEq)]
-pub struct Logical<'a>(pub &'a [i32]);
-
-/// Wrapper for creating character objects.
-#[derive(Debug, PartialEq)]
-pub struct Character<'a>(pub &'a str);
-
-/// Wrapper for creating language objects.
-#[derive(Debug, PartialEq)]
-pub struct Lang<'a>(pub &'a str);
-
-/// Wrapper for creating list objects.
-#[derive(Debug, PartialEq)]
-pub struct List<'a>(pub &'a [Robj]);
+impl Clone for Robj {
+    fn clone(&self) -> Self {
+        self.duplicate()
+    }
+}
 
 impl Default for Robj {
     fn default() -> Self {
@@ -117,7 +103,6 @@ impl_prim_from_robj!(f64);
 
 impl<'a> FromRobj<'a> for &'a str {
     fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
-        println!("TYPE={}", robj.sexptype());
         if let Some(s) = robj.as_str() {
             Ok(s)
         } else {
@@ -227,6 +212,45 @@ impl Robj {
                 unsafe {
                     let ptr = RAW(self.get()) as *const u8;
                     Some(std::slice::from_raw_parts(ptr, self.len()))
+                }
+            }
+            _ => None
+        }
+    }
+
+    /// Get a read-write reference to the content of an integer or logical vector.
+    pub fn as_i32_slice_mut(&mut self) -> Option<&mut [i32]> {
+        match self.sexptype() {
+            LGLSXP | INTSXP => {
+                unsafe {
+                    let ptr = INTEGER(self.get()) as *mut i32;
+                    Some(std::slice::from_raw_parts_mut(ptr, self.len()))
+                }
+            }
+            _ => None
+        }
+    }
+
+    /// Get a read-write reference to the content of a double vector.
+    pub fn as_f64_slice_mut(&self) -> Option<&mut [f64]> {
+        match self.sexptype() {
+            REALSXP => {
+                unsafe {
+                    let ptr = REAL(self.get()) as *mut f64;
+                    Some(std::slice::from_raw_parts_mut(ptr, self.len()))
+                }
+            }
+            _ => None
+        }
+    }
+
+    /// Get a read-write reference to the content of an integer or logical vector.
+    pub fn as_u8_slice_mut(&mut self) -> Option<&mut [u8]> {
+        match self.sexptype() {
+            RAWSXP => {
+                unsafe {
+                    let ptr = RAW(self.get()) as *mut u8;
+                    Some(std::slice::from_raw_parts_mut(ptr, self.len()))
                 }
             }
             _ => None
@@ -542,7 +566,15 @@ impl Robj {
     SEXP Rf_dimgets(SEXP, SEXP);
     SEXP Rf_dimnamesgets(SEXP, SEXP);
     SEXP Rf_DropDims(SEXP);
-    SEXP Rf_duplicate(SEXP);
+    */
+
+    /// Compatible way to duplicate an object. Use obj.clone() instead
+    /// for Rust compaitibility.
+    pub fn duplicate(&self) -> Self {
+        unsafe {new_owned(Rf_duplicate(self.get()))}
+    }
+
+    /*
     SEXP Rf_shallow_duplicate(SEXP);
     SEXP R_duplicate_attr(SEXP);
     SEXP R_shallow_duplicate_attr(SEXP);
@@ -777,22 +809,6 @@ pub unsafe fn new_borrowed(sexp: SEXP) -> Robj {
 
 pub unsafe fn new_sys(sexp: SEXP) -> Robj {
     Robj::Sys(sexp)
-}
-
-impl<'a> PartialEq<List<'a>> for Robj {
-    fn eq(&self, rhs: &List) -> bool {
-        match self.sexptype() {
-            VECSXP if self.len() == rhs.0.len() => {
-                for (l, r) in self.list_iter().unwrap().zip(rhs.0.iter()) {
-                    if !l.eq(r) {
-                        return false;
-                    }
-                }
-                true
-            }
-            _ => false
-        }
-    }
 }
 
 impl<'a> PartialEq<[i32]> for Robj {
@@ -1057,19 +1073,6 @@ impl<'a> From<Lang<'a>> for Robj {
     }
 }
 
-/// Make a list object from an array of Robjs.
-impl<'a> From<List<'a>> for Robj {
-    fn from(val: List<'a>) -> Self {
-        unsafe {
-            let sexp = Rf_allocVector(VECSXP, val.0.len() as R_xlen_t);
-            R_PreserveObject(sexp);
-            for i in 0..val.0.len() {
-                SET_VECTOR_ELT(sexp, i as R_xlen_t, val.0[i].get());
-            }
-            Robj::Owned(sexp)
-        }
-    }
-}
 
 /// Convert a string ref to an Robj string array object.
 impl<'a> From<&'a str> for Robj {
@@ -1096,23 +1099,6 @@ impl<'a> From<&'a [i32]> for Robj {
             let ptr = INTEGER(sexp);
             let slice = std::slice::from_raw_parts_mut(ptr, len);
             for (i, &v) in vals.iter().enumerate() {
-                slice[i] = v;
-            }
-            Robj::Owned(sexp)
-        }
-    }
-}
-
-/// Convert an integer slice to a logical object.
-impl<'a> From<Logical<'a>> for Robj {
-    fn from(vals: Logical) -> Self {
-        unsafe {
-            let len = vals.0.len();
-            let sexp = Rf_allocVector(LGLSXP, len as R_xlen_t);
-            R_PreserveObject(sexp);
-            let ptr = LOGICAL(sexp);
-            let slice = std::slice::from_raw_parts_mut(ptr, len);
-            for (i, &v) in vals.0.iter().enumerate() {
                 slice[i] = v;
             }
             Robj::Owned(sexp)
@@ -1167,19 +1153,6 @@ impl From<&[u8]> for Robj {
                 slice[i] = v;
             }
             Robj::Owned(sexp)
-        }
-    }
-}
-
-/// Convert a string to a symbol.
-impl<'a> From<Symbol<'a>> for Robj {
-    fn from(name: Symbol) -> Self {
-        unsafe {
-            if let Ok(name) = CString::new(name.0) {
-                new_owned(Rf_install(name.as_ptr()))
-            } else {
-                Robj::from(())
-            }
         }
     }
 }

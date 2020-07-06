@@ -6,7 +6,7 @@
         {
             "label": "test",
             "type": "shell",
-            "command": "cargo test -- --nocapture --test-threads=1",
+            "command": "clear && cargo test -- --nocapture --test-threads=1",
             "problemMatcher": [
                 "$rustc"
             ],
