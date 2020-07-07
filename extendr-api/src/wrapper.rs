@@ -175,12 +175,12 @@ macro_rules! impl_vector {
             }
         
             /// Read only access to the underlying R object.
-            pub fn robj(&self) -> &Robj {
+            pub fn _robj(&self) -> &Robj {
                 &self.base.robj
             }
         
             /// Read-write access to the underlying R object.
-            pub fn robj_mut(&mut self) -> &mut Robj {
+            pub fn _robj_mut(&mut self) -> &mut Robj {
                 &mut self.base.robj
             }
         }
