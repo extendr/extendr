@@ -24,18 +24,54 @@ pub struct Lang<'a>(pub &'a str);
 #[derive(Debug, PartialEq)]
 pub struct List<'a>(pub &'a [Robj]);
 
+/// A base class for vectors.
 pub struct VectorBase<T> {
     robj: Robj,
     ptr: *mut T,
     length: usize,
 }
+
+/// An owning floating point vector class.
 struct NumericVector {
-    inner: VectorBase<f64>,
+    base: VectorBase<f64>,
+}
+
+/// An owning integer vector class.
+struct IntegerVector {
+    base: VectorBase<i32>,
+}
+
+/// An owning boolean vector class.
+struct LogicalVector {
+    base: VectorBase<i32>,
+}
+
+/// An owning byte vector class.
+struct RawVector {
+    base: VectorBase<u8>,
 }
 
 impl std::fmt::Debug for NumericVector {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "NumericVector({:?})", self.inner.robj)
+        write!(f, "NumericVector({:?})", self.base.robj)
+    }
+}
+
+impl std::fmt::Debug for IntegerVector {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "IntegerVector({:?})", self.base.robj)
+    }
+}
+
+impl std::fmt::Debug for LogicalVector {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "LogicalVector({:?})", self.base.robj)
+    }
+}
+
+impl std::fmt::Debug for RawVector {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "RawVector({:?})", self.base.robj)
     }
 }
 
@@ -99,7 +135,7 @@ impl<'a> From<Symbol<'a>> for Robj {
     }
 }
 
-impl<T> VectorBase<T> {
+impl<T: Copy> VectorBase<T> {
     // Convert a vector to a slice.
     fn deref(&self) -> &[T] {
         unsafe { std::slice::from_raw_parts(self.ptr as *const T, self.length) }
@@ -110,132 +146,137 @@ impl<T> VectorBase<T> {
         unsafe { std::slice::from_raw_parts_mut(self.ptr as *mut T, self.length) }
     }
 
-    // Get a reference to the inner Robj.
-    fn robj(&self) -> &Robj {
-        &self.robj
-    }
-
-    // Get a reference to the inner Robj.
-    fn robj_mut(&mut self) -> &mut Robj {
-        &mut self.robj
+    fn fill(&mut self, val: T) {
+        let slice = self.deref_mut();
+        slice.iter_mut().for_each(|d| *d = val);
     }
 }
 
-impl NumericVector {
-    /// Create a new uninitialised R object for the vector.
-    pub unsafe fn allocate(length: usize) -> Self {
-        let robj = Robj::allocVector(REALSXP, length);
-        let slice = robj.as_f64_slice_mut().unwrap();
-        let ptr = slice.as_mut_ptr();
-        Self {
-            inner: VectorBase::<f64> { robj, ptr, length },
+macro_rules! impl_vector {
+    ($name: ident, $type: ty, $sexptype: ident) => {
+        impl $name {
+            /// Create a new uninitialised R object for the vector.
+            pub unsafe fn allocate(length: usize) -> Self {
+                let mut robj = Robj::allocVector(REALSXP, length);
+                let slice = robj.as_typed_slice_mut().unwrap();
+                let ptr = slice.as_mut_ptr();
+                Self {
+                    base: VectorBase { robj, ptr, length },
+                }
+            }
+        
+            /// Create a new vector filled with zeros.
+            pub fn zeros(length: usize) -> Self {
+                unsafe {
+                    let mut res = Self::allocate(length);
+                    res.base.fill(0.into());
+                    res
+                }
+            }
+        
+            /// Read only access to the underlying R object.
+            pub fn robj(&self) -> &Robj {
+                &self.base.robj
+            }
+        
+            /// Read-write access to the underlying R object.
+            pub fn robj_mut(&mut self) -> &mut Robj {
+                &mut self.base.robj
+            }
         }
-    }
-
-    /// Create a new R object for the vector.
-    pub fn zeros(length: usize) -> Self {
-        unsafe {
-            let mut res = Self::allocate(length);
-            res
-                .iter_mut()
-                .for_each(|d| *d = 0.);
-            res
+        
+        impl Default for $name {
+            fn default() -> Self {
+                Self::zeros(1)
+            }
         }
-    }
+        
+        /// Make the vector behave like Vec (ie. deref to a slice).
+        /// Because we have already unpacked the pointer and length, this
+        /// should be a nop in many cases.
+        impl Deref for $name {
+            type Target = [$type];
 
-    /// Read only access to the underlying R object.
-    pub fn robj(&self) -> &Robj {
-        self.inner.robj()
-    }
-
-    /// Read-write access to the underlying R object.
-    pub fn robj_mut(&mut self) -> &mut Robj {
-        self.inner.robj_mut()
-    }
-}
-
-impl Default for NumericVector {
-    fn default() -> Self {
-        Self::zeros(1)
-    }
-}
-
-/// Make NumericVector behave like Vec (ie. deref to a slice).
-/// Because we have already unpacked the pointer and length, this
-/// should be a nop in many cases.
-impl Deref for NumericVector {
-    type Target = [f64];
-
-    fn deref(&self) -> &Self::Target {
-        self.inner.deref()
-    }
-}
-
-impl DerefMut for NumericVector {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        self.inner.deref_mut()
-    }
-}
-
-impl From<Vec<f64>> for NumericVector {
-    fn from(v: Vec<f64>) -> Self {
-        v.into_iter().collect::<NumericVector>()
-    }
-}
-
-impl From<&[f64]> for NumericVector {
-    fn from(v: &[f64]) -> Self {
-        v.into_iter().cloned().collect::<NumericVector>()
-    }
-}
-
-/// Convert incoming parameters.
-impl<'a> FromRobj<'a> for NumericVector {
-    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
-        if let Some(slice) = robj.as_f64_slice_mut() {
-            let robj = unsafe { new_owned(robj.get()) };
-            let ptr = slice.as_mut_ptr();
-            let length = slice.len();
-            Ok(Self {
-                inner: VectorBase::<f64> { robj, ptr, length },
-            })
-        } else {
-            Err("not a numeric vector")
+            fn deref(&self) -> &Self::Target {
+                self.base.deref()
+            }
         }
-    }
-}
 
-/// Comparison for assqrt_eq.
-impl PartialEq<[f64]> for NumericVector {
-    fn eq(&self, rhs: &[f64]) -> bool {
-        self.inner.robj.as_f64_slice() == Some(rhs)
-    }
-}
-
-/// Implement collect.
-impl FromIterator<f64> for NumericVector {
-    fn from_iter<I: IntoIterator<Item = f64>>(iter: I) -> Self {
-        let iter = iter.into_iter();
-        let res = match iter.size_hint() {
-            // fast path: direct to vector
-            (min, Some(max)) if min == max => {
-                let mut res = unsafe { NumericVector::allocate(min) };
-                res
-                    .iter_mut()
-                    .zip(iter)
-                    .for_each(|(d, s)| *d = s);
+        /// Make the vector behave like Vec (ie. deref to a slice).
+        impl DerefMut for $name {
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                self.base.deref_mut()
+            }
+        }
+        impl From<Vec<$type>> for $name {
+            fn from(v: Vec<$type>) -> Self {
+                v.into_iter().collect::<$name>()
+            }
+        }
+        
+        impl From<&[$type]> for $name {
+            fn from(v: &[$type]) -> Self {
+                v.into_iter().cloned().collect::<$name>()
+            }
+        }
+        
+        /// Convert incoming parameters.
+        impl<'a> FromRobj<'a> for $name {
+            fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+                let mut robj = unsafe { new_owned(robj.get()) };
+                if let Some(slice) = robj.as_typed_slice_mut() {
+                    let ptr = slice.as_mut_ptr();
+                    let length = slice.len();
+                    Ok(Self {
+                        base: VectorBase::<$type> { robj, ptr, length },
+                    })
+                } else {
+                    Err("not a numeric vector")
+                }
+            }
+        }
+        
+        /// Comparison for assert_eq.
+        impl PartialEq<[$type]> for $name {
+            fn eq(&self, rhs: &[$type]) -> bool {
+                self.base.robj.as_typed_slice() == Some(rhs)
+            }
+        }
+        
+        /// Implement collect.
+        impl FromIterator<$type> for $name {
+            fn from_iter<I: IntoIterator<Item = $type>>(iter: I) -> Self {
+                let iter = iter.into_iter();
+                let res = match iter.size_hint() {
+                    // fast path: direct to vector
+                    (min, Some(max)) if min == max => {
+                        let mut res = unsafe { $name::allocate(min) };
+                        res
+                            .iter_mut()
+                            .zip(iter)
+                            .for_each(|(d, s)| *d = s);
+                        res
+                    }
+                    // slow path: build a vec first.
+                    _ => {
+                        let values: Vec<_> = iter.collect();
+                        let res = values.into_iter().collect::<$name>();
+                        res
+                    }
+                };
                 res
             }
-            // slow path: build a vec first.
-            _ => {
-                let values: Vec<_> = iter.collect();
-                let res = values.into_iter().collect::<NumericVector>();
-                res
-            }
-        };
-        res
+        }
     }
 }
+
+
+impl_vector!(NumericVector, f64, REALSXP);
+impl_vector!(IntegerVector, i32, INTSXP);
+impl_vector!(LogicalVector, i32, LGLSXP);
+impl_vector!(RawVector, u8, RAWSXP);
+
+
 
 #[cfg(test)]
 mod tests {

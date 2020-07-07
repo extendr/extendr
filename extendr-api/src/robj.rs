@@ -181,80 +181,32 @@ impl Robj {
 
     /// Get a read-only reference to the content of an integer or logical vector.
     pub fn as_i32_slice(&self) -> Option<&[i32]> {
-        match self.sexptype() {
-            LGLSXP | INTSXP => {
-                unsafe {
-                    let ptr = INTEGER(self.get()) as *const i32;
-                    Some(std::slice::from_raw_parts(ptr, self.len()))
-                }
-            }
-            _ => None
-        }
+        self.as_typed_slice()
     }
 
     /// Get a read-only reference to the content of a double vector.
     pub fn as_f64_slice(&self) -> Option<&[f64]> {
-        match self.sexptype() {
-            REALSXP => {
-                unsafe {
-                    let ptr = REAL(self.get()) as *const f64;
-                    Some(std::slice::from_raw_parts(ptr, self.len()))
-                }
-            }
-            _ => None
-        }
+        self.as_typed_slice()
     }
 
     /// Get a read-only reference to the content of an integer or logical vector.
     pub fn as_u8_slice(&self) -> Option<&[u8]> {
-        match self.sexptype() {
-            RAWSXP => {
-                unsafe {
-                    let ptr = RAW(self.get()) as *const u8;
-                    Some(std::slice::from_raw_parts(ptr, self.len()))
-                }
-            }
-            _ => None
-        }
+        self.as_typed_slice()
     }
 
     /// Get a read-write reference to the content of an integer or logical vector.
     pub fn as_i32_slice_mut(&mut self) -> Option<&mut [i32]> {
-        match self.sexptype() {
-            LGLSXP | INTSXP => {
-                unsafe {
-                    let ptr = INTEGER(self.get()) as *mut i32;
-                    Some(std::slice::from_raw_parts_mut(ptr, self.len()))
-                }
-            }
-            _ => None
-        }
+        self.as_typed_slice_mut()
     }
 
     /// Get a read-write reference to the content of a double vector.
-    pub fn as_f64_slice_mut(&self) -> Option<&mut [f64]> {
-        match self.sexptype() {
-            REALSXP => {
-                unsafe {
-                    let ptr = REAL(self.get()) as *mut f64;
-                    Some(std::slice::from_raw_parts_mut(ptr, self.len()))
-                }
-            }
-            _ => None
-        }
+    pub fn as_f64_slice_mut(&mut self) -> Option<&mut [f64]> {
+        self.as_typed_slice_mut()
     }
 
     /// Get a read-write reference to the content of an integer or logical vector.
     pub fn as_u8_slice_mut(&mut self) -> Option<&mut [u8]> {
-        match self.sexptype() {
-            RAWSXP => {
-                unsafe {
-                    let ptr = RAW(self.get()) as *mut u8;
-                    Some(std::slice::from_raw_parts_mut(ptr, self.len()))
-                }
-            }
-            _ => None
-        }
+        self.as_typed_slice_mut()
     }
 
     /// Get an iterator over a pairlist.
@@ -362,6 +314,52 @@ impl Robj {
         }
     }
 }
+
+pub trait AsTypedSlice<T> {
+    fn as_typed_slice(&self) -> Option<&[T]> {
+        None
+    }
+    fn as_typed_slice_mut(&mut self) -> Option<&mut [T]> {
+        None
+    }
+}
+
+
+macro_rules! make_typed_slice {
+    ($type: ty, $fn: tt, $($sexp: tt),* ) => {
+        impl AsTypedSlice<$type> for Robj {
+            fn as_typed_slice(&self) -> Option<&[$type]> {
+                match self.sexptype() {
+                    $( $sexp )|* => {
+                        unsafe {
+                            let ptr = $fn(self.get()) as *const $type;
+                            Some(std::slice::from_raw_parts(ptr, self.len()))
+                        }
+                    }
+                    _ => None
+                }
+            }
+        
+            fn as_typed_slice_mut(&mut self) -> Option<&mut [$type]> {
+                match self.sexptype() {
+                    $( $sexp )|* => {
+                        unsafe {
+                            let ptr = $fn(self.get()) as *mut $type;
+                            Some(std::slice::from_raw_parts_mut(ptr, self.len()))
+                        }
+                    }
+                    _ => None
+                }
+            }
+        }
+    }
+}
+
+make_typed_slice!(i32, INTEGER, INTSXP, LGLSXP);
+make_typed_slice!(f64, REAL, REALSXP);
+make_typed_slice!(u8, RAW, RAWSXP);
+
+
 
 ///////////////////////////////////////////////////////////////
 /// The following impls wrap specific Rinternals.h symbols.
