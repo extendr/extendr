@@ -620,9 +620,17 @@ impl Robj {
     SEXP Rf_mkChar(const char *);
     SEXP Rf_mkCharLen(const char *, int);
     Rboolean Rf_NonNullStringMatch(SEXP, SEXP);
-    int Rf_ncols(SEXP);
-    int Rf_nrows(SEXP);
-    SEXP Rf_nthcdr(SEXP, int);
+    */
+
+    pub fn ncols(&self) -> usize {
+        unsafe { Rf_ncols(self.get()) as usize }
+    }
+    
+    pub fn nrows(&self) -> usize {
+        unsafe { Rf_nrows(self.get()) as usize }
+    }
+    
+    /*SEXP Rf_nthcdr(SEXP, int);
     Rboolean Rf_pmatch(SEXP, SEXP, Rboolean);
     Rboolean Rf_psmatch(const char *, const char *, Rboolean);
     SEXP R_ParseEvalString(const char *, SEXP);

@@ -67,12 +67,14 @@ mod args;
 mod engine;
 mod rmacros;
 mod wrapper;
+mod array;
 
 pub use robj::*;
 pub use args::*;
 pub use engine::*;
 pub use rmacros::*;
 pub use wrapper::*;
+pub use array::*;
 
 pub use extendr_macros::*;
 pub use libR_sys::SEXP;
