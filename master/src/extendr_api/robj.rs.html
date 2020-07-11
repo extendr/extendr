@@ -1304,6 +1304,12 @@
 <span id="1304">1304</span>
 <span id="1305">1305</span>
 <span id="1306">1306</span>
+<span id="1307">1307</span>
+<span id="1308">1308</span>
+<span id="1309">1309</span>
+<span id="1310">1310</span>
+<span id="1311">1311</span>
+<span id="1312">1312</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! R object handling.</span>
 <span class="doccomment">//! </span>
@@ -1927,9 +1933,17 @@
     SEXP Rf_mkChar(const char *);
     SEXP Rf_mkCharLen(const char *, int);
     Rboolean Rf_NonNullStringMatch(SEXP, SEXP);
-    int Rf_ncols(SEXP);
-    int Rf_nrows(SEXP);
-    SEXP Rf_nthcdr(SEXP, int);
+    */</span>
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ncols</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+        <span class="kw">unsafe</span> { <span class="ident">Rf_ncols</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="ident">usize</span> }
+    }
+    
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">nrows</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+        <span class="kw">unsafe</span> { <span class="ident">Rf_nrows</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="ident">usize</span> }
+    }
+    
+    <span class="comment">/*SEXP Rf_nthcdr(SEXP, int);
     Rboolean Rf_pmatch(SEXP, SEXP, Rboolean);
     Rboolean Rf_psmatch(const char *, const char *, Rboolean);
     SEXP R_ParseEvalString(const char *, SEXP);
@@ -2285,8 +2299,6 @@
         }
     }
 }
-
-<span class="comment">// TODO: convert many of these from &quot;for Robj&quot; to &quot;for SEXP&quot; and wrap that.</span>
 
 <span class="doccomment">/// Convert a null to an Robj.</span>
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span>()<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
