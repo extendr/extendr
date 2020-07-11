@@ -987,8 +987,6 @@ impl Drop for Robj {
     }
 }
 
-// TODO: convert many of these from "for Robj" to "for SEXP" and wrap that.
-
 /// Convert a null to an Robj.
 impl From<()> for Robj {
     fn from(_: ()) -> Self {
