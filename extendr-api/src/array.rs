@@ -7,15 +7,6 @@ use std::ops::{Deref, DerefMut};
 use crate::robj::*;
 use libR_sys::*;
 
-/// A base class for vectors, matrices and arrays.
-pub struct ArrayBase<T, D> {
-    robj: Robj,
-    ptr: *mut T,
-    length: usize,
-    dims: D,
-    strides: D,
-}
-
 /// A base class for vectors.
 pub struct VectorBase<T> {
     robj: Robj,
@@ -89,7 +80,7 @@ macro_rules! impl_vector {
         impl $name {
             /// Create a new uninitialised R object for the vector.
             pub unsafe fn allocate(length: usize) -> Self {
-                let mut robj = Robj::allocVector(REALSXP, length);
+                let mut robj = Robj::allocVector($sexptype, length);
                 let slice = robj.as_typed_slice_mut().unwrap();
                 let ptr = slice.as_mut_ptr();
                 Self {
@@ -264,7 +255,7 @@ macro_rules! impl_matrix {
         impl $name {
             /// Create a new uninitialised R object for the matrix.
             pub unsafe fn allocate(rows: usize, cols: usize) -> Self {
-                let mut robj = Robj::allocVector(REALSXP, rows*cols);
+                let mut robj = Robj::allocVector($sexptype, rows*cols);
                 let slice = robj.as_typed_slice_mut().unwrap();
                 let ptr = slice.as_mut_ptr();
                 Self {
@@ -339,7 +330,6 @@ macro_rules! impl_matrix {
                     let mut robj = unsafe { new_owned(robj.get()) };
                     if let Some(slice) = robj.as_typed_slice_mut() {
                         let ptr = slice.as_mut_ptr();
-                        let length = slice.len();
                         Ok(Self {
                             base: MatrixBase::<$type> { robj, ptr, rows, cols },
                         })
@@ -394,13 +384,18 @@ mod tests {
 
     #[test]
     fn test_vector() {
+        // Necessary for memory allocation,
+        crate::engine::start_r();
+
         let mut nv = NumericVector::zeros(100);
+        let mut iv = IntegerVector::zeros(100);
         assert_eq!(nv[0], 0.);
         assert_eq!(nv[99], 0.);
-
         for v in nv.iter() {
             assert_eq!(v, &0.);
         }
+        nv[1] = 5.;
+        assert_eq!(nv[1], 5.);
 
         for v in nv.iter_mut() {
             *v = 1.;
@@ -409,6 +404,23 @@ mod tests {
         for v in nv.iter() {
             assert_eq!(v, &1.);
         }
+
+        assert_eq!(iv[0], 0);
+        assert_eq!(iv[99], 0);
+        for v in iv.iter() {
+            assert_eq!(v, &0);
+        }
+        iv[1] = 5;
+        assert_eq!(iv[1], 5);
+
+        for v in iv.iter_mut() {
+            *v = 1;
+        }
+
+        for v in iv.iter() {
+            assert_eq!(v, &1);
+        }
+
 
         // convert a generic Robj into a numeric vector.
         assert_eq!(
