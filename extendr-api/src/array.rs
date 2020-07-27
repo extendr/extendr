@@ -237,7 +237,7 @@ struct IntegerMatrix {
 
 /// An owning boolean matrix class.
 struct LogicalMatrix {
-    base: MatrixBase<i32>,
+    base: MatrixBase<Bool>,
 }
 
 /// An owning byte matrix class.
@@ -376,7 +376,7 @@ macro_rules! impl_matrix {
 
 impl_matrix!(NumericMatrix, f64, REALSXP);
 impl_matrix!(IntegerMatrix, i32, INTSXP);
-impl_matrix!(LogicalMatrix, i32, LGLSXP);
+impl_matrix!(LogicalMatrix, Bool, LGLSXP);
 impl_matrix!(RawMatrix, u8, RAWSXP);
 
 #[cfg(test)]
