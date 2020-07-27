@@ -9,6 +9,7 @@
 
 use libR_sys::*;
 use std::os::raw;
+use std::sync::Once;
 
 // Generate mutable static strings.
 // Much more efficient than CString.
@@ -19,43 +20,41 @@ macro_rules! cstr_mut {
     };
 }
 
-// TODO: use std::sync::Once
-static mut STARTED : bool = false;
+static START_R: Once = Once::new();
 
 pub fn start_r() {
-    unsafe {
-        if STARTED { return; }
-        STARTED = true;
-
-        // TODO: get the default home dir from libR-sys.
-        if cfg!(unix) {
-            if std::env::var("R_HOME").is_err() {
-                // env! gets the build-time R_HOME made in build.rs
-                std::env::set_var("R_HOME", "/usr/lib/R");
+    START_R.call_once(|| {
+        unsafe {
+            // TODO: get the default home dir from libR-sys.
+            if cfg!(unix) {
+                if std::env::var("R_HOME").is_err() {
+                    // env! gets the build-time R_HOME made in build.rs
+                    std::env::set_var("R_HOME", "/usr/lib/R");
+                }
             }
+    
+            // Due to Rf_initEmbeddedR using __libc_stack_end
+            // We can't call Rf_initEmbeddedR.
+            // Instead we must follow rustr's example and call the parts.
+    
+            //let res = unsafe { Rf_initEmbeddedR(1, args.as_mut_ptr()) };
+            // NOTE: R will crash if this is called twice in the same process.
+            Rf_initialize_R(3,
+                [
+                    cstr_mut!("R"),
+                    cstr_mut!("--slave"),
+                    cstr_mut!("--no-save"),
+                ].as_mut_ptr());
+    
+            // In case you are curious.
+            // Maybe 8MB is a bit small.
+            // eprintln!("R_CStackLimit={:016x}", R_CStackLimit);
+    
+            R_CStackLimit = usize::max_value();
+    
+            setup_Rmainloop();
         }
-
-        // Due to Rf_initEmbeddedR using __libc_stack_end
-        // We can't call Rf_initEmbeddedR.
-        // Instead we must follow rustr's example and call the parts.
-
-        //let res = unsafe { Rf_initEmbeddedR(1, args.as_mut_ptr()) };
-        // NOTE: R will crash if this is called twice in the same process.
-        Rf_initialize_R(3,
-            [
-                cstr_mut!("R"),
-                cstr_mut!("--slave"),
-                cstr_mut!("--no-save"),
-            ].as_mut_ptr());
-
-        // In case you are curious.
-        // Maybe 8MB is a bit small.
-        // eprintln!("R_CStackLimit={:016x}", R_CStackLimit);
-
-        R_CStackLimit = usize::max_value();
-
-        setup_Rmainloop();
-    }
+    });
 }
 
 /// Close down the R interpreter. Note you won't be able to
@@ -75,9 +74,14 @@ mod tests {
 
     #[test]
     fn test_engine() {
+        // If this is the first call, it should wake up the interpreter.
         start_r();
+
+        // This should do nothing.
+        start_r();
+
         // Ending the interpreter is bad if we are running multiple threads.
-        // TODO: mutexes and other bad things?
-        //end_r();
+        // So avoid doing this in tests.
+        end_r();
     }
 }
