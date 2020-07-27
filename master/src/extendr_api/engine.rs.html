@@ -81,6 +81,10 @@
 <span id="81">81</span>
 <span id="82">82</span>
 <span id="83">83</span>
+<span id="84">84</span>
+<span id="85">85</span>
+<span id="86">86</span>
+<span id="87">87</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! A sigleton instance of the R interpreter.</span>
 <span class="doccomment">//! </span>
@@ -93,6 +97,7 @@
 
 <span class="kw">use</span> <span class="ident">libR_sys</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">os</span>::<span class="ident">raw</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">Once</span>;
 
 <span class="comment">// Generate mutable static strings.</span>
 <span class="comment">// Much more efficient than CString.</span>
@@ -103,43 +108,41 @@
     };
 }
 
-<span class="comment">// TODO: use std::sync::Once</span>
-<span class="kw">static</span> <span class="kw-2">mut</span> <span class="ident">STARTED</span> : <span class="ident">bool</span> <span class="op">=</span> <span class="bool-val">false</span>;
+<span class="kw">static</span> <span class="ident">START_R</span>: <span class="ident">Once</span> <span class="op">=</span> <span class="ident">Once</span>::<span class="ident">new</span>();
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">start_r</span>() {
-    <span class="kw">unsafe</span> {
-        <span class="kw">if</span> <span class="ident">STARTED</span> { <span class="kw">return</span>; }
-        <span class="ident">STARTED</span> <span class="op">=</span> <span class="bool-val">true</span>;
-
-        <span class="comment">// TODO: get the default home dir from libR-sys.</span>
-        <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">unix</span>) {
-            <span class="kw">if</span> <span class="ident">std</span>::<span class="ident">env</span>::<span class="ident">var</span>(<span class="string">&quot;R_HOME&quot;</span>).<span class="ident">is_err</span>() {
-                <span class="comment">// env! gets the build-time R_HOME made in build.rs</span>
-                <span class="ident">std</span>::<span class="ident">env</span>::<span class="ident">set_var</span>(<span class="string">&quot;R_HOME&quot;</span>, <span class="string">&quot;/usr/lib/R&quot;</span>);
+    <span class="ident">START_R</span>.<span class="ident">call_once</span>(<span class="op">|</span><span class="op">|</span> {
+        <span class="kw">unsafe</span> {
+            <span class="comment">// TODO: get the default home dir from libR-sys.</span>
+            <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">unix</span>) {
+                <span class="kw">if</span> <span class="ident">std</span>::<span class="ident">env</span>::<span class="ident">var</span>(<span class="string">&quot;R_HOME&quot;</span>).<span class="ident">is_err</span>() {
+                    <span class="comment">// env! gets the build-time R_HOME made in build.rs</span>
+                    <span class="ident">std</span>::<span class="ident">env</span>::<span class="ident">set_var</span>(<span class="string">&quot;R_HOME&quot;</span>, <span class="string">&quot;/usr/lib/R&quot;</span>);
+                }
             }
+    
+            <span class="comment">// Due to Rf_initEmbeddedR using __libc_stack_end</span>
+            <span class="comment">// We can&#39;t call Rf_initEmbeddedR.</span>
+            <span class="comment">// Instead we must follow rustr&#39;s example and call the parts.</span>
+    
+            <span class="comment">//let res = unsafe { Rf_initEmbeddedR(1, args.as_mut_ptr()) };</span>
+            <span class="comment">// NOTE: R will crash if this is called twice in the same process.</span>
+            <span class="ident">Rf_initialize_R</span>(<span class="number">3</span>,
+                [
+                    <span class="macro">cstr_mut</span><span class="macro">!</span>(<span class="string">&quot;R&quot;</span>),
+                    <span class="macro">cstr_mut</span><span class="macro">!</span>(<span class="string">&quot;--slave&quot;</span>),
+                    <span class="macro">cstr_mut</span><span class="macro">!</span>(<span class="string">&quot;--no-save&quot;</span>),
+                ].<span class="ident">as_mut_ptr</span>());
+    
+            <span class="comment">// In case you are curious.</span>
+            <span class="comment">// Maybe 8MB is a bit small.</span>
+            <span class="comment">// eprintln!(&quot;R_CStackLimit={:016x}&quot;, R_CStackLimit);</span>
+    
+            <span class="ident">R_CStackLimit</span> <span class="op">=</span> <span class="ident">usize</span>::<span class="ident">max_value</span>();
+    
+            <span class="ident">setup_Rmainloop</span>();
         }
-
-        <span class="comment">// Due to Rf_initEmbeddedR using __libc_stack_end</span>
-        <span class="comment">// We can&#39;t call Rf_initEmbeddedR.</span>
-        <span class="comment">// Instead we must follow rustr&#39;s example and call the parts.</span>
-
-        <span class="comment">//let res = unsafe { Rf_initEmbeddedR(1, args.as_mut_ptr()) };</span>
-        <span class="comment">// NOTE: R will crash if this is called twice in the same process.</span>
-        <span class="ident">Rf_initialize_R</span>(<span class="number">3</span>,
-            [
-                <span class="macro">cstr_mut</span><span class="macro">!</span>(<span class="string">&quot;R&quot;</span>),
-                <span class="macro">cstr_mut</span><span class="macro">!</span>(<span class="string">&quot;--slave&quot;</span>),
-                <span class="macro">cstr_mut</span><span class="macro">!</span>(<span class="string">&quot;--no-save&quot;</span>),
-            ].<span class="ident">as_mut_ptr</span>());
-
-        <span class="comment">// In case you are curious.</span>
-        <span class="comment">// Maybe 8MB is a bit small.</span>
-        <span class="comment">// eprintln!(&quot;R_CStackLimit={:016x}&quot;, R_CStackLimit);</span>
-
-        <span class="ident">R_CStackLimit</span> <span class="op">=</span> <span class="ident">usize</span>::<span class="ident">max_value</span>();
-
-        <span class="ident">setup_Rmainloop</span>();
-    }
+    });
 }
 
 <span class="doccomment">/// Close down the R interpreter. Note you won&#39;t be able to</span>
@@ -159,11 +162,16 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_engine</span>() {
+        <span class="comment">// If this is the first call, it should wake up the interpreter.</span>
         <span class="ident">start_r</span>();
+
+        <span class="comment">// This should do nothing.</span>
+        <span class="ident">start_r</span>();
+
         <span class="comment">// Ending the interpreter is bad if we are running multiple threads.</span>
-        <span class="comment">// TODO: mutexes and other bad things?</span>
-        <span class="comment">//end_r();</span>
+        <span class="comment">// So avoid doing this in tests.</span>
+        <span class="ident">end_r</span>();
     }
 }
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "extendr_api";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "extendr_api";</script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>

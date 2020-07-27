@@ -418,6 +418,18 @@
 <span id="418">418</span>
 <span id="419">419</span>
 <span id="420">420</span>
+<span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Owning array types. These hold owndership of an R</span>
 <span class="doccomment">//! object. Primary use case is for writing R arrays.</span>
@@ -427,15 +439,6 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::{<span class="ident">Deref</span>, <span class="ident">DerefMut</span>};
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">robj</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">libR_sys</span>::<span class="kw-2">*</span>;
-
-<span class="doccomment">/// A base class for vectors, matrices and arrays.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ArrayBase</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">D</span><span class="op">&gt;</span> {
-    <span class="ident">robj</span>: <span class="ident">Robj</span>,
-    <span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span>,
-    <span class="ident">length</span>: <span class="ident">usize</span>,
-    <span class="ident">dims</span>: <span class="ident">D</span>,
-    <span class="ident">strides</span>: <span class="ident">D</span>,
-}
 
 <span class="doccomment">/// A base class for vectors.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">VectorBase</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
@@ -510,7 +513,7 @@
         <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span> {
             <span class="doccomment">/// Create a new uninitialised R object for the vector.</span>
             <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">allocate</span>(<span class="ident">length</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">Robj</span>::<span class="ident">allocVector</span>(<span class="ident">REALSXP</span>, <span class="ident">length</span>);
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">Robj</span>::<span class="ident">allocVector</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">sexptype</span>, <span class="ident">length</span>);
                 <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_typed_slice_mut</span>().<span class="ident">unwrap</span>();
                 <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">slice</span>.<span class="ident">as_mut_ptr</span>();
                 <span class="self">Self</span> {
@@ -685,7 +688,7 @@
         <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span> {
             <span class="doccomment">/// Create a new uninitialised R object for the matrix.</span>
             <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">allocate</span>(<span class="ident">rows</span>: <span class="ident">usize</span>, <span class="ident">cols</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">Robj</span>::<span class="ident">allocVector</span>(<span class="ident">REALSXP</span>, <span class="ident">rows</span><span class="kw-2">*</span><span class="ident">cols</span>);
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">Robj</span>::<span class="ident">allocVector</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">sexptype</span>, <span class="ident">rows</span><span class="kw-2">*</span><span class="ident">cols</span>);
                 <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_typed_slice_mut</span>().<span class="ident">unwrap</span>();
                 <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">slice</span>.<span class="ident">as_mut_ptr</span>();
                 <span class="self">Self</span> {
@@ -760,7 +763,6 @@
                     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">robj</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">robj</span>.<span class="ident">get</span>()) };
                     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">slice</span>) <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_typed_slice_mut</span>() {
                         <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">slice</span>.<span class="ident">as_mut_ptr</span>();
-                        <span class="kw">let</span> <span class="ident">length</span> <span class="op">=</span> <span class="ident">slice</span>.<span class="ident">len</span>();
                         <span class="prelude-val">Ok</span>(<span class="self">Self</span> {
                             <span class="ident">base</span>: <span class="ident">MatrixBase</span>::<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span> { <span class="macro-nonterminal">robj</span>, <span class="ident">ptr</span>, <span class="ident">rows</span>, <span class="ident">cols</span> },
                         })
@@ -815,13 +817,18 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_vector</span>() {
+        <span class="comment">// Necessary for memory allocation,</span>
+        <span class="kw">crate</span>::<span class="ident">engine</span>::<span class="ident">start_r</span>();
+
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">nv</span> <span class="op">=</span> <span class="ident">NumericVector</span>::<span class="ident">zeros</span>(<span class="number">100</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">iv</span> <span class="op">=</span> <span class="ident">IntegerVector</span>::<span class="ident">zeros</span>(<span class="number">100</span>);
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">nv</span>[<span class="number">0</span>], <span class="number">0.</span>);
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">nv</span>[<span class="number">99</span>], <span class="number">0.</span>);
-
         <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="ident">nv</span>.<span class="ident">iter</span>() {
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>, <span class="kw-2">&amp;</span><span class="number">0.</span>);
         }
+        <span class="ident">nv</span>[<span class="number">1</span>] <span class="op">=</span> <span class="number">5.</span>;
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">nv</span>[<span class="number">1</span>], <span class="number">5.</span>);
 
         <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="ident">nv</span>.<span class="ident">iter_mut</span>() {
             <span class="kw-2">*</span><span class="ident">v</span> <span class="op">=</span> <span class="number">1.</span>;
@@ -830,6 +837,23 @@
         <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="ident">nv</span>.<span class="ident">iter</span>() {
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>, <span class="kw-2">&amp;</span><span class="number">1.</span>);
         }
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">iv</span>[<span class="number">0</span>], <span class="number">0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">iv</span>[<span class="number">99</span>], <span class="number">0</span>);
+        <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="ident">iv</span>.<span class="ident">iter</span>() {
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>, <span class="kw-2">&amp;</span><span class="number">0</span>);
+        }
+        <span class="ident">iv</span>[<span class="number">1</span>] <span class="op">=</span> <span class="number">5</span>;
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">iv</span>[<span class="number">1</span>], <span class="number">5</span>);
+
+        <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="ident">iv</span>.<span class="ident">iter_mut</span>() {
+            <span class="kw-2">*</span><span class="ident">v</span> <span class="op">=</span> <span class="number">1</span>;
+        }
+
+        <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="ident">iv</span>.<span class="ident">iter</span>() {
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>, <span class="kw-2">&amp;</span><span class="number">1</span>);
+        }
+
 
         <span class="comment">// convert a generic Robj into a numeric vector.</span>
         <span class="macro">assert_eq</span><span class="macro">!</span>(
@@ -840,4 +864,4 @@
     }
 }
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "extendr_api";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "extendr_api";</script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
