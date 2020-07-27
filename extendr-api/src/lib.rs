@@ -68,6 +68,7 @@ mod engine;
 mod rmacros;
 mod wrapper;
 mod array;
+mod logical;
 
 pub use robj::*;
 pub use args::*;

@@ -2,16 +2,13 @@
 //! They do not contain an Robj (see array.rs for an example of this).
 
 use crate::robj::*;
+use crate::logical::*;
 use libR_sys::*;
 use std::ffi::CString;
 
 /// Wrapper for creating symbols.
 #[derive(Debug, PartialEq)]
 pub struct Symbol<'a>(pub &'a str);
-
-/// Wrapper for creating logical vectors.
-#[derive(Debug, PartialEq)]
-pub struct Logical<'a>(pub &'a [i32]);
 
 /// Wrapper for creating character objects.
 #[derive(Debug, PartialEq)]
@@ -56,16 +53,16 @@ impl<'a> From<List<'a>> for Robj {
 }
 
 /// Convert an integer slice to a logical object.
-impl<'a> From<Logical<'a>> for Robj {
-    fn from(vals: Logical) -> Self {
+impl<'a> From<&'a[Bool]> for Robj {
+    fn from(vals: &[Bool]) -> Self {
         unsafe {
-            let len = vals.0.len();
+            let len = vals.len();
             let sexp = Rf_allocVector(LGLSXP, len as R_xlen_t);
             R_PreserveObject(sexp);
             let ptr = LOGICAL(sexp);
             let slice = std::slice::from_raw_parts_mut(ptr, len);
-            for (i, &v) in vals.0.iter().enumerate() {
-                slice[i] = v;
+            for (i, &v) in vals.iter().enumerate() {
+                slice[i] = v.0;
             }
             Robj::Owned(sexp)
         }

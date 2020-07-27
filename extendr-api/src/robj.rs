@@ -20,6 +20,7 @@ use std::os::raw;
 
 use crate::AnyError;
 use crate::wrapper::*;
+use crate::logical::*;
 
 /// Wrapper for an R S-expression pointer (SEXP).
 /// 
@@ -181,6 +182,11 @@ impl Robj {
 
     /// Get a read-only reference to the content of an integer or logical vector.
     pub fn as_i32_slice(&self) -> Option<&[i32]> {
+        self.as_typed_slice()
+    }
+
+    /// Get a read-only reference to the content of an integer or logical vector.
+    pub fn as_logical_slice(&self) -> Option<&[Bool]> {
         self.as_typed_slice()
     }
 
@@ -355,7 +361,8 @@ macro_rules! make_typed_slice {
     }
 }
 
-make_typed_slice!(i32, INTEGER, INTSXP, LGLSXP);
+make_typed_slice!(Bool, INTEGER, LGLSXP);
+make_typed_slice!(i32, INTEGER, INTSXP);
 make_typed_slice!(f64, REAL, REALSXP);
 make_typed_slice!(u8, RAW, RAWSXP);
 
@@ -852,7 +859,8 @@ impl PartialEq<Robj> for Robj {
                     SPECIALSXP => false,
                     BUILTINSXP => false,
                     CHARSXP => self.as_str() == rhs.as_str(),
-                    LGLSXP | INTSXP => self.as_i32_slice() == rhs.as_i32_slice(),
+                    LGLSXP => self.as_logical_slice() == rhs.as_logical_slice(),
+                    INTSXP => self.as_i32_slice() == rhs.as_i32_slice(),
                     REALSXP => self.as_f64_slice() == rhs.as_f64_slice(),
                     CPLXSXP => false,
                     ANYSXP => false,
@@ -888,11 +896,11 @@ impl std::fmt::Debug for Robj {
             // BUILTINSXP => false,
             CHARSXP => write!(f, "Character({:?})", self.as_str().unwrap()),
             LGLSXP => {
-                let slice = self.as_i32_slice().unwrap();
+                let slice = self.as_logical_slice().unwrap();
                 if slice.len() == 1 {
-                    write!(f, "{}", if slice[0] == 0 {"FALSE"} else {"TRUE"})
+                    write!(f, "{}", if slice[0].0 == 0 {"FALSE"} else {"TRUE"})
                 } else {
-                    write!(f, "Logical(&{:?})", slice)
+                    write!(f, "&{:?}", slice)
                 }
             }
             INTSXP => {
@@ -1274,8 +1282,10 @@ mod tests {
         // Wrappers
         assert_eq!(format!("{:?}", Robj::from(Symbol("x"))), "Symbol(\"x\")");
         assert_eq!(format!("{:?}", Robj::from(Character("x"))), "Character(\"x\")");
-        assert_eq!(format!("{:?}", Robj::from(Logical(&[1, 0]))), "Logical(&[1, 0])");
         assert_eq!(format!("{:?}", Robj::from(Lang("x"))), "Lang([Symbol(\"x\")])");
+
+        // Logical
+        assert_eq!(format!("{:?}", Robj::from(&[Bool(1), Bool(0)][..])), "&[Bool(1), Bool(0)]");
     }
 
     #[test]

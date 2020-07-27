@@ -5,6 +5,7 @@
 use std::iter::FromIterator;
 use std::ops::{Deref, DerefMut};
 use crate::robj::*;
+use crate::logical::*;
 use libR_sys::*;
 
 /// A base class for vectors.
@@ -26,7 +27,7 @@ struct IntegerVector {
 
 /// An owning boolean vector class.
 struct LogicalVector {
-    base: VectorBase<i32>,
+    base: VectorBase<Bool>,
 }
 
 /// An owning byte vector class.
@@ -196,7 +197,7 @@ macro_rules! impl_vector {
 
 impl_vector!(NumericVector, f64, REALSXP);
 impl_vector!(IntegerVector, i32, INTSXP);
-impl_vector!(LogicalVector, i32, LGLSXP);
+impl_vector!(LogicalVector, Bool, LGLSXP);
 impl_vector!(RawVector, u8, RAWSXP);
 
 /// A base class for matrices.
