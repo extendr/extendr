@@ -80,7 +80,7 @@ macro_rules! impl_vector {
     ($name: ident, $type: ty, $sexptype: ident) => {
         impl $name {
             /// Create a new uninitialised R object for the vector.
-            pub unsafe fn allocate(length: usize) -> Self {
+            unsafe fn allocate(length: usize) -> Self {
                 let mut robj = Robj::allocVector($sexptype, length);
                 let slice = robj.as_typed_slice_mut().unwrap();
                 let ptr = slice.as_mut_ptr();
@@ -255,8 +255,8 @@ macro_rules! impl_matrix {
         
         impl $name {
             /// Create a new uninitialised R object for the matrix.
-            pub unsafe fn allocate(rows: usize, cols: usize) -> Self {
-                let mut robj = Robj::allocVector($sexptype, rows*cols);
+            unsafe fn allocate(rows: usize, cols: usize) -> Self {
+                let mut robj = Robj::allocMatrix($sexptype, rows as i32, cols as i32);
                 let slice = robj.as_typed_slice_mut().unwrap();
                 let ptr = slice.as_mut_ptr();
                 Self {
@@ -429,5 +429,13 @@ mod tests {
             &[1.][..]
         );
         assert!(from_robj::<NumericVector>(&Robj::from("x")).is_err());
+    }
+
+    #[test]
+    fn test_matrix() {
+        crate::engine::start_r();
+
+        let mut nm = NumericMatrix::zeros(100, 100);
+        
     }
 }
