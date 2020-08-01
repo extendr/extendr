@@ -82,6 +82,6 @@ mod tests {
 
         // Ending the interpreter is bad if we are running multiple threads.
         // So avoid doing this in tests.
-        end_r();
+        //end_r();
     }
 }
