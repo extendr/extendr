@@ -538,6 +538,13 @@ impl Robj {
     /// Get a 64 bit double value
     pub fn asReal(&self) -> f64 { unsafe{ Rf_asReal(self.get()) as f64 } }
 
+    /// Allocate a matrix object (see NumericMatrix etc.)
+    pub fn allocMatrix(sexptype: SEXPTYPE, rows: i32, cols: i32) -> Robj {
+        unsafe {
+            new_owned(Rf_allocMatrix(sexptype, rows, cols))
+        }
+    }
+
     /* TODO:
     int Rf_asLogical2(SEXP x, int checking, SEXP call, SEXP rho);
     Rcomplex Rf_asComplex(SEXP x);
@@ -549,7 +556,6 @@ impl Robj {
     SEXP Rf_allocFormalsList4(SEXP sym1, SEXP sym2, SEXP sym3, SEXP sym4);
     SEXP Rf_allocFormalsList5(SEXP sym1, SEXP sym2, SEXP sym3, SEXP sym4, SEXP sym5);
     SEXP Rf_allocFormalsList6(SEXP sym1, SEXP sym2, SEXP sym3, SEXP sym4, SEXP sym5, SEXP sym6);
-    SEXP Rf_allocMatrix(SEXPTYPE, int, int);
     SEXP Rf_allocList(int);
     SEXP Rf_allocS4Object(void);
     SEXP Rf_allocSExp(SEXPTYPE);
@@ -824,12 +830,14 @@ pub unsafe fn new_sys(sexp: SEXP) -> Robj {
     Robj::Sys(sexp)
 }
 
+/// Compare equality with integer slices.
 impl<'a> PartialEq<[i32]> for Robj {
     fn eq(&self, rhs: &[i32]) -> bool {
         self.as_i32_slice() == Some(rhs)
     }
 }
 
+/// Compare equality with slices of double.
 impl<'a> PartialEq<[f64]> for Robj {
     fn eq(&self, rhs: &[f64]) -> bool {
         self.as_f64_slice() == Some(rhs)
@@ -843,6 +851,7 @@ impl PartialEq<str> for Robj {
     }
 }
 
+/// Compare equality with two Robjs.
 impl PartialEq<Robj> for Robj {
     fn eq(&self, rhs: &Robj) -> bool {
         if self.sexptype() == rhs.sexptype() && self.len() == rhs.len() {
@@ -1005,7 +1014,7 @@ impl From<()> for Robj {
     }
 }
 
-/// Convert a 32 bit integer to an Robj.
+/// Convert a boolean to an Robj.
 impl From<bool> for Robj {
     fn from(val: bool) -> Self {
         unsafe {
