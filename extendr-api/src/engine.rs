@@ -28,8 +28,8 @@ pub fn start_r() {
             // TODO: get the default home dir from libR-sys.
             if cfg!(unix) {
                 if std::env::var("R_HOME").is_err() {
-                    // env! gets the build-time R_HOME made in build.rs
-                    std::env::set_var("R_HOME", "/usr/lib/R");
+                    // env! gets the build-time R_HOME stored by libR-sys
+                    std::env::set_var("R_HOME", env!("R_HOME"));
                 }
             }
     
