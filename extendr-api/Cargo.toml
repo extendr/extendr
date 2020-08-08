@@ -11,3 +11,4 @@ repository = "https://github.com/extendr/extendr"
 [dependencies]
 libR-sys = "0.1.6"
 extendr-macros = "0.1.0"
+ndarray = "0.13.1"
