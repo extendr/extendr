@@ -39,6 +39,22 @@ macro_rules! c {
     };
 }
 
+/// Create a vector with repeating elements.
+/// 
+/// Example:
+/// ```
+/// use extendr_api::*;
+/// start_r();
+/// let fred = rep!(1., 3);
+/// assert_eq!(fred, Robj::from(&[1., 1., 1.][..]));
+/// ```
+#[macro_export]
+macro_rules! rep {
+    ($($rest: tt)*) => {
+        lang!("rep", $($rest)*).eval_blind()
+    };
+}
+
 /// Read a CSV file.
 /// 
 /// Example:
