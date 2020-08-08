@@ -430,6 +430,15 @@
 <span id="430">430</span>
 <span id="431">431</span>
 <span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Owning array types. These hold owndership of an R</span>
 <span class="doccomment">//! object. Primary use case is for writing R arrays.</span>
@@ -438,6 +447,7 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">iter</span>::<span class="ident">FromIterator</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::{<span class="ident">Deref</span>, <span class="ident">DerefMut</span>};
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">robj</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">logical</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">libR_sys</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// A base class for vectors.</span>
@@ -459,7 +469,7 @@
 
 <span class="doccomment">/// An owning boolean vector class.</span>
 <span class="kw">struct</span> <span class="ident">LogicalVector</span> {
-    <span class="ident">base</span>: <span class="ident">VectorBase</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>,
+    <span class="ident">base</span>: <span class="ident">VectorBase</span><span class="op">&lt;</span><span class="ident">Bool</span><span class="op">&gt;</span>,
 }
 
 <span class="doccomment">/// An owning byte vector class.</span>
@@ -512,7 +522,7 @@
     (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>: <span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="kw">type</span>: <span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">sexptype</span>: <span class="ident">ident</span>) <span class="op">=</span><span class="op">&gt;</span> {
         <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span> {
             <span class="doccomment">/// Create a new uninitialised R object for the vector.</span>
-            <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">allocate</span>(<span class="ident">length</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+            <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">allocate</span>(<span class="ident">length</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">Robj</span>::<span class="ident">allocVector</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">sexptype</span>, <span class="ident">length</span>);
                 <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_typed_slice_mut</span>().<span class="ident">unwrap</span>();
                 <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">slice</span>.<span class="ident">as_mut_ptr</span>();
@@ -629,7 +639,7 @@
 
 <span class="macro">impl_vector</span><span class="macro">!</span>(<span class="ident">NumericVector</span>, <span class="ident">f64</span>, <span class="ident">REALSXP</span>);
 <span class="macro">impl_vector</span><span class="macro">!</span>(<span class="ident">IntegerVector</span>, <span class="ident">i32</span>, <span class="ident">INTSXP</span>);
-<span class="macro">impl_vector</span><span class="macro">!</span>(<span class="ident">LogicalVector</span>, <span class="ident">i32</span>, <span class="ident">LGLSXP</span>);
+<span class="macro">impl_vector</span><span class="macro">!</span>(<span class="ident">LogicalVector</span>, <span class="ident">Bool</span>, <span class="ident">LGLSXP</span>);
 <span class="macro">impl_vector</span><span class="macro">!</span>(<span class="ident">RawVector</span>, <span class="ident">u8</span>, <span class="ident">RAWSXP</span>);
 
 <span class="doccomment">/// A base class for matrices.</span>
@@ -669,7 +679,7 @@
 
 <span class="doccomment">/// An owning boolean matrix class.</span>
 <span class="kw">struct</span> <span class="ident">LogicalMatrix</span> {
-    <span class="ident">base</span>: <span class="ident">MatrixBase</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>,
+    <span class="ident">base</span>: <span class="ident">MatrixBase</span><span class="op">&lt;</span><span class="ident">Bool</span><span class="op">&gt;</span>,
 }
 
 <span class="doccomment">/// An owning byte matrix class.</span>
@@ -687,8 +697,8 @@
         
         <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span> {
             <span class="doccomment">/// Create a new uninitialised R object for the matrix.</span>
-            <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">allocate</span>(<span class="ident">rows</span>: <span class="ident">usize</span>, <span class="ident">cols</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">Robj</span>::<span class="ident">allocVector</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">sexptype</span>, <span class="ident">rows</span><span class="kw-2">*</span><span class="ident">cols</span>);
+            <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">allocate</span>(<span class="ident">rows</span>: <span class="ident">usize</span>, <span class="ident">cols</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">Robj</span>::<span class="ident">allocMatrix</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">sexptype</span>, <span class="ident">rows</span> <span class="kw">as</span> <span class="ident">i32</span>, <span class="ident">cols</span> <span class="kw">as</span> <span class="ident">i32</span>);
                 <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_typed_slice_mut</span>().<span class="ident">unwrap</span>();
                 <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">slice</span>.<span class="ident">as_mut_ptr</span>();
                 <span class="self">Self</span> {
@@ -808,7 +818,7 @@
 
 <span class="macro">impl_matrix</span><span class="macro">!</span>(<span class="ident">NumericMatrix</span>, <span class="ident">f64</span>, <span class="ident">REALSXP</span>);
 <span class="macro">impl_matrix</span><span class="macro">!</span>(<span class="ident">IntegerMatrix</span>, <span class="ident">i32</span>, <span class="ident">INTSXP</span>);
-<span class="macro">impl_matrix</span><span class="macro">!</span>(<span class="ident">LogicalMatrix</span>, <span class="ident">i32</span>, <span class="ident">LGLSXP</span>);
+<span class="macro">impl_matrix</span><span class="macro">!</span>(<span class="ident">LogicalMatrix</span>, <span class="ident">Bool</span>, <span class="ident">LGLSXP</span>);
 <span class="macro">impl_matrix</span><span class="macro">!</span>(<span class="ident">RawMatrix</span>, <span class="ident">u8</span>, <span class="ident">RAWSXP</span>);
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
@@ -861,6 +871,14 @@
             <span class="kw-2">&amp;</span>[<span class="number">1.</span>][..]
         );
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">from_robj</span>::<span class="op">&lt;</span><span class="ident">NumericVector</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="ident">Robj</span>::<span class="ident">from</span>(<span class="string">&quot;x&quot;</span>)).<span class="ident">is_err</span>());
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_matrix</span>() {
+        <span class="kw">crate</span>::<span class="ident">engine</span>::<span class="ident">start_r</span>();
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">nm</span> <span class="op">=</span> <span class="ident">NumericMatrix</span>::<span class="ident">zeros</span>(<span class="number">100</span>, <span class="number">100</span>);
+        
     }
 }
 </pre></div>

@@ -116,8 +116,8 @@
             <span class="comment">// TODO: get the default home dir from libR-sys.</span>
             <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">unix</span>) {
                 <span class="kw">if</span> <span class="ident">std</span>::<span class="ident">env</span>::<span class="ident">var</span>(<span class="string">&quot;R_HOME&quot;</span>).<span class="ident">is_err</span>() {
-                    <span class="comment">// env! gets the build-time R_HOME made in build.rs</span>
-                    <span class="ident">std</span>::<span class="ident">env</span>::<span class="ident">set_var</span>(<span class="string">&quot;R_HOME&quot;</span>, <span class="string">&quot;/usr/lib/R&quot;</span>);
+                    <span class="comment">// env! gets the build-time R_HOME stored by libR-sys</span>
+                    <span class="ident">std</span>::<span class="ident">env</span>::<span class="ident">set_var</span>(<span class="string">&quot;R_HOME&quot;</span>, <span class="macro">env</span><span class="macro">!</span>(<span class="string">&quot;R_HOME&quot;</span>));
                 }
             }
     
@@ -170,7 +170,7 @@
 
         <span class="comment">// Ending the interpreter is bad if we are running multiple threads.</span>
         <span class="comment">// So avoid doing this in tests.</span>
-        <span class="ident">end_r</span>();
+        <span class="comment">//end_r();</span>
     }
 }
 </pre></div>
