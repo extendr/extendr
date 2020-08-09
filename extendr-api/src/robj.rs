@@ -138,6 +138,8 @@ impl<'a> FromRobj<'a> for Vec<f64> {
 }
 
 /// Input Numeric vector parameter.
+/// Note we don't accept mutable R objects as parameters
+/// but you can make this behaviour using unsafe code.
 impl<'a, T> FromRobj<'a> for ArrayView1<'a, T> where Robj : AsTypedSlice<T> {
     fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
         if let Some(v) = robj.as_typed_slice() {
@@ -148,6 +150,7 @@ impl<'a, T> FromRobj<'a> for ArrayView1<'a, T> where Robj : AsTypedSlice<T> {
     }
 }
 
+/// Pass-through Robj conversion.
 impl<'a> FromRobj<'a> for Robj {
     fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
         Ok(unsafe { new_borrowed(robj.get()) })
