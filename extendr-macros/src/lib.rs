@@ -26,7 +26,7 @@ fn translate_actual(input : &FnArg) -> Expr {
         FnArg::Typed(ref pattype) => {
             let pat = &pattype.pat.as_ref();
             let ty = &pattype.ty.as_ref();
-            return parse_quote!{ from_robj::<#ty>(&new_borrowed(#pat)).unwrap_or_default() };
+            return parse_quote!{ extendr_api::unwrap_or_throw(from_robj::<#ty>(&new_borrowed(#pat))) };
         },
         _ => ()
     }
