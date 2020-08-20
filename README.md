@@ -21,7 +21,7 @@ features.
 
 Example:
 
-```
+```rust
 let v = c!(1, 2, 3);
 let l = list!(a=1, b=2);
 print!(paste0!("v=", v, " l=", l));
@@ -32,7 +32,7 @@ and panic-free execution.
 
 Example:
 
-```
+```rust
 let s = r!("hello");
 let i = r!(1);
 let r = r!(1.0);
@@ -42,7 +42,7 @@ Provide iterator support for creation and consumption of r vectors.
 
 Example:
 
-```
+```rust
 let res = (1..=100).iter().collect::<RObj>();
 for x in res.as_i32_slice() {
     println!("{}", x)?;
@@ -53,7 +53,7 @@ Provide a procedural macro to adapt Rust functions to R
 
 Example:
 
-```
+```rust
 #[export_function]
 fn fred(a: i32) -> i32 {
     a + 1
@@ -62,7 +62,7 @@ fn fred(a: i32) -> i32 {
 
 In R:
 
-```
+```r
 
 result <- .Call("fred", 1)
 
