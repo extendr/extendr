@@ -1,6 +1,6 @@
 
-add <- function(a, b) {
-  .Call("__wrap__add", a, b)
+add1 <- function(a, b) {
+  .Call("__wrap__add1", a, b)
 }
 
 
