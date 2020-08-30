@@ -9,18 +9,13 @@
 //! * The interface should be friendly to R users without Rust experience.
 
 use libR_sys::*;
-// use libR_sys::{SEXP, R_PreserveObject, R_ReleaseObject, R_NilValue, Rf_mkCharLen};
-// use libR_sys::{Rf_ScalarInteger, Rf_ScalarReal, Rf_ScalarLogical, R_GlobalEnv};
-// use libR_sys::{TYPEOF, INTEGER, REAL, PRINTNAME, R_CHAR, LOGICAL, STRING_PTR, RAW, VECTOR_ELT, STRING_ELT};
-// use libR_sys::{Rf_xlength, Rf_install, Rf_allocVector, R_xlen_t, Rf_lang1, R_tryEval, Rf_listAppend, Rf_xlengthgets};
-// use libR_sys::{CAR, CDR, SET_VECTOR_ELT};
 use std::os::raw;
-// use libR_sys::{NILSXP,SYMSXP,LISTSXP,CLOSXP,ENVSXP,PROMSXP,LANGSXP,SPECIALSXP,BUILTINSXP,CHARSXP,LGLSXP,INTSXP,REALSXP,CPLXSXP,STRSXP,DOTSXP,ANYSXP,VECSXP};
-// use libR_sys::{EXPRSXP, BCODESXP, EXTPTRSXP, WEAKREFSXP, RAWSXP, S4SXP, NEWSXP, FREESXP};
 
 use crate::AnyError;
 use crate::wrapper::*;
 use crate::logical::*;
+
+use ndarray::prelude::*;
 
 /// Wrapper for an R S-expression pointer (SEXP).
 /// 
@@ -57,7 +52,7 @@ impl Default for Robj {
     }
 }
 
-pub trait FromRobj<'a> : Sized + Default {
+pub trait FromRobj<'a> : Sized {
     fn from_robj(_robj: &'a Robj) -> Result<Self, &'static str> {
         Err("unable to convert value from R object")
     }
@@ -142,6 +137,20 @@ impl<'a> FromRobj<'a> for Vec<f64> {
     }
 }
 
+/// Input Numeric vector parameter.
+/// Note we don't accept mutable R objects as parameters
+/// but you can make this behaviour using unsafe code.
+impl<'a, T> FromRobj<'a> for ArrayView1<'a, T> where Robj : AsTypedSlice<T> {
+    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+        if let Some(v) = robj.as_typed_slice() {
+            Ok(ArrayView1::<'a, T>::from(v))
+        } else {
+            Err("not a floating point vector")
+        }
+    }
+}
+
+/// Pass-through Robj conversion.
 impl<'a> FromRobj<'a> for Robj {
     fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
         Ok(unsafe { new_borrowed(robj.get()) })
@@ -1311,6 +1320,9 @@ mod tests {
         assert_eq!(from_robj::<f64>(&Robj::from(1)), Ok(1.));
         assert_eq!(from_robj::<Vec::<i32>>(&Robj::from(1)), Ok(vec![1]));
         assert_eq!(from_robj::<Vec::<f64>>(&Robj::from(1.)), Ok(vec![1.]));
+        assert_eq!(from_robj::<ArrayView1<f64>>(&Robj::from(1.)), Ok(ArrayView1::<f64>::from(&[1.][..])));
+        assert_eq!(from_robj::<ArrayView1<i32>>(&Robj::from(1)), Ok(ArrayView1::<i32>::from(&[1][..])));
+        assert_eq!(from_robj::<ArrayView1<Bool>>(&Robj::from(true)), Ok(ArrayView1::<Bool>::from(&[Bool(1)][..])));
 
         let hello = Robj::from("hello");
         assert_eq!(from_robj::<&str>(&hello), Ok("hello"));

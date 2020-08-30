@@ -430,12 +430,4 @@ mod tests {
         );
         assert!(from_robj::<NumericVector>(&Robj::from("x")).is_err());
     }
-
-    #[test]
-    fn test_matrix() {
-        crate::engine::start_r();
-
-        let mut nm = NumericMatrix::zeros(100, 100);
-        
-    }
 }
