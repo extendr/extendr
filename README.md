@@ -5,8 +5,7 @@ Low-level R library bindings
 [![Travis Build Status](https://api.travis-ci.org/extendr/extendr.svg?branch=master)](https://travis-ci.org/extendr/extendr)
 [![Crates.io](http://meritbadge.herokuapp.com/extendr-api)](https://crates.io/crates/extendr)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-[Documentation](https://extendr.github.io/extendr/index.html)
+[![Documentation](https://docs.rs/mio/badge.svg)](https://docs.rs/extendr-api/latest/extendr_api/)
 
 This library aims to provide an interface that will be familiar to
 first-time users of Rust or indeed any compiled language.
