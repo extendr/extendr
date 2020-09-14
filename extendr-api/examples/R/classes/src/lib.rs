@@ -21,7 +21,7 @@ impl Person {
     }
 }
 
-#[export_function]
+#[extendr]
 fn aux_func(person: &Person) {
 }
 

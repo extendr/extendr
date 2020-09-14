@@ -47,7 +47,7 @@
 //! Example:
 //! 
 //! ```ignore
-//! #[export_function]
+//! #[extendr]
 //! fn fred(a: i32) -> i32 {
 //!     a + 1
 //! }
@@ -67,7 +67,6 @@ mod args;
 mod engine;
 mod rmacros;
 mod wrapper;
-mod array;
 mod logical;
 
 pub use robj::*;
@@ -75,7 +74,6 @@ pub use args::*;
 pub use engine::*;
 pub use rmacros::*;
 pub use wrapper::*;
-pub use array::*;
 
 pub use extendr_macros::*;
 pub use libR_sys::SEXP;
@@ -85,11 +83,11 @@ pub type AnyError = Box<dyn std::error::Error + Send + Sync>;
 
 #[cfg(test)]
 mod tests {
-    use extendr_macros::export_function;
+    use extendr_macros::extendr;
     use crate as extendr_api;
     use super::Robj;
 
-    #[export_function]
+    #[extendr]
     pub fn inttypes(a: i8, b: u8, c:i16, d: u16, e: i32, f: u32, g: i64, h: u64) {
         assert_eq!(a, 1);
         assert_eq!(b, 2);
@@ -101,78 +99,108 @@ mod tests {
         assert_eq!(h, 8);
     }
 
-    #[export_function]
+    #[extendr]
     pub fn floattypes(a: f32, b: f64) {
         assert_eq!(a, 1.);
         assert_eq!(b, 2.);
     }
 
-    #[export_function]
+    #[extendr]
     pub fn strtypes(a: &str, b: String) {
         assert_eq!(a, "abc");
         assert_eq!(b, "def");
     }
 
-    #[export_function]
+    #[extendr]
     pub fn vectortypes(a: Vec::<i32>, b: Vec::<f64>) {
         assert_eq!(a, [1, 2, 3]);
         assert_eq!(b, [4., 5., 6.]);
     }
 
-    #[export_function]
+    #[extendr]
     pub fn robjtype(a: Robj) {
         assert_eq!(a, Robj::from(1))
     }
 
-    #[export_function]
+    #[extendr]
     pub fn return_u8() -> u8 {
         123
     }
 
-    #[export_function]
+    #[extendr]
     pub fn return_u16() -> u16 {
         123
     }
 
-    #[export_function]
+    #[extendr]
     pub fn return_u32() -> u32 {
         123
     }
 
-    #[export_function]
+    #[extendr]
     pub fn return_u64() -> u64 {
         123
     }
 
-    #[export_function]
+    #[extendr]
     pub fn return_i8() -> i8 {
         123
     }
 
-    #[export_function]
+    #[extendr]
     pub fn return_i16() -> i16 {
         123
     }
 
-    #[export_function]
+    #[extendr]
     pub fn return_i32() -> i32 {
         123
     }
 
-    #[export_function]
+    #[extendr]
     pub fn return_i64() -> i64 {
         123
     }
 
-    #[export_function]
+    #[extendr]
     pub fn return_f32() -> f32 {
         123.
     }
 
-    #[export_function]
+    #[extendr]
     pub fn return_f64() -> f64 {
         123.
     }
+
+    struct Person {
+        pub name: String,
+    }
+    
+    #[extendr]
+    impl Person {
+        fn new() -> Self {
+            Self { name: "".to_string() }
+        }
+    
+        fn set_name(&mut self, name: &str) {
+            self.name = name.to_string();
+        }
+    
+        fn name(&self) -> &str {
+            self.name.as_str()
+        }
+    }
+    
+    // #[extendr]
+    // fn aux_func(person: &Person) {
+    // }
+    
+    
+    // Macro to generate exports
+    // extendr_module! {
+    //     impl Person;
+    //     fn aux_func(person: &Person);
+    // }
 
     #[test]
     fn export_test() {

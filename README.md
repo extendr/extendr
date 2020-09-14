@@ -54,17 +54,29 @@ Provide a procedural macro to adapt Rust functions to R
 Example:
 
 ```
-#[export_function]
+#[extendr]
 fn fred(a: i32) -> i32 {
     a + 1
 }
+
+struct X {}
+
+#[extendr]
+impl Jim {
+    fn new() -> Self {
+        Self {}
+    }
+}
+
+
 ```
 
 In R:
 
 ```
 
-result <- .Call("fred", 1)
+my_fred <- fred(1)
+my_jim <- Jim$new()
 
 ```
 
