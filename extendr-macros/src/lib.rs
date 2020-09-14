@@ -31,28 +31,38 @@ fn translate_formal(input: &FnArg, opts: &ExtendrOptions) -> FnArg {
     }
 }
 
-// Convert SEXP arguments into native types if we can.
+// Convert SEXP arguments into Robj. This maintains the lifetime of references.
 fn translate_convert(input: &FnArg, opts: &ExtendrOptions) -> syn::Stmt {
     match input {
         FnArg::Typed(ref pattype) => {
             let pat = &pattype.pat.as_ref();
-            let ty = &pattype.ty.as_ref();
-            parse_quote! { let #pat = extendr_api::unwrap_or_throw(extendr_api::from_robj::<#ty>(&extendr_api::new_borrowed(#pat))); }
+            if let syn::Pat::Ident(ref ident) = pat {
+                let varname = format_ident!("_{}_robj", ident.ident);
+                parse_quote! { let #varname = extendr_api::new_borrowed(#pat); }
+            } else {
+                panic!("expect identifier as arg name")
+            }
         }
         FnArg::Receiver(ref _reciever) => {
             let ty = opts.self_ty.clone().unwrap();
             //return parse_quote! { extendr_api::unwrap_or_throw(from_robj::<#ty>(&new_borrowed(&_self))) };
-            parse_quote! { let _self = extendr_api::unwrap_or_throw(extendr_api::from_robj::<#ty>(&extendr_api::new_borrowed(_self))); }
+            parse_quote! { let mut _self = extendr_api::unwrap_or_throw(extendr_api::from_robj::<#ty>(&extendr_api::new_borrowed(_self))); }
         }
     }
 }
 
-// Generate actual argument list for the call (ie. a list of param names).
+// Generate actual argument list for the call (ie. a list of conversions).
 fn translate_actual(input: &FnArg, _opts: &ExtendrOptions) -> Option<Expr> {
     match input {
         FnArg::Typed(ref pattype) => {
             let pat = &pattype.pat.as_ref();
-            Some(parse_quote! { #pat })
+            let ty = &pattype.ty.as_ref();
+            if let syn::Pat::Ident(ref ident) = pat {
+                let varname = format_ident!("_{}_robj", ident.ident);
+                Some(parse_quote!{ extendr_api::unwrap_or_throw(extendr_api::from_robj::<#ty>(&#varname)) })
+            } else {
+                None
+            }
         }
         FnArg::Receiver(ref _reciever) => {
             // Do not use self explicitly as an actual arg.
@@ -139,8 +149,7 @@ fn extendr_function(args: Vec<syn::NestedMeta>, func: ItemFn) -> TokenStream {
         pub extern "C" fn #wrap_name(#formal_args) -> extendr_api::SEXP {
             unsafe {
                 #convert_args
-                let result = #call_name(#actual_args);
-                extendr_api::Robj::from(result).get()
+                extendr_api::Robj::from(#call_name(#actual_args)).get()
             }
         }
     };
@@ -169,29 +178,30 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
     let expanded = TokenStream::from(quote! {
         #item_impl
 
-        impl<'a> FromRobj<'a> for #self_ty {
+        impl<'a> extendr_api::FromRobj<'a> for #self_ty {
             fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
                 Err("not done yet")
             }
         }
 
         extern "C" fn #finalizer_name (sexp: extendr_api::SEXP) {
-            unsafe {
-                let robj = Robj::from(sexp);
-                let tag = robj.externalPtrTag();
-                if tag == #self_ty_name {
-                    let ptr = robj.externalPtrAddr();
-                    Box::from_raw(ptr)
-                }
-            }
+            //unsafe {
+                //let robj = extendr_api::new_borrowed(sexp);
+                //let tag = robj.externalPtrTag();
+                //if tag.as_str() == Some(#self_ty_name) {
+                    //let ptr = robj.externalPtrAddr::<#self_ty>();
+                    //Box::from_raw(ptr);
+                //}
+            //}
         }
 
         impl From<#self_ty> for Robj {
             fn from(value: #self_ty) -> Self {
                 unsafe {
-                    let ptr = Box::new(value).as_ptr();
+                    let ptr = Box::into_raw(Box::new(value));
                     let res = Robj::makeExternalPtr(ptr, Robj::from(#self_ty_name), Robj::from(()));
-                    res.registerCFinalizerEx(res.get(), #finalizer_name, Robj::from(true));
+                    //res.registerCFinalizer(#finalizer_name);
+                    res
                 }
             }
         }

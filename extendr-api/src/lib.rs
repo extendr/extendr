@@ -86,7 +86,6 @@ mod tests {
     use extendr_macros::extendr;
     use crate as extendr_api;
     use super::Robj;
-
     #[extendr]
     pub fn inttypes(a: i8, b: u8, c:i16, d: u16, e: i32, f: u32, g: i64, h: u64) {
         assert_eq!(a, 1);

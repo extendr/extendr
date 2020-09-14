@@ -65,7 +65,7 @@ pub fn from_robj<'a, T : 'a + FromRobj<'a>>(robj: &'a Robj) -> Result<T, &'stati
 macro_rules! impl_prim_from_robj {
     ($t: ty) => {
         impl<'a> FromRobj<'a> for $t {
-            fn from_robj(robj: &Robj) -> Result<Self, &'static str> {
+            fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
                 if let Some(v) = robj.as_i32_slice() {
                     if v.len() == 0 {
                         Err("zero length vector")
@@ -644,10 +644,12 @@ impl Robj {
     Rboolean Rf_NonNullStringMatch(SEXP, SEXP);
     */
 
+    /// Number of columns of a matrix
     pub fn ncols(&self) -> usize {
         unsafe { Rf_ncols(self.get()) as usize }
     }
     
+    /// Number of rows of a matrix
     pub fn nrows(&self) -> usize {
         unsafe { Rf_nrows(self.get()) as usize }
     }
@@ -684,14 +686,40 @@ impl Robj {
     SEXP Rf_mkCharCE(const char *, cetype_t);
     SEXP Rf_mkCharLenCE(const char *, int, cetype_t);
     SEXP R_forceAndCall(SEXP e, int n, SEXP rho);
-    SEXP R_MakeExternalPtr(void *p, SEXP tag, SEXP prot);
-    void *R_ExternalPtrAddr(SEXP s);
-    SEXP R_ExternalPtrTag(SEXP s);
-    SEXP R_ExternalPtrProtected(SEXP s);
-    void R_ClearExternalPtr(SEXP s);
-    void R_SetExternalPtrAddr(SEXP s, void *p);
-    void R_SetExternalPtrTag(SEXP s, SEXP tag);
-    void R_SetExternalPtrProtected(SEXP s, SEXP p);
+    */
+
+    /// Internal function used to implement #[extendr] impl
+    pub unsafe fn makeExternalPtr<T>(p : *mut T, tag: Robj, prot: Robj) -> Self {
+        new_owned(R_MakeExternalPtr(p as *mut ::std::os::raw::c_void, tag.get(), prot.get()))
+    }
+
+    /// Internal function used to implement #[extendr] impl
+    pub unsafe fn externalPtrAddr<T>(&self) -> *mut T {
+        R_ExternalPtrAddr(self.get()) as * mut T
+    }
+
+    /// Internal function used to implement #[extendr] impl
+    pub unsafe fn externalPtrTag(&self) -> Self {
+        new_borrowed(R_ExternalPtrTag(self.get()))
+    }
+
+    /// Internal function used to implement #[extendr] impl
+    pub unsafe fn externalPtrProtected(&self) -> Self {
+        new_borrowed(R_ExternalPtrProtected(self.get()))
+    }
+
+    pub unsafe fn registerCFinalizer(&self, func: R_CFinalizer_t) {
+        R_RegisterCFinalizer(self.get(), func);
+    }
+
+    // SEXP R_ExternalPtrTag(SEXP s);
+    // SEXP R_ExternalPtrProtected(SEXP s);
+    // void R_ClearExternalPtr(SEXP s);
+    // void R_SetExternalPtrAddr(SEXP s, void *p);
+    // void R_SetExternalPtrTag(SEXP s, SEXP tag);
+    // void R_SetExternalPtrProtected(SEXP s, SEXP p);
+
+    /*
     SEXP R_MakeWeakRef(SEXP key, SEXP val, SEXP fin, Rboolean onexit);
     SEXP R_MakeWeakRefC(SEXP key, SEXP val, R_CFinalizer_t fin, Rboolean onexit);
     SEXP R_WeakRefKey(SEXP w);
