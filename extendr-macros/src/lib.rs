@@ -186,14 +186,14 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
         }
 
         extern "C" fn #finalizer_name (sexp: extendr_api::SEXP) {
-            //unsafe {
-                //let robj = extendr_api::new_borrowed(sexp);
-                //let tag = robj.externalPtrTag();
-                //if tag.as_str() == Some(#self_ty_name) {
-                    //let ptr = robj.externalPtrAddr::<#self_ty>();
-                    //Box::from_raw(ptr);
-                //}
-            //}
+            unsafe {
+                let robj = extendr_api::new_borrowed(sexp);
+                let tag = robj.externalPtrTag();
+                if tag.as_str() == Some(#self_ty_name) {
+                    let ptr = robj.externalPtrAddr::<#self_ty>();
+                    Box::from_raw(ptr);
+                }
+            }
         }
 
         impl From<#self_ty> for Robj {
@@ -201,7 +201,7 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
                 unsafe {
                     let ptr = Box::into_raw(Box::new(value));
                     let res = Robj::makeExternalPtr(ptr, Robj::from(#self_ty_name), Robj::from(()));
-                    //res.registerCFinalizer(#finalizer_name);
+                    res.registerCFinalizer(Some(#finalizer_name));
                     res
                 }
             }
