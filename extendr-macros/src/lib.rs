@@ -146,6 +146,7 @@ fn extendr_function(args: Vec<syn::NestedMeta>, func: ItemFn) -> TokenStream {
         #func
 
         #[no_mangle]
+        #[allow(non_snake_case)]
         pub extern "C" fn #wrap_name(#formal_args) -> extendr_api::SEXP {
             unsafe {
                 #convert_args
