@@ -282,7 +282,7 @@ impl Robj {
         }
     }
 
-    // Evaluate the expression and return an error or an R object.
+    /// Evaluate the expression and return an error or an R object.
     pub fn eval(&self) -> Result<Robj, AnyError> {
         unsafe {
             let mut error : raw::c_int = 0;
@@ -295,7 +295,7 @@ impl Robj {
         }
     }
 
-    // Evaluate the expression and return NULL or an R object.
+    /// Evaluate the expression and return NULL or an R object.
     pub fn eval_blind(&self) -> Robj {
         unsafe {
             let mut error : raw::c_int = 0;
@@ -308,8 +308,8 @@ impl Robj {
         }
     }
 
-    // Unprotect an object - assumes a transfer of ownership.
-    // This is unsafe because the object pointer may be left dangling.
+    /// Unprotect an object - assumes a transfer of ownership.
+    /// This is unsafe because the object pointer may be left dangling.
     pub unsafe fn unprotected(self) -> Robj {
         match self {
             Robj::Owned(sexp) => {
@@ -320,8 +320,8 @@ impl Robj {
         }
     }
 
-    // Return true if the object is owned by this wrapper.
-    // If so, it will be released when the wrapper drops.
+    /// Return true if the object is owned by this wrapper.
+    /// If so, it will be released when the wrapper drops.
     pub fn is_owned(&self) -> bool {
         match self {
             Robj::Owned(_) => true,
