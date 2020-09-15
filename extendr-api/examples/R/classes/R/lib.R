@@ -5,10 +5,10 @@ setClass("Person", representation( pointer = "externalptr" ) )
 # see https://dirk.eddelbuettel.com/code/rcpp/Rcpp-modules.pdf
 
 setMethod("$", "Person", function(self, name) {
-    function(...) .Call(paste("__wrap_Fred_", name), self@pointer)
+    function(...) .Call(paste("__wrap_Person_", name), self@pointer)
 } )
 
 setMethod("initialize", "Person", function(.Object, ...) {
-    .Object@pointer <- .Call("__wrap_Fred_new", ...)
+    .Object@pointer <- .Call("__wrap_Person_new", ...)
     .Object
 } )

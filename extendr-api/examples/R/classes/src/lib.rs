@@ -5,11 +5,10 @@ struct Person {
     pub name: String,
 }
 
-#[export_interface]
+#[extendr]
 impl Person {
-    #[export_interface(constructor)]
     fn new() -> Self {
-        Self { name: "" }
+        Self { name: String::new() }
     }
 
     fn set_name(&mut self, name: &str) {
@@ -17,7 +16,7 @@ impl Person {
     }
 
     fn name(&self) -> &str {
-        self.name
+        self.name.as_str()
     }
 }
 
