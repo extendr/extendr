@@ -1,17 +1,20 @@
 extern crate proc_macro;
-use proc_macro::TokenStream;
+use proc_macro::{TokenStream};
 use syn::punctuated::Punctuated;
-use syn::{parse_macro_input, parse_quote, Expr, FnArg, Item, ItemFn, ItemImpl};
+use syn::{parse_macro_input, parse_quote, Expr, FnArg, Item, ItemFn, ItemImpl, Ident, parse::ParseStream};
 use quote::{format_ident, quote};
 use syn::Token;
 
+const INIT_PREFIX : &str = "init__";
+const WRAP_PREFIX : &str = "wrap__";
+
+
 #[derive(Debug)]
 struct ExtendrOptions {
-    self_ty: Option<syn::Type>,
 }
 
 // Generate a list of arguments for the wrapper. All arguments are SEXP for .Call in R.
-fn translate_formal(input: &FnArg, opts: &ExtendrOptions) -> FnArg {
+fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> FnArg {
     match input {
         // function argument.
         FnArg::Typed(ref pattype) => {
@@ -23,7 +26,7 @@ fn translate_formal(input: &FnArg, opts: &ExtendrOptions) -> FnArg {
             if !reciever.attrs.is_empty() || reciever.reference.is_none() {
                 panic!("expected &self or &mut self");
             }
-            if opts.self_ty.is_none() {
+            if self_ty.is_none() {
                 panic!("found &self in non-impl function - have you missed the #[extendr] before the impl?");
             }
             return parse_quote! { _self : extendr_api::SEXP };
@@ -32,7 +35,7 @@ fn translate_formal(input: &FnArg, opts: &ExtendrOptions) -> FnArg {
 }
 
 // Convert SEXP arguments into Robj. This maintains the lifetime of references.
-fn translate_convert(input: &FnArg, opts: &ExtendrOptions) -> syn::Stmt {
+fn translate_convert(input: &FnArg, self_ty: Option<&syn::Type>) -> syn::Stmt {
     match input {
         FnArg::Typed(ref pattype) => {
             let pat = &pattype.pat.as_ref();
@@ -44,15 +47,14 @@ fn translate_convert(input: &FnArg, opts: &ExtendrOptions) -> syn::Stmt {
             }
         }
         FnArg::Receiver(ref _reciever) => {
-            let ty = opts.self_ty.clone().unwrap();
-            //return parse_quote! { extendr_api::unwrap_or_throw(from_robj::<#ty>(&new_borrowed(&_self))) };
+            let ty = self_ty.clone().unwrap();
             parse_quote! { let mut _self = extendr_api::unwrap_or_throw(extendr_api::from_robj::<#ty>(&extendr_api::new_borrowed(_self))); }
         }
     }
 }
 
 // Generate actual argument list for the call (ie. a list of conversions).
-fn translate_actual(input: &FnArg, _opts: &ExtendrOptions) -> Option<Expr> {
+fn translate_actual(input: &FnArg) -> Option<Expr> {
     match input {
         FnArg::Typed(ref pattype) => {
             let pat = &pattype.pat.as_ref();
@@ -72,47 +74,48 @@ fn translate_actual(input: &FnArg, _opts: &ExtendrOptions) -> Option<Expr> {
 }
 
 /// Parse a set of attribute arguments for #[extendr(opts...)]
-fn parse_options(opts: &mut ExtendrOptions, arg: &syn::NestedMeta) {
-    use syn::{Lit, Meta, MetaNameValue, NestedMeta, Type};
+fn parse_options(_opts: &mut ExtendrOptions, _arg: &syn::NestedMeta) {
+    /*use syn::{Lit, Meta, MetaNameValue, NestedMeta};
 
     match arg {
         NestedMeta::Meta(Meta::NameValue(MetaNameValue {
             ref path,
             eq_token: _,
-            lit: Lit::Str(ref lit_str),
+            lit: Lit::Str(ref _lit_str),
         })) => {
-            if path.is_ident("self_ty") {
-                use std::str::FromStr;
-                let tokens = TokenStream::from_str(lit_str.value().as_str()).unwrap();
-                opts.self_ty = Some(syn::parse::<Type>(tokens).unwrap());
-            } else {
-                panic!("expected self_ty = <Type>");
-            }
         }
         _ => panic!("expected #[extendr(opt = \"string\", ...)]"),
-    }
+    }*/
 }
 
 /// Generate bindings for a single function.
 fn extendr_function(args: Vec<syn::NestedMeta>, func: ItemFn) -> TokenStream {
-    let mut opts = ExtendrOptions { self_ty: None };
+    let mut opts = ExtendrOptions {};
 
     for arg in &args {
         parse_options(&mut opts, arg);
     }
 
-    let func_name = &func.sig.ident;
+    let mut wrappers = Vec::new();
+    generate_wrappers(&opts, &mut wrappers, "", &func.sig, None);
 
-    let wrap_name = if let Some(ref self_ty) = &opts.self_ty {
-        // Methods get __wrap__<type name>__<function name>
-        let ty_name = quote!(#self_ty).to_string();
-        format_ident!("__wrap__{}__{}", ty_name, func_name)
-    } else {
-        // Regular functions get __wrap__<function name>
-        format_ident!("__wrap__{}", func_name)
-    };
+    TokenStream::from(quote!{
+        #func
 
-    let inputs = &func.sig.inputs;
+        # ( #wrappers )*
+    })
+}
+
+// Generate wrappers for a specific function.
+fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix: &str, sig: &syn::Signature, self_ty: Option<&syn::Type>) {
+    let func_name = &sig.ident;
+
+    let wrap_name = format_ident!("{}{}{}", WRAP_PREFIX, prefix, func_name);
+    let init_name = format_ident!("{}{}{}", INIT_PREFIX, prefix, func_name);
+
+    let wrap_name_str = format!("{}", wrap_name);
+
+    let inputs = &sig.inputs;
     let has_self = match inputs.iter().next() {
         Some(FnArg::Receiver(_)) => true,
         _ => false
@@ -120,7 +123,7 @@ fn extendr_function(args: Vec<syn::NestedMeta>, func: ItemFn) -> TokenStream {
 
     let call_name = if has_self {
         quote! { _self.#func_name }
-    } else if let Some(ref self_ty) = &opts.self_ty {
+    } else if let Some(ref self_ty) = &self_ty {
         quote! { <#self_ty>::#func_name }
     } else {
         quote! { #func_name }
@@ -128,56 +131,73 @@ fn extendr_function(args: Vec<syn::NestedMeta>, func: ItemFn) -> TokenStream {
 
     let formal_args: Punctuated<FnArg, Token![,]> = inputs
         .iter()
-        .map(|input| translate_formal(input, &opts))
+        .map(|input| translate_formal(input, self_ty))
         .collect();
 
-    let convert_args: Punctuated<syn::Stmt, Token![;]> = inputs
+    let convert_args: Vec<syn::Stmt> = inputs
         .iter()
-        .map(|input| translate_convert(input, &opts))
+        .map(|input| translate_convert(input, self_ty))
         .collect();
 
     let actual_args: Punctuated<Expr, Token![,]> = inputs
         .iter()
-        .filter_map(|input| translate_actual(input, &opts))
+        .filter_map(|input| translate_actual(input))
         .collect();
 
-    // Output the original function plus a wrapper function.
-    let expanded = quote! {
-        #func
+    // let sexp_arg_types: Punctuated<syn::Type, Token![,]> = inputs
+    //     .iter()
+    //     .map(|_| -> syn::Type { parse_quote!{ extendr_api::SEXP } })
+    //     .collect();
 
+        let num_args = inputs.len() as i32;
+
+    wrappers.push(parse_quote!(
         #[no_mangle]
         #[allow(non_snake_case)]
         pub extern "C" fn #wrap_name(#formal_args) -> extendr_api::SEXP {
             unsafe {
-                #convert_args
+                #( #convert_args )*
                 extendr_api::Robj::from(#call_name(#actual_args)).get()
             }
         }
-    };
+    ));
 
-    //println!("res: {}", expanded);
-    TokenStream::from(expanded)
+    wrappers.push(parse_quote!(
+        #[allow(non_snake_case)]
+        fn #init_name(info: *mut extendr_api::DllInfo) {
+            unsafe {
+                type functype = unsafe extern "C" fn() -> *mut ::std::os::raw::c_void;
+                let ptr = #wrap_name as * const u8;
+                let ptr : functype = std::mem::transmute(ptr);
+                extendr_api::register_call_method(info, ptr, #wrap_name_str, #num_args);
+            }
+        }
+    ));
 }
 
 /// Handle trait implementations.
-/// convert #[extendr] to #[extendr(self_ty = <type name>)]
 fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
-    let self_ty = &item_impl.self_ty;
+    let opts = ExtendrOptions {};
+    let self_ty = item_impl.self_ty.as_ref();
     let self_ty_name = quote! {#self_ty}.to_string();
+    let prefix = format!("{}__", self_ty_name);
+    let mut method_init_names = Vec::new();
+    let mut wrappers = Vec::new();
     for impl_item in &mut item_impl.items {
-        // Add extendr attribute to every method with the trait name.
-        // TODO: Append to existing extendr attributes.
         if let syn::ImplItem::Method(ref mut method) = impl_item {
-            let new_attr: syn::Attribute = parse_quote! { #[extendr(self_ty = #self_ty_name)] };
-            method.attrs.push(new_attr);
+            method_init_names.push(format_ident!("{}{}__{}", INIT_PREFIX, self_ty_name, method.sig.ident));
+            generate_wrappers(&opts, &mut wrappers, prefix.as_str(), &method.sig, Some(self_ty));
         }
     }
 
-    let finalizer_name = format_ident!("__finalize__{}", self_ty_name);
+    let init_name = format_ident!("{}{}", INIT_PREFIX, self_ty_name);
 
+    let finalizer_name = format_ident!("__finalize__{}", self_ty_name);
 
     let expanded = TokenStream::from(quote! {
         #item_impl
+
+        #( #wrappers )*
 
         impl<'a> extendr_api::FromRobj<'a> for #self_ty {
             fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
@@ -185,14 +205,9 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
             }
         }
 
-        extern "C" fn #finalizer_name (sexp: extendr_api::SEXP) {
-            unsafe {
-                let robj = extendr_api::new_borrowed(sexp);
-                let tag = robj.externalPtrTag();
-                if tag.as_str() == Some(#self_ty_name) {
-                    let ptr = robj.externalPtrAddr::<#self_ty>();
-                    Box::from_raw(ptr);
-                }
+        impl<'a> extendr_api::FromRobj<'a> for &#self_ty {
+            fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+                Err("not done yet")
             }
         }
 
@@ -202,13 +217,31 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
                     let ptr = Box::into_raw(Box::new(value));
                     let res = Robj::makeExternalPtr(ptr, Robj::from(#self_ty_name), Robj::from(()));
                     res.registerCFinalizer(Some(#finalizer_name));
+                    eprintln!("constructor {}", #self_ty_name);
                     res
                 }
             }
         }
+
+        extern "C" fn #finalizer_name (sexp: extendr_api::SEXP) {
+            unsafe {
+                let robj = extendr_api::new_borrowed(sexp);
+                let tag = robj.externalPtrTag();
+                eprintln!("finalizer {:?}", tag.as_str());
+                if tag.as_str() == Some(#self_ty_name) {
+                    let ptr = robj.externalPtrAddr::<#self_ty>();
+                    Box::from_raw(ptr);
+                }
+            }
+        }
+
+        #[allow(non_snake_case)]
+        fn #init_name(info: *mut extendr_api::DllInfo) {
+            #( #method_init_names(info); )*
+        }
     });
 
-    eprintln!("{}", expanded);
+    //eprintln!("{}", expanded);
     expanded
 }
 
@@ -224,3 +257,75 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
         }
     }
 }
+
+#[derive(Debug)]
+struct Module {
+    modname: Option<Ident>,
+    initnames: Vec<Ident>,
+}
+
+impl syn::parse::Parse for Module {
+    fn parse(input: ParseStream) -> syn::Result<Self> {
+        use syn::spanned::Spanned;
+        let mut res = Self {
+            modname: None,
+            initnames: Vec::new(),
+        };
+        while !input.is_empty() {
+            if let Ok(kmod) = input.parse::<Token![mod]>() {
+                let name : Ident = input.parse()?;
+                if !res.modname.is_none() {
+                    return Err(syn::Error::new(kmod.span(), "only one mod allowed"));
+                }
+                res.modname = Some(name);
+            } else if let Ok(_) = input.parse::<Token![fn]>() {
+                res.initnames.push(input.parse()?);
+            } else if let Ok(_) = input.parse::<Token![impl]>() {
+                res.initnames.push(input.parse()?);
+            } else {
+                return Err(syn::Error::new(input.span(), "expected mod, fn or impl"));
+            }
+
+            input.parse::<Token![;]>()?;
+        }
+        if res.modname.is_none() {
+            return Err(syn::Error::new(input.span(), "expected one 'mod name'"));
+        }
+        Ok(res)
+    }
+}
+
+
+/// Define a module and export symbols to R
+/// Example:
+///
+/// extendr_module! {
+///     mod name;
+///     fn my_func1;
+///     fn my_func2;
+///     impl MyTrait;
+/// }
+/// 
+#[proc_macro]
+pub fn extendr_module(item: TokenStream) -> TokenStream {
+    let module = parse_macro_input!(item as Module);
+    let Module {modname, initnames} = module;
+    let module_init_name = format_ident!("R_init_lib{}", modname.unwrap());
+
+    let names = initnames.iter().map(|id| format_ident!("{}{}", INIT_PREFIX, id));
+
+    TokenStream::from(quote!{
+        #[no_mangle]
+        #[allow(non_snake_case)]
+        pub extern "C" fn #module_init_name(info: * mut extendr_api::DllInfo) {
+            #( #names(info); )*
+            /*unsafe {
+                R_useDynamicSymbols(info, FALSE);
+                R_forceSymbols(info, TRUE);
+            }*/
+        }
+    })
+}
+
+
+

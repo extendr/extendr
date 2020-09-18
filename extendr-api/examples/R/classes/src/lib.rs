@@ -1,6 +1,7 @@
 
 use extendr_api::*;
 
+#[derive(Debug)]
 struct Person {
     pub name: String,
 }
@@ -8,7 +9,7 @@ struct Person {
 #[extendr]
 impl Person {
     fn new() -> Self {
-        Self { name: String::new() }
+        Self { name: "".to_string() }
     }
 
     fn set_name(&mut self, name: &str) {
@@ -21,13 +22,14 @@ impl Person {
 }
 
 #[extendr]
-fn aux_func(person: &Person) {
+fn aux_func() {
 }
 
 
 // Macro to generate exports
 extendr_module! {
+    mod classes;
     impl Person;
-    fn aux_func(person: &Person);
+    fn aux_func;
 }
 
