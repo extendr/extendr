@@ -1,3 +1,4 @@
 ^Cargo.lock$
 ^.*\.tar\.gz$
 ^target/
+^.*\.so$
