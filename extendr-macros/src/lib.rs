@@ -35,7 +35,7 @@ fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> FnArg {
 }
 
 // Convert SEXP arguments into Robj. This maintains the lifetime of references.
-fn translate_convert(input: &FnArg, self_ty: Option<&syn::Type>) -> syn::Stmt {
+fn translate_to_robj(input: &FnArg) -> syn::Stmt {
     match input {
         FnArg::Typed(ref pattype) => {
             let pat = &pattype.pat.as_ref();
@@ -46,9 +46,8 @@ fn translate_convert(input: &FnArg, self_ty: Option<&syn::Type>) -> syn::Stmt {
                 panic!("expect identifier as arg name")
             }
         }
-        FnArg::Receiver(ref _reciever) => {
-            let ty = self_ty.clone().unwrap();
-            parse_quote! { let mut _self = extendr_api::unwrap_or_throw(extendr_api::from_robj::<#ty>(&extendr_api::new_borrowed(_self))); }
+        FnArg::Receiver(_) => {
+            parse_quote! { let mut _self_robj = extendr_api::new_borrowed(_self); }
         }
     }
 }
@@ -61,12 +60,12 @@ fn translate_actual(input: &FnArg) -> Option<Expr> {
             let ty = &pattype.ty.as_ref();
             if let syn::Pat::Ident(ref ident) = pat {
                 let varname = format_ident!("_{}_robj", ident.ident);
-                Some(parse_quote!{ extendr_api::unwrap_or_throw(extendr_api::from_robj::<#ty>(&#varname)) })
+                Some(parse_quote!{ extendr_api::unwrap_or_throw(<#ty>::from_robj(&#varname)) })
             } else {
                 None
             }
         }
-        FnArg::Receiver(ref _reciever) => {
+        FnArg::Receiver(_) => {
             // Do not use self explicitly as an actual arg.
             None
         }
@@ -122,10 +121,26 @@ fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix:
     };
 
     let call_name = if has_self {
-        quote! { _self.#func_name }
+        let is_mut = match inputs.iter().next() {
+            Some(FnArg::Receiver(ref reciever)) => reciever.mutability.is_some(),
+            _ => false
+        };
+        if is_mut {
+            // eg. Person::name(&mut self)
+            quote! { extendr_api::unwrap_or_throw(
+                <&mut #self_ty>::from_robj(&_self_robj)
+            ).#func_name }
+        } else {
+            // eg. Person::name(&self)
+            quote! { extendr_api::unwrap_or_throw(
+                <&#self_ty>::from_robj(&_self_robj)
+            ).#func_name }
+        }
     } else if let Some(ref self_ty) = &self_ty {
+        // eg. Person::new()
         quote! { <#self_ty>::#func_name }
     } else {
+        // eg. aux_func()
         quote! { #func_name }
     };
 
@@ -136,7 +151,7 @@ fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix:
 
     let convert_args: Vec<syn::Stmt> = inputs
         .iter()
-        .map(|input| translate_convert(input, self_ty))
+        .map(|input| translate_to_robj(input))
         .collect();
 
     let actual_args: Punctuated<Expr, Token![,]> = inputs
@@ -144,18 +159,14 @@ fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix:
         .filter_map(|input| translate_actual(input))
         .collect();
 
-    // let sexp_arg_types: Punctuated<syn::Type, Token![,]> = inputs
-    //     .iter()
-    //     .map(|_| -> syn::Type { parse_quote!{ extendr_api::SEXP } })
-    //     .collect();
-
-        let num_args = inputs.len() as i32;
+    let num_args = inputs.len() as i32;
 
     wrappers.push(parse_quote!(
         #[no_mangle]
         #[allow(non_snake_case)]
         pub extern "C" fn #wrap_name(#formal_args) -> extendr_api::SEXP {
             unsafe {
+                use extendr_api::FromRobj;
                 #( #convert_args )*
                 extendr_api::Robj::from(#call_name(#actual_args)).get()
             }
@@ -199,15 +210,23 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
 
         #( #wrappers )*
 
-        impl<'a> extendr_api::FromRobj<'a> for #self_ty {
+        impl<'a> extendr_api::FromRobj<'a> for &#self_ty {
             fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
-                Err("not done yet")
+                if robj.check_external_ptr(#self_ty_name) {
+                    Ok(unsafe { std::mem::transmute(robj.externalPtrAddr::<#self_ty>()) })
+                } else {
+                    Err(concat!("expected ", #self_ty_name))
+                }
             }
         }
 
-        impl<'a> extendr_api::FromRobj<'a> for &#self_ty {
+        impl<'a> extendr_api::FromRobj<'a> for &mut #self_ty {
             fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
-                Err("not done yet")
+                if robj.check_external_ptr(#self_ty_name) {
+                    Ok(unsafe { std::mem::transmute(robj.externalPtrAddr::<#self_ty>()) })
+                } else {
+                    Err(concat!("expected ", #self_ty_name))
+                }
             }
         }
 
@@ -217,7 +236,6 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
                     let ptr = Box::into_raw(Box::new(value));
                     let res = Robj::makeExternalPtr(ptr, Robj::from(#self_ty_name), Robj::from(()));
                     res.registerCFinalizer(Some(#finalizer_name));
-                    eprintln!("constructor {}", #self_ty_name);
                     res
                 }
             }
@@ -226,9 +244,8 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
         extern "C" fn #finalizer_name (sexp: extendr_api::SEXP) {
             unsafe {
                 let robj = extendr_api::new_borrowed(sexp);
-                let tag = robj.externalPtrTag();
-                eprintln!("finalizer {:?}", tag.as_str());
-                if tag.as_str() == Some(#self_ty_name) {
+                if robj.check_external_ptr(#self_ty_name) {
+                    //eprintln!("finalize {}", #self_ty_name);
                     let ptr = robj.externalPtrAddr::<#self_ty>();
                     Box::from_raw(ptr);
                 }

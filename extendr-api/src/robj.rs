@@ -58,10 +58,6 @@ pub trait FromRobj<'a> : Sized {
     }
 }
 
-pub fn from_robj<'a, T : 'a + FromRobj<'a>>(robj: &'a Robj) -> Result<T, &'static str> {
-    T::from_robj(robj)
-}
-
 macro_rules! impl_prim_from_robj {
     ($t: ty) => {
         impl<'a> FromRobj<'a> for $t {
@@ -852,6 +848,19 @@ impl Robj {
 
     /// Return true if this is can be made into a vector.
     pub fn isVectorizable(&self) -> bool { unsafe { Rf_isVectorizable(self.get()) != 0}}
+
+
+    /// Check an external pointer tag
+    /// This may work better by using a symbol cached in a static variable.
+    pub fn check_external_ptr(&self, expected_tag: &str) -> bool {
+        if self.sexptype() == libR_sys::EXTPTRSXP {
+            let tag = unsafe { self.externalPtrTag() };
+            if tag.as_str() == Some(expected_tag) {
+                return true;
+            }
+        }
+        false
+    }
 }
 
 pub unsafe fn new_owned(sexp: SEXP) -> Robj {
@@ -1336,24 +1345,24 @@ mod tests {
 
     #[test]
     fn test_from_robj() {
-        assert_eq!(from_robj::<u8>(&Robj::from(1)), Ok(1));
-        assert_eq!(from_robj::<u16>(&Robj::from(1)), Ok(1));
-        assert_eq!(from_robj::<u32>(&Robj::from(1)), Ok(1));
-        assert_eq!(from_robj::<u64>(&Robj::from(1)), Ok(1));
-        assert_eq!(from_robj::<i8>(&Robj::from(1)), Ok(1));
-        assert_eq!(from_robj::<i16>(&Robj::from(1)), Ok(1));
-        assert_eq!(from_robj::<i32>(&Robj::from(1)), Ok(1));
-        assert_eq!(from_robj::<i64>(&Robj::from(1)), Ok(1));
-        assert_eq!(from_robj::<f32>(&Robj::from(1)), Ok(1.));
-        assert_eq!(from_robj::<f64>(&Robj::from(1)), Ok(1.));
-        assert_eq!(from_robj::<Vec::<i32>>(&Robj::from(1)), Ok(vec![1]));
-        assert_eq!(from_robj::<Vec::<f64>>(&Robj::from(1.)), Ok(vec![1.]));
-        assert_eq!(from_robj::<ArrayView1<f64>>(&Robj::from(1.)), Ok(ArrayView1::<f64>::from(&[1.][..])));
-        assert_eq!(from_robj::<ArrayView1<i32>>(&Robj::from(1)), Ok(ArrayView1::<i32>::from(&[1][..])));
-        assert_eq!(from_robj::<ArrayView1<Bool>>(&Robj::from(true)), Ok(ArrayView1::<Bool>::from(&[Bool(1)][..])));
+        assert_eq!(<u8>::from_robj(&Robj::from(1)), Ok(1));
+        assert_eq!(<u16>::from_robj(&Robj::from(1)), Ok(1));
+        assert_eq!(<u32>::from_robj(&Robj::from(1)), Ok(1));
+        assert_eq!(<u64>::from_robj(&Robj::from(1)), Ok(1));
+        assert_eq!(<i8>::from_robj(&Robj::from(1)), Ok(1));
+        assert_eq!(<i16>::from_robj(&Robj::from(1)), Ok(1));
+        assert_eq!(<i32>::from_robj(&Robj::from(1)), Ok(1));
+        assert_eq!(<i64>::from_robj(&Robj::from(1)), Ok(1));
+        assert_eq!(<f32>::from_robj(&Robj::from(1)), Ok(1.));
+        assert_eq!(<f64>::from_robj(&Robj::from(1)), Ok(1.));
+        assert_eq!(<Vec::<i32>>::from_robj(&Robj::from(1)), Ok(vec![1]));
+        assert_eq!(<Vec::<f64>>::from_robj(&Robj::from(1.)), Ok(vec![1.]));
+        assert_eq!(<ArrayView1<f64>>::from_robj(&Robj::from(1.)), Ok(ArrayView1::<f64>::from(&[1.][..])));
+        assert_eq!(<ArrayView1<i32>>::from_robj(&Robj::from(1)), Ok(ArrayView1::<i32>::from(&[1][..])));
+        assert_eq!(<ArrayView1<Bool>>::from_robj(&Robj::from(true)), Ok(ArrayView1::<Bool>::from(&[Bool(1)][..])));
 
         let hello = Robj::from("hello");
-        assert_eq!(from_robj::<&str>(&hello), Ok("hello"));
+        assert_eq!(<&str>::from_robj(&hello), Ok("hello"));
     }
     #[test]
     fn test_to_robj() {
