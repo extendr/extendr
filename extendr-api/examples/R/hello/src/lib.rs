@@ -1,4 +1,3 @@
-
 use extendr_api::*;
 
 #[extendr]

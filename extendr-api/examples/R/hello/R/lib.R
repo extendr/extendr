@@ -1,6 +1,6 @@
 
 hello <- function() {
-  .Call("__wrap__hello")
+  .Call("wrap__hello")
 }
 
 
