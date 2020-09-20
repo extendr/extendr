@@ -1,7 +1,7 @@
 
 use extendr_api::*;
 
-#[export_function]
+#[extendr]
 fn hello() -> &'static str {
     "hello"
 }
