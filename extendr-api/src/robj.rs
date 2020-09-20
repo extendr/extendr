@@ -1,9 +1,9 @@
 //! R object handling.
-//! 
+//!
 //! See. https://cran.r-project.org/doc/manuals/R-exts.html
-//! 
+//!
 //! Fundamental principals:
-//! 
+//!
 //! * Any function that can break the protection mechanism is unsafe.
 //! * Users should be able to do almost everything without using libR_sys.
 //! * The interface should be friendly to R users without Rust experience.
@@ -11,20 +11,20 @@
 use libR_sys::*;
 use std::os::raw;
 
-use crate::AnyError;
-use crate::wrapper::*;
 use crate::logical::*;
+use crate::wrapper::*;
+use crate::AnyError;
 
 use ndarray::prelude::*;
 
 /// Wrapper for an R S-expression pointer (SEXP).
-/// 
+///
 /// As much as possible we wish to make this object safe (ie. no segfaults).
-/// 
+///
 /// If you avoid using unsafe functions it is more likely that you will avoid
 /// panics and segfaults. We will take great trouble to ensure that this
 /// is true.
-/// 
+///
 pub enum Robj {
     /// This object owns the SEXP and must free it.
     Owned(SEXP),
@@ -52,7 +52,7 @@ impl Default for Robj {
     }
 }
 
-pub trait FromRobj<'a> : Sized {
+pub trait FromRobj<'a>: Sized {
     fn from_robj(_robj: &'a Robj) -> Result<Self, &'static str> {
         Err("unable to convert value from R object")
     }
@@ -79,7 +79,7 @@ macro_rules! impl_prim_from_robj {
                 }
             }
         }
-    }
+    };
 }
 
 impl_prim_from_robj!(u8);
@@ -102,7 +102,7 @@ impl<'a> FromRobj<'a> for &'a str {
         }
     }
 }
-    
+
 impl<'a> FromRobj<'a> for String {
     fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
         if let Some(s) = robj.as_str() {
@@ -112,7 +112,7 @@ impl<'a> FromRobj<'a> for String {
         }
     }
 }
-    
+
 impl<'a> FromRobj<'a> for Vec<i32> {
     fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
         if let Some(v) = robj.as_i32_slice() {
@@ -136,7 +136,10 @@ impl<'a> FromRobj<'a> for Vec<f64> {
 /// Input Numeric vector parameter.
 /// Note we don't accept mutable R objects as parameters
 /// but you can make this behaviour using unsafe code.
-impl<'a, T> FromRobj<'a> for ArrayView1<'a, T> where Robj : AsTypedSlice<T> {
+impl<'a, T> FromRobj<'a> for ArrayView1<'a, T>
+where
+    Robj: AsTypedSlice<T>,
+{
     fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
         if let Some(v) = robj.as_typed_slice() {
             Ok(ArrayView1::<'a, T>::from(v))
@@ -223,36 +226,40 @@ impl Robj {
     /// Get an iterator over a pairlist.
     pub fn pairlist_iter(&self) -> Option<ListIter> {
         match self.sexptype() {
-            LISTSXP | LANGSXP | DOTSXP => {
-                unsafe {
-                    Some(ListIter{ list_elem: self.get()})
-                }
-            }
-            _ => None
+            LISTSXP | LANGSXP | DOTSXP => unsafe {
+                Some(ListIter {
+                    list_elem: self.get(),
+                })
+            },
+            _ => None,
         }
     }
 
     /// Get an iterator over an unnamed list.
     pub fn list_iter(&self) -> Option<VecIter> {
         match self.sexptype() {
-            VECSXP | EXPRSXP | WEAKREFSXP => {
-                unsafe {
-                    Some(VecIter{ vector: self.get(), i: 0, len: self.len()})
-                }
-            }
-            _ => None
+            VECSXP | EXPRSXP | WEAKREFSXP => unsafe {
+                Some(VecIter {
+                    vector: self.get(),
+                    i: 0,
+                    len: self.len(),
+                })
+            },
+            _ => None,
         }
     }
 
     /// Get an iterator over a string vector.
     pub fn str_iter(&self) -> Option<StrIter> {
         match self.sexptype() {
-            STRSXP => {
-                unsafe {
-                    Some(StrIter{ vector: self.get(), i: 0, len: self.len()})
-                }
-            }
-            _ => None
+            STRSXP => unsafe {
+                Some(StrIter {
+                    vector: self.get(),
+                    i: 0,
+                    len: self.len(),
+                })
+            },
+            _ => None,
         }
     }
 
@@ -267,13 +274,9 @@ impl Robj {
                         Some(to_str(R_CHAR(STRING_ELT(self.get(), 0)) as *const u8))
                     }
                 }
-                CHARSXP => {
-                    Some(to_str(R_CHAR(self.get()) as *const u8))
-                }
-                SYMSXP => {
-                    Some(to_str(R_CHAR(PRINTNAME(self.get())) as *const u8))
-                }
-                _ => None
+                CHARSXP => Some(to_str(R_CHAR(self.get()) as *const u8)),
+                SYMSXP => Some(to_str(R_CHAR(PRINTNAME(self.get())) as *const u8)),
+                _ => None,
             }
         }
     }
@@ -281,7 +284,7 @@ impl Robj {
     /// Evaluate the expression and return an error or an R object.
     pub fn eval(&self) -> Result<Robj, AnyError> {
         unsafe {
-            let mut error : raw::c_int = 0;
+            let mut error: raw::c_int = 0;
             let res = R_tryEval(self.get(), R_GlobalEnv, &mut error as *mut raw::c_int);
             if error != 0 {
                 Err(AnyError::from("R eval error"))
@@ -294,7 +297,7 @@ impl Robj {
     /// Evaluate the expression and return NULL or an R object.
     pub fn eval_blind(&self) -> Robj {
         unsafe {
-            let mut error : raw::c_int = 0;
+            let mut error: raw::c_int = 0;
             let res = R_tryEval(self.get(), R_GlobalEnv, &mut error as *mut raw::c_int);
             if error != 0 {
                 Robj::from(())
@@ -309,12 +312,12 @@ impl Robj {
         unsafe {
             use libR_sys::*;
             let mut status = 0_u32;
-            let status_ptr = &mut status as * mut u32;
-            let code : Robj = code.into();
+            let status_ptr = &mut status as *mut u32;
+            let code: Robj = code.into();
             let parsed = Robj::from(R_ParseVector(code.get(), -1, status_ptr, R_NilValue));
             match status {
                 1 => Ok(parsed),
-                _ => Err(AnyError::from("parse_error"))
+                _ => Err(AnyError::from("parse_error")),
             }
         }
     }
@@ -339,7 +342,7 @@ impl Robj {
                 R_ReleaseObject(sexp);
                 Robj::Borrowed(sexp)
             }
-            _ => self
+            _ => self,
         }
     }
 
@@ -362,7 +365,6 @@ pub trait AsTypedSlice<T> {
     }
 }
 
-
 macro_rules! make_typed_slice {
     ($type: ty, $fn: tt, $($sexp: tt),* ) => {
         impl AsTypedSlice<$type> for Robj {
@@ -377,7 +379,7 @@ macro_rules! make_typed_slice {
                     _ => None
                 }
             }
-        
+
             fn as_typed_slice_mut(&mut self) -> Option<&mut [$type]> {
                 match self.sexptype() {
                     $( $sexp )|* => {
@@ -398,31 +400,47 @@ make_typed_slice!(i32, INTEGER, INTSXP);
 make_typed_slice!(f64, REAL, REALSXP);
 make_typed_slice!(u8, RAW, RAWSXP);
 
-
-
 ///////////////////////////////////////////////////////////////
 /// The following impls wrap specific Rinternals.h symbols.
-/// 
+///
 #[allow(non_snake_case)]
 impl Robj {
     /// The "global" environment
-    pub fn globalEnv() -> Robj { unsafe { new_sys(R_GlobalEnv) }}
+    pub fn globalEnv() -> Robj {
+        unsafe { new_sys(R_GlobalEnv) }
+    }
     /// An empty environment at the root of the environment tree
-    pub fn emptyEnv() -> Robj { unsafe { new_sys(R_EmptyEnv) }}
+    pub fn emptyEnv() -> Robj {
+        unsafe { new_sys(R_EmptyEnv) }
+    }
     /// The base environment; formerly R_NilValue
-    pub fn baseEnv() -> Robj { unsafe { new_sys(R_BaseEnv) }}
+    pub fn baseEnv() -> Robj {
+        unsafe { new_sys(R_BaseEnv) }
+    }
     /// The (fake) namespace for base
-    pub fn baseNamespace() -> Robj { unsafe { new_sys(R_BaseNamespace) }}
+    pub fn baseNamespace() -> Robj {
+        unsafe { new_sys(R_BaseNamespace) }
+    }
     /// for registered namespaces
-    pub fn namespaceRegistry() -> Robj { unsafe { new_sys(R_NamespaceRegistry) }}
+    pub fn namespaceRegistry() -> Robj {
+        unsafe { new_sys(R_NamespaceRegistry) }
+    }
     /// Current srcref, for debuggers
-    pub fn srcref() -> Robj { unsafe { new_sys(R_Srcref) }}
+    pub fn srcref() -> Robj {
+        unsafe { new_sys(R_Srcref) }
+    }
     /// The nil object
-    pub fn nilValue() -> Robj { unsafe { new_sys(R_NilValue) }}
+    pub fn nilValue() -> Robj {
+        unsafe { new_sys(R_NilValue) }
+    }
     /// Unbound marker
-    pub fn unboundValue() -> Robj { unsafe { new_sys(R_UnboundValue) }}
+    pub fn unboundValue() -> Robj {
+        unsafe { new_sys(R_UnboundValue) }
+    }
     /// Missing argument marker
-    pub fn missingArg() -> Robj { unsafe { new_sys(R_MissingArg) }}
+    pub fn missingArg() -> Robj {
+        unsafe { new_sys(R_MissingArg) }
+    }
 
     /* Not supported by older R versions.
     /// To be found in BC interp. state (marker)
@@ -432,149 +450,256 @@ impl Robj {
     /// character"
     pub fn asCharacterSymbol() -> Robj { unsafe { new_sys(R_AsCharacterSymbol) }}
     */
+    
     /// "base"
-    pub fn baseSymbol() -> Robj { unsafe { new_sys(R_BaseSymbol) }}
+    pub fn baseSymbol() -> Robj {
+        unsafe { new_sys(R_BaseSymbol) }
+    }
     /// "{"
-    pub fn braceSymbol() -> Robj { unsafe { new_sys(R_BraceSymbol) }}
+    pub fn braceSymbol() -> Robj {
+        unsafe { new_sys(R_BraceSymbol) }
+    }
     /// "[["
-    pub fn bracket2Symbol() -> Robj { unsafe { new_sys(R_Bracket2Symbol) }}
+    pub fn bracket2Symbol() -> Robj {
+        unsafe { new_sys(R_Bracket2Symbol) }
+    }
     /// "["
-    pub fn bracketSymbol() -> Robj { unsafe { new_sys(R_BracketSymbol) }}
+    pub fn bracketSymbol() -> Robj {
+        unsafe { new_sys(R_BracketSymbol) }
+    }
     /// "class"
-    pub fn classSymbol() -> Robj { unsafe { new_sys(R_ClassSymbol) }}
+    pub fn classSymbol() -> Robj {
+        unsafe { new_sys(R_ClassSymbol) }
+    }
     /// ".Device"
-    pub fn deviceSymbol() -> Robj { unsafe { new_sys(R_DeviceSymbol) }}
+    pub fn deviceSymbol() -> Robj {
+        unsafe { new_sys(R_DeviceSymbol) }
+    }
     /// "dimnames"
-    pub fn dimNamesSymbol() -> Robj { unsafe { new_sys(R_DimNamesSymbol) }}
+    pub fn dimNamesSymbol() -> Robj {
+        unsafe { new_sys(R_DimNamesSymbol) }
+    }
     /// "dim"
-    pub fn dimSymbol() -> Robj { unsafe { new_sys(R_DimSymbol) }}
+    pub fn dimSymbol() -> Robj {
+        unsafe { new_sys(R_DimSymbol) }
+    }
     /// "$"
-    pub fn dollarSymbol() -> Robj { unsafe { new_sys(R_DollarSymbol) }}
+    pub fn dollarSymbol() -> Robj {
+        unsafe { new_sys(R_DollarSymbol) }
+    }
     /// "..."
-    pub fn dotsSymbol() -> Robj { unsafe { new_sys(R_DotsSymbol) }}
+    pub fn dotsSymbol() -> Robj {
+        unsafe { new_sys(R_DotsSymbol) }
+    }
     ///     pub fn dropSymbol() -> Robj { unsafe { new_sys(R_DropSymbol) }}"drop"
-    pub fn doubleColonSymbol() -> Robj { unsafe { new_sys(R_DoubleColonSymbol) }}//
+    pub fn doubleColonSymbol() -> Robj {
+        unsafe { new_sys(R_DoubleColonSymbol) }
+    } //
     /// ".Last.value"
-    pub fn lastvalueSymbol() -> Robj { unsafe { new_sys(R_LastvalueSymbol) }}
+    pub fn lastvalueSymbol() -> Robj {
+        unsafe { new_sys(R_LastvalueSymbol) }
+    }
     /// "levels"
-    pub fn levelsSymbol() -> Robj { unsafe { new_sys(R_LevelsSymbol) }}
+    pub fn levelsSymbol() -> Robj {
+        unsafe { new_sys(R_LevelsSymbol) }
+    }
     /// "mode"
-    pub fn modeSymbol() -> Robj { unsafe { new_sys(R_ModeSymbol) }}
+    pub fn modeSymbol() -> Robj {
+        unsafe { new_sys(R_ModeSymbol) }
+    }
     /// "na.rm"
-    pub fn naRmSymbol() -> Robj { unsafe { new_sys(R_NaRmSymbol) }}
+    pub fn naRmSymbol() -> Robj {
+        unsafe { new_sys(R_NaRmSymbol) }
+    }
     /// "name"
-    pub fn nameSymbol() -> Robj { unsafe { new_sys(R_NameSymbol) }}
+    pub fn nameSymbol() -> Robj {
+        unsafe { new_sys(R_NameSymbol) }
+    }
     /// "names"
-    pub fn namesSymbol() -> Robj { unsafe { new_sys(R_NamesSymbol) }}
+    pub fn namesSymbol() -> Robj {
+        unsafe { new_sys(R_NamesSymbol) }
+    }
     /// _NAMESPACE__."
-    pub fn namespaceEnvSymbol() -> Robj { unsafe { new_sys(R_NamespaceEnvSymbol) }}
+    pub fn namespaceEnvSymbol() -> Robj {
+        unsafe { new_sys(R_NamespaceEnvSymbol) }
+    }
     /// "package"
-    pub fn packageSymbol() -> Robj { unsafe { new_sys(R_PackageSymbol) }}
+    pub fn packageSymbol() -> Robj {
+        unsafe { new_sys(R_PackageSymbol) }
+    }
     /// "previous"
-    pub fn previousSymbol() -> Robj { unsafe { new_sys(R_PreviousSymbol) }}
+    pub fn previousSymbol() -> Robj {
+        unsafe { new_sys(R_PreviousSymbol) }
+    }
     /// "quote"
-    pub fn quoteSymbol() -> Robj { unsafe { new_sys(R_QuoteSymbol) }}
+    pub fn quoteSymbol() -> Robj {
+        unsafe { new_sys(R_QuoteSymbol) }
+    }
     /// "row.names"
-    pub fn rowNamesSymbol() -> Robj { unsafe { new_sys(R_RowNamesSymbol) }}
+    pub fn rowNamesSymbol() -> Robj {
+        unsafe { new_sys(R_RowNamesSymbol) }
+    }
     /// ".Random.seed"
-    pub fn seedsSymbol() -> Robj { unsafe { new_sys(R_SeedsSymbol) }}
+    pub fn seedsSymbol() -> Robj {
+        unsafe { new_sys(R_SeedsSymbol) }
+    }
     /// "sort.list"
-    pub fn sortListSymbol() -> Robj { unsafe { new_sys(R_SortListSymbol) }}
+    pub fn sortListSymbol() -> Robj {
+        unsafe { new_sys(R_SortListSymbol) }
+    }
     /// "source"
-    pub fn sourceSymbol() -> Robj { unsafe { new_sys(R_SourceSymbol) }}
+    pub fn sourceSymbol() -> Robj {
+        unsafe { new_sys(R_SourceSymbol) }
+    }
     /// "spec"
-    pub fn specSymbol() -> Robj { unsafe { new_sys(R_SpecSymbol) }}
+    pub fn specSymbol() -> Robj {
+        unsafe { new_sys(R_SpecSymbol) }
+    }
     /// "tsp"
-    pub fn tspSymbol() -> Robj { unsafe { new_sys(R_TspSymbol) }}
+    pub fn tspSymbol() -> Robj {
+        unsafe { new_sys(R_TspSymbol) }
+    }
     /// ":::"
-    pub fn tripleColonSymbol() -> Robj { unsafe { new_sys(R_TripleColonSymbol) }}
+    pub fn tripleColonSymbol() -> Robj {
+        unsafe { new_sys(R_TripleColonSymbol) }
+    }
     /// ".defined"
-    pub fn dot_defined() -> Robj { unsafe { new_sys(R_dot_defined) }}
+    pub fn dot_defined() -> Robj {
+        unsafe { new_sys(R_dot_defined) }
+    }
     /// ".Method"
-    pub fn dot_Method() -> Robj { unsafe { new_sys(R_dot_Method) }}
+    pub fn dot_Method() -> Robj {
+        unsafe { new_sys(R_dot_Method) }
+    }
     /// "packageName"
-    pub fn dot_packageName() -> Robj { unsafe { new_sys(R_dot_packageName) }}//
+    pub fn dot_packageName() -> Robj {
+        unsafe { new_sys(R_dot_packageName) }
+    } //
     /// ".target"
-    pub fn dot_target() -> Robj { unsafe { new_sys(R_dot_target) }}
+    pub fn dot_target() -> Robj {
+        unsafe { new_sys(R_dot_target) }
+    }
     /* fix version issues.
     /// ".Generic"
     pub fn dot_Generic() -> Robj { unsafe { new_sys(R_dot_Generic) }}
     */
     /// NA_STRING as a CHARSXP
-    pub fn naString() -> Robj { unsafe { new_sys(R_NaString) }}
+    pub fn naString() -> Robj {
+        unsafe { new_sys(R_NaString) }
+    }
     /// "" as a CHARSXP
-    pub fn blankString() -> Robj { unsafe { new_sys(R_BlankString) }}
+    pub fn blankString() -> Robj {
+        unsafe { new_sys(R_BlankString) }
+    }
     /// as a STRSXP
-    pub fn blankScalarString() -> Robj { unsafe { new_sys(R_BlankScalarString) }}
+    pub fn blankScalarString() -> Robj {
+        unsafe { new_sys(R_BlankScalarString) }
+    }
 }
 
 ///////////////////////////////////////////////////////////////
 /// The following impls wrap specific Rinternals.h functions.
-/// 
+///
 #[allow(non_snake_case)]
 impl Robj {
     /// Return true if this is the null object.
-    pub fn isNull(&self) -> bool { unsafe {Rf_isNull(self.get()) != 0} }
+    pub fn isNull(&self) -> bool {
+        unsafe { Rf_isNull(self.get()) != 0 }
+    }
 
     /// Return true if this is a symbol.
-    pub fn isSymbol(&self) -> bool { unsafe {Rf_isSymbol(self.get()) != 0} }
+    pub fn isSymbol(&self) -> bool {
+        unsafe { Rf_isSymbol(self.get()) != 0 }
+    }
 
     /// Return true if this is a boolean (logical) vector
-    pub fn isLogical(&self) -> bool { unsafe {Rf_isLogical(self.get()) != 0} }
+    pub fn isLogical(&self) -> bool {
+        unsafe { Rf_isLogical(self.get()) != 0 }
+    }
 
     /// Return true if this is a real (f64) vector.
-    pub fn isReal(&self) -> bool { unsafe {Rf_isReal(self.get()) != 0} }
+    pub fn isReal(&self) -> bool {
+        unsafe { Rf_isReal(self.get()) != 0 }
+    }
 
     /// Return true if this is a complex vector.
-    pub fn isComplex(&self) -> bool { unsafe {Rf_isComplex(self.get()) != 0} }
+    pub fn isComplex(&self) -> bool {
+        unsafe { Rf_isComplex(self.get()) != 0 }
+    }
 
     /// Return true if this is an expression.
-    pub fn isExpression(&self) -> bool { unsafe {Rf_isExpression(self.get()) != 0} }
+    pub fn isExpression(&self) -> bool {
+        unsafe { Rf_isExpression(self.get()) != 0 }
+    }
 
     /// Return true if this is an environment.
-    pub fn isEnvironment(&self) -> bool { unsafe {Rf_isEnvironment(self.get()) != 0} }
+    pub fn isEnvironment(&self) -> bool {
+        unsafe { Rf_isEnvironment(self.get()) != 0 }
+    }
 
     /// Return true if this is a string.
-    pub fn isString(&self) -> bool { unsafe {Rf_isString(self.get()) != 0} }
+    pub fn isString(&self) -> bool {
+        unsafe { Rf_isString(self.get()) != 0 }
+    }
 
     /// Return true if this is an object.
-    pub fn isObject(&self) -> bool { unsafe {Rf_isObject(self.get()) != 0} }
+    pub fn isObject(&self) -> bool {
+        unsafe { Rf_isObject(self.get()) != 0 }
+    }
 
     /// Get the source ref.
-    pub fn getCurrentSrcref(val: i32) -> Robj { unsafe{new_owned(R_GetCurrentSrcref(val as raw::c_int))}}
+    pub fn getCurrentSrcref(val: i32) -> Robj {
+        unsafe { new_owned(R_GetCurrentSrcref(val as raw::c_int)) }
+    }
 
     /// Get the source filename.
-    pub fn getSrcFilename(&self) -> Robj { unsafe{new_owned(R_GetSrcFilename(self.get()))}}
+    pub fn getSrcFilename(&self) -> Robj {
+        unsafe { new_owned(R_GetSrcFilename(self.get())) }
+    }
 
     /// Convert to a string vector.
-    pub fn asChar(&self) -> Robj { unsafe{new_owned(Rf_asChar(self.get()))}}
+    pub fn asChar(&self) -> Robj {
+        unsafe { new_owned(Rf_asChar(self.get())) }
+    }
 
     /// Convert to vectors of many kinds.
-    pub fn coerceVector(&self, sexptype: u32) -> Robj { unsafe{new_owned(Rf_coerceVector(self.get(), sexptype as SEXPTYPE))}}
+    pub fn coerceVector(&self, sexptype: u32) -> Robj {
+        unsafe { new_owned(Rf_coerceVector(self.get(), sexptype as SEXPTYPE)) }
+    }
 
     /// Convert a pairlist (LISTSXP) to a vector list (VECSXP).
-    pub fn pairToVectorList(&self) -> Robj { unsafe{new_owned(Rf_PairToVectorList(self.get()))}}
+    pub fn pairToVectorList(&self) -> Robj {
+        unsafe { new_owned(Rf_PairToVectorList(self.get())) }
+    }
 
     /// Convert a vector list (VECSXP) to a pair list (LISTSXP)
-    pub fn vectorToPairList(&self) -> Robj { unsafe{new_owned(Rf_VectorToPairList(self.get()))}}
+    pub fn vectorToPairList(&self) -> Robj {
+        unsafe { new_owned(Rf_VectorToPairList(self.get())) }
+    }
 
     /// Assign an integer to each unique string and return a "factor".
-    pub fn asCharacterFactor(&self) -> Robj { unsafe{new_owned(Rf_asCharacterFactor(self.get()))}}
+    pub fn asCharacterFactor(&self) -> Robj {
+        unsafe { new_owned(Rf_asCharacterFactor(self.get())) }
+    }
 
     /// Get a scalar boolean value
-    pub fn asLogical(&self) -> bool { unsafe{ Rf_asLogical(self.get()) != 0 } }
+    pub fn asLogical(&self) -> bool {
+        unsafe { Rf_asLogical(self.get()) != 0 }
+    }
 
     /// Get a scalar 32 bit integer value
-    pub fn asInteger(&self) -> i32 { unsafe{ Rf_asInteger(self.get()) as i32 } }
+    pub fn asInteger(&self) -> i32 {
+        unsafe { Rf_asInteger(self.get()) as i32 }
+    }
 
     /// Get a 64 bit double value
-    pub fn asReal(&self) -> f64 { unsafe{ Rf_asReal(self.get()) as f64 } }
+    pub fn asReal(&self) -> f64 {
+        unsafe { Rf_asReal(self.get()) as f64 }
+    }
 
     /// Allocate a matrix object (see NumericMatrix etc.)
     pub fn allocMatrix(sexptype: SEXPTYPE, rows: i32, cols: i32) -> Robj {
-        unsafe {
-            new_owned(Rf_allocMatrix(sexptype, rows, cols))
-        }
+        unsafe { new_owned(Rf_allocMatrix(sexptype, rows, cols)) }
     }
 
     /* TODO:
@@ -614,7 +739,7 @@ impl Robj {
     /// Compatible way to duplicate an object. Use obj.clone() instead
     /// for Rust compaitibility.
     pub fn duplicate(&self) -> Self {
-        unsafe {new_owned(Rf_duplicate(self.get()))}
+        unsafe { new_owned(Rf_duplicate(self.get())) }
     }
 
     /*
@@ -671,12 +796,12 @@ impl Robj {
     pub fn ncols(&self) -> usize {
         unsafe { Rf_ncols(self.get()) as usize }
     }
-    
+
     /// Number of rows of a matrix
     pub fn nrows(&self) -> usize {
         unsafe { Rf_nrows(self.get()) as usize }
     }
-    
+
     /*SEXP Rf_nthcdr(SEXP, int);
     Rboolean Rf_pmatch(SEXP, SEXP, Rboolean);
     Rboolean Rf_psmatch(const char *, const char *, Rboolean);
@@ -711,13 +836,17 @@ impl Robj {
     */
 
     /// Internal function used to implement #[extendr] impl
-    pub unsafe fn makeExternalPtr<T>(p : *mut T, tag: Robj, prot: Robj) -> Self {
-        new_owned(R_MakeExternalPtr(p as *mut ::std::os::raw::c_void, tag.get(), prot.get()))
+    pub unsafe fn makeExternalPtr<T>(p: *mut T, tag: Robj, prot: Robj) -> Self {
+        new_owned(R_MakeExternalPtr(
+            p as *mut ::std::os::raw::c_void,
+            tag.get(),
+            prot.get(),
+        ))
     }
 
     /// Internal function used to implement #[extendr] impl
     pub unsafe fn externalPtrAddr<T>(&self) -> *mut T {
-        R_ExternalPtrAddr(self.get()) as * mut T
+        R_ExternalPtrAddr(self.get()) as *mut T
     }
 
     /// Internal function used to implement #[extendr] impl
@@ -774,7 +903,7 @@ impl Robj {
 
     /// Read-only access to attribute list.
     // fn attrib(&self) -> Robj {
-        // unsafe {new_borrowed(ATTRIB(self.get()))}
+    // unsafe {new_borrowed(ATTRIB(self.get()))}
     // }
 
     /// Copy a vector and resize it.
@@ -791,90 +920,125 @@ impl Robj {
 
     /// Allocated an owned object of a certain type.
     pub fn allocVector(sexptype: u32, len: usize) -> Robj {
-        unsafe {
-            new_owned(Rf_allocVector(sexptype, len as R_xlen_t))
-        }
+        unsafe { new_owned(Rf_allocVector(sexptype, len as R_xlen_t)) }
     }
-    
+
     /// Return true if two arrays have identical dims.
     pub fn conformable(a: &Robj, b: &Robj) -> bool {
-        unsafe {
-            Rf_conformable(a.get(), b.get()) != 0
-        }
+        unsafe { Rf_conformable(a.get(), b.get()) != 0 }
     }
-    
+
     /// Borrow an element from a list.
     pub fn elt(&self, index: usize) -> Robj {
-        unsafe {
-            Robj::from(Rf_elt(self.get(), index as raw::c_int))
-        }
+        unsafe { Robj::from(Rf_elt(self.get(), index as raw::c_int)) }
     }
 
     //Rboolean Rf_inherits(SEXP, const char *);
 
     /// Return true if this is an array.
-    pub fn isArray(&self) -> bool { unsafe { Rf_isArray(self.get()) != 0}}
+    pub fn isArray(&self) -> bool {
+        unsafe { Rf_isArray(self.get()) != 0 }
+    }
 
     /// Return true if this is factor.
-    pub fn isFactor(&self) -> bool { unsafe { Rf_isFactor(self.get()) != 0}}
+    pub fn isFactor(&self) -> bool {
+        unsafe { Rf_isFactor(self.get()) != 0 }
+    }
 
     /// Return true if this is a data frame.
-    pub fn isFrame(&self) -> bool { unsafe { Rf_isFrame(self.get()) != 0}}
+    pub fn isFrame(&self) -> bool {
+        unsafe { Rf_isFrame(self.get()) != 0 }
+    }
 
     /// Return true if this is a function.
-    pub fn isFunction(&self) -> bool { unsafe { Rf_isFunction(self.get()) != 0}}
+    pub fn isFunction(&self) -> bool {
+        unsafe { Rf_isFunction(self.get()) != 0 }
+    }
 
     /// Return true if this is an integer vector.
-    pub fn isInteger(&self) -> bool { unsafe { Rf_isInteger(self.get()) != 0}}
+    pub fn isInteger(&self) -> bool {
+        unsafe { Rf_isInteger(self.get()) != 0 }
+    }
 
     /// Return true if this is a language object.
-    pub fn isLanguage(&self) -> bool { unsafe { Rf_isLanguage(self.get()) != 0}}
+    pub fn isLanguage(&self) -> bool {
+        unsafe { Rf_isLanguage(self.get()) != 0 }
+    }
 
     /// Return true if this is a vector list.
-    pub fn isList(&self) -> bool { unsafe { Rf_isList(self.get()) != 0}}
+    pub fn isList(&self) -> bool {
+        unsafe { Rf_isList(self.get()) != 0 }
+    }
 
     /// Return true if this is a matrix.
-    pub fn isMatrix(&self) -> bool { unsafe { Rf_isMatrix(self.get()) != 0}}
+    pub fn isMatrix(&self) -> bool {
+        unsafe { Rf_isMatrix(self.get()) != 0 }
+    }
 
     /// Return true if this is a vector list or null.
-    pub fn isNewList(&self) -> bool { unsafe { Rf_isNewList(self.get()) != 0}}
+    pub fn isNewList(&self) -> bool {
+        unsafe { Rf_isNewList(self.get()) != 0 }
+    }
 
     /// Return true if this is a numeric vector but not a factor.
-    pub fn isNumber(&self) -> bool { unsafe { Rf_isNumber(self.get()) != 0}}
+    pub fn isNumber(&self) -> bool {
+        unsafe { Rf_isNumber(self.get()) != 0 }
+    }
 
     /// Return true if this is a numeric vector but not a factor or complex.
-    pub fn isNumeric(&self) -> bool { unsafe { Rf_isNumeric(self.get()) != 0}}
+    pub fn isNumeric(&self) -> bool {
+        unsafe { Rf_isNumeric(self.get()) != 0 }
+    }
 
     /// Return true if this is a pairlist.
-    pub fn isPairList(&self) -> bool { unsafe { Rf_isPairList(self.get()) != 0}}
+    pub fn isPairList(&self) -> bool {
+        unsafe { Rf_isPairList(self.get()) != 0 }
+    }
 
     /// Return true if this is a primitive function.
-    pub fn isPrimitive(&self) -> bool { unsafe { Rf_isPrimitive(self.get()) != 0}}
+    pub fn isPrimitive(&self) -> bool {
+        unsafe { Rf_isPrimitive(self.get()) != 0 }
+    }
 
     /// Return true if this is a time series vector (see tsp).
-    pub fn isTs(&self) -> bool { unsafe { Rf_isTs(self.get()) != 0}}
+    pub fn isTs(&self) -> bool {
+        unsafe { Rf_isTs(self.get()) != 0 }
+    }
 
     /// Return true if this is a user defined binop.
-    pub fn isUserBinop(&self) -> bool { unsafe { Rf_isUserBinop(self.get()) != 0}}
+    pub fn isUserBinop(&self) -> bool {
+        unsafe { Rf_isUserBinop(self.get()) != 0 }
+    }
 
     /// Return true if this is a valid string.
-    pub fn isValidString(&self) -> bool { unsafe { Rf_isValidString(self.get()) != 0}}
+    pub fn isValidString(&self) -> bool {
+        unsafe { Rf_isValidString(self.get()) != 0 }
+    }
 
     /// Return true if this is a valid string.
-    pub fn isValidStringF(&self) -> bool { unsafe { Rf_isValidStringF(self.get()) != 0}}
+    pub fn isValidStringF(&self) -> bool {
+        unsafe { Rf_isValidStringF(self.get()) != 0 }
+    }
 
     /// Return true if this is a vector.
-    pub fn isVector(&self) -> bool { unsafe { Rf_isVector(self.get()) != 0}}
+    pub fn isVector(&self) -> bool {
+        unsafe { Rf_isVector(self.get()) != 0 }
+    }
 
     /// Return true if this is an atomic vector.
-    pub fn isVectorAtomic(&self) -> bool { unsafe { Rf_isVectorAtomic(self.get()) != 0}}
+    pub fn isVectorAtomic(&self) -> bool {
+        unsafe { Rf_isVectorAtomic(self.get()) != 0 }
+    }
 
     /// Return true if this is a vector list.
-    pub fn isVectorList(&self) -> bool { unsafe { Rf_isVectorList(self.get()) != 0}}
+    pub fn isVectorList(&self) -> bool {
+        unsafe { Rf_isVectorList(self.get()) != 0 }
+    }
 
     /// Return true if this is can be made into a vector.
-    pub fn isVectorizable(&self) -> bool { unsafe { Rf_isVectorizable(self.get()) != 0}}
-
+    pub fn isVectorizable(&self) -> bool {
+        unsafe { Rf_isVectorizable(self.get()) != 0 }
+    }
 
     /// Check an external pointer tag
     /// This may work better by using a symbol cached in a static variable.
@@ -933,7 +1097,10 @@ impl PartialEq<Robj> for Robj {
                 match self.sexptype() {
                     NILSXP => true,
                     SYMSXP => PRINTNAME(lsexp) == PRINTNAME(rsexp),
-                    LISTSXP | LANGSXP | DOTSXP => self.pairlist_iter().unwrap().eq(rhs.pairlist_iter().unwrap()),
+                    LISTSXP | LANGSXP | DOTSXP => self
+                        .pairlist_iter()
+                        .unwrap()
+                        .eq(rhs.pairlist_iter().unwrap()),
                     CLOSXP => false,
                     ENVSXP => false,
                     PROMSXP => false,
@@ -954,7 +1121,7 @@ impl PartialEq<Robj> for Robj {
                     S4SXP => false,
                     NEWSXP => false,
                     FREESXP => false,
-                    _ => false
+                    _ => false,
                 }
             }
         } else {
@@ -973,14 +1140,18 @@ impl std::fmt::Debug for Robj {
             // CLOSXP => false,
             // ENVSXP => false,
             // PROMSXP => false,
-            LANGSXP => write!(f, "Lang({:?})", self.pairlist_iter().unwrap().collect::<Vec<Robj>>()),
+            LANGSXP => write!(
+                f,
+                "Lang({:?})",
+                self.pairlist_iter().unwrap().collect::<Vec<Robj>>()
+            ),
             // SPECIALSXP => false,
             // BUILTINSXP => false,
             CHARSXP => write!(f, "Character({:?})", self.as_str().unwrap()),
             LGLSXP => {
                 let slice = self.as_logical_slice().unwrap();
                 if slice.len() == 1 {
-                    write!(f, "{}", if slice[0].0 == 0 {"FALSE"} else {"TRUE"})
+                    write!(f, "{}", if slice[0].0 == 0 { "FALSE" } else { "TRUE" })
                 } else {
                     write!(f, "&{:?}", slice)
                 }
@@ -992,7 +1163,7 @@ impl std::fmt::Debug for Robj {
                 } else {
                     write!(f, "{:?}", self.as_i32_slice().unwrap())
                 }
-            },
+            }
             REALSXP => {
                 let slice = self.as_f64_slice().unwrap();
                 if slice.len() == 1 {
@@ -1000,16 +1171,18 @@ impl std::fmt::Debug for Robj {
                 } else {
                     write!(f, "{:?}", slice)
                 }
-            },
-            VECSXP => {
-                write!(f, "{:?}", self.list_iter().unwrap().collect::<Vec<_>>())
             }
-            EXPRSXP => {
-                write!(f, "Expr({:?})", self.list_iter().unwrap().collect::<Vec<_>>())
-            }
-            WEAKREFSXP => {
-                write!(f, "Weakref({:?})", self.list_iter().unwrap().collect::<Vec<_>>())
-            }
+            VECSXP => write!(f, "{:?}", self.list_iter().unwrap().collect::<Vec<_>>()),
+            EXPRSXP => write!(
+                f,
+                "Expr({:?})",
+                self.list_iter().unwrap().collect::<Vec<_>>()
+            ),
+            WEAKREFSXP => write!(
+                f,
+                "Weakref({:?})",
+                self.list_iter().unwrap().collect::<Vec<_>>()
+            ),
             // CPLXSXP => false,
             STRSXP => {
                 write!(f, "[")?;
@@ -1034,11 +1207,11 @@ impl std::fmt::Debug for Robj {
                 } else {
                     write!(f, "{:?}", slice)
                 }
-            },
+            }
             // S4SXP => false,
             // NEWSXP => false,
             // FREESXP => false,
-            _ => write!(f, "??")
+            _ => write!(f, "??"),
         }
     }
 }
@@ -1048,19 +1221,20 @@ impl std::fmt::Debug for Robj {
 unsafe fn to_str<'a>(ptr: *const u8) -> &'a str {
     let mut len = 0;
     loop {
-        if *ptr.offset(len) == 0 {break}
+        if *ptr.offset(len) == 0 {
+            break;
+        }
         len += 1;
     }
     let slice = std::slice::from_raw_parts(ptr, len as usize);
     std::str::from_utf8_unchecked(slice)
 }
 
-
 /// Borrow an already protected SEXP
 /// Note that the SEXP must outlive the generated object.
 impl From<SEXP> for Robj {
     fn from(sexp: SEXP) -> Self {
-        unsafe {new_borrowed(sexp)}
+        unsafe { new_borrowed(sexp) }
     }
 }
 
@@ -1081,18 +1255,14 @@ impl Drop for Robj {
 impl From<()> for Robj {
     fn from(_: ()) -> Self {
         // Note: we do not need to protect this.
-        unsafe {
-            Robj::Sys(R_NilValue)
-        }
+        unsafe { Robj::Sys(R_NilValue) }
     }
 }
 
 /// Convert a boolean to an Robj.
 impl From<bool> for Robj {
     fn from(val: bool) -> Self {
-        unsafe {
-            new_owned(Rf_ScalarLogical(val as raw::c_int))
-        }
+        unsafe { new_owned(Rf_ScalarLogical(val as raw::c_int)) }
     }
 }
 
@@ -1100,12 +1270,10 @@ macro_rules! impl_from_int_prim {
     ($t : ty) => {
         impl From<$t> for Robj {
             fn from(val: $t) -> Self {
-                unsafe {
-                    new_owned(Rf_ScalarInteger(val as raw::c_int))
-                }
+                unsafe { new_owned(Rf_ScalarInteger(val as raw::c_int)) }
             }
         }
-    }
+    };
 }
 
 impl_from_int_prim!(u8);
@@ -1121,12 +1289,10 @@ macro_rules! impl_from_float_prim {
     ($t : ty) => {
         impl From<$t> for Robj {
             fn from(val: $t) -> Self {
-                unsafe {
-                    new_owned(Rf_ScalarReal(val as raw::c_double))
-                }
+                unsafe { new_owned(Rf_ScalarReal(val as raw::c_double)) }
             }
         }
-    }
+    };
 }
 
 impl_from_float_prim!(f32);
@@ -1151,7 +1317,10 @@ impl From<usize> for Robj {
 impl<'a> From<Character<'a>> for Robj {
     fn from(val: Character) -> Self {
         unsafe {
-            new_owned(Rf_mkCharLen(val.0.as_ptr() as *const raw::c_char, val.0.len() as i32))
+            new_owned(Rf_mkCharLen(
+                val.0.as_ptr() as *const raw::c_char,
+                val.0.len() as i32,
+            ))
         }
     }
 }
@@ -1166,7 +1335,6 @@ impl<'a> From<Lang<'a>> for Robj {
         }
     }
 }
-
 
 /// Convert a string ref to an Robj string array object.
 impl<'a> From<&'a str> for Robj {
@@ -1266,7 +1434,10 @@ impl<T: AsRef<str>> From<Vec<T>> for Robj {
             // populate the slice with character objects.
             // note: a better way would be to steal the allocated buffer from the strings,
             for (i, s) in vals.iter().enumerate() {
-                slice[i] = Rf_mkCharLen(s.as_ref().as_ptr() as *const raw::c_char, s.as_ref().len() as i32);
+                slice[i] = Rf_mkCharLen(
+                    s.as_ref().as_ptr() as *const raw::c_char,
+                    s.as_ref().len() as i32,
+                );
             }
 
             // The sexp is already protected but we need to unprotect it when it dies.
@@ -1285,7 +1456,7 @@ pub struct VecIter {
 
 impl Iterator for VecIter {
     type Item = Robj;
- 
+
     fn size_hint(&self) -> (usize, Option<usize>) {
         (self.len, Some(self.len))
     }
@@ -1296,7 +1467,7 @@ impl Iterator for VecIter {
         if i >= self.len {
             return None;
         } else {
-            Some(Robj::from(unsafe {VECTOR_ELT(self.vector, i as isize)}))
+            Some(Robj::from(unsafe { VECTOR_ELT(self.vector, i as isize) }))
         }
     }
 
@@ -1314,7 +1485,7 @@ pub struct ListIter {
 
 impl Iterator for ListIter {
     type Item = Robj;
- 
+
     fn next(&mut self) -> Option<Self::Item> {
         unsafe {
             let sexp = self.list_elem;
@@ -1337,7 +1508,7 @@ pub struct StrIter {
 
 impl Iterator for StrIter {
     type Item = &'static str;
- 
+
     fn size_hint(&self) -> (usize, Option<usize>) {
         (self.len, Some(self.len))
     }
@@ -1363,7 +1534,6 @@ impl Iterator for StrIter {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1383,16 +1553,31 @@ mod tests {
 
         // Vectors
         assert_eq!(format!("{:?}", Robj::from(&[1, 2, 3][..])), "[1, 2, 3]");
-        assert_eq!(format!("{:?}", Robj::from(&[1., 2., 3.][..])), "[1.0, 2.0, 3.0]");
-        assert_eq!(format!("{:?}", Robj::from(&[1_u8, 2_u8, 3_u8][..])), "[1, 2, 3]");
+        assert_eq!(
+            format!("{:?}", Robj::from(&[1., 2., 3.][..])),
+            "[1.0, 2.0, 3.0]"
+        );
+        assert_eq!(
+            format!("{:?}", Robj::from(&[1_u8, 2_u8, 3_u8][..])),
+            "[1, 2, 3]"
+        );
 
         // Wrappers
         assert_eq!(format!("{:?}", Robj::from(Symbol("x"))), "Symbol(\"x\")");
-        assert_eq!(format!("{:?}", Robj::from(Character("x"))), "Character(\"x\")");
-        assert_eq!(format!("{:?}", Robj::from(Lang("x"))), "Lang([Symbol(\"x\")])");
+        assert_eq!(
+            format!("{:?}", Robj::from(Character("x"))),
+            "Character(\"x\")"
+        );
+        assert_eq!(
+            format!("{:?}", Robj::from(Lang("x"))),
+            "Lang([Symbol(\"x\")])"
+        );
 
         // Logical
-        assert_eq!(format!("{:?}", Robj::from(&[Bool(1), Bool(0)][..])), "&[Bool(1), Bool(0)]");
+        assert_eq!(
+            format!("{:?}", Robj::from(&[Bool(1), Bool(0)][..])),
+            "&[Bool(1), Bool(0)]"
+        );
     }
 
     #[test]
@@ -1409,9 +1594,18 @@ mod tests {
         assert_eq!(<f64>::from_robj(&Robj::from(1)), Ok(1.));
         assert_eq!(<Vec::<i32>>::from_robj(&Robj::from(1)), Ok(vec![1]));
         assert_eq!(<Vec::<f64>>::from_robj(&Robj::from(1.)), Ok(vec![1.]));
-        assert_eq!(<ArrayView1<f64>>::from_robj(&Robj::from(1.)), Ok(ArrayView1::<f64>::from(&[1.][..])));
-        assert_eq!(<ArrayView1<i32>>::from_robj(&Robj::from(1)), Ok(ArrayView1::<i32>::from(&[1][..])));
-        assert_eq!(<ArrayView1<Bool>>::from_robj(&Robj::from(true)), Ok(ArrayView1::<Bool>::from(&[Bool(1)][..])));
+        assert_eq!(
+            <ArrayView1<f64>>::from_robj(&Robj::from(1.)),
+            Ok(ArrayView1::<f64>::from(&[1.][..]))
+        );
+        assert_eq!(
+            <ArrayView1<i32>>::from_robj(&Robj::from(1)),
+            Ok(ArrayView1::<i32>::from(&[1][..]))
+        );
+        assert_eq!(
+            <ArrayView1<Bool>>::from_robj(&Robj::from(true)),
+            Ok(ArrayView1::<Bool>::from(&[Bool(1)][..]))
+        );
 
         let hello = Robj::from("hello");
         assert_eq!(<&str>::from_robj(&hello), Ok("hello"));
@@ -1440,7 +1634,10 @@ mod tests {
     fn parse_test() -> Result<(), AnyError> {
         start_r();
         let p = Robj::parse("print(1L);print(1L);")?;
-        assert_eq!(format!("{:?}", p), "Expr([Lang([Symbol(\"print\"), 1]), Lang([Symbol(\"print\"), 1])])");
+        assert_eq!(
+            format!("{:?}", p),
+            "Expr([Lang([Symbol(\"print\"), 1]), Lang([Symbol(\"print\"), 1])])"
+        );
 
         let p = Robj::eval_string("1L + 1L")?;
         assert_eq!(p, Robj::from(2));

@@ -1,5 +1,5 @@
 //! Argument parsing and checking.
-//! 
+//!
 
 use libR_sys::*;
 //use crate::robj::*;
@@ -42,7 +42,10 @@ pub unsafe fn append_with_name(tail: SEXP, obj: Robj, name: &str) -> SEXP {
     let mut name = Vec::from(name.as_bytes());
     name.push(0);
     let cons = Rf_cons(obj.get(), R_NilValue);
-    SET_TAG(cons, Rf_install(name.as_ptr() as *const std::os::raw::c_char));
+    SET_TAG(
+        cons,
+        Rf_install(name.as_ptr() as *const std::os::raw::c_char),
+    );
     SETCDR(tail, cons);
     cons
 }
@@ -102,15 +105,15 @@ macro_rules! lang {
 mod tests {
     //use crate::args;
     use super::*;
-    use crate::{start_r, end_r};
-    
+    use crate::{end_r, start_r};
+
     #[test]
     fn test_args() {
         start_r();
         assert_eq!(Robj::from(1).eval().unwrap(), Robj::from(1));
         //assert_eq!(Robj::from(Lang("ls")), Robj::from(1));
         assert_eq!(lang!("+", 1, 1).eval().unwrap(), Robj::from(2));
-        assert_eq!(lang!("+", x=1, y=1).eval().unwrap(), Robj::from(2));
+        assert_eq!(lang!("+", x = 1, y = 1).eval().unwrap(), Robj::from(2));
         //assert_eq!(Robj::from(Lang("ls")).and(baseenv()).eval().unwrap(), Robj::from(1));
         //let plus = Robj::from(Lang("+"));
         /*assert_eq!(args!(), vec![]);

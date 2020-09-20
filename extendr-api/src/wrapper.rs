@@ -1,8 +1,8 @@
 //! Wrappers are lightweight proxies for references to R datatypes.
 //! They do not contain an Robj (see array.rs for an example of this).
 
-use crate::robj::*;
 use crate::logical::*;
+use crate::robj::*;
 use libR_sys::*;
 use std::ffi::CString;
 
@@ -53,7 +53,7 @@ impl<'a> From<List<'a>> for Robj {
 }
 
 /// Convert an integer slice to a logical object.
-impl<'a> From<&'a[Bool]> for Robj {
+impl<'a> From<&'a [Bool]> for Robj {
     fn from(vals: &[Bool]) -> Self {
         unsafe {
             let len = vals.len();
@@ -81,4 +81,3 @@ impl<'a> From<Symbol<'a>> for Robj {
         }
     }
 }
-

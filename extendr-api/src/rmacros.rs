@@ -1,11 +1,11 @@
 //!
 //! rmacros - a set of macros to call actual R functions in a rusty way.
-//! 
+//!
 
 /// R object encapsulation operator.
-/// 
+///
 /// Shorthand for Robj::from(x).
-/// 
+///
 /// Example:
 /// ```
 /// use extendr_api::*;
@@ -21,7 +21,7 @@ macro_rules! r {
 }
 
 /// Concatenation operator.
-/// 
+///
 /// Example:
 /// ```
 /// use extendr_api::*;
@@ -40,7 +40,7 @@ macro_rules! c {
 }
 
 /// Create a vector with repeating elements.
-/// 
+///
 /// Example:
 /// ```
 /// use extendr_api::*;
@@ -56,7 +56,7 @@ macro_rules! rep {
 }
 
 /// Read a CSV file.
-/// 
+///
 /// Example:
 /// ```no_run
 /// use extendr_api::*;
@@ -71,7 +71,7 @@ macro_rules! read_table {
 }
 
 /// Create a list.
-/// 
+///
 /// Example:
 /// ```
 /// use extendr_api::*;
@@ -90,7 +90,7 @@ macro_rules! list {
 }
 
 /// Create a dataframe.
-/// 
+///
 /// Example:
 /// ```
 /// use extendr_api::*;
@@ -107,4 +107,3 @@ macro_rules! data_frame {
         lang!("data.frame", $($rest)*).eval_blind()
     };
 }
-
