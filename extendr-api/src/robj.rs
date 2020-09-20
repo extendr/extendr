@@ -235,7 +235,7 @@ impl Robj {
     /// Get an iterator over an unnamed list.
     pub fn list_iter(&self) -> Option<VecIter> {
         match self.sexptype() {
-            VECSXP => {
+            VECSXP | EXPRSXP | WEAKREFSXP => {
                 unsafe {
                     Some(VecIter{ vector: self.get(), i: 0, len: self.len()})
                 }
@@ -302,6 +302,33 @@ impl Robj {
                 Robj::from(res)
             }
         }
+    }
+
+    /// Parse a string into an R executable object
+    pub fn parse(code: &str) -> Result<Robj, AnyError> {
+        unsafe {
+            use libR_sys::*;
+            let mut status = 0_u32;
+            let status_ptr = &mut status as * mut u32;
+            let code : Robj = code.into();
+            let parsed = Robj::from(R_ParseVector(code.get(), -1, status_ptr, R_NilValue));
+            match status {
+                1 => Ok(parsed),
+                _ => Err(AnyError::from("parse_error"))
+            }
+        }
+    }
+
+    /// Parse a string into an R executable object and run it.
+    pub fn eval_string(code: &str) -> Result<Robj, AnyError> {
+        let expr = Robj::parse(code)?;
+        let mut res = Robj::from(());
+        if let Some(iter) = expr.list_iter() {
+            for lang in iter {
+                res = lang.eval()?;
+            }
+        }
+        Ok(res)
     }
 
     /// Unprotect an object - assumes a transfer of ownership.
@@ -653,7 +680,6 @@ impl Robj {
     /*SEXP Rf_nthcdr(SEXP, int);
     Rboolean Rf_pmatch(SEXP, SEXP, Rboolean);
     Rboolean Rf_psmatch(const char *, const char *, Rboolean);
-    SEXP R_ParseEvalString(const char *, SEXP);
     void Rf_PrintValue(SEXP);
     void Rf_printwhere(void);
     void Rf_readS3VarsFromFrame(SEXP, SEXP*, SEXP*, SEXP*, SEXP*, SEXP*, SEXP*);
@@ -974,16 +1000,16 @@ impl std::fmt::Debug for Robj {
                     write!(f, "{:?}", slice)
                 }
             },
-            // CPLXSXP => false,
-            VECSXP | EXPRSXP | WEAKREFSXP => {
-                write!(f, "[")?;
-                let mut sep = "";
-                for obj in self.list_iter().unwrap() {
-                    write!(f, "{}{:?}", sep, obj)?;
-                    sep = ", ";
-                }
-                write!(f, "]")
+            VECSXP => {
+                write!(f, "{:?}", self.list_iter().unwrap().collect::<Vec<_>>())
             }
+            EXPRSXP => {
+                write!(f, "Expr({:?})", self.list_iter().unwrap().collect::<Vec<_>>())
+            }
+            WEAKREFSXP => {
+                write!(f, "Weakref({:?})", self.list_iter().unwrap().collect::<Vec<_>>())
+            }
+            // CPLXSXP => false,
             STRSXP => {
                 write!(f, "[")?;
                 let mut sep = "";
@@ -1316,6 +1342,7 @@ impl Iterator for StrIter {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::engine::*;
 
     #[test]
     fn test_debug() {
@@ -1376,5 +1403,16 @@ mod tests {
         assert_eq!(Robj::from(1_i64), Robj::from(1));
         assert_eq!(Robj::from(1.0_f32), Robj::from(1.));
         assert_eq!(Robj::from(1.0_f64), Robj::from(1.));
+    }
+
+    #[test]
+    fn parse_test() -> Result<(), AnyError> {
+        start_r();
+        let p = Robj::parse("print(1L);print(1L);")?;
+        assert_eq!(format!("{:?}", p), "Expr([Lang([Symbol(\"print\"), 1]), Lang([Symbol(\"print\"), 1])])");
+
+        let p = Robj::eval_string("1L + 1L")?;
+        assert_eq!(p, Robj::from(2));
+        Ok(())
     }
 }

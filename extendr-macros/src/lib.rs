@@ -159,6 +159,11 @@ fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix:
         .filter_map(|input| translate_actual(input))
         .collect();
 
+    // let R_formal_args: Vec<String> = inputs
+    //     .iter()
+    //     .filter_map(|input| translate_R_formal(input))
+    //     .collect();
+
     let num_args = inputs.len() as i32;
 
     wrappers.push(parse_quote!(
@@ -175,13 +180,14 @@ fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix:
 
     wrappers.push(parse_quote!(
         #[allow(non_snake_case)]
-        fn #init_name(info: *mut extendr_api::DllInfo) {
-            unsafe {
-                type functype = unsafe extern "C" fn() -> *mut ::std::os::raw::c_void;
-                let ptr = #wrap_name as * const u8;
-                let ptr : functype = std::mem::transmute(ptr);
-                extendr_api::register_call_method(info, ptr, #wrap_name_str, #num_args);
-            }
+        fn #init_name(info: *mut extendr_api::DllInfo, call_methods: &mut Vec<extendr_api::CallMethod>) {
+            call_methods.push(
+                extendr_api::CallMethod {
+                    call_symbol: std::ffi::CString::new(#wrap_name_str).unwrap(),
+                    func_ptr: #wrap_name as * const u8,
+                    num_args: #num_args,
+                }
+            )
         }
     ));
 }
@@ -253,8 +259,8 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
         }
 
         #[allow(non_snake_case)]
-        fn #init_name(info: *mut extendr_api::DllInfo) {
-            #( #method_init_names(info); )*
+        fn #init_name(info: *mut extendr_api::DllInfo, call_methods: &mut Vec<extendr_api::CallMethod>) {
+            #( #method_init_names(info, call_methods); )*
         }
     });
 
@@ -278,7 +284,8 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
 #[derive(Debug)]
 struct Module {
     modname: Option<Ident>,
-    initnames: Vec<Ident>,
+    fnnames: Vec<Ident>,
+    implnames: Vec<Ident>,
 }
 
 impl syn::parse::Parse for Module {
@@ -286,7 +293,8 @@ impl syn::parse::Parse for Module {
         use syn::spanned::Spanned;
         let mut res = Self {
             modname: None,
-            initnames: Vec::new(),
+            fnnames: Vec::new(),
+            implnames: Vec::new(),
         };
         while !input.is_empty() {
             if let Ok(kmod) = input.parse::<Token![mod]>() {
@@ -296,9 +304,9 @@ impl syn::parse::Parse for Module {
                 }
                 res.modname = Some(name);
             } else if let Ok(_) = input.parse::<Token![fn]>() {
-                res.initnames.push(input.parse()?);
+                res.fnnames.push(input.parse()?);
             } else if let Ok(_) = input.parse::<Token![impl]>() {
-                res.initnames.push(input.parse()?);
+                res.implnames.push(input.parse()?);
             } else {
                 return Err(syn::Error::new(input.span(), "expected mod, fn or impl"));
             }
@@ -326,20 +334,21 @@ impl syn::parse::Parse for Module {
 #[proc_macro]
 pub fn extendr_module(item: TokenStream) -> TokenStream {
     let module = parse_macro_input!(item as Module);
-    let Module {modname, initnames} = module;
-    let module_init_name = format_ident!("R_init_lib{}", modname.unwrap());
+    let Module {modname, fnnames, implnames} = module;
+    let modname = modname.unwrap();
+    let module_init_name = format_ident!("R_init_lib{}", modname);
 
-    let names = initnames.iter().map(|id| format_ident!("{}{}", INIT_PREFIX, id));
+    let fninitnames = fnnames.iter().map(|id| format_ident!("{}{}", INIT_PREFIX, id));
+    let implinitnames = implnames.iter().map(|id| format_ident!("{}{}", INIT_PREFIX, id));
 
     TokenStream::from(quote!{
         #[no_mangle]
         #[allow(non_snake_case)]
         pub extern "C" fn #module_init_name(info: * mut extendr_api::DllInfo) {
-            #( #names(info); )*
-            /*unsafe {
-                R_useDynamicSymbols(info, FALSE);
-                R_forceSymbols(info, TRUE);
-            }*/
+            let mut call_methods = Vec::new();
+            #( #fninitnames(info, &mut call_methods); )*
+            #( #implinitnames(info, &mut call_methods); )*
+            unsafe { extendr_api::register_call_methods(info, call_methods.as_ref()) };
         }
     })
 }
