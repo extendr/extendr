@@ -7,85 +7,92 @@ Low-level R library bindings
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://docs.rs/mio/badge.svg)](https://docs.rs/extendr-api/latest/extendr_api/)
 
+## Overview
+
+Extendr is a Rust extension mechanism for R
+
+It is intended to be easier to use than the C interface and
+Rcpp as Rust gives type safety and freedom from segfaults.
+
+The following code illustrates a simple structure trait
+which is written in Rust. The data is defined in the `struct`
+declaration and the methods in the `impl`.
+
+```
+use extendr_api::*;
+
+struct Person {
+    pub name: String,
+}
+
+#[extendr]
+impl Person {
+    fn new() -> Self {
+        Self { name: "".to_string() }
+    }
+
+    fn set_name(&mut self, name: &str) {
+        self.name = name.to_string();
+    }
+
+    fn name(&self) -> &str {
+        self.name.as_str()
+    }
+}
+
+#[extendr]
+fn aux_func() {
+}
+
+
+// Macro to generate exports
+extendr_module! {
+    mod classes;
+    impl Person;
+    fn aux_func;
+}
+```
+
+The `#[extendr]` attribute causes the compiler to generate
+wrapper and registration functions for R which are called
+when the package is loaded.
+
+The `extendr_module!` macro lists the module name and exported functions
+and interfaces.
+
 This library aims to provide an interface that will be familiar to
 first-time users of Rust or indeed any compiled language.
 
 Anyone who knows the R library should be able to write R extensions.
 
+## Goals of the project
 
-This library is just being born, but goals are:
-
-A macro-based interface to R internal functions and language
-features.
-
-Example:
-
-```
-let v = c!(1, 2, 3);
-let l = list!(a=1, b=2);
-print!(paste0!("v=", v, " l=", l));
-```
-
-Provide a safe wrapper for r objects with error handlng
-and panic-free execution.
-
-Example:
-
-```
-let s = r!("hello");
-let i = r!(1);
-let r = r!(1.0);
-```
-
-Provide iterator support for creation and consumption of r vectors.
-
-Example:
-
-```
-let res = (1..=100).iter().collect::<RObj>();
-for x in res.as_i32_slice() {
-    println!("{}", x)?;
-}
-```
-
-Provide a procedural macro to adapt Rust functions to R
-
-Example:
+Instead of wrapping R objects, we convert to Rust native objects
+on entry to a function. This makes the wrapped code clean and dependency
+free. The ultimate goal is to allow the wrapping of existing 
+Rust libraries without markup, but in the meantime, the markup
+is as light as possible.
 
 ```
 #[extendr]
-fn fred(a: i32) -> i32 {
-    a + 1
+pub fn my_sum(v: &[f64]) -> f64 {
+    v.iter().sum()
 }
-
-struct X {}
-
-#[extendr]
-impl Jim {
-    fn new() -> Self {
-        Self {}
-    }
-}
-
-
 ```
 
-In R:
+You can interact in more detail with R objects using the RObj
+type which wraps the native R object type. This supports a large
+subset of the R internals functions, but wrapped to prevent
+accidental segfaults and failures.
 
 ```
-
-my_fred <- fred(1)
-my_jim <- Jim$new()
-
-```
-
 ## extendr roadmap
 
 ### Basic
 - [x] Be able to build simple rust extensions for R.
 - [x] Wrap the R SEXP object safely (Robj)
-- [ ] Iterator support for matrices and vectors.
-- [ ] Class support.
+- [x] Iterator support for matrices and vectors.
+- [x] Class support.
 
 ### Documentation
 - [x] Begin documentation.
