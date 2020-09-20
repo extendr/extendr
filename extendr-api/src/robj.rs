@@ -945,7 +945,8 @@ impl PartialEq<Robj> for Robj {
                     REALSXP => self.as_f64_slice() == rhs.as_f64_slice(),
                     CPLXSXP => false,
                     ANYSXP => false,
-                    VECSXP | EXPRSXP | STRSXP => self.list_iter().unwrap().eq(rhs.list_iter().unwrap()),
+                    VECSXP | EXPRSXP => self.list_iter().unwrap().eq(rhs.list_iter().unwrap()),
+                    STRSXP => self.str_iter().unwrap().eq(rhs.str_iter().unwrap()),
                     BCODESXP => false,
                     EXTPTRSXP => false,
                     WEAKREFSXP => false,
@@ -1250,6 +1251,30 @@ impl From<&[u8]> for Robj {
     }
 }
 
+/// Convert vectors of strings to an R object.
+impl<T: AsRef<str>> From<Vec<T>> for Robj {
+    fn from(vals: Vec<T>) -> Self {
+        unsafe {
+            // Create a vector an put it on the R_PreciousList
+            let sexp = Rf_allocVector(STRSXP, vals.len() as R_xlen_t);
+            R_PreserveObject(sexp);
+
+            // Get a mutable slice for the vector.
+            let ptr = STRING_PTR(sexp);
+            let slice = std::slice::from_raw_parts_mut(ptr, vals.len());
+
+            // populate the slice with character objects.
+            // note: a better way would be to steal the allocated buffer from the strings,
+            for (i, s) in vals.iter().enumerate() {
+                slice[i] = Rf_mkCharLen(s.as_ref().as_ptr() as *const raw::c_char, s.as_ref().len() as i32);
+            }
+
+            // The sexp is already protected but we need to unprotect it when it dies.
+            Robj::Owned(sexp)
+        }
+    }
+}
+
 // Iterator over the objects in a vector or string.
 #[derive(Clone)]
 pub struct VecIter {
@@ -1403,6 +1428,12 @@ mod tests {
         assert_eq!(Robj::from(1_i64), Robj::from(1));
         assert_eq!(Robj::from(1.0_f32), Robj::from(1.));
         assert_eq!(Robj::from(1.0_f64), Robj::from(1.));
+
+        let ab = Robj::from(vec!["a", "b"]);
+        let ab2 = Robj::from(vec!["a".to_string(), "b".to_string()]);
+        assert_eq!(ab, ab2);
+        assert_eq!(format!("{:?}", ab), "[\"a\", \"b\"]");
+        assert_eq!(format!("{:?}", ab2), "[\"a\", \"b\"]");
     }
 
     #[test]
