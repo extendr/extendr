@@ -1427,17 +1427,14 @@ impl<T: AsRef<str>> From<Vec<T>> for Robj {
             let sexp = Rf_allocVector(STRSXP, vals.len() as R_xlen_t);
             R_PreserveObject(sexp);
 
-            // Get a mutable slice for the vector.
-            let ptr = STRING_PTR(sexp);
-            let slice = std::slice::from_raw_parts_mut(ptr, vals.len());
-
             // populate the slice with character objects.
             // note: a better way would be to steal the allocated buffer from the strings,
             for (i, s) in vals.iter().enumerate() {
-                slice[i] = Rf_mkCharLen(
+                // note that SET_STRING_ELT is more than a store.
+                SET_STRING_ELT(sexp, i as R_xlen_t, Rf_mkCharLen(
                     s.as_ref().as_ptr() as *const raw::c_char,
                     s.as_ref().len() as i32,
-                );
+                ));
             }
 
             // The sexp is already protected but we need to unprotect it when it dies.
