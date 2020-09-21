@@ -7,6 +7,22 @@ Low-level R library bindings
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://docs.rs/mio/badge.svg)](https://docs.rs/extendr-api/latest/extendr_api/)
 
+## Installation - Rust
+
+Extendr is available on [crates.io](https://crates.io/crates/extendr_api).
+
+Simply add this line to the `[dependencies]` section of a rust crate.
+You will then be able to call R code from Rust.
+
+```toml
+[dependencies]
+extendr_api = "0.1.3"
+```
+## Installation - R
+
+For now, copy one of the examples in `examples/R`. An R package will
+be available shortly help to build R packages in Rust.
+
 ## Overview
 
 Extendr is a Rust extension mechanism for R
