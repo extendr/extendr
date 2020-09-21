@@ -1,0 +1,2 @@
+extendr.package.skeleton <-
+function() {}
