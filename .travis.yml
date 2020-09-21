@@ -1,5 +1,9 @@
 sudo: false
 
+arch: amd64
+os: linux
+dist: bionic # minimum version supported for now.
+
 language: rust
 
 rust:

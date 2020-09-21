@@ -5,7 +5,7 @@ use ndarray::prelude::*;
 /// Add two vectors using `ArrayView1` and `ArrayViewMut1`.
 /// The result is stored in an R vector, which is returned directly
 /// so that no copying occurs.
-#[export_function]
+#[extendr]
 fn add1(a: ArrayView1<f64>, b: ArrayView1<f64>) -> Robj {
     // determine the length of the smallest vector.
     let len = a.len().min(b.len());

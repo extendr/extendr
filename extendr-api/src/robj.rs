@@ -58,14 +58,10 @@ pub trait FromRobj<'a>: Sized {
     }
 }
 
-pub fn from_robj<'a, T: 'a + FromRobj<'a>>(robj: &'a Robj) -> Result<T, &'static str> {
-    T::from_robj(robj)
-}
-
 macro_rules! impl_prim_from_robj {
     ($t: ty) => {
         impl<'a> FromRobj<'a> for $t {
-            fn from_robj(robj: &Robj) -> Result<Self, &'static str> {
+            fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
                 if let Some(v) = robj.as_i32_slice() {
                     if v.len() == 0 {
                         Err("zero length vector")
@@ -242,7 +238,7 @@ impl Robj {
     /// Get an iterator over an unnamed list.
     pub fn list_iter(&self) -> Option<VecIter> {
         match self.sexptype() {
-            VECSXP => unsafe {
+            VECSXP | EXPRSXP | WEAKREFSXP => unsafe {
                 Some(VecIter {
                     vector: self.get(),
                     i: 0,
@@ -285,7 +281,7 @@ impl Robj {
         }
     }
 
-    // Evaluate the expression and return an error or an R object.
+    /// Evaluate the expression and return an error or an R object.
     pub fn eval(&self) -> Result<Robj, AnyError> {
         unsafe {
             let mut error: raw::c_int = 0;
@@ -298,7 +294,7 @@ impl Robj {
         }
     }
 
-    // Evaluate the expression and return NULL or an R object.
+    /// Evaluate the expression and return NULL or an R object.
     pub fn eval_blind(&self) -> Robj {
         unsafe {
             let mut error: raw::c_int = 0;
@@ -311,8 +307,35 @@ impl Robj {
         }
     }
 
-    // Unprotect an object - assumes a transfer of ownership.
-    // This is unsafe because the object pointer may be left dangling.
+    /// Parse a string into an R executable object
+    pub fn parse(code: &str) -> Result<Robj, AnyError> {
+        unsafe {
+            use libR_sys::*;
+            let mut status = 0_u32;
+            let status_ptr = &mut status as *mut u32;
+            let code: Robj = code.into();
+            let parsed = Robj::from(R_ParseVector(code.get(), -1, status_ptr, R_NilValue));
+            match status {
+                1 => Ok(parsed),
+                _ => Err(AnyError::from("parse_error")),
+            }
+        }
+    }
+
+    /// Parse a string into an R executable object and run it.
+    pub fn eval_string(code: &str) -> Result<Robj, AnyError> {
+        let expr = Robj::parse(code)?;
+        let mut res = Robj::from(());
+        if let Some(iter) = expr.list_iter() {
+            for lang in iter {
+                res = lang.eval()?;
+            }
+        }
+        Ok(res)
+    }
+
+    /// Unprotect an object - assumes a transfer of ownership.
+    /// This is unsafe because the object pointer may be left dangling.
     pub unsafe fn unprotected(self) -> Robj {
         match self {
             Robj::Owned(sexp) => {
@@ -323,8 +346,8 @@ impl Robj {
         }
     }
 
-    // Return true if the object is owned by this wrapper.
-    // If so, it will be released when the wrapper drops.
+    /// Return true if the object is owned by this wrapper.
+    /// If so, it will be released when the wrapper drops.
     pub fn is_owned(&self) -> bool {
         match self {
             Robj::Owned(_) => true,
@@ -769,10 +792,12 @@ impl Robj {
     Rboolean Rf_NonNullStringMatch(SEXP, SEXP);
     */
 
+    /// Number of columns of a matrix
     pub fn ncols(&self) -> usize {
         unsafe { Rf_ncols(self.get()) as usize }
     }
 
+    /// Number of rows of a matrix
     pub fn nrows(&self) -> usize {
         unsafe { Rf_nrows(self.get()) as usize }
     }
@@ -780,7 +805,6 @@ impl Robj {
     /*SEXP Rf_nthcdr(SEXP, int);
     Rboolean Rf_pmatch(SEXP, SEXP, Rboolean);
     Rboolean Rf_psmatch(const char *, const char *, Rboolean);
-    SEXP R_ParseEvalString(const char *, SEXP);
     void Rf_PrintValue(SEXP);
     void Rf_printwhere(void);
     void Rf_readS3VarsFromFrame(SEXP, SEXP*, SEXP*, SEXP*, SEXP*, SEXP*, SEXP*);
@@ -809,14 +833,44 @@ impl Robj {
     SEXP Rf_mkCharCE(const char *, cetype_t);
     SEXP Rf_mkCharLenCE(const char *, int, cetype_t);
     SEXP R_forceAndCall(SEXP e, int n, SEXP rho);
-    SEXP R_MakeExternalPtr(void *p, SEXP tag, SEXP prot);
-    void *R_ExternalPtrAddr(SEXP s);
-    SEXP R_ExternalPtrTag(SEXP s);
-    SEXP R_ExternalPtrProtected(SEXP s);
-    void R_ClearExternalPtr(SEXP s);
-    void R_SetExternalPtrAddr(SEXP s, void *p);
-    void R_SetExternalPtrTag(SEXP s, SEXP tag);
-    void R_SetExternalPtrProtected(SEXP s, SEXP p);
+    */
+
+    /// Internal function used to implement #[extendr] impl
+    pub unsafe fn makeExternalPtr<T>(p: *mut T, tag: Robj, prot: Robj) -> Self {
+        new_owned(R_MakeExternalPtr(
+            p as *mut ::std::os::raw::c_void,
+            tag.get(),
+            prot.get(),
+        ))
+    }
+
+    /// Internal function used to implement #[extendr] impl
+    pub unsafe fn externalPtrAddr<T>(&self) -> *mut T {
+        R_ExternalPtrAddr(self.get()) as *mut T
+    }
+
+    /// Internal function used to implement #[extendr] impl
+    pub unsafe fn externalPtrTag(&self) -> Self {
+        new_borrowed(R_ExternalPtrTag(self.get()))
+    }
+
+    /// Internal function used to implement #[extendr] impl
+    pub unsafe fn externalPtrProtected(&self) -> Self {
+        new_borrowed(R_ExternalPtrProtected(self.get()))
+    }
+
+    pub unsafe fn registerCFinalizer(&self, func: R_CFinalizer_t) {
+        R_RegisterCFinalizer(self.get(), func);
+    }
+
+    // SEXP R_ExternalPtrTag(SEXP s);
+    // SEXP R_ExternalPtrProtected(SEXP s);
+    // void R_ClearExternalPtr(SEXP s);
+    // void R_SetExternalPtrAddr(SEXP s, void *p);
+    // void R_SetExternalPtrTag(SEXP s, SEXP tag);
+    // void R_SetExternalPtrProtected(SEXP s, SEXP p);
+
+    /*
     SEXP R_MakeWeakRef(SEXP key, SEXP val, SEXP fin, Rboolean onexit);
     SEXP R_MakeWeakRefC(SEXP key, SEXP val, R_CFinalizer_t fin, Rboolean onexit);
     SEXP R_WeakRefKey(SEXP w);
@@ -985,6 +1039,18 @@ impl Robj {
     pub fn isVectorizable(&self) -> bool {
         unsafe { Rf_isVectorizable(self.get()) != 0 }
     }
+
+    /// Check an external pointer tag
+    /// This may work better by using a symbol cached in a static variable.
+    pub fn check_external_ptr(&self, expected_tag: &str) -> bool {
+        if self.sexptype() == libR_sys::EXTPTRSXP {
+            let tag = unsafe { self.externalPtrTag() };
+            if tag.as_str() == Some(expected_tag) {
+                return true;
+            }
+        }
+        false
+    }
 }
 
 pub unsafe fn new_owned(sexp: SEXP) -> Robj {
@@ -1046,9 +1112,8 @@ impl PartialEq<Robj> for Robj {
                     REALSXP => self.as_f64_slice() == rhs.as_f64_slice(),
                     CPLXSXP => false,
                     ANYSXP => false,
-                    VECSXP | EXPRSXP | STRSXP => {
-                        self.list_iter().unwrap().eq(rhs.list_iter().unwrap())
-                    }
+                    VECSXP | EXPRSXP => self.list_iter().unwrap().eq(rhs.list_iter().unwrap()),
+                    STRSXP => self.str_iter().unwrap().eq(rhs.str_iter().unwrap()),
                     BCODESXP => false,
                     EXTPTRSXP => false,
                     WEAKREFSXP => false,
@@ -1107,16 +1172,18 @@ impl std::fmt::Debug for Robj {
                     write!(f, "{:?}", slice)
                 }
             }
+            VECSXP => write!(f, "{:?}", self.list_iter().unwrap().collect::<Vec<_>>()),
+            EXPRSXP => write!(
+                f,
+                "Expr({:?})",
+                self.list_iter().unwrap().collect::<Vec<_>>()
+            ),
+            WEAKREFSXP => write!(
+                f,
+                "Weakref({:?})",
+                self.list_iter().unwrap().collect::<Vec<_>>()
+            ),
             // CPLXSXP => false,
-            VECSXP | EXPRSXP | WEAKREFSXP => {
-                write!(f, "[")?;
-                let mut sep = "";
-                for obj in self.list_iter().unwrap() {
-                    write!(f, "{}{:?}", sep, obj)?;
-                    sep = ", ";
-                }
-                write!(f, "]")
-            }
             STRSXP => {
                 write!(f, "[")?;
                 let mut sep = "";
@@ -1370,6 +1437,30 @@ impl From<&[u8]> for Robj {
     }
 }
 
+/// Convert vectors of strings to an R object.
+impl<T: AsRef<str>> From<Vec<T>> for Robj {
+    fn from(vals: Vec<T>) -> Self {
+        unsafe {
+            // Create a vector an put it on the R_PreciousList
+            let sexp = Rf_allocVector(STRSXP, vals.len() as R_xlen_t);
+            R_PreserveObject(sexp);
+
+            // populate the slice with character objects.
+            // note: a better way would be to steal the allocated buffer from the strings,
+            for (i, s) in vals.iter().enumerate() {
+                // note that SET_STRING_ELT is more than a store.
+                SET_STRING_ELT(sexp, i as R_xlen_t, Rf_mkCharLen(
+                    s.as_ref().as_ptr() as *const raw::c_char,
+                    s.as_ref().len() as i32,
+                ));
+            }
+
+            // The sexp is already protected but we need to unprotect it when it dies.
+            Robj::Owned(sexp)
+        }
+    }
+}
+
 // Iterator over the objects in a vector or string.
 #[derive(Clone)]
 pub struct VecIter {
@@ -1461,6 +1552,7 @@ impl Iterator for StrIter {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::engine::*;
 
     #[test]
     fn test_debug() {
@@ -1505,33 +1597,33 @@ mod tests {
 
     #[test]
     fn test_from_robj() {
-        assert_eq!(from_robj::<u8>(&Robj::from(1)), Ok(1));
-        assert_eq!(from_robj::<u16>(&Robj::from(1)), Ok(1));
-        assert_eq!(from_robj::<u32>(&Robj::from(1)), Ok(1));
-        assert_eq!(from_robj::<u64>(&Robj::from(1)), Ok(1));
-        assert_eq!(from_robj::<i8>(&Robj::from(1)), Ok(1));
-        assert_eq!(from_robj::<i16>(&Robj::from(1)), Ok(1));
-        assert_eq!(from_robj::<i32>(&Robj::from(1)), Ok(1));
-        assert_eq!(from_robj::<i64>(&Robj::from(1)), Ok(1));
-        assert_eq!(from_robj::<f32>(&Robj::from(1)), Ok(1.));
-        assert_eq!(from_robj::<f64>(&Robj::from(1)), Ok(1.));
-        assert_eq!(from_robj::<Vec::<i32>>(&Robj::from(1)), Ok(vec![1]));
-        assert_eq!(from_robj::<Vec::<f64>>(&Robj::from(1.)), Ok(vec![1.]));
+        assert_eq!(<u8>::from_robj(&Robj::from(1)), Ok(1));
+        assert_eq!(<u16>::from_robj(&Robj::from(1)), Ok(1));
+        assert_eq!(<u32>::from_robj(&Robj::from(1)), Ok(1));
+        assert_eq!(<u64>::from_robj(&Robj::from(1)), Ok(1));
+        assert_eq!(<i8>::from_robj(&Robj::from(1)), Ok(1));
+        assert_eq!(<i16>::from_robj(&Robj::from(1)), Ok(1));
+        assert_eq!(<i32>::from_robj(&Robj::from(1)), Ok(1));
+        assert_eq!(<i64>::from_robj(&Robj::from(1)), Ok(1));
+        assert_eq!(<f32>::from_robj(&Robj::from(1)), Ok(1.));
+        assert_eq!(<f64>::from_robj(&Robj::from(1)), Ok(1.));
+        assert_eq!(<Vec::<i32>>::from_robj(&Robj::from(1)), Ok(vec![1]));
+        assert_eq!(<Vec::<f64>>::from_robj(&Robj::from(1.)), Ok(vec![1.]));
         assert_eq!(
-            from_robj::<ArrayView1<f64>>(&Robj::from(1.)),
+            <ArrayView1<f64>>::from_robj(&Robj::from(1.)),
             Ok(ArrayView1::<f64>::from(&[1.][..]))
         );
         assert_eq!(
-            from_robj::<ArrayView1<i32>>(&Robj::from(1)),
+            <ArrayView1<i32>>::from_robj(&Robj::from(1)),
             Ok(ArrayView1::<i32>::from(&[1][..]))
         );
         assert_eq!(
-            from_robj::<ArrayView1<Bool>>(&Robj::from(true)),
+            <ArrayView1<Bool>>::from_robj(&Robj::from(true)),
             Ok(ArrayView1::<Bool>::from(&[Bool(1)][..]))
         );
 
         let hello = Robj::from("hello");
-        assert_eq!(from_robj::<&str>(&hello), Ok("hello"));
+        assert_eq!(<&str>::from_robj(&hello), Ok("hello"));
     }
     #[test]
     fn test_to_robj() {
@@ -1545,5 +1637,25 @@ mod tests {
         assert_eq!(Robj::from(1_i64), Robj::from(1));
         assert_eq!(Robj::from(1.0_f32), Robj::from(1.));
         assert_eq!(Robj::from(1.0_f64), Robj::from(1.));
+
+        let ab = Robj::from(vec!["a", "b"]);
+        let ab2 = Robj::from(vec!["a".to_string(), "b".to_string()]);
+        assert_eq!(ab, ab2);
+        assert_eq!(format!("{:?}", ab), "[\"a\", \"b\"]");
+        assert_eq!(format!("{:?}", ab2), "[\"a\", \"b\"]");
+    }
+
+    #[test]
+    fn parse_test() -> Result<(), AnyError> {
+        start_r();
+        let p = Robj::parse("print(1L);print(1L);")?;
+        assert_eq!(
+            format!("{:?}", p),
+            "Expr([Lang([Symbol(\"print\"), 1]), Lang([Symbol(\"print\"), 1])])"
+        );
+
+        let p = Robj::eval_string("1L + 1L")?;
+        assert_eq!(p, Robj::from(2));
+        Ok(())
     }
 }

@@ -1,0 +1,3 @@
+
+useDynLib(libclasses, .registration = TRUE)
+export(aux_func)

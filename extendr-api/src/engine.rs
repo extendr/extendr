@@ -1,11 +1,10 @@
 //! A sigleton instance of the R interpreter.
-//! 
+//!
 //! Only call this from main() if you want to run stand-alone.
-//! 
-//! Its principal use is for testing. 
-//! 
+//!
+//! Its principal use is for testing.
+//!
 //! See https://github.com/wch/r-source/blob/trunk/src/unix/Rembedded.c
-
 
 use libR_sys::*;
 use std::os::raw;
@@ -33,7 +32,7 @@ pub fn unwrap_or_throw<T>(r: Result<T, &'static str>) -> T {
                 Rf_error(R_ERROR_BUF.as_slice().as_ptr() as *mut raw::c_char);
                 unreachable!("");
             }
-            Ok(v) => v
+            Ok(v) => v,
         }
     }
 }
@@ -50,26 +49,24 @@ pub fn start_r() {
                     std::env::set_var("R_HOME", env!("R_HOME"));
                 }
             }
-    
+
             // Due to Rf_initEmbeddedR using __libc_stack_end
             // We can't call Rf_initEmbeddedR.
             // Instead we must follow rustr's example and call the parts.
-    
+
             //let res = unsafe { Rf_initEmbeddedR(1, args.as_mut_ptr()) };
             // NOTE: R will crash if this is called twice in the same process.
-            Rf_initialize_R(3,
-                [
-                    cstr_mut!("R"),
-                    cstr_mut!("--slave"),
-                    cstr_mut!("--no-save"),
-                ].as_mut_ptr());
-    
+            Rf_initialize_R(
+                3,
+                [cstr_mut!("R"), cstr_mut!("--slave"), cstr_mut!("--no-save")].as_mut_ptr(),
+            );
+
             // In case you are curious.
             // Maybe 8MB is a bit small.
             // eprintln!("R_CStackLimit={:016x}", R_CStackLimit);
-    
+
             R_CStackLimit = usize::max_value();
-    
+
             setup_Rmainloop();
         }
     });
