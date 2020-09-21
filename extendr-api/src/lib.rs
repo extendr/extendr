@@ -5,10 +5,10 @@
 //! first-time users of Rust or indeed any compiled language.
 //!
 //! Anyone who knows the R library should be able to write R extensions.
-//!
-//! See the [Robj](../robj/struct.Robj.html) struct for much of the content of this crate.
-//! [Robj](../robj/struct.Robj.html) provides a safe wrapper for the R object type.
-//!
+//! 
+//! See the [Robj](../robj/enum.Robj.html) struct for much of the content of this crate.
+//! [Robj](../robj/enum.Robj.html) provides a safe wrapper for the R object type.
+//! 
 //! This library is just being born, but goals are:
 //!
 //! Implement common R functions such as c() and print()

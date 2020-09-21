@@ -450,7 +450,7 @@ impl Robj {
     /// character"
     pub fn asCharacterSymbol() -> Robj { unsafe { new_sys(R_AsCharacterSymbol) }}
     */
-    
+
     /// "base"
     pub fn baseSymbol() -> Robj {
         unsafe { new_sys(R_BaseSymbol) }
@@ -1346,6 +1346,24 @@ impl<'a> From<&'a str> for Robj {
             let ptr = STRING_PTR(sexp);
             let slice = std::slice::from_raw_parts_mut(ptr, 1);
             slice[0] = ssexp;
+            Robj::Owned(sexp)
+        }
+    }
+}
+
+impl<'a> From<&'a [&str]> for Robj {
+    fn from(vals: &'a [&str]) -> Self {
+        unsafe {
+            let len = vals.len();
+            let sexp = Rf_allocVector(STRSXP, len as R_xlen_t);
+            R_PreserveObject(sexp);
+            for (idx, &v) in vals.iter().enumerate() {
+                SET_STRING_ELT(
+                    sexp,
+                    idx as isize,
+                    Rf_mkCharLen(v.as_ptr() as *const raw::c_char, v.len() as i32),
+                );
+            }
             Robj::Owned(sexp)
         }
     }
