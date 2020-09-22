@@ -7,6 +7,8 @@ Low-level R library bindings
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://docs.rs/mio/badge.svg)](https://docs.rs/extendr-api/latest/extendr_api/)
 
+[![Logo](https://github.com/extendr/extendr/raw/master/extendr-logo-256.png)](https://github.com/extendr/extendr/raw/master/extendr-logo-256.png)
+
 ## Installation - Rust
 
 Extendr is available on [crates.io](https://crates.io/crates/extendr_api).
