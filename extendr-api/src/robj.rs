@@ -1369,6 +1369,19 @@ impl<'a> From<&'a [&str]> for Robj {
     }
 }
 
+/// Convert a string to an Robj string array object.
+impl From<String> for Robj {
+    fn from(val: String) -> Self {
+        Robj::from(&val as &str)
+    }
+}
+
+impl<'a> From<&'a [String]> for Robj {
+    fn from(vals: &'a [String]) -> Self {
+        Robj::from(vals.into_iter().map(|s| s as &str).collect::<Vec<&str>>())
+    }
+}
+
 /// Convert an integer slice to an integer object.
 impl<'a> From<&'a [i32]> for Robj {
     fn from(vals: &[i32]) -> Self {
@@ -1565,6 +1578,7 @@ mod tests {
         assert_eq!(format!("{:?}", Robj::from(1)), "1");
         assert_eq!(format!("{:?}", Robj::from(1.)), "1.0");
         assert_eq!(format!("{:?}", Robj::from("hello")), "[\"hello\"]");
+        assert_eq!(format!("{:?}", Robj::from("hello".to_owned())), "[\"hello\"]");
 
         // Vectors
         assert_eq!(format!("{:?}", Robj::from(&[1, 2, 3][..])), "[1, 2, 3]");
