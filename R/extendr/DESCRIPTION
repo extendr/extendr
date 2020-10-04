@@ -1,9 +1,11 @@
 Package: extendr
 Type: Package
-Title: What the package does (short line)
+Title: Easy R extensions using Rust.
 Version: 1.0
 Date: 2020-09-21
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Author: Andy Thomason
+Maintainer: Andy Thomason <andy@andythomason.com>
+Description: Extendr allows R users to write simple and
+  concise extensions to the R programming language that can take advantage of the
+  parallel features of rust to compute results faster.
+License: MIT

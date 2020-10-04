@@ -2,7 +2,7 @@
 \alias{Module}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+    Module gets rust functions an impls into an environment.
 }
 \description{
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~

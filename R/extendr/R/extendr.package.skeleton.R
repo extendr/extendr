@@ -1,2 +1,4 @@
-extendr.package.skeleton <-
-function() {}
+
+extendr.package.skeleton <-function() {
+
+}
