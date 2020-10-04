@@ -1,17 +1,16 @@
 
-# getNativeSymbolInfo
-
 # example:
-# mod <- Module("mod_formals", getDynLib(fx))
-# norm <- mod$norm
-# norm()
-# norm(x = 2, y = 3)
-
+#   mod <- Module("fred")
+#   mod$
 Module <- function(
-    module_name,
+    module,
     PACKAGE = methods::getPackageName(where),
     where = topenv(parent.frame()),
     mustStart = FALSE
 ) {
-    
+    if(!is.character(module)) {
+        stop("Argument \"module\" should be the name of a module.")
+    }
+
+
 }
