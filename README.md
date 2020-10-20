@@ -11,14 +11,14 @@ Low-level R library bindings
 
 ## Installation - Rust
 
-Extendr is available on [crates.io](https://crates.io/crates/extendr_api).
+Extendr is available on [crates.io](https://crates.io/crates/extendr-api).
 
 Simply add this line to the `[dependencies]` section of a rust crate.
 You will then be able to call R code from Rust.
 
 ```toml
 [dependencies]
-extendr_api = "0.1.3"
+extendr-api = "0.1.3"
 ```
 ## Installation - R
 
