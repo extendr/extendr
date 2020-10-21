@@ -6,7 +6,7 @@ Build in this directory with:
 
 Then in R:
 
-    > library(vector)
+    > library(vectors)
     > add(1, 2)
     3
     > 
