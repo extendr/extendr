@@ -16,7 +16,7 @@ extendr.package.skeleton <-function(
     email = "maintainer.name@maintainer.org",
     license = "MIT"
 ) {
-    if (!is(name, "character") || len(name) != 1) {
+    if (!is(name, "character") || length(name) != 1) {
         stop("Expects a single string for package.name")
     }
 
