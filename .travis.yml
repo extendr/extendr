@@ -13,7 +13,7 @@ rust:
 
 addons:
   apt:
-    packages: # recommanded versions for rust-bindgen
+    packages: # recommended versions for rust-bindgen
       - r-base-dev
       - llvm-3.9-dev
       - libclang-3.9-dev
