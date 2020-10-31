@@ -14,7 +14,7 @@ extendr.package.skeleton <-function(
     author = "Your name here",
     mainainer = "maintainer name here",
     email = "maintainer.name@maintainer.org",
-    license = "MIT",
+    license = "MIT"
 ) {
     if (!is(name, "character") || len(name) != 1) {
         stop("Expects a single string for package.name")
@@ -58,11 +58,11 @@ extendr.package.skeleton <-function(
 
         if (!grepl("useDynLib", ns.lines)) {
             # useDynLib is missing - write one
-            ns.lines = c(sprintf("useDynLib(%s)", name), ns.lines), ns.lines)
+            ns.lines = c(sprintf("useDynLib(%s)", name), ns.lines)
         }
         if (!grepl("exportPattern", ns.lines)) {
             # exportPattern is missing - write one
-            ns.lines = c("exportPattern(\"^[[:alpha:]]+\")", name), ns.lines), ns.lines)
+            ns.lines = c("exportPattern(\"^[[:alpha:]]+\")", ns.lines)
         }
 
         writeLines(lines, ns.path)
