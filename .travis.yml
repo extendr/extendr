@@ -1,15 +1,15 @@
 sudo: false
 
 arch: amd64
-os: linux
+os:
+  - linux
+  - osx
 dist: bionic # minimum version supported for now.
 
 language: rust
 
 rust:
   - stable
-  - beta
-  - nightly
 
 addons:
   apt:
