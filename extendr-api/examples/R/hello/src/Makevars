@@ -1,0 +1,16 @@
+
+LIBDIR = ../target/release
+STATLIB = $(LIBDIR)/libhello.a
+PKG_LIBS = -L$(LIBDIR) -lhello
+
+all: clean
+
+$(SHLIB): $(STATLIB)
+	echo BUILDING SHLIB
+
+$(STATLIB):
+	echo BUILDING STATLIB
+	cargo build --release --manifest-path=../Cargo.toml
+
+clean:
+	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) ../target
