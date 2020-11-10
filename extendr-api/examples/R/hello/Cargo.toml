@@ -5,7 +5,7 @@ authors = ["andy-thomason <andy@andythomason.com>"]
 edition = "2018"
 
 [lib]
-crate-type = ["dylib"]
+crate-type = ["staticlib"]
 
 [dependencies]
 extendr-api = {path = "../../../../extendr-api"}
