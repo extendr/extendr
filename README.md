@@ -3,9 +3,9 @@
 Low-level R library bindings
 
 [![Travis Build Status](https://api.travis-ci.org/extendr/extendr.svg?branch=master)](https://travis-ci.org/extendr/extendr)
-[![Crates.io](http://meritbadge.herokuapp.com/extendr-api)](https://crates.io/crates/extendr)
+[![Crates.io](http://meritbadge.herokuapp.com/extendr-api)](https://crates.io/crates/extendr-api)
+[![Documentation](https://docs.rs/mio/badge.svg)](https://docs.rs/extendr-api)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Documentation](https://docs.rs/mio/badge.svg)](https://docs.rs/extendr-api/latest/extendr_api/)
 
 [![Logo](https://github.com/extendr/extendr/raw/master/extendr-logo-256.png)](https://github.com/extendr/extendr/raw/master/extendr-logo-256.png)
 
@@ -18,7 +18,7 @@ You will then be able to call R code from Rust.
 
 ```toml
 [dependencies]
-extendr-api = "0.1.3"
+extendr-api = "0.1.4"
 ```
 ## Installation - R
 
