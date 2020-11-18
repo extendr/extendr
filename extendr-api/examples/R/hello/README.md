@@ -11,5 +11,3 @@ Then in R:
     hello
     NULL
     > 
-
-

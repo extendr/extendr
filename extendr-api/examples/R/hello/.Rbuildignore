@@ -2,3 +2,5 @@
 ^.*\.tar\.gz$
 ^target/
 ^.*\.so$
+^.*\.Rproj$
+^\.Rproj\.user$
