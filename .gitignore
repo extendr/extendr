@@ -16,3 +16,4 @@
 # R CMD INSTALL produces these files.
 **/*.o
 **/*.so
+.Rproj.user
