@@ -4,7 +4,8 @@
 // the linker removing the static library.
 //
 // This will be removed in future versions with the module macro.
-void wrap__hello();
+void R_init_libhello();
 
-void *x = (void*)&wrap__hello;
+void *__dummy = (void*)&R_init_libhello;
+
 

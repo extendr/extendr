@@ -7,5 +7,6 @@ fn hello() -> &'static str {
 
 // Macro to generate exports
 extendr_module! {
+    mod hello;
     fn hello;
 }
