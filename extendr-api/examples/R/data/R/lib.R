@@ -1,6 +1,6 @@
 
-data <- function() {
-  .Call("wrap__data")
+data <- function(...) {
+  .Call("wrap__data", ...)
 }
 
 
