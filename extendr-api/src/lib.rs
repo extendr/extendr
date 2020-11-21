@@ -311,4 +311,16 @@ mod tests {
             assert_eq!(new_borrowed(wrap__return_f64()), Robj::from(123.));
         }
     }
+
+    #[test]
+    fn r_output_test() {
+        let fifo = lang!("fifo", Robj::from("")).eval().unwrap();
+        let fifo = unsafe { fifo.get() };
+        println!("{:?}", fifo);
+        lang!("sink", fifo).eval_blind();
+        rprintln!("Hello world");
+        lang!("sink").eval_blind();
+        let result : Robj = lang!("readLines", fifo).eval_blind();
+        assert_eq!(result, Robj::from("Hello world"));
+    }
 }
