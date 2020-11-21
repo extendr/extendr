@@ -1,7 +1,7 @@
 TARGET = $(subst 64,x86_64,$(subst 32,i686,$(WIN)))-pc-windows-gnu
 LIBDIR = ../target/$(TARGET)/release
-STATLIB = $(LIBDIR)/hello.lib
-PKG_LIBS = -L$(LIBDIR) -lhello -lws2_32 -ladvapi32 -luserenv
+STATLIB = $(LIBDIR)/data.lib
+PKG_LIBS = -L$(LIBDIR) -ldata -lws2_32 -ladvapi32 -luserenv
 
 all: clean
 

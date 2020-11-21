@@ -1,0 +1,4 @@
+
+library(data)
+
+stopifnot(data())

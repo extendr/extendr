@@ -1,10 +1,10 @@
-Package: hello
+Package: data
 Type: Package
 Title: Minimal Example of Calling Rust from R using Cargo
 Version: 0.1.0
 Author: Andy Thomason
 Maintainer: Andy Thomason <andy@andythomason.com>
-Description: Say hello from R using Rust.
+Description: Show multiple methods to access data.
 License: MIT
 Encoding: UTF-8
 LazyData: true
