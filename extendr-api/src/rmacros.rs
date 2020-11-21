@@ -107,3 +107,53 @@ macro_rules! data_frame {
         lang!("data.frame", $($rest)*).eval_blind()
     };
 }
+
+/// Print via the R output stream.
+///
+/// Works like print! but integrates with R and respects
+/// redirection with functions like sink and capture.output
+#[macro_export]
+macro_rules! rprint {
+    () => {
+    };
+    ($($rest: tt)*) => {
+        print_r_output(format!($($rest)*));
+    };
+}
+
+/// Print with a newline via the R output stream.
+///
+/// Works like println! but integrates with R and respects
+/// redirection with functions like sink and capture.output
+#[macro_export]
+macro_rules! rprintln {
+    () => {
+        print_r_output("\n");
+    };
+    ($($rest: tt)*) => {
+        print_r_output(format!($($rest)*));
+        print_r_output("\n");
+    };
+}
+
+/// Print via the R error stream.
+#[macro_export]
+macro_rules! reprint {
+    () => {
+    };
+    ($($rest: tt)*) => {
+        print_r_error(format!($($rest)*));
+    };
+}
+
+/// Print with a newline via the R output stream.
+#[macro_export]
+macro_rules! reprintln {
+    () => {
+        print_r_error("\n");
+    };
+    ($($rest: tt)*) => {
+        print_r_error(format!($($rest)*));
+        print_r_error("\n");
+    };
+}
