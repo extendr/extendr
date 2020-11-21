@@ -1,0 +1,14 @@
+TARGET = $(subst 64,x86_64,$(subst 32,i686,$(WIN)))-pc-windows-gnu
+LIBDIR = ../target/$(TARGET)/release
+STATLIB = $(LIBDIR)/hello.lib
+PKG_LIBS = -L$(LIBDIR) -lhello -lws2_32 -ladvapi32 -luserenv
+
+all: clean
+
+$(SHLIB): $(STATLIB)
+
+$(STATLIB):
+	cargo build --target=$(TARGET) --release --manifest-path=../Cargo.toml
+
+clean:
+	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) ../target
