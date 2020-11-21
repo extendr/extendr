@@ -761,7 +761,7 @@ impl Robj {
     */
 
     /// Compatible way to duplicate an object. Use obj.clone() instead
-    /// for Rust compaitibility.
+    /// for Rust compatibility.
     pub fn duplicate(&self) -> Self {
         unsafe { new_owned(Rf_duplicate(self.get())) }
     }
@@ -781,7 +781,19 @@ impl Robj {
     SEXP Rf_findVar(SEXP, SEXP);
     SEXP Rf_findVarInFrame(SEXP, SEXP);
     SEXP Rf_findVarInFrame3(SEXP, SEXP, Rboolean);
-    SEXP Rf_getAttrib(SEXP, SEXP);
+    */
+
+    /// Get a specific attribute as a borrowed robj.
+    pub fn getAttrib(&self, name: &Robj) -> Robj {
+        unsafe { new_borrowed(Rf_getAttrib(self.get(), name.get())) }
+    }
+
+    /// Get the names attribute as a string iterator if one exists.
+    pub fn names(&self) -> Option<StrIter> {
+        self.getAttrib(&Robj::namesSymbol()).str_iter()
+    }
+
+    /*
     SEXP Rf_GetArrayDimnames(SEXP);
     SEXP Rf_GetColNames(SEXP);
     void Rf_GetMatrixDimnames(SEXP, SEXP*, SEXP*, const char**, const char**);
