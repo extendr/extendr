@@ -316,7 +316,6 @@ mod tests {
     fn r_output_test() {
         let fifo = lang!("fifo", Robj::from("")).eval().unwrap();
         let fifo = unsafe { fifo.get() };
-        println!("{:?}", fifo);
         lang!("sink", fifo).eval_blind();
         rprintln!("Hello world");
         lang!("sink").eval_blind();

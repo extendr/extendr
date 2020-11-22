@@ -110,8 +110,8 @@ macro_rules! data_frame {
 
 /// Print via the R output stream.
 ///
-/// Works like print! but integrates with R and respects
-/// redirection with functions like sink and capture.output
+/// Works like [`print!`] but integrates with R and respects
+/// redirection with functions like `sink()` and `capture.output()`
 #[macro_export]
 macro_rules! rprint {
     () => {
@@ -123,8 +123,8 @@ macro_rules! rprint {
 
 /// Print with a newline via the R output stream.
 ///
-/// Works like println! but integrates with R and respects
-/// redirection with functions like sink and capture.output
+/// Works like [`println!`] but integrates with R and respects
+/// redirection with functions like `sink()` and `capture.output()`
 #[macro_export]
 macro_rules! rprintln {
     () => {
