@@ -168,7 +168,11 @@ fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix:
 
     let num_args = inputs.len() as i32;
 
-    output_info::output_wrapper_info(&raw_wrap_name, sig.inputs.clone().into_iter().collect());
+    output_info::output_wrapper_info(
+        &raw_wrap_name,
+        sig.inputs.clone().into_iter().collect(),
+        &sig.output,
+    );
     wrappers.push(parse_quote!(
         #[no_mangle]
         #[allow(non_snake_case)]

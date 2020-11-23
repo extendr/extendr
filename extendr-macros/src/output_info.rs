@@ -6,7 +6,7 @@ use std::fs::File;
 use std::io::{BufWriter, Write};
 use std::path::PathBuf;
 use std::sync::Mutex;
-use syn::FnArg;
+use syn::{FnArg, Pat, ReturnType};
 
 lazy_static! {
     static ref WRAPPER_FNS: Mutex<Vec<WrapperFn>> = Mutex::new(Vec::new());
@@ -39,8 +39,11 @@ struct WrapperFnArg {
 }
 
 /// Extract info about wrapper function and write it to target directory.
-pub fn output_wrapper_info(wrapper_fn_name: &str, args: Vec<FnArg>) {
-    let is_void = false; // TODO
+pub fn output_wrapper_info(wrapper_fn_name: &str, args: Vec<FnArg>, return_type: &ReturnType) {
+    let is_void = match return_type {
+        ReturnType::Default => true,
+        _ => false,
+    };
     let mut func = WrapperFn {
         name: wrapper_fn_name.to_owned(),
         is_void,
@@ -49,7 +52,7 @@ pub fn output_wrapper_info(wrapper_fn_name: &str, args: Vec<FnArg>) {
 
     for arg in args {
         if let FnArg::Typed(pat_type) = arg {
-            if let syn::Pat::Ident(pat_ident) = *pat_type.pat {
+            if let Pat::Ident(pat_ident) = *pat_type.pat {
                 func.arguments.push(WrapperFnArg {
                     name: pat_ident.ident.to_string(),
                 })
