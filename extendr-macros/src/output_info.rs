@@ -1,10 +1,16 @@
+use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use std::env;
 use std::error::Error;
 use std::fs::File;
-use std::io::{BufReader, BufWriter, Write};
+use std::io::{BufWriter, Write};
 use std::path::PathBuf;
+use std::sync::Mutex;
 use syn::FnArg;
+
+lazy_static! {
+    static ref WRAPPER_FNS: Mutex<Vec<WrapperFn>> = Mutex::new(Vec::new());
+}
 
 const OUTPUT_FILE_NAME: &str = "extendr_wrappers.json";
 
@@ -57,21 +63,15 @@ pub fn output_wrapper_info(wrapper_fn_name: &str, args: Vec<FnArg>) {
 fn write_wrapper_info(wrapper_fn: WrapperFn) -> Result<(), Box<dyn Error>> {
     let output_file_path = find_output_file().unwrap();
 
-    // Read previously emitted wrapper functions from file
-    let mut wrapper_fns: Vec<WrapperFn> = match output_file_path.exists() {
-        true => {
-            let file = File::open(&output_file_path)?;
-            let reader = BufReader::new(file);
-            serde_json::from_reader(reader)?
-        }
-        false => Vec::new(),
-    };
-
-    wrapper_fns.push(wrapper_fn);
+    // Write fn to singleton to keep track of all functions across macro invocations
+    WRAPPER_FNS
+        .lock()
+        .expect("Could not aquire lock to WRAPPER_FNS singleton")
+        .push(wrapper_fn);
 
     let file = File::create(&output_file_path)?;
     let mut writer = BufWriter::new(file);
-    serde_json::to_writer_pretty(&mut writer, &wrapper_fns)?;
+    serde_json::to_writer_pretty(&mut writer, &*WRAPPER_FNS)?;
     writer.flush()?;
 
     Ok(())
