@@ -5,9 +5,10 @@ use syn::{parse_macro_input, parse_quote, Expr, FnArg, Item, ItemFn, ItemImpl, I
 use quote::{format_ident, quote};
 use syn::Token;
 
-const INIT_PREFIX : &str = "init__";
-const WRAP_PREFIX : &str = "wrap__";
+mod output_info;
 
+const INIT_PREFIX: &str = "init__";
+const WRAP_PREFIX: &str = "wrap__";
 
 #[derive(Debug)]
 struct ExtendrOptions {
@@ -109,6 +110,7 @@ fn extendr_function(args: Vec<syn::NestedMeta>, func: ItemFn) -> TokenStream {
 fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix: &str, sig: &syn::Signature, self_ty: Option<&syn::Type>) {
     let func_name = &sig.ident;
 
+    let raw_wrap_name = format!("{}{}{}", WRAP_PREFIX, prefix, func_name);
     let wrap_name = format_ident!("{}{}{}", WRAP_PREFIX, prefix, func_name);
     let init_name = format_ident!("{}{}{}", INIT_PREFIX, prefix, func_name);
 
@@ -166,6 +168,7 @@ fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix:
 
     let num_args = inputs.len() as i32;
 
+    output_info::output_wrapper_info(&raw_wrap_name, sig.inputs.clone().into_iter().collect());
     wrappers.push(parse_quote!(
         #[no_mangle]
         #[allow(non_snake_case)]
