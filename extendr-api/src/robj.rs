@@ -1658,6 +1658,18 @@ mod tests {
             Ok(ArrayView2::<Bool>::from_shape((1, 1), &[Bool(1)][..]).unwrap())
         );
 
+        assert_eq!(
+            <ArrayView2<f64>>::from_robj(
+                &Robj::eval_string("matrix(c(1, 2, 3, 4, 5, 6, 7, 8), ncol=2, nrow=4, byrow=T)")
+                    .unwrap()
+            ),
+            Ok(ArrayView2::<f64>::from_shape(
+                (4, 2),
+                &[1f64, 2f64, 3f64, 4f64, 5f64, 6f64, 7f64, 8f64][..]
+            )
+            .unwrap())
+        );
+
         let hello = Robj::from("hello");
         assert_eq!(<&str>::from_robj(&hello), Ok("hello"));
     }
