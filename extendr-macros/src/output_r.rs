@@ -77,7 +77,7 @@ struct WrapperFnArg {
 }
 
 /// Extract info about wrapper function and write it to target directory.
-pub fn output_wrapper_info(
+pub fn output_r_wrapper(
     fn_name: &Ident,
     wrapper_fn_name: &str,
     args: Vec<FnArg>,
@@ -104,10 +104,10 @@ pub fn output_wrapper_info(
         }
     }
 
-    write_wrapper_info(func).expect("Unable to write wrapper info file to target directory");
+    write_r_wrapper(func).expect("Unable to write R wrapper file to target directory");
 }
-/// Write info about wrapper function to the output info file in the target directory.
-fn write_wrapper_info(wrapper_fn: WrapperFn) -> Result<(), Box<dyn Error>> {
+/// Write R wrapper function to the output R file in the target directory.
+fn write_r_wrapper(wrapper_fn: WrapperFn) -> Result<(), Box<dyn Error>> {
     let output_file_path = find_output_file().unwrap();
 
     // Write fn to singleton to keep track of all functions across macro invocations

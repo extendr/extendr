@@ -5,7 +5,7 @@ use syn::{parse_macro_input, parse_quote, Expr, FnArg, Item, ItemFn, ItemImpl, I
 use quote::{format_ident, quote};
 use syn::Token;
 
-mod output_info;
+mod output_r;
 
 const INIT_PREFIX: &str = "init__";
 const WRAP_PREFIX: &str = "wrap__";
@@ -168,7 +168,7 @@ fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix:
 
     let num_args = inputs.len() as i32;
 
-    output_info::output_wrapper_info(
+    output_r::output_r_wrapper(
         func_name,
         &raw_wrap_name,
         sig.inputs.clone().into_iter().collect(),
