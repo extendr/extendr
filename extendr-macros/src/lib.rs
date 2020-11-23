@@ -169,6 +169,7 @@ fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix:
     let num_args = inputs.len() as i32;
 
     output_info::output_wrapper_info(
+        func_name,
         &raw_wrap_name,
         sig.inputs.clone().into_iter().collect(),
         &sig.output,

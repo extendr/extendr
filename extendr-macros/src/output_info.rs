@@ -1,18 +1,18 @@
 use lazy_static::lazy_static;
-use serde::{Deserialize, Serialize};
 use std::env;
 use std::error::Error;
 use std::fs::File;
 use std::io::{BufWriter, Write};
 use std::path::PathBuf;
+use std::string::ToString;
 use std::sync::Mutex;
-use syn::{FnArg, Pat, ReturnType};
+use syn::{FnArg, Ident, Pat, ReturnType};
 
 lazy_static! {
     static ref WRAPPER_FNS: Mutex<Vec<WrapperFn>> = Mutex::new(Vec::new());
 }
 
-const OUTPUT_FILE_NAME: &str = "extendr_wrappers.json";
+const OUTPUT_FILE_NAME: &str = "extendr_wrappers.R";
 
 fn find_target_dir() -> Result<PathBuf, &'static str> {
     if let Some(manifest_dir) = env::var_os("CARGO_MANIFEST_DIR") {
@@ -26,26 +26,70 @@ fn find_output_file() -> Result<PathBuf, &'static str> {
     Ok(find_target_dir()?.join(OUTPUT_FILE_NAME))
 }
 
-#[derive(Serialize, Deserialize)]
 struct WrapperFn {
     pub name: String,
+    pub wrapper_name: String,
     pub is_void: bool,
     pub arguments: Vec<WrapperFnArg>,
 }
 
-#[derive(Serialize, Deserialize)]
+impl WrapperFn {
+    fn to_r_wrapper(&self) -> String {
+        let seperated_args = self
+            .arguments
+            .iter()
+            .map(|arg| arg.name.as_ref())
+            .collect::<Vec<_>>()
+            .join(", ");
+        let mut inner_invocation = format!(
+            ".Call(\"{name}\"{leading_comma}{args})",
+            name = &self.wrapper_name,
+            leading_comma = match self.arguments.len() {
+                0 => "",
+                _ => ", ",
+            },
+            args = seperated_args,
+        );
+        if self.is_void {
+            inner_invocation = format!("invisible({})", inner_invocation);
+        }
+
+        let function_signature = format!(
+            "{name} <- function({args})",
+            name = &self.name,
+            args = seperated_args,
+        );
+
+        format!(
+            r#"
+            {signature} {{
+                {invocation}
+            }}
+            "#,
+            signature = function_signature,
+            invocation = inner_invocation
+        )
+    }
+}
+
 struct WrapperFnArg {
     pub name: String,
 }
 
 /// Extract info about wrapper function and write it to target directory.
-pub fn output_wrapper_info(wrapper_fn_name: &str, args: Vec<FnArg>, return_type: &ReturnType) {
+pub fn output_wrapper_info(
+    fn_name: &Ident,
+    wrapper_fn_name: &str,
+    args: Vec<FnArg>,
+    return_type: &ReturnType,
+) {
     let is_void = match return_type {
         ReturnType::Default => true,
         _ => false,
     };
     let mut func = WrapperFn {
-        name: wrapper_fn_name.to_owned(),
+        name: fn_name.to_string(),
+        wrapper_name: wrapper_fn_name.to_owned(),
         is_void,
         arguments: Vec::new(),
     };
@@ -74,8 +118,14 @@ fn write_wrapper_info(wrapper_fn: WrapperFn) -> Result<(), Box<dyn Error>> {
 
     let file = File::create(&output_file_path)?;
     let mut writer = BufWriter::new(file);
-    serde_json::to_writer_pretty(&mut writer, &*WRAPPER_FNS)?;
-    writer.flush()?;
+    let wrapper_lock = WRAPPER_FNS
+        .lock()
+        .expect("Could not aquire lock to WRAPPER_FNS singleton");
+    for wrapper_fn in wrapper_lock.iter() {
+        writer
+            .write_all(wrapper_fn.to_r_wrapper().as_bytes())
+            .expect("Could not write R wrapper function to file");
+    }
 
     Ok(())
 }
