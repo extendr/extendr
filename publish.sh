@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+git push --tags
+
 pushd extendr-macros
 cargo publish
 popd

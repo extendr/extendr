@@ -19,8 +19,8 @@ pushd extendr-macros
 cargo publish --dry-run
 popd
 
-pushd extendr-api
-cargo publish --dry-run
-popd
-#git push --tags
+#pushd extendr-api
+#cargo publish --dry-run
+#popd
+
 #cargo publish
