@@ -424,6 +424,25 @@ make_typed_slice!(i32, INTEGER, INTSXP);
 make_typed_slice!(f64, REAL, REALSXP);
 make_typed_slice!(u8, RAW, RAWSXP);
 
+// These are helper functions which give access to common properties of R objects.
+#[allow(non_snake_case)]
+impl Robj {
+    /// Get the names attribute as a string iterator if one exists.
+    pub fn names(&self) -> Option<StrIter> {
+        self.getAttrib(&Robj::namesSymbol()).str_iter()
+    }
+
+    /// Return an iterator over names and values of a list if they exist.
+    pub fn namesAndValues(&self) -> Option<std::iter::Zip<StrIter, VecIter>> {
+        if let Some(names) = self.names() {
+            if let Some(values) = self.list_iter() {
+                return Some(names.zip(values));
+            }
+        }
+        None
+    }
+}
+
 ///////////////////////////////////////////////////////////////
 /// The following impls wrap specific Rinternals.h symbols.
 ///
@@ -785,12 +804,12 @@ impl Robj {
 
     /// Get a specific attribute as a borrowed robj.
     pub fn getAttrib(&self, name: &Robj) -> Robj {
-        unsafe { new_borrowed(Rf_getAttrib(self.get(), name.get())) }
-    }
-
-    /// Get the names attribute as a string iterator if one exists.
-    pub fn names(&self) -> Option<StrIter> {
-        self.getAttrib(&Robj::namesSymbol()).str_iter()
+        if self.sexptype() == CHARSXP {
+            // Avoid R error.
+            Robj::from(NULL)
+        } else {
+            unsafe { new_borrowed(Rf_getAttrib(self.get(), name.get())) }
+        }
     }
 
     /*
@@ -1528,10 +1547,17 @@ impl Iterator for VecIter {
     }
 }
 
-// Iterator over the objects in a vector or string.
+/// Iterator over the objects in a vector or string.
 #[derive(Clone)]
 pub struct ListIter {
     list_elem: SEXP,
+}
+
+impl ListIter {
+    /// Make an empty list iterator.
+    pub fn new() -> Self {
+        unsafe { Self { list_elem: R_NilValue } }
+    }
 }
 
 impl Iterator for ListIter {
@@ -1555,6 +1581,13 @@ pub struct StrIter {
     vector: SEXP,
     i: usize,
     len: usize,
+}
+
+impl StrIter {
+    /// Make an empty str iterator.
+    pub fn new() -> Self {
+        unsafe { Self { vector: R_NilValue, i: 0, len: 0 } }
+    }
 }
 
 impl Iterator for StrIter {
@@ -1584,6 +1617,7 @@ impl Iterator for StrIter {
         self.next()
     }
 }
+
 
 #[cfg(test)]
 mod tests {
