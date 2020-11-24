@@ -15,7 +15,9 @@ lazy_static! {
 const OUTPUT_FILE_NAME: &str = "extendr_wrappers.R";
 
 fn find_target_dir() -> Result<PathBuf, &'static str> {
-    if let Some(manifest_dir) = env::var_os("CARGO_MANIFEST_DIR") {
+    // env::current_dir() always points at the root of a crate directory
+    // (also works in workspaces)
+    if let Some(manifest_dir) = env::current_dir().ok() {
         let target_dir = PathBuf::from(manifest_dir).join("target");
         return Ok(target_dir);
     }
