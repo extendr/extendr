@@ -1,6 +1,6 @@
 [package]
 name = "extendr-macros"
-version = "0.1.9"
+version = "0.1.10"
 authors = ["andy-thomason <andy@andythomason.com>"]
 edition = "2018"
 description = "Generate bindings from R to Rust."

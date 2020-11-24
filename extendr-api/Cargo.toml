@@ -1,6 +1,6 @@
 [package]
 name = "extendr-api"
-version = "0.1.9"
+version = "0.1.10"
 authors = ["andy-thomason <andy@andythomason.com>"]
 edition = "2018"
 description = "Safe and user friendly bindings to the R programming language."
@@ -10,5 +10,5 @@ repository = "https://github.com/extendr/extendr"
 
 [dependencies]
 libR-sys = "0.1.10"
-extendr-macros = { path = "../extendr-macros", version="0.1.9" }
+extendr-macros = { path = "../extendr-macros", version="0.1.10" }
 ndarray = "0.13.1"
