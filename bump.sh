@@ -14,5 +14,13 @@ git add extendr-api/Cargo.toml
 git add extendr-macros/Cargo.toml
 git commit -m "bump to ${new_version} using bump.sh"
 git tag v${new_version}
+
+pushd extendr-macros
+cargo publish --dry-run
+popd
+
+pushd extendr-api
+cargo publish --dry-run
+popd
 #git push --tags
 #cargo publish
