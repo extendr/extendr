@@ -130,3 +130,19 @@ accidental segfaults and failures.
 ### R packages
 - [ ] Bindings for rust-bio
 
+## publishing the crate
+
+There are two scripts in the root on the repo:
+
+Change and commit the version number.
+
+```
+./bump.sh new.version.number
+```
+
+Push and publish the crate.
+
+```
+./publish.sh
+```
+
