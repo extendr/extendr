@@ -1,6 +1,6 @@
 name: Tests
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   test_linux:
@@ -62,11 +62,12 @@ jobs:
         shell: msys2 {0}
         run: |
           pacman -S --noconfirm mingw-w64-x86_64-clang mingw-w64-x86_64-toolchain
+      - uses: r-lib/actions/setup-r@v1
       - name: Build
-        run: cargo build
+        run: msys2 -c 'C:/Rust/.cargo/bin/cargo build'
         env:
           LIBCLANG_PATH: C:\msys64\mingw64\bin
       - name: Run tests
-        run: cargo test -- --nocapture --test-threads=1
+        run: msys2 -c 'C:/Rust/.cargo/bin/cargo test -- --nocapture --test-threads=1'
         env:
           LIBCLANG_PATH: C:\msys64\mingw64\bin
