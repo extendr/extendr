@@ -44,3 +44,23 @@ jobs:
         run: cargo build
       - name: Run tests
         run: cargo test -- --nocapture --test-threads=1
+
+  test_windows:
+    name: Run tests (Windows)
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        rust-version: [stable, beta, nightly]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust-version }}
+      - name: Install dependencies
+        run: choco install llvm r
+      - name: Set dynamic environment variables
+        run: echo "LIBCLANG_PATH=C:\\ProgramData\chocolatey\lib" >> $GITHUB_ENV
+      - name: Build
+        run: cargo build
+      - name: Run tests
+        run: cargo test -- --nocapture --test-threads=1
