@@ -22,6 +22,12 @@ impl From<bool> for Bool {
     }
 }
 
+impl From<Bool> for bool {
+    fn from(v: Bool) -> Self {
+        v.0 != 0
+    }
+}
+
 impl PartialEq<Bool> for Bool {
     fn eq(&self, rhs: &Bool) -> bool {
         self.0 == rhs.0

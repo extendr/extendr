@@ -4,35 +4,63 @@
 
 use extendr_api::*;
 
-
 #[extendr]
 fn data(input: Robj) -> bool {
     let mut an_integer = 0;
     let mut a_number = 0.;
     let mut a_string = String::new();
-    let a_bool = false;
-    let a_list = ListIter::new();
-    let an_integer_array = Vec::new();
-    let a_number_array = Vec::new();
-    let a_string_array = StrIter::new();
-    //let a_logical_array = Vec::new();
+    let mut a_bool = false;
+    let mut a_list = Vec::new();
+    let mut an_integer_array = Vec::new();
+    let mut a_number_array = Vec::new();
+    let mut a_string_array = Vec::new();
+    let mut a_logical_array = Vec::new();
 
     if let Some(names_and_values) = input.namesAndValues() {
         for (key, value) in names_and_values {
             println!("n={} v={:?}", key, value);
             match key {
-                "an_integer" => { an_integer = <i32>::from_robj(&value).unwrap(); }
-                "a_number" => { a_number = <f64>::from_robj(&value).unwrap(); }
-                "a_string" => { a_string = <String>::from_robj(&value).unwrap(); }
-                "a_bool" => { a_bool = <bool>::from_robj(&value).unwrap(); }
-                "a_list" => { a_list = <ListIter>::from_robj(&value).unwrap(); }
-                "an_integer_array" => { an_integer_array = <Vec<i32>>::from_robj(&value).unwrap(); }
-                "a_number_array" => { a_number_array = <Vec<f64>>::from_robj(&value).unwrap(); }
-                "a_string_array" => { a_string_array = value.str_iter().unwrap(); }
-                //"a_logical_array" => { a_logical_array = Vec<bool>::from_robj(&value).unwrap(); }
+                "an_integer" => if let Some(value) = value.as_integer() {
+                    an_integer = value;
+                }
+                "a_number" => if let Some(value) = value.as_numeric() {
+                    a_number = value;
+                }
+                "a_string" => if let Some(value) = value.as_str() {
+                    a_string = value.to_string();
+                }
+                "a_bool" => if let Some(value) = value.as_bool() {
+                    a_bool = value
+                }
+                "a_list" => if let Some(value) = value.list_iter() {
+                    a_list = value.collect::<Vec<_>>();
+                }
+                "an_integer_array" => if let Some(value) = value.as_integer_vector() {
+                    an_integer_array = value;
+                }
+                "a_number_array" => if let Some(value) = value.as_numeric_vector() {
+                    a_number_array = value;
+                }
+                "a_string_array" => if let Some(value) = value.str_iter() {
+                    a_string_array = value.map(|s| s.to_string()).collect::<Vec<_>>();
+                }
+                "a_logical_array" => if let Some(value) = value.as_logical_vector() {
+                    a_logical_array = value;
+                }
+                &_ => (),
             }
         }
     }
+
+    println!("an_integer={:?}", an_integer);
+    println!("a_number={:?}", a_number);
+    println!("a_string={:?}", a_string);
+    println!("a_bool={:?}", a_bool);
+    println!("a_list={:?}", a_list);
+    println!("an_integer_array={:?}", an_integer_array);
+    println!("a_number_array={:?}", a_number_array);
+    println!("a_string_array={:?}", a_string_array);
+    println!("a_logical_array={:?}", a_logical_array);
     true
 }
 
