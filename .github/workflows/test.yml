@@ -3,7 +3,7 @@ name: Tests
 on: [push]
 
 jobs:
-  test:
+  test_linux:
     name: Run tests (Linux)
     runs-on: ubuntu-latest
     strategy:
@@ -14,7 +14,7 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.rust-version }}
-      - name: Install dependencie
+      - name: Install dependencies
         run: sudo apt-get install r-base-dev llvm-3.9-dev libclang-3.9-dev
       - name: Build
         run: cargo build
@@ -24,3 +24,23 @@ jobs:
         run: cargo test -- --nocapture --test-threads=1
         env:
           LIBCLANG_PATH: /usr/lib/llvm-3.9/lib
+
+  test_macos:
+    name: Run tests (macOS)
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        rust-version: [stable, beta, nightly]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust-version }}
+      - name: Install dependencies
+        run: brew install llvm r
+      - name: Set dynamic environment variables
+        run: echo "LIBCLANG_PATH=$(brew --prefix llvm)/lib" >> $GITHUB_ENV
+      - name: Build
+        run: cargo build
+      - name: Run tests
+        run: cargo test -- --nocapture --test-threads=1
