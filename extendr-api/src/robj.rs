@@ -149,6 +149,30 @@ where
     }
 }
 
+macro_rules! make_array_view_2 {
+    ($type: ty, $fn: tt, $error_str: tt, $($sexp: tt),* ) => {
+        impl<'a> FromRobj<'a> for ArrayView2<'a, $type> {
+            fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+                match robj.sexptype() {
+                    $( $sexp )|* => unsafe {
+                        let ptr = $fn(robj.get()) as *const $type;
+                        let ncols = Rf_ncols(robj.get()) as usize;
+                        let nrows = Rf_nrows(robj.get()) as usize;
+
+                        Ok(ArrayView2::from_shape_ptr((nrows, ncols).f(), ptr))
+                    },
+                    _ => Err($error_str),
+                }
+            }
+        }
+    }
+}
+
+make_array_view_2!(Bool, INTEGER, "not a logical matrix", LGLSXP);
+make_array_view_2!(i32, INTEGER, "not a integer matrix", INTSXP);
+make_array_view_2!(f64, REAL, "not a floating point matrix", REALSXP);
+make_array_view_2!(u8, RAW, "not a raw matrix", RAWSXP);
+
 /// Pass-through Robj conversion.
 impl<'a> FromRobj<'a> for Robj {
     fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
@@ -1620,6 +1644,30 @@ mod tests {
         assert_eq!(
             <ArrayView1<Bool>>::from_robj(&Robj::from(true)),
             Ok(ArrayView1::<Bool>::from(&[Bool(1)][..]))
+        );
+        assert_eq!(
+            <ArrayView2<f64>>::from_robj(&Robj::from(1.)),
+            Ok(ArrayView2::<f64>::from_shape((1, 1), &[1.][..]).unwrap())
+        );
+        assert_eq!(
+            <ArrayView2<i32>>::from_robj(&Robj::from(1)),
+            Ok(ArrayView2::<i32>::from_shape((1, 1), &[1][..]).unwrap())
+        );
+        assert_eq!(
+            <ArrayView2<Bool>>::from_robj(&Robj::from(true)),
+            Ok(ArrayView2::<Bool>::from_shape((1, 1), &[Bool(1)][..]).unwrap())
+        );
+
+        assert_eq!(
+            <ArrayView2<f64>>::from_robj(
+                &Robj::eval_string("matrix(c(1, 2, 3, 4, 5, 6, 7, 8), ncol=2, nrow=4, byrow=T)")
+                    .unwrap()
+            ),
+            Ok(ArrayView2::<f64>::from_shape(
+                (4, 2),
+                &[1f64, 2f64, 3f64, 4f64, 5f64, 6f64, 7f64, 8f64][..]
+            )
+            .unwrap())
         );
 
         let hello = Robj::from("hello");
