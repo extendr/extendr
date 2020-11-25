@@ -105,7 +105,7 @@ macro_rules! lang {
 mod tests {
     //use crate::args;
     use super::*;
-    use crate::{end_r, start_r};
+    use crate::start_r;
 
     #[test]
     fn test_args() {
@@ -123,6 +123,6 @@ mod tests {
         assert_eq!(args!(1+1), vec![("", Robj::from(2))]);
         assert_eq!(args!(1+1, 2), [("", Robj::from(2)), ("", Robj::from(2))]);
         assert_eq!(args!(a=1+1, b=2), [("a", Robj::from(2)), ("b", Robj::from(2))]);*/
-        end_r();
+        //end_r();
     }
 }

@@ -83,6 +83,9 @@ pub use libR_sys::R_registerRoutines;
 pub use libR_sys::R_useDynamicSymbols;
 pub use libR_sys::SEXP;
 
+use libR_sys::*;
+use std::ffi::CString;
+
 /// Generic dynamic error type.
 pub type AnyError = Box<dyn std::error::Error + Send + Sync>;
 
@@ -126,6 +129,20 @@ pub unsafe fn register_call_methods(info: *mut libR_sys::DllInfo, methods: &[Cal
 //     eprintln!("[{}]", rcode);
 //     Robj::eval_string(rcode.as_str()).unwrap();
 // }
+
+pub fn print_r_output<T: Into<Vec<u8>>>(s: T) {
+    let cs = CString::new(s).expect("NulError");
+    unsafe {
+        Rprintf(cs.as_ptr());
+    }
+}
+
+pub fn print_r_error<T: Into<Vec<u8>>>(s: T) {
+    let cs = CString::new(s).expect("NulError");
+    unsafe {
+        REprintf(cs.as_ptr());
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -293,5 +310,16 @@ mod tests {
             assert_eq!(new_borrowed(wrap__return_f32()), Robj::from(123.));
             assert_eq!(new_borrowed(wrap__return_f64()), Robj::from(123.));
         }
+    }
+
+    #[test]
+    fn r_output_test() {
+        let fifo = lang!("fifo", Robj::from("")).eval().unwrap();
+        let fifo = unsafe { fifo.get() };
+        lang!("sink", fifo).eval_blind();
+        rprintln!("Hello world");
+        lang!("sink").eval_blind();
+        let result : Robj = lang!("readLines", fifo).eval_blind();
+        assert_eq!(result, Robj::from("Hello world"));
     }
 }
