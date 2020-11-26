@@ -36,7 +36,7 @@ The following code illustrates a simple structure trait
 which is written in Rust. The data is defined in the `struct`
 declaration and the methods in the `impl`.
 
-```
+```rust
 use extendr_api::*;
 
 struct Person {
@@ -91,7 +91,7 @@ free. The ultimate goal is to allow the wrapping of existing
 Rust libraries without markup, but in the meantime, the markup
 is as light as possible.
 
-```
+```rust
 #[extendr]
 pub fn my_sum(v: &[f64]) -> f64 {
     v.iter().sum()
@@ -131,6 +131,7 @@ accidental segfaults and failures.
 - [ ] Bindings for rust-bio
 
 ## publishing the crate
+```
 
 There are two scripts in the root on the repo:
 
@@ -146,3 +147,10 @@ Push and publish the crate.
 ./publish.sh
 ```
 
+## Contributing
+
+We are happy about any contributions!
+
+To get started you can take a look at our [Github issues](https://github.com/extendr/extendr/issues).
+
+You can also get in contact via our [Discord server](https://discord.gg/7hmApuc)!
