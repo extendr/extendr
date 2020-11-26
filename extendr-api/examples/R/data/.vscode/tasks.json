@@ -1,0 +1,17 @@
+{
+        "version": "2.0.0",
+        "tasks": [
+                {
+                        "label": "run",
+                        "type": "shell",
+                        "command": "clear; R CMD INSTALL .; Rscript -e 'source(\"tests/test_data.R\")'",
+                        "problemMatcher": [
+                                "$rustc"
+                        ],
+                        "group": {
+                                "kind": "build",
+                                "isDefault": true
+                        }
+                }
+        ]
+}

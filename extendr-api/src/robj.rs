@@ -52,6 +52,7 @@ impl Default for Robj {
     }
 }
 
+/// Trait used for incomming parameter conversion.
 pub trait FromRobj<'a>: Sized {
     fn from_robj(_robj: &'a Robj) -> Result<Self, &'static str> {
         Err("unable to convert value from R object")
@@ -218,8 +219,31 @@ impl Robj {
     }
 
     /// Get a read-only reference to the content of an integer or logical vector.
+    pub fn as_integer_slice(&self) -> Option<&[i32]> {
+        self.as_typed_slice()
+    }
+
+    /// Get a Vec<i32> copied from the object.
+    pub fn as_integer_vector(&self) -> Option<Vec<i32>> {
+        if let Some(value) = self.as_integer_slice() {
+            Some(value.iter().cloned().collect::<Vec<_>>())
+        } else {
+            None
+        }
+    }
+
+    /// Get a read-only reference to the content of an integer or logical vector.
     pub fn as_logical_slice(&self) -> Option<&[Bool]> {
         self.as_typed_slice()
+    }
+
+    /// Get a Vec<bool> copied from the object.
+    pub fn as_logical_vector(&self) -> Option<Vec<bool>> {
+        if let Some(value) = self.as_logical_slice() {
+            Some(value.iter().map(|x| x.clone().into()).collect::<Vec<_>>())
+        } else {
+            None
+        }
     }
 
     /// Get a read-only reference to the content of a double vector.
@@ -227,8 +251,27 @@ impl Robj {
         self.as_typed_slice()
     }
 
+    /// Get a read-only reference to the content of a double vector.
+    pub fn as_numeric_slice(&self) -> Option<&[f64]> {
+        self.as_typed_slice()
+    }
+
+    /// Get a Vec<f64> copied from the object.
+    pub fn as_numeric_vector(&self) -> Option<Vec<f64>> {
+        if let Some(value) = self.as_numeric_slice() {
+            Some(value.iter().cloned().collect::<Vec<_>>())
+        } else {
+            None
+        }
+    }
+
     /// Get a read-only reference to the content of an integer or logical vector.
     pub fn as_u8_slice(&self) -> Option<&[u8]> {
+        self.as_typed_slice()
+    }
+
+    /// Get a read-only reference to the content of an integer or logical vector.
+    pub fn as_raw_slice(&self) -> Option<&[u8]> {
         self.as_typed_slice()
     }
 
@@ -302,6 +345,41 @@ impl Robj {
                 SYMSXP => Some(to_str(R_CHAR(PRINTNAME(self.get())) as *const u8)),
                 _ => None,
             }
+        }
+    }
+
+    /// Get a scalar integer.
+    pub fn as_i32(&self) -> Option<i32> {
+        match self.as_i32_slice() {
+            Some(slice) if slice.len() == 1 => Some(slice[0]),
+            _ => None
+        }
+    }
+
+    /// Get a scalar integer.
+    pub fn as_integer(&self) -> Option<i32> {
+        self.as_i32()
+    }
+
+    /// Get a scalar real.
+    pub fn as_f64(&self) -> Option<f64> {
+        match self.as_f64_slice() {
+            Some(slice) if slice.len() == 1 => Some(slice[0]),
+            _ => None
+        }
+    }
+
+    /// Get a scalar real.
+    pub fn as_numeric(&self) -> Option<f64> {
+        self.as_f64()
+    }
+
+    /// Get a scalar boolean.
+    /// Also accepts 1/0.
+    pub fn as_bool(&self) -> Option<bool> {
+        match self.as_logical_slice() {
+            Some(slice) if slice.len() == 1 => Some(slice[0].into()),
+            _ => None
         }
     }
 
@@ -423,6 +501,25 @@ make_typed_slice!(Bool, INTEGER, LGLSXP);
 make_typed_slice!(i32, INTEGER, INTSXP);
 make_typed_slice!(f64, REAL, REALSXP);
 make_typed_slice!(u8, RAW, RAWSXP);
+
+// These are helper functions which give access to common properties of R objects.
+#[allow(non_snake_case)]
+impl Robj {
+    /// Get the names attribute as a string iterator if one exists.
+    pub fn names(&self) -> Option<StrIter> {
+        self.getAttrib(&Robj::namesSymbol()).str_iter()
+    }
+
+    /// Return an iterator over names and values of a list if they exist.
+    pub fn namesAndValues(&self) -> Option<std::iter::Zip<StrIter, VecIter>> {
+        if let Some(names) = self.names() {
+            if let Some(values) = self.list_iter() {
+                return Some(names.zip(values));
+            }
+        }
+        None
+    }
+}
 
 ///////////////////////////////////////////////////////////////
 /// The following impls wrap specific Rinternals.h symbols.
@@ -761,7 +858,7 @@ impl Robj {
     */
 
     /// Compatible way to duplicate an object. Use obj.clone() instead
-    /// for Rust compaitibility.
+    /// for Rust compatibility.
     pub fn duplicate(&self) -> Self {
         unsafe { new_owned(Rf_duplicate(self.get())) }
     }
@@ -781,7 +878,19 @@ impl Robj {
     SEXP Rf_findVar(SEXP, SEXP);
     SEXP Rf_findVarInFrame(SEXP, SEXP);
     SEXP Rf_findVarInFrame3(SEXP, SEXP, Rboolean);
-    SEXP Rf_getAttrib(SEXP, SEXP);
+    */
+
+    /// Get a specific attribute as a borrowed robj.
+    pub fn getAttrib(&self, name: &Robj) -> Robj {
+        if self.sexptype() == CHARSXP {
+            // Avoid R error.
+            Robj::from(NULL)
+        } else {
+            unsafe { new_borrowed(Rf_getAttrib(self.get(), name.get())) }
+        }
+    }
+
+    /*
     SEXP Rf_GetArrayDimnames(SEXP);
     SEXP Rf_GetColNames(SEXP);
     void Rf_GetMatrixDimnames(SEXP, SEXP*, SEXP*, const char**, const char**);
@@ -1524,10 +1633,27 @@ impl Iterator for VecIter {
     }
 }
 
-// Iterator over the objects in a vector or string.
+impl std::fmt::Debug for VecIter {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "[")?;
+        for s in self.clone() {
+            write!(f, "{:?}", s)?;
+        }
+        write!(f, "]")
+    }
+}
+
+/// Iterator over the objects in a vector or string.
 #[derive(Clone)]
 pub struct ListIter {
     list_elem: SEXP,
+}
+
+impl ListIter {
+    /// Make an empty list iterator.
+    pub fn new() -> Self {
+        unsafe { Self { list_elem: R_NilValue } }
+    }
 }
 
 impl Iterator for ListIter {
@@ -1546,11 +1672,27 @@ impl Iterator for ListIter {
     }
 }
 
+impl std::fmt::Debug for ListIter {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "[")?;
+        for s in self.clone() {
+            write!(f, "{:?}", s)?;
+        }
+        write!(f, "]")
+    }
+}
 #[derive(Clone)]
 pub struct StrIter {
     vector: SEXP,
     i: usize,
     len: usize,
+}
+
+impl StrIter {
+    /// Make an empty str iterator.
+    pub fn new() -> Self {
+        unsafe { Self { vector: R_NilValue, i: 0, len: 0 } }
+    }
 }
 
 impl Iterator for StrIter {
@@ -1578,6 +1720,16 @@ impl Iterator for StrIter {
     fn nth(&mut self, n: usize) -> Option<Self::Item> {
         self.i += n;
         self.next()
+    }
+}
+
+impl std::fmt::Debug for StrIter {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "[")?;
+        for s in self.clone() {
+            write!(f, "{:?}", s)?;
+        }
+        write!(f, "]")
     }
 }
 

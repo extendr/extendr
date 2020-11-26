@@ -1,0 +1,12 @@
+Package: data
+Type: Package
+Title: Minimal Example of Calling Rust from R using Cargo
+Version: 0.1.0
+Author: Andy Thomason
+Maintainer: Andy Thomason <andy@andythomason.com>
+Description: Show multiple methods to access data.
+License: MIT
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
+
