@@ -2,7 +2,7 @@
 
 Low-level R library bindings
 
-[![Travis Build Status](https://api.travis-ci.org/extendr/extendr.svg?branch=master)](https://travis-ci.org/extendr/extendr)
+[![Github Actions Build Status](https://github.com/extendr/extendr/workflows/test/badge.svg)](https://github.com/extendr/extendr/actions)
 [![Crates.io](http://meritbadge.herokuapp.com/extendr-api)](https://crates.io/crates/extendr-api)
 [![Documentation](https://docs.rs/mio/badge.svg)](https://docs.rs/extendr-api)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
