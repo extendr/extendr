@@ -6,9 +6,15 @@ jobs:
   test_linux:
     name: Run tests (Linux)
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.allow-failure }}
     strategy:
       matrix:
-        rust-version: [stable, beta, nightly]
+        rust-version: [stable, beta]
+        allow-failure: [false]
+        include:
+          - rust-version: nightly
+            allow-failure: true
+
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
@@ -45,29 +51,29 @@ jobs:
       - name: Run tests
         run: cargo test -- --nocapture --test-threads=1
 
-  test_windows:
-    name: Run tests (Windows)
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        rust-version: [stable-gnu]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ matrix.rust-version }}
-          target: x86_64-pc-windows-gnu
-      - uses: msys2/setup-msys2@v2
-      - name: Install dependencies
-        shell: msys2 {0}
-        run: |
-          pacman -S --noconfirm mingw-w64-x86_64-clang mingw-w64-x86_64-toolchain
-      - uses: r-lib/actions/setup-r@v1
-      - name: Build
-        run: msys2 -c 'C:/Rust/.cargo/bin/cargo build'
-        env:
-          LIBCLANG_PATH: C:\msys64\mingw64\bin
-      - name: Run tests
-        run: msys2 -c 'C:/Rust/.cargo/bin/cargo test -- --nocapture --test-threads=1'
-        env:
-          LIBCLANG_PATH: C:\msys64\mingw64\bin
+  # test_windows:
+    # name: Run tests (Windows)
+    # runs-on: windows-latest
+    # strategy:
+      # matrix:
+        # rust-version: [stable-gnu]
+    # steps:
+      # - uses: actions/checkout@v2
+      # - uses: actions-rs/toolchain@v1
+        # with:
+          # toolchain: ${{ matrix.rust-version }}
+          # target: x86_64-pc-windows-gnu
+      # - uses: msys2/setup-msys2@v2
+      # - name: Install dependencies
+        # shell: msys2 {0}
+        # run: |
+          # pacman -S --noconfirm mingw-w64-x86_64-clang mingw-w64-x86_64-toolchain
+      # - uses: r-lib/actions/setup-r@v1
+      # - name: Build
+        # run: msys2 -c 'C:/Rust/.cargo/bin/cargo build'
+        # env:
+          # LIBCLANG_PATH: C:\msys64\mingw64\bin
+      # - name: Run tests
+        # run: msys2 -c 'C:/Rust/.cargo/bin/cargo test -- --nocapture --test-threads=1'
+        # env:
+          # LIBCLANG_PATH: C:\msys64\mingw64\bin
