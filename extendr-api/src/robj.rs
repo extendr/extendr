@@ -1375,6 +1375,14 @@ impl<'a> From<&'a str> for Robj {
     }
 }
 
+/// Convert a String to an Robj string array object.
+impl From<String> for Robj {
+    fn from(val: String) -> Self {
+        Robj::from(&*val)
+    }
+}
+
+/// Convert an array of string refs to an Robj string array object.
 impl<'a> From<&'a [&str]> for Robj {
     fn from(vals: &'a [&str]) -> Self {
         unsafe {
@@ -1589,6 +1597,8 @@ mod tests {
         assert_eq!(format!("{:?}", Robj::from(1)), "1");
         assert_eq!(format!("{:?}", Robj::from(1.)), "1.0");
         assert_eq!(format!("{:?}", Robj::from("hello")), "[\"hello\"]");
+        let s = "hello".to_string();
+        assert_eq!(format!("{:?}", Robj::from(s)), "[\"hello\"]");
 
         // Vectors
         assert_eq!(format!("{:?}", Robj::from(&[1, 2, 3][..])), "[1, 2, 3]");
