@@ -89,10 +89,10 @@ jobs:
           cargo build
         env:
           LIBCLANG_PATH: C:/msys64/mingw64/bin
-      - name: Run tests
-        run: |
-          echo "C:/msys64/usr/bin" >> $GITHUB_PATH
-          echo "C:/msys64/mingw64/bin" >> $GITHUB_PATH
-          cargo test -- --nocapture --test-threads=1
-        env:
-          LIBCLANG_PATH: C:/msys64/mingw64/bin
+      # - name: Run tests
+      #   run: |
+      #     echo "C:/msys64/usr/bin" >> $GITHUB_PATH
+      #     echo "C:/msys64/mingw64/bin" >> $GITHUB_PATH
+      #     cargo test -- --nocapture --test-threads=1
+      #   env:
+      #     LIBCLANG_PATH: C:/msys64/mingw64/bin
