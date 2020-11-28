@@ -2,7 +2,7 @@
 //!
 //! Only call this from main() if you want to run stand-alone.
 //!
-//! It's principal use is for testing.
+//! Its principal use is for testing.
 //!
 //! See https://github.com/wch/r-source/blob/trunk/src/unix/Rembedded.c
 
