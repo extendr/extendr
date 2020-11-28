@@ -2,7 +2,7 @@
 //!
 //! Only call this from main() if you want to run stand-alone.
 //!
-//! Its principal use is for testing.
+//! It's principal use is for testing.
 //!
 //! See https://github.com/wch/r-source/blob/trunk/src/unix/Rembedded.c
 
@@ -17,24 +17,6 @@ macro_rules! cstr_mut {
     ($s: expr) => {
         concat!($s, "\0").as_ptr() as *mut raw::c_char
     };
-}
-
-static mut R_ERROR_BUF: Vec<u8> = Vec::new();
-
-/// Throw an R error if a result is an error.
-pub fn unwrap_or_throw<T>(r: Result<T, &'static str>) -> T {
-    unsafe {
-        match r {
-            Err(e) => {
-                R_ERROR_BUF.clear();
-                R_ERROR_BUF.extend(e.bytes());
-                R_ERROR_BUF.push(0);
-                Rf_error(R_ERROR_BUF.as_slice().as_ptr() as *mut raw::c_char);
-                unreachable!("");
-            }
-            Ok(v) => v,
-        }
-    }
 }
 
 static START_R: Once = Once::new();

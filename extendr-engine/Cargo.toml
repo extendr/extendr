@@ -1,5 +1,5 @@
 [package]
-name = "extendr-api"
+name = "extendr-engine"
 version = "0.1.11"
 authors = ["andy-thomason <andy@andythomason.com>"]
 edition = "2018"
@@ -10,6 +10,3 @@ repository = "https://github.com/extendr/extendr"
 
 [dependencies]
 libR-sys = "0.1.10"
-extendr-macros = { path = "../extendr-macros", version="0.1.11" }
-extendr-engine = { path = "../extendr-engine", version="0.1.11" }
-ndarray = "0.13.1"

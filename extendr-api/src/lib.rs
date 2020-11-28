@@ -63,14 +63,14 @@
 //!
 
 mod args;
-mod engine;
+mod error;
 mod logical;
 mod rmacros;
 mod robj;
 mod wrapper;
 
 pub use args::*;
-pub use engine::*;
+pub use error::*;
 pub use rmacros::*;
 pub use robj::*;
 pub use wrapper::*;
@@ -150,6 +150,7 @@ mod tests {
     use crate as extendr_api;
     use extendr_macros::extendr;
     use extendr_macros::extendr_module;
+
     #[extendr]
     pub fn inttypes(a: i8, b: u8, c: i16, d: u16, e: i32, f: u32, g: i64, h: u64) {
         assert_eq!(a, 1);

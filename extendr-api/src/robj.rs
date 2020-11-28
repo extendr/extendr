@@ -1736,7 +1736,7 @@ impl std::fmt::Debug for StrIter {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::engine::*;
+    use extendr_engine::*;
 
     #[test]
     fn test_debug() {

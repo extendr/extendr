@@ -9,7 +9,7 @@
 /// Example:
 /// ```
 /// use extendr_api::*;
-/// start_r();
+/// extendr_engine::start_r();
 /// let fred = r!(1);
 /// assert_eq!(fred, Robj::from(1));
 /// ```
@@ -25,7 +25,7 @@ macro_rules! r {
 /// Example:
 /// ```
 /// use extendr_api::*;
-/// start_r();
+/// extendr_engine::start_r();
 /// let fred = c!(1, 2, 3);
 /// assert_eq!(fred, Robj::from(&[1, 2, 3][..]));
 /// ```
@@ -44,7 +44,7 @@ macro_rules! c {
 /// Example:
 /// ```
 /// use extendr_api::*;
-/// start_r();
+/// extendr_engine::start_r();
 /// let fred = rep!(1., 3);
 /// assert_eq!(fred, Robj::from(&[1., 1., 1.][..]));
 /// ```
@@ -60,7 +60,7 @@ macro_rules! rep {
 /// Example:
 /// ```no_run
 /// use extendr_api::*;
-/// start_r();
+/// extendr_engine::start_r();
 /// let mydata = read_table!("mydata.csv").unwrap();
 /// ```
 #[macro_export]
@@ -75,7 +75,7 @@ macro_rules! read_table {
 /// Example:
 /// ```
 /// use extendr_api::*;
-/// start_r();
+/// extendr_engine::start_r();
 /// let mylist = list!(x=1, y=2);
 /// assert_eq!(mylist, List(&[1.into(), 2.into()]));
 /// ```
@@ -94,7 +94,7 @@ macro_rules! list {
 /// Example:
 /// ```
 /// use extendr_api::*;
-/// start_r();
+/// extendr_engine::start_r();
 /// let mydata = data_frame!(x=1, y=2);
 /// assert_eq!(mydata, List(&[1.into(), 2.into()]));
 /// ```
