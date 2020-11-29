@@ -1,0 +1,28 @@
+name: Documents
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  docs:
+    name: Deploy the dev version of documents to GitHub Pages
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - name: Install dependencies
+        run: sudo apt-get install r-base-dev llvm-3.9-dev libclang-3.9-dev
+      - name: Docs
+        run: cargo doc --workspace --no-deps
+        env:
+          LIBCLANG_PATH: /usr/lib/llvm-3.9/lib
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./target/doc
