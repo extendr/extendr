@@ -4,7 +4,7 @@ Low-level R library bindings
 
 [![Github Actions Build Status](https://github.com/extendr/extendr/workflows/Tests/badge.svg)](https://github.com/extendr/extendr/actions)
 [![Crates.io](http://meritbadge.herokuapp.com/extendr-api)](https://crates.io/crates/extendr-api)
-[![Documentation](https://docs.rs/mio/badge.svg)](https://docs.rs/extendr-api)
+[![Documentation](https://docs.rs/extendr-api/badge.svg)](https://docs.rs/extendr-api)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 [![Logo](https://github.com/extendr/extendr/raw/master/extendr-logo-256.png)](https://github.com/extendr/extendr/raw/master/extendr-logo-256.png)
