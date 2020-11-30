@@ -449,8 +449,8 @@
         <span class="ident">std</span>::<span class="ident">ptr</span>::<span class="ident">null</span>(),
         <span class="ident">std</span>::<span class="ident">ptr</span>::<span class="ident">null</span>(),
     );
-    <span class="comment">//libR_sys::R_useDynamicSymbols(info, 0);</span>
-    <span class="comment">//libR_sys::R_forceSymbols(info, 1);</span>
+    <span class="ident">libR_sys</span>::<span class="ident">R_useDynamicSymbols</span>(<span class="ident">info</span>, <span class="number">0</span>);
+    <span class="ident">libR_sys</span>::<span class="ident">R_forceSymbols</span>(<span class="ident">info</span>, <span class="number">1</span>);
 }
 
 <span class="comment">// pub fn add_function_to_namespace(namespace: &amp;str, fn_name: &amp;str, wrap_name: &amp;str) {</span>
