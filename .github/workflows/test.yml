@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   test_linux:
     name: Run tests (Linux)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     continue-on-error: ${{ matrix.allow-failure }}
     strategy:
       matrix:
@@ -20,16 +20,10 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.rust-version }}
-      - name: Install dependencies
-        run: sudo apt-get install r-base-dev llvm-3.9-dev libclang-3.9-dev
       - name: Build
         run: cargo build
-        env:
-          LIBCLANG_PATH: /usr/lib/llvm-3.9/lib
       - name: Run tests
         run: cargo test -- --nocapture --test-threads=1
-        env:
-          LIBCLANG_PATH: /usr/lib/llvm-3.9/lib
 
   test_macos:
     name: Run tests (macOS)
