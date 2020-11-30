@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["extendr_api"] = [{"text":"impl Clone for Robj","synthetic":false,"types":[]},{"text":"impl Clone for VecIter","synthetic":false,"types":[]},{"text":"impl Clone for ListIter","synthetic":false,"types":[]},{"text":"impl Clone for StrIter","synthetic":false,"types":[]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

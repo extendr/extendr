@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["extendr_api"] = [{"text":"impl Iterator for VecIter","synthetic":false,"types":[]},{"text":"impl Iterator for ListIter","synthetic":false,"types":[]},{"text":"impl Iterator for StrIter","synthetic":false,"types":[]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["extendr_api"] = [{"text":"impl Debug for Robj","synthetic":false,"types":[]},{"text":"impl Debug for VecIter","synthetic":false,"types":[]},{"text":"impl Debug for ListIter","synthetic":false,"types":[]},{"text":"impl Debug for StrIter","synthetic":false,"types":[]},{"text":"impl&lt;'a&gt; Debug for Symbol&lt;'a&gt;","synthetic":false,"types":[]},{"text":"impl&lt;'a&gt; Debug for Character&lt;'a&gt;","synthetic":false,"types":[]},{"text":"impl&lt;'a&gt; Debug for Lang&lt;'a&gt;","synthetic":false,"types":[]},{"text":"impl&lt;'a&gt; Debug for List&lt;'a&gt;","synthetic":false,"types":[]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
