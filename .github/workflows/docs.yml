@@ -15,12 +15,8 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-      - name: Install dependencies
-        run: sudo apt-get install r-base-dev llvm-3.9-dev libclang-3.9-dev
       - name: Docs
         run: cargo doc --workspace --no-deps
-        env:
-          LIBCLANG_PATH: /usr/lib/llvm-3.9/lib
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
