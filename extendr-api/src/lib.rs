@@ -120,8 +120,8 @@ pub unsafe fn register_call_methods(info: *mut libR_sys::DllInfo, methods: &[Cal
         std::ptr::null(),
         std::ptr::null(),
     );
-    //libR_sys::R_useDynamicSymbols(info, 0);
-    //libR_sys::R_forceSymbols(info, 1);
+    libR_sys::R_useDynamicSymbols(info, 0);
+    libR_sys::R_forceSymbols(info, 1);
 }
 
 // pub fn add_function_to_namespace(namespace: &str, fn_name: &str, wrap_name: &str) {
