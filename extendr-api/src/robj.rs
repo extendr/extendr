@@ -318,13 +318,21 @@ impl Robj {
 
     /// Get an iterator over a string vector.
     pub fn str_iter(&self) -> Option<StrIter> {
+        let i = 0;
+        let len = self.len();
         match self.sexptype() {
             STRSXP => unsafe {
-                Some(StrIter {
-                    vector: self.get(),
-                    i: 0,
-                    len: self.len(),
-                })
+                let vector = self.get();
+                Some(StrIter {vector, i, len, levels: R_NilValue})
+            },
+            INTSXP => unsafe {
+                let vector = self.get();
+                let levels = self.getAttrib(&Robj::levelsSymbol());
+                if levels.sexptype() == STRSXP {
+                    Some(StrIter {vector, i, len, levels: levels.get()})
+                } else {
+                    None
+                }
             },
             _ => None,
         }
@@ -518,6 +526,25 @@ impl Robj {
             }
         }
         None
+    }
+
+    /// Get the class attribute as a string iterator if one exists.
+    pub fn class(&self) -> Option<StrIter> {
+        self.getAttrib(&Robj::classSymbol()).str_iter()
+    }
+
+    /// Return true if this class inherits this class.
+    pub fn inherits(&self, classname: &str) -> bool {
+        if let Some(mut iter) = self.class() {
+            iter.find(|&n| n == classname).is_some()
+        } else {
+            false
+        }
+    }
+
+    /// Get the levels attribute as a string iterator if one exists.
+    pub fn levels(&self) -> Option<StrIter> {
+        self.getAttrib(&Robj::levelsSymbol()).str_iter()
     }
 }
 
@@ -881,6 +908,7 @@ impl Robj {
     */
 
     /// Get a specific attribute as a borrowed robj.
+    /// Return R_NilValue on error.
     pub fn getAttrib(&self, name: &Robj) -> Robj {
         if self.sexptype() == CHARSXP {
             // Avoid R error.
@@ -1686,12 +1714,13 @@ pub struct StrIter {
     vector: SEXP,
     i: usize,
     len: usize,
+    levels: SEXP,
 }
 
 impl StrIter {
     /// Make an empty str iterator.
     pub fn new() -> Self {
-        unsafe { Self { vector: R_NilValue, i: 0, len: 0 } }
+        unsafe { Self { vector: R_NilValue, i: 0, len: 0, levels: R_NilValue } }
     }
 }
 
@@ -1703,16 +1732,25 @@ impl Iterator for StrIter {
     }
 
     fn next(&mut self) -> Option<Self::Item> {
-        let i = self.i;
-        self.i += 1;
-        if i >= self.len {
-            return None;
-        } else {
-            unsafe {
+        unsafe {
+            let i = self.i;
+            self.i += 1;
+            if i >= self.len {
+                return None;
+            } else if TYPEOF(self.vector) as u32 == STRSXP {
                 let sexp = STRING_ELT(self.vector, i as isize);
                 let ptr = R_CHAR(sexp) as *const u8;
                 let slice = std::slice::from_raw_parts(ptr, Rf_xlength(sexp) as usize);
                 Some(std::str::from_utf8_unchecked(slice))
+            } else if TYPEOF(self.vector) as u32 == INTSXP && TYPEOF(self.levels) as u32 == STRSXP {
+                let j = *INTEGER(self.vector).offset(i as isize - 1);
+                println!("levels iterator i={} j={}", i, j);
+                let sexp = STRING_ELT(self.levels, j as isize);
+                let ptr = R_CHAR(sexp) as *const u8;
+                let slice = std::slice::from_raw_parts(ptr, Rf_xlength(sexp) as usize);
+                Some(std::str::from_utf8_unchecked(slice))
+            } else {
+                return None;
             }
         }
     }
@@ -1726,8 +1764,10 @@ impl Iterator for StrIter {
 impl std::fmt::Debug for StrIter {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "[")?;
+        let mut comma = "";
         for s in self.clone() {
-            write!(f, "{:?}", s)?;
+            write!(f, "{}{:?}", comma, s)?;
+            comma = ", ";
         }
         write!(f, "]")
     }
@@ -1737,6 +1777,7 @@ impl std::fmt::Debug for StrIter {
 mod tests {
     use super::*;
     use crate::engine::*;
+    use crate::*;
 
     #[test]
     fn test_debug() {
@@ -1866,6 +1907,31 @@ mod tests {
 
         let p = Robj::eval_string("1L + 1L")?;
         assert_eq!(p, Robj::from(2));
+        Ok(())
+    }
+
+    #[test]
+    fn str_iter_test() -> Result<(), AnyError> {
+        start_r();
+        let obj = Robj::from(vec!["a", "b", "c"]);
+        assert_eq!(obj.str_iter().unwrap().collect::<Vec<_>>(), vec!["a", "b", "c"]);
+
+        // Dataframe example thanks to jbabyhacker
+        let x_vec = &["abcd", "def", "fg", "fg"][..];
+        let y_vec = &[3.0, 4.0, 5.0, 6.0][..];
+        let z_vec = &[6, 7, 8, 9][..];
+
+        let data_frame = data_frame!(x = x_vec.clone(), y = y_vec.clone(), z = z_vec.clone());
+
+        assert!(data_frame.inherits("data.frame"));
+    
+        println!("{:?}", data_frame);
+    
+        let c : Vec<_> = data_frame.list_iter().unwrap().collect();
+        println!("levels={:?}", c[0].levels());
+        assert_eq!(c[0].str_iter().unwrap().collect::<Vec<_>>(), x_vec);
+        assert_eq!(c[1].as_f64_slice(), Some(y_vec));
+        assert_eq!(c[2].as_i32_slice(), Some(z_vec));
         Ok(())
     }
 }
