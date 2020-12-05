@@ -1724,6 +1724,20 @@ impl StrIter {
     }
 }
 
+// Get a string reference from a CHARSXP
+fn str_from_strsxp<'a>(sexp: SEXP, index: isize) -> &'a str {
+    unsafe {
+        if index < 0 || index >= Rf_xlength(sexp) {
+            ""
+        } else {
+            let charsxp = STRING_ELT(sexp, index);
+            let ptr = R_CHAR(charsxp) as *const u8;
+            let slice = std::slice::from_raw_parts(ptr, Rf_xlength(charsxp) as usize);
+            std::str::from_utf8_unchecked(slice)
+        }
+    }
+}
+
 impl Iterator for StrIter {
     type Item = &'static str;
 
@@ -1738,17 +1752,10 @@ impl Iterator for StrIter {
             if i >= self.len {
                 return None;
             } else if TYPEOF(self.vector) as u32 == STRSXP {
-                let sexp = STRING_ELT(self.vector, i as isize);
-                let ptr = R_CHAR(sexp) as *const u8;
-                let slice = std::slice::from_raw_parts(ptr, Rf_xlength(sexp) as usize);
-                Some(std::str::from_utf8_unchecked(slice))
+                Some(str_from_strsxp(self.vector, i as isize))
             } else if TYPEOF(self.vector) as u32 == INTSXP && TYPEOF(self.levels) as u32 == STRSXP {
-                let j = *INTEGER(self.vector).offset(i as isize - 1);
-                println!("levels iterator i={} j={}", i, j);
-                let sexp = STRING_ELT(self.levels, j as isize);
-                let ptr = R_CHAR(sexp) as *const u8;
-                let slice = std::slice::from_raw_parts(ptr, Rf_xlength(sexp) as usize);
-                Some(std::str::from_utf8_unchecked(slice))
+                let j = *(INTEGER(self.vector).offset(i as isize));
+                Some(str_from_strsxp(self.levels, j as isize - 1))
             } else {
                 return None;
             }
