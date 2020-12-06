@@ -330,6 +330,42 @@ impl Robj {
         }
     }
 
+    /// Get a vector of owned strings.
+    /// Owned strings have long lifetimes, but are much slower than references.
+    /// ```
+    ///    use extendr_api::*;
+    ///    start_r();
+    ///    let robj1 = Robj::from("xyz");
+    ///    assert_eq!(robj1.as_string_vector(), Some(vec!["xyz".to_string()]));
+    ///    let robj2 = Robj::from(1);
+    ///    assert_eq!(robj2.as_string_vector(), None);
+    /// ```
+    pub fn as_string_vector(&self) -> Option<Vec<String>> {
+        if let Some(iter) = self.str_iter() {
+            Some(iter.map(str::to_string).collect())
+        } else {
+            None
+        }
+    }
+
+    /// Get a vector of string references.
+    /// String references (&str) are faster, but have short lifetimes.
+    /// ```
+    ///    use extendr_api::*;
+    ///    start_r();
+    ///    let robj1 = Robj::from("xyz");
+    ///    assert_eq!(robj1.as_str_vector(), Some(vec!["xyz"]));
+    ///    let robj2 = Robj::from(1);
+    ///    assert_eq!(robj2.as_str_vector(), None);
+    /// ```
+    pub fn as_str_vector(&self) -> Option<Vec<&str>> {
+        if let Some(iter) = self.str_iter() {
+            Some(iter.collect())
+        } else {
+            None
+        }
+    }
+
     /// Get a read-only reference to a char, symbol or string type.
     pub fn as_str(&self) -> Option<&str> {
         unsafe {
@@ -375,7 +411,6 @@ impl Robj {
     }
 
     /// Get a scalar boolean.
-    /// Also accepts 1/0.
     pub fn as_bool(&self) -> Option<bool> {
         match self.as_logical_slice() {
             Some(slice) if slice.len() == 1 => Some(slice[0].into()),
@@ -1716,6 +1751,27 @@ impl ToVectorValue for &bool {
 
 pub trait RobjItertools : Iterator {
     /// Convert a wide range of iterators to Robj.
+    /// ```
+    /// use extendr_api::*;
+    ///
+    /// start_r();
+    ///
+    /// // Integer iterators.
+    /// let robj = (0..3).collect_robj();
+    /// assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);
+    ///
+    /// // Logical iterators.
+    /// let robj = (0..3).map(|x| x % 2 == 0).collect_robj();
+    /// assert_eq!(robj.as_logical_vector().unwrap(), vec![true, false, true]);
+    ///
+    /// // Numeric iterators.
+    /// let robj = (0..3).map(|x| x as f64).collect_robj();
+    /// assert_eq!(robj.as_numeric_vector().unwrap(), vec![0., 1., 2.]);
+    ///
+    /// // String iterators.
+    /// let robj = (0..3).map(|x| format!("{}", x)).collect_robj();
+    /// assert_eq!(robj.as_str_vector(), Some(vec!["0", "1", "2"]));
+    /// ```
     fn collect_robj(self) -> Robj
         where
             Self : Iterator,
@@ -2072,10 +2128,10 @@ mod tests {
         assert_eq!(robj.as_numeric_vector().unwrap(), vec![0., 1., 2.]);
 
         let robj = (0..3).map(|x| format!("{}", x)).collect_robj();
-        assert_eq!(robj.str_iter().unwrap().collect::<Vec<_>>(), vec!["0", "1", "2"]);
+        assert_eq!(robj.as_str_vector(), Some(vec!["0", "1", "2"]));
 
         let robj = ["0", "1", "2"].iter().collect_robj();
-        assert_eq!(robj.str_iter().unwrap().collect::<Vec<_>>(), vec!["0", "1", "2"]);
+        assert_eq!(robj.as_str_vector(), Some(vec!["0", "1", "2"]));
 
         // Fallback allocation where size is not known in advance.
         let robj = (0..3).filter(|&x| x != 1).collect_robj();
@@ -2085,7 +2141,7 @@ mod tests {
         assert_eq!(robj.as_numeric_vector().unwrap(), vec![0., 2.]);
 
         let robj = (0..3).filter(|&x| x != 1).map(|x| format!("{}", x)).collect_robj();
-        assert_eq!(robj.str_iter().unwrap().collect::<Vec<_>>(), vec!["0", "2"]);
+        assert_eq!(robj.as_str_vector(), Some(vec!["0", "2"]));
 
         Ok(())
     }
