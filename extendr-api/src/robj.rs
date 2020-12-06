@@ -1602,6 +1602,185 @@ impl<T: AsRef<str>> From<Vec<T>> for Robj {
     }
 }
 
+pub trait ToVectorValue {
+    fn sexptype() -> SEXPTYPE {
+        0
+    }
+
+    fn to_numeric(&self) -> f64 where Self: Sized {
+        0.
+    }
+
+    fn to_integer(&self) -> i32 where Self: Sized  {
+        0
+    }
+
+    fn to_bool(&self) -> bool where Self: Sized  {
+        false
+    }
+
+    fn to_str(&self) -> &str where Self: Sized  {
+        ""
+    }
+}
+
+impl ToVectorValue for f64 {
+    fn sexptype() -> SEXPTYPE {
+        REALSXP
+    }
+
+    fn to_numeric(&self) -> f64 {
+        *self
+    }
+}
+
+impl ToVectorValue for &f64 {
+    fn sexptype() -> SEXPTYPE {
+        REALSXP
+    }
+
+    fn to_numeric(&self) -> f64 {
+        **self
+    }
+}
+
+impl ToVectorValue for i32 {
+    fn sexptype() -> SEXPTYPE {
+        INTSXP
+    }
+
+    fn to_integer(&self) -> i32 {
+        *self
+    }
+}
+
+impl ToVectorValue for &i32 {
+    fn sexptype() -> SEXPTYPE {
+        INTSXP
+    }
+
+    fn to_integer(&self) -> i32 {
+        **self
+    }
+}
+
+impl ToVectorValue for &str {
+    fn sexptype() -> SEXPTYPE {
+        STRSXP
+    }
+
+    fn to_str(&self) -> &str {
+        *self
+    }
+}
+
+impl ToVectorValue for &&str {
+    fn sexptype() -> SEXPTYPE {
+        STRSXP
+    }
+
+    fn to_str(&self) -> &str {
+        **self
+    }
+}
+
+impl ToVectorValue for String {
+    fn sexptype() -> SEXPTYPE {
+        STRSXP
+    }
+
+    fn to_str(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl ToVectorValue for bool {
+    fn sexptype() -> SEXPTYPE {
+        LGLSXP
+    }
+
+    fn to_bool(&self) -> bool {
+        *self
+    }
+}
+
+impl ToVectorValue for &bool {
+    fn sexptype() -> SEXPTYPE {
+        LGLSXP
+    }
+
+    fn to_bool(&self) -> bool {
+        **self
+    }
+}
+
+pub trait RobjItertools : Iterator {
+    /// Convert a wide range of iterators to Robj.
+    fn collect_robj(self) -> Robj
+        where
+            Self : Iterator,
+            Self : Sized,
+            Self::Item : ToVectorValue
+        {
+        unsafe {
+            if let (len, Some(max)) = self.size_hint().clone() {
+                if len == max {
+                    // Length of the vector is known in advance.
+                    let sexptype = Self::Item::sexptype();
+                    if sexptype != 0 {
+                        let sexp = Rf_allocVector(sexptype, len as R_xlen_t);
+                        R_PreserveObject(sexp);
+                        match sexptype {
+                            REALSXP => {
+                                let ptr = REAL(sexp);
+                                for (i, v) in self.enumerate() {
+                                    *ptr.offset(i as isize) = v.to_numeric();
+                                }
+                            }
+                            INTSXP => {
+                                let ptr = INTEGER(sexp);
+                                for (i, v) in self.enumerate() {
+                                    *ptr.offset(i as isize) = v.to_integer();
+                                }
+                            }
+                            LGLSXP => {
+                                let ptr = LOGICAL(sexp);
+                                for (i, v) in self.enumerate() {
+                                    *ptr.offset(i as isize) = v.to_bool() as i32;
+                                }
+                            }
+                            STRSXP => {
+                                for (i, v) in self.enumerate() {
+                                    let v = v.to_str();
+                                    SET_STRING_ELT(
+                                        sexp,
+                                        i as isize,
+                                        Rf_mkCharLen(v.as_ptr() as *const raw::c_char, v.len() as i32),
+                                    );
+                                }
+                            }
+                            _ => {
+                                panic!("unexpected SEXPTYPE in collect_robj");
+                            }
+                        }
+                        return Robj::Owned(sexp);
+                    } else {
+                        return Robj::from(());
+                    }
+                }
+            }
+
+            // If the size is indeterminate, create a vector and call recursively.
+            let vec : Vec<_> = self.collect();
+            assert!(vec.iter().size_hint() == (vec.len(), Some(vec.len())));
+            vec.into_iter().collect_robj()
+        }
+    }
+}
+
+// Thanks to *pretzelhammer* on stackoverflow for this.
+impl<T> RobjItertools for T where T: Iterator {}
+
 // Iterator over the objects in a vector or string.
 #[derive(Clone)]
 pub struct VecIter {
@@ -1866,6 +2045,48 @@ mod tests {
 
         let p = Robj::eval_string("1L + 1L")?;
         assert_eq!(p, Robj::from(2));
+        Ok(())
+    }
+
+    #[test]
+    fn output_iterator_test() -> Result<(), AnyError> {
+        start_r();
+
+        // Allocation where size is known in advance.
+        let robj = (0..3).collect_robj();
+        assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);
+
+        let robj = [0, 1, 2].iter().collect_robj();
+        assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);
+
+        let robj = (0..3).map(|x| x % 2 == 0).collect_robj();
+        assert_eq!(robj.as_logical_vector().unwrap(), vec![true, false, true]);
+
+        let robj = [true, false, true].iter().collect_robj();
+        assert_eq!(robj.as_logical_vector().unwrap(), vec![true, false, true]);
+
+        let robj = (0..3).map(|x| x as f64).collect_robj();
+        assert_eq!(robj.as_numeric_vector().unwrap(), vec![0., 1., 2.]);
+
+        let robj = [0., 1., 2.].iter().collect_robj();
+        assert_eq!(robj.as_numeric_vector().unwrap(), vec![0., 1., 2.]);
+
+        let robj = (0..3).map(|x| format!("{}", x)).collect_robj();
+        assert_eq!(robj.str_iter().unwrap().collect::<Vec<_>>(), vec!["0", "1", "2"]);
+
+        let robj = ["0", "1", "2"].iter().collect_robj();
+        assert_eq!(robj.str_iter().unwrap().collect::<Vec<_>>(), vec!["0", "1", "2"]);
+
+        // Fallback allocation where size is not known in advance.
+        let robj = (0..3).filter(|&x| x != 1).collect_robj();
+        assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 2]);
+
+        let robj = (0..3).filter(|&x| x != 1).map(|x| x as f64).collect_robj();
+        assert_eq!(robj.as_numeric_vector().unwrap(), vec![0., 2.]);
+
+        let robj = (0..3).filter(|&x| x != 1).map(|x| format!("{}", x)).collect_robj();
+        assert_eq!(robj.str_iter().unwrap().collect::<Vec<_>>(), vec!["0", "2"]);
+
         Ok(())
     }
 }
