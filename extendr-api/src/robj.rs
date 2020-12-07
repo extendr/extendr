@@ -345,7 +345,7 @@ impl Robj {
             INTSXP => unsafe {
                 let vector = self.get();
                 let levels = self.getAttrib(&Robj::levelsSymbol());
-                if levels.sexptype() == STRSXP {
+                if self.isFactor() && levels.sexptype() == STRSXP {
                     Some(StrIter {vector, i, len, levels: levels.get()})
                 } else {
                     None
