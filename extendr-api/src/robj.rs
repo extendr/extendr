@@ -319,22 +319,20 @@ impl Robj {
     /// Get an iterator over a string vector.
     /// Returns None if the object is not a string vector
     /// but works for factors.
+    ///
     /// ```
     /// use extendr_api::*;
     ///
     /// start_r();
     ///
-    /// // Get an iterator over strings in an Robj.
     /// let obj = Robj::from(vec!["a", "b", "c"]);
     /// assert_eq!(obj.str_iter().unwrap().collect::<Vec<_>>(), vec!["a", "b", "c"]);
     /// 
-    /// // Also works for factors.
-    /// let x_vec = &["abcd", "def", "fg", "fg"][..];
-    /// let data_frame = data_frame!(x = x_vec.clone());
-    /// let c : Vec<_> = data_frame.list_iter().unwrap().collect();
-    /// if c[0].levels().is_some() {
-    ///    assert_eq!(c[0].str_iter().unwrap().collect::<Vec<_>>(), x_vec);
-    /// }
+    /// let factor = factor!(vec!["abcd", "def", "fg", "fg"]);
+    /// assert_eq!(factor.levels().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg"]);
+    /// assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);
+    /// assert_eq!(factor.str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
+    /// assert_eq!(factor.str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
     /// ```
     pub fn str_iter(&self) -> Option<StrIter> {
         let i = 0;
@@ -844,7 +842,7 @@ impl Robj {
         unsafe { new_owned(Rf_VectorToPairList(self.get())) }
     }
 
-    /// Assign an integer to each unique string and return a "factor".
+    /// Convert a factor to a string vector.
     pub fn asCharacterFactor(&self) -> Robj {
         unsafe { new_owned(Rf_asCharacterFactor(self.get())) }
     }
@@ -1933,31 +1931,6 @@ mod tests {
 
         let p = Robj::eval_string("1L + 1L")?;
         assert_eq!(p, Robj::from(2));
-        Ok(())
-    }
-
-    #[test]
-    fn str_iter_test() -> Result<(), AnyError> {
-        start_r();
-        let obj = Robj::from(vec!["a", "b", "c"]);
-        assert_eq!(obj.str_iter().unwrap().collect::<Vec<_>>(), vec!["a", "b", "c"]);
-
-        // Dataframe example thanks to jbabyhacker
-        let x_vec = &["abcd", "def", "fg", "fg"][..];
-        let y_vec = &[3.0, 4.0, 5.0, 6.0][..];
-        let z_vec = &[6, 7, 8, 9][..];
-
-        let data_frame = data_frame!(x = x_vec.clone(), y = y_vec.clone(), z = z_vec.clone());
-
-        assert!(data_frame.inherits("data.frame"));
-    
-        println!("{:?}", data_frame);
-    
-        let c : Vec<_> = data_frame.list_iter().unwrap().collect();
-        println!("levels={:?}", c[0].levels());
-        assert_eq!(c[0].str_iter().unwrap().collect::<Vec<_>>(), x_vec);
-        assert_eq!(c[1].as_f64_slice(), Some(y_vec));
-        assert_eq!(c[2].as_i32_slice(), Some(z_vec));
         Ok(())
     }
 }
