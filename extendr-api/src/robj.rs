@@ -317,6 +317,25 @@ impl Robj {
     }
 
     /// Get an iterator over a string vector.
+    /// Returns None if the object is not a string vector
+    /// but works for factors.
+    /// ```
+    /// use extendr_api::*;
+    ///
+    /// start_r();
+    ///
+    /// // Get an iterator over strings in an Robj.
+    /// let obj = Robj::from(vec!["a", "b", "c"]);
+    /// assert_eq!(obj.str_iter().unwrap().collect::<Vec<_>>(), vec!["a", "b", "c"]);
+    /// 
+    /// // Also works for factors.
+    /// let x_vec = &["abcd", "def", "fg", "fg"][..];
+    /// let data_frame = data_frame!(x = x_vec.clone());
+    /// let c : Vec<_> = data_frame.list_iter().unwrap().collect();
+    /// if c[0].levels().is_some() {
+    ///    assert_eq!(c[0].str_iter().unwrap().collect::<Vec<_>>(), x_vec);
+    /// }
+    /// ```
     pub fn str_iter(&self) -> Option<StrIter> {
         let i = 0;
         let len = self.len();
