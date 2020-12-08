@@ -64,16 +64,16 @@ macro_rules! impl_prim_from_robj {
         impl<'a> FromRobj<'a> for $t {
             fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
                 if let Some(v) = robj.as_i32_slice() {
-                    if v.len() == 0 {
-                        Err("zero length vector")
-                    } else {
-                        Ok(v[0] as Self)
+                    match v.len() {
+                        0 => Err("zero length vector"),
+                        1 => Ok(v[0] as Self),
+                        _ => Err(">1 length vector"),
                     }
                 } else if let Some(v) = robj.as_f64_slice() {
-                    if v.len() == 0 {
-                        Err("zero length vector")
-                    } else {
-                        Ok(v[0] as Self)
+                    match v.len() {
+                        0 => Err("zero length vector"),
+                        1 => Ok(v[0] as Self),
+                        _ => Err(">1 length vector"),
                     }
                 } else {
                     Err("unable to convert R object to primitive")
