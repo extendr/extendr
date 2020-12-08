@@ -1834,6 +1834,11 @@ mod tests {
 
         let hello = Robj::from("hello");
         assert_eq!(<&str>::from_robj(&hello), Ok("hello"));
+
+        // conversion from a vector to a scalar value
+        assert_eq!(<i32>::from_robj(&Robj::from(vec![].as_slice() as &[i32])), Err("zero length vector"));
+        assert_eq!(<i32>::from_robj(&Robj::from(vec![1].as_slice() as &[i32])), Ok(1));
+        assert_eq!(<i32>::from_robj(&Robj::from(vec![1, 2].as_slice() as &[i32])), Err(">1 length vector"));
     }
     #[test]
     fn test_to_robj() {
