@@ -160,6 +160,24 @@
 <span id="157">157</span>
 <span id="158">158</span>
 <span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! rmacros - a set of macros to call actual R functions in a rusty way.</span>
@@ -268,6 +286,24 @@
     };
     ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
         <span class="macro">lang</span><span class="macro">!</span>(<span class="string">&quot;data.frame&quot;</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>).<span class="ident">eval_blind</span>()
+    };
+}
+
+<span class="doccomment">/// Create a factor.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Example:</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// use extendr_api::*;</span>
+<span class="doccomment">/// start_r();</span>
+<span class="doccomment">/// let factor = factor!(vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
+<span class="doccomment">/// assert_eq!(factor.levels().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;]);</span>
+<span class="doccomment">/// assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);</span>
+<span class="doccomment">/// assert_eq!(factor.str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
+<span class="doccomment">/// ```</span>
+<span class="attribute">#[<span class="ident">macro_export</span>]</span>
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">factor</span> {
+    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="macro">lang</span><span class="macro">!</span>(<span class="string">&quot;factor&quot;</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>).<span class="ident">eval_blind</span>()
     };
 }
 
