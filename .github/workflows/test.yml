@@ -66,7 +66,6 @@ jobs:
             mingw-w64-x86_64-clang
             mingw-w64-x86_64-headers-git
             mingw-w64-x86_64-make
-            mingw-w64-x86_64-pkg-config
       - uses: r-lib/actions/setup-r@v1
         with:
           r-version: 'release'
