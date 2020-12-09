@@ -317,14 +317,39 @@ impl Robj {
     }
 
     /// Get an iterator over a string vector.
+    /// Returns None if the object is not a string vector
+    /// but works for factors.
+    ///
+    /// ```
+    /// use extendr_api::*;
+    ///
+    /// start_r();
+    ///
+    /// let obj = Robj::from(vec!["a", "b", "c"]);
+    /// assert_eq!(obj.str_iter().unwrap().collect::<Vec<_>>(), vec!["a", "b", "c"]);
+    /// 
+    /// let factor = factor!(vec!["abcd", "def", "fg", "fg"]);
+    /// assert_eq!(factor.levels().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg"]);
+    /// assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);
+    /// assert_eq!(factor.str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
+    /// assert_eq!(factor.str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
+    /// ```
     pub fn str_iter(&self) -> Option<StrIter> {
+        let i = 0;
+        let len = self.len();
         match self.sexptype() {
             STRSXP => unsafe {
-                Some(StrIter {
-                    vector: self.get(),
-                    i: 0,
-                    len: self.len(),
-                })
+                let vector = self.get();
+                Some(StrIter {vector, i, len, levels: R_NilValue})
+            },
+            INTSXP => unsafe {
+                let vector = self.get();
+                let levels = self.getAttrib(&Robj::levelsSymbol());
+                if self.isFactor() && levels.sexptype() == STRSXP {
+                    Some(StrIter {vector, i, len, levels: levels.get()})
+                } else {
+                    None
+                }
             },
             _ => None,
         }
@@ -518,6 +543,25 @@ impl Robj {
             }
         }
         None
+    }
+
+    /// Get the class attribute as a string iterator if one exists.
+    pub fn class(&self) -> Option<StrIter> {
+        self.getAttrib(&Robj::classSymbol()).str_iter()
+    }
+
+    /// Return true if this class inherits this class.
+    pub fn inherits(&self, classname: &str) -> bool {
+        if let Some(mut iter) = self.class() {
+            iter.find(|&n| n == classname).is_some()
+        } else {
+            false
+        }
+    }
+
+    /// Get the levels attribute as a string iterator if one exists.
+    pub fn levels(&self) -> Option<StrIter> {
+        self.getAttrib(&Robj::levelsSymbol()).str_iter()
     }
 }
 
@@ -798,7 +842,7 @@ impl Robj {
         unsafe { new_owned(Rf_VectorToPairList(self.get())) }
     }
 
-    /// Assign an integer to each unique string and return a "factor".
+    /// Convert a factor to a string vector.
     pub fn asCharacterFactor(&self) -> Robj {
         unsafe { new_owned(Rf_asCharacterFactor(self.get())) }
     }
@@ -881,6 +925,7 @@ impl Robj {
     */
 
     /// Get a specific attribute as a borrowed robj.
+    /// Return R_NilValue on error.
     pub fn getAttrib(&self, name: &Robj) -> Robj {
         if self.sexptype() == CHARSXP {
             // Avoid R error.
@@ -1686,12 +1731,27 @@ pub struct StrIter {
     vector: SEXP,
     i: usize,
     len: usize,
+    levels: SEXP,
 }
 
 impl StrIter {
     /// Make an empty str iterator.
     pub fn new() -> Self {
-        unsafe { Self { vector: R_NilValue, i: 0, len: 0 } }
+        unsafe { Self { vector: R_NilValue, i: 0, len: 0, levels: R_NilValue } }
+    }
+}
+
+// Get a string reference from a CHARSXP
+fn str_from_strsxp<'a>(sexp: SEXP, index: isize) -> &'a str {
+    unsafe {
+        if index < 0 || index >= Rf_xlength(sexp) {
+            ""
+        } else {
+            let charsxp = STRING_ELT(sexp, index);
+            let ptr = R_CHAR(charsxp) as *const u8;
+            let slice = std::slice::from_raw_parts(ptr, Rf_xlength(charsxp) as usize);
+            std::str::from_utf8_unchecked(slice)
+        }
     }
 }
 
@@ -1703,16 +1763,18 @@ impl Iterator for StrIter {
     }
 
     fn next(&mut self) -> Option<Self::Item> {
-        let i = self.i;
-        self.i += 1;
-        if i >= self.len {
-            return None;
-        } else {
-            unsafe {
-                let sexp = STRING_ELT(self.vector, i as isize);
-                let ptr = R_CHAR(sexp) as *const u8;
-                let slice = std::slice::from_raw_parts(ptr, Rf_xlength(sexp) as usize);
-                Some(std::str::from_utf8_unchecked(slice))
+        unsafe {
+            let i = self.i;
+            self.i += 1;
+            if i >= self.len {
+                return None;
+            } else if TYPEOF(self.vector) as u32 == STRSXP {
+                Some(str_from_strsxp(self.vector, i as isize))
+            } else if TYPEOF(self.vector) as u32 == INTSXP && TYPEOF(self.levels) as u32 == STRSXP {
+                let j = *(INTEGER(self.vector).offset(i as isize));
+                Some(str_from_strsxp(self.levels, j as isize - 1))
+            } else {
+                return None;
             }
         }
     }
@@ -1726,8 +1788,10 @@ impl Iterator for StrIter {
 impl std::fmt::Debug for StrIter {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "[")?;
+        let mut comma = "";
         for s in self.clone() {
-            write!(f, "{:?}", s)?;
+            write!(f, "{}{:?}", comma, s)?;
+            comma = ", ";
         }
         write!(f, "]")
     }
@@ -1737,6 +1801,7 @@ impl std::fmt::Debug for StrIter {
 mod tests {
     use super::*;
     use crate::engine::*;
+    use crate::*;
 
     #[test]
     fn test_debug() {
