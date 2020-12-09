@@ -64,16 +64,16 @@ macro_rules! impl_prim_from_robj {
         impl<'a> FromRobj<'a> for $t {
             fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
                 if let Some(v) = robj.as_i32_slice() {
-                    if v.len() == 0 {
-                        Err("zero length vector")
-                    } else {
-                        Ok(v[0] as Self)
+                    match v.len() {
+                        0 => Err("Input must be of length 1. Vector of length zero given."),
+                        1 => Ok(v[0] as Self),
+                        _ => Err("Input must be of length 1. Vector of length >1 given."),
                     }
                 } else if let Some(v) = robj.as_f64_slice() {
-                    if v.len() == 0 {
-                        Err("zero length vector")
-                    } else {
-                        Ok(v[0] as Self)
+                    match v.len() {
+                        0 => Err("Input must be of length 1. Vector of length zero given."),
+                        1 => Ok(v[0] as Self),
+                        _ => Err("Input must be of length 1. Vector of length >1 given."),
                     }
                 } else {
                     Err("unable to convert R object to primitive")
@@ -1834,6 +1834,11 @@ mod tests {
 
         let hello = Robj::from("hello");
         assert_eq!(<&str>::from_robj(&hello), Ok("hello"));
+
+        // conversion from a vector to a scalar value
+        assert_eq!(<i32>::from_robj(&Robj::from(vec![].as_slice() as &[i32])), Err("Input must be of length 1. Vector of length zero given."));
+        assert_eq!(<i32>::from_robj(&Robj::from(vec![1].as_slice() as &[i32])), Ok(1));
+        assert_eq!(<i32>::from_robj(&Robj::from(vec![1, 2].as_slice() as &[i32])), Err("Input must be of length 1. Vector of length >1 given."));
     }
     #[test]
     fn test_to_robj() {
