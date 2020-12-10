@@ -18,12 +18,11 @@ You will then be able to call R code from Rust.
 
 ```toml
 [dependencies]
-extendr-api = "0.1.4"
+extendr-api = "0.1.10"
 ```
 ## Installation - R
 
-For now, copy one of the examples in `examples/R`. An R package will
-be available shortly help to build R packages in Rust.
+There are two ways you can use the extendr API from R. First, you can use the [rextendr](https://extendr.github.io/rextendr/) package to call individual Rust functions from an R session. Second, you can write an R package that uses compiled Rust code, see the [helloextendr](https://github.com/extendr/helloextendr) repo for a minimal example.
 
 ## Overview
 
@@ -103,7 +102,6 @@ type which wraps the native R object type. This supports a large
 subset of the R internals functions, but wrapped to prevent
 accidental segfaults and failures.
 
-```
 ## extendr roadmap
 
 ### Basic
@@ -131,7 +129,6 @@ accidental segfaults and failures.
 - [ ] Bindings for rust-bio
 
 ## publishing the crate
-```
 
 There are two scripts in the root on the repo:
 
