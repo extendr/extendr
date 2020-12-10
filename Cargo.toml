@@ -2,6 +2,7 @@
 
 members = [
 	"extendr-api",
+	"extendr-engine",
 	"extendr-macros",
 ]
 

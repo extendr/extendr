@@ -370,7 +370,7 @@ impl Robj {
     /// ```
     /// use extendr_api::*;
     ///
-    /// start_r();
+    /// extendr_engine::start_r();
     ///
     /// let obj = Robj::from(vec!["a", "b", "c"]);
     /// assert_eq!(obj.str_iter().unwrap().collect::<Vec<_>>(), vec!["a", "b", "c"]);
@@ -406,7 +406,7 @@ impl Robj {
     /// Owned strings have long lifetimes, but are much slower than references.
     /// ```
     ///    use extendr_api::*;
-    ///    start_r();
+    ///    extendr_engine::start_r();
     ///    let robj1 = Robj::from("xyz");
     ///    assert_eq!(robj1.as_string_vector(), Some(vec!["xyz".to_string()]));
     ///    let robj2 = Robj::from(1);
@@ -424,7 +424,7 @@ impl Robj {
     /// String references (&str) are faster, but have short lifetimes.
     /// ```
     ///    use extendr_api::*;
-    ///    start_r();
+    ///    extendr_engine::start_r();
     ///    let robj1 = Robj::from("xyz");
     ///    assert_eq!(robj1.as_str_vector(), Some(vec!["xyz"]));
     ///    let robj2 = Robj::from(1);
@@ -1846,7 +1846,7 @@ pub trait RobjItertools : Iterator {
     /// ```
     /// use extendr_api::*;
     ///
-    /// start_r();
+    /// extendr_engine::start_r();
     ///
     /// // Integer iterators.
     /// let robj = (0..3).collect_robj();
@@ -2086,9 +2086,8 @@ impl std::fmt::Debug for StrIter {
 
 #[cfg(test)]
 mod tests {
+    use extendr_engine::*;
     use super::*;
-    use crate::engine::*;
-    use crate::*;
 
     #[test]
     fn test_debug() {

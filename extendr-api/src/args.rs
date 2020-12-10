@@ -105,7 +105,7 @@ macro_rules! lang {
 mod tests {
     //use crate::args;
     use super::*;
-    use crate::start_r;
+    use extendr_engine::start_r;
 
     #[test]
     fn test_args() {

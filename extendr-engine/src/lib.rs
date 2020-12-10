@@ -19,24 +19,6 @@ macro_rules! cstr_mut {
     };
 }
 
-static mut R_ERROR_BUF: Vec<u8> = Vec::new();
-
-/// Throw an R error if a result is an error.
-pub fn unwrap_or_throw<T>(r: Result<T, &'static str>) -> T {
-    unsafe {
-        match r {
-            Err(e) => {
-                R_ERROR_BUF.clear();
-                R_ERROR_BUF.extend(e.bytes());
-                R_ERROR_BUF.push(0);
-                Rf_error(R_ERROR_BUF.as_slice().as_ptr() as *mut raw::c_char);
-                unreachable!("");
-            }
-            Ok(v) => v,
-        }
-    }
-}
-
 static START_R: Once = Once::new();
 
 pub fn start_r() {
@@ -65,7 +47,9 @@ pub fn start_r() {
             // Maybe 8MB is a bit small.
             // eprintln!("R_CStackLimit={:016x}", R_CStackLimit);
 
-            R_CStackLimit = usize::max_value();
+            if cfg!(not(target_os = "windows")) {
+                R_CStackLimit = usize::max_value();
+            }
 
             setup_Rmainloop();
         }
