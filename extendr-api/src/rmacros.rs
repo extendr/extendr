@@ -113,7 +113,7 @@ macro_rules! data_frame {
 /// Example:
 /// ```
 /// use extendr_api::*;
-/// start_r();
+/// extendr_engine::start_r();
 /// let factor = factor!(vec!["abcd", "def", "fg", "fg"]);
 /// assert_eq!(factor.levels().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg"]);
 /// assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);
