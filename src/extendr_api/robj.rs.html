@@ -2305,7 +2305,6 @@
 <span id="2302">2302</span>
 <span id="2303">2303</span>
 <span id="2304">2304</span>
-<span id="2305">2305</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! R object handling.</span>
 <span class="doccomment">//!</span>
@@ -2679,7 +2678,7 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::*;</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// start_r();</span>
+    <span class="doccomment">/// extendr_engine::start_r();</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// let obj = Robj::from(vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</span>
     <span class="doccomment">/// assert_eq!(obj.str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</span>
@@ -2715,7 +2714,7 @@
     <span class="doccomment">/// Owned strings have long lifetimes, but are much slower than references.</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    start_r();</span>
+    <span class="doccomment">///    extendr_engine::start_r();</span>
     <span class="doccomment">///    let robj1 = Robj::from(&quot;xyz&quot;);</span>
     <span class="doccomment">///    assert_eq!(robj1.as_string_vector(), Some(vec![&quot;xyz&quot;.to_string()]));</span>
     <span class="doccomment">///    let robj2 = Robj::from(1);</span>
@@ -2733,7 +2732,7 @@
     <span class="doccomment">/// String references (&amp;str) are faster, but have short lifetimes.</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    start_r();</span>
+    <span class="doccomment">///    extendr_engine::start_r();</span>
     <span class="doccomment">///    let robj1 = Robj::from(&quot;xyz&quot;);</span>
     <span class="doccomment">///    assert_eq!(robj1.as_str_vector(), Some(vec![&quot;xyz&quot;]));</span>
     <span class="doccomment">///    let robj2 = Robj::from(1);</span>
@@ -4155,7 +4154,7 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::*;</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// start_r();</span>
+    <span class="doccomment">/// extendr_engine::start_r();</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// // Integer iterators.</span>
     <span class="doccomment">/// let robj = (0..3).collect_robj();</span>
@@ -4395,9 +4394,8 @@
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
+    <span class="kw">use</span> <span class="ident">extendr_engine</span>::<span class="kw-2">*</span>;
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">engine</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_debug</span>() {

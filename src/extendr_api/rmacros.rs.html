@@ -190,7 +190,7 @@
 <span class="doccomment">/// Example:</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use extendr_api::*;</span>
-<span class="doccomment">/// start_r();</span>
+<span class="doccomment">/// extendr_engine::start_r();</span>
 <span class="doccomment">/// let fred = r!(1);</span>
 <span class="doccomment">/// assert_eq!(fred, Robj::from(1));</span>
 <span class="doccomment">/// ```</span>
@@ -206,7 +206,7 @@
 <span class="doccomment">/// Example:</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use extendr_api::*;</span>
-<span class="doccomment">/// start_r();</span>
+<span class="doccomment">/// extendr_engine::start_r();</span>
 <span class="doccomment">/// let fred = c!(1, 2, 3);</span>
 <span class="doccomment">/// assert_eq!(fred, Robj::from(&amp;[1, 2, 3][..]));</span>
 <span class="doccomment">/// ```</span>
@@ -225,7 +225,7 @@
 <span class="doccomment">/// Example:</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use extendr_api::*;</span>
-<span class="doccomment">/// start_r();</span>
+<span class="doccomment">/// extendr_engine::start_r();</span>
 <span class="doccomment">/// let fred = rep!(1., 3);</span>
 <span class="doccomment">/// assert_eq!(fred, Robj::from(&amp;[1., 1., 1.][..]));</span>
 <span class="doccomment">/// ```</span>
@@ -241,7 +241,7 @@
 <span class="doccomment">/// Example:</span>
 <span class="doccomment">/// ```no_run</span>
 <span class="doccomment">/// use extendr_api::*;</span>
-<span class="doccomment">/// start_r();</span>
+<span class="doccomment">/// extendr_engine::start_r();</span>
 <span class="doccomment">/// let mydata = read_table!(&quot;mydata.csv&quot;).unwrap();</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
@@ -256,7 +256,7 @@
 <span class="doccomment">/// Example:</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use extendr_api::*;</span>
-<span class="doccomment">/// start_r();</span>
+<span class="doccomment">/// extendr_engine::start_r();</span>
 <span class="doccomment">/// let mylist = list!(x=1, y=2);</span>
 <span class="doccomment">/// assert_eq!(mylist, List(&amp;[1.into(), 2.into()]));</span>
 <span class="doccomment">/// ```</span>
@@ -275,7 +275,7 @@
 <span class="doccomment">/// Example:</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use extendr_api::*;</span>
-<span class="doccomment">/// start_r();</span>
+<span class="doccomment">/// extendr_engine::start_r();</span>
 <span class="doccomment">/// let mydata = data_frame!(x=1, y=2);</span>
 <span class="doccomment">/// assert_eq!(mydata, List(&amp;[1.into(), 2.into()]));</span>
 <span class="doccomment">/// ```</span>
@@ -294,7 +294,7 @@
 <span class="doccomment">/// Example:</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use extendr_api::*;</span>
-<span class="doccomment">/// start_r();</span>
+<span class="doccomment">/// extendr_engine::start_r();</span>
 <span class="doccomment">/// let factor = factor!(vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
 <span class="doccomment">/// assert_eq!(factor.levels().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;]);</span>
 <span class="doccomment">/// assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);</span>
