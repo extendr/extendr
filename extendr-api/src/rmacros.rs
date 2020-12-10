@@ -108,6 +108,24 @@ macro_rules! data_frame {
     };
 }
 
+/// Create a factor.
+///
+/// Example:
+/// ```
+/// use extendr_api::*;
+/// start_r();
+/// let factor = factor!(vec!["abcd", "def", "fg", "fg"]);
+/// assert_eq!(factor.levels().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg"]);
+/// assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);
+/// assert_eq!(factor.str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
+/// ```
+#[macro_export]
+macro_rules! factor {
+    ($($rest: tt)*) => {
+        lang!("factor", $($rest)*).eval_blind()
+    };
+}
+
 /// Print via the R output stream.
 ///
 /// Works like [`print!`] but integrates with R and respects
