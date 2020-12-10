@@ -134,6 +134,26 @@ impl<'a> FromRobj<'a> for Vec<f64> {
     }
 }
 
+macro_rules! impl_iter_from_robj {
+    ($t: ty, $iter_fn: ident) => {
+        impl<'a> FromRobj<'a> for $t {
+            fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+                if let Some(v) = robj.$iter_fn() {
+                    Ok(v)
+                } else {
+                    Err("not a vector of strings")
+                }
+            }
+        }
+    };
+}
+
+impl_iter_from_robj!(StrIter, str_iter);
+impl_iter_from_robj!(VecIter, list_iter);
+impl_iter_from_robj!(IntegerIter<'a>, integer_iter);
+impl_iter_from_robj!(NumericIter<'a>, numeric_iter);
+impl_iter_from_robj!(LogicalIter<'a>, logical_iter);
+
 /// Input Numeric vector parameter.
 /// Note we don't accept mutable R objects as parameters
 /// but you can make this behaviour using unsafe code.
@@ -218,9 +238,18 @@ impl Robj {
         self.as_typed_slice()
     }
 
-    /// Get a read-only reference to the content of an integer or logical vector.
+    /// Get a read-only reference to the content of an integer vector.
     pub fn as_integer_slice(&self) -> Option<&[i32]> {
         self.as_typed_slice()
+    }
+
+    /// Get an iterator over integer elements of this slice.
+    pub fn integer_iter(&self) -> Option<IntegerIter> {
+        if let Some(slice) = self.as_integer_slice() {
+            Some(slice.iter())
+        } else {
+            None
+        }
     }
 
     /// Get a Vec<i32> copied from the object.
@@ -246,6 +275,15 @@ impl Robj {
         }
     }
 
+    /// Get an iterator over logical elements of this slice.
+    pub fn logical_iter(&self) -> Option<LogicalIter> {
+        if let Some(slice) = self.as_logical_slice() {
+            Some(slice.iter())
+        } else {
+            None
+        }
+    }
+
     /// Get a read-only reference to the content of a double vector.
     pub fn as_f64_slice(&self) -> Option<&[f64]> {
         self.as_typed_slice()
@@ -254,6 +292,15 @@ impl Robj {
     /// Get a read-only reference to the content of a double vector.
     pub fn as_numeric_slice(&self) -> Option<&[f64]> {
         self.as_typed_slice()
+    }
+
+    /// Get an iterator over numeric elements of this slice.
+    pub fn numeric_iter(&self) -> Option<NumericIter> {
+        if let Some(slice) = self.as_numeric_slice() {
+            Some(slice.iter())
+        } else {
+            None
+        }
     }
 
     /// Get a Vec<f64> copied from the object.
@@ -1924,6 +1971,11 @@ impl std::fmt::Debug for VecIter {
 }
 
 /// Iterator over the objects in a vector or string.
+pub type IntegerIter<'a> = std::slice::Iter<'a, i32>;
+pub type NumericIter<'a> = std::slice::Iter<'a, f64>;
+pub type LogicalIter<'a> = std::slice::Iter<'a, Bool>;
+
+// Iterator over the objects in a vector or string.
 #[derive(Clone)]
 pub struct ListIter {
     list_elem: SEXP,
@@ -2214,5 +2266,40 @@ mod tests {
         assert_eq!(robj.as_str_vector(), Some(vec!["0", "2"]));
 
         Ok(())
+    }
+    
+    // Test that we can use Iterators as the input to functions.
+    // eg.
+    // #[extendr]
+    // fn fred(a: NumericIter, b: NumericIter) -> NumericIter {
+    // }
+    #[test]
+    fn input_iterator_test() {
+        start_r();
+
+        let src : &[&str] = &["1", "2", "3"];
+        let robj = Robj::from(src);
+        let iter = <StrIter>::from_robj(&robj).unwrap();
+        assert_eq!(iter.collect::<Vec<_>>(), src);
+
+        let src = &[Robj::from(1), Robj::from(2), Robj::from(3)];
+        let robj = Robj::from(List(src));
+        let iter = <VecIter>::from_robj(&robj).unwrap();
+        assert_eq!(iter.collect::<Vec<_>>(), src);
+
+        let src: &[i32] = &[1, 2, 3];
+        let robj = Robj::from(src);
+        let iter = <IntegerIter>::from_robj(&robj).unwrap();
+        assert_eq!(iter.cloned().collect::<Vec<_>>(), src);
+
+        let src: &[f64] = &[1., 2., 3.];
+        let robj = Robj::from(src);
+        let iter = <NumericIter>::from_robj(&robj).unwrap();
+        assert_eq!(iter.cloned().collect::<Vec<_>>(), src);
+
+        let src: &[Bool] = &[Bool::from(true), Bool::from(false), Bool::from(true)];
+        let robj = Robj::from(src);
+        let iter = <LogicalIter>::from_robj(&robj).unwrap();
+        assert_eq!(iter.cloned().collect::<Vec<_>>(), src);
     }
 }
