@@ -115,6 +115,7 @@ fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix:
     let init_name = format_ident!("{}{}{}", INIT_PREFIX, prefix, func_name);
 
     let wrap_name_str = format!("{}", wrap_name);
+    let panic_str = format!("{} paniced.\0", func_name);
 
     let inputs = &sig.inputs;
     let has_self = match inputs.iter().next() {
@@ -181,7 +182,15 @@ fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix:
             unsafe {
                 use extendr_api::FromRobj;
                 #( #convert_args )*
-                extendr_api::Robj::from(#call_name(#actual_args)).get()
+                match std::panic::catch_unwind(||
+                    extendr_api::Robj::from(#call_name(#actual_args)).get()
+                ) {
+                    Ok(res) => res,
+                    Err(_) => {
+                        Rf_error(#panic_str.as_ptr() as * const std::os::raw::c_char);
+                        R_NilValue
+                    }
+                }
             }
         }
     ));
