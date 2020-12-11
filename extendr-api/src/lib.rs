@@ -124,6 +124,22 @@ pub unsafe fn register_call_methods(info: *mut libR_sys::DllInfo, methods: &[Cal
     libR_sys::R_forceSymbols(info, 1);
 }
 
+/// This function is use by the wrapper logic to catch
+/// panics on return.
+pub fn handle_panic<F>(err_str: &str, f: F) -> SEXP
+where
+    F : FnOnce() -> SEXP,
+    F : std::panic::UnwindSafe
+{
+    match std::panic::catch_unwind(f) {
+        Ok(res) => res,
+        Err(_) => {
+            unsafe { libR_sys::Rf_error(err_str.as_ptr() as * const std::os::raw::c_char); }
+            unreachable!("handle_panic unreachable")
+        }
+    }
+}
+
 // pub fn add_function_to_namespace(namespace: &str, fn_name: &str, wrap_name: &str) {
 //     let rcode = format!("{}::{} <- function(...) .Call(\"{}\", ...)", namespace, fn_name, wrap_name);
 //     eprintln!("[{}]", rcode);

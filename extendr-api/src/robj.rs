@@ -2133,6 +2133,7 @@ type NamedListIter = std::iter::Zip<StrIter, VecIter>;
 mod tests {
     use extendr_engine::*;
     use super::*;
+    use crate::engine::*;
 
     #[test]
     fn test_debug() {

@@ -182,15 +182,9 @@ fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix:
             unsafe {
                 use extendr_api::FromRobj;
                 #( #convert_args )*
-                match std::panic::catch_unwind(||
+                extendr_api::handle_panic(#panic_str, ||
                     extendr_api::Robj::from(#call_name(#actual_args)).get()
-                ) {
-                    Ok(res) => res,
-                    Err(_) => {
-                        Rf_error(#panic_str.as_ptr() as * const std::os::raw::c_char);
-                        R_NilValue
-                    }
-                }
+                )
             }
         }
     ));
