@@ -219,7 +219,7 @@ impl<'a> FromRobj<'a> for Robj {
 impl<'a> FromRobj<'a> for HashMap<String, Robj> {
     fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
         if let Some(iter) = robj.named_list_iter() {
-            Ok(iter.map(|(k, v)| (k.to_string(), v)).collect::<HashMap<String, Robj>>())
+            Ok(iter.map(|(k, v)| (k.to_string(), v.to_owned())).collect::<HashMap<String, Robj>>())
         } else {
             Err("expected a list")
         }
@@ -596,6 +596,14 @@ impl Robj {
         match self {
             Robj::Owned(_) => true,
             _ => false,
+        }
+    }
+
+    // Convert the Robj to an owned one.
+    pub fn to_owned(self) -> Robj {
+        match self {
+            Robj::Owned(_) => self,
+            _ => unsafe { new_owned(self.get()) }
         }
     }
 }
