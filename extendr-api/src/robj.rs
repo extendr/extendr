@@ -2231,7 +2231,7 @@ mod tests {
 
         use std::collections::HashMap;
         let hmap = [("a".into(), 1.into()), ("b".into(), 2.into())].iter().cloned().collect::<HashMap<String, Robj>>();
-        let list = list!(a=1, b=2);
+        let list = crate::list!(a=1, b=2);
         assert_eq!(<HashMap<String, Robj>>::from_robj(&list), Ok(hmap));
     }
     #[test]

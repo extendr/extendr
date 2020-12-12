@@ -149,9 +149,6 @@ mod tests {
     use super::*;
     use crate as extendr_api;
 
-    // Allow macros in the tests.
-    use crate::*;
-
     use extendr_macros::extendr;
     use extendr_macros::extendr_module;
 
