@@ -2237,7 +2237,19 @@ mod tests {
         assert_eq!(<i32>::from_robj(&Robj::from(vec![1].as_slice() as &[i32])), Ok(1));
         assert_eq!(<i32>::from_robj(&Robj::from(vec![1, 2].as_slice() as &[i32])), Err("Input must be of length 1. Vector of length >1 given."));
 
+        // use std::collections::HashMap;
+        // let hmap1 = [("a".into(), 1.into()), ("b".into(), 2.into())].iter().cloned().collect::<HashMap<String, Robj>>();
+        // let list2 = hmap1.iter().collect_named_robj();
+        // let hmap_owned = <HashMap<String, Robj>>::from_robj(&list2).unwrap();
+        // let hmap_borrowed = <HashMap<&str, Robj>>::from_robj(&list2).unwrap();
         // assert_eq!(hmap_owned, hmap1);
+
+        // assert!(hmap_owned["a"].is_owned());
+        // assert_eq!(hmap_owned["a"], Robj::from(1));
+        // assert_eq!(hmap_owned["b"], Robj::from(2));
+
+        // assert_eq!(hmap_borrowed["a"], Robj::from(1));
+        // assert_eq!(hmap_borrowed["b"], Robj::from(2));
     }
     #[test]
     fn test_to_robj() {
