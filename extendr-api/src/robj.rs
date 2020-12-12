@@ -16,6 +16,7 @@ use crate::wrapper::*;
 use crate::AnyError;
 
 use ndarray::prelude::*;
+use std::collections::HashMap;
 
 /// Wrapper for an R S-expression pointer (SEXP).
 ///
@@ -93,6 +94,20 @@ impl_prim_from_robj!(i32);
 impl_prim_from_robj!(i64);
 impl_prim_from_robj!(f32);
 impl_prim_from_robj!(f64);
+
+impl<'a> FromRobj<'a> for bool {
+    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+        if let Some(v) = robj.as_logical_slice() {
+            match v.len() {
+                0 => Err("Input must be of length 1. Vector of length zero given."),
+                1 => Ok(v[0].to_bool()),
+                _ => Err("Input must be of length 1. Vector of length >1 given."),
+            }
+        } else {
+            Err("not a logical object")
+        }
+    }
+}
 
 impl<'a> FromRobj<'a> for &'a str {
     fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
@@ -198,6 +213,26 @@ make_array_view_2!(u8, RAW, "not a raw matrix", RAWSXP);
 impl<'a> FromRobj<'a> for Robj {
     fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
         Ok(unsafe { new_borrowed(robj.get()) })
+    }
+}
+
+impl<'a> FromRobj<'a> for HashMap<String, Robj> {
+    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+        if let Some(iter) = robj.named_list_iter() {
+            Ok(iter.map(|(k, v)| (k.to_string(), v)).collect::<HashMap<String, Robj>>())
+        } else {
+            Err("expected a list")
+        }
+    }
+}
+
+impl<'a> FromRobj<'a> for HashMap<&str, Robj> {
+    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+        if let Some(iter) = robj.named_list_iter() {
+            Ok(iter.map(|(k, v)| (k, v)).collect::<HashMap<&str, Robj>>())
+        } else {
+            Err("expected a list")
+        }
     }
 }
 
@@ -618,7 +653,7 @@ impl Robj {
     }
 
     /// Return an iterator over names and values of a list if they exist.
-    pub fn namesAndValues(&self) -> Option<std::iter::Zip<StrIter, VecIter>> {
+    pub fn named_list_iter(&self) -> Option<NamedListIter> {
         if let Some(names) = self.names() {
             if let Some(values) = self.list_iter() {
                 return Some(names.zip(values));
@@ -2084,6 +2119,8 @@ impl std::fmt::Debug for StrIter {
     }
 }
 
+type NamedListIter = std::iter::Zip<StrIter, VecIter>;
+
 #[cfg(test)]
 mod tests {
     use extendr_engine::*;
@@ -2134,6 +2171,7 @@ mod tests {
 
     #[test]
     fn test_from_robj() {
+        assert_eq!(<bool>::from_robj(&Robj::from(true)), Ok(true));
         assert_eq!(<u8>::from_robj(&Robj::from(1)), Ok(1));
         assert_eq!(<u16>::from_robj(&Robj::from(1)), Ok(1));
         assert_eq!(<u32>::from_robj(&Robj::from(1)), Ok(1));
@@ -2190,9 +2228,15 @@ mod tests {
         assert_eq!(<i32>::from_robj(&Robj::from(vec![].as_slice() as &[i32])), Err("Input must be of length 1. Vector of length zero given."));
         assert_eq!(<i32>::from_robj(&Robj::from(vec![1].as_slice() as &[i32])), Ok(1));
         assert_eq!(<i32>::from_robj(&Robj::from(vec![1, 2].as_slice() as &[i32])), Err("Input must be of length 1. Vector of length >1 given."));
+
+        use std::collections::HashMap;
+        let hmap = [("a".into(), 1.into()), ("b".into(), 2.into())].iter().cloned().collect::<HashMap<String, Robj>>();
+        let list = list!(a=1, b=2);
+        assert_eq!(<HashMap<String, Robj>>::from_robj(&list), Ok(hmap));
     }
     #[test]
     fn test_to_robj() {
+        assert_eq!(Robj::from(true), Robj::from(&[Bool::from(true)][..]));
         assert_eq!(Robj::from(1_u8), Robj::from(1));
         assert_eq!(Robj::from(1_u16), Robj::from(1));
         assert_eq!(Robj::from(1_u32), Robj::from(1));
