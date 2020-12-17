@@ -1,3 +1,56 @@
+//!
+//! Macros for generating wrappers for rust functions.
+
+//
+// We can invoke the #[extendr] macro on functions or struct impls.
+// 
+// eg.
+//
+// ```ignore
+// #[extendr]
+// fn hello() -> &'static str {
+//     "hello"
+// }
+// ```
+//
+// These macros add additional functions which you can see using the
+// `cargo expand` extension.
+//
+// Invoking the #[extendr_module] macro generates an entrypoint for the
+// library that will be called by R.
+//
+// ```ignore
+// #[no_mangle]
+// #[allow(non_snake_case)]
+// pub extern "C" fn R_init_hello(info: *mut extendr_api::DllInfo) {
+//     let mut call_methods = Vec::new();
+//     init__hello(info, &mut call_methods);
+//     unsafe { extendr_api::register_call_methods(info, call_methods.as_ref()) };
+// }
+// ```
+//
+// The module also generates the `init__` functions that provide metadata
+// to R to register the wrappers.
+//
+// ```ignore
+// #[allow(non_snake_case)]
+// fn init__hello(info: *mut extendr_api::DllInfo, call_methods: &mut Vec<extendr_api::CallMethod>) {
+//     call_methods.push(extendr_api::CallMethod {
+//         call_symbol: std::ffi::CString::new("wrap__hello").unwrap(),
+//         func_ptr: wrap__hello as *const u8,
+//         num_args: 0i32,
+//     })
+// }
+// ```
+//
+// In the case of struct impls we also generate the following:
+//
+// * Wrappers and init functions for all methods.
+// * A single init function that calls the other init functions for the methods.
+// * An input conversion from an external pointer to a reference and a move of that type.
+// * An output converstion from that type to an owned external pointer object.
+// * A finalizer for that type to free memory allocated.
+
 extern crate proc_macro;
 use proc_macro::{TokenStream};
 use syn::punctuated::Punctuated;
@@ -175,6 +228,19 @@ fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix:
         sig.inputs.clone().into_iter().collect(),
         &sig.output,
     );
+
+    // Generate wrappers for rust functions to be called from R.
+    // Example:
+    // ```
+    // #[no_mangle]
+    // #[allow(non_snake_case)]
+    // pub extern "C" fn wrap__hello() -> extendr_api::SEXP {
+    //     unsafe {
+    //         use extendr_api::FromRobj;
+    //         extendr_api::Robj::from(hello()).get()
+    //     }
+    // }
+    // ```
     wrappers.push(parse_quote!(
         #[no_mangle]
         #[allow(non_snake_case)]
@@ -189,6 +255,17 @@ fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix:
         }
     ));
 
+    // Generate init functions which gather metadata about functions and methods.
+    //
+    // Example:
+    // #[allow(non_snake_case)]
+    // fn init__hello(info: *mut extendr_api::DllInfo, call_methods: &mut Vec<extendr_api::CallMethod>) {
+    //     call_methods.push(extendr_api::CallMethod {
+    //         call_symbol: std::ffi::CString::new("wrap__hello").unwrap(),
+    //         func_ptr: wrap__hello as *const u8,
+    //         num_args: 0i32,
+    //     })
+    // }
     wrappers.push(parse_quote!(
         #[allow(non_snake_case)]
         fn #init_name(info: *mut extendr_api::DllInfo, call_methods: &mut Vec<extendr_api::CallMethod>) {
@@ -204,6 +281,36 @@ fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix:
 }
 
 /// Handle trait implementations.
+///
+/// Example:
+/// ```ignore
+/// use extendr_api::*;
+/// #[derive(Debug)]
+/// struct Person {
+///     pub name: String,
+/// }
+/// #[extendr]
+/// impl Person {
+///     fn new() -> Self {
+///         Self { name: "".to_string() }
+///     }
+///     fn set_name(&mut self, name: &str) {
+///         self.name = name.to_string();
+///     }
+///     fn name(&self) -> &str {
+///         self.name.as_str()
+///     }
+/// }
+/// #[extendr]
+/// fn aux_func() {
+/// }
+/// // Macro to generate exports
+/// extendr_module! {
+///     mod classes;
+///     impl Person;
+///     fn aux_func;
+/// }
+/// ```
 fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
     let opts = ExtendrOptions {};
     let self_ty = item_impl.self_ty.as_ref();
@@ -211,6 +318,19 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
     let prefix = format!("{}__", self_ty_name);
     let mut method_init_names = Vec::new();
     let mut wrappers = Vec::new();
+
+    // Generate wrappers for methods.
+    // eg.
+    // ```
+    // #[no_mangle]
+    // #[allow(non_snake_case)]
+    // pub extern "C" fn wrap__Person__new() -> extendr_api::SEXP {
+    //     unsafe {
+    //         use extendr_api::FromRobj;
+    //         extendr_api::Robj::from(<Person>::new()).get()
+    //     }
+    // }
+    // ```
     for impl_item in &mut item_impl.items {
         if let syn::ImplItem::Method(ref mut method) = impl_item {
             method_init_names.push(format_ident!("{}{}__{}", INIT_PREFIX, self_ty_name, method.sig.ident));
@@ -223,10 +343,13 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
     let finalizer_name = format_ident!("__finalize__{}", self_ty_name);
 
     let expanded = TokenStream::from(quote! {
+        // The impl itself copied from the source.
         #item_impl
 
+        // Function wrappers
         #( #wrappers )*
 
+        // Input conversion function for this type.
         impl<'a> extendr_api::FromRobj<'a> for &#self_ty {
             fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
                 if robj.check_external_ptr(#self_ty_name) {
@@ -237,6 +360,7 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
             }
         }
 
+        // Input conversion function for a reference to this type.
         impl<'a> extendr_api::FromRobj<'a> for &mut #self_ty {
             fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
                 if robj.check_external_ptr(#self_ty_name) {
@@ -247,6 +371,7 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
             }
         }
 
+        // Output conversion function for this type.
         impl From<#self_ty> for Robj {
             fn from(value: #self_ty) -> Self {
                 unsafe {
@@ -258,6 +383,7 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
             }
         }
 
+        // Function to free memory for this type.
         extern "C" fn #finalizer_name (sexp: extendr_api::SEXP) {
             unsafe {
                 let robj = extendr_api::new_borrowed(sexp);
@@ -269,6 +395,16 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
             }
         }
 
+        // Init function to call the method inits for this type.
+        // Example:
+        // ```ignore
+        // #[allow(non_snake_case)]
+        // fn init__Person(info: *mut extendr_api::DllInfo, call_methods: &mut Vec<extendr_api::CallMethod>) {
+        //     init__Person__new(info, call_methods);
+        //     init__Person__set_name(info, call_methods);
+        //     init__Person__name(info, call_methods);
+        // }
+        // ```
         #[allow(non_snake_case)]
         fn #init_name(info: *mut extendr_api::DllInfo, call_methods: &mut Vec<extendr_api::CallMethod>) {
             #( #method_init_names(info, call_methods); )*
@@ -292,6 +428,7 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
     }
 }
 
+// This structure contains parameters parsed from the #[extendr_module] definition.
 #[derive(Debug)]
 struct Module {
     modname: Option<Ident>,
@@ -299,6 +436,7 @@ struct Module {
     implnames: Vec<Ident>,
 }
 
+// Custom parser for the module.
 impl syn::parse::Parse for Module {
     fn parse(input: ParseStream) -> syn::Result<Self> {
         use syn::spanned::Spanned;
@@ -334,20 +472,31 @@ impl syn::parse::Parse for Module {
 
 /// Define a module and export symbols to R
 /// Example:
-///
+///```ignore
 /// extendr_module! {
 ///     mod name;
 ///     fn my_func1;
 ///     fn my_func2;
 ///     impl MyTrait;
 /// }
-/// 
+/// ```
+/// Outputs:
+///
+/// ```ignore
+/// #[no_mangle]
+/// #[allow(non_snake_case)]
+/// pub extern "C" fn R_init_hello(info: *mut extendr_api::DllInfo) {
+///     let mut call_methods = Vec::new();
+///     init__hello(info, &mut call_methods);
+///     unsafe { extendr_api::register_call_methods(info, call_methods.as_ref()) };
+/// }
+/// ```
 #[proc_macro]
 pub fn extendr_module(item: TokenStream) -> TokenStream {
     let module = parse_macro_input!(item as Module);
     let Module {modname, fnnames, implnames} = module;
     let modname = modname.unwrap();
-    let module_init_name = format_ident!("R_init_lib{}", modname);
+    let module_init_name = format_ident!("R_init_{}", modname);
 
     let fninitnames = fnnames.iter().map(|id| format_ident!("{}{}", INIT_PREFIX, id));
     let implinitnames = implnames.iter().map(|id| format_ident!("{}{}", INIT_PREFIX, id));
@@ -363,6 +512,3 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         }
     })
 }
-
-
-
