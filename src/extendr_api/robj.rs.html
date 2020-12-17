@@ -2305,6 +2305,67 @@
 <span id="2302">2302</span>
 <span id="2303">2303</span>
 <span id="2304">2304</span>
+<span id="2305">2305</span>
+<span id="2306">2306</span>
+<span id="2307">2307</span>
+<span id="2308">2308</span>
+<span id="2309">2309</span>
+<span id="2310">2310</span>
+<span id="2311">2311</span>
+<span id="2312">2312</span>
+<span id="2313">2313</span>
+<span id="2314">2314</span>
+<span id="2315">2315</span>
+<span id="2316">2316</span>
+<span id="2317">2317</span>
+<span id="2318">2318</span>
+<span id="2319">2319</span>
+<span id="2320">2320</span>
+<span id="2321">2321</span>
+<span id="2322">2322</span>
+<span id="2323">2323</span>
+<span id="2324">2324</span>
+<span id="2325">2325</span>
+<span id="2326">2326</span>
+<span id="2327">2327</span>
+<span id="2328">2328</span>
+<span id="2329">2329</span>
+<span id="2330">2330</span>
+<span id="2331">2331</span>
+<span id="2332">2332</span>
+<span id="2333">2333</span>
+<span id="2334">2334</span>
+<span id="2335">2335</span>
+<span id="2336">2336</span>
+<span id="2337">2337</span>
+<span id="2338">2338</span>
+<span id="2339">2339</span>
+<span id="2340">2340</span>
+<span id="2341">2341</span>
+<span id="2342">2342</span>
+<span id="2343">2343</span>
+<span id="2344">2344</span>
+<span id="2345">2345</span>
+<span id="2346">2346</span>
+<span id="2347">2347</span>
+<span id="2348">2348</span>
+<span id="2349">2349</span>
+<span id="2350">2350</span>
+<span id="2351">2351</span>
+<span id="2352">2352</span>
+<span id="2353">2353</span>
+<span id="2354">2354</span>
+<span id="2355">2355</span>
+<span id="2356">2356</span>
+<span id="2357">2357</span>
+<span id="2358">2358</span>
+<span id="2359">2359</span>
+<span id="2360">2360</span>
+<span id="2361">2361</span>
+<span id="2362">2362</span>
+<span id="2363">2363</span>
+<span id="2364">2364</span>
+<span id="2365">2365</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! R object handling.</span>
 <span class="doccomment">//!</span>
@@ -2324,6 +2385,7 @@
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">AnyError</span>;
 
 <span class="kw">use</span> <span class="ident">ndarray</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
 
 <span class="doccomment">/// Wrapper for an R S-expression pointer (SEXP).</span>
 <span class="doccomment">///</span>
@@ -2401,6 +2463,20 @@
 <span class="macro">impl_prim_from_robj</span><span class="macro">!</span>(<span class="ident">i64</span>);
 <span class="macro">impl_prim_from_robj</span><span class="macro">!</span>(<span class="ident">f32</span>);
 <span class="macro">impl_prim_from_robj</span><span class="macro">!</span>(<span class="ident">f64</span>);
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">FromRobj</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">from_robj</span>(<span class="ident">robj</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_logical_slice</span>() {
+            <span class="kw">match</span> <span class="ident">v</span>.<span class="ident">len</span>() {
+                <span class="number">0</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Err</span>(<span class="string">&quot;Input must be of length 1. Vector of length zero given.&quot;</span>),
+                <span class="number">1</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">v</span>[<span class="number">0</span>].<span class="ident">to_bool</span>()),
+                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Err</span>(<span class="string">&quot;Input must be of length 1. Vector of length &gt;1 given.&quot;</span>),
+            }
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Err</span>(<span class="string">&quot;not a logical object&quot;</span>)
+        }
+    }
+}
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">FromRobj</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span> {
     <span class="kw">fn</span> <span class="ident">from_robj</span>(<span class="ident">robj</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
@@ -2506,6 +2582,26 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">FromRobj</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
     <span class="kw">fn</span> <span class="ident">from_robj</span>(<span class="ident">robj</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
         <span class="prelude-val">Ok</span>(<span class="kw">unsafe</span> { <span class="ident">new_borrowed</span>(<span class="ident">robj</span>.<span class="ident">get</span>()) })
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">FromRobj</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Robj</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">from_robj</span>(<span class="ident">robj</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">iter</span>) <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">named_list_iter</span>() {
+            <span class="prelude-val">Ok</span>(<span class="ident">iter</span>.<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">k</span>, <span class="ident">v</span>)<span class="op">|</span> (<span class="ident">k</span>.<span class="ident">to_string</span>(), <span class="ident">v</span>.<span class="ident">to_owned</span>())).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>())
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Err</span>(<span class="string">&quot;expected a list&quot;</span>)
+        }
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">FromRobj</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">HashMap</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">Robj</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">from_robj</span>(<span class="ident">robj</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">iter</span>) <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">named_list_iter</span>() {
+            <span class="prelude-val">Ok</span>(<span class="ident">iter</span>.<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">k</span>, <span class="ident">v</span>)<span class="op">|</span> (<span class="ident">k</span>, <span class="ident">v</span>)).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>())
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Err</span>(<span class="string">&quot;expected a list&quot;</span>)
+        }
     }
 }
 
@@ -2871,6 +2967,14 @@
             <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
         }
     }
+
+    <span class="comment">// Convert the Robj to an owned one.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_owned</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">Robj</span>::<span class="ident">Owned</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>,
+            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="self">self</span>.<span class="ident">get</span>()) }
+        }
+    }
 }
 
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">AsTypedSlice</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
@@ -2926,7 +3030,7 @@
     }
 
     <span class="doccomment">/// Return an iterator over names and values of a list if they exist.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">namesAndValues</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">std</span>::<span class="ident">iter</span>::<span class="ident">Zip</span><span class="op">&lt;</span><span class="ident">StrIter</span>, <span class="ident">VecIter</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">named_list_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">NamedListIter</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">names</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">names</span>() {
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">values</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">list_iter</span>() {
                 <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">names</span>.<span class="ident">zip</span>(<span class="ident">values</span>));
@@ -4392,6 +4496,8 @@
     }
 }
 
+<span class="kw">type</span> <span class="ident">NamedListIter</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">iter</span>::<span class="ident">Zip</span><span class="op">&lt;</span><span class="ident">StrIter</span>, <span class="ident">VecIter</span><span class="op">&gt;</span>;
+
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
     <span class="kw">use</span> <span class="ident">extendr_engine</span>::<span class="kw-2">*</span>;
@@ -4442,6 +4548,7 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_from_robj</span>() {
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>::<span class="ident">from_robj</span>(<span class="kw-2">&amp;</span><span class="ident">Robj</span>::<span class="ident">from</span>(<span class="bool-val">true</span>)), <span class="prelude-val">Ok</span>(<span class="bool-val">true</span>));
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>::<span class="ident">from_robj</span>(<span class="kw-2">&amp;</span><span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">1</span>)), <span class="prelude-val">Ok</span>(<span class="number">1</span>));
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>::<span class="ident">from_robj</span>(<span class="kw-2">&amp;</span><span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">1</span>)), <span class="prelude-val">Ok</span>(<span class="number">1</span>));
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>::<span class="ident">from_robj</span>(<span class="kw-2">&amp;</span><span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">1</span>)), <span class="prelude-val">Ok</span>(<span class="number">1</span>));
@@ -4498,9 +4605,24 @@
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>::<span class="ident">from_robj</span>(<span class="kw-2">&amp;</span><span class="ident">Robj</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[].<span class="ident">as_slice</span>() <span class="kw">as</span> <span class="kw-2">&amp;</span>[<span class="ident">i32</span>])), <span class="prelude-val">Err</span>(<span class="string">&quot;Input must be of length 1. Vector of length zero given.&quot;</span>));
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>::<span class="ident">from_robj</span>(<span class="kw-2">&amp;</span><span class="ident">Robj</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">1</span>].<span class="ident">as_slice</span>() <span class="kw">as</span> <span class="kw-2">&amp;</span>[<span class="ident">i32</span>])), <span class="prelude-val">Ok</span>(<span class="number">1</span>));
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>::<span class="ident">from_robj</span>(<span class="kw-2">&amp;</span><span class="ident">Robj</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">1</span>, <span class="number">2</span>].<span class="ident">as_slice</span>() <span class="kw">as</span> <span class="kw-2">&amp;</span>[<span class="ident">i32</span>])), <span class="prelude-val">Err</span>(<span class="string">&quot;Input must be of length 1. Vector of length &gt;1 given.&quot;</span>));
+
+        <span class="comment">// use std::collections::HashMap;</span>
+        <span class="comment">// let hmap1 = [(&quot;a&quot;.into(), 1.into()), (&quot;b&quot;.into(), 2.into())].iter().cloned().collect::&lt;HashMap&lt;String, Robj&gt;&gt;();</span>
+        <span class="comment">// let list2 = hmap1.iter().collect_named_robj();</span>
+        <span class="comment">// let hmap_owned = &lt;HashMap&lt;String, Robj&gt;&gt;::from_robj(&amp;list2).unwrap();</span>
+        <span class="comment">// let hmap_borrowed = &lt;HashMap&lt;&amp;str, Robj&gt;&gt;::from_robj(&amp;list2).unwrap();</span>
+        <span class="comment">// assert_eq!(hmap_owned, hmap1);</span>
+
+        <span class="comment">// assert!(hmap_owned[&quot;a&quot;].is_owned());</span>
+        <span class="comment">// assert_eq!(hmap_owned[&quot;a&quot;], Robj::from(1));</span>
+        <span class="comment">// assert_eq!(hmap_owned[&quot;b&quot;], Robj::from(2));</span>
+
+        <span class="comment">// assert_eq!(hmap_borrowed[&quot;a&quot;], Robj::from(1));</span>
+        <span class="comment">// assert_eq!(hmap_borrowed[&quot;b&quot;], Robj::from(2));</span>
     }
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_to_robj</span>() {
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Robj</span>::<span class="ident">from</span>(<span class="bool-val">true</span>), <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="kw-2">&amp;</span>[<span class="ident">Bool</span>::<span class="ident">from</span>(<span class="bool-val">true</span>)][..]));
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">1_u8</span>), <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">1</span>));
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">1_u16</span>), <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">1</span>));
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">1_u32</span>), <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">1</span>));
