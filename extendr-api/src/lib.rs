@@ -148,6 +148,7 @@ pub fn print_r_error<T: Into<Vec<u8>>>(s: T) {
 mod tests {
     use super::*;
     use crate as extendr_api;
+
     use extendr_macros::extendr;
     use extendr_macros::extendr_module;
 
