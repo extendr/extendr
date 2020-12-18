@@ -169,24 +169,24 @@ impl<'a> FromRobj<'a> for Vec<f64> {
 }
 
 macro_rules! impl_iter_from_robj {
-    ($t: ty, $iter_fn: ident) => {
+    ($t: ty, $iter_fn: ident, $msg: expr) => {
         impl<'a> FromRobj<'a> for $t {
             fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
                 if let Some(v) = robj.$iter_fn() {
                     Ok(v)
                 } else {
-                    Err("not a vector of strings")
+                    Err($msg)
                 }
             }
         }
     };
 }
 
-impl_iter_from_robj!(StrIter, str_iter);
-impl_iter_from_robj!(VecIter, list_iter);
-impl_iter_from_robj!(IntegerIter<'a>, integer_iter);
-impl_iter_from_robj!(NumericIter<'a>, numeric_iter);
-impl_iter_from_robj!(LogicalIter<'a>, logical_iter);
+impl_iter_from_robj!(StrIter, str_iter, "Not a character vector.");
+impl_iter_from_robj!(VecIter, list_iter, "Not a list.");
+impl_iter_from_robj!(IntegerIter<'a>, integer_iter, "Not an integer vector.");
+impl_iter_from_robj!(NumericIter<'a>, numeric_iter, "Not a numeric vector.");
+impl_iter_from_robj!(LogicalIter<'a>, logical_iter, "Not a logical vector.");
 
 /// Input Numeric vector parameter.
 /// Note we don't accept mutable R objects as parameters
