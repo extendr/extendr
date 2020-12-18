@@ -1,18 +1,13 @@
-# Minimal Example of Calling Rust from R
+# Integration Tests for Calling Extendr from an R Package
 
-[![R build status](https://github.com/extendr/helloextendr/workflows/R-CMD-check/badge.svg)](https://github.com/extendr/helloextendr/actions)
+[![R build status](https://github.com/extendr/extendr/workflows/Tests/badge.svg)](https://github.com/extendr/extendr/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-This is a template package to demonstrate how to call Rust from R using the [extendr-api](https://crates.io/crates/extendr-api) crate.
+This package serves as a test to see whether an R package using extendr can successfully build, run, and pass `R CMD check` on all major platforms.
 
+The Rust code that is part of the package is located here: https://github.com/extendr/extendr/tree/master/tests/extendrtests/src/rust
 
-# Installation
+The wrapper scripts calling the Rust functions are located here:
+https://github.com/extendr/extendr/blob/master/tests/extendrtests/R/wrappers.R
 
-Before you can install this package, you need to install a working Rust toolchain. 
-
-To run rust-bindgen, you'll need to install libclang/llvm. See for instructions here: https://github.com/rust-lang/rust-bindgen/blob/master/book/src/requirements.md
-
-To build this package from within RStudio, you'll also have to make sure llvm is available in your path under R. To do so, add something like the following to your `.Renviron` file:
-```
-PATH=/usr/local/opt/llvm/bin:${PATH}
-```
+The test functions that verify that the wrapper and Rust functions work correctly are located here: https://github.com/extendr/extendr/blob/master/tests/extendrtests/tests/testthat/test-wrappers.R
