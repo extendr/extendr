@@ -41,7 +41,7 @@ jobs:
 
       - name: Install R dependencies for integration testing
         run: |
-          install.packages('rmarkdown', 'testthat')
+          install.packages(c('rmarkdown', 'testthat'))
         shell: Rscript {0}
 
       - name: Run R integration tests
