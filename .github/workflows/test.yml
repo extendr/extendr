@@ -12,6 +12,8 @@ jobs:
       fail-fast: false
       matrix:
         config:
+          #- {os: windows-latest, r: 'release', rust-version: 'stable-x86_64-pc-windows-gnu'}
+          - {os: macOS-latest,   r: 'release', rust-version: 'stable'}
           - {os: ubuntu-20.04,   r: 'release', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           - {os: ubuntu-20.04,   r: 'release', rust-version: 'beta', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'nightly', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
@@ -32,6 +34,15 @@ jobs:
           r-version: ${{ matrix.config.r }}
 
       - uses: r-lib/actions/setup-pandoc@v1
+      
+      # this step can be deleted once we move to prebuilt
+      # libR-sys bindings
+      - name: Install system dependencies on macOS
+        if: runner.os == 'macOS'
+        run: |
+          brew install llvm
+          echo "LIBCLANG_PATH=$(brew --prefix llvm)/lib" >> $GITHUB_ENV
+          echo "LIBCLANG_PATH=$(brew --prefix llvm)/lib" >> ~/.Renviron
 
       - name: Build
         run: cargo build
@@ -42,6 +53,14 @@ jobs:
       - name: Install R dependencies for integration testing
         run: install.packages(c('rmarkdown', 'testthat', 'rcmdcheck'))
         shell: Rscript {0}
+        
+      - name: Cache installed R packages
+        if: runner.os != 'Windows'
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
+          restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
       - name: Run R integration tests
         env:
@@ -49,25 +68,6 @@ jobs:
         run: rcmdcheck::rcmdcheck(path = "tests/extendrtests", args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
         shell: Rscript {0}
         
-  test_macos:
-    name: Run tests (macOS)
-    runs-on: macos-latest
-    strategy:
-      matrix:
-        rust-version: [stable]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ matrix.rust-version }}
-      - name: Install dependencies
-        run: brew install llvm r
-      - name: Set dynamic environment variables
-        run: echo "LIBCLANG_PATH=$(brew --prefix llvm)/lib" >> $GITHUB_ENV
-      - name: Build
-        run: cargo build
-      - name: Run tests
-        run: cargo test -- --nocapture --test-threads=1
 
   test_windows:
     name: Run tests (Windows)
