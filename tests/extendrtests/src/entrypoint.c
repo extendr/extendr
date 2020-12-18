@@ -14,10 +14,12 @@ void *x = (void*)&wrap__hello;
 #include <Rinternals.h>
 
 SEXP wrap__hello();
+SEXP wrap__add_ints();
 
 // Standard R package stuff
 static const R_CallMethodDef CallEntries[] = {
   {"wrap__hello", (DL_FUNC) &wrap__hello, 0},
+  {"wrap__add_ints", (DL_FUNC) &wrap__add_ints, 2},
   {NULL, NULL, 0}
 };
 
