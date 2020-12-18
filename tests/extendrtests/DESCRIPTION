@@ -1,0 +1,20 @@
+Package: extendrtests
+Title: Integration tests for calling extendr from an R package
+Version: 0.1.0
+Authors@R: c(
+    person("Andy", "Thomason", , "andy@andythomason.com", c("aut")),
+    person("Claus O.", "Wilke", , "wilke@austin.utexas.edu", c("aut", "cre"),
+      comment = c(ORCID = "0000-0002-7470-9261"))
+  )
+Description:
+  This packge provides tests for extendr functionality used from
+  within an R package.
+License: MIT + file LICENSE
+SystemRequirements: Rust
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Suggests:
+    rmarkdown,
+    testthat
