@@ -47,7 +47,7 @@ jobs:
       - name: Run R integration tests
         run: |
           R CMD build tests/extendrtests
-          R CMD check extendrtests*.tar.gz
+          R CMD check extendrtests*.tar.gz --no-manual
 
   test_macos:
     name: Run tests (macOS)
