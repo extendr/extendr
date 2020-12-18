@@ -5,3 +5,6 @@ members = [
 	"extendr-engine",
 	"extendr-macros",
 ]
+
+[patch.crates-io]
+libR-sys = { git = "https://github.com/extendr/libR-sys" }
