@@ -12,7 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: windows-latest, r: 'release', rust-version: 'stable-x86_64-pc-windows-gnu'}
+          - {os: windows-latest, r: 'release', rust-version: 'stable-x86_64-pc-windows-msvc'}
           - {os: macOS-latest,   r: 'release', rust-version: 'stable'}
           - {os: ubuntu-20.04,   r: 'release', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           - {os: ubuntu-20.04,   r: 'release', rust-version: 'beta', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
@@ -61,7 +61,7 @@ jobs:
 
       - name: Build (Windows)
         if: runner.os == 'Windows'
-        run: cargo build
+        run: cargo build --target x86_64-pc-windows-gnu
         shell: msys2 {0}
 
 ## Tests don't currently succeed on Windows
