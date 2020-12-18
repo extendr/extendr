@@ -16,7 +16,7 @@ jobs:
           - {os: macOS-latest,   r: 'release', rust-version: 'stable'}
           - {os: ubuntu-20.04,   r: 'release', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           - {os: ubuntu-20.04,   r: 'release', rust-version: 'beta', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+#          - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           - {os: ubuntu-20.04,   r: 'release',   rust-version: 'nightly', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
 
     env:
@@ -138,7 +138,7 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
 
-      - uses: r-lib/actions/setup-pandoc@v1
+#      - uses: r-lib/actions/setup-pandoc@v1
       
       - name: Build
         run: cargo build --target x86_64-pc-windows-gnu
@@ -220,3 +220,44 @@ jobs:
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: check
+
+
+  tests_R_devel:
+    runs-on: ${{ matrix.config.os }}
+
+    name: R devel ${{ matrix.config.os }} (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
+            
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      RSPM: ${{ matrix.config.rspm }}
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.config.rust-version }}
+          default: true
+
+      - uses: r-lib/actions/setup-r@v1
+        with:
+          r-version: ${{ matrix.config.r }}
+
+#      - uses: r-lib/actions/setup-pandoc@v1
+      
+      - name: Build
+        run: |
+          cargo build --manifest-path extendr-api/Cargo.toml --features libR-sys/use-bindgen
+          cargo build --manifest-path extendr-engine/Cargo.toml --features libR-sys/use-bindgen
+
+      - name: Run tests
+        run: |
+          cargo test --manifest-path extendr-api/Cargo.toml --features libR-sys/use-bindgen -- --nocapture --test-threads=1
+          cargo test --manifest-path extendr-engine/Cargo.toml --features libR-sys/use-bindgen -- --nocapture --test-threads=1
+          cargo test --manifest-path extendr-engine/Cargo.toml --features libR-sys/use-bindgen -- --nocapture --test-threads=1
