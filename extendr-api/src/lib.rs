@@ -136,6 +136,16 @@ where
     }
 }
 
+// return true if value is an integer NA in R.
+pub fn integer_is_na(val: i32) -> bool {
+    val == std::i32::MIN
+}
+
+// return true if value is an numeric NA in R.
+pub fn numeric_is_na(val: f64)  -> bool{
+    unsafe { R_IsNA(val) != 0 }
+}
+
 // pub fn add_function_to_namespace(namespace: &str, fn_name: &str, wrap_name: &str) {
 //     let rcode = format!("{}::{} <- function(...) .Call(\"{}\", ...)", namespace, fn_name, wrap_name);
 //     eprintln!("[{}]", rcode);
@@ -313,7 +323,7 @@ mod tests {
                 Robj::from(&[4., 5., 6.] as &[f64]).get(),
             );
             wrap__robjtype(Robj::from(1).get());
-            
+
             // Note u8 is special as it makes the raw type
             assert_eq!(new_borrowed(wrap__return_u8()), Robj::from(&[123_u8][..]));
 

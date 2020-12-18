@@ -17,6 +17,8 @@ use crate::AnyError;
 
 use ndarray::prelude::*;
 use std::collections::HashMap;
+use super::integer_is_na;
+use super::numeric_is_na;
 
 /// Wrapper for an R S-expression pointer (SEXP).
 ///
@@ -67,13 +69,21 @@ macro_rules! impl_prim_from_robj {
                 if let Some(v) = robj.as_i32_slice() {
                     match v.len() {
                         0 => Err("Input must be of length 1. Vector of length zero given."),
-                        1 => Ok(v[0] as Self),
+                        1 => if !integer_is_na(v[0]) {
+                                Ok(v[0] as Self)
+                             } else {
+                                Err("Input must not be NA.")
+                             },
                         _ => Err("Input must be of length 1. Vector of length >1 given."),
                     }
                 } else if let Some(v) = robj.as_f64_slice() {
                     match v.len() {
                         0 => Err("Input must be of length 1. Vector of length zero given."),
-                        1 => Ok(v[0] as Self),
+                        1 => if !numeric_is_na(v[0]) {
+                            Ok(v[0] as Self)
+                         } else {
+                            Err("Input must not be NA.")
+                         },
                         _ => Err("Input must be of length 1. Vector of length >1 given."),
                     }
                 } else {
@@ -100,8 +110,12 @@ impl<'a> FromRobj<'a> for bool {
         if let Some(v) = robj.as_logical_slice() {
             match v.len() {
                 0 => Err("Input must be of length 1. Vector of length zero given."),
-                1 => Ok(v[0].to_bool()),
-                _ => Err("Input must be of length 1. Vector of length >1 given."),
+                1 => if !v[0].is_na() {
+                    Ok(v[0].to_bool())
+                 } else {
+                    Err("Input must not be NA.")
+                 },
+            _ => Err("Input must be of length 1. Vector of length >1 given."),
             }
         } else {
             Err("not a logical object")
@@ -2254,6 +2268,7 @@ mod tests {
         assert_eq!(<i64>::from_robj(&Robj::from(1)), Ok(1));
         assert_eq!(<f32>::from_robj(&Robj::from(1)), Ok(1.));
         assert_eq!(<f64>::from_robj(&Robj::from(1)), Ok(1.));
+
         assert_eq!(<Vec::<i32>>::from_robj(&Robj::from(1)), Ok(vec![1]));
         assert_eq!(<Vec::<f64>>::from_robj(&Robj::from(1.)), Ok(vec![1.]));
         assert_eq!(
@@ -2318,26 +2333,31 @@ mod tests {
         assert_eq!(hmap_borrowed["b"], Robj::from(2));
 
         let na_integer = Robj::eval_string("NA_integer_").unwrap();
+        assert!(<i32>::from_robj(&na_integer).is_err());
         assert_eq!(<Option<i32>>::from_robj(&na_integer), Ok(None));
         assert_eq!(<Option<i32>>::from_robj(&Robj::from(1)), Ok(Some(1)));
         assert!(<Option<i32>>::from_robj(&Robj::from(&[1, 2][..])).is_err());
 
         let na_bool = Robj::eval_string("TRUE == NA").unwrap();
+        assert!(<bool>::from_robj(&na_bool).is_err());
         assert_eq!(<Option<bool>>::from_robj(&na_bool), Ok(None));
         assert_eq!(<Option<bool>>::from_robj(&Robj::from(true)), Ok(Some(true)));
         assert!(<Option<bool>>::from_robj(&Robj::from(&[true, false][..])).is_err());
 
         let na_real = Robj::eval_string("NA_real_").unwrap();
+        assert!(<f64>::from_robj(&na_real).is_err());
         assert_eq!(<Option<f64>>::from_robj(&na_real), Ok(None));
         assert_eq!(<Option<f64>>::from_robj(&Robj::from(1.)), Ok(Some(1.)));
         assert!(<Option<f64>>::from_robj(&Robj::from(&[1., 2.][..])).is_err());
 
         let na_string = Robj::eval_string("NA_character_").unwrap();
+        assert!(<&str>::from_robj(&na_string).is_err());
         assert_eq!(<Option<&str>>::from_robj(&na_string), Ok(None));
         assert_eq!(<Option<&str>>::from_robj(&Robj::from("1")), Ok(Some("1")));
         assert!(<Option<&str>>::from_robj(&Robj::from(&["1", "2"][..])).is_err());
 
         let na_string = Robj::eval_string("NA_character_").unwrap();
+        assert!(<String>::from_robj(&na_string).is_err());
         assert_eq!(<Option<String>>::from_robj(&na_string), Ok(None));
         assert_eq!(<Option<String>>::from_robj(&Robj::from("1")), Ok(Some("1".to_string())));
         assert!(<Option<String>>::from_robj(&Robj::from(&["1", "2"][..])).is_err());
