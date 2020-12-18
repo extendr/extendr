@@ -35,6 +35,7 @@ jobs:
         run: |
           rustup target add x86_64-pc-windows-gnu
           rustup target add i686-pc-windows-gnu
+          rustup component remove rust-mingw
 
 #      - uses: msys2/setup-msys2@v2
 #        if: runner.os == 'Windows'
