@@ -8,7 +8,7 @@ hello <- function() {
 }
 
 #' @rdname wrappers
-# @param x,y parameters
+#' @param x,y parameters
 #' @export
 add_ints <- function(x, y) {
   .Call("wrap__add_ints", x, y)
