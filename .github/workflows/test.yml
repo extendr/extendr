@@ -63,10 +63,19 @@ jobs:
           restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
       - name: Run R integration tests
+        id: r_integration_tests
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
         run: rcmdcheck::rcmdcheck(path = "tests/extendrtests", args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
         shell: Rscript {0}
+        
+      - name: Upload check results from R integration tests
+        if: steps.r_integration_tests.outcome == 'failure'
+        uses: actions/upload-artifact@main
+        with:
+          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
+          path: check
+
         
 
   test_windows:

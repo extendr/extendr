@@ -9,9 +9,6 @@ hello()
 
 add_ints(x, y)
 }
-\arguments{
-\item{x, y}{parameters}
-}
 \description{
 Wrappers for Rust functions.
 }
