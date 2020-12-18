@@ -3,7 +3,7 @@ name: Tests
 on: [push, pull_request]
 
 jobs:
-  test_linux:
+  tests:
     runs-on: ${{ matrix.config.os }}
 
     name: ${{ matrix.config.os }} (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
@@ -41,15 +41,6 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v1
       
-      # this step can be deleted once we move to prebuilt
-      # libR-sys bindings
-      - name: Install system dependencies on macOS
-        if: runner.os == 'macOS'
-        run: |
-          brew install llvm
-          echo "LIBCLANG_PATH=$(brew --prefix llvm)/lib" >> $GITHUB_ENV
-          echo "LIBCLANG_PATH=$(brew --prefix llvm)/lib" >> ~/.Renviron
-
       - name: Build
         run: cargo build
 
@@ -81,50 +72,3 @@ jobs:
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: check
-
-        
-
-  test_windows:
-    name: Run tests (Windows)
-    runs-on: windows-latest
-    defaults:
-      run:
-        shell: msys2 {0}
-    strategy:
-      matrix:
-        rust-version: [stable-gnu]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: msys2/setup-msys2@v2
-        with:
-          msystem: MINGW64
-          path-type: inherit
-          release: false
-          update: false
-          install: >-
-            mingw-w64-x86_64-clang
-            mingw-w64-x86_64-headers-git
-            mingw-w64-x86_64-make
-      - uses: r-lib/actions/setup-r@v1
-        with:
-          r-version: 'release'
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ matrix.rust-version }}
-          target: x86_64-pc-windows-gnu
-          default: true
-          components: rustfmt, clippy
-      - name: Build
-        run: |
-          echo "C:/msys64/usr/bin" >> $GITHUB_PATH
-          echo "C:/msys64/mingw64/bin" >> $GITHUB_PATH
-          cargo build
-        env:
-          LIBCLANG_PATH: C:/msys64/mingw64/bin
-      # - name: Run tests
-      #   run: |
-      #     echo "C:/msys64/usr/bin" >> $GITHUB_PATH
-      #     echo "C:/msys64/mingw64/bin" >> $GITHUB_PATH
-      #     cargo test -- --nocapture --test-threads=1
-      #   env:
-      #     LIBCLANG_PATH: C:/msys64/mingw64/bin
