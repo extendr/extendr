@@ -247,6 +247,6 @@ jobs:
 
       - name: Run tests
         run: |
-#          cargo test --manifest-path extendr-api/Cargo.toml --features libR-sys/use-bindgen -- --nocapture --test-threads=1
           cargo test --manifest-path extendr-engine/Cargo.toml --features libR-sys/use-bindgen -- --nocapture --test-threads=1
           cargo test --manifest-path extendr-macros/Cargo.toml --features libR-sys/use-bindgen -- --nocapture --test-threads=1
+          cargo test --manifest-path extendr-api/Cargo.toml --features libR-sys/use-bindgen -- --nocapture --test-threads=1
