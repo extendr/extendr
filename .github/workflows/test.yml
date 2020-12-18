@@ -15,8 +15,7 @@ jobs:
 #          - {os: windows-latest, r: 'release', rust-version: 'stable-x86_64-pc-windows-msvc'}
           - {os: macOS-latest,   r: 'release', rust-version: 'stable'}
           - {os: ubuntu-20.04,   r: 'release', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          - {os: ubuntu-20.04,   r: 'release', rust-version: 'beta', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-#          - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+#          - {os: ubuntu-20.04,   r: 'release', rust-version: 'beta', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           - {os: ubuntu-20.04,   r: 'release',   rust-version: 'nightly', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
 
     env:
@@ -199,14 +198,6 @@ jobs:
         run: install.packages(c('rmarkdown', 'testthat', 'rcmdcheck'))
         shell: Rscript {0}
         
-      - name: Cache installed R packages
-        if: runner.os != 'Windows'
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
-
       - name: Run R integration tests
         id: r_integration_tests
         env:
@@ -222,10 +213,10 @@ jobs:
           path: check
 
 
-  tests_R_devel:
+  tests_R_devel_bindgen:
     runs-on: ${{ matrix.config.os }}
 
-    name: R devel ${{ matrix.config.os }} (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
+    name: ${{ matrix.config.os }} w/ bindgen (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
             
     strategy:
       fail-fast: false
@@ -248,8 +239,6 @@ jobs:
       - uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.config.r }}
-
-#      - uses: r-lib/actions/setup-pandoc@v1
       
       - name: Build
         run: |
@@ -258,6 +247,6 @@ jobs:
 
       - name: Run tests
         run: |
-          cargo test --manifest-path extendr-api/Cargo.toml --features libR-sys/use-bindgen -- --nocapture --test-threads=1
+#          cargo test --manifest-path extendr-api/Cargo.toml --features libR-sys/use-bindgen -- --nocapture --test-threads=1
           cargo test --manifest-path extendr-engine/Cargo.toml --features libR-sys/use-bindgen -- --nocapture --test-threads=1
-          cargo test --manifest-path extendr-engine/Cargo.toml --features libR-sys/use-bindgen -- --nocapture --test-threads=1
+          cargo test --manifest-path extendr-macros/Cargo.toml --features libR-sys/use-bindgen -- --nocapture --test-threads=1
