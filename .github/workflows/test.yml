@@ -40,15 +40,15 @@ jobs:
         run: cargo test -- --nocapture --test-threads=1
 
       - name: Install R dependencies for integration testing
-        run: |
-          install.packages(c('rmarkdown', 'testthat'))
+        run: install.packages(c('rmarkdown', 'testthat', 'rcmdcheck'))
         shell: Rscript {0}
 
       - name: Run R integration tests
-        run: |
-          R CMD build tests/extendrtests
-          R CMD check extendrtests*.tar.gz --no-manual
-
+        env:
+          _R_CHECK_CRAN_INCOMING_REMOTE_: false
+        run: rcmdcheck::rcmdcheck(path = "tests/extendrtests", args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
+        shell: Rscript {0}
+        
   test_macos:
     name: Run tests (macOS)
     runs-on: macos-latest
