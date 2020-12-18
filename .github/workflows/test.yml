@@ -86,7 +86,7 @@ jobs:
 
       - name: Install R dependencies for integration testing
         run: |
-          remotes::install_deps(dependencies = TRUE)
+          remotes::install_deps(pkgdir = "tests/extendrtests", dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
         
