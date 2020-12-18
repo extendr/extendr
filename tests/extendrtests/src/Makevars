@@ -1,0 +1,18 @@
+#LIBDIR = ./rust/target/release  # debug compiles faster
+LIBDIR = ./rust/target/debug
+STATLIB = $(LIBDIR)/libextendrtests.a
+PKG_LIBS = -L$(LIBDIR) -lextendrtests
+
+all: C_clean
+
+$(SHLIB): $(STATLIB)
+
+$(STATLIB):
+#	cargo build --lib --release --manifest-path=./rust/Cargo.toml
+	cargo build --lib --manifest-path=./rust/Cargo.toml
+
+C_clean:
+	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS)
+
+clean:
+	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) rust/target

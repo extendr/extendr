@@ -1,91 +1,144 @@
 name: Tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
 
 jobs:
-  test_linux:
-    name: Run tests (Linux)
-    runs-on: ubuntu-20.04
-    continue-on-error: ${{ matrix.allow-failure }}
+# All tests under this job are run with pre-computed libR-sys bindings.
+  tests_no_bindgen:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
+            
     strategy:
+      fail-fast: false
       matrix:
-        rust-version: [stable, beta]
-        allow-failure: [false]
-        include:
-          - rust-version: nightly
-            allow-failure: true
+        config:
+          - {os: windows-latest, r: 'release', rust-version: 'stable-x86_64-pc-windows-msvc'}
+          - {os: macOS-latest,   r: 'release', rust-version: 'stable'}
+          - {os: ubuntu-20.04,   r: 'release', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: ubuntu-20.04,   r: 'release', rust-version: 'nightly', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'nightly', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      RSPM: ${{ matrix.config.rspm }}
 
     steps:
       - uses: actions/checkout@v2
+      
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: ${{ matrix.rust-version }}
-      - name: Build
-        run: cargo build
-      - name: Run tests
-        run: cargo test -- --nocapture --test-threads=1
+          toolchain: ${{ matrix.config.rust-version }}
 
-  test_macos:
-    name: Run tests (macOS)
-    runs-on: macos-latest
-    strategy:
-      matrix:
-        rust-version: [stable]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ matrix.rust-version }}
-      - name: Install dependencies
-        run: brew install llvm r
-      - name: Set dynamic environment variables
-        run: echo "LIBCLANG_PATH=$(brew --prefix llvm)/lib" >> $GITHUB_ENV
-      - name: Build
-        run: cargo build
-      - name: Run tests
-        run: cargo test -- --nocapture --test-threads=1
+      - name: Set up Rust targets on Windows
+        if: runner.os == 'Windows'
+        run: |
+          rustup target add x86_64-pc-windows-gnu
+          rustup target add i686-pc-windows-gnu
 
-  test_windows:
-    name: Run tests (Windows)
-    runs-on: windows-latest
-    defaults:
-      run:
-        shell: msys2 {0}
-    strategy:
-      matrix:
-        rust-version: [stable-gnu]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: msys2/setup-msys2@v2
-        with:
-          msystem: MINGW64
-          path-type: inherit
-          release: false
-          update: false
-          install: >-
-            mingw-w64-x86_64-clang
-            mingw-w64-x86_64-headers-git
-            mingw-w64-x86_64-make
       - uses: r-lib/actions/setup-r@v1
         with:
-          r-version: 'release'
+          r-version: ${{ matrix.config.r }}
+
+      - uses: r-lib/actions/setup-pandoc@v1
+      
+      - name: Build (not Windows)
+        if: runner.os != 'Windows'
+        run: cargo build
+
+      - name: Run tests (not Windows)
+        if: runner.os != 'Windows'
+        run: cargo test -- --nocapture --test-threads=1
+
+      - name: Build (Windows)
+        if: runner.os == 'Windows'
+        run: cargo build --target x86_64-pc-windows-gnu
+
+## Tests don't currently succeed on Windows
+## The following test hangs: tests::r_output_test
+## See: https://github.com/extendr/extendr/issues/67
+#      - name: Run tests (Windows)
+#        if: runner.os == 'Windows'
+#        run: cargo test -- --nocapture --test-threads=1
+
+      - name: Query dependencies for integration testing
+        run: |
+          install.packages('remotes')
+          saveRDS(remotes::dev_package_deps(pkgdir = "tests/extendrtests", dependencies = TRUE), ".github/depends.Rds", version = 2)
+          writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
+        shell: Rscript {0}
+
+      - name: Cache installed R packages
+        if: runner.os != 'Windows'
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
+          restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
+
+      - name: Install R dependencies for integration testing
+        run: |
+          remotes::install_deps(pkgdir = "tests/extendrtests", dependencies = TRUE)
+          remotes::install_cran("rcmdcheck")
+        shell: Rscript {0}
+        
+      - name: Run R integration tests
+        id: r_integration_tests
+        env:
+          _R_CHECK_CRAN_INCOMING_REMOTE_: false
+        run: rcmdcheck::rcmdcheck(path = "tests/extendrtests", args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
+        shell: Rscript {0}
+        
+      - name: Upload check results from R integration tests
+        if: failure()
+        uses: actions/upload-artifact@main
+        with:
+          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
+          path: check
+
+
+# All tests under this job are run with R devel and freshly generated bindings.
+  tests_R_devel_bindgen:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} w/ bindgen (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
+            
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      RSPM: ${{ matrix.config.rspm }}
+
+    steps:
+      - uses: actions/checkout@v2
+      
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: ${{ matrix.rust-version }}
-          target: x86_64-pc-windows-gnu
-          default: true
-          components: rustfmt, clippy
+          toolchain: ${{ matrix.config.rust-version }}
+
+      - uses: r-lib/actions/setup-r@v1
+        with:
+          r-version: ${{ matrix.config.r }}
+      
       - name: Build
         run: |
-          echo "C:/msys64/usr/bin" >> $GITHUB_PATH
-          echo "C:/msys64/mingw64/bin" >> $GITHUB_PATH
-          cargo build
-        env:
-          LIBCLANG_PATH: C:/msys64/mingw64/bin
-      # - name: Run tests
-      #   run: |
-      #     echo "C:/msys64/usr/bin" >> $GITHUB_PATH
-      #     echo "C:/msys64/mingw64/bin" >> $GITHUB_PATH
-      #     cargo test -- --nocapture --test-threads=1
-      #   env:
-      #     LIBCLANG_PATH: C:/msys64/mingw64/bin
+          cargo build --manifest-path extendr-api/Cargo.toml --features libR-sys/use-bindgen
+          cargo build --manifest-path extendr-engine/Cargo.toml --features libR-sys/use-bindgen
+
+      - name: Run tests
+        run: |
+          cargo test --manifest-path extendr-engine/Cargo.toml --features libR-sys/use-bindgen -- --nocapture --test-threads=1
+          cargo test --manifest-path extendr-macros/Cargo.toml --features libR-sys/use-bindgen -- --nocapture --test-threads=1
+          cargo test --manifest-path extendr-api/Cargo.toml --features libR-sys/use-bindgen -- --nocapture --test-threads=1
