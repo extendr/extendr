@@ -117,7 +117,6 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.config.rust-version }}
-          default: true
 
       - name: Set up Rust targets
         run: |
@@ -172,7 +171,6 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.config.rust-version }}
-          default: true
 
       - name: Set up Rust targets
         run: |
@@ -233,7 +231,6 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.config.rust-version }}
-          default: true
 
       - uses: r-lib/actions/setup-r@v1
         with:
