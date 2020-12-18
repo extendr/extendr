@@ -3,7 +3,7 @@ name: Tests
 on: [push, pull_request]
 
 jobs:
-  tests:
+  tests_unix:
     runs-on: ${{ matrix.config.os }}
 
     name: ${{ matrix.config.os }} (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
@@ -73,6 +73,128 @@ jobs:
 #        run: cargo test -- --nocapture --test-threads=1
 #        shell: msys2 {0}
 
+      - name: Install R dependencies for integration testing
+        run: install.packages(c('rmarkdown', 'testthat', 'rcmdcheck'))
+        shell: Rscript {0}
+        
+      - name: Cache installed R packages
+        if: runner.os != 'Windows'
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
+          restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
+
+      - name: Run R integration tests
+        id: r_integration_tests
+        env:
+          _R_CHECK_CRAN_INCOMING_REMOTE_: false
+        run: rcmdcheck::rcmdcheck(path = "tests/extendrtests", args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
+        shell: Rscript {0}
+        
+      - name: Upload check results from R integration tests
+        if: failure()
+        uses: actions/upload-artifact@main
+        with:
+          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
+          path: check
+
+  tests_windows:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} no integration (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
+            
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: windows-latest, r: 'release', rust-version: 'stable-x86_64-pc-windows-msvc'}
+
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+ 
+    steps:
+      - uses: actions/checkout@v2
+      
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.config.rust-version }}
+          default: true
+
+      - name: Set up Rust targets
+        run: |
+          rustup target add x86_64-pc-windows-gnu
+          rustup target add i686-pc-windows-gnu
+          rustup component remove rust-mingw
+
+#      - uses: msys2/setup-msys2@v2
+#        with:
+#          msystem: MINGW64
+#          path-type: inherit
+#          release: false
+#          update: false
+
+      - uses: r-lib/actions/setup-r@v1
+        with:
+          r-version: ${{ matrix.config.r }}
+
+      - uses: r-lib/actions/setup-pandoc@v1
+      
+      - name: Build
+        run: cargo build --target x86_64-pc-windows-gnu
+#        shell: msys2 {0}
+
+## Tests don't currently succeed on Windows
+## The following test hangs: tests::r_output_test
+## See: https://github.com/extendr/extendr/issues/67
+#      - name: Run tests (Windows)
+#        run: cargo test -- --nocapture --test-threads=1
+#        shell: msys2 {0}
+
+
+# For some reason, integration tests need to run separately
+# in a clean environment
+  integration_tests_windows:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} integration only (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
+            
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: windows-latest, r: 'release', rust-version: 'stable-x86_64-pc-windows-gnu'}
+
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+ 
+    steps:
+      - uses: actions/checkout@v2
+      
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.config.rust-version }}
+          default: true
+
+      - name: Set up Rust targets
+        run: |
+          rustup target add x86_64-pc-windows-gnu
+          rustup target add i686-pc-windows-gnu
+#          rustup component remove rust-mingw
+
+#      - uses: msys2/setup-msys2@v2
+#        with:
+#          msystem: MINGW64
+#          path-type: inherit
+#          release: false
+#          update: false
+
+      - uses: r-lib/actions/setup-r@v1
+        with:
+          r-version: ${{ matrix.config.r }}
+
+      - uses: r-lib/actions/setup-pandoc@v1
+      
       - name: Install R dependencies for integration testing
         run: install.packages(c('rmarkdown', 'testthat', 'rcmdcheck'))
         shell: Rscript {0}
