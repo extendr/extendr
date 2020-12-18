@@ -37,13 +37,13 @@ jobs:
           rustup target add i686-pc-windows-gnu
           rustup component remove rust-mingw
 
-#      - uses: msys2/setup-msys2@v2
-#        if: runner.os == 'Windows'
-#        with:
-#          msystem: MINGW64
-#          path-type: inherit
-#          release: false
-#          update: false
+      - uses: msys2/setup-msys2@v2
+        if: runner.os == 'Windows'
+        with:
+          msystem: MINGW64
+          path-type: inherit
+          release: false
+          update: false
 
       - uses: r-lib/actions/setup-r@v1
         with:
@@ -59,10 +59,10 @@ jobs:
         if: runner.os != 'Windows'
         run: cargo test -- --nocapture --test-threads=1
 
-#      - name: Build (Windows)
-#        if: runner.os == 'Windows'
-#        run: cargo build
-#        shell: msys2 {0}
+      - name: Build (Windows)
+        if: runner.os == 'Windows'
+        run: cargo build
+        shell: msys2 {0}
 
 ## Tests don't currently succeed on Windows
 ## The following test hangs: tests::r_output_test
