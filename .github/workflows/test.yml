@@ -59,6 +59,7 @@ jobs:
 
 ## Tests don't currently succeed on Windows
 ## The following test hangs: tests::r_output_test
+## See: https://github.com/extendr/extendr/issues/67
 #      - name: Run tests (Windows)
 #        if: runner.os == 'Windows'
 #        run: cargo test -- --nocapture --test-threads=1
