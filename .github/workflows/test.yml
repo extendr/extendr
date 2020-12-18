@@ -28,7 +28,7 @@ jobs:
         run: |
           R -s -e "install.packages(c('rmarkdown', 'testthat'), type = 'source')"
           R CMD build tests/extendrtests
-          R CMD check tests/extendrtests
+          R CMD check extendrtests*.tar.gz
 
   test_macos:
     name: Run tests (macOS)
