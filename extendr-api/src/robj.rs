@@ -1654,36 +1654,6 @@ impl From<()> for Robj {
     }
 }
 
-macro_rules! impl_from_int_prim {
-    ($t : ty) => {
-        impl From<$t> for Robj {
-            fn from(val: $t) -> Self {
-                unsafe { new_owned(Rf_ScalarInteger(val as raw::c_int)) }
-            }
-        }
-    };
-}
-
-impl_from_int_prim!(u8);
-impl_from_int_prim!(u16);
-impl_from_int_prim!(u32);
-impl_from_int_prim!(u64);
-impl_from_int_prim!(i8);
-impl_from_int_prim!(i16);
-impl_from_int_prim!(i64);
-
-macro_rules! impl_from_float_prim {
-    ($t : ty) => {
-        impl From<$t> for Robj {
-            fn from(val: $t) -> Self {
-                unsafe { new_owned(Rf_ScalarReal(val as raw::c_double)) }
-            }
-        }
-    };
-}
-
-impl_from_float_prim!(f32);
-
 /// Convert a length value to an Robj.
 /// Note: This is good only up to 2^53, but that exceeds the address space
 /// of current generation computers (8PiB)
@@ -1722,25 +1692,9 @@ impl<'a> From<Lang<'a>> for Robj {
     }
 }
 
-/// Convert a byte slice to a raw object.
-impl From<&[u8]> for Robj {
-    fn from(vals: &[u8]) -> Self {
-        unsafe {
-            let len = vals.len();
-            let sexp = Rf_allocVector(RAWSXP, len as R_xlen_t);
-            R_PreserveObject(sexp);
-            let ptr = RAW(sexp);
-            let slice = std::slice::from_raw_parts_mut(ptr, len);
-            for (i, &v) in vals.iter().enumerate() {
-                slice[i] = v;
-            }
-            Robj::Owned(sexp)
-        }
-    }
-}
-
-
-
+/// `ToVectorValue` is a trait that allows many different types
+/// to be converted to vectors. It is used as a type parameter
+/// to `collect_robj()`.
 pub trait ToVectorValue {
     fn sexptype() -> SEXPTYPE {
         0
@@ -1751,92 +1705,115 @@ pub trait ToVectorValue {
     }
 
     fn to_integer(&self) -> i32 where Self: Sized  {
-        0
+        std::i32::MIN
     }
 
     fn to_logical(&self) -> i32 where Self: Sized  {
         std::i32::MIN
     }
 
-    fn to_str(&self) -> SEXP where Self: Sized  {
+    fn to_raw(&self) -> u8 where Self: Sized  {
+        0
+    }
+
+    fn to_sexp(&self) -> SEXP where Self: Sized  {
         unsafe { R_NaString }
     }
 }
 
-impl ToVectorValue for f64 {
-    fn sexptype() -> SEXPTYPE {
-        REALSXP
-    }
-
-    fn to_numeric(&self) -> f64 {
-        *self
-    }
-}
-
-impl ToVectorValue for &f64 {
-    fn sexptype() -> SEXPTYPE {
-        REALSXP
-    }
-
-    fn to_numeric(&self) -> f64 {
-        **self
-    }
-}
-
-impl ToVectorValue for Option<f64> {
-    fn sexptype() -> SEXPTYPE {
-        REALSXP
-    }
-
-    fn to_numeric(&self) -> f64 {
-        if self.is_some() {
-            self.unwrap()
-        } else {
-            unsafe { R_NaReal }
+macro_rules! impl_numeric_tvv {
+    ($t: ty) => {
+        impl ToVectorValue for $t {
+            fn sexptype() -> SEXPTYPE {
+                REALSXP
+            }
+        
+            fn to_numeric(&self) -> f64 {
+                *self as f64
+            }
+        }
+        
+        impl ToVectorValue for &$t {
+            fn sexptype() -> SEXPTYPE {
+                REALSXP
+            }
+        
+            fn to_numeric(&self) -> f64 {
+                **self as f64
+            }
+        }
+        
+        impl ToVectorValue for Option<$t> {
+            fn sexptype() -> SEXPTYPE {
+                REALSXP
+            }
+        
+            fn to_numeric(&self) -> f64 {
+                if self.is_some() {
+                    self.unwrap() as f64
+                } else {
+                    unsafe { R_NaReal }
+                }
+            }
         }
     }
 }
 
-impl ToVectorValue for i32 {
-    fn sexptype() -> SEXPTYPE {
-        INTSXP
-    }
+impl_numeric_tvv!(f64);
+impl_numeric_tvv!(f32);
 
-    fn to_integer(&self) -> i32 {
-        *self
-    }
-}
+macro_rules! impl_integer_tvv {
+    ($t: ty) => {
+        impl ToVectorValue for $t {
+            fn sexptype() -> SEXPTYPE {
+                INTSXP
+            }
 
-impl ToVectorValue for &i32 {
-    fn sexptype() -> SEXPTYPE {
-        INTSXP
-    }
+            fn to_integer(&self) -> i32 {
+                *self as i32
+            }
+        }
 
-    fn to_integer(&self) -> i32 {
-        **self
-    }
-}
+        impl ToVectorValue for &$t {
+            fn sexptype() -> SEXPTYPE {
+                INTSXP
+            }
 
-impl ToVectorValue for Option<i32> {
-    fn sexptype() -> SEXPTYPE {
-        INTSXP
-    }
+            fn to_integer(&self) -> i32 {
+                **self as i32
+            }
+        }
 
-    fn to_integer(&self) -> i32 {
-        if self.is_some() {
-            self.unwrap()
-        } else {
-            unsafe { R_NaInt }
+        impl ToVectorValue for Option<$t> {
+            fn sexptype() -> SEXPTYPE {
+                INTSXP
+            }
+
+            fn to_integer(&self) -> i32 {
+                if self.is_some() {
+                    self.unwrap() as i32
+                } else {
+                    unsafe { R_NaInt }
+                }
+            }
         }
     }
 }
+
+impl_integer_tvv!(i8);
+impl_integer_tvv!(i16);
+impl_integer_tvv!(i32);
+impl_integer_tvv!(i64);
+impl_integer_tvv!(u16);
+impl_integer_tvv!(u32);
+impl_integer_tvv!(u64);
 
 impl ToVectorValue for &str {
     fn sexptype() -> SEXPTYPE {
         STRSXP
     }
 
-    fn to_str(&self) -> SEXP where Self: Sized  {
+    fn to_sexp(&self) -> SEXP where Self: Sized  {
         unsafe { Rf_mkCharLen(self.as_ptr() as *const raw::c_char, self.len() as i32) }
     }
 }
@@ -1846,7 +1823,7 @@ impl ToVectorValue for &&str {
         STRSXP
     }
 
-    fn to_str(&self) -> SEXP where Self: Sized  {
+    fn to_sexp(&self) -> SEXP where Self: Sized  {
         unsafe { Rf_mkCharLen(self.as_ptr() as *const raw::c_char, self.len() as i32) }
     }
 }
@@ -1856,7 +1833,7 @@ impl ToVectorValue for Option<&str> {
         STRSXP
     }
 
-    fn to_str(&self) -> SEXP where Self: Sized {
+    fn to_sexp(&self) -> SEXP where Self: Sized {
         if let Some(s) = self {
             unsafe { Rf_mkCharLen(s.as_ptr() as *const raw::c_char, s.len() as i32) }
         } else {
@@ -1870,7 +1847,7 @@ impl ToVectorValue for String {
         STRSXP
     }
 
-    fn to_str(&self) -> SEXP where Self: Sized  {
+    fn to_sexp(&self) -> SEXP where Self: Sized  {
         unsafe { Rf_mkCharLen(self.as_ptr() as *const raw::c_char, self.len() as i32) }
     }
 }
@@ -1908,6 +1885,40 @@ impl ToVectorValue for Option<bool> {
         }
     }
 }
+
+impl ToVectorValue for u8 {
+    fn sexptype() -> SEXPTYPE {
+        RAWSXP
+    }
+
+    fn to_raw(&self) -> u8 where Self: Sized  {
+        *self
+    }
+}
+
+impl ToVectorValue for &u8 {
+    fn sexptype() -> SEXPTYPE {
+        RAWSXP
+    }
+
+    fn to_raw(&self) -> u8 where Self: Sized  {
+        **self
+    }
+}
+
+// impl ToVectorValue for Option<u8> {
+//     fn sexptype() -> SEXPTYPE {
+//         RAWSXP
+//     }
+
+//     fn to_raw(&self) -> u8 {
+//         if self.is_some() {
+//             self.unwrap()
+//         } else {
+//             0
+//         }
+//     }
+// }
 
 pub trait RobjItertools : Iterator {
     /// Convert a wide range of iterators to Robj.
@@ -1965,9 +1976,15 @@ pub trait RobjItertools : Iterator {
                                     *ptr.offset(i as isize) = v.to_logical();
                                 }
                             }
+                            RAWSXP => {
+                                let ptr = RAW(sexp);
+                                for (i, v) in self.enumerate() {
+                                    *ptr.offset(i as isize) = v.to_raw();
+                                }
+                            }
                             STRSXP => {
                                 for (i, v) in self.enumerate() {
-                                    SET_STRING_ELT(sexp, i as isize, v.to_str());
+                                    SET_STRING_ELT(sexp, i as isize, v.to_sexp());
                                 }
                             }
                             _ => {
@@ -2328,7 +2345,7 @@ mod tests {
     #[test]
     fn test_to_robj() {
         assert_eq!(Robj::from(true), Robj::from(&[Bool::from(true)][..]));
-        assert_eq!(Robj::from(1_u8), Robj::from(1));
+        //assert_eq!(Robj::from(1_u8), Robj::from(1));
         assert_eq!(Robj::from(1_u16), Robj::from(1));
         assert_eq!(Robj::from(1_u32), Robj::from(1));
         assert_eq!(Robj::from(1_u64), Robj::from(1));
