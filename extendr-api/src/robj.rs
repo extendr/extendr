@@ -57,6 +57,7 @@ impl Default for Robj {
 
 /// Trait used for incomming parameter conversion.
 pub trait FromRobj<'a>: Sized {
+    // Convert an incomming Robj from R into a value or an error.
     fn from_robj(_robj: &'a Robj) -> Result<Self, &'static str> {
         Err("unable to convert value from R object")
     }
@@ -118,24 +119,28 @@ impl<'a> FromRobj<'a> for bool {
             _ => Err("Input must be of length 1. Vector of length >1 given."),
             }
         } else {
-            Err("not a logical object")
+            Err("Not a logical object.")
         }
     }
 }
 
 impl<'a> FromRobj<'a> for &'a str {
     fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
-        if let Some(s) = robj.as_str() {
+        if robj.is_na() {
+            Err("Input must not be NA.")
+        } else if let Some(s) = robj.as_str() {
             Ok(s)
         } else {
-            Err("not a string object")
+            Err("Not a string object.")
         }
     }
 }
 
 impl<'a> FromRobj<'a> for String {
     fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
-        if let Some(s) = robj.as_str() {
+        if robj.is_na() {
+            Err("Input must not be NA.")
+        } else if let Some(s) = robj.as_str() {
             Ok(s.to_string())
         } else {
             Err("not a string object")
