@@ -37,18 +37,16 @@ pub fn start_r() {
             // NOTE: R will crash if this is called twice in the same process.
             Rf_initialize_R(
                 3,
-                [cstr_mut!("R"), cstr_mut!("--slave"), cstr_mut!("--vanilla")].as_mut_ptr(),
+                [cstr_mut!("R"), cstr_mut!("--slave"), cstr_mut!("--no-save")].as_mut_ptr(),
             );
 
             // In case you are curious.
             // Maybe 8MB is a bit small.
-            println!("R_CStackLimit={:016x}", R_CStackLimit);
+            // eprintln!("R_CStackLimit={:016x}", R_CStackLimit);
 
-            //if cfg!(not(target_os = "windows")) {
-            //    R_CStackLimit = usize::max_value();
-            //}
-
-            R_CStackLimit = 100*8388608;
+            if cfg!(not(target_os = "windows")) {
+                R_CStackLimit = usize::max_value();
+            }
 
             setup_Rmainloop();
         }
