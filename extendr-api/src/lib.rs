@@ -77,10 +77,6 @@ pub use wrapper::*;
 
 pub use extendr_macros::*;
 pub use libR_sys::DllInfo;
-pub use libR_sys::R_CallMethodDef;
-pub use libR_sys::R_forceSymbols;
-pub use libR_sys::R_registerRoutines;
-pub use libR_sys::R_useDynamicSymbols;
 pub use libR_sys::SEXP;
 
 use libR_sys::*;
