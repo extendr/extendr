@@ -84,9 +84,6 @@
 <span id="81">81</span>
 <span id="82">82</span>
 <span id="83">83</span>
-<span id="84">84</span>
-<span id="85">85</span>
-<span id="86">86</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! A sigleton instance of the R interpreter.</span>
 <span class="doccomment">//!</span>
@@ -114,12 +111,9 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">start_r</span>() {
     <span class="ident">START_R</span>.<span class="ident">call_once</span>(<span class="op">|</span><span class="op">|</span> {
         <span class="kw">unsafe</span> {
-            <span class="comment">// TODO: get the default home dir from libR-sys.</span>
-            <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">unix</span>) {
-                <span class="kw">if</span> <span class="ident">std</span>::<span class="ident">env</span>::<span class="ident">var</span>(<span class="string">&quot;R_HOME&quot;</span>).<span class="ident">is_err</span>() {
-                    <span class="comment">// env! gets the build-time R_HOME stored by libR-sys</span>
-                    <span class="ident">std</span>::<span class="ident">env</span>::<span class="ident">set_var</span>(<span class="string">&quot;R_HOME&quot;</span>, <span class="macro">env</span><span class="macro">!</span>(<span class="string">&quot;R_HOME&quot;</span>));
-                }
+            <span class="kw">if</span> <span class="ident">std</span>::<span class="ident">env</span>::<span class="ident">var</span>(<span class="string">&quot;R_HOME&quot;</span>).<span class="ident">is_err</span>() {
+                <span class="comment">// env! gets the build-time R_HOME stored by libR-sys</span>
+                <span class="ident">std</span>::<span class="ident">env</span>::<span class="ident">set_var</span>(<span class="string">&quot;R_HOME&quot;</span>, <span class="macro">env</span><span class="macro">!</span>(<span class="string">&quot;R_HOME&quot;</span>));
             }
 
             <span class="comment">// Due to Rf_initEmbeddedR using __libc_stack_end</span>
