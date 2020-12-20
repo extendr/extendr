@@ -5,10 +5,10 @@
 //! first-time users of Rust or indeed any compiled language.
 //!
 //! Anyone who knows the R library should be able to write R extensions.
-//! 
+//!
 //! See the [Robj](../robj/enum.Robj.html) struct for much of the content of this crate.
 //! [Robj](../robj/enum.Robj.html) provides a safe wrapper for the R object type.
-//! 
+//!
 //! This library is just being born, but goals are:
 //!
 //! Implement common R functions such as c() and print()
@@ -69,11 +69,17 @@ mod rmacros;
 mod robj;
 mod wrapper;
 
+#[cfg(feature = "ndarray")]
+mod robj_ndarray;
+
 pub use args::*;
 pub use error::*;
 pub use rmacros::*;
 pub use robj::*;
 pub use wrapper::*;
+
+#[cfg(feature = "ndarray")]
+pub use robj_ndarray::*;
 
 pub use extendr_macros::*;
 pub use libR_sys::DllInfo;
@@ -124,13 +130,15 @@ pub unsafe fn register_call_methods(info: *mut libR_sys::DllInfo, methods: &[Cal
 /// panics on return.
 pub fn handle_panic<F>(err_str: &str, f: F) -> SEXP
 where
-    F : FnOnce() -> SEXP,
-    F : std::panic::UnwindSafe
+    F: FnOnce() -> SEXP,
+    F: std::panic::UnwindSafe,
 {
     match std::panic::catch_unwind(f) {
         Ok(res) => res,
         Err(_) => {
-            unsafe { libR_sys::Rf_error(err_str.as_ptr() as * const std::os::raw::c_char); }
+            unsafe {
+                libR_sys::Rf_error(err_str.as_ptr() as *const std::os::raw::c_char);
+            }
             unreachable!("handle_panic unreachable")
         }
     }
@@ -333,7 +341,7 @@ mod tests {
         lang!("sink", fifo).eval_blind();
         rprintln!("Hello world");
         lang!("sink").eval_blind();
-        let result : Robj = lang!("readLines", fifo).eval_blind();
+        let result: Robj = lang!("readLines", fifo).eval_blind();
         assert_eq!(result, Robj::from("Hello world"));
     }
 }

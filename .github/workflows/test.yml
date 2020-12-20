@@ -137,7 +137,7 @@ jobs:
       
       - name: Build
         run: |
-          cargo build --manifest-path extendr-api/Cargo.toml --features libR-sys/use-bindgen
+          cargo build --manifest-path extendr-api/Cargo.toml --features libR-sys/use-bindgen --features ndarray
           cargo build --manifest-path extendr-engine/Cargo.toml --features libR-sys/use-bindgen
 
       - name: Run tests
@@ -146,5 +146,6 @@ jobs:
           export LD_LIBRARY_PATH=${R_HOME}/lib
           cargo test --manifest-path extendr-engine/Cargo.toml --features libR-sys/use-bindgen -- --nocapture --test-threads=1
           cargo test --manifest-path extendr-api/Cargo.toml --features libR-sys/use-bindgen -- --nocapture --test-threads=1
+          cargo test --manifest-path extendr-api/Cargo.toml --features libR-sys/use-bindgen --features ndarray -- --nocapture --test-threads=1
           cargo test --manifest-path extendr-macros/Cargo.toml -- --nocapture --test-threads=1
 
