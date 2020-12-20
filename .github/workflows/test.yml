@@ -56,7 +56,10 @@ jobs:
 
       - name: Run tests (not Windows)
         if: runner.os != 'Windows'
-        run: cargo test -- --nocapture --test-threads=1
+        run: |
+          export R_HOME=`R -s -e 'cat(R.home())'`
+          export LD_LIBRARY_PATH=${R_HOME}/lib
+          cargo test -- --nocapture --test-threads=1
 
       - name: Build (Windows)
         if: runner.os == 'Windows'
@@ -139,6 +142,9 @@ jobs:
 
       - name: Run tests
         run: |
+          export R_HOME=`R -s -e 'cat(R.home())'`
+          export LD_LIBRARY_PATH=${R_HOME}/lib
           cargo test --manifest-path extendr-engine/Cargo.toml --features libR-sys/use-bindgen -- --nocapture --test-threads=1
-          cargo test --manifest-path extendr-macros/Cargo.toml --features libR-sys/use-bindgen -- --nocapture --test-threads=1
           cargo test --manifest-path extendr-api/Cargo.toml --features libR-sys/use-bindgen -- --nocapture --test-threads=1
+          cargo test --manifest-path extendr-macros/Cargo.toml -- --nocapture --test-threads=1
+
