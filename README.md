@@ -138,22 +138,25 @@ Install [cargo-workspaces](https://github.com/pksunkara/cargo-workspaces)
 cargo install cargo-workspaces
 ```
 
-### Steps
+### Bump version without publish
 
-`cargo ws version` will bump all the versions of the crates in this workspace, automatically commit, and tag with the bumped version.
+We use `cargo ws version` for this. This command does:
+
+1. Bump all the versions of the crates in this workspace.
+2. Commit.
+3. Tag with the bumped version.
+4. Push to the repo immediately. (Be careful! If you want to review the change manually before pushing, add `--no-git-push` option as well.)
 
 ``` sh
-cargo ws version --force='*' --no-individual-tags --no-git-push
+cargo ws version --force='*' --no-individual-tags --pre-id alpha prerelease
 ```
 
-The meaning of the options are
+The meanings of the options and arguments are
 
 * `--force='*'`: By default, `cargo ws version` skips the crates unchange since the last version. This option makes them included in the targets. 
 * `--no-individual-tags`: By default, `cargo ws version` creates a tag for each crates (e.g. `crateA@v0.0.1`) in addition to the usual version tag (e.g. `v0.0.1`). This option skips the individual tags.
-* `--no-git-push`: By default, `cargo ws version` pushes to the master immediately. By specifying this option, we can stop before it.
-
-When executing the command above, you will be asked to choose the next version interactively.
-
+* `--pre-id alpha`: Specify the identifier prepended to the version.
+* `prerelease`: Increase the version with prerelease identifier (e.g. `v0.1.10 -> v0.1.10-alpha.0`, `v0.1.10-alpha.0 -> v0.1.10-alpha.1`). We can also specify `patch`, `minor`, or `major` to increment the corresponding part of the version. Alternatively, we can omit this and choose the version interactively
 
 <details>
 
@@ -175,34 +178,52 @@ info current common version 0.1.11
   Custom Version
 ```
 
-Press `y` to proceed.
+Then, you will be asked to confirm the change. Press `y` to proceed.
 
 ``` console
-✔ Select a new version (currently 0.1.11) · Patch (0.1.12)
-
 Changes:
- - extendr-api: 0.1.11 => 0.1.12
- - extendr-engine: 0.1.11 => 0.1.12
- - extendr-macros: 0.1.11 => 0.1.12
+ - extendr-api: 0.1.12-alpha.0 => 0.1.12-alpha.1
+ - extendr-engine: 0.1.12-alpha.0 => 0.1.12-alpha.1
+ - extendr-macros: 0.1.12-alpha.0 => 0.1.12-alpha.1
 
 ? Are you sure you want to create these versions? (y/N) › no
 ```
 
 </details>
 
+### Bump version and publish
 
-Then, review the changes and publish it.
+When we publish, we use `cargo ws publish`. This command does:
+
+1. Run `cargo ws version`.
+2. Publish all the crates within the workspace.
 
 ``` sh
-git show HEAD^
+# publish
+cargo ws publish --force='*' --no-individual-tags patch
 
-cargo ws publish --from-git
+# change the version for further development
+cargo ws version --force='*' --no-individual-tags --pre-id alpha prerelease
 ```
 
-After confirming the publishment succeeded, push the tags to the repo.
+This command will publish to Crates.io immediately.
+If we want to review the change manually before publishing, we can do it step by step.
 
 ``` sh
+# bump version
+cargo ws version --force='*' --no-individual-tags --no-git-push patch
+
+# review the changes
+git show HEAD^
+
+# push all the changes
 git push --tags
+
+# publish without modifying the current version
+cargo ws publish --force='*' --from-git
+
+# change the version for further development
+cargo ws version --force='*' --no-individual-tags --pre-id alpha prerelease
 ```
 
 ## Contributing
