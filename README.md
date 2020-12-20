@@ -202,7 +202,7 @@ cargo ws publish --from-git
 After confirming the publishment succeeded, push the tags to the repo.
 
 ``` sh
-git push <version>
+git push --tags
 ```
 
 ## Contributing
