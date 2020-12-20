@@ -128,20 +128,81 @@ accidental segfaults and failures.
 ### R packages
 - [ ] Bindings for rust-bio
 
-## publishing the crate
+## Publishing the crate
 
-There are two scripts in the root on the repo:
+### Prerequisite
 
-Change and commit the version number.
+Install [cargo-workspaces](https://github.com/pksunkara/cargo-workspaces)
 
+``` sh
+cargo install cargo-workspaces
 ```
-./bump.sh new.version.number
+
+### Steps
+
+`cargo ws version` will bump all the versions of the crates in this workspace, automatically commit, and tag with the bumped version.
+
+``` sh
+cargo ws version --force='*' --no-individual-tags --no-git-push
 ```
 
-Push and publish the crate.
+The meaning of the options are
 
+* `--force='*'`: By default, `cargo ws version` skips the crates unchange since the last version. This option makes them included in the targets. 
+* `--no-individual-tags`: By default, `cargo ws version` creates a tag for each crates (e.g. `crateA@v0.0.1`) in addition to the usual version tag (e.g. `v0.0.1`). This option skips the individual tags.
+* `--no-git-push`: By default, `cargo ws version` pushes to the master immediately. By specifying this option, we can stop before it.
+
+When executing the command above, you will be asked to choose the next version interactively.
+
+
+<details>
+
+<summary>console output</summary>
+
+Move the cursor with <kbd>↑</kbd><kbd>↓</kbd>, and press <kbd>Enter</kbd> to choose.
+
+``` console
+info looking for changes since v0.1.10
+info current common version 0.1.11
+? Select a new version (currently 0.1.11) ›
+❯ Patch (0.1.12)
+  Minor (0.2.0)
+  Major (1.0.0)
+  Prepatch (0.1.12-alpha.0)
+  Preminor (0.2.0-alpha.0)
+  Premajor (1.0.0-alpha.0)
+  Custom Prerelease
+  Custom Version
 ```
-./publish.sh
+
+Press `y` to proceed.
+
+``` console
+✔ Select a new version (currently 0.1.11) · Patch (0.1.12)
+
+Changes:
+ - extendr-api: 0.1.11 => 0.1.12
+ - extendr-engine: 0.1.11 => 0.1.12
+ - extendr-macros: 0.1.11 => 0.1.12
+
+? Are you sure you want to create these versions? (y/N) › no
+```
+
+</details>
+
+
+Then, review the changes and publish it.
+
+``` sh
+git show HEAD^
+
+cargo ws publish --from-git
+```
+
+After confirming the publishment succeeded, push the tags to the repo.
+
+``` sh
+git push <version>
 ```
 
 ## Contributing
