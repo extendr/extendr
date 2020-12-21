@@ -16,6 +16,8 @@ use crate::wrapper::*;
 use crate::AnyError;
 
 use std::collections::HashMap;
+use super::integer_is_na;
+use super::numeric_is_na;
 
 /// Wrapper for an R S-expression pointer (SEXP).
 ///
@@ -54,6 +56,7 @@ impl Default for Robj {
 
 /// Trait used for incomming parameter conversion.
 pub trait FromRobj<'a>: Sized {
+    // Convert an incomming Robj from R into a value or an error.
     fn from_robj(_robj: &'a Robj) -> Result<Self, &'static str> {
         Err("unable to convert value from R object")
     }
@@ -66,13 +69,21 @@ macro_rules! impl_prim_from_robj {
                 if let Some(v) = robj.as_i32_slice() {
                     match v.len() {
                         0 => Err("Input must be of length 1. Vector of length zero given."),
-                        1 => Ok(v[0] as Self),
+                        1 => if !integer_is_na(v[0]) {
+                                Ok(v[0] as Self)
+                             } else {
+                                Err("Input must not be NA.")
+                             },
                         _ => Err("Input must be of length 1. Vector of length >1 given."),
                     }
                 } else if let Some(v) = robj.as_f64_slice() {
                     match v.len() {
                         0 => Err("Input must be of length 1. Vector of length zero given."),
-                        1 => Ok(v[0] as Self),
+                        1 => if !numeric_is_na(v[0]) {
+                            Ok(v[0] as Self)
+                         } else {
+                            Err("Input must not be NA.")
+                         },
                         _ => Err("Input must be of length 1. Vector of length >1 given."),
                     }
                 } else {
@@ -99,28 +110,36 @@ impl<'a> FromRobj<'a> for bool {
         if let Some(v) = robj.as_logical_slice() {
             match v.len() {
                 0 => Err("Input must be of length 1. Vector of length zero given."),
-                1 => Ok(v[0].to_bool()),
-                _ => Err("Input must be of length 1. Vector of length >1 given."),
+                1 => if !v[0].is_na() {
+                    Ok(v[0].to_bool())
+                 } else {
+                    Err("Input must not be NA.")
+                 },
+            _ => Err("Input must be of length 1. Vector of length >1 given."),
             }
         } else {
-            Err("not a logical object")
+            Err("Not a logical object.")
         }
     }
 }
 
 impl<'a> FromRobj<'a> for &'a str {
     fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
-        if let Some(s) = robj.as_str() {
+        if robj.is_na() {
+            Err("Input must not be NA.")
+        } else if let Some(s) = robj.as_str() {
             Ok(s)
         } else {
-            Err("not a string object")
+            Err("Not a string object.")
         }
     }
 }
 
 impl<'a> FromRobj<'a> for String {
     fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
-        if let Some(s) = robj.as_str() {
+        if robj.is_na() {
+            Err("Input must not be NA.")
+        } else if let Some(s) = robj.as_str() {
             Ok(s.to_string())
         } else {
             Err("not a string object")
@@ -149,24 +168,24 @@ impl<'a> FromRobj<'a> for Vec<f64> {
 }
 
 macro_rules! impl_iter_from_robj {
-    ($t: ty, $iter_fn: ident) => {
+    ($t: ty, $iter_fn: ident, $msg: expr) => {
         impl<'a> FromRobj<'a> for $t {
             fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
                 if let Some(v) = robj.$iter_fn() {
                     Ok(v)
                 } else {
-                    Err("not a vector of strings")
+                    Err($msg)
                 }
             }
         }
     };
 }
 
-impl_iter_from_robj!(StrIter, str_iter);
-impl_iter_from_robj!(VecIter, list_iter);
-impl_iter_from_robj!(IntegerIter<'a>, integer_iter);
-impl_iter_from_robj!(NumericIter<'a>, numeric_iter);
-impl_iter_from_robj!(LogicalIter<'a>, logical_iter);
+impl_iter_from_robj!(StrIter, str_iter, "Not a character vector.");
+impl_iter_from_robj!(VecIter, list_iter, "Not a list.");
+impl_iter_from_robj!(IntegerIter<'a>, integer_iter, "Not an integer vector.");
+impl_iter_from_robj!(NumericIter<'a>, numeric_iter, "Not a numeric vector.");
+impl_iter_from_robj!(LogicalIter<'a>, logical_iter, "Not a logical vector.");
 
 /// Pass-through Robj conversion.
 impl<'a> FromRobj<'a> for Robj {
@@ -191,6 +210,71 @@ impl<'a> FromRobj<'a> for HashMap<&str, Robj> {
             Ok(iter.map(|(k, v)| (k, v)).collect::<HashMap<&str, Robj>>())
         } else {
             Err("expected a list")
+        }
+    }
+}
+
+// NA-sensitive integer input handling
+impl<'a> FromRobj<'a> for Option<i32> {
+    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+        if robj.is_na() {
+            Ok(None)
+        } else if let Some(val) = robj.as_integer() {
+            Ok(Some(val))
+        } else {
+            Err("expected an integer scalar")
+        }
+    }
+}
+
+// NA-sensitive logical input handling
+impl<'a> FromRobj<'a> for Option<bool> {
+    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+        if robj.is_na() {
+            Ok(None)
+        } else if let Some(val) = robj.as_logical() {
+            Ok(Some(val))
+        } else {
+            Err("expected a logical scalar")
+        }
+    }
+}
+
+// NA-sensitive numeric input handling
+impl<'a> FromRobj<'a> for Option<f64> {
+    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+        if robj.is_na() {
+            Ok(None)
+        } else if let Some(val) = robj.as_numeric() {
+            Ok(Some(val))
+        } else {
+            Err("expected a numeric scalar")
+        }
+    }
+}
+
+// NA-sensitive string input handling
+impl<'a> FromRobj<'a> for Option<&'a str> {
+    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+        if robj.is_na() {
+            Ok(None)
+        } else if let Some(val) = robj.as_str() {
+            Ok(Some(val))
+        } else {
+            Err("expected a character scalar")
+        }
+    }
+}
+
+// NA-sensitive string input handling
+impl<'a> FromRobj<'a> for Option<String> {
+    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+        if robj.is_na() {
+            Ok(None)
+        } else if let Some(val) = robj.as_str() {
+            Ok(Some(val.to_string()))
+        } else {
+            Err("expected a character scalar")
         }
     }
 }
@@ -225,6 +309,25 @@ impl Robj {
     /// Get the extended length of the object.
     pub fn len(&self) -> usize {
         unsafe { Rf_xlength(self.get()) as usize }
+    }
+
+    /// Is this object is an NA?
+    /// Works for character, integer and numeric types.
+    pub fn is_na(&self) -> bool {
+        if self.len() != 1 {
+            false
+        } else {
+            unsafe {
+                let sexp = self.get();
+                match self.sexptype() {
+                    STRSXP => STRING_ELT(sexp, 0) == libR_sys::R_NaString,
+                    INTSXP => *(INTEGER(sexp)) == libR_sys::R_NaInt,
+                    LGLSXP => *(LOGICAL(sexp)) == libR_sys::R_NaInt,
+                    REALSXP => R_IsNA(*(REAL(sexp))) != 0,
+                    _ => false,
+                }
+            }
+        }
     }
 
     /// Get a read-only reference to the content of an integer or logical vector.
@@ -437,7 +540,7 @@ impl Robj {
         unsafe {
             match self.sexptype() {
                 STRSXP => {
-                    if self.len() == 0 {
+                    if self.len() != 1 {
                         None
                     } else {
                         Some(to_str(R_CHAR(STRING_ELT(self.get(), 0)) as *const u8))
@@ -478,6 +581,14 @@ impl Robj {
 
     /// Get a scalar boolean.
     pub fn as_bool(&self) -> Option<bool> {
+        match self.as_logical_slice() {
+            Some(slice) if slice.len() == 1 => Some(slice[0].into()),
+            _ => None
+        }
+    }
+
+    /// Get a scalar boolean.
+    pub fn as_logical(&self) -> Option<bool> {
         match self.as_logical_slice() {
             Some(slice) if slice.len() == 1 => Some(slice[0].into()),
             _ => None
@@ -1521,45 +1632,6 @@ impl From<()> for Robj {
     }
 }
 
-/// Convert a boolean to an Robj.
-impl From<bool> for Robj {
-    fn from(val: bool) -> Self {
-        unsafe { new_owned(Rf_ScalarLogical(val as raw::c_int)) }
-    }
-}
-
-macro_rules! impl_from_int_prim {
-    ($t : ty) => {
-        impl From<$t> for Robj {
-            fn from(val: $t) -> Self {
-                unsafe { new_owned(Rf_ScalarInteger(val as raw::c_int)) }
-            }
-        }
-    };
-}
-
-impl_from_int_prim!(u8);
-impl_from_int_prim!(u16);
-impl_from_int_prim!(u32);
-impl_from_int_prim!(u64);
-impl_from_int_prim!(i8);
-impl_from_int_prim!(i16);
-impl_from_int_prim!(i32);
-impl_from_int_prim!(i64);
-
-macro_rules! impl_from_float_prim {
-    ($t : ty) => {
-        impl From<$t> for Robj {
-            fn from(val: $t) -> Self {
-                unsafe { new_owned(Rf_ScalarReal(val as raw::c_double)) }
-            }
-        }
-    };
-}
-
-impl_from_float_prim!(f32);
-impl_from_float_prim!(f64);
-
 /// Convert a length value to an Robj.
 /// Note: This is good only up to 2^53, but that exceeds the address space
 /// of current generation computers (8PiB)
@@ -1598,139 +1670,9 @@ impl<'a> From<Lang<'a>> for Robj {
     }
 }
 
-/// Convert a string ref to an Robj string array object.
-impl<'a> From<&'a str> for Robj {
-    fn from(val: &str) -> Self {
-        unsafe {
-            let sexp = Rf_allocVector(STRSXP, 1);
-            R_PreserveObject(sexp);
-            let ssexp = Rf_mkCharLen(val.as_ptr() as *const raw::c_char, val.len() as i32);
-            let ptr = STRING_PTR(sexp);
-            let slice = std::slice::from_raw_parts_mut(ptr, 1);
-            slice[0] = ssexp;
-            Robj::Owned(sexp)
-        }
-    }
-}
-
-/// Convert a String to an Robj string array object.
-impl From<String> for Robj {
-    fn from(val: String) -> Self {
-        Robj::from(&*val)
-    }
-}
-
-/// Convert an array of string refs to an Robj string array object.
-impl<'a> From<&'a [&str]> for Robj {
-    fn from(vals: &'a [&str]) -> Self {
-        unsafe {
-            let len = vals.len();
-            let sexp = Rf_allocVector(STRSXP, len as R_xlen_t);
-            R_PreserveObject(sexp);
-            for (idx, &v) in vals.iter().enumerate() {
-                SET_STRING_ELT(
-                    sexp,
-                    idx as isize,
-                    Rf_mkCharLen(v.as_ptr() as *const raw::c_char, v.len() as i32),
-                );
-            }
-            Robj::Owned(sexp)
-        }
-    }
-}
-
-/// Convert an integer slice to an integer object.
-impl<'a> From<&'a [i32]> for Robj {
-    fn from(vals: &[i32]) -> Self {
-        unsafe {
-            let len = vals.len();
-            let sexp = Rf_allocVector(INTSXP, len as R_xlen_t);
-            R_PreserveObject(sexp);
-            let ptr = INTEGER(sexp);
-            let slice = std::slice::from_raw_parts_mut(ptr, len);
-            for (i, &v) in vals.iter().enumerate() {
-                slice[i] = v;
-            }
-            Robj::Owned(sexp)
-        }
-    }
-}
-
-/// Convert a bool slice to a logical object.
-impl From<&[bool]> for Robj {
-    fn from(vals: &[bool]) -> Self {
-        unsafe {
-            let len = vals.len();
-            let sexp = Rf_allocVector(LGLSXP, len as R_xlen_t);
-            R_PreserveObject(sexp);
-            let ptr = LOGICAL(sexp);
-            let slice = std::slice::from_raw_parts_mut(ptr, len);
-            for (i, &v) in vals.iter().enumerate() {
-                slice[i] = v as i32;
-            }
-            Robj::Owned(sexp)
-        }
-    }
-}
-
-/// Convert a double slice to a numeric object.
-impl From<&[f64]> for Robj {
-    fn from(vals: &[f64]) -> Self {
-        unsafe {
-            let len = vals.len();
-            let sexp = Rf_allocVector(REALSXP, len as R_xlen_t);
-            R_PreserveObject(sexp);
-            let ptr = REAL(sexp);
-            let slice = std::slice::from_raw_parts_mut(ptr, len);
-            for (i, &v) in vals.iter().enumerate() {
-                slice[i] = v;
-            }
-            Robj::Owned(sexp)
-        }
-    }
-}
-
-/// Convert a byte slice to a raw object.
-impl From<&[u8]> for Robj {
-    fn from(vals: &[u8]) -> Self {
-        unsafe {
-            let len = vals.len();
-            let sexp = Rf_allocVector(RAWSXP, len as R_xlen_t);
-            R_PreserveObject(sexp);
-            let ptr = RAW(sexp);
-            let slice = std::slice::from_raw_parts_mut(ptr, len);
-            for (i, &v) in vals.iter().enumerate() {
-                slice[i] = v;
-            }
-            Robj::Owned(sexp)
-        }
-    }
-}
-
-/// Convert vectors of strings to an R object.
-impl<T: AsRef<str>> From<Vec<T>> for Robj {
-    fn from(vals: Vec<T>) -> Self {
-        unsafe {
-            // Create a vector an put it on the R_PreciousList
-            let sexp = Rf_allocVector(STRSXP, vals.len() as R_xlen_t);
-            R_PreserveObject(sexp);
-
-            // populate the slice with character objects.
-            // note: a better way would be to steal the allocated buffer from the strings,
-            for (i, s) in vals.iter().enumerate() {
-                // note that SET_STRING_ELT is more than a store.
-                SET_STRING_ELT(sexp, i as R_xlen_t, Rf_mkCharLen(
-                    s.as_ref().as_ptr() as *const raw::c_char,
-                    s.as_ref().len() as i32,
-                ));
-            }
-
-            // The sexp is already protected but we need to unprotect it when it dies.
-            Robj::Owned(sexp)
-        }
-    }
-}
-
+/// `ToVectorValue` is a trait that allows many different types
+/// to be converted to vectors. It is used as a type parameter
+/// to `collect_robj()`.
 pub trait ToVectorValue {
     fn sexptype() -> SEXPTYPE {
         0
@@ -1741,65 +1683,116 @@ pub trait ToVectorValue {
     }
 
     fn to_integer(&self) -> i32 where Self: Sized  {
+        std::i32::MIN
+    }
+
+    fn to_logical(&self) -> i32 where Self: Sized  {
+        std::i32::MIN
+    }
+
+    fn to_raw(&self) -> u8 where Self: Sized  {
         0
     }
 
-    fn to_bool(&self) -> bool where Self: Sized  {
-        false
-    }
-
-    fn to_str(&self) -> &str where Self: Sized  {
-        ""
+    fn to_sexp(&self) -> SEXP where Self: Sized  {
+        unsafe { R_NaString }
     }
 }
 
-impl ToVectorValue for f64 {
-    fn sexptype() -> SEXPTYPE {
-        REALSXP
+macro_rules! impl_numeric_tvv {
+    ($t: ty) => {
+        impl ToVectorValue for $t {
+            fn sexptype() -> SEXPTYPE {
+                REALSXP
+            }
+        
+            fn to_numeric(&self) -> f64 {
+                *self as f64
+            }
+        }
+        
+        impl ToVectorValue for &$t {
+            fn sexptype() -> SEXPTYPE {
+                REALSXP
+            }
+        
+            fn to_numeric(&self) -> f64 {
+                **self as f64
+            }
+        }
+        
+        impl ToVectorValue for Option<$t> {
+            fn sexptype() -> SEXPTYPE {
+                REALSXP
+            }
+        
+            fn to_numeric(&self) -> f64 {
+                if self.is_some() {
+                    self.unwrap() as f64
+                } else {
+                    unsafe { R_NaReal }
+                }
+            }
+        }
     }
+}
 
-    fn to_numeric(&self) -> f64 {
-        *self
+impl_numeric_tvv!(f64);
+impl_numeric_tvv!(f32);
+
+macro_rules! impl_integer_tvv {
+    ($t: ty) => {
+        impl ToVectorValue for $t {
+            fn sexptype() -> SEXPTYPE {
+                INTSXP
+            }
+
+            fn to_integer(&self) -> i32 {
+                *self as i32
+            }
+        }
+
+        impl ToVectorValue for &$t {
+            fn sexptype() -> SEXPTYPE {
+                INTSXP
+            }
+
+            fn to_integer(&self) -> i32 {
+                **self as i32
+            }
+        }
+
+        impl ToVectorValue for Option<$t> {
+            fn sexptype() -> SEXPTYPE {
+                INTSXP
+            }
+
+            fn to_integer(&self) -> i32 {
+                if self.is_some() {
+                    self.unwrap() as i32
+                } else {
+                    unsafe { R_NaInt }
+                }
+            }
+        }
     }
 }
 
-impl ToVectorValue for &f64 {
-    fn sexptype() -> SEXPTYPE {
-        REALSXP
-    }
-
-    fn to_numeric(&self) -> f64 {
-        **self
-    }
-}
-
-impl ToVectorValue for i32 {
-    fn sexptype() -> SEXPTYPE {
-        INTSXP
-    }
-
-    fn to_integer(&self) -> i32 {
-        *self
-    }
-}
-
-impl ToVectorValue for &i32 {
-    fn sexptype() -> SEXPTYPE {
-        INTSXP
-    }
-
-    fn to_integer(&self) -> i32 {
-        **self
-    }
-}
+impl_integer_tvv!(i8);
+impl_integer_tvv!(i16);
+impl_integer_tvv!(i32);
+impl_integer_tvv!(i64);
+impl_integer_tvv!(u16);
+impl_integer_tvv!(u32);
+impl_integer_tvv!(u64);
 
 impl ToVectorValue for &str {
     fn sexptype() -> SEXPTYPE {
         STRSXP
     }
 
-    fn to_str(&self) -> &str {
-        *self
+    fn to_sexp(&self) -> SEXP where Self: Sized  {
+        unsafe { Rf_mkCharLen(self.as_ptr() as *const raw::c_char, self.len() as i32) }
     }
 }
 
@@ -1808,8 +1801,22 @@ impl ToVectorValue for &&str {
         STRSXP
     }
 
-    fn to_str(&self) -> &str {
-        **self
+    fn to_sexp(&self) -> SEXP where Self: Sized  {
+        unsafe { Rf_mkCharLen(self.as_ptr() as *const raw::c_char, self.len() as i32) }
+    }
+}
+
+impl ToVectorValue for Option<&str> {
+    fn sexptype() -> SEXPTYPE {
+        STRSXP
+    }
+
+    fn to_sexp(&self) -> SEXP where Self: Sized {
+        if let Some(s) = self {
+            unsafe { Rf_mkCharLen(s.as_ptr() as *const raw::c_char, s.len() as i32) }
+        } else {
+            unsafe { R_NaString }
+        }
     }
 }
 
@@ -1818,8 +1825,8 @@ impl ToVectorValue for String {
         STRSXP
     }
 
-    fn to_str(&self) -> &str {
-        self.as_str()
+    fn to_sexp(&self) -> SEXP where Self: Sized  {
+        unsafe { Rf_mkCharLen(self.as_ptr() as *const raw::c_char, self.len() as i32) }
     }
 }
 
@@ -1828,8 +1835,8 @@ impl ToVectorValue for bool {
         LGLSXP
     }
 
-    fn to_bool(&self) -> bool {
-        *self
+    fn to_logical(&self) -> i32 where Self: Sized  {
+        *self as i32
     }
 }
 
@@ -1838,10 +1845,58 @@ impl ToVectorValue for &bool {
         LGLSXP
     }
 
-    fn to_bool(&self) -> bool {
+    fn to_logical(&self) -> i32 where Self: Sized  {
+        **self as i32
+    }
+}
+
+impl ToVectorValue for Option<bool> {
+    fn sexptype() -> SEXPTYPE {
+        LGLSXP
+    }
+
+    fn to_logical(&self) -> i32 {
+        if self.is_some() {
+            self.unwrap() as i32
+        } else {
+            unsafe { R_NaInt }
+        }
+    }
+}
+
+impl ToVectorValue for u8 {
+    fn sexptype() -> SEXPTYPE {
+        RAWSXP
+    }
+
+    fn to_raw(&self) -> u8 where Self: Sized  {
+        *self
+    }
+}
+
+impl ToVectorValue for &u8 {
+    fn sexptype() -> SEXPTYPE {
+        RAWSXP
+    }
+
+    fn to_raw(&self) -> u8 where Self: Sized  {
         **self
     }
 }
+
+// impl ToVectorValue for Option<u8> {
+//     fn sexptype() -> SEXPTYPE {
+//         RAWSXP
+//     }
+
+//     fn to_raw(&self) -> u8 {
+//         if self.is_some() {
+//             self.unwrap()
+//         } else {
+//             0
+//         }
+//     }
+// }
 
 pub trait RobjItertools : Iterator {
     /// Convert a wide range of iterators to Robj.
@@ -1896,17 +1951,18 @@ pub trait RobjItertools : Iterator {
                             LGLSXP => {
                                 let ptr = LOGICAL(sexp);
                                 for (i, v) in self.enumerate() {
-                                    *ptr.offset(i as isize) = v.to_bool() as i32;
+                                    *ptr.offset(i as isize) = v.to_logical();
+                                }
+                            }
+                            RAWSXP => {
+                                let ptr = RAW(sexp);
+                                for (i, v) in self.enumerate() {
+                                    *ptr.offset(i as isize) = v.to_raw();
                                 }
                             }
                             STRSXP => {
                                 for (i, v) in self.enumerate() {
-                                    let v = v.to_str();
-                                    SET_STRING_ELT(
-                                        sexp,
-                                        i as isize,
-                                        Rf_mkCharLen(v.as_ptr() as *const raw::c_char, v.len() as i32),
-                                    );
+                                    SET_STRING_ELT(sexp, i as isize, v.to_sexp());
                                 }
                             }
                             _ => {
@@ -1930,6 +1986,33 @@ pub trait RobjItertools : Iterator {
 
 // Thanks to *pretzelhammer* on stackoverflow for this.
 impl<T> RobjItertools for T where T: Iterator {}
+
+impl<T> From<T> for Robj
+where
+    T : ToVectorValue
+{
+    fn from(scalar: T) -> Self {
+        Some(scalar).into_iter().collect_robj()
+    }
+}
+
+impl<T> From<&[T]> for Robj
+where
+    T : ToVectorValue + Clone
+{
+    fn from(slice: &[T]) -> Self {
+        slice.into_iter().cloned().collect_robj()
+    }
+}
+
+impl<T> From<Vec<T>> for Robj
+where
+    T : ToVectorValue + Clone
+{
+    fn from(slice: Vec<T>) -> Self {
+        slice.into_iter().collect_robj()
+    }
+}
 
 // Iterator over the objects in a vector or string.
 #[derive(Clone)]
@@ -2149,6 +2232,7 @@ mod tests {
         assert_eq!(<i64>::from_robj(&Robj::from(1)), Ok(1));
         assert_eq!(<f32>::from_robj(&Robj::from(1)), Ok(1.));
         assert_eq!(<f64>::from_robj(&Robj::from(1)), Ok(1.));
+
         assert_eq!(<Vec::<i32>>::from_robj(&Robj::from(1)), Ok(vec![1]));
         assert_eq!(<Vec::<f64>>::from_robj(&Robj::from(1.)), Ok(vec![1.]));
 
@@ -2169,24 +2253,64 @@ mod tests {
             Err("Input must be of length 1. Vector of length >1 given.")
         );
 
-        // use std::collections::HashMap;
-        // let hmap1 = [("a".into(), 1.into()), ("b".into(), 2.into())].iter().cloned().collect::<HashMap<String, Robj>>();
-        // let list2 = hmap1.iter().collect_named_robj();
-        // let hmap_owned = <HashMap<String, Robj>>::from_robj(&list2).unwrap();
-        // let hmap_borrowed = <HashMap<&str, Robj>>::from_robj(&list2).unwrap();
-        // assert_eq!(hmap_owned, hmap1);
+        let hello = Robj::from("hello");
+        assert_eq!(<&str>::from_robj(&hello), Ok("hello"));
 
-        // assert!(hmap_owned["a"].is_owned());
-        // assert_eq!(hmap_owned["a"], Robj::from(1));
-        // assert_eq!(hmap_owned["b"], Robj::from(2));
+        // conversion from a vector to a scalar value
+        assert_eq!(<i32>::from_robj(&Robj::from(vec![].as_slice() as &[i32])), Err("Input must be of length 1. Vector of length zero given."));
+        assert_eq!(<i32>::from_robj(&Robj::from(vec![1].as_slice() as &[i32])), Ok(1));
+        assert_eq!(<i32>::from_robj(&Robj::from(vec![1, 2].as_slice() as &[i32])), Err("Input must be of length 1. Vector of length >1 given."));
 
-        // assert_eq!(hmap_borrowed["a"], Robj::from(1));
-        // assert_eq!(hmap_borrowed["b"], Robj::from(2));
+        use std::collections::HashMap;
+        let list = Robj::eval_string("list(a=1L, b=2L)").unwrap();
+        let hmap1 = [("a".into(), 1.into()), ("b".into(), 2.into())].iter().cloned().collect::<HashMap<String, Robj>>();
+        let hmap2 = [("a", 1.into()), ("b", 2.into())].iter().cloned().collect::<HashMap<&str, Robj>>();
+        let hmap_owned = <HashMap<String, Robj>>::from_robj(&list).unwrap();
+        let hmap_borrowed = <HashMap<&str, Robj>>::from_robj(&list).unwrap();
+        assert_eq!(hmap_owned, hmap1);
+        assert_eq!(hmap_borrowed, hmap2);
+
+        assert!(hmap_owned["a"].is_owned());
+        assert_eq!(hmap_owned["a"], Robj::from(1));
+        assert_eq!(hmap_owned["b"], Robj::from(2));
+
+        assert_eq!(hmap_borrowed["a"], Robj::from(1));
+        assert_eq!(hmap_borrowed["b"], Robj::from(2));
+
+        let na_integer = Robj::eval_string("NA_integer_").unwrap();
+        assert!(<i32>::from_robj(&na_integer).is_err());
+        assert_eq!(<Option<i32>>::from_robj(&na_integer), Ok(None));
+        assert_eq!(<Option<i32>>::from_robj(&Robj::from(1)), Ok(Some(1)));
+        assert!(<Option<i32>>::from_robj(&Robj::from(&[1, 2][..])).is_err());
+
+        let na_bool = Robj::eval_string("TRUE == NA").unwrap();
+        assert!(<bool>::from_robj(&na_bool).is_err());
+        assert_eq!(<Option<bool>>::from_robj(&na_bool), Ok(None));
+        assert_eq!(<Option<bool>>::from_robj(&Robj::from(true)), Ok(Some(true)));
+        assert!(<Option<bool>>::from_robj(&Robj::from(&[true, false][..])).is_err());
+
+        let na_real = Robj::eval_string("NA_real_").unwrap();
+        assert!(<f64>::from_robj(&na_real).is_err());
+        assert_eq!(<Option<f64>>::from_robj(&na_real), Ok(None));
+        assert_eq!(<Option<f64>>::from_robj(&Robj::from(1.)), Ok(Some(1.)));
+        assert!(<Option<f64>>::from_robj(&Robj::from(&[1., 2.][..])).is_err());
+
+        let na_string = Robj::eval_string("NA_character_").unwrap();
+        assert!(<&str>::from_robj(&na_string).is_err());
+        assert_eq!(<Option<&str>>::from_robj(&na_string), Ok(None));
+        assert_eq!(<Option<&str>>::from_robj(&Robj::from("1")), Ok(Some("1")));
+        assert!(<Option<&str>>::from_robj(&Robj::from(&["1", "2"][..])).is_err());
+
+        let na_string = Robj::eval_string("NA_character_").unwrap();
+        assert!(<String>::from_robj(&na_string).is_err());
+        assert_eq!(<Option<String>>::from_robj(&na_string), Ok(None));
+        assert_eq!(<Option<String>>::from_robj(&Robj::from("1")), Ok(Some("1".to_string())));
+        assert!(<Option<String>>::from_robj(&Robj::from(&["1", "2"][..])).is_err());
     }
     #[test]
     fn test_to_robj() {
         assert_eq!(Robj::from(true), Robj::from(&[Bool::from(true)][..]));
-        assert_eq!(Robj::from(1_u8), Robj::from(1));
+        //assert_eq!(Robj::from(1_u8), Robj::from(1));
         assert_eq!(Robj::from(1_u16), Robj::from(1));
         assert_eq!(Robj::from(1_u32), Robj::from(1));
         assert_eq!(Robj::from(1_u64), Robj::from(1));
@@ -2202,6 +2326,22 @@ mod tests {
         assert_eq!(ab, ab2);
         assert_eq!(format!("{:?}", ab), "[\"a\", \"b\"]");
         assert_eq!(format!("{:?}", ab2), "[\"a\", \"b\"]");
+
+        assert_eq!(Robj::from(Some(1)), Robj::from(1));
+        assert!(!Robj::from(Some(1)).is_na());
+        assert!(Robj::from(<Option<i32>>::None).is_na());
+
+        assert_eq!(Robj::from(Some(true)), Robj::from(true));
+        assert!(!Robj::from(Some(true)).is_na());
+        assert!(Robj::from(<Option<bool>>::None).is_na());
+
+        assert_eq!(Robj::from(Some(1.)), Robj::from(1.));
+        assert!(!Robj::from(Some(1.)).is_na());
+        assert!(Robj::from(<Option<f64>>::None).is_na());
+
+        assert_eq!(Robj::from(Some("xyz")), Robj::from("xyz"));
+        assert!(!Robj::from(Some("xyz")).is_na());
+        assert!(Robj::from(<Option<&str>>::None).is_na());
     }
 
     #[test]
