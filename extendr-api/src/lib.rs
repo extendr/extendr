@@ -328,12 +328,39 @@ mod tests {
 
     #[test]
     fn r_output_test() {
-        let fifo = lang!("fifo", Robj::from("")).eval().unwrap();
-        let fifo = unsafe { fifo.get() };
-        lang!("sink", fifo).eval_blind();
+
+        // R equivalent
+        // > txt_con <- textConnection("test_con", open = "w")
+        // > sink(txt_con)
+        // > cat("Hello world")
+        // > sink()
+        // > close(txt_con)
+        // > expect_equal(test_con, "Hello world")
+        //
+        
+        let con_target_name = "test_con";
+        // `textConnection` outputting to `test_con` R variable
+        let txt_con = 
+            lang!(
+                "textConnection", 
+                Robj::from(con_target_name), 
+                open = Robj::from("w"))
+            .eval().unwrap();
+
+            
+        let txt_con = unsafe { txt_con.get() };
+        // `sink` to connection
+        lang!("sink", txt_con).eval_blind();
         rprintln!("Hello world");
+        // `sink` reset
         lang!("sink").eval_blind();
-        let result : Robj = lang!("readLines", fifo).eval_blind();
+        
+        // Retrieve value of `test_con` by evaluating R variable name
+        let result = Robj::eval_string(&con_target_name).unwrap();
+        
+        // Close connection
+        lang!("close", txt_con).eval_blind();
+        
         assert_eq!(result, Robj::from("Hello world"));
     }
 }
