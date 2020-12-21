@@ -75,16 +75,12 @@ jobs:
       - name: Build (Windows)
         if: runner.os == 'Windows'
         run: cargo build --target x86_64-pc-windows-gnu
-        env:
-          LIBCLANG_PATH: C:\msys64\mingw64\bin
-        shell: msys2
-      
+        shell: msys2 {0}
+
       - name: Run tests (Windows)
         if: runner.os == 'Windows'
         run: cargo test --target x86_64-pc-windows-gnu -- --nocapture --test-threads=1
-        env:
-          LIBCLANG_PATH: C:\msys64\mingw64\bin
-        shell: msys2
+        shell: msys2 {0}
 
       - name: Query dependencies for integration testing
         run: |
