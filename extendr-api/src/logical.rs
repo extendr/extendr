@@ -1,28 +1,28 @@
 
-use super::integer_is_na;
 /// Bool is a wrapper for i32 in the context of an R's tristate boolean.
-#[derive(Debug)]
+/// It can be TRUE, FALSE or NA_LOGICAL.
+#[derive(Debug, PartialEq, Eq)]
 pub struct Bool(pub i32);
 
 impl Bool {
-    // Convert this Bool to a bool. Note NA will be true.
+    /// Convert this Bool to a bool. Note NA will be true.
     pub fn to_bool(&self) -> bool {
         self.0 != 0
     }
 
-    // Convert this construct a Bool from a rust boolean.
+    /// Convert this construct a Bool from a rust boolean.
     pub fn from_bool(val: bool) -> Self {
         Bool(val as i32)
     }
 
-    // Return true if this Bool is NA.
-    pub fn is_na(&self) -> bool {
-        integer_is_na(self.0)
+    /// Test if TRUE
+    pub fn is_true(&self) -> bool {
+        self.0 != 0
     }
 
-    // Construct a NA Bool.
-    pub fn na() -> Bool {
-        Bool(std::i32::MIN)
+    /// Test if FALSE
+    pub fn is_false(&self) -> bool {
+        self.0 == 0
     }
 }
 
@@ -55,11 +55,5 @@ impl From<Bool> for bool {
 impl From<&Bool> for bool {
     fn from(v: &Bool) -> Self {
         v.0 != 0
-    }
-}
-
-impl PartialEq<Bool> for Bool {
-    fn eq(&self, rhs: &Bool) -> bool {
-        self.0 == rhs.0
     }
 }

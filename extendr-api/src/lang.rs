@@ -6,6 +6,7 @@ use libR_sys::*;
 use crate::robj::Robj;
 
 /// Convert a list of tokens to an array of tuples.
+#[doc(hidden)]
 #[macro_export]
 macro_rules! push_args {
     ($args: expr, $name: ident = $val : expr) => {
@@ -24,6 +25,7 @@ macro_rules! push_args {
     };
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! args {
     () => {
@@ -38,6 +40,7 @@ macro_rules! args {
     };
 }
 
+#[doc(hidden)]
 pub unsafe fn append_with_name(tail: SEXP, obj: Robj, name: &str) -> SEXP {
     let mut name = Vec::from(name.as_bytes());
     name.push(0);
@@ -50,12 +53,14 @@ pub unsafe fn append_with_name(tail: SEXP, obj: Robj, name: &str) -> SEXP {
     cons
 }
 
+#[doc(hidden)]
 pub unsafe fn append(tail: SEXP, obj: Robj) -> SEXP {
     let cons = Rf_cons(obj.get(), R_NilValue);
     SETCDR(tail, cons);
     cons
 }
 
+#[doc(hidden)]
 pub unsafe fn make_lang(sym: &str) -> Robj {
     let mut name = Vec::from(sym.as_bytes());
     name.push(0);
@@ -64,6 +69,7 @@ pub unsafe fn make_lang(sym: &str) -> Robj {
 }
 
 /// Convert a list of tokens to an array of tuples.
+#[doc(hidden)]
 #[macro_export]
 macro_rules! append_lang {
     ($tail: ident, $name: ident = $val : expr) => {
@@ -82,7 +88,45 @@ macro_rules! append_lang {
     };
 }
 
+/// The call! macro calls an R function with Rust parameters.
+/// Equivalent to `lang!(sym, params).eval()`
+/// This returns a Rust Result.
+///
+/// Example:
+/// ```
+/// use extendr_api::*;
+/// extendr_engine::start_r();
+///
+/// let vec = call!("c", 1.0, 2.0, 3.0).unwrap();
+/// assert_eq!(vec, r!([1., 2., 3.]));
+///
+/// let list = call!("list", a=1, b=2).unwrap();
+/// assert_eq!(list.len(), 2);
+///
+/// let three = call!("+", 1, 2).unwrap();
+/// assert_eq!(three, r!(3));
+/// ```
+#[macro_export]
+macro_rules! call {
+    ($($toks: tt)*) => {
+        lang!($($toks)*).eval()
+    }
+}
+
 /// A macro for constructing R langage objects.
+///
+/// Example:
+/// ```
+/// use extendr_api::*;
+/// extendr_engine::start_r();
+///
+/// let call_to_c = lang!("c", 1., 2., 3.);
+/// let vec = call_to_c.eval().unwrap();
+/// assert_eq!(vec, r!([1., 2., 3.]));
+///
+/// let list = lang!("list", a=1, b=2).eval().unwrap();
+/// assert_eq!(list.len(), 2);
+/// ```
 #[macro_export]
 macro_rules! lang {
     ($sym : expr) => {
@@ -101,28 +145,3 @@ macro_rules! lang {
     };
 }
 
-#[cfg(test)]
-mod tests {
-    //use crate::args;
-    use super::*;
-    use extendr_engine::start_r;
-
-    #[test]
-    fn test_args() {
-        start_r();
-        assert_eq!(Robj::from(1).eval().unwrap(), Robj::from(1));
-        //assert_eq!(Robj::from(Lang("ls")), Robj::from(1));
-        assert_eq!(lang!("+", 1, 1).eval().unwrap(), Robj::from(2));
-        assert_eq!(lang!("+", x = 1, y = 1).eval().unwrap(), Robj::from(2));
-        //assert_eq!(Robj::from(Lang("ls")).and(baseenv()).eval().unwrap(), Robj::from(1));
-        //let plus = Robj::from(Lang("+"));
-        /*assert_eq!(args!(), vec![]);
-        assert_eq!(args!(1), vec![("", 1.into())]);
-        assert_eq!(args!(a=1), vec![("a", 1.into())]);
-        assert_eq!(args!(2, a=1), vec![("", 2.into()), ("a", 1.into())]);
-        assert_eq!(args!(1+1), vec![("", Robj::from(2))]);
-        assert_eq!(args!(1+1, 2), [("", Robj::from(2)), ("", Robj::from(2))]);
-        assert_eq!(args!(a=1+1, b=2), [("a", Robj::from(2)), ("b", Robj::from(2))]);*/
-        //end_r();
-    }
-}
