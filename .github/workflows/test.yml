@@ -61,6 +61,15 @@ jobs:
           export LD_LIBRARY_PATH=${R_HOME}/lib
           cargo test -- --nocapture --test-threads=1
 
+      # Installing 'msys2' on Windows only
+      - uses: msys2/setup-msys2@v2
+        if: runner.os == 'Windows'
+        with:
+          msystem: MINGW64
+          path-type: inherit
+          release: false
+          update: false
+
       - name: Build (Windows)
         if: runner.os == 'Windows'
         run: cargo build --target x86_64-pc-windows-gnu
