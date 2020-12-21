@@ -44,6 +44,16 @@ jobs:
           rustup target add x86_64-pc-windows-gnu
           rustup target add i686-pc-windows-gnu
 
+      # Installing 'msys2' on Windows only
+      - name: Set up 'msys2' for Windows
+        uses: msys2/setup-msys2@v2
+        if: runner.os == 'Windows'
+        with:
+          msystem: MINGW64
+          path-type: inherit
+          release: false
+          update: false
+          
       - uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.config.r }}
@@ -61,22 +71,18 @@ jobs:
           export LD_LIBRARY_PATH=${R_HOME}/lib
           cargo test -- --nocapture --test-threads=1
 
-      # Installing 'msys2' on Windows only
-      - uses: msys2/setup-msys2@v2
-        if: runner.os == 'Windows'
-        with:
-          msystem: MINGW64
-          path-type: inherit
-          release: false
-          update: false
 
       - name: Build (Windows)
         if: runner.os == 'Windows'
         run: cargo build --target x86_64-pc-windows-gnu
-
+        env:
+          LIBCLANG_PATH: C:\msys64\mingw64\bin
+      
       - name: Run tests (Windows)
         if: runner.os == 'Windows'
         run: cargo test --target x86_64-pc-windows-gnu -- --nocapture --test-threads=1
+        env:
+          LIBCLANG_PATH: C:\msys64\mingw64\bin
 
       - name: Query dependencies for integration testing
         run: |
