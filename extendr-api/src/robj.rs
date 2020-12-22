@@ -2240,23 +2240,6 @@ mod tests {
         assert_eq!(<&str>::from_robj(&hello), Ok("hello"));
 
         // conversion from a vector to a scalar value
-        assert_eq!(
-            <i32>::from_robj(&Robj::from(vec![].as_slice() as &[i32])),
-            Err("Input must be of length 1. Vector of length zero given.")
-        );
-        assert_eq!(
-            <i32>::from_robj(&Robj::from(vec![1].as_slice() as &[i32])),
-            Ok(1)
-        );
-        assert_eq!(
-            <i32>::from_robj(&Robj::from(vec![1, 2].as_slice() as &[i32])),
-            Err("Input must be of length 1. Vector of length >1 given.")
-        );
-
-        let hello = Robj::from("hello");
-        assert_eq!(<&str>::from_robj(&hello), Ok("hello"));
-
-        // conversion from a vector to a scalar value
         assert_eq!(<i32>::from_robj(&Robj::from(vec![].as_slice() as &[i32])), Err("Input must be of length 1. Vector of length zero given."));
         assert_eq!(<i32>::from_robj(&Robj::from(vec![1].as_slice() as &[i32])), Ok(1));
         assert_eq!(<i32>::from_robj(&Robj::from(vec![1, 2].as_slice() as &[i32])), Err("Input must be of length 1. Vector of length >1 given."));
