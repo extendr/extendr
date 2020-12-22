@@ -22,13 +22,13 @@ jobs:
       matrix:
         config:
           
-          # - {os: windows-latest, r: 'release', rust-version: 'stable-x86_64-pc-windows-msvc', msystem: "MINGW64"}
+          - {os: windows-latest, r: 'release', rust-version: 'stable-x86_64-pc-windows-msvc', msystem: "MINGW64"}
           # - {os: windows-latest, r: 'release', rust-version: 'nightly-x86_64-pc-windows-msvc', msystem: "MINGW64"}
           # - {os: windows-latest, r: 'devel', rust-version: 'stable-x86_64-pc-windows-msvc', msystem: "MINGW64"}
           # - {os: windows-latest, r: 'oldrel', rust-version: 'stable-x86_64-pc-windows-msvc', msystem: "MINGW64"}
 
 
-          # - {os: windows-latest, r: 'release', rust-version: 'stable-i686-pc-windows-msvc', msystem: "MINGW32"}
+          - {os: windows-latest, r: 'release', rust-version: 'stable-i686-pc-windows-msvc', msystem: "MINGW32"}
           # - {os: windows-latest, r: 'release', rust-version: 'nightly-i686-pc-windows-msvc', msystem: "MINGW32"}
           # - {os: windows-latest, r: 'devel', rust-version: 'stable-i686-pc-windows-msvc', msystem: "MINGW32"}
           # - {os: windows-latest, r: 'oldrel', rust-version: 'stable-i686-pc-windows-msvc', msystem: "MINGW32"}
@@ -71,27 +71,50 @@ jobs:
         uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.config.r }}
+      
+      # This step is only needed for Windows
+      - name: Set up MSYS2 for Windows
+        if: startsWith(runner.os, 'Windows')
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: ${{ matrix.config.msystem }}
+          path-type: inherit
+          release: false
+          update: false
+
+      # All configurations for Windows go here
+      # `Rust` toolchain is used to determine target architecture
+      # Alternatively, `if:` conditions can be used
+      - name: Configure Windows
+        if: startsWith(runner.os, 'Windows')
+        # 1. Add appropriate *-gnu target
+        # 2. Set CARGO_BUILD_FLAGS to the `rust` target
+        run: |
+          if ($env:RUST_TOOLCHAIN -like "*x86_64*") {
+            rustup target add x86_64-pc-windows-gnu ;
+            echo "CARGO_BUILD_FLAGS=--target=x86_64-pc-windows-gnu" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append ;
+            echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+            echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          }
+          if ($env:RUST_TOOLCHAIN -like "*i686*") {
+            rustup target add i686-pc-windows-gnu ;
+            echo "CARGO_BUILD_FLAGS=--target=i686-pc-windows-gnu" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append ;
+            echo "C:\msys64\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+            echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\i386"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          }
+        env: 
+          RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
 
       - name: Set up Pandoc
         uses: r-lib/actions/setup-pandoc@v1
       
       - name: Build
-        run: cargo build
+        run: cargo build -vv $env:CARGO_BUILD_FLAGS
 
       - name: Run tests
         run: |
-          cargo test -- --nocapture --test-threads=1
+          cargo test -vv $env:CARGO_BUILD_FLAGS -- --nocapture --test-threads=1
 
-
-      # - name: Build (Windows)
-      #   if: runner.os == 'Windows'
-      #   run: cargo build --target x86_64-pc-windows-gnu
-      #   shell: msys2 {0}
-
-      # - name: Run tests (Windows)
-      #   if: runner.os == 'Windows'
-      #   run: cargo test --target x86_64-pc-windows-gnu -- --nocapture --test-threads=1
-      #   shell: msys2 {0}
 
       # - name: Query dependencies for integration testing
       #   run: |
