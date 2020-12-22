@@ -34,7 +34,7 @@ jobs:
           # - {os: windows-latest, r: 'oldrel', rust-version: 'stable-i686-pc-windows-msvc', msystem: "MINGW32"}
 
 
-          # - {os: macOS-latest,   r: 'release', rust-version: 'stable'}
+          - {os: macOS-latest,   r: 'release', rust-version: 'stable'}
           # - {os: macOS-latest,   r: 'release', rust-version: 'nightly'}
           # - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
           # - {os: macOS-latest,   r: 'oldrel', rust-version: 'stable'}
@@ -60,35 +60,23 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
-      - uses: actions-rs/toolchain@v1
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.config.rust-version }}
-
-      - name: Set up Rust targets on Windows
-        if: runner.os == 'Windows'
-        run: |
-          rustup target add x86_64-pc-windows-gnu
-          rustup target add i686-pc-windows-gnu
-
-      # Installing 'msys2' on Windows only
-      - name: Set up 'msys2' for Windows
-        uses: msys2/setup-msys2@v2
-        if: runner.os == 'Windows'
-        with:
-          msystem: MINGW64
-          path-type: inherit
-          release: false
-          update: false
-
-      - uses: r-lib/actions/setup-r@v1
+          default: true
+          components: rustfmt, clippy
+      
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.config.r }}
 
-      - uses: r-lib/actions/setup-pandoc@v1
+      - name: Set up Pandoc
+        uses: r-lib/actions/setup-pandoc@v1
       
-      # - name: Build (not Windows)
-      #   if: runner.os != 'Windows'
-      #   run: cargo build
+      - name: Build
+        run: cargo build
 
       # - name: Run tests (not Windows)
       #   if: runner.os != 'Windows'
