@@ -14,5 +14,5 @@ libR-sys = "0.1.12"
 [features]
 default = []
 
-# All features needed for testing
+# All features to test
 tests-all = ["libR-sys/use-bindgen"]

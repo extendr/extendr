@@ -156,6 +156,6 @@ jobs:
           export LD_LIBRARY_PATH=${R_HOME}/lib
           cargo test --manifest-path extendr-engine/Cargo.toml --features tests-all -- --nocapture --test-threads=1
           cargo test --manifest-path extendr-api/Cargo.toml --features tests-all -- --nocapture --test-threads=1
-          cargo test --manifest-path extendr-api/Cargo.toml --features tests-wo-ndarray -- --nocapture --test-threads=1
+          cargo test --manifest-path extendr-api/Cargo.toml --features tests-minimal -- --nocapture --test-threads=1
           cargo test --manifest-path extendr-macros/Cargo.toml -- --nocapture --test-threads=1
 

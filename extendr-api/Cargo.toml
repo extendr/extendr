@@ -17,8 +17,8 @@ ndarray = { version = "0.13.1", optional = true }
 [features]
 default = []
 
-# All features needed for testing
+# All features to test
 tests-all = ["ndarray", "libR-sys/use-bindgen"]
 
-# All features needed for testing, minus ndarray
-tests-wo-ndarray = ["libR-sys/use-bindgen"]
+# The minimal set of features without all optional ones
+tests-minimal = ["libR-sys/use-bindgen"]
