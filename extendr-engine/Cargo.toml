@@ -15,7 +15,4 @@ libR-sys = "0.1.12"
 default = []
 
 # All features needed for testing
-tests-all = ["ndarray", "libR-sys/use-bindgen"]
-
-# All features needed for testing, minus ndarray
-tests-wo-ndarray = ["libR-sys/use-bindgen"]
+tests-all = ["libR-sys/use-bindgen"]

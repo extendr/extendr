@@ -20,4 +20,4 @@ lazy_static = "1.4.0"
 default = []
 
 # All features needed for testing
-tests-all = ["ndarray", "libR-sys/use-bindgen"]
+tests-all = ["libR-sys/use-bindgen"]
