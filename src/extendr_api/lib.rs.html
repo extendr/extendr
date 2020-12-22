@@ -383,6 +383,12 @@
 <span id="380">380</span>
 <span id="381">381</span>
 <span id="382">382</span>
+<span id="383">383</span>
+<span id="384">384</span>
+<span id="385">385</span>
+<span id="386">386</span>
+<span id="387">387</span>
+<span id="388">388</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! extendr - A safe and user friendly R extension interface.</span>
@@ -455,11 +461,17 @@
 <span class="kw">mod</span> <span class="ident">robj</span>;
 <span class="kw">mod</span> <span class="ident">wrapper</span>;
 
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
+<span class="kw">mod</span> <span class="ident">robj_ndarray</span>;
+
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">args</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">error</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">rmacros</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">robj</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">wrapper</span>::<span class="kw-2">*</span>;
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">robj_ndarray</span>::<span class="kw-2">*</span>;
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">extendr_macros</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">libR_sys</span>::<span class="ident">DllInfo</span>;
