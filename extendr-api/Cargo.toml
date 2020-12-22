@@ -16,3 +16,6 @@ ndarray = { version = "0.13.1", optional = true }
 
 [features]
 default = []
+
+# All features needed for testing
+tests-all = ["ndarray", "libR-sys/use-bindgen"]

@@ -15,3 +15,9 @@ proc_macro = true
 syn = { version = "1.0.22", features = ["full", "extra-traits"] }
 quote = "1.0.6"
 lazy_static = "1.4.0"
+
+[features]
+default = []
+
+# All features needed for testing
+tests-all = ["ndarray", "libR-sys/use-bindgen"]

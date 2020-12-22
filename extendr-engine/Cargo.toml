@@ -10,3 +10,12 @@ repository = "https://github.com/extendr/extendr"
 
 [dependencies]
 libR-sys = "0.1.12"
+
+[features]
+default = []
+
+# All features needed for testing
+tests-all = ["ndarray", "libR-sys/use-bindgen"]
+
+# All features needed for testing, minus ndarray
+tests-wo-ndarray = ["libR-sys/use-bindgen"]
