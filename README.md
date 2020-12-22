@@ -156,13 +156,13 @@ The meanings of the options and arguments are
 * `--force='*'`: By default, `cargo ws version` skips the crates unchange since the last version. This option makes them included in the targets. 
 * `--no-individual-tags`: By default, `cargo ws version` creates a tag for each crates (e.g. `crateA@v0.0.1`) in addition to the usual version tag (e.g. `v0.0.1`). This option skips the individual tags.
 * `--pre-id alpha`: Specify the identifier prepended to the version.
-* `prerelease`: Increase the version with prerelease identifier (e.g. `v0.1.10 -> v0.1.10-alpha.0`, `v0.1.10-alpha.0 -> v0.1.10-alpha.1`). We can also specify `patch`, `minor`, or `major` to increment the corresponding part of the version. Alternatively, we can omit this and choose the version interactively
+* `prerelease`: Increase the version with prerelease identifier (e.g. `v0.1.10 -> v0.1.10-alpha.0`, `v0.1.10-alpha.0 -> v0.1.10-alpha.1`). We can also specify `patch`, `minor`, or `major` to increment the corresponding part of the version. Alternatively, we can omit this and choose the version interactively.
 
 <details>
 
 <summary>console output</summary>
 
-Move the cursor with <kbd>↑</kbd><kbd>↓</kbd>, and press <kbd>Enter</kbd> to choose.
+If you are asked to select a new version interactively, move the cursor with <kbd>↑</kbd><kbd>↓</kbd>, and press <kbd>Enter</kbd> to choose.
 
 ``` console
 info looking for changes since v0.1.10
