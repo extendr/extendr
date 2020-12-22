@@ -10,3 +10,9 @@ repository = "https://github.com/extendr/extendr"
 
 [dependencies]
 libR-sys = "0.1.12"
+
+[features]
+default = []
+
+# All features to test
+tests-all = ["libR-sys/use-bindgen"]

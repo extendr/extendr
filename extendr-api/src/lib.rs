@@ -69,11 +69,17 @@ mod rmacros;
 mod robj;
 mod wrapper;
 
+#[cfg(feature = "ndarray")]
+mod robj_ndarray;
+
 pub use args::*;
 pub use error::*;
 pub use rmacros::*;
 pub use robj::*;
 pub use wrapper::*;
+
+#[cfg(feature = "ndarray")]
+pub use robj_ndarray::*;
 
 pub use extendr_macros::*;
 pub use libR_sys::DllInfo;
