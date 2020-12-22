@@ -60,102 +60,102 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v1
       
-      - name: Build (not Windows)
-        if: runner.os != 'Windows'
-        run: cargo build
+      # - name: Build (not Windows)
+      #   if: runner.os != 'Windows'
+      #   run: cargo build
 
-      - name: Run tests (not Windows)
-        if: runner.os != 'Windows'
-        run: |
-          export R_HOME=`R -s -e 'cat(R.home())'`
-          export LD_LIBRARY_PATH=${R_HOME}/lib
-          cargo test -- --nocapture --test-threads=1
+      # - name: Run tests (not Windows)
+      #   if: runner.os != 'Windows'
+      #   run: |
+      #     export R_HOME=`R -s -e 'cat(R.home())'`
+      #     export LD_LIBRARY_PATH=${R_HOME}/lib
+      #     cargo test -- --nocapture --test-threads=1
 
 
-      - name: Build (Windows)
-        if: runner.os == 'Windows'
-        run: cargo build --target x86_64-pc-windows-gnu
-        shell: msys2 {0}
+      # - name: Build (Windows)
+      #   if: runner.os == 'Windows'
+      #   run: cargo build --target x86_64-pc-windows-gnu
+      #   shell: msys2 {0}
 
-      - name: Run tests (Windows)
-        if: runner.os == 'Windows'
-        run: cargo test --target x86_64-pc-windows-gnu -- --nocapture --test-threads=1
-        shell: msys2 {0}
+      # - name: Run tests (Windows)
+      #   if: runner.os == 'Windows'
+      #   run: cargo test --target x86_64-pc-windows-gnu -- --nocapture --test-threads=1
+      #   shell: msys2 {0}
 
-      - name: Query dependencies for integration testing
-        run: |
-          install.packages('remotes')
-          saveRDS(remotes::dev_package_deps(pkgdir = "tests/extendrtests", dependencies = TRUE), ".github/depends.Rds", version = 2)
-          writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
-        shell: Rscript {0}
+      # - name: Query dependencies for integration testing
+      #   run: |
+      #     install.packages('remotes')
+      #     saveRDS(remotes::dev_package_deps(pkgdir = "tests/extendrtests", dependencies = TRUE), ".github/depends.Rds", version = 2)
+      #     writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
+      #   shell: Rscript {0}
 
-      - name: Cache installed R packages
-        if: runner.os != 'Windows'
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
+      # - name: Cache installed R packages
+      #   if: runner.os != 'Windows'
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: ${{ env.R_LIBS_USER }}
+      #     key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
+      #     restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
-      - name: Install R dependencies for integration testing
-        run: |
-          remotes::install_deps(pkgdir = "tests/extendrtests", dependencies = TRUE)
-          remotes::install_cran("rcmdcheck")
-        shell: Rscript {0}
+      # - name: Install R dependencies for integration testing
+      #   run: |
+      #     remotes::install_deps(pkgdir = "tests/extendrtests", dependencies = TRUE)
+      #     remotes::install_cran("rcmdcheck")
+      #   shell: Rscript {0}
         
-      - name: Run R integration tests
-        id: r_integration_tests
-        env:
-          _R_CHECK_CRAN_INCOMING_REMOTE_: false
-        run: rcmdcheck::rcmdcheck(path = "tests/extendrtests", args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
-        shell: Rscript {0}
+      # - name: Run R integration tests
+      #   id: r_integration_tests
+      #   env:
+      #     _R_CHECK_CRAN_INCOMING_REMOTE_: false
+      #   run: rcmdcheck::rcmdcheck(path = "tests/extendrtests", args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
+      #   shell: Rscript {0}
         
-      - name: Upload check results from R integration tests
-        if: failure()
-        uses: actions/upload-artifact@main
-        with:
-          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
-          path: check
+      # - name: Upload check results from R integration tests
+      #   if: failure()
+      #   uses: actions/upload-artifact@main
+      #   with:
+      #     name: ${{ runner.os }}-r${{ matrix.config.r }}-results
+      #     path: check
 
 
 # All tests under this job are run with R devel and freshly generated bindings.
-  tests_R_devel_bindgen:
-    runs-on: ${{ matrix.config.os }}
+  # tests_R_devel_bindgen:
+  #   runs-on: ${{ matrix.config.os }}
 
-    name: ${{ matrix.config.os }} w/ bindgen (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
+  #   name: ${{ matrix.config.os }} w/ bindgen (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
             
-    strategy:
-      fail-fast: false
-      matrix:
-        config:
-          - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       config:
+  #         - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
 
-    env:
-      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      RSPM: ${{ matrix.config.rspm }}
+  #   env:
+  #     R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+  #     RSPM: ${{ matrix.config.rspm }}
 
-    steps:
-      - uses: actions/checkout@v2
+  #   steps:
+  #     - uses: actions/checkout@v2
       
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ matrix.config.rust-version }}
+  #     - uses: actions-rs/toolchain@v1
+  #       with:
+  #         toolchain: ${{ matrix.config.rust-version }}
 
-      - uses: r-lib/actions/setup-r@v1
-        with:
-          r-version: ${{ matrix.config.r }}
+  #     - uses: r-lib/actions/setup-r@v1
+  #       with:
+  #         r-version: ${{ matrix.config.r }}
       
-      - name: Build
-        run: |
-          cargo build --manifest-path extendr-api/Cargo.toml --features tests-all
-          cargo build --manifest-path extendr-engine/Cargo.toml --features tests-all
+  #     - name: Build
+  #       run: |
+  #         cargo build --manifest-path extendr-api/Cargo.toml --features tests-all
+  #         cargo build --manifest-path extendr-engine/Cargo.toml --features tests-all
 
-      - name: Run tests
-        run: |
-          export R_HOME=`R -s -e 'cat(R.home())'`
-          export LD_LIBRARY_PATH=${R_HOME}/lib
-          cargo test --manifest-path extendr-engine/Cargo.toml --features tests-all -- --nocapture --test-threads=1
-          cargo test --manifest-path extendr-api/Cargo.toml --features tests-all -- --nocapture --test-threads=1
-          cargo test --manifest-path extendr-api/Cargo.toml --features tests-minimal -- --nocapture --test-threads=1
-          cargo test --manifest-path extendr-macros/Cargo.toml -- --nocapture --test-threads=1
+  #     - name: Run tests
+  #       run: |
+  #         export R_HOME=`R -s -e 'cat(R.home())'`
+  #         export LD_LIBRARY_PATH=${R_HOME}/lib
+  #         cargo test --manifest-path extendr-engine/Cargo.toml --features tests-all -- --nocapture --test-threads=1
+  #         cargo test --manifest-path extendr-api/Cargo.toml --features tests-all -- --nocapture --test-threads=1
+  #         cargo test --manifest-path extendr-api/Cargo.toml --features tests-minimal -- --nocapture --test-threads=1
+  #         cargo test --manifest-path extendr-macros/Cargo.toml -- --nocapture --test-threads=1
 
