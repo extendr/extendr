@@ -22,25 +22,26 @@ jobs:
       matrix:
         config:
           - {os: windows-latest, r: 'release', rust-version: 'stable-msvc', msystem: "MINGW64"}
-          # - {os: windows-latest, r: 'release', rust-version: 'stable-x86_64-pc-windows-msvc', msystem: "MINGW64"}
+          
+          - {os: windows-latest, r: 'release', rust-version: 'stable-x86_64-pc-windows-msvc', msystem: "MINGW64"}
           # - {os: windows-latest, r: 'release', rust-version: 'nightly-x86_64-pc-windows-msvc', msystem: "MINGW64"}
           # - {os: windows-latest, r: 'devel', rust-version: 'stable-x86_64-pc-windows-msvc', msystem: "MINGW64"}
           # - {os: windows-latest, r: 'oldrel', rust-version: 'stable-x86_64-pc-windows-msvc', msystem: "MINGW64"}
 
 
-          # - {os: windows-latest, r: 'release', rust-version: 'stable-i686-pc-windows-msvc', msystem: "MINGW32"}
+          - {os: windows-latest, r: 'release', rust-version: 'stable-i686-pc-windows-msvc', msystem: "MINGW32"}
           # - {os: windows-latest, r: 'release', rust-version: 'nightly-i686-pc-windows-msvc', msystem: "MINGW32"}
           # - {os: windows-latest, r: 'devel', rust-version: 'stable-i686-pc-windows-msvc', msystem: "MINGW32"}
           # - {os: windows-latest, r: 'oldrel', rust-version: 'stable-i686-pc-windows-msvc', msystem: "MINGW32"}
 
 
-          # - {os: macOS-latest,   r: 'release', rust-version: 'stable'}
+          - {os: macOS-latest,   r: 'release', rust-version: 'stable'}
           # - {os: macOS-latest,   r: 'release', rust-version: 'nightly'}
           # - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
           # - {os: macOS-latest,   r: 'oldrel', rust-version: 'stable'}
 
 
-          # - {os: ubuntu-20.04,   r: 'release', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: ubuntu-20.04,   r: 'release', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           # - {os: ubuntu-20.04,   r: 'release', rust-version: 'nightly', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           # # R-devel requires LD_LIBRARY_PATH
           # - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}   
@@ -120,40 +121,40 @@ jobs:
 
 
 
-      # - name: Query dependencies for integration testing
-      #   run: |
-      #     install.packages('remotes')
-      #     saveRDS(remotes::dev_package_deps(pkgdir = "tests/extendrtests", dependencies = TRUE), ".github/depends.Rds", version = 2)
-      #     writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
-      #   shell: Rscript {0}
+      - name: Query dependencies for integration testing
+        run: |
+          install.packages('remotes')
+          saveRDS(remotes::dev_package_deps(pkgdir = "tests/extendrtests", dependencies = TRUE), ".github/depends.Rds", version = 2)
+          writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
+        shell: Rscript {0}
 
-      # - name: Cache installed R packages
-      #   # if: runner.os != 'Windows'
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: ${{ env.R_LIBS_USER }}
-      #     key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
-      #     restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
+      - name: Cache installed R packages
+        # if: runner.os != 'Windows'
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
+          restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
-      # - name: Install R dependencies for integration testing
-      #   run: |
-      #     remotes::install_deps(pkgdir = "tests/extendrtests", dependencies = TRUE)
-      #     remotes::install_cran("rcmdcheck")
-      #   shell: Rscript {0}
+      - name: Install R dependencies for integration testing
+        run: |
+          remotes::install_deps(pkgdir = "tests/extendrtests", dependencies = TRUE)
+          remotes::install_cran("rcmdcheck")
+        shell: Rscript {0}
         
-      # - name: Run R integration tests
-      #   id: r_integration_tests
-      #   env:
-      #     _R_CHECK_CRAN_INCOMING_REMOTE_: false
-      #   run: rcmdcheck::rcmdcheck(path = "tests/extendrtests", args = c("--no-manual", "--as-cran", Sys.getenv("R_CHECK_NO_MULTIARCH")), error_on = "warning", check_dir = "check")
-      #   shell: Rscript {0}
+      - name: Run R integration tests
+        id: r_integration_tests
+        env:
+          _R_CHECK_CRAN_INCOMING_REMOTE_: false
+        run: rcmdcheck::rcmdcheck(path = "tests/extendrtests", args = c("--no-manual", "--as-cran", Sys.getenv("R_CHECK_NO_MULTIARCH")), error_on = "warning", check_dir = "check")
+        shell: Rscript {0}
         
-      # - name: Upload check results from R integration tests
-      #   if: failure()
-      #   uses: actions/upload-artifact@main
-      #   with:
-      #     name:  ${{ matrix.config.os }}-R-${{ matrix.config.r }}-rust-${{ matrix.config.rust-version }}
-      #     path: check
+      - name: Upload check results from R integration tests
+        if: failure()
+        uses: actions/upload-artifact@main
+        with:
+          name:  ${{ matrix.config.os }}-R-${{ matrix.config.r }}-rust-${{ matrix.config.rust-version }}
+          path: check
 
 
 # All tests under this job are run with R devel and freshly generated bindings.
