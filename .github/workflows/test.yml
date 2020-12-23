@@ -175,8 +175,10 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
+          # - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          # - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
+          - {os: windows-latest, r: 'devel', rust-version: 'stable-x86_64-pc-windows-msvc'}
+          - {os: windows-latest, r: 'devel', rust-version: 'stable-i686-pc-windows-msvc'}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -201,21 +203,62 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
       
+
+      # This step is only needed for Windows
+      - name: Set up MSYS2 for Windows
+        if: startsWith(runner.os, 'Windows')
+        uses: msys2/setup-msys2@v2
+        with:
+          path-type: inherit
+          release: false
+          update: false
+
+      # All configurations for Windows go here
+      # `Rust` toolchain is used to determine target architecture
+      # Alternatively, `if:` conditions can be used
+      - name: Configure Windows
+        if: runner.os == 'Windows'
+        # 1. Add appropriate *-gnu target
+        # 2. Set CARGO_BUILD_FLAGS to the `rust` target
+        # 3. Configure path to `libclang`
+        # 4. Add path to `mingw32`/`mingw64` -- otherwise library is linked to `rtools`
+        # 5. Add path to R's `i386`/`x64`  -- to solve `x86` build/test issue
+        run: |
+          if ($env:RUST_TOOLCHAIN -like "*x86_64*") {
+            rustup target add x86_64-pc-windows-gnu ;
+            echo "CARGO_BUILD_FLAGS=--target=x86_64-pc-windows-gnu" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append ;
+            echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+            echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          }
+          if ($env:RUST_TOOLCHAIN -like "*i686*") {
+            rustup target add i686-pc-windows-gnu ;
+            echo "CARGO_BUILD_FLAGS=--target=i686-pc-windows-gnu" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append ;
+            echo "C:\msys64\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+            echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\i386"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+
+          }
+        env: 
+          RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
+
       - name: Configure Linux
-        if: runner.os == 'linux'
+        if: startsWith(runner.os, 'linux')
         run: |
           Del alias:R
           echo "LD_LIBRARY_PATH=$(R -s -e 'cat(normalizePath(R.home()))')/lib" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
+      - name: Debug
+        run: |
+          echo $env:CARGO_BUILD_FLAGS
+
       - name: Build
         run: |
-          cargo build --manifest-path extendr-api/Cargo.toml --features tests-all
-          cargo build --manifest-path extendr-engine/Cargo.toml --features tests-all
+          cargo build $env:CARGO_BUILD_FLAGS --manifest-path extendr-api/Cargo.toml --features tests-all
+          cargo build $env:CARGO_BUILD_FLAGS --manifest-path extendr-engine/Cargo.toml --features tests-all
 
       - name: Run tests
         run: |
-          cargo test --manifest-path extendr-engine/Cargo.toml --features tests-all -- --nocapture --test-threads=1
-          cargo test --manifest-path extendr-api/Cargo.toml --features tests-all -- --nocapture --test-threads=1
-          cargo test --manifest-path extendr-api/Cargo.toml --features tests-minimal -- --nocapture --test-threads=1
-          cargo test --manifest-path extendr-macros/Cargo.toml -- --nocapture --test-threads=1
+          cargo test $env:CARGO_BUILD_FLAGS --manifest-path extendr-engine/Cargo.toml --features tests-all -- --nocapture --test-threads=1
+          cargo test $env:CARGO_BUILD_FLAGS --manifest-path extendr-api/Cargo.toml --features tests-all -- --nocapture --test-threads=1
+          cargo test $env:CARGO_BUILD_FLAGS --manifest-path extendr-api/Cargo.toml --features tests-minimal -- --nocapture --test-threads=1
+          cargo test $env:CARGO_BUILD_FLAGS --manifest-path extendr-macros/Cargo.toml -- --nocapture --test-threads=1
 
