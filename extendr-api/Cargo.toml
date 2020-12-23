@@ -9,7 +9,7 @@ documentation = "https://extendr.github.io/extendr/extendr_api/index.html"
 repository = "https://github.com/extendr/extendr"
 
 [dependencies]
-libR-sys = "0.1.12"
+libR-sys = "0.2.0"
 extendr-macros = { path = "../extendr-macros", version="0.1.11" }
 extendr-engine = { path = "../extendr-engine", version="0.1.11" }
 ndarray = { version = "0.13.1", optional = true }
