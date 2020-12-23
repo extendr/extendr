@@ -13,10 +13,10 @@ edition = "2018"
 crate-type = ["staticlib"]
 
 [dependencies]
-extendr-api = { path = "../../../../extendr-api" }
+extendr-api = "*"
 
 [patch.crates-io]
-#extendr-api = { git = "https://github.com/extendr/extendr" }
-#extendr-engine = { git = "https://github.com/extendr/extendr" }
-#extendr-macros = { git = "https://github.com/extendr/extendr" }
+extendr-api = { git = "https://github.com/extendr/extendr" }
+extendr-engine = { git = "https://github.com/extendr/extendr" }
+extendr-macros = { git = "https://github.com/extendr/extendr" }
 #libR-sys = { git = "https://github.com/extendr/libR-sys" }
