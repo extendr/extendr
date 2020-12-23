@@ -11,198 +11,198 @@ on:
       - master
 
 jobs:
-# All tests under this job are run with pre-computed libR-sys bindings.
-  tests_no_bindgen:
-    runs-on: ${{ matrix.config.os }}
-
-    name: ${{ matrix.config.os }} (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
-            
-    strategy:
-      fail-fast: false
-      matrix:
-        config:
-          - {os: windows-latest, r: 'release', rust-version: 'stable-msvc'}
-
-          - {os: windows-latest, r: 'release', rust-version: 'stable-x86_64-pc-windows-msvc'}
-          - {os: windows-latest, r: 'release', rust-version: 'nightly-x86_64-pc-windows-msvc'}
-          - {os: windows-latest, r: 'devel', rust-version: 'stable-x86_64-pc-windows-msvc'}
-          - {os: windows-latest, r: 'oldrel', rust-version: 'stable-x86_64-pc-windows-msvc'}
-
-
-          - {os: windows-latest, r: 'release', rust-version: 'stable-i686-pc-windows-msvc'}
-          - {os: windows-latest, r: 'release', rust-version: 'nightly-i686-pc-windows-msvc'}
-          - {os: windows-latest, r: 'devel', rust-version: 'stable-i686-pc-windows-msvc'}
-          - {os: windows-latest, r: 'oldrel', rust-version: 'stable-i686-pc-windows-msvc'}
-
-
-          - {os: macOS-latest,   r: 'release', rust-version: 'stable'}
-          - {os: macOS-latest,   r: 'release', rust-version: 'nightly'}
-          - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
-          - {os: macOS-latest,   r: 'oldrel', rust-version: 'stable'}
-
-
-          - {os: ubuntu-20.04,   r: 'release', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          - {os: ubuntu-20.04,   r: 'release', rust-version: 'nightly', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          # R-devel requires LD_LIBRARY_PATH
-          - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}   
-          - {os: ubuntu-20.04,   r: 'oldrel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}   
-
-
-
-    env:
-      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      RSPM: ${{ matrix.config.rspm }}
-      BUILD_TARGETS: default
-    
-    # PowerShell core is available on all platforms and can be used to unify scripts
-    defaults:
-      run:
-        shell: pwsh
-
-    steps:
-      - uses: actions/checkout@v2
-      
-      - name: Set up Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ matrix.config.rust-version }}
-          default: true
-          components: rustfmt, clippy
-      
-      - name: Set up R
-        uses: r-lib/actions/setup-r@v1
-        with:
-          r-version: ${{ matrix.config.r }}
-      
-      # This step is only needed for Windows
-      - name: Set up MSYS2 for Windows
-        if: startsWith(runner.os, 'Windows')
-        uses: msys2/setup-msys2@v2
-        with:
-          path-type: inherit
-          release: false
-          update: false
-
-      # All configurations for Windows go here
-      # `Rust` toolchain is used to determine target architecture
-      - name: Configure Windows
-        if: startsWith(runner.os, 'Windows')
-        # 1. Add appropriate *-gnu target
-        # 2. Set CARGO_BUILD_FLAGS to the `rust` target
-        run: |
-          $targets=@()
-          if ($env:RUST_TOOLCHAIN -notlike "*x86_64*") {
-            rustup target add i686-pc-windows-gnu ;
-            $targets+="i686-pc-windows-gnu"
-            echo "C:\msys64\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
-            echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\i386"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
-          }
-          if ($env:RUST_TOOLCHAIN -notlike "*i686*") {
-            rustup target add x86_64-pc-windows-gnu ;
-            $targets+="x86_64-pc-windows-gnu"
-            echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
-            echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
-          }
-          echo "BUILD_TARGETS=$($targets -join ',')" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append ;
-        env: 
-          RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
-
-      # This is required for ubuntu r-devel
-      # 'Del alias:R' removes 'R' alias which prevents running R 
-      - name: Configure Linux
-        if: runner.os == 'linux'
-        run: |
-          Del alias:R
-          echo "LD_LIBRARY_PATH=$(R -s -e 'cat(normalizePath(R.home()))')/lib" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-
-      - name: Set up Pandoc
-        uses: r-lib/actions/setup-pandoc@v1
-      
-      - name: Build
-        run: |
-          cargo update
-          foreach($target in ($env:BUILD_TARGETS).Split(',')) {cargo build -vv $(if($target -ne 'default') {"--target=$target"} ) }
-
-      - name: Run tests
-        run: |
-          foreach($target in ($env:BUILD_TARGETS).Split(',')) {cargo test -vv $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture --test-threads=1}
-
-
-
-      - name: Query dependencies for integration testing
-        run: |
-          install.packages('remotes')
-          saveRDS(remotes::dev_package_deps(pkgdir = "tests/extendrtests", dependencies = TRUE), ".github/depends.Rds", version = 2)
-          writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
-        shell: Rscript {0}
-
-      - name: Cache installed R packages
-        # if: runner.os != 'Windows'
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
-
-      - name: Install R dependencies for integration testing
-        run: |
-          remotes::install_deps(pkgdir = "tests/extendrtests", dependencies = TRUE)
-          remotes::install_cran("rcmdcheck")
-        shell: Rscript {0}
-        
-      - name: Run R integration tests
-        id: r_integration_tests
-        env:
-          _R_CHECK_CRAN_INCOMING_REMOTE_: false
-        run: rcmdcheck::rcmdcheck(path = "tests/extendrtests", args = c("--no-manual", "--as-cran", ifelse(grepl("default|^.*,.*$", Sys.getenv("BUILD_TARGETS")), "", "--no-multiarch")), error_on = "warning", check_dir = "check")
-        shell: Rscript {0}
-        
-      - name: Upload check results from R integration tests
-        if: failure()
-        uses: actions/upload-artifact@main
-        with:
-          name:  ${{ matrix.config.os }}-R-${{ matrix.config.r }}-rust-${{ matrix.config.rust-version }}
-          path: check
-
-
-# All tests under this job are run with R devel and freshly generated bindings.
-  # tests_R_devel_bindgen:
+  # # All tests under this job are run with pre-computed libR-sys bindings.
+  # tests_no_bindgen:
   #   runs-on: ${{ matrix.config.os }}
 
-  #   name: ${{ matrix.config.os }} w/ bindgen (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
+  #   name: ${{ matrix.config.os }} (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
             
   #   strategy:
   #     fail-fast: false
   #     matrix:
   #       config:
-  #         - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+  #         - {os: windows-latest, r: 'release', rust-version: 'stable-msvc'}
+
+  #         - {os: windows-latest, r: 'release', rust-version: 'stable-x86_64-pc-windows-msvc'}
+  #         - {os: windows-latest, r: 'release', rust-version: 'nightly-x86_64-pc-windows-msvc'}
+  #         - {os: windows-latest, r: 'devel', rust-version: 'stable-x86_64-pc-windows-msvc'}
+  #         - {os: windows-latest, r: 'oldrel', rust-version: 'stable-x86_64-pc-windows-msvc'}
+
+
+  #         - {os: windows-latest, r: 'release', rust-version: 'stable-i686-pc-windows-msvc'}
+  #         - {os: windows-latest, r: 'release', rust-version: 'nightly-i686-pc-windows-msvc'}
+  #         - {os: windows-latest, r: 'devel', rust-version: 'stable-i686-pc-windows-msvc'}
+  #         - {os: windows-latest, r: 'oldrel', rust-version: 'stable-i686-pc-windows-msvc'}
+
+
+  #         - {os: macOS-latest,   r: 'release', rust-version: 'stable'}
+  #         - {os: macOS-latest,   r: 'release', rust-version: 'nightly'}
+  #         - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
+  #         - {os: macOS-latest,   r: 'oldrel', rust-version: 'stable'}
+
+
+  #         - {os: ubuntu-20.04,   r: 'release', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+  #         - {os: ubuntu-20.04,   r: 'release', rust-version: 'nightly', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+  #         # R-devel requires LD_LIBRARY_PATH
+  #         - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}   
+  #         - {os: ubuntu-20.04,   r: 'oldrel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}   
+
+
 
   #   env:
   #     R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
   #     RSPM: ${{ matrix.config.rspm }}
+  #     BUILD_TARGETS: default
+    
+  #   # PowerShell core is available on all platforms and can be used to unify scripts
+  #   defaults:
+  #     run:
+  #       shell: pwsh
 
   #   steps:
   #     - uses: actions/checkout@v2
       
-  #     - uses: actions-rs/toolchain@v1
+  #     - name: Set up Rust
+  #       uses: actions-rs/toolchain@v1
   #       with:
   #         toolchain: ${{ matrix.config.rust-version }}
-
-  #     - uses: r-lib/actions/setup-r@v1
+  #         default: true
+  #         components: rustfmt, clippy
+      
+  #     - name: Set up R
+  #       uses: r-lib/actions/setup-r@v1
   #       with:
   #         r-version: ${{ matrix.config.r }}
       
+  #     # This step is only needed for Windows
+  #     - name: Set up MSYS2 for Windows
+  #       if: startsWith(runner.os, 'Windows')
+  #       uses: msys2/setup-msys2@v2
+  #       with:
+  #         path-type: inherit
+  #         release: false
+  #         update: false
+
+  #     # All configurations for Windows go here
+  #     # `Rust` toolchain is used to determine target architecture
+  #     - name: Configure Windows
+  #       if: startsWith(runner.os, 'Windows')
+  #       # 1. Add appropriate *-gnu target
+  #       # 2. Set CARGO_BUILD_FLAGS to the `rust` target
+  #       run: |
+  #         $targets=@()
+  #         if ($env:RUST_TOOLCHAIN -notlike "*x86_64*") {
+  #           rustup target add i686-pc-windows-gnu ;
+  #           $targets+="i686-pc-windows-gnu"
+  #           echo "C:\msys64\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+  #           echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\i386"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+  #         }
+  #         if ($env:RUST_TOOLCHAIN -notlike "*i686*") {
+  #           rustup target add x86_64-pc-windows-gnu ;
+  #           $targets+="x86_64-pc-windows-gnu"
+  #           echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+  #           echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+  #         }
+  #         echo "BUILD_TARGETS=$($targets -join ',')" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append ;
+  #       env: 
+  #         RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
+
+  #     # This is required for ubuntu r-devel
+  #     # 'Del alias:R' removes 'R' alias which prevents running R 
+  #     - name: Configure Linux
+  #       if: runner.os == 'linux'
+  #       run: |
+  #         Del alias:R
+  #         echo "LD_LIBRARY_PATH=$(R -s -e 'cat(normalizePath(R.home()))')/lib" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+  #     - name: Set up Pandoc
+  #       uses: r-lib/actions/setup-pandoc@v1
+      
   #     - name: Build
   #       run: |
-  #         cargo build --manifest-path extendr-api/Cargo.toml --features tests-all
-  #         cargo build --manifest-path extendr-engine/Cargo.toml --features tests-all
+  #         cargo update
+  #         foreach($target in ($env:BUILD_TARGETS).Split(',')) {cargo build -vv $(if($target -ne 'default') {"--target=$target"} ) }
 
   #     - name: Run tests
   #       run: |
-  #         export R_HOME=`R -s -e 'cat(R.home())'`
-  #         export LD_LIBRARY_PATH=${R_HOME}/lib
-  #         cargo test --manifest-path extendr-engine/Cargo.toml --features tests-all -- --nocapture --test-threads=1
-  #         cargo test --manifest-path extendr-api/Cargo.toml --features tests-all -- --nocapture --test-threads=1
-  #         cargo test --manifest-path extendr-api/Cargo.toml --features tests-minimal -- --nocapture --test-threads=1
-  #         cargo test --manifest-path extendr-macros/Cargo.toml -- --nocapture --test-threads=1
+  #         foreach($target in ($env:BUILD_TARGETS).Split(',')) {cargo test -vv $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture --test-threads=1}
+
+
+
+  #     - name: Query dependencies for integration testing
+  #       run: |
+  #         install.packages('remotes')
+  #         saveRDS(remotes::dev_package_deps(pkgdir = "tests/extendrtests", dependencies = TRUE), ".github/depends.Rds", version = 2)
+  #         writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
+  #       shell: Rscript {0}
+
+  #     - name: Cache installed R packages
+  #       # if: runner.os != 'Windows'
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: ${{ env.R_LIBS_USER }}
+  #         key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
+  #         restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
+
+  #     - name: Install R dependencies for integration testing
+  #       run: |
+  #         remotes::install_deps(pkgdir = "tests/extendrtests", dependencies = TRUE)
+  #         remotes::install_cran("rcmdcheck")
+  #       shell: Rscript {0}
+        
+  #     - name: Run R integration tests
+  #       id: r_integration_tests
+  #       env:
+  #         _R_CHECK_CRAN_INCOMING_REMOTE_: false
+  #       run: rcmdcheck::rcmdcheck(path = "tests/extendrtests", args = c("--no-manual", "--as-cran", ifelse(grepl("default|^.*,.*$", Sys.getenv("BUILD_TARGETS")), "", "--no-multiarch")), error_on = "warning", check_dir = "check")
+  #       shell: Rscript {0}
+        
+  #     - name: Upload check results from R integration tests
+  #       if: failure()
+  #       uses: actions/upload-artifact@main
+  #       with:
+  #         name:  ${{ matrix.config.os }}-R-${{ matrix.config.r }}-rust-${{ matrix.config.rust-version }}
+  #         path: check
+
+
+# All tests under this job are run with R devel and freshly generated bindings.
+  tests_R_devel_bindgen:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} w/ bindgen (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
+            
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      RSPM: ${{ matrix.config.rspm }}
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.config.rust-version }}
+
+      - uses: r-lib/actions/setup-r@v1
+        with:
+          r-version: ${{ matrix.config.r }}
+      
+      - name: Build
+        run: |
+          cargo build --manifest-path extendr-api/Cargo.toml --features tests-all
+          cargo build --manifest-path extendr-engine/Cargo.toml --features tests-all
+
+      - name: Run tests
+        run: |
+          export R_HOME=`R -s -e 'cat(R.home())'`
+          export LD_LIBRARY_PATH=${R_HOME}/lib
+          cargo test --manifest-path extendr-engine/Cargo.toml --features tests-all -- --nocapture --test-threads=1
+          cargo test --manifest-path extendr-api/Cargo.toml --features tests-all -- --nocapture --test-threads=1
+          cargo test --manifest-path extendr-api/Cargo.toml --features tests-minimal -- --nocapture --test-threads=1
+          cargo test --manifest-path extendr-macros/Cargo.toml -- --nocapture --test-threads=1
 
