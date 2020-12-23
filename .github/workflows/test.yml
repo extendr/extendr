@@ -21,31 +21,31 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: windows-latest, r: 'release', rust-version: 'stable-msvc', msystem: "MINGW64"}
-          
-          - {os: windows-latest, r: 'release', rust-version: 'stable-x86_64-pc-windows-msvc', msystem: "MINGW64"}
-          # - {os: windows-latest, r: 'release', rust-version: 'nightly-x86_64-pc-windows-msvc', msystem: "MINGW64"}
-          # - {os: windows-latest, r: 'devel', rust-version: 'stable-x86_64-pc-windows-msvc', msystem: "MINGW64"}
-          # - {os: windows-latest, r: 'oldrel', rust-version: 'stable-x86_64-pc-windows-msvc', msystem: "MINGW64"}
+          - {os: windows-latest, r: 'release', rust-version: 'stable-msvc'}
+
+          - {os: windows-latest, r: 'release', rust-version: 'stable-x86_64-pc-windows-msvc'}
+          - {os: windows-latest, r: 'release', rust-version: 'nightly-x86_64-pc-windows-msvc'}
+          - {os: windows-latest, r: 'devel', rust-version: 'stable-x86_64-pc-windows-msvc'}
+          - {os: windows-latest, r: 'oldrel', rust-version: 'stable-x86_64-pc-windows-msvc'}
 
 
-          - {os: windows-latest, r: 'release', rust-version: 'stable-i686-pc-windows-msvc', msystem: "MINGW32"}
-          # - {os: windows-latest, r: 'release', rust-version: 'nightly-i686-pc-windows-msvc', msystem: "MINGW32"}
-          # - {os: windows-latest, r: 'devel', rust-version: 'stable-i686-pc-windows-msvc', msystem: "MINGW32"}
-          # - {os: windows-latest, r: 'oldrel', rust-version: 'stable-i686-pc-windows-msvc', msystem: "MINGW32"}
+          - {os: windows-latest, r: 'release', rust-version: 'stable-i686-pc-windows-msvc'}
+          - {os: windows-latest, r: 'release', rust-version: 'nightly-i686-pc-windows-msvc'}
+          - {os: windows-latest, r: 'devel', rust-version: 'stable-i686-pc-windows-msvc'}
+          - {os: windows-latest, r: 'oldrel', rust-version: 'stable-i686-pc-windows-msvc'}
 
 
           - {os: macOS-latest,   r: 'release', rust-version: 'stable'}
-          # - {os: macOS-latest,   r: 'release', rust-version: 'nightly'}
-          # - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
-          # - {os: macOS-latest,   r: 'oldrel', rust-version: 'stable'}
+          - {os: macOS-latest,   r: 'release', rust-version: 'nightly'}
+          - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
+          - {os: macOS-latest,   r: 'oldrel', rust-version: 'stable'}
 
 
           - {os: ubuntu-20.04,   r: 'release', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          # - {os: ubuntu-20.04,   r: 'release', rust-version: 'nightly', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          # # R-devel requires LD_LIBRARY_PATH
-          # - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}   
-          # - {os: ubuntu-20.04,   r: 'oldrel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}   
+          - {os: ubuntu-20.04,   r: 'release', rust-version: 'nightly', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          # R-devel requires LD_LIBRARY_PATH
+          - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}   
+          - {os: ubuntu-20.04,   r: 'oldrel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}   
 
 
 
@@ -79,7 +79,6 @@ jobs:
         if: startsWith(runner.os, 'Windows')
         uses: msys2/setup-msys2@v2
         with:
-          msystem: ${{ matrix.config.msystem }}
           path-type: inherit
           release: false
           update: false
@@ -108,11 +107,20 @@ jobs:
         env: 
           RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
 
+      # This is required for ubuntu r-devel
+      # 'Del alias:R' removes 'R' alias which prevents running R 
+      - name: Configure Linux
+        if: runner.os == 'linux'
+        run: |
+          Del alias:R
+          echo "LD_LIBRARY_PATH=$(R -s -e 'cat(normalizePath(R.home()))')/lib" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
       - name: Set up Pandoc
         uses: r-lib/actions/setup-pandoc@v1
       
       - name: Build
         run: |
+          cargo update
           foreach($target in ($env:BUILD_TARGETS).Split(',')) {cargo build -vv $(if($target -ne 'default') {"--target=$target"} ) }
 
       - name: Run tests
@@ -146,7 +154,7 @@ jobs:
         id: r_integration_tests
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
-        run: rcmdcheck::rcmdcheck(path = "tests/extendrtests", args = c("--no-manual", "--as-cran", Sys.getenv("R_CHECK_NO_MULTIARCH")), error_on = "warning", check_dir = "check")
+        run: rcmdcheck::rcmdcheck(path = "tests/extendrtests", args = c("--no-manual", "--as-cran", ifelse(grepl("default|^.*,.*$", Sys.getenv("BUILD_TARGETS")), "", "--no-multiarch")), error_on = "warning", check_dir = "check")
         shell: Rscript {0}
         
       - name: Upload check results from R integration tests
