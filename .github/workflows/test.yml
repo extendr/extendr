@@ -175,8 +175,8 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          # - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          # - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
+          - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
           - {os: windows-latest, r: 'devel', rust-version: 'stable-x86_64-pc-windows-msvc'}
           - {os: windows-latest, r: 'devel', rust-version: 'stable-i686-pc-windows-msvc'}
 
@@ -245,10 +245,6 @@ jobs:
         run: |
           Del alias:R
           echo "LD_LIBRARY_PATH=$(R -s -e 'cat(normalizePath(R.home()))')/lib" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-
-      - name: Debug
-        run: |
-          echo $env:CARGO_BUILD_FLAGS
 
       - name: Build
         run: |
