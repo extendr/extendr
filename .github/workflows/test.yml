@@ -141,13 +141,13 @@ jobs:
       # Required by Windows builds, does not affect other platforms
       - name: Build
         run: |
-          foreach($target in ($env:BUILD_TARGETS).Split(',')) {cargo build -vv $(if($target -ne 'default') {"--target=$target"} ) }
+          foreach($target in ($env:BUILD_TARGETS).Split(',')) {cargo build -v $(if($target -ne 'default') {"--target=$target"} ) }
 
       # For each target in the BUILD_TARGETS comma-separated list, run cargo test with appropriate target
       # Required by Windows builds, does not affect other platforms
       - name: Run tests
         run: |
-          foreach($target in ($env:BUILD_TARGETS).Split(',')) {cargo test -vv $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture --test-threads=1}
+          foreach($target in ($env:BUILD_TARGETS).Split(',')) {cargo test -v $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture --test-threads=1}
 
 
       - name: Query dependencies for integration testing
@@ -268,13 +268,13 @@ jobs:
 
       - name: Build
         run: |
-          cargo build $env:CARGO_BUILD_FLAGS --manifest-path extendr-api/Cargo.toml --features tests-all
-          cargo build $env:CARGO_BUILD_FLAGS --manifest-path extendr-engine/Cargo.toml --features tests-all
+          cargo build $env:CARGO_BUILD_FLAGS -v --manifest-path extendr-api/Cargo.toml --features tests-all
+          cargo build $env:CARGO_BUILD_FLAGS -v --manifest-path extendr-engine/Cargo.toml --features tests-all
 
       - name: Run tests
         run: |
-          cargo test $env:CARGO_BUILD_FLAGS --manifest-path extendr-engine/Cargo.toml --features tests-all -- --nocapture --test-threads=1
-          cargo test $env:CARGO_BUILD_FLAGS --manifest-path extendr-api/Cargo.toml --features tests-all -- --nocapture --test-threads=1
-          cargo test $env:CARGO_BUILD_FLAGS --manifest-path extendr-api/Cargo.toml --features tests-minimal -- --nocapture --test-threads=1
-          cargo test $env:CARGO_BUILD_FLAGS --manifest-path extendr-macros/Cargo.toml -- --nocapture --test-threads=1
+          cargo test $env:CARGO_BUILD_FLAGS -v --manifest-path extendr-engine/Cargo.toml --features tests-all -- --nocapture --test-threads=1
+          cargo test $env:CARGO_BUILD_FLAGS -v --manifest-path extendr-api/Cargo.toml --features tests-all -- --nocapture --test-threads=1
+          cargo test $env:CARGO_BUILD_FLAGS -v --manifest-path extendr-api/Cargo.toml --features tests-minimal -- --nocapture --test-threads=1
+          cargo test $env:CARGO_BUILD_FLAGS -v --manifest-path extendr-macros/Cargo.toml -- --nocapture --test-threads=1
 
