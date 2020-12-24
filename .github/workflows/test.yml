@@ -129,6 +129,7 @@ jobs:
       - name: Build
         run: |
           foreach($target in ($env:BUILD_TARGETS).Split(',')) {
+            echo $target
             cargo build $(if($target -ne 'default') {"--target=$target"} ) 
           }
 
@@ -137,6 +138,7 @@ jobs:
       - name: Run tests
         run: |
           foreach($target in ($env:BUILD_TARGETS).Split(',')) {
+            echo $target
             cargo test $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture --test-threads=1
           }
 
@@ -191,8 +193,6 @@ jobs:
           - {os: ubuntu-20.04,   r: 'devel', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
           - {os: windows-latest, r: 'devel', rust-version: 'stable-msvc'}
-          # - {os: windows-latest, r: 'devel', rust-version: 'stable-x86_64-pc-windows-msvc'}
-          # - {os: windows-latest, r: 'devel', rust-version: 'stable-i686-pc-windows-msvc'}
 
 
     env:
@@ -262,24 +262,30 @@ jobs:
       - name: Build
         run: |
           foreach($target in ($env:BUILD_TARGETS).Split(',')) {
+            echo $target
             cargo build --manifest-path extendr-api/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) 
           }
           foreach($target in ($env:BUILD_TARGETS).Split(',')) {
+            echo $target
             cargo build --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) 
           }
 
       - name: Run tests
         run: |
           foreach($target in ($env:BUILD_TARGETS).Split(',')) {
+            echo $target
             cargo test --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture --test-threads=1 
           }
           foreach($target in ($env:BUILD_TARGETS).Split(',')) {
+            echo $target
             cargo test --manifest-path extendr-api/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture --test-threads=1 
           }
           foreach($target in ($env:BUILD_TARGETS).Split(',')) {
+            echo $target
             cargo test --manifest-path extendr-api/Cargo.toml --features tests-minimal $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture --test-threads=1
           }
           foreach($target in ($env:BUILD_TARGETS).Split(',')) {
+            echo $target
             cargo test --manifest-path extendr-macros/Cargo.toml  $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture --test-threads=1
           }
 
