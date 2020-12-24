@@ -4,5 +4,5 @@
 #' @rdname wrappers
 #' @export
 hello_world <- function() {
-  .Call("wrap__hello_world")
+  .Call(wrap__hello_world)
 }
