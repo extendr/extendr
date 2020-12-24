@@ -6,6 +6,7 @@ void R_init_extendrtests(void *);
 void *__dummy__ = (void*)&R_init_extendrtests;
 */
 
+/*
 #define R_NO_REMAP
 #define STRICT_R_HEADERS
 #include <Rinternals.h>
@@ -30,4 +31,16 @@ void R_init_extendrtests(DllInfo *dll) {
   R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);
+}
+ 
+*/
+
+#define R_NO_REMAP
+#define STRICT_R_HEADERS
+#include <Rinternals.h>
+
+void R_init_extendrtests_rust(DllInfo *dll);
+
+void R_init_extendrtests(DllInfo *dll) {
+  R_init_extendrtests_rust(dll);
 }
