@@ -18,7 +18,7 @@ fn char_scalar(x: String) -> String { x }
 
 // Macro to generate exports
 extendr_module! {
-    mod extendrtests;
+    mod extendrtests_decoy;
     fn hello_world;
 
     fn double_scalar;
