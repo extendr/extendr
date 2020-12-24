@@ -11,7 +11,7 @@ on:
       - master
 
 jobs:
-# All tests under this job are run with pre-computed libR-sys bindings.
+  # All tests under this job are run with pre-computed libR-sys bindings.
   tests_no_bindgen:
     runs-on: ${{ matrix.config.os }}
 
@@ -21,66 +21,127 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: windows-latest, r: 'release', rust-version: 'stable-x86_64-pc-windows-msvc'}
+          # Windows jobs with unspecific Rust architecture build for both i686 and x86_64 
+          # R integration tests are also executed for both architectures
+          - {os: windows-latest, r: 'release', rust-version: 'stable-msvc'}
+          # - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc'}
+          # - {os: windows-latest, r: 'devel', rust-version: 'stable-msvc'}
+          # - {os: windows-latest, r: 'oldrel', rust-version: 'stable-msvc'}
+
           - {os: macOS-latest,   r: 'release', rust-version: 'stable'}
+          # - {os: macOS-latest,   r: 'release', rust-version: 'nightly'}
+          # - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
+          # - {os: macOS-latest,   r: 'oldrel', rust-version: 'stable'}
+
           - {os: ubuntu-20.04,   r: 'release', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           - {os: ubuntu-20.04,   r: 'release', rust-version: 'nightly', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'nightly', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          # R-devel requires LD_LIBRARY_PATH
+          - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}   
+          - {os: ubuntu-20.04,   r: 'oldrel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}   
+
+
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       RSPM: ${{ matrix.config.rspm }}
 
+      # This environment variable enables support for pseudo multi-target cargo builds.
+      # Current stable Rust does not support multi-targeting,
+      # see https://github.com/rust-lang/cargo/issues/8176
+      # The variable is treated as a comma-separated list of valid Rust targets.
+      # 'default' value emits no '--target' flag.
+      # E.g.: BUILD_TARGETS=i686-pc-windows-gnu,x86_64-pc-windows-gnu builds two times,
+      # each time providing '--target=*-pc-windows-gnu' flag to cargo.
+      BUILD_TARGETS: default
+    
+    # PowerShell core is available on all platforms and can be used to unify scripts
+    defaults:
+      run:
+        shell: pwsh
+
     steps:
       - uses: actions/checkout@v2
       
-      - uses: actions-rs/toolchain@v1
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.config.rust-version }}
-
-      - name: Set up Rust targets on Windows
-        if: runner.os == 'Windows'
-        run: |
-          rustup target add x86_64-pc-windows-gnu
-          rustup target add i686-pc-windows-gnu
-
-      # Installing 'msys2' on Windows only
-      - name: Set up 'msys2' for Windows
-        uses: msys2/setup-msys2@v2
-        if: runner.os == 'Windows'
+          default: true
+          components: rustfmt, clippy
+      
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v1
         with:
-          msystem: MINGW64
+          r-version: ${{ matrix.config.r }}
+      
+      - name: Set up Pandoc
+        uses: r-lib/actions/setup-pandoc@v1
+      
+      # This step is only needed for Windows
+      - name: Set up MSYS2 for Windows
+        if: startsWith(runner.os, 'Windows')
+        uses: msys2/setup-msys2@v2
+        with:
           path-type: inherit
           release: false
           update: false
 
-      - uses: r-lib/actions/setup-r@v1
-        with:
-          r-version: ${{ matrix.config.r }}
-
-      - uses: r-lib/actions/setup-pandoc@v1
-      
-      - name: Build (not Windows)
-        if: runner.os != 'Windows'
-        run: cargo build
-
-      - name: Run tests (not Windows)
-        if: runner.os != 'Windows'
+      # All configurations for Windows go here
+      # If 'rust-version' has no architecture id, both if conditions are executed
+      # Otherwise, only one condition is met
+      # $targets variable is used to build targets list used later for cargo build/test
+      # The order of if blocks favors x86_64 over i686 paths, which is optimal for multi-targeting
+      - name: Configure Windows
+        if: startsWith(runner.os, 'Windows')
+        # 1. Add rust target
+        # 2. Add target name to the $targets variable
+        # 3. Add mingw32/mingw64 bin folders to PATH
+        # 4. Add R x64/i386 folders to PATH
         run: |
-          export R_HOME=`R -s -e 'cat(R.home())'`
-          export LD_LIBRARY_PATH=${R_HOME}/lib
-          cargo test -- --nocapture --test-threads=1
+          $targets=@()
+          if ($env:RUST_TOOLCHAIN -notlike "*x86_64*") {
+            rustup target add i686-pc-windows-gnu ;
+            $targets+="i686-pc-windows-gnu"
+            echo "C:\msys64\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+            echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\i386"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          }
+          if ($env:RUST_TOOLCHAIN -notlike "*i686*") {
+            rustup target add x86_64-pc-windows-gnu ;
+            $targets+="x86_64-pc-windows-gnu"
+            echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+            echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          }
+          echo "BUILD_TARGETS=$($targets -join ',')" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append ;
+        env: 
+          RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
 
+      # This is required for ubuntu r-devel
+      # 'Del alias:R' removes 'R' alias which prevents running R 
+      - name: Configure Linux
+        if: startsWith(runner.os, 'linux')
+        run: |
+          Del alias:R
+          echo "LD_LIBRARY_PATH=$(R -s -e 'cat(normalizePath(R.home()))')/lib" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
-      - name: Build (Windows)
-        if: runner.os == 'Windows'
-        run: cargo build --target x86_64-pc-windows-gnu
-        shell: msys2 {0}
+      
+      # For each target in the BUILD_TARGETS comma-separated list, run cargo build with appropriate target
+      # Required by Windows builds, does not affect other platforms
+      - name: Build
+        run: |
+          foreach($target in ($env:BUILD_TARGETS).Split(',')) {
+            echo $target
+            cargo build $(if($target -ne 'default') {"--target=$target"} ) 
+          }
 
-      - name: Run tests (Windows)
-        if: runner.os == 'Windows'
-        run: cargo test --target x86_64-pc-windows-gnu -- --nocapture --test-threads=1
-        shell: msys2 {0}
+      # For each target in the BUILD_TARGETS comma-separated list, run cargo test with appropriate target
+      # Required by Windows builds, does not affect other platforms
+      - name: Run tests
+        run: |
+          foreach($target in ($env:BUILD_TARGETS).Split(',')) {
+            echo $target
+            cargo test $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture --test-threads=1
+          }
+
 
       - name: Query dependencies for integration testing
         run: |
@@ -90,7 +151,6 @@ jobs:
         shell: Rscript {0}
 
       - name: Cache installed R packages
-        if: runner.os != 'Windows'
         uses: actions/cache@v2
         with:
           path: ${{ env.R_LIBS_USER }}
@@ -103,6 +163,8 @@ jobs:
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
         
+      # Windows: modified PATH will launch 32-bit Rscript if the build targets only i686/i386, so no conflict will arise
+      # Rust pseudo multi-targeting: R CMD CHECK receives an extra argument '--no-multiarch' if BUILD_TARGETS is not 'default' and does not contain any commas
       - name: Run R integration tests
         id: r_integration_tests
         env:
@@ -114,7 +176,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@main
         with:
-          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
+          name:  ${{ matrix.config.os }}-R-${{ matrix.config.r }}-rust-${{ matrix.config.rust-version }}
           path: check
 
 
@@ -128,34 +190,102 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: ubuntu-20.04,   r: 'devel', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
+          - {os: windows-latest, r: 'devel', rust-version: 'stable-msvc'}
+
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       RSPM: ${{ matrix.config.rspm }}
+      BUILD_TARGETS: default
+
+    # PowerShell core is available on all platforms and can be used to unify scripts
+    defaults:
+      run:
+        shell: pwsh
 
     steps:
       - uses: actions/checkout@v2
       
-      - uses: actions-rs/toolchain@v1
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.config.rust-version }}
+          default: true
 
-      - uses: r-lib/actions/setup-r@v1
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.config.r }}
       
+
+      # This step is only needed for Windows
+      - name: Set up MSYS2 for Windows
+        if: startsWith(runner.os, 'Windows')
+        uses: msys2/setup-msys2@v2
+        with:
+          path-type: inherit
+          release: false
+          update: false
+
+      - name: Configure Windows
+        if: startsWith(runner.os, 'Windows')
+        # 1. Add rust target
+        # 2. Add target name to the $targets variable
+        # 3. Add mingw32/mingw64 bin folders to PATH
+        # 4. Add R x64/i386 folders to PATH
+        run: |
+          $targets=@()
+          if ($env:RUST_TOOLCHAIN -notlike "*x86_64*") {
+            rustup target add i686-pc-windows-gnu ;
+            $targets+="i686-pc-windows-gnu"
+            echo "C:\msys64\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+            echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\i386"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          }
+          if ($env:RUST_TOOLCHAIN -notlike "*i686*") {
+            rustup target add x86_64-pc-windows-gnu ;
+            $targets+="x86_64-pc-windows-gnu"
+            echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+            echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          }
+          echo "BUILD_TARGETS=$($targets -join ',')" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append ;
+        env: 
+          RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
+
+      - name: Configure Linux
+        if: startsWith(runner.os, 'linux')
+        run: |
+          Del alias:R
+          echo "LD_LIBRARY_PATH=$(R -s -e 'cat(normalizePath(R.home()))')/lib" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
       - name: Build
         run: |
-          cargo build --manifest-path extendr-api/Cargo.toml --features tests-all
-          cargo build --manifest-path extendr-engine/Cargo.toml --features tests-all
+          foreach($target in ($env:BUILD_TARGETS).Split(',')) {
+            echo $target
+            cargo build --manifest-path extendr-api/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) 
+          }
+          foreach($target in ($env:BUILD_TARGETS).Split(',')) {
+            echo $target
+            cargo build --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) 
+          }
 
       - name: Run tests
         run: |
-          export R_HOME=`R -s -e 'cat(R.home())'`
-          export LD_LIBRARY_PATH=${R_HOME}/lib
-          cargo test --manifest-path extendr-engine/Cargo.toml --features tests-all -- --nocapture --test-threads=1
-          cargo test --manifest-path extendr-api/Cargo.toml --features tests-all -- --nocapture --test-threads=1
-          cargo test --manifest-path extendr-api/Cargo.toml --features tests-minimal -- --nocapture --test-threads=1
-          cargo test --manifest-path extendr-macros/Cargo.toml -- --nocapture --test-threads=1
+          foreach($target in ($env:BUILD_TARGETS).Split(',')) {
+            echo $target
+            cargo test --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture --test-threads=1 
+          }
+          foreach($target in ($env:BUILD_TARGETS).Split(',')) {
+            echo $target
+            cargo test --manifest-path extendr-api/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture --test-threads=1 
+          }
+          foreach($target in ($env:BUILD_TARGETS).Split(',')) {
+            echo $target
+            cargo test --manifest-path extendr-api/Cargo.toml --features tests-minimal $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture --test-threads=1
+          }
+          foreach($target in ($env:BUILD_TARGETS).Split(',')) {
+            echo $target
+            cargo test --manifest-path extendr-macros/Cargo.toml  $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture --test-threads=1
+          }
 
