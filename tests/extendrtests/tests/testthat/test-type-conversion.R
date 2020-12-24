@@ -29,7 +29,3 @@ test_that("Conversion of R types to Rust types and vice versa works", {
   expect_error(.Call(wrap__char_scalar, c("hello", "world")), "not a string object") # why this error message and not "Input must be of length 1"?
 })
 
-#test_that("Call to Rust via wrapper functions works", {
-#  expect_equal(hello_world(), "Hello world!")
-#})
-

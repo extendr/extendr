@@ -15,7 +15,7 @@ fn bool_scalar(x: bool) -> bool { x }
 #[extendr]
 fn char_scalar(x: String) -> String { x }
 
-
+/*
 // Macro to generate exports
 extendr_module! {
     mod extendrtests;
@@ -26,3 +26,4 @@ extendr_module! {
     fn bool_scalar;
     fn char_scalar;
 }
+*/
