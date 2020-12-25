@@ -5,7 +5,6 @@ authors = ["andy-thomason <andy@andythomason.com>"]
 edition = "2018"
 description = "Safe and user friendly bindings to the R programming language."
 license = "MIT"
-documentation = "https://extendr.github.io/extendr/extendr_api/index.html"
 repository = "https://github.com/extendr/extendr"
 
 [dependencies]
