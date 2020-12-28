@@ -17,12 +17,15 @@
 // `cargo expand` extension.
 //
 // Invoking the #[extendr_module] macro generates an entrypoint for the
-// library that will be called by R.
+// library that will be called by R. Note that we add a postfix
+// `_extendr` to the init function because we need to forward routine
+// registration from C to Rust, and the C function will be called
+// `R_init_hello()`.
 //
 // ```ignore
 // #[no_mangle]
 // #[allow(non_snake_case)]
-// pub extern "C" fn R_init_hello(info: *mut extendr_api::DllInfo) {
+// pub extern "C" fn R_init_hello_extendr(info: *mut extendr_api::DllInfo) {
 //     let mut call_methods = Vec::new();
 //     init__hello(info, &mut call_methods);
 //     unsafe { extendr_api::register_call_methods(info, call_methods.as_ref()) };
@@ -485,7 +488,7 @@ impl syn::parse::Parse for Module {
 /// ```ignore
 /// #[no_mangle]
 /// #[allow(non_snake_case)]
-/// pub extern "C" fn R_init_hello(info: *mut extendr_api::DllInfo) {
+/// pub extern "C" fn R_init_hello_extendr(info: *mut extendr_api::DllInfo) {
 ///     let mut call_methods = Vec::new();
 ///     init__hello(info, &mut call_methods);
 ///     unsafe { extendr_api::register_call_methods(info, call_methods.as_ref()) };
@@ -496,7 +499,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
     let module = parse_macro_input!(item as Module);
     let Module {modname, fnnames, implnames} = module;
     let modname = modname.unwrap();
-    let module_init_name = format_ident!("R_init_{}", modname);
+    let module_init_name = format_ident!("R_init_{}_extendr", modname);
 
     let fninitnames = fnnames.iter().map(|id| format_ident!("{}{}", INIT_PREFIX, id));
     let implinitnames = implnames.iter().map(|id| format_ident!("{}{}", INIT_PREFIX, id));
