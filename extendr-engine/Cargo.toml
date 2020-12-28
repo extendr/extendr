@@ -1,7 +1,13 @@
 [package]
 name = "extendr-engine"
 version = "0.1.11"
-authors = ["andy-thomason <andy@andythomason.com>"]
+authors = [
+    "andy-thomason <andy@andythomason.com>",
+    "Thomas Down",
+    "CGMossa",
+    "Claus O. Wilke <wilke@austin.utexas.edu>",
+    "Hiroaki Yutani"
+]
 edition = "2018"
 description = "Safe and user friendly bindings to the R programming language."
 license = "MIT"
