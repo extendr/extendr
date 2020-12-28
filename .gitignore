@@ -18,3 +18,6 @@
 **/*.so
 .Rproj.user
 **/tasks.json
+
+# CLion support files
+**/.idea
