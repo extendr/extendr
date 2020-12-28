@@ -1,11 +1,9 @@
+// We need to forward routine registration from C to Rust 
+// to avoid the linker removing the static library.
 
+void R_init_hello_extendr(void *dll);
 
-// Take the address of the wrap__hello stub function to avoid
-// the linker removing the static library.
-//
-// This will be removed in future versions with the module macro.
-void R_init_libhello();
-
-void *__dummy = (void*)&R_init_libhello;
-
+void R_init_hello(void *dll) {
+  R_init_hello_extendr(dll);
+}
 
