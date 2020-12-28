@@ -88,7 +88,8 @@ cargo ws version --force='*' --no-individual-tags --no-git-push patch
 # review the changes
 git show HEAD^
 
-# push all the changes
+# push all the commits and tags
+git push
 git push --tags
 
 # publish without modifying the current version

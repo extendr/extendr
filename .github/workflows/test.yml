@@ -77,15 +77,6 @@ jobs:
       - name: Set up Pandoc
         uses: r-lib/actions/setup-pandoc@v1
       
-      # This step is only needed for Windows
-      - name: Set up MSYS2 for Windows
-        if: startsWith(runner.os, 'Windows')
-        uses: msys2/setup-msys2@v2
-        with:
-          path-type: inherit
-          release: false
-          update: false
-
       # All configurations for Windows go here
       # If 'rust-version' has no architecture id, both if conditions are executed
       # Otherwise, only one condition is met
@@ -219,15 +210,6 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
       
-
-      # This step is only needed for Windows
-      - name: Set up MSYS2 for Windows
-        if: startsWith(runner.os, 'Windows')
-        uses: msys2/setup-msys2@v2
-        with:
-          path-type: inherit
-          release: false
-          update: false
 
       - name: Configure Windows
         if: startsWith(runner.os, 'Windows')
