@@ -515,6 +515,9 @@
 <span id="512">512</span>
 <span id="513">513</span>
 <span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Macros for generating wrappers for rust functions.</span>
@@ -535,12 +538,15 @@
 <span class="comment">// `cargo expand` extension.</span>
 <span class="comment">//</span>
 <span class="comment">// Invoking the #[extendr_module] macro generates an entrypoint for the</span>
-<span class="comment">// library that will be called by R.</span>
+<span class="comment">// library that will be called by R. Note that we add a postfix</span>
+<span class="comment">// `_extendr` to the init function because we need to forward routine</span>
+<span class="comment">// registration from C to Rust, and the C function will be called</span>
+<span class="comment">// `R_init_hello()`.</span>
 <span class="comment">//</span>
 <span class="comment">// ```ignore</span>
 <span class="comment">// #[no_mangle]</span>
 <span class="comment">// #[allow(non_snake_case)]</span>
-<span class="comment">// pub extern &quot;C&quot; fn R_init_hello(info: *mut extendr_api::DllInfo) {</span>
+<span class="comment">// pub extern &quot;C&quot; fn R_init_hello_extendr(info: *mut extendr_api::DllInfo) {</span>
 <span class="comment">//     let mut call_methods = Vec::new();</span>
 <span class="comment">//     init__hello(info, &amp;mut call_methods);</span>
 <span class="comment">//     unsafe { extendr_api::register_call_methods(info, call_methods.as_ref()) };</span>
@@ -1003,7 +1009,7 @@
 <span class="doccomment">/// ```ignore</span>
 <span class="doccomment">/// #[no_mangle]</span>
 <span class="doccomment">/// #[allow(non_snake_case)]</span>
-<span class="doccomment">/// pub extern &quot;C&quot; fn R_init_hello(info: *mut extendr_api::DllInfo) {</span>
+<span class="doccomment">/// pub extern &quot;C&quot; fn R_init_hello_extendr(info: *mut extendr_api::DllInfo) {</span>
 <span class="doccomment">///     let mut call_methods = Vec::new();</span>
 <span class="doccomment">///     init__hello(info, &amp;mut call_methods);</span>
 <span class="doccomment">///     unsafe { extendr_api::register_call_methods(info, call_methods.as_ref()) };</span>
@@ -1014,7 +1020,7 @@
     <span class="kw">let</span> <span class="ident">module</span> <span class="op">=</span> <span class="macro">parse_macro_input</span><span class="macro">!</span>(<span class="ident">item</span> <span class="kw">as</span> <span class="ident">Module</span>);
     <span class="kw">let</span> <span class="ident">Module</span> {<span class="ident">modname</span>, <span class="ident">fnnames</span>, <span class="ident">implnames</span>} <span class="op">=</span> <span class="ident">module</span>;
     <span class="kw">let</span> <span class="ident">modname</span> <span class="op">=</span> <span class="ident">modname</span>.<span class="ident">unwrap</span>();
-    <span class="kw">let</span> <span class="ident">module_init_name</span> <span class="op">=</span> <span class="macro">format_ident</span><span class="macro">!</span>(<span class="string">&quot;R_init_{}&quot;</span>, <span class="ident">modname</span>);
+    <span class="kw">let</span> <span class="ident">module_init_name</span> <span class="op">=</span> <span class="macro">format_ident</span><span class="macro">!</span>(<span class="string">&quot;R_init_{}_extendr&quot;</span>, <span class="ident">modname</span>);
 
     <span class="kw">let</span> <span class="ident">fninitnames</span> <span class="op">=</span> <span class="ident">fnnames</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">id</span><span class="op">|</span> <span class="macro">format_ident</span><span class="macro">!</span>(<span class="string">&quot;{}{}&quot;</span>, <span class="ident">INIT_PREFIX</span>, <span class="ident">id</span>));
     <span class="kw">let</span> <span class="ident">implinitnames</span> <span class="op">=</span> <span class="ident">implnames</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">id</span><span class="op">|</span> <span class="macro">format_ident</span><span class="macro">!</span>(<span class="string">&quot;{}{}&quot;</span>, <span class="ident">INIT_PREFIX</span>, <span class="ident">id</span>));
