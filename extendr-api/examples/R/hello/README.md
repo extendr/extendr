@@ -8,6 +8,5 @@ Then in R:
 
     > library(hello)
     > hello()
-    hello
-    NULL
+    [1] "hello"
     > 
