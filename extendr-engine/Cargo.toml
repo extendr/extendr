@@ -4,7 +4,7 @@ version = "0.1.11"
 authors = [
     "andy-thomason <andy@andythomason.com>",
     "Thomas Down",
-    "CGMossa",
+    "Mossa Merhi Reimert <mossa@sund.ku.dk>",
     "Claus O. Wilke <wilke@austin.utexas.edu>",
     "Hiroaki Yutani"
 ]
