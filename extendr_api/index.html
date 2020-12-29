@@ -1,60 +1,141 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `extendr_api` crate."><meta name="keywords" content="rust, rustlang, rust-lang, extendr_api"><title>extendr_api - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../ayu.css" disabled ><script src="../storage.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="alternate icon" type="image/png" href="../favicon-16x16.png">
-<link rel="alternate icon" type="image/png" href="../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../extendr_api/index.html'><div class='logo-container rust-logo'><img src='../rust-logo.png' alt='logo'></div></a><p class='location'>Crate extendr_api</p><div class='block version'><p>Version 0.1.11</p></div><div class="sidebar-elems"><a id='all-types' href='all.html'><p>See all extendr_api's items</p></a><div class="block items"><ul><li><a href="#macros">Macros</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#constants">Constants</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'extendr_api', ty: 'mod', relpath: '../'};</script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
-                <a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/extendr_api/lib.rs.html#1-388' title='goto source code'>[src]</a></span><span class='in-band'>Crate <a class="mod" href=''>extendr_api</a></span></h1><div class='docblock'><p>extendr - A safe and user friendly R extension interface.</p>
+<link rel="alternate icon" type="image/png" href="../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../extendr_api/index.html'><div class='logo-container'><img src='https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png' alt='logo'></div></a><p class='location'>Crate extendr_api</p><div class='block version'><p>Version 0.1.11</p></div><div class="sidebar-elems"><a id='all-types' href='all.html'><p>See all extendr_api's items</p></a><div class="block items"><ul><li><a href="#macros">Macros</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#constants">Constants</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'extendr_api', ty: 'mod', relpath: '../'};</script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
+                <a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/extendr_api/lib.rs.html#1-478' title='goto source code'>[src]</a></span><span class='in-band'>Crate <a class="mod" href=''>extendr_api</a></span></h1><div class='docblock'><p>A safe and user friendly R extension interface.</p>
+<ul>
+<li>Build rust extensions to R.</li>
+<li>Convert R packages to Rust crates.</li>
+</ul>
 <p>This library aims to provide an interface that will be familiar to
 first-time users of Rust or indeed any compiled language.</p>
-<p>Anyone who knows the R library should be able to write R extensions.</p>
-<p>See the <a href="../robj/enum.Robj.html">Robj</a> struct for much of the content of this crate.
-<a href="../robj/enum.Robj.html">Robj</a> provides a safe wrapper for the R object type.</p>
-<p>This library is just being born, but goals are:</p>
-<p>Implement common R functions such as c() and print()</p>
-<p>Example:</p>
+<p>See <a href="../extendr_api/enum.Robj.html" title="Robj">Robj</a> for much of the content of this crate.
+<a href="../extendr_api/enum.Robj.html" title="Robj">Robj</a> provides a safe wrapper for the R object type.</p>
+<p>Use attributes and macros to export to R.</p>
 
 <div class='information'><div class='tooltip ignore'>ⓘ<span class='tooltiptext'>This example is not tested</span></div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
-<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="macro">c</span><span class="macro">!</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>);
-<span class="kw">let</span> <span class="ident">l</span> <span class="op">=</span> <span class="macro">list</span><span class="macro">!</span>(<span class="ident">a</span><span class="op">=</span><span class="number">1</span>, <span class="ident">b</span><span class="op">=</span><span class="number">2</span>);
-<span class="macro">print</span><span class="macro">!</span>(<span class="ident">v</span>, <span class="ident">l</span>);</pre></div>
-<p>Provide a wrapper for r objects.</p>
-<p>Example:</p>
-
-<div class='information'><div class='tooltip ignore'>ⓘ<span class='tooltiptext'>This example is not tested</span></div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
-<span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="string">&quot;hello&quot;</span>);
-<span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">1</span>);
-<span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">1.0</span>);</pre></div>
-<p>Provide iterator support for creation and consumption of r vectors.</p>
-<p>Example:</p>
-
-<div class='information'><div class='tooltip ignore'>ⓘ<span class='tooltiptext'>This example is not tested</span></div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
-<span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> (<span class="number">1</span>..<span class="op">=</span><span class="number">100</span>).<span class="ident">iter</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>();
-<span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> <span class="ident">res</span> {
-    <span class="macro">print</span><span class="macro">!</span>(<span class="ident">x</span>);
-}</pre></div>
-<p>Provide a procedural macro to adapt Rust functions to R</p>
-<p>Example:</p>
-
-<div class='information'><div class='tooltip ignore'>ⓘ<span class='tooltiptext'>This example is not tested</span></div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
+<span class="kw">use</span> <span class="ident">extendr_api</span>::<span class="kw-2">*</span>;
+<span class="comment">// Export a function or impl to R.</span>
 <span class="attribute">#[<span class="ident">extendr</span>]</span>
 <span class="kw">fn</span> <span class="ident">fred</span>(<span class="ident">a</span>: <span class="ident">i32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">i32</span> {
     <span class="ident">a</span> <span class="op">+</span> <span class="number">1</span>
-}</pre></div>
+}
+
+<span class="comment">// define exports using extendr_module </span>
+<span class="macro">extendr_module</span><span class="macro">!</span> {
+   <span class="kw">mod</span> <span class="ident">mymodule</span>;
+   <span class="kw">fn</span> <span class="ident">fred</span>;    
+}
+ </pre></div>
 <p>In R:</p>
 
 <div class='information'><div class='tooltip ignore'>ⓘ<span class='tooltiptext'>This example is not tested</span></div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore">
+<span class="ident">result</span> <span class="op">&lt;</span><span class="op">-</span> <span class="ident">fred</span>(<span class="number">1</span>)</pre></div>
+<p><a href="../extendr_api/enum.Robj.html" title="Robj">Robj</a> is a wrapper for R objects.
+The r!() and R!() macros let you build R objects
+using Rust and R syntax respectively.</p>
 
-<span class="ident">result</span> <span class="op">&lt;</span><span class="op">-</span> .<span class="ident">Call</span>(<span class="string">&quot;fred&quot;</span>, <span class="number">1</span>)
-</pre></div>
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">extendr_api</span>::<span class="kw-2">*</span>;        <span class="comment">// Put API in scope.</span>
+<span class="ident">extendr_engine</span>::<span class="ident">start_r</span>(); <span class="comment">// Start test environment.</span>
+
+<span class="comment">// An R object with a single string &quot;hello&quot;</span>
+<span class="kw">let</span> <span class="ident">character</span> <span class="op">=</span> <span class="macro">r</span><span class="macro">!</span>(<span class="string">&quot;hello&quot;</span>);
+
+<span class="comment">// An R integer object with a single number 1L.</span>
+<span class="comment">// Note that in Rust, 1 is an integer and 1.0 is a real.</span>
+<span class="kw">let</span> <span class="ident">integer</span> <span class="op">=</span> <span class="macro">r</span><span class="macro">!</span>(<span class="number">1</span>);
+
+<span class="comment">// An R real object with a single number 1.</span>
+<span class="comment">// Note that in R, 1 is a real and 1L is an integer.</span>
+<span class="kw">let</span> <span class="ident">real</span> <span class="op">=</span> <span class="macro">r</span><span class="macro">!</span>(<span class="number">1.0</span>);
+
+<span class="comment">// An R real vector.</span>
+<span class="kw">let</span> <span class="ident">real_vector</span> <span class="op">=</span> <span class="macro">r</span><span class="macro">!</span>([<span class="number">1.0</span>, <span class="number">2.0</span>]);
+
+<span class="comment">// An R function object.</span>
+<span class="kw">let</span> <span class="ident">function</span> <span class="op">=</span> <span class="macro">R</span><span class="macro">!</span>(<span class="ident">function</span>(<span class="ident">x</span>, <span class="ident">y</span>) { <span class="ident">x</span> <span class="op">+</span> <span class="ident">y</span> });
+
+<span class="comment">// A named list using the list! macro.</span>
+<span class="kw">let</span> <span class="ident">list</span> <span class="op">=</span> <span class="macro">list</span><span class="macro">!</span>(<span class="ident">a</span> <span class="op">=</span> <span class="number">1</span>, <span class="ident">b</span> <span class="op">=</span> <span class="number">2</span>);</pre></div>
+<p>In Rust, we prefer to use iterators rather than loops.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">extendr_api</span>::<span class="kw-2">*</span>;        <span class="comment">// Put API in scope.</span>
+<span class="ident">extendr_engine</span>::<span class="ident">start_r</span>(); <span class="comment">// Start test environment.</span>
+
+<span class="comment">// 1 ..= 100 is the same as 1:100</span>
+<span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> (<span class="number">1</span> ..<span class="op">=</span> <span class="number">100</span>).<span class="ident">collect_robj</span>();
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">res</span>.<span class="ident">len</span>(), <span class="number">100</span>);
+
+<span class="comment">// Rust arrays are zero-indexed so it is more common to use 0 .. 100.</span>
+<span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> (<span class="number">0</span> .. <span class="number">100</span>).<span class="ident">collect_robj</span>();
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">res</span>.<span class="ident">len</span>(), <span class="number">100</span>);</pre></div>
+<p>To index a vector, first convert it to a slice and then
+remember to use 0-based indexing. In Rust, going out of bounds
+will cause and error (a panic) unlike C++ which may crash.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">extendr_api</span>::<span class="kw-2">*</span>;        <span class="comment">// Put API in scope.</span>
+<span class="ident">extendr_engine</span>::<span class="ident">start_r</span>(); <span class="comment">// Start test environment.</span>
+
+<span class="kw">let</span> <span class="ident">vals</span> <span class="op">=</span> <span class="macro">r</span><span class="macro">!</span>([<span class="number">1.0</span>, <span class="number">2.0</span>]);
+<span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">vals</span>.<span class="ident">as_real_slice</span>().<span class="ident">unwrap</span>();
+<span class="kw">let</span> <span class="ident">one</span> <span class="op">=</span> <span class="ident">slice</span>[<span class="number">0</span>];
+<span class="kw">let</span> <span class="ident">two</span> <span class="op">=</span> <span class="ident">slice</span>[<span class="number">1</span>];
+<span class="comment">//let error = slice[2];</span></pre></div>
+<p>The <a href="../extendr_api/macro.R.html" title="R!">R!</a> macro lets you embed R code in Rust.</p>
+<p>The <a href="../extendr_api/macro.r.html" title="r!">r!</a> macro converts a rust object to an R object.</p>
+<p>You can call R functions and primitives using the <a href="../extendr_api/macro.call.html" title="call!">call!</a> macro.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+
+<span class="kw">use</span> <span class="ident">extendr_api</span>::<span class="kw-2">*</span>;        <span class="comment">// Put API in scope.</span>
+<span class="ident">extendr_engine</span>::<span class="ident">start_r</span>(); <span class="comment">// Start test environment.</span>
+
+<span class="comment">// As one R! macro call</span>
+<span class="kw">let</span> <span class="ident">confint1</span> <span class="op">=</span> <span class="macro">R</span><span class="macro">!</span>(<span class="ident">confint</span>(<span class="ident">lm</span>(<span class="ident">weight</span> ~ <span class="ident">group</span> <span class="op">-</span> <span class="number">1</span>, <span class="ident">PlantGrowth</span>))).<span class="ident">unwrap</span>();
+
+<span class="comment">// As many parameterized calls.</span>
+<span class="kw">let</span> <span class="ident">formula</span> <span class="op">=</span> <span class="macro">R</span><span class="macro">!</span>(<span class="ident">weight</span> ~ <span class="ident">group</span> <span class="op">-</span> <span class="number">1</span>).<span class="ident">unwrap</span>();
+<span class="kw">let</span> <span class="ident">plant_growth</span> <span class="op">=</span> <span class="macro">R</span><span class="macro">!</span>(<span class="ident">PlantGrowth</span>).<span class="ident">unwrap</span>();
+<span class="kw">let</span> <span class="ident">model</span> <span class="op">=</span> <span class="macro">call</span><span class="macro">!</span>(<span class="string">&quot;lm&quot;</span>, <span class="ident">formula</span>, <span class="ident">plant_growth</span>).<span class="ident">unwrap</span>();
+<span class="kw">let</span> <span class="ident">confint2</span> <span class="op">=</span> <span class="macro">call</span><span class="macro">!</span>(<span class="string">&quot;confint&quot;</span>, <span class="ident">model</span>).<span class="ident">unwrap</span>();
+
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">confint1</span>.<span class="ident">as_real_vector</span>(), <span class="ident">confint2</span>.<span class="ident">as_real_vector</span>());</pre></div>
+<p>Rust has a concept of &quot;Owned&quot; and &quot;Borrowed&quot; objects.</p>
+<p>Owned objects, such as <a href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="Vec">Vec</a> and <a href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="String">String</a> allocate memory
+which is released when the object lifetime ends.</p>
+<p>Borrowed objects such as &amp;<a href="https://doc.rust-lang.org/nightly/std/primitive.i32.html" title="i32">i32</a> and &amp;str are just pointers
+to annother object's memory and can't live longer than the
+object they reference.</p>
+<p>Borrowed objects are much faster than owned objects and use less
+memory but are used only for temporary access.</p>
+<p>When we take a slice of an R vector, for example, we need the
+original R object to be alive or the data will be corrupted.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">extendr_api</span>::<span class="kw-2">*</span>;        <span class="comment">// Put API in scope.</span>
+<span class="ident">extendr_engine</span>::<span class="ident">start_r</span>(); <span class="comment">// Start test environment.</span>
+
+<span class="comment">// robj is an &quot;Owned&quot; object that controls the memory allocated.</span>
+<span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r</span><span class="macro">!</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);
+
+<span class="comment">// slice is a &quot;borrowed&quot; reference to the bytes in robj.</span>
+<span class="comment">// and cannot live longer than robj.</span>
+<span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_integer_slice</span>().<span class="ident">unwrap</span>();</pre></div>
 </div><h2 id='macros' class='section-header'><a href="#macros">Macros</a></h2>
-<table><tr class='module-item'><td><a class="macro" href="macro.append_lang.html" title='extendr_api::append_lang macro'>append_lang</a></td><td class='docblock-short'><p>Convert a list of tokens to an array of tuples.</p>
-</td></tr><tr class='module-item'><td><a class="macro" href="macro.args.html" title='extendr_api::args macro'>args</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="macro" href="macro.c.html" title='extendr_api::c macro'>c</a></td><td class='docblock-short'><p>Concatenation operator.</p>
+<table><tr class='module-item'><td><a class="macro" href="macro.R.html" title='extendr_api::R macro'>R</a></td><td class='docblock-short'><p>Call inline R source code from Rust.</p>
+</td></tr><tr class='module-item'><td><a class="macro" href="macro.c.html" title='extendr_api::c macro'>c</a></td><td class='docblock-short'><p>Concatenation operator.</p>
+</td></tr><tr class='module-item'><td><a class="macro" href="macro.call.html" title='extendr_api::call macro'>call</a></td><td class='docblock-short'><p>The call! macro calls an R function with Rust parameters.
+Equivalent to <code>lang!(sym, params).eval()</code>
+This returns a Rust Result.</p>
 </td></tr><tr class='module-item'><td><a class="macro" href="macro.data_frame.html" title='extendr_api::data_frame macro'>data_frame</a></td><td class='docblock-short'><p>Create a dataframe.</p>
 </td></tr><tr class='module-item'><td><a class="macro" href="macro.extendr_module.html" title='extendr_api::extendr_module macro'>extendr_module</a></td><td class='docblock-short'><p>Define a module and export symbols to R
 Example:</p>
 </td></tr><tr class='module-item'><td><a class="macro" href="macro.factor.html" title='extendr_api::factor macro'>factor</a></td><td class='docblock-short'><p>Create a factor.</p>
 </td></tr><tr class='module-item'><td><a class="macro" href="macro.lang.html" title='extendr_api::lang macro'>lang</a></td><td class='docblock-short'><p>A macro for constructing R langage objects.</p>
 </td></tr><tr class='module-item'><td><a class="macro" href="macro.list.html" title='extendr_api::list macro'>list</a></td><td class='docblock-short'><p>Create a list.</p>
-</td></tr><tr class='module-item'><td><a class="macro" href="macro.push_args.html" title='extendr_api::push_args macro'>push_args</a></td><td class='docblock-short'><p>Convert a list of tokens to an array of tuples.</p>
-</td></tr><tr class='module-item'><td><a class="macro" href="macro.r.html" title='extendr_api::r macro'>r</a></td><td class='docblock-short'><p>R object encapsulation operator.</p>
+</td></tr><tr class='module-item'><td><a class="macro" href="macro.r.html" title='extendr_api::r macro'>r</a></td><td class='docblock-short'><p>Convert a rust expression to an R object.</p>
 </td></tr><tr class='module-item'><td><a class="macro" href="macro.read_table.html" title='extendr_api::read_table macro'>read_table</a></td><td class='docblock-short'><p>Read a CSV file.</p>
 </td></tr><tr class='module-item'><td><a class="macro" href="macro.rep.html" title='extendr_api::rep macro'>rep</a></td><td class='docblock-short'><p>Create a vector with repeating elements.</p>
 </td></tr><tr class='module-item'><td><a class="macro" href="macro.reprint.html" title='extendr_api::reprint macro'>reprint</a></td><td class='docblock-short'><p>Print via the R error stream.</p>
@@ -62,25 +143,87 @@ Example:</p>
 </td></tr><tr class='module-item'><td><a class="macro" href="macro.rprint.html" title='extendr_api::rprint macro'>rprint</a></td><td class='docblock-short'><p>Print via the R output stream.</p>
 </td></tr><tr class='module-item'><td><a class="macro" href="macro.rprintln.html" title='extendr_api::rprintln macro'>rprintln</a></td><td class='docblock-short'><p>Print with a newline via the R output stream.</p>
 </td></tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
-<table><tr class='module-item'><td><a class="struct" href="struct.CallMethod.html" title='extendr_api::CallMethod struct'>CallMethod</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.Character.html" title='extendr_api::Character struct'>Character</a></td><td class='docblock-short'><p>Wrapper for creating character objects.</p>
-</td></tr><tr class='module-item'><td><a class="struct" href="struct.Lang.html" title='extendr_api::Lang struct'>Lang</a></td><td class='docblock-short'><p>Wrapper for creating language objects.</p>
-</td></tr><tr class='module-item'><td><a class="struct" href="struct.List.html" title='extendr_api::List struct'>List</a></td><td class='docblock-short'><p>Wrapper for creating list objects.</p>
-</td></tr><tr class='module-item'><td><a class="struct" href="struct.ListIter.html" title='extendr_api::ListIter struct'>ListIter</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.StrIter.html" title='extendr_api::StrIter struct'>StrIter</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.Symbol.html" title='extendr_api::Symbol struct'>Symbol</a></td><td class='docblock-short'><p>Wrapper for creating symbols.</p>
+<table><tr class='module-item'><td><a class="struct" href="struct.Bool.html" title='extendr_api::Bool struct'>Bool</a></td><td class='docblock-short'><p>Bool is a wrapper for i32 in the context of an R's tristate boolean.
+It can be TRUE, FALSE or NA_LOGICAL.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Character.html" title='extendr_api::Character struct'>Character</a></td><td class='docblock-short'><p>Wrapper for creating character objects.
+These are used only as the contents of a character
+vector.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Lang.html" title='extendr_api::Lang struct'>Lang</a></td><td class='docblock-short'><p>Wrapper for creating language objects.
+Example:</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.List.html" title='extendr_api::List struct'>List</a></td><td class='docblock-short'><p>Wrapper for creating list objects.
+Example:</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ListIter.html" title='extendr_api::ListIter struct'>ListIter</a></td><td class='docblock-short'><p>Iterator over the objects in a vector or string.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.StrIter.html" title='extendr_api::StrIter struct'>StrIter</a></td><td class='docblock-short'><p>Iterator over strings or string factors.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Symbol.html" title='extendr_api::Symbol struct'>Symbol</a></td><td class='docblock-short'><p>Wrapper for creating symbols.</p>
 </td></tr><tr class='module-item'><td><a class="struct" href="struct.VecIter.html" title='extendr_api::VecIter struct'>VecIter</a></td><td class='docblock-short'></td></tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
 <table><tr class='module-item'><td><a class="enum" href="enum.Robj.html" title='extendr_api::Robj enum'>Robj</a></td><td class='docblock-short'><p>Wrapper for an R S-expression pointer (SEXP).</p>
 </td></tr></table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
-<table><tr class='module-item'><td><a class="constant" href="constant.FALSE.html" title='extendr_api::FALSE constant'>FALSE</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="constant" href="constant.NULL.html" title='extendr_api::NULL constant'>NULL</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="constant" href="constant.TRUE.html" title='extendr_api::TRUE constant'>TRUE</a></td><td class='docblock-short'></td></tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
-<table><tr class='module-item'><td><a class="trait" href="trait.AsTypedSlice.html" title='extendr_api::AsTypedSlice trait'>AsTypedSlice</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="trait" href="trait.FromRobj.html" title='extendr_api::FromRobj trait'>FromRobj</a></td><td class='docblock-short'><p>Trait used for incomming parameter conversion.</p>
-</td></tr><tr class='module-item'><td><a class="trait" href="trait.RobjItertools.html" title='extendr_api::RobjItertools trait'>RobjItertools</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="trait" href="trait.ToVectorValue.html" title='extendr_api::ToVectorValue trait'>ToVectorValue</a></td><td class='docblock-short'><p><code>ToVectorValue</code> is a trait that allows many different types
+<table><tr class='module-item'><td><a class="constant" href="constant.FALSE.html" title='extendr_api::FALSE constant'>FALSE</a></td><td class='docblock-short'><p>FALSE value eg. <code>r!(FALSE)</code></p>
+</td></tr><tr class='module-item'><td><a class="constant" href="constant.NA_INTEGER.html" title='extendr_api::NA_INTEGER constant'>NA_INTEGER</a></td><td class='docblock-short'><p>NA value for integers eg. <code>r!(NA_INTEGER)</code></p>
+</td></tr><tr class='module-item'><td><a class="constant" href="constant.NA_LOGICAL.html" title='extendr_api::NA_LOGICAL constant'>NA_LOGICAL</a></td><td class='docblock-short'><p>NA value for logical. <code>r!(NA_LOGICAL)</code></p>
+</td></tr><tr class='module-item'><td><a class="constant" href="constant.NA_REAL.html" title='extendr_api::NA_REAL constant'>NA_REAL</a></td><td class='docblock-short'><p>NA value for real values eg. <code>r!(NA_REAL)</code></p>
+</td></tr><tr class='module-item'><td><a class="constant" href="constant.NA_STRING.html" title='extendr_api::NA_STRING constant'>NA_STRING</a></td><td class='docblock-short'><p>NA value for strings. <code>r!(NA_STRING)</code></p>
+</td></tr><tr class='module-item'><td><a class="constant" href="constant.NULL.html" title='extendr_api::NULL constant'>NULL</a></td><td class='docblock-short'><p>NULL value eg. <code>r!(NULL)</code></p>
+</td></tr><tr class='module-item'><td><a class="constant" href="constant.TRUE.html" title='extendr_api::TRUE constant'>TRUE</a></td><td class='docblock-short'><p>TRUE value eg. <code>r!(TRUE)</code></p>
+</td></tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+<table><tr class='module-item'><td><a class="trait" href="trait.AsTypedSlice.html" title='extendr_api::AsTypedSlice trait'>AsTypedSlice</a></td><td class='docblock-short'><p>Generic access to typed slices in an Robj.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.FromRobj.html" title='extendr_api::FromRobj trait'>FromRobj</a></td><td class='docblock-short'><p>Trait used for incomming parameter conversion.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.IsNA.html" title='extendr_api::IsNA trait'>IsNA</a></td><td class='docblock-short'><p>Return true if this primitive is NA.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.RobjItertools.html" title='extendr_api::RobjItertools trait'>RobjItertools</a></td><td class='docblock-short'><p>Extensions to iterators for R objects including <a href="../extendr_api/trait.RobjItertools.html#method.collect_robj" title="RobjItertools::collect_robj()">RobjItertools::collect_robj()</a>.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.ToVectorValue.html" title='extendr_api::ToVectorValue trait'>ToVectorValue</a></td><td class='docblock-short'><p><code>ToVectorValue</code> is a trait that allows many different types
 to be converted to vectors. It is used as a type parameter
 to <code>collect_robj()</code>.</p>
 </td></tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
-<table><tr class='module-item'><td><a class="fn" href="fn.append.html" title='extendr_api::append fn'>append</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="fn" href="fn.append_with_name.html" title='extendr_api::append_with_name fn'>append_with_name</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="fn" href="fn.handle_panic.html" title='extendr_api::handle_panic fn'>handle_panic</a></td><td class='docblock-short'><p>This function is use by the wrapper logic to catch
-panics on return.</p>
-</td></tr><tr class='module-item'><td><a class="fn" href="fn.integer_is_na.html" title='extendr_api::integer_is_na fn'>integer_is_na</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="fn" href="fn.make_lang.html" title='extendr_api::make_lang fn'>make_lang</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="fn" href="fn.new_borrowed.html" title='extendr_api::new_borrowed fn'>new_borrowed</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="fn" href="fn.new_owned.html" title='extendr_api::new_owned fn'>new_owned</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="fn" href="fn.new_sys.html" title='extendr_api::new_sys fn'>new_sys</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="fn" href="fn.numeric_is_na.html" title='extendr_api::numeric_is_na fn'>numeric_is_na</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="fn" href="fn.print_r_error.html" title='extendr_api::print_r_error fn'>print_r_error</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="fn" href="fn.print_r_output.html" title='extendr_api::print_r_output fn'>print_r_output</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="fn" href="fn.register_call_methods.html" title='extendr_api::register_call_methods fn'>register_call_methods</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="fn" href="fn.unwrap_or_throw.html" title='extendr_api::unwrap_or_throw fn'>unwrap_or_throw</a></td><td class='docblock-short'><p>Throw an R error if a result is an error.</p>
+<table><tr class='module-item'><td><a class="fn" href="fn.base_env.html" title='extendr_api::base_env fn'>base_env</a></td><td class='docblock-short'><p>The base environment; formerly R_NilValue</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.base_namespace.html" title='extendr_api::base_namespace fn'>base_namespace</a></td><td class='docblock-short'><p>The (fake) namespace for base</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.base_symbol.html" title='extendr_api::base_symbol fn'>base_symbol</a></td><td class='docblock-short'><p>&quot;base&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.blank_scalar_string.html" title='extendr_api::blank_scalar_string fn'>blank_scalar_string</a></td><td class='docblock-short'><p>&quot;&quot; as a STRSXP</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.blank_string.html" title='extendr_api::blank_string fn'>blank_string</a></td><td class='docblock-short'><p>&quot;&quot; as a CHARSXP</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.brace_symbol.html" title='extendr_api::brace_symbol fn'>brace_symbol</a></td><td class='docblock-short'><p>&quot;{&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.bracket_2_symbol.html" title='extendr_api::bracket_2_symbol fn'>bracket_2_symbol</a></td><td class='docblock-short'><p>&quot;[[&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.bracket_symbol.html" title='extendr_api::bracket_symbol fn'>bracket_symbol</a></td><td class='docblock-short'><p>&quot;[&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.class_symbol.html" title='extendr_api::class_symbol fn'>class_symbol</a></td><td class='docblock-short'><p>&quot;class&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.device_symbol.html" title='extendr_api::device_symbol fn'>device_symbol</a></td><td class='docblock-short'><p>&quot;.Device&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.dim_symbol.html" title='extendr_api::dim_symbol fn'>dim_symbol</a></td><td class='docblock-short'><p>&quot;dim&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.dimnames_symbol.html" title='extendr_api::dimnames_symbol fn'>dimnames_symbol</a></td><td class='docblock-short'><p>&quot;dimnames&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.dollar_symbol.html" title='extendr_api::dollar_symbol fn'>dollar_symbol</a></td><td class='docblock-short'><p>&quot;$&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.dot_defined.html" title='extendr_api::dot_defined fn'>dot_defined</a></td><td class='docblock-short'><p>&quot;.defined&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.dot_method.html" title='extendr_api::dot_method fn'>dot_method</a></td><td class='docblock-short'><p>&quot;.Method&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.dot_package_name.html" title='extendr_api::dot_package_name fn'>dot_package_name</a></td><td class='docblock-short'><p>&quot;packageName&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.dot_target.html" title='extendr_api::dot_target fn'>dot_target</a></td><td class='docblock-short'><p>&quot;.target&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.dots_symbol.html" title='extendr_api::dots_symbol fn'>dots_symbol</a></td><td class='docblock-short'><p>&quot;...&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.double_colon_symbol.html" title='extendr_api::double_colon_symbol fn'>double_colon_symbol</a></td><td class='docblock-short'><p>&quot;::&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.empty_env.html" title='extendr_api::empty_env fn'>empty_env</a></td><td class='docblock-short'><p>An empty environment at the root of the environment tree</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.find_namespace.html" title='extendr_api::find_namespace fn'>find_namespace</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="fn" href="fn.global_env.html" title='extendr_api::global_env fn'>global_env</a></td><td class='docblock-short'><p>The &quot;global&quot; environment</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.lastvalue_symbol.html" title='extendr_api::lastvalue_symbol fn'>lastvalue_symbol</a></td><td class='docblock-short'><p>&quot;.Last.value&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.levels_symbol.html" title='extendr_api::levels_symbol fn'>levels_symbol</a></td><td class='docblock-short'><p>&quot;levels&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.missing_arg.html" title='extendr_api::missing_arg fn'>missing_arg</a></td><td class='docblock-short'><p>Missing argument marker</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.mode_symbol.html" title='extendr_api::mode_symbol fn'>mode_symbol</a></td><td class='docblock-short'><p>&quot;mode&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.na_rm_symbol.html" title='extendr_api::na_rm_symbol fn'>na_rm_symbol</a></td><td class='docblock-short'><p>&quot;na.rm&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.na_string.html" title='extendr_api::na_string fn'>na_string</a></td><td class='docblock-short'><p>NA_STRING as a CHARSXP</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.name_symbol.html" title='extendr_api::name_symbol fn'>name_symbol</a></td><td class='docblock-short'><p>&quot;name&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.names_symbol.html" title='extendr_api::names_symbol fn'>names_symbol</a></td><td class='docblock-short'><p>&quot;names&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.namespace_env_symbol.html" title='extendr_api::namespace_env_symbol fn'>namespace_env_symbol</a></td><td class='docblock-short'><p><em>NAMESPACE</em>_.&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.namespace_registry.html" title='extendr_api::namespace_registry fn'>namespace_registry</a></td><td class='docblock-short'><p>for registered namespaces</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.nil_value.html" title='extendr_api::nil_value fn'>nil_value</a></td><td class='docblock-short'><p>The nil object</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.package_symbol.html" title='extendr_api::package_symbol fn'>package_symbol</a></td><td class='docblock-short'><p>&quot;package&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.previous_symbol.html" title='extendr_api::previous_symbol fn'>previous_symbol</a></td><td class='docblock-short'><p>&quot;previous&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.quote_symbol.html" title='extendr_api::quote_symbol fn'>quote_symbol</a></td><td class='docblock-short'><p>&quot;quote&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.row_names_symbol.html" title='extendr_api::row_names_symbol fn'>row_names_symbol</a></td><td class='docblock-short'><p>&quot;row.names&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.seeds_symbol.html" title='extendr_api::seeds_symbol fn'>seeds_symbol</a></td><td class='docblock-short'><p>&quot;.Random.seed&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.sort_list_symbol.html" title='extendr_api::sort_list_symbol fn'>sort_list_symbol</a></td><td class='docblock-short'><p>&quot;sort.list&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.source_symbol.html" title='extendr_api::source_symbol fn'>source_symbol</a></td><td class='docblock-short'><p>&quot;source&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.spec_symbol.html" title='extendr_api::spec_symbol fn'>spec_symbol</a></td><td class='docblock-short'><p>&quot;spec&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.srcref.html" title='extendr_api::srcref fn'>srcref</a></td><td class='docblock-short'><p>Current srcref, for debuggers</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.triple_colon_symbol.html" title='extendr_api::triple_colon_symbol fn'>triple_colon_symbol</a></td><td class='docblock-short'><p>&quot;:::&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.tsp_symbol.html" title='extendr_api::tsp_symbol fn'>tsp_symbol</a></td><td class='docblock-short'><p>&quot;tsp&quot;</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.unbound_value.html" title='extendr_api::unbound_value fn'>unbound_value</a></td><td class='docblock-short'><p>Unbound marker</p>
 </td></tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
 <table><tr class='module-item'><td><a class="type" href="type.AnyError.html" title='extendr_api::AnyError type'>AnyError</a></td><td class='docblock-short'><p>Generic dynamic error type.</p>
-</td></tr><tr class='module-item'><td><a class="type" href="type.DllInfo.html" title='extendr_api::DllInfo type'>DllInfo</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="type" href="type.IntegerIter.html" title='extendr_api::IntegerIter type'>IntegerIter</a></td><td class='docblock-short'><p>Iterator over the objects in a vector or string.</p>
-</td></tr><tr class='module-item'><td><a class="type" href="type.LogicalIter.html" title='extendr_api::LogicalIter type'>LogicalIter</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="type" href="type.NumericIter.html" title='extendr_api::NumericIter type'>NumericIter</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="type" href="type.SEXP.html" title='extendr_api::SEXP type'>SEXP</a></td><td class='docblock-short'></td></tr></table><h2 id='attributes' class='section-header'><a href="#attributes">Attribute Macros</a></h2>
+</td></tr><tr class='module-item'><td><a class="type" href="type.IntegerIter.html" title='extendr_api::IntegerIter type'>IntegerIter</a></td><td class='docblock-short'><p>Iterator over primitives in integer objects.</p>
+</td></tr><tr class='module-item'><td><a class="type" href="type.LogicalIter.html" title='extendr_api::LogicalIter type'>LogicalIter</a></td><td class='docblock-short'><p>Iterator over primitives in logical objects.</p>
+</td></tr><tr class='module-item'><td><a class="type" href="type.NamedListIter.html" title='extendr_api::NamedListIter type'>NamedListIter</a></td><td class='docblock-short'><p>Iterator over name-value pairs in lists.</p>
+</td></tr><tr class='module-item'><td><a class="type" href="type.RealIter.html" title='extendr_api::RealIter type'>RealIter</a></td><td class='docblock-short'><p>Iterator over primitives in real objects.</p>
+</td></tr></table><h2 id='attributes' class='section-header'><a href="#attributes">Attribute Macros</a></h2>
 <table><tr class='module-item'><td><a class="attr" href="attr.extendr.html" title='extendr_api::extendr attr'>extendr</a></td><td class='docblock-short'><p>Generate bindings for a single function.</p>
 </td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../";window.currentCrate = "extendr_api";</script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>
