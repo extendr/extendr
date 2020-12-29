@@ -1,0 +1,1127 @@
+//! R object handling.
+//!
+//! See. https://cran.r-project.org/doc/manuals/R-exts.html
+//!
+//! Fundamental principals:
+//!
+//! * Any function that can break the protection mechanism is unsafe.
+//! * Users should be able to do almost everything without using libR_sys.
+//! * The interface should be friendly to R users without Rust experience.
+//!
+
+use libR_sys::*;
+use std::os::raw;
+
+use crate::logical::*;
+use crate::wrapper::*;
+use crate::{AnyError, IsNA};
+
+use std::collections::HashMap;
+use std::iter::IntoIterator;
+use std::ops::{Range, RangeInclusive};
+
+mod from_robj;
+mod into_robj;
+mod iter;
+mod rinternals;
+mod symbols;
+
+#[cfg(test)]
+mod tests;
+
+pub use from_robj::*;
+pub use into_robj::*;
+pub use iter::*;
+pub use rinternals::*;
+pub use symbols::*;
+
+/// Wrapper for an R S-expression pointer (SEXP).
+///
+/// Create R objects from rust types and iterators:
+///
+/// ```
+/// use extendr_api::*;        // Put API in scope.
+/// extendr_engine::start_r(); // Start test environment.
+///
+/// // Different ways of making integer scalar 1.
+/// let non_na : Option<i32> = Some(1);
+/// let a : Robj = vec![1].into();
+/// let b = r!(1);
+/// let c = r!(vec![1]);
+/// let d = r!(non_na);
+/// let e = r!([1]);
+/// assert_eq!(a, b);
+/// assert_eq!(a, c);
+/// assert_eq!(a, d);
+/// assert_eq!(a, e);
+///
+/// // Different ways of making boolean scalar TRUE.
+/// let a : Robj = true.into();
+/// let b = r!(TRUE);
+/// assert_eq!(a, b);
+///
+/// // Create a named list
+/// let a = list!(a = 1, b = "x");
+/// assert_eq!(a.len(), 2);
+///
+/// // Use an iterator (like 1:10)
+/// let a = r!(1 ..= 10);
+/// assert_eq!(a, r!([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));
+///
+/// // Use an iterator (like (1:10)[(1:10) %% 3 == 0])
+/// let a = (1 ..= 10).filter(|v| v % 3 == 0).collect_robj();
+/// assert_eq!(a, c!(3, 6, 9));
+/// ```
+///
+/// Use iterators to get the contents of R objects.
+///
+/// ```
+/// use extendr_api::*;        // Put API in scope.
+/// extendr_engine::start_r(); // Start test environment.
+///
+/// let a : Robj = c!(1, 2, 3, 4, 5);
+/// let iter = a.integer_iter().unwrap();
+/// let robj = iter.filter(|&&x| x < 3).collect_robj();
+/// assert_eq!(robj, c!(1, 2));
+/// ```
+///
+/// Convert to/from Rust vectors.
+///
+/// ```
+/// use extendr_api::*;        // Put API in scope.
+/// extendr_engine::start_r(); // Start test environment.
+///
+/// let a : Robj = r!(vec![1., 2., 3., 4.]);
+/// let b : Vec<f64> = a.as_real_vector().unwrap();
+/// assert_eq!(a.len(), 4);
+/// assert_eq!(b, vec![1., 2., 3., 4.]);
+/// ```
+///
+/// Iterate over names and values.
+///
+/// ```
+/// use extendr_api::*;        // Put API in scope.
+/// extendr_engine::start_r(); // Start test environment.
+///
+/// let abc = list!(a = 1, b = "x", c = vec![1, 2]);
+/// let names : Vec<_> = abc.names().unwrap().collect();
+/// let names_and_values : Vec<_> = abc.named_list_iter().unwrap().collect();
+/// assert_eq!(names, vec!["a", "b", "c"]);
+/// assert_eq!(names_and_values, vec![("a", r!(1)), ("b", r!("x")), ("c", r!(vec![1, 2]))]);
+/// ```
+///
+/// NOTE: as much as possible we wish to make this object safe (ie. no segfaults).
+///
+/// If you avoid using unsafe functions it is more likely that you will avoid
+/// panics and segfaults. We will take great trouble to ensure that this
+/// is true.
+///
+pub enum Robj {
+    // This object owns the SEXP and must free it.
+    #[doc(hidden)]
+    Owned(SEXP),
+
+    //  This object references a SEXP such as an input parameter.
+    #[doc(hidden)]
+    Borrowed(SEXP),
+
+    //  This object references a SEXP owned by libR.
+    #[doc(hidden)]
+    Sys(SEXP),
+}
+
+/// TRUE value eg. `r!(TRUE)`
+pub const TRUE: Bool = Bool(1);
+
+/// FALSE value eg. `r!(FALSE)`
+pub const FALSE: Bool = Bool(0);
+
+/// NULL value eg. `r!(NULL)`
+pub const NULL: () = ();
+
+/// NA value for integers eg. `r!(NA_INTEGER)`
+pub const NA_INTEGER: Option<i32> = None;
+
+/// NA value for real values eg. `r!(NA_REAL)`
+pub const NA_REAL: Option<f64> = None;
+
+/// NA value for strings. `r!(NA_STRING)`
+pub const NA_STRING: Option<&str> = None;
+
+/// NA value for logical. `r!(NA_LOGICAL)`
+pub const NA_LOGICAL: Bool = Bool(std::i32::MIN);
+
+impl Clone for Robj {
+    fn clone(&self) -> Self {
+        self.duplicate()
+    }
+}
+
+impl Default for Robj {
+    fn default() -> Self {
+        Robj::from(())
+    }
+}
+
+impl Robj {
+    /// Get a copy of the underlying SEXP.
+    /// Note: this is unsafe.
+    #[doc(hidden)]
+    pub unsafe fn get(&self) -> SEXP {
+        match self {
+            Robj::Owned(sexp) => *sexp,
+            Robj::Borrowed(sexp) => *sexp,
+            Robj::Sys(sexp) => *sexp,
+        }
+    }
+
+    /// Get a copy of the underlying SEXP for mutable types.
+    /// This is valid only for owned objects as we are not
+    /// permitted to modify parameters or system objects.
+    #[doc(hidden)]
+    pub unsafe fn get_mut(&mut self) -> Option<SEXP> {
+        match self {
+            Robj::Owned(sexp) => Some(*sexp),
+            Robj::Borrowed(_) => None,
+            Robj::Sys(_) => None,
+        }
+    }
+
+    #[doc(hidden)]
+    /// Get the XXXSXP type of the object.
+    pub fn sexptype(&self) -> u32 {
+        unsafe { TYPEOF(self.get()) as u32 }
+    }
+
+    /// Get the extended length of the object.
+    /// ```
+    /// use extendr_api::*;        // Put API in scope.
+    /// extendr_engine::start_r(); // Start test environment.
+    ///
+    /// let a : Robj = r!(vec![1., 2., 3., 4.]);
+    /// assert_eq!(a.len(), 4);
+    /// ```
+    pub fn len(&self) -> usize {
+        unsafe { Rf_xlength(self.get()) as usize }
+    }
+
+    /// Is this object is an NA scalar?
+    /// Works for character, integer and numeric types.
+    /// ```
+    /// use extendr_api::*;        // Put API in scope.
+    /// extendr_engine::start_r(); // Start test environment.
+    ///
+    /// assert_eq!(r!(NA_INTEGER).is_na(), true);
+    /// assert_eq!(r!(NA_REAL).is_na(), true);
+    /// assert_eq!(r!(NA_STRING).is_na(), true);
+    /// ```
+    pub fn is_na(&self) -> bool {
+        if self.len() != 1 {
+            false
+        } else {
+            unsafe {
+                let sexp = self.get();
+                match self.sexptype() {
+                    STRSXP => STRING_ELT(sexp, 0) == libR_sys::R_NaString,
+                    INTSXP => *(INTEGER(sexp)) == libR_sys::R_NaInt,
+                    LGLSXP => *(LOGICAL(sexp)) == libR_sys::R_NaInt,
+                    REALSXP => R_IsNA(*(REAL(sexp))) != 0,
+                    _ => false,
+                }
+            }
+        }
+    }
+
+    /// Get a read-only reference to the content of an integer vector.
+    /// ```
+    /// use extendr_api::*;        // Put API in scope.
+    /// extendr_engine::start_r(); // Start test environment.
+    ///
+    /// let robj = r!([1, 2, 3]);
+    /// assert_eq!(robj.as_integer_slice().unwrap(), [1, 2, 3]);
+    /// ```
+    pub fn as_integer_slice<'a>(&self) -> Option<&'a [i32]> {
+        self.as_typed_slice()
+    }
+
+    /// Get an iterator over integer elements of this slice.
+    /// ```
+    /// use extendr_api::*;        // Put API in scope.
+    /// extendr_engine::start_r(); // Start test environment.
+    ///
+    /// let robj = r!([1, 2, 3]);
+    /// let mut tot = 0;
+    /// for val in robj.integer_iter().unwrap() {
+    ///   tot += val;
+    /// }
+    /// assert_eq!(tot, 6);
+    /// ```
+    pub fn integer_iter<'a>(&self) -> Option<IntegerIter<'a>>
+    where
+        Self: 'a,
+    {
+        if let Some(slice) = self.as_integer_slice() {
+            Some(slice.iter())
+        } else {
+            None
+        }
+    }
+
+    /// Get a Vec<i32> copied from the object.
+    /// ```
+    /// use extendr_api::*;        // Put API in scope.
+    /// extendr_engine::start_r(); // Start test environment.
+    ///
+    /// let robj = r!([1, 2, 3]);
+    /// assert_eq!(robj.as_integer_slice().unwrap(), vec![1, 2, 3]);
+    /// ```
+    pub fn as_integer_vector(&self) -> Option<Vec<i32>> {
+        if let Some(value) = self.as_integer_slice() {
+            Some(value.iter().cloned().collect::<Vec<_>>())
+        } else {
+            None
+        }
+    }
+
+    /// Get a read-only reference to the content of a logical vector
+    /// using the tri-state [Bool]. Returns None if not a logical vector.
+    /// ```
+    /// use extendr_api::*;        // Put API in scope.
+    /// extendr_engine::start_r(); // Start test environment.
+    ///
+    /// let robj = r!([TRUE, FALSE, NA_LOGICAL]);
+    /// assert_eq!(robj.as_logical_slice().unwrap(), [TRUE, FALSE, NA_LOGICAL]);
+    /// ```
+    pub fn as_logical_slice(&self) -> Option<&[Bool]> {
+        self.as_typed_slice()
+    }
+
+    /// Get a Vec<Bool> copied from the object
+    /// using the tri-state [Bool].
+    /// Returns None if not a logical vector.
+    /// ```
+    /// use extendr_api::*;        // Put API in scope.
+    /// extendr_engine::start_r(); // Start test environment.
+    ///
+    /// let robj = r!([TRUE, FALSE, NA_LOGICAL]);
+    /// assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, NA_LOGICAL]);
+    /// ```
+    pub fn as_logical_vector(&self) -> Option<Vec<Bool>> {
+        if let Some(value) = self.as_logical_slice() {
+            Some(value.iter().cloned().collect::<Vec<_>>())
+        } else {
+            None
+        }
+    }
+
+    /// Get an iterator over logical elements of this slice.
+    /// ```
+    /// use extendr_api::*;        // Put API in scope.
+    /// extendr_engine::start_r(); // Start test environment.
+    ///
+    /// let robj = r!([TRUE, FALSE, NA_LOGICAL]);
+    /// let (mut nt, mut nf, mut nna) = (0, 0, 0);
+    /// for val in robj.logical_iter().unwrap() {
+    ///   match *val {
+    ///     TRUE => nt += 1,
+    ///     FALSE => nf += 1,
+    ///     NA_LOGICAL => nna += 1,
+    ///     _ => ()
+    ///   }
+    /// }
+    /// assert_eq!((nt, nf, nna), (1, 1, 1));
+    /// ```
+    pub fn logical_iter(&self) -> Option<LogicalIter> {
+        if let Some(slice) = self.as_logical_slice() {
+            Some(slice.iter())
+        } else {
+            None
+        }
+    }
+
+    /// Get a read-only reference to the content of a double vector.
+    /// Note: the slice may contain NaN or NA values.
+    /// We may introduce a "Real" type to handle this like the Bool type.
+    /// ```
+    /// use extendr_api::*;        // Put API in scope.
+    /// extendr_engine::start_r(); // Start test environment.
+    ///
+    /// let robj = r!([Some(1.), None, Some(3.)]);
+    /// let mut tot = 0.;
+    /// for val in robj.as_real_slice().unwrap() {
+    ///   if !val.is_na() {
+    ///     tot += val;
+    ///   }
+    /// }
+    /// assert_eq!(tot, 4.);
+    /// ```
+    pub fn as_real_slice(&self) -> Option<&[f64]> {
+        self.as_typed_slice()
+    }
+
+    /// Get an iterator over real elements of this slice.
+    /// ```
+    /// use extendr_api::*;        // Put API in scope.
+    /// extendr_engine::start_r(); // Start test environment.
+    ///
+    /// let robj = r!([1., 2., 3.]);
+    /// let mut tot = 0.;
+    /// for val in robj.real_iter().unwrap() {
+    ///   if !val.is_na() {
+    ///     tot += val;
+    ///   }
+    /// }
+    /// assert_eq!(tot, 6.);
+    /// ```
+    pub fn real_iter(&self) -> Option<RealIter> {
+        if let Some(slice) = self.as_real_slice() {
+            Some(slice.iter())
+        } else {
+            None
+        }
+    }
+
+    /// Get a Vec<f64> copied from the object.
+    /// ```
+    /// use extendr_api::*;        // Put API in scope.
+    /// extendr_engine::start_r(); // Start test environment.
+    ///
+    /// let robj = r!([1., 2., 3.]);
+    /// assert_eq!(robj.as_real_vector().unwrap(), vec![1., 2., 3.])
+    /// ```
+    pub fn as_real_vector(&self) -> Option<Vec<f64>> {
+        if let Some(value) = self.as_real_slice() {
+            Some(value.iter().cloned().collect::<Vec<_>>())
+        } else {
+            None
+        }
+    }
+
+    /// Get a read-only reference to the content of an integer or logical vector.
+    /// ```
+    /// use extendr_api::*;        // Put API in scope.
+    /// extendr_engine::start_r(); // Start test environment.
+    ///
+    /// let robj = r!([1_u8, 2, 3]);
+    /// assert_eq!(robj.as_raw_slice().unwrap(), [1_u8, 2, 3]);
+    /// ```
+    pub fn as_raw_slice(&self) -> Option<&[u8]> {
+        self.as_typed_slice()
+    }
+
+    /// Get a read-write reference to the content of an integer or logical vector.
+    /// Note that rust slices are 0-based so `slice[1]` is the middle value.
+    /// ```
+    /// use extendr_api::*;        // Put API in scope.
+    /// extendr_engine::start_r(); // Start test environment.
+    ///
+    /// let mut robj = r!([1, 2, 3]);
+    /// let slice : & mut [i32] = robj.as_integer_slice_mut().unwrap();
+    /// slice[1] = 100;
+    /// assert_eq!(robj, r!([1, 100, 3]));
+    /// ```
+    pub fn as_integer_slice_mut(&mut self) -> Option<&mut [i32]> {
+        self.as_typed_slice_mut()
+    }
+
+    /// Get a read-write reference to the content of a double vector.
+    /// Note that rust slices are 0-based so `slice[1]` is the middle value.
+    /// ```
+    /// use extendr_api::*;        // Put API in scope.
+    /// extendr_engine::start_r(); // Start test environment.
+    ///
+    /// let mut robj = r!([1.0, 2.0, 3.0]);
+    /// let slice = robj.as_real_slice_mut().unwrap();
+    /// slice[1] = 100.0;
+    /// assert_eq!(robj, r!([1.0, 100.0, 3.0]));
+    /// ```
+    pub fn as_real_slice_mut(&mut self) -> Option<&mut [f64]> {
+        self.as_typed_slice_mut()
+    }
+
+    /// Get a read-write reference to the content of a raw vector.
+    /// ```
+    /// use extendr_api::*;        // Put API in scope.
+    /// extendr_engine::start_r(); // Start test environment.
+    ///
+    /// let mut robj = r!([1_u8, 2, 3]);
+    /// let slice = robj.as_raw_slice_mut().unwrap();
+    /// slice[1] = 100;
+    /// assert_eq!(robj, r!([1_u8, 100, 3]));
+    /// ```
+    pub fn as_raw_slice_mut(&mut self) -> Option<&mut [u8]> {
+        self.as_typed_slice_mut()
+    }
+
+    /// Get a vector of owned strings.
+    /// Owned strings have long lifetimes, but are much slower than references.
+    /// ```
+    ///    use extendr_api::*;
+    ///    extendr_engine::start_r();
+    ///    let robj1 = Robj::from("xyz");
+    ///    assert_eq!(robj1.as_string_vector(), Some(vec!["xyz".to_string()]));
+    ///    let robj2 = Robj::from(1);
+    ///    assert_eq!(robj2.as_string_vector(), None);
+    /// ```
+    pub fn as_string_vector(&self) -> Option<Vec<String>> {
+        if let Some(iter) = self.str_iter() {
+            Some(iter.map(str::to_string).collect())
+        } else {
+            None
+        }
+    }
+
+    /// Get a vector of string references.
+    /// String references (&str) are faster, but have short lifetimes.
+    /// ```
+    ///    use extendr_api::*;
+    ///    extendr_engine::start_r();
+    ///    let robj1 = Robj::from("xyz");
+    ///    assert_eq!(robj1.as_str_vector(), Some(vec!["xyz"]));
+    ///    let robj2 = Robj::from(1);
+    ///    assert_eq!(robj2.as_str_vector(), None);
+    /// ```
+    pub fn as_str_vector(&self) -> Option<Vec<&str>> {
+        if let Some(iter) = self.str_iter() {
+            Some(iter.collect())
+        } else {
+            None
+        }
+    }
+
+    /// Get a read-only reference to a char, symbol or string type.
+    /// ```
+    ///    use extendr_api::*;
+    ///    extendr_engine::start_r();
+    ///    let robj1 = Robj::from("xyz");
+    ///    let robj2 = Robj::from(1);
+    ///    assert_eq!(robj1.as_str(), Some("xyz"));
+    ///    assert_eq!(robj2.as_str(), None);
+    /// ```
+    pub fn as_str(&self) -> Option<&str> {
+        unsafe {
+            match self.sexptype() {
+                STRSXP => {
+                    if self.len() != 1 {
+                        None
+                    } else {
+                        Some(to_str(R_CHAR(STRING_ELT(self.get(), 0)) as *const u8))
+                    }
+                }
+                CHARSXP => Some(to_str(R_CHAR(self.get()) as *const u8)),
+                SYMSXP => Some(to_str(R_CHAR(PRINTNAME(self.get())) as *const u8)),
+                _ => None,
+            }
+        }
+    }
+
+    /// Get a scalar integer.
+    /// ```
+    ///    use extendr_api::*;
+    ///    extendr_engine::start_r();
+    ///    let robj1 = Robj::from("xyz");
+    ///    let robj2 = Robj::from(1);
+    ///    let robj3 = Robj::from(NA_INTEGER);
+    ///    assert_eq!(robj1.as_integer(), None);
+    ///    assert_eq!(robj2.as_integer(), Some(1));
+    ///    assert_eq!(robj3.as_integer(), None);
+    /// ```
+    pub fn as_integer(&self) -> Option<i32> {
+        match self.as_integer_slice() {
+            Some(slice) if slice.len() == 1 && !slice[0].is_na() => Some(slice[0]),
+            _ => None,
+        }
+    }
+
+    /// Get a scalar real.
+    /// ```
+    ///    use extendr_api::*;
+    ///    extendr_engine::start_r();
+    ///    let robj1 = Robj::from(1);
+    ///    let robj2 = Robj::from(1.);
+    ///    let robj3 = Robj::from(NA_REAL);
+    ///    assert_eq!(robj1.as_real(), None);
+    ///    assert_eq!(robj2.as_real(), Some(1.));
+    ///    assert_eq!(robj3.as_real(), None);
+    /// ```
+    pub fn as_real(&self) -> Option<f64> {
+        match self.as_real_slice() {
+            Some(slice) if slice.len() == 1 && !slice[0].is_na() => Some(slice[0]),
+            _ => None,
+        }
+    }
+
+    /// Get a scalar rust boolean.
+    /// ```
+    ///    use extendr_api::*;
+    ///    extendr_engine::start_r();
+    ///    let robj1 = Robj::from(TRUE);
+    ///    let robj2 = Robj::from(1.);
+    ///    let robj3 = Robj::from(NA_LOGICAL);
+    ///    assert_eq!(robj1.as_bool(), Some(true));
+    ///    assert_eq!(robj2.as_bool(), None);
+    ///    assert_eq!(robj3.as_bool(), None);
+    /// ```
+    pub fn as_bool(&self) -> Option<bool> {
+        match self.as_logical_slice() {
+            Some(slice) if slice.len() == 1 && !slice[0].is_na() => Some(slice[0].into()),
+            _ => None,
+        }
+    }
+
+    /// Get a scalar boolean as a tri-boolean [Bool] value.
+    /// ```
+    ///    use extendr_api::*;
+    ///    extendr_engine::start_r();
+    ///    let robj1 = Robj::from(TRUE);
+    ///    let robj2 = Robj::from([TRUE, FALSE]);
+    ///    let robj3 = Robj::from(NA_LOGICAL);
+    ///    assert_eq!(robj1.as_logical(), Some(TRUE));
+    ///    assert_eq!(robj2.as_logical(), None);
+    ///    assert_eq!(robj3.as_logical(), Some(NA_LOGICAL));
+    /// ```
+    pub fn as_logical(&self) -> Option<Bool> {
+        match self.as_logical_slice() {
+            Some(slice) if slice.len() == 1 => Some(slice[0]),
+            _ => None,
+        }
+    }
+
+    /// Evaluate the expression in R and return an error or an R object.
+    /// ```
+    ///    use extendr_api::*;
+    ///    extendr_engine::start_r();
+    ///
+    ///    let add = lang!("+", 1, 2);
+    ///    assert_eq!(add.eval().unwrap(), r!(3));
+    /// ```
+    pub fn eval(&self) -> Result<Robj, AnyError> {
+        unsafe {
+            let mut error: raw::c_int = 0;
+            let res = R_tryEval(self.get(), R_GlobalEnv, &mut error as *mut raw::c_int);
+            if error != 0 {
+                Err(AnyError::from("R eval error"))
+            } else {
+                Ok(Robj::from(res))
+            }
+        }
+    }
+
+    /// Evaluate the expression and return NULL or an R object.
+    /// ```
+    ///    use extendr_api::*;
+    ///    extendr_engine::start_r();
+    ///    let bad = lang!("imnotavalidfunctioninR", 1, 2);
+    ///    assert_eq!(bad.eval_blind(), r!(NULL));
+    /// ```
+    pub fn eval_blind(&self) -> Robj {
+        let res = self.eval();
+        if res.is_err() {
+            Robj::from(())
+        } else {
+            Robj::from(res.unwrap())
+        }
+    }
+
+    /// Parse a string into an R executable object
+    /// ```
+    ///    use extendr_api::*;
+    ///    extendr_engine::start_r();
+    ///    let expr = Robj::parse("1 + 2").unwrap();
+    ///    assert!(expr.is_expression());
+    /// ```
+    pub fn parse(code: &str) -> Result<Robj, AnyError> {
+        unsafe {
+            use libR_sys::*;
+            let mut status = 0_u32;
+            let status_ptr = &mut status as *mut u32;
+            let code: Robj = code.into();
+            let parsed = Robj::from(R_ParseVector(code.get(), -1, status_ptr, R_NilValue));
+            match status {
+                1 => Ok(parsed),
+                _ => Err(AnyError::from("parse_error")),
+            }
+        }
+    }
+
+    /// Parse a string into an R executable object and run it.
+    /// ```
+    ///    use extendr_api::*;
+    ///    extendr_engine::start_r();
+    ///    let res = Robj::eval_string("1 + 2").unwrap();
+    ///    assert_eq!(res, r!(3.));
+    /// ```
+    pub fn eval_string(code: &str) -> Result<Robj, AnyError> {
+        let expr = Robj::parse(code)?;
+        let mut res = Robj::from(());
+        if let Some(iter) = expr.list_iter() {
+            for lang in iter {
+                res = lang.eval()?;
+            }
+        }
+        Ok(res)
+    }
+
+    /// Unprotect an object - assumes a transfer of ownership.
+    /// This is unsafe because the object pointer may be left dangling.
+    #[doc(hidden)]
+    pub unsafe fn unprotected(self) -> Robj {
+        match self {
+            Robj::Owned(sexp) => {
+                R_ReleaseObject(sexp);
+                Robj::Borrowed(sexp)
+            }
+            _ => self,
+        }
+    }
+
+    /// Return true if the object is owned by this wrapper.
+    /// If so, it will be released when the wrapper drops.
+    /// ```
+    ///    use extendr_api::*;
+    ///    extendr_engine::start_r();
+    ///    let owned = r!(1);      // Allocated vector.
+    ///    let borrowed = r!(());  // R_NilValue
+    ///    assert_eq!(owned.is_owned(), true);
+    ///    assert_eq!(borrowed.is_owned(), false);
+    /// ```
+    pub fn is_owned(&self) -> bool {
+        match self {
+            Robj::Owned(_) => true,
+            _ => false,
+        }
+    }
+
+    // Convert the Robj to an owned one.
+    #[doc(hidden)]
+    pub fn to_owned(self) -> Robj {
+        match self {
+            Robj::Owned(_) => self,
+            _ => unsafe { new_owned(self.get()) },
+        }
+    }
+}
+
+/// Generic access to typed slices in an Robj.
+pub trait AsTypedSlice<'a, T>
+where
+    Self: 'a,
+{
+    fn as_typed_slice(&self) -> Option<&'a [T]>
+    where
+        Self: 'a,
+    {
+        None
+    }
+
+    fn as_typed_slice_mut(&mut self) -> Option<&'a mut [T]>
+    where
+        Self: 'a,
+    {
+        None
+    }
+}
+
+macro_rules! make_typed_slice {
+    ($type: ty, $fn: tt, $($sexp: tt),* ) => {
+        impl<'a> AsTypedSlice<'a, $type> for Robj
+        where
+            Self : 'a,
+        {
+            fn as_typed_slice(&self) -> Option<&'a [$type]> {
+                match self.sexptype() {
+                    $( $sexp )|* => {
+                        unsafe {
+                            let ptr = $fn(self.get()) as *const $type;
+                            Some(std::slice::from_raw_parts(ptr, self.len()))
+                        }
+                    }
+                    _ => None
+                }
+            }
+
+            fn as_typed_slice_mut(&mut self) -> Option<&'a mut [$type]> {
+                match self.sexptype() {
+                    $( $sexp )|* => {
+                        unsafe {
+                            let ptr = $fn(self.get()) as *mut $type;
+                            Some(std::slice::from_raw_parts_mut(ptr, self.len()))
+                        }
+                    }
+                    _ => None
+                }
+            }
+        }
+    }
+}
+
+make_typed_slice!(Bool, INTEGER, LGLSXP);
+make_typed_slice!(i32, INTEGER, INTSXP);
+make_typed_slice!(f64, REAL, REALSXP);
+make_typed_slice!(u8, RAW, RAWSXP);
+
+/// These are helper functions which give access to common properties of R objects.
+#[allow(non_snake_case)]
+impl Robj {
+    /// Get a specific attribute as a borrowed robj if it exists.
+    /// ```
+    ///    use extendr_api::*;
+    ///    extendr_engine::start_r();
+    ///
+    ///    let mut robj = r!("hello");
+    ///    robj.set_attrib(Symbol("xyz"), 1);
+    ///    assert_eq!(robj.get_attrib(Symbol("xyz")), Some(r!(1)));
+    /// ```
+    pub fn get_attrib<'a, N>(&self, name: N) -> Option<Robj>
+    where
+        Self: 'a,
+        Robj: From<N> + 'a,
+    {
+        let name = Robj::from(name);
+        if self.sexptype() == CHARSXP {
+            None
+        } else {
+            let res = unsafe { new_borrowed(Rf_getAttrib(self.get(), name.get())) };
+            if res.is_null() {
+                None
+            } else {
+                Some(res)
+            }
+        }
+    }
+
+    /// Set a specific attribute and return the value.
+    /// ```
+    ///    use extendr_api::*;
+    ///    extendr_engine::start_r();
+    ///
+    ///    let mut robj = r!("hello");
+    ///    let value = robj.set_attrib(Symbol("xyz"), 1);
+    ///    assert_eq!(robj.get_attrib(Symbol("xyz")), Some(value));
+    /// ```
+    pub fn set_attrib<N, V>(&mut self, name: N, value: V) -> Robj
+    where
+        Robj: From<N>,
+        Robj: From<V>,
+    {
+        let name = Robj::from(name);
+        let value = Robj::from(value);
+        unsafe { new_borrowed(Rf_setAttrib(self.get(), name.get(), value.get())) }
+    }
+
+    /// Get the names attribute as a string iterator if one exists.
+    /// ```
+    ///    use extendr_api::*;
+    ///    extendr_engine::start_r();
+    ///
+    ///    let list = list!(a = 1, b = 2, c = 3);
+    ///    let names : Vec<_> = list.names().unwrap().collect();
+    ///    assert_eq!(names, vec!["a", "b", "c"]);
+    /// ```
+    pub fn names(&self) -> Option<StrIter> {
+        if let Some(names) = self.get_attrib(names_symbol()) {
+            names.str_iter()
+        } else {
+            None
+        }
+    }
+
+    /// Get the dim attribute as an integer iterator if one exists.
+    /// ```
+    ///    use extendr_api::*;
+    ///    extendr_engine::start_r();
+    ///
+    ///    let array = R!(array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c("x", "y"), c("a","b")))).unwrap();
+    ///    let dim : Vec<_> = array.dim().unwrap().cloned().collect();
+    ///    assert_eq!(dim, vec![2, 2]);
+    /// ```
+    pub fn dim<'a>(&self) -> Option<IntegerIter<'a>>
+    where
+        Self: 'a,
+        Robj: 'a,
+    {
+        if let Some(dim) = self.get_attrib(dim_symbol()) {
+            dim.integer_iter()
+        } else {
+            None
+        }
+    }
+
+    /// Get the dimnames attribute as a list iterator if one exists.
+    /// ```
+    ///    use extendr_api::*;
+    ///    extendr_engine::start_r();
+    ///
+    ///    let array = R!(array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c("x", "y"), c("a","b")))).unwrap();
+    ///    let names : Vec<_> = array.dimnames().unwrap().collect();
+    ///    assert_eq!(names, vec![r!(["x", "y"]), r!(["a", "b"])]);
+    /// ```
+    pub fn dimnames(&self) -> Option<VecIter> {
+        if let Some(names) = self.get_attrib(dimnames_symbol()) {
+            names.list_iter()
+        } else {
+            None
+        }
+    }
+
+    /// Return an iterator over names and values of a list if they exist.
+    /// ```
+    ///    use extendr_api::*;
+    ///    extendr_engine::start_r();
+    ///
+    ///    let list = list!(a = 1, b = 2, c = 3);
+    ///    let names_and_values : Vec<_> = list.named_list_iter().unwrap().collect();
+    ///    assert_eq!(names_and_values, vec![("a", r!(1)), ("b", r!(2)), ("c", r!(3))]);
+    /// ```
+    pub fn named_list_iter(&self) -> Option<NamedListIter> {
+        if let Some(names) = self.names() {
+            if let Some(values) = self.list_iter() {
+                return Some(names.zip(values));
+            }
+        }
+        None
+    }
+
+    /// Get the class attribute as a string iterator if one exists.
+    /// ```
+    ///    use extendr_api::*;
+    ///    extendr_engine::start_r();
+    ///
+    ///    let formula = R!(y ~ A * x + b).unwrap();
+    ///    let class : Vec<_> = formula.class().unwrap().collect();
+    ///    assert_eq!(class, ["formula"]);
+    /// ```
+    pub fn class(&self) -> Option<StrIter> {
+        if let Some(class) = self.get_attrib(class_symbol()) {
+            class.str_iter()
+        } else {
+            None
+        }
+    }
+
+    /// Return true if this class inherits this class.
+    /// ```
+    ///    use extendr_api::*;
+    ///    extendr_engine::start_r();
+    ///
+    ///    let formula = R!(y ~ A * x + b).unwrap();
+    ///    assert_eq!(formula.inherits("formula"), true);
+    /// ```
+    pub fn inherits(&self, classname: &str) -> bool {
+        if let Some(mut iter) = self.class() {
+            iter.find(|&n| n == classname).is_some()
+        } else {
+            false
+        }
+    }
+
+    /// Get the levels attribute as a string iterator if one exists.
+    /// ```
+    ///    use extendr_api::*;
+    ///    extendr_engine::start_r();
+    ///
+    ///    let factor = factor!(vec!["abcd", "def", "fg", "fg"]);
+    ///    let levels : Vec<_> = factor.levels().unwrap().collect();
+    ///    assert_eq!(levels, vec!["abcd", "def", "fg"]);
+    /// ```
+    pub fn levels(&self) -> Option<StrIter> {
+        if let Some(levels) = self.get_attrib(levels_symbol()) {
+            levels.str_iter()
+        } else {
+            None
+        }
+    }
+}
+
+#[doc(hidden)]
+pub unsafe fn new_owned(sexp: SEXP) -> Robj {
+    R_PreserveObject(sexp);
+    Robj::Owned(sexp)
+}
+
+#[doc(hidden)]
+pub unsafe fn new_borrowed(sexp: SEXP) -> Robj {
+    Robj::Borrowed(sexp)
+}
+
+#[doc(hidden)]
+pub unsafe fn new_sys(sexp: SEXP) -> Robj {
+    Robj::Sys(sexp)
+}
+
+/// Compare equality with integer slices.
+impl<'a> PartialEq<[i32]> for Robj {
+    fn eq(&self, rhs: &[i32]) -> bool {
+        self.as_integer_slice() == Some(rhs)
+    }
+}
+
+/// Compare equality with slices of double.
+impl<'a> PartialEq<[f64]> for Robj {
+    fn eq(&self, rhs: &[f64]) -> bool {
+        self.as_real_slice() == Some(rhs)
+    }
+}
+
+/// Compare equality with strings.
+impl PartialEq<str> for Robj {
+    fn eq(&self, rhs: &str) -> bool {
+        self.as_str() == Some(rhs)
+    }
+}
+
+/// Compare equality with two Robjs.
+impl PartialEq<Robj> for Robj {
+    fn eq(&self, rhs: &Robj) -> bool {
+        if self.sexptype() == rhs.sexptype() && self.len() == rhs.len() {
+            unsafe {
+                let lsexp = self.get();
+                let rsexp = rhs.get();
+                match self.sexptype() {
+                    NILSXP => true,
+                    SYMSXP => PRINTNAME(lsexp) == PRINTNAME(rsexp),
+                    LISTSXP | LANGSXP | DOTSXP => self
+                        .pairlist_iter()
+                        .unwrap()
+                        .eq(rhs.pairlist_iter().unwrap()),
+                    CLOSXP => false,
+                    ENVSXP => false,
+                    PROMSXP => false,
+                    SPECIALSXP => false,
+                    BUILTINSXP => false,
+                    CHARSXP => self.as_str() == rhs.as_str(),
+                    LGLSXP => self.as_logical_slice() == rhs.as_logical_slice(),
+                    INTSXP => self.as_integer_slice() == rhs.as_integer_slice(),
+                    REALSXP => self.as_real_slice() == rhs.as_real_slice(),
+                    CPLXSXP => false,
+                    ANYSXP => false,
+                    VECSXP | EXPRSXP => self.list_iter().unwrap().eq(rhs.list_iter().unwrap()),
+                    STRSXP => self.str_iter().unwrap().eq(rhs.str_iter().unwrap()),
+                    BCODESXP => false,
+                    EXTPTRSXP => false,
+                    WEAKREFSXP => false,
+                    RAWSXP => self.as_raw_slice() == rhs.as_raw_slice(),
+                    S4SXP => false,
+                    NEWSXP => false,
+                    FREESXP => false,
+                    _ => false,
+                }
+            }
+        } else {
+            false
+        }
+    }
+}
+
+/// Implement {:?} formatting.
+impl std::fmt::Debug for Robj {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self.sexptype() {
+            NILSXP => write!(f, "NULL"),
+            SYMSXP => write!(f, "Symbol({:?})", self.as_str().unwrap()),
+            // LISTSXP => false,
+            // CLOSXP => false,
+            // ENVSXP => false,
+            // PROMSXP => false,
+            LANGSXP => write!(
+                f,
+                "Lang({:?})",
+                self.pairlist_iter().unwrap().collect::<Vec<Robj>>()
+            ),
+            // SPECIALSXP => false,
+            // BUILTINSXP => false,
+            CHARSXP => write!(f, "Character({:?})", self.as_str().unwrap()),
+            LGLSXP => {
+                let slice = self.as_logical_slice().unwrap();
+                if slice.len() == 1 {
+                    write!(f, "{}", if slice[0].0 == 0 { "FALSE" } else { "TRUE" })
+                } else {
+                    write!(f, "&{:?}", slice)
+                }
+            }
+            INTSXP => {
+                let slice = self.as_integer_slice().unwrap();
+                if slice.len() == 1 {
+                    write!(f, "{:?}", slice[0])
+                } else {
+                    write!(f, "{:?}", self.as_integer_slice().unwrap())
+                }
+            }
+            REALSXP => {
+                let slice = self.as_real_slice().unwrap();
+                if slice.len() == 1 {
+                    write!(f, "{:?}", slice[0])
+                } else {
+                    write!(f, "{:?}", slice)
+                }
+            }
+            VECSXP => write!(f, "{:?}", self.list_iter().unwrap().collect::<Vec<_>>()),
+            EXPRSXP => write!(
+                f,
+                "Expr({:?})",
+                self.list_iter().unwrap().collect::<Vec<_>>()
+            ),
+            WEAKREFSXP => write!(
+                f,
+                "Weakref({:?})",
+                self.list_iter().unwrap().collect::<Vec<_>>()
+            ),
+            // CPLXSXP => false,
+            STRSXP => {
+                write!(f, "[")?;
+                let mut sep = "";
+                for obj in self.str_iter().unwrap() {
+                    write!(f, "{}{:?}", sep, obj)?;
+                    sep = ", ";
+                }
+                write!(f, "]")
+            }
+            // DOTSXP => false,
+            // ANYSXP => false,
+            // VECSXP => false,
+            // EXPRSXP => false,
+            // BCODESXP => false,
+            // EXTPTRSXP => false,
+            // WEAKREFSXP => false,
+            RAWSXP => {
+                let slice = self.as_raw_slice().unwrap();
+                if slice.len() == 1 {
+                    write!(f, "{}", slice[0])
+                } else {
+                    write!(f, "{:?}", slice)
+                }
+            }
+            // S4SXP => false,
+            // NEWSXP => false,
+            // FREESXP => false,
+            _ => write!(f, "??"),
+        }
+    }
+}
+
+// Internal utf8 to str conversion.
+// Lets not worry about non-ascii/unicode strings for now (or ever).
+unsafe fn to_str<'a>(ptr: *const u8) -> &'a str {
+    let mut len = 0;
+    loop {
+        if *ptr.offset(len) == 0 {
+            break;
+        }
+        len += 1;
+    }
+    let slice = std::slice::from_raw_parts(ptr, len as usize);
+    std::str::from_utf8_unchecked(slice)
+}
+
+/// Release any owned objects.
+impl Drop for Robj {
+    fn drop(&mut self) {
+        unsafe {
+            match self {
+                Robj::Owned(sexp) => R_ReleaseObject(*sexp),
+                Robj::Borrowed(_) => (),
+                Robj::Sys(_) => (),
+            }
+        }
+    }
+}

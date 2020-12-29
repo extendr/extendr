@@ -2,7 +2,7 @@
 //! rmacros - a set of macros to call actual R functions in a rusty way.
 //!
 
-/// R object encapsulation operator.
+/// Convert a rust expression to an R object.
 ///
 /// Shorthand for Robj::from(x).
 ///
@@ -12,11 +12,47 @@
 /// extendr_engine::start_r();
 /// let fred = r!(1);
 /// assert_eq!(fred, Robj::from(1));
+///
+/// let int_array = r!([1, 2, 3]);
+/// assert_eq!(int_array.len(), 3);
+///
+/// let numeric_array = r!([1., 2., 3.]);
+/// assert_eq!(numeric_array.len(), 3);
+///
+/// let logical_array = r!([true, false, true]);
+/// assert_eq!(logical_array.len(), 3);
+///
+/// let numeric_array_with_na = r!([Some(1.), None, Some(3.)]);
+/// assert_eq!(numeric_array_with_na.len(), 3);
+///
 /// ```
 #[macro_export]
 macro_rules! r {
     ($e: expr) => {
         Robj::from($e)
+    };
+}
+
+/// Call inline R source code from Rust.
+///
+/// ```
+/// use extendr_api::*;
+/// extendr_engine::start_r();
+///
+/// let formula = R!(y ~ z + 1).unwrap();
+/// assert!(formula.inherits("formula"));
+///
+/// // Currently, multiline calls require semicolons as the newlines are lost.
+/// let x = R!({
+///    x <- function() { 1 };
+///    x()
+/// }).unwrap();
+/// assert_eq!(x, r!(1.));
+/// ```
+#[macro_export] 
+macro_rules! R {
+    ($($t:tt)*) => {
+        Robj::eval_string(stringify!($($t)*))
     };
 }
 
@@ -27,15 +63,19 @@ macro_rules! r {
 /// use extendr_api::*;
 /// extendr_engine::start_r();
 /// let fred = c!(1, 2, 3);
-/// assert_eq!(fred, Robj::from(&[1, 2, 3][..]));
+/// assert_eq!(fred, r!([1, 2, 3]));
 /// ```
+/// Note: make sure to use rust syntax for numbers: 1 is integer, 1. is numeric.
+/// For vectors of primitives, prefer to use `r!([1, 2, 3])`.
+///
+/// Panics on error.
 #[macro_export]
 macro_rules! c {
     () => {
-        lang!("c").eval_blind()
+        call!("c").unwrap()
     };
     ($($rest: tt)*) => {
-        lang!("c", $($rest)*).eval_blind()
+        call!("c", $($rest)*).unwrap()
     };
 }
 
@@ -46,12 +86,13 @@ macro_rules! c {
 /// use extendr_api::*;
 /// extendr_engine::start_r();
 /// let fred = rep!(1., 3);
-/// assert_eq!(fred, Robj::from(&[1., 1., 1.][..]));
+/// assert_eq!(fred, r!([1., 1., 1.]));
 /// ```
+/// Note: make sure to use rust syntax for numbers: 1 is integer, 1. is numeric.
 #[macro_export]
 macro_rules! rep {
     ($($rest: tt)*) => {
-        lang!("rep", $($rest)*).eval_blind()
+        call!("rep", $($rest)*).unwrap()
     };
 }
 
@@ -66,7 +107,7 @@ macro_rules! rep {
 #[macro_export]
 macro_rules! read_table {
     ($($rest: tt)*) => {
-        lang!("read.table", $($rest)*).eval()
+        call!("read.table", $($rest)*)
     };
 }
 
@@ -79,13 +120,15 @@ macro_rules! read_table {
 /// let mylist = list!(x=1, y=2);
 /// assert_eq!(mylist, List(&[1.into(), 2.into()]));
 /// ```
+///
+/// Panics on error.
 #[macro_export]
 macro_rules! list {
     () => {
-        lang!("list").eval_blind()
+        call!("list").unwrap()
     };
     ($($rest: tt)*) => {
-        lang!("list", $($rest)*).eval_blind()
+        call!("list", $($rest)*).unwrap()
     };
 }
 
@@ -98,13 +141,15 @@ macro_rules! list {
 /// let mydata = data_frame!(x=1, y=2);
 /// assert_eq!(mydata, List(&[1.into(), 2.into()]));
 /// ```
+///
+/// Panics on error.
 #[macro_export]
 macro_rules! data_frame {
     () => {
-        lang!("data.frame").eval_blind()
+        call!("data.frame").unwrap()
     };
     ($($rest: tt)*) => {
-        lang!("data.frame", $($rest)*).eval_blind()
+        call!("data.frame", $($rest)*).unwrap()
     };
 }
 
@@ -119,10 +164,12 @@ macro_rules! data_frame {
 /// assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);
 /// assert_eq!(factor.str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
 /// ```
+///
+/// Panics on error.
 #[macro_export]
 macro_rules! factor {
     ($($rest: tt)*) => {
-        lang!("factor", $($rest)*).eval_blind()
+        call!("factor", $($rest)*).unwrap()
     };
 }
 

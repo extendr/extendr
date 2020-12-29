@@ -6,6 +6,7 @@ use std::os::raw;
 static mut R_ERROR_BUF: Vec<u8> = Vec::new();
 
 /// Throw an R error if a result is an error.
+#[doc(hidden)]
 pub fn unwrap_or_throw<T>(r: Result<T, &'static str>) -> T {
     unsafe {
         match r {

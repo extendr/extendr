@@ -1,68 +1,147 @@
 //!
-//! extendr - A safe and user friendly R extension interface.
+//! A safe and user friendly R extension interface.
+//!
+//! * Build rust extensions to R.
+//! * Convert R packages to Rust crates.
 //!
 //! This library aims to provide an interface that will be familiar to
 //! first-time users of Rust or indeed any compiled language.
 //!
-//! Anyone who knows the R library should be able to write R extensions.
+//! See [Robj] for much of the content of this crate.
+//! [Robj] provides a safe wrapper for the R object type.
 //! 
-//! See the [Robj](../robj/enum.Robj.html) struct for much of the content of this crate.
-//! [Robj](../robj/enum.Robj.html) provides a safe wrapper for the R object type.
-//! 
-//! This library is just being born, but goals are:
-//!
-//! Implement common R functions such as c() and print()
-//!
-//! Example:
-//!
+//! Use attributes and macros to export to R.
 //! ```ignore
-//! let v = c!(1, 2, 3);
-//! let l = list!(a=1, b=2);
-//! print!(v, l);
-//! ```
-//!
-//! Provide a wrapper for r objects.
-//!
-//! Example:
-//!
-//! ```ignore
-//! let s = Robj::from("hello");
-//! let i = Robj::from(1);
-//! let r = Robj::from(1.0);
-//! ```
-//!
-//! Provide iterator support for creation and consumption of r vectors.
-//!
-//! Example:
-//!
-//! ```ignore
-//! let res = (1..=100).iter().collect::<Robj>();
-//! for x in res {
-//!     print!(x);
-//! }
-//! ```
-//!
-//! Provide a procedural macro to adapt Rust functions to R
-//!
-//! Example:
-//!
-//! ```ignore
+//! use extendr_api::*;
+//! // Export a function or impl to R.
 //! #[extendr]
 //! fn fred(a: i32) -> i32 {
 //!     a + 1
 //! }
+//!
+//! // define exports using extendr_module 
+//! extendr_module! {
+//!    mod mymodule;
+//!    fn fred;    
+//! }
+//! 
 //! ```
 //!
 //! In R:
 //!
 //! ```ignore
-//!
-//! result <- .Call("fred", 1)
-//!
+//! result <- fred(1)
 //! ```
 //!
+//! [Robj] is a wrapper for R objects.
+//! The r!() and R!() macros let you build R objects
+//! using Rust and R syntax respectively.
+//! ```
+//! use extendr_api::*;        // Put API in scope.
+//! extendr_engine::start_r(); // Start test environment.
+//!
+//! // An R object with a single string "hello"
+//! let character = r!("hello");
+//!
+//! // An R integer object with a single number 1L.
+//! // Note that in Rust, 1 is an integer and 1.0 is a real.
+//! let integer = r!(1);
+//!
+//! // An R real object with a single number 1.
+//! // Note that in R, 1 is a real and 1L is an integer.
+//! let real = r!(1.0);
+//!
+//! // An R real vector.
+//! let real_vector = r!([1.0, 2.0]);
+//!
+//! // An R function object.
+//! let function = R!(function(x, y) { x + y });
+//!
+//! // A named list using the list! macro.
+//! let list = list!(a = 1, b = 2);
+//! ```
+//!
+//! In Rust, we prefer to use iterators rather than loops.
+//!
+//! ```
+//! use extendr_api::*;        // Put API in scope.
+//! extendr_engine::start_r(); // Start test environment.
+//!
+//! // 1 ..= 100 is the same as 1:100
+//! let res = (1 ..= 100).collect_robj();
+//! assert_eq!(res.len(), 100);
+//!
+//! // Rust arrays are zero-indexed so it is more common to use 0 .. 100.
+//! let res = (0 .. 100).collect_robj();
+//! assert_eq!(res.len(), 100);
+//! ```
+//!
+//! To index a vector, first convert it to a slice and then
+//! remember to use 0-based indexing. In Rust, going out of bounds
+//! will cause and error (a panic) unlike C++ which may crash.
+//! ```
+//! use extendr_api::*;        // Put API in scope.
+//! extendr_engine::start_r(); // Start test environment.
+//!
+//! let vals = r!([1.0, 2.0]);
+//! let slice = vals.as_real_slice().unwrap();
+//! let one = slice[0];
+//! let two = slice[1];
+//! //let error = slice[2];
+//! ```
+//!
+//! The [R!] macro lets you embed R code in Rust.
+//!
+//! The [r!] macro converts a rust object to an R object.
+//!
+//! You can call R functions and primitives using the [call!] macro.
+//! ```
+//!
+//! use extendr_api::*;        // Put API in scope.
+//! extendr_engine::start_r(); // Start test environment.
+//!
+//! // As one R! macro call
+//! let confint1 = R!(confint(lm(weight ~ group - 1, PlantGrowth))).unwrap();
+//!
+//! // As many parameterized calls.
+//! let formula = R!(weight ~ group - 1).unwrap();
+//! let plant_growth = R!(PlantGrowth).unwrap();
+//! let model = call!("lm", formula, plant_growth).unwrap();
+//! let confint2 = call!("confint", model).unwrap();
+//!
+//! assert_eq!(confint1.as_real_vector(), confint2.as_real_vector());
+//! ```
+//!
+//! Rust has a concept of "Owned" and "Borrowed" objects.
+//!
+//! Owned objects, such as [Vec] and [String] allocate memory
+//! which is released when the object lifetime ends.
+//!
+//! Borrowed objects such as &[i32] and &str are just pointers
+//! to annother object's memory and can't live longer than the
+//! object they reference.
+//!
+//! Borrowed objects are much faster than owned objects and use less
+//! memory but are used only for temporary access.
+//!
+//! When we take a slice of an R vector, for example, we need the
+//! original R object to be alive or the data will be corrupted.
+//!
+//! ```
+//! use extendr_api::*;        // Put API in scope.
+//! extendr_engine::start_r(); // Start test environment.
+//!
+//! // robj is an "Owned" object that controls the memory allocated.
+//! let robj = r!([1, 2, 3]);
+//!
+//! // slice is a "borrowed" reference to the bytes in robj.
+//! // and cannot live longer than robj.
+//! let slice = robj.as_integer_slice().unwrap();
+//! ```
 
-mod args;
+#![doc(html_logo_url = "https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png")]
+
+mod lang;
 mod error;
 mod logical;
 mod rmacros;
@@ -72,25 +151,34 @@ mod wrapper;
 #[cfg(feature = "ndarray")]
 mod robj_ndarray;
 
-pub use args::*;
+pub use lang::*;
 pub use error::*;
 pub use rmacros::*;
 pub use robj::*;
 pub use wrapper::*;
+pub use logical::*;
 
 #[cfg(feature = "ndarray")]
 pub use robj_ndarray::*;
 
 pub use extendr_macros::*;
+
+#[doc(hidden)]
 pub use libR_sys::DllInfo;
+
+#[doc(hidden)]
 pub use libR_sys::SEXP;
 
+#[doc(hidden)]
 use libR_sys::*;
+
+#[doc(hidden)]
 use std::ffi::CString;
 
 /// Generic dynamic error type.
 pub type AnyError = Box<dyn std::error::Error + Send + Sync>;
 
+#[doc(hidden)]
 pub struct CallMethod {
     pub call_symbol: std::ffi::CString,
     pub func_ptr: *const u8,
@@ -99,6 +187,7 @@ pub struct CallMethod {
 
 // Internal function used to implement the .Call interface.
 // This is called from the code generated by the #[extendr] attribute.
+#[doc(hidden)]
 pub unsafe fn register_call_methods(info: *mut libR_sys::DllInfo, methods: &[CallMethod]) {
     let mut rmethods: Vec<_> = methods
         .iter()
@@ -128,6 +217,7 @@ pub unsafe fn register_call_methods(info: *mut libR_sys::DllInfo, methods: &[Cal
 
 /// This function is use by the wrapper logic to catch
 /// panics on return.
+#[doc(hidden)]
 pub fn handle_panic<F>(err_str: &str, f: F) -> SEXP
 where
     F : FnOnce() -> SEXP,
@@ -142,14 +232,27 @@ where
     }
 }
 
-// return true if value is an integer NA in R.
-pub fn integer_is_na(val: i32) -> bool {
-    val == std::i32::MIN
+/// Return true if this primitive is NA.
+pub trait IsNA {
+    fn is_na(&self) -> bool;
 }
 
-// return true if value is an numeric NA in R.
-pub fn numeric_is_na(val: f64)  -> bool{
-    unsafe { R_IsNA(val) != 0 }
+impl IsNA for f64 {
+    fn is_na(&self) -> bool {
+        unsafe { R_IsNA(*self) != 0 }
+    }
+}
+
+impl IsNA for i32 {
+    fn is_na(&self) -> bool {
+        *self == std::i32::MIN
+    }
+}
+
+impl IsNA for Bool {
+    fn is_na(&self) -> bool {
+        self.0 == std::i32::MIN
+    }
 }
 
 // pub fn add_function_to_namespace(namespace: &str, fn_name: &str, wrap_name: &str) {
@@ -158,6 +261,7 @@ pub fn numeric_is_na(val: f64)  -> bool{
 //     Robj::eval_string(rcode.as_str()).unwrap();
 // }
 
+#[doc(hidden)]
 pub fn print_r_output<T: Into<Vec<u8>>>(s: T) {
     let cs = CString::new(s).expect("NulError");
     unsafe {
@@ -165,6 +269,7 @@ pub fn print_r_output<T: Into<Vec<u8>>>(s: T) {
     }
 }
 
+#[doc(hidden)]
 pub fn print_r_error<T: Into<Vec<u8>>>(s: T) {
     let cs = CString::new(s).expect("NulError");
     unsafe {
@@ -298,6 +403,7 @@ mod tests {
 
     #[test]
     fn export_test() {
+        extendr_engine::start_r();
         use super::*;
         // Call the exported functions through their generated C wrappers.
         unsafe {
@@ -350,7 +456,7 @@ mod tests {
 
     #[test]
     fn r_output_test() {
-
+        
         // R equivalent
         // > txt_con <- textConnection("test_con", open = "w")
         // > sink(txt_con)
@@ -359,30 +465,14 @@ mod tests {
         // > close(txt_con)
         // > expect_equal(test_con, "Hello world")
         //
-        
-        let con_target_name = "test_con";
-        // `textConnection` outputting to `test_con` R variable
-        let txt_con = 
-            lang!(
-                "textConnection", 
-                Robj::from(con_target_name), 
-                open = Robj::from("w"))
-            .eval().unwrap();
 
-            
-        let txt_con = unsafe { txt_con.get() };
-        // `sink` to connection
-        lang!("sink", txt_con).eval_blind();
+        extendr_engine::start_r();
+        let txt_con = R!(textConnection("test_con", open = "w")).unwrap();
+        call!("sink", &txt_con).unwrap();
         rprintln!("Hello world");
-        // `sink` reset
-        lang!("sink").eval_blind();
-        
-        // Retrieve value of `test_con` by evaluating R variable name
-        let result = Robj::eval_string(&con_target_name).unwrap();
-        
-        // Close connection
-        lang!("close", txt_con).eval_blind();
-        
-        assert_eq!(result, Robj::from("Hello world"));
+        call!("sink").unwrap();
+        call!("close", &txt_con).unwrap();
+        let result = R!(test_con).unwrap();
+        assert_eq!(result, r!("Hello world"));
     }
 }

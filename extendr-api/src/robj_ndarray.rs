@@ -1,4 +1,6 @@
+#[doc(hidden)]
 use libR_sys::*;
+#[doc(hidden)]
 use ndarray::prelude::*;
 
 use crate::logical::Bool;
