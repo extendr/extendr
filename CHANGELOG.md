@@ -1,20 +1,17 @@
 # Changelog
 
-## libR-sys devel
-
-- Added precomputed bindings for Apple Silicon.
+## extendr devel
 
 - Added contributing guidelines and code of conduct.
 
-## libR-sys 0.2.0
+- Made use of ndarray optional.
 
-- Provide precomputed bindings. Computations of bindings on the fly now only
-  happens when the `use-bindgen` feature is enabled.
+- Made #[extendr] calls panic and thread safe.
 
-## libR-sys 0.1.10
+- Added NA handling to the #[extendr] macro.
 
-- Minor fixes.
+- Added a separate extendr-engine crate that is needed when calling R from Rust.
 
-## libR-sys 0.1.9
+## extendr 0.1.10
 
-- Remove need for pkg-config.
+- Fix build on Windows and MacOS.
