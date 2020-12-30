@@ -84,7 +84,7 @@ pub trait ToVectorValue {
     where
         Self: Sized,
     {
-        unsafe { R_NaString }
+        unsafe { R_NilValue }
     }
 }
 
@@ -172,6 +172,7 @@ impl_integer_tvv!(i8);
 impl_integer_tvv!(i16);
 impl_integer_tvv!(i32);
 impl_integer_tvv!(i64);
+impl_integer_tvv!(u8);
 impl_integer_tvv!(u16);
 impl_integer_tvv!(u32);
 impl_integer_tvv!(u64);
@@ -292,32 +293,6 @@ impl ToVectorValue for Option<bool> {
     }
 }
 
-impl ToVectorValue for u8 {
-    fn sexptype() -> SEXPTYPE {
-        RAWSXP
-    }
-
-    fn to_raw(&self) -> u8
-    where
-        Self: Sized,
-    {
-        *self
-    }
-}
-
-impl ToVectorValue for &u8 {
-    fn sexptype() -> SEXPTYPE {
-        RAWSXP
-    }
-
-    fn to_raw(&self) -> u8
-    where
-        Self: Sized,
-    {
-        **self
-    }
-}
-
 // Not thread safe.
 unsafe fn fixed_size_collect<I>(iter: I, len: usize) -> Robj
 where
@@ -347,12 +322,6 @@ where
                 let ptr = LOGICAL(sexp);
                 for (i, v) in iter.enumerate() {
                     *ptr.offset(i as isize) = v.to_logical();
-                }
-            }
-            RAWSXP => {
-                let ptr = RAW(sexp);
-                for (i, v) in iter.enumerate() {
-                    *ptr.offset(i as isize) = v.to_raw();
                 }
             }
             STRSXP => {

@@ -415,10 +415,8 @@ mod tests {
             );
             wrap__robjtype(Robj::from(1).get());
 
-            // Note u8 is special as it makes the raw type
-            assert_eq!(new_borrowed(wrap__return_u8()), Robj::from(&[123_u8][..]));
-
             // General integer types.
+            assert_eq!(new_borrowed(wrap__return_u8()), Robj::from(123));
             assert_eq!(new_borrowed(wrap__return_u16()), Robj::from(123));
             assert_eq!(new_borrowed(wrap__return_u32()), Robj::from(123));
             assert_eq!(new_borrowed(wrap__return_u64()), Robj::from(123));

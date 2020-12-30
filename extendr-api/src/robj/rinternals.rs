@@ -394,17 +394,17 @@ impl Robj {
         unsafe { Rf_isFunction(self.get()) != 0 }
     }
 
-    /// Return true if this is an integer vector.
+    /// Return true if this is an integer vector (INTSXP) but not a factor.
     pub fn is_integer(&self) -> bool {
         unsafe { Rf_isInteger(self.get()) != 0 }
     }
 
-    /// Return true if this is a language object.
+    /// Return true if this is a language object (LANGSXP).
     pub fn is_language(&self) -> bool {
         unsafe { Rf_isLanguage(self.get()) != 0 }
     }
 
-    /// Return true if this is a vector list.
+    /// Return true if this is NILSXP or LISTSXP.
     pub fn is_list(&self) -> bool {
         unsafe { Rf_isList(self.get()) != 0 }
     }
@@ -414,17 +414,17 @@ impl Robj {
         unsafe { Rf_isMatrix(self.get()) != 0 }
     }
 
-    /// Return true if this is a vector list or null.
+    /// Return true if this is NILSXP or VECSXP.
     pub fn is_new_list(&self) -> bool {
         unsafe { Rf_isNewList(self.get()) != 0 }
     }
 
-    /// Return true if this is a numeric vector but not a factor.
+    /// Return true if this is INTSXP, LGLSXP or REALSXP but not a factor.
     pub fn is_number(&self) -> bool {
         unsafe { Rf_isNumber(self.get()) != 0 }
     }
 
-    /// Return true if this is a pairlist.
+    /// Return true if this is NILSXP, LISTSXP, LANGSXP or DOTSXP.
     pub fn is_pair_list(&self) -> bool {
         unsafe { Rf_isPairList(self.get()) != 0 }
     }
@@ -488,7 +488,17 @@ impl Robj {
     }
 }
 
-pub fn find_namespace(name: &str) -> Robj {
+///
+/// ```ignore
+///    use extendr_api::*;
+///    extendr_engine::start_r();
+///
+///    println!("{:?}", R!(getNamespace("stats")).unwrap());
+///    // assert_eq!(find_namespace("stats").is_some(), true);
+///    assert!(false);
+/// ```
+pub fn find_namespace(name: &str) -> Option<Robj> {
     let name = r!(Symbol(name));
-    single_threaded(|| unsafe { new_borrowed(R_FindNamespace(name.get())) })
+    let res = single_threaded(|| unsafe { new_borrowed(R_FindNamespace(name.get())) });
+    Some(res)
 }

@@ -402,8 +402,8 @@ impl Robj {
     /// use extendr_api::*;        // Put API in scope.
     /// extendr_engine::start_r(); // Start test environment.
     ///
-    /// let robj = r!([1_u8, 2, 3]);
-    /// assert_eq!(robj.as_raw_slice().unwrap(), [1_u8, 2, 3]);
+    /// let robj = r!(Raw(&[1, 2, 3]));
+    /// assert_eq!(robj.as_raw_slice().unwrap(), &[1, 2, 3]);
     /// ```
     pub fn as_raw_slice(&self) -> Option<&[u8]> {
         self.as_typed_slice()
@@ -444,10 +444,10 @@ impl Robj {
     /// use extendr_api::*;        // Put API in scope.
     /// extendr_engine::start_r(); // Start test environment.
     ///
-    /// let mut robj = r!([1_u8, 2, 3]);
+    /// let mut robj = r!(Raw(&[1, 2, 3]));
     /// let slice = robj.as_raw_slice_mut().unwrap();
     /// slice[1] = 100;
-    /// assert_eq!(robj, r!([1_u8, 100, 3]));
+    /// assert_eq!(robj, r!(Raw(&[1, 100, 3])));
     /// ```
     pub fn as_raw_slice_mut(&mut self) -> Option<&mut [u8]> {
         self.as_typed_slice_mut()
@@ -1019,83 +1019,80 @@ impl PartialEq<Robj> for Robj {
 impl std::fmt::Debug for Robj {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self.sexptype() {
-            NILSXP => write!(f, "NULL"),
-            SYMSXP => write!(f, "Symbol({:?})", self.as_str().unwrap()),
-            // LISTSXP => false,
-            // CLOSXP => false,
-            // ENVSXP => false,
-            // PROMSXP => false,
+            NILSXP => write!(f, "r!(NULL)"),
+            SYMSXP => write!(f, "r!(Symbol({:?}))", self.as_str().unwrap()),
+            LISTSXP => write!(
+                f,
+                "r!(Pairlist(&{:?}))",
+                self.pairlist_iter().unwrap().collect::<Vec<Robj>>()
+            ),
+            CLOSXP => write!(f, "r!(Function())"),
+            ENVSXP => write!(f, "r!(Env())"),
+            PROMSXP => write!(f, "r!(Promise())"),
             LANGSXP => write!(
                 f,
-                "Lang({:?})",
+                "r!(Lang(&{:?}))",
                 self.pairlist_iter().unwrap().collect::<Vec<Robj>>()
             ),
             // SPECIALSXP => false,
             // BUILTINSXP => false,
-            CHARSXP => write!(f, "Character({:?})", self.as_str().unwrap()),
+            CHARSXP => write!(f, "r!(Character({:?}))", self.as_str().unwrap()),
             LGLSXP => {
                 let slice = self.as_logical_slice().unwrap();
                 if slice.len() == 1 {
-                    write!(f, "{}", if slice[0].0 == 0 { "FALSE" } else { "TRUE" })
+                    write!(f, "{}", if slice[0].0 == 0 { "r!(FALSE)" } else { "r!(TRUE)" })
                 } else {
-                    write!(f, "&{:?}", slice)
+                    write!(f, "r!({:?})", slice)
                 }
             }
             INTSXP => {
                 let slice = self.as_integer_slice().unwrap();
                 if slice.len() == 1 {
-                    write!(f, "{:?}", slice[0])
+                    write!(f, "r!({:?})", slice[0])
                 } else {
-                    write!(f, "{:?}", self.as_integer_slice().unwrap())
+                    write!(f, "r!({:?})", self.as_integer_slice().unwrap())
                 }
             }
             REALSXP => {
                 let slice = self.as_real_slice().unwrap();
                 if slice.len() == 1 {
-                    write!(f, "{:?}", slice[0])
+                    write!(f, "r!({:?})", slice[0])
                 } else {
-                    write!(f, "{:?}", slice)
+                    write!(f, "r!({:?})", slice)
                 }
             }
-            VECSXP => write!(f, "{:?}", self.list_iter().unwrap().collect::<Vec<_>>()),
+            VECSXP => write!(f, "r!({:?})", self.list_iter().unwrap().collect::<Vec<_>>()),
             EXPRSXP => write!(
                 f,
-                "Expr({:?})",
+                "r!(Expr({:?}))",
                 self.list_iter().unwrap().collect::<Vec<_>>()
             ),
             WEAKREFSXP => write!(
                 f,
-                "Weakref({:?})",
+                "r!(Weakref({:?}))",
                 self.list_iter().unwrap().collect::<Vec<_>>()
             ),
             // CPLXSXP => false,
             STRSXP => {
-                write!(f, "[")?;
+                write!(f, "r!([")?;
                 let mut sep = "";
                 for obj in self.str_iter().unwrap() {
                     write!(f, "{}{:?}", sep, obj)?;
                     sep = ", ";
                 }
-                write!(f, "]")
+                write!(f, "])")
             }
-            // DOTSXP => false,
-            // ANYSXP => false,
-            // VECSXP => false,
-            // EXPRSXP => false,
-            // BCODESXP => false,
-            // EXTPTRSXP => false,
-            // WEAKREFSXP => false,
+            DOTSXP => write!(f, "r!(Dot())"),
+            ANYSXP => write!(f, "r!(Any())"),
+            BCODESXP => write!(f, "r!(Bcode())"),
+            EXTPTRSXP => write!(f, "r!(Extptr())"),
             RAWSXP => {
                 let slice = self.as_raw_slice().unwrap();
-                if slice.len() == 1 {
-                    write!(f, "{}", slice[0])
-                } else {
-                    write!(f, "{:?}", slice)
-                }
+                write!(f, "r!(Raw({:?}))", slice)
             }
-            // S4SXP => false,
-            // NEWSXP => false,
-            // FREESXP => false,
+            S4SXP => write!(f, "r!(S4())"),
+            NEWSXP => write!(f, "r!(New())"),
+            FREESXP => write!(f, "r!(Free())"),
             _ => write!(f, "??"),
         }
     }

@@ -1,40 +1,40 @@
-use super::*;
+use crate::*;
 
 #[test]
 fn test_debug() {
     extendr_engine::start_r();
     // Special values
-    assert_eq!(format!("{:?}", Robj::from(NULL)), "NULL");
-    assert_eq!(format!("{:?}", Robj::from(TRUE)), "TRUE");
-    assert_eq!(format!("{:?}", Robj::from(FALSE)), "FALSE");
+    assert_eq!(format!("{:?}", r!(NULL)), "r!(NULL)");
+    assert_eq!(format!("{:?}", r!(TRUE)), "r!(TRUE)");
+    assert_eq!(format!("{:?}", r!(FALSE)), "r!(FALSE)");
 
     // Scalars
-    assert_eq!(format!("{:?}", Robj::from(1)), "1");
-    assert_eq!(format!("{:?}", Robj::from(1.)), "1.0");
-    assert_eq!(format!("{:?}", Robj::from("hello")), "[\"hello\"]");
+    assert_eq!(format!("{:?}", r!(1)), "r!(1)");
+    assert_eq!(format!("{:?}", r!(1.)), "r!(1.0)");
+    assert_eq!(format!("{:?}", r!("hello")), "r!([\"hello\"])");
     let s = "hello".to_string();
-    assert_eq!(format!("{:?}", Robj::from(s)), "[\"hello\"]");
+    assert_eq!(format!("{:?}", r!(s)), "r!([\"hello\"])");
 
     // Vectors
-    assert_eq!(format!("{:?}", Robj::from([1, 2, 3])), "[1, 2, 3]");
-    assert_eq!(format!("{:?}", Robj::from([1., 2., 3.])), "[1.0, 2.0, 3.0]");
-    assert_eq!(format!("{:?}", Robj::from([1_u8, 2_u8, 3_u8])), "[1, 2, 3]");
+    assert_eq!(format!("{:?}", r!([1, 2, 3])), "r!([1, 2, 3])");
+    assert_eq!(format!("{:?}", r!([1., 2., 3.])), "r!([1.0, 2.0, 3.0])");
+    assert_eq!(format!("{:?}", r!(Raw(&[1, 2, 3]))), "r!(Raw([1, 2, 3]))");
 
     // Wrappers
-    assert_eq!(format!("{:?}", Robj::from(Symbol("x"))), "Symbol(\"x\")");
+    assert_eq!(format!("{:?}", r!(Symbol("x"))), "r!(Symbol(\"x\"))");
     assert_eq!(
-        format!("{:?}", Robj::from(Character("x"))),
-        "Character(\"x\")"
+        format!("{:?}", r!(Character("x"))),
+        "r!(Character(\"x\"))"
     );
     assert_eq!(
-        format!("{:?}", Robj::from(Lang("x"))),
-        "Lang([Symbol(\"x\")])"
+        format!("{:?}", r!(Lang(&[r!(Symbol("x"))]))),
+        "r!(Lang(&[r!(Symbol(\"x\"))]))"
     );
 
     // Logical
     assert_eq!(
-        format!("{:?}", Robj::from([Bool(1), Bool(0)])),
-        "&[Bool(1), Bool(0)]"
+        format!("{:?}", r!([Bool(1), Bool(0)])),
+        "r!([Bool(1), Bool(0)])"
     );
 }
 
@@ -55,45 +55,6 @@ fn test_from_robj() {
 
     assert_eq!(<Vec::<i32>>::from_robj(&Robj::from(1)), Ok(vec![1]));
     assert_eq!(<Vec::<f64>>::from_robj(&Robj::from(1.)), Ok(vec![1.]));
-
-    /*
-    assert_eq!(
-        <ArrayView1<f64>>::from_robj(&Robj::from(1.)),
-        Ok(ArrayView1::<f64>::from(&[1.][..]))
-    );
-    assert_eq!(
-        <ArrayView1<i32>>::from_robj(&Robj::from(1)),
-        Ok(ArrayView1::<i32>::from(&[1][..]))
-    );
-    assert_eq!(
-        <ArrayView1<Bool>>::from_robj(&Robj::from(true)),
-        Ok(ArrayView1::<Bool>::from(&[Bool(1)][..]))
-    );
-    assert_eq!(
-        <ArrayView2<f64>>::from_robj(&Robj::from(1.)),
-        Ok(ArrayView2::<f64>::from_shape((1, 1), &[1.][..]).unwrap())
-    );
-    assert_eq!(
-        <ArrayView2<i32>>::from_robj(&Robj::from(1)),
-        Ok(ArrayView2::<i32>::from_shape((1, 1), &[1][..]).unwrap())
-    );
-    assert_eq!(
-        <ArrayView2<Bool>>::from_robj(&Robj::from(true)),
-        Ok(ArrayView2::<Bool>::from_shape((1, 1), &[Bool(1)][..]).unwrap())
-    );
-
-    assert_eq!(
-        <ArrayView2<f64>>::from_robj(
-            &Robj::eval_string("matrix(c(1, 2, 3, 4, 5, 6, 7, 8), ncol = 2, nrow = 4, byrow = T)")
-                .unwrap()
-        ),
-        Ok(ArrayView2::<f64>::from_shape(
-            (4, 2),
-            &[1f64, 2f64, 3f64, 4f64, 5f64, 6f64, 7f64, 8f64][..]
-        )
-        .unwrap())
-    );
-    */
 
     let hello = Robj::from("hello");
     assert_eq!(<&str>::from_robj(&hello), Ok("hello"));
@@ -185,8 +146,8 @@ fn test_to_robj() {
     let ab = Robj::from(vec!["a", "b"]);
     let ab2 = Robj::from(vec!["a".to_string(), "b".to_string()]);
     assert_eq!(ab, ab2);
-    assert_eq!(format!("{:?}", ab), "[\"a\", \"b\"]");
-    assert_eq!(format!("{:?}", ab2), "[\"a\", \"b\"]");
+    assert_eq!(format!("{:?}", ab), "r!([\"a\", \"b\"])");
+    assert_eq!(format!("{:?}", ab2), "r!([\"a\", \"b\"])");
 
     assert_eq!(Robj::from(Some(1)), Robj::from(1));
     assert!(!Robj::from(Some(1)).is_na());
@@ -209,10 +170,8 @@ fn test_to_robj() {
 fn parse_test() -> Result<(), AnyError> {
     extendr_engine::start_r();
     let p = Robj::parse("print(1L);print(1L);")?;
-    assert_eq!(
-        format!("{:?}", p),
-        "Expr([Lang([Symbol(\"print\"), 1]), Lang([Symbol(\"print\"), 1])])"
-    );
+    let q = r!(Expr(&[r!(Lang(&[r!(Symbol("print")), r!(1)])), r!(Lang(&[r!(Symbol("print")), r!(1)]))]));
+    assert_eq!(p, q);
 
     let p = Robj::eval_string("1L + 1L")?;
     assert_eq!(p, Robj::from(2));

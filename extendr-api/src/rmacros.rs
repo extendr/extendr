@@ -118,7 +118,7 @@ macro_rules! read_table {
 /// use extendr_api::*;
 /// extendr_engine::start_r();
 /// let mylist = list!(x=1, y=2);
-/// assert_eq!(mylist, List(&[1.into(), 2.into()]));
+/// assert_eq!(mylist, r!(List(&[r!(1), r!(2)])));
 /// ```
 ///
 /// Panics on error.
@@ -139,7 +139,7 @@ macro_rules! list {
 /// use extendr_api::*;
 /// extendr_engine::start_r();
 /// let mydata = data_frame!(x=1, y=2);
-/// assert_eq!(mydata, List(&[1.into(), 2.into()]));
+/// assert_eq!(mydata, r!(List(&[r!(1), r!(2)])));
 /// ```
 ///
 /// Panics on error.

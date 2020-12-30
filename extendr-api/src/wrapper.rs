@@ -2,11 +2,11 @@
 //! They do not contain an Robj (see array.rs for an example of this).
 
 use crate::robj::*;
+use crate::single_threaded;
 #[doc(hidden)]
 use libR_sys::*;
 #[doc(hidden)]
 use std::ffi::CString;
-use crate::single_threaded;
 
 /// Wrapper for creating symbols.
 ///
@@ -39,17 +39,51 @@ pub struct Symbol<'a>(pub &'a str);
 #[derive(Debug, PartialEq)]
 pub struct Character<'a>(pub &'a str);
 
+/// Wrapper for creating raw (byte) objects.
+///
+/// Example:
+/// ```
+/// use extendr_api::*;
+/// extendr_engine::start_r();
+/// let bytes = r!(Raw(&[1, 2, 3]));
+/// assert_eq!(bytes.len(), 3);
+/// assert_eq!(bytes, r!(Raw(&[1, 2, 3])));
+/// ```
+///
+#[derive(Debug, PartialEq)]
+pub struct Raw<'a>(pub &'a [u8]);
+
 /// Wrapper for creating language objects.
 /// Example:
 /// ```
 /// use extendr_api::*;
 /// extendr_engine::start_r();
-/// let _call_to_xyz = r!(Lang("xyz"));
+/// let call_to_xyz = r!(Lang(&[r!(Symbol("xyz")), r!(1), r!(2)]));
+/// assert_eq!(call_to_xyz.is_language(), true);
+/// assert_eq!(call_to_xyz.len(), 3);
+/// assert_eq!(format!("{:?}", call_to_xyz), r#"r!(Lang(&[r!(Symbol("xyz")), r!(1), r!(2)]))"#);
+///
 /// ```
 ///
-/// Note: prefer to use the [lang!] macro for this.
+/// Note: You can use the [lang!] macro for this.
 #[derive(Debug, PartialEq)]
-pub struct Lang<'a>(pub &'a str);
+pub struct Lang<T>(pub T);
+
+/// Wrapper for creating pair list (LISTSXP) objects.
+/// Example:
+/// ```
+/// use extendr_api::*;
+/// extendr_engine::start_r();
+/// let call_to_xyz = r!(Pairlist(&[r!(NULL), r!(1), r!(2)]));
+/// assert_eq!(call_to_xyz.is_pair_list(), true);
+/// assert_eq!(call_to_xyz.len(), 3);
+/// assert_eq!(format!("{:?}", call_to_xyz), r#"r!(Pairlist(&[r!(NULL), r!(1), r!(2)]))"#);
+///
+/// ```
+///
+/// Note: You can use the [lang!] macro for this.
+#[derive(Debug, PartialEq)]
+pub struct Pairlist<T>(pub T);
 
 /// Wrapper for creating list objects.
 /// Example:
@@ -60,34 +94,49 @@ pub struct Lang<'a>(pub &'a str);
 /// assert_eq!(mixed_list.len(), 2);
 /// ```
 ///
-/// Note: prefer to use the [list!] macro for this.
+/// Note: prefer to use the [list!] macro for named lists.
 #[derive(Debug, PartialEq)]
-pub struct List<'a>(pub &'a [Robj]);
+pub struct List<T>(pub T);
 
-impl<'a> PartialEq<List<'a>> for Robj {
-    fn eq(&self, rhs: &List) -> bool {
-        match self.sexptype() {
-            VECSXP if self.len() == rhs.0.len() => {
-                for (l, r) in self.list_iter().unwrap().zip(rhs.0.iter()) {
-                    if !l.eq(r) {
-                        return false;
-                    }
-                }
-                true
-            }
-            _ => false,
-        }
+/// Wrapper for creating expression objects.
+/// Example:
+/// ```
+/// use extendr_api::*;
+/// extendr_engine::start_r();
+/// let expr = r!(Expr(&[r!(1.), r!("xyz")]));
+/// assert_eq!(expr.len(), 2);
+/// ```
+#[derive(Debug, PartialEq)]
+pub struct Expr<'a>(pub &'a [Robj]);
+
+impl<T> From<List<T>> for Robj
+where
+    T: IntoIterator,
+    Robj: From<T::Item>,
+{
+    /// Make a list object from an array of Robjs.
+    fn from(val: List<T>) -> Self {
+        make_vector(VECSXP, val.0)
     }
 }
 
-impl<'a> From<List<'a>> for Robj {
-    /// Make a list object from an array of Robjs.
-    fn from(val: List<'a>) -> Self {
+impl<'a> From<Expr<'a>> for Robj {
+    /// Make an expression object from a collection Robjs.
+    fn from(val: Expr<'a>) -> Self {
+        make_vector(EXPRSXP, val.0)
+    }
+}
+
+impl<'a> From<Raw<'a>> for Robj {
+    /// Make a raw object from bytes.
+    fn from(val: Raw<'a>) -> Self {
         single_threaded(|| unsafe {
-            let sexp = Rf_allocVector(VECSXP, val.0.len() as R_xlen_t);
+            let val = val.0;
+            let sexp = Rf_allocVector(RAWSXP, val.len() as R_xlen_t);
             R_PreserveObject(sexp);
-            for i in 0..val.0.len() {
-                SET_VECTOR_ELT(sexp, i as R_xlen_t, val.0[i].get());
+            let ptr = RAW(sexp);
+            for (i, &v) in val.iter().enumerate() {
+                *ptr.offset(i as isize) = v;
             }
             Robj::Owned(sexp)
         })
@@ -95,7 +144,7 @@ impl<'a> From<List<'a>> for Robj {
 }
 
 impl<'a> From<Symbol<'a>> for Robj {
-    /// Convert a string to a symbol.
+    /// Make a symbol object.
     fn from(name: Symbol) -> Self {
         single_threaded(|| unsafe {
             if let Ok(name) = CString::new(name.0) {
@@ -107,12 +156,70 @@ impl<'a> From<Symbol<'a>> for Robj {
     }
 }
 
-impl<'a> From<Lang<'a>> for Robj {
-    /// Convert a wrapped string ref to an Robj language object.
-    fn from(val: Lang<'a>) -> Self {
+impl<T> From<Lang<T>> for Robj
+where
+    T: IntoIterator,
+    Robj: From<T::Item>,
+{
+    /// Convert a wrapper to an R language object.
+    fn from(val: Lang<T>) -> Self {
         single_threaded(|| unsafe {
-            let name = Robj::from(Symbol(val.0));
-            new_owned(Rf_lang1(name.get()))
+            let values = get_protected_values(val.0);
+            let mut res = R_NilValue;
+            let len = values.len();
+            for val in values.into_iter().rev() {
+                res = Rf_lcons(val, res);
+            }
+            Rf_unprotect(len as i32);
+            new_owned(res)
         })
     }
+}
+
+impl<T> From<Pairlist<T>> for Robj
+where
+    T: IntoIterator,
+    Robj: From<T::Item>,
+{
+    /// Convert a wrapper to a LISTSXP object.
+    fn from(val: Pairlist<T>) -> Self {
+        single_threaded(|| unsafe {
+            let values = get_protected_values(val.0);
+            let mut res = R_NilValue;
+            let len = values.len();
+            for val in values.into_iter().rev() {
+                res = Rf_cons(val, res);
+            }
+            Rf_unprotect(len as i32);
+            new_owned(res)
+        })
+    }
+}
+
+unsafe fn get_protected_values<T>(values: T) -> Vec<SEXP>
+where
+    T: IntoIterator,
+    Robj: From<T::Item>,
+{
+    values
+        .into_iter()
+        .map(|item| Rf_protect(Robj::from(item).get()))
+        .collect()
+}
+
+fn make_vector<T>(sexptype: u32, val: T) -> Robj
+where
+    T: IntoIterator,
+    Robj: From<T::Item>,
+{
+    single_threaded(|| unsafe {
+        let values = get_protected_values(val);
+        let sexp = Rf_allocVector(sexptype, values.len() as R_xlen_t);
+        R_PreserveObject(sexp);
+        for i in 0..values.len() {
+            SET_VECTOR_ELT(sexp, i as R_xlen_t, values[i]);
+        }
+        Rf_unprotect(values.len() as i32);
+        Robj::Owned(sexp)
+    })
 }
