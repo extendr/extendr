@@ -68,27 +68,27 @@ impl Robj {
 
     /// Convert to vectors of many kinds.
     pub fn coerce_vector(&self, sexptype: u32) -> Robj {
-        unsafe { new_owned(Rf_coerceVector(self.get(), sexptype as SEXPTYPE)) }
+        single_threaded(|| unsafe { new_owned(Rf_coerceVector(self.get(), sexptype as SEXPTYPE)) })
     }
 
     /// Convert a pairlist (LISTSXP) to a vector list (VECSXP).
     pub fn pair_to_vector_list(&self) -> Robj {
-        unsafe { new_owned(Rf_PairToVectorList(self.get())) }
+        single_threaded(|| unsafe { new_owned(Rf_PairToVectorList(self.get())) })
     }
 
     /// Convert a vector list (VECSXP) to a pair list (LISTSXP)
     pub fn vector_to_pair_list(&self) -> Robj {
-        unsafe { new_owned(Rf_VectorToPairList(self.get())) }
+        single_threaded(|| unsafe { new_owned(Rf_VectorToPairList(self.get())) })
     }
 
     /// Convert a factor to a string vector.
     pub fn as_character_factor(&self) -> Robj {
-        unsafe { new_owned(Rf_asCharacterFactor(self.get())) }
+        single_threaded(|| unsafe { new_owned(Rf_asCharacterFactor(self.get())) })
     }
 
     /// Allocate a matrix object.
     pub fn alloc_matrix(sexptype: SEXPTYPE, rows: i32, cols: i32) -> Robj {
-        unsafe { new_owned(Rf_allocMatrix(sexptype, rows, cols)) }
+        single_threaded(|| unsafe { new_owned(Rf_allocMatrix(sexptype, rows, cols)) })
     }
 
     /* TODO:
@@ -128,7 +128,7 @@ impl Robj {
     /// Compatible way to duplicate an object. Use obj.clone() instead
     /// for Rust compatibility.
     pub fn duplicate(&self) -> Self {
-        unsafe { new_owned(Rf_duplicate(self.get())) }
+        single_threaded(|| unsafe { new_owned(Rf_duplicate(self.get())) })
     }
 
     /*
@@ -168,7 +168,7 @@ impl Robj {
         if !self.is_environment() {
             return Err("find_fun needs an environment.".into());
         }
-        Ok(unsafe { new_borrowed(Rf_findFun(symbol.get(), self.get())) })
+        Ok(single_threaded(|| unsafe { new_borrowed(Rf_findFun(symbol.get(), self.get())) }))
     }
 
     /*
@@ -257,11 +257,11 @@ impl Robj {
     /// Internal function used to implement `#[extendr]` impl
     #[doc(hidden)]
     pub unsafe fn make_external_ptr<T>(p: *mut T, tag: Robj, prot: Robj) -> Self {
-        new_owned(R_MakeExternalPtr(
+        new_owned(single_threaded(|| R_MakeExternalPtr(
             p as *mut ::std::os::raw::c_void,
             tag.get(),
             prot.get(),
-        ))
+        )))
     }
 
     #[doc(hidden)]
@@ -294,12 +294,12 @@ impl Robj {
 
     #[doc(hidden)]
     pub unsafe fn registerCFinalizer(&self, func: R_CFinalizer_t) {
-        self.register_c_finalizer(func)
+        single_threaded(|| self.register_c_finalizer(func))
     }
 
     #[doc(hidden)]
     pub unsafe fn register_c_finalizer(&self, func: R_CFinalizer_t) {
-        R_RegisterCFinalizer(self.get(), func);
+        single_threaded(|| R_RegisterCFinalizer(self.get(), func));
     }
 
     // SEXP R_ExternalPtrTag(SEXP s);
@@ -350,7 +350,7 @@ impl Robj {
     pub fn xlengthgets(&self, new_len: usize) -> Result<Robj, AnyError> {
         unsafe {
             if self.is_vector() {
-                Ok(new_owned(Rf_xlengthgets(self.get(), new_len as R_xlen_t)))
+                Ok(single_threaded(|| new_owned(Rf_xlengthgets(self.get(), new_len as R_xlen_t))))
             } else {
                 Err(AnyError::from("xlengthgets: Not a vector type"))
             }
@@ -359,18 +359,18 @@ impl Robj {
 
     /// Allocated an owned object of a certain type.
     pub fn alloc_vector(sexptype: u32, len: usize) -> Robj {
-        unsafe { new_owned(Rf_allocVector(sexptype, len as R_xlen_t)) }
+        single_threaded(|| unsafe { new_owned(Rf_allocVector(sexptype, len as R_xlen_t)) })
     }
 
     /// Return true if two arrays have identical dims.
     pub fn conformable(a: &Robj, b: &Robj) -> bool {
-        unsafe { Rf_conformable(a.get(), b.get()) != 0 }
+        single_threaded(|| unsafe { Rf_conformable(a.get(), b.get()) != 0 })
     }
 
     /// Borrow an element from a list.
-    pub fn elt(&self, index: usize) -> Robj {
-        unsafe { Robj::from(Rf_elt(self.get(), index as raw::c_int)) }
-    }
+    // pub fn elt(&self, index: usize) -> Robj {
+    //     single_threaded(|| unsafe { Robj::from(Rf_elt(self.get(), index as raw::c_int)) })
+    // }
 
     //Rboolean Rf_inherits(SEXP, const char *);
 
@@ -490,5 +490,5 @@ impl Robj {
 
 pub fn find_namespace(name: &str) -> Robj {
     let name = r!(Symbol(name));
-    unsafe { new_borrowed(R_FindNamespace(name.get())) }
+    single_threaded(|| unsafe { new_borrowed(R_FindNamespace(name.get())) })
 }

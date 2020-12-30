@@ -6,6 +6,7 @@ use crate::robj::*;
 use libR_sys::*;
 #[doc(hidden)]
 use std::ffi::CString;
+use crate::single_threaded;
 
 /// Wrapper for creating symbols.
 ///
@@ -82,36 +83,36 @@ impl<'a> PartialEq<List<'a>> for Robj {
 impl<'a> From<List<'a>> for Robj {
     /// Make a list object from an array of Robjs.
     fn from(val: List<'a>) -> Self {
-        unsafe {
+        single_threaded(|| unsafe {
             let sexp = Rf_allocVector(VECSXP, val.0.len() as R_xlen_t);
             R_PreserveObject(sexp);
             for i in 0..val.0.len() {
                 SET_VECTOR_ELT(sexp, i as R_xlen_t, val.0[i].get());
             }
             Robj::Owned(sexp)
-        }
+        })
     }
 }
 
 impl<'a> From<Symbol<'a>> for Robj {
     /// Convert a string to a symbol.
     fn from(name: Symbol) -> Self {
-        unsafe {
+        single_threaded(|| unsafe {
             if let Ok(name) = CString::new(name.0) {
                 new_owned(Rf_install(name.as_ptr()))
             } else {
                 Robj::from(())
             }
-        }
+        })
     }
 }
 
 impl<'a> From<Lang<'a>> for Robj {
     /// Convert a wrapped string ref to an Robj language object.
     fn from(val: Lang<'a>) -> Self {
-        unsafe {
+        single_threaded(|| unsafe {
             let name = Robj::from(Symbol(val.0));
             new_owned(Rf_lang1(name.get()))
-        }
+        })
     }
 }
