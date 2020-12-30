@@ -147,6 +147,7 @@ mod logical;
 mod rmacros;
 mod robj;
 mod wrapper;
+mod thread_safety;
 
 #[cfg(feature = "ndarray")]
 mod robj_ndarray;
@@ -157,6 +158,7 @@ pub use rmacros::*;
 pub use robj::*;
 pub use wrapper::*;
 pub use logical::*;
+pub use thread_safety::{single_threaded, handle_panic};
 
 #[cfg(feature = "ndarray")]
 pub use robj_ndarray::*;
@@ -215,23 +217,6 @@ pub unsafe fn register_call_methods(info: *mut libR_sys::DllInfo, methods: &[Cal
     libR_sys::R_forceSymbols(info, 1);
 }
 
-/// This function is use by the wrapper logic to catch
-/// panics on return.
-#[doc(hidden)]
-pub fn handle_panic<F>(err_str: &str, f: F) -> SEXP
-where
-    F : FnOnce() -> SEXP,
-    F : std::panic::UnwindSafe
-{
-    match std::panic::catch_unwind(f) {
-        Ok(res) => res,
-        Err(_) => {
-            unsafe { libR_sys::Rf_error(err_str.as_ptr() as * const std::os::raw::c_char); }
-            unreachable!("handle_panic unreachable")
-        }
-    }
-}
-
 /// Return true if this primitive is NA.
 pub trait IsNA {
     fn is_na(&self) -> bool;
@@ -254,12 +239,6 @@ impl IsNA for Bool {
         self.0 == std::i32::MIN
     }
 }
-
-// pub fn add_function_to_namespace(namespace: &str, fn_name: &str, wrap_name: &str) {
-//     let rcode = format!("{}::{} <- function(...) .Call(\"{}\", ...)", namespace, fn_name, wrap_name);
-//     eprintln!("[{}]", rcode);
-//     Robj::eval_string(rcode.as_str()).unwrap();
-// }
 
 #[doc(hidden)]
 pub fn print_r_output<T: Into<Vec<u8>>>(s: T) {

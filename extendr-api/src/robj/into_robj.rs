@@ -1,4 +1,14 @@
 use super::*;
+use crate::single_threaded;
+
+fn str_to_character(s: &str) -> SEXP {
+    unsafe {
+        Rf_mkCharLen(
+            s.as_ptr() as *const raw::c_char,
+            s.len() as i32,
+        )
+    }
+}
 
 /// Borrow an already protected SEXP
 /// Note that the SEXP must outlive the generated object.
@@ -19,12 +29,9 @@ impl From<()> for Robj {
 /// Convert a wrapped string ref to an Robj char object.
 impl<'a> From<Character<'a>> for Robj {
     fn from(val: Character) -> Self {
-        unsafe {
-            new_owned(Rf_mkCharLen(
-                val.0.as_ptr() as *const raw::c_char,
-                val.0.len() as i32,
-            ))
-        }
+        single_threaded(|| unsafe {
+            new_owned(str_to_character(val.0))
+        })
     }
 }
 
@@ -180,8 +187,7 @@ macro_rules! impl_str_tvv {
             where
                 Self: Sized,
             {
-                let s: &str = self.as_ref();
-                unsafe { Rf_mkCharLen(s.as_ptr() as *const raw::c_char, s.len() as i32) }
+                str_to_character(self.as_ref())
             }
         }
 
@@ -194,8 +200,7 @@ macro_rules! impl_str_tvv {
             where
                 Self: Sized,
             {
-                let s: &str = self.as_ref();
-                unsafe { Rf_mkCharLen(s.as_ptr() as *const raw::c_char, s.len() as i32) }
+                str_to_character(self.as_ref())
             }
         }
 
@@ -209,8 +214,7 @@ macro_rules! impl_str_tvv {
                 Self: Sized,
             {
                 if let Some(s) = self {
-                    let s: &str = s.as_ref();
-                    unsafe { Rf_mkCharLen(s.as_ptr() as *const raw::c_char, s.len() as i32) }
+                    str_to_character(s.as_ref())
                 } else {
                     unsafe { R_NaString }
                 }
@@ -314,6 +318,58 @@ impl ToVectorValue for &u8 {
     }
 }
 
+// Not thread safe.
+unsafe fn fixed_size_collect<I>(iter: I, len: usize) -> Robj
+where
+    I: Iterator,
+    I: Sized,
+    I::Item: ToVectorValue,
+{
+    // Length of the vector is known in advance.
+    let sexptype = I::Item::sexptype();
+    if sexptype != 0 {
+        let sexp = Rf_allocVector(sexptype, len as R_xlen_t);
+        R_PreserveObject(sexp);
+        match sexptype {
+            REALSXP => {
+                let ptr = REAL(sexp);
+                for (i, v) in iter.enumerate() {
+                    *ptr.offset(i as isize) = v.to_real();
+                }
+            }
+            INTSXP => {
+                let ptr = INTEGER(sexp);
+                for (i, v) in iter.enumerate() {
+                    *ptr.offset(i as isize) = v.to_integer();
+                }
+            }
+            LGLSXP => {
+                let ptr = LOGICAL(sexp);
+                for (i, v) in iter.enumerate() {
+                    *ptr.offset(i as isize) = v.to_logical();
+                }
+            }
+            RAWSXP => {
+                let ptr = RAW(sexp);
+                for (i, v) in iter.enumerate() {
+                    *ptr.offset(i as isize) = v.to_raw();
+                }
+            }
+            STRSXP => {
+                for (i, v) in iter.enumerate() {
+                    SET_STRING_ELT(sexp, i as isize, v.to_sexp());
+                }
+            }
+            _ => {
+                panic!("unexpected SEXPTYPE in collect_robj");
+            }
+        }
+        return Robj::Owned(sexp);
+    } else {
+        return Robj::from(());
+    }
+}
+
 /// Extensions to iterators for R objects including [RobjItertools::collect_robj()].
 pub trait RobjItertools: Iterator {
     /// Convert a wide range of iterators to Robj.
@@ -344,60 +400,17 @@ pub trait RobjItertools: Iterator {
         Self: Sized,
         Self::Item: ToVectorValue,
     {
-        unsafe {
-            if let (len, Some(max)) = self.size_hint().clone() {
-                if len == max {
-                    // Length of the vector is known in advance.
-                    let sexptype = Self::Item::sexptype();
-                    if sexptype != 0 {
-                        let sexp = Rf_allocVector(sexptype, len as R_xlen_t);
-                        R_PreserveObject(sexp);
-                        match sexptype {
-                            REALSXP => {
-                                let ptr = REAL(sexp);
-                                for (i, v) in self.enumerate() {
-                                    *ptr.offset(i as isize) = v.to_real();
-                                }
-                            }
-                            INTSXP => {
-                                let ptr = INTEGER(sexp);
-                                for (i, v) in self.enumerate() {
-                                    *ptr.offset(i as isize) = v.to_integer();
-                                }
-                            }
-                            LGLSXP => {
-                                let ptr = LOGICAL(sexp);
-                                for (i, v) in self.enumerate() {
-                                    *ptr.offset(i as isize) = v.to_logical();
-                                }
-                            }
-                            RAWSXP => {
-                                let ptr = RAW(sexp);
-                                for (i, v) in self.enumerate() {
-                                    *ptr.offset(i as isize) = v.to_raw();
-                                }
-                            }
-                            STRSXP => {
-                                for (i, v) in self.enumerate() {
-                                    SET_STRING_ELT(sexp, i as isize, v.to_sexp());
-                                }
-                            }
-                            _ => {
-                                panic!("unexpected SEXPTYPE in collect_robj");
-                            }
-                        }
-                        return Robj::Owned(sexp);
-                    } else {
-                        return Robj::from(());
-                    }
-                }
+        if let (len, Some(max)) = self.size_hint().clone() {
+            if len == max {
+                return single_threaded(|| unsafe {
+                    fixed_size_collect(self, len)
+                });
             }
-
-            // If the size is indeterminate, create a vector and call recursively.
-            let vec: Vec<_> = self.collect();
-            assert!(vec.iter().size_hint() == (vec.len(), Some(vec.len())));
-            vec.into_iter().collect_robj()
         }
+        // If the size is indeterminate, create a vector and call recursively.
+        let vec: Vec<_> = self.collect();
+        assert!(vec.iter().size_hint() == (vec.len(), Some(vec.len())));
+        vec.into_iter().collect_robj()
     }
 }
 

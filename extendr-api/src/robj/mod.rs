@@ -14,7 +14,7 @@ use std::os::raw;
 
 use crate::logical::*;
 use crate::wrapper::*;
-use crate::{AnyError, IsNA};
+use crate::{single_threaded, AnyError, IsNA};
 
 use std::collections::HashMap;
 use std::iter::IntoIterator;
@@ -596,7 +596,7 @@ impl Robj {
     ///    assert_eq!(add.eval().unwrap(), r!(3));
     /// ```
     pub fn eval(&self) -> Result<Robj, AnyError> {
-        unsafe {
+        single_threaded(|| unsafe {
             let mut error: raw::c_int = 0;
             let res = R_tryEval(self.get(), R_GlobalEnv, &mut error as *mut raw::c_int);
             if error != 0 {
@@ -604,7 +604,7 @@ impl Robj {
             } else {
                 Ok(Robj::from(res))
             }
-        }
+        })
     }
 
     /// Evaluate the expression and return NULL or an R object.
@@ -631,7 +631,7 @@ impl Robj {
     ///    assert!(expr.is_expression());
     /// ```
     pub fn parse(code: &str) -> Result<Robj, AnyError> {
-        unsafe {
+        single_threaded(|| unsafe {
             use libR_sys::*;
             let mut status = 0_u32;
             let status_ptr = &mut status as *mut u32;
@@ -641,7 +641,7 @@ impl Robj {
                 1 => Ok(parsed),
                 _ => Err(AnyError::from("parse_error")),
             }
-        }
+        })
     }
 
     /// Parse a string into an R executable object and run it.
@@ -652,14 +652,16 @@ impl Robj {
     ///    assert_eq!(res, r!(3.));
     /// ```
     pub fn eval_string(code: &str) -> Result<Robj, AnyError> {
-        let expr = Robj::parse(code)?;
-        let mut res = Robj::from(());
-        if let Some(iter) = expr.list_iter() {
-            for lang in iter {
-                res = lang.eval()?;
+        single_threaded(|| {
+            let expr = Robj::parse(code)?;
+            let mut res = Robj::from(());
+            if let Some(iter) = expr.list_iter() {
+                for lang in iter {
+                    res = lang.eval()?;
+                }
             }
-        }
-        Ok(res)
+            Ok(res)
+        })
     }
 
     /// Unprotect an object - assumes a transfer of ownership.
@@ -668,7 +670,7 @@ impl Robj {
     pub unsafe fn unprotected(self) -> Robj {
         match self {
             Robj::Owned(sexp) => {
-                R_ReleaseObject(sexp);
+                single_threaded(|| R_ReleaseObject(sexp));
                 Robj::Borrowed(sexp)
             }
             _ => self,
@@ -806,7 +808,7 @@ impl Robj {
     {
         let name = Robj::from(name);
         let value = Robj::from(value);
-        unsafe { new_borrowed(Rf_setAttrib(self.get(), name.get(), value.get())) }
+        single_threaded(||unsafe { new_borrowed(Rf_setAttrib(self.get(), name.get(), value.get())) })
     }
 
     /// Get the names attribute as a string iterator if one exists.
@@ -935,7 +937,7 @@ impl Robj {
 
 #[doc(hidden)]
 pub unsafe fn new_owned(sexp: SEXP) -> Robj {
-    R_PreserveObject(sexp);
+    single_threaded(|| R_PreserveObject(sexp));
     Robj::Owned(sexp)
 }
 
@@ -1118,7 +1120,7 @@ impl Drop for Robj {
     fn drop(&mut self) {
         unsafe {
             match self {
-                Robj::Owned(sexp) => R_ReleaseObject(*sexp),
+                Robj::Owned(sexp) => single_threaded(|| R_ReleaseObject(*sexp)),
                 Robj::Borrowed(_) => (),
                 Robj::Sys(_) => (),
             }
