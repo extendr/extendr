@@ -566,27 +566,27 @@
 
     <span class="doccomment">/// Convert to vectors of many kinds.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">coerce_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">sexptype</span>: <span class="ident">u32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
-        <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">Rf_coerceVector</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">sexptype</span> <span class="kw">as</span> <span class="ident">SEXPTYPE</span>)) }
+        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">Rf_coerceVector</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">sexptype</span> <span class="kw">as</span> <span class="ident">SEXPTYPE</span>)) })
     }
 
     <span class="doccomment">/// Convert a pairlist (LISTSXP) to a vector list (VECSXP).</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pair_to_vector_list</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
-        <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">Rf_PairToVectorList</span>(<span class="self">self</span>.<span class="ident">get</span>())) }
+        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">Rf_PairToVectorList</span>(<span class="self">self</span>.<span class="ident">get</span>())) })
     }
 
     <span class="doccomment">/// Convert a vector list (VECSXP) to a pair list (LISTSXP)</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">vector_to_pair_list</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
-        <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">Rf_VectorToPairList</span>(<span class="self">self</span>.<span class="ident">get</span>())) }
+        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">Rf_VectorToPairList</span>(<span class="self">self</span>.<span class="ident">get</span>())) })
     }
 
     <span class="doccomment">/// Convert a factor to a string vector.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_character_factor</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
-        <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">Rf_asCharacterFactor</span>(<span class="self">self</span>.<span class="ident">get</span>())) }
+        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">Rf_asCharacterFactor</span>(<span class="self">self</span>.<span class="ident">get</span>())) })
     }
 
     <span class="doccomment">/// Allocate a matrix object.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">alloc_matrix</span>(<span class="ident">sexptype</span>: <span class="ident">SEXPTYPE</span>, <span class="ident">rows</span>: <span class="ident">i32</span>, <span class="ident">cols</span>: <span class="ident">i32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
-        <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">Rf_allocMatrix</span>(<span class="ident">sexptype</span>, <span class="ident">rows</span>, <span class="ident">cols</span>)) }
+        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">Rf_allocMatrix</span>(<span class="ident">sexptype</span>, <span class="ident">rows</span>, <span class="ident">cols</span>)) })
     }
 
     <span class="comment">/* TODO:
@@ -626,7 +626,7 @@
     <span class="doccomment">/// Compatible way to duplicate an object. Use obj.clone() instead</span>
     <span class="doccomment">/// for Rust compatibility.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">duplicate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">Rf_duplicate</span>(<span class="self">self</span>.<span class="ident">get</span>())) }
+        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">Rf_duplicate</span>(<span class="self">self</span>.<span class="ident">get</span>())) })
     }
 
     <span class="comment">/*
@@ -666,7 +666,7 @@
         <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_environment</span>() {
             <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="string">&quot;find_fun needs an environment.&quot;</span>.<span class="ident">into</span>());
         }
-        <span class="prelude-val">Ok</span>(<span class="kw">unsafe</span> { <span class="ident">new_borrowed</span>(<span class="ident">Rf_findFun</span>(<span class="ident">symbol</span>.<span class="ident">get</span>(), <span class="self">self</span>.<span class="ident">get</span>())) })
+        <span class="prelude-val">Ok</span>(<span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">new_borrowed</span>(<span class="ident">Rf_findFun</span>(<span class="ident">symbol</span>.<span class="ident">get</span>(), <span class="self">self</span>.<span class="ident">get</span>())) }))
     }
 
     <span class="comment">/*
@@ -755,11 +755,11 @@
     <span class="doccomment">/// Internal function used to implement `#[extendr]` impl</span>
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">make_external_ptr</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">p</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span>, <span class="ident">tag</span>: <span class="ident">Robj</span>, <span class="ident">prot</span>: <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="ident">new_owned</span>(<span class="ident">R_MakeExternalPtr</span>(
+        <span class="ident">new_owned</span>(<span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">R_MakeExternalPtr</span>(
             <span class="ident">p</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> ::<span class="ident">std</span>::<span class="ident">os</span>::<span class="ident">raw</span>::<span class="ident">c_void</span>,
             <span class="ident">tag</span>.<span class="ident">get</span>(),
             <span class="ident">prot</span>.<span class="ident">get</span>(),
-        ))
+        )))
     }
 
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
@@ -792,12 +792,12 @@
 
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">registerCFinalizer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">func</span>: <span class="ident">R_CFinalizer_t</span>) {
-        <span class="self">self</span>.<span class="ident">register_c_finalizer</span>(<span class="ident">func</span>)
+        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">register_c_finalizer</span>(<span class="ident">func</span>))
     }
 
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">register_c_finalizer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">func</span>: <span class="ident">R_CFinalizer_t</span>) {
-        <span class="ident">R_RegisterCFinalizer</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">func</span>);
+        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">R_RegisterCFinalizer</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">func</span>));
     }
 
     <span class="comment">// SEXP R_ExternalPtrTag(SEXP s);</span>
@@ -848,7 +848,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">xlengthgets</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">new_len</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span>, <span class="ident">AnyError</span><span class="op">&gt;</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_vector</span>() {
-                <span class="prelude-val">Ok</span>(<span class="ident">new_owned</span>(<span class="ident">Rf_xlengthgets</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">new_len</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>)))
+                <span class="prelude-val">Ok</span>(<span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">new_owned</span>(<span class="ident">Rf_xlengthgets</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">new_len</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>))))
             } <span class="kw">else</span> {
                 <span class="prelude-val">Err</span>(<span class="ident">AnyError</span>::<span class="ident">from</span>(<span class="string">&quot;xlengthgets: Not a vector type&quot;</span>))
             }
@@ -857,18 +857,18 @@
 
     <span class="doccomment">/// Allocated an owned object of a certain type.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">alloc_vector</span>(<span class="ident">sexptype</span>: <span class="ident">u32</span>, <span class="ident">len</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
-        <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">Rf_allocVector</span>(<span class="ident">sexptype</span>, <span class="ident">len</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>)) }
+        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">Rf_allocVector</span>(<span class="ident">sexptype</span>, <span class="ident">len</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>)) })
     }
 
     <span class="doccomment">/// Return true if two arrays have identical dims.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">conformable</span>(<span class="ident">a</span>: <span class="kw-2">&amp;</span><span class="ident">Robj</span>, <span class="ident">b</span>: <span class="kw-2">&amp;</span><span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_conformable</span>(<span class="ident">a</span>.<span class="ident">get</span>(), <span class="ident">b</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">Rf_conformable</span>(<span class="ident">a</span>.<span class="ident">get</span>(), <span class="ident">b</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> })
     }
 
     <span class="doccomment">/// Borrow an element from a list.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="ident">Rf_elt</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">index</span> <span class="kw">as</span> <span class="ident">raw</span>::<span class="ident">c_int</span>)) }
-    }
+    <span class="comment">// pub fn elt(&amp;self, index: usize) -&gt; Robj {</span>
+    <span class="comment">//     single_threaded(|| unsafe { Robj::from(Rf_elt(self.get(), index as raw::c_int)) })</span>
+    <span class="comment">// }</span>
 
     <span class="comment">//Rboolean Rf_inherits(SEXP, const char *);</span>
 
@@ -988,7 +988,7 @@
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_namespace</span>(<span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
     <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="macro">r</span><span class="macro">!</span>(<span class="ident">Symbol</span>(<span class="ident">name</span>));
-    <span class="kw">unsafe</span> { <span class="ident">new_borrowed</span>(<span class="ident">R_FindNamespace</span>(<span class="ident">name</span>.<span class="ident">get</span>())) }
+    <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">new_borrowed</span>(<span class="ident">R_FindNamespace</span>(<span class="ident">name</span>.<span class="ident">get</span>())) })
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../";window.currentCrate = "extendr_api";</script><script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>
