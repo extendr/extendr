@@ -602,7 +602,7 @@ impl Robj {
             if error != 0 {
                 Err(AnyError::from("R eval error"))
             } else {
-                Ok(Robj::from(res))
+                Ok(new_owned(res))
             }
         })
     }
@@ -636,7 +636,7 @@ impl Robj {
             let mut status = 0_u32;
             let status_ptr = &mut status as *mut u32;
             let code: Robj = code.into();
-            let parsed = Robj::from(R_ParseVector(code.get(), -1, status_ptr, R_NilValue));
+            let parsed = new_owned(R_ParseVector(code.get(), -1, status_ptr, R_NilValue));
             match status {
                 1 => Ok(parsed),
                 _ => Err(AnyError::from("parse_error")),

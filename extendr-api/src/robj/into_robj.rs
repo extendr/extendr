@@ -12,11 +12,11 @@ fn str_to_character(s: &str) -> SEXP {
 
 /// Borrow an already protected SEXP
 /// Note that the SEXP must outlive the generated object.
-impl From<SEXP> for Robj {
-    fn from(sexp: SEXP) -> Self {
-        unsafe { new_borrowed(sexp) }
-    }
-}
+// impl From<SEXP> for Robj {
+//     fn from(sexp: SEXP) -> Self {
+//         unsafe { new_borrowed(sexp) }
+//     }
+// }
 
 /// Convert a null to an Robj.
 impl From<()> for Robj {

@@ -1,12 +1,10 @@
 //! Wrappers are lightweight proxies for references to R datatypes.
 //! They do not contain an Robj (see array.rs for an example of this).
 
-use crate::robj::*;
-use crate::single_threaded;
+use crate::*;
 #[doc(hidden)]
 use libR_sys::*;
 #[doc(hidden)]
-use std::ffi::CString;
 
 /// Wrapper for creating symbols.
 ///
@@ -78,7 +76,6 @@ pub struct Lang<T>(pub T);
 /// assert_eq!(call_to_xyz.is_pair_list(), true);
 /// assert_eq!(call_to_xyz.len(), 3);
 /// assert_eq!(format!("{:?}", call_to_xyz), r#"r!(Pairlist(&[r!(NULL), r!(1), r!(2)]))"#);
-///
 /// ```
 ///
 /// Note: You can use the [lang!] macro for this.
@@ -108,6 +105,22 @@ pub struct List<T>(pub T);
 /// ```
 #[derive(Debug, PartialEq)]
 pub struct Expr<'a>(pub &'a [Robj]);
+
+/// Wrapper for creating environments.
+/// Example:
+/// ```
+/// use extendr_api::*;
+/// extendr_engine::start_r();
+/// let expr = r!(Env{parent: global_env(), names: &["a", "b"], values: &[1, 2]});
+/// // assert_eq!(expr, r!(Env{parent: global_env(), names: vec!["a".to_string(), "b".to_string()], values: &[1, 2]}));
+/// assert_eq!(expr.len(), 2);
+/// ```
+#[derive(Debug, PartialEq)]
+pub struct Env<P, N, V> {
+    pub parent: P,
+    pub names: N,
+    pub values: V,
+}
 
 impl<T> From<List<T>> for Robj
 where
@@ -146,13 +159,7 @@ impl<'a> From<Raw<'a>> for Robj {
 impl<'a> From<Symbol<'a>> for Robj {
     /// Make a symbol object.
     fn from(name: Symbol) -> Self {
-        single_threaded(|| unsafe {
-            if let Ok(name) = CString::new(name.0) {
-                new_owned(Rf_install(name.as_ptr()))
-            } else {
-                Robj::from(())
-            }
-        })
+        single_threaded(|| unsafe { new_owned(make_symbol(name.0)) })
     }
 }
 
@@ -172,6 +179,44 @@ where
             }
             Rf_unprotect(len as i32);
             new_owned(res)
+        })
+    }
+}
+
+impl<P, N, V, NI, VI> From<Env<P, N, V>> for Robj
+where
+    N: IntoIterator<Item = NI>,
+    V: IntoIterator<Item = VI>,
+    Robj: From<P>,
+    NI: AsRef<str>,
+    Robj: From<VI>,
+{
+    /// Convert a wrapper to an R environment object.
+    /// ```
+    /// use extendr_api::*;
+    /// extendr_engine::start_r();
+    /// let expr = r!(Env{parent: global_env(), names: &["a", "b"], values: &[1, 2]});
+    /// assert_eq!(expr.len(), 2);
+    /// ```
+    fn from(val: Env<P, N, V>) -> Self {
+        single_threaded(|| {
+            let (parent, names, values) = (val.parent, val.names, val.values);
+            let values = get_protected_values(values);
+            let names = get_protected_names(names);
+            let len = values.len().min(names.len());
+            let dict_len = (len * 2 + 1) as i32;
+            // This call is only available in later R libs.
+            // let mut res = R_NewEnv(parent.get(), 1, dict_len);
+            let res = call!("new.env", TRUE, parent, dict_len).unwrap();
+            assert!(res.is_owned());
+
+            let res_sexp = unsafe { res.get() };
+            for (name, value) in names.into_iter().zip(values.into_iter()) {
+                unsafe { Rf_defineVar(name, value, res_sexp) };
+            }
+
+            unsafe { Rf_unprotect(len as i32 * 2) };
+            res
         })
     }
 }
@@ -196,15 +241,37 @@ where
     }
 }
 
-unsafe fn get_protected_values<T>(values: T) -> Vec<SEXP>
+fn get_protected_values<T>(values: T) -> Vec<SEXP>
 where
     T: IntoIterator,
     Robj: From<T::Item>,
 {
-    values
-        .into_iter()
-        .map(|item| Rf_protect(Robj::from(item).get()))
-        .collect()
+    unsafe {
+        values
+            .into_iter()
+            .map(|item| Rf_protect(Robj::from(item).get()))
+            .collect()
+    }
+}
+
+fn make_symbol(name: &str) -> SEXP {
+    let mut bytes = Vec::with_capacity(name.len() + 1);
+    bytes.extend(name.bytes());
+    bytes.push(0);
+    unsafe { Rf_install(bytes.as_ptr() as *const i8) }
+}
+
+fn get_protected_names<T>(values: T) -> Vec<SEXP>
+where
+    T: IntoIterator,
+    T::Item: AsRef<str>,
+{
+    unsafe {
+        values
+            .into_iter()
+            .map(|item| Rf_protect(make_symbol(item.as_ref())))
+            .collect()
+    }
 }
 
 fn make_vector<T>(sexptype: u32, val: T) -> Robj

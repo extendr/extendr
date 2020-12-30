@@ -21,7 +21,7 @@ impl Iterator for VecIter {
         if i >= self.len {
             return None;
         } else {
-            Some(Robj::from(unsafe { VECTOR_ELT(self.vector, i as isize) }))
+            Some(unsafe { new_owned(VECTOR_ELT(self.vector, i as isize)) })
         }
     }
 

@@ -4,7 +4,7 @@
 use libR_sys::*;
 //use crate::robj::*;
 use crate::robj::Robj;
-use crate::single_threaded;
+use crate::{single_threaded, new_owned};
 
 /// Convert a list of tokens to an array of tuples.
 #[doc(hidden)]
@@ -68,7 +68,7 @@ pub unsafe fn make_lang(sym: &str) -> Robj {
     let mut name = Vec::from(sym.as_bytes());
     name.push(0);
     let sexp = single_threaded(|| Rf_lang1(Rf_install(name.as_ptr() as *const std::os::raw::c_char)));
-    Robj::from(sexp)
+    new_owned(sexp)
 }
 
 /// Convert a list of tokens to an array of tuples.
@@ -102,6 +102,7 @@ macro_rules! append_lang {
 ///
 /// let vec = call!("c", 1.0, 2.0, 3.0).unwrap();
 /// assert_eq!(vec, r!([1., 2., 3.]));
+/// assert_eq!(vec.is_owned(), true);
 ///
 /// let list = call!("list", a=1, b=2).unwrap();
 /// assert_eq!(list.len(), 2);
