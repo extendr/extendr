@@ -4,7 +4,6 @@ use super::*;
 ///////////////////////////////////////////////////////////////
 /// The following impls wrap specific Rinternals.h functions.
 ///
-#[allow(non_snake_case)]
 impl Robj {
     /// Return true if this is the null object.
     pub fn is_null(&self) -> bool {
@@ -250,6 +249,7 @@ impl Robj {
     */
 
     #[doc(hidden)]
+    #[allow(non_snake_case)]
     pub unsafe fn makeExternalPtr<T>(p: *mut T, tag: Robj, prot: Robj) -> Self {
         Robj::make_external_ptr(p, tag, prot)
     }
@@ -265,6 +265,7 @@ impl Robj {
     }
 
     #[doc(hidden)]
+    #[allow(non_snake_case)]
     pub unsafe fn externalPtrAddr<T>(&self) -> *mut T {
         R_ExternalPtrAddr(self.get()) as *mut T
     }
@@ -276,6 +277,7 @@ impl Robj {
     }
 
     #[doc(hidden)]
+    #[allow(non_snake_case)]
     pub unsafe fn externalPtrTag(&self) -> Self {
         self.external_ptr_tag()
     }
@@ -293,6 +295,7 @@ impl Robj {
     }
 
     #[doc(hidden)]
+    #[allow(non_snake_case)]
     pub unsafe fn registerCFinalizer(&self, func: R_CFinalizer_t) {
         single_threaded(|| self.register_c_finalizer(func))
     }

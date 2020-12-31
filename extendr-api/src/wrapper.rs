@@ -60,7 +60,6 @@ pub struct Raw<'a>(pub &'a [u8]);
 /// assert_eq!(call_to_xyz.is_language(), true);
 /// assert_eq!(call_to_xyz.len(), 3);
 /// assert_eq!(format!("{:?}", call_to_xyz), r#"r!(Lang(&[r!(Symbol("xyz")), r!(1), r!(2)]))"#);
-///
 /// ```
 ///
 /// Note: You can use the [lang!] macro for this.
@@ -83,7 +82,6 @@ pub struct Lang<T>(pub T);
 pub struct Pairlist<T>(pub T);
 
 /// Wrapper for creating list objects.
-/// Example:
 /// ```
 /// use extendr_api::*;
 /// extendr_engine::start_r();
@@ -128,6 +126,12 @@ where
     Robj: From<T::Item>,
 {
     /// Make a list object from an array of Robjs.
+    /// ```
+    /// use extendr_api::*;
+    /// extendr_engine::start_r();
+    /// let list_of_ints = r!(List(&[1, 2]));
+    /// assert_eq!(list_of_ints.len(), 2);
+    /// ```
     fn from(val: List<T>) -> Self {
         make_vector(VECSXP, val.0)
     }
@@ -289,4 +293,11 @@ where
         Rf_unprotect(values.len() as i32);
         Robj::Owned(sexp)
     })
+}
+
+/// Allow you to skip the Symbol() in some cases.
+impl<'a> From<&'a str> for Symbol<'a> {
+    fn from(val: &'a str) -> Self {
+        Self(val)
+    }
 }

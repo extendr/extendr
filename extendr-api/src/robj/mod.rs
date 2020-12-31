@@ -25,6 +25,7 @@ mod into_robj;
 mod iter;
 mod rinternals;
 mod symbols;
+mod operators;
 
 #[cfg(test)]
 mod tests;
@@ -34,6 +35,7 @@ pub use into_robj::*;
 pub use iter::*;
 pub use rinternals::*;
 pub use symbols::*;
+pub use operators::*;
 
 /// Wrapper for an R S-expression pointer (SEXP).
 ///
