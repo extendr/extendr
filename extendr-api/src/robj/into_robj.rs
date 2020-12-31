@@ -2,21 +2,8 @@ use super::*;
 use crate::single_threaded;
 
 fn str_to_character(s: &str) -> SEXP {
-    unsafe {
-        Rf_mkCharLen(
-            s.as_ptr() as *const raw::c_char,
-            s.len() as i32,
-        )
-    }
+    unsafe { Rf_mkCharLen(s.as_ptr() as *const raw::c_char, s.len() as i32) }
 }
-
-/// Borrow an already protected SEXP
-/// Note that the SEXP must outlive the generated object.
-// impl From<SEXP> for Robj {
-//     fn from(sexp: SEXP) -> Self {
-//         unsafe { new_borrowed(sexp) }
-//     }
-// }
 
 /// Convert a null to an Robj.
 impl From<()> for Robj {
@@ -29,9 +16,7 @@ impl From<()> for Robj {
 /// Convert a wrapped string ref to an Robj char object.
 impl<'a> From<Character<'a>> for Robj {
     fn from(val: Character) -> Self {
-        single_threaded(|| unsafe {
-            new_owned(str_to_character(val.0))
-        })
+        single_threaded(|| unsafe { new_owned(str_to_character(val.0)) })
     }
 }
 
@@ -371,9 +356,7 @@ pub trait RobjItertools: Iterator {
     {
         if let (len, Some(max)) = self.size_hint().clone() {
             if len == max {
-                return single_threaded(|| unsafe {
-                    fixed_size_collect(self, len)
-                });
+                return single_threaded(|| unsafe { fixed_size_collect(self, len) });
             }
         }
         // If the size is indeterminate, create a vector and call recursively.

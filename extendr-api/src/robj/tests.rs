@@ -30,8 +30,8 @@ fn test_debug() {
 
     // Logical
     assert_eq!(
-        format!("{:?}", r!([Bool(1), Bool(0)])),
-        "r!([Bool(1), Bool(0)])"
+        format!("{:?}", r!([TRUE, FALSE, NA_LOGICAL])),
+        "r!([TRUE, FALSE, NA_LOGICAL])"
     );
 }
 

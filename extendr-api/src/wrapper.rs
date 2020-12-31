@@ -461,7 +461,9 @@ impl Robj {
                 let mut values = Vec::new();
                 if let Some(as_list_iter) = hashtab.as_list_iter() {
                     for frame in as_list_iter {
-                        if let (Some(obj_iter), Some(tag_iter)) = (frame.as_pairlist_iter(), frame.as_pairlist_tag_iter()) {
+                        if let (Some(obj_iter), Some(tag_iter)) =
+                            (frame.as_pairlist_iter(), frame.as_pairlist_tag_iter())
+                        {
                             for (obj, tag) in obj_iter.zip(tag_iter) {
                                 if !obj.is_null() && tag.is_some() {
                                     values.push(obj);
@@ -470,7 +472,9 @@ impl Robj {
                             }
                         }
                     }
-                } else if let (Some(obj_iter), Some(tag_iter)) = (frame.as_pairlist_iter(), frame.as_pairlist_tag_iter()) {
+                } else if let (Some(obj_iter), Some(tag_iter)) =
+                    (frame.as_pairlist_iter(), frame.as_pairlist_tag_iter())
+                {
                     for (obj, tag) in obj_iter.zip(tag_iter) {
                         if !obj.is_null() && tag.is_some() {
                             values.push(obj);
@@ -478,7 +482,11 @@ impl Robj {
                         }
                     }
                 }
-                Some(Env{parent, names, values})
+                Some(Env {
+                    parent,
+                    names,
+                    values,
+                })
             }
         } else {
             None

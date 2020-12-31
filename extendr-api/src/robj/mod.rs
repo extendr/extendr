@@ -948,7 +948,7 @@ pub unsafe fn new_owned(sexp: SEXP) -> Robj {
 #[doc(hidden)]
 pub unsafe fn new_borrowed<'a>(sexp: SEXP) -> Robj
 where
-    Robj : 'a
+    Robj: 'a,
 {
     Robj::Borrowed(sexp)
 }
@@ -997,21 +997,22 @@ impl PartialEq<Robj> for Robj {
                         .unwrap()
                         .eq(rhs.as_pairlist_iter().unwrap()),
                     CLOSXP => false,
-                    ENVSXP => false,
+                    ENVSXP => self.as_env() == rhs.as_env(),
                     PROMSXP => false,
                     SPECIALSXP => false,
                     BUILTINSXP => false,
-                    CHARSXP => self.as_str() == rhs.as_str(),
+                    CHARSXP => self.as_character() == rhs.as_character(),
                     LGLSXP => self.as_logical_slice() == rhs.as_logical_slice(),
                     INTSXP => self.as_integer_slice() == rhs.as_integer_slice(),
                     REALSXP => self.as_real_slice() == rhs.as_real_slice(),
                     CPLXSXP => false,
                     ANYSXP => false,
-                    VECSXP | EXPRSXP => self.as_list_iter().unwrap().eq(rhs.as_list_iter().unwrap()),
+                    VECSXP | EXPRSXP | WEAKREFSXP => {
+                        self.as_list_iter().unwrap().eq(rhs.as_list_iter().unwrap())
+                    }
                     STRSXP => self.as_str_iter().unwrap().eq(rhs.as_str_iter().unwrap()),
                     BCODESXP => false,
                     EXTPTRSXP => false,
-                    WEAKREFSXP => false,
                     RAWSXP => self.as_raw_slice() == rhs.as_raw_slice(),
                     S4SXP => false,
                     NEWSXP => false,
@@ -1033,20 +1034,18 @@ impl std::fmt::Debug for Robj {
             SYMSXP => write!(f, "r!({:?})", self.as_symbol().unwrap()),
             LISTSXP => write!(f, "r!({:?})", self.as_pairlist().unwrap()),
             CLOSXP => write!(f, "r!(Function())"),
-            ENVSXP => {
-                unsafe {
-                    let sexp = self.get();
-                    if sexp == R_GlobalEnv {
-                        write!(f, "global_env()")
-                    } else if sexp == R_BaseEnv {
-                        write!(f, "base_env()")
-                    } else if sexp == R_EmptyEnv {
-                        write!(f, "empty_env()")
-                    } else {
-                        write!(f, "r!({:?})", self.as_env().unwrap())
-                    }
+            ENVSXP => unsafe {
+                let sexp = self.get();
+                if sexp == R_GlobalEnv {
+                    write!(f, "global_env()")
+                } else if sexp == R_BaseEnv {
+                    write!(f, "base_env()")
+                } else if sexp == R_EmptyEnv {
+                    write!(f, "empty_env()")
+                } else {
+                    write!(f, "r!({:?})", self.as_env().unwrap())
                 }
-            }
+            },
             PROMSXP => write!(f, "r!(Promise())"),
             LANGSXP => write!(f, "r!({:?})", self.as_lang().unwrap()),
             // SPECIALSXP => false,
@@ -1085,11 +1084,7 @@ impl std::fmt::Debug for Robj {
                 }
             }
             VECSXP => write!(f, "r!({:?})", self.as_list().unwrap()),
-            EXPRSXP => write!(
-                f,
-                "r!({:?})",
-                self.as_expr().unwrap()
-            ),
+            EXPRSXP => write!(f, "r!({:?})", self.as_expr().unwrap()),
             WEAKREFSXP => write!(
                 f,
                 "r!(Weakref({:?}))",

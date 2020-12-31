@@ -1,5 +1,5 @@
-use crate::*;
 use super::*;
+use crate::*;
 
 ///////////////////////////////////////////////////////////////
 /// The following impls wrap specific Rinternals.h functions.
@@ -167,7 +167,9 @@ impl Robj {
         if !self.is_environment() {
             return Err("find_fun needs an environment.".into());
         }
-        Ok(single_threaded(|| unsafe { new_borrowed(Rf_findFun(symbol.get(), self.get())) }))
+        Ok(single_threaded(|| unsafe {
+            new_borrowed(Rf_findFun(symbol.get(), self.get()))
+        }))
     }
 
     /*
@@ -257,11 +259,9 @@ impl Robj {
     /// Internal function used to implement `#[extendr]` impl
     #[doc(hidden)]
     pub unsafe fn make_external_ptr<T>(p: *mut T, tag: Robj, prot: Robj) -> Self {
-        new_owned(single_threaded(|| R_MakeExternalPtr(
-            p as *mut ::std::os::raw::c_void,
-            tag.get(),
-            prot.get(),
-        )))
+        new_owned(single_threaded(|| {
+            R_MakeExternalPtr(p as *mut ::std::os::raw::c_void, tag.get(), prot.get())
+        }))
     }
 
     #[doc(hidden)]
@@ -353,7 +353,9 @@ impl Robj {
     pub fn xlengthgets(&self, new_len: usize) -> Result<Robj, AnyError> {
         unsafe {
             if self.is_vector() {
-                Ok(single_threaded(|| new_owned(Rf_xlengthgets(self.get(), new_len as R_xlen_t))))
+                Ok(single_threaded(|| {
+                    new_owned(Rf_xlengthgets(self.get(), new_len as R_xlen_t))
+                }))
             } else {
                 Err(AnyError::from("xlengthgets: Not a vector type"))
             }

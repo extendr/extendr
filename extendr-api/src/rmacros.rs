@@ -49,7 +49,7 @@ macro_rules! r {
 /// }).unwrap();
 /// assert_eq!(x, r!(1.));
 /// ```
-#[macro_export] 
+#[macro_export]
 macro_rules! R {
     ($($t:tt)*) => {
         Robj::eval_string(stringify!($($t)*))
@@ -66,7 +66,7 @@ macro_rules! R {
 /// let wombat = sym!(wombat);
 /// assert_eq!(wombat, r!(Symbol("wombat")));
 /// ```
-#[macro_export] 
+#[macro_export]
 macro_rules! sym {
     ($($t:tt)*) => {
         Robj::from(Symbol(stringify!($($t)*)))

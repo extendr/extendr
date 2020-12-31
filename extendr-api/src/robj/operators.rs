@@ -1,6 +1,6 @@
-use crate::*;
 use super::*;
-use std::ops::{Add, Sub, Mul, Div};
+use crate::*;
+use std::ops::{Add, Div, Mul, Sub};
 
 ///////////////////////////////////////////////////////////////
 /// The following impls add operators to Robj.
@@ -16,9 +16,9 @@ impl Robj {
     /// ```
     pub fn dollar<'a, T>(&self, symbol: T) -> Result<Robj, AnyError>
     where
-        Symbol<'a> : From<T>
+        Symbol<'a>: From<T>,
     {
-        let symbol : Symbol = Symbol::from(symbol);
+        let symbol: Symbol = Symbol::from(symbol);
         call!("$", self, symbol)
     }
 
@@ -32,7 +32,7 @@ impl Robj {
     /// ```
     pub fn slice<T>(&self, rhs: T) -> Result<Robj, AnyError>
     where
-        T : Into<Robj>,
+        T: Into<Robj>,
     {
         call!("[", self, rhs.into())
     }
@@ -47,7 +47,7 @@ impl Robj {
     /// ```
     pub fn index<T>(&self, rhs: T) -> Result<Robj, AnyError>
     where
-        T : Into<Robj>,
+        T: Into<Robj>,
     {
         call!("[[", self, rhs.into())
     }
@@ -64,7 +64,7 @@ impl Robj {
     /// ```
     pub fn tilda<T>(&self, rhs: T) -> Result<Robj, AnyError>
     where
-        T : Into<Robj>,
+        T: Into<Robj>,
     {
         call!("~", self, rhs.into())
     }
@@ -80,7 +80,7 @@ impl Robj {
     /// ```
     pub fn double_colon<T>(&self, rhs: T) -> Result<Robj, AnyError>
     where
-        T : Into<Robj>,
+        T: Into<Robj>,
     {
         call!("::", self, rhs.into())
     }
@@ -100,7 +100,7 @@ impl Robj {
 
 impl<Rhs> Add<Rhs> for Robj
 where
-    Rhs : Into<Robj>,
+    Rhs: Into<Robj>,
 {
     type Output = Robj;
 
@@ -131,7 +131,7 @@ where
 
 impl<Rhs> Sub<Rhs> for Robj
 where
-    Rhs : Into<Robj>,
+    Rhs: Into<Robj>,
 {
     type Output = Robj;
 
@@ -162,7 +162,7 @@ where
 
 impl<Rhs> Mul<Rhs> for Robj
 where
-    Rhs : Into<Robj>,
+    Rhs: Into<Robj>,
 {
     type Output = Robj;
 
@@ -191,10 +191,9 @@ where
     }
 }
 
-
 impl<Rhs> Div<Rhs> for Robj
 where
-    Rhs : Into<Robj>,
+    Rhs: Into<Robj>,
 {
     type Output = Robj;
 
