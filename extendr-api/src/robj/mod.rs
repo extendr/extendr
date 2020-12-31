@@ -82,7 +82,7 @@ pub use symbols::*;
 /// extendr_engine::start_r(); // Start test environment.
 ///
 /// let a : Robj = c!(1, 2, 3, 4, 5);
-/// let iter = a.integer_iter().unwrap();
+/// let iter = a.as_integer_iter().unwrap();
 /// let robj = iter.filter(|&&x| x < 3).collect_robj();
 /// assert_eq!(robj, c!(1, 2));
 /// ```
@@ -107,7 +107,7 @@ pub use symbols::*;
 ///
 /// let abc = list!(a = 1, b = "x", c = vec![1, 2]);
 /// let names : Vec<_> = abc.names().unwrap().collect();
-/// let names_and_values : Vec<_> = abc.named_list_iter().unwrap().collect();
+/// let names_and_values : Vec<_> = abc.as_named_list_iter().unwrap().collect();
 /// assert_eq!(names, vec!["a", "b", "c"]);
 /// assert_eq!(names_and_values, vec![("a", r!(1)), ("b", r!("x")), ("c", r!(vec![1, 2]))]);
 /// ```
@@ -253,12 +253,12 @@ impl Robj {
     ///
     /// let robj = r!([1, 2, 3]);
     /// let mut tot = 0;
-    /// for val in robj.integer_iter().unwrap() {
+    /// for val in robj.as_integer_iter().unwrap() {
     ///   tot += val;
     /// }
     /// assert_eq!(tot, 6);
     /// ```
-    pub fn integer_iter<'a>(&self) -> Option<IntegerIter<'a>>
+    pub fn as_integer_iter<'a>(&self) -> Option<IntegerIter<'a>>
     where
         Self: 'a,
     {
@@ -323,7 +323,7 @@ impl Robj {
     ///
     /// let robj = r!([TRUE, FALSE, NA_LOGICAL]);
     /// let (mut nt, mut nf, mut nna) = (0, 0, 0);
-    /// for val in robj.logical_iter().unwrap() {
+    /// for val in robj.as_logical_iter().unwrap() {
     ///   match *val {
     ///     TRUE => nt += 1,
     ///     FALSE => nf += 1,
@@ -333,7 +333,7 @@ impl Robj {
     /// }
     /// assert_eq!((nt, nf, nna), (1, 1, 1));
     /// ```
-    pub fn logical_iter(&self) -> Option<LogicalIter> {
+    pub fn as_logical_iter(&self) -> Option<LogicalIter> {
         if let Some(slice) = self.as_logical_slice() {
             Some(slice.iter())
         } else {
@@ -368,14 +368,14 @@ impl Robj {
     ///
     /// let robj = r!([1., 2., 3.]);
     /// let mut tot = 0.;
-    /// for val in robj.real_iter().unwrap() {
+    /// for val in robj.as_real_iter().unwrap() {
     ///   if !val.is_na() {
     ///     tot += val;
     ///   }
     /// }
     /// assert_eq!(tot, 6.);
     /// ```
-    pub fn real_iter(&self) -> Option<RealIter> {
+    pub fn as_real_iter(&self) -> Option<RealIter> {
         if let Some(slice) = self.as_real_slice() {
             Some(slice.iter())
         } else {
@@ -466,7 +466,7 @@ impl Robj {
     ///    assert_eq!(robj2.as_string_vector(), None);
     /// ```
     pub fn as_string_vector(&self) -> Option<Vec<String>> {
-        if let Some(iter) = self.str_iter() {
+        if let Some(iter) = self.as_str_iter() {
             Some(iter.map(str::to_string).collect())
         } else {
             None
@@ -484,7 +484,7 @@ impl Robj {
     ///    assert_eq!(robj2.as_str_vector(), None);
     /// ```
     pub fn as_str_vector(&self) -> Option<Vec<&str>> {
-        if let Some(iter) = self.str_iter() {
+        if let Some(iter) = self.as_str_iter() {
             Some(iter.collect())
         } else {
             None
@@ -657,7 +657,7 @@ impl Robj {
         single_threaded(|| {
             let expr = Robj::parse(code)?;
             let mut res = Robj::from(());
-            if let Some(iter) = expr.list_iter() {
+            if let Some(iter) = expr.as_list_iter() {
                 for lang in iter {
                     res = lang.eval()?;
                 }
@@ -826,7 +826,7 @@ impl Robj {
     /// ```
     pub fn names(&self) -> Option<StrIter> {
         if let Some(names) = self.get_attrib(names_symbol()) {
-            names.str_iter()
+            names.as_str_iter()
         } else {
             None
         }
@@ -847,7 +847,7 @@ impl Robj {
         Robj: 'a,
     {
         if let Some(dim) = self.get_attrib(dim_symbol()) {
-            dim.integer_iter()
+            dim.as_integer_iter()
         } else {
             None
         }
@@ -864,7 +864,7 @@ impl Robj {
     /// ```
     pub fn dimnames(&self) -> Option<ListIter> {
         if let Some(names) = self.get_attrib(dimnames_symbol()) {
-            names.list_iter()
+            names.as_list_iter()
         } else {
             None
         }
@@ -876,12 +876,12 @@ impl Robj {
     ///    extendr_engine::start_r();
     ///
     ///    let list = list!(a = 1, b = 2, c = 3);
-    ///    let names_and_values : Vec<_> = list.named_list_iter().unwrap().collect();
+    ///    let names_and_values : Vec<_> = list.as_named_list_iter().unwrap().collect();
     ///    assert_eq!(names_and_values, vec![("a", r!(1)), ("b", r!(2)), ("c", r!(3))]);
     /// ```
-    pub fn named_list_iter(&self) -> Option<NamedListIter> {
+    pub fn as_named_list_iter(&self) -> Option<NamedListIter> {
         if let Some(names) = self.names() {
-            if let Some(values) = self.list_iter() {
+            if let Some(values) = self.as_list_iter() {
                 return Some(names.zip(values));
             }
         }
@@ -899,7 +899,7 @@ impl Robj {
     /// ```
     pub fn class(&self) -> Option<StrIter> {
         if let Some(class) = self.get_attrib(class_symbol()) {
-            class.str_iter()
+            class.as_str_iter()
         } else {
             None
         }
@@ -932,7 +932,7 @@ impl Robj {
     /// ```
     pub fn levels(&self) -> Option<StrIter> {
         if let Some(levels) = self.get_attrib(levels_symbol()) {
-            levels.str_iter()
+            levels.as_str_iter()
         } else {
             None
         }
@@ -993,9 +993,9 @@ impl PartialEq<Robj> for Robj {
                     NILSXP => true,
                     SYMSXP => PRINTNAME(lsexp) == PRINTNAME(rsexp),
                     LISTSXP | LANGSXP | DOTSXP => self
-                        .pairlist_iter()
+                        .as_pairlist_iter()
                         .unwrap()
-                        .eq(rhs.pairlist_iter().unwrap()),
+                        .eq(rhs.as_pairlist_iter().unwrap()),
                     CLOSXP => false,
                     ENVSXP => false,
                     PROMSXP => false,
@@ -1007,8 +1007,8 @@ impl PartialEq<Robj> for Robj {
                     REALSXP => self.as_real_slice() == rhs.as_real_slice(),
                     CPLXSXP => false,
                     ANYSXP => false,
-                    VECSXP | EXPRSXP => self.list_iter().unwrap().eq(rhs.list_iter().unwrap()),
-                    STRSXP => self.str_iter().unwrap().eq(rhs.str_iter().unwrap()),
+                    VECSXP | EXPRSXP => self.as_list_iter().unwrap().eq(rhs.as_list_iter().unwrap()),
+                    STRSXP => self.as_str_iter().unwrap().eq(rhs.as_str_iter().unwrap()),
                     BCODESXP => false,
                     EXTPTRSXP => false,
                     WEAKREFSXP => false,
@@ -1093,13 +1093,13 @@ impl std::fmt::Debug for Robj {
             WEAKREFSXP => write!(
                 f,
                 "r!(Weakref({:?}))",
-                self.list_iter().unwrap().collect::<Vec<_>>()
+                self.as_list_iter().unwrap().collect::<Vec<_>>()
             ),
             // CPLXSXP => false,
             STRSXP => {
                 write!(f, "r!([")?;
                 let mut sep = "";
-                for obj in self.str_iter().unwrap() {
+                for obj in self.as_str_iter().unwrap() {
                     write!(f, "{}{:?}", sep, obj)?;
                     sep = ", ";
                 }

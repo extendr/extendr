@@ -368,7 +368,7 @@ impl Robj {
     pub fn as_lang(&self) -> Option<Lang<Vec<Robj>>> {
         if self.sexptype() == LANGSXP {
             let res: Vec<_> = self
-                .pairlist_iter()
+                .as_pairlist_iter()
                 .unwrap()
                 .map(|robj| robj.to_owned())
                 .collect();
@@ -390,7 +390,7 @@ impl Robj {
     pub fn as_pairlist(&self) -> Option<Pairlist<Vec<Robj>>> {
         if self.sexptype() == LISTSXP {
             let res: Vec<_> = self
-                .pairlist_iter()
+                .as_pairlist_iter()
                 .unwrap()
                 .map(|robj| robj.to_owned())
                 .collect();
@@ -412,7 +412,7 @@ impl Robj {
     pub fn as_list(&self) -> Option<List<Vec<Robj>>> {
         if self.sexptype() == VECSXP {
             let res: Vec<_> = self
-                .list_iter()
+                .as_list_iter()
                 .unwrap()
                 .map(|robj| robj.to_owned())
                 .collect();
@@ -434,7 +434,7 @@ impl Robj {
     pub fn as_expr(&self) -> Option<Expr<Vec<Robj>>> {
         if self.sexptype() == EXPRSXP {
             let res: Vec<_> = self
-                .list_iter()
+                .as_list_iter()
                 .unwrap()
                 .map(|robj| robj.to_owned())
                 .collect();
@@ -459,9 +459,9 @@ impl Robj {
                 let frame = new_owned(FRAME(self.get()));
                 let mut names = Vec::new();
                 let mut values = Vec::new();
-                if let Some(list_iter) = hashtab.list_iter() {
-                    for frame in list_iter {
-                        if let (Some(obj_iter), Some(tag_iter)) = (frame.pairlist_iter(), frame.pairlist_tag_iter()) {
+                if let Some(as_list_iter) = hashtab.as_list_iter() {
+                    for frame in as_list_iter {
+                        if let (Some(obj_iter), Some(tag_iter)) = (frame.as_pairlist_iter(), frame.as_pairlist_tag_iter()) {
                             for (obj, tag) in obj_iter.zip(tag_iter) {
                                 if !obj.is_null() && tag.is_some() {
                                     values.push(obj);
@@ -470,7 +470,7 @@ impl Robj {
                             }
                         }
                     }
-                } else if let (Some(obj_iter), Some(tag_iter)) = (frame.pairlist_iter(), frame.pairlist_tag_iter()) {
+                } else if let (Some(obj_iter), Some(tag_iter)) = (frame.as_pairlist_iter(), frame.as_pairlist_tag_iter()) {
                     for (obj, tag) in obj_iter.zip(tag_iter) {
                         if !obj.is_null() && tag.is_some() {
                             values.push(obj);

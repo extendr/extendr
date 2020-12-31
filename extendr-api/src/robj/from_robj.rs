@@ -133,11 +133,11 @@ macro_rules! impl_iter_from_robj {
     };
 }
 
-impl_iter_from_robj!(StrIter, str_iter, "Not a character vector.");
-impl_iter_from_robj!(ListIter, list_iter, "Not a list.");
-impl_iter_from_robj!(IntegerIter<'a>, integer_iter, "Not an integer vector.");
-impl_iter_from_robj!(RealIter<'a>, real_iter, "Not a real vector.");
-impl_iter_from_robj!(LogicalIter<'a>, logical_iter, "Not a logical vector.");
+impl_iter_from_robj!(StrIter, as_str_iter, "Not a character vector.");
+impl_iter_from_robj!(ListIter, as_list_iter, "Not a list.");
+impl_iter_from_robj!(IntegerIter<'a>, as_integer_iter, "Not an integer vector.");
+impl_iter_from_robj!(RealIter<'a>, as_real_iter, "Not a real vector.");
+impl_iter_from_robj!(LogicalIter<'a>, as_logical_iter, "Not a logical vector.");
 
 /// Pass-through Robj conversion.
 impl<'a> FromRobj<'a> for Robj {
@@ -148,7 +148,7 @@ impl<'a> FromRobj<'a> for Robj {
 
 impl<'a> FromRobj<'a> for HashMap<String, Robj> {
     fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
-        if let Some(iter) = robj.named_list_iter() {
+        if let Some(iter) = robj.as_named_list_iter() {
             Ok(iter
                 .map(|(k, v)| (k.to_string(), v.to_owned()))
                 .collect::<HashMap<String, Robj>>())
@@ -160,7 +160,7 @@ impl<'a> FromRobj<'a> for HashMap<String, Robj> {
 
 impl<'a> FromRobj<'a> for HashMap<&str, Robj> {
     fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
-        if let Some(iter) = robj.named_list_iter() {
+        if let Some(iter) = robj.as_named_list_iter() {
             Ok(iter.map(|(k, v)| (k, v)).collect::<HashMap<&str, Robj>>())
         } else {
             Err("expected a list")

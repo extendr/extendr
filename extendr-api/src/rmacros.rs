@@ -179,7 +179,7 @@ macro_rules! data_frame {
 /// let factor = factor!(vec!["abcd", "def", "fg", "fg"]);
 /// assert_eq!(factor.levels().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg"]);
 /// assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);
-/// assert_eq!(factor.str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
+/// assert_eq!(factor.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
 /// ```
 ///
 /// Panics on error.
