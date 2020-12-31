@@ -1,5 +1,6 @@
 use crate::*;
 use super::*;
+use std::ops::{Add, Sub, Mul, Div};
 
 ///////////////////////////////////////////////////////////////
 /// The following impls add operators to Robj.
@@ -21,7 +22,7 @@ impl Robj {
         call!("$", self, symbol)
     }
 
-    /// Do the equivalent of x[y]
+    /// Do the equivalent of `x[y]`
     /// ```
     /// use extendr_api::*;
     /// extendr_engine::start_r();
@@ -36,7 +37,7 @@ impl Robj {
         call!("[", self, rhs.into())
     }
 
-    /// Do the equivalent of x[y]
+    /// Do the equivalent of `x[[y]]`
     /// ```
     /// use extendr_api::*;
     /// extendr_engine::start_r();
@@ -82,5 +83,130 @@ impl Robj {
         T : Into<Robj>,
     {
         call!("::", self, rhs.into())
+    }
+}
+
+impl<Rhs> Add<Rhs> for Robj
+where
+    Rhs : Into<Robj>,
+{
+    type Output = Robj;
+
+    /// Add two R objects, consuming the left hand side.
+    /// panics on error.
+    /// ```
+    /// use extendr_api::*;
+    /// extendr_engine::start_r();
+    ///
+    /// // lhs and rhs get dropped here
+    /// let lhs = r!([1, 2]);
+    /// let rhs = r!([10, 20]);
+    /// assert_eq!(lhs + rhs, r!([11, 22]));
+    ///
+    /// // lhs gets dropped and rhs is a temporary object.
+    /// let lhs = r!([1, 2]);
+    /// assert_eq!(lhs + 1000, r!([1001, 1002]));
+    ///
+    /// // Only lhs gets dropped.
+    /// let lhs = r!([1, 2]);
+    /// let rhs = r!([10, 20]);
+    /// assert_eq!(lhs + &rhs, r!([11, 22]));
+    /// ```
+    fn add(self, rhs: Rhs) -> Self::Output {
+        call!("+", self, rhs.into()).expect("Robj add failed")
+    }
+}
+
+impl<Rhs> Sub<Rhs> for Robj
+where
+    Rhs : Into<Robj>,
+{
+    type Output = Robj;
+
+    /// Subtract two R objects, consuming the left hand side.
+    /// panics on error.
+    /// ```
+    /// use extendr_api::*;
+    /// extendr_engine::start_r();
+    ///
+    /// // lhs and rhs get dropped here
+    /// let lhs = r!([10, 20]);
+    /// let rhs = r!([1, 2]);
+    /// assert_eq!(lhs - rhs, r!([9, 18]));
+    ///
+    /// // lhs gets dropped and rhs is a temporary object.
+    /// let lhs = r!([1000, 2000]);
+    /// assert_eq!(lhs - 1, r!([999, 1999]));
+    ///
+    /// // Only lhs gets dropped.
+    /// let lhs = r!([10, 20]);
+    /// let rhs = r!([1, 2]);
+    /// assert_eq!(lhs - &rhs, r!([9, 18]));
+    /// ```
+    fn sub(self, rhs: Rhs) -> Self::Output {
+        call!("-", self, rhs.into()).expect("Robj subtract failed")
+    }
+}
+
+impl<Rhs> Mul<Rhs> for Robj
+where
+    Rhs : Into<Robj>,
+{
+    type Output = Robj;
+
+    /// Multiply two R objects, consuming the left hand side.
+    /// panics on error.
+    /// ```
+    /// use extendr_api::*;
+    /// extendr_engine::start_r();
+    ///
+    /// // lhs and rhs get dropped here
+    /// let lhs = r!([10.0, 20.0]);
+    /// let rhs = r!([1.0, 2.0]);
+    /// assert_eq!(lhs * rhs, r!([10.0, 40.0]));
+    ///
+    /// // lhs gets dropped and rhs is a temporary object.
+    /// let lhs = r!([1.0, 2.0]);
+    /// assert_eq!(lhs * 10.0, r!([10.0, 20.0]));
+    ///
+    /// // Only lhs gets dropped.
+    /// let lhs = r!([10.0, 20.0]);
+    /// let rhs = r!([1.0, 2.0]);
+    /// assert_eq!(lhs * &rhs, r!([10.0, 40.0]));
+    /// ```
+    fn mul(self, rhs: Rhs) -> Self::Output {
+        call!("*", self, rhs.into()).expect("Robj multiply failed")
+    }
+}
+
+
+impl<Rhs> Div<Rhs> for Robj
+where
+    Rhs : Into<Robj>,
+{
+    type Output = Robj;
+
+    /// Divide two R objects, consuming the left hand side.
+    /// panics on error.
+    /// ```
+    /// use extendr_api::*;
+    /// extendr_engine::start_r();
+    ///
+    /// // lhs and rhs get dropped here
+    /// let lhs = r!([10.0, 20.0]);
+    /// let rhs = r!([1.0, 2.0]);
+    /// assert_eq!(lhs / rhs, r!([10.0, 10.0]));
+    ///
+    /// // lhs gets dropped and rhs is a temporary object.
+    /// let lhs = r!([10.0, 30.0]);
+    /// assert_eq!(lhs / 10.0, r!([1.0, 3.0]));
+    ///
+    /// // Only lhs gets dropped.
+    /// let lhs = r!([10.0, 20.0]);
+    /// let rhs = r!([1.0, 2.0]);
+    /// assert_eq!(lhs / &rhs, r!([10.0, 10.0]));
+    /// ```
+    fn div(self, rhs: Rhs) -> Self::Output {
+        call!("/", self, rhs.into()).expect("Robj divide failed")
     }
 }

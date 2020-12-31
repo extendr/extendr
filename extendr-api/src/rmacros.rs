@@ -56,6 +56,23 @@ macro_rules! R {
     };
 }
 
+/// The sym! macro install symbols.
+/// You should cache your symbols in variables
+/// as generating them is costly.
+/// ```
+/// use extendr_api::*;
+/// extendr_engine::start_r();
+///
+/// let wombat = sym!(wombat);
+/// assert_eq!(wombat, r!(Symbol("wombat")));
+/// ```
+#[macro_export] 
+macro_rules! sym {
+    ($($t:tt)*) => {
+        Robj::from(Symbol(stringify!($($t)*)))
+    };
+}
+
 /// Concatenation operator.
 ///
 /// Example:
