@@ -31,7 +31,7 @@ impl Robj {
     }
 
     /// Return true if this is an expression.
-    pub fn is_expression(&self) -> bool {
+    pub fn is_expr(&self) -> bool {
         unsafe { Rf_isExpression(self.get()) != 0 }
     }
 
@@ -408,7 +408,7 @@ impl Robj {
     }
 
     /// Return true if this is NILSXP or LISTSXP.
-    pub fn is_list(&self) -> bool {
+    pub fn is_pairlist(&self) -> bool {
         unsafe { Rf_isList(self.get()) != 0 }
     }
 
@@ -418,7 +418,7 @@ impl Robj {
     }
 
     /// Return true if this is NILSXP or VECSXP.
-    pub fn is_new_list(&self) -> bool {
+    pub fn is_list(&self) -> bool {
         unsafe { Rf_isNewList(self.get()) != 0 }
     }
 

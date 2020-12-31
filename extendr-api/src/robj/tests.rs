@@ -22,13 +22,10 @@ fn test_debug() {
 
     // Wrappers
     assert_eq!(format!("{:?}", r!(Symbol("x"))), "r!(Symbol(\"x\"))");
-    assert_eq!(
-        format!("{:?}", r!(Character("x"))),
-        "r!(Character(\"x\"))"
-    );
+    assert_eq!(format!("{:?}", r!(Character("x"))), "r!(Character(\"x\"))");
     assert_eq!(
         format!("{:?}", r!(Lang(&[r!(Symbol("x"))]))),
-        "r!(Lang(&[r!(Symbol(\"x\"))]))"
+        "r!(Lang([r!(Symbol(\"x\"))]))"
     );
 
     // Logical
@@ -170,7 +167,10 @@ fn test_to_robj() {
 fn parse_test() -> Result<(), AnyError> {
     extendr_engine::start_r();
     let p = Robj::parse("print(1L);print(1L);")?;
-    let q = r!(Expr(&[r!(Lang(&[r!(Symbol("print")), r!(1)])), r!(Lang(&[r!(Symbol("print")), r!(1)]))]));
+    let q = r!(Expr(&[
+        r!(Lang(&[r!(Symbol("print")), r!(1)])),
+        r!(Lang(&[r!(Symbol("print")), r!(1)]))
+    ]));
     assert_eq!(p, q);
 
     let p = Robj::eval_string("1L + 1L")?;
@@ -239,7 +239,7 @@ fn input_iterator_test() {
 
     let src = &[Robj::from(1), Robj::from(2), Robj::from(3)];
     let robj = Robj::from(List(src));
-    let iter = <VecIter>::from_robj(&robj).unwrap();
+    let iter = <ListIter>::from_robj(&robj).unwrap();
     assert_eq!(iter.collect::<Vec<_>>(), src);
 
     let src: &[i32] = &[1, 2, 3];

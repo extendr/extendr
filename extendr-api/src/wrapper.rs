@@ -8,12 +8,11 @@ use libR_sys::*;
 
 /// Wrapper for creating symbols.
 ///
-/// Example:
 /// ```
 /// use extendr_api::*;
 /// extendr_engine::start_r();
 /// let symbol = r!(Symbol("xyz"));
-/// assert_eq!(symbol.as_str(), Some("xyz"));
+/// assert_eq!(symbol.as_symbol(), Some(Symbol("xyz")));
 /// assert!(symbol.is_symbol());
 /// ```
 /// Note that creating a symbol from a string is expensive
@@ -26,12 +25,11 @@ pub struct Symbol<'a>(pub &'a str);
 /// These are used only as the contents of a character
 /// vector.
 ///
-/// Example:
 /// ```
 /// use extendr_api::*;
 /// extendr_engine::start_r();
 /// let chr = r!(Character("xyz"));
-/// assert_eq!(chr.as_str(), Some("xyz"));
+/// assert_eq!(chr.as_character(), Some(Character("xyz")));
 /// ```
 ///
 #[derive(Debug, PartialEq)]
@@ -39,27 +37,26 @@ pub struct Character<'a>(pub &'a str);
 
 /// Wrapper for creating raw (byte) objects.
 ///
-/// Example:
 /// ```
 /// use extendr_api::*;
 /// extendr_engine::start_r();
 /// let bytes = r!(Raw(&[1, 2, 3]));
 /// assert_eq!(bytes.len(), 3);
-/// assert_eq!(bytes, r!(Raw(&[1, 2, 3])));
+/// assert_eq!(bytes.as_raw(), Some(Raw(&[1, 2, 3])));
 /// ```
 ///
 #[derive(Debug, PartialEq)]
 pub struct Raw<'a>(pub &'a [u8]);
 
 /// Wrapper for creating language objects.
-/// Example:
 /// ```
 /// use extendr_api::*;
 /// extendr_engine::start_r();
 /// let call_to_xyz = r!(Lang(&[r!(Symbol("xyz")), r!(1), r!(2)]));
 /// assert_eq!(call_to_xyz.is_language(), true);
 /// assert_eq!(call_to_xyz.len(), 3);
-/// assert_eq!(format!("{:?}", call_to_xyz), r#"r!(Lang(&[r!(Symbol("xyz")), r!(1), r!(2)]))"#);
+/// assert_eq!(call_to_xyz.as_lang(), Some(Lang(vec![r!(Symbol("xyz")), r!(1), r!(2)])));
+/// assert_eq!(format!("{:?}", call_to_xyz), r#"r!(Lang([r!(Symbol("xyz")), r!(1), r!(2)]))"#);
 /// ```
 ///
 /// Note: You can use the [lang!] macro for this.
@@ -67,34 +64,32 @@ pub struct Raw<'a>(pub &'a [u8]);
 pub struct Lang<T>(pub T);
 
 /// Wrapper for creating pair list (LISTSXP) objects.
-/// Example:
 /// ```
 /// use extendr_api::*;
 /// extendr_engine::start_r();
-/// let call_to_xyz = r!(Pairlist(&[r!(NULL), r!(1), r!(2)]));
-/// assert_eq!(call_to_xyz.is_pair_list(), true);
-/// assert_eq!(call_to_xyz.len(), 3);
-/// assert_eq!(format!("{:?}", call_to_xyz), r#"r!(Pairlist(&[r!(NULL), r!(1), r!(2)]))"#);
+/// let pairlist = r!(Pairlist(&[r!(0), r!(1), r!(2)]));
+/// assert_eq!(pairlist.is_pairlist(), true);
+/// assert_eq!(pairlist.as_pairlist(), Some(Pairlist(vec![r!(0), r!(1), r!(2)])));
+/// assert_eq!(format!("{:?}", pairlist), r#"r!(Pairlist([r!(0), r!(1), r!(2)]))"#);
 /// ```
-///
-/// Note: You can use the [lang!] macro for this.
 #[derive(Debug, PartialEq)]
 pub struct Pairlist<T>(pub T);
 
-/// Wrapper for creating list objects.
+/// Wrapper for creating list (VECSXP) objects.
 /// ```
 /// use extendr_api::*;
 /// extendr_engine::start_r();
-/// let mixed_list = r!(List(&[r!(1.), r!("xyz")]));
-/// assert_eq!(mixed_list.len(), 2);
+/// let list = r!(List(&[r!(0), r!(1), r!(2)]));
+/// assert_eq!(list.is_list(), true);
+/// assert_eq!(list.as_list(), Some(List(vec![r!(0), r!(1), r!(2)])));
+/// assert_eq!(format!("{:?}", list), r#"r!(List([r!(0), r!(1), r!(2)]))"#);
 /// ```
 ///
-/// Note: prefer to use the [list!] macro for named lists.
+/// Note: you can use the [list!] macro for named lists.
 #[derive(Debug, PartialEq)]
 pub struct List<T>(pub T);
 
 /// Wrapper for creating expression objects.
-/// Example:
 /// ```
 /// use extendr_api::*;
 /// extendr_engine::start_r();
@@ -102,16 +97,14 @@ pub struct List<T>(pub T);
 /// assert_eq!(expr.len(), 2);
 /// ```
 #[derive(Debug, PartialEq)]
-pub struct Expr<'a>(pub &'a [Robj]);
+pub struct Expr<T>(pub T);
 
 /// Wrapper for creating environments.
-/// Example:
 /// ```
 /// use extendr_api::*;
 /// extendr_engine::start_r();
 /// let expr = r!(Env{parent: global_env(), names: &["a", "b"], values: &[1, 2]});
-/// // assert_eq!(expr, r!(Env{parent: global_env(), names: vec!["a".to_string(), "b".to_string()], values: &[1, 2]}));
-/// assert_eq!(expr.len(), 2);
+/// assert_eq!(expr.as_env(), Some((Env{parent: global_env(), names: vec!["a", "b"], values: vec![r!(1), r!(2)]})));
 /// ```
 #[derive(Debug, PartialEq)]
 pub struct Env<P, N, V> {
@@ -137,9 +130,19 @@ where
     }
 }
 
-impl<'a> From<Expr<'a>> for Robj {
-    /// Make an expression object from a collection Robjs.
-    fn from(val: Expr<'a>) -> Self {
+impl<T> From<Expr<T>> for Robj
+where
+    T: IntoIterator,
+    Robj: From<T::Item>,
+{
+    /// Make an expression object from an array of Robjs.
+    /// ```
+    /// use extendr_api::*;
+    /// extendr_engine::start_r();
+    /// let list_of_ints = r!(Expr(&[1, 2]));
+    /// assert_eq!(list_of_ints.len(), 2);
+    /// ```
+    fn from(val: Expr<T>) -> Self {
         make_vector(EXPRSXP, val.0)
     }
 }
@@ -200,7 +203,7 @@ where
     /// use extendr_api::*;
     /// extendr_engine::start_r();
     /// let expr = r!(Env{parent: global_env(), names: &["a", "b"], values: &[1, 2]});
-    /// assert_eq!(expr.len(), 2);
+    /// assert_eq!(expr.as_env(), Some((Env{parent: global_env(), names: vec!["a", "b"], values: vec![r!(1), r!(2)]})));
     /// ```
     fn from(val: Env<P, N, V>) -> Self {
         single_threaded(|| {
@@ -299,5 +302,186 @@ where
 impl<'a> From<&'a str> for Symbol<'a> {
     fn from(val: &'a str) -> Self {
         Self(val)
+    }
+}
+
+impl Robj {
+    /// Convert a symbol object to a Symbol wrapper.
+    /// ```
+    /// use extendr_api::*;
+    /// extendr_engine::start_r();
+    /// let fred = sym!(fred);
+    /// assert_eq!(fred.as_symbol(), Some(Symbol("fred")));
+    /// ```
+    pub fn as_symbol(&self) -> Option<Symbol> {
+        if self.is_symbol() {
+            Some(Symbol(unsafe {
+                to_str(R_CHAR(PRINTNAME(self.get())) as *const u8)
+            }))
+        } else {
+            None
+        }
+    }
+
+    /// Convert a character object to a Character wrapper.
+    /// ```
+    /// use extendr_api::*;
+    /// extendr_engine::start_r();
+    /// let fred = r!(Character("fred"));
+    /// assert_eq!(fred.as_character(), Some(Character("fred")));
+    /// ```
+    pub fn as_character(&self) -> Option<Character> {
+        if self.sexptype() == CHARSXP {
+            Some(Character(unsafe {
+                to_str(R_CHAR(self.get()) as *const u8)
+            }))
+        } else {
+            None
+        }
+    }
+
+    /// Convert a raw object to a Character wrapper.
+    /// ```
+    /// use extendr_api::*;
+    /// extendr_engine::start_r();
+    /// let bytes = r!(Raw(&[1, 2, 3]));
+    /// assert_eq!(bytes.len(), 3);
+    /// assert_eq!(bytes.as_raw(), Some(Raw(&[1, 2, 3])));
+    /// ```
+    pub fn as_raw(&self) -> Option<Raw> {
+        if self.sexptype() == RAWSXP {
+            Some(Raw(self.as_raw_slice().unwrap()))
+        } else {
+            None
+        }
+    }
+    /// Convert a language object to a Lang wrapper.
+    /// ```
+    /// use extendr_api::*;
+    /// extendr_engine::start_r();
+    /// let call_to_xyz = r!(Lang(&[r!(Symbol("xyz")), r!(1), r!(2)]));
+    /// assert_eq!(call_to_xyz.is_language(), true);
+    /// assert_eq!(call_to_xyz.len(), 3);
+    /// assert_eq!(call_to_xyz.as_lang(), Some(Lang(vec![r!(Symbol("xyz")), r!(1), r!(2)])));
+    /// assert_eq!(format!("{:?}", call_to_xyz), r#"r!(Lang([r!(Symbol("xyz")), r!(1), r!(2)]))"#);
+    /// ```
+    pub fn as_lang(&self) -> Option<Lang<Vec<Robj>>> {
+        if self.sexptype() == LANGSXP {
+            let res: Vec<_> = self
+                .pairlist_iter()
+                .unwrap()
+                .map(|robj| robj.to_owned())
+                .collect();
+            Some(Lang(res))
+        } else {
+            None
+        }
+    }
+
+    /// Convert a pair list object (LISTSXP) to a Pairlist wrapper.
+    /// ```
+    /// use extendr_api::*;
+    /// extendr_engine::start_r();
+    /// let pairlist = r!(Pairlist(&[r!(0), r!(1), r!(2)]));
+    /// assert_eq!(pairlist.is_pairlist(), true);
+    /// assert_eq!(pairlist.as_pairlist(), Some(Pairlist(vec![r!(0), r!(1), r!(2)])));
+    /// assert_eq!(format!("{:?}", pairlist), r#"r!(Pairlist([r!(0), r!(1), r!(2)]))"#);
+    /// ```
+    pub fn as_pairlist(&self) -> Option<Pairlist<Vec<Robj>>> {
+        if self.sexptype() == LISTSXP {
+            let res: Vec<_> = self
+                .pairlist_iter()
+                .unwrap()
+                .map(|robj| robj.to_owned())
+                .collect();
+            Some(Pairlist(res))
+        } else {
+            None
+        }
+    }
+
+    /// Convert a list object (VECSXP) to a List wrapper.
+    /// ```
+    /// use extendr_api::*;
+    /// extendr_engine::start_r();
+    /// let list = r!(List(&[r!(0), r!(1), r!(2)]));
+    /// assert_eq!(list.is_list(), true);
+    /// assert_eq!(list.as_list(), Some(List(vec![r!(0), r!(1), r!(2)])));
+    /// assert_eq!(format!("{:?}", list), r#"r!(List([r!(0), r!(1), r!(2)]))"#);
+    /// ```
+    pub fn as_list(&self) -> Option<List<Vec<Robj>>> {
+        if self.sexptype() == VECSXP {
+            let res: Vec<_> = self
+                .list_iter()
+                .unwrap()
+                .map(|robj| robj.to_owned())
+                .collect();
+            Some(List(res))
+        } else {
+            None
+        }
+    }
+
+    /// Convert an expression object (EXPRSXP) to a Expr wrapper.
+    /// ```
+    /// use extendr_api::*;
+    /// extendr_engine::start_r();
+    /// let expr = r!(Expr(&[r!(0), r!(1), r!(2)]));
+    /// assert_eq!(expr.is_expr(), true);
+    /// assert_eq!(expr.as_expr(), Some(Expr(vec![r!(0), r!(1), r!(2)])));
+    /// assert_eq!(format!("{:?}", expr), r#"r!(Expr([r!(0), r!(1), r!(2)]))"#);
+    /// ```
+    pub fn as_expr(&self) -> Option<Expr<Vec<Robj>>> {
+        if self.sexptype() == EXPRSXP {
+            let res: Vec<_> = self
+                .list_iter()
+                .unwrap()
+                .map(|robj| robj.to_owned())
+                .collect();
+            Some(Expr(res))
+        } else {
+            None
+        }
+    }
+
+    /// Convert an environment object (ENVSXP) to a Env wrapper.
+    /// ```
+    /// use extendr_api::*;
+    /// extendr_engine::start_r();
+    /// let expr = r!(Env{parent: global_env(), names: &["a", "b"], values: &[1, 2]});
+    /// assert_eq!(expr.as_env(), Some(Env{parent: global_env(), names: vec!["a", "b"], values: vec![r!(1), r!(2)]}))
+    /// ```
+    pub fn as_env(&self) -> Option<Env<Robj, Vec<&str>, Vec<Robj>>> {
+        if self.sexptype() == ENVSXP {
+            unsafe {
+                let parent = new_owned(ENCLOS(self.get()));
+                let hashtab = new_owned(HASHTAB(self.get()));
+                let frame = new_owned(FRAME(self.get()));
+                let mut names = Vec::new();
+                let mut values = Vec::new();
+                if let Some(list_iter) = hashtab.list_iter() {
+                    for frame in list_iter {
+                        if let (Some(obj_iter), Some(tag_iter)) = (frame.pairlist_iter(), frame.pairlist_tag_iter()) {
+                            for (obj, tag) in obj_iter.zip(tag_iter) {
+                                if !obj.is_null() && tag.is_some() {
+                                    values.push(obj);
+                                    names.push(tag.unwrap());
+                                }
+                            }
+                        }
+                    }
+                } else if let (Some(obj_iter), Some(tag_iter)) = (frame.pairlist_iter(), frame.pairlist_tag_iter()) {
+                    for (obj, tag) in obj_iter.zip(tag_iter) {
+                        if !obj.is_null() && tag.is_some() {
+                            values.push(obj);
+                            names.push(tag.unwrap());
+                        }
+                    }
+                }
+                Some(Env{parent, names, values})
+            }
+        } else {
+            None
+        }
     }
 }

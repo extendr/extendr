@@ -134,7 +134,7 @@ macro_rules! impl_iter_from_robj {
 }
 
 impl_iter_from_robj!(StrIter, str_iter, "Not a character vector.");
-impl_iter_from_robj!(VecIter, list_iter, "Not a list.");
+impl_iter_from_robj!(ListIter, list_iter, "Not a list.");
 impl_iter_from_robj!(IntegerIter<'a>, integer_iter, "Not an integer vector.");
 impl_iter_from_robj!(RealIter<'a>, real_iter, "Not a real vector.");
 impl_iter_from_robj!(LogicalIter<'a>, logical_iter, "Not a logical vector.");

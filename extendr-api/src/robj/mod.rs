@@ -23,9 +23,9 @@ use std::ops::{Range, RangeInclusive};
 mod from_robj;
 mod into_robj;
 mod iter;
+mod operators;
 mod rinternals;
 mod symbols;
-mod operators;
 
 #[cfg(test)]
 mod tests;
@@ -33,9 +33,9 @@ mod tests;
 pub use from_robj::*;
 pub use into_robj::*;
 pub use iter::*;
+pub use operators::*;
 pub use rinternals::*;
 pub use symbols::*;
-pub use operators::*;
 
 /// Wrapper for an R S-expression pointer (SEXP).
 ///
@@ -491,7 +491,7 @@ impl Robj {
         }
     }
 
-    /// Get a read-only reference to a char, symbol or string type.
+    /// Get a read-only reference to a scalar string type.
     /// ```
     ///    use extendr_api::*;
     ///    extendr_engine::start_r();
@@ -500,7 +500,7 @@ impl Robj {
     ///    assert_eq!(robj1.as_str(), Some("xyz"));
     ///    assert_eq!(robj2.as_str(), None);
     /// ```
-    pub fn as_str(&self) -> Option<&str> {
+    pub fn as_str<'a>(&self) -> Option<&'a str> {
         unsafe {
             match self.sexptype() {
                 STRSXP => {
@@ -510,8 +510,8 @@ impl Robj {
                         Some(to_str(R_CHAR(STRING_ELT(self.get(), 0)) as *const u8))
                     }
                 }
-                CHARSXP => Some(to_str(R_CHAR(self.get()) as *const u8)),
-                SYMSXP => Some(to_str(R_CHAR(PRINTNAME(self.get())) as *const u8)),
+                // CHARSXP => Some(to_str(R_CHAR(self.get()) as *const u8)),
+                // SYMSXP => Some(to_str(R_CHAR(PRINTNAME(self.get())) as *const u8)),
                 _ => None,
             }
         }
@@ -630,7 +630,7 @@ impl Robj {
     ///    use extendr_api::*;
     ///    extendr_engine::start_r();
     ///    let expr = Robj::parse("1 + 2").unwrap();
-    ///    assert!(expr.is_expression());
+    ///    assert!(expr.is_expr());
     /// ```
     pub fn parse(code: &str) -> Result<Robj, AnyError> {
         single_threaded(|| unsafe {
@@ -810,7 +810,9 @@ impl Robj {
     {
         let name = Robj::from(name);
         let value = Robj::from(value);
-        single_threaded(||unsafe { new_borrowed(Rf_setAttrib(self.get(), name.get(), value.get())) })
+        single_threaded(|| unsafe {
+            new_borrowed(Rf_setAttrib(self.get(), name.get(), value.get()))
+        })
     }
 
     /// Get the names attribute as a string iterator if one exists.
@@ -860,7 +862,7 @@ impl Robj {
     ///    let names : Vec<_> = array.dimnames().unwrap().collect();
     ///    assert_eq!(names, vec![r!(["x", "y"]), r!(["a", "b"])]);
     /// ```
-    pub fn dimnames(&self) -> Option<VecIter> {
+    pub fn dimnames(&self) -> Option<ListIter> {
         if let Some(names) = self.get_attrib(dimnames_symbol()) {
             names.list_iter()
         } else {
@@ -944,7 +946,10 @@ pub unsafe fn new_owned(sexp: SEXP) -> Robj {
 }
 
 #[doc(hidden)]
-pub unsafe fn new_borrowed(sexp: SEXP) -> Robj {
+pub unsafe fn new_borrowed<'a>(sexp: SEXP) -> Robj
+where
+    Robj : 'a
+{
     Robj::Borrowed(sexp)
 }
 
@@ -977,8 +982,11 @@ impl PartialEq<str> for Robj {
 /// Compare equality with two Robjs.
 impl PartialEq<Robj> for Robj {
     fn eq(&self, rhs: &Robj) -> bool {
-        if self.sexptype() == rhs.sexptype() && self.len() == rhs.len() {
-            unsafe {
+        unsafe {
+            if self.get() == rhs.get() {
+                return true;
+            }
+            if self.sexptype() == rhs.sexptype() && self.len() == rhs.len() {
                 let lsexp = self.get();
                 let rsexp = rhs.get();
                 match self.sexptype() {
@@ -1010,9 +1018,9 @@ impl PartialEq<Robj> for Robj {
                     FREESXP => false,
                     _ => false,
                 }
+            } else {
+                false
             }
-        } else {
-            false
         }
     }
 }
@@ -1022,27 +1030,40 @@ impl std::fmt::Debug for Robj {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self.sexptype() {
             NILSXP => write!(f, "r!(NULL)"),
-            SYMSXP => write!(f, "r!(Symbol({:?}))", self.as_str().unwrap()),
-            LISTSXP => write!(
-                f,
-                "r!(Pairlist(&{:?}))",
-                self.pairlist_iter().unwrap().collect::<Vec<Robj>>()
-            ),
+            SYMSXP => write!(f, "r!({:?})", self.as_symbol().unwrap()),
+            LISTSXP => write!(f, "r!({:?})", self.as_pairlist().unwrap()),
             CLOSXP => write!(f, "r!(Function())"),
-            ENVSXP => write!(f, "r!(Env())"),
+            ENVSXP => {
+                unsafe {
+                    let sexp = self.get();
+                    if sexp == R_GlobalEnv {
+                        write!(f, "global_env()")
+                    } else if sexp == R_BaseEnv {
+                        write!(f, "base_env()")
+                    } else if sexp == R_EmptyEnv {
+                        write!(f, "empty_env()")
+                    } else {
+                        write!(f, "r!({:?})", self.as_env().unwrap())
+                    }
+                }
+            }
             PROMSXP => write!(f, "r!(Promise())"),
-            LANGSXP => write!(
-                f,
-                "r!(Lang(&{:?}))",
-                self.pairlist_iter().unwrap().collect::<Vec<Robj>>()
-            ),
+            LANGSXP => write!(f, "r!({:?})", self.as_lang().unwrap()),
             // SPECIALSXP => false,
             // BUILTINSXP => false,
-            CHARSXP => write!(f, "r!(Character({:?}))", self.as_str().unwrap()),
+            CHARSXP => write!(f, "r!({:?})", self.as_character().unwrap()),
             LGLSXP => {
                 let slice = self.as_logical_slice().unwrap();
                 if slice.len() == 1 {
-                    write!(f, "{}", if slice[0].0 == 0 { "r!(FALSE)" } else { "r!(TRUE)" })
+                    write!(
+                        f,
+                        "{}",
+                        if slice[0].0 == 0 {
+                            "r!(FALSE)"
+                        } else {
+                            "r!(TRUE)"
+                        }
+                    )
                 } else {
                     write!(f, "r!({:?})", slice)
                 }
@@ -1063,11 +1084,11 @@ impl std::fmt::Debug for Robj {
                     write!(f, "r!({:?})", slice)
                 }
             }
-            VECSXP => write!(f, "r!({:?})", self.list_iter().unwrap().collect::<Vec<_>>()),
+            VECSXP => write!(f, "r!({:?})", self.as_list().unwrap()),
             EXPRSXP => write!(
                 f,
-                "r!(Expr({:?}))",
-                self.list_iter().unwrap().collect::<Vec<_>>()
+                "r!({:?})",
+                self.as_expr().unwrap()
             ),
             WEAKREFSXP => write!(
                 f,
@@ -1089,8 +1110,7 @@ impl std::fmt::Debug for Robj {
             BCODESXP => write!(f, "r!(Bcode())"),
             EXTPTRSXP => write!(f, "r!(Extptr())"),
             RAWSXP => {
-                let slice = self.as_raw_slice().unwrap();
-                write!(f, "r!(Raw({:?}))", slice)
+                write!(f, "r!({:?})", self.as_raw().unwrap())
             }
             S4SXP => write!(f, "r!(S4())"),
             NEWSXP => write!(f, "r!(New())"),
@@ -1102,7 +1122,7 @@ impl std::fmt::Debug for Robj {
 
 // Internal utf8 to str conversion.
 // Lets not worry about non-ascii/unicode strings for now (or ever).
-unsafe fn to_str<'a>(ptr: *const u8) -> &'a str {
+pub(crate) unsafe fn to_str<'a>(ptr: *const u8) -> &'a str {
     let mut len = 0;
     loop {
         if *ptr.offset(len) == 0 {

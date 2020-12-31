@@ -73,10 +73,10 @@ impl Robj {
     /// ```
     /// use extendr_api::*;
     /// extendr_engine::start_r();
-    /// let rlang = r!(Symbol("rlang"));
-    /// let env = r!(Symbol("env"));
-    /// let rlang_env = rlang.double_colon(env).unwrap();
-    /// assert_eq!(rlang_env.is_function(), true);
+    /// let base = r!(Symbol("base"));
+    /// let env = r!(Symbol(".getNamespace"));
+    /// let base_env = base.double_colon(env).unwrap();
+    /// assert_eq!(base_env.is_function(), true);
     /// ```
     pub fn double_colon<T>(&self, rhs: T) -> Result<Robj, AnyError>
     where
@@ -84,6 +84,18 @@ impl Robj {
     {
         call!("::", self, rhs.into())
     }
+
+    // /// Do the equivalent of x(y)
+    // /// ```
+    // /// use extendr_api::*;
+    // /// extendr_engine::start_r();
+    // /// let function = R!(function(a, b) a + b).unwrap();
+    // /// assert_eq!(function.is_function(), true);
+    // /// assert_eq!(function.call((1, 2)), r!(3));
+    // /// ```
+    // pub fn call<Args>(&self, _args: Args) -> Robj {
+    //     r!(NULL)
+    // }
 }
 
 impl<Rhs> Add<Rhs> for Robj
@@ -210,3 +222,12 @@ where
         call!("/", self, rhs.into()).expect("Robj divide failed")
     }
 }
+
+// Calls are still experimental.
+//
+// impl<Args> Fn(Args) for Robj
+// {
+//     extern "rust-call" fn call(&self, args: Args) -> Self::Output {
+
+//     }
+// }
