@@ -10,7 +10,9 @@ impl Robj {
     /// ```
     /// use extendr_api::*;
     /// extendr_engine::start_r();
-    /// let env = r!(Env{parent: global_env(), names: &["a", "b"], values: &[1, 2]});
+    /// let env = r!(Env{
+    ///    parent: global_env(),
+    ///    names_and_values: vec![("a".to_string(), r!(1)), ("b".to_string(), r!(2))]});
     /// assert_eq!(env.dollar("a").unwrap(), r!(1));
     /// assert_eq!(env.dollar("b").unwrap(), r!(2));
     /// ```

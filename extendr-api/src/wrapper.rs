@@ -5,6 +5,7 @@ use crate::*;
 #[doc(hidden)]
 use libR_sys::*;
 #[doc(hidden)]
+use std::collections::HashMap;
 
 /// Wrapper for creating symbols.
 ///
@@ -18,7 +19,7 @@ use libR_sys::*;
 /// Note that creating a symbol from a string is expensive
 /// and so you may want to cache them.
 ///
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Symbol<'a>(pub &'a str);
 
 /// Wrapper for creating character objects.
@@ -32,7 +33,7 @@ pub struct Symbol<'a>(pub &'a str);
 /// assert_eq!(chr.as_character(), Some(Character("xyz")));
 /// ```
 ///
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Character<'a>(pub &'a str);
 
 /// Wrapper for creating raw (byte) objects.
@@ -45,7 +46,7 @@ pub struct Character<'a>(pub &'a str);
 /// assert_eq!(bytes.as_raw(), Some(Raw(&[1, 2, 3])));
 /// ```
 ///
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Raw<'a>(pub &'a [u8]);
 
 /// Wrapper for creating language objects.
@@ -60,20 +61,23 @@ pub struct Raw<'a>(pub &'a [u8]);
 /// ```
 ///
 /// Note: You can use the [lang!] macro for this.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Lang<T>(pub T);
 
 /// Wrapper for creating pair list (LISTSXP) objects.
 /// ```
 /// use extendr_api::*;
 /// extendr_engine::start_r();
-/// let pairlist = r!(Pairlist(&[r!(0), r!(1), r!(2)]));
-/// assert_eq!(pairlist.is_pairlist(), true);
-/// assert_eq!(pairlist.as_pairlist(), Some(Pairlist(vec![r!(0), r!(1), r!(2)])));
-/// assert_eq!(format!("{:?}", pairlist), r#"r!(Pairlist([r!(0), r!(1), r!(2)]))"#);
+/// let hashmap : std::collections::HashMap<_, _> = (0..100)
+///     .map(|i| (Some(format!("n{}", i)), r!(i))).collect();
+/// let pairlist = Pairlist{names_and_values: hashmap};
+/// let expr = r!(pairlist);
+/// assert_eq!(expr.len(), 100);
 /// ```
-#[derive(Debug, PartialEq)]
-pub struct Pairlist<T>(pub T);
+#[derive(Debug, PartialEq, Clone)]
+pub struct Pairlist<NV> {
+    pub names_and_values: NV,
+}
 
 /// Wrapper for creating list (VECSXP) objects.
 /// ```
@@ -86,7 +90,7 @@ pub struct Pairlist<T>(pub T);
 /// ```
 ///
 /// Note: you can use the [list!] macro for named lists.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct List<T>(pub T);
 
 /// Wrapper for creating expression objects.
@@ -96,27 +100,38 @@ pub struct List<T>(pub T);
 /// let expr = r!(Expr(&[r!(1.), r!("xyz")]));
 /// assert_eq!(expr.len(), 2);
 /// ```
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Expr<T>(pub T);
 
 /// Wrapper for creating environments.
+#[derive(Debug, PartialEq, Clone)]
+pub struct Env<P, NV> {
+    pub parent: P,
+    pub names_and_values: NV,
+}
+
+/// Wrapper for creating functions (CLOSSXP).
 /// ```
 /// use extendr_api::*;
 /// extendr_engine::start_r();
-/// let expr = r!(Env{parent: global_env(), names: &["a", "b"], values: &[1, 2]});
-/// assert_eq!(expr.as_env(), Some((Env{parent: global_env(), names: vec!["a", "b"], values: vec![r!(1), r!(2)]})));
+/// let func = R!(function(a,b) {c <- a + b}).unwrap();
+/// println!("{:?}", func.as_func());
 /// ```
-#[derive(Debug, PartialEq)]
-pub struct Env<P, N, V> {
-    pub parent: P,
-    pub names: N,
-    pub values: V,
+#[derive(Debug, PartialEq, Clone)]
+pub struct Func<F, B, E> {
+    pub formals: F,
+    pub body: B,
+    pub env: E,
+    pub debug: i32,
+    pub step: i32,
+    pub trace: i32,
 }
 
 impl<T> From<List<T>> for Robj
 where
     T: IntoIterator,
-    Robj: From<T::Item>,
+    T::IntoIter: ExactSizeIterator,
+    T::Item: Into<Robj>,
 {
     /// Make a list object from an array of Robjs.
     /// ```
@@ -133,7 +148,8 @@ where
 impl<T> From<Expr<T>> for Robj
 where
     T: IntoIterator,
-    Robj: From<T::Item>,
+    T::IntoIter: ExactSizeIterator,
+    T::Item: Into<Robj>,
 {
     /// Make an expression object from an array of Robjs.
     /// ```
@@ -173,91 +189,91 @@ impl<'a> From<Symbol<'a>> for Robj {
 impl<T> From<Lang<T>> for Robj
 where
     T: IntoIterator,
-    Robj: From<T::Item>,
+    T::IntoIter : DoubleEndedIterator,
+    T::Item : Into<Robj>,
 {
     /// Convert a wrapper to an R language object.
     fn from(val: Lang<T>) -> Self {
         single_threaded(|| unsafe {
-            let values = get_protected_values(val.0);
             let mut res = R_NilValue;
-            let len = values.len();
-            for val in values.into_iter().rev() {
-                res = Rf_lcons(val, res);
+            let mut num_protected = 0;
+            for val in val.0.into_iter().rev() {
+                let val = Rf_protect(val.into().get());
+                res = Rf_protect(Rf_lcons(val, res));
+                num_protected += 2;
             }
-            Rf_unprotect(len as i32);
-            new_owned(res)
-        })
-    }
-}
-
-impl<P, N, V, NI, VI> From<Env<P, N, V>> for Robj
-where
-    N: IntoIterator<Item = NI>,
-    V: IntoIterator<Item = VI>,
-    Robj: From<P>,
-    NI: AsRef<str>,
-    Robj: From<VI>,
-{
-    /// Convert a wrapper to an R environment object.
-    /// ```
-    /// use extendr_api::*;
-    /// extendr_engine::start_r();
-    /// let expr = r!(Env{parent: global_env(), names: &["a", "b"], values: &[1, 2]});
-    /// assert_eq!(expr.as_env(), Some((Env{parent: global_env(), names: vec!["a", "b"], values: vec![r!(1), r!(2)]})));
-    /// ```
-    fn from(val: Env<P, N, V>) -> Self {
-        single_threaded(|| {
-            let (parent, names, values) = (val.parent, val.names, val.values);
-            let values = get_protected_values(values);
-            let names = get_protected_names(names);
-            let len = values.len().min(names.len());
-            let dict_len = (len * 2 + 1) as i32;
-            // This call is only available in later R libs.
-            // let mut res = R_NewEnv(parent.get(), 1, dict_len);
-            let res = call!("new.env", TRUE, parent, dict_len).unwrap();
-            assert!(res.is_owned());
-
-            let res_sexp = unsafe { res.get() };
-            for (name, value) in names.into_iter().zip(values.into_iter()) {
-                unsafe { Rf_defineVar(name, value, res_sexp) };
-            }
-
-            unsafe { Rf_unprotect(len as i32 * 2) };
+            let res = new_owned(res);
+            Rf_unprotect(num_protected);
             res
         })
     }
 }
 
-impl<T> From<Pairlist<T>> for Robj
+impl<'a, P, NV> From<Env<P, NV>> for Robj
 where
-    T: IntoIterator,
-    Robj: From<T::Item>,
+    P: Into<Robj>,
+    NV: IntoIterator + 'a,
+    NV::Item: Into<(String, Robj)>
 {
-    /// Convert a wrapper to a LISTSXP object.
-    fn from(val: Pairlist<T>) -> Self {
-        single_threaded(|| unsafe {
-            let values = get_protected_values(val.0);
-            let mut res = R_NilValue;
-            let len = values.len();
-            for val in values.into_iter().rev() {
-                res = Rf_cons(val, res);
+    /// Convert a wrapper to an R environment object.
+    /// ```
+    /// use extendr_api::*;
+    /// extendr_engine::start_r();
+    /// let hashmap : std::collections::HashMap<_, _> = (0..100)
+    ///     .map(|i| (format!("n{}", i), r!(i))).collect();
+    /// let env = Env{parent: global_env(), names_and_values: hashmap};
+    /// let expr = r!(env);
+    /// assert_eq!(expr.len(), 100);
+    /// ```
+    fn from(val: Env<P, NV>) -> Self {
+        single_threaded(|| {
+            let (parent, names_and_values) = (val.parent, val.names_and_values);
+            let dict_len = 29;
+            let res = call!("new.env", TRUE, parent.into(), dict_len).unwrap();
+            for nv in names_and_values {
+                let (n, v) = nv.into();
+                unsafe { Rf_defineVar(r!(Symbol(n.as_str())).get(), v.get(), res.get())}
             }
-            Rf_unprotect(len as i32);
-            new_owned(res)
+            res
         })
     }
 }
 
-fn get_protected_values<T>(values: T) -> Vec<SEXP>
+impl<'a, NV> From<Pairlist<NV>> for Robj
 where
-    T: IntoIterator,
-    Robj: From<T::Item>,
+    NV: IntoIterator + 'a,
+    NV::Item: Into<(Option<String>, Robj)>
 {
-    unsafe {
-        values
-            .into_iter()
-            .map(|item| Rf_protect(Robj::from(item).get()))
-            .collect()
+    /// Convert a wrapper to a LISTSXP object.
+    /// ```
+    /// use extendr_api::*;
+    /// extendr_engine::start_r();
+    /// let hashmap : std::collections::HashMap<_, _> = (0..100)
+    ///     .map(|i| (Some(format!("n{}", i)), r!(i))).collect();
+    /// let pairlist = Pairlist{names_and_values: hashmap};
+    /// let expr = r!(pairlist);
+    /// assert_eq!(expr.len(), 100);
+    /// ```
+    fn from(val: Pairlist<NV>) -> Self {
+        single_threaded(|| unsafe {
+            let names_and_values = val.names_and_values;
+            let mut num_protects = 0;
+            let mut res = R_NilValue;
+            let names_and_values : Vec<_> = names_and_values.into_iter().collect();
+            for nv in names_and_values.into_iter().rev() {
+                let (name, val) = nv.into();
+                let val = Rf_protect(val.get());
+                res = Rf_protect(Rf_cons(val, res));
+                num_protects += 2;
+                if let Some(name) = name {
+                    let name = r!(Symbol(name.as_str())).get();
+                    SET_TAG(res, name);
+                }
+            }
+            let res = new_owned(res);
+            Rf_unprotect(num_protects as i32);
+            res
+        })
     }
 }
 
@@ -268,32 +284,19 @@ fn make_symbol(name: &str) -> SEXP {
     unsafe { Rf_install(bytes.as_ptr() as *const i8) }
 }
 
-fn get_protected_names<T>(values: T) -> Vec<SEXP>
+fn make_vector<T>(sexptype: u32, values: T) -> Robj
 where
     T: IntoIterator,
-    T::Item: AsRef<str>,
-{
-    unsafe {
-        values
-            .into_iter()
-            .map(|item| Rf_protect(make_symbol(item.as_ref())))
-            .collect()
-    }
-}
-
-fn make_vector<T>(sexptype: u32, val: T) -> Robj
-where
-    T: IntoIterator,
-    Robj: From<T::Item>,
+    T::IntoIter: ExactSizeIterator,
+    T::Item: Into<Robj>,
 {
     single_threaded(|| unsafe {
-        let values = get_protected_values(val);
+        let values = values.into_iter();
         let sexp = Rf_allocVector(sexptype, values.len() as R_xlen_t);
         R_PreserveObject(sexp);
-        for i in 0..values.len() {
-            SET_VECTOR_ELT(sexp, i as R_xlen_t, values[i]);
+        for (i, val) in values.enumerate() {
+            SET_VECTOR_ELT(sexp, i as R_xlen_t, val.into().get());
         }
-        Rf_unprotect(values.len() as i32);
         Robj::Owned(sexp)
     })
 }
@@ -382,19 +385,25 @@ impl Robj {
     /// ```
     /// use extendr_api::*;
     /// extendr_engine::start_r();
-    /// let pairlist = r!(Pairlist(&[r!(0), r!(1), r!(2)]));
-    /// assert_eq!(pairlist.is_pairlist(), true);
-    /// assert_eq!(pairlist.as_pairlist(), Some(Pairlist(vec![r!(0), r!(1), r!(2)])));
-    /// assert_eq!(format!("{:?}", pairlist), r#"r!(Pairlist([r!(0), r!(1), r!(2)]))"#);
+    /// let names_and_values = vec![(Some("a".to_string()), r!(1)), (Some("b".to_string()), r!(2)), (None, r!(3))];
+    /// let pairlist1 = Pairlist{ names_and_values };
+    /// let names_and_values = vec![(Some("a"), r!(1)), (Some("b"), r!(2)), (None, r!(3))];
+    /// let pairlist2 = Pairlist{ names_and_values };
+    /// let robj = r!(pairlist1);
+    /// assert_eq!(robj.as_pairlist().unwrap(), pairlist2);
     /// ```
-    pub fn as_pairlist(&self) -> Option<Pairlist<Vec<Robj>>> {
+    pub fn as_pairlist(&self) -> Option<Pairlist<Vec<(Option<&str>, Robj)>>> {
         if self.sexptype() == LISTSXP {
-            let res: Vec<_> = self
+            let names = self
+                .as_pairlist_tag_iter()
+                .unwrap();
+            let values = self
                 .as_pairlist_iter()
-                .unwrap()
-                .map(|robj| robj.to_owned())
+                .unwrap();
+            let names_and_values : Vec<_> = names
+                .zip(values)
                 .collect();
-            Some(Pairlist(res))
+            Some(Pairlist { names_and_values })
         } else {
             None
         }
@@ -448,17 +457,20 @@ impl Robj {
     /// ```
     /// use extendr_api::*;
     /// extendr_engine::start_r();
-    /// let expr = r!(Env{parent: global_env(), names: &["a", "b"], values: &[1, 2]});
-    /// assert_eq!(expr.as_env(), Some(Env{parent: global_env(), names: vec!["a", "b"], values: vec![r!(1), r!(2)]}))
+    /// let names_and_values : std::collections::HashMap<_, _> = (0..100).map(|i| (format!("n{}", i), r!(i))).collect();
+    /// let env = Env{parent: global_env(), names_and_values};
+    /// let expr = r!(env.clone());
+    /// assert_eq!(expr.len(), 100);
+    /// let env2 = expr.as_env().unwrap();
+    /// assert_eq!(env2, env);
     /// ```
-    pub fn as_env(&self) -> Option<Env<Robj, Vec<&str>, Vec<Robj>>> {
+    pub fn as_env(&self) -> Option<Env<Robj, HashMap<String, Robj>>> {
         if self.sexptype() == ENVSXP {
             unsafe {
                 let parent = new_owned(ENCLOS(self.get()));
                 let hashtab = new_owned(HASHTAB(self.get()));
                 let frame = new_owned(FRAME(self.get()));
-                let mut names = Vec::new();
-                let mut values = Vec::new();
+                let mut names_and_values = HashMap::new();
                 if let Some(as_list_iter) = hashtab.as_list_iter() {
                     for frame in as_list_iter {
                         if let (Some(obj_iter), Some(tag_iter)) =
@@ -466,8 +478,7 @@ impl Robj {
                         {
                             for (obj, tag) in obj_iter.zip(tag_iter) {
                                 if !obj.is_null() && tag.is_some() {
-                                    values.push(obj);
-                                    names.push(tag.unwrap());
+                                    names_and_values.insert(tag.unwrap().to_string(), obj);
                                 }
                             }
                         }
@@ -477,15 +488,43 @@ impl Robj {
                 {
                     for (obj, tag) in obj_iter.zip(tag_iter) {
                         if !obj.is_null() && tag.is_some() {
-                            values.push(obj);
-                            names.push(tag.unwrap());
+                            names_and_values.insert(tag.unwrap().to_string(), obj);
                         }
                     }
                 }
                 Some(Env {
                     parent,
-                    names,
-                    values,
+                    names_and_values
+                })
+            }
+        } else {
+            None
+        }
+    }
+    /// Convert a function object (CLOSXP) to a Func wrapper.
+    /// ```
+    /// use extendr_api::*;
+    /// extendr_engine::start_r();
+    /// let func = R!(function(a,b) a + b).unwrap();
+    /// println!("{:?}", func.as_func());
+    /// ```
+    pub fn as_func(&self) -> Option<Func<Robj, Robj, Robj>> {
+        if self.sexptype() == CLOSXP {
+            unsafe {
+                let sexp = self.get();
+                let formals = new_owned(FORMALS(sexp));
+                let body = new_owned(BODY(sexp));
+                let env = new_owned(CLOENV(sexp));
+                let debug = RDEBUG(sexp);
+                let step = RSTEP(sexp);
+                let trace = RTRACE(sexp);
+                Some(Func {
+                    formals,
+                    body,
+                    env,
+                    debug,
+                    step,
+                    trace,
                 })
             }
         } else {
