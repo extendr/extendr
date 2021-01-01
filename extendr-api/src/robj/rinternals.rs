@@ -429,12 +429,7 @@ impl Robj {
         unsafe { Rf_isNumber(self.get()) != 0 }
     }
 
-    /// Return true if this is NILSXP, LISTSXP, LANGSXP or DOTSXP.
-    pub fn is_pair_list(&self) -> bool {
-        unsafe { Rf_isPairList(self.get()) != 0 }
-    }
-
-    /// Return true if this is a primitive function.
+    /// Return true if this is a primitive function BUILTINSXP, SPECIALSXP.
     pub fn is_primitive(&self) -> bool {
         unsafe { Rf_isPrimitive(self.get()) != 0 }
     }
@@ -490,6 +485,10 @@ impl Robj {
             }
         }
         false
+    }
+
+    pub fn is_missing_arg(&self) -> bool {
+        unsafe { self.get() == R_MissingArg }
     }
 }
 

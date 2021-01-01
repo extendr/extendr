@@ -87,7 +87,7 @@ impl Robj {
         call!("::", self, rhs.into())
     }
 
-    // /// Do the equivalent of x(y)
+    // /// Do the equivalent of x(a, b, c)
     // /// ```
     // /// use extendr_api::*;
     // /// extendr_engine::start_r();
@@ -232,3 +232,53 @@ where
 
 //     }
 // }
+
+/* list of primitives in base.
+> b[sapply(b, function(b) is.primitive(get(b, baseenv())))]
+  [1] "-"               ":"               "!"               "!="
+  [5] "("               "["               "[["              "[[<-"
+  [9] "[<-"             "{"               "@"               "@<-"
+ [13] "*"               "/"               "&"               "&&"
+ [17] "%*%"             "%/%"             "%%"              "^"
+ [21] "+"               "<"               "<-"              "<<-"
+ [25] "<="              "="               "=="              ">"
+ [29] ">="              "|"               "||"              "~"
+ [33] "$"               "$<-"             "abs"             "acos"
+ [37] "acosh"           "all"             "any"             "anyNA"
+ [41] "Arg"             "as.call"         "as.character"    "as.complex"
+ [45] "as.double"       "as.environment"  "as.integer"      "as.logical"
+ [49] "as.numeric"      "as.raw"          "asin"            "asinh"
+ [53] "atan"            "atanh"           "attr"            "attr<-"
+ [57] "attributes"      "attributes<-"    "baseenv"         "break"
+ [61] "browser"         "c"               "call"            "ceiling"
+ [65] "class"           "class<-"         "Conj"            "cos"
+ [69] "cosh"            "cospi"           "cummax"          "cummin"
+ [73] "cumprod"         "cumsum"          "digamma"         "dim"
+ [77] "dim<-"           "dimnames"        "dimnames<-"      "emptyenv"
+ [81] "enc2native"      "enc2utf8"        "environment<-"   "exp"
+ [85] "expm1"           "expression"      "floor"           "for"
+ [89] "forceAndCall"    "function"        "gamma"           "gc.time"
+ [93] "globalenv"       "if"              "Im"              "interactive"
+ [97] "invisible"       "is.array"        "is.atomic"       "is.call"
+[101] "is.character"    "is.complex"      "is.double"       "is.environment"
+[105] "is.expression"   "is.finite"       "is.function"     "is.infinite"
+[109] "is.integer"      "is.language"     "is.list"         "is.logical"
+[113] "is.matrix"       "is.na"           "is.name"         "is.nan"
+[117] "is.null"         "is.numeric"      "is.object"       "is.pairlist"
+[121] "is.raw"          "is.recursive"    "is.single"       "is.symbol"
+[125] "isS4"            "lazyLoadDBfetch" "length"          "length<-"
+[129] "levels<-"        "lgamma"          "list"            "log"
+[133] "log10"           "log1p"           "log2"            "max"
+[137] "min"             "missing"         "Mod"             "names"
+[141] "names<-"         "nargs"           "next"            "nzchar"
+[145] "oldClass"        "oldClass<-"      "on.exit"         "pos.to.env"
+[149] "proc.time"       "prod"            "quote"           "range"
+[153] "Re"              "rep"             "repeat"          "retracemem"
+[157] "return"          "round"           "seq_along"       "seq_len"
+[161] "seq.int"         "sign"            "signif"          "sin"
+[165] "sinh"            "sinpi"           "sqrt"            "standardGeneric"
+[169] "storage.mode<-"  "substitute"      "sum"             "switch"
+[173] "tan"             "tanh"            "tanpi"           "tracemem"
+[177] "trigamma"        "trunc"           "unclass"         "untracemem"
+[181] "UseMethod"       "while"           "xtfrm"
+*/

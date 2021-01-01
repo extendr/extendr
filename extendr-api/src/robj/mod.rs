@@ -1031,7 +1031,13 @@ impl std::fmt::Debug for Robj {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self.sexptype() {
             NILSXP => write!(f, "r!(NULL)"),
-            SYMSXP => write!(f, "r!({:?})", self.as_symbol().unwrap()),
+            SYMSXP => {
+                if self.is_missing_arg() {
+                    write!(f, "missing_arg()")
+                } else {
+                    write!(f, "sym!({})", self.as_symbol().unwrap().0)
+                }
+            }
             LISTSXP => write!(f, "r!({:?})", self.as_pairlist().unwrap()),
             CLOSXP => write!(f, "r!(Function())"),
             ENVSXP => unsafe {
@@ -1048,8 +1054,8 @@ impl std::fmt::Debug for Robj {
             },
             PROMSXP => write!(f, "r!(Promise())"),
             LANGSXP => write!(f, "r!({:?})", self.as_lang().unwrap()),
-            // SPECIALSXP => false,
-            // BUILTINSXP => false,
+            SPECIALSXP => write!(f, "r!(Special())"),
+            BUILTINSXP => write!(f, "r!(Builtin())"),
             CHARSXP => write!(f, "r!({:?})", self.as_character().unwrap()),
             LGLSXP => {
                 let slice = self.as_logical_slice().unwrap();

@@ -21,11 +21,11 @@ fn test_debug() {
     assert_eq!(format!("{:?}", r!(Raw(&[1, 2, 3]))), "r!(Raw([1, 2, 3]))");
 
     // Wrappers
-    assert_eq!(format!("{:?}", r!(Symbol("x"))), "r!(Symbol(\"x\"))");
+    assert_eq!(format!("{:?}", r!(Symbol("x"))), "sym!(x)");
     assert_eq!(format!("{:?}", r!(Character("x"))), "r!(Character(\"x\"))");
     assert_eq!(
         format!("{:?}", r!(Lang(&[r!(Symbol("x"))]))),
-        "r!(Lang([r!(Symbol(\"x\"))]))"
+        "r!(Lang([sym!(x)]))"
     );
 
     // Logical

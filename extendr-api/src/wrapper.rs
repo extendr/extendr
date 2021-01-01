@@ -57,7 +57,6 @@ pub struct Raw<'a>(pub &'a [u8]);
 /// assert_eq!(call_to_xyz.is_language(), true);
 /// assert_eq!(call_to_xyz.len(), 3);
 /// assert_eq!(call_to_xyz.as_lang(), Some(Lang(vec![r!(Symbol("xyz")), r!(1), r!(2)])));
-/// assert_eq!(format!("{:?}", call_to_xyz), r#"r!(Lang([r!(Symbol("xyz")), r!(1), r!(2)]))"#);
 /// ```
 ///
 /// Note: You can use the [lang!] macro for this.
@@ -114,18 +113,35 @@ pub struct Env<P, NV> {
 /// ```
 /// use extendr_api::*;
 /// extendr_engine::start_r();
-/// let func = R!(function(a,b) {c <- a + b}).unwrap();
-/// println!("{:?}", func.as_func());
+/// let expr = R!(function(a = 1, b) {c <- a + b}).unwrap();
+/// let func = expr.as_func().unwrap();
+///
+/// let expected_formals = Pairlist {
+///     names_and_values: vec![(Some("a"), r!(1.0)), (Some("b"), missing_arg())] };
+/// let expected_body = lang!(
+///     "{", lang!("<-", sym!(c), lang!("+", sym!(a), sym!(b))));
+/// assert_eq!(func.formals.as_pairlist().unwrap(), expected_formals);
+/// assert_eq!(func.body, expected_body);
+/// assert_eq!(func.env, global_env());
 /// ```
 #[derive(Debug, PartialEq, Clone)]
 pub struct Func<F, B, E> {
     pub formals: F,
     pub body: B,
     pub env: E,
-    pub debug: i32,
-    pub step: i32,
-    pub trace: i32,
 }
+
+/// Wrapper for creating and reading Primitive functions.
+///
+/// ```
+/// use extendr_api::*;
+/// extendr_engine::start_r();
+/// let robj = r!(Primitive("+"));
+/// assert!(robj.is_primitive());
+/// assert!(!r!(Primitive("not_a_primitive")).is_primitive());
+/// ```
+#[derive(Debug, PartialEq, Clone)]
+pub struct Primitive<'a>(pub &'a str);
 
 impl<T> From<List<T>> for Robj
 where
@@ -186,11 +202,32 @@ impl<'a> From<Symbol<'a>> for Robj {
     }
 }
 
+impl<'a> From<Primitive<'a>> for Robj {
+    /// Make a primitive object, or NULL if not available.
+    /// ```
+    /// use extendr_api::*;
+    /// extendr_engine::start_r();
+    /// let builtin = r!(Primitive("+"));
+    /// let special = r!(Primitive("if"));
+    /// ```
+    fn from(name: Primitive) -> Self {
+        single_threaded(|| unsafe {
+            let sym = make_symbol(name.0);
+            let symvalue = new_sys(SYMVALUE(sym));
+            if symvalue.is_primitive() {
+                symvalue
+            } else {
+                r!(NULL)
+            }
+        })
+    }
+}
+
 impl<T> From<Lang<T>> for Robj
 where
     T: IntoIterator,
-    T::IntoIter : DoubleEndedIterator,
-    T::Item : Into<Robj>,
+    T::IntoIter: DoubleEndedIterator,
+    T::Item: Into<Robj>,
 {
     /// Convert a wrapper to an R language object.
     fn from(val: Lang<T>) -> Self {
@@ -213,7 +250,7 @@ impl<'a, P, NV> From<Env<P, NV>> for Robj
 where
     P: Into<Robj>,
     NV: IntoIterator + 'a,
-    NV::Item: Into<(String, Robj)>
+    NV::Item: Into<(String, Robj)>,
 {
     /// Convert a wrapper to an R environment object.
     /// ```
@@ -232,7 +269,7 @@ where
             let res = call!("new.env", TRUE, parent.into(), dict_len).unwrap();
             for nv in names_and_values {
                 let (n, v) = nv.into();
-                unsafe { Rf_defineVar(r!(Symbol(n.as_str())).get(), v.get(), res.get())}
+                unsafe { Rf_defineVar(r!(Symbol(n.as_str())).get(), v.get(), res.get()) }
             }
             res
         })
@@ -242,7 +279,7 @@ where
 impl<'a, NV> From<Pairlist<NV>> for Robj
 where
     NV: IntoIterator + 'a,
-    NV::Item: Into<(Option<String>, Robj)>
+    NV::Item: Into<(Option<String>, Robj)>,
 {
     /// Convert a wrapper to a LISTSXP object.
     /// ```
@@ -259,7 +296,7 @@ where
             let names_and_values = val.names_and_values;
             let mut num_protects = 0;
             let mut res = R_NilValue;
-            let names_and_values : Vec<_> = names_and_values.into_iter().collect();
+            let names_and_values: Vec<_> = names_and_values.into_iter().collect();
             for nv in names_and_values.into_iter().rev() {
                 let (name, val) = nv.into();
                 let val = Rf_protect(val.get());
@@ -366,7 +403,7 @@ impl Robj {
     /// assert_eq!(call_to_xyz.is_language(), true);
     /// assert_eq!(call_to_xyz.len(), 3);
     /// assert_eq!(call_to_xyz.as_lang(), Some(Lang(vec![r!(Symbol("xyz")), r!(1), r!(2)])));
-    /// assert_eq!(format!("{:?}", call_to_xyz), r#"r!(Lang([r!(Symbol("xyz")), r!(1), r!(2)]))"#);
+    /// assert_eq!(format!("{:?}", call_to_xyz), r#"r!(Lang([sym!(xyz), r!(1), r!(2)]))"#);
     /// ```
     pub fn as_lang(&self) -> Option<Lang<Vec<Robj>>> {
         if self.sexptype() == LANGSXP {
@@ -394,15 +431,9 @@ impl Robj {
     /// ```
     pub fn as_pairlist(&self) -> Option<Pairlist<Vec<(Option<&str>, Robj)>>> {
         if self.sexptype() == LISTSXP {
-            let names = self
-                .as_pairlist_tag_iter()
-                .unwrap();
-            let values = self
-                .as_pairlist_iter()
-                .unwrap();
-            let names_and_values : Vec<_> = names
-                .zip(values)
-                .collect();
+            let names = self.as_pairlist_tag_iter().unwrap();
+            let values = self.as_pairlist_iter().unwrap();
+            let names_and_values: Vec<_> = names.zip(values).collect();
             Some(Pairlist { names_and_values })
         } else {
             None
@@ -494,7 +525,7 @@ impl Robj {
                 }
                 Some(Env {
                     parent,
-                    names_and_values
+                    names_and_values,
                 })
             }
         } else {
@@ -515,20 +546,30 @@ impl Robj {
                 let formals = new_owned(FORMALS(sexp));
                 let body = new_owned(BODY(sexp));
                 let env = new_owned(CLOENV(sexp));
-                let debug = RDEBUG(sexp);
-                let step = RSTEP(sexp);
-                let trace = RTRACE(sexp);
-                Some(Func {
-                    formals,
-                    body,
-                    env,
-                    debug,
-                    step,
-                    trace,
-                })
+                Some(Func { formals, body, env })
             }
         } else {
             None
         }
     }
+
+    // /// Convert a primitive object (BUILTINSXP or SPECIALSXP) to a wrapper.
+    // /// ```
+    // /// use extendr_api::*;
+    // /// extendr_engine::start_r();
+    // /// let builtin = r!(Primitive("+"));
+    // /// let special = r!(Primitive("if"));
+    // /// assert_eq!(builtin.sexptype(), libR_sys::BUILTINSXP);
+    // /// assert_eq!(special.sexptype(), libR_sys::SPECIALSXP);
+    // /// ```
+    // pub fn as_primitive(&self) -> Option<Primitive> {
+    //     match self.sexptype() {
+    //         BUILTINSXP | SPECIALSXP => {
+    //             // Unfortunately, for now PRIMNAME is out of bounds.
+    //             //Some(Primitive(unsafe {to_str(PRIMNAME(self.get()) as * const u8)}))
+    //             None
+    //         }
+    //         _ => None,
+    //     }
+    // }
 }
