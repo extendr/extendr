@@ -1,3 +1,3 @@
 (function() {var implementors = {};
-implementors["extendr_api"] = [{"text":"impl Iterator for VecIter","synthetic":false,"types":[]},{"text":"impl Iterator for ListIter","synthetic":false,"types":[]},{"text":"impl Iterator for StrIter","synthetic":false,"types":[]}];
+implementors["extendr_api"] = [{"text":"impl Iterator for ListIter","synthetic":false,"types":[]},{"text":"impl Iterator for PairlistIter","synthetic":false,"types":[]},{"text":"impl&lt;'a&gt; Iterator for PairlistTagIter&lt;'a&gt;","synthetic":false,"types":[]},{"text":"impl Iterator for StrIter","synthetic":false,"types":[]}];
 if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

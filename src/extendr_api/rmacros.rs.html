@@ -225,6 +225,23 @@
 <span id="222">222</span>
 <span id="223">223</span>
 <span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! rmacros - a set of macros to call actual R functions in a rusty way.</span>
@@ -277,10 +294,27 @@
 <span class="doccomment">/// }).unwrap();</span>
 <span class="doccomment">/// assert_eq!(x, r!(1.));</span>
 <span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">macro_export</span>]</span> 
+<span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">R</span> {
     ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
         <span class="ident">Robj</span>::<span class="ident">eval_string</span>(<span class="macro">stringify</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>)<span class="kw-2">*</span>))
+    };
+}
+
+<span class="doccomment">/// The sym! macro install symbols.</span>
+<span class="doccomment">/// You should cache your symbols in variables</span>
+<span class="doccomment">/// as generating them is costly.</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// use extendr_api::*;</span>
+<span class="doccomment">/// extendr_engine::start_r();</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// let wombat = sym!(wombat);</span>
+<span class="doccomment">/// assert_eq!(wombat, r!(Symbol(&quot;wombat&quot;)));</span>
+<span class="doccomment">/// ```</span>
+<span class="attribute">#[<span class="ident">macro_export</span>]</span>
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">sym</span> {
+    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="ident">Symbol</span>(<span class="macro">stringify</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>)<span class="kw-2">*</span>)))
     };
 }
 
@@ -346,7 +380,7 @@
 <span class="doccomment">/// use extendr_api::*;</span>
 <span class="doccomment">/// extendr_engine::start_r();</span>
 <span class="doccomment">/// let mylist = list!(x=1, y=2);</span>
-<span class="doccomment">/// assert_eq!(mylist, List(&amp;[1.into(), 2.into()]));</span>
+<span class="doccomment">/// assert_eq!(mylist, r!(List(&amp;[r!(1), r!(2)])));</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Panics on error.</span>
@@ -367,7 +401,7 @@
 <span class="doccomment">/// use extendr_api::*;</span>
 <span class="doccomment">/// extendr_engine::start_r();</span>
 <span class="doccomment">/// let mydata = data_frame!(x=1, y=2);</span>
-<span class="doccomment">/// assert_eq!(mydata, List(&amp;[1.into(), 2.into()]));</span>
+<span class="doccomment">/// assert_eq!(mydata, r!(List(&amp;[r!(1), r!(2)])));</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Panics on error.</span>
@@ -390,7 +424,7 @@
 <span class="doccomment">/// let factor = factor!(vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
 <span class="doccomment">/// assert_eq!(factor.levels().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;]);</span>
 <span class="doccomment">/// assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);</span>
-<span class="doccomment">/// assert_eq!(factor.str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
+<span class="doccomment">/// assert_eq!(factor.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Panics on error.</span>

@@ -1130,6 +1130,26 @@
 <span id="1127">1127</span>
 <span id="1128">1128</span>
 <span id="1129">1129</span>
+<span id="1130">1130</span>
+<span id="1131">1131</span>
+<span id="1132">1132</span>
+<span id="1133">1133</span>
+<span id="1134">1134</span>
+<span id="1135">1135</span>
+<span id="1136">1136</span>
+<span id="1137">1137</span>
+<span id="1138">1138</span>
+<span id="1139">1139</span>
+<span id="1140">1140</span>
+<span id="1141">1141</span>
+<span id="1142">1142</span>
+<span id="1143">1143</span>
+<span id="1144">1144</span>
+<span id="1145">1145</span>
+<span id="1146">1146</span>
+<span id="1147">1147</span>
+<span id="1148">1148</span>
+<span id="1149">1149</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! R object handling.</span>
 <span class="doccomment">//!</span>
@@ -1156,6 +1176,7 @@
 <span class="kw">mod</span> <span class="ident">from_robj</span>;
 <span class="kw">mod</span> <span class="ident">into_robj</span>;
 <span class="kw">mod</span> <span class="ident">iter</span>;
+<span class="kw">mod</span> <span class="ident">operators</span>;
 <span class="kw">mod</span> <span class="ident">rinternals</span>;
 <span class="kw">mod</span> <span class="ident">symbols</span>;
 
@@ -1165,6 +1186,7 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">from_robj</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">into_robj</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">iter</span>::<span class="kw-2">*</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">operators</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">rinternals</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">symbols</span>::<span class="kw-2">*</span>;
 
@@ -1213,7 +1235,7 @@
 <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// let a : Robj = c!(1, 2, 3, 4, 5);</span>
-<span class="doccomment">/// let iter = a.integer_iter().unwrap();</span>
+<span class="doccomment">/// let iter = a.as_integer_iter().unwrap();</span>
 <span class="doccomment">/// let robj = iter.filter(|&amp;&amp;x| x &lt; 3).collect_robj();</span>
 <span class="doccomment">/// assert_eq!(robj, c!(1, 2));</span>
 <span class="doccomment">/// ```</span>
@@ -1238,7 +1260,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// let abc = list!(a = 1, b = &quot;x&quot;, c = vec![1, 2]);</span>
 <span class="doccomment">/// let names : Vec&lt;_&gt; = abc.names().unwrap().collect();</span>
-<span class="doccomment">/// let names_and_values : Vec&lt;_&gt; = abc.named_list_iter().unwrap().collect();</span>
+<span class="doccomment">/// let names_and_values : Vec&lt;_&gt; = abc.as_named_list_iter().unwrap().collect();</span>
 <span class="doccomment">/// assert_eq!(names, vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</span>
 <span class="doccomment">/// assert_eq!(names_and_values, vec![(&quot;a&quot;, r!(1)), (&quot;b&quot;, r!(&quot;x&quot;)), (&quot;c&quot;, r!(vec![1, 2]))]);</span>
 <span class="doccomment">/// ```</span>
@@ -1384,12 +1406,12 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// let robj = r!([1, 2, 3]);</span>
     <span class="doccomment">/// let mut tot = 0;</span>
-    <span class="doccomment">/// for val in robj.integer_iter().unwrap() {</span>
+    <span class="doccomment">/// for val in robj.as_integer_iter().unwrap() {</span>
     <span class="doccomment">///   tot += val;</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// assert_eq!(tot, 6);</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">integer_iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IntegerIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_integer_iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IntegerIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span>
     <span class="kw">where</span>
         <span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
     {
@@ -1454,7 +1476,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// let robj = r!([TRUE, FALSE, NA_LOGICAL]);</span>
     <span class="doccomment">/// let (mut nt, mut nf, mut nna) = (0, 0, 0);</span>
-    <span class="doccomment">/// for val in robj.logical_iter().unwrap() {</span>
+    <span class="doccomment">/// for val in robj.as_logical_iter().unwrap() {</span>
     <span class="doccomment">///   match *val {</span>
     <span class="doccomment">///     TRUE =&gt; nt += 1,</span>
     <span class="doccomment">///     FALSE =&gt; nf += 1,</span>
@@ -1464,7 +1486,7 @@
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// assert_eq!((nt, nf, nna), (1, 1, 1));</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">logical_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">LogicalIter</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_logical_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">LogicalIter</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">slice</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_logical_slice</span>() {
             <span class="prelude-val">Some</span>(<span class="ident">slice</span>.<span class="ident">iter</span>())
         } <span class="kw">else</span> {
@@ -1499,14 +1521,14 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// let robj = r!([1., 2., 3.]);</span>
     <span class="doccomment">/// let mut tot = 0.;</span>
-    <span class="doccomment">/// for val in robj.real_iter().unwrap() {</span>
+    <span class="doccomment">/// for val in robj.as_real_iter().unwrap() {</span>
     <span class="doccomment">///   if !val.is_na() {</span>
     <span class="doccomment">///     tot += val;</span>
     <span class="doccomment">///   }</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// assert_eq!(tot, 6.);</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">real_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RealIter</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_real_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RealIter</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">slice</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_real_slice</span>() {
             <span class="prelude-val">Some</span>(<span class="ident">slice</span>.<span class="ident">iter</span>())
         } <span class="kw">else</span> {
@@ -1535,8 +1557,8 @@
     <span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
     <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// let robj = r!([1_u8, 2, 3]);</span>
-    <span class="doccomment">/// assert_eq!(robj.as_raw_slice().unwrap(), [1_u8, 2, 3]);</span>
+    <span class="doccomment">/// let robj = r!(Raw(&amp;[1, 2, 3]));</span>
+    <span class="doccomment">/// assert_eq!(robj.as_raw_slice().unwrap(), &amp;[1, 2, 3]);</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_raw_slice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_typed_slice</span>()
@@ -1577,10 +1599,10 @@
     <span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
     <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// let mut robj = r!([1_u8, 2, 3]);</span>
+    <span class="doccomment">/// let mut robj = r!(Raw(&amp;[1, 2, 3]));</span>
     <span class="doccomment">/// let slice = robj.as_raw_slice_mut().unwrap();</span>
     <span class="doccomment">/// slice[1] = 100;</span>
-    <span class="doccomment">/// assert_eq!(robj, r!([1_u8, 100, 3]));</span>
+    <span class="doccomment">/// assert_eq!(robj, r!(Raw(&amp;[1, 100, 3])));</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_raw_slice_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>]<span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_typed_slice_mut</span>()
@@ -1597,7 +1619,7 @@
     <span class="doccomment">///    assert_eq!(robj2.as_string_vector(), None);</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_string_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">iter</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">str_iter</span>() {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">iter</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_str_iter</span>() {
             <span class="prelude-val">Some</span>(<span class="ident">iter</span>.<span class="ident">map</span>(<span class="ident">str</span>::<span class="ident">to_string</span>).<span class="ident">collect</span>())
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
@@ -1615,14 +1637,14 @@
     <span class="doccomment">///    assert_eq!(robj2.as_str_vector(), None);</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_str_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">iter</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">str_iter</span>() {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">iter</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_str_iter</span>() {
             <span class="prelude-val">Some</span>(<span class="ident">iter</span>.<span class="ident">collect</span>())
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
         }
     }
 
-    <span class="doccomment">/// Get a read-only reference to a char, symbol or string type.</span>
+    <span class="doccomment">/// Get a read-only reference to a scalar string type.</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">///    use extendr_api::*;</span>
     <span class="doccomment">///    extendr_engine::start_r();</span>
@@ -1631,7 +1653,7 @@
     <span class="doccomment">///    assert_eq!(robj1.as_str(), Some(&quot;xyz&quot;));</span>
     <span class="doccomment">///    assert_eq!(robj2.as_str(), None);</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_str</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_str</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span><span class="op">&gt;</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
                 <span class="ident">STRSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
@@ -1641,8 +1663,8 @@
                         <span class="prelude-val">Some</span>(<span class="ident">to_str</span>(<span class="ident">R_CHAR</span>(<span class="ident">STRING_ELT</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="number">0</span>)) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>))
                     }
                 }
-                <span class="ident">CHARSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">to_str</span>(<span class="ident">R_CHAR</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>)),
-                <span class="ident">SYMSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">to_str</span>(<span class="ident">R_CHAR</span>(<span class="ident">PRINTNAME</span>(<span class="self">self</span>.<span class="ident">get</span>())) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>)),
+                <span class="comment">// CHARSXP =&gt; Some(to_str(R_CHAR(self.get()) as *const u8)),</span>
+                <span class="comment">// SYMSXP =&gt; Some(to_str(R_CHAR(PRINTNAME(self.get())) as *const u8)),</span>
                 <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
             }
         }
@@ -1735,7 +1757,7 @@
             <span class="kw">if</span> <span class="ident">error</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
                 <span class="prelude-val">Err</span>(<span class="ident">AnyError</span>::<span class="ident">from</span>(<span class="string">&quot;R eval error&quot;</span>))
             } <span class="kw">else</span> {
-                <span class="prelude-val">Ok</span>(<span class="ident">Robj</span>::<span class="ident">from</span>(<span class="ident">res</span>))
+                <span class="prelude-val">Ok</span>(<span class="ident">new_owned</span>(<span class="ident">res</span>))
             }
         })
     }
@@ -1761,7 +1783,7 @@
     <span class="doccomment">///    use extendr_api::*;</span>
     <span class="doccomment">///    extendr_engine::start_r();</span>
     <span class="doccomment">///    let expr = Robj::parse(&quot;1 + 2&quot;).unwrap();</span>
-    <span class="doccomment">///    assert!(expr.is_expression());</span>
+    <span class="doccomment">///    assert!(expr.is_expr());</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">parse</span>(<span class="ident">code</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span>, <span class="ident">AnyError</span><span class="op">&gt;</span> {
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
@@ -1769,7 +1791,7 @@
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">status</span> <span class="op">=</span> <span class="number">0_u32</span>;
             <span class="kw">let</span> <span class="ident">status_ptr</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">status</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u32</span>;
             <span class="kw">let</span> <span class="ident">code</span>: <span class="ident">Robj</span> <span class="op">=</span> <span class="ident">code</span>.<span class="ident">into</span>();
-            <span class="kw">let</span> <span class="ident">parsed</span> <span class="op">=</span> <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="ident">R_ParseVector</span>(<span class="ident">code</span>.<span class="ident">get</span>(), <span class="op">-</span><span class="number">1</span>, <span class="ident">status_ptr</span>, <span class="ident">R_NilValue</span>));
+            <span class="kw">let</span> <span class="ident">parsed</span> <span class="op">=</span> <span class="ident">new_owned</span>(<span class="ident">R_ParseVector</span>(<span class="ident">code</span>.<span class="ident">get</span>(), <span class="op">-</span><span class="number">1</span>, <span class="ident">status_ptr</span>, <span class="ident">R_NilValue</span>));
             <span class="kw">match</span> <span class="ident">status</span> {
                 <span class="number">1</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">parsed</span>),
                 <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">AnyError</span>::<span class="ident">from</span>(<span class="string">&quot;parse_error&quot;</span>)),
@@ -1788,7 +1810,7 @@
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
             <span class="kw">let</span> <span class="ident">expr</span> <span class="op">=</span> <span class="ident">Robj</span>::<span class="ident">parse</span>(<span class="ident">code</span>)<span class="question-mark">?</span>;
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">Robj</span>::<span class="ident">from</span>(());
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">iter</span>) <span class="op">=</span> <span class="ident">expr</span>.<span class="ident">list_iter</span>() {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">iter</span>) <span class="op">=</span> <span class="ident">expr</span>.<span class="ident">as_list_iter</span>() {
                 <span class="kw">for</span> <span class="ident">lang</span> <span class="kw">in</span> <span class="ident">iter</span> {
                     <span class="ident">res</span> <span class="op">=</span> <span class="ident">lang</span>.<span class="ident">eval</span>()<span class="question-mark">?</span>;
                 }
@@ -1941,7 +1963,9 @@
     {
         <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="ident">name</span>);
         <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="ident">value</span>);
-        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span><span class="kw">unsafe</span> { <span class="ident">new_borrowed</span>(<span class="ident">Rf_setAttrib</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">name</span>.<span class="ident">get</span>(), <span class="ident">value</span>.<span class="ident">get</span>())) })
+        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
+            <span class="ident">new_borrowed</span>(<span class="ident">Rf_setAttrib</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">name</span>.<span class="ident">get</span>(), <span class="ident">value</span>.<span class="ident">get</span>()))
+        })
     }
 
     <span class="doccomment">/// Get the names attribute as a string iterator if one exists.</span>
@@ -1955,7 +1979,7 @@
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">names</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StrIter</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">names</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_attrib</span>(<span class="ident">names_symbol</span>()) {
-            <span class="ident">names</span>.<span class="ident">str_iter</span>()
+            <span class="ident">names</span>.<span class="ident">as_str_iter</span>()
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
         }
@@ -1976,7 +2000,7 @@
         <span class="ident">Robj</span>: <span class="lifetime">&#39;a</span>,
     {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">dim</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_attrib</span>(<span class="ident">dim_symbol</span>()) {
-            <span class="ident">dim</span>.<span class="ident">integer_iter</span>()
+            <span class="ident">dim</span>.<span class="ident">as_integer_iter</span>()
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
         }
@@ -1991,9 +2015,9 @@
     <span class="doccomment">///    let names : Vec&lt;_&gt; = array.dimnames().unwrap().collect();</span>
     <span class="doccomment">///    assert_eq!(names, vec![r!([&quot;x&quot;, &quot;y&quot;]), r!([&quot;a&quot;, &quot;b&quot;])]);</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dimnames</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">VecIter</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dimnames</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ListIter</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">names</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_attrib</span>(<span class="ident">dimnames_symbol</span>()) {
-            <span class="ident">names</span>.<span class="ident">list_iter</span>()
+            <span class="ident">names</span>.<span class="ident">as_list_iter</span>()
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
         }
@@ -2005,12 +2029,12 @@
     <span class="doccomment">///    extendr_engine::start_r();</span>
     <span class="doccomment">///</span>
     <span class="doccomment">///    let list = list!(a = 1, b = 2, c = 3);</span>
-    <span class="doccomment">///    let names_and_values : Vec&lt;_&gt; = list.named_list_iter().unwrap().collect();</span>
+    <span class="doccomment">///    let names_and_values : Vec&lt;_&gt; = list.as_named_list_iter().unwrap().collect();</span>
     <span class="doccomment">///    assert_eq!(names_and_values, vec![(&quot;a&quot;, r!(1)), (&quot;b&quot;, r!(2)), (&quot;c&quot;, r!(3))]);</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">named_list_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">NamedListIter</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_named_list_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">NamedListIter</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">names</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">names</span>() {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">values</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">list_iter</span>() {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">values</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_list_iter</span>() {
                 <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">names</span>.<span class="ident">zip</span>(<span class="ident">values</span>));
             }
         }
@@ -2028,7 +2052,7 @@
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">class</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StrIter</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">class</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_attrib</span>(<span class="ident">class_symbol</span>()) {
-            <span class="ident">class</span>.<span class="ident">str_iter</span>()
+            <span class="ident">class</span>.<span class="ident">as_str_iter</span>()
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
         }
@@ -2061,7 +2085,7 @@
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">levels</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StrIter</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">levels</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_attrib</span>(<span class="ident">levels_symbol</span>()) {
-            <span class="ident">levels</span>.<span class="ident">str_iter</span>()
+            <span class="ident">levels</span>.<span class="ident">as_str_iter</span>()
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
         }
@@ -2075,7 +2099,10 @@
 }
 
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">new_borrowed</span>(<span class="ident">sexp</span>: <span class="ident">SEXP</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">new_borrowed</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">sexp</span>: <span class="ident">SEXP</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span>
+<span class="kw">where</span>
+    <span class="ident">Robj</span>: <span class="lifetime">&#39;a</span>,
+{
     <span class="ident">Robj</span>::<span class="ident">Borrowed</span>(<span class="ident">sexp</span>)
 }
 
@@ -2108,42 +2135,46 @@
 <span class="doccomment">/// Compare equality with two Robjs.</span>
 <span class="kw">impl</span> <span class="ident">PartialEq</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
     <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rhs</span>: <span class="kw-2">&amp;</span><span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">sexptype</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">rhs</span>.<span class="ident">sexptype</span>() <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">rhs</span>.<span class="ident">len</span>() {
-            <span class="kw">unsafe</span> {
+        <span class="kw">unsafe</span> {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">get</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">rhs</span>.<span class="ident">get</span>() {
+                <span class="kw">return</span> <span class="bool-val">true</span>;
+            }
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">sexptype</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">rhs</span>.<span class="ident">sexptype</span>() <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">rhs</span>.<span class="ident">len</span>() {
                 <span class="kw">let</span> <span class="ident">lsexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get</span>();
                 <span class="kw">let</span> <span class="ident">rsexp</span> <span class="op">=</span> <span class="ident">rhs</span>.<span class="ident">get</span>();
                 <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
                     <span class="ident">NILSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
                     <span class="ident">SYMSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">PRINTNAME</span>(<span class="ident">lsexp</span>) <span class="op">=</span><span class="op">=</span> <span class="ident">PRINTNAME</span>(<span class="ident">rsexp</span>),
                     <span class="ident">LISTSXP</span> <span class="op">|</span> <span class="ident">LANGSXP</span> <span class="op">|</span> <span class="ident">DOTSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>
-                        .<span class="ident">pairlist_iter</span>()
+                        .<span class="ident">as_pairlist_iter</span>()
                         .<span class="ident">unwrap</span>()
-                        .<span class="ident">eq</span>(<span class="ident">rhs</span>.<span class="ident">pairlist_iter</span>().<span class="ident">unwrap</span>()),
+                        .<span class="ident">eq</span>(<span class="ident">rhs</span>.<span class="ident">as_pairlist_iter</span>().<span class="ident">unwrap</span>()),
                     <span class="ident">CLOSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
-                    <span class="ident">ENVSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                    <span class="ident">ENVSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">as_env</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">rhs</span>.<span class="ident">as_env</span>(),
                     <span class="ident">PROMSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
                     <span class="ident">SPECIALSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
                     <span class="ident">BUILTINSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
-                    <span class="ident">CHARSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">as_str</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">rhs</span>.<span class="ident">as_str</span>(),
+                    <span class="ident">CHARSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">as_character</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">rhs</span>.<span class="ident">as_character</span>(),
                     <span class="ident">LGLSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">as_logical_slice</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">rhs</span>.<span class="ident">as_logical_slice</span>(),
                     <span class="ident">INTSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">as_integer_slice</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">rhs</span>.<span class="ident">as_integer_slice</span>(),
                     <span class="ident">REALSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">as_real_slice</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">rhs</span>.<span class="ident">as_real_slice</span>(),
                     <span class="ident">CPLXSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
                     <span class="ident">ANYSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
-                    <span class="ident">VECSXP</span> <span class="op">|</span> <span class="ident">EXPRSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">list_iter</span>().<span class="ident">unwrap</span>().<span class="ident">eq</span>(<span class="ident">rhs</span>.<span class="ident">list_iter</span>().<span class="ident">unwrap</span>()),
-                    <span class="ident">STRSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">str_iter</span>().<span class="ident">unwrap</span>().<span class="ident">eq</span>(<span class="ident">rhs</span>.<span class="ident">str_iter</span>().<span class="ident">unwrap</span>()),
+                    <span class="ident">VECSXP</span> <span class="op">|</span> <span class="ident">EXPRSXP</span> <span class="op">|</span> <span class="ident">WEAKREFSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
+                        <span class="self">self</span>.<span class="ident">as_list_iter</span>().<span class="ident">unwrap</span>().<span class="ident">eq</span>(<span class="ident">rhs</span>.<span class="ident">as_list_iter</span>().<span class="ident">unwrap</span>())
+                    }
+                    <span class="ident">STRSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">as_str_iter</span>().<span class="ident">unwrap</span>().<span class="ident">eq</span>(<span class="ident">rhs</span>.<span class="ident">as_str_iter</span>().<span class="ident">unwrap</span>()),
                     <span class="ident">BCODESXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
                     <span class="ident">EXTPTRSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
-                    <span class="ident">WEAKREFSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
                     <span class="ident">RAWSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">as_raw_slice</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">rhs</span>.<span class="ident">as_raw_slice</span>(),
                     <span class="ident">S4SXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
                     <span class="ident">NEWSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
                     <span class="ident">FREESXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
                     <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
                 }
+            } <span class="kw">else</span> {
+                <span class="bool-val">false</span>
             }
-        } <span class="kw">else</span> {
-            <span class="bool-val">false</span>
         }
     }
 }
@@ -2152,83 +2183,92 @@
 <span class="kw">impl</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">Robj</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
-            <span class="ident">NILSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;NULL&quot;</span>),
-            <span class="ident">SYMSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;Symbol({:?})&quot;</span>, <span class="self">self</span>.<span class="ident">as_str</span>().<span class="ident">unwrap</span>()),
-            <span class="comment">// LISTSXP =&gt; false,</span>
-            <span class="comment">// CLOSXP =&gt; false,</span>
-            <span class="comment">// ENVSXP =&gt; false,</span>
-            <span class="comment">// PROMSXP =&gt; false,</span>
-            <span class="ident">LANGSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(
-                <span class="ident">f</span>,
-                <span class="string">&quot;Lang({:?})&quot;</span>,
-                <span class="self">self</span>.<span class="ident">pairlist_iter</span>().<span class="ident">unwrap</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>()
-            ),
-            <span class="comment">// SPECIALSXP =&gt; false,</span>
-            <span class="comment">// BUILTINSXP =&gt; false,</span>
-            <span class="ident">CHARSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;Character({:?})&quot;</span>, <span class="self">self</span>.<span class="ident">as_str</span>().<span class="ident">unwrap</span>()),
+            <span class="ident">NILSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(NULL)&quot;</span>),
+            <span class="ident">SYMSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_missing_arg</span>() {
+                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;missing_arg()&quot;</span>)
+                } <span class="kw">else</span> {
+                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;sym!({})&quot;</span>, <span class="self">self</span>.<span class="ident">as_symbol</span>().<span class="ident">unwrap</span>().<span class="number">0</span>)
+                }
+            }
+            <span class="ident">LISTSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="self">self</span>.<span class="ident">as_pairlist</span>().<span class="ident">unwrap</span>()),
+            <span class="ident">CLOSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Function())&quot;</span>),
+            <span class="ident">ENVSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">unsafe</span> {
+                <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get</span>();
+                <span class="kw">if</span> <span class="ident">sexp</span> <span class="op">=</span><span class="op">=</span> <span class="ident">R_GlobalEnv</span> {
+                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;global_env()&quot;</span>)
+                } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">sexp</span> <span class="op">=</span><span class="op">=</span> <span class="ident">R_BaseEnv</span> {
+                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;base_env()&quot;</span>)
+                } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">sexp</span> <span class="op">=</span><span class="op">=</span> <span class="ident">R_EmptyEnv</span> {
+                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;empty_env()&quot;</span>)
+                } <span class="kw">else</span> {
+                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="self">self</span>.<span class="ident">as_env</span>().<span class="ident">unwrap</span>())
+                }
+            },
+            <span class="ident">PROMSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Promise())&quot;</span>),
+            <span class="ident">LANGSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="self">self</span>.<span class="ident">as_lang</span>().<span class="ident">unwrap</span>()),
+            <span class="ident">SPECIALSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Special())&quot;</span>),
+            <span class="ident">BUILTINSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Builtin())&quot;</span>),
+            <span class="ident">CHARSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="self">self</span>.<span class="ident">as_character</span>().<span class="ident">unwrap</span>()),
             <span class="ident">LGLSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_logical_slice</span>().<span class="ident">unwrap</span>();
                 <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
-                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="kw">if</span> <span class="ident">slice</span>[<span class="number">0</span>].<span class="number">0</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> { <span class="string">&quot;FALSE&quot;</span> } <span class="kw">else</span> { <span class="string">&quot;TRUE&quot;</span> })
+                    <span class="macro">write</span><span class="macro">!</span>(
+                        <span class="ident">f</span>,
+                        <span class="string">&quot;{}&quot;</span>,
+                        <span class="kw">if</span> <span class="ident">slice</span>[<span class="number">0</span>].<span class="number">0</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+                            <span class="string">&quot;r!(FALSE)&quot;</span>
+                        } <span class="kw">else</span> {
+                            <span class="string">&quot;r!(TRUE)&quot;</span>
+                        }
+                    )
                 } <span class="kw">else</span> {
-                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;&amp;{:?}&quot;</span>, <span class="ident">slice</span>)
+                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="ident">slice</span>)
                 }
             }
             <span class="ident">INTSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_integer_slice</span>().<span class="ident">unwrap</span>();
                 <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
-                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="ident">slice</span>[<span class="number">0</span>])
+                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="ident">slice</span>[<span class="number">0</span>])
                 } <span class="kw">else</span> {
-                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="self">self</span>.<span class="ident">as_integer_slice</span>().<span class="ident">unwrap</span>())
+                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="self">self</span>.<span class="ident">as_integer_slice</span>().<span class="ident">unwrap</span>())
                 }
             }
             <span class="ident">REALSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_real_slice</span>().<span class="ident">unwrap</span>();
                 <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
-                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="ident">slice</span>[<span class="number">0</span>])
+                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="ident">slice</span>[<span class="number">0</span>])
                 } <span class="kw">else</span> {
-                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="ident">slice</span>)
+                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="ident">slice</span>)
                 }
             }
-            <span class="ident">VECSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="self">self</span>.<span class="ident">list_iter</span>().<span class="ident">unwrap</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()),
-            <span class="ident">EXPRSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(
-                <span class="ident">f</span>,
-                <span class="string">&quot;Expr({:?})&quot;</span>,
-                <span class="self">self</span>.<span class="ident">list_iter</span>().<span class="ident">unwrap</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()
-            ),
+            <span class="ident">VECSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="self">self</span>.<span class="ident">as_list</span>().<span class="ident">unwrap</span>()),
+            <span class="ident">EXPRSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="self">self</span>.<span class="ident">as_expr</span>().<span class="ident">unwrap</span>()),
             <span class="ident">WEAKREFSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(
                 <span class="ident">f</span>,
-                <span class="string">&quot;Weakref({:?})&quot;</span>,
-                <span class="self">self</span>.<span class="ident">list_iter</span>().<span class="ident">unwrap</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()
+                <span class="string">&quot;r!(Weakref({:?}))&quot;</span>,
+                <span class="self">self</span>.<span class="ident">as_list_iter</span>().<span class="ident">unwrap</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()
             ),
             <span class="comment">// CPLXSXP =&gt; false,</span>
             <span class="ident">STRSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;[&quot;</span>)<span class="question-mark">?</span>;
+                <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!([&quot;</span>)<span class="question-mark">?</span>;
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sep</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>;
-                <span class="kw">for</span> <span class="ident">obj</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">str_iter</span>().<span class="ident">unwrap</span>() {
+                <span class="kw">for</span> <span class="ident">obj</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">as_str_iter</span>().<span class="ident">unwrap</span>() {
                     <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}{:?}&quot;</span>, <span class="ident">sep</span>, <span class="ident">obj</span>)<span class="question-mark">?</span>;
                     <span class="ident">sep</span> <span class="op">=</span> <span class="string">&quot;, &quot;</span>;
                 }
-                <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;]&quot;</span>)
+                <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;])&quot;</span>)
             }
-            <span class="comment">// DOTSXP =&gt; false,</span>
-            <span class="comment">// ANYSXP =&gt; false,</span>
-            <span class="comment">// VECSXP =&gt; false,</span>
-            <span class="comment">// EXPRSXP =&gt; false,</span>
-            <span class="comment">// BCODESXP =&gt; false,</span>
-            <span class="comment">// EXTPTRSXP =&gt; false,</span>
-            <span class="comment">// WEAKREFSXP =&gt; false,</span>
+            <span class="ident">DOTSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Dot())&quot;</span>),
+            <span class="ident">ANYSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Any())&quot;</span>),
+            <span class="ident">BCODESXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Bcode())&quot;</span>),
+            <span class="ident">EXTPTRSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Extptr())&quot;</span>),
             <span class="ident">RAWSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_raw_slice</span>().<span class="ident">unwrap</span>();
-                <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
-                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">slice</span>[<span class="number">0</span>])
-                } <span class="kw">else</span> {
-                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="ident">slice</span>)
-                }
+                <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="self">self</span>.<span class="ident">as_raw</span>().<span class="ident">unwrap</span>())
             }
-            <span class="comment">// S4SXP =&gt; false,</span>
-            <span class="comment">// NEWSXP =&gt; false,</span>
-            <span class="comment">// FREESXP =&gt; false,</span>
+            <span class="ident">S4SXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(S4())&quot;</span>),
+            <span class="ident">NEWSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(New())&quot;</span>),
+            <span class="ident">FREESXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Free())&quot;</span>),
             <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;??&quot;</span>),
         }
     }
@@ -2236,7 +2276,7 @@
 
 <span class="comment">// Internal utf8 to str conversion.</span>
 <span class="comment">// Lets not worry about non-ascii/unicode strings for now (or ever).</span>
-<span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">to_str</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span> {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">to_str</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">len</span> <span class="op">=</span> <span class="number">0</span>;
     <span class="kw">loop</span> {
         <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">ptr</span>.<span class="ident">offset</span>(<span class="ident">len</span>) <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {

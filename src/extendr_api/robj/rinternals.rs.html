@@ -495,14 +495,27 @@
 <span id="492">492</span>
 <span id="493">493</span>
 <span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
 
 <span class="comment">///////////////////////////////////////////////////////////////</span>
 <span class="doccomment">/// The following impls wrap specific Rinternals.h functions.</span>
 <span class="doccomment">///</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
 <span class="kw">impl</span> <span class="ident">Robj</span> {
     <span class="doccomment">/// Return true if this is the null object.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_null</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
@@ -530,7 +543,7 @@
     }
 
     <span class="doccomment">/// Return true if this is an expression.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_expression</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_expr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isExpression</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
@@ -666,7 +679,9 @@
         <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_environment</span>() {
             <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="string">&quot;find_fun needs an environment.&quot;</span>.<span class="ident">into</span>());
         }
-        <span class="prelude-val">Ok</span>(<span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">new_borrowed</span>(<span class="ident">Rf_findFun</span>(<span class="ident">symbol</span>.<span class="ident">get</span>(), <span class="self">self</span>.<span class="ident">get</span>())) }))
+        <span class="prelude-val">Ok</span>(<span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
+            <span class="ident">new_borrowed</span>(<span class="ident">Rf_findFun</span>(<span class="ident">symbol</span>.<span class="ident">get</span>(), <span class="self">self</span>.<span class="ident">get</span>()))
+        }))
     }
 
     <span class="comment">/*
@@ -748,6 +763,7 @@
     */</span>
 
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
+    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">makeExternalPtr</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">p</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span>, <span class="ident">tag</span>: <span class="ident">Robj</span>, <span class="ident">prot</span>: <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="ident">Robj</span>::<span class="ident">make_external_ptr</span>(<span class="ident">p</span>, <span class="ident">tag</span>, <span class="ident">prot</span>)
     }
@@ -755,14 +771,13 @@
     <span class="doccomment">/// Internal function used to implement `#[extendr]` impl</span>
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">make_external_ptr</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">p</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span>, <span class="ident">tag</span>: <span class="ident">Robj</span>, <span class="ident">prot</span>: <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="ident">new_owned</span>(<span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">R_MakeExternalPtr</span>(
-            <span class="ident">p</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> ::<span class="ident">std</span>::<span class="ident">os</span>::<span class="ident">raw</span>::<span class="ident">c_void</span>,
-            <span class="ident">tag</span>.<span class="ident">get</span>(),
-            <span class="ident">prot</span>.<span class="ident">get</span>(),
-        )))
+        <span class="ident">new_owned</span>(<span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
+            <span class="ident">R_MakeExternalPtr</span>(<span class="ident">p</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> ::<span class="ident">std</span>::<span class="ident">os</span>::<span class="ident">raw</span>::<span class="ident">c_void</span>, <span class="ident">tag</span>.<span class="ident">get</span>(), <span class="ident">prot</span>.<span class="ident">get</span>())
+        }))
     }
 
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
+    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">externalPtrAddr</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span> {
         <span class="ident">R_ExternalPtrAddr</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span>
     }
@@ -774,6 +789,7 @@
     }
 
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
+    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">externalPtrTag</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="self">self</span>.<span class="ident">external_ptr_tag</span>()
     }
@@ -791,6 +807,7 @@
     }
 
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
+    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">registerCFinalizer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">func</span>: <span class="ident">R_CFinalizer_t</span>) {
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">register_c_finalizer</span>(<span class="ident">func</span>))
     }
@@ -848,7 +865,9 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">xlengthgets</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">new_len</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span>, <span class="ident">AnyError</span><span class="op">&gt;</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_vector</span>() {
-                <span class="prelude-val">Ok</span>(<span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">new_owned</span>(<span class="ident">Rf_xlengthgets</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">new_len</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>))))
+                <span class="prelude-val">Ok</span>(<span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
+                    <span class="ident">new_owned</span>(<span class="ident">Rf_xlengthgets</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">new_len</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>))
+                }))
             } <span class="kw">else</span> {
                 <span class="prelude-val">Err</span>(<span class="ident">AnyError</span>::<span class="ident">from</span>(<span class="string">&quot;xlengthgets: Not a vector type&quot;</span>))
             }
@@ -892,18 +911,18 @@
         <span class="kw">unsafe</span> { <span class="ident">Rf_isFunction</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
-    <span class="doccomment">/// Return true if this is an integer vector.</span>
+    <span class="doccomment">/// Return true if this is an integer vector (INTSXP) but not a factor.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_integer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isInteger</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
-    <span class="doccomment">/// Return true if this is a language object.</span>
+    <span class="doccomment">/// Return true if this is a language object (LANGSXP).</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_language</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isLanguage</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
-    <span class="doccomment">/// Return true if this is a vector list.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_list</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="doccomment">/// Return true if this is NILSXP or LISTSXP.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_pairlist</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isList</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
@@ -912,22 +931,17 @@
         <span class="kw">unsafe</span> { <span class="ident">Rf_isMatrix</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
-    <span class="doccomment">/// Return true if this is a vector list or null.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_new_list</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="doccomment">/// Return true if this is NILSXP or VECSXP.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_list</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isNewList</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
-    <span class="doccomment">/// Return true if this is a numeric vector but not a factor.</span>
+    <span class="doccomment">/// Return true if this is INTSXP, LGLSXP or REALSXP but not a factor.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_number</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isNumber</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
-    <span class="doccomment">/// Return true if this is a pairlist.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_pair_list</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isPairList</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
-    }
-
-    <span class="doccomment">/// Return true if this is a primitive function.</span>
+    <span class="doccomment">/// Return true if this is a primitive function BUILTINSXP, SPECIALSXP.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_primitive</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isPrimitive</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
@@ -984,11 +998,25 @@
         }
         <span class="bool-val">false</span>
     }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_missing_arg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">get</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">R_MissingArg</span> }
+    }
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_namespace</span>(<span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+<span class="doccomment">///</span>
+<span class="doccomment">/// ```ignore</span>
+<span class="doccomment">///    use extendr_api::*;</span>
+<span class="doccomment">///    extendr_engine::start_r();</span>
+<span class="doccomment">///</span>
+<span class="doccomment">///    println!(&quot;{:?}&quot;, R!(getNamespace(&quot;stats&quot;)).unwrap());</span>
+<span class="doccomment">///    // assert_eq!(find_namespace(&quot;stats&quot;).is_some(), true);</span>
+<span class="doccomment">///    assert!(false);</span>
+<span class="doccomment">/// ```</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_namespace</span>(<span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="macro">r</span><span class="macro">!</span>(<span class="ident">Symbol</span>(<span class="ident">name</span>));
-    <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">new_borrowed</span>(<span class="ident">R_FindNamespace</span>(<span class="ident">name</span>.<span class="ident">get</span>())) })
+    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">new_borrowed</span>(<span class="ident">R_FindNamespace</span>(<span class="ident">name</span>.<span class="ident">get</span>())) });
+    <span class="prelude-val">Some</span>(<span class="ident">res</span>)
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../";window.currentCrate = "extendr_api";</script><script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>

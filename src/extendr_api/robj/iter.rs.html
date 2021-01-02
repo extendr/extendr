@@ -306,18 +306,100 @@
 <span id="303">303</span>
 <span id="304">304</span>
 <span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
+<span id="312">312</span>
+<span id="313">313</span>
+<span id="314">314</span>
+<span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
+<span id="318">318</span>
+<span id="319">319</span>
+<span id="320">320</span>
+<span id="321">321</span>
+<span id="322">322</span>
+<span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
+<span id="326">326</span>
+<span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
+<span id="358">358</span>
+<span id="359">359</span>
+<span id="360">360</span>
+<span id="361">361</span>
+<span id="362">362</span>
+<span id="363">363</span>
+<span id="364">364</span>
+<span id="365">365</span>
+<span id="366">366</span>
+<span id="367">367</span>
+<span id="368">368</span>
+<span id="369">369</span>
+<span id="370">370</span>
+<span id="371">371</span>
+<span id="372">372</span>
+<span id="373">373</span>
+<span id="374">374</span>
+<span id="375">375</span>
+<span id="376">376</span>
+<span id="377">377</span>
+<span id="378">378</span>
+<span id="379">379</span>
+<span id="380">380</span>
+<span id="381">381</span>
+<span id="382">382</span>
+<span id="383">383</span>
+<span id="384">384</span>
+<span id="385">385</span>
+<span id="386">386</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">marker</span>::<span class="ident">PhantomData</span>;
 
-<span class="comment">// Iterator over the objects in a vector or string.</span>
+<span class="comment">// Iterator over the objects in a VECSXP, EXPRSXP or WEAKREFSXP.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">VecIter</span> {
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ListIter</span> {
     <span class="ident">vector</span>: <span class="ident">SEXP</span>,
     <span class="ident">i</span>: <span class="ident">usize</span>,
     <span class="ident">len</span>: <span class="ident">usize</span>,
 }
 
-<span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">VecIter</span> {
+<span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">ListIter</span> {
     <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">Robj</span>;
 
     <span class="kw">fn</span> <span class="ident">size_hint</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">usize</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) {
@@ -330,7 +412,7 @@
         <span class="kw">if</span> <span class="ident">i</span> <span class="op">&gt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span> {
             <span class="kw">return</span> <span class="prelude-val">None</span>;
         } <span class="kw">else</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">Robj</span>::<span class="ident">from</span>(<span class="kw">unsafe</span> { <span class="ident">VECTOR_ELT</span>(<span class="self">self</span>.<span class="ident">vector</span>, <span class="ident">i</span> <span class="kw">as</span> <span class="ident">isize</span>) }))
+            <span class="prelude-val">Some</span>(<span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">VECTOR_ELT</span>(<span class="self">self</span>.<span class="ident">vector</span>, <span class="ident">i</span> <span class="kw">as</span> <span class="ident">isize</span>)) })
         }
     }
 
@@ -340,7 +422,7 @@
     }
 }
 
-<span class="kw">impl</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">VecIter</span> {
+<span class="kw">impl</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">ListIter</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
         <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;[&quot;</span>)<span class="question-mark">?</span>;
         <span class="kw">for</span> <span class="ident">s</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">clone</span>() {
@@ -351,7 +433,7 @@
 }
 
 <span class="doccomment">/// Iterator over name-value pairs in lists.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">NamedListIter</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">iter</span>::<span class="ident">Zip</span><span class="op">&lt;</span><span class="ident">StrIter</span>, <span class="ident">VecIter</span><span class="op">&gt;</span>;
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">NamedListIter</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">iter</span>::<span class="ident">Zip</span><span class="op">&lt;</span><span class="ident">StrIter</span>, <span class="ident">ListIter</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// Iterator over primitives in integer objects.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">IntegerIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">slice</span>::<span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">i32</span><span class="op">&gt;</span>;
@@ -370,7 +452,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// let my_list = list!(a = 1, b = 2);</span>
 <span class="doccomment">/// let mut total = 0;</span>
-<span class="doccomment">/// for robj in my_list.list_iter().unwrap() {</span>
+<span class="doccomment">/// for robj in my_list.as_list_iter().unwrap() {</span>
 <span class="doccomment">///   if let Some(val) = robj.as_integer() {</span>
 <span class="doccomment">///     total += val;</span>
 <span class="doccomment">///   }</span>
@@ -382,11 +464,11 @@
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ListIter</span> {
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PairlistIter</span> {
     <span class="ident">list_elem</span>: <span class="ident">SEXP</span>,
 }
 
-<span class="kw">impl</span> <span class="ident">ListIter</span> {
+<span class="kw">impl</span> <span class="ident">PairlistIter</span> {
     <span class="doccomment">/// Make an empty list iterator.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="kw">unsafe</span> {
@@ -397,7 +479,7 @@
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">ListIter</span> {
+<span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">PairlistIter</span> {
     <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">Robj</span>;
 
     <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
@@ -413,7 +495,7 @@
     }
 }
 
-<span class="kw">impl</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">ListIter</span> {
+<span class="kw">impl</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">PairlistIter</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
         <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;[&quot;</span>)<span class="question-mark">?</span>;
         <span class="kw">for</span> <span class="ident">s</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">clone</span>() {
@@ -422,6 +504,66 @@
         <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;]&quot;</span>)
     }
 }
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
+<span class="doccomment">/// Iterator over pairlist tag names.</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
+<span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// let mut robj = R!(pairlist(a = 1, b = 2, 3)).unwrap();</span>
+<span class="doccomment">/// // let mut robj = pairlist!(a = 1, b = 2, 3);</span>
+<span class="doccomment">/// let tags : Vec&lt;_&gt; = robj.as_pairlist_tag_iter().unwrap().collect();</span>
+<span class="doccomment">/// assert_eq!(tags, vec![Some(&quot;a&quot;), Some(&quot;b&quot;), None]);</span>
+<span class="doccomment">/// ```</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PairlistTagIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="ident">list_elem</span>: <span class="ident">SEXP</span>,
+    <span class="ident">phantom</span>: <span class="ident">PhantomData</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> ()<span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">PairlistTagIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Make an empty list iterator.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="kw">unsafe</span> {
+            <span class="self">Self</span> {
+                <span class="ident">list_elem</span>: <span class="ident">R_NilValue</span>,
+                <span class="ident">phantom</span>: <span class="ident">PhantomData</span>,
+            }
+        }
+    }
+}
+
+<span class="comment">// &#39;a is the lifetime of the pairlist.</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">PairlistTagIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span><span class="op">&gt;</span>;
+
+    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
+        <span class="kw">unsafe</span> {
+            <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">list_elem</span>;
+            <span class="kw">if</span> <span class="ident">sexp</span> <span class="op">=</span><span class="op">=</span> <span class="ident">R_NilValue</span> {
+                <span class="prelude-val">None</span>
+            } <span class="kw">else</span> {
+                <span class="self">self</span>.<span class="ident">list_elem</span> <span class="op">=</span> <span class="ident">CDR</span>(<span class="ident">sexp</span>);
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">symbol</span>) <span class="op">=</span> <span class="ident">new_borrowed</span>::<span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">TAG</span>(<span class="ident">sexp</span>)).<span class="ident">as_symbol</span>() {
+                    <span class="prelude-val">Some</span>(<span class="prelude-val">Some</span>(<span class="ident">std</span>::<span class="ident">mem</span>::<span class="ident">transmute</span>(<span class="ident">symbol</span>.<span class="number">0</span>)))
+                } <span class="kw">else</span> {
+                    <span class="prelude-val">Some</span>(<span class="prelude-val">None</span>)
+                }
+            }
+        }
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">PairlistTagIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;[&quot;</span>)<span class="question-mark">?</span>;
+        <span class="kw">for</span> <span class="ident">s</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">clone</span>() {
+            <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="ident">s</span>)<span class="question-mark">?</span>;
+        }
+        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;]&quot;</span>)
+    }
+}
+
 <span class="doccomment">/// Iterator over strings or string factors.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
@@ -429,13 +571,13 @@
 <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// let robj = r!([&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</span>
-<span class="doccomment">/// assert_eq!(robj.str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</span>
+<span class="doccomment">/// assert_eq!(robj.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// let factor = factor!([&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
 <span class="doccomment">/// assert_eq!(factor.levels().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;]);</span>
 <span class="doccomment">/// assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);</span>
-<span class="doccomment">/// assert_eq!(factor.str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
-<span class="doccomment">/// assert_eq!(factor.str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
+<span class="doccomment">/// assert_eq!(factor.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
+<span class="doccomment">/// assert_eq!(factor.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StrIter</span> {
@@ -516,20 +658,19 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Robj</span> {
-    <span class="doccomment">/// Get an iterator over a pairlist, lang or ... object.</span>
-    <span class="doccomment">/// Note: we plan to combine list iterators into one.</span>
+    <span class="doccomment">/// Get an iterator over a pairlist objects.</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
     <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// let mut robj = lang!(&quot;+&quot;, 1, 2);</span>
-    <span class="doccomment">/// let objects : Vec&lt;_&gt; = robj.pairlist_iter().unwrap().collect();</span>
-    <span class="doccomment">/// assert_eq!(objects, vec![r!(Symbol(&quot;+&quot;)), r!(1), r!(2)])</span>
+    <span class="doccomment">/// let mut robj = R!(pairlist(a = 1, b = 2, 3)).unwrap();</span>
+    <span class="doccomment">/// let objects : Vec&lt;_&gt; = robj.as_pairlist_iter().unwrap().collect();</span>
+    <span class="doccomment">/// assert_eq!(objects, vec![r!(1.0), r!(2.0), r!(3.0)])</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pairlist_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ListIter</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_pairlist_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PairlistIter</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
             <span class="ident">LISTSXP</span> <span class="op">|</span> <span class="ident">LANGSXP</span> <span class="op">|</span> <span class="ident">DOTSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">unsafe</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">ListIter</span> {
+                <span class="prelude-val">Some</span>(<span class="ident">PairlistIter</span> {
                     <span class="ident">list_elem</span>: <span class="self">self</span>.<span class="ident">get</span>(),
                 })
             },
@@ -537,20 +678,41 @@
         }
     }
 
-    <span class="doccomment">/// Get an iterator over an unnamed list.</span>
-    <span class="doccomment">/// Note: we plan to combine list iterators into one.</span>
+    <span class="doccomment">/// Get an iterator over a pairlist tags.</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
+    <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// let mut robj = R!(pairlist(a = 1, b = 2, 3)).unwrap();</span>
+    <span class="doccomment">/// // let mut robj = pairlist!(a = 1, b = 2, 3);</span>
+    <span class="doccomment">/// let tags : Vec&lt;_&gt; = robj.as_pairlist_tag_iter().unwrap().collect();</span>
+    <span class="doccomment">/// assert_eq!(tags, vec![Some(&quot;a&quot;), Some(&quot;b&quot;), None]);</span>
+    <span class="doccomment">/// ```</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_pairlist_tag_iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PairlistTagIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
+            <span class="ident">LISTSXP</span> <span class="op">|</span> <span class="ident">LANGSXP</span> <span class="op">|</span> <span class="ident">DOTSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">unsafe</span> {
+                <span class="prelude-val">Some</span>(<span class="ident">PairlistTagIter</span> {
+                    <span class="ident">list_elem</span>: <span class="self">self</span>.<span class="ident">get</span>(),
+                    <span class="ident">phantom</span>: <span class="ident">PhantomData</span>,
+                })
+            },
+            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        }
+    }
+
+    <span class="doccomment">/// Get an iterator over a list (VECSXP).</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
     <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// let mut robj = list!(1, 2, 3);</span>
-    <span class="doccomment">/// let objects : Vec&lt;_&gt; = robj.list_iter().unwrap().collect();</span>
+    <span class="doccomment">/// let objects : Vec&lt;_&gt; = robj.as_list_iter().unwrap().collect();</span>
     <span class="doccomment">/// assert_eq!(objects, vec![r!(1), r!(2), r!(3)])</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">list_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">VecIter</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_list_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ListIter</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
             <span class="ident">VECSXP</span> <span class="op">|</span> <span class="ident">EXPRSXP</span> <span class="op">|</span> <span class="ident">WEAKREFSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">unsafe</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">VecIter</span> {
+                <span class="prelude-val">Some</span>(<span class="ident">ListIter</span> {
                     <span class="ident">vector</span>: <span class="self">self</span>.<span class="ident">get</span>(),
                     <span class="ident">i</span>: <span class="number">0</span>,
                     <span class="ident">len</span>: <span class="self">self</span>.<span class="ident">len</span>(),
@@ -570,15 +732,15 @@
     <span class="doccomment">/// extendr_engine::start_r();</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// let obj = Robj::from(vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</span>
-    <span class="doccomment">/// assert_eq!(obj.str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</span>
+    <span class="doccomment">/// assert_eq!(obj.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// let factor = factor!(vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
     <span class="doccomment">/// assert_eq!(factor.levels().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;]);</span>
     <span class="doccomment">/// assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);</span>
-    <span class="doccomment">/// assert_eq!(factor.str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
-    <span class="doccomment">/// assert_eq!(factor.str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
+    <span class="doccomment">/// assert_eq!(factor.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
+    <span class="doccomment">/// assert_eq!(factor.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">str_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StrIter</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_str_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StrIter</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="number">0</span>;
         <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span>();
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
