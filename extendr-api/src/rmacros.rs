@@ -49,10 +49,27 @@ macro_rules! r {
 /// }).unwrap();
 /// assert_eq!(x, r!(1.));
 /// ```
-#[macro_export] 
+#[macro_export]
 macro_rules! R {
     ($($t:tt)*) => {
         Robj::eval_string(stringify!($($t)*))
+    };
+}
+
+/// The sym! macro install symbols.
+/// You should cache your symbols in variables
+/// as generating them is costly.
+/// ```
+/// use extendr_api::*;
+/// extendr_engine::start_r();
+///
+/// let wombat = sym!(wombat);
+/// assert_eq!(wombat, r!(Symbol("wombat")));
+/// ```
+#[macro_export]
+macro_rules! sym {
+    ($($t:tt)*) => {
+        Robj::from(Symbol(stringify!($($t)*)))
     };
 }
 
@@ -118,7 +135,7 @@ macro_rules! read_table {
 /// use extendr_api::*;
 /// extendr_engine::start_r();
 /// let mylist = list!(x=1, y=2);
-/// assert_eq!(mylist, List(&[1.into(), 2.into()]));
+/// assert_eq!(mylist, r!(List(&[r!(1), r!(2)])));
 /// ```
 ///
 /// Panics on error.
@@ -139,7 +156,7 @@ macro_rules! list {
 /// use extendr_api::*;
 /// extendr_engine::start_r();
 /// let mydata = data_frame!(x=1, y=2);
-/// assert_eq!(mydata, List(&[1.into(), 2.into()]));
+/// assert_eq!(mydata, r!(List(&[r!(1), r!(2)])));
 /// ```
 ///
 /// Panics on error.
@@ -162,7 +179,7 @@ macro_rules! data_frame {
 /// let factor = factor!(vec!["abcd", "def", "fg", "fg"]);
 /// assert_eq!(factor.levels().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg"]);
 /// assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);
-/// assert_eq!(factor.str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
+/// assert_eq!(factor.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
 /// ```
 ///
 /// Panics on error.

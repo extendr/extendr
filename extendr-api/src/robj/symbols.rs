@@ -15,7 +15,7 @@ pub fn base_env() -> Robj {
     unsafe { new_sys(R_BaseEnv) }
 }
 
-/// The (fake) namespace for base
+/// The namespace for base
 pub fn base_namespace() -> Robj {
     unsafe { new_sys(R_BaseNamespace) }
 }

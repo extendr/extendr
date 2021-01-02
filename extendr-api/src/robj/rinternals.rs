@@ -1,10 +1,9 @@
-use crate::*;
 use super::*;
+use crate::*;
 
 ///////////////////////////////////////////////////////////////
 /// The following impls wrap specific Rinternals.h functions.
 ///
-#[allow(non_snake_case)]
 impl Robj {
     /// Return true if this is the null object.
     pub fn is_null(&self) -> bool {
@@ -32,7 +31,7 @@ impl Robj {
     }
 
     /// Return true if this is an expression.
-    pub fn is_expression(&self) -> bool {
+    pub fn is_expr(&self) -> bool {
         unsafe { Rf_isExpression(self.get()) != 0 }
     }
 
@@ -168,7 +167,9 @@ impl Robj {
         if !self.is_environment() {
             return Err("find_fun needs an environment.".into());
         }
-        Ok(single_threaded(|| unsafe { new_borrowed(Rf_findFun(symbol.get(), self.get())) }))
+        Ok(single_threaded(|| unsafe {
+            new_borrowed(Rf_findFun(symbol.get(), self.get()))
+        }))
     }
 
     /*
@@ -250,6 +251,7 @@ impl Robj {
     */
 
     #[doc(hidden)]
+    #[allow(non_snake_case)]
     pub unsafe fn makeExternalPtr<T>(p: *mut T, tag: Robj, prot: Robj) -> Self {
         Robj::make_external_ptr(p, tag, prot)
     }
@@ -257,14 +259,13 @@ impl Robj {
     /// Internal function used to implement `#[extendr]` impl
     #[doc(hidden)]
     pub unsafe fn make_external_ptr<T>(p: *mut T, tag: Robj, prot: Robj) -> Self {
-        new_owned(single_threaded(|| R_MakeExternalPtr(
-            p as *mut ::std::os::raw::c_void,
-            tag.get(),
-            prot.get(),
-        )))
+        new_owned(single_threaded(|| {
+            R_MakeExternalPtr(p as *mut ::std::os::raw::c_void, tag.get(), prot.get())
+        }))
     }
 
     #[doc(hidden)]
+    #[allow(non_snake_case)]
     pub unsafe fn externalPtrAddr<T>(&self) -> *mut T {
         R_ExternalPtrAddr(self.get()) as *mut T
     }
@@ -276,6 +277,7 @@ impl Robj {
     }
 
     #[doc(hidden)]
+    #[allow(non_snake_case)]
     pub unsafe fn externalPtrTag(&self) -> Self {
         self.external_ptr_tag()
     }
@@ -293,6 +295,7 @@ impl Robj {
     }
 
     #[doc(hidden)]
+    #[allow(non_snake_case)]
     pub unsafe fn registerCFinalizer(&self, func: R_CFinalizer_t) {
         single_threaded(|| self.register_c_finalizer(func))
     }
@@ -350,7 +353,9 @@ impl Robj {
     pub fn xlengthgets(&self, new_len: usize) -> Result<Robj, AnyError> {
         unsafe {
             if self.is_vector() {
-                Ok(single_threaded(|| new_owned(Rf_xlengthgets(self.get(), new_len as R_xlen_t))))
+                Ok(single_threaded(|| {
+                    new_owned(Rf_xlengthgets(self.get(), new_len as R_xlen_t))
+                }))
             } else {
                 Err(AnyError::from("xlengthgets: Not a vector type"))
             }
@@ -394,18 +399,18 @@ impl Robj {
         unsafe { Rf_isFunction(self.get()) != 0 }
     }
 
-    /// Return true if this is an integer vector.
+    /// Return true if this is an integer vector (INTSXP) but not a factor.
     pub fn is_integer(&self) -> bool {
         unsafe { Rf_isInteger(self.get()) != 0 }
     }
 
-    /// Return true if this is a language object.
+    /// Return true if this is a language object (LANGSXP).
     pub fn is_language(&self) -> bool {
         unsafe { Rf_isLanguage(self.get()) != 0 }
     }
 
-    /// Return true if this is a vector list.
-    pub fn is_list(&self) -> bool {
+    /// Return true if this is NILSXP or LISTSXP.
+    pub fn is_pairlist(&self) -> bool {
         unsafe { Rf_isList(self.get()) != 0 }
     }
 
@@ -414,22 +419,17 @@ impl Robj {
         unsafe { Rf_isMatrix(self.get()) != 0 }
     }
 
-    /// Return true if this is a vector list or null.
-    pub fn is_new_list(&self) -> bool {
+    /// Return true if this is NILSXP or VECSXP.
+    pub fn is_list(&self) -> bool {
         unsafe { Rf_isNewList(self.get()) != 0 }
     }
 
-    /// Return true if this is a numeric vector but not a factor.
+    /// Return true if this is INTSXP, LGLSXP or REALSXP but not a factor.
     pub fn is_number(&self) -> bool {
         unsafe { Rf_isNumber(self.get()) != 0 }
     }
 
-    /// Return true if this is a pairlist.
-    pub fn is_pair_list(&self) -> bool {
-        unsafe { Rf_isPairList(self.get()) != 0 }
-    }
-
-    /// Return true if this is a primitive function.
+    /// Return true if this is a primitive function BUILTINSXP, SPECIALSXP.
     pub fn is_primitive(&self) -> bool {
         unsafe { Rf_isPrimitive(self.get()) != 0 }
     }
@@ -486,9 +486,23 @@ impl Robj {
         }
         false
     }
+
+    pub fn is_missing_arg(&self) -> bool {
+        unsafe { self.get() == R_MissingArg }
+    }
 }
 
-pub fn find_namespace(name: &str) -> Robj {
+///
+/// ```ignore
+///    use extendr_api::*;
+///    extendr_engine::start_r();
+///
+///    println!("{:?}", R!(getNamespace("stats")).unwrap());
+///    // assert_eq!(find_namespace("stats").is_some(), true);
+///    assert!(false);
+/// ```
+pub fn find_namespace(name: &str) -> Option<Robj> {
     let name = r!(Symbol(name));
-    single_threaded(|| unsafe { new_borrowed(R_FindNamespace(name.get())) })
+    let res = single_threaded(|| unsafe { new_borrowed(R_FindNamespace(name.get())) });
+    Some(res)
 }

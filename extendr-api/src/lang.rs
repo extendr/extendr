@@ -4,7 +4,7 @@
 use libR_sys::*;
 //use crate::robj::*;
 use crate::robj::Robj;
-use crate::single_threaded;
+use crate::{new_owned, single_threaded};
 
 /// Convert a list of tokens to an array of tuples.
 #[doc(hidden)]
@@ -43,7 +43,7 @@ macro_rules! args {
 
 #[doc(hidden)]
 pub unsafe fn append_with_name(tail: SEXP, obj: Robj, name: &str) -> SEXP {
-    single_threaded(||{
+    single_threaded(|| {
         let mut name = Vec::from(name.as_bytes());
         name.push(0);
         let cons = Rf_cons(obj.get(), R_NilValue);
@@ -67,8 +67,9 @@ pub unsafe fn append(tail: SEXP, obj: Robj) -> SEXP {
 pub unsafe fn make_lang(sym: &str) -> Robj {
     let mut name = Vec::from(sym.as_bytes());
     name.push(0);
-    let sexp = single_threaded(|| Rf_lang1(Rf_install(name.as_ptr() as *const std::os::raw::c_char)));
-    Robj::from(sexp)
+    let sexp =
+        single_threaded(|| Rf_lang1(Rf_install(name.as_ptr() as *const std::os::raw::c_char)));
+    new_owned(sexp)
 }
 
 /// Convert a list of tokens to an array of tuples.
@@ -102,6 +103,7 @@ macro_rules! append_lang {
 ///
 /// let vec = call!("c", 1.0, 2.0, 3.0).unwrap();
 /// assert_eq!(vec, r!([1., 2., 3.]));
+/// assert_eq!(vec.is_owned(), true);
 ///
 /// let list = call!("list", a=1, b=2).unwrap();
 /// assert_eq!(list.len(), 2);
@@ -147,4 +149,3 @@ macro_rules! lang {
         }
     };
 }
-

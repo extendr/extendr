@@ -9,7 +9,7 @@
 //!
 //! See [Robj] for much of the content of this crate.
 //! [Robj] provides a safe wrapper for the R object type.
-//! 
+//!
 //! Use attributes and macros to export to R.
 //! ```ignore
 //! use extendr_api::*;
@@ -19,12 +19,12 @@
 //!     a + 1
 //! }
 //!
-//! // define exports using extendr_module 
+//! // define exports using extendr_module
 //! extendr_module! {
 //!    mod mymodule;
 //!    fn fred;    
 //! }
-//! 
+//!
 //! ```
 //!
 //! In R:
@@ -59,6 +59,9 @@
 //!
 //! // A named list using the list! macro.
 //! let list = list!(a = 1, b = 2);
+//!
+//! // A symbol
+//! let sym = sym!(wombat);
 //! ```
 //!
 //! In Rust, we prefer to use iterators rather than loops.
@@ -68,12 +71,17 @@
 //! extendr_engine::start_r(); // Start test environment.
 //!
 //! // 1 ..= 100 is the same as 1:100
-//! let res = (1 ..= 100).collect_robj();
-//! assert_eq!(res.len(), 100);
+//! let res = r!(1 ..= 100);
+//! assert_eq!(res, R!(1:100).unwrap());
 //!
 //! // Rust arrays are zero-indexed so it is more common to use 0 .. 100.
-//! let res = (0 .. 100).collect_robj();
+//! let res = r!(0 .. 100);
 //! assert_eq!(res.len(), 100);
+//!
+//! // Using map is a super fast way to generate vectors.
+//! let iter = (0..3).map(|i| format!("fred{}", i));
+//! let character = iter.collect_robj();
+//! assert_eq!(character, r!(["fred0", "fred1", "fred2"]));
 //! ```
 //!
 //! To index a vector, first convert it to a slice and then
@@ -87,12 +95,47 @@
 //! let slice = vals.as_real_slice().unwrap();
 //! let one = slice[0];
 //! let two = slice[1];
-//! //let error = slice[2];
+//! // let error = slice[2];
+//! assert_eq!(one, 1.0);
+//! assert_eq!(two, 2.0);
 //! ```
 //!
-//! The [R!] macro lets you embed R code in Rust.
+//! Much slower, but more general are these methods:
+//! ```
+//! use extendr_api::*;        // Put API in scope.
+//! extendr_engine::start_r(); // Start test environment.
 //!
-//! The [r!] macro converts a rust object to an R object.
+//! let vals = r!([1.0, 2.0, 3.0]);
+//!
+//! // one-based indexing [[i]], returns an object.
+//! assert_eq!(vals.index(1).unwrap(), r!(1.0));
+//!
+//! // one-based slicing [x], returns an object.
+//! assert_eq!(vals.slice(1..=2).unwrap(), r!([1.0, 2.0]));
+//!
+//! // $ operator, returns an object
+//! let list = list!(a = 1.0, b = "xyz");
+//! assert_eq!(list.dollar("a").unwrap(), r!(1.0));
+//! ```
+//!
+//! The [R!] macro lets you embed R code in Rust
+//! but does not take variables.
+//! ```
+//! use extendr_api::*;        // Put API in scope.
+//! extendr_engine::start_r(); // Start test environment.
+//! // The text "1+1" is parsed as R source code.
+//! assert_eq!(R!(1+1).unwrap(), r!(2.0));
+//! ```
+//!
+//! The [r!] macro converts a rust object to an R object
+//! and takes parameters.
+//! ```
+//! use extendr_api::*;        // Put API in scope.
+//! extendr_engine::start_r(); // Start test environment.
+//! // The text "1.0+1.0" is parsed as Rust source code.
+//! let one = 1.0;
+//! assert_eq!(r!(one+1.0), r!(2.0));
+//! ```
 //!
 //! You can call R functions and primitives using the [call!] macro.
 //! ```
@@ -139,26 +182,28 @@
 //! let slice = robj.as_integer_slice().unwrap();
 //! ```
 
-#![doc(html_logo_url = "https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png")]
+#![doc(
+    html_logo_url = "https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png"
+)]
 
-mod lang;
 mod error;
+mod lang;
 mod logical;
 mod rmacros;
 mod robj;
-mod wrapper;
 mod thread_safety;
+mod wrapper;
 
 #[cfg(feature = "ndarray")]
 mod robj_ndarray;
 
-pub use lang::*;
 pub use error::*;
+pub use lang::*;
+pub use logical::*;
 pub use rmacros::*;
 pub use robj::*;
+pub use thread_safety::{handle_panic, single_threaded};
 pub use wrapper::*;
-pub use logical::*;
-pub use thread_safety::{single_threaded, handle_panic};
 
 #[cfg(feature = "ndarray")]
 pub use robj_ndarray::*;
@@ -415,10 +460,8 @@ mod tests {
             );
             wrap__robjtype(Robj::from(1).get());
 
-            // Note u8 is special as it makes the raw type
-            assert_eq!(new_borrowed(wrap__return_u8()), Robj::from(&[123_u8][..]));
-
             // General integer types.
+            assert_eq!(new_borrowed(wrap__return_u8()), Robj::from(123));
             assert_eq!(new_borrowed(wrap__return_u16()), Robj::from(123));
             assert_eq!(new_borrowed(wrap__return_u32()), Robj::from(123));
             assert_eq!(new_borrowed(wrap__return_u64()), Robj::from(123));
@@ -435,7 +478,6 @@ mod tests {
 
     #[test]
     fn r_output_test() {
-        
         // R equivalent
         // > txt_con <- textConnection("test_con", open = "w")
         // > sink(txt_con)

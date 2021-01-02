@@ -1,7 +1,6 @@
-
 /// Bool is a wrapper for i32 in the context of an R's tristate boolean.
 /// It can be TRUE, FALSE or NA_LOGICAL.
-#[derive(Debug, PartialEq, Eq)]
+#[derive(PartialEq, Eq)]
 pub struct Bool(pub i32);
 
 impl Bool {
@@ -55,5 +54,16 @@ impl From<Bool> for bool {
 impl From<&Bool> for bool {
     fn from(v: &Bool) -> Self {
         v.0 != 0
+    }
+}
+
+impl std::fmt::Debug for Bool {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Bool(0) => write!(f, "FALSE"),
+            Bool(1) => write!(f, "TRUE"),
+            Bool(std::i32::MIN) => write!(f, "NA_LOGICAL"),
+            _ => write!(f, "Bool({})", self.0),
+        }
     }
 }

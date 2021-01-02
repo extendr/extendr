@@ -21,4 +21,3 @@ pub fn unwrap_or_throw<T>(r: Result<T, &'static str>) -> T {
         }
     }
 }
-

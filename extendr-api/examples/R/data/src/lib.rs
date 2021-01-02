@@ -41,7 +41,7 @@ fn data(input: Robj) -> bool {
                     }
                 }
                 "a_list" => {
-                    if let Some(value) = value.list_iter() {
+                    if let Some(value) = value.as_list_iter() {
                         a_list = value.collect::<Vec<_>>();
                     }
                 }
@@ -56,7 +56,7 @@ fn data(input: Robj) -> bool {
                     }
                 }
                 "a_string_array" => {
-                    if let Some(value) = value.str_iter() {
+                    if let Some(value) = value.as_str_iter() {
                         a_string_array = value.map(|s| s.to_string()).collect::<Vec<_>>();
                     }
                 }

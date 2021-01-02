@@ -1,14 +1,15 @@
 use super::*;
+use std::marker::PhantomData;
 
-// Iterator over the objects in a vector or string.
+// Iterator over the objects in a VECSXP, EXPRSXP or WEAKREFSXP.
 #[derive(Clone)]
-pub struct VecIter {
+pub struct ListIter {
     vector: SEXP,
     i: usize,
     len: usize,
 }
 
-impl Iterator for VecIter {
+impl Iterator for ListIter {
     type Item = Robj;
 
     fn size_hint(&self) -> (usize, Option<usize>) {
@@ -21,7 +22,7 @@ impl Iterator for VecIter {
         if i >= self.len {
             return None;
         } else {
-            Some(Robj::from(unsafe { VECTOR_ELT(self.vector, i as isize) }))
+            Some(unsafe { new_owned(VECTOR_ELT(self.vector, i as isize)) })
         }
     }
 
@@ -31,7 +32,7 @@ impl Iterator for VecIter {
     }
 }
 
-impl std::fmt::Debug for VecIter {
+impl std::fmt::Debug for ListIter {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "[")?;
         for s in self.clone() {
@@ -42,7 +43,7 @@ impl std::fmt::Debug for VecIter {
 }
 
 /// Iterator over name-value pairs in lists.
-pub type NamedListIter = std::iter::Zip<StrIter, VecIter>;
+pub type NamedListIter = std::iter::Zip<StrIter, ListIter>;
 
 /// Iterator over primitives in integer objects.
 pub type IntegerIter<'a> = std::slice::Iter<'a, i32>;
@@ -61,7 +62,7 @@ pub type LogicalIter<'a> = std::slice::Iter<'a, Bool>;
 ///
 /// let my_list = list!(a = 1, b = 2);
 /// let mut total = 0;
-/// for robj in my_list.list_iter().unwrap() {
+/// for robj in my_list.as_list_iter().unwrap() {
 ///   if let Some(val) = robj.as_integer() {
 ///     total += val;
 ///   }
@@ -73,11 +74,11 @@ pub type LogicalIter<'a> = std::slice::Iter<'a, Bool>;
 /// }
 /// ```
 #[derive(Clone)]
-pub struct ListIter {
+pub struct PairlistIter {
     list_elem: SEXP,
 }
 
-impl ListIter {
+impl PairlistIter {
     /// Make an empty list iterator.
     pub fn new() -> Self {
         unsafe {
@@ -88,7 +89,7 @@ impl ListIter {
     }
 }
 
-impl Iterator for ListIter {
+impl Iterator for PairlistIter {
     type Item = Robj;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -104,7 +105,7 @@ impl Iterator for ListIter {
     }
 }
 
-impl std::fmt::Debug for ListIter {
+impl std::fmt::Debug for PairlistIter {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "[")?;
         for s in self.clone() {
@@ -113,6 +114,66 @@ impl std::fmt::Debug for ListIter {
         write!(f, "]")
     }
 }
+
+#[derive(Clone)]
+/// Iterator over pairlist tag names.
+/// ```
+/// use extendr_api::*;        // Put API in scope.
+/// extendr_engine::start_r(); // Start test environment.
+///
+/// let mut robj = R!(pairlist(a = 1, b = 2, 3)).unwrap();
+/// // let mut robj = pairlist!(a = 1, b = 2, 3);
+/// let tags : Vec<_> = robj.as_pairlist_tag_iter().unwrap().collect();
+/// assert_eq!(tags, vec![Some("a"), Some("b"), None]);
+/// ```
+pub struct PairlistTagIter<'a> {
+    list_elem: SEXP,
+    phantom: PhantomData<&'a ()>,
+}
+
+impl<'a> PairlistTagIter<'a> {
+    /// Make an empty list iterator.
+    pub fn new() -> Self {
+        unsafe {
+            Self {
+                list_elem: R_NilValue,
+                phantom: PhantomData,
+            }
+        }
+    }
+}
+
+// 'a is the lifetime of the pairlist.
+impl<'a> Iterator for PairlistTagIter<'a> {
+    type Item = Option<&'a str>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        unsafe {
+            let sexp = self.list_elem;
+            if sexp == R_NilValue {
+                None
+            } else {
+                self.list_elem = CDR(sexp);
+                if let Some(symbol) = new_borrowed::<'a>(TAG(sexp)).as_symbol() {
+                    Some(Some(std::mem::transmute(symbol.0)))
+                } else {
+                    Some(None)
+                }
+            }
+        }
+    }
+}
+
+impl<'a> std::fmt::Debug for PairlistTagIter<'a> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "[")?;
+        for s in self.clone() {
+            write!(f, "{:?}", s)?;
+        }
+        write!(f, "]")
+    }
+}
+
 /// Iterator over strings or string factors.
 ///
 /// ```
@@ -120,13 +181,13 @@ impl std::fmt::Debug for ListIter {
 /// extendr_engine::start_r(); // Start test environment.
 ///
 /// let robj = r!(["a", "b", "c"]);
-/// assert_eq!(robj.str_iter().unwrap().collect::<Vec<_>>(), vec!["a", "b", "c"]);
+/// assert_eq!(robj.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["a", "b", "c"]);
 ///
 /// let factor = factor!(["abcd", "def", "fg", "fg"]);
 /// assert_eq!(factor.levels().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg"]);
 /// assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);
-/// assert_eq!(factor.str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
-/// assert_eq!(factor.str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
+/// assert_eq!(factor.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
+/// assert_eq!(factor.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
 /// ```
 #[derive(Clone)]
 pub struct StrIter {
@@ -207,20 +268,19 @@ impl std::fmt::Debug for StrIter {
 }
 
 impl Robj {
-    /// Get an iterator over a pairlist, lang or ... object.
-    /// Note: we plan to combine list iterators into one.
+    /// Get an iterator over a pairlist objects.
     /// ```
     /// use extendr_api::*;        // Put API in scope.
     /// extendr_engine::start_r(); // Start test environment.
     ///
-    /// let mut robj = lang!("+", 1, 2);
-    /// let objects : Vec<_> = robj.pairlist_iter().unwrap().collect();
-    /// assert_eq!(objects, vec![r!(Symbol("+")), r!(1), r!(2)])
+    /// let mut robj = R!(pairlist(a = 1, b = 2, 3)).unwrap();
+    /// let objects : Vec<_> = robj.as_pairlist_iter().unwrap().collect();
+    /// assert_eq!(objects, vec![r!(1.0), r!(2.0), r!(3.0)])
     /// ```
-    pub fn pairlist_iter(&self) -> Option<ListIter> {
+    pub fn as_pairlist_iter(&self) -> Option<PairlistIter> {
         match self.sexptype() {
             LISTSXP | LANGSXP | DOTSXP => unsafe {
-                Some(ListIter {
+                Some(PairlistIter {
                     list_elem: self.get(),
                 })
             },
@@ -228,20 +288,41 @@ impl Robj {
         }
     }
 
-    /// Get an iterator over an unnamed list.
-    /// Note: we plan to combine list iterators into one.
+    /// Get an iterator over a pairlist tags.
+    /// ```
+    /// use extendr_api::*;        // Put API in scope.
+    /// extendr_engine::start_r(); // Start test environment.
+    ///
+    /// let mut robj = R!(pairlist(a = 1, b = 2, 3)).unwrap();
+    /// // let mut robj = pairlist!(a = 1, b = 2, 3);
+    /// let tags : Vec<_> = robj.as_pairlist_tag_iter().unwrap().collect();
+    /// assert_eq!(tags, vec![Some("a"), Some("b"), None]);
+    /// ```
+    pub fn as_pairlist_tag_iter<'a>(&self) -> Option<PairlistTagIter<'a>> {
+        match self.sexptype() {
+            LISTSXP | LANGSXP | DOTSXP => unsafe {
+                Some(PairlistTagIter {
+                    list_elem: self.get(),
+                    phantom: PhantomData,
+                })
+            },
+            _ => None,
+        }
+    }
+
+    /// Get an iterator over a list (VECSXP).
     /// ```
     /// use extendr_api::*;        // Put API in scope.
     /// extendr_engine::start_r(); // Start test environment.
     ///
     /// let mut robj = list!(1, 2, 3);
-    /// let objects : Vec<_> = robj.list_iter().unwrap().collect();
+    /// let objects : Vec<_> = robj.as_list_iter().unwrap().collect();
     /// assert_eq!(objects, vec![r!(1), r!(2), r!(3)])
     /// ```
-    pub fn list_iter(&self) -> Option<VecIter> {
+    pub fn as_list_iter(&self) -> Option<ListIter> {
         match self.sexptype() {
             VECSXP | EXPRSXP | WEAKREFSXP => unsafe {
-                Some(VecIter {
+                Some(ListIter {
                     vector: self.get(),
                     i: 0,
                     len: self.len(),
@@ -261,15 +342,15 @@ impl Robj {
     /// extendr_engine::start_r();
     ///
     /// let obj = Robj::from(vec!["a", "b", "c"]);
-    /// assert_eq!(obj.str_iter().unwrap().collect::<Vec<_>>(), vec!["a", "b", "c"]);
+    /// assert_eq!(obj.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["a", "b", "c"]);
     ///
     /// let factor = factor!(vec!["abcd", "def", "fg", "fg"]);
     /// assert_eq!(factor.levels().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg"]);
     /// assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);
-    /// assert_eq!(factor.str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
-    /// assert_eq!(factor.str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
+    /// assert_eq!(factor.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
+    /// assert_eq!(factor.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
     /// ```
-    pub fn str_iter(&self) -> Option<StrIter> {
+    pub fn as_str_iter(&self) -> Option<StrIter> {
         let i = 0;
         let len = self.len();
         match self.sexptype() {

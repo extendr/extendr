@@ -2,20 +2,7 @@ use super::*;
 use crate::single_threaded;
 
 fn str_to_character(s: &str) -> SEXP {
-    unsafe {
-        Rf_mkCharLen(
-            s.as_ptr() as *const raw::c_char,
-            s.len() as i32,
-        )
-    }
-}
-
-/// Borrow an already protected SEXP
-/// Note that the SEXP must outlive the generated object.
-impl From<SEXP> for Robj {
-    fn from(sexp: SEXP) -> Self {
-        unsafe { new_borrowed(sexp) }
-    }
+    unsafe { Rf_mkCharLen(s.as_ptr() as *const raw::c_char, s.len() as i32) }
 }
 
 /// Convert a null to an Robj.
@@ -29,9 +16,7 @@ impl From<()> for Robj {
 /// Convert a wrapped string ref to an Robj char object.
 impl<'a> From<Character<'a>> for Robj {
     fn from(val: Character) -> Self {
-        single_threaded(|| unsafe {
-            new_owned(str_to_character(val.0))
-        })
+        single_threaded(|| unsafe { new_owned(str_to_character(val.0)) })
     }
 }
 
@@ -84,7 +69,7 @@ pub trait ToVectorValue {
     where
         Self: Sized,
     {
-        unsafe { R_NaString }
+        unsafe { R_NilValue }
     }
 }
 
@@ -172,6 +157,7 @@ impl_integer_tvv!(i8);
 impl_integer_tvv!(i16);
 impl_integer_tvv!(i32);
 impl_integer_tvv!(i64);
+impl_integer_tvv!(u8);
 impl_integer_tvv!(u16);
 impl_integer_tvv!(u32);
 impl_integer_tvv!(u64);
@@ -292,32 +278,6 @@ impl ToVectorValue for Option<bool> {
     }
 }
 
-impl ToVectorValue for u8 {
-    fn sexptype() -> SEXPTYPE {
-        RAWSXP
-    }
-
-    fn to_raw(&self) -> u8
-    where
-        Self: Sized,
-    {
-        *self
-    }
-}
-
-impl ToVectorValue for &u8 {
-    fn sexptype() -> SEXPTYPE {
-        RAWSXP
-    }
-
-    fn to_raw(&self) -> u8
-    where
-        Self: Sized,
-    {
-        **self
-    }
-}
-
 // Not thread safe.
 unsafe fn fixed_size_collect<I>(iter: I, len: usize) -> Robj
 where
@@ -347,12 +307,6 @@ where
                 let ptr = LOGICAL(sexp);
                 for (i, v) in iter.enumerate() {
                     *ptr.offset(i as isize) = v.to_logical();
-                }
-            }
-            RAWSXP => {
-                let ptr = RAW(sexp);
-                for (i, v) in iter.enumerate() {
-                    *ptr.offset(i as isize) = v.to_raw();
                 }
             }
             STRSXP => {
@@ -402,9 +356,7 @@ pub trait RobjItertools: Iterator {
     {
         if let (len, Some(max)) = self.size_hint().clone() {
             if len == max {
-                return single_threaded(|| unsafe {
-                    fixed_size_collect(self, len)
-                });
+                return single_threaded(|| unsafe { fixed_size_collect(self, len) });
             }
         }
         // If the size is indeterminate, create a vector and call recursively.
