@@ -63,13 +63,30 @@ macro_rules! R {
 /// use extendr_api::*;
 /// extendr_engine::start_r();
 ///
-/// R!(myvar <- 1).unwrap();
+/// current_env().set_local(sym!(myvar), 1.0);
 /// assert_eq!(var!(myvar), Ok(r!(1.0)));
 /// ```
 #[macro_export]
 macro_rules! var {
     ($($tokens: tt)*) => {{
         local_var(sym!($($tokens)*))
+    }};
+}
+
+/// Get a global variable.
+///
+/// Variables with embedded "." may not work.
+/// ```
+/// use extendr_api::*;
+/// test! {
+///      // The "iris" dataset is a dataframe.
+///      assert_eq!(global!(iris)?.is_frame(), true);
+/// }
+/// ```
+#[macro_export]
+macro_rules! global {
+    ($($tokens: tt)*) => {{
+        global_var(sym!($($tokens)*))
     }};
 }
 
@@ -254,5 +271,21 @@ macro_rules! reprintln {
     ($($rest: tt)*) => {
         print_r_error(format!($($rest)*));
         print_r_error("\n");
+    };
+}
+
+/// Macro for running tests.
+///
+/// This allows us to use ? in example code instead of unwrap.
+#[macro_export]
+macro_rules! test {
+    () => {
+        test(|| Ok(()))
+    };
+    ($($rest: tt)*) => {
+        test(|| {
+            $($rest)*
+            Ok(())
+        })
     };
 }

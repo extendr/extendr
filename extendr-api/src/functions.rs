@@ -6,11 +6,10 @@ use crate::*;
 /// Use the Env{} wrapper for more detail.
 /// ```
 /// use extendr_api::*;
-/// test(|| {
+/// test! {
 ///     let env = new_env();
 ///     assert_eq!(env.len(), 0);
-///     Ok(())
-///})
+/// }
 /// ```
 pub fn new_env() -> Robj {
     // 14 is a reasonable default.
@@ -47,13 +46,10 @@ pub fn new_env_with_capacity(capacity: usize) -> Robj {
 /// See also [global_var()].
 /// ```
 /// use extendr_api::*;
-/// test(|| {
+/// test! {
 ///    let iris = global_var(sym!(iris))?;
 ///    assert_eq!(iris.len(), 5);
-///
-///    assert_eq!(var!(iris)?.is_frame(), true);
-///    Ok(())
-/// })
+/// }
 /// ```
 pub fn global_var<K : Into<Robj>>(key: K) -> Result<Robj, Error> {
     global_env()
@@ -72,11 +68,10 @@ pub fn global_var<K : Into<Robj>>(key: K) -> Result<Robj, Error> {
 /// See also [var!].
 /// ```
 /// use extendr_api::*;
-/// test(|| {
+/// test! {
 ///    current_env().set_local(sym!(my_var), 1);
 ///    assert_eq!(local_var(sym!(my_var))?, r!(1));
-///    Ok(())
-/// })
+/// }
 /// ```
 pub fn local_var<K : Into<Robj>>(key: K) -> Result<Robj, Error> {
     current_env()
@@ -88,12 +83,13 @@ pub fn local_var<K : Into<Robj>>(key: K) -> Result<Robj, Error> {
 /// Get a global function from global_env() and ancestors.
 /// ```
 /// use extendr_api::*;
-/// extendr_engine::start_r();
-/// let ls = global_function(sym!(ls)).unwrap();
-/// assert_eq!(ls.is_function(), true);
+/// test! {
+///     let ls = global_function(sym!(ls)).ok_or("ls failed")?;
+///     assert_eq!(ls.is_function(), true);
 ///
-/// // Note that the following will throw an R error as iris is not a function.
-/// // let iris = global_function(sym!(iris));
+///     // Note that the following will throw an R error as iris is not a function.
+///     // let iris = global_function(sym!(iris));
+/// }
 /// ```
 pub fn global_function<K : Into<Robj>>(key: K) -> Option<Robj> {
     global_env().find_function(key)
@@ -135,11 +131,10 @@ pub fn current_env() -> Robj {
 ///
 /// ```
 /// use extendr_api::*;
-/// test(|| {
+/// test! {
 ///     global_env().set_local(sym!(x), "hello");
 ///     assert_eq!(global_env().local(sym!(x)), Some(r!("hello")));
-///     Ok(())
-/// })
+/// }
 /// ```
 pub fn global_env() -> Robj {
     unsafe { new_sys(R_GlobalEnv) }
@@ -154,11 +149,10 @@ pub fn empty_env() -> Robj {
 ///
 /// ```
 /// use extendr_api::*;
-/// test(|| {
+/// test! {
 ///     global_env().set_local(sym!(x), "hello");
 ///     assert_eq!(base_env().local(sym!(+)), Some(r!(Primitive("+"))));
-///     Ok(())
-/// })
+/// }
 /// ```
 pub fn base_env() -> Robj {
     unsafe { new_sys(R_BaseEnv) }
@@ -167,10 +161,10 @@ pub fn base_env() -> Robj {
 /// The namespace for base.
 ///
 /// ```
-///    use extendr_api::*;
-///    extendr_engine::start_r();
-///
-///    assert_eq!(base_namespace().parent().unwrap(), global_env());
+/// use extendr_api::*;
+/// test! {
+///    assert_eq!(base_namespace().parent().ok_or("no parent")?, global_env());
+/// }
 /// ```
 pub fn base_namespace() -> Robj {
     unsafe { new_sys(R_BaseNamespace) }
@@ -371,6 +365,8 @@ pub fn blank_scalar_string() -> Robj {
 }
 
 /// Extendr test harness.
+///
+/// See also [test!]
 /// ```
 /// extendr_api::test(|| {
 ///   Ok(())
