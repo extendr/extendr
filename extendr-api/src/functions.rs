@@ -1,6 +1,123 @@
-use super::*;
+use crate::*;
+
+
+/// Create a new, empty environment parented on global_env()
+///
+/// Use the Env{} wrapper for more detail.
+/// ```
+/// use extendr_api::*;
+/// test(|| {
+///     let env = new_env();
+///     assert_eq!(env.len(), 0);
+///     Ok(())
+///})
+/// ```
+pub fn new_env() -> Robj {
+    // 14 is a reasonable default.
+    new_env_with_capacity(14)
+}
+
+/// Create a new, empty environment parented on global_env()
+/// with a reserved size.
+///
+/// This function will guess the hash table size if required.
+/// Use the Env{} wrapper for more detail.
+/// ```
+/// use extendr_api::*;
+/// extendr_engine::start_r();
+/// let env = new_env_with_capacity(5);
+/// env.set_local(sym!(a), 1);
+/// env.set_local(sym!(b), 2);
+/// assert_eq!(env.len(), 2);
+/// ```
+pub fn new_env_with_capacity(capacity: usize) -> Robj {
+    if capacity <= 5 {
+        // Unhashed envirnment
+        call!("new.env", FALSE, global_env(), 0).unwrap()
+    } else {
+        // Hashed environment, the pidgeon hole principle
+        // ensures there are empty slots in the hash table.
+        call!("new.env", TRUE, global_env(), capacity as i32*2+1).unwrap()
+    }
+}
+
+/// Get a global variable from global_env() and ancestors.
+/// If the result is a promise, evaulate the promise.
+///
+/// See also [global_var()].
+/// ```
+/// use extendr_api::*;
+/// test(|| {
+///    let iris = global_var(sym!(iris))?;
+///    assert_eq!(iris.len(), 5);
+///
+///    assert_eq!(var!(iris)?.is_frame(), true);
+///    Ok(())
+/// })
+/// ```
+pub fn global_var<K : Into<Robj>>(key: K) -> Result<Robj, Error> {
+    global_env()
+        .find_var(key)
+        .ok_or_else(|| Error::NotFound)
+        .and_then(|v| v.eval_promise())
+}
+
+/// Get a global function from global_env() and ancestors.
+/// ```
+/// use extendr_api::*;
+/// extendr_engine::start_r();
+/// let ls = global_function(sym!(ls)).unwrap();
+/// assert_eq!(ls.is_function(), true);
+///
+/// // Note that the following will throw an R error as iris is not a function.
+/// // let iris = global_function(sym!(iris));
+/// ```
+pub fn global_function<K : Into<Robj>>(key: K) -> Option<Robj> {
+    global_env().find_function(key)
+}
+
+/// Find a namespace by name.
+///
+/// See also [Robj::double_colon].
+/// ```
+///    use extendr_api::*;
+///    extendr_engine::start_r();
+///
+///    assert_eq!(find_namespace("base").is_some(), true);
+///    assert_eq!(find_namespace("stats").is_some(), true);
+/// ```
+pub fn find_namespace<K : Into<Robj>>(key: K) -> Option<Robj> {
+    // single_threaded(|| unsafe { new_borrowed(R_FindNamespace(key.get())) });
+    let res = single_threaded(|| call!(".getNamespace", key.into()));
+    if let Ok(res) = res {
+        Some(res)
+    } else {
+        None
+    }
+}
+
+/// The current interpreter environment.
+///
+/// ```
+///    use extendr_api::*;
+///    extendr_engine::start_r();
+///
+///    assert_eq!(current_env(), base_env());
+/// ```
+pub fn current_env() -> Robj {
+    unsafe { new_owned(R_GetCurrentEnv()) }
+}
 
 /// The "global" environment
+///
+/// ```
+/// use extendr_api::*;
+/// test(|| {
+///     global_env().set_local(sym!(x), "hello");
+///     assert_eq!(global_env().local(sym!(x)), Some(r!("hello")));
+///     Ok(())
+/// })
+/// ```
 pub fn global_env() -> Robj {
     unsafe { new_sys(R_GlobalEnv) }
 }
@@ -11,16 +128,39 @@ pub fn empty_env() -> Robj {
 }
 
 /// The base environment; formerly R_NilValue
+///
+/// ```
+/// use extendr_api::*;
+/// test(|| {
+///     global_env().set_local(sym!(x), "hello");
+///     assert_eq!(base_env().local(sym!(+)), Some(r!(Primitive("+"))));
+///     Ok(())
+/// })
+/// ```
 pub fn base_env() -> Robj {
     unsafe { new_sys(R_BaseEnv) }
 }
 
-/// The namespace for base
+/// The namespace for base.
+///
+/// ```
+///    use extendr_api::*;
+///    extendr_engine::start_r();
+///
+///    assert_eq!(base_namespace().parent().unwrap(), global_env());
+/// ```
 pub fn base_namespace() -> Robj {
     unsafe { new_sys(R_BaseNamespace) }
 }
 
-/// for registered namespaces
+/// For registered namespaces.
+///
+/// ```
+///    use extendr_api::*;
+///    extendr_engine::start_r();
+///
+///    assert_eq!(namespace_registry().is_environment(), true);
+/// ```
 pub fn namespace_registry() -> Robj {
     unsafe { new_sys(R_NamespaceRegistry) }
 }
@@ -205,4 +345,16 @@ pub fn blank_string() -> Robj {
 /// "" as a STRSXP
 pub fn blank_scalar_string() -> Robj {
     unsafe { new_sys(R_BlankScalarString) }
+}
+
+/// Extendr test harness.
+/// ```
+/// extendr_api::test(|| {
+///   Ok(())
+/// })
+/// ```
+pub fn test<F : FnOnce() -> Result<(), Error>>(f: F) {
+    extendr_engine::start_r();
+
+    f().unwrap();
 }

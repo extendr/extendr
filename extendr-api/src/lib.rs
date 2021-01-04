@@ -193,6 +193,7 @@ mod rmacros;
 mod robj;
 mod thread_safety;
 mod wrapper;
+mod functions;
 
 #[cfg(feature = "ndarray")]
 mod robj_ndarray;
@@ -204,6 +205,7 @@ pub use rmacros::*;
 pub use robj::*;
 pub use thread_safety::{handle_panic, single_threaded};
 pub use wrapper::*;
+pub use functions::*;
 
 #[cfg(feature = "ndarray")]
 pub use robj_ndarray::*;
@@ -221,9 +223,6 @@ use libR_sys::*;
 
 #[doc(hidden)]
 use std::ffi::CString;
-
-/// Generic dynamic error type.
-pub type AnyError = Box<dyn std::error::Error + Send + Sync>;
 
 #[doc(hidden)]
 pub struct CallMethod {

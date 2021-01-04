@@ -12,9 +12,7 @@
 use libR_sys::*;
 use std::os::raw;
 
-use crate::logical::*;
-use crate::wrapper::*;
-use crate::{single_threaded, AnyError, IsNA};
+use crate::*;
 
 use std::collections::HashMap;
 use std::iter::IntoIterator;
@@ -25,7 +23,6 @@ mod into_robj;
 mod iter;
 mod operators;
 mod rinternals;
-mod symbols;
 
 #[cfg(test)]
 mod tests;
@@ -35,7 +32,6 @@ pub use into_robj::*;
 pub use iter::*;
 pub use operators::*;
 pub use rinternals::*;
-pub use symbols::*;
 
 /// Wrapper for an R S-expression pointer (SEXP).
 ///
@@ -205,6 +201,66 @@ impl Robj {
     /// ```
     pub fn len(&self) -> usize {
         unsafe { Rf_xlength(self.get()) as usize }
+    }
+
+    /// Get a variable from an enviroment, but not its ancestors.
+    /// ```
+    /// use extendr_api::*;        // Put API in scope.
+    /// extendr_engine::start_r(); // Start test environment.
+    ///
+    /// let env = new_env();
+    /// env.set_local(sym!(x), "fred");
+    /// assert_eq!(env.local(sym!(x)), Some(r!("fred")));
+    /// ```
+    pub fn local<K: Into<Robj>>(&self, key: K) -> Option<Robj> {
+        let key = key.into();
+        if self.is_environment() && key.is_symbol() {
+            unsafe { Some(new_owned(Rf_findVarInFrame3(self.get(), key.get(), 1))) }
+        } else {
+            None
+        }
+    }
+
+    /// Set or define a variable in an enviroment.
+    /// ```
+    /// use extendr_api::*;        // Put API in scope.
+    /// extendr_engine::start_r(); // Start test environment.
+    ///
+    /// let env = new_env();
+    /// env.set_local(sym!(x), "harry");
+    /// env.set_local(sym!(x), "fred");
+    /// assert_eq!(env.local(sym!(x)), Some(r!("fred")));
+    /// ```
+    pub fn set_local<K: Into<Robj>, V: Into<Robj>>(&self, key: K, value: V) {
+        let key = key.into();
+        let value = value.into();
+        if self.is_environment() && key.is_symbol() {
+            single_threaded(|| unsafe {
+                Rf_defineVar(key.get(), value.get(), self.get());
+            })
+        }
+    }
+
+    /// Get the parent of an environment.
+    /// ```
+    /// use extendr_api::*;        // Put API in scope.
+    /// extendr_engine::start_r(); // Start test environment.
+    ///
+    /// let global_parent = global_env().parent().unwrap();
+    /// assert_eq!(global_parent.is_environment(), true);
+    /// assert_eq!(base_env().parent(), None);
+    /// assert_eq!(r!(1).parent(), None);
+    /// ```
+    pub fn parent(&self) -> Option<Robj> {
+        unsafe {
+            if self.is_environment() {
+                let parent = ENCLOS(self.get());
+                if Rf_isEnvironment(parent) != 0 && parent != R_EmptyEnv {
+                    return Some(new_owned(parent));
+                }
+            }
+            None
+        }
     }
 
     /// Is this object is an NA scalar?
@@ -597,12 +653,12 @@ impl Robj {
     ///    let add = lang!("+", 1, 2);
     ///    assert_eq!(add.eval().unwrap(), r!(3));
     /// ```
-    pub fn eval(&self) -> Result<Robj, AnyError> {
+    pub fn eval(&self) -> Result<Robj, Error> {
         single_threaded(|| unsafe {
             let mut error: raw::c_int = 0;
             let res = R_tryEval(self.get(), R_GlobalEnv, &mut error as *mut raw::c_int);
             if error != 0 {
-                Err(AnyError::from("R eval error"))
+                Err(Error::from("R eval error"))
             } else {
                 Ok(new_owned(res))
             }
@@ -632,7 +688,7 @@ impl Robj {
     ///    let expr = Robj::parse("1 + 2").unwrap();
     ///    assert!(expr.is_expr());
     /// ```
-    pub fn parse(code: &str) -> Result<Robj, AnyError> {
+    pub fn parse(code: &str) -> Result<Robj, Error> {
         single_threaded(|| unsafe {
             use libR_sys::*;
             let mut status = 0_u32;
@@ -641,7 +697,7 @@ impl Robj {
             let parsed = new_owned(R_ParseVector(code.get(), -1, status_ptr, R_NilValue));
             match status {
                 1 => Ok(parsed),
-                _ => Err(AnyError::from("parse_error")),
+                _ => Err(Error::ParseError),
             }
         })
     }
@@ -653,7 +709,7 @@ impl Robj {
     ///    let res = Robj::eval_string("1 + 2").unwrap();
     ///    assert_eq!(res, r!(3.));
     /// ```
-    pub fn eval_string(code: &str) -> Result<Robj, AnyError> {
+    pub fn eval_string(code: &str) -> Result<Robj, Error> {
         single_threaded(|| {
             let expr = Robj::parse(code)?;
             let mut res = Robj::from(());
@@ -937,6 +993,44 @@ impl Robj {
             None
         }
     }
+
+    /// Get the names in an environment.
+    /// ```
+    ///    use extendr_api::*;
+    ///    extendr_engine::start_r();
+    ///
+    ///    let names_and_values : std::collections::HashMap<_, _> = (0..4).map(|i| (format!("n{}", i), r!(i))).collect();
+    ///    let env = r!(Env{parent: global_env(), names_and_values});
+    ///    assert_eq!(env.ls().unwrap(), vec!["n0".to_string(), "n1".to_string(), "n2".to_string(), "n3".to_string()]);
+    /// ```
+    pub fn ls(&self) -> Option<Vec<String>> {
+        if self.is_environment() {
+            let mut names = Vec::new();
+            unsafe {
+                let hashtab = new_owned(HASHTAB(self.get()));
+                let frame = new_owned(FRAME(self.get()));
+                if let Some(as_list_iter) = hashtab.as_list_iter() {
+                    for frame in as_list_iter {
+                        if let Some(tag_iter) = frame.as_pairlist_tag_iter() {
+                            for tag in tag_iter {
+                                if tag.is_some() {
+                                    names.push(tag.unwrap().to_string());
+                                }
+                            }
+                        }
+                    }
+                } else if let Some(tag_iter) = frame.as_pairlist_tag_iter() {
+                    for tag in tag_iter {
+                        if tag.is_some() {
+                            names.push(tag.unwrap().to_string());
+                        }
+                    }
+                }
+            }
+            return Some(names);
+        }
+        None
+    }
 }
 
 #[doc(hidden)]
@@ -953,7 +1047,7 @@ where
     Robj::Borrowed(sexp)
 }
 
-#[doc(hidden)]
+#[doc(hidden)]  
 pub unsafe fn new_sys(sexp: SEXP) -> Robj {
     Robj::Sys(sexp)
 }
@@ -997,7 +1091,7 @@ impl PartialEq<Robj> for Robj {
                         .unwrap()
                         .eq(rhs.as_pairlist_iter().unwrap()),
                     CLOSXP => false,
-                    ENVSXP => self.as_env() == rhs.as_env(),
+                    ENVSXP => self.as_environment() == rhs.as_environment(),
                     PROMSXP => false,
                     SPECIALSXP => false,
                     BUILTINSXP => false,
@@ -1034,6 +1128,8 @@ impl std::fmt::Debug for Robj {
             SYMSXP => {
                 if self.is_missing_arg() {
                     write!(f, "missing_arg()")
+                } else if self.is_unbound_value() {
+                    write!(f, "unbound_value()")
                 } else {
                     write!(f, "sym!({})", self.as_symbol().unwrap().0)
                 }
@@ -1049,7 +1145,7 @@ impl std::fmt::Debug for Robj {
                 } else if sexp == R_EmptyEnv {
                     write!(f, "empty_env()")
                 } else {
-                    write!(f, "r!({:?})", self.as_env().unwrap())
+                    write!(f, "r!({:?})", self.as_environment().unwrap())
                 }
             },
             PROMSXP => write!(f, "r!(Promise())"),

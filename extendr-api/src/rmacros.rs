@@ -56,6 +56,22 @@ macro_rules! R {
     };
 }
 
+/// Get a global variable.
+///
+/// ```
+/// use extendr_api::*;
+/// extendr_engine::start_r();
+///
+/// R!(myvar <- 1).unwrap();
+/// assert_eq!(var!(myvar), Ok(r!(1.0)));
+/// ```
+#[macro_export]
+macro_rules! var {
+    ($($tokens: tt)*) => {{
+        global_var(sym!($($tokens)*))
+    }};
+}
+
 /// The sym! macro install symbols.
 /// You should cache your symbols in variables
 /// as generating them is costly.
@@ -68,8 +84,8 @@ macro_rules! R {
 /// ```
 #[macro_export]
 macro_rules! sym {
-    ($($t:tt)*) => {
-        Robj::from(Symbol(stringify!($($t)*)))
+    ($($tokens: tt)*) => {
+        Robj::from(Symbol(stringify!($($tokens)*)))
     };
 }
 

@@ -131,6 +131,14 @@ pub struct Func<F, B, E> {
     pub env: E,
 }
 
+#[derive(Debug, PartialEq, Clone)]
+pub struct Promise<C, E, V> {
+    pub code: C,
+    pub env: E,
+    pub value: V,
+    pub seen: bool
+}
+
 /// Wrapper for creating and reading Primitive functions.
 ///
 /// ```
@@ -355,9 +363,18 @@ impl Robj {
     /// ```
     pub fn as_symbol(&self) -> Option<Symbol> {
         if self.is_symbol() {
-            Some(Symbol(unsafe {
-                to_str(R_CHAR(PRINTNAME(self.get())) as *const u8)
-            }))
+            unsafe {
+                let printname = PRINTNAME(self.get());
+                if TYPEOF(printname) as u32 == CHARSXP {
+                    Some(Symbol(
+                        to_str(R_CHAR(printname) as *const u8)
+                    ))
+                } else {
+                    Some(Symbol(
+                        "bad symbol"
+                    ))
+                }
+            }
         } else {
             None
         }
@@ -492,10 +509,10 @@ impl Robj {
     /// let env = Env{parent: global_env(), names_and_values};
     /// let expr = r!(env.clone());
     /// assert_eq!(expr.len(), 100);
-    /// let env2 = expr.as_env().unwrap();
+    /// let env2 = expr.as_environment().unwrap();
     /// assert_eq!(env2, env);
     /// ```
-    pub fn as_env(&self) -> Option<Env<Robj, HashMap<String, Robj>>> {
+    pub fn as_environment(&self) -> Option<Env<Robj, HashMap<String, Robj>>> {
         if self.sexptype() == ENVSXP {
             unsafe {
                 let parent = new_owned(ENCLOS(self.get()));
@@ -508,7 +525,7 @@ impl Robj {
                             (frame.as_pairlist_iter(), frame.as_pairlist_tag_iter())
                         {
                             for (obj, tag) in obj_iter.zip(tag_iter) {
-                                if !obj.is_null() && tag.is_some() {
+                                if !obj.is_unbound_value() && tag.is_some() {
                                     names_and_values.insert(tag.unwrap().to_string(), obj);
                                 }
                             }
@@ -518,7 +535,7 @@ impl Robj {
                     (frame.as_pairlist_iter(), frame.as_pairlist_tag_iter())
                 {
                     for (obj, tag) in obj_iter.zip(tag_iter) {
-                        if !obj.is_null() && tag.is_some() {
+                        if !obj.is_unbound_value() && tag.is_some() {
                             names_and_values.insert(tag.unwrap().to_string(), obj);
                         }
                     }
@@ -572,4 +589,21 @@ impl Robj {
     //         _ => None,
     //     }
     // }
+
+    /// Get a wrapper for a promise.
+    pub fn as_promise(&self) -> Option<Promise<Robj, Robj, Robj>> {
+        if self.is_promise() {
+            unsafe {
+                let sexp = self.get();
+                Some(Promise {
+                    code: new_owned(PRCODE(sexp)),
+                    env: new_owned(PRENV(sexp)),
+                    value: new_owned(PRVALUE(sexp)),
+                    seen: PRSEEN(sexp) != 0
+                })
+            }
+        } else {
+            None
+        }
+    }
 }

@@ -1,4 +1,4 @@
-use super::*;
+use crate::*;
 use std::marker::PhantomData;
 
 // Iterator over the objects in a VECSXP, EXPRSXP or WEAKREFSXP.
@@ -218,9 +218,13 @@ fn str_from_strsxp<'a>(sexp: SEXP, index: isize) -> &'a str {
             ""
         } else {
             let charsxp = STRING_ELT(sexp, index);
-            let ptr = R_CHAR(charsxp) as *const u8;
-            let slice = std::slice::from_raw_parts(ptr, Rf_xlength(charsxp) as usize);
-            std::str::from_utf8_unchecked(slice)
+            if TYPEOF(charsxp) == CHARSXP as i32 {
+                let ptr = R_CHAR(charsxp) as *const u8;
+                let slice = std::slice::from_raw_parts(ptr, Rf_xlength(charsxp) as usize);
+                std::str::from_utf8_unchecked(slice)
+            } else {
+                "error: not a char"
+            }
         }
     }
 }
@@ -288,7 +292,7 @@ impl Robj {
         }
     }
 
-    /// Get an iterator over a pairlist tags.
+    /// Get an iterator over pairlist tags.
     /// ```
     /// use extendr_api::*;        // Put API in scope.
     /// extendr_engine::start_r(); // Start test environment.

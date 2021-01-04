@@ -21,3 +21,4 @@
 
 # CLion support files
 **/.idea
+.vscode/tasks.json

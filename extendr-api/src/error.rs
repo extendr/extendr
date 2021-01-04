@@ -21,3 +21,43 @@ pub fn unwrap_or_throw<T>(r: Result<T, &'static str>) -> T {
         }
     }
 }
+
+#[derive(Debug, PartialEq)]
+pub enum Error {
+    NotFound,
+    NotAVectorType,
+    ParseError,
+    Other(String),
+}
+
+impl std::fmt::Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
+
+impl std::error::Error for Error {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        None
+    }
+}
+
+impl From<Box<dyn std::error::Error>> for Error {
+    fn from(err: Box<dyn std::error::Error>) -> Error {
+        Error::Other(format!("{}", err))
+    }
+}
+
+impl From<&str> for Error {
+    fn from(err: &str) -> Error {
+        Error::Other(err.to_string())
+    }
+}
+
+// NoneError is unstable.
+//
+// impl From<std::option::NoneError> for Error {
+//     fn from(err: std::option::NoneError) -> Error {
+//         Error::None
+//     }
+// }
