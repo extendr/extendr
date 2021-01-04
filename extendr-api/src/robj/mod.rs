@@ -653,7 +653,7 @@ impl Robj {
     ///    let add = lang!("+", 1, 2);
     ///    assert_eq!(add.eval().unwrap(), r!(3));
     /// ```
-    pub fn eval(&self) -> Result<Robj, Error> {
+    pub fn eval(&self) -> Result<Robj> {
         single_threaded(|| unsafe {
             let mut error: raw::c_int = 0;
             let res = R_tryEval(self.get(), R_GlobalEnv, &mut error as *mut raw::c_int);
@@ -688,7 +688,7 @@ impl Robj {
     ///    let expr = Robj::parse("1 + 2").unwrap();
     ///    assert!(expr.is_expr());
     /// ```
-    pub fn parse(code: &str) -> Result<Robj, Error> {
+    pub fn parse(code: &str) -> Result<Robj> {
         single_threaded(|| unsafe {
             use libR_sys::*;
             let mut status = 0_u32;
@@ -709,7 +709,7 @@ impl Robj {
     ///    let res = Robj::eval_string("1 + 2").unwrap();
     ///    assert_eq!(res, r!(3.));
     /// ```
-    pub fn eval_string(code: &str) -> Result<Robj, Error> {
+    pub fn eval_string(code: &str) -> Result<Robj> {
         single_threaded(|| {
             let expr = Robj::parse(code)?;
             let mut res = Robj::from(());

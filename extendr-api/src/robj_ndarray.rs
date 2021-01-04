@@ -13,7 +13,7 @@ impl<'a, T> FromRobj<'a> for ArrayView1<'a, T>
 where
     Robj: AsTypedSlice<T>,
 {
-    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
         if let Some(v) = robj.as_typed_slice() {
             Ok(ArrayView1::<'a, T>::from(v))
         } else {
@@ -25,7 +25,7 @@ where
 macro_rules! make_array_view_2 {
     ($type: ty, $fn: tt, $error_str: tt, $($sexp: tt),* ) => {
         impl<'a> FromRobj<'a> for ArrayView2<'a, $type> {
-            fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+            fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
                 match robj.sexptype() {
                     $( $sexp )|* => unsafe {
                         let ptr = $fn(robj.get()) as *const $type;

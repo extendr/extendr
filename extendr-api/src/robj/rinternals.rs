@@ -200,7 +200,7 @@ impl Robj {
     ///    let iris_dataframe = iris_promise.eval_promise().unwrap();
     ///    assert_eq!(iris_dataframe.is_frame(), true);
     /// ```
-    pub fn eval_promise(&self) -> Result<Robj, Error> {
+    pub fn eval_promise(&self) -> Result<Robj> {
         if self.is_promise() {
             let promise = self.as_promise().unwrap();
             if !promise.value.is_unbound_value() {
@@ -280,7 +280,7 @@ impl Robj {
 
     /// Copy a vector and resize it.
     /// See. https://github.com/hadley/r-internals/blob/master/vectors.md
-    pub fn xlengthgets(&self, new_len: usize) -> Result<Robj, Error> {
+    pub fn xlengthgets(&self, new_len: usize) -> Result<Robj> {
         unsafe {
             if self.is_vector() {
                 Ok(single_threaded(|| {

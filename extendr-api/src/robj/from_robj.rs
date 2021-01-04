@@ -3,7 +3,7 @@ use super::*;
 /// Trait used for incomming parameter conversion.
 pub trait FromRobj<'a>: Sized {
     // Convert an incomming Robj from R into a value or an error.
-    fn from_robj(_robj: &'a Robj) -> Result<Self, &'static str> {
+    fn from_robj(_robj: &'a Robj) -> std::result::Result<Self, &'static str> {
         Err("unable to convert value from R object")
     }
 }
@@ -11,7 +11,7 @@ pub trait FromRobj<'a>: Sized {
 macro_rules! impl_prim_from_robj {
     ($t: ty) => {
         impl<'a> FromRobj<'a> for $t {
-            fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+            fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
                 if let Some(v) = robj.as_integer_slice() {
                     match v.len() {
                         0 => Err("Input must be of length 1. Vector of length zero given."),
@@ -56,7 +56,7 @@ impl_prim_from_robj!(f32);
 impl_prim_from_robj!(f64);
 
 impl<'a> FromRobj<'a> for bool {
-    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
         if let Some(v) = robj.as_logical_slice() {
             match v.len() {
                 0 => Err("Input must be of length 1. Vector of length zero given."),
@@ -76,7 +76,7 @@ impl<'a> FromRobj<'a> for bool {
 }
 
 impl<'a> FromRobj<'a> for &'a str {
-    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
         if robj.is_na() {
             Err("Input must not be NA.")
         } else if let Some(s) = robj.as_str() {
@@ -88,7 +88,7 @@ impl<'a> FromRobj<'a> for &'a str {
 }
 
 impl<'a> FromRobj<'a> for String {
-    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
         if robj.is_na() {
             Err("Input must not be NA.")
         } else if let Some(s) = robj.as_str() {
@@ -100,7 +100,7 @@ impl<'a> FromRobj<'a> for String {
 }
 
 impl<'a> FromRobj<'a> for Vec<i32> {
-    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
         if let Some(v) = robj.as_integer_slice() {
             Ok(Vec::from(v))
         } else {
@@ -110,7 +110,7 @@ impl<'a> FromRobj<'a> for Vec<i32> {
 }
 
 impl<'a> FromRobj<'a> for Vec<f64> {
-    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
         if let Some(v) = robj.as_real_slice() {
             Ok(Vec::from(v))
         } else {
@@ -122,7 +122,7 @@ impl<'a> FromRobj<'a> for Vec<f64> {
 macro_rules! impl_iter_from_robj {
     ($t: ty, $iter_fn: ident, $msg: expr) => {
         impl<'a> FromRobj<'a> for $t {
-            fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+            fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
                 if let Some(v) = robj.$iter_fn() {
                     Ok(v)
                 } else {
@@ -141,13 +141,13 @@ impl_iter_from_robj!(LogicalIter<'a>, as_logical_iter, "Not a logical vector.");
 
 /// Pass-through Robj conversion.
 impl<'a> FromRobj<'a> for Robj {
-    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
         Ok(unsafe { new_borrowed(robj.get()) })
     }
 }
 
 impl<'a> FromRobj<'a> for HashMap<String, Robj> {
-    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
         if let Some(iter) = robj.as_named_list_iter() {
             Ok(iter
                 .map(|(k, v)| (k.to_string(), v.to_owned()))
@@ -159,7 +159,7 @@ impl<'a> FromRobj<'a> for HashMap<String, Robj> {
 }
 
 impl<'a> FromRobj<'a> for HashMap<&str, Robj> {
-    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
         if let Some(iter) = robj.as_named_list_iter() {
             Ok(iter.map(|(k, v)| (k, v)).collect::<HashMap<&str, Robj>>())
         } else {
@@ -170,7 +170,7 @@ impl<'a> FromRobj<'a> for HashMap<&str, Robj> {
 
 // NA-sensitive integer input handling
 impl<'a> FromRobj<'a> for Option<i32> {
-    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
         if robj.is_na() {
             Ok(None)
         } else if let Some(val) = robj.as_integer() {
@@ -183,7 +183,7 @@ impl<'a> FromRobj<'a> for Option<i32> {
 
 // NA-sensitive logical input handling
 impl<'a> FromRobj<'a> for Option<bool> {
-    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
         if let Some(val) = robj.as_logical() {
             if val.is_na() {
                 Ok(None)
@@ -198,7 +198,7 @@ impl<'a> FromRobj<'a> for Option<bool> {
 
 // NA-sensitive real input handling
 impl<'a> FromRobj<'a> for Option<f64> {
-    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
         if robj.is_na() {
             Ok(None)
         } else if let Some(val) = robj.as_real() {
@@ -211,7 +211,7 @@ impl<'a> FromRobj<'a> for Option<f64> {
 
 // NA-sensitive string input handling
 impl<'a> FromRobj<'a> for Option<&'a str> {
-    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
         if robj.is_na() {
             Ok(None)
         } else if let Some(val) = robj.as_str() {
@@ -224,7 +224,7 @@ impl<'a> FromRobj<'a> for Option<&'a str> {
 
 // NA-sensitive string input handling
 impl<'a> FromRobj<'a> for Option<String> {
-    fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
         if robj.is_na() {
             Ok(None)
         } else if let Some(val) = robj.as_str() {

@@ -51,7 +51,7 @@ pub fn new_env_with_capacity(capacity: usize) -> Robj {
 ///    assert_eq!(iris.len(), 5);
 /// }
 /// ```
-pub fn global_var<K : Into<Robj>>(key: K) -> Result<Robj, Error> {
+pub fn global_var<K : Into<Robj>>(key: K) -> Result<Robj> {
     global_env()
         .find_var(key)
         .ok_or_else(|| Error::NotFound)
@@ -73,7 +73,7 @@ pub fn global_var<K : Into<Robj>>(key: K) -> Result<Robj, Error> {
 ///    assert_eq!(local_var(sym!(my_var))?, r!(1));
 /// }
 /// ```
-pub fn local_var<K : Into<Robj>>(key: K) -> Result<Robj, Error> {
+pub fn local_var<K : Into<Robj>>(key: K) -> Result<Robj> {
     current_env()
         .find_var(key)
         .ok_or_else(|| Error::NotFound)
@@ -372,7 +372,7 @@ pub fn blank_scalar_string() -> Robj {
 ///   Ok(())
 /// })
 /// ```
-pub fn test<F : FnOnce() -> Result<(), Error>>(f: F) {
+pub fn test<F : FnOnce() -> Result<()>>(f: F) {
     extendr_engine::start_r();
 
     f().unwrap();

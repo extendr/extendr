@@ -354,7 +354,7 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
 
         // Input conversion function for this type.
         impl<'a> extendr_api::FromRobj<'a> for &#self_ty {
-            fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+            fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
                 if robj.check_external_ptr(#self_ty_name) {
                     Ok(unsafe { std::mem::transmute(robj.externalPtrAddr::<#self_ty>()) })
                 } else {
@@ -365,7 +365,7 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
 
         // Input conversion function for a reference to this type.
         impl<'a> extendr_api::FromRobj<'a> for &mut #self_ty {
-            fn from_robj(robj: &'a Robj) -> Result<Self, &'static str> {
+            fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
                 if robj.check_external_ptr(#self_ty_name) {
                     Ok(unsafe { std::mem::transmute(robj.externalPtrAddr::<#self_ty>()) })
                 } else {

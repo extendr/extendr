@@ -13,6 +13,30 @@ impl From<()> for Robj {
     }
 }
 
+/// Convert a Result to an Robj. This is used to allow
+/// functions to use the ? operator and return [Result<T>].
+///
+/// Panics if there is an error.
+/// ```
+/// use extendr_api::*;
+/// fn my_func() -> Result<f64> {
+///     Ok(1.0)
+/// }
+///
+/// test! {
+///     assert_eq!(r!(my_func()), r!(1.0));
+/// }
+/// ```
+impl<T> From<Result<T>> for Robj
+where
+    T : Into<Robj>
+{
+    fn from(res: Result<T>) -> Self {
+        // Force a panic on error.
+        res.unwrap().into()
+    }
+}
+
 /// Convert a wrapped string ref to an Robj char object.
 impl<'a> From<Character<'a>> for Robj {
     fn from(val: Character) -> Self {

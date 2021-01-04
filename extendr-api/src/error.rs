@@ -7,7 +7,7 @@ static mut R_ERROR_BUF: Vec<u8> = Vec::new();
 
 /// Throw an R error if a result is an error.
 #[doc(hidden)]
-pub fn unwrap_or_throw<T>(r: Result<T, &'static str>) -> T {
+pub fn unwrap_or_throw<T>(r: std::result::Result<T, &'static str>) -> T {
     unsafe {
         match r {
             Err(e) => {
@@ -29,6 +29,8 @@ pub enum Error {
     ParseError,
     Other(String),
 }
+
+pub type Result<T> = std::result::Result<T, Error>;
 
 impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

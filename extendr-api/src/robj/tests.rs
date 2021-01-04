@@ -164,7 +164,7 @@ fn test_to_robj() {
 }
 
 #[test]
-fn parse_test() -> Result<(), Error> {
+fn parse_test() -> Result<()> {
     extendr_engine::start_r();
     let p = Robj::parse("print(1L);print(1L);")?;
     let q = r!(Expr(&[
@@ -179,7 +179,7 @@ fn parse_test() -> Result<(), Error> {
 }
 
 #[test]
-fn output_iterator_test() -> Result<(), Error> {
+fn output_iterator_test() -> Result<()> {
     extendr_engine::start_r();
 
     // Allocation where size is known in advance.
