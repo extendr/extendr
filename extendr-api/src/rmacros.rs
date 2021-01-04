@@ -35,6 +35,9 @@ macro_rules! r {
 
 /// Call inline R source code from Rust.
 ///
+/// Multiline expressions and variables with embedded "." may not work.
+/// Note that the performance of this function is not good.
+///
 /// ```
 /// use extendr_api::*;
 /// extendr_engine::start_r();
@@ -42,12 +45,8 @@ macro_rules! r {
 /// let formula = R!(y ~ z + 1).unwrap();
 /// assert!(formula.inherits("formula"));
 ///
-/// // Currently, multiline calls require semicolons as the newlines are lost.
-/// let x = R!({
-///    x <- function() { 1 };
-///    x()
-/// }).unwrap();
-/// assert_eq!(x, r!(1.));
+/// let function = R!(function(x,y) x+y).unwrap();
+/// assert!(function.is_function());
 /// ```
 #[macro_export]
 macro_rules! R {
@@ -56,8 +55,10 @@ macro_rules! R {
     };
 }
 
-/// Get a global variable.
+/// Get a local variable from the calling function
+/// or a global variable if no such variable exists.
 ///
+/// Variables with embedded "." may not work.
 /// ```
 /// use extendr_api::*;
 /// extendr_engine::start_r();
@@ -68,7 +69,7 @@ macro_rules! R {
 #[macro_export]
 macro_rules! var {
     ($($tokens: tt)*) => {{
-        global_var(sym!($($tokens)*))
+        local_var(sym!($($tokens)*))
     }};
 }
 

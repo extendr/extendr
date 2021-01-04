@@ -62,6 +62,29 @@ pub fn global_var<K : Into<Robj>>(key: K) -> Result<Robj, Error> {
         .and_then(|v| v.eval_promise())
 }
 
+/// Get a local variable from current_env() and ancestors.
+///
+/// If the result is a promise, evaulate the promise.
+/// The result will come from the calling enviroment
+/// of an R function which will enable you to use variables
+/// from the caller.
+///
+/// See also [var!].
+/// ```
+/// use extendr_api::*;
+/// test(|| {
+///    current_env().set_local(sym!(my_var), 1);
+///    assert_eq!(local_var(sym!(my_var))?, r!(1));
+///    Ok(())
+/// })
+/// ```
+pub fn local_var<K : Into<Robj>>(key: K) -> Result<Robj, Error> {
+    current_env()
+        .find_var(key)
+        .ok_or_else(|| Error::NotFound)
+        .and_then(|v| v.eval_promise())
+}
+
 /// Get a global function from global_env() and ancestors.
 /// ```
 /// use extendr_api::*;
