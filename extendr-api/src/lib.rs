@@ -198,6 +198,7 @@ mod rmacros;
 mod robj;
 mod thread_safety;
 mod wrapper;
+mod matrix;
 
 #[cfg(feature = "ndarray")]
 mod robj_ndarray;
@@ -210,6 +211,7 @@ pub use rmacros::*;
 pub use robj::*;
 pub use thread_safety::{handle_panic, single_threaded};
 pub use wrapper::*;
+pub use matrix::*;
 
 #[cfg(feature = "ndarray")]
 pub use robj_ndarray::*;
