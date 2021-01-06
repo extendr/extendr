@@ -6,7 +6,7 @@
         {
             "label": "test",
             "type": "shell",
-            "command": "clear && cargo test -- --nocapture --test-threads=1",
+            "command": "cd extendr-api; clear; cargo test -- --nocapture && cargo doc --target-dir /tmp/doc/",
             "problemMatcher": [
                 "$rustc"
             ],

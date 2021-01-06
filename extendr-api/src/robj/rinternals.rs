@@ -1,5 +1,5 @@
-use super::*;
 use crate::*;
+use std::os::raw;
 
 ///////////////////////////////////////////////////////////////
 /// The following impls wrap specific Rinternals.h functions.
@@ -38,6 +38,11 @@ impl Robj {
     /// Return true if this is an environment.
     pub fn is_environment(&self) -> bool {
         unsafe { Rf_isEnvironment(self.get()) != 0 }
+    }
+
+    /// Return true if this is an environment.
+    pub fn is_promise(&self) -> bool {
+        self.sexptype() == PROMSXP
     }
 
     /// Return true if this is a string.
@@ -90,122 +95,123 @@ impl Robj {
         single_threaded(|| unsafe { new_owned(Rf_allocMatrix(sexptype, rows, cols)) })
     }
 
-    /* TODO:
-    int Rf_asLogical2(SEXP x, int checking, SEXP call, SEXP rho);
-    Rcomplex Rf_asComplex(SEXP x);
-    void Rf_addMissingVarsToNewEnv(SEXP, SEXP);
-    SEXP Rf_alloc3DArray(SEXPTYPE, int, int, int);
-    SEXP Rf_allocArray(SEXPTYPE, SEXP);
-    SEXP Rf_allocFormalsList2(SEXP sym1, SEXP sym2);
-    SEXP Rf_allocFormalsList3(SEXP sym1, SEXP sym2, SEXP sym3);
-    SEXP Rf_allocFormalsList4(SEXP sym1, SEXP sym2, SEXP sym3, SEXP sym4);
-    SEXP Rf_allocFormalsList5(SEXP sym1, SEXP sym2, SEXP sym3, SEXP sym4, SEXP sym5);
-    SEXP Rf_allocFormalsList6(SEXP sym1, SEXP sym2, SEXP sym3, SEXP sym4, SEXP sym5, SEXP sym6);
-    SEXP Rf_allocList(int);
-    SEXP Rf_allocS4Object(void);
-    SEXP Rf_allocSExp(SEXPTYPE);
-    SEXP Rf_allocVector3(SEXPTYPE, R_xlen_t, R_allocator_t*);
-    R_xlen_t Rf_any_duplicated(SEXP x, Rboolean from_last);
-    R_xlen_t Rf_any_duplicated3(SEXP x, SEXP incomp, Rboolean from_last);
-    SEXP Rf_applyClosure(SEXP, SEXP, SEXP, SEXP, SEXP);
-    SEXP Rf_arraySubscript(int, SEXP, SEXP, SEXP (*)(SEXP,SEXP), SEXP (*)(SEXP, int), SEXP);
-    SEXP Rf_classgets(SEXP, SEXP);
-    SEXP Rf_cons(SEXP, SEXP);
-    SEXP Rf_fixSubset3Args(SEXP, SEXP, SEXP, SEXP*);
-    void Rf_copyMatrix(SEXP, SEXP, Rboolean);
-    void Rf_copyListMatrix(SEXP, SEXP, Rboolean);
-    void Rf_copyMostAttrib(SEXP, SEXP);
-    void Rf_copyVector(SEXP, SEXP);
-    int Rf_countContexts(int, int);
-    SEXP Rf_CreateTag(SEXP);
-    void Rf_defineVar(SEXP, SEXP, SEXP);
-    SEXP Rf_dimgets(SEXP, SEXP);
-    SEXP Rf_dimnamesgets(SEXP, SEXP);
-    SEXP Rf_DropDims(SEXP);
-    */
-
     /// Compatible way to duplicate an object. Use obj.clone() instead
     /// for Rust compatibility.
     pub fn duplicate(&self) -> Self {
         single_threaded(|| unsafe { new_owned(Rf_duplicate(self.get())) })
     }
 
-    /*
-    SEXP Rf_shallow_duplicate(SEXP);
-    SEXP R_duplicate_attr(SEXP);
-    SEXP R_shallow_duplicate_attr(SEXP);
-    SEXP Rf_lazy_duplicate(SEXP);
-    SEXP Rf_duplicated(SEXP, Rboolean);
-    Rboolean R_envHasNoSpecialSymbols(SEXP);
-    SEXP Rf_eval(SEXP, SEXP);
-    SEXP Rf_ExtractSubset(SEXP, SEXP, SEXP);
-    SEXP Rf_findFun(SEXP, SEXP);
-    SEXP Rf_findFun3(SEXP, SEXP, SEXP);
-    void Rf_findFunctionForBody(SEXP);
-    SEXP Rf_findVar(SEXP, SEXP);
-    SEXP Rf_findVarInFrame(SEXP, SEXP);
-    SEXP Rf_findVarInFrame3(SEXP, SEXP, Rboolean);
-    */
-
     /// Find a function in an environment ignoring other variables.
+    ///
+    /// This evaulates promises if they are found.
+    ///
+    /// See also [global_function()].
     /// ```
     ///    use extendr_api::*;
     ///    extendr_engine::start_r();
     ///
-    ///    R!(my_fun <- function() {});
-    ///    let my_fun = global_env().find_function(Symbol("my_fun")).unwrap();
+    ///    let my_fun = base_env().find_function(sym!(ls)).unwrap();
     ///    assert_eq!(my_fun.is_function(), true);
+    ///    assert_eq!(base_env().find_var(sym!(ls)).unwrap().is_promise(), true);
     /// ```
-    pub fn find_function<S>(&self, symbol: S) -> Result<Robj, AnyError>
-    where
-        Robj: From<S>,
-    {
-        let symbol = Robj::from(symbol);
-        if !symbol.is_symbol() {
-            return Err("find_fun needs a Symbol. eg. find_fun(Symbol(\"xyz\"))".into());
+    pub fn find_function<K: Into<Robj>>(&self, key: K) -> Option<Robj> {
+        let key = key.into();
+        if !self.is_environment() || !key.is_symbol() {
+            return None;
         }
-        if !self.is_environment() {
-            return Err("find_fun needs an environment.".into());
+        // let mut env: Robj = self.into();
+        // loop {
+        //     if let Some(var) = env.local(&key) {
+        //         if let Some(var) = var.eval_promise() {
+        //             if var.is_function() {
+        //                 break Some(var);
+        //             }
+        //         }
+        //     }
+        //     if let Some(parent) = env.parent() {
+        //         env = parent;
+        //     } else {
+        //         break None;
+        //     }
+        // }
+        unsafe {
+            let var = Rf_findFun(key.get(), self.get());
+            if var != R_UnboundValue {
+                Some(new_borrowed(var))
+            } else {
+                None
+            }
         }
-        Ok(single_threaded(|| unsafe {
-            new_borrowed(Rf_findFun(symbol.get(), self.get()))
-        }))
     }
 
-    /*
-    SEXP Rf_GetArrayDimnames(SEXP);
-    SEXP Rf_GetColNames(SEXP);
-    void Rf_GetMatrixDimnames(SEXP, SEXP*, SEXP*, const char**, const char**);
-    SEXP Rf_GetOption(SEXP, SEXP);
-    SEXP Rf_GetOption1(SEXP);
-    int Rf_FixupDigits(SEXP, warn_type);
-    int Rf_FixupWidth (SEXP, warn_type);
-    int Rf_GetOptionDigits(void);
-    int Rf_GetOptionWidth(void);
-    SEXP Rf_GetRowNames(SEXP);
-    void Rf_gsetVar(SEXP, SEXP, SEXP);
-    SEXP Rf_install(const char *);
-    SEXP Rf_installChar(SEXP);
-    SEXP Rf_installNoTrChar(SEXP);
-    SEXP Rf_installTrChar(SEXP);
-    SEXP Rf_installDDVAL(int i);
-    SEXP Rf_installS3Signature(const char *, const char *);
-    Rboolean Rf_isFree(SEXP);
-    Rboolean Rf_isOrdered(SEXP);
-    Rboolean Rf_isUnmodifiedSpecSym(SEXP sym, SEXP env);
-    Rboolean Rf_isUnordered(SEXP);
-    Rboolean Rf_isUnsorted(SEXP, Rboolean);
-    SEXP Rf_lengthgets(SEXP, R_len_t);
-    SEXP Rf_xlengthgets(SEXP, R_xlen_t);
-    SEXP R_lsInternal(SEXP, Rboolean);
-    SEXP R_lsInternal3(SEXP, Rboolean, Rboolean);
-    SEXP Rf_match(SEXP, SEXP, int);
-    SEXP Rf_matchE(SEXP, SEXP, int, SEXP);
-    SEXP Rf_namesgets(SEXP, SEXP);
-    SEXP Rf_mkChar(const char *);
-    SEXP Rf_mkCharLen(const char *, int);
-    Rboolean Rf_NonNullStringMatch(SEXP, SEXP);
-    */
+    /// Find a variable in an environment.
+    ///
+    /// See also [global_var()].
+    ///
+    /// Note that many common variables and functions are contained in promises
+    /// which must be evaluated and this function may throw an R error.
+    /// ```
+    ///    use extendr_api::*;
+    ///    extendr_engine::start_r();
+    ///
+    ///    let iris_dataframe = global_env()
+    ///        .find_var(sym!(iris)).unwrap().eval_promise().unwrap();
+    ///    assert_eq!(iris_dataframe.is_frame(), true);
+    ///    assert_eq!(iris_dataframe.len(), 5);
+    ///    assert_eq!(global_env().find_var(sym!(imnotasymbol)), None);
+    /// ```
+    pub fn find_var<K: Into<Robj>>(&self, key: K) -> Option<Robj> {
+        let key = key.into();
+        if !self.is_environment() || !key.is_symbol() {
+            return None;
+        }
+        // Alterative:
+        // let mut env: Robj = self.into();
+        // loop {
+        //     if let Some(var) = env.local(&key) {
+        //         println!("v1={:?}", var);
+        //         if let Some(var) = var.eval_promise() {
+        //             println!("v2={:?}", var);
+        //             break Some(var);
+        //         }
+        //     }
+        //     if let Some(parent) = env.parent() {
+        //         env = parent;
+        //     } else {
+        //         break None;
+        //     }
+        // }
+        unsafe {
+            let var = Rf_findVar(key.get(), self.get());
+            if var != R_UnboundValue {
+                Some(new_borrowed(var))
+            } else {
+                None
+            }
+        }
+    }
+
+    /// If this object is a promise, evaluate it, otherwise return the object.
+    /// ```
+    ///    use extendr_api::*;
+    ///    extendr_engine::start_r();
+    ///
+    ///    let iris_promise = global_env().find_var(sym!(iris)).unwrap();
+    ///    let iris_dataframe = iris_promise.eval_promise().unwrap();
+    ///    assert_eq!(iris_dataframe.is_frame(), true);
+    /// ```
+    pub fn eval_promise(&self) -> Result<Robj> {
+        if self.is_promise() {
+            let promise = self.as_promise().unwrap();
+            if !promise.value.is_unbound_value() {
+                Ok(promise.value)
+            } else {
+                self.eval()
+            }
+        } else {
+            Ok(self.into())
+        }
+    }
 
     /// Number of columns of a matrix
     pub fn ncols(&self) -> usize {
@@ -216,39 +222,6 @@ impl Robj {
     pub fn nrows(&self) -> usize {
         unsafe { Rf_nrows(self.get()) as usize }
     }
-
-    /*SEXP Rf_nthcdr(SEXP, int);
-    Rboolean Rf_pmatch(SEXP, SEXP, Rboolean);
-    Rboolean Rf_psmatch(const char *, const char *, Rboolean);
-    void Rf_PrintValue(SEXP);
-    void Rf_printwhere(void);
-    void Rf_readS3VarsFromFrame(SEXP, SEXP*, SEXP*, SEXP*, SEXP*, SEXP*, SEXP*);
-    SEXP Rf_setAttrib(SEXP, SEXP, SEXP);
-    void Rf_setSVector(SEXP*, int, SEXP);
-    void Rf_setVar(SEXP, SEXP, SEXP);
-    SEXP Rf_stringSuffix(SEXP, int);
-    SEXPTYPE Rf_str2type(const char *);
-    Rboolean Rf_StringBlank(SEXP);
-    SEXP Rf_substitute(SEXP,SEXP);
-    SEXP Rf_topenv(SEXP, SEXP);
-    const char * Rf_translateChar(SEXP);
-    const char * Rf_translateChar0(SEXP);
-    const char * Rf_translateCharUTF8(SEXP);
-    const char * Rf_type2char(SEXPTYPE);
-    SEXP Rf_type2rstr(SEXPTYPE);
-    SEXP Rf_type2str(SEXPTYPE);
-    SEXP Rf_type2str_nowarn(SEXPTYPE);
-    SEXP R_GetCurrentEnv();
-    Rboolean Rf_isS4(SEXP);
-    SEXP Rf_asS4(SEXP, Rboolean, int);
-    SEXP Rf_S3Class(SEXP);
-    int Rf_isBasicClass(const char *);
-    Rboolean R_cycle_detected(SEXP s, SEXP child);
-    u32 Rf_getCharCE(SEXP);
-    SEXP Rf_mkCharCE(const char *, cetype_t);
-    SEXP Rf_mkCharLenCE(const char *, int, cetype_t);
-    SEXP R_forceAndCall(SEXP e, int n, SEXP rho);
-    */
 
     #[doc(hidden)]
     #[allow(non_snake_case)]
@@ -305,59 +278,16 @@ impl Robj {
         single_threaded(|| R_RegisterCFinalizer(self.get(), func));
     }
 
-    // SEXP R_ExternalPtrTag(SEXP s);
-    // SEXP R_ExternalPtrProtected(SEXP s);
-    // void R_ClearExternalPtr(SEXP s);
-    // void R_SetExternalPtrAddr(SEXP s, void *p);
-    // void R_SetExternalPtrTag(SEXP s, SEXP tag);
-    // void R_SetExternalPtrProtected(SEXP s, SEXP p);
-
-    /*
-    SEXP R_MakeWeakRef(SEXP key, SEXP val, SEXP fin, Rboolean onexit);
-    SEXP R_MakeWeakRefC(SEXP key, SEXP val, R_CFinalizer_t fin, Rboolean onexit);
-    SEXP R_WeakRefKey(SEXP w);
-    SEXP R_WeakRefValue(SEXP w);
-    void R_RunWeakRefFinalizer(SEXP w);
-    SEXP R_PromiseExpr(SEXP);
-    SEXP R_ClosureExpr(SEXP);
-    SEXP R_BytecodeExpr(SEXP e);
-    SEXP R_bcEncode(SEXP);
-    SEXP R_bcDecode(SEXP);
-    void R_registerBC(SEXP, SEXP);
-    Rboolean R_checkConstants(Rboolean);
-    Rboolean R_BCVersionOK(SEXP);
-    void R_RestoreHashCount(SEXP rho);
-    Rboolean R_IsPackageEnv(SEXP rho);
-    SEXP R_PackageEnvName(SEXP rho);
-    SEXP R_FindPackageEnv(SEXP info);
-    Rboolean R_IsNamespaceEnv(SEXP rho);
-    SEXP R_NamespaceEnvSpec(SEXP rho);
-    SEXP R_FindNamespace(SEXP info);
-    void R_LockEnvironment(SEXP env, Rboolean bindings);
-    Rboolean R_EnvironmentIsLocked(SEXP env);
-    void R_LockBinding(SEXP sym, SEXP env);
-    void R_unLockBinding(SEXP sym, SEXP env);
-    void R_MakeActiveBinding(SEXP sym, SEXP fun, SEXP env);
-    Rboolean R_BindingIsLocked(SEXP sym, SEXP env);
-    Rboolean R_BindingIsActive(SEXP sym, SEXP env);
-    Rboolean R_HasFancyBindings(SEXP rho);
-    */
-
-    /// Read-only access to attribute list.
-    // fn attrib(&self) -> Robj {
-    // unsafe {new_borrowed(ATTRIB(self.get()))}
-    // }
-
     /// Copy a vector and resize it.
     /// See. https://github.com/hadley/r-internals/blob/master/vectors.md
-    pub fn xlengthgets(&self, new_len: usize) -> Result<Robj, AnyError> {
+    pub fn xlengthgets(&self, new_len: usize) -> Result<Robj> {
         unsafe {
             if self.is_vector() {
                 Ok(single_threaded(|| {
                     new_owned(Rf_xlengthgets(self.get(), new_len as R_xlen_t))
                 }))
             } else {
-                Err(AnyError::from("xlengthgets: Not a vector type"))
+                Err(Error::NotAVectorType)
             }
         }
     }
@@ -371,13 +301,6 @@ impl Robj {
     pub fn conformable(a: &Robj, b: &Robj) -> bool {
         single_threaded(|| unsafe { Rf_conformable(a.get(), b.get()) != 0 })
     }
-
-    /// Borrow an element from a list.
-    // pub fn elt(&self, index: usize) -> Robj {
-    //     single_threaded(|| unsafe { Robj::from(Rf_elt(self.get(), index as raw::c_int)) })
-    // }
-
-    //Rboolean Rf_inherits(SEXP, const char *);
 
     /// Return true if this is an array.
     pub fn is_array(&self) -> bool {
@@ -490,19 +413,25 @@ impl Robj {
     pub fn is_missing_arg(&self) -> bool {
         unsafe { self.get() == R_MissingArg }
     }
+
+    pub fn is_unbound_value(&self) -> bool {
+        unsafe { self.get() == R_UnboundValue }
+    }
+
+    pub fn is_package_env(&self) -> bool {
+        unsafe { R_IsPackageEnv(self.get()) != 0 }
+    }
+
+    pub fn package_env_name(&self) -> Robj {
+        unsafe { new_borrowed(R_PackageEnvName(self.get())) }
+    }
+
+    pub fn is_namespace_env(&self) -> bool {
+        unsafe { R_IsNamespaceEnv(self.get()) != 0 }
+    }
+
+    pub fn namespace_env_spec(&self) -> Robj {
+        unsafe { new_borrowed(R_NamespaceEnvSpec(self.get())) }
+    }
 }
 
-///
-/// ```ignore
-///    use extendr_api::*;
-///    extendr_engine::start_r();
-///
-///    println!("{:?}", R!(getNamespace("stats")).unwrap());
-///    // assert_eq!(find_namespace("stats").is_some(), true);
-///    assert!(false);
-/// ```
-pub fn find_namespace(name: &str) -> Option<Robj> {
-    let name = r!(Symbol(name));
-    let res = single_threaded(|| unsafe { new_borrowed(R_FindNamespace(name.get())) });
-    Some(res)
-}

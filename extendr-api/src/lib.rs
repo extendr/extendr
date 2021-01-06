@@ -37,122 +37,125 @@
 //! The r!() and R!() macros let you build R objects
 //! using Rust and R syntax respectively.
 //! ```
-//! use extendr_api::*;        // Put API in scope.
-//! extendr_engine::start_r(); // Start test environment.
-//!
-//! // An R object with a single string "hello"
-//! let character = r!("hello");
-//!
-//! // An R integer object with a single number 1L.
-//! // Note that in Rust, 1 is an integer and 1.0 is a real.
-//! let integer = r!(1);
-//!
-//! // An R real object with a single number 1.
-//! // Note that in R, 1 is a real and 1L is an integer.
-//! let real = r!(1.0);
-//!
-//! // An R real vector.
-//! let real_vector = r!([1.0, 2.0]);
-//!
-//! // An R function object.
-//! let function = R!(function(x, y) { x + y });
-//!
-//! // A named list using the list! macro.
-//! let list = list!(a = 1, b = 2);
-//!
-//! // A symbol
-//! let sym = sym!(wombat);
+//! use extendr_api::*;
+//! test! {
+//!     // An R object with a single string "hello"
+//!     let character = r!("hello");
+//!    
+//!     // An R integer object with a single number 1L.
+//!     // Note that in Rust, 1 is an integer and 1.0 is a real.
+//!     let integer = r!(1);
+//!    
+//!     // An R real object with a single number 1.
+//!     // Note that in R, 1 is a real and 1L is an integer.
+//!     let real = r!(1.0);
+//!    
+//!     // An R real vector.
+//!     let real_vector = r!([1.0, 2.0]);
+//!    
+//!     // An R function object.
+//!     let function = R!(function(x, y) { x + y })?;
+//!    
+//!     // A named list using the list! macro.
+//!     let list = list!(a = 1, b = 2);
+//!    
+//!     // A symbol
+//!     let sym = sym!(wombat);
+//! }
 //! ```
 //!
 //! In Rust, we prefer to use iterators rather than loops.
 //!
 //! ```
-//! use extendr_api::*;        // Put API in scope.
-//! extendr_engine::start_r(); // Start test environment.
-//!
-//! // 1 ..= 100 is the same as 1:100
-//! let res = r!(1 ..= 100);
-//! assert_eq!(res, R!(1:100).unwrap());
-//!
-//! // Rust arrays are zero-indexed so it is more common to use 0 .. 100.
-//! let res = r!(0 .. 100);
-//! assert_eq!(res.len(), 100);
-//!
-//! // Using map is a super fast way to generate vectors.
-//! let iter = (0..3).map(|i| format!("fred{}", i));
-//! let character = iter.collect_robj();
-//! assert_eq!(character, r!(["fred0", "fred1", "fred2"]));
+//! use extendr_api::*;
+//! test! {
+//!     // 1 ..= 100 is the same as 1:100
+//!     let res = r!(1 ..= 100);
+//!     assert_eq!(res, R!(1:100)?);
+//!    
+//!     // Rust arrays are zero-indexed so it is more common to use 0 .. 100.
+//!     let res = r!(0 .. 100);
+//!     assert_eq!(res.len(), 100);
+//!    
+//!     // Using map is a super fast way to generate vectors.
+//!     let iter = (0..3).map(|i| format!("fred{}", i));
+//!     let character = iter.collect_robj();
+//!     assert_eq!(character, r!(["fred0", "fred1", "fred2"]));
+//! }
 //! ```
 //!
 //! To index a vector, first convert it to a slice and then
 //! remember to use 0-based indexing. In Rust, going out of bounds
 //! will cause and error (a panic) unlike C++ which may crash.
 //! ```
-//! use extendr_api::*;        // Put API in scope.
-//! extendr_engine::start_r(); // Start test environment.
-//!
-//! let vals = r!([1.0, 2.0]);
-//! let slice = vals.as_real_slice().unwrap();
-//! let one = slice[0];
-//! let two = slice[1];
-//! // let error = slice[2];
-//! assert_eq!(one, 1.0);
-//! assert_eq!(two, 2.0);
+//! use extendr_api::*;
+//! test! {
+//!     let vals = r!([1.0, 2.0]);
+//!     let slice = vals.as_real_slice().ok_or("expected slice")?;
+//!     let one = slice[0];
+//!     let two = slice[1];
+//!     // let error = slice[2];
+//!     assert_eq!(one, 1.0);
+//!     assert_eq!(two, 2.0);
+//! }
 //! ```
 //!
 //! Much slower, but more general are these methods:
 //! ```
-//! use extendr_api::*;        // Put API in scope.
-//! extendr_engine::start_r(); // Start test environment.
-//!
-//! let vals = r!([1.0, 2.0, 3.0]);
-//!
-//! // one-based indexing [[i]], returns an object.
-//! assert_eq!(vals.index(1).unwrap(), r!(1.0));
-//!
-//! // one-based slicing [x], returns an object.
-//! assert_eq!(vals.slice(1..=2).unwrap(), r!([1.0, 2.0]));
-//!
-//! // $ operator, returns an object
-//! let list = list!(a = 1.0, b = "xyz");
-//! assert_eq!(list.dollar("a").unwrap(), r!(1.0));
+//! use extendr_api::*;
+//! test! {
+//!     let vals = r!([1.0, 2.0, 3.0]);
+//!    
+//!     // one-based indexing [[i]], returns an object.
+//!     assert_eq!(vals.index(1)?, r!(1.0));
+//!    
+//!     // one-based slicing [x], returns an object.
+//!     assert_eq!(vals.slice(1..=2)?, r!([1.0, 2.0]));
+//!    
+//!     // $ operator, returns an object
+//!     let list = list!(a = 1.0, b = "xyz");
+//!     assert_eq!(list.dollar("a")?, r!(1.0));
+//! }
 //! ```
 //!
 //! The [R!] macro lets you embed R code in Rust
 //! but does not take variables.
 //! ```
-//! use extendr_api::*;        // Put API in scope.
-//! extendr_engine::start_r(); // Start test environment.
-//! // The text "1+1" is parsed as R source code.
-//! assert_eq!(R!(1+1).unwrap(), r!(2.0));
+//! use extendr_api::*;
+//! test! {
+//!     // The text "1 + 1" is parsed as R source code.
+//!     // The result is 1.0 + 1.0 in Rust.
+//!     assert_eq!(R!(1 + 1)?, r!(2.0));
+//! }
 //! ```
 //!
 //! The [r!] macro converts a rust object to an R object
 //! and takes parameters.
 //! ```
-//! use extendr_api::*;        // Put API in scope.
-//! extendr_engine::start_r(); // Start test environment.
-//! // The text "1.0+1.0" is parsed as Rust source code.
-//! let one = 1.0;
-//! assert_eq!(r!(one+1.0), r!(2.0));
+//! use extendr_api::*;
+//! test! {
+//!     // The text "1.0+1.0" is parsed as Rust source code.
+//!     let one = 1.0;
+//!     assert_eq!(r!(one+1.0), r!(2.0));
+//! }
 //! ```
 //!
 //! You can call R functions and primitives using the [call!] macro.
 //! ```
+//! use extendr_api::*;
+//! test! {
 //!
-//! use extendr_api::*;        // Put API in scope.
-//! extendr_engine::start_r(); // Start test environment.
-//!
-//! // As one R! macro call
-//! let confint1 = R!(confint(lm(weight ~ group - 1, PlantGrowth))).unwrap();
-//!
-//! // As many parameterized calls.
-//! let formula = R!(weight ~ group - 1).unwrap();
-//! let plant_growth = R!(PlantGrowth).unwrap();
-//! let model = call!("lm", formula, plant_growth).unwrap();
-//! let confint2 = call!("confint", model).unwrap();
-//!
-//! assert_eq!(confint1.as_real_vector(), confint2.as_real_vector());
+//!     // As one R! macro call
+//!     let confint1 = R!(confint(lm(weight ~ group - 1, PlantGrowth)))?;
+//!    
+//!     // As many parameterized calls.
+//!     let formula = call!("~", sym!(weight), lang!("-", sym!(group), 1))?;
+//!     let plant_growth = global!(PlantGrowth)?;
+//!     let model = call!("lm", formula, plant_growth)?;
+//!     let confint2 = call!("confint", model)?;
+//!    
+//!     assert_eq!(confint1.as_real_vector(), confint2.as_real_vector());
+//! }
 //! ```
 //!
 //! Rust has a concept of "Owned" and "Borrowed" objects.
@@ -171,15 +174,16 @@
 //! original R object to be alive or the data will be corrupted.
 //!
 //! ```
-//! use extendr_api::*;        // Put API in scope.
-//! extendr_engine::start_r(); // Start test environment.
-//!
-//! // robj is an "Owned" object that controls the memory allocated.
-//! let robj = r!([1, 2, 3]);
-//!
-//! // slice is a "borrowed" reference to the bytes in robj.
-//! // and cannot live longer than robj.
-//! let slice = robj.as_integer_slice().unwrap();
+//! use extendr_api::*;
+//! test! {
+//!     // robj is an "Owned" object that controls the memory allocated.
+//!     let robj = r!([1, 2, 3]);
+//!    
+//!     // slice is a "borrowed" reference to the bytes in robj.
+//!     // and cannot live longer than robj.
+//!     let slice = robj.as_integer_slice().ok_or("expected slice")?;
+//!     assert_eq!(slice.len(), 3);
+//! }
 //! ```
 
 #![doc(
@@ -187,6 +191,7 @@
 )]
 
 mod error;
+mod functions;
 mod lang;
 mod logical;
 mod rmacros;
@@ -198,6 +203,7 @@ mod wrapper;
 mod robj_ndarray;
 
 pub use error::*;
+pub use functions::*;
 pub use lang::*;
 pub use logical::*;
 pub use rmacros::*;
@@ -221,9 +227,6 @@ use libR_sys::*;
 
 #[doc(hidden)]
 use std::ffi::CString;
-
-/// Generic dynamic error type.
-pub type AnyError = Box<dyn std::error::Error + Send + Sync>;
 
 #[doc(hidden)]
 pub struct CallMethod {

@@ -1,4 +1,3 @@
-use super::*;
 use crate::*;
 use std::ops::{Add, Div, Mul, Sub};
 
@@ -16,7 +15,7 @@ impl Robj {
     /// assert_eq!(env.dollar("a").unwrap(), r!(1));
     /// assert_eq!(env.dollar("b").unwrap(), r!(2));
     /// ```
-    pub fn dollar<'a, T>(&self, symbol: T) -> Result<Robj, AnyError>
+    pub fn dollar<'a, T>(&self, symbol: T) -> Result<Robj>
     where
         Symbol<'a>: From<T>,
     {
@@ -32,7 +31,7 @@ impl Robj {
     /// assert_eq!(vec.slice(2).unwrap(), r!(20));
     /// assert_eq!(vec.slice(2..=3).unwrap(), r!([20, 30]));
     /// ```
-    pub fn slice<T>(&self, rhs: T) -> Result<Robj, AnyError>
+    pub fn slice<T>(&self, rhs: T) -> Result<Robj>
     where
         T: Into<Robj>,
     {
@@ -47,7 +46,7 @@ impl Robj {
     /// assert_eq!(vec.index(2).unwrap(), r!(20));
     /// assert_eq!(vec.index(2..=3).is_err(), true);
     /// ```
-    pub fn index<T>(&self, rhs: T) -> Result<Robj, AnyError>
+    pub fn index<T>(&self, rhs: T) -> Result<Robj>
     where
         T: Into<Robj>,
     {
@@ -60,11 +59,11 @@ impl Robj {
     /// extendr_engine::start_r();
     /// let x = r!(Symbol("x"));
     /// let y = r!(Symbol("y"));
-    /// let tilda = x.tilda(y).unwrap();
-    /// assert_eq!(tilda, r!(Lang(&[r!(Symbol("~")), r!(Symbol("x")), r!(Symbol("y"))])));
-    /// assert_eq!(tilda.inherits("formula"), true);
+    /// let tilde = x.tilde(y).unwrap();
+    /// assert_eq!(tilde, r!(Lang(&[r!(Symbol("~")), r!(Symbol("x")), r!(Symbol("y"))])));
+    /// assert_eq!(tilde.inherits("formula"), true);
     /// ```
-    pub fn tilda<T>(&self, rhs: T) -> Result<Robj, AnyError>
+    pub fn tilde<T>(&self, rhs: T) -> Result<Robj>
     where
         T: Into<Robj>,
     {
@@ -80,7 +79,7 @@ impl Robj {
     /// let base_env = base.double_colon(env).unwrap();
     /// assert_eq!(base_env.is_function(), true);
     /// ```
-    pub fn double_colon<T>(&self, rhs: T) -> Result<Robj, AnyError>
+    pub fn double_colon<T>(&self, rhs: T) -> Result<Robj>
     where
         T: Into<Robj>,
     {

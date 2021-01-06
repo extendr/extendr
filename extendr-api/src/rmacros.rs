@@ -35,6 +35,9 @@ macro_rules! r {
 
 /// Call inline R source code from Rust.
 ///
+/// Multiline expressions and variables with embedded "." may not work.
+/// Note that the performance of this function is not good.
+///
 /// ```
 /// use extendr_api::*;
 /// extendr_engine::start_r();
@@ -42,18 +45,49 @@ macro_rules! r {
 /// let formula = R!(y ~ z + 1).unwrap();
 /// assert!(formula.inherits("formula"));
 ///
-/// // Currently, multiline calls require semicolons as the newlines are lost.
-/// let x = R!({
-///    x <- function() { 1 };
-///    x()
-/// }).unwrap();
-/// assert_eq!(x, r!(1.));
+/// let function = R!(function(x,y) x+y).unwrap();
+/// assert!(function.is_function());
 /// ```
 #[macro_export]
 macro_rules! R {
     ($($t:tt)*) => {
         Robj::eval_string(stringify!($($t)*))
     };
+}
+
+/// Get a local variable from the calling function
+/// or a global variable if no such variable exists.
+///
+/// Variables with embedded "." may not work.
+/// ```
+/// use extendr_api::*;
+/// extendr_engine::start_r();
+///
+/// current_env().set_local(sym!(myvar), 1.0);
+/// assert_eq!(var!(myvar), Ok(r!(1.0)));
+/// ```
+#[macro_export]
+macro_rules! var {
+    ($($tokens: tt)*) => {{
+        local_var(sym!($($tokens)*))
+    }};
+}
+
+/// Get a global variable.
+///
+/// Variables with embedded "." may not work.
+/// ```
+/// use extendr_api::*;
+/// test! {
+///      // The "iris" dataset is a dataframe.
+///      assert_eq!(global!(iris)?.is_frame(), true);
+/// }
+/// ```
+#[macro_export]
+macro_rules! global {
+    ($($tokens: tt)*) => {{
+        global_var(sym!($($tokens)*))
+    }};
 }
 
 /// The sym! macro install symbols.
@@ -68,8 +102,8 @@ macro_rules! R {
 /// ```
 #[macro_export]
 macro_rules! sym {
-    ($($t:tt)*) => {
-        Robj::from(Symbol(stringify!($($t)*)))
+    ($($tokens: tt)*) => {
+        Robj::from(Symbol(stringify!($($tokens)*)))
     };
 }
 
@@ -237,5 +271,21 @@ macro_rules! reprintln {
     ($($rest: tt)*) => {
         print_r_error(format!($($rest)*));
         print_r_error("\n");
+    };
+}
+
+/// Macro for running tests.
+///
+/// This allows us to use ? in example code instead of unwrap.
+#[macro_export]
+macro_rules! test {
+    () => {
+        test(|| Ok(()))
+    };
+    ($($rest: tt)*) => {
+        test(|| {
+            $($rest)*
+            Ok(())
+        })
     };
 }
