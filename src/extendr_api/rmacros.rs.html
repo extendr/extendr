@@ -242,6 +242,56 @@
 <span id="239">239</span>
 <span id="240">240</span>
 <span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! rmacros - a set of macros to call actual R functions in a rusty way.</span>
@@ -280,6 +330,9 @@
 
 <span class="doccomment">/// Call inline R source code from Rust.</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// Multiline expressions and variables with embedded &quot;.&quot; may not work.</span>
+<span class="doccomment">/// Note that the performance of this function is not good.</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use extendr_api::*;</span>
 <span class="doccomment">/// extendr_engine::start_r();</span>
@@ -287,18 +340,49 @@
 <span class="doccomment">/// let formula = R!(y ~ z + 1).unwrap();</span>
 <span class="doccomment">/// assert!(formula.inherits(&quot;formula&quot;));</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// // Currently, multiline calls require semicolons as the newlines are lost.</span>
-<span class="doccomment">/// let x = R!({</span>
-<span class="doccomment">///    x &lt;- function() { 1 };</span>
-<span class="doccomment">///    x()</span>
-<span class="doccomment">/// }).unwrap();</span>
-<span class="doccomment">/// assert_eq!(x, r!(1.));</span>
+<span class="doccomment">/// let function = R!(function(x,y) x+y).unwrap();</span>
+<span class="doccomment">/// assert!(function.is_function());</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">R</span> {
     ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
         <span class="ident">Robj</span>::<span class="ident">eval_string</span>(<span class="macro">stringify</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>)<span class="kw-2">*</span>))
     };
+}
+
+<span class="doccomment">/// Get a local variable from the calling function</span>
+<span class="doccomment">/// or a global variable if no such variable exists.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Variables with embedded &quot;.&quot; may not work.</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// use extendr_api::*;</span>
+<span class="doccomment">/// extendr_engine::start_r();</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// current_env().set_local(sym!(myvar), 1.0);</span>
+<span class="doccomment">/// assert_eq!(var!(myvar), Ok(r!(1.0)));</span>
+<span class="doccomment">/// ```</span>
+<span class="attribute">#[<span class="ident">macro_export</span>]</span>
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">var</span> {
+    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {{
+        <span class="ident">local_var</span>(<span class="macro">sym</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>)<span class="kw-2">*</span>))
+    }};
+}
+
+<span class="doccomment">/// Get a global variable.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Variables with embedded &quot;.&quot; may not work.</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// use extendr_api::*;</span>
+<span class="doccomment">/// test! {</span>
+<span class="doccomment">///      // The &quot;iris&quot; dataset is a dataframe.</span>
+<span class="doccomment">///      assert_eq!(global!(iris)?.is_frame(), true);</span>
+<span class="doccomment">/// }</span>
+<span class="doccomment">/// ```</span>
+<span class="attribute">#[<span class="ident">macro_export</span>]</span>
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">global</span> {
+    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {{
+        <span class="ident">global_var</span>(<span class="macro">sym</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>)<span class="kw-2">*</span>))
+    }};
 }
 
 <span class="doccomment">/// The sym! macro install symbols.</span>
@@ -313,8 +397,8 @@
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">sym</span> {
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
-        <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="ident">Symbol</span>(<span class="macro">stringify</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>)<span class="kw-2">*</span>)))
+    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="ident">Symbol</span>(<span class="macro">stringify</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>)<span class="kw-2">*</span>)))
     };
 }
 
@@ -482,6 +566,22 @@
     ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
         <span class="ident">print_r_error</span>(<span class="macro">format</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>));
         <span class="ident">print_r_error</span>(<span class="string">&quot;\n&quot;</span>);
+    };
+}
+
+<span class="doccomment">/// Macro for running tests.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// This allows us to use ? in example code instead of unwrap.</span>
+<span class="attribute">#[<span class="ident">macro_export</span>]</span>
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">test</span> {
+    () <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="ident">test</span>(<span class="op">|</span><span class="op">|</span> <span class="prelude-val">Ok</span>(()))
+    };
+    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="ident">test</span>(<span class="op">|</span><span class="op">|</span> {
+            $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="op">*</span>
+            <span class="prelude-val">Ok</span>(())
+        })
     };
 }
 </pre></div>

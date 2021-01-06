@@ -576,6 +576,40 @@
 <span id="573">573</span>
 <span id="574">574</span>
 <span id="575">575</span>
+<span id="576">576</span>
+<span id="577">577</span>
+<span id="578">578</span>
+<span id="579">579</span>
+<span id="580">580</span>
+<span id="581">581</span>
+<span id="582">582</span>
+<span id="583">583</span>
+<span id="584">584</span>
+<span id="585">585</span>
+<span id="586">586</span>
+<span id="587">587</span>
+<span id="588">588</span>
+<span id="589">589</span>
+<span id="590">590</span>
+<span id="591">591</span>
+<span id="592">592</span>
+<span id="593">593</span>
+<span id="594">594</span>
+<span id="595">595</span>
+<span id="596">596</span>
+<span id="597">597</span>
+<span id="598">598</span>
+<span id="599">599</span>
+<span id="600">600</span>
+<span id="601">601</span>
+<span id="602">602</span>
+<span id="603">603</span>
+<span id="604">604</span>
+<span id="605">605</span>
+<span id="606">606</span>
+<span id="607">607</span>
+<span id="608">608</span>
+<span id="609">609</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Wrappers are lightweight proxies for references to R datatypes.</span>
 <span class="doccomment">//! They do not contain an Robj (see array.rs for an example of this).</span>
@@ -708,6 +742,14 @@
     <span class="kw">pub</span> <span class="ident">formals</span>: <span class="ident">F</span>,
     <span class="kw">pub</span> <span class="ident">body</span>: <span class="ident">B</span>,
     <span class="kw">pub</span> <span class="ident">env</span>: <span class="ident">E</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Clone</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Promise</span><span class="op">&lt;</span><span class="ident">C</span>, <span class="ident">E</span>, <span class="ident">V</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="ident">code</span>: <span class="ident">C</span>,
+    <span class="kw">pub</span> <span class="ident">env</span>: <span class="ident">E</span>,
+    <span class="kw">pub</span> <span class="ident">value</span>: <span class="ident">V</span>,
+    <span class="kw">pub</span> <span class="ident">seen</span>: <span class="ident">bool</span>
 }
 
 <span class="doccomment">/// Wrapper for creating and reading Primitive functions.</span>
@@ -934,9 +976,18 @@
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_symbol</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Symbol</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_symbol</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">Symbol</span>(<span class="kw">unsafe</span> {
-                <span class="ident">to_str</span>(<span class="ident">R_CHAR</span>(<span class="ident">PRINTNAME</span>(<span class="self">self</span>.<span class="ident">get</span>())) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>)
-            }))
+            <span class="kw">unsafe</span> {
+                <span class="kw">let</span> <span class="ident">printname</span> <span class="op">=</span> <span class="ident">PRINTNAME</span>(<span class="self">self</span>.<span class="ident">get</span>());
+                <span class="kw">if</span> <span class="ident">TYPEOF</span>(<span class="ident">printname</span>) <span class="kw">as</span> <span class="ident">u32</span> <span class="op">=</span><span class="op">=</span> <span class="ident">CHARSXP</span> {
+                    <span class="prelude-val">Some</span>(<span class="ident">Symbol</span>(
+                        <span class="ident">to_str</span>(<span class="ident">R_CHAR</span>(<span class="ident">printname</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>)
+                    ))
+                } <span class="kw">else</span> {
+                    <span class="prelude-val">Some</span>(<span class="ident">Symbol</span>(
+                        <span class="string">&quot;bad symbol&quot;</span>
+                    ))
+                }
+            }
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
         }
@@ -1071,10 +1122,10 @@
     <span class="doccomment">/// let env = Env{parent: global_env(), names_and_values};</span>
     <span class="doccomment">/// let expr = r!(env.clone());</span>
     <span class="doccomment">/// assert_eq!(expr.len(), 100);</span>
-    <span class="doccomment">/// let env2 = expr.as_env().unwrap();</span>
+    <span class="doccomment">/// let env2 = expr.as_environment().unwrap();</span>
     <span class="doccomment">/// assert_eq!(env2, env);</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_env</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Env</span><span class="op">&lt;</span><span class="ident">Robj</span>, <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_environment</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Env</span><span class="op">&lt;</span><span class="ident">Robj</span>, <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">sexptype</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">ENVSXP</span> {
             <span class="kw">unsafe</span> {
                 <span class="kw">let</span> <span class="ident">parent</span> <span class="op">=</span> <span class="ident">new_owned</span>(<span class="ident">ENCLOS</span>(<span class="self">self</span>.<span class="ident">get</span>()));
@@ -1087,7 +1138,7 @@
                             (<span class="ident">frame</span>.<span class="ident">as_pairlist_iter</span>(), <span class="ident">frame</span>.<span class="ident">as_pairlist_tag_iter</span>())
                         {
                             <span class="kw">for</span> (<span class="ident">obj</span>, <span class="ident">tag</span>) <span class="kw">in</span> <span class="ident">obj_iter</span>.<span class="ident">zip</span>(<span class="ident">tag_iter</span>) {
-                                <span class="kw">if</span> <span class="op">!</span><span class="ident">obj</span>.<span class="ident">is_null</span>() <span class="op">&amp;&amp;</span> <span class="ident">tag</span>.<span class="ident">is_some</span>() {
+                                <span class="kw">if</span> <span class="op">!</span><span class="ident">obj</span>.<span class="ident">is_unbound_value</span>() <span class="op">&amp;&amp;</span> <span class="ident">tag</span>.<span class="ident">is_some</span>() {
                                     <span class="ident">names_and_values</span>.<span class="ident">insert</span>(<span class="ident">tag</span>.<span class="ident">unwrap</span>().<span class="ident">to_string</span>(), <span class="ident">obj</span>);
                                 }
                             }
@@ -1097,7 +1148,7 @@
                     (<span class="ident">frame</span>.<span class="ident">as_pairlist_iter</span>(), <span class="ident">frame</span>.<span class="ident">as_pairlist_tag_iter</span>())
                 {
                     <span class="kw">for</span> (<span class="ident">obj</span>, <span class="ident">tag</span>) <span class="kw">in</span> <span class="ident">obj_iter</span>.<span class="ident">zip</span>(<span class="ident">tag_iter</span>) {
-                        <span class="kw">if</span> <span class="op">!</span><span class="ident">obj</span>.<span class="ident">is_null</span>() <span class="op">&amp;&amp;</span> <span class="ident">tag</span>.<span class="ident">is_some</span>() {
+                        <span class="kw">if</span> <span class="op">!</span><span class="ident">obj</span>.<span class="ident">is_unbound_value</span>() <span class="op">&amp;&amp;</span> <span class="ident">tag</span>.<span class="ident">is_some</span>() {
                             <span class="ident">names_and_values</span>.<span class="ident">insert</span>(<span class="ident">tag</span>.<span class="ident">unwrap</span>().<span class="ident">to_string</span>(), <span class="ident">obj</span>);
                         }
                     }
@@ -1151,6 +1202,23 @@
     <span class="comment">//         _ =&gt; None,</span>
     <span class="comment">//     }</span>
     <span class="comment">// }</span>
+
+    <span class="doccomment">/// Get a wrapper for a promise.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_promise</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Promise</span><span class="op">&lt;</span><span class="ident">Robj</span>, <span class="ident">Robj</span>, <span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_promise</span>() {
+            <span class="kw">unsafe</span> {
+                <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get</span>();
+                <span class="prelude-val">Some</span>(<span class="ident">Promise</span> {
+                    <span class="ident">code</span>: <span class="ident">new_owned</span>(<span class="ident">PRCODE</span>(<span class="ident">sexp</span>)),
+                    <span class="ident">env</span>: <span class="ident">new_owned</span>(<span class="ident">PRENV</span>(<span class="ident">sexp</span>)),
+                    <span class="ident">value</span>: <span class="ident">new_owned</span>(<span class="ident">PRVALUE</span>(<span class="ident">sexp</span>)),
+                    <span class="ident">seen</span>: <span class="ident">PRSEEN</span>(<span class="ident">sexp</span>) <span class="op">!</span><span class="op">=</span> <span class="number">0</span>
+                })
+            }
+        } <span class="kw">else</span> {
+            <span class="prelude-val">None</span>
+        }
+    }
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "extendr_api";</script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>

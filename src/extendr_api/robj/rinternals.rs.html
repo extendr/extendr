@@ -438,80 +438,9 @@
 <span id="435">435</span>
 <span id="436">436</span>
 <span id="437">437</span>
-<span id="438">438</span>
-<span id="439">439</span>
-<span id="440">440</span>
-<span id="441">441</span>
-<span id="442">442</span>
-<span id="443">443</span>
-<span id="444">444</span>
-<span id="445">445</span>
-<span id="446">446</span>
-<span id="447">447</span>
-<span id="448">448</span>
-<span id="449">449</span>
-<span id="450">450</span>
-<span id="451">451</span>
-<span id="452">452</span>
-<span id="453">453</span>
-<span id="454">454</span>
-<span id="455">455</span>
-<span id="456">456</span>
-<span id="457">457</span>
-<span id="458">458</span>
-<span id="459">459</span>
-<span id="460">460</span>
-<span id="461">461</span>
-<span id="462">462</span>
-<span id="463">463</span>
-<span id="464">464</span>
-<span id="465">465</span>
-<span id="466">466</span>
-<span id="467">467</span>
-<span id="468">468</span>
-<span id="469">469</span>
-<span id="470">470</span>
-<span id="471">471</span>
-<span id="472">472</span>
-<span id="473">473</span>
-<span id="474">474</span>
-<span id="475">475</span>
-<span id="476">476</span>
-<span id="477">477</span>
-<span id="478">478</span>
-<span id="479">479</span>
-<span id="480">480</span>
-<span id="481">481</span>
-<span id="482">482</span>
-<span id="483">483</span>
-<span id="484">484</span>
-<span id="485">485</span>
-<span id="486">486</span>
-<span id="487">487</span>
-<span id="488">488</span>
-<span id="489">489</span>
-<span id="490">490</span>
-<span id="491">491</span>
-<span id="492">492</span>
-<span id="493">493</span>
-<span id="494">494</span>
-<span id="495">495</span>
-<span id="496">496</span>
-<span id="497">497</span>
-<span id="498">498</span>
-<span id="499">499</span>
-<span id="500">500</span>
-<span id="501">501</span>
-<span id="502">502</span>
-<span id="503">503</span>
-<span id="504">504</span>
-<span id="505">505</span>
-<span id="506">506</span>
-<span id="507">507</span>
-<span id="508">508</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">os</span>::<span class="ident">raw</span>;
 
 <span class="comment">///////////////////////////////////////////////////////////////</span>
 <span class="doccomment">/// The following impls wrap specific Rinternals.h functions.</span>
@@ -550,6 +479,11 @@
     <span class="doccomment">/// Return true if this is an environment.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_environment</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isEnvironment</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    }
+
+    <span class="doccomment">/// Return true if this is an environment.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_promise</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">sexptype</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">PROMSXP</span>
     }
 
     <span class="doccomment">/// Return true if this is a string.</span>
@@ -602,122 +536,123 @@
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">Rf_allocMatrix</span>(<span class="ident">sexptype</span>, <span class="ident">rows</span>, <span class="ident">cols</span>)) })
     }
 
-    <span class="comment">/* TODO:
-    int Rf_asLogical2(SEXP x, int checking, SEXP call, SEXP rho);
-    Rcomplex Rf_asComplex(SEXP x);
-    void Rf_addMissingVarsToNewEnv(SEXP, SEXP);
-    SEXP Rf_alloc3DArray(SEXPTYPE, int, int, int);
-    SEXP Rf_allocArray(SEXPTYPE, SEXP);
-    SEXP Rf_allocFormalsList2(SEXP sym1, SEXP sym2);
-    SEXP Rf_allocFormalsList3(SEXP sym1, SEXP sym2, SEXP sym3);
-    SEXP Rf_allocFormalsList4(SEXP sym1, SEXP sym2, SEXP sym3, SEXP sym4);
-    SEXP Rf_allocFormalsList5(SEXP sym1, SEXP sym2, SEXP sym3, SEXP sym4, SEXP sym5);
-    SEXP Rf_allocFormalsList6(SEXP sym1, SEXP sym2, SEXP sym3, SEXP sym4, SEXP sym5, SEXP sym6);
-    SEXP Rf_allocList(int);
-    SEXP Rf_allocS4Object(void);
-    SEXP Rf_allocSExp(SEXPTYPE);
-    SEXP Rf_allocVector3(SEXPTYPE, R_xlen_t, R_allocator_t*);
-    R_xlen_t Rf_any_duplicated(SEXP x, Rboolean from_last);
-    R_xlen_t Rf_any_duplicated3(SEXP x, SEXP incomp, Rboolean from_last);
-    SEXP Rf_applyClosure(SEXP, SEXP, SEXP, SEXP, SEXP);
-    SEXP Rf_arraySubscript(int, SEXP, SEXP, SEXP (*)(SEXP,SEXP), SEXP (*)(SEXP, int), SEXP);
-    SEXP Rf_classgets(SEXP, SEXP);
-    SEXP Rf_cons(SEXP, SEXP);
-    SEXP Rf_fixSubset3Args(SEXP, SEXP, SEXP, SEXP*);
-    void Rf_copyMatrix(SEXP, SEXP, Rboolean);
-    void Rf_copyListMatrix(SEXP, SEXP, Rboolean);
-    void Rf_copyMostAttrib(SEXP, SEXP);
-    void Rf_copyVector(SEXP, SEXP);
-    int Rf_countContexts(int, int);
-    SEXP Rf_CreateTag(SEXP);
-    void Rf_defineVar(SEXP, SEXP, SEXP);
-    SEXP Rf_dimgets(SEXP, SEXP);
-    SEXP Rf_dimnamesgets(SEXP, SEXP);
-    SEXP Rf_DropDims(SEXP);
-    */</span>
-
     <span class="doccomment">/// Compatible way to duplicate an object. Use obj.clone() instead</span>
     <span class="doccomment">/// for Rust compatibility.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">duplicate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">Rf_duplicate</span>(<span class="self">self</span>.<span class="ident">get</span>())) })
     }
 
-    <span class="comment">/*
-    SEXP Rf_shallow_duplicate(SEXP);
-    SEXP R_duplicate_attr(SEXP);
-    SEXP R_shallow_duplicate_attr(SEXP);
-    SEXP Rf_lazy_duplicate(SEXP);
-    SEXP Rf_duplicated(SEXP, Rboolean);
-    Rboolean R_envHasNoSpecialSymbols(SEXP);
-    SEXP Rf_eval(SEXP, SEXP);
-    SEXP Rf_ExtractSubset(SEXP, SEXP, SEXP);
-    SEXP Rf_findFun(SEXP, SEXP);
-    SEXP Rf_findFun3(SEXP, SEXP, SEXP);
-    void Rf_findFunctionForBody(SEXP);
-    SEXP Rf_findVar(SEXP, SEXP);
-    SEXP Rf_findVarInFrame(SEXP, SEXP);
-    SEXP Rf_findVarInFrame3(SEXP, SEXP, Rboolean);
-    */</span>
-
     <span class="doccomment">/// Find a function in an environment ignoring other variables.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This evaulates promises if they are found.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// See also [global_function()].</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">///    use extendr_api::*;</span>
     <span class="doccomment">///    extendr_engine::start_r();</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">///    R!(my_fun &lt;- function() {});</span>
-    <span class="doccomment">///    let my_fun = global_env().find_function(Symbol(&quot;my_fun&quot;)).unwrap();</span>
+    <span class="doccomment">///    let my_fun = base_env().find_function(sym!(ls)).unwrap();</span>
     <span class="doccomment">///    assert_eq!(my_fun.is_function(), true);</span>
+    <span class="doccomment">///    assert_eq!(base_env().find_var(sym!(ls)).unwrap().is_promise(), true);</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_function</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">symbol</span>: <span class="ident">S</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span>, <span class="ident">AnyError</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">Robj</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>,
-    {
-        <span class="kw">let</span> <span class="ident">symbol</span> <span class="op">=</span> <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="ident">symbol</span>);
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">symbol</span>.<span class="ident">is_symbol</span>() {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="string">&quot;find_fun needs a Symbol. eg. find_fun(Symbol(\&quot;xyz\&quot;))&quot;</span>.<span class="ident">into</span>());
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_function</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">into</span>();
+        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_environment</span>() <span class="op">|</span><span class="op">|</span> <span class="op">!</span><span class="ident">key</span>.<span class="ident">is_symbol</span>() {
+            <span class="kw">return</span> <span class="prelude-val">None</span>;
         }
-        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_environment</span>() {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="string">&quot;find_fun needs an environment.&quot;</span>.<span class="ident">into</span>());
+        <span class="comment">// let mut env: Robj = self.into();</span>
+        <span class="comment">// loop {</span>
+        <span class="comment">//     if let Some(var) = env.local(&amp;key) {</span>
+        <span class="comment">//         if let Some(var) = var.eval_promise() {</span>
+        <span class="comment">//             if var.is_function() {</span>
+        <span class="comment">//                 break Some(var);</span>
+        <span class="comment">//             }</span>
+        <span class="comment">//         }</span>
+        <span class="comment">//     }</span>
+        <span class="comment">//     if let Some(parent) = env.parent() {</span>
+        <span class="comment">//         env = parent;</span>
+        <span class="comment">//     } else {</span>
+        <span class="comment">//         break None;</span>
+        <span class="comment">//     }</span>
+        <span class="comment">// }</span>
+        <span class="kw">unsafe</span> {
+            <span class="kw">let</span> <span class="ident">var</span> <span class="op">=</span> <span class="ident">Rf_findFun</span>(<span class="ident">key</span>.<span class="ident">get</span>(), <span class="self">self</span>.<span class="ident">get</span>());
+            <span class="kw">if</span> <span class="ident">var</span> <span class="op">!</span><span class="op">=</span> <span class="ident">R_UnboundValue</span> {
+                <span class="prelude-val">Some</span>(<span class="ident">new_borrowed</span>(<span class="ident">var</span>))
+            } <span class="kw">else</span> {
+                <span class="prelude-val">None</span>
+            }
         }
-        <span class="prelude-val">Ok</span>(<span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
-            <span class="ident">new_borrowed</span>(<span class="ident">Rf_findFun</span>(<span class="ident">symbol</span>.<span class="ident">get</span>(), <span class="self">self</span>.<span class="ident">get</span>()))
-        }))
     }
 
-    <span class="comment">/*
-    SEXP Rf_GetArrayDimnames(SEXP);
-    SEXP Rf_GetColNames(SEXP);
-    void Rf_GetMatrixDimnames(SEXP, SEXP*, SEXP*, const char**, const char**);
-    SEXP Rf_GetOption(SEXP, SEXP);
-    SEXP Rf_GetOption1(SEXP);
-    int Rf_FixupDigits(SEXP, warn_type);
-    int Rf_FixupWidth (SEXP, warn_type);
-    int Rf_GetOptionDigits(void);
-    int Rf_GetOptionWidth(void);
-    SEXP Rf_GetRowNames(SEXP);
-    void Rf_gsetVar(SEXP, SEXP, SEXP);
-    SEXP Rf_install(const char *);
-    SEXP Rf_installChar(SEXP);
-    SEXP Rf_installNoTrChar(SEXP);
-    SEXP Rf_installTrChar(SEXP);
-    SEXP Rf_installDDVAL(int i);
-    SEXP Rf_installS3Signature(const char *, const char *);
-    Rboolean Rf_isFree(SEXP);
-    Rboolean Rf_isOrdered(SEXP);
-    Rboolean Rf_isUnmodifiedSpecSym(SEXP sym, SEXP env);
-    Rboolean Rf_isUnordered(SEXP);
-    Rboolean Rf_isUnsorted(SEXP, Rboolean);
-    SEXP Rf_lengthgets(SEXP, R_len_t);
-    SEXP Rf_xlengthgets(SEXP, R_xlen_t);
-    SEXP R_lsInternal(SEXP, Rboolean);
-    SEXP R_lsInternal3(SEXP, Rboolean, Rboolean);
-    SEXP Rf_match(SEXP, SEXP, int);
-    SEXP Rf_matchE(SEXP, SEXP, int, SEXP);
-    SEXP Rf_namesgets(SEXP, SEXP);
-    SEXP Rf_mkChar(const char *);
-    SEXP Rf_mkCharLen(const char *, int);
-    Rboolean Rf_NonNullStringMatch(SEXP, SEXP);
-    */</span>
+    <span class="doccomment">/// Find a variable in an environment.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// See also [global_var()].</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that many common variables and functions are contained in promises</span>
+    <span class="doccomment">/// which must be evaluated and this function may throw an R error.</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">///    use extendr_api::*;</span>
+    <span class="doccomment">///    extendr_engine::start_r();</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">///    let iris_dataframe = global_env()</span>
+    <span class="doccomment">///        .find_var(sym!(iris)).unwrap().eval_promise().unwrap();</span>
+    <span class="doccomment">///    assert_eq!(iris_dataframe.is_frame(), true);</span>
+    <span class="doccomment">///    assert_eq!(iris_dataframe.len(), 5);</span>
+    <span class="doccomment">///    assert_eq!(global_env().find_var(sym!(imnotasymbol)), None);</span>
+    <span class="doccomment">/// ```</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_var</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">into</span>();
+        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_environment</span>() <span class="op">|</span><span class="op">|</span> <span class="op">!</span><span class="ident">key</span>.<span class="ident">is_symbol</span>() {
+            <span class="kw">return</span> <span class="prelude-val">None</span>;
+        }
+        <span class="comment">// Alterative:</span>
+        <span class="comment">// let mut env: Robj = self.into();</span>
+        <span class="comment">// loop {</span>
+        <span class="comment">//     if let Some(var) = env.local(&amp;key) {</span>
+        <span class="comment">//         println!(&quot;v1={:?}&quot;, var);</span>
+        <span class="comment">//         if let Some(var) = var.eval_promise() {</span>
+        <span class="comment">//             println!(&quot;v2={:?}&quot;, var);</span>
+        <span class="comment">//             break Some(var);</span>
+        <span class="comment">//         }</span>
+        <span class="comment">//     }</span>
+        <span class="comment">//     if let Some(parent) = env.parent() {</span>
+        <span class="comment">//         env = parent;</span>
+        <span class="comment">//     } else {</span>
+        <span class="comment">//         break None;</span>
+        <span class="comment">//     }</span>
+        <span class="comment">// }</span>
+        <span class="kw">unsafe</span> {
+            <span class="kw">let</span> <span class="ident">var</span> <span class="op">=</span> <span class="ident">Rf_findVar</span>(<span class="ident">key</span>.<span class="ident">get</span>(), <span class="self">self</span>.<span class="ident">get</span>());
+            <span class="kw">if</span> <span class="ident">var</span> <span class="op">!</span><span class="op">=</span> <span class="ident">R_UnboundValue</span> {
+                <span class="prelude-val">Some</span>(<span class="ident">new_borrowed</span>(<span class="ident">var</span>))
+            } <span class="kw">else</span> {
+                <span class="prelude-val">None</span>
+            }
+        }
+    }
+
+    <span class="doccomment">/// If this object is a promise, evaluate it, otherwise return the object.</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">///    use extendr_api::*;</span>
+    <span class="doccomment">///    extendr_engine::start_r();</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">///    let iris_promise = global_env().find_var(sym!(iris)).unwrap();</span>
+    <span class="doccomment">///    let iris_dataframe = iris_promise.eval_promise().unwrap();</span>
+    <span class="doccomment">///    assert_eq!(iris_dataframe.is_frame(), true);</span>
+    <span class="doccomment">/// ```</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">eval_promise</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_promise</span>() {
+            <span class="kw">let</span> <span class="ident">promise</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_promise</span>().<span class="ident">unwrap</span>();
+            <span class="kw">if</span> <span class="op">!</span><span class="ident">promise</span>.<span class="ident">value</span>.<span class="ident">is_unbound_value</span>() {
+                <span class="prelude-val">Ok</span>(<span class="ident">promise</span>.<span class="ident">value</span>)
+            } <span class="kw">else</span> {
+                <span class="self">self</span>.<span class="ident">eval</span>()
+            }
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">into</span>())
+        }
+    }
 
     <span class="doccomment">/// Number of columns of a matrix</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ncols</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
@@ -728,39 +663,6 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">nrows</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_nrows</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="ident">usize</span> }
     }
-
-    <span class="comment">/*SEXP Rf_nthcdr(SEXP, int);
-    Rboolean Rf_pmatch(SEXP, SEXP, Rboolean);
-    Rboolean Rf_psmatch(const char *, const char *, Rboolean);
-    void Rf_PrintValue(SEXP);
-    void Rf_printwhere(void);
-    void Rf_readS3VarsFromFrame(SEXP, SEXP*, SEXP*, SEXP*, SEXP*, SEXP*, SEXP*);
-    SEXP Rf_setAttrib(SEXP, SEXP, SEXP);
-    void Rf_setSVector(SEXP*, int, SEXP);
-    void Rf_setVar(SEXP, SEXP, SEXP);
-    SEXP Rf_stringSuffix(SEXP, int);
-    SEXPTYPE Rf_str2type(const char *);
-    Rboolean Rf_StringBlank(SEXP);
-    SEXP Rf_substitute(SEXP,SEXP);
-    SEXP Rf_topenv(SEXP, SEXP);
-    const char * Rf_translateChar(SEXP);
-    const char * Rf_translateChar0(SEXP);
-    const char * Rf_translateCharUTF8(SEXP);
-    const char * Rf_type2char(SEXPTYPE);
-    SEXP Rf_type2rstr(SEXPTYPE);
-    SEXP Rf_type2str(SEXPTYPE);
-    SEXP Rf_type2str_nowarn(SEXPTYPE);
-    SEXP R_GetCurrentEnv();
-    Rboolean Rf_isS4(SEXP);
-    SEXP Rf_asS4(SEXP, Rboolean, int);
-    SEXP Rf_S3Class(SEXP);
-    int Rf_isBasicClass(const char *);
-    Rboolean R_cycle_detected(SEXP s, SEXP child);
-    u32 Rf_getCharCE(SEXP);
-    SEXP Rf_mkCharCE(const char *, cetype_t);
-    SEXP Rf_mkCharLenCE(const char *, int, cetype_t);
-    SEXP R_forceAndCall(SEXP e, int n, SEXP rho);
-    */</span>
 
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
     <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
@@ -817,59 +719,16 @@
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">R_RegisterCFinalizer</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">func</span>));
     }
 
-    <span class="comment">// SEXP R_ExternalPtrTag(SEXP s);</span>
-    <span class="comment">// SEXP R_ExternalPtrProtected(SEXP s);</span>
-    <span class="comment">// void R_ClearExternalPtr(SEXP s);</span>
-    <span class="comment">// void R_SetExternalPtrAddr(SEXP s, void *p);</span>
-    <span class="comment">// void R_SetExternalPtrTag(SEXP s, SEXP tag);</span>
-    <span class="comment">// void R_SetExternalPtrProtected(SEXP s, SEXP p);</span>
-
-    <span class="comment">/*
-    SEXP R_MakeWeakRef(SEXP key, SEXP val, SEXP fin, Rboolean onexit);
-    SEXP R_MakeWeakRefC(SEXP key, SEXP val, R_CFinalizer_t fin, Rboolean onexit);
-    SEXP R_WeakRefKey(SEXP w);
-    SEXP R_WeakRefValue(SEXP w);
-    void R_RunWeakRefFinalizer(SEXP w);
-    SEXP R_PromiseExpr(SEXP);
-    SEXP R_ClosureExpr(SEXP);
-    SEXP R_BytecodeExpr(SEXP e);
-    SEXP R_bcEncode(SEXP);
-    SEXP R_bcDecode(SEXP);
-    void R_registerBC(SEXP, SEXP);
-    Rboolean R_checkConstants(Rboolean);
-    Rboolean R_BCVersionOK(SEXP);
-    void R_RestoreHashCount(SEXP rho);
-    Rboolean R_IsPackageEnv(SEXP rho);
-    SEXP R_PackageEnvName(SEXP rho);
-    SEXP R_FindPackageEnv(SEXP info);
-    Rboolean R_IsNamespaceEnv(SEXP rho);
-    SEXP R_NamespaceEnvSpec(SEXP rho);
-    SEXP R_FindNamespace(SEXP info);
-    void R_LockEnvironment(SEXP env, Rboolean bindings);
-    Rboolean R_EnvironmentIsLocked(SEXP env);
-    void R_LockBinding(SEXP sym, SEXP env);
-    void R_unLockBinding(SEXP sym, SEXP env);
-    void R_MakeActiveBinding(SEXP sym, SEXP fun, SEXP env);
-    Rboolean R_BindingIsLocked(SEXP sym, SEXP env);
-    Rboolean R_BindingIsActive(SEXP sym, SEXP env);
-    Rboolean R_HasFancyBindings(SEXP rho);
-    */</span>
-
-    <span class="doccomment">/// Read-only access to attribute list.</span>
-    <span class="comment">// fn attrib(&amp;self) -&gt; Robj {</span>
-    <span class="comment">// unsafe {new_borrowed(ATTRIB(self.get()))}</span>
-    <span class="comment">// }</span>
-
     <span class="doccomment">/// Copy a vector and resize it.</span>
     <span class="doccomment">/// See. https://github.com/hadley/r-internals/blob/master/vectors.md</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">xlengthgets</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">new_len</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span>, <span class="ident">AnyError</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">xlengthgets</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">new_len</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_vector</span>() {
                 <span class="prelude-val">Ok</span>(<span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
                     <span class="ident">new_owned</span>(<span class="ident">Rf_xlengthgets</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">new_len</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>))
                 }))
             } <span class="kw">else</span> {
-                <span class="prelude-val">Err</span>(<span class="ident">AnyError</span>::<span class="ident">from</span>(<span class="string">&quot;xlengthgets: Not a vector type&quot;</span>))
+                <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">NotAVectorType</span>)
             }
         }
     }
@@ -883,13 +742,6 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">conformable</span>(<span class="ident">a</span>: <span class="kw-2">&amp;</span><span class="ident">Robj</span>, <span class="ident">b</span>: <span class="kw-2">&amp;</span><span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">Rf_conformable</span>(<span class="ident">a</span>.<span class="ident">get</span>(), <span class="ident">b</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> })
     }
-
-    <span class="doccomment">/// Borrow an element from a list.</span>
-    <span class="comment">// pub fn elt(&amp;self, index: usize) -&gt; Robj {</span>
-    <span class="comment">//     single_threaded(|| unsafe { Robj::from(Rf_elt(self.get(), index as raw::c_int)) })</span>
-    <span class="comment">// }</span>
-
-    <span class="comment">//Rboolean Rf_inherits(SEXP, const char *);</span>
 
     <span class="doccomment">/// Return true if this is an array.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_array</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
@@ -1002,21 +854,27 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_missing_arg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">get</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">R_MissingArg</span> }
     }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_unbound_value</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">get</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">R_UnboundValue</span> }
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_package_env</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">unsafe</span> { <span class="ident">R_IsPackageEnv</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">package_env_name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+        <span class="kw">unsafe</span> { <span class="ident">new_borrowed</span>(<span class="ident">R_PackageEnvName</span>(<span class="self">self</span>.<span class="ident">get</span>())) }
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_namespace_env</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">unsafe</span> { <span class="ident">R_IsNamespaceEnv</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">namespace_env_spec</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+        <span class="kw">unsafe</span> { <span class="ident">new_borrowed</span>(<span class="ident">R_NamespaceEnvSpec</span>(<span class="self">self</span>.<span class="ident">get</span>())) }
+    }
 }
 
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">///    use extendr_api::*;</span>
-<span class="doccomment">///    extendr_engine::start_r();</span>
-<span class="doccomment">///</span>
-<span class="doccomment">///    println!(&quot;{:?}&quot;, R!(getNamespace(&quot;stats&quot;)).unwrap());</span>
-<span class="doccomment">///    // assert_eq!(find_namespace(&quot;stats&quot;).is_some(), true);</span>
-<span class="doccomment">///    assert!(false);</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_namespace</span>(<span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="macro">r</span><span class="macro">!</span>(<span class="ident">Symbol</span>(<span class="ident">name</span>));
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">new_borrowed</span>(<span class="ident">R_FindNamespace</span>(<span class="ident">name</span>.<span class="ident">get</span>())) });
-    <span class="prelude-val">Some</span>(<span class="ident">res</span>)
-}
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../";window.currentCrate = "extendr_api";</script><script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>
