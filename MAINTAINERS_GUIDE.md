@@ -71,11 +71,7 @@ When we publish, we use `cargo ws publish`. This command does:
 2. Publish all the crates within the workspace.
 
 ``` sh
-# publish
 cargo ws publish --force='*' --no-individual-tags patch
-
-# change the version for further development
-cargo ws version --force='*' --no-individual-tags --pre-id alpha prerelease
 ```
 
 This command will publish to Crates.io immediately.
@@ -94,7 +90,6 @@ git push --tags
 
 # publish without modifying the current version
 cargo ws publish --force='*' --from-git
-
-# change the version for further development
-cargo ws version --force='*' --no-individual-tags --pre-id alpha prerelease
 ```
+
+We might also want to bump version to the development version. In the case, follow "Bump version without publish" section above.
