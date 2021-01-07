@@ -399,6 +399,35 @@ mod tests {
         123.
     }
 
+    #[extendr]
+    pub fn f64_slice(x: &[f64]) -> &[f64] { x }
+
+    #[extendr]
+    pub fn i32_slice(x: &[i32]) -> &[i32] { x }
+
+    #[extendr]
+    pub fn bool_slice(x: &[Bool]) -> &[Bool] { x }
+
+    #[extendr]
+    pub fn f64_iter(x: RealIter) -> RealIter { x }
+
+    #[extendr]
+    pub fn i32_iter(x: IntegerIter) -> IntegerIter { x }
+
+    #[extendr]
+    pub fn bool_iter(x: LogicalIter) -> LogicalIter { x }
+
+    #[extendr]
+    pub fn symbol(x: Symbol) -> Symbol { x }
+
+    #[extendr]
+    pub fn matrix(x: Matrix<&[f64]>) -> Matrix<&[f64]> { x }
+
+    use std::collections::HashMap;
+    
+    #[extendr]
+    pub fn hash_map(x: HashMap<&str, Robj>) -> HashMap<&str, Robj> { x }
+
     struct Person {
         pub name: String,
     }
