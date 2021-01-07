@@ -219,6 +219,9 @@ pub use robj_ndarray::*;
 pub use extendr_macros::*;
 
 #[doc(hidden)]
+pub use std::collections::HashMap;
+
+#[doc(hidden)]
 pub use libR_sys::DllInfo;
 
 #[doc(hidden)]
@@ -421,10 +424,8 @@ mod tests {
     pub fn symbol(x: Symbol) -> Symbol { x }
 
     #[extendr]
-    pub fn matrix(x: Matrix<&[f64]>) -> Matrix<&[f64]> { x }
+    pub fn matrix(x: RMatrix<&[f64]>) -> RMatrix<&[f64]> { x }
 
-    use std::collections::HashMap;
-    
     #[extendr]
     pub fn hash_map(x: HashMap<&str, Robj>) -> HashMap<&str, Robj> { x }
 
@@ -508,6 +509,82 @@ mod tests {
             assert_eq!(new_borrowed(wrap__return_f32()), Robj::from(123.));
             assert_eq!(new_borrowed(wrap__return_f64()), Robj::from(123.));
         }
+    }
+
+    #[test]
+    fn class_wrapper_test() {
+        test! {
+            let mut person = Person::new();
+            person.set_name("fred");
+            let robj = r!(person);
+            assert_eq!(robj.check_external_ptr("Person"), true);
+            let person2 = <&Person>::from_robj(&robj).unwrap();
+            assert_eq!(person2.name(), "fred");
+        }
+    }
+
+    #[test]
+    fn slice_test() {
+        test! {
+            unsafe {
+                // #[extendr]
+                // pub fn f64_slice(x: &[f64]) -> &[f64] { x }
+
+                let robj = r!([1., 2., 3.]);
+                assert_eq!(new_owned(wrap__f64_slice(robj.get())), robj);
+            
+                // #[extendr]
+                // pub fn i32_slice(x: &[i32]) -> &[i32] { x }
+            
+                let robj = r!([1, 2, 3]);
+                assert_eq!(new_owned(wrap__i32_slice(robj.get())), robj);
+            
+                // #[extendr]
+                // pub fn bool_slice(x: &[Bool]) -> &[Bool] { x }
+            
+                let robj = r!([TRUE, FALSE, TRUE]);
+                assert_eq!(new_owned(wrap__bool_slice(robj.get())), robj);
+            
+                // #[extendr]
+                // pub fn f64_iter(x: RealIter) -> RealIter { x }
+            
+                let robj = r!([1., 2., 3.]);
+                assert_eq!(new_owned(wrap__f64_iter(robj.get())), robj);
+            
+                // #[extendr]
+                // pub fn i32_iter(x: IntegerIter) -> IntegerIter { x }
+            
+                let robj = r!([1, 2, 3]);
+                assert_eq!(new_owned(wrap__i32_iter(robj.get())), robj);
+            
+                // #[extendr]
+                // pub fn bool_iter(x: LogicalIter) -> LogicalIter { x }
+            
+                let robj = r!([TRUE, FALSE, TRUE]);
+                assert_eq!(new_owned(wrap__bool_iter(robj.get())), robj);
+            
+                // #[extendr]
+                // pub fn symbol(x: Symbol) -> Symbol { x }
+            
+                let robj = sym!(fred);
+                assert_eq!(new_owned(wrap__symbol(robj.get())), robj);
+            
+                // #[extendr]
+                // pub fn matrix(x: Matrix<&[f64]>) -> Matrix<&[f64]> { x }
+            
+                let m = RMatrix::new([1., 2.], 1, 2);
+                let robj = r!(m);
+                assert_eq!(new_owned(wrap__matrix(robj.get())), robj);
+            
+                // #[extendr]
+                // pub fn hash_map(x: HashMap<&str, Robj>) -> HashMap<&str, Robj> { x }
+                let robj = r!(List(&[1, 2]));
+                robj.set_attrib(names_symbol(), r!(["a", "b"]));
+                let res = new_owned(wrap__hash_map(robj.get()));
+                assert_eq!(res.len(), 2);
+            }
+        }
+    
     }
 
     #[test]

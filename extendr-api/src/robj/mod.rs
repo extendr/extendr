@@ -1196,8 +1196,12 @@ impl std::fmt::Debug for Robj {
             STRSXP => {
                 write!(f, "r!([")?;
                 let mut sep = "";
-                for obj in self.as_str_iter().unwrap() {
-                    write!(f, "{}{:?}", sep, obj)?;
+                for s in self.as_str_iter().unwrap() {
+                    // if s.is_na() {
+                    //     write!(f, "{}na_str()", sep)?;
+                    // } else {
+                        write!(f, "{}{:?}", sep, s)?;
+                    // }
                     sep = ", ";
                 }
                 write!(f, "])")

@@ -1,5 +1,6 @@
 use super::*;
 use crate::single_threaded;
+use std::collections::HashMap;
 
 fn str_to_character(s: &str) -> SEXP {
     unsafe { Rf_mkCharLen(s.as_ptr() as *const raw::c_char, s.len() as i32) }
@@ -487,3 +488,37 @@ impl_from_into_iter! {&'a [T]}
 
 impl_from_as_iterator! {Range<T>}
 impl_from_as_iterator! {RangeInclusive<T>}
+
+impl<'a> From<RealIter<'a>> for Robj {
+    fn from(val: RealIter) -> Self {
+        val.collect_robj()
+    }
+}
+
+impl<'a> From<IntegerIter<'a>> for Robj {
+    fn from(val: IntegerIter) -> Self {
+        val.collect_robj()
+    }
+}
+
+impl<'a> From<LogicalIter<'a>> for Robj {
+    fn from(val: LogicalIter) -> Self {
+        val.collect_robj()
+    }
+}
+
+impl<'a> From<HashMap<&'a str, Robj>> for Robj {
+    fn from(val: HashMap<&'a str, Robj>) -> Self {
+        let res: Robj = List(
+            val
+            .iter()
+            .map(|(_, v)| v)
+        ).into();
+        let names = val
+            .into_iter()
+            .map(|(k, _)| k)
+            .collect_robj();
+        res.set_attrib(names_symbol(), names);
+        res
+    }
+}
