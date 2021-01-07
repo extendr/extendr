@@ -2108,13 +2108,13 @@
     <span class="doccomment">///    let value = robj.set_attrib(Symbol(&quot;xyz&quot;), 1);</span>
     <span class="doccomment">///    assert_eq!(robj.get_attrib(Symbol(&quot;xyz&quot;)), Some(value));</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_attrib</span><span class="op">&lt;</span><span class="ident">N</span>, <span class="ident">V</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">name</span>: <span class="ident">N</span>, <span class="ident">value</span>: <span class="ident">V</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_attrib</span><span class="op">&lt;</span><span class="ident">N</span>, <span class="ident">V</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="ident">N</span>, <span class="ident">value</span>: <span class="ident">V</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span>
     <span class="kw">where</span>
-        <span class="ident">Robj</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">N</span><span class="op">&gt;</span>,
-        <span class="ident">Robj</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">V</span><span class="op">&gt;</span>,
+        <span class="ident">N</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
+        <span class="ident">V</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
     {
-        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="ident">name</span>);
-        <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="ident">value</span>);
+        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">name</span>.<span class="ident">into</span>();
+        <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">into</span>();
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
             <span class="ident">new_borrowed</span>(<span class="ident">Rf_setAttrib</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">name</span>.<span class="ident">get</span>(), <span class="ident">value</span>.<span class="ident">get</span>()))
         })

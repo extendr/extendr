@@ -503,6 +503,8 @@
 <span id="500">500</span>
 <span id="501">501</span>
 <span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! A safe and user friendly R extension interface.</span>
@@ -704,6 +706,7 @@
 <span class="kw">mod</span> <span class="ident">robj</span>;
 <span class="kw">mod</span> <span class="ident">thread_safety</span>;
 <span class="kw">mod</span> <span class="ident">wrapper</span>;
+<span class="kw">mod</span> <span class="ident">matrix</span>;
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
 <span class="kw">mod</span> <span class="ident">robj_ndarray</span>;
@@ -716,6 +719,7 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">robj</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">thread_safety</span>::{<span class="ident">handle_panic</span>, <span class="ident">single_threaded</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">wrapper</span>::<span class="kw-2">*</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">matrix</span>::<span class="kw-2">*</span>;
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">robj_ndarray</span>::<span class="kw-2">*</span>;

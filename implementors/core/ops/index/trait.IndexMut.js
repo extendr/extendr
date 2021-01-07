@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["extendr_api"] = [{"text":"impl&lt;T&gt; IndexMut&lt;[usize; 2]&gt; for Array&lt;T, [usize; 2]&gt; <span class=\"where fmt-newline\">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: IndexMut&lt;usize&gt;,&nbsp;</span>","synthetic":false,"types":[]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
