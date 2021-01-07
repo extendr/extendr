@@ -86,7 +86,7 @@ If we want to review the change manually before publishing, we can do it step by
 cargo ws version --force='*' --no-individual-tags --no-git-push patch
 
 # review the changes
-git show HEAD^
+git show HEAD
 
 # push all the commits and tags
 git push
