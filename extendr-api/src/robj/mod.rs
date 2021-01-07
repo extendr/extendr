@@ -859,13 +859,13 @@ impl Robj {
     ///    let value = robj.set_attrib(Symbol("xyz"), 1);
     ///    assert_eq!(robj.get_attrib(Symbol("xyz")), Some(value));
     /// ```
-    pub fn set_attrib<N, V>(&mut self, name: N, value: V) -> Robj
+    pub fn set_attrib<N, V>(&self, name: N, value: V) -> Robj
     where
-        Robj: From<N>,
-        Robj: From<V>,
+        N: Into<Robj>,
+        V: Into<Robj>,
     {
-        let name = Robj::from(name);
-        let value = Robj::from(value);
+        let name = name.into();
+        let value = value.into();
         single_threaded(|| unsafe {
             new_borrowed(Rf_setAttrib(self.get(), name.get(), value.get()))
         })
