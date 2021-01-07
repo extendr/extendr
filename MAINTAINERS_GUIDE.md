@@ -16,19 +16,23 @@ We use `cargo ws version` for this. This command does:
 
 1. Bump all the versions of the crates in this workspace.
 2. Commit.
-3. Tag with the bumped version.
+3. Tag with the bumped version. (This step will be skipped this time as we specify `--no-git-tag`)
 4. Push to the repo immediately. (Be careful! If you want to review the change manually before pushing, add `--no-git-push` option as well.)
 
 ``` sh
-cargo ws version --force='*' --no-individual-tags --pre-id alpha prerelease
+cargo ws version --force='*' --no-git-tag --pre-id alpha prerelease
 ```
 
 The meanings of the options and arguments are
 
 * `--force='*'`: By default, `cargo ws version` skips the crates unchange since the last version. This option makes them included in the targets. 
-* `--no-individual-tags`: By default, `cargo ws version` creates a tag for each crates (e.g. `crateA@v0.0.1`) in addition to the usual version tag (e.g. `v0.0.1`). This option skips the individual tags.
+* `--no-git-tag`: By default, `cargo ws version` creates a tag for the new commit. This option skips the step.
 * `--pre-id alpha`: Specify the identifier prepended to the version.
 * `prerelease`: Increase the version with prerelease identifier (e.g. `v0.1.10 -> v0.1.10-alpha.0`, `v0.1.10-alpha.0 -> v0.1.10-alpha.1`). We can also specify `patch`, `minor`, or `major` to increment the corresponding part of the version. Alternatively, we can omit this and choose the version interactively.
+
+When we want to create a tag at the same time, remove `--no-git-tag` and specify `--no-individual-tags`.
+
+* `--no-individual-tags`: By default, `cargo ws version` creates a tag for each crate (e.g. `crateA@v0.0.1`) in addition to the usual version tag (e.g. `v0.0.1`). This option skips the individual tags.
 
 <details>
 
