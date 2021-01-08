@@ -304,49 +304,51 @@ impl ToVectorValue for Option<bool> {
 }
 
 // Not thread safe.
-unsafe fn fixed_size_collect<I>(iter: I, len: usize) -> Robj
+fn fixed_size_collect<I>(iter: I, len: usize) -> Robj
 where
     I: Iterator,
     I: Sized,
     I::Item: ToVectorValue,
 {
-    // Length of the vector is known in advance.
-    let sexptype = I::Item::sexptype();
-    if sexptype != 0 {
-        let sexp = Rf_allocVector(sexptype, len as R_xlen_t);
-        R_PreserveObject(sexp);
-        match sexptype {
-            REALSXP => {
-                let ptr = REAL(sexp);
-                for (i, v) in iter.enumerate() {
-                    *ptr.offset(i as isize) = v.to_real();
+    single_threaded(|| unsafe { 
+        // Length of the vector is known in advance.
+        let sexptype = I::Item::sexptype();
+        if sexptype != 0 {
+            let sexp = Rf_allocVector(sexptype, len as R_xlen_t);
+            R_PreserveObject(sexp);
+            match sexptype {
+                REALSXP => {
+                    let ptr = REAL(sexp);
+                    for (i, v) in iter.enumerate() {
+                        *ptr.offset(i as isize) = v.to_real();
+                    }
+                }
+                INTSXP => {
+                    let ptr = INTEGER(sexp);
+                    for (i, v) in iter.enumerate() {
+                        *ptr.offset(i as isize) = v.to_integer();
+                    }
+                }
+                LGLSXP => {
+                    let ptr = LOGICAL(sexp);
+                    for (i, v) in iter.enumerate() {
+                        *ptr.offset(i as isize) = v.to_logical();
+                    }
+                }
+                STRSXP => {
+                    for (i, v) in iter.enumerate() {
+                        SET_STRING_ELT(sexp, i as isize, v.to_sexp());
+                    }
+                }
+                _ => {
+                    panic!("unexpected SEXPTYPE in collect_robj");
                 }
             }
-            INTSXP => {
-                let ptr = INTEGER(sexp);
-                for (i, v) in iter.enumerate() {
-                    *ptr.offset(i as isize) = v.to_integer();
-                }
-            }
-            LGLSXP => {
-                let ptr = LOGICAL(sexp);
-                for (i, v) in iter.enumerate() {
-                    *ptr.offset(i as isize) = v.to_logical();
-                }
-            }
-            STRSXP => {
-                for (i, v) in iter.enumerate() {
-                    SET_STRING_ELT(sexp, i as isize, v.to_sexp());
-                }
-            }
-            _ => {
-                panic!("unexpected SEXPTYPE in collect_robj");
-            }
+            return Robj::Owned(sexp);
+        } else {
+            return Robj::from(());
         }
-        return Robj::Owned(sexp);
-    } else {
-        return Robj::from(());
-    }
+    })
 }
 
 /// Extensions to iterators for R objects including [RobjItertools::collect_robj()].
@@ -381,7 +383,7 @@ pub trait RobjItertools: Iterator {
     {
         if let (len, Some(max)) = self.size_hint().clone() {
             if len == max {
-                return single_threaded(|| unsafe { fixed_size_collect(self, len) });
+                return fixed_size_collect(self, len);
             }
         }
         // If the size is indeterminate, create a vector and call recursively.
@@ -490,24 +492,28 @@ impl_from_as_iterator! {Range<T>}
 impl_from_as_iterator! {RangeInclusive<T>}
 
 impl<'a> From<RealIter<'a>> for Robj {
+    /// Convert a real iterator into a vector.
     fn from(val: RealIter) -> Self {
         val.collect_robj()
     }
 }
 
 impl<'a> From<IntegerIter<'a>> for Robj {
+    /// Convert an integer iterator into a vector.
     fn from(val: IntegerIter) -> Self {
         val.collect_robj()
     }
 }
 
 impl<'a> From<LogicalIter<'a>> for Robj {
+    /// Convert a logical iterator into a vector.
     fn from(val: LogicalIter) -> Self {
         val.collect_robj()
     }
 }
 
 impl<'a> From<HashMap<&'a str, Robj>> for Robj {
+    /// Convert a hashmap into a list.
     fn from(val: HashMap<&'a str, Robj>) -> Self {
         let res: Robj = List(
             val

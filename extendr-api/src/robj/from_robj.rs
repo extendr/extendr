@@ -265,7 +265,6 @@ where
     Robj: AsTypedSlice<'a, T>,
 {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        println!("from_robj: {:?} {:?}", robj, robj.class());
         if let Some(x) = robj.as_matrix() {
             Ok(x)
         } else if !robj.as_typed_slice().is_some() {

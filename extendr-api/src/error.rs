@@ -2,6 +2,7 @@
 
 use libR_sys::*;
 use std::os::raw;
+use crate::*;
 
 static mut R_ERROR_BUF: Vec<u8> = Vec::new();
 
@@ -26,7 +27,8 @@ pub fn unwrap_or_throw<T>(r: std::result::Result<T, &'static str>) -> T {
 pub enum Error {
     NotFound,
     NotAVectorType,
-    ParseError,
+    EvalError{ code: Robj, error: i32 },
+    ParseError{ code: String, status: u32 },
     Other(String),
 }
 
@@ -53,6 +55,12 @@ impl From<Box<dyn std::error::Error>> for Error {
 impl From<&str> for Error {
     fn from(err: &str) -> Error {
         Error::Other(err.to_string())
+    }
+}
+
+impl From<String> for Error {
+    fn from(err: String) -> Error {
+        Error::Other(err)
     }
 }
 
