@@ -101,7 +101,7 @@ where
     }
 }
 
-pub fn throw_r_error<S : AsRef<str>>(s: S) {
+pub fn throw_r_error<S: AsRef<str>>(s: S) {
     let s = s.as_ref();
     unsafe { libR_sys::Rf_error(std::ffi::CString::new(s).unwrap().as_ptr()) };
 }
@@ -111,10 +111,10 @@ pub fn throw_r_error<S : AsRef<str>>(s: S) {
 /// use extendr_api::*;
 /// test! {
 ///    let res = catch_r_error(|| unsafe {
-///        throw_r_error("bad things!")
+///        throw_r_error("bad things!");
 ///        std::ptr::null_mut()
 ///    });
-///    assert_eq!(res.is_ok(), true);
+///    assert_eq!(res.is_ok(), false);
 /// }
 /// ```
 pub fn catch_r_error<F>(f: F) -> Result<SEXP>
@@ -128,11 +128,11 @@ where
     where
         F: FnOnce() -> SEXP + Copy,
     {
-        let data = data as * const ();
-        let f : &F = std::mem::transmute(data);
+        let data = data as *const ();
+        let f: &F = std::mem::transmute(data);
         f()
     }
-    
+
     unsafe extern "C" fn do_cleanup(_: *mut raw::c_void, jump: Rboolean) {
         if jump != 0 {
             panic!("R has thrown an error.");
@@ -140,8 +140,8 @@ where
     }
 
     unsafe {
-        let fun_ptr = do_call::<F> as * const ();
-        let clean_ptr = do_cleanup as * const ();
+        let fun_ptr = do_call::<F> as *const ();
+        let clean_ptr = do_cleanup as *const ();
         let x = false;
         let fun = std::mem::transmute(fun_ptr);
         let cleanfun = std::mem::transmute(clean_ptr);
@@ -153,9 +153,7 @@ where
             R_UnwindProtect(fun, data, cleanfun, cleandata, cont)
         }) {
             Ok(res) => Ok(res),
-            Err(_) => {
-                Err("Error in protected R code".into())
-            }
+            Err(_) => Err("Error in protected R code".into()),
         };
         Rf_unprotect(1);
         res
