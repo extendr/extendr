@@ -16,7 +16,7 @@ jobs:
         with:
           toolchain: stable
       - name: Docs
-        run: cargo doc --workspace --no-deps
+        run: cargo doc --workspace --no-deps --all-features
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
