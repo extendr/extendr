@@ -2,7 +2,13 @@ use super::*;
 use crate::single_threaded;
 
 fn str_to_character(s: &str) -> SEXP {
-    unsafe { Rf_mkCharLen(s.as_ptr() as *const raw::c_char, s.len() as i32) }
+    unsafe {
+        if s.is_na() {
+            R_NaString
+        } else {
+            Rf_mkCharLen(s.as_ptr() as *const raw::c_char, s.len() as i32)
+        }
+    }
 }
 
 /// Convert a null to an Robj.

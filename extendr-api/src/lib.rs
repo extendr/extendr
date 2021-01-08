@@ -290,6 +290,13 @@ impl IsNA for Bool {
     }
 }
 
+impl IsNA for &str {
+    /// Check for NA in a string by address.
+    fn is_na(&self) -> bool {
+        self.as_ptr() == na_str().as_ptr()
+    }
+}
+
 #[doc(hidden)]
 pub fn print_r_output<T: Into<Vec<u8>>>(s: T) {
     let cs = CString::new(s).expect("NulError");
@@ -500,5 +507,13 @@ mod tests {
         call!("close", &txt_con).unwrap();
         let result = R!(test_con).unwrap();
         assert_eq!(result, r!("Hello world"));
+    }
+
+    #[test]
+    fn test_na_str() {
+        assert!(na_str().as_ptr() != "NA".as_ptr());
+        assert_eq!(na_str(), "NA");
+        assert_eq!("NA".is_na(), false);
+        assert_eq!(na_str().is_na(), true);
     }
 }
