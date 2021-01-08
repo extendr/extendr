@@ -510,9 +510,9 @@ impl Robj {
     /// let expr = r!(env.clone());
     /// assert_eq!(expr.len(), 100);
     /// let env2 = expr.as_environment().unwrap();
-    /// assert_eq!(env2, env);
+    /// assert_eq!(env2.names_and_values.len(), 100);
     /// ```
-    pub fn as_environment(&self) -> Option<Env<Robj, HashMap<String, Robj>>> {
+    pub fn as_environment(&self) -> Option<Env<Robj, HashMap<&str, Robj>>> {
         if self.sexptype() == ENVSXP {
             unsafe {
                 let parent = new_owned(ENCLOS(self.get()));
@@ -526,7 +526,7 @@ impl Robj {
                         {
                             for (obj, tag) in obj_iter.zip(tag_iter) {
                                 if !obj.is_unbound_value() && tag.is_some() {
-                                    names_and_values.insert(tag.unwrap().to_string(), obj);
+                                    names_and_values.insert(tag.unwrap(), obj);
                                 }
                             }
                         }
@@ -536,7 +536,7 @@ impl Robj {
                 {
                     for (obj, tag) in obj_iter.zip(tag_iter) {
                         if !obj.is_unbound_value() && tag.is_some() {
-                            names_and_values.insert(tag.unwrap().to_string(), obj);
+                            names_and_values.insert(tag.unwrap(), obj);
                         }
                     }
                 }

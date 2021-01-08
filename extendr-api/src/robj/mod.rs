@@ -658,7 +658,7 @@ impl Robj {
             let mut error: raw::c_int = 0;
             let res = R_tryEval(self.get(), R_GlobalEnv, &mut error as *mut raw::c_int);
             if error != 0 {
-                Err(Error::from("R eval error"))
+                Err(Error::EvalError{ code: r!(self), error })
             } else {
                 Ok(new_owned(res))
             }
@@ -693,11 +693,11 @@ impl Robj {
             use libR_sys::*;
             let mut status = 0_u32;
             let status_ptr = &mut status as *mut u32;
-            let code: Robj = code.into();
-            let parsed = new_owned(R_ParseVector(code.get(), -1, status_ptr, R_NilValue));
+            let codeobj: Robj = code.into();
+            let parsed = new_owned(R_ParseVector(codeobj.get(), -1, status_ptr, R_NilValue));
             match status {
                 1 => Ok(parsed),
-                _ => Err(Error::ParseError),
+                _ => Err(Error::ParseError{code: code.into(), status }),
             }
         })
     }
@@ -715,7 +715,7 @@ impl Robj {
             let mut res = Robj::from(());
             if let Some(iter) = expr.as_list_iter() {
                 for lang in iter {
-                    res = lang.eval()?;
+                    res = lang.eval()?
                 }
             }
             Ok(res)
@@ -1196,8 +1196,12 @@ impl std::fmt::Debug for Robj {
             STRSXP => {
                 write!(f, "r!([")?;
                 let mut sep = "";
-                for obj in self.as_str_iter().unwrap() {
-                    write!(f, "{}{:?}", sep, obj)?;
+                for s in self.as_str_iter().unwrap() {
+                    // if s.is_na() {
+                    //     write!(f, "{}na_str()", sep)?;
+                    // } else {
+                        write!(f, "{}{:?}", sep, s)?;
+                    // }
                     sep = ", ";
                 }
                 write!(f, "])")

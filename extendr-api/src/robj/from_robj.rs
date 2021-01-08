@@ -234,3 +234,58 @@ impl<'a> FromRobj<'a> for Option<String> {
         }
     }
 }
+
+impl<'a, T> FromRobj<'a> for &'a [T]
+where
+    Robj : AsTypedSlice<'a, T>
+{
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+        if let Some(slice) = robj.as_typed_slice() {
+            Ok(slice)
+        } else {
+            Err("Expected a vector type.")
+        }
+    }
+}
+
+// Symbol input parameters.
+impl<'a> FromRobj<'a> for Symbol<'a> {
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+        if let Some(x) = robj.as_symbol() {
+            Ok(x)
+        } else {
+            Err("Expected a symbol.")
+        }
+    }
+}
+
+// Matrix input parameters.
+impl<'a, T> FromRobj<'a> for RArray<&'a [T], [usize; 2]>
+where
+    Robj: AsTypedSlice<'a, T>,
+{
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+        if let Some(x) = robj.as_matrix() {
+            Ok(x)
+        } else if !robj.as_typed_slice().is_some() {
+            Err("Matrix type mismatch.")
+        } else {
+            Err("Expected a matrix.")
+        }
+    }
+}
+
+// Matrix input parameters.
+impl<'a, T> FromRobj<'a> for RMatrix3D<&'a [T]>
+where
+    Robj: AsTypedSlice<'a, T>,
+{
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+        if let Some(x) = robj.as_matrix3d() {
+            Ok(x)
+        } else {
+            Err("Expected a 3d matrix.")
+        }
+    }
+}
+
