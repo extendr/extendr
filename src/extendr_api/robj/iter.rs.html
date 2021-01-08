@@ -391,6 +391,17 @@
 <span id="388">388</span>
 <span id="389">389</span>
 <span id="390">390</span>
+<span id="391">391</span>
+<span id="392">392</span>
+<span id="393">393</span>
+<span id="394">394</span>
+<span id="395">395</span>
+<span id="396">396</span>
+<span id="397">397</span>
+<span id="398">398</span>
+<span id="399">399</span>
+<span id="400">400</span>
+<span id="401">401</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">marker</span>::<span class="ident">PhantomData</span>;
@@ -609,15 +620,17 @@
 <span class="kw">fn</span> <span class="ident">str_from_strsxp</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">sexp</span>: <span class="ident">SEXP</span>, <span class="ident">index</span>: <span class="ident">isize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span> {
     <span class="kw">unsafe</span> {
         <span class="kw">if</span> <span class="ident">index</span> <span class="op">&lt;</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">index</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">Rf_xlength</span>(<span class="ident">sexp</span>) {
-            <span class="string">&quot;&quot;</span>
+            <span class="ident">na_str</span>()
         } <span class="kw">else</span> {
             <span class="kw">let</span> <span class="ident">charsxp</span> <span class="op">=</span> <span class="ident">STRING_ELT</span>(<span class="ident">sexp</span>, <span class="ident">index</span>);
-            <span class="kw">if</span> <span class="ident">TYPEOF</span>(<span class="ident">charsxp</span>) <span class="op">=</span><span class="op">=</span> <span class="ident">CHARSXP</span> <span class="kw">as</span> <span class="ident">i32</span> {
+            <span class="kw">if</span> <span class="ident">charsxp</span> <span class="op">=</span><span class="op">=</span> <span class="ident">R_NaString</span> {
+                <span class="ident">na_str</span>()
+            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">TYPEOF</span>(<span class="ident">charsxp</span>) <span class="op">=</span><span class="op">=</span> <span class="ident">CHARSXP</span> <span class="kw">as</span> <span class="ident">i32</span> {
                 <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">R_CHAR</span>(<span class="ident">charsxp</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>;
                 <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">slice</span>::<span class="ident">from_raw_parts</span>(<span class="ident">ptr</span>, <span class="ident">Rf_xlength</span>(<span class="ident">charsxp</span>) <span class="kw">as</span> <span class="ident">usize</span>);
                 <span class="ident">std</span>::<span class="ident">str</span>::<span class="ident">from_utf8_unchecked</span>(<span class="ident">slice</span>)
             } <span class="kw">else</span> {
-                <span class="string">&quot;error: not a char&quot;</span>
+                <span class="ident">na_str</span>()
             }
         }
     }
@@ -747,6 +760,15 @@
     <span class="doccomment">/// assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);</span>
     <span class="doccomment">/// assert_eq!(factor.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
     <span class="doccomment">/// assert_eq!(factor.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// let obj = Robj::from(vec![Some(&quot;a&quot;), Some(&quot;b&quot;), None]);</span>
+    <span class="doccomment">/// assert_eq!(obj.as_str_iter().unwrap().map(|s| s.is_na()).collect::&lt;Vec&lt;_&gt;&gt;(), vec![false, false, true]);</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// let obj = Robj::from(vec![&quot;a&quot;, &quot;b&quot;, na_str()]);</span>
+    <span class="doccomment">/// assert_eq!(obj.as_str_iter().unwrap().map(|s| s.is_na()).collect::&lt;Vec&lt;_&gt;&gt;(), vec![false, false, true]);</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// let obj = Robj::from(vec![&quot;a&quot;, &quot;b&quot;, &quot;NA&quot;]);</span>
+    <span class="doccomment">/// assert_eq!(obj.as_str_iter().unwrap().map(|s| s.is_na()).collect::&lt;Vec&lt;_&gt;&gt;(), vec![false, false, false]);</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_str_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StrIter</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="number">0</span>;

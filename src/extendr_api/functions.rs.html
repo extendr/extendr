@@ -380,6 +380,20 @@
 <span id="377">377</span>
 <span id="378">378</span>
 <span id="379">379</span>
+<span id="380">380</span>
+<span id="381">381</span>
+<span id="382">382</span>
+<span id="383">383</span>
+<span id="384">384</span>
+<span id="385">385</span>
+<span id="386">386</span>
+<span id="387">387</span>
+<span id="388">388</span>
+<span id="389">389</span>
+<span id="390">390</span>
+<span id="391">391</span>
+<span id="392">392</span>
+<span id="393">393</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
 
@@ -745,6 +759,20 @@ pub fn dot_Generic() -&gt; Robj { unsafe { new_sys(R_dot_Generic) }}
 <span class="doccomment">/// &quot;&quot; as a STRSXP</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">blank_scalar_string</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
     <span class="kw">unsafe</span> { <span class="ident">new_sys</span>(<span class="ident">R_BlankScalarString</span>) }
+}
+
+<span class="doccomment">/// Special &quot;NA&quot; string that represents null strings.</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// use extendr_api::*;</span>
+<span class="doccomment">/// test! {</span>
+<span class="doccomment">///     assert!(na_str().as_ptr() != &quot;NA&quot;.as_ptr());</span>
+<span class="doccomment">///     assert_eq!(na_str(), &quot;NA&quot;);</span>
+<span class="doccomment">///     assert_eq!(&quot;NA&quot;.is_na(), false);</span>
+<span class="doccomment">///     assert_eq!(na_str().is_na(), true);</span>
+<span class="doccomment">/// }</span>
+<span class="doccomment">/// ```</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">na_str</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> {
+    <span class="kw">unsafe</span> { <span class="ident">std</span>::<span class="ident">str</span>::<span class="ident">from_utf8_unchecked</span>(<span class="kw-2">&amp;</span>[<span class="string">b&#39;N&#39;</span>, <span class="string">b&#39;A&#39;</span>]) }
 }
 
 <span class="doccomment">/// Extendr test harness.</span>
