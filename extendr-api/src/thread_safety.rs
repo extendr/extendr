@@ -1,23 +1,26 @@
 //! Provide limited protection for multithreaded access to the R API.
 
 use std::cell::RefCell;
-use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::atomic::{AtomicU32, Ordering};
 
-static OWNER_THREAD: AtomicUsize = AtomicUsize::new(0);
-static NEXT_THREAD_ID: AtomicUsize = AtomicUsize::new(1);
+static OWNER_THREAD: AtomicU32 = AtomicU32::new(0);
+static NEXT_THREAD_ID: AtomicU32 = AtomicU32::new(1);
 
 thread_local! {
-    static THREAD_ID: RefCell<usize> = RefCell::new(0);
+    static THREAD_ID: RefCell<u32> = RefCell::new(0);
 }
 
 // Get an integer 1.. for each thread that calls this.
-fn this_thread_id() -> usize {
+fn this_thread_id() -> u32 {
     THREAD_ID.with(|f| {
-        if *f.borrow() == 0 {
+        let mut id = *f.borrow();
+        if id == 0 {
             // Initialise with next value.
-            *f.borrow_mut() = NEXT_THREAD_ID.fetch_add(1, Ordering::SeqCst);
+            let mut ptr = f.borrow_mut();
+            id = NEXT_THREAD_ID.fetch_add(1, Ordering::SeqCst);
+            *ptr = id;
         }
-        *f.borrow()
+        id
     })
 }
 
@@ -26,8 +29,8 @@ fn this_thread_id() -> usize {
 ///
 /// ```
 /// use extendr_api::*;
-/// use std::sync::atomic::{AtomicUsize, Ordering};
-/// static GLOBAL_THREAD_COUNT: AtomicUsize = AtomicUsize::new(0);
+/// use std::sync::atomic::{AtomicU32, Ordering};
+/// static GLOBAL_THREAD_COUNT: AtomicU32 = AtomicU32::new(0);
 ///
 /// let threads : Vec<_> = (0..100).map(|_| {
 ///    std::thread::spawn(move|| {
