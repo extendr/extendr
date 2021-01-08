@@ -1246,6 +1246,10 @@
 <span id="1243">1243</span>
 <span id="1244">1244</span>
 <span id="1245">1245</span>
+<span id="1246">1246</span>
+<span id="1247">1247</span>
+<span id="1248">1248</span>
+<span id="1249">1249</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! R object handling.</span>
 <span class="doccomment">//!</span>
@@ -1907,7 +1911,7 @@
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">error</span>: <span class="ident">raw</span>::<span class="ident">c_int</span> <span class="op">=</span> <span class="number">0</span>;
             <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">R_tryEval</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">R_GlobalEnv</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">error</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">raw</span>::<span class="ident">c_int</span>);
             <span class="kw">if</span> <span class="ident">error</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-                <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">from</span>(<span class="string">&quot;R eval error&quot;</span>))
+                <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">EvalError</span>{ <span class="ident">code</span>: <span class="macro">r</span><span class="macro">!</span>(<span class="self">self</span>), <span class="ident">error</span> })
             } <span class="kw">else</span> {
                 <span class="prelude-val">Ok</span>(<span class="ident">new_owned</span>(<span class="ident">res</span>))
             }
@@ -1942,11 +1946,11 @@
             <span class="kw">use</span> <span class="ident">libR_sys</span>::<span class="kw-2">*</span>;
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">status</span> <span class="op">=</span> <span class="number">0_u32</span>;
             <span class="kw">let</span> <span class="ident">status_ptr</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">status</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u32</span>;
-            <span class="kw">let</span> <span class="ident">code</span>: <span class="ident">Robj</span> <span class="op">=</span> <span class="ident">code</span>.<span class="ident">into</span>();
-            <span class="kw">let</span> <span class="ident">parsed</span> <span class="op">=</span> <span class="ident">new_owned</span>(<span class="ident">R_ParseVector</span>(<span class="ident">code</span>.<span class="ident">get</span>(), <span class="op">-</span><span class="number">1</span>, <span class="ident">status_ptr</span>, <span class="ident">R_NilValue</span>));
+            <span class="kw">let</span> <span class="ident">codeobj</span>: <span class="ident">Robj</span> <span class="op">=</span> <span class="ident">code</span>.<span class="ident">into</span>();
+            <span class="kw">let</span> <span class="ident">parsed</span> <span class="op">=</span> <span class="ident">new_owned</span>(<span class="ident">R_ParseVector</span>(<span class="ident">codeobj</span>.<span class="ident">get</span>(), <span class="op">-</span><span class="number">1</span>, <span class="ident">status_ptr</span>, <span class="ident">R_NilValue</span>));
             <span class="kw">match</span> <span class="ident">status</span> {
                 <span class="number">1</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">parsed</span>),
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">ParseError</span>),
+                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">ParseError</span>{<span class="ident">code</span>: <span class="ident">code</span>.<span class="ident">into</span>(), <span class="ident">status</span> }),
             }
         })
     }
@@ -1964,7 +1968,7 @@
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">Robj</span>::<span class="ident">from</span>(());
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">iter</span>) <span class="op">=</span> <span class="ident">expr</span>.<span class="ident">as_list_iter</span>() {
                 <span class="kw">for</span> <span class="ident">lang</span> <span class="kw">in</span> <span class="ident">iter</span> {
-                    <span class="ident">res</span> <span class="op">=</span> <span class="ident">lang</span>.<span class="ident">eval</span>()<span class="question-mark">?</span>;
+                    <span class="ident">res</span> <span class="op">=</span> <span class="ident">lang</span>.<span class="ident">eval</span>()<span class="question-mark">?</span>
                 }
             }
             <span class="prelude-val">Ok</span>(<span class="ident">res</span>)
@@ -2445,8 +2449,12 @@
             <span class="ident">STRSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!([&quot;</span>)<span class="question-mark">?</span>;
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sep</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>;
-                <span class="kw">for</span> <span class="ident">obj</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">as_str_iter</span>().<span class="ident">unwrap</span>() {
-                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}{:?}&quot;</span>, <span class="ident">sep</span>, <span class="ident">obj</span>)<span class="question-mark">?</span>;
+                <span class="kw">for</span> <span class="ident">s</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">as_str_iter</span>().<span class="ident">unwrap</span>() {
+                    <span class="comment">// if s.is_na() {</span>
+                    <span class="comment">//     write!(f, &quot;{}na_str()&quot;, sep)?;</span>
+                    <span class="comment">// } else {</span>
+                        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}{:?}&quot;</span>, <span class="ident">sep</span>, <span class="ident">s</span>)<span class="question-mark">?</span>;
+                    <span class="comment">// }</span>
                     <span class="ident">sep</span> <span class="op">=</span> <span class="string">&quot;, &quot;</span>;
                 }
                 <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;])&quot;</span>)

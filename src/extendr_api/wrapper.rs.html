@@ -1123,9 +1123,9 @@
     <span class="doccomment">/// let expr = r!(env.clone());</span>
     <span class="doccomment">/// assert_eq!(expr.len(), 100);</span>
     <span class="doccomment">/// let env2 = expr.as_environment().unwrap();</span>
-    <span class="doccomment">/// assert_eq!(env2, env);</span>
+    <span class="doccomment">/// assert_eq!(env2.names_and_values.len(), 100);</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_environment</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Env</span><span class="op">&lt;</span><span class="ident">Robj</span>, <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_environment</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Env</span><span class="op">&lt;</span><span class="ident">Robj</span>, <span class="ident">HashMap</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">sexptype</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">ENVSXP</span> {
             <span class="kw">unsafe</span> {
                 <span class="kw">let</span> <span class="ident">parent</span> <span class="op">=</span> <span class="ident">new_owned</span>(<span class="ident">ENCLOS</span>(<span class="self">self</span>.<span class="ident">get</span>()));
@@ -1139,7 +1139,7 @@
                         {
                             <span class="kw">for</span> (<span class="ident">obj</span>, <span class="ident">tag</span>) <span class="kw">in</span> <span class="ident">obj_iter</span>.<span class="ident">zip</span>(<span class="ident">tag_iter</span>) {
                                 <span class="kw">if</span> <span class="op">!</span><span class="ident">obj</span>.<span class="ident">is_unbound_value</span>() <span class="op">&amp;&amp;</span> <span class="ident">tag</span>.<span class="ident">is_some</span>() {
-                                    <span class="ident">names_and_values</span>.<span class="ident">insert</span>(<span class="ident">tag</span>.<span class="ident">unwrap</span>().<span class="ident">to_string</span>(), <span class="ident">obj</span>);
+                                    <span class="ident">names_and_values</span>.<span class="ident">insert</span>(<span class="ident">tag</span>.<span class="ident">unwrap</span>(), <span class="ident">obj</span>);
                                 }
                             }
                         }
@@ -1149,7 +1149,7 @@
                 {
                     <span class="kw">for</span> (<span class="ident">obj</span>, <span class="ident">tag</span>) <span class="kw">in</span> <span class="ident">obj_iter</span>.<span class="ident">zip</span>(<span class="ident">tag_iter</span>) {
                         <span class="kw">if</span> <span class="op">!</span><span class="ident">obj</span>.<span class="ident">is_unbound_value</span>() <span class="op">&amp;&amp;</span> <span class="ident">tag</span>.<span class="ident">is_some</span>() {
-                            <span class="ident">names_and_values</span>.<span class="ident">insert</span>(<span class="ident">tag</span>.<span class="ident">unwrap</span>().<span class="ident">to_string</span>(), <span class="ident">obj</span>);
+                            <span class="ident">names_and_values</span>.<span class="ident">insert</span>(<span class="ident">tag</span>.<span class="ident">unwrap</span>(), <span class="ident">obj</span>);
                         }
                     }
                 }
