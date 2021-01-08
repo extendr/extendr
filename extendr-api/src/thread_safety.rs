@@ -1,5 +1,7 @@
 //! Provide limited protection for multithreaded access to the R API.
 
+use crate::*;
+
 use std::cell::RefCell;
 use std::sync::atomic::{AtomicUsize, Ordering};
 
@@ -81,6 +83,8 @@ where
 
 /// This function is used by the wrapper logic to catch
 /// panics on return.
+///
+#[doc(hidden)]
 pub fn handle_panic<F, R>(err_str: &str, f: F) -> R
 where
     F: FnOnce() -> R,
@@ -94,5 +98,66 @@ where
             }
             unreachable!("handle_panic unreachable")
         }
+    }
+}
+
+pub fn throw_r_error<S : AsRef<str>>(s: S) {
+    let s = s.as_ref();
+    unsafe { libR_sys::Rf_error(std::ffi::CString::new(s).unwrap().as_ptr()) };
+}
+
+/// Wrap an R function such as Rf_findFunction and convert errors and panics into results.
+/// ```
+/// use extendr_api::*;
+/// test! {
+///    let res = catch_r_error(|| unsafe {
+///        throw_r_error("bad things!")
+///        std::ptr::null_mut()
+///    });
+///    assert_eq!(res.is_ok(), true);
+/// }
+/// ```
+pub fn catch_r_error<F>(f: F) -> Result<SEXP>
+where
+    F: FnOnce() -> SEXP + Copy,
+    F: std::panic::UnwindSafe,
+{
+    use std::os::raw;
+
+    unsafe extern "C" fn do_call<F>(data: *mut raw::c_void) -> SEXP
+    where
+        F: FnOnce() -> SEXP + Copy,
+    {
+        let data = data as * const ();
+        let f : &F = std::mem::transmute(data);
+        f()
+    }
+    
+    unsafe extern "C" fn do_cleanup(_: *mut raw::c_void, jump: Rboolean) {
+        if jump != 0 {
+            panic!("R has thrown an error.");
+        }
+    }
+
+    unsafe {
+        let fun_ptr = do_call::<F> as * const ();
+        let clean_ptr = do_cleanup as * const ();
+        let x = false;
+        let fun = std::mem::transmute(fun_ptr);
+        let cleanfun = std::mem::transmute(clean_ptr);
+        let data = std::mem::transmute(&f);
+        let cleandata = std::mem::transmute(&x);
+        let cont = R_MakeUnwindCont();
+        Rf_protect(cont);
+        let res = match std::panic::catch_unwind(|| {
+            R_UnwindProtect(fun, data, cleanfun, cleandata, cont)
+        }) {
+            Ok(res) => Ok(res),
+            Err(_) => {
+                Err("Error in protected R code".into())
+            }
+        };
+        Rf_unprotect(1);
+        res
     }
 }

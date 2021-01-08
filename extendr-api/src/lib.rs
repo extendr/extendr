@@ -209,7 +209,7 @@ pub use lang::*;
 pub use logical::*;
 pub use rmacros::*;
 pub use robj::*;
-pub use thread_safety::{handle_panic, single_threaded};
+pub use thread_safety::{handle_panic, single_threaded, throw_r_error, catch_r_error};
 pub use wrapper::*;
 pub use matrix::*;
 
