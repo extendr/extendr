@@ -3,7 +3,7 @@
 
 //
 // We can invoke the #[extendr] macro on functions or struct impls.
-// 
+//
 // eg.
 //
 // ```ignore
@@ -55,11 +55,13 @@
 // * A finalizer for that type to free memory allocated.
 
 extern crate proc_macro;
-use proc_macro::{TokenStream};
-use syn::punctuated::Punctuated;
-use syn::{parse_macro_input, parse_quote, Expr, FnArg, Item, ItemFn, ItemImpl, Ident, parse::ParseStream};
+use proc_macro::TokenStream;
 use quote::{format_ident, quote};
+use syn::punctuated::Punctuated;
 use syn::Token;
+use syn::{
+    parse::ParseStream, parse_macro_input, parse_quote, Expr, FnArg, Ident, Item, ItemFn, ItemImpl,
+};
 
 mod output_r;
 
@@ -67,8 +69,7 @@ const INIT_PREFIX: &str = "init__";
 const WRAP_PREFIX: &str = "wrap__";
 
 #[derive(Debug)]
-struct ExtendrOptions {
-}
+struct ExtendrOptions {}
 
 // Generate a list of arguments for the wrapper. All arguments are SEXP for .Call in R.
 fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> FnArg {
@@ -117,7 +118,7 @@ fn translate_actual(input: &FnArg) -> Option<Expr> {
             let ty = &pattype.ty.as_ref();
             if let syn::Pat::Ident(ref ident) = pat {
                 let varname = format_ident!("_{}_robj", ident.ident);
-                Some(parse_quote!{ extendr_api::unwrap_or_throw(<#ty>::from_robj(&#varname)) })
+                Some(parse_quote! { extendr_api::unwrap_or_throw(<#ty>::from_robj(&#varname)) })
             } else {
                 None
             }
@@ -155,7 +156,7 @@ fn extendr_function(args: Vec<syn::NestedMeta>, func: ItemFn) -> TokenStream {
     let mut wrappers = Vec::new();
     generate_wrappers(&opts, &mut wrappers, "", &func.sig, None);
 
-    TokenStream::from(quote!{
+    TokenStream::from(quote! {
         #func
 
         # ( #wrappers )*
@@ -163,7 +164,13 @@ fn extendr_function(args: Vec<syn::NestedMeta>, func: ItemFn) -> TokenStream {
 }
 
 // Generate wrappers for a specific function.
-fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix: &str, sig: &syn::Signature, self_ty: Option<&syn::Type>) {
+fn generate_wrappers(
+    _opts: &ExtendrOptions,
+    wrappers: &mut Vec<ItemFn>,
+    prefix: &str,
+    sig: &syn::Signature,
+    self_ty: Option<&syn::Type>,
+) {
     let func_name = &sig.ident;
 
     let raw_wrap_name = format!("{}{}{}", WRAP_PREFIX, prefix, func_name);
@@ -176,13 +183,13 @@ fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix:
     let inputs = &sig.inputs;
     let has_self = match inputs.iter().next() {
         Some(FnArg::Receiver(_)) => true,
-        _ => false
+        _ => false,
     };
 
     let call_name = if has_self {
         let is_mut = match inputs.iter().next() {
             Some(FnArg::Receiver(ref reciever)) => reciever.mutability.is_some(),
-            _ => false
+            _ => false,
         };
         if is_mut {
             // eg. Person::name(&mut self)
@@ -336,8 +343,19 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
     // ```
     for impl_item in &mut item_impl.items {
         if let syn::ImplItem::Method(ref mut method) = impl_item {
-            method_init_names.push(format_ident!("{}{}__{}", INIT_PREFIX, self_ty_name, method.sig.ident));
-            generate_wrappers(&opts, &mut wrappers, prefix.as_str(), &method.sig, Some(self_ty));
+            method_init_names.push(format_ident!(
+                "{}{}__{}",
+                INIT_PREFIX,
+                self_ty_name,
+                method.sig.ident
+            ));
+            generate_wrappers(
+                &opts,
+                &mut wrappers,
+                prefix.as_str(),
+                &method.sig,
+                Some(self_ty),
+            );
         }
     }
 
@@ -425,9 +443,7 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
     match parse_macro_input!(item as Item) {
         Item::Fn(func) => return extendr_function(args, func),
         Item::Impl(item_impl) => return extendr_impl(item_impl),
-        other_item => {
-            TokenStream::from(quote! {#other_item})
-        }
+        other_item => TokenStream::from(quote! {#other_item}),
     }
 }
 
@@ -450,7 +466,7 @@ impl syn::parse::Parse for Module {
         };
         while !input.is_empty() {
             if let Ok(kmod) = input.parse::<Token![mod]>() {
-                let name : Ident = input.parse()?;
+                let name: Ident = input.parse()?;
                 if !res.modname.is_none() {
                     return Err(syn::Error::new(kmod.span(), "only one mod allowed"));
                 }
@@ -471,7 +487,6 @@ impl syn::parse::Parse for Module {
         Ok(res)
     }
 }
-
 
 /// Define a module and export symbols to R
 /// Example:
@@ -497,14 +512,22 @@ impl syn::parse::Parse for Module {
 #[proc_macro]
 pub fn extendr_module(item: TokenStream) -> TokenStream {
     let module = parse_macro_input!(item as Module);
-    let Module {modname, fnnames, implnames} = module;
+    let Module {
+        modname,
+        fnnames,
+        implnames,
+    } = module;
     let modname = modname.unwrap();
     let module_init_name = format_ident!("R_init_{}_extendr", modname);
 
-    let fninitnames = fnnames.iter().map(|id| format_ident!("{}{}", INIT_PREFIX, id));
-    let implinitnames = implnames.iter().map(|id| format_ident!("{}{}", INIT_PREFIX, id));
+    let fninitnames = fnnames
+        .iter()
+        .map(|id| format_ident!("{}{}", INIT_PREFIX, id));
+    let implinitnames = implnames
+        .iter()
+        .map(|id| format_ident!("{}{}", INIT_PREFIX, id));
 
-    TokenStream::from(quote!{
+    TokenStream::from(quote! {
         #[no_mangle]
         #[allow(non_snake_case)]
         pub extern "C" fn #module_init_name(info: * mut extendr_api::DllInfo) {

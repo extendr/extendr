@@ -136,7 +136,7 @@ pub struct Promise<C, E, V> {
     pub code: C,
     pub env: E,
     pub value: V,
-    pub seen: bool
+    pub seen: bool,
 }
 
 /// Wrapper for creating and reading Primitive functions.
@@ -366,13 +366,9 @@ impl Robj {
             unsafe {
                 let printname = PRINTNAME(self.get());
                 if TYPEOF(printname) as u32 == CHARSXP {
-                    Some(Symbol(
-                        to_str(R_CHAR(printname) as *const u8)
-                    ))
+                    Some(Symbol(to_str(R_CHAR(printname) as *const u8)))
                 } else {
-                    Some(Symbol(
-                        "bad symbol"
-                    ))
+                    Some(Symbol("bad symbol"))
                 }
             }
         } else {
@@ -599,7 +595,7 @@ impl Robj {
                     code: new_owned(PRCODE(sexp)),
                     env: new_owned(PRENV(sexp)),
                     value: new_owned(PRVALUE(sexp)),
-                    seen: PRSEEN(sexp) != 0
+                    seen: PRSEEN(sexp) != 0,
                 })
             }
         } else {

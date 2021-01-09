@@ -1,8 +1,8 @@
 //! Error handling in Rust called from R.
 
+use crate::*;
 use libR_sys::*;
 use std::os::raw;
-use crate::*;
 
 static mut R_ERROR_BUF: Vec<u8> = Vec::new();
 
@@ -27,8 +27,8 @@ pub fn unwrap_or_throw<T>(r: std::result::Result<T, &'static str>) -> T {
 pub enum Error {
     NotFound,
     NotAVectorType,
-    EvalError{ code: Robj, error: i32 },
-    ParseError{ code: String, status: u32 },
+    EvalError { code: Robj, error: i32 },
+    ParseError { code: String, status: u32 },
     Other(String),
 }
 

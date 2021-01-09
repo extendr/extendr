@@ -1,6 +1,5 @@
 use crate::*;
 
-
 /// Create a new, empty environment parented on global_env()
 ///
 /// Use the Env{} wrapper for more detail.
@@ -36,7 +35,7 @@ pub fn new_env_with_capacity(capacity: usize) -> Robj {
     } else {
         // Hashed environment, the pidgeon hole principle
         // ensures there are empty slots in the hash table.
-        call!("new.env", TRUE, global_env(), capacity as i32*2+1).unwrap()
+        call!("new.env", TRUE, global_env(), capacity as i32 * 2 + 1).unwrap()
     }
 }
 
@@ -51,7 +50,7 @@ pub fn new_env_with_capacity(capacity: usize) -> Robj {
 ///    assert_eq!(iris.len(), 5);
 /// }
 /// ```
-pub fn global_var<K : Into<Robj>>(key: K) -> Result<Robj> {
+pub fn global_var<K: Into<Robj>>(key: K) -> Result<Robj> {
     global_env()
         .find_var(key)
         .ok_or_else(|| Error::NotFound)
@@ -73,7 +72,7 @@ pub fn global_var<K : Into<Robj>>(key: K) -> Result<Robj> {
 ///    assert_eq!(local_var(sym!(my_var))?, r!(1));
 /// }
 /// ```
-pub fn local_var<K : Into<Robj>>(key: K) -> Result<Robj> {
+pub fn local_var<K: Into<Robj>>(key: K) -> Result<Robj> {
     current_env()
         .find_var(key)
         .ok_or_else(|| Error::NotFound)
@@ -91,7 +90,7 @@ pub fn local_var<K : Into<Robj>>(key: K) -> Result<Robj> {
 ///     // let iris = global_function(sym!(iris));
 /// }
 /// ```
-pub fn global_function<K : Into<Robj>>(key: K) -> Option<Robj> {
+pub fn global_function<K: Into<Robj>>(key: K) -> Option<Robj> {
     global_env().find_function(key)
 }
 
@@ -105,7 +104,7 @@ pub fn global_function<K : Into<Robj>>(key: K) -> Option<Robj> {
 ///    assert_eq!(find_namespace("base").is_some(), true);
 ///    assert_eq!(find_namespace("stats").is_some(), true);
 /// ```
-pub fn find_namespace<K : Into<Robj>>(key: K) -> Option<Robj> {
+pub fn find_namespace<K: Into<Robj>>(key: K) -> Option<Robj> {
     // single_threaded(|| unsafe { new_borrowed(R_FindNamespace(key.get())) });
     let res = single_threaded(|| call!(".getNamespace", key.into()));
     if let Ok(res) = res {
@@ -386,7 +385,7 @@ pub fn na_str() -> &'static str {
 ///   Ok(())
 /// })
 /// ```
-pub fn test<F : FnOnce() -> Result<()>>(f: F) {
+pub fn test<F: FnOnce() -> Result<()>>(f: F) {
     extendr_engine::start_r();
 
     f().unwrap();

@@ -194,11 +194,11 @@ mod error;
 mod functions;
 mod lang;
 mod logical;
+mod matrix;
 mod rmacros;
 mod robj;
 mod thread_safety;
 mod wrapper;
-mod matrix;
 
 #[cfg(feature = "ndarray")]
 mod robj_ndarray;
@@ -207,11 +207,11 @@ pub use error::*;
 pub use functions::*;
 pub use lang::*;
 pub use logical::*;
+pub use matrix::*;
 pub use rmacros::*;
 pub use robj::*;
 pub use thread_safety::{handle_panic, single_threaded};
 pub use wrapper::*;
-pub use matrix::*;
 
 #[cfg(feature = "ndarray")]
 pub use robj_ndarray::*;
@@ -410,31 +410,49 @@ mod tests {
     }
 
     #[extendr]
-    pub fn f64_slice(x: &[f64]) -> &[f64] { x }
+    pub fn f64_slice(x: &[f64]) -> &[f64] {
+        x
+    }
 
     #[extendr]
-    pub fn i32_slice(x: &[i32]) -> &[i32] { x }
+    pub fn i32_slice(x: &[i32]) -> &[i32] {
+        x
+    }
 
     #[extendr]
-    pub fn bool_slice(x: &[Bool]) -> &[Bool] { x }
+    pub fn bool_slice(x: &[Bool]) -> &[Bool] {
+        x
+    }
 
     #[extendr]
-    pub fn f64_iter(x: RealIter) -> RealIter { x }
+    pub fn f64_iter(x: RealIter) -> RealIter {
+        x
+    }
 
     #[extendr]
-    pub fn i32_iter(x: IntegerIter) -> IntegerIter { x }
+    pub fn i32_iter(x: IntegerIter) -> IntegerIter {
+        x
+    }
 
     #[extendr]
-    pub fn bool_iter(x: LogicalIter) -> LogicalIter { x }
+    pub fn bool_iter(x: LogicalIter) -> LogicalIter {
+        x
+    }
 
     #[extendr]
-    pub fn symbol(x: Symbol) -> Symbol { x }
+    pub fn symbol(x: Symbol) -> Symbol {
+        x
+    }
 
     #[extendr]
-    pub fn matrix(x: RMatrix<&[f64]>) -> RMatrix<&[f64]> { x }
+    pub fn matrix(x: RMatrix<&[f64]>) -> RMatrix<&[f64]> {
+        x
+    }
 
     #[extendr]
-    pub fn hash_map(x: HashMap<&str, Robj>) -> HashMap<&str, Robj> { x }
+    pub fn hash_map(x: HashMap<&str, Robj>) -> HashMap<&str, Robj> {
+        x
+    }
 
     struct Person {
         pub name: String,
@@ -539,50 +557,50 @@ mod tests {
 
                 let robj = r!([1., 2., 3.]);
                 assert_eq!(new_owned(wrap__f64_slice(robj.get())), robj);
-            
+
                 // #[extendr]
                 // pub fn i32_slice(x: &[i32]) -> &[i32] { x }
-            
+
                 let robj = r!([1, 2, 3]);
                 assert_eq!(new_owned(wrap__i32_slice(robj.get())), robj);
-            
+
                 // #[extendr]
                 // pub fn bool_slice(x: &[Bool]) -> &[Bool] { x }
-            
+
                 let robj = r!([TRUE, FALSE, TRUE]);
                 assert_eq!(new_owned(wrap__bool_slice(robj.get())), robj);
-            
+
                 // #[extendr]
                 // pub fn f64_iter(x: RealIter) -> RealIter { x }
-            
+
                 let robj = r!([1., 2., 3.]);
                 assert_eq!(new_owned(wrap__f64_iter(robj.get())), robj);
-            
+
                 // #[extendr]
                 // pub fn i32_iter(x: IntegerIter) -> IntegerIter { x }
-            
+
                 let robj = r!([1, 2, 3]);
                 assert_eq!(new_owned(wrap__i32_iter(robj.get())), robj);
-            
+
                 // #[extendr]
                 // pub fn bool_iter(x: LogicalIter) -> LogicalIter { x }
-            
+
                 let robj = r!([TRUE, FALSE, TRUE]);
                 assert_eq!(new_owned(wrap__bool_iter(robj.get())), robj);
-            
+
                 // #[extendr]
                 // pub fn symbol(x: Symbol) -> Symbol { x }
-            
+
                 let robj = sym!(fred);
                 assert_eq!(new_owned(wrap__symbol(robj.get())), robj);
-            
+
                 // #[extendr]
                 // pub fn matrix(x: Matrix<&[f64]>) -> Matrix<&[f64]> { x }
-            
+
                 let m = RMatrix::new([1., 2.], 1, 2);
                 let robj = r!(m);
                 assert_eq!(new_owned(wrap__matrix(robj.get())), robj);
-            
+
                 // #[extendr]
                 // pub fn hash_map(x: HashMap<&str, Robj>) -> HashMap<&str, Robj> { x }
                 let robj = r!(List(&[1, 2]));
@@ -591,7 +609,6 @@ mod tests {
                 assert_eq!(res.len(), 2);
             }
         }
-    
     }
 
     #[test]
