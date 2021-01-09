@@ -118,7 +118,6 @@ jobs:
       - name: Check code formatting and lint
         if: matrix.config.check_fmt_and_clippy
         run: |
-          rustup component add rustfmt clippy
           cargo fmt -- --check
           # TODO: uncomment this
           # cargo clippy
