@@ -34,7 +34,7 @@ jobs:
           # - {os: macOS-latest,   r: 'oldrel', rust-version: 'stable'}
 
           - {os: ubuntu-20.04,   r: 'release', rust-version: 'stable',  rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest", check_fmt: true}
-          - {os: ubuntu-20.04,   r: 'release', rust-version: 'nightly', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest", check_clippy: true}
+          - {os: ubuntu-20.04,   r: 'release', rust-version: 'nightly', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           # R-devel requires LD_LIBRARY_PATH
           - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}   
           - {os: ubuntu-20.04,   r: 'oldrel',  rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}   
@@ -118,16 +118,6 @@ jobs:
       - name: Check code formatting
         if: matrix.config.check_fmt
         run: cargo fmt -- --check
-
-      # TODO: uncomment this
-      # 
-      # # Check clippy warnings. As this doesn't depend on the platform, do this only on one platform.
-      # - name: Check code formatting
-      #   if: matrix.config.check_clippy
-      #   uses: actions-rs/clippy-check@v1
-      #   with:
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     args: --all-features
 
       # For each target in the BUILD_TARGETS comma-separated list, run cargo build with appropriate target
       # Required by Windows builds, does not affect other platforms
