@@ -46,13 +46,13 @@ impl std::fmt::Debug for ListIter {
 pub type NamedListIter = std::iter::Zip<StrIter, ListIter>;
 
 /// Iterator over primitives in integer objects.
-pub type IntegerIter<'a> = std::slice::Iter<'a, i32>;
+pub type IntegerIter<'a> = std::iter::Cloned<std::slice::Iter<'a, i32>>;
 
 /// Iterator over primitives in real objects.
-pub type RealIter<'a> = std::slice::Iter<'a, f64>;
+pub type RealIter<'a> = std::iter::Cloned<std::slice::Iter<'a, f64>>;
 
 /// Iterator over primitives in logical objects.
-pub type LogicalIter<'a> = std::slice::Iter<'a, Bool>;
+pub type LogicalIter<'a> = std::iter::Cloned<std::slice::Iter<'a, Bool>>;
 
 /// Iterator over the objects in a vector or string.
 ///
