@@ -66,12 +66,11 @@ pub struct Lang<T>(pub T);
 /// Wrapper for creating pair list (LISTSXP) objects.
 /// ```
 /// use extendr_api::*;
-/// extendr_engine::start_r();
-/// let hashmap : std::collections::HashMap<_, _> = (0..100)
-///     .map(|i| (Some(format!("n{}", i)), r!(i))).collect();
-/// let pairlist = Pairlist{names_and_values: hashmap};
-/// let expr = r!(pairlist);
-/// assert_eq!(expr.len(), 100);
+/// test! {
+///     let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
+///     let expr = r!(Pairlist{names_and_values});
+///     assert_eq!(expr.len(), 100);
+/// }
 /// ```
 #[derive(Debug, PartialEq, Clone)]
 pub struct Pairlist<NV> {
@@ -117,7 +116,7 @@ pub struct Env<P, NV> {
 /// let func = expr.as_func().unwrap();
 ///
 /// let expected_formals = Pairlist {
-///     names_and_values: vec![(Some("a"), r!(1.0)), (Some("b"), missing_arg())] };
+///     names_and_values: vec![("a", r!(1.0)), ("b", missing_arg())] };
 /// let expected_body = lang!(
 ///     "{", lang!("<-", sym!(c), lang!("+", sym!(a), sym!(b))));
 /// assert_eq!(func.formals.as_pairlist().unwrap(), expected_formals);
@@ -284,20 +283,33 @@ where
     }
 }
 
+pub trait SymPair {
+    fn sym_pair(self) -> (Robj, Robj);
+}
+
+impl<S, R> SymPair for (S, R)
+where
+    S : AsRef<str>,
+    R : Into<Robj>,
+{
+    fn sym_pair(self) -> (Robj, Robj) {
+        (r!(Symbol(self.0.as_ref())), self.1.into())
+    }
+}
+
 impl<'a, NV> From<Pairlist<NV>> for Robj
 where
     NV: IntoIterator + 'a,
-    NV::Item: Into<(Option<String>, Robj)>,
+    NV::Item: SymPair,
 {
     /// Convert a wrapper to a LISTSXP object.
     /// ```
     /// use extendr_api::*;
-    /// extendr_engine::start_r();
-    /// let hashmap : std::collections::HashMap<_, _> = (0..100)
-    ///     .map(|i| (Some(format!("n{}", i)), r!(i))).collect();
-    /// let pairlist = Pairlist{names_and_values: hashmap};
-    /// let expr = r!(pairlist);
-    /// assert_eq!(expr.len(), 100);
+    /// test! {
+    ///     let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
+    ///     let expr = r!(Pairlist{names_and_values});
+    ///     assert_eq!(expr.len(), 100);
+    /// }
     /// ```
     fn from(val: Pairlist<NV>) -> Self {
         single_threaded(|| unsafe {
@@ -306,13 +318,12 @@ where
             let mut res = R_NilValue;
             let names_and_values: Vec<_> = names_and_values.into_iter().collect();
             for nv in names_and_values.into_iter().rev() {
-                let (name, val) = nv.into();
+                let (name, val) = nv.sym_pair();
                 let val = Rf_protect(val.get());
                 res = Rf_protect(Rf_cons(val, res));
                 num_protects += 2;
-                if let Some(name) = name {
-                    let name = r!(Symbol(name.as_str())).get();
-                    SET_TAG(res, name);
+                if !name.is_na() {
+                    SET_TAG(res, name.get());
                 }
             }
             let res = new_owned(res);
@@ -439,14 +450,12 @@ impl Robj {
     /// ```
     /// use extendr_api::*;
     /// extendr_engine::start_r();
-    /// let names_and_values = vec![(Some("a".to_string()), r!(1)), (Some("b".to_string()), r!(2)), (None, r!(3))];
-    /// let pairlist1 = Pairlist{ names_and_values };
-    /// let names_and_values = vec![(Some("a"), r!(1)), (Some("b"), r!(2)), (None, r!(3))];
-    /// let pairlist2 = Pairlist{ names_and_values };
-    /// let robj = r!(pairlist1);
-    /// assert_eq!(robj.as_pairlist().unwrap(), pairlist2);
+    /// let names_and_values = vec![("a", r!(1)), ("b", r!(2)), (na_str(), r!(3))];
+    /// let pairlist = Pairlist{ names_and_values };
+    /// let robj = r!(pairlist.clone());
+    /// assert_eq!(robj.as_pairlist().unwrap(), pairlist);
     /// ```
-    pub fn as_pairlist(&self) -> Option<Pairlist<Vec<(Option<&str>, Robj)>>> {
+    pub fn as_pairlist(&self) -> Option<Pairlist<Vec<(&str, Robj)>>> {
         if self.sexptype() == LISTSXP {
             let names = self.as_pairlist_tag_iter().unwrap();
             let values = self.as_pairlist_iter().unwrap();
@@ -525,8 +534,8 @@ impl Robj {
                             (frame.as_pairlist_iter(), frame.as_pairlist_tag_iter())
                         {
                             for (obj, tag) in obj_iter.zip(tag_iter) {
-                                if !obj.is_unbound_value() && tag.is_some() {
-                                    names_and_values.insert(tag.unwrap(), obj);
+                                if !obj.is_unbound_value() && !tag.is_na() {
+                                    names_and_values.insert(tag, obj);
                                 }
                             }
                         }
@@ -535,8 +544,8 @@ impl Robj {
                     (frame.as_pairlist_iter(), frame.as_pairlist_tag_iter())
                 {
                     for (obj, tag) in obj_iter.zip(tag_iter) {
-                        if !obj.is_unbound_value() && tag.is_some() {
-                            names_and_values.insert(tag.unwrap(), obj);
+                        if !obj.is_unbound_value() && !tag.is_na() {
+                            names_and_values.insert(tag, obj);
                         }
                     }
                 }

@@ -124,7 +124,7 @@ impl std::fmt::Debug for PairlistIter {
 /// let mut robj = R!(pairlist(a = 1, b = 2, 3)).unwrap();
 /// // let mut robj = pairlist!(a = 1, b = 2, 3);
 /// let tags : Vec<_> = robj.as_pairlist_tag_iter().unwrap().collect();
-/// assert_eq!(tags, vec![Some("a"), Some("b"), None]);
+/// assert_eq!(tags, vec!["a", "b", na_str()]);
 /// ```
 pub struct PairlistTagIter<'a> {
     list_elem: SEXP,
@@ -145,7 +145,7 @@ impl<'a> PairlistTagIter<'a> {
 
 // 'a is the lifetime of the pairlist.
 impl<'a> Iterator for PairlistTagIter<'a> {
-    type Item = Option<&'a str>;
+    type Item = &'a str;
 
     fn next(&mut self) -> Option<Self::Item> {
         unsafe {
@@ -155,9 +155,9 @@ impl<'a> Iterator for PairlistTagIter<'a> {
             } else {
                 self.list_elem = CDR(sexp);
                 if let Some(symbol) = new_borrowed::<'a>(TAG(sexp)).as_symbol() {
-                    Some(Some(std::mem::transmute(symbol.0)))
+                    Some(std::mem::transmute(symbol.0))
                 } else {
-                    Some(None)
+                    Some(na_str())
                 }
             }
         }
@@ -302,7 +302,7 @@ impl Robj {
     /// let mut robj = R!(pairlist(a = 1, b = 2, 3)).unwrap();
     /// // let mut robj = pairlist!(a = 1, b = 2, 3);
     /// let tags : Vec<_> = robj.as_pairlist_tag_iter().unwrap().collect();
-    /// assert_eq!(tags, vec![Some("a"), Some("b"), None]);
+    /// assert_eq!(tags, vec!["a", "b", na_str()]);
     /// ```
     pub fn as_pairlist_tag_iter<'a>(&self) -> Option<PairlistTagIter<'a>> {
         match self.sexptype() {

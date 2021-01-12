@@ -1013,16 +1013,16 @@ impl Robj {
                     for frame in as_list_iter {
                         if let Some(tag_iter) = frame.as_pairlist_tag_iter() {
                             for tag in tag_iter {
-                                if tag.is_some() {
-                                    names.push(tag.unwrap().to_string());
+                                if !tag.is_na() {
+                                    names.push(tag.to_string());
                                 }
                             }
                         }
                     }
                 } else if let Some(tag_iter) = frame.as_pairlist_tag_iter() {
                     for tag in tag_iter {
-                        if tag.is_some() {
-                            names.push(tag.unwrap().to_string());
+                        if !tag.is_na() {
+                            names.push(tag.to_string());
                         }
                     }
                 }
