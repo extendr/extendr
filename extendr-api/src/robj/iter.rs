@@ -32,16 +32,6 @@ impl Iterator for ListIter {
     }
 }
 
-impl std::fmt::Debug for ListIter {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "[")?;
-        for s in self.clone() {
-            write!(f, "{:?}", s)?;
-        }
-        write!(f, "]")
-    }
-}
-
 /// Iterator over name-value pairs in lists.
 pub type NamedListIter = std::iter::Zip<StrIter, ListIter>;
 
@@ -105,16 +95,6 @@ impl Iterator for PairlistIter {
     }
 }
 
-impl std::fmt::Debug for PairlistIter {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "[")?;
-        for s in self.clone() {
-            write!(f, "{:?}", s)?;
-        }
-        write!(f, "]")
-    }
-}
-
 #[derive(Clone)]
 /// Iterator over pairlist tag names.
 /// ```
@@ -161,16 +141,6 @@ impl<'a> Iterator for PairlistTagIter<'a> {
                 }
             }
         }
-    }
-}
-
-impl<'a> std::fmt::Debug for PairlistTagIter<'a> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "[")?;
-        for s in self.clone() {
-            write!(f, "{:?}", s)?;
-        }
-        write!(f, "]")
     }
 }
 
@@ -261,17 +231,26 @@ impl Iterator for StrIter {
     }
 }
 
-impl std::fmt::Debug for StrIter {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "[")?;
-        let mut comma = "";
-        for s in self.clone() {
-            write!(f, "{}{:?}", comma, s)?;
-            comma = ", ";
+macro_rules! impl_iter_debug {
+    ($name: ty) => {
+        impl std::fmt::Debug for $name {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                write!(f, "[")?;
+                let mut comma = "";
+                for s in self.clone() {
+                    write!(f, "{}{:?}", comma, s)?;
+                    comma = ", ";
+                }
+                write!(f, "]")
+            }
         }
-        write!(f, "]")
     }
 }
+
+impl_iter_debug!(ListIter);
+impl_iter_debug!(PairlistIter);
+impl_iter_debug!(PairlistTagIter<'a>);
+impl_iter_debug!(StrIter);
 
 impl Robj {
     /// Get an iterator over a pairlist objects.

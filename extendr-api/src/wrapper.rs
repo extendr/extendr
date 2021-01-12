@@ -257,15 +257,14 @@ impl<'a, P, NV> From<Env<P, NV>> for Robj
 where
     P: Into<Robj>,
     NV: IntoIterator + 'a,
-    NV::Item: Into<(String, Robj)>,
+    NV::Item: SymPair,
 {
     /// Convert a wrapper to an R environment object.
     /// ```
     /// use extendr_api::*;
     /// extendr_engine::start_r();
-    /// let hashmap : std::collections::HashMap<_, _> = (0..100)
-    ///     .map(|i| (format!("n{}", i), r!(i))).collect();
-    /// let env = Env{parent: global_env(), names_and_values: hashmap};
+    /// let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
+    /// let env = Env{parent: global_env(), names_and_values};
     /// let expr = r!(env);
     /// assert_eq!(expr.len(), 100);
     /// ```
@@ -275,25 +274,11 @@ where
             let dict_len = 29;
             let res = call!("new.env", TRUE, parent.into(), dict_len).unwrap();
             for nv in names_and_values {
-                let (n, v) = nv.into();
-                unsafe { Rf_defineVar(r!(Symbol(n.as_str())).get(), v.get(), res.get()) }
+                let (n, v) = nv.sym_pair();
+                unsafe { Rf_defineVar(n.get(), v.get(), res.get()) }
             }
             res
         })
-    }
-}
-
-pub trait SymPair {
-    fn sym_pair(self) -> (Robj, Robj);
-}
-
-impl<S, R> SymPair for (S, R)
-where
-    S : AsRef<str>,
-    R : Into<Robj>,
-{
-    fn sym_pair(self) -> (Robj, Robj) {
-        (r!(Symbol(self.0.as_ref())), self.1.into())
     }
 }
 
@@ -381,9 +366,8 @@ impl Robj {
                         to_str(R_CHAR(printname) as *const u8)
                     ))
                 } else {
-                    Some(Symbol(
-                        "bad symbol"
-                    ))
+                    // This should never occur.
+                    None
                 }
             }
         } else {
@@ -430,17 +414,11 @@ impl Robj {
     /// let call_to_xyz = r!(Lang(&[r!(Symbol("xyz")), r!(1), r!(2)]));
     /// assert_eq!(call_to_xyz.is_language(), true);
     /// assert_eq!(call_to_xyz.len(), 3);
-    /// assert_eq!(call_to_xyz.as_lang(), Some(Lang(vec![r!(Symbol("xyz")), r!(1), r!(2)])));
     /// assert_eq!(format!("{:?}", call_to_xyz), r#"r!(Lang([sym!(xyz), r!(1), r!(2)]))"#);
     /// ```
-    pub fn as_lang(&self) -> Option<Lang<Vec<Robj>>> {
+    pub fn as_lang(&self) -> Option<Lang<PairlistIter>> {
         if self.sexptype() == LANGSXP {
-            let res: Vec<_> = self
-                .as_pairlist_iter()
-                .unwrap()
-                .map(|robj| robj.to_owned())
-                .collect();
-            Some(Lang(res))
+            Some(Lang(self.as_pairlist_iter().unwrap()))
         } else {
             None
         }
@@ -472,20 +450,10 @@ impl Robj {
     /// extendr_engine::start_r();
     /// let list = r!(List(&[r!(0), r!(1), r!(2)]));
     /// assert_eq!(list.is_list(), true);
-    /// assert_eq!(list.as_list(), Some(List(vec![r!(0), r!(1), r!(2)])));
     /// assert_eq!(format!("{:?}", list), r#"r!(List([r!(0), r!(1), r!(2)]))"#);
     /// ```
-    pub fn as_list(&self) -> Option<List<Vec<Robj>>> {
-        if self.sexptype() == VECSXP {
-            let res: Vec<_> = self
-                .as_list_iter()
-                .unwrap()
-                .map(|robj| robj.to_owned())
-                .collect();
-            Some(List(res))
-        } else {
-            None
-        }
+    pub fn as_list(&self) -> Option<List<ListIter>> {
+        self.as_list_iter().map(|l| List(l))
     }
 
     /// Convert an expression object (EXPRSXP) to a Expr wrapper.
@@ -616,3 +584,18 @@ impl Robj {
         }
     }
 }
+
+pub trait SymPair {
+    fn sym_pair(self) -> (Robj, Robj);
+}
+
+impl<S, R> SymPair for (S, R)
+where
+    S : AsRef<str>,
+    R : Into<Robj>,
+{
+    fn sym_pair(self) -> (Robj, Robj) {
+        (r!(Symbol(self.0.as_ref())), self.1.into())
+    }
+}
+
