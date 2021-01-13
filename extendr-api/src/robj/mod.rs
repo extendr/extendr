@@ -1001,35 +1001,12 @@ impl Robj {
     ///
     ///    let names_and_values : std::collections::HashMap<_, _> = (0..4).map(|i| (format!("n{}", i), r!(i))).collect();
     ///    let env = r!(Env{parent: global_env(), names_and_values});
-    ///    assert_eq!(env.ls().unwrap(), vec!["n0".to_string(), "n1".to_string(), "n2".to_string(), "n3".to_string()]);
+    ///    assert_eq!(env.ls().unwrap(), vec!["n0", "n1", "n2", "n3"]);
     /// ```
-    pub fn ls(&self) -> Option<Vec<String>> {
-        if self.is_environment() {
-            let mut names = Vec::new();
-            unsafe {
-                let hashtab = new_owned(HASHTAB(self.get()));
-                let frame = new_owned(FRAME(self.get()));
-                if let Some(as_list_iter) = hashtab.as_list_iter() {
-                    for frame in as_list_iter {
-                        if let Some(tag_iter) = frame.as_pairlist_tag_iter() {
-                            for tag in tag_iter {
-                                if !tag.is_na() {
-                                    names.push(tag.to_string());
-                                }
-                            }
-                        }
-                    }
-                } else if let Some(tag_iter) = frame.as_pairlist_tag_iter() {
-                    for tag in tag_iter {
-                        if !tag.is_na() {
-                            names.push(tag.to_string());
-                        }
-                    }
-                }
-            }
-            return Some(names);
-        }
-        None
+    pub fn ls(&self) -> Option<Vec<&str>> {
+        self.as_env_iter().map(
+            |iter| iter.map(|(k, _)| k).collect::<Vec<_>>()
+        )
     }
 }
 
@@ -1091,7 +1068,7 @@ impl PartialEq<Robj> for Robj {
                         .unwrap()
                         .eq(rhs.as_pairlist_iter().unwrap()),
                     CLOSXP => false,
-                    ENVSXP => self.as_environment() == rhs.as_environment(),
+                    ENVSXP => false, // objects must match.
                     PROMSXP => false,
                     SPECIALSXP => false,
                     BUILTINSXP => false,

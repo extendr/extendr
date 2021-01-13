@@ -5,7 +5,6 @@ use crate::*;
 #[doc(hidden)]
 use libR_sys::*;
 #[doc(hidden)]
-use std::collections::HashMap;
 
 /// Wrapper for creating symbols.
 ///
@@ -261,11 +260,12 @@ where
     /// Convert a wrapper to an R environment object.
     /// ```
     /// use extendr_api::*;
-    /// extendr_engine::start_r();
-    /// let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
-    /// let env = Env{parent: global_env(), names_and_values};
-    /// let expr = r!(env);
-    /// assert_eq!(expr.len(), 100);
+    /// test! {
+    ///     let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
+    ///     let env = Env{parent: global_env(), names_and_values};
+    ///     let expr = r!(env);
+    ///     assert_eq!(expr.len(), 100);
+    /// }
     /// ```
     fn from(val: Env<P, NV>) -> Self {
         single_threaded(|| {
@@ -480,51 +480,23 @@ impl Robj {
     /// Convert an environment object (ENVSXP) to a Env wrapper.
     /// ```
     /// use extendr_api::*;
-    /// extendr_engine::start_r();
-    /// let names_and_values : std::collections::HashMap<_, _> = (0..100).map(|i| (format!("n{}", i), r!(i))).collect();
-    /// let env = Env{parent: global_env(), names_and_values};
-    /// let expr = r!(env.clone());
-    /// assert_eq!(expr.len(), 100);
-    /// let env2 = expr.as_environment().unwrap();
-    /// assert_eq!(env2.names_and_values.len(), 100);
+    /// test! {
+    ///     let names_and_values = (0..100).map(|i| (format!("n{}", i), r!(i)));
+    ///     let env = Env{parent: global_env(), names_and_values};
+    ///     let expr = r!(env.clone());
+    ///     assert_eq!(expr.len(), 100);
+    ///     let env2 = expr.as_environment().unwrap();
+    ///     assert_eq!(env2.names_and_values.count(), 100);
+    /// }
     /// ```
-    pub fn as_environment(&self) -> Option<Env<Robj, HashMap<&str, Robj>>> {
-        if self.sexptype() == ENVSXP {
-            unsafe {
-                let parent = new_owned(ENCLOS(self.get()));
-                let hashtab = new_owned(HASHTAB(self.get()));
-                let frame = new_owned(FRAME(self.get()));
-                let mut names_and_values = HashMap::new();
-                if let Some(as_list_iter) = hashtab.as_list_iter() {
-                    for frame in as_list_iter {
-                        if let (Some(obj_iter), Some(tag_iter)) =
-                            (frame.as_pairlist_iter(), frame.as_pairlist_tag_iter())
-                        {
-                            for (obj, tag) in obj_iter.zip(tag_iter) {
-                                if !obj.is_unbound_value() && !tag.is_na() {
-                                    names_and_values.insert(tag, obj);
-                                }
-                            }
-                        }
-                    }
-                } else if let (Some(obj_iter), Some(tag_iter)) =
-                    (frame.as_pairlist_iter(), frame.as_pairlist_tag_iter())
-                {
-                    for (obj, tag) in obj_iter.zip(tag_iter) {
-                        if !obj.is_unbound_value() && !tag.is_na() {
-                            names_and_values.insert(tag, obj);
-                        }
-                    }
-                }
-                Some(Env {
-                    parent,
-                    names_and_values,
-                })
-            }
+    pub fn as_environment(&self) -> Option<Env<Robj, EnvIter>> {
+        if self.is_environment() {
+            Some(Env{ parent: self.parent().unwrap(), names_and_values: self.as_env_iter().unwrap()})
         } else {
             None
         }
     }
+
     /// Convert a function object (CLOSXP) to a Func wrapper.
     /// ```
     /// use extendr_api::*;

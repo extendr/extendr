@@ -8,6 +8,17 @@ pub struct ListIter {
     len: usize,
 }
 
+impl ListIter {
+    // A new, empty list iterator.
+    pub fn new() -> Self {
+        ListIter {
+            vector: ().into(),
+            i: 0,
+            len: 0,
+        }
+    }
+}
+
 impl Iterator for ListIter {
     type Item = Robj;
 
@@ -248,10 +259,81 @@ macro_rules! impl_iter_debug {
     }
 }
 
+/// Iterator over the names and values of an environment
+///
+/// ```
+/// use extendr_api::*;
+/// test! {
+///     let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
+///     let env = Env{parent: global_env(), names_and_values};
+///     let robj = r!(env);
+///     let names_and_values = robj.as_env_iter().unwrap().collect::<Vec<_>>();
+///     assert_eq!(names_and_values.len(), 100);
+///
+///     let small_env = new_env_with_capacity(1);
+///     small_env.set_local(sym!(x), 1);
+///     let names_and_values = small_env.as_env_iter().unwrap().collect::<Vec<_>>();
+///     assert_eq!(names_and_values, vec![("x", r!(1))]);
+///
+///     let large_env = new_env_with_capacity(1000);
+///     large_env.set_local(sym!(x), 1);
+///     let names_and_values = large_env.as_env_iter().unwrap().collect::<Vec<_>>();
+///     assert_eq!(names_and_values, vec![("x", r!(1))]);
+/// }
+///
+/// ```
+#[derive(Clone)]
+pub struct EnvIter {
+    hash_table: ListIter,
+    pairlist: PairlistIter,
+    pairlisttags: PairlistTagIter,
+}
+
+impl Iterator for EnvIter {
+    type Item = (&'static str, Robj);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        loop {
+            // Environments are a hash table (list) or pair lists (pairlist)
+            // Get the first available value from the pair list.
+            loop {
+                match (self.pairlisttags.next(), self.pairlist.next()) {
+                    (Some(key), Some(value)) => {
+                        // if the key and value are valid, return a pair.
+                        if !key.is_na() && !value.is_unbound_value() {
+                            println!("value: {:?}", (&key, &value));
+                            return Some((key, value));
+                        }
+                    }
+                    // if the key and value are invalid, move on to the hash table.
+                    _ => break
+                }
+                // continue pair list loop.
+            }
+
+            // Get the first pairlist from the hash table.
+            loop {
+                if let Some(obj) = self.hash_table.next() {
+                    if !obj.is_null() && obj.is_pairlist() {
+                        self.pairlisttags = obj.as_pairlist_tag_iter().unwrap();
+                        self.pairlist = obj.as_pairlist_iter().unwrap();
+                        break;
+                    }
+                    // continue hash table loop.
+                } else {
+                    // The hash table is empty, end of iteration.
+                    return None;
+                }
+            }
+        }
+    }
+}
+
 impl_iter_debug!(ListIter);
 impl_iter_debug!(PairlistIter);
 impl_iter_debug!(PairlistTagIter);
 impl_iter_debug!(StrIter);
+impl_iter_debug!(EnvIter);
 
 impl Robj {
     /// Get an iterator over a pairlist objects.
@@ -375,6 +457,34 @@ impl Robj {
                 }
             },
             _ => None,
+        }
+    }
+
+    /// Iterate over an environment.
+    pub fn as_env_iter(&self) -> Option<EnvIter> {
+        if self.is_environment() {
+            unsafe {
+                let hashtab = new_owned(HASHTAB(self.get()));
+                let frame = new_owned(FRAME(self.get()));
+                if hashtab.is_null() && frame.is_pairlist() {
+                    Some(EnvIter {
+                        hash_table: ListIter::new(),
+                        pairlisttags: frame.as_pairlist_tag_iter().unwrap(),
+                        pairlist: frame.as_pairlist_iter().unwrap(),
+                    })
+        
+                } else if hashtab.is_list() {
+                    Some(EnvIter {
+                        hash_table: hashtab.as_list_iter().unwrap(),
+                        pairlist: PairlistIter::new(),
+                        pairlisttags: PairlistTagIter::new(),
+                    })
+                } else {
+                    None
+                }
+            }
+        } else {
+            None
         }
     }
 }
