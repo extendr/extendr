@@ -3,7 +3,7 @@ use crate::*;
 // Iterator over the objects in a VECSXP, EXPRSXP or WEAKREFSXP.
 #[derive(Clone)]
 pub struct ListIter {
-    vector: SEXP,
+    vector: Robj,
     i: usize,
     len: usize,
 }
@@ -21,7 +21,7 @@ impl Iterator for ListIter {
         if i >= self.len {
             return None;
         } else {
-            Some(unsafe { new_owned(VECTOR_ELT(self.vector, i as isize)) })
+            Some(unsafe { new_owned(VECTOR_ELT(self.vector.get(), i as isize)) })
         }
     }
 
@@ -64,6 +64,7 @@ pub type LogicalIter<'a> = std::iter::Cloned<std::slice::Iter<'a, Bool>>;
 /// ```
 #[derive(Clone)]
 pub struct PairlistIter {
+    root_obj: Robj,
     list_elem: SEXP,
 }
 
@@ -72,6 +73,7 @@ impl PairlistIter {
     pub fn new() -> Self {
         unsafe {
             Self {
+                root_obj: ().into(),
                 list_elem: R_NilValue,
             }
         }
@@ -159,7 +161,7 @@ impl Iterator for PairlistTagIter {
 /// ```
 #[derive(Clone)]
 pub struct StrIter {
-    vector: SEXP,
+    vector: Robj,
     i: usize,
     len: usize,
     levels: SEXP,
@@ -170,7 +172,7 @@ impl StrIter {
     pub fn new() -> Self {
         unsafe {
             Self {
-                vector: R_NilValue,
+                vector: ().into(),
                 i: 0,
                 len: 0,
                 levels: R_NilValue,
@@ -210,12 +212,13 @@ impl Iterator for StrIter {
         unsafe {
             let i = self.i;
             self.i += 1;
+            let vector = self.vector.get();
             if i >= self.len {
                 return None;
-            } else if TYPEOF(self.vector) as u32 == STRSXP {
-                Some(str_from_strsxp(self.vector, i as isize))
-            } else if TYPEOF(self.vector) as u32 == INTSXP && TYPEOF(self.levels) as u32 == STRSXP {
-                let j = *(INTEGER(self.vector).offset(i as isize));
+            } else if TYPEOF(vector) as u32 == STRSXP {
+                Some(str_from_strsxp(vector, i as isize))
+            } else if TYPEOF(vector) as u32 == INTSXP && TYPEOF(self.levels) as u32 == STRSXP {
+                let j = *(INTEGER(vector).offset(i as isize));
                 Some(str_from_strsxp(self.levels, j as isize - 1))
             } else {
                 return None;
@@ -264,6 +267,7 @@ impl Robj {
         match self.sexptype() {
             LISTSXP | LANGSXP | DOTSXP => unsafe {
                 Some(PairlistIter {
+                    root_obj: self.into(),
                     list_elem: self.get(),
                 })
             },
@@ -304,9 +308,9 @@ impl Robj {
     /// ```
     pub fn as_list_iter(&self) -> Option<ListIter> {
         match self.sexptype() {
-            VECSXP | EXPRSXP | WEAKREFSXP => unsafe {
+            VECSXP | EXPRSXP | WEAKREFSXP => {
                 Some(ListIter {
-                    vector: self.get(),
+                    vector: self.into(),
                     i: 0,
                     len: self.len(),
                 })
@@ -347,20 +351,18 @@ impl Robj {
         let len = self.len();
         match self.sexptype() {
             STRSXP => unsafe {
-                let vector = self.get();
                 Some(StrIter {
-                    vector,
+                    vector: self.into(),
                     i,
                     len,
                     levels: R_NilValue,
                 })
             },
             INTSXP => unsafe {
-                let vector = self.get();
                 if let Some(levels) = self.get_attrib(levels_symbol()) {
                     if self.is_factor() && levels.sexptype() == STRSXP {
                         Some(StrIter {
-                            vector,
+                            vector: self.into(),
                             i,
                             len,
                             levels: levels.get(),
