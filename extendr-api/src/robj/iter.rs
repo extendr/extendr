@@ -1,5 +1,4 @@
 use crate::*;
-use std::marker::PhantomData;
 
 // Iterator over the objects in a VECSXP, EXPRSXP or WEAKREFSXP.
 #[derive(Clone)]
@@ -106,26 +105,25 @@ impl Iterator for PairlistIter {
 /// let tags : Vec<_> = robj.as_pairlist_tag_iter().unwrap().collect();
 /// assert_eq!(tags, vec!["a", "b", na_str()]);
 /// ```
-pub struct PairlistTagIter<'a> {
+pub struct PairlistTagIter {
+    root_obj: Robj,
     list_elem: SEXP,
-    phantom: PhantomData<&'a ()>,
 }
 
-impl<'a> PairlistTagIter<'a> {
+impl PairlistTagIter {
     /// Make an empty list iterator.
     pub fn new() -> Self {
         unsafe {
             Self {
+                root_obj: ().into(),
                 list_elem: R_NilValue,
-                phantom: PhantomData,
             }
         }
     }
 }
 
-// 'a is the lifetime of the pairlist.
-impl<'a> Iterator for PairlistTagIter<'a> {
-    type Item = &'a str;
+impl Iterator for PairlistTagIter {
+    type Item = &'static str;
 
     fn next(&mut self) -> Option<Self::Item> {
         unsafe {
@@ -134,7 +132,7 @@ impl<'a> Iterator for PairlistTagIter<'a> {
                 None
             } else {
                 self.list_elem = CDR(sexp);
-                if let Some(symbol) = new_borrowed::<'a>(TAG(sexp)).as_symbol() {
+                if let Some(symbol) = new_borrowed(TAG(sexp)).as_symbol() {
                     Some(std::mem::transmute(symbol.0))
                 } else {
                     Some(na_str())
@@ -249,7 +247,7 @@ macro_rules! impl_iter_debug {
 
 impl_iter_debug!(ListIter);
 impl_iter_debug!(PairlistIter);
-impl_iter_debug!(PairlistTagIter<'a>);
+impl_iter_debug!(PairlistTagIter);
 impl_iter_debug!(StrIter);
 
 impl Robj {
@@ -283,12 +281,12 @@ impl Robj {
     /// let tags : Vec<_> = robj.as_pairlist_tag_iter().unwrap().collect();
     /// assert_eq!(tags, vec!["a", "b", na_str()]);
     /// ```
-    pub fn as_pairlist_tag_iter<'a>(&self) -> Option<PairlistTagIter<'a>> {
+    pub fn as_pairlist_tag_iter(&self) -> Option<PairlistTagIter> {
         match self.sexptype() {
             LISTSXP | LANGSXP | DOTSXP => unsafe {
                 Some(PairlistTagIter {
+                    root_obj: self.into(),
                     list_elem: self.get(),
-                    phantom: PhantomData,
                 })
             },
             _ => None,

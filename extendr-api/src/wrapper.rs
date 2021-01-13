@@ -56,7 +56,6 @@ pub struct Raw<'a>(pub &'a [u8]);
 /// let call_to_xyz = r!(Lang(&[r!(Symbol("xyz")), r!(1), r!(2)]));
 /// assert_eq!(call_to_xyz.is_language(), true);
 /// assert_eq!(call_to_xyz.len(), 3);
-/// assert_eq!(call_to_xyz.as_lang(), Some(Lang(vec![r!(Symbol("xyz")), r!(1), r!(2)])));
 /// ```
 ///
 /// Note: You can use the [lang!] macro for this.
@@ -83,7 +82,7 @@ pub struct Pairlist<NV> {
 /// extendr_engine::start_r();
 /// let list = r!(List(&[r!(0), r!(1), r!(2)]));
 /// assert_eq!(list.is_list(), true);
-/// assert_eq!(list.as_list(), Some(List(vec![r!(0), r!(1), r!(2)])));
+/// assert_eq!(list.len(), 3);
 /// assert_eq!(format!("{:?}", list), r#"r!(List([r!(0), r!(1), r!(2)]))"#);
 /// ```
 ///
