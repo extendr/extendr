@@ -114,10 +114,13 @@ fn write_r_wrapper(wrapper_fn: WrapperFn) -> Result<(), Box<dyn Error>> {
     let output_file_path = find_output_file().unwrap();
     let package_name = std::env::var("CARGO_CRATE_NAME")?;
 
+    #[cfg(not(target_os = "windows"))]
+    let package_name = format!("lib{}", package_name);
+
     // Write fn to singleton to keep track of all functions across macro invocations
     WRAPPER_FNS
         .lock()
-        .expect("Could not aquire lock to WRAPPER_FNS singleton")
+        .expect("Could not acquire lock to WRAPPER_FNS singleton")
         .push(wrapper_fn);
 
     let file = File::create(&output_file_path)?;
