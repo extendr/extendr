@@ -199,6 +199,7 @@ mod robj;
 mod thread_safety;
 mod wrapper;
 mod matrix;
+pub mod metadata;
 
 #[cfg(feature = "ndarray")]
 mod robj_ndarray;
@@ -232,6 +233,8 @@ use libR_sys::*;
 
 #[doc(hidden)]
 use std::ffi::CString;
+
+pub use metadata::Metadata;
 
 #[doc(hidden)]
 pub struct CallMethod {

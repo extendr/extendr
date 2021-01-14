@@ -63,6 +63,7 @@ use syn::Token;
 
 mod output_r;
 
+const META_PREFIX: &str = "meta__";
 const INIT_PREFIX: &str = "init__";
 const WRAP_PREFIX: &str = "wrap__";
 
@@ -87,6 +88,44 @@ fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> FnArg {
                 panic!("found &self in non-impl function - have you missed the #[extendr] before the impl?");
             }
             return parse_quote! { _self : extendr_api::SEXP };
+        }
+    }
+}
+
+// Generate a list of arguments for the wrapper. All arguments are SEXP for .Call in R.
+fn translate_meta_arg(input: &FnArg, self_ty: Option<&syn::Type>) -> Expr {
+    match input {
+        // function argument.
+        FnArg::Typed(ref pattype) => {
+            let pat = pattype.pat.as_ref();
+            let ty = pattype.ty.as_ref();
+            let name_string = quote!{ #pat }.to_string();
+            let type_string = quote!{ #ty }.to_string();
+            return parse_quote! {
+                extendr_api::metadata::Arg {
+                    doc: "",
+                    name: #name_string,
+                    arg_type: #type_string
+                }
+            }
+        }
+        // &self
+        FnArg::Receiver(ref reciever) => {
+            if !reciever.attrs.is_empty() || reciever.reference.is_none() {
+                panic!("expected &self or &mut self");
+            }
+            if self_ty.is_none() {
+                panic!("found &self in non-impl function - have you missed the #[extendr] before the impl?");
+            }
+            let name_string = quote!{ #reciever }.to_string();
+            let type_string = quote!{ #self_ty }.to_string();
+            return parse_quote! {
+                extendr_api::metadata::Arg {
+                    doc: "",
+                    name: #name_string,
+                    arg_type: #type_string
+                }
+            }
         }
     }
 }
@@ -169,6 +208,13 @@ fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix:
     let raw_wrap_name = format!("{}{}{}", WRAP_PREFIX, prefix, func_name);
     let wrap_name = format_ident!("{}{}{}", WRAP_PREFIX, prefix, func_name);
     let init_name = format_ident!("{}{}{}", INIT_PREFIX, prefix, func_name);
+    let meta_name = format_ident!("{}{}{}", META_PREFIX, prefix, func_name);
+
+    // TODO: extract this from attributes.
+    let name_str = format!("{}", func_name);
+    let doc_string = "";
+    let return_type = &sig.output;
+    let return_type_string = quote!{ #return_type }.to_string();
 
     let wrap_name_str = format!("{}", wrap_name);
     let panic_str = format!("{} paniced.\0", func_name);
@@ -218,10 +264,10 @@ fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix:
         .filter_map(|input| translate_actual(input))
         .collect();
 
-    // let R_formal_args: Vec<String> = inputs
-    //     .iter()
-    //     .filter_map(|input| translate_R_formal(input))
-    //     .collect();
+    let meta_args: Vec<Expr> = inputs
+        .iter()
+        .map(|input| translate_meta_arg(input, self_ty))
+        .collect();
 
     let num_args = inputs.len() as i32;
 
@@ -281,6 +327,22 @@ fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix:
             )
         }
     ));
+
+    wrappers.push(parse_quote!(
+        #[allow(non_snake_case)]
+        fn #meta_name(metadata: &mut Vec<extendr_api::metadata::Func>) {
+            let mut args = vec![
+                #( #meta_args, )*
+            ];
+            metadata.push(extendr_api::metadata::Func {
+                doc: #doc_string,
+                name: #name_str,
+                args: args,
+                return_type: #return_type_string,
+                func_ptr: #wrap_name as * const u8,
+            })
+        }
+    ));
 }
 
 /// Handle trait implementations.
@@ -320,6 +382,7 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
     let self_ty_name = quote! {#self_ty}.to_string();
     let prefix = format!("{}__", self_ty_name);
     let mut method_init_names = Vec::new();
+    let mut method_meta_names = Vec::new();
     let mut wrappers = Vec::new();
 
     // Generate wrappers for methods.
@@ -337,11 +400,13 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
     for impl_item in &mut item_impl.items {
         if let syn::ImplItem::Method(ref mut method) = impl_item {
             method_init_names.push(format_ident!("{}{}__{}", INIT_PREFIX, self_ty_name, method.sig.ident));
+            method_meta_names.push(format_ident!("{}{}__{}", META_PREFIX, self_ty_name, method.sig.ident));
             generate_wrappers(&opts, &mut wrappers, prefix.as_str(), &method.sig, Some(self_ty));
         }
     }
 
     let init_name = format_ident!("{}{}", INIT_PREFIX, self_ty_name);
+    let meta_name = format_ident!("{}{}", META_PREFIX, self_ty_name);
 
     let finalizer_name = format_ident!("__finalize__{}", self_ty_name);
 
@@ -411,6 +476,17 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
         #[allow(non_snake_case)]
         fn #init_name(info: *mut extendr_api::DllInfo, call_methods: &mut Vec<extendr_api::CallMethod>) {
             #( #method_init_names(info, call_methods); )*
+        }
+
+        #[allow(non_snake_case)]
+        fn #meta_name(structs: &mut Vec<extendr_api::metadata::Struct>) {
+            let mut methods = Vec::new();
+            #( #method_meta_names(&mut methods); )*
+            structs.push(extendr_api::metadata::Struct {
+                doc: "",
+                name: #self_ty_name,
+                methods,
+            });
         }
     });
 
@@ -500,11 +576,35 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
     let Module {modname, fnnames, implnames} = module;
     let modname = modname.unwrap();
     let module_init_name = format_ident!("R_init_{}_extendr", modname);
+    let module_metadata_name = format_ident!("get_{}_metadata", modname);
+    let wrap_module_metadata_name = format_ident!("{}get_{}_metadata", WRAP_PREFIX, modname);
 
     let fninitnames = fnnames.iter().map(|id| format_ident!("{}{}", INIT_PREFIX, id));
     let implinitnames = implnames.iter().map(|id| format_ident!("{}{}", INIT_PREFIX, id));
+    let fnmetanames = fnnames.iter().map(|id| format_ident!("{}{}", META_PREFIX, id));
+    let implmetanames = implnames.iter().map(|id| format_ident!("{}{}", META_PREFIX, id));
 
     TokenStream::from(quote!{
+        #[no_mangle]
+        #[allow(non_snake_case)]
+        pub fn #module_metadata_name() -> extendr_api::metadata::Metadata {
+            let mut functions = Vec::new();
+            let mut structs = Vec::new();
+            #( #fnmetanames(&mut functions); )*
+            #( #implmetanames(&mut structs); )*
+            extendr_api::metadata::Metadata {
+                doc: "",
+                functions,
+                structs,
+            }
+        }
+
+        #[no_mangle]
+        #[allow(non_snake_case)]
+        pub extern "C" fn #wrap_module_metadata_name() -> SEXP {
+            unsafe { Robj::from(#module_metadata_name()).get() }
+        }
+
         #[no_mangle]
         #[allow(non_snake_case)]
         pub extern "C" fn #module_init_name(info: * mut extendr_api::DllInfo) {
