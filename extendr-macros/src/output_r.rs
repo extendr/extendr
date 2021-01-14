@@ -36,7 +36,7 @@ struct WrapperFn {
 }
 
 impl WrapperFn {
-    fn to_r_wrapper(&self) -> String {
+    fn to_r_wrapper(&self, package_name: String) -> String {
         let seperated_args = self
             .arguments
             .iter()
@@ -44,13 +44,14 @@ impl WrapperFn {
             .collect::<Vec<_>>()
             .join(", ");
         let mut inner_invocation = format!(
-            ".Call(\"{name}\"{leading_comma}{args})",
+            ".Call(\"{name}\"{leading_comma}{args}, PACKAGE = \"{package_name}\")",
             name = &self.wrapper_name,
             leading_comma = match self.arguments.len() {
                 0 => "",
                 _ => ", ",
             },
             args = seperated_args,
+            package_name = package_name,
         );
         if self.is_void {
             inner_invocation = format!("invisible({})", inner_invocation);
@@ -111,6 +112,7 @@ pub fn output_r_wrapper(
 /// Write R wrapper function to the output R file in the target directory.
 fn write_r_wrapper(wrapper_fn: WrapperFn) -> Result<(), Box<dyn Error>> {
     let output_file_path = find_output_file().unwrap();
+    let package_name = std::env::var("CARGO_CRATE_NAME")?;
 
     // Write fn to singleton to keep track of all functions across macro invocations
     WRAPPER_FNS
@@ -131,10 +133,10 @@ fn write_r_wrapper(wrapper_fn: WrapperFn) -> Result<(), Box<dyn Error>> {
     )?;
     let wrapper_lock = WRAPPER_FNS
         .lock()
-        .expect("Could not aquire lock to WRAPPER_FNS singleton");
+        .expect("Could not acquire lock to WRAPPER_FNS singleton");
     for wrapper_fn in wrapper_lock.iter() {
         writer
-            .write_all(wrapper_fn.to_r_wrapper().as_bytes())
+            .write_all(wrapper_fn.to_r_wrapper(package_name.to_string()).as_bytes())
             .expect("Could not write R wrapper function to file");
     }
 
