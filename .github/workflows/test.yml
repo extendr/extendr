@@ -244,16 +244,20 @@ jobs:
       - name: Build
         run: |
           foreach($target in ($env:BUILD_TARGETS).Split(',')) {
-            echo $target
+            echo "::group::Build extendr-api for $target target"
             cargo build --manifest-path extendr-api/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} )
+            echo "::endgroup::"
+
             if (!$?) { 
               echo "::error::$target" ;
               throw "Last exit code $LASTEXITCODE"
             }
           }
           foreach($target in ($env:BUILD_TARGETS).Split(',')) {
-            echo $target
+            echo "::group::Build extendr-engine for $target target"
             cargo build --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) 
+            echo "::endgroup::"
+            
             if (!$?) { 
               echo "::error::$target" ;
               throw "Last exit code $LASTEXITCODE"
@@ -263,32 +267,40 @@ jobs:
       - name: Run tests
         run: |
           foreach($target in ($env:BUILD_TARGETS).Split(',')) {
-            echo $target
+            echo "::group::Test extendr-engine \w tests-all for $target target"
             cargo test --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture 
+            echo "::endgroup::"
+
             if (!$?) { 
               echo "::error::$target" ;
               throw "Last exit code $LASTEXITCODE"
             }
           }
           foreach($target in ($env:BUILD_TARGETS).Split(',')) {
-            echo $target
+            echo "::group::Test extendr-api \w tests-all for $target target"
             cargo test --manifest-path extendr-api/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture 
+            echo "::endgroup::"
+
             if (!$?) { 
               echo "::error::$target" ;
               throw "Last exit code $LASTEXITCODE"
             }
           }
-          foreach($target in ($env:BUILD_TARGETS).Split(',')) {
-            echo $target
+          foreach($target in ($env:BUILD_TARGETS).Split(',')) {            
+            echo "::group::Test extendr-api \w tests-minimal for $target target"
             cargo test --manifest-path extendr-api/Cargo.toml --features tests-minimal $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture
+            echo "::endgroup::"
+
             if (!$?) { 
               echo "::error::$target" ;
               throw "Last exit code $LASTEXITCODE"
             }
           }
           foreach($target in ($env:BUILD_TARGETS).Split(',')) {
-            echo $target
+            echo "::group::Test extendr-macros for $target target"
             cargo test --manifest-path extendr-macros/Cargo.toml  $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture
+            echo "::endgroup::"
+
             if (!$?) { 
               echo "::error::$target" ;
               throw "Last exit code $LASTEXITCODE"
