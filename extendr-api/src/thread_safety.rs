@@ -88,7 +88,11 @@ where
 
 pub fn throw_r_error<S: AsRef<str>>(s: S) {
     let s = s.as_ref();
-    unsafe { libR_sys::Rf_error(std::ffi::CString::new(s).unwrap().as_ptr()) };
+    unsafe {
+        let cstring = std::ffi::CString::new(s).unwrap();
+        libR_sys::Rf_error(cstring.as_ptr());
+        unreachable!("Rf_error does not return");
+    };
 }
 
 /// Wrap an R function such as Rf_findFunction and convert errors and panics into results.
