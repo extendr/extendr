@@ -202,6 +202,7 @@ It can be TRUE, FALSE or NA_LOGICAL.</p>
 These are used only as the contents of a character
 vector.</p>
 </td></tr><tr class="module-item"><td><a class="struct" href="struct.Env.html" title="extendr_api::Env struct">Env</a></td><td class="docblock-short"><p>Wrapper for creating environments.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.EnvIter.html" title="extendr_api::EnvIter struct">EnvIter</a></td><td class="docblock-short"><p>Iterator over the names and values of an environment</p>
 </td></tr><tr class="module-item"><td><a class="struct" href="struct.Expr.html" title="extendr_api::Expr struct">Expr</a></td><td class="docblock-short"><p>Wrapper for creating expression objects.</p>
 </td></tr><tr class="module-item"><td><a class="struct" href="struct.Func.html" title="extendr_api::Func struct">Func</a></td><td class="docblock-short"><p>Wrapper for creating functions (CLOSSXP).</p>
 </td></tr><tr class="module-item"><td><a class="struct" href="struct.Lang.html" title="extendr_api::Lang struct">Lang</a></td><td class="docblock-short"><p>Wrapper for creating language objects.</p>
@@ -213,7 +214,6 @@ vector.</p>
 </td></tr><tr class="module-item"><td><a class="struct" href="struct.Promise.html" title="extendr_api::Promise struct">Promise</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="struct" href="struct.RArray.html" title="extendr_api::RArray struct">RArray</a></td><td class="docblock-short"><p>Wrapper for creating and using matrices and arrays.</p>
 </td></tr><tr class="module-item"><td><a class="struct" href="struct.Raw.html" title="extendr_api::Raw struct">Raw</a></td><td class="docblock-short"><p>Wrapper for creating raw (byte) objects.</p>
 </td></tr><tr class="module-item"><td><a class="struct" href="struct.StrIter.html" title="extendr_api::StrIter struct">StrIter</a></td><td class="docblock-short"><p>Iterator over strings or string factors.</p>
-</td></tr><tr class="module-item"><td><a class="struct" href="struct.Symbol.html" title="extendr_api::Symbol struct">Symbol</a></td><td class="docblock-short"><p>Wrapper for creating symbols.</p>
 </td></tr></table><h2 id="enums" class="section-header"><a href="#enums">Enums</a></h2>
 <table><tr class="module-item"><td><a class="enum" href="enum.Error.html" title="extendr_api::Error enum">Error</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="enum" href="enum.Robj.html" title="extendr_api::Robj enum">Robj</a></td><td class="docblock-short"><p>Wrapper for an R S-expression pointer (SEXP).</p>
 </td></tr></table><h2 id="constants" class="section-header"><a href="#constants">Constants</a></h2>
@@ -229,7 +229,7 @@ vector.</p>
 </td></tr><tr class="module-item"><td><a class="trait" href="trait.FromRobj.html" title="extendr_api::FromRobj trait">FromRobj</a></td><td class="docblock-short"><p>Trait used for incomming parameter conversion.</p>
 </td></tr><tr class="module-item"><td><a class="trait" href="trait.IsNA.html" title="extendr_api::IsNA trait">IsNA</a></td><td class="docblock-short"><p>Return true if this primitive is NA.</p>
 </td></tr><tr class="module-item"><td><a class="trait" href="trait.RobjItertools.html" title="extendr_api::RobjItertools trait">RobjItertools</a></td><td class="docblock-short"><p>Extensions to iterators for R objects including <a href="../extendr_api/trait.RobjItertools.html#method.collect_robj" title="RobjItertools::collect_robj()">RobjItertools::collect_robj()</a>.</p>
-</td></tr><tr class="module-item"><td><a class="trait" href="trait.ToVectorValue.html" title="extendr_api::ToVectorValue trait">ToVectorValue</a></td><td class="docblock-short"><p><code>ToVectorValue</code> is a trait that allows many different types
+</td></tr><tr class="module-item"><td><a class="trait" href="trait.SymPair.html" title="extendr_api::SymPair trait">SymPair</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="trait" href="trait.ToVectorValue.html" title="extendr_api::ToVectorValue trait">ToVectorValue</a></td><td class="docblock-short"><p><code>ToVectorValue</code> is a trait that allows many different types
 to be converted to vectors. It is used as a type parameter
 to <code>collect_robj()</code>.</p>
 </td></tr></table><h2 id="functions" class="section-header"><a href="#functions">Functions</a></h2>
@@ -288,7 +288,7 @@ Note: This will fail badly if the called function panics or calls RF_error.</p>
 </td></tr><tr class="module-item"><td><a class="fn" href="fn.spec_symbol.html" title="extendr_api::spec_symbol fn">spec_symbol</a></td><td class="docblock-short"><p>&quot;spec&quot;</p>
 </td></tr><tr class="module-item"><td><a class="fn" href="fn.srcref.html" title="extendr_api::srcref fn">srcref</a></td><td class="docblock-short"><p>Current srcref, for debuggers</p>
 </td></tr><tr class="module-item"><td><a class="fn" href="fn.test.html" title="extendr_api::test fn">test</a></td><td class="docblock-short"><p>Extendr test harness.</p>
-</td></tr><tr class="module-item"><td><a class="fn" href="fn.throw_r_error.html" title="extendr_api::throw_r_error fn">throw_r_error</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="fn" href="fn.triple_colon_symbol.html" title="extendr_api::triple_colon_symbol fn">triple_colon_symbol</a></td><td class="docblock-short"><p>&quot;:::&quot;</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.this_thread_id.html" title="extendr_api::this_thread_id fn">this_thread_id</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="fn" href="fn.throw_r_error.html" title="extendr_api::throw_r_error fn">throw_r_error</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="fn" href="fn.triple_colon_symbol.html" title="extendr_api::triple_colon_symbol fn">triple_colon_symbol</a></td><td class="docblock-short"><p>&quot;:::&quot;</p>
 </td></tr><tr class="module-item"><td><a class="fn" href="fn.tsp_symbol.html" title="extendr_api::tsp_symbol fn">tsp_symbol</a></td><td class="docblock-short"><p>&quot;tsp&quot;</p>
 </td></tr><tr class="module-item"><td><a class="fn" href="fn.unbound_value.html" title="extendr_api::unbound_value fn">unbound_value</a></td><td class="docblock-short"><p>Unbound marker</p>
 </td></tr></table><h2 id="types" class="section-header"><a href="#types">Type Definitions</a></h2>

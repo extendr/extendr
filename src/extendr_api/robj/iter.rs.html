@@ -402,16 +402,115 @@
 <span id="399">399</span>
 <span id="400">400</span>
 <span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
+<span id="404">404</span>
+<span id="405">405</span>
+<span id="406">406</span>
+<span id="407">407</span>
+<span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
+<span id="411">411</span>
+<span id="412">412</span>
+<span id="413">413</span>
+<span id="414">414</span>
+<span id="415">415</span>
+<span id="416">416</span>
+<span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
+<span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
+<span id="446">446</span>
+<span id="447">447</span>
+<span id="448">448</span>
+<span id="449">449</span>
+<span id="450">450</span>
+<span id="451">451</span>
+<span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
+<span id="464">464</span>
+<span id="465">465</span>
+<span id="466">466</span>
+<span id="467">467</span>
+<span id="468">468</span>
+<span id="469">469</span>
+<span id="470">470</span>
+<span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">marker</span>::<span class="ident">PhantomData</span>;
 
 <span class="comment">// Iterator over the objects in a VECSXP, EXPRSXP or WEAKREFSXP.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ListIter</span> {
-    <span class="ident">vector</span>: <span class="ident">SEXP</span>,
+    <span class="ident">vector</span>: <span class="ident">Robj</span>,
     <span class="ident">i</span>: <span class="ident">usize</span>,
     <span class="ident">len</span>: <span class="ident">usize</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">ListIter</span> {
+    <span class="comment">// A new, empty list iterator.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="ident">ListIter</span> {
+            <span class="ident">vector</span>: ().<span class="ident">into</span>(),
+            <span class="ident">i</span>: <span class="number">0</span>,
+            <span class="ident">len</span>: <span class="number">0</span>,
+        }
+    }
 }
 
 <span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">ListIter</span> {
@@ -427,7 +526,7 @@
         <span class="kw">if</span> <span class="ident">i</span> <span class="op">&gt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span> {
             <span class="kw">return</span> <span class="prelude-val">None</span>;
         } <span class="kw">else</span> {
-            <span class="prelude-val">Some</span>(<span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">VECTOR_ELT</span>(<span class="self">self</span>.<span class="ident">vector</span>, <span class="ident">i</span> <span class="kw">as</span> <span class="ident">isize</span>)) })
+            <span class="prelude-val">Some</span>(<span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">VECTOR_ELT</span>(<span class="self">self</span>.<span class="ident">vector</span>.<span class="ident">get</span>(), <span class="ident">i</span> <span class="kw">as</span> <span class="ident">isize</span>)) })
         }
     }
 
@@ -437,27 +536,17 @@
     }
 }
 
-<span class="kw">impl</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">ListIter</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;[&quot;</span>)<span class="question-mark">?</span>;
-        <span class="kw">for</span> <span class="ident">s</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">clone</span>() {
-            <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="ident">s</span>)<span class="question-mark">?</span>;
-        }
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;]&quot;</span>)
-    }
-}
-
 <span class="doccomment">/// Iterator over name-value pairs in lists.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">NamedListIter</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">iter</span>::<span class="ident">Zip</span><span class="op">&lt;</span><span class="ident">StrIter</span>, <span class="ident">ListIter</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// Iterator over primitives in integer objects.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">IntegerIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">slice</span>::<span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">i32</span><span class="op">&gt;</span>;
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">IntegerIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">iter</span>::<span class="ident">Cloned</span><span class="op">&lt;</span><span class="ident">std</span>::<span class="ident">slice</span>::<span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">i32</span><span class="op">&gt;</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// Iterator over primitives in real objects.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">RealIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">slice</span>::<span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">f64</span><span class="op">&gt;</span>;
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">RealIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">iter</span>::<span class="ident">Cloned</span><span class="op">&lt;</span><span class="ident">std</span>::<span class="ident">slice</span>::<span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// Iterator over primitives in logical objects.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">LogicalIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">slice</span>::<span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">Bool</span><span class="op">&gt;</span>;
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">LogicalIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">iter</span>::<span class="ident">Cloned</span><span class="op">&lt;</span><span class="ident">std</span>::<span class="ident">slice</span>::<span class="ident">Iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">Bool</span><span class="op">&gt;</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// Iterator over the objects in a vector or string.</span>
 <span class="doccomment">///</span>
@@ -480,6 +569,7 @@
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PairlistIter</span> {
+    <span class="ident">root_obj</span>: <span class="ident">Robj</span>,
     <span class="ident">list_elem</span>: <span class="ident">SEXP</span>,
 }
 
@@ -488,6 +578,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="kw">unsafe</span> {
             <span class="self">Self</span> {
+                <span class="ident">root_obj</span>: ().<span class="ident">into</span>(),
                 <span class="ident">list_elem</span>: <span class="ident">R_NilValue</span>,
             }
         }
@@ -510,16 +601,6 @@
     }
 }
 
-<span class="kw">impl</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">PairlistIter</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;[&quot;</span>)<span class="question-mark">?</span>;
-        <span class="kw">for</span> <span class="ident">s</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">clone</span>() {
-            <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="ident">s</span>)<span class="question-mark">?</span>;
-        }
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;]&quot;</span>)
-    }
-}
-
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
 <span class="doccomment">/// Iterator over pairlist tag names.</span>
 <span class="doccomment">/// ```</span>
@@ -529,28 +610,27 @@
 <span class="doccomment">/// let mut robj = R!(pairlist(a = 1, b = 2, 3)).unwrap();</span>
 <span class="doccomment">/// // let mut robj = pairlist!(a = 1, b = 2, 3);</span>
 <span class="doccomment">/// let tags : Vec&lt;_&gt; = robj.as_pairlist_tag_iter().unwrap().collect();</span>
-<span class="doccomment">/// assert_eq!(tags, vec![Some(&quot;a&quot;), Some(&quot;b&quot;), None]);</span>
+<span class="doccomment">/// assert_eq!(tags, vec![&quot;a&quot;, &quot;b&quot;, na_str()]);</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PairlistTagIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PairlistTagIter</span> {
+    <span class="ident">root_obj</span>: <span class="ident">Robj</span>,
     <span class="ident">list_elem</span>: <span class="ident">SEXP</span>,
-    <span class="ident">phantom</span>: <span class="ident">PhantomData</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> ()<span class="op">&gt;</span>,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">PairlistTagIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+<span class="kw">impl</span> <span class="ident">PairlistTagIter</span> {
     <span class="doccomment">/// Make an empty list iterator.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="kw">unsafe</span> {
             <span class="self">Self</span> {
+                <span class="ident">root_obj</span>: ().<span class="ident">into</span>(),
                 <span class="ident">list_elem</span>: <span class="ident">R_NilValue</span>,
-                <span class="ident">phantom</span>: <span class="ident">PhantomData</span>,
             }
         }
     }
 }
 
-<span class="comment">// &#39;a is the lifetime of the pairlist.</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">PairlistTagIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span><span class="op">&gt;</span>;
+<span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">PairlistTagIter</span> {
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>;
 
     <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
         <span class="kw">unsafe</span> {
@@ -559,23 +639,13 @@
                 <span class="prelude-val">None</span>
             } <span class="kw">else</span> {
                 <span class="self">self</span>.<span class="ident">list_elem</span> <span class="op">=</span> <span class="ident">CDR</span>(<span class="ident">sexp</span>);
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">symbol</span>) <span class="op">=</span> <span class="ident">new_borrowed</span>::<span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">TAG</span>(<span class="ident">sexp</span>)).<span class="ident">as_symbol</span>() {
-                    <span class="prelude-val">Some</span>(<span class="prelude-val">Some</span>(<span class="ident">std</span>::<span class="ident">mem</span>::<span class="ident">transmute</span>(<span class="ident">symbol</span>.<span class="number">0</span>)))
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">symbol</span>) <span class="op">=</span> <span class="ident">new_borrowed</span>(<span class="ident">TAG</span>(<span class="ident">sexp</span>)).<span class="ident">as_symbol</span>() {
+                    <span class="prelude-val">Some</span>(<span class="ident">std</span>::<span class="ident">mem</span>::<span class="ident">transmute</span>(<span class="ident">symbol</span>.<span class="number">0</span>))
                 } <span class="kw">else</span> {
-                    <span class="prelude-val">Some</span>(<span class="prelude-val">None</span>)
+                    <span class="prelude-val">Some</span>(<span class="ident">na_str</span>())
                 }
             }
         }
-    }
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">PairlistTagIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;[&quot;</span>)<span class="question-mark">?</span>;
-        <span class="kw">for</span> <span class="ident">s</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">clone</span>() {
-            <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="ident">s</span>)<span class="question-mark">?</span>;
-        }
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;]&quot;</span>)
     }
 }
 
@@ -596,7 +666,7 @@
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StrIter</span> {
-    <span class="ident">vector</span>: <span class="ident">SEXP</span>,
+    <span class="ident">vector</span>: <span class="ident">Robj</span>,
     <span class="ident">i</span>: <span class="ident">usize</span>,
     <span class="ident">len</span>: <span class="ident">usize</span>,
     <span class="ident">levels</span>: <span class="ident">SEXP</span>,
@@ -607,7 +677,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="kw">unsafe</span> {
             <span class="self">Self</span> {
-                <span class="ident">vector</span>: <span class="ident">R_NilValue</span>,
+                <span class="ident">vector</span>: ().<span class="ident">into</span>(),
                 <span class="ident">i</span>: <span class="number">0</span>,
                 <span class="ident">len</span>: <span class="number">0</span>,
                 <span class="ident">levels</span>: <span class="ident">R_NilValue</span>,
@@ -647,12 +717,13 @@
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">i</span>;
             <span class="self">self</span>.<span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+            <span class="kw">let</span> <span class="ident">vector</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">vector</span>.<span class="ident">get</span>();
             <span class="kw">if</span> <span class="ident">i</span> <span class="op">&gt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span> {
                 <span class="kw">return</span> <span class="prelude-val">None</span>;
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">TYPEOF</span>(<span class="self">self</span>.<span class="ident">vector</span>) <span class="kw">as</span> <span class="ident">u32</span> <span class="op">=</span><span class="op">=</span> <span class="ident">STRSXP</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">str_from_strsxp</span>(<span class="self">self</span>.<span class="ident">vector</span>, <span class="ident">i</span> <span class="kw">as</span> <span class="ident">isize</span>))
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">TYPEOF</span>(<span class="self">self</span>.<span class="ident">vector</span>) <span class="kw">as</span> <span class="ident">u32</span> <span class="op">=</span><span class="op">=</span> <span class="ident">INTSXP</span> <span class="op">&amp;&amp;</span> <span class="ident">TYPEOF</span>(<span class="self">self</span>.<span class="ident">levels</span>) <span class="kw">as</span> <span class="ident">u32</span> <span class="op">=</span><span class="op">=</span> <span class="ident">STRSXP</span> {
-                <span class="kw">let</span> <span class="ident">j</span> <span class="op">=</span> <span class="kw-2">*</span>(<span class="ident">INTEGER</span>(<span class="self">self</span>.<span class="ident">vector</span>).<span class="ident">offset</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">isize</span>));
+            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">TYPEOF</span>(<span class="ident">vector</span>) <span class="kw">as</span> <span class="ident">u32</span> <span class="op">=</span><span class="op">=</span> <span class="ident">STRSXP</span> {
+                <span class="prelude-val">Some</span>(<span class="ident">str_from_strsxp</span>(<span class="ident">vector</span>, <span class="ident">i</span> <span class="kw">as</span> <span class="ident">isize</span>))
+            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">TYPEOF</span>(<span class="ident">vector</span>) <span class="kw">as</span> <span class="ident">u32</span> <span class="op">=</span><span class="op">=</span> <span class="ident">INTSXP</span> <span class="op">&amp;&amp;</span> <span class="ident">TYPEOF</span>(<span class="self">self</span>.<span class="ident">levels</span>) <span class="kw">as</span> <span class="ident">u32</span> <span class="op">=</span><span class="op">=</span> <span class="ident">STRSXP</span> {
+                <span class="kw">let</span> <span class="ident">j</span> <span class="op">=</span> <span class="kw-2">*</span>(<span class="ident">INTEGER</span>(<span class="ident">vector</span>).<span class="ident">offset</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">isize</span>));
                 <span class="prelude-val">Some</span>(<span class="ident">str_from_strsxp</span>(<span class="self">self</span>.<span class="ident">levels</span>, <span class="ident">j</span> <span class="kw">as</span> <span class="ident">isize</span> <span class="op">-</span> <span class="number">1</span>))
             } <span class="kw">else</span> {
                 <span class="kw">return</span> <span class="prelude-val">None</span>;
@@ -666,17 +737,97 @@
     }
 }
 
-<span class="kw">impl</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">StrIter</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;[&quot;</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">comma</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>;
-        <span class="kw">for</span> <span class="ident">s</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">clone</span>() {
-            <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}{:?}&quot;</span>, <span class="ident">comma</span>, <span class="ident">s</span>)<span class="question-mark">?</span>;
-            <span class="ident">comma</span> <span class="op">=</span> <span class="string">&quot;, &quot;</span>;
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">impl_iter_debug</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>: <span class="ident">ty</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="kw">impl</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span> {
+            <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+                <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;[&quot;</span>)<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">comma</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>;
+                <span class="kw">for</span> <span class="ident">s</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">clone</span>() {
+                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}{:?}&quot;</span>, <span class="ident">comma</span>, <span class="ident">s</span>)<span class="question-mark">?</span>;
+                    <span class="ident">comma</span> <span class="op">=</span> <span class="string">&quot;, &quot;</span>;
+                }
+                <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;]&quot;</span>)
+            }
         }
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;]&quot;</span>)
     }
 }
+
+<span class="doccomment">/// Iterator over the names and values of an environment</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// use extendr_api::*;</span>
+<span class="doccomment">/// test! {</span>
+<span class="doccomment">///     let names_and_values = (0..100).map(|i| (format!(&quot;n{}&quot;, i), i));</span>
+<span class="doccomment">///     let env = Env{parent: global_env(), names_and_values};</span>
+<span class="doccomment">///     let robj = r!(env);</span>
+<span class="doccomment">///     let names_and_values = robj.as_env_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;();</span>
+<span class="doccomment">///     assert_eq!(names_and_values.len(), 100);</span>
+<span class="doccomment">///</span>
+<span class="doccomment">///     let small_env = new_env_with_capacity(1);</span>
+<span class="doccomment">///     small_env.set_local(sym!(x), 1);</span>
+<span class="doccomment">///     let names_and_values = small_env.as_env_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;();</span>
+<span class="doccomment">///     assert_eq!(names_and_values, vec![(&quot;x&quot;, r!(1))]);</span>
+<span class="doccomment">///</span>
+<span class="doccomment">///     let large_env = new_env_with_capacity(1000);</span>
+<span class="doccomment">///     large_env.set_local(sym!(x), 1);</span>
+<span class="doccomment">///     let names_and_values = large_env.as_env_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;();</span>
+<span class="doccomment">///     assert_eq!(names_and_values, vec![(&quot;x&quot;, r!(1))]);</span>
+<span class="doccomment">/// }</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ```</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EnvIter</span> {
+    <span class="ident">hash_table</span>: <span class="ident">ListIter</span>,
+    <span class="ident">pairlist</span>: <span class="ident">PairlistIter</span>,
+    <span class="ident">pairlisttags</span>: <span class="ident">PairlistTagIter</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">EnvIter</span> {
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> (<span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">Robj</span>);
+
+    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
+        <span class="kw">loop</span> {
+            <span class="comment">// Environments are a hash table (list) or pair lists (pairlist)</span>
+            <span class="comment">// Get the first available value from the pair list.</span>
+            <span class="kw">loop</span> {
+                <span class="kw">match</span> (<span class="self">self</span>.<span class="ident">pairlisttags</span>.<span class="ident">next</span>(), <span class="self">self</span>.<span class="ident">pairlist</span>.<span class="ident">next</span>()) {
+                    (<span class="prelude-val">Some</span>(<span class="ident">key</span>), <span class="prelude-val">Some</span>(<span class="ident">value</span>)) <span class="op">=</span><span class="op">&gt;</span> {
+                        <span class="comment">// if the key and value are valid, return a pair.</span>
+                        <span class="kw">if</span> <span class="op">!</span><span class="ident">key</span>.<span class="ident">is_na</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">value</span>.<span class="ident">is_unbound_value</span>() {
+                            <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;value: {:?}&quot;</span>, (<span class="kw-2">&amp;</span><span class="ident">key</span>, <span class="kw-2">&amp;</span><span class="ident">value</span>));
+                            <span class="kw">return</span> <span class="prelude-val">Some</span>((<span class="ident">key</span>, <span class="ident">value</span>));
+                        }
+                    }
+                    <span class="comment">// if the key and value are invalid, move on to the hash table.</span>
+                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">break</span>
+                }
+                <span class="comment">// continue pair list loop.</span>
+            }
+
+            <span class="comment">// Get the first pairlist from the hash table.</span>
+            <span class="kw">loop</span> {
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">obj</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">hash_table</span>.<span class="ident">next</span>() {
+                    <span class="kw">if</span> <span class="op">!</span><span class="ident">obj</span>.<span class="ident">is_null</span>() <span class="op">&amp;&amp;</span> <span class="ident">obj</span>.<span class="ident">is_pairlist</span>() {
+                        <span class="self">self</span>.<span class="ident">pairlisttags</span> <span class="op">=</span> <span class="ident">obj</span>.<span class="ident">as_pairlist_tag_iter</span>().<span class="ident">unwrap</span>();
+                        <span class="self">self</span>.<span class="ident">pairlist</span> <span class="op">=</span> <span class="ident">obj</span>.<span class="ident">as_pairlist_iter</span>().<span class="ident">unwrap</span>();
+                        <span class="kw">break</span>;
+                    }
+                    <span class="comment">// continue hash table loop.</span>
+                } <span class="kw">else</span> {
+                    <span class="comment">// The hash table is empty, end of iteration.</span>
+                    <span class="kw">return</span> <span class="prelude-val">None</span>;
+                }
+            }
+        }
+    }
+}
+
+<span class="macro">impl_iter_debug</span><span class="macro">!</span>(<span class="ident">ListIter</span>);
+<span class="macro">impl_iter_debug</span><span class="macro">!</span>(<span class="ident">PairlistIter</span>);
+<span class="macro">impl_iter_debug</span><span class="macro">!</span>(<span class="ident">PairlistTagIter</span>);
+<span class="macro">impl_iter_debug</span><span class="macro">!</span>(<span class="ident">StrIter</span>);
+<span class="macro">impl_iter_debug</span><span class="macro">!</span>(<span class="ident">EnvIter</span>);
 
 <span class="kw">impl</span> <span class="ident">Robj</span> {
     <span class="doccomment">/// Get an iterator over a pairlist objects.</span>
@@ -692,6 +843,7 @@
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
             <span class="ident">LISTSXP</span> <span class="op">|</span> <span class="ident">LANGSXP</span> <span class="op">|</span> <span class="ident">DOTSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">unsafe</span> {
                 <span class="prelude-val">Some</span>(<span class="ident">PairlistIter</span> {
+                    <span class="ident">root_obj</span>: <span class="self">self</span>.<span class="ident">into</span>(),
                     <span class="ident">list_elem</span>: <span class="self">self</span>.<span class="ident">get</span>(),
                 })
             },
@@ -707,14 +859,14 @@
     <span class="doccomment">/// let mut robj = R!(pairlist(a = 1, b = 2, 3)).unwrap();</span>
     <span class="doccomment">/// // let mut robj = pairlist!(a = 1, b = 2, 3);</span>
     <span class="doccomment">/// let tags : Vec&lt;_&gt; = robj.as_pairlist_tag_iter().unwrap().collect();</span>
-    <span class="doccomment">/// assert_eq!(tags, vec![Some(&quot;a&quot;), Some(&quot;b&quot;), None]);</span>
+    <span class="doccomment">/// assert_eq!(tags, vec![&quot;a&quot;, &quot;b&quot;, na_str()]);</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_pairlist_tag_iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PairlistTagIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_pairlist_tag_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PairlistTagIter</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
             <span class="ident">LISTSXP</span> <span class="op">|</span> <span class="ident">LANGSXP</span> <span class="op">|</span> <span class="ident">DOTSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">unsafe</span> {
                 <span class="prelude-val">Some</span>(<span class="ident">PairlistTagIter</span> {
+                    <span class="ident">root_obj</span>: <span class="self">self</span>.<span class="ident">into</span>(),
                     <span class="ident">list_elem</span>: <span class="self">self</span>.<span class="ident">get</span>(),
-                    <span class="ident">phantom</span>: <span class="ident">PhantomData</span>,
                 })
             },
             <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
@@ -732,9 +884,9 @@
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_list_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ListIter</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
-            <span class="ident">VECSXP</span> <span class="op">|</span> <span class="ident">EXPRSXP</span> <span class="op">|</span> <span class="ident">WEAKREFSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">unsafe</span> {
+            <span class="ident">VECSXP</span> <span class="op">|</span> <span class="ident">EXPRSXP</span> <span class="op">|</span> <span class="ident">WEAKREFSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="prelude-val">Some</span>(<span class="ident">ListIter</span> {
-                    <span class="ident">vector</span>: <span class="self">self</span>.<span class="ident">get</span>(),
+                    <span class="ident">vector</span>: <span class="self">self</span>.<span class="ident">into</span>(),
                     <span class="ident">i</span>: <span class="number">0</span>,
                     <span class="ident">len</span>: <span class="self">self</span>.<span class="ident">len</span>(),
                 })
@@ -775,20 +927,18 @@
         <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span>();
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
             <span class="ident">STRSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">unsafe</span> {
-                <span class="kw">let</span> <span class="ident">vector</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get</span>();
                 <span class="prelude-val">Some</span>(<span class="ident">StrIter</span> {
-                    <span class="ident">vector</span>,
+                    <span class="ident">vector</span>: <span class="self">self</span>.<span class="ident">into</span>(),
                     <span class="ident">i</span>,
                     <span class="ident">len</span>,
                     <span class="ident">levels</span>: <span class="ident">R_NilValue</span>,
                 })
             },
             <span class="ident">INTSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">unsafe</span> {
-                <span class="kw">let</span> <span class="ident">vector</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get</span>();
                 <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">levels</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_attrib</span>(<span class="ident">levels_symbol</span>()) {
                     <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_factor</span>() <span class="op">&amp;&amp;</span> <span class="ident">levels</span>.<span class="ident">sexptype</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">STRSXP</span> {
                         <span class="prelude-val">Some</span>(<span class="ident">StrIter</span> {
-                            <span class="ident">vector</span>,
+                            <span class="ident">vector</span>: <span class="self">self</span>.<span class="ident">into</span>(),
                             <span class="ident">i</span>,
                             <span class="ident">len</span>,
                             <span class="ident">levels</span>: <span class="ident">levels</span>.<span class="ident">get</span>(),
@@ -801,6 +951,34 @@
                 }
             },
             <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+        }
+    }
+
+    <span class="doccomment">/// Iterate over an environment.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_env_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">EnvIter</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_environment</span>() {
+            <span class="kw">unsafe</span> {
+                <span class="kw">let</span> <span class="ident">hashtab</span> <span class="op">=</span> <span class="ident">new_owned</span>(<span class="ident">HASHTAB</span>(<span class="self">self</span>.<span class="ident">get</span>()));
+                <span class="kw">let</span> <span class="ident">frame</span> <span class="op">=</span> <span class="ident">new_owned</span>(<span class="ident">FRAME</span>(<span class="self">self</span>.<span class="ident">get</span>()));
+                <span class="kw">if</span> <span class="ident">hashtab</span>.<span class="ident">is_null</span>() <span class="op">&amp;&amp;</span> <span class="ident">frame</span>.<span class="ident">is_pairlist</span>() {
+                    <span class="prelude-val">Some</span>(<span class="ident">EnvIter</span> {
+                        <span class="ident">hash_table</span>: <span class="ident">ListIter</span>::<span class="ident">new</span>(),
+                        <span class="ident">pairlisttags</span>: <span class="ident">frame</span>.<span class="ident">as_pairlist_tag_iter</span>().<span class="ident">unwrap</span>(),
+                        <span class="ident">pairlist</span>: <span class="ident">frame</span>.<span class="ident">as_pairlist_iter</span>().<span class="ident">unwrap</span>(),
+                    })
+        
+                } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">hashtab</span>.<span class="ident">is_list</span>() {
+                    <span class="prelude-val">Some</span>(<span class="ident">EnvIter</span> {
+                        <span class="ident">hash_table</span>: <span class="ident">hashtab</span>.<span class="ident">as_list_iter</span>().<span class="ident">unwrap</span>(),
+                        <span class="ident">pairlist</span>: <span class="ident">PairlistIter</span>::<span class="ident">new</span>(),
+                        <span class="ident">pairlisttags</span>: <span class="ident">PairlistTagIter</span>::<span class="ident">new</span>(),
+                    })
+                } <span class="kw">else</span> {
+                    <span class="prelude-val">None</span>
+                }
+            }
+        } <span class="kw">else</span> {
+            <span class="prelude-val">None</span>
         }
     }
 }
