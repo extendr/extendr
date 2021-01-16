@@ -5,7 +5,6 @@ use crate::*;
 #[doc(hidden)]
 use libR_sys::*;
 #[doc(hidden)]
-use std::collections::HashMap;
 
 /// Wrapper for creating symbols.
 ///
@@ -56,7 +55,6 @@ pub struct Raw<'a>(pub &'a [u8]);
 /// let call_to_xyz = r!(Lang(&[r!(Symbol("xyz")), r!(1), r!(2)]));
 /// assert_eq!(call_to_xyz.is_language(), true);
 /// assert_eq!(call_to_xyz.len(), 3);
-/// assert_eq!(call_to_xyz.as_lang(), Some(Lang(vec![r!(Symbol("xyz")), r!(1), r!(2)])));
 /// ```
 ///
 /// Note: You can use the [lang!] macro for this.
@@ -66,12 +64,11 @@ pub struct Lang<T>(pub T);
 /// Wrapper for creating pair list (LISTSXP) objects.
 /// ```
 /// use extendr_api::*;
-/// extendr_engine::start_r();
-/// let hashmap : std::collections::HashMap<_, _> = (0..100)
-///     .map(|i| (Some(format!("n{}", i)), r!(i))).collect();
-/// let pairlist = Pairlist{names_and_values: hashmap};
-/// let expr = r!(pairlist);
-/// assert_eq!(expr.len(), 100);
+/// test! {
+///     let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
+///     let expr = r!(Pairlist{names_and_values});
+///     assert_eq!(expr.len(), 100);
+/// }
 /// ```
 #[derive(Debug, PartialEq, Clone)]
 pub struct Pairlist<NV> {
@@ -84,7 +81,7 @@ pub struct Pairlist<NV> {
 /// extendr_engine::start_r();
 /// let list = r!(List(&[r!(0), r!(1), r!(2)]));
 /// assert_eq!(list.is_list(), true);
-/// assert_eq!(list.as_list(), Some(List(vec![r!(0), r!(1), r!(2)])));
+/// assert_eq!(list.len(), 3);
 /// assert_eq!(format!("{:?}", list), r#"r!(List([r!(0), r!(1), r!(2)]))"#);
 /// ```
 ///
@@ -117,7 +114,7 @@ pub struct Env<P, NV> {
 /// let func = expr.as_func().unwrap();
 ///
 /// let expected_formals = Pairlist {
-///     names_and_values: vec![(Some("a"), r!(1.0)), (Some("b"), missing_arg())] };
+///     names_and_values: vec![("a", r!(1.0)), ("b", missing_arg())] };
 /// let expected_body = lang!(
 ///     "{", lang!("<-", sym!(c), lang!("+", sym!(a), sym!(b))));
 /// assert_eq!(func.formals.as_pairlist().unwrap(), expected_formals);
@@ -258,17 +255,17 @@ impl<'a, P, NV> From<Env<P, NV>> for Robj
 where
     P: Into<Robj>,
     NV: IntoIterator + 'a,
-    NV::Item: Into<(String, Robj)>,
+    NV::Item: SymPair,
 {
     /// Convert a wrapper to an R environment object.
     /// ```
     /// use extendr_api::*;
-    /// extendr_engine::start_r();
-    /// let hashmap : std::collections::HashMap<_, _> = (0..100)
-    ///     .map(|i| (format!("n{}", i), r!(i))).collect();
-    /// let env = Env{parent: global_env(), names_and_values: hashmap};
-    /// let expr = r!(env);
-    /// assert_eq!(expr.len(), 100);
+    /// test! {
+    ///     let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
+    ///     let env = Env{parent: global_env(), names_and_values};
+    ///     let expr = r!(env);
+    ///     assert_eq!(expr.len(), 100);
+    /// }
     /// ```
     fn from(val: Env<P, NV>) -> Self {
         single_threaded(|| {
@@ -276,8 +273,8 @@ where
             let dict_len = 29;
             let res = call!("new.env", TRUE, parent.into(), dict_len).unwrap();
             for nv in names_and_values {
-                let (n, v) = nv.into();
-                unsafe { Rf_defineVar(r!(Symbol(n.as_str())).get(), v.get(), res.get()) }
+                let (n, v) = nv.sym_pair();
+                unsafe { Rf_defineVar(n.get(), v.get(), res.get()) }
             }
             res
         })
@@ -287,17 +284,16 @@ where
 impl<'a, NV> From<Pairlist<NV>> for Robj
 where
     NV: IntoIterator + 'a,
-    NV::Item: Into<(Option<String>, Robj)>,
+    NV::Item: SymPair,
 {
     /// Convert a wrapper to a LISTSXP object.
     /// ```
     /// use extendr_api::*;
-    /// extendr_engine::start_r();
-    /// let hashmap : std::collections::HashMap<_, _> = (0..100)
-    ///     .map(|i| (Some(format!("n{}", i)), r!(i))).collect();
-    /// let pairlist = Pairlist{names_and_values: hashmap};
-    /// let expr = r!(pairlist);
-    /// assert_eq!(expr.len(), 100);
+    /// test! {
+    ///     let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
+    ///     let expr = r!(Pairlist{names_and_values});
+    ///     assert_eq!(expr.len(), 100);
+    /// }
     /// ```
     fn from(val: Pairlist<NV>) -> Self {
         single_threaded(|| unsafe {
@@ -306,13 +302,12 @@ where
             let mut res = R_NilValue;
             let names_and_values: Vec<_> = names_and_values.into_iter().collect();
             for nv in names_and_values.into_iter().rev() {
-                let (name, val) = nv.into();
+                let (name, val) = nv.sym_pair();
                 let val = Rf_protect(val.get());
                 res = Rf_protect(Rf_cons(val, res));
                 num_protects += 2;
-                if let Some(name) = name {
-                    let name = r!(Symbol(name.as_str())).get();
-                    SET_TAG(res, name);
+                if !name.is_na() {
+                    SET_TAG(res, name.get());
                 }
             }
             let res = new_owned(res);
@@ -370,9 +365,8 @@ impl Robj {
                         to_str(R_CHAR(printname) as *const u8)
                     ))
                 } else {
-                    Some(Symbol(
-                        "bad symbol"
-                    ))
+                    // This should never occur.
+                    None
                 }
             }
         } else {
@@ -419,17 +413,11 @@ impl Robj {
     /// let call_to_xyz = r!(Lang(&[r!(Symbol("xyz")), r!(1), r!(2)]));
     /// assert_eq!(call_to_xyz.is_language(), true);
     /// assert_eq!(call_to_xyz.len(), 3);
-    /// assert_eq!(call_to_xyz.as_lang(), Some(Lang(vec![r!(Symbol("xyz")), r!(1), r!(2)])));
     /// assert_eq!(format!("{:?}", call_to_xyz), r#"r!(Lang([sym!(xyz), r!(1), r!(2)]))"#);
     /// ```
-    pub fn as_lang(&self) -> Option<Lang<Vec<Robj>>> {
+    pub fn as_lang(&self) -> Option<Lang<PairlistIter>> {
         if self.sexptype() == LANGSXP {
-            let res: Vec<_> = self
-                .as_pairlist_iter()
-                .unwrap()
-                .map(|robj| robj.to_owned())
-                .collect();
-            Some(Lang(res))
+            Some(Lang(self.as_pairlist_iter().unwrap()))
         } else {
             None
         }
@@ -439,14 +427,12 @@ impl Robj {
     /// ```
     /// use extendr_api::*;
     /// extendr_engine::start_r();
-    /// let names_and_values = vec![(Some("a".to_string()), r!(1)), (Some("b".to_string()), r!(2)), (None, r!(3))];
-    /// let pairlist1 = Pairlist{ names_and_values };
-    /// let names_and_values = vec![(Some("a"), r!(1)), (Some("b"), r!(2)), (None, r!(3))];
-    /// let pairlist2 = Pairlist{ names_and_values };
-    /// let robj = r!(pairlist1);
-    /// assert_eq!(robj.as_pairlist().unwrap(), pairlist2);
+    /// let names_and_values = vec![("a", r!(1)), ("b", r!(2)), (na_str(), r!(3))];
+    /// let pairlist = Pairlist{ names_and_values };
+    /// let robj = r!(pairlist.clone());
+    /// assert_eq!(robj.as_pairlist().unwrap(), pairlist);
     /// ```
-    pub fn as_pairlist(&self) -> Option<Pairlist<Vec<(Option<&str>, Robj)>>> {
+    pub fn as_pairlist(&self) -> Option<Pairlist<Vec<(&str, Robj)>>> {
         if self.sexptype() == LISTSXP {
             let names = self.as_pairlist_tag_iter().unwrap();
             let values = self.as_pairlist_iter().unwrap();
@@ -463,20 +449,10 @@ impl Robj {
     /// extendr_engine::start_r();
     /// let list = r!(List(&[r!(0), r!(1), r!(2)]));
     /// assert_eq!(list.is_list(), true);
-    /// assert_eq!(list.as_list(), Some(List(vec![r!(0), r!(1), r!(2)])));
     /// assert_eq!(format!("{:?}", list), r#"r!(List([r!(0), r!(1), r!(2)]))"#);
     /// ```
-    pub fn as_list(&self) -> Option<List<Vec<Robj>>> {
-        if self.sexptype() == VECSXP {
-            let res: Vec<_> = self
-                .as_list_iter()
-                .unwrap()
-                .map(|robj| robj.to_owned())
-                .collect();
-            Some(List(res))
-        } else {
-            None
-        }
+    pub fn as_list(&self) -> Option<List<ListIter>> {
+        self.as_list_iter().map(|l| List(l))
     }
 
     /// Convert an expression object (EXPRSXP) to a Expr wrapper.
@@ -504,51 +480,23 @@ impl Robj {
     /// Convert an environment object (ENVSXP) to a Env wrapper.
     /// ```
     /// use extendr_api::*;
-    /// extendr_engine::start_r();
-    /// let names_and_values : std::collections::HashMap<_, _> = (0..100).map(|i| (format!("n{}", i), r!(i))).collect();
-    /// let env = Env{parent: global_env(), names_and_values};
-    /// let expr = r!(env.clone());
-    /// assert_eq!(expr.len(), 100);
-    /// let env2 = expr.as_environment().unwrap();
-    /// assert_eq!(env2.names_and_values.len(), 100);
+    /// test! {
+    ///     let names_and_values = (0..100).map(|i| (format!("n{}", i), r!(i)));
+    ///     let env = Env{parent: global_env(), names_and_values};
+    ///     let expr = r!(env.clone());
+    ///     assert_eq!(expr.len(), 100);
+    ///     let env2 = expr.as_environment().unwrap();
+    ///     assert_eq!(env2.names_and_values.count(), 100);
+    /// }
     /// ```
-    pub fn as_environment(&self) -> Option<Env<Robj, HashMap<&str, Robj>>> {
-        if self.sexptype() == ENVSXP {
-            unsafe {
-                let parent = new_owned(ENCLOS(self.get()));
-                let hashtab = new_owned(HASHTAB(self.get()));
-                let frame = new_owned(FRAME(self.get()));
-                let mut names_and_values = HashMap::new();
-                if let Some(as_list_iter) = hashtab.as_list_iter() {
-                    for frame in as_list_iter {
-                        if let (Some(obj_iter), Some(tag_iter)) =
-                            (frame.as_pairlist_iter(), frame.as_pairlist_tag_iter())
-                        {
-                            for (obj, tag) in obj_iter.zip(tag_iter) {
-                                if !obj.is_unbound_value() && tag.is_some() {
-                                    names_and_values.insert(tag.unwrap(), obj);
-                                }
-                            }
-                        }
-                    }
-                } else if let (Some(obj_iter), Some(tag_iter)) =
-                    (frame.as_pairlist_iter(), frame.as_pairlist_tag_iter())
-                {
-                    for (obj, tag) in obj_iter.zip(tag_iter) {
-                        if !obj.is_unbound_value() && tag.is_some() {
-                            names_and_values.insert(tag.unwrap(), obj);
-                        }
-                    }
-                }
-                Some(Env {
-                    parent,
-                    names_and_values,
-                })
-            }
+    pub fn as_environment(&self) -> Option<Env<Robj, EnvIter>> {
+        if self.is_environment() {
+            Some(Env{ parent: self.parent().unwrap(), names_and_values: self.as_env_iter().unwrap()})
         } else {
             None
         }
     }
+
     /// Convert a function object (CLOSXP) to a Func wrapper.
     /// ```
     /// use extendr_api::*;
@@ -607,3 +555,18 @@ impl Robj {
         }
     }
 }
+
+pub trait SymPair {
+    fn sym_pair(self) -> (Robj, Robj);
+}
+
+impl<S, R> SymPair for (S, R)
+where
+    S : AsRef<str>,
+    R : Into<Robj>,
+{
+    fn sym_pair(self) -> (Robj, Robj) {
+        (r!(Symbol(self.0.as_ref())), self.1.into())
+    }
+}
+

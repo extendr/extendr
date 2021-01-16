@@ -79,7 +79,7 @@ pub use rinternals::*;
 ///
 /// let a : Robj = c!(1, 2, 3, 4, 5);
 /// let iter = a.as_integer_iter().unwrap();
-/// let robj = iter.filter(|&&x| x < 3).collect_robj();
+/// let robj = iter.filter(|&x| x < 3).collect_robj();
 /// assert_eq!(robj, c!(1, 2));
 /// ```
 ///
@@ -319,7 +319,7 @@ impl Robj {
         Self: 'a,
     {
         if let Some(slice) = self.as_integer_slice() {
-            Some(slice.iter())
+            Some(slice.iter().cloned())
         } else {
             None
         }
@@ -380,7 +380,7 @@ impl Robj {
     /// let robj = r!([TRUE, FALSE, NA_LOGICAL]);
     /// let (mut nt, mut nf, mut nna) = (0, 0, 0);
     /// for val in robj.as_logical_iter().unwrap() {
-    ///   match *val {
+    ///   match val {
     ///     TRUE => nt += 1,
     ///     FALSE => nf += 1,
     ///     NA_LOGICAL => nna += 1,
@@ -391,7 +391,7 @@ impl Robj {
     /// ```
     pub fn as_logical_iter(&self) -> Option<LogicalIter> {
         if let Some(slice) = self.as_logical_slice() {
-            Some(slice.iter())
+            Some(slice.iter().cloned())
         } else {
             None
         }
@@ -433,7 +433,7 @@ impl Robj {
     /// ```
     pub fn as_real_iter(&self) -> Option<RealIter> {
         if let Some(slice) = self.as_real_slice() {
-            Some(slice.iter())
+            Some(slice.iter().cloned())
         } else {
             None
         }
@@ -894,7 +894,7 @@ impl Robj {
     ///    extendr_engine::start_r();
     ///
     ///    let array = R!(array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c("x", "y"), c("a","b")))).unwrap();
-    ///    let dim : Vec<_> = array.dim().unwrap().cloned().collect();
+    ///    let dim : Vec<_> = array.dim().unwrap().collect();
     ///    assert_eq!(dim, vec![2, 2]);
     /// ```
     pub fn dim<'a>(&self) -> Option<IntegerIter<'a>>
@@ -1001,35 +1001,12 @@ impl Robj {
     ///
     ///    let names_and_values : std::collections::HashMap<_, _> = (0..4).map(|i| (format!("n{}", i), r!(i))).collect();
     ///    let env = r!(Env{parent: global_env(), names_and_values});
-    ///    assert_eq!(env.ls().unwrap(), vec!["n0".to_string(), "n1".to_string(), "n2".to_string(), "n3".to_string()]);
+    ///    assert_eq!(env.ls().unwrap(), vec!["n0", "n1", "n2", "n3"]);
     /// ```
-    pub fn ls(&self) -> Option<Vec<String>> {
-        if self.is_environment() {
-            let mut names = Vec::new();
-            unsafe {
-                let hashtab = new_owned(HASHTAB(self.get()));
-                let frame = new_owned(FRAME(self.get()));
-                if let Some(as_list_iter) = hashtab.as_list_iter() {
-                    for frame in as_list_iter {
-                        if let Some(tag_iter) = frame.as_pairlist_tag_iter() {
-                            for tag in tag_iter {
-                                if tag.is_some() {
-                                    names.push(tag.unwrap().to_string());
-                                }
-                            }
-                        }
-                    }
-                } else if let Some(tag_iter) = frame.as_pairlist_tag_iter() {
-                    for tag in tag_iter {
-                        if tag.is_some() {
-                            names.push(tag.unwrap().to_string());
-                        }
-                    }
-                }
-            }
-            return Some(names);
-        }
-        None
+    pub fn ls(&self) -> Option<Vec<&str>> {
+        self.as_env_iter().map(
+            |iter| iter.map(|(k, _)| k).collect::<Vec<_>>()
+        )
     }
 }
 
@@ -1091,7 +1068,7 @@ impl PartialEq<Robj> for Robj {
                         .unwrap()
                         .eq(rhs.as_pairlist_iter().unwrap()),
                     CLOSXP => false,
-                    ENVSXP => self.as_environment() == rhs.as_environment(),
+                    ENVSXP => false, // objects must match.
                     PROMSXP => false,
                     SPECIALSXP => false,
                     BUILTINSXP => false,
