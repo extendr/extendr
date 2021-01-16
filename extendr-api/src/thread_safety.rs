@@ -1,5 +1,6 @@
 //! Provide limited protection for multithreaded access to the R API.
 
+use crate::*;
 use std::sync::atomic::{AtomicU32, Ordering};
 
 static OWNER_THREAD: AtomicU32 = AtomicU32::new(0);
