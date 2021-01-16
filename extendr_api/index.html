@@ -241,6 +241,7 @@ to <code>collect_robj()</code>.</p>
 </td></tr><tr class="module-item"><td><a class="fn" href="fn.brace_symbol.html" title="extendr_api::brace_symbol fn">brace_symbol</a></td><td class="docblock-short"><p>&quot;{&quot;</p>
 </td></tr><tr class="module-item"><td><a class="fn" href="fn.bracket_2_symbol.html" title="extendr_api::bracket_2_symbol fn">bracket_2_symbol</a></td><td class="docblock-short"><p>&quot;[[&quot;</p>
 </td></tr><tr class="module-item"><td><a class="fn" href="fn.bracket_symbol.html" title="extendr_api::bracket_symbol fn">bracket_symbol</a></td><td class="docblock-short"><p>&quot;[&quot;</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.catch_r_error.html" title="extendr_api::catch_r_error fn">catch_r_error</a></td><td class="docblock-short"><p>Wrap an R function such as Rf_findFunction and convert errors and panics into results.</p>
 </td></tr><tr class="module-item"><td><a class="fn" href="fn.class_symbol.html" title="extendr_api::class_symbol fn">class_symbol</a></td><td class="docblock-short"><p>&quot;class&quot;</p>
 </td></tr><tr class="module-item"><td><a class="fn" href="fn.current_env.html" title="extendr_api::current_env fn">current_env</a></td><td class="docblock-short"><p>The current interpreter environment.</p>
 </td></tr><tr class="module-item"><td><a class="fn" href="fn.device_symbol.html" title="extendr_api::device_symbol fn">device_symbol</a></td><td class="docblock-short"><p>&quot;.Device&quot;</p>
@@ -259,8 +260,6 @@ to <code>collect_robj()</code>.</p>
 </td></tr><tr class="module-item"><td><a class="fn" href="fn.global_function.html" title="extendr_api::global_function fn">global_function</a></td><td class="docblock-short"><p>Get a global function from global_env() and ancestors.</p>
 </td></tr><tr class="module-item"><td><a class="fn" href="fn.global_var.html" title="extendr_api::global_var fn">global_var</a></td><td class="docblock-short"><p>Get a global variable from global_env() and ancestors.
 If the result is a promise, evaulate the promise.</p>
-</td></tr><tr class="module-item"><td><a class="fn" href="fn.handle_panic.html" title="extendr_api::handle_panic fn">handle_panic</a></td><td class="docblock-short"><p>This function is used by the wrapper logic to catch
-panics on return.</p>
 </td></tr><tr class="module-item"><td><a class="fn" href="fn.lastvalue_symbol.html" title="extendr_api::lastvalue_symbol fn">lastvalue_symbol</a></td><td class="docblock-short"><p>&quot;.Last.value&quot;</p>
 </td></tr><tr class="module-item"><td><a class="fn" href="fn.levels_symbol.html" title="extendr_api::levels_symbol fn">levels_symbol</a></td><td class="docblock-short"><p>&quot;levels&quot;</p>
 </td></tr><tr class="module-item"><td><a class="fn" href="fn.local_var.html" title="extendr_api::local_var fn">local_var</a></td><td class="docblock-short"><p>Get a local variable from current_env() and ancestors.</p>
@@ -289,7 +288,7 @@ Note: This will fail badly if the called function panics or calls RF_error.</p>
 </td></tr><tr class="module-item"><td><a class="fn" href="fn.spec_symbol.html" title="extendr_api::spec_symbol fn">spec_symbol</a></td><td class="docblock-short"><p>&quot;spec&quot;</p>
 </td></tr><tr class="module-item"><td><a class="fn" href="fn.srcref.html" title="extendr_api::srcref fn">srcref</a></td><td class="docblock-short"><p>Current srcref, for debuggers</p>
 </td></tr><tr class="module-item"><td><a class="fn" href="fn.test.html" title="extendr_api::test fn">test</a></td><td class="docblock-short"><p>Extendr test harness.</p>
-</td></tr><tr class="module-item"><td><a class="fn" href="fn.triple_colon_symbol.html" title="extendr_api::triple_colon_symbol fn">triple_colon_symbol</a></td><td class="docblock-short"><p>&quot;:::&quot;</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.throw_r_error.html" title="extendr_api::throw_r_error fn">throw_r_error</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="fn" href="fn.triple_colon_symbol.html" title="extendr_api::triple_colon_symbol fn">triple_colon_symbol</a></td><td class="docblock-short"><p>&quot;:::&quot;</p>
 </td></tr><tr class="module-item"><td><a class="fn" href="fn.tsp_symbol.html" title="extendr_api::tsp_symbol fn">tsp_symbol</a></td><td class="docblock-short"><p>&quot;tsp&quot;</p>
 </td></tr><tr class="module-item"><td><a class="fn" href="fn.unbound_value.html" title="extendr_api::unbound_value fn">unbound_value</a></td><td class="docblock-short"><p>Unbound marker</p>
 </td></tr></table><h2 id="types" class="section-header"><a href="#types">Type Definitions</a></h2>
