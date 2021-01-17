@@ -1010,9 +1010,8 @@ impl Robj {
     ///    assert_eq!(env.ls().unwrap(), vec!["n0", "n1", "n2", "n3"]);
     /// ```
     pub fn ls(&self) -> Option<Vec<&str>> {
-        self.as_env_iter().map(
-            |iter| iter.map(|(k, _)| k).collect::<Vec<_>>()
-        )
+        self.as_env_iter()
+            .map(|iter| iter.map(|(k, _)| k).collect::<Vec<_>>())
     }
 }
 

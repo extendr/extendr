@@ -489,7 +489,10 @@ impl Robj {
     /// ```
     pub fn as_environment(&self) -> Option<Env<Robj, EnvIter>> {
         if self.is_environment() {
-            Some(Env{ parent: self.parent().unwrap(), names_and_values: self.as_env_iter().unwrap()})
+            Some(Env {
+                parent: self.parent().unwrap(),
+                names_and_values: self.as_env_iter().unwrap(),
+            })
         } else {
             None
         }
@@ -560,11 +563,10 @@ pub trait SymPair {
 
 impl<S, R> SymPair for (S, R)
 where
-    S : AsRef<str>,
-    R : Into<Robj>,
+    S: AsRef<str>,
+    R: Into<Robj>,
 {
     fn sym_pair(self) -> (Robj, Robj) {
         (r!(Symbol(self.0.as_ref())), self.1.into())
     }
 }
-
