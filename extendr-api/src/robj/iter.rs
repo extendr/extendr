@@ -1,12 +1,22 @@
 use crate::*;
-use std::marker::PhantomData;
 
 // Iterator over the objects in a VECSXP, EXPRSXP or WEAKREFSXP.
 #[derive(Clone)]
 pub struct ListIter {
-    vector: SEXP,
+    vector: Robj,
     i: usize,
     len: usize,
+}
+
+impl ListIter {
+    // A new, empty list iterator.
+    pub fn new() -> Self {
+        ListIter {
+            vector: ().into(),
+            i: 0,
+            len: 0,
+        }
+    }
 }
 
 impl Iterator for ListIter {
@@ -22,7 +32,7 @@ impl Iterator for ListIter {
         if i >= self.len {
             return None;
         } else {
-            Some(unsafe { new_owned(VECTOR_ELT(self.vector, i as isize)) })
+            Some(unsafe { new_owned(VECTOR_ELT(self.vector.get(), i as isize)) })
         }
     }
 
@@ -32,27 +42,17 @@ impl Iterator for ListIter {
     }
 }
 
-impl std::fmt::Debug for ListIter {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "[")?;
-        for s in self.clone() {
-            write!(f, "{:?}", s)?;
-        }
-        write!(f, "]")
-    }
-}
-
 /// Iterator over name-value pairs in lists.
 pub type NamedListIter = std::iter::Zip<StrIter, ListIter>;
 
 /// Iterator over primitives in integer objects.
-pub type IntegerIter<'a> = std::slice::Iter<'a, i32>;
+pub type IntegerIter<'a> = std::iter::Cloned<std::slice::Iter<'a, i32>>;
 
 /// Iterator over primitives in real objects.
-pub type RealIter<'a> = std::slice::Iter<'a, f64>;
+pub type RealIter<'a> = std::iter::Cloned<std::slice::Iter<'a, f64>>;
 
 /// Iterator over primitives in logical objects.
-pub type LogicalIter<'a> = std::slice::Iter<'a, Bool>;
+pub type LogicalIter<'a> = std::iter::Cloned<std::slice::Iter<'a, Bool>>;
 
 /// Iterator over the objects in a vector or string.
 ///
@@ -75,6 +75,7 @@ pub type LogicalIter<'a> = std::slice::Iter<'a, Bool>;
 /// ```
 #[derive(Clone)]
 pub struct PairlistIter {
+    root_obj: Robj,
     list_elem: SEXP,
 }
 
@@ -83,6 +84,7 @@ impl PairlistIter {
     pub fn new() -> Self {
         unsafe {
             Self {
+                root_obj: ().into(),
                 list_elem: R_NilValue,
             }
         }
@@ -105,16 +107,6 @@ impl Iterator for PairlistIter {
     }
 }
 
-impl std::fmt::Debug for PairlistIter {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "[")?;
-        for s in self.clone() {
-            write!(f, "{:?}", s)?;
-        }
-        write!(f, "]")
-    }
-}
-
 #[derive(Clone)]
 /// Iterator over pairlist tag names.
 /// ```
@@ -124,28 +116,27 @@ impl std::fmt::Debug for PairlistIter {
 /// let mut robj = R!(pairlist(a = 1, b = 2, 3)).unwrap();
 /// // let mut robj = pairlist!(a = 1, b = 2, 3);
 /// let tags : Vec<_> = robj.as_pairlist_tag_iter().unwrap().collect();
-/// assert_eq!(tags, vec![Some("a"), Some("b"), None]);
+/// assert_eq!(tags, vec!["a", "b", na_str()]);
 /// ```
-pub struct PairlistTagIter<'a> {
+pub struct PairlistTagIter {
+    root_obj: Robj,
     list_elem: SEXP,
-    phantom: PhantomData<&'a ()>,
 }
 
-impl<'a> PairlistTagIter<'a> {
+impl PairlistTagIter {
     /// Make an empty list iterator.
     pub fn new() -> Self {
         unsafe {
             Self {
+                root_obj: ().into(),
                 list_elem: R_NilValue,
-                phantom: PhantomData,
             }
         }
     }
 }
 
-// 'a is the lifetime of the pairlist.
-impl<'a> Iterator for PairlistTagIter<'a> {
-    type Item = Option<&'a str>;
+impl Iterator for PairlistTagIter {
+    type Item = &'static str;
 
     fn next(&mut self) -> Option<Self::Item> {
         unsafe {
@@ -154,23 +145,13 @@ impl<'a> Iterator for PairlistTagIter<'a> {
                 None
             } else {
                 self.list_elem = CDR(sexp);
-                if let Some(symbol) = new_borrowed::<'a>(TAG(sexp)).as_symbol() {
-                    Some(Some(std::mem::transmute(symbol.0)))
+                if let Some(symbol) = new_borrowed(TAG(sexp)).as_symbol() {
+                    Some(std::mem::transmute(symbol.0))
                 } else {
-                    Some(None)
+                    Some(na_str())
                 }
             }
         }
-    }
-}
-
-impl<'a> std::fmt::Debug for PairlistTagIter<'a> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "[")?;
-        for s in self.clone() {
-            write!(f, "{:?}", s)?;
-        }
-        write!(f, "]")
     }
 }
 
@@ -191,7 +172,7 @@ impl<'a> std::fmt::Debug for PairlistTagIter<'a> {
 /// ```
 #[derive(Clone)]
 pub struct StrIter {
-    vector: SEXP,
+    vector: Robj,
     i: usize,
     len: usize,
     levels: SEXP,
@@ -202,7 +183,7 @@ impl StrIter {
     pub fn new() -> Self {
         unsafe {
             Self {
-                vector: R_NilValue,
+                vector: ().into(),
                 i: 0,
                 len: 0,
                 levels: R_NilValue,
@@ -242,12 +223,13 @@ impl Iterator for StrIter {
         unsafe {
             let i = self.i;
             self.i += 1;
+            let vector = self.vector.get();
             if i >= self.len {
                 return None;
-            } else if TYPEOF(self.vector) as u32 == STRSXP {
-                Some(str_from_strsxp(self.vector, i as isize))
-            } else if TYPEOF(self.vector) as u32 == INTSXP && TYPEOF(self.levels) as u32 == STRSXP {
-                let j = *(INTEGER(self.vector).offset(i as isize));
+            } else if TYPEOF(vector) as u32 == STRSXP {
+                Some(str_from_strsxp(vector, i as isize))
+            } else if TYPEOF(vector) as u32 == INTSXP && TYPEOF(self.levels) as u32 == STRSXP {
+                let j = *(INTEGER(vector).offset(i as isize));
                 Some(str_from_strsxp(self.levels, j as isize - 1))
             } else {
                 return None;
@@ -261,17 +243,97 @@ impl Iterator for StrIter {
     }
 }
 
-impl std::fmt::Debug for StrIter {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "[")?;
-        let mut comma = "";
-        for s in self.clone() {
-            write!(f, "{}{:?}", comma, s)?;
-            comma = ", ";
+macro_rules! impl_iter_debug {
+    ($name: ty) => {
+        impl std::fmt::Debug for $name {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                write!(f, "[")?;
+                let mut comma = "";
+                for s in self.clone() {
+                    write!(f, "{}{:?}", comma, s)?;
+                    comma = ", ";
+                }
+                write!(f, "]")
+            }
         }
-        write!(f, "]")
     }
 }
+
+/// Iterator over the names and values of an environment
+///
+/// ```
+/// use extendr_api::*;
+/// test! {
+///     let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
+///     let env = Env{parent: global_env(), names_and_values};
+///     let robj = r!(env);
+///     let names_and_values = robj.as_env_iter().unwrap().collect::<Vec<_>>();
+///     assert_eq!(names_and_values.len(), 100);
+///
+///     let small_env = new_env_with_capacity(1);
+///     small_env.set_local(sym!(x), 1);
+///     let names_and_values = small_env.as_env_iter().unwrap().collect::<Vec<_>>();
+///     assert_eq!(names_and_values, vec![("x", r!(1))]);
+///
+///     let large_env = new_env_with_capacity(1000);
+///     large_env.set_local(sym!(x), 1);
+///     let names_and_values = large_env.as_env_iter().unwrap().collect::<Vec<_>>();
+///     assert_eq!(names_and_values, vec![("x", r!(1))]);
+/// }
+///
+/// ```
+#[derive(Clone)]
+pub struct EnvIter {
+    hash_table: ListIter,
+    pairlist: PairlistIter,
+    pairlisttags: PairlistTagIter,
+}
+
+impl Iterator for EnvIter {
+    type Item = (&'static str, Robj);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        loop {
+            // Environments are a hash table (list) or pair lists (pairlist)
+            // Get the first available value from the pair list.
+            loop {
+                match (self.pairlisttags.next(), self.pairlist.next()) {
+                    (Some(key), Some(value)) => {
+                        // if the key and value are valid, return a pair.
+                        if !key.is_na() && !value.is_unbound_value() {
+                            println!("value: {:?}", (&key, &value));
+                            return Some((key, value));
+                        }
+                    }
+                    // if the key and value are invalid, move on to the hash table.
+                    _ => break
+                }
+                // continue pair list loop.
+            }
+
+            // Get the first pairlist from the hash table.
+            loop {
+                if let Some(obj) = self.hash_table.next() {
+                    if !obj.is_null() && obj.is_pairlist() {
+                        self.pairlisttags = obj.as_pairlist_tag_iter().unwrap();
+                        self.pairlist = obj.as_pairlist_iter().unwrap();
+                        break;
+                    }
+                    // continue hash table loop.
+                } else {
+                    // The hash table is empty, end of iteration.
+                    return None;
+                }
+            }
+        }
+    }
+}
+
+impl_iter_debug!(ListIter);
+impl_iter_debug!(PairlistIter);
+impl_iter_debug!(PairlistTagIter);
+impl_iter_debug!(StrIter);
+impl_iter_debug!(EnvIter);
 
 impl Robj {
     /// Get an iterator over a pairlist objects.
@@ -287,6 +349,7 @@ impl Robj {
         match self.sexptype() {
             LISTSXP | LANGSXP | DOTSXP => unsafe {
                 Some(PairlistIter {
+                    root_obj: self.into(),
                     list_elem: self.get(),
                 })
             },
@@ -302,14 +365,14 @@ impl Robj {
     /// let mut robj = R!(pairlist(a = 1, b = 2, 3)).unwrap();
     /// // let mut robj = pairlist!(a = 1, b = 2, 3);
     /// let tags : Vec<_> = robj.as_pairlist_tag_iter().unwrap().collect();
-    /// assert_eq!(tags, vec![Some("a"), Some("b"), None]);
+    /// assert_eq!(tags, vec!["a", "b", na_str()]);
     /// ```
-    pub fn as_pairlist_tag_iter<'a>(&self) -> Option<PairlistTagIter<'a>> {
+    pub fn as_pairlist_tag_iter(&self) -> Option<PairlistTagIter> {
         match self.sexptype() {
             LISTSXP | LANGSXP | DOTSXP => unsafe {
                 Some(PairlistTagIter {
+                    root_obj: self.into(),
                     list_elem: self.get(),
-                    phantom: PhantomData,
                 })
             },
             _ => None,
@@ -327,9 +390,9 @@ impl Robj {
     /// ```
     pub fn as_list_iter(&self) -> Option<ListIter> {
         match self.sexptype() {
-            VECSXP | EXPRSXP | WEAKREFSXP => unsafe {
+            VECSXP | EXPRSXP | WEAKREFSXP => {
                 Some(ListIter {
-                    vector: self.get(),
+                    vector: self.into(),
                     i: 0,
                     len: self.len(),
                 })
@@ -370,20 +433,18 @@ impl Robj {
         let len = self.len();
         match self.sexptype() {
             STRSXP => unsafe {
-                let vector = self.get();
                 Some(StrIter {
-                    vector,
+                    vector: self.into(),
                     i,
                     len,
                     levels: R_NilValue,
                 })
             },
             INTSXP => unsafe {
-                let vector = self.get();
                 if let Some(levels) = self.get_attrib(levels_symbol()) {
                     if self.is_factor() && levels.sexptype() == STRSXP {
                         Some(StrIter {
-                            vector,
+                            vector: self.into(),
                             i,
                             len,
                             levels: levels.get(),
@@ -396,6 +457,34 @@ impl Robj {
                 }
             },
             _ => None,
+        }
+    }
+
+    /// Iterate over an environment.
+    pub fn as_env_iter(&self) -> Option<EnvIter> {
+        if self.is_environment() {
+            unsafe {
+                let hashtab = new_owned(HASHTAB(self.get()));
+                let frame = new_owned(FRAME(self.get()));
+                if hashtab.is_null() && frame.is_pairlist() {
+                    Some(EnvIter {
+                        hash_table: ListIter::new(),
+                        pairlisttags: frame.as_pairlist_tag_iter().unwrap(),
+                        pairlist: frame.as_pairlist_iter().unwrap(),
+                    })
+        
+                } else if hashtab.is_list() {
+                    Some(EnvIter {
+                        hash_table: hashtab.as_list_iter().unwrap(),
+                        pairlist: PairlistIter::new(),
+                        pairlisttags: PairlistTagIter::new(),
+                    })
+                } else {
+                    None
+                }
+            }
+        } else {
+            None
         }
     }
 }

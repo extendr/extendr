@@ -112,13 +112,14 @@ impl Robj {
     ///
     ///    let my_fun = base_env().find_function(sym!(ls)).unwrap();
     ///    assert_eq!(my_fun.is_function(), true);
-    ///    assert_eq!(base_env().find_var(sym!(ls)).unwrap().is_promise(), true);
+    ///    assert!(base_env().find_function(sym!(qwertyuiop)).is_none());
     /// ```
     pub fn find_function<K: Into<Robj>>(&self, key: K) -> Option<Robj> {
         let key = key.into();
         if !self.is_environment() || !key.is_symbol() {
             return None;
         }
+        // This may be better:
         // let mut env: Robj = self.into();
         // loop {
         //     if let Some(var) = env.local(&key) {
@@ -135,8 +136,7 @@ impl Robj {
         //     }
         // }
         unsafe {
-            let var = Rf_findFun(key.get(), self.get());
-            if var != R_UnboundValue {
+            if let Ok(var) = catch_r_error(|| Rf_findFun(key.get(), self.get())) {
                 Some(new_borrowed(var))
             } else {
                 None

@@ -216,7 +216,7 @@ impl Robj {
         if self.is_array() {
             if let Some(data) = self.as_typed_slice() {
                 if let Some(dim) = self.dim() {
-                    let dim: Vec<_> = dim.cloned().collect();
+                    let dim: Vec<_> = dim.collect();
                     let dim = [dim[0] as usize, dim[1] as usize, dim[2] as usize];
                     return Some(RArray { data, dim });
                 }

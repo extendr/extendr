@@ -210,7 +210,7 @@ pub use logical::*;
 pub use matrix::*;
 pub use rmacros::*;
 pub use robj::*;
-pub use thread_safety::{handle_panic, single_threaded};
+pub use thread_safety::{handle_panic, single_threaded, throw_r_error, catch_r_error, this_thread_id};
 pub use wrapper::*;
 
 #[cfg(feature = "ndarray")]

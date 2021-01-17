@@ -25,6 +25,7 @@ pub fn unwrap_or_throw<T>(r: std::result::Result<T, &'static str>) -> T {
 
 #[derive(Debug, PartialEq)]
 pub enum Error {
+    Panic{},
     NotFound,
     NotAVectorType,
     EvalError { code: Robj, error: i32 },
