@@ -81,9 +81,6 @@
 <span id="78">78</span>
 <span id="79">79</span>
 <span id="80">80</span>
-<span id="81">81</span>
-<span id="82">82</span>
-<span id="83">83</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! A sigleton instance of the R interpreter.</span>
 <span class="doccomment">//!</span>
@@ -130,10 +127,7 @@
             <span class="comment">// In case you are curious.</span>
             <span class="comment">// Maybe 8MB is a bit small.</span>
             <span class="comment">// eprintln!(&quot;R_CStackLimit={:016x}&quot;, R_CStackLimit);</span>
-
-            <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;windows&quot;</span>)) {
-                <span class="ident">R_CStackLimit</span> <span class="op">=</span> <span class="ident">usize</span>::<span class="ident">max_value</span>();
-            }
+            <span class="ident">R_CStackLimit</span> <span class="op">=</span> <span class="ident">usize</span>::<span class="ident">max_value</span>();
 
             <span class="ident">setup_Rmainloop</span>();
         }
