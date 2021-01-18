@@ -14,6 +14,8 @@ fn int_scalar(x: i32) -> i32 { x }
 fn bool_scalar(x: bool) -> bool { x }
 #[extendr]
 fn char_scalar(x: String) -> String { x }
+#[extendr]
+fn char_vec(x: Vec<String>) -> Vec<String> {x}
 
 
 // Macro to generate exports
@@ -25,4 +27,5 @@ extendr_module! {
     fn int_scalar;
     fn bool_scalar;
     fn char_scalar;
+    fn char_vec;
 }
