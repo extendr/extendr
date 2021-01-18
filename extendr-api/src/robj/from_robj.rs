@@ -119,6 +119,16 @@ impl<'a> FromRobj<'a> for Vec<f64> {
     }
 }
 
+impl<'a> FromRobj<'a> for Vec<String> {
+    fn from_robj (robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+        if let Some(v) = robj.as_string_vector() {
+            Ok(Vec::from(v.to_vec()))
+        } else {
+            Err("not a character vector")
+        }
+    }
+}
+
 macro_rules! impl_iter_from_robj {
     ($t: ty, $iter_fn: ident, $msg: expr) => {
         impl<'a> FromRobj<'a> for $t {
