@@ -283,6 +283,35 @@ fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix:
     ));
 }
 
+fn make_name (ty: &syn::Type) -> String {
+
+    // c.f. https://docs.rs/syn/1.0.58/syn/enum.Type.html#variants
+    let path: &syn::Path = match ty {
+        syn::Type::Path(p) => {
+            // <Type as Trait>::function(...), which should not appear in impl
+            if p.qself.is_some() {
+                panic!("Something is wrong");
+            }
+
+            &p.path
+        }
+        _ => {
+            panic!("Unknown type")
+        }
+    };
+
+    // ::Foo
+    if path.leading_colon.is_some() {
+        panic!("There shouldn't be leading colons?")
+    }
+
+    if path.segments.len() > 1 {
+        panic!("Namespaced impl are not supported and connot be exported.")
+    }
+
+    path.segments[0].ident.to_string()
+}
+
 /// Handle trait implementations.
 ///
 /// Example:
@@ -317,7 +346,7 @@ fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix:
 fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
     let opts = ExtendrOptions {};
     let self_ty = item_impl.self_ty.as_ref();
-    let self_ty_name = quote! {#self_ty}.to_string();
+    let self_ty_name = make_name(self_ty);
     let prefix = format!("{}__", self_ty_name);
     let mut method_init_names = Vec::new();
     let mut wrappers = Vec::new();
