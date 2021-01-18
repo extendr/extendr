@@ -283,6 +283,8 @@ fn generate_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix:
     ));
 }
 
+// Extracts the `impl` name from a `syn::Type`. It's used to make names for 
+// the C init wrappers.
 fn make_name (ty: &syn::Type) -> String {
 
     // c.f. https://docs.rs/syn/1.0.58/syn/enum.Type.html#variants
@@ -290,19 +292,19 @@ fn make_name (ty: &syn::Type) -> String {
         syn::Type::Path(p) => {
             // <Type as Trait>::function(...), which should not appear in impl
             if p.qself.is_some() {
-                panic!("Something is wrong");
+                panic!("This doesn't look to be an `impl`.");
             }
 
             &p.path
         }
         _ => {
-            panic!("Unknown type")
+            panic!("Unknown type.")
         }
     };
 
     // ::Foo
     if path.leading_colon.is_some() {
-        panic!("There shouldn't be leading colons?")
+        panic!("There shouldn't be leading colons.")
     }
 
     if path.segments.len() > 1 {
