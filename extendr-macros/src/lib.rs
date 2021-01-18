@@ -306,7 +306,7 @@ fn make_name (ty: &syn::Type) -> String {
     }
 
     if path.segments.len() > 1 {
-        panic!("Namespaced impl are not supported and connot be exported.")
+        panic!("Namespaced impl are not supported and cannot be exported.")
     }
 
     path.segments[0].ident.to_string()
