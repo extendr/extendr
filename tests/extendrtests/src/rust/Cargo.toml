@@ -16,7 +16,7 @@ crate-type = ["staticlib"]
 extendr-api = "*"
 
 [patch.crates-io]
-extendr-api = { path = "../../../../../../extendr-api" }
-extendr-engine = { path = "../../../../../../extendr-engine" }
-extendr-macros = { path = "../../../../../../extendr-macros" }
+extendr-api = { path = "../../../../../../../../extendr-api" }
+extendr-engine = { path = "../../../../../../../../extendr-engine" }
+extendr-macros = { path = "../../../../../../../../extendr-macros" }
 #libR-sys = { git = "https://github.com/extendr/libR-sys" }
