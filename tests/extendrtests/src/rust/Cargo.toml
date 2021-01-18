@@ -17,6 +17,6 @@ extendr-api = "*"
 
 [patch.crates-io]
 extendr-api = { path = "~/extendr" }
-extendr-engine = { local = "~/extendr" }
-extendr-macros = { local = "~/extendr" }
+extendr-engine = { path = "~/extendr" }
+extendr-macros = { path = "~/extendr" }
 #libR-sys = { git = "https://github.com/extendr/libR-sys" }
