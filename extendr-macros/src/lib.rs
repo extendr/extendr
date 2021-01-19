@@ -409,7 +409,7 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
         // }
         // ```
         #[allow(non_snake_case)]
-        fn #init_name(info: *mut extendr_api::DllInfo, call_methods: &mut Vec<extendr_api::CallMethod>) {
+        pub fn #init_name(info: *mut extendr_api::DllInfo, call_methods: &mut Vec<extendr_api::CallMethod>) {
             #( #method_init_names(info, call_methods); )*
         }
     });
