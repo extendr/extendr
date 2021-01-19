@@ -29,9 +29,10 @@ test_that("Conversion of R types to Rust types and vice versa works", {
   expect_error(.Call(wrap__char_scalar, c("hello", "world")), "not a string object") # why this error message and not "Input must be of length 1"?
 
   expect_equal(.Call(wrap__char_vec, c("hello", "world")), c("hello", "world"))
-  expect_error(.Call(wrap__char_vec, .45), "not a string object")
-  expect_error(.Call(wrap__char_vec, 15L), "not a string object")
-  expect_error(.Call(wrap__char_vec, TRUE), "not a string object")
+  expect_error(.Call(wrap__char_vec, .45), "not a character vector")
+  expect_error(.Call(wrap__char_vec, 15L), "not a character vector")
+  expect_error(.Call(wrap__char_vec, TRUE), "not a character vector")
   expect_error(.Call(wrap__char_vec, NA_character_), "Input must not be NA")
+  expect_error(.Call(wrap__char_vec, c("hello", NA)), "Vector cannot contain NA's")
 })
 
