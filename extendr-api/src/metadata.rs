@@ -102,7 +102,7 @@ fn write_function_wrapper(w: &mut Vec<u8>, func: &Func, package_name: &str, use_
         return Ok(());
     }
 
-    writeln!(w, "# '@export")?;
+    writeln!(w, "#' @export")?;
     write_doc(w, func.doc)?;
 
     let args = func.args.iter().map(|arg| arg.name).collect::<Vec<_>>().join(", ");
@@ -177,7 +177,7 @@ impl Metadata {
 
         for imp in &self.impls {
             write_doc(& mut w, imp.doc)?;
-            writeln!(w, "# '@export")?;
+            writeln!(w, "#' @export")?;
             writeln!(w, "{} <- new.env(parent = emptyenv())\n", imp.name)?;
                         
             for func in &imp.methods {
@@ -185,7 +185,7 @@ impl Metadata {
                 write_method_wrapper(&mut w, func, self.name, use_symbols, imp.name)?;
             }
 
-            writeln!(w, "# '@export")?;
+            writeln!(w, "#' @export")?;
             writeln!(w, "`$.{}` <- function (self, name) {{ func <- {}[[name]]; environment(func) <- environment(); func }}\n", imp.name, imp.name)?;
         }
         unsafe { Ok(String::from_utf8_unchecked(w)) }
