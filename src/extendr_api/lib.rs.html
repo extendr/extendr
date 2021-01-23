@@ -626,6 +626,58 @@
 <span id="623">623</span>
 <span id="624">624</span>
 <span id="625">625</span>
+<span id="626">626</span>
+<span id="627">627</span>
+<span id="628">628</span>
+<span id="629">629</span>
+<span id="630">630</span>
+<span id="631">631</span>
+<span id="632">632</span>
+<span id="633">633</span>
+<span id="634">634</span>
+<span id="635">635</span>
+<span id="636">636</span>
+<span id="637">637</span>
+<span id="638">638</span>
+<span id="639">639</span>
+<span id="640">640</span>
+<span id="641">641</span>
+<span id="642">642</span>
+<span id="643">643</span>
+<span id="644">644</span>
+<span id="645">645</span>
+<span id="646">646</span>
+<span id="647">647</span>
+<span id="648">648</span>
+<span id="649">649</span>
+<span id="650">650</span>
+<span id="651">651</span>
+<span id="652">652</span>
+<span id="653">653</span>
+<span id="654">654</span>
+<span id="655">655</span>
+<span id="656">656</span>
+<span id="657">657</span>
+<span id="658">658</span>
+<span id="659">659</span>
+<span id="660">660</span>
+<span id="661">661</span>
+<span id="662">662</span>
+<span id="663">663</span>
+<span id="664">664</span>
+<span id="665">665</span>
+<span id="666">666</span>
+<span id="667">667</span>
+<span id="668">668</span>
+<span id="669">669</span>
+<span id="670">670</span>
+<span id="671">671</span>
+<span id="672">672</span>
+<span id="673">673</span>
+<span id="674">674</span>
+<span id="675">675</span>
+<span id="676">676</span>
+<span id="677">677</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! A safe and user friendly R extension interface.</span>
@@ -828,6 +880,7 @@
 <span class="kw">mod</span> <span class="ident">thread_safety</span>;
 <span class="kw">mod</span> <span class="ident">wrapper</span>;
 <span class="kw">mod</span> <span class="ident">matrix</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">metadata</span>;
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
 <span class="kw">mod</span> <span class="ident">robj_ndarray</span>;
@@ -862,6 +915,8 @@
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ffi</span>::<span class="ident">CString</span>;
 
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">metadata</span>::<span class="ident">Metadata</span>;
+
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CallMethod</span> {
     <span class="kw">pub</span> <span class="ident">call_symbol</span>: <span class="ident">std</span>::<span class="ident">ffi</span>::<span class="ident">CString</span>,
@@ -869,18 +924,33 @@
     <span class="kw">pub</span> <span class="ident">num_args</span>: <span class="ident">i32</span>,
 }
 
+<span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">make_method_def</span>(<span class="ident">cstrings</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">std</span>::<span class="ident">ffi</span>::<span class="ident">CString</span><span class="op">&gt;</span>, <span class="ident">rmethods</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">libR_sys</span>::<span class="ident">R_CallMethodDef</span><span class="op">&gt;</span>, <span class="ident">func</span>: <span class="kw-2">&amp;</span><span class="ident">metadata</span>::<span class="ident">Func</span>, <span class="ident">wrapped_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) {
+    <span class="ident">cstrings</span>.<span class="ident">push</span>(<span class="ident">std</span>::<span class="ident">ffi</span>::<span class="ident">CString</span>::<span class="ident">new</span>(<span class="ident">wrapped_name</span>).<span class="ident">unwrap</span>());
+    <span class="ident">rmethods</span>.<span class="ident">push</span>(<span class="ident">libR_sys</span>::<span class="ident">R_CallMethodDef</span> {
+        <span class="ident">name</span>: <span class="ident">cstrings</span>.<span class="ident">last</span>().<span class="ident">unwrap</span>().<span class="ident">as_ptr</span>(),
+        <span class="ident">fun</span>: <span class="prelude-val">Some</span>(<span class="ident">std</span>::<span class="ident">mem</span>::<span class="ident">transmute</span>(<span class="ident">func</span>.<span class="ident">func_ptr</span>)),
+        <span class="ident">numArgs</span>: <span class="ident">func</span>.<span class="ident">args</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">i32</span>,
+    });
+}
+
+
 <span class="comment">// Internal function used to implement the .Call interface.</span>
 <span class="comment">// This is called from the code generated by the #[extendr] attribute.</span>
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">register_call_methods</span>(<span class="ident">info</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">libR_sys</span>::<span class="ident">DllInfo</span>, <span class="ident">methods</span>: <span class="kw-2">&amp;</span>[<span class="ident">CallMethod</span>]) {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rmethods</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">methods</span>
-        .<span class="ident">iter</span>()
-        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">m</span><span class="op">|</span> <span class="ident">libR_sys</span>::<span class="ident">R_CallMethodDef</span> {
-            <span class="ident">name</span>: <span class="ident">m</span>.<span class="ident">call_symbol</span>.<span class="ident">as_ptr</span>(),
-            <span class="ident">fun</span>: <span class="prelude-val">Some</span>(<span class="ident">std</span>::<span class="ident">mem</span>::<span class="ident">transmute</span>(<span class="ident">m</span>.<span class="ident">func_ptr</span>)),
-            <span class="ident">numArgs</span>: <span class="ident">m</span>.<span class="ident">num_args</span>,
-        })
-        .<span class="ident">collect</span>();
+<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">register_call_methods</span>(<span class="ident">info</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">libR_sys</span>::<span class="ident">DllInfo</span>, <span class="ident">metadata</span>: <span class="ident">Metadata</span>) {
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rmethods</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cstrings</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
+    <span class="kw">for</span> <span class="ident">func</span> <span class="kw">in</span> <span class="ident">metadata</span>.<span class="ident">functions</span> {
+        <span class="kw">let</span> <span class="ident">wrapped_name</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;wrap__{}&quot;</span>, <span class="ident">func</span>.<span class="ident">name</span>);
+        <span class="ident">make_method_def</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">cstrings</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rmethods</span>, <span class="kw-2">&amp;</span><span class="ident">func</span>, <span class="ident">wrapped_name</span>.<span class="ident">as_str</span>());
+    }
+
+    <span class="kw">for</span> <span class="ident">imp</span> <span class="kw">in</span> <span class="ident">metadata</span>.<span class="ident">impls</span> {
+        <span class="kw">for</span> <span class="ident">func</span> <span class="kw">in</span> <span class="ident">imp</span>.<span class="ident">methods</span> {
+            <span class="kw">let</span> <span class="ident">wrapped_name</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;wrap__{}__{}&quot;</span>, <span class="ident">imp</span>.<span class="ident">name</span>, <span class="ident">func</span>.<span class="ident">name</span>);
+            <span class="ident">make_method_def</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">cstrings</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rmethods</span>, <span class="kw-2">&amp;</span><span class="ident">func</span>, <span class="ident">wrapped_name</span>.<span class="ident">as_str</span>());
+        }
+    }
 
     <span class="ident">rmethods</span>.<span class="ident">push</span>(<span class="ident">libR_sys</span>::<span class="ident">R_CallMethodDef</span> {
         <span class="ident">name</span>: <span class="ident">std</span>::<span class="ident">ptr</span>::<span class="ident">null</span>(),
@@ -895,8 +965,10 @@
         <span class="ident">std</span>::<span class="ident">ptr</span>::<span class="ident">null</span>(),
         <span class="ident">std</span>::<span class="ident">ptr</span>::<span class="ident">null</span>(),
     );
+
+    <span class="comment">// This seems to allow both symbols and strings,</span>
     <span class="ident">libR_sys</span>::<span class="ident">R_useDynamicSymbols</span>(<span class="ident">info</span>, <span class="number">0</span>);
-    <span class="ident">libR_sys</span>::<span class="ident">R_forceSymbols</span>(<span class="ident">info</span>, <span class="number">1</span>);
+    <span class="ident">libR_sys</span>::<span class="ident">R_forceSymbols</span>(<span class="ident">info</span>, <span class="number">0</span>);
 }
 
 <span class="doccomment">/// Return true if this primitive is NA.</span>
@@ -1070,6 +1142,7 @@
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
+    <span class="doccomment">/// impl comment.</span>
     <span class="kw">impl</span> <span class="ident">Person</span> {
         <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
             <span class="self">Self</span> {
@@ -1086,7 +1159,16 @@
         }
     }
 
+    <span class="comment">// see metadata_test for the following comments.</span>
+
+    <span class="doccomment">/// comment #1</span>
+    <span class="doccomment">/// comment #2</span>
+    <span class="doccomment">/**
+        comment #3
+        comment #4
+    **/</span>
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
+    <span class="doccomment">/// aux_func doc comment.</span>
     <span class="kw">fn</span> <span class="ident">aux_func</span>(<span class="ident">_person</span>: <span class="kw-2">&amp;</span><span class="ident">Person</span>) {}
 
     <span class="comment">// Macro to generate exports</span>
@@ -1250,6 +1332,28 @@
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">na_str</span>(), <span class="string">&quot;NA&quot;</span>);
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&quot;NA&quot;</span>.<span class="ident">is_na</span>(), <span class="bool-val">false</span>);
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">na_str</span>().<span class="ident">is_na</span>(), <span class="bool-val">true</span>);
+    }
+    
+    
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">metadata_test</span>() {
+        <span class="macro">test</span><span class="macro">!</span> {
+            <span class="comment">// Rust interface.</span>
+            <span class="kw">let</span> <span class="ident">metadata</span> <span class="op">=</span> <span class="ident">get_my_module_metadata</span>();
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">metadata</span>.<span class="ident">functions</span>[<span class="number">0</span>].<span class="ident">doc</span>, <span class="string">&quot; comment #1\n comment #2\n\n        comment #3\n        comment #4\n    *\n aux_func doc comment.&quot;</span>);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">metadata</span>.<span class="ident">functions</span>[<span class="number">0</span>].<span class="ident">name</span>, <span class="string">&quot;aux_func&quot;</span>);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">metadata</span>.<span class="ident">functions</span>[<span class="number">0</span>].<span class="ident">args</span>[<span class="number">0</span>].<span class="ident">name</span>, <span class="string">&quot;_person&quot;</span>);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">metadata</span>.<span class="ident">functions</span>[<span class="number">1</span>].<span class="ident">name</span>, <span class="string">&quot;get_my_module_metadata&quot;</span>);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">metadata</span>.<span class="ident">impls</span>[<span class="number">0</span>].<span class="ident">name</span>, <span class="string">&quot;Person&quot;</span>);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">metadata</span>.<span class="ident">impls</span>[<span class="number">0</span>].<span class="ident">methods</span>.<span class="ident">len</span>(), <span class="number">3</span>);
+
+            <span class="comment">// R interface</span>
+            <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">wrap__get_my_module_metadata</span>()) };
+            <span class="kw">let</span> <span class="ident">functions</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">dollar</span>(<span class="string">&quot;functions&quot;</span>).<span class="ident">unwrap</span>();
+            <span class="kw">let</span> <span class="ident">impls</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">dollar</span>(<span class="string">&quot;impls&quot;</span>).<span class="ident">unwrap</span>();
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">functions</span>.<span class="ident">len</span>(), <span class="number">3</span>);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">impls</span>.<span class="ident">len</span>(), <span class="number">1</span>);
+        }
     }
 }
 </pre></div>
