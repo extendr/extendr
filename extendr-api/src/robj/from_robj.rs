@@ -119,6 +119,24 @@ impl<'a> FromRobj<'a> for Vec<f64> {
     }
 }
 
+impl<'a> FromRobj<'a> for Vec<String> {
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+        if robj.is_na() {
+            Err("Input must be a character vector. Got 'NA'.")
+        } else if let Some(v) = robj.as_string_vector() {
+            let str_vec = v.to_vec();
+            // check for NA's in the string vector
+            if let Some(_str) = str_vec.iter().find(|&s| *s == na_str()) {
+                Err("Input vector cannot contain NA's.")
+            } else {
+                Ok(str_vec)
+            }
+        } else {
+            Err("Input must be a character vector.")
+        }
+    }
+}
+
 macro_rules! impl_iter_from_robj {
     ($t: ty, $iter_fn: ident, $msg: expr) => {
         impl<'a> FromRobj<'a> for $t {

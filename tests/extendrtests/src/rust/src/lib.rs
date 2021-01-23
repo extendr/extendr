@@ -27,6 +27,8 @@ fn bool_scalar(x: bool) -> bool { x }
 /// @param x a number
 #[extendr]
 fn char_scalar(x: String) -> String { x }
+#[extendr]
+fn char_vec(x: Vec<String>) -> Vec<String> {x}
 
 /// Class for testing
 #[derive(Default, Debug)]
@@ -68,6 +70,7 @@ extendr_module! {
     fn int_scalar;
     fn bool_scalar;
     fn char_scalar;
+    fn char_vec;
     
     impl MyClass;
 }
