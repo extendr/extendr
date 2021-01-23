@@ -120,7 +120,7 @@ impl<'a> FromRobj<'a> for Vec<f64> {
 }
 
 impl<'a> FromRobj<'a> for Vec<String> {
-    fn from_robj (robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
         if robj.is_na() {
             Err("Input must be a character vector. Got 'NA'.")
         } else if let Some(v) = robj.as_string_vector() {
