@@ -14,14 +14,12 @@ The test functions that verify that the wrapper and Rust functions work correctl
 
 ## Running tests locally
 
-The Cargo.toml file hardcodes the relative path of the `extendr` libraries, thus
-in order to check this project locally you need to run:
+The Cargo.toml file hard-codes the relative path of the `extendr` libraries. You can build and install `extendrtests` from RStudio as normal using the menu items in the "Build" menu. However, "Check" does not work. To check this project locally you need to run:
 
 ```r
-rcmdcheck::rcmdcheck(check_dir = "check")
+rcmdcheck::rcmdcheck(check_dir = "../../../")
 ```
 
-This is necessary so the relative path in Cargo.toml points to the correct
-location. **Note**: Clicking 'Check' in RStudio will not work because it runs
-`devtools::check()` (that resolves to `rcmdcheck::rcmdcheck()`) with no arguments and the checks are then run in a temporary
-directory that doesn't have the same relative path.
+This is necessary so the relative path in Cargo.toml points to the correct location.
+
+Clicking "Check" in RStudio will not work because it runs `devtools::check()` (that resolves to `rcmdcheck::rcmdcheck()`) with no arguments and the checks are then run in a temporary directory that doesn't have the same relative path.
