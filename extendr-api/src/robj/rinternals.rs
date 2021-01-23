@@ -434,4 +434,3 @@ impl Robj {
         unsafe { new_borrowed(R_NamespaceEnvSpec(self.get())) }
     }
 }
-

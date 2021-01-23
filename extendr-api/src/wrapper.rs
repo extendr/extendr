@@ -133,7 +133,7 @@ pub struct Promise<C, E, V> {
     pub code: C,
     pub env: E,
     pub value: V,
-    pub seen: bool
+    pub seen: bool,
 }
 
 /// Wrapper for creating and reading Primitive functions.
@@ -361,9 +361,7 @@ impl Robj {
             unsafe {
                 let printname = PRINTNAME(self.get());
                 if TYPEOF(printname) as u32 == CHARSXP {
-                    Some(Symbol(
-                        to_str(R_CHAR(printname) as *const u8)
-                    ))
+                    Some(Symbol(to_str(R_CHAR(printname) as *const u8)))
                 } else {
                     // This should never occur.
                     None
@@ -491,7 +489,10 @@ impl Robj {
     /// ```
     pub fn as_environment(&self) -> Option<Env<Robj, EnvIter>> {
         if self.is_environment() {
-            Some(Env{ parent: self.parent().unwrap(), names_and_values: self.as_env_iter().unwrap()})
+            Some(Env {
+                parent: self.parent().unwrap(),
+                names_and_values: self.as_env_iter().unwrap(),
+            })
         } else {
             None
         }
@@ -547,7 +548,7 @@ impl Robj {
                     code: new_owned(PRCODE(sexp)),
                     env: new_owned(PRENV(sexp)),
                     value: new_owned(PRVALUE(sexp)),
-                    seen: PRSEEN(sexp) != 0
+                    seen: PRSEEN(sexp) != 0,
                 })
             }
         } else {
@@ -562,11 +563,10 @@ pub trait SymPair {
 
 impl<S, R> SymPair for (S, R)
 where
-    S : AsRef<str>,
-    R : Into<Robj>,
+    S: AsRef<str>,
+    R: Into<Robj>,
 {
     fn sym_pair(self) -> (Robj, Robj) {
         (r!(Symbol(self.0.as_ref())), self.1.into())
     }
 }
-

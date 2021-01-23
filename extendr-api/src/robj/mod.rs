@@ -658,7 +658,10 @@ impl Robj {
             let mut error: raw::c_int = 0;
             let res = R_tryEval(self.get(), R_GlobalEnv, &mut error as *mut raw::c_int);
             if error != 0 {
-                Err(Error::EvalError{ code: r!(self), error })
+                Err(Error::EvalError {
+                    code: r!(self),
+                    error,
+                })
             } else {
                 Ok(new_owned(res))
             }
@@ -697,7 +700,10 @@ impl Robj {
             let parsed = new_owned(R_ParseVector(codeobj.get(), -1, status_ptr, R_NilValue));
             match status {
                 1 => Ok(parsed),
-                _ => Err(Error::ParseError{code: code.into(), status }),
+                _ => Err(Error::ParseError {
+                    code: code.into(),
+                    status,
+                }),
             }
         })
     }
@@ -1004,9 +1010,8 @@ impl Robj {
     ///    assert_eq!(env.ls().unwrap(), vec!["n0", "n1", "n2", "n3"]);
     /// ```
     pub fn ls(&self) -> Option<Vec<&str>> {
-        self.as_env_iter().map(
-            |iter| iter.map(|(k, _)| k).collect::<Vec<_>>()
-        )
+        self.as_env_iter()
+            .map(|iter| iter.map(|(k, _)| k).collect::<Vec<_>>())
     }
 }
 
@@ -1024,7 +1029,7 @@ where
     Robj::Borrowed(sexp)
 }
 
-#[doc(hidden)]  
+#[doc(hidden)]
 pub unsafe fn new_sys(sexp: SEXP) -> Robj {
     Robj::Sys(sexp)
 }
@@ -1177,7 +1182,7 @@ impl std::fmt::Debug for Robj {
                     // if s.is_na() {
                     //     write!(f, "{}na_str()", sep)?;
                     // } else {
-                        write!(f, "{}{:?}", sep, s)?;
+                    write!(f, "{}{:?}", sep, s)?;
                     // }
                     sep = ", ";
                 }

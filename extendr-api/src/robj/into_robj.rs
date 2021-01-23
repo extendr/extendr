@@ -36,7 +36,7 @@ impl From<()> for Robj {
 /// ```
 impl<T> From<Result<T>> for Robj
 where
-    T : Into<Robj>
+    T: Into<Robj>,
 {
     fn from(res: Result<T>) -> Self {
         // Force a panic on error.
@@ -316,7 +316,7 @@ where
     I: Sized,
     I::Item: ToVectorValue,
 {
-    single_threaded(|| unsafe { 
+    single_threaded(|| unsafe {
         // Length of the vector is known in advance.
         let sexptype = I::Item::sexptype();
         if sexptype != 0 {
@@ -521,15 +521,8 @@ impl<'a> From<LogicalIter<'a>> for Robj {
 impl<'a> From<HashMap<&'a str, Robj>> for Robj {
     /// Convert a hashmap into a list.
     fn from(val: HashMap<&'a str, Robj>) -> Self {
-        let res: Robj = List(
-            val
-            .iter()
-            .map(|(_, v)| v)
-        ).into();
-        let names = val
-            .into_iter()
-            .map(|(k, _)| k)
-            .collect_robj();
+        let res: Robj = List(val.iter().map(|(_, v)| v)).into();
+        let names = val.into_iter().map(|(k, _)| k).collect_robj();
         res.set_attrib(names_symbol(), names);
         res
     }

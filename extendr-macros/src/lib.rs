@@ -3,7 +3,7 @@
 
 //
 // We can invoke the #[extendr] macro on functions or struct impls.
-// 
+//
 // eg.
 //
 // ```ignore
@@ -55,11 +55,14 @@
 // * A finalizer for that type to free memory allocated.
 
 extern crate proc_macro;
-use proc_macro::{TokenStream};
-use syn::punctuated::Punctuated;
-use syn::{parse_macro_input, parse_quote, Expr, FnArg, Item, ItemFn, ItemImpl, Ident, Type, parse::ParseStream};
+use proc_macro::TokenStream;
 use quote::{format_ident, quote};
+use syn::punctuated::Punctuated;
 use syn::Token;
+use syn::{
+    parse::ParseStream, parse_macro_input, parse_quote, Expr, FnArg, Ident, Item, ItemFn, ItemImpl,
+    Type,
+};
 
 mod output_r;
 
@@ -67,8 +70,7 @@ const META_PREFIX: &str = "meta__";
 const WRAP_PREFIX: &str = "wrap__";
 
 #[derive(Debug)]
-struct ExtendrOptions {
-}
+struct ExtendrOptions {}
 
 // Generate a list of arguments for the wrapper. All arguments are SEXP for .Call in R.
 fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> FnArg {
@@ -98,14 +100,14 @@ fn translate_meta_arg(input: &FnArg, self_ty: Option<&syn::Type>) -> Expr {
         FnArg::Typed(ref pattype) => {
             let pat = pattype.pat.as_ref();
             let ty = pattype.ty.as_ref();
-            let name_string = quote!{ #pat }.to_string();
+            let name_string = quote! { #pat }.to_string();
             let type_string = type_name(ty);
             return parse_quote! {
                 extendr_api::metadata::Arg {
                     name: #name_string,
                     arg_type: #type_string
                 }
-            }
+            };
         }
         // &self
         FnArg::Receiver(ref reciever) => {
@@ -121,7 +123,7 @@ fn translate_meta_arg(input: &FnArg, self_ty: Option<&syn::Type>) -> Expr {
                     name: "self",
                     arg_type: #type_string
                 }
-            }
+            };
         }
     }
 }
@@ -152,7 +154,7 @@ fn translate_actual(input: &FnArg) -> Option<Expr> {
             let ty = &pattype.ty.as_ref();
             if let syn::Pat::Ident(ref ident) = pat {
                 let varname = format_ident!("_{}_robj", ident.ident);
-                Some(parse_quote!{ extendr_api::unwrap_or_throw(<#ty>::from_robj(&#varname)) })
+                Some(parse_quote! { extendr_api::unwrap_or_throw(<#ty>::from_robj(&#varname)) })
             } else {
                 None
             }
@@ -190,7 +192,7 @@ fn extendr_function(args: Vec<syn::NestedMeta>, func: ItemFn) -> TokenStream {
     let mut wrappers = Vec::new();
     make_function_wrappers(&opts, &mut wrappers, "", &func.attrs, &func.sig, None);
 
-    TokenStream::from(quote!{
+    TokenStream::from(quote! {
         #func
 
         # ( #wrappers )*
@@ -222,7 +224,7 @@ fn get_doc_string(attrs: &Vec<syn::Attribute>) -> String {
 fn get_return_type(sig: &syn::Signature) -> String {
     match &sig.output {
         syn::ReturnType::Default => "()".into(),
-        syn::ReturnType::Type(_, ref rettype) => type_name( rettype),
+        syn::ReturnType::Type(_, ref rettype) => type_name(rettype),
     }
 }
 
@@ -242,7 +244,6 @@ fn mangled_type_name(type_: &Type) -> String {
     res
 }
 
-
 // Return a simplified type name that will be meaningful to R. Defaults to a digest.
 // For example:
 // & Fred -> Fred
@@ -250,7 +251,7 @@ fn mangled_type_name(type_: &Type) -> String {
 // && Fred -> Fred
 // Fred<'a> -> Fred
 // &[i32] -> _hex_hex_hex_hex
-// 
+//
 fn type_name(type_: &Type) -> String {
     match type_ {
         Type::Path(syn::TypePath { path, .. }) => {
@@ -263,27 +264,23 @@ fn type_name(type_: &Type) -> String {
                 mangled_type_name(type_)
             }
         }
-        Type::Group(syn::TypeGroup { elem, .. }) => {
-            type_name(elem)
-        }
-        Type::Reference(syn::TypeReference { elem, .. }) => {
-            type_name(elem)
-        }
-        Type::Paren(syn::TypeParen { elem, .. }) => {
-            type_name(elem)
-        }
-        Type::Ptr(syn::TypePtr { elem, .. }) => {
-            type_name(elem)
-        }
-        _ => {
-            mangled_type_name(type_)
-        }
+        Type::Group(syn::TypeGroup { elem, .. }) => type_name(elem),
+        Type::Reference(syn::TypeReference { elem, .. }) => type_name(elem),
+        Type::Paren(syn::TypeParen { elem, .. }) => type_name(elem),
+        Type::Ptr(syn::TypePtr { elem, .. }) => type_name(elem),
+        _ => mangled_type_name(type_),
     }
-
 }
 
 // Generate wrappers for a specific function.
-fn make_function_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, prefix: &str, attrs: &Vec<syn::Attribute>, sig: &syn::Signature, self_ty: Option<&syn::Type>) {
+fn make_function_wrappers(
+    _opts: &ExtendrOptions,
+    wrappers: &mut Vec<ItemFn>,
+    prefix: &str,
+    attrs: &Vec<syn::Attribute>,
+    sig: &syn::Signature,
+    self_ty: Option<&syn::Type>,
+) {
     let func_name = &sig.ident;
 
     let raw_wrap_name = format!("{}{}{}", WRAP_PREFIX, prefix, func_name);
@@ -299,13 +296,13 @@ fn make_function_wrappers(_opts: &ExtendrOptions, wrappers: &mut Vec<ItemFn>, pr
     let inputs = &sig.inputs;
     let has_self = match inputs.iter().next() {
         Some(FnArg::Receiver(_)) => true,
-        _ => false
+        _ => false,
     };
 
     let call_name = if has_self {
         let is_mut = match inputs.iter().next() {
             Some(FnArg::Receiver(ref reciever)) => reciever.mutability.is_some(),
-            _ => false
+            _ => false,
         };
         if is_mut {
             // eg. Person::name(&mut self)
@@ -461,7 +458,6 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
     let prefix = format!("{}__", self_ty_name);
     let mut method_meta_names = Vec::new();
     let doc_string = get_doc_string(&item_impl.attrs);
-    
 
     // Generate wrappers for methods.
     // eg.
@@ -478,8 +474,20 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
     let mut wrappers: Vec<ItemFn> = Vec::new();
     for impl_item in &mut item_impl.items {
         if let syn::ImplItem::Method(ref mut method) = impl_item {
-            method_meta_names.push(format_ident!("{}{}__{}", META_PREFIX, self_ty_name, method.sig.ident));
-            make_function_wrappers(&opts, &mut wrappers, prefix.as_str(), &method.attrs, &method.sig, Some(self_ty));
+            method_meta_names.push(format_ident!(
+                "{}{}__{}",
+                META_PREFIX,
+                self_ty_name,
+                method.sig.ident
+            ));
+            make_function_wrappers(
+                &opts,
+                &mut wrappers,
+                prefix.as_str(),
+                &method.attrs,
+                &method.sig,
+                Some(self_ty),
+            );
         }
     }
 
@@ -577,9 +585,7 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
     match parse_macro_input!(item as Item) {
         Item::Fn(func) => return extendr_function(args, func),
         Item::Impl(item_impl) => return extendr_impl(item_impl),
-        other_item => {
-            TokenStream::from(quote! {#other_item})
-        }
+        other_item => TokenStream::from(quote! {#other_item}),
     }
 }
 
@@ -602,7 +608,7 @@ impl syn::parse::Parse for Module {
         };
         while !input.is_empty() {
             if let Ok(kmod) = input.parse::<Token![mod]>() {
-                let name : Ident = input.parse()?;
+                let name: Ident = input.parse()?;
                 if !res.modname.is_none() {
                     return Err(syn::Error::new(kmod.span(), "only one mod allowed"));
                 }
@@ -623,7 +629,6 @@ impl syn::parse::Parse for Module {
         Ok(res)
     }
 }
-
 
 /// Define a module and export symbols to R
 /// Example:
@@ -649,7 +654,11 @@ impl syn::parse::Parse for Module {
 #[proc_macro]
 pub fn extendr_module(item: TokenStream) -> TokenStream {
     let module = parse_macro_input!(item as Module);
-    let Module {modname, fnnames, implnames} = module;
+    let Module {
+        modname,
+        fnnames,
+        implnames,
+    } = module;
     let modname = modname.unwrap();
     let modname_string = modname.to_string();
     let module_init_name = format_ident!("R_init_{}_extendr", modname);
@@ -662,10 +671,14 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
     let make_module_wrappers_name_string = make_module_wrappers_name.to_string();
     let wrap_make_module_wrappers = format_ident!("{}make_{}_wrappers", WRAP_PREFIX, modname);
 
-    let fnmetanames = fnnames.iter().map(|id| format_ident!("{}{}", META_PREFIX, id));
-    let implmetanames = implnames.iter().map(|id| format_ident!("{}{}", META_PREFIX, type_name(id)));
+    let fnmetanames = fnnames
+        .iter()
+        .map(|id| format_ident!("{}{}", META_PREFIX, id));
+    let implmetanames = implnames
+        .iter()
+        .map(|id| format_ident!("{}{}", META_PREFIX, type_name(id)));
 
-    TokenStream::from(quote!{
+    TokenStream::from(quote! {
         #[no_mangle]
         #[allow(non_snake_case)]
         pub fn #module_metadata_name() -> extendr_api::metadata::Metadata {
@@ -713,7 +726,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
             unsafe {
                 let robj = new_borrowed(use_symbols_sexp);
                 let use_symbols : bool = <bool>::from_robj(&robj).unwrap();
-    
+
                 extendr_api::Robj::from(#module_metadata_name().make_r_wrappers(use_symbols).unwrap()).get()
             }
         }
