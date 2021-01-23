@@ -177,7 +177,9 @@ jobs:
         id: r_integration_tests
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
-        run: rcmdcheck::rcmdcheck(path = "tests/extendrtests", args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
+        run: |
+          setwd("tests/extendrtests")
+          rcmdcheck::rcmdcheck(path = ".", args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
         shell: Rscript {0}
         
       - name: Upload check results from R integration tests

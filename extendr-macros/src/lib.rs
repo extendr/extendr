@@ -61,11 +61,12 @@ use syn::punctuated::Punctuated;
 use syn::Token;
 use syn::{
     parse::ParseStream, parse_macro_input, parse_quote, Expr, FnArg, Ident, Item, ItemFn, ItemImpl,
+    Type,
 };
 
 mod output_r;
 
-const INIT_PREFIX: &str = "init__";
+const META_PREFIX: &str = "meta__";
 const WRAP_PREFIX: &str = "wrap__";
 
 #[derive(Debug)]
@@ -88,6 +89,41 @@ fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> FnArg {
                 panic!("found &self in non-impl function - have you missed the #[extendr] before the impl?");
             }
             return parse_quote! { _self : extendr_api::SEXP };
+        }
+    }
+}
+
+// Generate code to make a metadata::Arg.
+fn translate_meta_arg(input: &FnArg, self_ty: Option<&syn::Type>) -> Expr {
+    match input {
+        // function argument.
+        FnArg::Typed(ref pattype) => {
+            let pat = pattype.pat.as_ref();
+            let ty = pattype.ty.as_ref();
+            let name_string = quote! { #pat }.to_string();
+            let type_string = type_name(ty);
+            return parse_quote! {
+                extendr_api::metadata::Arg {
+                    name: #name_string,
+                    arg_type: #type_string
+                }
+            };
+        }
+        // &self
+        FnArg::Receiver(ref reciever) => {
+            if !reciever.attrs.is_empty() || reciever.reference.is_none() {
+                panic!("expected &self or &mut self");
+            }
+            if self_ty.is_none() {
+                panic!("found &self in non-impl function - have you missed the #[extendr] before the impl?");
+            }
+            let type_string = type_name(self_ty.unwrap());
+            return parse_quote! {
+                extendr_api::metadata::Arg {
+                    name: "self",
+                    arg_type: #type_string
+                }
+            };
         }
     }
 }
@@ -154,7 +190,7 @@ fn extendr_function(args: Vec<syn::NestedMeta>, func: ItemFn) -> TokenStream {
     }
 
     let mut wrappers = Vec::new();
-    generate_wrappers(&opts, &mut wrappers, "", &func.sig, None);
+    make_function_wrappers(&opts, &mut wrappers, "", &func.attrs, &func.sig, None);
 
     TokenStream::from(quote! {
         #func
@@ -163,11 +199,85 @@ fn extendr_function(args: Vec<syn::NestedMeta>, func: ItemFn) -> TokenStream {
     })
 }
 
+// Extract doc strings from attributes.
+fn get_doc_string(attrs: &Vec<syn::Attribute>) -> String {
+    let mut res = String::new();
+    for attr in attrs {
+        if let Some(id) = attr.path.get_ident() {
+            if id.to_string() == "doc" {
+                if let Ok(meta) = attr.parse_meta() {
+                    if let syn::Meta::NameValue(nv) = meta {
+                        if let syn::Lit::Str(litstr) = nv.lit {
+                            if !res.is_empty() {
+                                res.extend("\n".chars());
+                            }
+                            res.extend(litstr.value().chars());
+                        }
+                    }
+                }
+            }
+        }
+    }
+    res
+}
+
+fn get_return_type(sig: &syn::Signature) -> String {
+    match &sig.output {
+        syn::ReturnType::Default => "()".into(),
+        syn::ReturnType::Type(_, ref rettype) => type_name(rettype),
+    }
+}
+
+fn mangled_type_name(type_: &Type) -> String {
+    let src = quote!( #type_ ).to_string();
+    let mut res = String::new();
+    for c in src.chars() {
+        if c != ' ' {
+            if c.is_alphanumeric() {
+                res.push(c)
+            } else {
+                let f = format!("_{:02x}", c as u32);
+                res.extend(f.chars());
+            }
+        }
+    }
+    res
+}
+
+// Return a simplified type name that will be meaningful to R. Defaults to a digest.
+// For example:
+// & Fred -> Fred
+// * Fred -> Fred
+// && Fred -> Fred
+// Fred<'a> -> Fred
+// &[i32] -> _hex_hex_hex_hex
+//
+fn type_name(type_: &Type) -> String {
+    match type_ {
+        Type::Path(syn::TypePath { path, .. }) => {
+            if let Some(ident) = path.get_ident() {
+                ident.to_string()
+            } else if path.segments.len() == 1 {
+                let seg = path.segments.clone().into_iter().next().unwrap();
+                seg.ident.to_string()
+            } else {
+                mangled_type_name(type_)
+            }
+        }
+        Type::Group(syn::TypeGroup { elem, .. }) => type_name(elem),
+        Type::Reference(syn::TypeReference { elem, .. }) => type_name(elem),
+        Type::Paren(syn::TypeParen { elem, .. }) => type_name(elem),
+        Type::Ptr(syn::TypePtr { elem, .. }) => type_name(elem),
+        _ => mangled_type_name(type_),
+    }
+}
+
 // Generate wrappers for a specific function.
-fn generate_wrappers(
+fn make_function_wrappers(
     _opts: &ExtendrOptions,
     wrappers: &mut Vec<ItemFn>,
     prefix: &str,
+    attrs: &Vec<syn::Attribute>,
     sig: &syn::Signature,
     self_ty: Option<&syn::Type>,
 ) {
@@ -175,9 +285,12 @@ fn generate_wrappers(
 
     let raw_wrap_name = format!("{}{}{}", WRAP_PREFIX, prefix, func_name);
     let wrap_name = format_ident!("{}{}{}", WRAP_PREFIX, prefix, func_name);
-    let init_name = format_ident!("{}{}{}", INIT_PREFIX, prefix, func_name);
+    let meta_name = format_ident!("{}{}{}", META_PREFIX, prefix, func_name);
 
-    let wrap_name_str = format!("{}", wrap_name);
+    let name_str = format!("{}", func_name);
+    let doc_string = get_doc_string(attrs);
+    let return_type_string = get_return_type(&sig);
+
     let panic_str = format!("{} paniced.\0", func_name);
 
     let inputs = &sig.inputs;
@@ -225,12 +338,10 @@ fn generate_wrappers(
         .filter_map(|input| translate_actual(input))
         .collect();
 
-    // let R_formal_args: Vec<String> = inputs
-    //     .iter()
-    //     .filter_map(|input| translate_R_formal(input))
-    //     .collect();
-
-    let num_args = inputs.len() as i32;
+    let meta_args: Vec<Expr> = inputs
+        .iter()
+        .map(|input| translate_meta_arg(input, self_ty))
+        .collect();
 
     output_r::output_r_wrapper(
         func_name,
@@ -265,27 +376,21 @@ fn generate_wrappers(
         }
     ));
 
-    // Generate init functions which gather metadata about functions and methods.
-    //
-    // Example:
-    // #[allow(non_snake_case)]
-    // fn init__hello(info: *mut extendr_api::DllInfo, call_methods: &mut Vec<extendr_api::CallMethod>) {
-    //     call_methods.push(extendr_api::CallMethod {
-    //         call_symbol: std::ffi::CString::new("wrap__hello").unwrap(),
-    //         func_ptr: wrap__hello as *const u8,
-    //         num_args: 0i32,
-    //     })
-    // }
+    // Generate a function to push the metadata for a function.
     wrappers.push(parse_quote!(
         #[allow(non_snake_case)]
-        fn #init_name(info: *mut extendr_api::DllInfo, call_methods: &mut Vec<extendr_api::CallMethod>) {
-            call_methods.push(
-                extendr_api::CallMethod {
-                    call_symbol: std::ffi::CString::new(#wrap_name_str).unwrap(),
-                    func_ptr: #wrap_name as * const u8,
-                    num_args: #num_args,
-                }
-            )
+        fn #meta_name(metadata: &mut Vec<extendr_api::metadata::Func>) {
+            let mut args = vec![
+                #( #meta_args, )*
+            ];
+            metadata.push(extendr_api::metadata::Func {
+                doc: #doc_string,
+                name: #name_str,
+                args: args,
+                return_type: #return_type_string,
+                func_ptr: #wrap_name as * const u8,
+                hidden: false,
+            })
         }
     ));
 }
@@ -322,12 +427,37 @@ fn generate_wrappers(
 /// }
 /// ```
 fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
+    // Only `impl name { }` allowed
+    if item_impl.defaultness.is_some() {
+        return quote! { compile_error!("default not allowed in #[extendr] impl"); }.into();
+    }
+
+    if item_impl.unsafety.is_some() {
+        return quote! { compile_error!("unsafe not allowed in #[extendr] impl"); }.into();
+    }
+
+    if item_impl.generics.const_params().count() != 0 {
+        return quote! { compile_error!("const params not allowed in #[extendr] impl"); }.into();
+    }
+
+    if item_impl.generics.type_params().count() != 0 {
+        return quote! { compile_error!("type params not allowed in #[extendr] impl"); }.into();
+    }
+
+    // if item_impl.generics.lifetimes().count() != 0 {
+    //     return quote! { compile_error!("lifetime params not allowed in #[extendr] impl"); }.into();
+    // }
+
+    if item_impl.generics.where_clause.is_some() {
+        return quote! { compile_error!("where clause not allowed in #[extendr] impl"); }.into();
+    }
+
     let opts = ExtendrOptions {};
     let self_ty = item_impl.self_ty.as_ref();
-    let self_ty_name = quote! {#self_ty}.to_string();
+    let self_ty_name = type_name(&self_ty);
     let prefix = format!("{}__", self_ty_name);
-    let mut method_init_names = Vec::new();
-    let mut wrappers = Vec::new();
+    let mut method_meta_names = Vec::new();
+    let doc_string = get_doc_string(&item_impl.attrs);
 
     // Generate wrappers for methods.
     // eg.
@@ -341,25 +471,27 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
     //     }
     // }
     // ```
+    let mut wrappers: Vec<ItemFn> = Vec::new();
     for impl_item in &mut item_impl.items {
         if let syn::ImplItem::Method(ref mut method) = impl_item {
-            method_init_names.push(format_ident!(
+            method_meta_names.push(format_ident!(
                 "{}{}__{}",
-                INIT_PREFIX,
+                META_PREFIX,
                 self_ty_name,
                 method.sig.ident
             ));
-            generate_wrappers(
+            make_function_wrappers(
                 &opts,
                 &mut wrappers,
                 prefix.as_str(),
+                &method.attrs,
                 &method.sig,
                 Some(self_ty),
             );
         }
     }
 
-    let init_name = format_ident!("{}{}", INIT_PREFIX, self_ty_name);
+    let meta_name = format_ident!("{}{}", META_PREFIX, self_ty_name);
 
     let finalizer_name = format_ident!("__finalize__{}", self_ty_name);
 
@@ -398,6 +530,20 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
                 unsafe {
                     let ptr = Box::into_raw(Box::new(value));
                     let res = Robj::makeExternalPtr(ptr, Robj::from(#self_ty_name), Robj::from(()));
+                    res.set_attrib(class_symbol(), #self_ty_name);
+                    res.registerCFinalizer(Some(#finalizer_name));
+                    res
+                }
+            }
+        }
+
+        // Output conversion function for this type.
+        impl<'a> From<&'a #self_ty> for Robj {
+            fn from(value: &'a #self_ty) -> Self {
+                unsafe {
+                    let ptr = Box::into_raw(Box::new(value));
+                    let res = Robj::makeExternalPtr(ptr, Robj::from(#self_ty_name), Robj::from(()));
+                    res.set_attrib(class_symbol(), #self_ty_name);
                     res.registerCFinalizer(Some(#finalizer_name));
                     res
                 }
@@ -416,19 +562,15 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
             }
         }
 
-        // Init function to call the method inits for this type.
-        // Example:
-        // ```ignore
-        // #[allow(non_snake_case)]
-        // fn init__Person(info: *mut extendr_api::DllInfo, call_methods: &mut Vec<extendr_api::CallMethod>) {
-        //     init__Person__new(info, call_methods);
-        //     init__Person__set_name(info, call_methods);
-        //     init__Person__name(info, call_methods);
-        // }
-        // ```
         #[allow(non_snake_case)]
-        fn #init_name(info: *mut extendr_api::DllInfo, call_methods: &mut Vec<extendr_api::CallMethod>) {
-            #( #method_init_names(info, call_methods); )*
+        fn #meta_name(impls: &mut Vec<extendr_api::metadata::Impl>) {
+            let mut methods = Vec::new();
+            #( #method_meta_names(&mut methods); )*
+            impls.push(extendr_api::metadata::Impl {
+                doc: #doc_string,
+                name: #self_ty_name,
+                methods,
+            });
         }
     });
 
@@ -452,7 +594,7 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
 struct Module {
     modname: Option<Ident>,
     fnnames: Vec<Ident>,
-    implnames: Vec<Ident>,
+    implnames: Vec<Type>,
 }
 
 // Custom parser for the module.
@@ -518,23 +660,81 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         implnames,
     } = module;
     let modname = modname.unwrap();
+    let modname_string = modname.to_string();
     let module_init_name = format_ident!("R_init_{}_extendr", modname);
 
-    let fninitnames = fnnames
+    let module_metadata_name = format_ident!("get_{}_metadata", modname);
+    let module_metadata_name_string = module_metadata_name.to_string();
+    let wrap_module_metadata_name = format_ident!("{}get_{}_metadata", WRAP_PREFIX, modname);
+
+    let make_module_wrappers_name = format_ident!("make_{}_wrappers", modname);
+    let make_module_wrappers_name_string = make_module_wrappers_name.to_string();
+    let wrap_make_module_wrappers = format_ident!("{}make_{}_wrappers", WRAP_PREFIX, modname);
+
+    let fnmetanames = fnnames
         .iter()
-        .map(|id| format_ident!("{}{}", INIT_PREFIX, id));
-    let implinitnames = implnames
+        .map(|id| format_ident!("{}{}", META_PREFIX, id));
+    let implmetanames = implnames
         .iter()
-        .map(|id| format_ident!("{}{}", INIT_PREFIX, id));
+        .map(|id| format_ident!("{}{}", META_PREFIX, type_name(id)));
 
     TokenStream::from(quote! {
         #[no_mangle]
         #[allow(non_snake_case)]
+        pub fn #module_metadata_name() -> extendr_api::metadata::Metadata {
+            let mut functions = Vec::new();
+            let mut impls = Vec::new();
+            #( #fnmetanames(&mut functions); )*
+            #( #implmetanames(&mut impls); )*
+
+            // Add this function to the list, but set hidden: true.
+            functions.push(extendr_api::metadata::Func {
+                doc: "Metadata access function.",
+                name: #module_metadata_name_string,
+                args: Vec::new(),
+                return_type: "Metadata",
+                func_ptr: #wrap_module_metadata_name as * const u8,
+                hidden: true,
+            });
+
+            // Add this function to the list, but set hidden: true.
+            functions.push(extendr_api::metadata::Func {
+                doc: "Wrapper generator.",
+                name: #make_module_wrappers_name_string,
+                args: vec![extendr_api::metadata::Arg { name: "use_symbols", arg_type: "bool" }],
+                return_type: "String",
+                func_ptr: #wrap_make_module_wrappers as * const u8,
+                hidden: true,
+            });
+
+            extendr_api::metadata::Metadata {
+                name: #modname_string,
+                functions,
+                impls,
+            }
+        }
+
+        #[no_mangle]
+        #[allow(non_snake_case)]
+        pub extern "C" fn #wrap_module_metadata_name() -> SEXP {
+            unsafe { extendr_api::Robj::from(#module_metadata_name()).get() }
+        }
+
+        #[no_mangle]
+        #[allow(non_snake_case)]
+        pub extern "C" fn #wrap_make_module_wrappers(use_symbols_sexp: SEXP) -> SEXP {
+            unsafe {
+                let robj = new_borrowed(use_symbols_sexp);
+                let use_symbols : bool = <bool>::from_robj(&robj).unwrap();
+
+                extendr_api::Robj::from(#module_metadata_name().make_r_wrappers(use_symbols).unwrap()).get()
+            }
+        }
+
+        #[no_mangle]
+        #[allow(non_snake_case)]
         pub extern "C" fn #module_init_name(info: * mut extendr_api::DllInfo) {
-            let mut call_methods = Vec::new();
-            #( #fninitnames(info, &mut call_methods); )*
-            #( #implinitnames(info, &mut call_methods); )*
-            unsafe { extendr_api::register_call_methods(info, call_methods.as_ref()) };
+            unsafe { extendr_api::register_call_methods(info, #module_metadata_name()) };
         }
     })
 }
