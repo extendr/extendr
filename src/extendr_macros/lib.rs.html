@@ -728,13 +728,26 @@
 <span id="725">725</span>
 <span id="726">726</span>
 <span id="727">727</span>
+<span id="728">728</span>
+<span id="729">729</span>
+<span id="730">730</span>
+<span id="731">731</span>
+<span id="732">732</span>
+<span id="733">733</span>
+<span id="734">734</span>
+<span id="735">735</span>
+<span id="736">736</span>
+<span id="737">737</span>
+<span id="738">738</span>
+<span id="739">739</span>
+<span id="740">740</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Macros for generating wrappers for rust functions.</span>
 
 <span class="comment">//</span>
 <span class="comment">// We can invoke the #[extendr] macro on functions or struct impls.</span>
-<span class="comment">// </span>
+<span class="comment">//</span>
 <span class="comment">// eg.</span>
 <span class="comment">//</span>
 <span class="comment">// ```ignore</span>
@@ -786,11 +799,14 @@
 <span class="comment">// * A finalizer for that type to free memory allocated.</span>
 
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">proc_macro</span>;
-<span class="kw">use</span> <span class="ident">proc_macro</span>::{<span class="ident">TokenStream</span>};
-<span class="kw">use</span> <span class="ident">syn</span>::<span class="ident">punctuated</span>::<span class="ident">Punctuated</span>;
-<span class="kw">use</span> <span class="ident">syn</span>::{<span class="ident">parse_macro_input</span>, <span class="ident">parse_quote</span>, <span class="ident">Expr</span>, <span class="ident">FnArg</span>, <span class="ident">Item</span>, <span class="ident">ItemFn</span>, <span class="ident">ItemImpl</span>, <span class="ident">Ident</span>, <span class="ident">Type</span>, <span class="ident">parse</span>::<span class="ident">ParseStream</span>};
+<span class="kw">use</span> <span class="ident">proc_macro</span>::<span class="ident">TokenStream</span>;
 <span class="kw">use</span> <span class="ident">quote</span>::{<span class="ident">format_ident</span>, <span class="ident">quote</span>};
+<span class="kw">use</span> <span class="ident">syn</span>::<span class="ident">punctuated</span>::<span class="ident">Punctuated</span>;
 <span class="kw">use</span> <span class="ident">syn</span>::<span class="ident">Token</span>;
+<span class="kw">use</span> <span class="ident">syn</span>::{
+    <span class="ident">parse</span>::<span class="ident">ParseStream</span>, <span class="ident">parse_macro_input</span>, <span class="ident">parse_quote</span>, <span class="ident">Expr</span>, <span class="ident">FnArg</span>, <span class="ident">Ident</span>, <span class="ident">Item</span>, <span class="ident">ItemFn</span>, <span class="ident">ItemImpl</span>,
+    <span class="ident">Type</span>,
+};
 
 <span class="kw">mod</span> <span class="ident">output_r</span>;
 
@@ -798,8 +814,7 @@
 <span class="kw">const</span> <span class="ident">WRAP_PREFIX</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;wrap__&quot;</span>;
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">struct</span> <span class="ident">ExtendrOptions</span> {
-}
+<span class="kw">struct</span> <span class="ident">ExtendrOptions</span> {}
 
 <span class="comment">// Generate a list of arguments for the wrapper. All arguments are SEXP for .Call in R.</span>
 <span class="kw">fn</span> <span class="ident">translate_formal</span>(<span class="ident">input</span>: <span class="kw-2">&amp;</span><span class="ident">FnArg</span>, <span class="ident">self_ty</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">syn</span>::<span class="ident">Type</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">FnArg</span> {
@@ -829,14 +844,14 @@
         <span class="ident">FnArg</span>::<span class="ident">Typed</span>(<span class="kw-2">ref</span> <span class="ident">pattype</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="ident">pat</span> <span class="op">=</span> <span class="ident">pattype</span>.<span class="ident">pat</span>.<span class="ident">as_ref</span>();
             <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">pattype</span>.<span class="ident">ty</span>.<span class="ident">as_ref</span>();
-            <span class="kw">let</span> <span class="ident">name_string</span> <span class="op">=</span> <span class="macro">quote</span><span class="macro">!</span>{ #<span class="ident">pat</span> }.<span class="ident">to_string</span>();
+            <span class="kw">let</span> <span class="ident">name_string</span> <span class="op">=</span> <span class="macro">quote</span><span class="macro">!</span> { #<span class="ident">pat</span> }.<span class="ident">to_string</span>();
             <span class="kw">let</span> <span class="ident">type_string</span> <span class="op">=</span> <span class="ident">type_name</span>(<span class="ident">ty</span>);
             <span class="kw">return</span> <span class="macro">parse_quote</span><span class="macro">!</span> {
                 <span class="ident">extendr_api</span>::<span class="ident">metadata</span>::<span class="ident">Arg</span> {
                     <span class="ident">name</span>: #<span class="ident">name_string</span>,
                     <span class="ident">arg_type</span>: #<span class="ident">type_string</span>
                 }
-            }
+            };
         }
         <span class="comment">// &amp;self</span>
         <span class="ident">FnArg</span>::<span class="ident">Receiver</span>(<span class="kw-2">ref</span> <span class="ident">reciever</span>) <span class="op">=</span><span class="op">&gt;</span> {
@@ -852,7 +867,7 @@
                     <span class="ident">name</span>: <span class="string">&quot;self&quot;</span>,
                     <span class="ident">arg_type</span>: #<span class="ident">type_string</span>
                 }
-            }
+            };
         }
     }
 }
@@ -883,7 +898,7 @@
             <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">pattype</span>.<span class="ident">ty</span>.<span class="ident">as_ref</span>();
             <span class="kw">if</span> <span class="kw">let</span> <span class="ident">syn</span>::<span class="ident">Pat</span>::<span class="ident">Ident</span>(<span class="kw-2">ref</span> <span class="ident">ident</span>) <span class="op">=</span> <span class="ident">pat</span> {
                 <span class="kw">let</span> <span class="ident">varname</span> <span class="op">=</span> <span class="macro">format_ident</span><span class="macro">!</span>(<span class="string">&quot;_{}_robj&quot;</span>, <span class="ident">ident</span>.<span class="ident">ident</span>);
-                <span class="prelude-val">Some</span>(<span class="macro">parse_quote</span><span class="macro">!</span>{ <span class="ident">extendr_api</span>::<span class="ident">unwrap_or_throw</span>(<span class="op">&lt;</span>#<span class="ident">ty</span><span class="op">&gt;</span>::<span class="ident">from_robj</span>(<span class="kw-2">&amp;</span>#<span class="ident">varname</span>)) })
+                <span class="prelude-val">Some</span>(<span class="macro">parse_quote</span><span class="macro">!</span> { <span class="ident">extendr_api</span>::<span class="ident">unwrap_or_throw</span>(<span class="op">&lt;</span>#<span class="ident">ty</span><span class="op">&gt;</span>::<span class="ident">from_robj</span>(<span class="kw-2">&amp;</span>#<span class="ident">varname</span>)) })
             } <span class="kw">else</span> {
                 <span class="prelude-val">None</span>
             }
@@ -921,7 +936,7 @@
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">wrappers</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
     <span class="ident">make_function_wrappers</span>(<span class="kw-2">&amp;</span><span class="ident">opts</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">wrappers</span>, <span class="string">&quot;&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">func</span>.<span class="ident">attrs</span>, <span class="kw-2">&amp;</span><span class="ident">func</span>.<span class="ident">sig</span>, <span class="prelude-val">None</span>);
 
-    <span class="ident">TokenStream</span>::<span class="ident">from</span>(<span class="macro">quote</span><span class="macro">!</span>{
+    <span class="ident">TokenStream</span>::<span class="ident">from</span>(<span class="macro">quote</span><span class="macro">!</span> {
         #<span class="ident">func</span>
 
         # ( #<span class="ident">wrappers</span> )<span class="op">*</span>
@@ -953,7 +968,7 @@
 <span class="kw">fn</span> <span class="ident">get_return_type</span>(<span class="ident">sig</span>: <span class="kw-2">&amp;</span><span class="ident">syn</span>::<span class="ident">Signature</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
     <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">sig</span>.<span class="ident">output</span> {
         <span class="ident">syn</span>::<span class="ident">ReturnType</span>::<span class="ident">Default</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;()&quot;</span>.<span class="ident">into</span>(),
-        <span class="ident">syn</span>::<span class="ident">ReturnType</span>::<span class="ident">Type</span>(<span class="kw">_</span>, <span class="kw-2">ref</span> <span class="ident">rettype</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">type_name</span>( <span class="ident">rettype</span>),
+        <span class="ident">syn</span>::<span class="ident">ReturnType</span>::<span class="ident">Type</span>(<span class="kw">_</span>, <span class="kw-2">ref</span> <span class="ident">rettype</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">type_name</span>(<span class="ident">rettype</span>),
     }
 }
 
@@ -973,7 +988,6 @@
     <span class="ident">res</span>
 }
 
-
 <span class="comment">// Return a simplified type name that will be meaningful to R. Defaults to a digest.</span>
 <span class="comment">// For example:</span>
 <span class="comment">// &amp; Fred -&gt; Fred</span>
@@ -981,7 +995,7 @@
 <span class="comment">// &amp;&amp; Fred -&gt; Fred</span>
 <span class="comment">// Fred&lt;&#39;a&gt; -&gt; Fred</span>
 <span class="comment">// &amp;[i32] -&gt; _hex_hex_hex_hex</span>
-<span class="comment">// </span>
+<span class="comment">//</span>
 <span class="kw">fn</span> <span class="ident">type_name</span>(<span class="ident">type_</span>: <span class="kw-2">&amp;</span><span class="ident">Type</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
     <span class="kw">match</span> <span class="ident">type_</span> {
         <span class="ident">Type</span>::<span class="ident">Path</span>(<span class="ident">syn</span>::<span class="ident">TypePath</span> { <span class="ident">path</span>, .. }) <span class="op">=</span><span class="op">&gt;</span> {
@@ -994,27 +1008,23 @@
                 <span class="ident">mangled_type_name</span>(<span class="ident">type_</span>)
             }
         }
-        <span class="ident">Type</span>::<span class="ident">Group</span>(<span class="ident">syn</span>::<span class="ident">TypeGroup</span> { <span class="ident">elem</span>, .. }) <span class="op">=</span><span class="op">&gt;</span> {
-            <span class="ident">type_name</span>(<span class="ident">elem</span>)
-        }
-        <span class="ident">Type</span>::<span class="ident">Reference</span>(<span class="ident">syn</span>::<span class="ident">TypeReference</span> { <span class="ident">elem</span>, .. }) <span class="op">=</span><span class="op">&gt;</span> {
-            <span class="ident">type_name</span>(<span class="ident">elem</span>)
-        }
-        <span class="ident">Type</span>::<span class="ident">Paren</span>(<span class="ident">syn</span>::<span class="ident">TypeParen</span> { <span class="ident">elem</span>, .. }) <span class="op">=</span><span class="op">&gt;</span> {
-            <span class="ident">type_name</span>(<span class="ident">elem</span>)
-        }
-        <span class="ident">Type</span>::<span class="ident">Ptr</span>(<span class="ident">syn</span>::<span class="ident">TypePtr</span> { <span class="ident">elem</span>, .. }) <span class="op">=</span><span class="op">&gt;</span> {
-            <span class="ident">type_name</span>(<span class="ident">elem</span>)
-        }
-        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> {
-            <span class="ident">mangled_type_name</span>(<span class="ident">type_</span>)
-        }
+        <span class="ident">Type</span>::<span class="ident">Group</span>(<span class="ident">syn</span>::<span class="ident">TypeGroup</span> { <span class="ident">elem</span>, .. }) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">type_name</span>(<span class="ident">elem</span>),
+        <span class="ident">Type</span>::<span class="ident">Reference</span>(<span class="ident">syn</span>::<span class="ident">TypeReference</span> { <span class="ident">elem</span>, .. }) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">type_name</span>(<span class="ident">elem</span>),
+        <span class="ident">Type</span>::<span class="ident">Paren</span>(<span class="ident">syn</span>::<span class="ident">TypeParen</span> { <span class="ident">elem</span>, .. }) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">type_name</span>(<span class="ident">elem</span>),
+        <span class="ident">Type</span>::<span class="ident">Ptr</span>(<span class="ident">syn</span>::<span class="ident">TypePtr</span> { <span class="ident">elem</span>, .. }) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">type_name</span>(<span class="ident">elem</span>),
+        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">mangled_type_name</span>(<span class="ident">type_</span>),
     }
-
 }
 
 <span class="comment">// Generate wrappers for a specific function.</span>
-<span class="kw">fn</span> <span class="ident">make_function_wrappers</span>(<span class="ident">_opts</span>: <span class="kw-2">&amp;</span><span class="ident">ExtendrOptions</span>, <span class="ident">wrappers</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ItemFn</span><span class="op">&gt;</span>, <span class="ident">prefix</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">attrs</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">syn</span>::<span class="ident">Attribute</span><span class="op">&gt;</span>, <span class="ident">sig</span>: <span class="kw-2">&amp;</span><span class="ident">syn</span>::<span class="ident">Signature</span>, <span class="ident">self_ty</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">syn</span>::<span class="ident">Type</span><span class="op">&gt;</span>) {
+<span class="kw">fn</span> <span class="ident">make_function_wrappers</span>(
+    <span class="ident">_opts</span>: <span class="kw-2">&amp;</span><span class="ident">ExtendrOptions</span>,
+    <span class="ident">wrappers</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ItemFn</span><span class="op">&gt;</span>,
+    <span class="ident">prefix</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
+    <span class="ident">attrs</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">syn</span>::<span class="ident">Attribute</span><span class="op">&gt;</span>,
+    <span class="ident">sig</span>: <span class="kw-2">&amp;</span><span class="ident">syn</span>::<span class="ident">Signature</span>,
+    <span class="ident">self_ty</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">syn</span>::<span class="ident">Type</span><span class="op">&gt;</span>,
+) {
     <span class="kw">let</span> <span class="ident">func_name</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">sig</span>.<span class="ident">ident</span>;
 
     <span class="kw">let</span> <span class="ident">raw_wrap_name</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}{}{}&quot;</span>, <span class="ident">WRAP_PREFIX</span>, <span class="ident">prefix</span>, <span class="ident">func_name</span>);
@@ -1030,13 +1040,13 @@
     <span class="kw">let</span> <span class="ident">inputs</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">sig</span>.<span class="ident">inputs</span>;
     <span class="kw">let</span> <span class="ident">has_self</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">inputs</span>.<span class="ident">iter</span>().<span class="ident">next</span>() {
         <span class="prelude-val">Some</span>(<span class="ident">FnArg</span>::<span class="ident">Receiver</span>(<span class="kw">_</span>)) <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">true</span>,
-        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>
+        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
     };
 
     <span class="kw">let</span> <span class="ident">call_name</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">has_self</span> {
         <span class="kw">let</span> <span class="ident">is_mut</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">inputs</span>.<span class="ident">iter</span>().<span class="ident">next</span>() {
             <span class="prelude-val">Some</span>(<span class="ident">FnArg</span>::<span class="ident">Receiver</span>(<span class="kw-2">ref</span> <span class="ident">reciever</span>)) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">reciever</span>.<span class="ident">mutability</span>.<span class="ident">is_some</span>(),
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>
+            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
         };
         <span class="kw">if</span> <span class="ident">is_mut</span> {
             <span class="comment">// eg. Person::name(&amp;mut self)</span>
@@ -1192,7 +1202,6 @@
     <span class="kw">let</span> <span class="ident">prefix</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}__&quot;</span>, <span class="ident">self_ty_name</span>);
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">method_meta_names</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
     <span class="kw">let</span> <span class="ident">doc_string</span> <span class="op">=</span> <span class="ident">get_doc_string</span>(<span class="kw-2">&amp;</span><span class="ident">item_impl</span>.<span class="ident">attrs</span>);
-    
 
     <span class="comment">// Generate wrappers for methods.</span>
     <span class="comment">// eg.</span>
@@ -1209,8 +1218,20 @@
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">wrappers</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ItemFn</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
     <span class="kw">for</span> <span class="ident">impl_item</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">item_impl</span>.<span class="ident">items</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">syn</span>::<span class="ident">ImplItem</span>::<span class="ident">Method</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">method</span>) <span class="op">=</span> <span class="ident">impl_item</span> {
-            <span class="ident">method_meta_names</span>.<span class="ident">push</span>(<span class="macro">format_ident</span><span class="macro">!</span>(<span class="string">&quot;{}{}__{}&quot;</span>, <span class="ident">META_PREFIX</span>, <span class="ident">self_ty_name</span>, <span class="ident">method</span>.<span class="ident">sig</span>.<span class="ident">ident</span>));
-            <span class="ident">make_function_wrappers</span>(<span class="kw-2">&amp;</span><span class="ident">opts</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">wrappers</span>, <span class="ident">prefix</span>.<span class="ident">as_str</span>(), <span class="kw-2">&amp;</span><span class="ident">method</span>.<span class="ident">attrs</span>, <span class="kw-2">&amp;</span><span class="ident">method</span>.<span class="ident">sig</span>, <span class="prelude-val">Some</span>(<span class="ident">self_ty</span>));
+            <span class="ident">method_meta_names</span>.<span class="ident">push</span>(<span class="macro">format_ident</span><span class="macro">!</span>(
+                <span class="string">&quot;{}{}__{}&quot;</span>,
+                <span class="ident">META_PREFIX</span>,
+                <span class="ident">self_ty_name</span>,
+                <span class="ident">method</span>.<span class="ident">sig</span>.<span class="ident">ident</span>
+            ));
+            <span class="ident">make_function_wrappers</span>(
+                <span class="kw-2">&amp;</span><span class="ident">opts</span>,
+                <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">wrappers</span>,
+                <span class="ident">prefix</span>.<span class="ident">as_str</span>(),
+                <span class="kw-2">&amp;</span><span class="ident">method</span>.<span class="ident">attrs</span>,
+                <span class="kw-2">&amp;</span><span class="ident">method</span>.<span class="ident">sig</span>,
+                <span class="prelude-val">Some</span>(<span class="ident">self_ty</span>),
+            );
         }
     }
 
@@ -1308,9 +1329,7 @@
     <span class="kw">match</span> <span class="macro">parse_macro_input</span><span class="macro">!</span>(<span class="ident">item</span> <span class="kw">as</span> <span class="ident">Item</span>) {
         <span class="ident">Item</span>::<span class="ident">Fn</span>(<span class="ident">func</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="ident">extendr_function</span>(<span class="ident">args</span>, <span class="ident">func</span>),
         <span class="ident">Item</span>::<span class="ident">Impl</span>(<span class="ident">item_impl</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">return</span> <span class="ident">extendr_impl</span>(<span class="ident">item_impl</span>),
-        <span class="ident">other_item</span> <span class="op">=</span><span class="op">&gt;</span> {
-            <span class="ident">TokenStream</span>::<span class="ident">from</span>(<span class="macro">quote</span><span class="macro">!</span> {#<span class="ident">other_item</span>})
-        }
+        <span class="ident">other_item</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">TokenStream</span>::<span class="ident">from</span>(<span class="macro">quote</span><span class="macro">!</span> {#<span class="ident">other_item</span>}),
     }
 }
 
@@ -1333,7 +1352,7 @@
         };
         <span class="kw">while</span> <span class="op">!</span><span class="ident">input</span>.<span class="ident">is_empty</span>() {
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">kmod</span>) <span class="op">=</span> <span class="ident">input</span>.<span class="ident">parse</span>::<span class="op">&lt;</span><span class="macro">Token</span><span class="macro">!</span>[<span class="kw">mod</span>]<span class="op">&gt;</span>() {
-                <span class="kw">let</span> <span class="ident">name</span> : <span class="ident">Ident</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">parse</span>()<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">name</span>: <span class="ident">Ident</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">parse</span>()<span class="question-mark">?</span>;
                 <span class="kw">if</span> <span class="op">!</span><span class="ident">res</span>.<span class="ident">modname</span>.<span class="ident">is_none</span>() {
                     <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">syn</span>::<span class="ident">Error</span>::<span class="ident">new</span>(<span class="ident">kmod</span>.<span class="ident">span</span>(), <span class="string">&quot;only one mod allowed&quot;</span>));
                 }
@@ -1354,7 +1373,6 @@
         <span class="prelude-val">Ok</span>(<span class="ident">res</span>)
     }
 }
-
 
 <span class="doccomment">/// Define a module and export symbols to R</span>
 <span class="doccomment">/// Example:</span>
@@ -1380,7 +1398,11 @@
 <span class="attribute">#[<span class="ident">proc_macro</span>]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extendr_module</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">TokenStream</span> {
     <span class="kw">let</span> <span class="ident">module</span> <span class="op">=</span> <span class="macro">parse_macro_input</span><span class="macro">!</span>(<span class="ident">item</span> <span class="kw">as</span> <span class="ident">Module</span>);
-    <span class="kw">let</span> <span class="ident">Module</span> {<span class="ident">modname</span>, <span class="ident">fnnames</span>, <span class="ident">implnames</span>} <span class="op">=</span> <span class="ident">module</span>;
+    <span class="kw">let</span> <span class="ident">Module</span> {
+        <span class="ident">modname</span>,
+        <span class="ident">fnnames</span>,
+        <span class="ident">implnames</span>,
+    } <span class="op">=</span> <span class="ident">module</span>;
     <span class="kw">let</span> <span class="ident">modname</span> <span class="op">=</span> <span class="ident">modname</span>.<span class="ident">unwrap</span>();
     <span class="kw">let</span> <span class="ident">modname_string</span> <span class="op">=</span> <span class="ident">modname</span>.<span class="ident">to_string</span>();
     <span class="kw">let</span> <span class="ident">module_init_name</span> <span class="op">=</span> <span class="macro">format_ident</span><span class="macro">!</span>(<span class="string">&quot;R_init_{}_extendr&quot;</span>, <span class="ident">modname</span>);
@@ -1393,10 +1415,14 @@
     <span class="kw">let</span> <span class="ident">make_module_wrappers_name_string</span> <span class="op">=</span> <span class="ident">make_module_wrappers_name</span>.<span class="ident">to_string</span>();
     <span class="kw">let</span> <span class="ident">wrap_make_module_wrappers</span> <span class="op">=</span> <span class="macro">format_ident</span><span class="macro">!</span>(<span class="string">&quot;{}make_{}_wrappers&quot;</span>, <span class="ident">WRAP_PREFIX</span>, <span class="ident">modname</span>);
 
-    <span class="kw">let</span> <span class="ident">fnmetanames</span> <span class="op">=</span> <span class="ident">fnnames</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">id</span><span class="op">|</span> <span class="macro">format_ident</span><span class="macro">!</span>(<span class="string">&quot;{}{}&quot;</span>, <span class="ident">META_PREFIX</span>, <span class="ident">id</span>));
-    <span class="kw">let</span> <span class="ident">implmetanames</span> <span class="op">=</span> <span class="ident">implnames</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">id</span><span class="op">|</span> <span class="macro">format_ident</span><span class="macro">!</span>(<span class="string">&quot;{}{}&quot;</span>, <span class="ident">META_PREFIX</span>, <span class="ident">type_name</span>(<span class="ident">id</span>)));
+    <span class="kw">let</span> <span class="ident">fnmetanames</span> <span class="op">=</span> <span class="ident">fnnames</span>
+        .<span class="ident">iter</span>()
+        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">id</span><span class="op">|</span> <span class="macro">format_ident</span><span class="macro">!</span>(<span class="string">&quot;{}{}&quot;</span>, <span class="ident">META_PREFIX</span>, <span class="ident">id</span>));
+    <span class="kw">let</span> <span class="ident">implmetanames</span> <span class="op">=</span> <span class="ident">implnames</span>
+        .<span class="ident">iter</span>()
+        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">id</span><span class="op">|</span> <span class="macro">format_ident</span><span class="macro">!</span>(<span class="string">&quot;{}{}&quot;</span>, <span class="ident">META_PREFIX</span>, <span class="ident">type_name</span>(<span class="ident">id</span>)));
 
-    <span class="ident">TokenStream</span>::<span class="ident">from</span>(<span class="macro">quote</span><span class="macro">!</span>{
+    <span class="ident">TokenStream</span>::<span class="ident">from</span>(<span class="macro">quote</span><span class="macro">!</span> {
         <span class="attribute">#[<span class="ident">no_mangle</span>]</span>
         <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
         <span class="kw">pub</span> <span class="kw">fn</span> #<span class="ident">module_metadata_name</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">extendr_api</span>::<span class="ident">metadata</span>::<span class="ident">Metadata</span> {
@@ -1444,7 +1470,7 @@
             <span class="kw">unsafe</span> {
                 <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">new_borrowed</span>(<span class="ident">use_symbols_sexp</span>);
                 <span class="kw">let</span> <span class="ident">use_symbols</span> : <span class="ident">bool</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>::<span class="ident">from_robj</span>(<span class="kw-2">&amp;</span><span class="ident">robj</span>).<span class="ident">unwrap</span>();
-    
+
                 <span class="ident">extendr_api</span>::<span class="ident">Robj</span>::<span class="ident">from</span>(#<span class="ident">module_metadata_name</span>().<span class="ident">make_r_wrappers</span>(<span class="ident">use_symbols</span>).<span class="ident">unwrap</span>()).<span class="ident">get</span>()
             }
         }

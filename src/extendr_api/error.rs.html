@@ -78,9 +78,9 @@
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Error handling in Rust called from R.</span>
 
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">libR_sys</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">os</span>::<span class="ident">raw</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
 
 <span class="kw">static</span> <span class="kw-2">mut</span> <span class="ident">R_ERROR_BUF</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
 
@@ -103,11 +103,11 @@
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Error</span> {
-    <span class="ident">Panic</span>{},
+    <span class="ident">Panic</span> {},
     <span class="ident">NotFound</span>,
     <span class="ident">NotAVectorType</span>,
-    <span class="ident">EvalError</span>{ <span class="ident">code</span>: <span class="ident">Robj</span>, <span class="ident">error</span>: <span class="ident">i32</span> },
-    <span class="ident">ParseError</span>{ <span class="ident">code</span>: <span class="ident">String</span>, <span class="ident">status</span>: <span class="ident">u32</span> },
+    <span class="ident">EvalError</span> { <span class="ident">code</span>: <span class="ident">Robj</span>, <span class="ident">error</span>: <span class="ident">i32</span> },
+    <span class="ident">ParseError</span> { <span class="ident">code</span>: <span class="ident">String</span>, <span class="ident">status</span>: <span class="ident">u32</span> },
     <span class="ident">Other</span>(<span class="ident">String</span>),
 }
 

@@ -488,9 +488,6 @@
 <span id="485">485</span>
 <span id="486">486</span>
 <span id="487">487</span>
-<span id="488">488</span>
-<span id="489">489</span>
-<span id="490">490</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
 
@@ -750,7 +747,7 @@
                 <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;]&quot;</span>)
             }
         }
-    }
+    };
 }
 
 <span class="doccomment">/// Iterator over the names and values of an environment</span>
@@ -800,7 +797,7 @@
                         }
                     }
                     <span class="comment">// if the key and value are invalid, move on to the hash table.</span>
-                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">break</span>
+                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">break</span>,
                 }
                 <span class="comment">// continue pair list loop.</span>
             }
@@ -813,7 +810,7 @@
                         <span class="self">self</span>.<span class="ident">pairlist</span> <span class="op">=</span> <span class="ident">obj</span>.<span class="ident">as_pairlist_iter</span>().<span class="ident">unwrap</span>();
                         <span class="kw">break</span>;
                     }
-                    <span class="comment">// continue hash table loop.</span>
+                <span class="comment">// continue hash table loop.</span>
                 } <span class="kw">else</span> {
                     <span class="comment">// The hash table is empty, end of iteration.</span>
                     <span class="kw">return</span> <span class="prelude-val">None</span>;
@@ -884,13 +881,11 @@
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_list_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ListIter</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
-            <span class="ident">VECSXP</span> <span class="op">|</span> <span class="ident">EXPRSXP</span> <span class="op">|</span> <span class="ident">WEAKREFSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">ListIter</span> {
-                    <span class="ident">vector</span>: <span class="self">self</span>.<span class="ident">into</span>(),
-                    <span class="ident">i</span>: <span class="number">0</span>,
-                    <span class="ident">len</span>: <span class="self">self</span>.<span class="ident">len</span>(),
-                })
-            },
+            <span class="ident">VECSXP</span> <span class="op">|</span> <span class="ident">EXPRSXP</span> <span class="op">|</span> <span class="ident">WEAKREFSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">ListIter</span> {
+                <span class="ident">vector</span>: <span class="self">self</span>.<span class="ident">into</span>(),
+                <span class="ident">i</span>: <span class="number">0</span>,
+                <span class="ident">len</span>: <span class="self">self</span>.<span class="ident">len</span>(),
+            }),
             <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
         }
     }
@@ -966,7 +961,6 @@
                         <span class="ident">pairlisttags</span>: <span class="ident">frame</span>.<span class="ident">as_pairlist_tag_iter</span>().<span class="ident">unwrap</span>(),
                         <span class="ident">pairlist</span>: <span class="ident">frame</span>.<span class="ident">as_pairlist_iter</span>().<span class="ident">unwrap</span>(),
                     })
-        
                 } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">hashtab</span>.<span class="ident">is_list</span>() {
                     <span class="prelude-val">Some</span>(<span class="ident">EnvIter</span> {
                         <span class="ident">hash_table</span>: <span class="ident">hashtab</span>.<span class="ident">as_list_iter</span>().<span class="ident">unwrap</span>(),

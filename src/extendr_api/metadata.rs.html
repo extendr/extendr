@@ -194,6 +194,39 @@
 <span id="191">191</span>
 <span id="192">192</span>
 <span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Module metadata</span>
 <span class="doccomment">//!</span>
@@ -294,7 +327,12 @@
 }
 
 <span class="doccomment">/// Generate a wrapper for a non-method function.</span>
-<span class="kw">fn</span> <span class="ident">write_function_wrapper</span>(<span class="ident">w</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">func</span>: <span class="kw-2">&amp;</span><span class="ident">Func</span>, <span class="ident">package_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">use_symbols</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">write_function_wrapper</span>(
+    <span class="ident">w</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
+    <span class="ident">func</span>: <span class="kw-2">&amp;</span><span class="ident">Func</span>,
+    <span class="ident">package_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
+    <span class="ident">use_symbols</span>: <span class="ident">bool</span>,
+) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
     <span class="kw">if</span> <span class="ident">func</span>.<span class="ident">hidden</span> {
         <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
     }
@@ -302,7 +340,12 @@
     <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;#&#39; @export&quot;</span>)<span class="question-mark">?</span>;
     <span class="ident">write_doc</span>(<span class="ident">w</span>, <span class="ident">func</span>.<span class="ident">doc</span>)<span class="question-mark">?</span>;
 
-    <span class="kw">let</span> <span class="ident">args</span> <span class="op">=</span> <span class="ident">func</span>.<span class="ident">args</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">arg</span><span class="op">|</span> <span class="ident">arg</span>.<span class="ident">name</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>().<span class="ident">join</span>(<span class="string">&quot;, &quot;</span>);
+    <span class="kw">let</span> <span class="ident">args</span> <span class="op">=</span> <span class="ident">func</span>
+        .<span class="ident">args</span>
+        .<span class="ident">iter</span>()
+        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">arg</span><span class="op">|</span> <span class="ident">arg</span>.<span class="ident">name</span>)
+        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()
+        .<span class="ident">join</span>(<span class="string">&quot;, &quot;</span>);
 
     <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;{} &lt;- function({}) .Call(&quot;</span>, <span class="ident">func</span>.<span class="ident">name</span>, <span class="ident">args</span>)<span class="question-mark">?</span>;
 
@@ -321,7 +364,13 @@
 }
 
 <span class="doccomment">/// Generate a wrapper for a method.</span>
-<span class="kw">fn</span> <span class="ident">write_method_wrapper</span>(<span class="ident">w</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">func</span>: <span class="kw-2">&amp;</span><span class="ident">Func</span>, <span class="ident">package_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">use_symbols</span>: <span class="ident">bool</span>, <span class="ident">class_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">write_method_wrapper</span>(
+    <span class="ident">w</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
+    <span class="ident">func</span>: <span class="kw-2">&amp;</span><span class="ident">Func</span>,
+    <span class="ident">package_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
+    <span class="ident">use_symbols</span>: <span class="ident">bool</span>,
+    <span class="ident">class_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
+) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
     <span class="kw">if</span> <span class="ident">func</span>.<span class="ident">hidden</span> {
         <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
     }
@@ -330,20 +379,32 @@
     <span class="kw">let</span> <span class="ident">formal_args</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">actual_args</span>.<span class="ident">is_empty</span>() <span class="op">&amp;&amp;</span> <span class="ident">actual_args</span>[<span class="number">0</span>] <span class="op">=</span><span class="op">=</span> <span class="string">&quot;self&quot;</span> {
         <span class="comment">// Skip a leading &quot;self&quot; argument.</span>
         <span class="comment">// This is supplied by the environment.</span>
-        <span class="ident">func</span>.<span class="ident">args</span>.<span class="ident">iter</span>().<span class="ident">skip</span>(<span class="number">1</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">arg</span><span class="op">|</span> <span class="ident">arg</span>.<span class="ident">name</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()
+        <span class="ident">func</span>.<span class="ident">args</span>
+            .<span class="ident">iter</span>()
+            .<span class="ident">skip</span>(<span class="number">1</span>)
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">arg</span><span class="op">|</span> <span class="ident">arg</span>.<span class="ident">name</span>)
+            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()
     } <span class="kw">else</span> {
         <span class="ident">actual_args</span>.<span class="ident">clone</span>()
     };
-    
+
     <span class="kw">let</span> <span class="ident">formal_args</span> <span class="op">=</span> <span class="ident">formal_args</span>.<span class="ident">join</span>(<span class="string">&quot;, &quot;</span>);
     <span class="kw">let</span> <span class="ident">actual_args</span> <span class="op">=</span> <span class="ident">actual_args</span>.<span class="ident">join</span>(<span class="string">&quot;, &quot;</span>);
 
-    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;{}${} &lt;- function({}) .Call(&quot;</span>, <span class="ident">class_name</span>, <span class="ident">func</span>.<span class="ident">name</span>, <span class="ident">formal_args</span>)<span class="question-mark">?</span>;
+    <span class="macro">write</span><span class="macro">!</span>(
+        <span class="ident">w</span>,
+        <span class="string">&quot;{}${} &lt;- function({}) .Call(&quot;</span>,
+        <span class="ident">class_name</span>, <span class="ident">func</span>.<span class="ident">name</span>, <span class="ident">formal_args</span>
+    )<span class="question-mark">?</span>;
 
     <span class="kw">if</span> <span class="ident">use_symbols</span> {
         <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;wrap__{}__{}&quot;</span>, <span class="ident">class_name</span>, <span class="ident">func</span>.<span class="ident">name</span>)<span class="question-mark">?</span>;
     } <span class="kw">else</span> {
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;\&quot;wrap__{}__{}\&quot;, PACKAGE=\&quot;{}\&quot;&quot;</span>, <span class="ident">class_name</span>, <span class="ident">func</span>.<span class="ident">name</span>, <span class="ident">package_name</span>)<span class="question-mark">?</span>;
+        <span class="macro">write</span><span class="macro">!</span>(
+            <span class="ident">w</span>,
+            <span class="string">&quot;\&quot;wrap__{}__{}\&quot;, PACKAGE=\&quot;{}\&quot;&quot;</span>,
+            <span class="ident">class_name</span>, <span class="ident">func</span>.<span class="ident">name</span>, <span class="ident">package_name</span>
+        )<span class="question-mark">?</span>;
     }
 
     <span class="kw">if</span> <span class="ident">actual_args</span>.<span class="ident">is_empty</span>() {
@@ -366,17 +427,22 @@
         <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;&quot;</span>)<span class="question-mark">?</span>;
         <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;# Generated by&quot;</span>)<span class="question-mark">?</span>;
         <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;#&quot;</span>)<span class="question-mark">?</span>;
-        <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;# cat(.Call(\&quot;wrap__make_{}_wrappers\&quot;, use_symbols={}))\n&quot;</span>, <span class="self">self</span>.<span class="ident">name</span>, <span class="kw">if</span> <span class="ident">use_symbols</span> {<span class="string">&quot;TRUE&quot;</span>} <span class="kw">else</span> {<span class="string">&quot;FALSE&quot;</span>})<span class="question-mark">?</span>;
-        
+        <span class="macro">writeln</span><span class="macro">!</span>(
+            <span class="ident">w</span>,
+            <span class="string">&quot;# cat(.Call(\&quot;wrap__make_{}_wrappers\&quot;, use_symbols={}))\n&quot;</span>,
+            <span class="self">self</span>.<span class="ident">name</span>,
+            <span class="kw">if</span> <span class="ident">use_symbols</span> { <span class="string">&quot;TRUE&quot;</span> } <span class="kw">else</span> { <span class="string">&quot;FALSE&quot;</span> }
+        )<span class="question-mark">?</span>;
+
         <span class="kw">for</span> <span class="ident">func</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">functions</span> {
             <span class="ident">write_function_wrapper</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">w</span>, <span class="ident">func</span>, <span class="self">self</span>.<span class="ident">name</span>, <span class="ident">use_symbols</span>)<span class="question-mark">?</span>;
         }
 
         <span class="kw">for</span> <span class="ident">imp</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">impls</span> {
-            <span class="ident">write_doc</span>(<span class="op">&amp;</span> <span class="kw-2">mut</span> <span class="ident">w</span>, <span class="ident">imp</span>.<span class="ident">doc</span>)<span class="question-mark">?</span>;
+            <span class="ident">write_doc</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">w</span>, <span class="ident">imp</span>.<span class="ident">doc</span>)<span class="question-mark">?</span>;
             <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;#&#39; @export&quot;</span>)<span class="question-mark">?</span>;
             <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;{} &lt;- new.env(parent = emptyenv())\n&quot;</span>, <span class="ident">imp</span>.<span class="ident">name</span>)<span class="question-mark">?</span>;
-                        
+
             <span class="kw">for</span> <span class="ident">func</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">imp</span>.<span class="ident">methods</span> {
                 <span class="comment">// write_doc(&amp; mut w, func.doc)?;</span>
                 <span class="ident">write_method_wrapper</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">w</span>, <span class="ident">func</span>, <span class="self">self</span>.<span class="ident">name</span>, <span class="ident">use_symbols</span>, <span class="ident">imp</span>.<span class="ident">name</span>)<span class="question-mark">?</span>;

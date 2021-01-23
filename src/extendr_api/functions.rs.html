@@ -393,10 +393,8 @@
 <span id="390">390</span>
 <span id="391">391</span>
 <span id="392">392</span>
-<span id="393">393</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
-
 
 <span class="doccomment">/// Create a new, empty environment parented on global_env()</span>
 <span class="doccomment">///</span>
@@ -433,7 +431,7 @@
     } <span class="kw">else</span> {
         <span class="comment">// Hashed environment, the pidgeon hole principle</span>
         <span class="comment">// ensures there are empty slots in the hash table.</span>
-        <span class="macro">call</span><span class="macro">!</span>(<span class="string">&quot;new.env&quot;</span>, <span class="ident">TRUE</span>, <span class="ident">global_env</span>(), <span class="ident">capacity</span> <span class="kw">as</span> <span class="ident">i32</span><span class="kw-2">*</span><span class="number">2</span><span class="op">+</span><span class="number">1</span>).<span class="ident">unwrap</span>()
+        <span class="macro">call</span><span class="macro">!</span>(<span class="string">&quot;new.env&quot;</span>, <span class="ident">TRUE</span>, <span class="ident">global_env</span>(), <span class="ident">capacity</span> <span class="kw">as</span> <span class="ident">i32</span> <span class="op">*</span> <span class="number">2</span> <span class="op">+</span> <span class="number">1</span>).<span class="ident">unwrap</span>()
     }
 }
 
@@ -448,7 +446,7 @@
 <span class="doccomment">///    assert_eq!(iris.len(), 5);</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">global_var</span><span class="op">&lt;</span><span class="ident">K</span> : <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">global_var</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
     <span class="ident">global_env</span>()
         .<span class="ident">find_var</span>(<span class="ident">key</span>)
         .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Error</span>::<span class="ident">NotFound</span>)
@@ -470,7 +468,7 @@
 <span class="doccomment">///    assert_eq!(local_var(sym!(my_var))?, r!(1));</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">local_var</span><span class="op">&lt;</span><span class="ident">K</span> : <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">local_var</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
     <span class="ident">current_env</span>()
         .<span class="ident">find_var</span>(<span class="ident">key</span>)
         .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Error</span>::<span class="ident">NotFound</span>)
@@ -488,7 +486,7 @@
 <span class="doccomment">///     // let iris = global_function(sym!(iris));</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">global_function</span><span class="op">&lt;</span><span class="ident">K</span> : <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">global_function</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
     <span class="ident">global_env</span>().<span class="ident">find_function</span>(<span class="ident">key</span>)
 }
 
@@ -502,7 +500,7 @@
 <span class="doccomment">///    assert_eq!(find_namespace(&quot;base&quot;).is_some(), true);</span>
 <span class="doccomment">///    assert_eq!(find_namespace(&quot;stats&quot;).is_some(), true);</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_namespace</span><span class="op">&lt;</span><span class="ident">K</span> : <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_namespace</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
     <span class="comment">// single_threaded(|| unsafe { new_borrowed(R_FindNamespace(key.get())) });</span>
     <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">call</span><span class="macro">!</span>(<span class="string">&quot;.getNamespace&quot;</span>, <span class="ident">key</span>.<span class="ident">into</span>()));
     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">res</span>) <span class="op">=</span> <span class="ident">res</span> {
@@ -783,7 +781,7 @@ pub fn dot_Generic() -&gt; Robj { unsafe { new_sys(R_dot_Generic) }}
 <span class="doccomment">///   Ok(())</span>
 <span class="doccomment">/// })</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">test</span><span class="op">&lt;</span><span class="ident">F</span> : <span class="ident">FnOnce</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">f</span>: <span class="ident">F</span>) {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">test</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">FnOnce</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">f</span>: <span class="ident">F</span>) {
     <span class="ident">extendr_engine</span>::<span class="ident">start_r</span>();
 
     <span class="ident">f</span>().<span class="ident">unwrap</span>();

@@ -709,7 +709,7 @@
     <span class="kw">pub</span> <span class="ident">code</span>: <span class="ident">C</span>,
     <span class="kw">pub</span> <span class="ident">env</span>: <span class="ident">E</span>,
     <span class="kw">pub</span> <span class="ident">value</span>: <span class="ident">V</span>,
-    <span class="kw">pub</span> <span class="ident">seen</span>: <span class="ident">bool</span>
+    <span class="kw">pub</span> <span class="ident">seen</span>: <span class="ident">bool</span>,
 }
 
 <span class="doccomment">/// Wrapper for creating and reading Primitive functions.</span>
@@ -937,9 +937,7 @@
             <span class="kw">unsafe</span> {
                 <span class="kw">let</span> <span class="ident">printname</span> <span class="op">=</span> <span class="ident">PRINTNAME</span>(<span class="self">self</span>.<span class="ident">get</span>());
                 <span class="kw">if</span> <span class="ident">TYPEOF</span>(<span class="ident">printname</span>) <span class="kw">as</span> <span class="ident">u32</span> <span class="op">=</span><span class="op">=</span> <span class="ident">CHARSXP</span> {
-                    <span class="prelude-val">Some</span>(<span class="ident">Symbol</span>(
-                        <span class="ident">to_str</span>(<span class="ident">R_CHAR</span>(<span class="ident">printname</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>)
-                    ))
+                    <span class="prelude-val">Some</span>(<span class="ident">Symbol</span>(<span class="ident">to_str</span>(<span class="ident">R_CHAR</span>(<span class="ident">printname</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>)))
                 } <span class="kw">else</span> {
                     <span class="comment">// This should never occur.</span>
                     <span class="prelude-val">None</span>
@@ -1067,7 +1065,10 @@
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_environment</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Env</span><span class="op">&lt;</span><span class="ident">Robj</span>, <span class="ident">EnvIter</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_environment</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">Env</span>{ <span class="ident">parent</span>: <span class="self">self</span>.<span class="ident">parent</span>().<span class="ident">unwrap</span>(), <span class="ident">names_and_values</span>: <span class="self">self</span>.<span class="ident">as_env_iter</span>().<span class="ident">unwrap</span>()})
+            <span class="prelude-val">Some</span>(<span class="ident">Env</span> {
+                <span class="ident">parent</span>: <span class="self">self</span>.<span class="ident">parent</span>().<span class="ident">unwrap</span>(),
+                <span class="ident">names_and_values</span>: <span class="self">self</span>.<span class="ident">as_env_iter</span>().<span class="ident">unwrap</span>(),
+            })
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
         }
@@ -1123,7 +1124,7 @@
                     <span class="ident">code</span>: <span class="ident">new_owned</span>(<span class="ident">PRCODE</span>(<span class="ident">sexp</span>)),
                     <span class="ident">env</span>: <span class="ident">new_owned</span>(<span class="ident">PRENV</span>(<span class="ident">sexp</span>)),
                     <span class="ident">value</span>: <span class="ident">new_owned</span>(<span class="ident">PRVALUE</span>(<span class="ident">sexp</span>)),
-                    <span class="ident">seen</span>: <span class="ident">PRSEEN</span>(<span class="ident">sexp</span>) <span class="op">!</span><span class="op">=</span> <span class="number">0</span>
+                    <span class="ident">seen</span>: <span class="ident">PRSEEN</span>(<span class="ident">sexp</span>) <span class="op">!</span><span class="op">=</span> <span class="number">0</span>,
                 })
             }
         } <span class="kw">else</span> {
@@ -1138,13 +1139,12 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">R</span><span class="op">&gt;</span> <span class="ident">SymPair</span> <span class="kw">for</span> (<span class="ident">S</span>, <span class="ident">R</span>)
 <span class="kw">where</span>
-    <span class="ident">S</span> : <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>,
-    <span class="ident">R</span> : <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
+    <span class="ident">S</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>,
+    <span class="ident">R</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
 {
     <span class="kw">fn</span> <span class="ident">sym_pair</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">Robj</span>, <span class="ident">Robj</span>) {
         (<span class="macro">r</span><span class="macro">!</span>(<span class="ident">Symbol</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">as_ref</span>())), <span class="self">self</span>.<span class="number">1</span>.<span class="ident">into</span>())
     }
 }
-
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "extendr_api";</script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
