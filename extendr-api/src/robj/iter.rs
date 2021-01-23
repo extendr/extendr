@@ -256,7 +256,7 @@ macro_rules! impl_iter_debug {
                 write!(f, "]")
             }
         }
-    }
+    };
 }
 
 /// Iterator over the names and values of an environment
@@ -306,7 +306,7 @@ impl Iterator for EnvIter {
                         }
                     }
                     // if the key and value are invalid, move on to the hash table.
-                    _ => break
+                    _ => break,
                 }
                 // continue pair list loop.
             }
@@ -319,7 +319,7 @@ impl Iterator for EnvIter {
                         self.pairlist = obj.as_pairlist_iter().unwrap();
                         break;
                     }
-                    // continue hash table loop.
+                // continue hash table loop.
                 } else {
                     // The hash table is empty, end of iteration.
                     return None;
@@ -390,13 +390,11 @@ impl Robj {
     /// ```
     pub fn as_list_iter(&self) -> Option<ListIter> {
         match self.sexptype() {
-            VECSXP | EXPRSXP | WEAKREFSXP => {
-                Some(ListIter {
-                    vector: self.into(),
-                    i: 0,
-                    len: self.len(),
-                })
-            },
+            VECSXP | EXPRSXP | WEAKREFSXP => Some(ListIter {
+                vector: self.into(),
+                i: 0,
+                len: self.len(),
+            }),
             _ => None,
         }
     }
@@ -472,7 +470,6 @@ impl Robj {
                         pairlisttags: frame.as_pairlist_tag_iter().unwrap(),
                         pairlist: frame.as_pairlist_iter().unwrap(),
                     })
-        
                 } else if hashtab.is_list() {
                     Some(EnvIter {
                         hash_table: hashtab.as_list_iter().unwrap(),

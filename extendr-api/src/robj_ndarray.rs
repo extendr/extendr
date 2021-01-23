@@ -36,7 +36,7 @@ macro_rules! make_array_view_2 {
                 return Err($error_str);
             }
         }
-    }
+    };
 }
 
 make_array_view_2!(Bool, "Not a logical matrix.");

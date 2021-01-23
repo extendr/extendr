@@ -255,7 +255,7 @@ impl<'a> FromRobj<'a> for Option<String> {
 
 impl<'a, T> FromRobj<'a> for &'a [T]
 where
-    Robj : AsTypedSlice<'a, T>
+    Robj: AsTypedSlice<'a, T>,
 {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
         if let Some(slice) = robj.as_typed_slice() {
@@ -306,4 +306,3 @@ where
         }
     }
 }
-
