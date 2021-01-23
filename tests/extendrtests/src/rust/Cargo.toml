@@ -23,6 +23,6 @@ extendr-api = "*"
 #extendr-macros = { path = "../../../../extendr-macros/"}
 
 # R CMD check
-extendr-api = { git = "https://github.com/extendr/extendr", branch = "metadata"}
-extendr-engine = { git = "https://github.com/extendr/extendr", branch = "metadata" }
-extendr-macros = { git = "https://github.com/extendr/extendr", branch = "metadata" }
+extendr-api = { git = "https://github.com/extendr/extendr"}
+extendr-engine = { git = "https://github.com/extendr/extendr" }
+extendr-macros = { git = "https://github.com/extendr/extendr" }
