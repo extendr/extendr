@@ -7,38 +7,37 @@ NULL
 #
 # cat(.Call("wrap__make_extendrtests_wrappers", use_symbols=TRUE))
 
-# '@export
 #' Say hello
+#' @export
 hello_world <- function() .Call(wrap__hello_world)
 
-# '@export
 #' convert a double scalar to itself
+#' @export
 #' @param x a number
 double_scalar <- function(x) .Call(wrap__double_scalar, x)
 
-# '@export
 #' convert an int scalar to itself
+#' @export
 #' @param x a number
 int_scalar <- function(x) .Call(wrap__int_scalar, x)
 
-# '@export
 #' convert a bool scalar to itself
+#' @export
 #' @param x a number
 bool_scalar <- function(x) .Call(wrap__bool_scalar, x)
 
-# '@export
 #' convert a string to itself
+#' @export
 #' @param x a number
 char_scalar <- function(x) .Call(wrap__char_scalar, x)
 
 #' Class for testing
-# '@export
+#' @export
 MyClass <- new.env(parent = emptyenv())
 
 MyClass$new <- function() .Call(wrap__MyClass__new)
 MyClass$set_a <- function(x) .Call(wrap__MyClass__set_a, self, x)
 MyClass$a <- function() .Call(wrap__MyClass__a, self)
 MyClass$me <- function() .Call(wrap__MyClass__me, self)
-# '@export
+#' @export
 `$.MyClass` <- function (self, name) { func <- MyClass[[name]]; environment(func) <- environment(); func }
-

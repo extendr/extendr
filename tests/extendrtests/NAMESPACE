@@ -2,7 +2,9 @@
 
 S3method("$",MyClass)
 export(MyClass)
-export(get_extendrtests_metadata)
+export(bool_scalar)
+export(char_scalar)
+export(double_scalar)
 export(hello_world)
-export(make_extendrtests_wrappers)
+export(int_scalar)
 useDynLib(extendrtests, .registration = TRUE)
