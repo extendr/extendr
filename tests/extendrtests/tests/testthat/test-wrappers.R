@@ -2,7 +2,7 @@ test_that("Wrapper code is up-to-date", {
   # What we're doing here is generating the latest wrappers for the
   # Rust library and comparing to the wrappers file stored in the
   # package R code. There are two reasons why this test may fail:
-  # 1. The wrapper code needs updating via `make_wrappers()`
+  # 1. The wrapper code needs updating via `make_wrappers()`.
   # 2. The Rust code that generates the wrappers has a problem.
   #
   # Make sure you know which it is before running `make_wrappers()`.
