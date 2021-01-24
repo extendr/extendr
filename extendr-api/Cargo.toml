@@ -16,14 +16,16 @@ repository = "https://github.com/extendr/extendr"
 [dependencies]
 libR-sys = "0.2.0"
 extendr-macros = { path = "../extendr-macros", version = "0.1.11" }
-extendr-engine = { path = "../extendr-engine", version = "0.1.11", optional = true }
 ndarray = { version = "0.13.1", optional = true }
 
+[dev-dependencies]
+extendr-engine = { path = "../extendr-engine", version = "0.1.11" }
+
 [features]
-default = ["extendr-engine"]
+default = []
 
 # All features to test
-tests-all = ["ndarray", "extendr-engine", "libR-sys/use-bindgen"]
+tests-all = ["ndarray", "libR-sys/use-bindgen"]
 
 # The minimal set of features without all optional ones
 tests-minimal = ["libR-sys/use-bindgen"]

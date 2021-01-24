@@ -25,5 +25,5 @@ extendr-api = "*"
 ## Build against local extendr sources. Check locally by 
 ## running rcmdcheck::rcmdcheck(check_dir = "../../../") from
 ## the root of extendrtests.
-extendr-api = { path = "../../../../../extendr/extendr-api/", features = [] }
+extendr-api = { path = "../../../../../extendr/extendr-api/" }
 extendr-macros = { path = "../../../../../extendr/extendr-macros/" }

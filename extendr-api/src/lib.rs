@@ -521,7 +521,6 @@ mod tests {
         impl Person;
     }
 
-    #[cfg(feature = "extendr_engine")]
     #[test]
     fn export_test() {
         extendr_engine::start_r();
@@ -648,7 +647,6 @@ mod tests {
         }
     }
 
-    #[cfg(feature = "extendr_engine")]
     #[test]
     fn r_output_test() {
         // R equivalent
