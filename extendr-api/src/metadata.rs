@@ -96,6 +96,13 @@ fn write_doc(w: &mut Vec<u8>, doc: &str) -> std::io::Result<()> {
     Ok(())
 }
 
+fn sanitize_arg_name(arg: &Arg) -> String {
+    match arg.name.chars().next() {
+        Some('_') => format!("`{}`", arg.name),
+        _ => arg.name.to_string()
+    }
+}
+
 /// Generate a wrapper for a non-method function.
 fn write_function_wrapper(
     w: &mut Vec<u8>,
