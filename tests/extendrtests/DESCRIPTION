@@ -7,7 +7,7 @@ Authors@R: c(
       comment = c(ORCID = "0000-0002-7470-9261"))
   )
 Description:
-  This packge provides tests for extendr functionality used from
+  This package provides tests for extendr functionality used from
   within an R package.
 License: MIT + file LICENSE
 SystemRequirements: Rust
