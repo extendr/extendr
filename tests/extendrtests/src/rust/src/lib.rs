@@ -1,6 +1,7 @@
 use extendr_api::*;
 
 /// Say hello
+/// @export
 #[extendr]
 fn hello_world() -> &'static str {
     "Hello world!"
@@ -8,38 +9,52 @@ fn hello_world() -> &'static str {
 
 // functions to test input/output conversion
 
-/// convert a double scalar to itself
+/// Convert a double scalar to itself
 /// @param x a number
+/// @export
 #[extendr]
 fn double_scalar(x: f64) -> f64 { x }
 
-/// convert an int scalar to itself
+/// Convert an int scalar to itself
 /// @param x a number
+/// @export
 #[extendr]
 fn int_scalar(x: i32) -> i32 { x }
 
-/// convert a bool scalar to itself
+/// Convert a bool scalar to itself
 /// @param x a number
+/// @export
 #[extendr]
 fn bool_scalar(x: bool) -> bool { x }
 
-/// convert a string to itself
-/// @param x a number
+/// Convert a string to itself
+/// @param x a string
+/// @export
 #[extendr]
 fn char_scalar(x: String) -> String { x }
+
+/// Convert a vector of strings to itself
+/// @param x a vector of strings
+/// @export
 #[extendr]
 fn char_vec(x: Vec<String>) -> Vec<String> {x}
 
-/// Class for testing
+// Class for testing
 #[derive(Default, Debug)]
 struct MyClass {
     a: i32,
 }
 
-/// Class for testing
+/// Class for testing (exported)
+/// @examples
+/// x <- MyClass$new()
+/// x$a()
+/// x$set_a(10)
+/// x$a()
+/// @export
 #[extendr]
 impl MyClass {
-    /// Method for making new object.
+    /// Method for making a new object.
     fn new() -> Self {
         Self { a: 0 }
     }
@@ -61,6 +76,27 @@ impl MyClass {
     }
 }
 
+// Class for testing (unexported)
+#[derive(Default, Debug)]
+struct MyClassUnexported {
+    a: i32,
+}
+
+/// Class for testing (unexported)
+#[extendr]
+impl MyClassUnexported {
+    /// Method for making a new object.
+    fn new() -> Self {
+        Self { a: 22 }
+    }
+    
+    /// Method for getting stuff.
+    fn a(&self) -> i32 {
+        self.a
+    }
+}
+
+
 // Macro to generate exports
 extendr_module! {
     mod extendrtests;
@@ -73,4 +109,5 @@ extendr_module! {
     fn char_vec;
     
     impl MyClass;
+    impl MyClassUnexported;
 }

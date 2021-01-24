@@ -701,7 +701,10 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
             functions.push(extendr_api::metadata::Func {
                 doc: "Wrapper generator.",
                 name: #make_module_wrappers_name_string,
-                args: vec![extendr_api::metadata::Arg { name: "use_symbols", arg_type: "bool" }],
+                args: vec![
+                    extendr_api::metadata::Arg { name: "use_symbols", arg_type: "bool" },
+                    extendr_api::metadata::Arg { name: "package_name", arg_type: "&str" },
+                    ],
                 return_type: "String",
                 func_ptr: #wrap_make_module_wrappers as * const u8,
                 hidden: true,
@@ -722,12 +725,24 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
 
         #[no_mangle]
         #[allow(non_snake_case)]
-        pub extern "C" fn #wrap_make_module_wrappers(use_symbols_sexp: SEXP) -> SEXP {
+        pub extern "C" fn #wrap_make_module_wrappers(
+            use_symbols_sexp: SEXP,
+            package_name_sexp: SEXP,
+        ) -> SEXP {
             unsafe {
                 let robj = new_borrowed(use_symbols_sexp);
-                let use_symbols : bool = <bool>::from_robj(&robj).unwrap();
+                let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
 
-                extendr_api::Robj::from(#module_metadata_name().make_r_wrappers(use_symbols).unwrap()).get()
+                let robj = new_borrowed(package_name_sexp);
+                let package_name: &str = <&str>::from_robj(&robj).unwrap();
+
+                extendr_api::Robj::from(
+                    #module_metadata_name()
+                        .make_r_wrappers(
+                            use_symbols,
+                            package_name,
+                        ).unwrap()
+                ).get()
             }
         }
 
