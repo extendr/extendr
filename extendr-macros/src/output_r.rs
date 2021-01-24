@@ -14,7 +14,6 @@ lazy_static! {
 
 const OUTPUT_FILE_NAME: &str = "extendr_wrappers.R";
 
-
 fn find_target_dir() -> Result<PathBuf, &'static str> {
     // env::current_dir() always points at the root of a crate directory
     // (also works in workspaces)
@@ -39,7 +38,7 @@ struct WrapperFn {
 fn sanitize_arg_name(arg: &WrapperFnArg) -> String {
     match arg.name.chars().next() {
         Some('_') => format!("`{}`", arg.name),
-        _ => arg.name.to_string()
+        _ => arg.name.to_string(),
     }
 }
 impl WrapperFn {
