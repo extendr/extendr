@@ -280,10 +280,10 @@ macro_rules! reprintln {
 #[macro_export]
 macro_rules! test {
     () => {
-        test(|| Ok(()))
+        extendr_engine::test(|| Ok(()))
     };
     ($($rest: tt)*) => {
-        test(|| {
+        extendr_engine::test(|| {
             $($rest)*
             Ok(())
         })

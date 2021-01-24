@@ -61,6 +61,20 @@ pub fn end_r() {
     }
 }
 
+/// Extendr test harness.
+///
+/// See also [test!]
+/// ```
+/// extendr_api::test(|| {
+///   Ok(())
+/// })
+/// ```
+pub fn test<F: FnOnce() -> Result<(), String>>(f: F) {
+    start_r();
+
+    f().unwrap();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
