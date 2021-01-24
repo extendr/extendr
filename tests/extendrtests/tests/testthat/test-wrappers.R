@@ -1,7 +1,11 @@
 test_that("Wrapper code is up-to-date", {
   # if this test fails check whether the wrapper code needs 
   # updating via make_wrappers()
-  x <- .Call("wrap__make_extendrtests_wrappers", use_symbols = TRUE)
+  x <- .Call(
+    "wrap__make_extendrtests_wrappers",
+    use_symbols = TRUE,
+    package_name = "extendrtests"
+  )
   x <- strsplit(x, "\n")[[1]]
   
   # testthat run locally?
