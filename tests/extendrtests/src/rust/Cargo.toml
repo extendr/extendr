@@ -16,16 +16,11 @@ crate-type = ["staticlib"]
 extendr-api = "*"
 
 [patch.crates-io]
-
-## Build against current extendr version on github. Not recommended
-## for development work.
-#extendr-api = { git = "https://github.com/extendr/extendr"}
-#extendr-engine = { git = "https://github.com/extendr/extendr" }
-#extendr-macros = { git = "https://github.com/extendr/extendr" }
-
 ## Build against local extendr sources. Check locally by 
 ## running rcmdcheck::rcmdcheck(check_dir = "../../../") from
 ## the root of extendrtests.
 extendr-api = { path = "../../../../../extendr/extendr-api/"}
-extendr-engine = { path = "../../../../../extendr/extendr-engine/"}
-extendr-macros = { path = "../../../../../extendr/extendr-macros/"}
+
+## Build against current extendr version on github. Not recommended
+## for development work.
+#extendr-api = { git = "https://github.com/extendr/extendr"}

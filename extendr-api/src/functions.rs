@@ -376,17 +376,3 @@ pub fn blank_scalar_string() -> Robj {
 pub fn na_str() -> &'static str {
     unsafe { std::str::from_utf8_unchecked(&[b'N', b'A']) }
 }
-
-/// Extendr test harness.
-///
-/// See also [test!]
-/// ```
-/// extendr_api::test(|| {
-///   Ok(())
-/// })
-/// ```
-pub fn test<F: FnOnce() -> Result<()>>(f: F) {
-    extendr_engine::start_r();
-
-    f().unwrap();
-}
