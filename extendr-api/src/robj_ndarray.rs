@@ -56,7 +56,6 @@ make_array_view_2!(f64, "Not a floating point matrix.");
 //     }
 // }
 
-#[cfg(test)]
 #[test]
 fn test_from_robj() {
     test! {
