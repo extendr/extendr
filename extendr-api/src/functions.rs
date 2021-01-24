@@ -385,14 +385,9 @@ pub fn na_str() -> &'static str {
 ///   Ok(())
 /// })
 /// ```
-#[cfg(feature = "extendr_engine")]
+#[cfg(test)]
 pub fn test<F: FnOnce() -> Result<()>>(f: F) {
     extendr_engine::start_r();
 
     f().unwrap();
-}
-
-#[cfg(not(feature = "extendr_engine"))]
-pub fn test<F: FnOnce() -> Result<()>>(_: F) {
-    ()
 }
