@@ -1,6 +1,12 @@
 test_that("Wrapper code is up-to-date", {
-  # if this test fails check whether the wrapper code needs 
-  # updating via make_wrappers()
+  # What we're doing here is generating the latest wrappers for the
+  # Rust library and comparing to the wrappers file stored in the
+  # package R code. There are two reasons why this test may fail:
+  # 1. The wrapper code needs updating via `make_wrappers()`
+  # 2. The Rust code that generates the wrappers has a problem.
+  #
+  # Make sure you know which it is before running `make_wrappers()`.
+  
   x <- .Call(
     "wrap__make_extendrtests_wrappers",
     use_symbols = TRUE,
@@ -8,12 +14,15 @@ test_that("Wrapper code is up-to-date", {
   )
   x <- strsplit(x, "\n")[[1]]
   
-  # testthat run locally?
+  # locating the file containing the R wrappers is a bit complicated,
+  # because it depends on whether testthat is run locally or as part
+  # of R CMD check.
+  
   tmp <- file.path("..", "..", "R", "extendr-wrappers.R")
-  if (file.exists(tmp)) {
+  if (file.exists(tmp)) { # testthat run locally?
     source <- tmp
   } else {
-    # testthat run as part of R CMD check
+    # testthat run as part of R CMD check?
     tmp <- file.path("..", "..", "00_pkg_src", "extendrtests", "R", "extendr-wrappers.R")
     if (file.exists(tmp)) {
       source <- tmp
