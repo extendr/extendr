@@ -20,7 +20,7 @@ extendr-engine = { path = "../extendr-engine", version = "0.1.11", optional = tr
 ndarray = { version = "0.13.1", optional = true }
 
 [features]
-default = []
+default = ["extendr-engine"]
 
 # All features to test
 tests-all = ["ndarray", "extendr-engine", "libR-sys/use-bindgen"]
