@@ -120,7 +120,7 @@ fn write_function_wrapper(
     let args = func
         .args
         .iter()
-        .map(|arg| arg.name)
+        .map(sanitize_arg_name)
         .collect::<Vec<_>>()
         .join(", ");
 
@@ -152,14 +152,14 @@ fn write_method_wrapper(
         return Ok(());
     }
 
-    let actual_args = func.args.iter().map(|arg| arg.name).collect::<Vec<_>>();
+    let actual_args = func.args.iter().map(sanitize_arg_name).collect::<Vec<_>>();
     let formal_args = if !actual_args.is_empty() && actual_args[0] == "self" {
         // Skip a leading "self" argument.
         // This is supplied by the environment.
         func.args
             .iter()
             .skip(1)
-            .map(|arg| arg.name)
+            .map(sanitize_arg_name)
             .collect::<Vec<_>>()
     } else {
         actual_args.clone()
