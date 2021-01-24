@@ -192,7 +192,6 @@ fn write_impl_wrapper(
     package_name: &str,
     use_symbols: bool,
 ) -> std::io::Result<()> {
-
     let exported = imp.doc.contains("@export");
 
     write_doc(w, imp.doc)?;
