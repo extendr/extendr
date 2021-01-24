@@ -8,6 +8,7 @@ make_wrappers <- function() {
   x <- strsplit(x, "\n")[[1]]
   
   outfile <- here::here("R", "extendr-wrappers.R")
-  message("Writting wrappers to: ", outfile)
+  message("Writting wrappers to:\n", outfile)
   brio::write_lines(x, outfile)
+  message("\nRemember to run `devtools::document()` to update the .Rd files.")
 }
