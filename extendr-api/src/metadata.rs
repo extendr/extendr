@@ -187,7 +187,6 @@ fn write_method_wrapper(
 
     writeln!(w, ")\n")?;
 
-
     Ok(())
 }
 
