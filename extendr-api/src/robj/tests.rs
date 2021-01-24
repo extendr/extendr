@@ -1,5 +1,6 @@
 use crate::*;
 
+#[cfg(feature = "extendr_engine")]
 #[test]
 fn test_debug() {
     extendr_engine::start_r();
@@ -35,6 +36,7 @@ fn test_debug() {
     );
 }
 
+#[cfg(feature = "extendr_engine")]
 #[test]
 fn test_from_robj() {
     extendr_engine::start_r();
@@ -125,6 +127,8 @@ fn test_from_robj() {
     );
     assert!(<Option<String>>::from_robj(&Robj::from(["1", "2"])).is_err());
 }
+
+#[cfg(feature = "extendr_engine")]
 #[test]
 fn test_to_robj() {
     extendr_engine::start_r();
@@ -163,6 +167,7 @@ fn test_to_robj() {
     assert!(Robj::from(<Option<&str>>::None).is_na());
 }
 
+#[cfg(feature = "extendr_engine")]
 #[test]
 fn parse_test() -> Result<()> {
     extendr_engine::start_r();
@@ -178,6 +183,7 @@ fn parse_test() -> Result<()> {
     Ok(())
 }
 
+#[cfg(feature = "extendr_engine")]
 #[test]
 fn output_iterator_test() -> Result<()> {
     extendr_engine::start_r();
@@ -228,6 +234,7 @@ fn output_iterator_test() -> Result<()> {
 // #[extendr]
 // fn fred(a: RealIter, b: RealIter) -> RealIter {
 // }
+#[cfg(feature = "extendr_engine")]
 #[test]
 fn input_iterator_test() {
     extendr_engine::start_r();
