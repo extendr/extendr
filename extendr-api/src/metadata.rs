@@ -124,7 +124,7 @@ fn write_function_wrapper(
         .collect::<Vec<_>>()
         .join(", ");
 
-    write!(w, "{} <- function({}) .Call(", func.name, args)?;
+    write!(w, "{} <- function({}) .Call(", sanitize_identifier(func.name), args)?;
 
     if use_symbols {
         write!(w, "wrap__{}", func.name)?;
@@ -176,7 +176,9 @@ fn write_method_wrapper(
     write!(
         w,
         "{}${} <- function({}) .Call(",
-        class_name, func.name, formal_args
+        class_name,
+        sanitize_identifier(func.name), 
+        formal_args
     )?;
 
     if use_symbols {
