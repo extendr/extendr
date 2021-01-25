@@ -116,7 +116,11 @@ fn write_function_wrapper(
         .collect::<Vec<_>>()
         .join(", ");
 
-    write!(w, "{} <- function({}) .Call(", func.name, args)?;
+    if func.return_type == "()" {
+        write!(w, "{} <- function({}) invisible(.Call(", func.name, args)?;
+    } else {
+        write!(w, "{} <- function({}) .Call(", func.name, args)?;
+    }
 
     if use_symbols {
         write!(w, "wrap__{}", func.name)?;
@@ -132,7 +136,11 @@ fn write_function_wrapper(
         write!(w, ", PACKAGE = \"{}\"", package_name)?;
     }
 
-    writeln!(w, ")\n")?;
+    if func.return_type == "()" {
+        writeln!(w, "))\n")?;
+    } else {
+        writeln!(w, ")\n")?;
+    }
 
     Ok(())
 }
@@ -165,11 +173,11 @@ fn write_method_wrapper(
     let formal_args = formal_args.join(", ");
     let actual_args = actual_args.join(", ");
 
-    write!(
-        w,
-        "{}${} <- function({}) .Call(",
-        class_name, func.name, formal_args
-    )?;
+    if func.return_type == "()" {
+        write!(w, "{}${} <- function({}) invisible(.Call(", class_name, func.name, formal_args)?;
+    } else {
+        write!(w, "{}${} <- function({}) .Call(", class_name, func.name, formal_args)?;
+    }
 
     if use_symbols {
         write!(w, "wrap__{}__{}", class_name, func.name)?;
@@ -185,7 +193,11 @@ fn write_method_wrapper(
         write!(w, ", PACKAGE = \"{}\"", package_name)?;
     }
 
-    writeln!(w, ")\n")?;
+    if func.return_type == "()" {
+        writeln!(w, "))\n")?;
+    } else {
+        writeln!(w, ")\n")?;
+    }
 
     Ok(())
 }

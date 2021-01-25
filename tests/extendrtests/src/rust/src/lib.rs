@@ -1,11 +1,18 @@
 use extendr_api::*;
 
-/// Say hello
+/// Return string `"Hello world!"` to R.
 /// @export
 #[extendr]
 fn hello_world() -> &'static str {
     "Hello world!"
 }
+
+/// Do nothing.
+/// @export
+#[extendr]
+fn do_nothing() {
+}
+
 
 // functions to test input/output conversion
 
@@ -101,6 +108,7 @@ impl MyClassUnexported {
 extendr_module! {
     mod extendrtests;
     fn hello_world;
+    fn do_nothing;
 
     fn double_scalar;
     fn int_scalar;

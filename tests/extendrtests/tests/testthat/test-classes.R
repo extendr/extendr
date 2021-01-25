@@ -4,6 +4,9 @@ test_that("Exported class works", {
   x$set_a(10L)
   expect_equal(x$a(), 10L)
   expect_equal(x$me(), x)
+  
+  expect_visible(x$a())
+  expect_invisible(x$set_a(5L))
 })
 
 test_that("Unexported class works", {
