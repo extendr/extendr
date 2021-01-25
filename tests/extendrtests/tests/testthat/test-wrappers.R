@@ -39,8 +39,8 @@ test_that("Rust function prefixed with `_` can be called", {
   expect_invisible(`__00__special_function_name`())
 })
 
-test_that("Rust method prefixed with `_` can be called", {
-  x <- MyClass$new()
+test_that("Rust classes and methods prefixed with `_` can be invoked", {
+  x <- `__MyClass`$new()
   x$`__name_test`()
 })
 

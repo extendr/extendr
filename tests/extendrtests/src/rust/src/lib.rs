@@ -96,11 +96,7 @@ struct __MyClass {
 }
 
 /// Class for testing special names
-/// @name c__MyClass
-/// @examples
-/// x <- `__MyClass`$new()
-/// x$`__name_test`()
-/// @export
+/// Unexported because of document conflict
 #[extendr]
 impl __MyClass {
     /// Method for making a new object.
@@ -148,5 +144,6 @@ extendr_module! {
     fn __00__special_function_name;
 
     impl MyClass;
+    impl __MyClass;
     impl MyClassUnexported;
 }
