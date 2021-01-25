@@ -7,9 +7,9 @@
 special_param_names(`_x`, `_y`)
 }
 \arguments{
-\item{`_x`}{an integer scalar, ignored}
+\item{_x}{an integer scalar, ignored}
 
-\item{`_y`}{an integer scalar, ignore}
+\item{_y}{an integer scalar, ignored}
 }
 \description{
 Test whether \verb{_arg} parameters are treated correctly in R

@@ -40,8 +40,8 @@ fn char_scalar(x: String) -> String { x }
 fn char_vec(x: Vec<String>) -> Vec<String> {x}
 
 /// Test whether `_arg` parameters are treated correctly in R
-/// @param `_x` an integer scalar, ignored
-/// @param `_y` an integer scalar, ignore
+/// @param _x an integer scalar, ignored
+/// @param _y an integer scalar, ignored
 /// @export
 #[extendr]
 fn special_param_names(_x : i32, _y : i32) {}
