@@ -96,10 +96,11 @@ fn write_doc(w: &mut Vec<u8>, doc: &str) -> std::io::Result<()> {
     Ok(())
 }
 
-fn sanitize_arg_name(arg: &Arg) -> String {
-    match arg.name.chars().next() {
-        Some('_') => format!("`{}`", arg.name),
-        _ => arg.name.to_string(),
+/// Wraps invalid R identifers, like `_function_name`, into back quotes.
+fn sanitize_identifier(name: &str) -> String {
+    match name.chars().next() {
+        Some('_') => format!("`{}`", name),
+        _ => name.to_string(),
     }
 }
 
@@ -119,14 +120,14 @@ fn write_function_wrapper(
     let args = func
         .args
         .iter()
-        .map(sanitize_arg_name)
+        .map(|arg| sanitize_identifier(arg.name))
         .collect::<Vec<_>>()
         .join(", ");
 
     if func.return_type == "()" {
-        write!(w, "{} <- function({}) invisible(.Call(", func.name, args)?;
+        write!(w, "{} <- function({}) invisible(.Call(", sanitize_identifier(func.name), args)?;
     } else {
-        write!(w, "{} <- function({}) .Call(", func.name, args)?;
+        write!(w, "{} <- function({}) .Call(", sanitized_identifier(func.name), args)?;
     }
 
     if use_symbols {
@@ -164,7 +165,11 @@ fn write_method_wrapper(
         return Ok(());
     }
 
-    let actual_args = func.args.iter().map(sanitize_arg_name).collect::<Vec<_>>();
+    let actual_args = func
+        .args
+        .iter()
+        .map(|arg| sanitize_identifier(arg.name))
+        .collect::<Vec<_>>();
     let formal_args = if !actual_args.is_empty() && actual_args[0] == "self" {
         // Skip a leading "self" argument.
         // This is supplied by the environment.
@@ -184,13 +189,17 @@ fn write_method_wrapper(
         write!(
             w,
             "{}${} <- function({}) invisible(.Call(",
-            class_name, func.name, formal_args
+            sanitize_identifier(class_name), 
+            sanitize_identifier(func.name), 
+            formal_args
         )?;
     } else {
         write!(
             w,
             "{}${} <- function({}) .Call(",
-            class_name, func.name, formal_args
+            sanitize_identifier(class_name), 
+            sanitize_identifier(func.name), 
+            formal_args
         )?;
     }
 
@@ -227,7 +236,9 @@ fn write_impl_wrapper(
     let exported = imp.doc.contains("@export");
 
     write_doc(w, imp.doc)?;
-    writeln!(w, "{} <- new.env(parent = emptyenv())\n", imp.name)?;
+
+    let imp_name = sanitize_identifier(imp.name);
+    writeln!(w, "{} <- new.env(parent = emptyenv())\n", imp_name)?;
 
     for func in &imp.methods {
         // write_doc(& mut w, func.doc)?;
@@ -239,7 +250,7 @@ fn write_impl_wrapper(
         writeln!(w, "#' @usage NULL")?;
         writeln!(w, "#' @export")?;
     }
-    writeln!(w, "`$.{}` <- function (self, name) {{ func <- {}[[name]]; environment(func) <- environment(); func }}\n", imp.name, imp.name)?;
+    writeln!(w, "`$.{}` <- function (self, name) {{ func <- {}[[name]]; environment(func) <- environment(); func }}\n", imp.name, imp_name)?;
 
     Ok(())
 }

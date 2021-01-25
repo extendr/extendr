@@ -53,6 +53,13 @@ fn char_vec(x: Vec<String>) -> Vec<String> {x}
 #[extendr]
 fn special_param_names(_x : i32, _y : i32) {}
 
+/// Test wrapping of special function name
+/// @name f__00__special_function_name
+/// @export
+#[extendr]
+#[allow(non_snake_case)]
+fn __00__special_function_name() {}
+
 // Class for testing
 #[derive(Default, Debug)]
 struct MyClass {
@@ -90,6 +97,24 @@ impl MyClass {
     }
 }
 
+// Class for testing special names
+#[derive(Default, Debug)]
+struct __MyClass {
+}
+
+/// Class for testing special names
+/// Unexported because of document conflict
+#[extendr]
+impl __MyClass {
+    /// Method for making a new object.
+    fn new() -> Self {
+        Self {}
+    }
+    /// Method with special name unsupported by R
+    fn __name_test(&self) {}
+}
+
+
 // Class for testing (unexported)
 #[derive(Default, Debug)]
 struct MyClassUnexported {
@@ -124,7 +149,9 @@ extendr_module! {
     fn char_vec;
     
     fn special_param_names;
+    fn __00__special_function_name;
 
     impl MyClass;
+    impl __MyClass;
     impl MyClassUnexported;
 }

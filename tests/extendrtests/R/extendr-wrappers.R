@@ -47,6 +47,11 @@ char_vec <- function(x) .Call(wrap__char_vec, x)
 #' @export
 special_param_names <- function(`_x`, `_y`) invisible(.Call(wrap__special_param_names, `_x`, `_y`))
 
+#' Test wrapping of special function name
+#' @name f__00__special_function_name
+#' @export
+`__00__special_function_name` <- function() .Call(wrap____00__special_function_name)
+
 #' Class for testing (exported)
 #' @examples
 #' x <- MyClass$new()
@@ -68,6 +73,16 @@ MyClass$me <- function() .Call(wrap__MyClass__me, self)
 #' @usage NULL
 #' @export
 `$.MyClass` <- function (self, name) { func <- MyClass[[name]]; environment(func) <- environment(); func }
+
+#' Class for testing special names
+#' Unexported because of document conflict
+`__MyClass` <- new.env(parent = emptyenv())
+
+`__MyClass`$new <- function() .Call(wrap____MyClass__new)
+
+`__MyClass`$`__name_test` <- function() .Call(wrap____MyClass____name_test, self)
+
+`$.__MyClass` <- function (self, name) { func <- `__MyClass`[[name]]; environment(func) <- environment(); func }
 
 #' Class for testing (unexported)
 MyClassUnexported <- new.env(parent = emptyenv())
