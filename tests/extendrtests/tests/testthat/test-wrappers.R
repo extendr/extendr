@@ -45,7 +45,9 @@ test_that("Rust classes and methods prefixed with `_` can be invoked", {
 })
 
 test_that("Rust `_arg` is correctly wrapped in R", {
-  expect_invisible(special_param_names(`_y` = 42L, `_x` = 100L))
+  x <- 100L
+  y <- 42L
+  expect_equal(special_param_names(`_y` = y, `_x` = x), x - y)
 })
 
 test_that("Call to Rust via wrapper functions works", {

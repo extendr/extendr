@@ -49,11 +49,12 @@ fn char_vec(x: Vec<String>) -> Vec<String> {x}
 // Weird behavior of parameter descriptions:
 // first passes tests as is, second -- only in backqutoes.
 /// Test whether `_arg` parameters are treated correctly in R
+/// Executes \code{`_x` - `_y`}
 /// @param _x an integer scalar, ignored
 /// @param `_y` an integer scalar, ignored
 /// @export
 #[extendr]
-fn special_param_names(_x : i32, _y : i32) {}
+fn special_param_names(_x : i32, _y : i32) -> i32 { _x - _y }
 
 /// Test wrapping of special function name
 /// @name f__00__special_function_name

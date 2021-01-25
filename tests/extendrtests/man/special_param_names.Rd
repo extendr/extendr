@@ -2,7 +2,8 @@
 % Please edit documentation in R/extendr-wrappers.R
 \name{special_param_names}
 \alias{special_param_names}
-\title{Test whether \verb{_arg} parameters are treated correctly in R}
+\title{Test whether \verb{_arg} parameters are treated correctly in R
+Executes \code{`_x` - `_y`}}
 \usage{
 special_param_names(`_x`, `_y`)
 }
@@ -13,4 +14,5 @@ special_param_names(`_x`, `_y`)
 }
 \description{
 Test whether \verb{_arg} parameters are treated correctly in R
+Executes \code{`_x` - `_y`}
 }
