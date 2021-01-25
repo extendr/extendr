@@ -4,7 +4,7 @@ use crate::*;
 ///
 /// Use the Env{} wrapper for more detail.
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;;
 /// test! {
 ///     let env = new_env();
 ///     assert_eq!(env.len(), 0);
@@ -21,12 +21,13 @@ pub fn new_env() -> Robj {
 /// This function will guess the hash table size if required.
 /// Use the Env{} wrapper for more detail.
 /// ```
-/// use extendr_api::*;
-/// extendr_engine::start_r();
-/// let env = new_env_with_capacity(5);
-/// env.set_local(sym!(a), 1);
-/// env.set_local(sym!(b), 2);
-/// assert_eq!(env.len(), 2);
+/// use extendr_api::prelude::*;;
+/// test! {
+///     let env = new_env_with_capacity(5);
+///     env.set_local(sym!(a), 1);
+///     env.set_local(sym!(b), 2);
+///     assert_eq!(env.len(), 2);
+/// }
 /// ```
 pub fn new_env_with_capacity(capacity: usize) -> Robj {
     if capacity <= 5 {
@@ -44,7 +45,7 @@ pub fn new_env_with_capacity(capacity: usize) -> Robj {
 ///
 /// See also [global_var()].
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;;
 /// test! {
 ///    let iris = global_var(sym!(iris))?;
 ///    assert_eq!(iris.len(), 5);
@@ -66,7 +67,7 @@ pub fn global_var<K: Into<Robj>>(key: K) -> Result<Robj> {
 ///
 /// See also [var!].
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;;
 /// test! {
 ///    current_env().set_local(sym!(my_var), 1);
 ///    assert_eq!(local_var(sym!(my_var))?, r!(1));
@@ -81,13 +82,10 @@ pub fn local_var<K: Into<Robj>>(key: K) -> Result<Robj> {
 
 /// Get a global function from global_env() and ancestors.
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;;
 /// test! {
 ///     let ls = global_function(sym!(ls)).ok_or("ls failed")?;
 ///     assert_eq!(ls.is_function(), true);
-///
-///     // Note that the following will throw an R error as iris is not a function.
-///     // let iris = global_function(sym!(iris));
 /// }
 /// ```
 pub fn global_function<K: Into<Robj>>(key: K) -> Option<Robj> {
@@ -98,11 +96,11 @@ pub fn global_function<K: Into<Robj>>(key: K) -> Option<Robj> {
 ///
 /// See also [Robj::double_colon].
 /// ```
-///    use extendr_api::*;
-///    extendr_engine::start_r();
-///
+/// use extendr_api::prelude::*;;
+/// test! {
 ///    assert_eq!(find_namespace("base").is_some(), true);
 ///    assert_eq!(find_namespace("stats").is_some(), true);
+/// }
 /// ```
 pub fn find_namespace<K: Into<Robj>>(key: K) -> Option<Robj> {
     // single_threaded(|| unsafe { new_borrowed(R_FindNamespace(key.get())) });
@@ -117,10 +115,10 @@ pub fn find_namespace<K: Into<Robj>>(key: K) -> Option<Robj> {
 /// The current interpreter environment.
 ///
 /// ```
-///    use extendr_api::*;
-///    extendr_engine::start_r();
-///
+/// use extendr_api::prelude::*;;
+/// test! {
 ///    assert_eq!(current_env(), base_env());
+/// }
 /// ```
 pub fn current_env() -> Robj {
     unsafe { new_owned(R_GetCurrentEnv()) }
@@ -129,7 +127,7 @@ pub fn current_env() -> Robj {
 /// The "global" environment
 ///
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;;
 /// test! {
 ///     global_env().set_local(sym!(x), "hello");
 ///     assert_eq!(global_env().local(sym!(x)), Some(r!("hello")));
@@ -147,7 +145,7 @@ pub fn empty_env() -> Robj {
 /// The base environment; formerly R_NilValue
 ///
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;;
 /// test! {
 ///     global_env().set_local(sym!(x), "hello");
 ///     assert_eq!(base_env().local(sym!(+)), Some(r!(Primitive("+"))));
@@ -160,7 +158,7 @@ pub fn base_env() -> Robj {
 /// The namespace for base.
 ///
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;;
 /// test! {
 ///    assert_eq!(base_namespace().parent().ok_or("no parent")?, global_env());
 /// }
@@ -172,10 +170,10 @@ pub fn base_namespace() -> Robj {
 /// For registered namespaces.
 ///
 /// ```
-///    use extendr_api::*;
-///    extendr_engine::start_r();
-///
+/// use extendr_api::prelude::*;;
+/// test! {
 ///    assert_eq!(namespace_registry().is_environment(), true);
+/// }
 /// ```
 pub fn namespace_registry() -> Robj {
     unsafe { new_sys(R_NamespaceRegistry) }
@@ -365,7 +363,7 @@ pub fn blank_scalar_string() -> Robj {
 
 /// Special "NA" string that represents null strings.
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;;
 /// test! {
 ///     assert!(na_str().as_ptr() != "NA".as_ptr());
 ///     assert_eq!(na_str(), "NA");

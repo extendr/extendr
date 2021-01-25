@@ -20,7 +20,6 @@ use std::ops::{Range, RangeInclusive};
 
 mod from_robj;
 mod into_robj;
-mod iter;
 mod operators;
 mod rinternals;
 

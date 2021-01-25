@@ -190,19 +190,28 @@
     html_logo_url = "https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png"
 )]
 
-mod error;
-mod functions;
-mod lang;
-mod logical;
-mod matrix;
+pub mod error;
+pub mod functions;
+pub mod iter;
+pub mod lang;
+pub mod logical;
+pub mod matrix;
 pub mod metadata;
-mod rmacros;
-mod robj;
-mod thread_safety;
-mod wrapper;
+pub mod prelude;
+pub mod rmacros;
+pub mod robj;
+pub mod thread_safety;
+pub mod wrapper;
 
 #[cfg(feature = "ndarray")]
-mod robj_ndarray;
+pub mod robj_ndarray;
+
+//////////////////////////////////////////////////
+// Note these pub use statements are deprectaed
+//
+// `use extendr_api::prelude::*;`
+//
+// instead.
 
 pub use error::*;
 pub use functions::*;
@@ -220,6 +229,7 @@ pub use wrapper::*;
 pub use robj_ndarray::*;
 
 pub use extendr_macros::*;
+//////////////////////////////////////////////////
 
 #[doc(hidden)]
 pub use std::collections::HashMap;
