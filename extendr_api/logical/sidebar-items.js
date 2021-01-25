@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Bool","Bool is a wrapper for i32 in the context of an R's tristate boolean. It can be TRUE, FALSE or NA_LOGICAL."]]});

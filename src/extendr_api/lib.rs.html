@@ -700,6 +700,16 @@
 <span id="697">697</span>
 <span id="698">698</span>
 <span id="699">699</span>
+<span id="700">700</span>
+<span id="701">701</span>
+<span id="702">702</span>
+<span id="703">703</span>
+<span id="704">704</span>
+<span id="705">705</span>
+<span id="706">706</span>
+<span id="707">707</span>
+<span id="708">708</span>
+<span id="709">709</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! A safe and user friendly R extension interface.</span>
@@ -893,19 +903,28 @@
     <span class="ident">html_logo_url</span> <span class="op">=</span> <span class="string">&quot;https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png&quot;</span>
 )]</span>
 
-<span class="kw">mod</span> <span class="ident">error</span>;
-<span class="kw">mod</span> <span class="ident">functions</span>;
-<span class="kw">mod</span> <span class="ident">lang</span>;
-<span class="kw">mod</span> <span class="ident">logical</span>;
-<span class="kw">mod</span> <span class="ident">matrix</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">error</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">functions</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">iter</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">lang</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">logical</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">matrix</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">metadata</span>;
-<span class="kw">mod</span> <span class="ident">rmacros</span>;
-<span class="kw">mod</span> <span class="ident">robj</span>;
-<span class="kw">mod</span> <span class="ident">thread_safety</span>;
-<span class="kw">mod</span> <span class="ident">wrapper</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">prelude</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">rmacros</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">robj</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">thread_safety</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">wrapper</span>;
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
-<span class="kw">mod</span> <span class="ident">robj_ndarray</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">robj_ndarray</span>;
+
+<span class="comment">//////////////////////////////////////////////////</span>
+<span class="comment">// Note these pub use statements are deprectaed</span>
+<span class="comment">//</span>
+<span class="comment">// `use extendr_api::prelude::*;`</span>
+<span class="comment">//</span>
+<span class="comment">// instead.</span>
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">error</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">functions</span>::<span class="kw-2">*</span>;
@@ -923,6 +942,7 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">robj_ndarray</span>::<span class="kw-2">*</span>;
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">extendr_macros</span>::<span class="kw-2">*</span>;
+<span class="comment">//////////////////////////////////////////////////</span>
 
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
