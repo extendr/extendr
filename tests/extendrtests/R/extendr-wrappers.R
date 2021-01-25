@@ -65,12 +65,20 @@ MyClass$a <- function() .Call(wrap__MyClass__a, self)
 
 MyClass$me <- function() .Call(wrap__MyClass__me, self)
 
-MyClass$`__name_test` <- function() .Call(wrap__MyClass____name_test, self)
-
 #' @rdname MyClass
 #' @usage NULL
 #' @export
 `$.MyClass` <- function (self, name) { func <- MyClass[[name]]; environment(func) <- environment(); func }
+
+#' Class for testing special names
+#' Unexported because of document conflict
+`__MyClass` <- new.env(parent = emptyenv())
+
+`__MyClass`$new <- function() .Call(wrap____MyClass__new)
+
+`__MyClass`$`__name_test` <- function() .Call(wrap____MyClass____name_test, self)
+
+`$.__MyClass` <- function (self, name) { func <- `__MyClass`[[name]]; environment(func) <- environment(); func }
 
 #' Class for testing (unexported)
 MyClassUnexported <- new.env(parent = emptyenv())

@@ -6,7 +6,7 @@
 \alias{$.MyClass}
 \title{Class for testing (exported)}
 \format{
-An object of class \code{environment} of length 5.
+An object of class \code{environment} of length 4.
 }
 \usage{
 MyClass
