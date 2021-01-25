@@ -210,19 +210,21 @@ fn write_impl_wrapper(
     let exported = imp.doc.contains("@export");
 
     write_doc(w, imp.doc)?;
-    writeln!(w, "{} <- new.env(parent = emptyenv())\n", imp.name)?;
+
+    let imp_name = sanitize_identifier(imp.name);
+    writeln!(w, "{} <- new.env(parent = emptyenv())\n", imp_name)?;
 
     for func in &imp.methods {
         // write_doc(& mut w, func.doc)?;
-        write_method_wrapper(w, func, package_name, use_symbols, imp.name)?;
+        write_method_wrapper(w, func, package_name, use_symbols, &imp_name)?;
     }
 
     if exported {
-        writeln!(w, "#' @rdname {}", imp.name)?;
+        writeln!(w, "#' @rdname {}", imp_name)?;
         writeln!(w, "#' @usage NULL")?;
         writeln!(w, "#' @export")?;
     }
-    writeln!(w, "`$.{}` <- function (self, name) {{ func <- {}[[name]]; environment(func) <- environment(); func }}\n", imp.name, imp.name)?;
+    writeln!(w, "`$.{}` <- function (self, name) {{ func <- {}[[name]]; environment(func) <- environment(); func }}\n", imp_name, imp_name)?;
 
     Ok(())
 }
