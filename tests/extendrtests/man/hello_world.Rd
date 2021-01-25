@@ -2,10 +2,10 @@
 % Please edit documentation in R/extendr-wrappers.R
 \name{hello_world}
 \alias{hello_world}
-\title{Say hello}
+\title{Return string \code{"Hello world!"} to R.}
 \usage{
 hello_world()
 }
 \description{
-Say hello
+Return string \code{"Hello world!"} to R.
 }

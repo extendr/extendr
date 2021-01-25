@@ -8,9 +8,13 @@
 #' @useDynLib extendrtests, .registration = TRUE
 NULL
 
-#' Say hello
+#' Return string `"Hello world!"` to R.
 #' @export
 hello_world <- function() .Call(wrap__hello_world)
+
+#' Do nothing.
+#' @export
+do_nothing <- function() invisible(.Call(wrap__do_nothing))
 
 #' Convert a double scalar to itself
 #' @param x a number
@@ -54,7 +58,7 @@ MyClass <- new.env(parent = emptyenv())
 
 MyClass$new <- function() .Call(wrap__MyClass__new)
 
-MyClass$set_a <- function(x) .Call(wrap__MyClass__set_a, self, x)
+MyClass$set_a <- function(x) invisible(.Call(wrap__MyClass__set_a, self, x))
 
 MyClass$a <- function() .Call(wrap__MyClass__a, self)
 
