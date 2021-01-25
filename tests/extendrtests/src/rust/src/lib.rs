@@ -88,10 +88,29 @@ impl MyClass {
     fn me(&self) -> &Self {
         self
     }
+}
 
+// Class for testing special names
+#[derive(Default, Debug)]
+struct __MyClass {
+}
+
+/// Class for testing special names
+/// @name c__MyClass
+/// @examples
+/// x <- `__MyClass`$new()
+/// x$`__name_test`()
+/// @export
+#[extendr]
+impl __MyClass {
+    /// Method for making a new object.
+    fn new() -> Self {
+        Self {}
+    }
     /// Method with special name unsupported by R
     fn __name_test(&self) {}
 }
+
 
 // Class for testing (unexported)
 #[derive(Default, Debug)]
