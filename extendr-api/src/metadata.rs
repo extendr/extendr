@@ -127,7 +127,7 @@ fn write_function_wrapper(
     if func.return_type == "()" {
         write!(w, "{} <- function({}) invisible(.Call(", sanitize_identifier(func.name), args)?;
     } else {
-        write!(w, "{} <- function({}) .Call(", sanitized_identifier(func.name), args)?;
+        write!(w, "{} <- function({}) .Call(", sanitize_identifier(func.name), args)?;
     }
 
     if use_symbols {
