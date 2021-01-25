@@ -19,7 +19,7 @@ pub use super::functions::{
     triple_colon_symbol, tsp_symbol, unbound_value,
 };
 
-pub use crate::{append, append_lang, args, call, lang, make_lang, append_with_name};
+pub use crate::{append, append_lang, append_with_name, args, call, lang, make_lang};
 pub use crate::{
     c, data_frame, factor, global, list, r, read_table, rep, reprint, reprintln, rprint, rprintln,
     sym, test, var, R,
