@@ -39,6 +39,13 @@ fn char_scalar(x: String) -> String { x }
 #[extendr]
 fn char_vec(x: Vec<String>) -> Vec<String> {x}
 
+/// Test whether `_arg` parameters are treated correctly in R
+/// @param `_x` an integer scalar, ignored
+/// @param `_y` an integer scalar, ignore
+/// @export
+#[extendr]
+fn special_param_names(_x : i32, _y : i32) {}
+
 // Class for testing
 #[derive(Default, Debug)]
 struct MyClass {
@@ -108,6 +115,8 @@ extendr_module! {
     fn char_scalar;
     fn char_vec;
     
+    fn special_param_names;
+
     impl MyClass;
     impl MyClassUnexported;
 }

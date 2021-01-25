@@ -35,6 +35,10 @@ test_that("Wrapper code is up-to-date", {
   expect_equal(x, y)
 })
 
+test_that("Rust `_arg` is correctly wrapped in R", {
+  expect_invisible(special_param_names(`_y` = 42L, `_x` = 100L))
+})
+
 test_that("Call to Rust via wrapper functions works", {
   expect_equal(hello_world(), "Hello world!")
 })
