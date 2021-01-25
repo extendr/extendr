@@ -96,7 +96,7 @@ fn write_doc(w: &mut Vec<u8>, doc: &str) -> std::io::Result<()> {
     Ok(())
 }
 
-/// Wraps invalid R identifers, like `_function_name`, into back quotes.
+/// Wraps invalid R identifers, like `_function_name`, into backticks.
 fn sanitize_identifier(name: &str) -> String {
     match name.chars().next() {
         Some('_') => format!("`{}`", name),
@@ -125,9 +125,19 @@ fn write_function_wrapper(
         .join(", ");
 
     if func.return_type == "()" {
-        write!(w, "{} <- function({}) invisible(.Call(", sanitize_identifier(func.name), args)?;
+        write!(
+            w,
+            "{} <- function({}) invisible(.Call(",
+            sanitize_identifier(func.name),
+            args
+        )?;
     } else {
-        write!(w, "{} <- function({}) .Call(", sanitize_identifier(func.name), args)?;
+        write!(
+            w,
+            "{} <- function({}) .Call(",
+            sanitize_identifier(func.name),
+            args
+        )?;
     }
 
     if use_symbols {
@@ -185,24 +195,27 @@ fn write_method_wrapper(
     let formal_args = formal_args.join(", ");
     let actual_args = actual_args.join(", ");
 
+    // Both `class_name` and `func.name` should be processed
+    // because they are exposed to R
     if func.return_type == "()" {
         write!(
             w,
             "{}${} <- function({}) invisible(.Call(",
-            sanitize_identifier(class_name), 
-            sanitize_identifier(func.name), 
+            sanitize_identifier(class_name),
+            sanitize_identifier(func.name),
             formal_args
         )?;
     } else {
         write!(
             w,
             "{}${} <- function({}) .Call(",
-            sanitize_identifier(class_name), 
-            sanitize_identifier(func.name), 
+            sanitize_identifier(class_name),
+            sanitize_identifier(func.name),
             formal_args
         )?;
     }
 
+    // Here no processing is needed because of `wrap__` prefix
     if use_symbols {
         write!(w, "wrap__{}__{}", class_name, func.name)?;
     } else {
@@ -237,11 +250,14 @@ fn write_impl_wrapper(
 
     write_doc(w, imp.doc)?;
 
-    let imp_name = sanitize_identifier(imp.name);
-    writeln!(w, "{} <- new.env(parent = emptyenv())\n", imp_name)?;
+    let imp_name_fixed = sanitize_identifier(imp.name);
+
+    // Using fixed name because it is exposed to R
+    writeln!(w, "{} <- new.env(parent = emptyenv())\n", imp_name_fixed)?;
 
     for func in &imp.methods {
         // write_doc(& mut w, func.doc)?;
+        // `imp.name` is passed as is and sanitized within the function
         write_method_wrapper(w, func, package_name, use_symbols, imp.name)?;
     }
 
@@ -250,7 +266,10 @@ fn write_impl_wrapper(
         writeln!(w, "#' @usage NULL")?;
         writeln!(w, "#' @export")?;
     }
-    writeln!(w, "`$.{}` <- function (self, name) {{ func <- {}[[name]]; environment(func) <- environment(); func }}\n", imp.name, imp_name)?;
+    // LHS with dollar operator is wrapped in ``, so pass name as is,
+    // but in the body `imp_name_fixed` is called as valid R function,
+    // so we pass preprocessed value
+    writeln!(w, "`$.{}` <- function (self, name) {{ func <- {}[[name]]; environment(func) <- environment(); func }}\n", imp.name, imp_name_fixed)?;
 
     Ok(())
 }

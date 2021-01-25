@@ -46,6 +46,8 @@ fn char_scalar(x: String) -> String { x }
 #[extendr]
 fn char_vec(x: Vec<String>) -> Vec<String> {x}
 
+// Weird behavior of parameter descriptions:
+// first passes tests as is, second -- only in backqutoes.
 /// Test whether `_arg` parameters are treated correctly in R
 /// @param _x an integer scalar, ignored
 /// @param `_y` an integer scalar, ignored
@@ -102,8 +104,8 @@ impl MyClass {
 struct __MyClass {
 }
 
-/// Class for testing special names
-/// Unexported because of document conflict
+// Class for testing special names
+// Unexported because of documentation conflict
 #[extendr]
 impl __MyClass {
     /// Method for making a new object.

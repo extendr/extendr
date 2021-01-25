@@ -74,8 +74,6 @@ MyClass$me <- function() .Call(wrap__MyClass__me, self)
 #' @export
 `$.MyClass` <- function (self, name) { func <- MyClass[[name]]; environment(func) <- environment(); func }
 
-#' Class for testing special names
-#' Unexported because of document conflict
 `__MyClass` <- new.env(parent = emptyenv())
 
 `__MyClass`$new <- function() .Call(wrap____MyClass__new)
