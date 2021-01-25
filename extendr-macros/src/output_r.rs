@@ -35,10 +35,10 @@ struct WrapperFn {
     pub arguments: Vec<WrapperFnArg>,
 }
 
-fn sanitize_arg_name(arg: &WrapperFnArg) -> String {
-    match arg.name.chars().next() {
-        Some('_') => format!("`{}`", arg.name),
-        _ => arg.name.to_string(),
+fn sanitize_identifier(name: &str) -> String {
+    match name.chars().next() {
+        Some('_') => format!("`{}`", name),
+        _ => name.to_string(),
     }
 }
 impl WrapperFn {
@@ -46,7 +46,7 @@ impl WrapperFn {
         let seperated_args = self
             .arguments
             .iter()
-            .map(sanitize_arg_name)
+            .map(|arg| sanitize_identifier(&(arg.name)))
             .collect::<Vec<_>>()
             .join(", ");
         let mut inner_invocation = format!(
@@ -64,7 +64,7 @@ impl WrapperFn {
 
         let function_signature = format!(
             "{name} <- function({args})",
-            name = &self.name,
+            name = sanitize_identifier(&self.name),
             args = seperated_args,
         );
 
