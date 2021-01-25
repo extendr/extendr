@@ -174,9 +174,17 @@ fn write_method_wrapper(
     let actual_args = actual_args.join(", ");
 
     if func.return_type == "()" {
-        write!(w, "{}${} <- function({}) invisible(.Call(", class_name, func.name, formal_args)?;
+        write!(
+            w,
+            "{}${} <- function({}) invisible(.Call(",
+            class_name, func.name, formal_args
+        )?;
     } else {
-        write!(w, "{}${} <- function({}) .Call(", class_name, func.name, formal_args)?;
+        write!(
+            w,
+            "{}${} <- function({}) .Call(",
+            class_name, func.name, formal_args
+        )?;
     }
 
     if use_symbols {
