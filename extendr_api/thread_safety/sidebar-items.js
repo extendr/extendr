@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["catch_r_error","Wrap an R function such as Rf_findFunction and convert errors and panics into results."],["single_threaded","Run a function single threaded. Note: This will fail badly if the called function panics or calls RF_error."],["this_thread_id",""],["throw_r_error",""]]});
