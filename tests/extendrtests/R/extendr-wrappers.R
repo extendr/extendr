@@ -50,7 +50,7 @@ special_param_names <- function(`_x`, `_y`) invisible(.Call(wrap__special_param_
 #' Test wrapping of special function name
 #' @name f__00__special_function_name
 #' @export
-`__00__special_function_name` <- function() .Call(wrap____00__special_function_name)
+`__00__special_function_name` <- function() invisible(.Call(wrap____00__special_function_name))
 
 #' Class for testing (exported)
 #' @examples
@@ -80,7 +80,7 @@ MyClass$me <- function() .Call(wrap__MyClass__me, self)
 
 `__MyClass`$new <- function() .Call(wrap____MyClass__new)
 
-`__MyClass`$`__name_test` <- function() .Call(wrap____MyClass____name_test, self)
+`__MyClass`$`__name_test` <- function() invisible(.Call(wrap____MyClass____name_test, self))
 
 `$.__MyClass` <- function (self, name) { func <- `__MyClass`[[name]]; environment(func) <- environment(); func }
 
