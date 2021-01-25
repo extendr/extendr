@@ -43,6 +43,11 @@ char_vec <- function(x) .Call(wrap__char_vec, x)
 #' @export
 special_param_names <- function(`_x`, `_y`) .Call(wrap__special_param_names, `_x`, `_y`)
 
+#' Test wrapping of special function name
+#' @name f__00__special_function_name
+#' @export
+`__00__special_function_name` <- function() .Call(wrap____00__special_function_name)
+
 #' Class for testing (exported)
 #' @examples
 #' x <- MyClass$new()
@@ -59,6 +64,8 @@ MyClass$set_a <- function(x) .Call(wrap__MyClass__set_a, self, x)
 MyClass$a <- function() .Call(wrap__MyClass__a, self)
 
 MyClass$me <- function() .Call(wrap__MyClass__me, self)
+
+MyClass$`__name_test` <- function() .Call(wrap__MyClass____name_test, self)
 
 #' @rdname MyClass
 #' @usage NULL
