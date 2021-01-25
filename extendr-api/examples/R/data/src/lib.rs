@@ -2,7 +2,7 @@
 //! Show data extraction and creation methods.
 //! See tests/test_data.R for inputs.
 
-use extendr_api::*;
+use extendr_api::prelude::*;
 
 #[extendr]
 fn data(input: Robj) -> bool {

@@ -6,7 +6,7 @@ use std::ops::{Index, IndexMut};
 /// Wrapper for creating and using matrices and arrays.
 ///
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// test! {
 ///     let matrix = RMatrix::new([
 ///          1., 2., 3.,
@@ -236,7 +236,7 @@ where
     ///
     /// Panics if out of bounds.
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// test! {
     ///     let matrix = RMatrix::new(vec![
     ///          1., 2., 3.,
@@ -259,7 +259,7 @@ where
     ///
     /// Panics if out of bounds.
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// test! {
     ///     let mut matrix = RMatrix::new(vec![0.; 6], 3, 2);
     ///     matrix[[0, 0]] = 1.;

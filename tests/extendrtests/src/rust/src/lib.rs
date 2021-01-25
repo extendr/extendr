@@ -1,4 +1,4 @@
-use extendr_api::*;
+use extendr_api::prelude::*;
 
 /// Return string `"Hello world!"` to R.
 /// @export

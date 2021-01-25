@@ -9,7 +9,7 @@ use libR_sys::*;
 /// Wrapper for creating symbols.
 ///
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// extendr_engine::start_r();
 /// let symbol = r!(Symbol("xyz"));
 /// assert_eq!(symbol.as_symbol(), Some(Symbol("xyz")));
@@ -26,7 +26,7 @@ pub struct Symbol<'a>(pub &'a str);
 /// vector.
 ///
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// extendr_engine::start_r();
 /// let chr = r!(Character("xyz"));
 /// assert_eq!(chr.as_character(), Some(Character("xyz")));
@@ -38,7 +38,7 @@ pub struct Character<'a>(pub &'a str);
 /// Wrapper for creating raw (byte) objects.
 ///
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// extendr_engine::start_r();
 /// let bytes = r!(Raw(&[1, 2, 3]));
 /// assert_eq!(bytes.len(), 3);
@@ -50,7 +50,7 @@ pub struct Raw<'a>(pub &'a [u8]);
 
 /// Wrapper for creating language objects.
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// extendr_engine::start_r();
 /// let call_to_xyz = r!(Lang(&[r!(Symbol("xyz")), r!(1), r!(2)]));
 /// assert_eq!(call_to_xyz.is_language(), true);
@@ -63,7 +63,7 @@ pub struct Lang<T>(pub T);
 
 /// Wrapper for creating pair list (LISTSXP) objects.
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// test! {
 ///     let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
 ///     let expr = r!(Pairlist{names_and_values});
@@ -77,7 +77,7 @@ pub struct Pairlist<NV> {
 
 /// Wrapper for creating list (VECSXP) objects.
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// extendr_engine::start_r();
 /// let list = r!(List(&[r!(0), r!(1), r!(2)]));
 /// assert_eq!(list.is_list(), true);
@@ -91,7 +91,7 @@ pub struct List<T>(pub T);
 
 /// Wrapper for creating expression objects.
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// extendr_engine::start_r();
 /// let expr = r!(Expr(&[r!(1.), r!("xyz")]));
 /// assert_eq!(expr.len(), 2);
@@ -108,7 +108,7 @@ pub struct Env<P, NV> {
 
 /// Wrapper for creating functions (CLOSSXP).
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// extendr_engine::start_r();
 /// let expr = R!(function(a = 1, b) {c <- a + b}).unwrap();
 /// let func = expr.as_func().unwrap();
@@ -139,7 +139,7 @@ pub struct Promise<C, E, V> {
 /// Wrapper for creating and reading Primitive functions.
 ///
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// extendr_engine::start_r();
 /// let robj = r!(Primitive("+"));
 /// assert!(robj.is_primitive());
@@ -156,7 +156,7 @@ where
 {
     /// Make a list object from an array of Robjs.
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r();
     /// let list_of_ints = r!(List(&[1, 2]));
     /// assert_eq!(list_of_ints.len(), 2);
@@ -174,7 +174,7 @@ where
 {
     /// Make an expression object from an array of Robjs.
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r();
     /// let list_of_ints = r!(Expr(&[1, 2]));
     /// assert_eq!(list_of_ints.len(), 2);
@@ -210,7 +210,7 @@ impl<'a> From<Symbol<'a>> for Robj {
 impl<'a> From<Primitive<'a>> for Robj {
     /// Make a primitive object, or NULL if not available.
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r();
     /// let builtin = r!(Primitive("+"));
     /// let special = r!(Primitive("if"));
@@ -259,7 +259,7 @@ where
 {
     /// Convert a wrapper to an R environment object.
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// test! {
     ///     let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
     ///     let env = Env{parent: global_env(), names_and_values};
@@ -288,7 +288,7 @@ where
 {
     /// Convert a wrapper to a LISTSXP object.
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// test! {
     ///     let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
     ///     let expr = r!(Pairlist{names_and_values});
@@ -351,7 +351,7 @@ impl<'a> From<&'a str> for Symbol<'a> {
 impl Robj {
     /// Convert a symbol object to a Symbol wrapper.
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r();
     /// let fred = sym!(fred);
     /// assert_eq!(fred.as_symbol(), Some(Symbol("fred")));
@@ -374,7 +374,7 @@ impl Robj {
 
     /// Convert a character object to a Character wrapper.
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r();
     /// let fred = r!(Character("fred"));
     /// assert_eq!(fred.as_character(), Some(Character("fred")));
@@ -391,7 +391,7 @@ impl Robj {
 
     /// Convert a raw object to a Character wrapper.
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r();
     /// let bytes = r!(Raw(&[1, 2, 3]));
     /// assert_eq!(bytes.len(), 3);
@@ -406,7 +406,7 @@ impl Robj {
     }
     /// Convert a language object to a Lang wrapper.
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r();
     /// let call_to_xyz = r!(Lang(&[r!(Symbol("xyz")), r!(1), r!(2)]));
     /// assert_eq!(call_to_xyz.is_language(), true);
@@ -423,7 +423,7 @@ impl Robj {
 
     /// Convert a pair list object (LISTSXP) to a Pairlist wrapper.
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r();
     /// let names_and_values = vec![("a", r!(1)), ("b", r!(2)), (na_str(), r!(3))];
     /// let pairlist = Pairlist{ names_and_values };
@@ -443,7 +443,7 @@ impl Robj {
 
     /// Convert a list object (VECSXP) to a List wrapper.
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r();
     /// let list = r!(List(&[r!(0), r!(1), r!(2)]));
     /// assert_eq!(list.is_list(), true);
@@ -455,7 +455,7 @@ impl Robj {
 
     /// Convert an expression object (EXPRSXP) to a Expr wrapper.
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r();
     /// let expr = r!(Expr(&[r!(0), r!(1), r!(2)]));
     /// assert_eq!(expr.is_expr(), true);
@@ -477,7 +477,7 @@ impl Robj {
 
     /// Convert an environment object (ENVSXP) to a Env wrapper.
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// test! {
     ///     let names_and_values = (0..100).map(|i| (format!("n{}", i), r!(i)));
     ///     let env = Env{parent: global_env(), names_and_values};
@@ -500,7 +500,7 @@ impl Robj {
 
     /// Convert a function object (CLOSXP) to a Func wrapper.
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r();
     /// let func = R!(function(a,b) a + b).unwrap();
     /// println!("{:?}", func.as_func());
@@ -521,7 +521,7 @@ impl Robj {
 
     // /// Convert a primitive object (BUILTINSXP or SPECIALSXP) to a wrapper.
     // /// ```
-    // /// use extendr_api::*;
+    // /// use extendr_api::prelude::*;
     // /// extendr_engine::start_r();
     // /// let builtin = r!(Primitive("+"));
     // /// let special = r!(Primitive("if"));

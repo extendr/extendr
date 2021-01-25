@@ -3,7 +3,7 @@
 //! This allows us to be more selective about exports and avoid users
 //! using deprecated features.
 
-pub use super::IsNA;
+pub use super::{IsNA, FALSE, NA_INTEGER, NA_LOGICAL, NA_REAL, NA_STRING, NULL, TRUE};
 
 pub use super::error::{Error, Result};
 
@@ -19,20 +19,17 @@ pub use super::functions::{
     triple_colon_symbol, tsp_symbol, unbound_value,
 };
 
-// lang.
-pub use crate::{call, lang};
-
-pub use super::logical::Bool;
-
-pub use super::matrix::{RArray, RColumn, RMatrix, RMatrix3D};
-
-// rmacros.
+pub use crate::{append, append_lang, args, call, lang, make_lang, append_with_name};
 pub use crate::{
     c, data_frame, factor, global, list, r, read_table, rep, reprint, reprintln, rprint, rprintln,
     sym, test, var, R,
 };
 
-pub use super::robj::Robj;
+pub use super::logical::Bool;
+
+pub use super::matrix::{RArray, RColumn, RMatrix, RMatrix3D};
+
+pub use super::robj::{Robj, RobjItertools};
 
 pub use super::thread_safety::{
     catch_r_error, handle_panic, single_threaded, this_thread_id, throw_r_error,

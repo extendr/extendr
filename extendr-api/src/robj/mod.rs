@@ -37,7 +37,7 @@ pub use rinternals::*;
 /// Create R objects from rust types and iterators:
 ///
 /// ```
-/// use extendr_api::*;        // Put API in scope.
+/// use extendr_api::prelude::*;
 /// extendr_engine::start_r(); // Start test environment.
 ///
 /// // Different ways of making integer scalar 1.
@@ -73,7 +73,7 @@ pub use rinternals::*;
 /// Use iterators to get the contents of R objects.
 ///
 /// ```
-/// use extendr_api::*;        // Put API in scope.
+/// use extendr_api::prelude::*;
 /// extendr_engine::start_r(); // Start test environment.
 ///
 /// let a : Robj = c!(1, 2, 3, 4, 5);
@@ -85,7 +85,7 @@ pub use rinternals::*;
 /// Convert to/from Rust vectors.
 ///
 /// ```
-/// use extendr_api::*;        // Put API in scope.
+/// use extendr_api::prelude::*;
 /// extendr_engine::start_r(); // Start test environment.
 ///
 /// let a : Robj = r!(vec![1., 2., 3., 4.]);
@@ -97,7 +97,7 @@ pub use rinternals::*;
 /// Iterate over names and values.
 ///
 /// ```
-/// use extendr_api::*;        // Put API in scope.
+/// use extendr_api::prelude::*;
 /// extendr_engine::start_r(); // Start test environment.
 ///
 /// let abc = list!(a = 1, b = "x", c = vec![1, 2]);
@@ -126,27 +126,6 @@ pub enum Robj {
     #[doc(hidden)]
     Sys(SEXP),
 }
-
-/// TRUE value eg. `r!(TRUE)`
-pub const TRUE: Bool = Bool(1);
-
-/// FALSE value eg. `r!(FALSE)`
-pub const FALSE: Bool = Bool(0);
-
-/// NULL value eg. `r!(NULL)`
-pub const NULL: () = ();
-
-/// NA value for integers eg. `r!(NA_INTEGER)`
-pub const NA_INTEGER: Option<i32> = None;
-
-/// NA value for real values eg. `r!(NA_REAL)`
-pub const NA_REAL: Option<f64> = None;
-
-/// NA value for strings. `r!(NA_STRING)`
-pub const NA_STRING: Option<&str> = None;
-
-/// NA value for logical. `r!(NA_LOGICAL)`
-pub const NA_LOGICAL: Bool = Bool(std::i32::MIN);
 
 impl Clone for Robj {
     fn clone(&self) -> Self {
@@ -192,7 +171,7 @@ impl Robj {
 
     /// Get the extended length of the object.
     /// ```
-    /// use extendr_api::*;        // Put API in scope.
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r(); // Start test environment.
     ///
     /// let a : Robj = r!(vec![1., 2., 3., 4.]);
@@ -204,7 +183,7 @@ impl Robj {
 
     /// Get a variable from an enviroment, but not its ancestors.
     /// ```
-    /// use extendr_api::*;        // Put API in scope.
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r(); // Start test environment.
     ///
     /// let env = new_env();
@@ -222,7 +201,7 @@ impl Robj {
 
     /// Set or define a variable in an enviroment.
     /// ```
-    /// use extendr_api::*;        // Put API in scope.
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r(); // Start test environment.
     ///
     /// let env = new_env();
@@ -242,7 +221,7 @@ impl Robj {
 
     /// Get the parent of an environment.
     /// ```
-    /// use extendr_api::*;        // Put API in scope.
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r(); // Start test environment.
     ///
     /// let global_parent = global_env().parent().unwrap();
@@ -265,7 +244,7 @@ impl Robj {
     /// Is this object is an NA scalar?
     /// Works for character, integer and numeric types.
     /// ```
-    /// use extendr_api::*;        // Put API in scope.
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r(); // Start test environment.
     ///
     /// assert_eq!(r!(NA_INTEGER).is_na(), true);
@@ -291,7 +270,7 @@ impl Robj {
 
     /// Get a read-only reference to the content of an integer vector.
     /// ```
-    /// use extendr_api::*;        // Put API in scope.
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r(); // Start test environment.
     ///
     /// let robj = r!([1, 2, 3]);
@@ -303,7 +282,7 @@ impl Robj {
 
     /// Get an iterator over integer elements of this slice.
     /// ```
-    /// use extendr_api::*;        // Put API in scope.
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r(); // Start test environment.
     ///
     /// let robj = r!([1, 2, 3]);
@@ -326,7 +305,7 @@ impl Robj {
 
     /// Get a Vec<i32> copied from the object.
     /// ```
-    /// use extendr_api::*;        // Put API in scope.
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r(); // Start test environment.
     ///
     /// let robj = r!([1, 2, 3]);
@@ -343,7 +322,7 @@ impl Robj {
     /// Get a read-only reference to the content of a logical vector
     /// using the tri-state [Bool]. Returns None if not a logical vector.
     /// ```
-    /// use extendr_api::*;        // Put API in scope.
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r(); // Start test environment.
     ///
     /// let robj = r!([TRUE, FALSE, NA_LOGICAL]);
@@ -357,7 +336,7 @@ impl Robj {
     /// using the tri-state [Bool].
     /// Returns None if not a logical vector.
     /// ```
-    /// use extendr_api::*;        // Put API in scope.
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r(); // Start test environment.
     ///
     /// let robj = r!([TRUE, FALSE, NA_LOGICAL]);
@@ -373,7 +352,7 @@ impl Robj {
 
     /// Get an iterator over logical elements of this slice.
     /// ```
-    /// use extendr_api::*;        // Put API in scope.
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r(); // Start test environment.
     ///
     /// let robj = r!([TRUE, FALSE, NA_LOGICAL]);
@@ -400,7 +379,7 @@ impl Robj {
     /// Note: the slice may contain NaN or NA values.
     /// We may introduce a "Real" type to handle this like the Bool type.
     /// ```
-    /// use extendr_api::*;        // Put API in scope.
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r(); // Start test environment.
     ///
     /// let robj = r!([Some(1.), None, Some(3.)]);
@@ -418,7 +397,7 @@ impl Robj {
 
     /// Get an iterator over real elements of this slice.
     /// ```
-    /// use extendr_api::*;        // Put API in scope.
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r(); // Start test environment.
     ///
     /// let robj = r!([1., 2., 3.]);
@@ -440,7 +419,7 @@ impl Robj {
 
     /// Get a Vec<f64> copied from the object.
     /// ```
-    /// use extendr_api::*;        // Put API in scope.
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r(); // Start test environment.
     ///
     /// let robj = r!([1., 2., 3.]);
@@ -456,7 +435,7 @@ impl Robj {
 
     /// Get a read-only reference to the content of an integer or logical vector.
     /// ```
-    /// use extendr_api::*;        // Put API in scope.
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r(); // Start test environment.
     ///
     /// let robj = r!(Raw(&[1, 2, 3]));
@@ -469,7 +448,7 @@ impl Robj {
     /// Get a read-write reference to the content of an integer or logical vector.
     /// Note that rust slices are 0-based so `slice[1]` is the middle value.
     /// ```
-    /// use extendr_api::*;        // Put API in scope.
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r(); // Start test environment.
     ///
     /// let mut robj = r!([1, 2, 3]);
@@ -484,7 +463,7 @@ impl Robj {
     /// Get a read-write reference to the content of a double vector.
     /// Note that rust slices are 0-based so `slice[1]` is the middle value.
     /// ```
-    /// use extendr_api::*;        // Put API in scope.
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r(); // Start test environment.
     ///
     /// let mut robj = r!([1.0, 2.0, 3.0]);
@@ -498,7 +477,7 @@ impl Robj {
 
     /// Get a read-write reference to the content of a raw vector.
     /// ```
-    /// use extendr_api::*;        // Put API in scope.
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r(); // Start test environment.
     ///
     /// let mut robj = r!(Raw(&[1, 2, 3]));
@@ -513,7 +492,7 @@ impl Robj {
     /// Get a vector of owned strings.
     /// Owned strings have long lifetimes, but are much slower than references.
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///    let robj1 = Robj::from("xyz");
     ///    assert_eq!(robj1.as_string_vector(), Some(vec!["xyz".to_string()]));
@@ -531,7 +510,7 @@ impl Robj {
     /// Get a vector of string references.
     /// String references (&str) are faster, but have short lifetimes.
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///    let robj1 = Robj::from("xyz");
     ///    assert_eq!(robj1.as_str_vector(), Some(vec!["xyz"]));
@@ -548,7 +527,7 @@ impl Robj {
 
     /// Get a read-only reference to a scalar string type.
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///    let robj1 = Robj::from("xyz");
     ///    let robj2 = Robj::from(1);
@@ -574,7 +553,7 @@ impl Robj {
 
     /// Get a scalar integer.
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///    let robj1 = Robj::from("xyz");
     ///    let robj2 = Robj::from(1);
@@ -592,7 +571,7 @@ impl Robj {
 
     /// Get a scalar real.
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///    let robj1 = Robj::from(1);
     ///    let robj2 = Robj::from(1.);
@@ -610,7 +589,7 @@ impl Robj {
 
     /// Get a scalar rust boolean.
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///    let robj1 = Robj::from(TRUE);
     ///    let robj2 = Robj::from(1.);
@@ -628,7 +607,7 @@ impl Robj {
 
     /// Get a scalar boolean as a tri-boolean [Bool] value.
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///    let robj1 = Robj::from(TRUE);
     ///    let robj2 = Robj::from([TRUE, FALSE]);
@@ -646,7 +625,7 @@ impl Robj {
 
     /// Evaluate the expression in R and return an error or an R object.
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///
     ///    let add = lang!("+", 1, 2);
@@ -669,7 +648,7 @@ impl Robj {
 
     /// Evaluate the expression and return NULL or an R object.
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///    let bad = lang!("imnotavalidfunctioninR", 1, 2);
     ///    assert_eq!(bad.eval_blind(), r!(NULL));
@@ -685,7 +664,7 @@ impl Robj {
 
     /// Parse a string into an R executable object
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///    let expr = Robj::parse("1 + 2").unwrap();
     ///    assert!(expr.is_expr());
@@ -709,7 +688,7 @@ impl Robj {
 
     /// Parse a string into an R executable object and run it.
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///    let res = Robj::eval_string("1 + 2").unwrap();
     ///    assert_eq!(res, r!(3.));
@@ -743,7 +722,7 @@ impl Robj {
     /// Return true if the object is owned by this wrapper.
     /// If so, it will be released when the wrapper drops.
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///    let owned = r!(1);      // Allocated vector.
     ///    let borrowed = r!(());  // R_NilValue
@@ -830,7 +809,7 @@ make_typed_slice!(u8, RAW, RAWSXP);
 impl Robj {
     /// Get a specific attribute as a borrowed robj if it exists.
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///
     ///    let mut robj = r!("hello");
@@ -857,7 +836,7 @@ impl Robj {
 
     /// Set a specific attribute and return the value.
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///
     ///    let mut robj = r!("hello");
@@ -878,7 +857,7 @@ impl Robj {
 
     /// Get the names attribute as a string iterator if one exists.
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///
     ///    let list = list!(a = 1, b = 2, c = 3);
@@ -895,7 +874,7 @@ impl Robj {
 
     /// Get the dim attribute as an integer iterator if one exists.
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///
     ///    let array = R!(array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c("x", "y"), c("a","b")))).unwrap();
@@ -916,7 +895,7 @@ impl Robj {
 
     /// Get the dimnames attribute as a list iterator if one exists.
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///
     ///    let array = R!(array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c("x", "y"), c("a","b")))).unwrap();
@@ -933,7 +912,7 @@ impl Robj {
 
     /// Return an iterator over names and values of a list if they exist.
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///
     ///    let list = list!(a = 1, b = 2, c = 3);
@@ -951,7 +930,7 @@ impl Robj {
 
     /// Get the class attribute as a string iterator if one exists.
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///
     ///    let formula = R!(y ~ A * x + b).unwrap();
@@ -968,7 +947,7 @@ impl Robj {
 
     /// Return true if this class inherits this class.
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///
     ///    let formula = R!(y ~ A * x + b).unwrap();
@@ -984,7 +963,7 @@ impl Robj {
 
     /// Get the levels attribute as a string iterator if one exists.
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///
     ///    let factor = factor!(vec!["abcd", "def", "fg", "fg"]);
@@ -1001,7 +980,7 @@ impl Robj {
 
     /// Get the names in an environment.
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///
     ///    let names_and_values : std::collections::HashMap<_, _> = (0..4).map(|i| (format!("n{}", i), r!(i))).collect();

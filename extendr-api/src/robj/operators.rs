@@ -7,7 +7,7 @@ use std::ops::{Add, Div, Mul, Sub};
 impl Robj {
     /// Do the equivalent of x$y
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r();
     /// let env = r!(Env{
     ///    parent: global_env(),
@@ -25,7 +25,7 @@ impl Robj {
 
     /// Do the equivalent of `x[y]`
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r();
     /// let vec = r!([10, 20, 30]);
     /// assert_eq!(vec.slice(2).unwrap(), r!(20));
@@ -40,7 +40,7 @@ impl Robj {
 
     /// Do the equivalent of `x[[y]]`
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r();
     /// let vec = r!([10, 20, 30]);
     /// assert_eq!(vec.index(2).unwrap(), r!(20));
@@ -55,7 +55,7 @@ impl Robj {
 
     /// Do the equivalent of x ~ y
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r();
     /// let x = r!(Symbol("x"));
     /// let y = r!(Symbol("y"));
@@ -72,7 +72,7 @@ impl Robj {
 
     /// Do the equivalent of x :: y
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r();
     /// let base = r!(Symbol("base"));
     /// let env = r!(Symbol(".getNamespace"));
@@ -88,7 +88,7 @@ impl Robj {
 
     // /// Do the equivalent of x(a, b, c)
     // /// ```
-    // /// use extendr_api::*;
+    // /// use extendr_api::prelude::*;
     // /// extendr_engine::start_r();
     // /// let function = R!(function(a, b) a + b).unwrap();
     // /// assert_eq!(function.is_function(), true);
@@ -108,7 +108,7 @@ where
     /// Add two R objects, consuming the left hand side.
     /// panics on error.
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r();
     ///
     /// // lhs and rhs get dropped here
@@ -139,7 +139,7 @@ where
     /// Subtract two R objects, consuming the left hand side.
     /// panics on error.
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r();
     ///
     /// // lhs and rhs get dropped here
@@ -170,7 +170,7 @@ where
     /// Multiply two R objects, consuming the left hand side.
     /// panics on error.
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r();
     ///
     /// // lhs and rhs get dropped here
@@ -201,7 +201,7 @@ where
     /// Divide two R objects, consuming the left hand side.
     /// panics on error.
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     /// extendr_engine::start_r();
     ///
     /// // lhs and rhs get dropped here

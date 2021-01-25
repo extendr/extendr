@@ -107,7 +107,7 @@ impl Robj {
     ///
     /// See also [global_function()].
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///
     ///    let my_fun = base_env().find_function(sym!(ls)).unwrap();
@@ -151,7 +151,7 @@ impl Robj {
     /// Note that many common variables and functions are contained in promises
     /// which must be evaluated and this function may throw an R error.
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///
     ///    let iris_dataframe = global_env()
@@ -193,7 +193,7 @@ impl Robj {
 
     /// If this object is a promise, evaluate it, otherwise return the object.
     /// ```
-    ///    use extendr_api::*;
+    ///    use extendr_api::prelude::*;
     ///    extendr_engine::start_r();
     ///
     ///    let iris_promise = global_env().find_var(sym!(iris)).unwrap();

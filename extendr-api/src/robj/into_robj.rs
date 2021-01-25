@@ -25,7 +25,7 @@ impl From<()> for Robj {
 ///
 /// Panics if there is an error.
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// fn my_func() -> Result<f64> {
 ///     Ok(1.0)
 /// }
@@ -361,7 +361,7 @@ where
 pub trait RobjItertools: Iterator {
     /// Convert a wide range of iterators to Robj.
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     ///
     /// extendr_engine::start_r();
     ///

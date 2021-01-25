@@ -8,7 +8,7 @@
 ///
 /// Example:
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// extendr_engine::start_r();
 /// let fred = r!(1);
 /// assert_eq!(fred, Robj::from(1));
@@ -39,7 +39,7 @@ macro_rules! r {
 /// Note that the performance of this function is not good.
 ///
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// extendr_engine::start_r();
 ///
 /// let formula = R!(y ~ z + 1).unwrap();
@@ -60,7 +60,7 @@ macro_rules! R {
 ///
 /// Variables with embedded "." may not work.
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// extendr_engine::start_r();
 ///
 /// current_env().set_local(sym!(myvar), 1.0);
@@ -77,7 +77,7 @@ macro_rules! var {
 ///
 /// Variables with embedded "." may not work.
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// test! {
 ///      // The "iris" dataset is a dataframe.
 ///      assert_eq!(global!(iris)?.is_frame(), true);
@@ -94,7 +94,7 @@ macro_rules! global {
 /// You should cache your symbols in variables
 /// as generating them is costly.
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// extendr_engine::start_r();
 ///
 /// let wombat = sym!(wombat);
@@ -111,7 +111,7 @@ macro_rules! sym {
 ///
 /// Example:
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// extendr_engine::start_r();
 /// let fred = c!(1, 2, 3);
 /// assert_eq!(fred, r!([1, 2, 3]));
@@ -134,7 +134,7 @@ macro_rules! c {
 ///
 /// Example:
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// extendr_engine::start_r();
 /// let fred = rep!(1., 3);
 /// assert_eq!(fred, r!([1., 1., 1.]));
@@ -151,7 +151,7 @@ macro_rules! rep {
 ///
 /// Example:
 /// ```no_run
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// extendr_engine::start_r();
 /// let mydata = read_table!("mydata.csv").unwrap();
 /// ```
@@ -166,7 +166,7 @@ macro_rules! read_table {
 ///
 /// Example:
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// extendr_engine::start_r();
 /// let mylist = list!(x=1, y=2);
 /// assert_eq!(mylist, r!(List(&[r!(1), r!(2)])));
@@ -187,7 +187,7 @@ macro_rules! list {
 ///
 /// Example:
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// extendr_engine::start_r();
 /// let mydata = data_frame!(x=1, y=2);
 /// assert_eq!(mydata, r!(List(&[r!(1), r!(2)])));
@@ -208,7 +208,7 @@ macro_rules! data_frame {
 ///
 /// Example:
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// extendr_engine::start_r();
 /// let factor = factor!(vec!["abcd", "def", "fg", "fg"]);
 /// assert_eq!(factor.levels().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg"]);

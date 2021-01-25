@@ -36,7 +36,7 @@ which is written in Rust. The data is defined in the `struct`
 declaration and the methods in the `impl`.
 
 ```rust
-use extendr_api::*;
+use extendr_api::prelude::*;
 
 struct Person {
     pub name: String,

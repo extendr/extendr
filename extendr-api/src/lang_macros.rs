@@ -98,7 +98,7 @@ macro_rules! append_lang {
 ///
 /// Example:
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// extendr_engine::start_r();
 ///
 /// let vec = call!("c", 1.0, 2.0, 3.0).unwrap();
@@ -122,7 +122,7 @@ macro_rules! call {
 ///
 /// Example:
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// extendr_engine::start_r();
 ///
 /// let call_to_c = lang!("c", 1., 2., 3.);

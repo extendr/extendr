@@ -399,7 +399,7 @@ fn make_function_wrappers(
 ///
 /// Example:
 /// ```ignore
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// #[derive(Debug)]
 /// struct Person {
 ///     pub name: String,

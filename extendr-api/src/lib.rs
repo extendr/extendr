@@ -12,7 +12,7 @@
 //!
 //! Use attributes and macros to export to R.
 //! ```ignore
-//! use extendr_api::*;
+//! use extendr_api::prelude::*;
 //! // Export a function or impl to R.
 //! #[extendr]
 //! fn fred(a: i32) -> i32 {
@@ -37,7 +37,7 @@
 //! The r!() and R!() macros let you build R objects
 //! using Rust and R syntax respectively.
 //! ```
-//! use extendr_api::*;
+//! use extendr_api::prelude::*;
 //! test! {
 //!     // An R object with a single string "hello"
 //!     let character = r!("hello");
@@ -67,7 +67,7 @@
 //! In Rust, we prefer to use iterators rather than loops.
 //!
 //! ```
-//! use extendr_api::*;
+//! use extendr_api::prelude::*;
 //! test! {
 //!     // 1 ..= 100 is the same as 1:100
 //!     let res = r!(1 ..= 100);
@@ -88,7 +88,7 @@
 //! remember to use 0-based indexing. In Rust, going out of bounds
 //! will cause and error (a panic) unlike C++ which may crash.
 //! ```
-//! use extendr_api::*;
+//! use extendr_api::prelude::*;
 //! test! {
 //!     let vals = r!([1.0, 2.0]);
 //!     let slice = vals.as_real_slice().ok_or("expected slice")?;
@@ -102,7 +102,7 @@
 //!
 //! Much slower, but more general are these methods:
 //! ```
-//! use extendr_api::*;
+//! use extendr_api::prelude::*;
 //! test! {
 //!     let vals = r!([1.0, 2.0, 3.0]);
 //!    
@@ -121,7 +121,7 @@
 //! The [R!] macro lets you embed R code in Rust
 //! but does not take variables.
 //! ```
-//! use extendr_api::*;
+//! use extendr_api::prelude::*;
 //! test! {
 //!     // The text "1 + 1" is parsed as R source code.
 //!     // The result is 1.0 + 1.0 in Rust.
@@ -132,7 +132,7 @@
 //! The [r!] macro converts a rust object to an R object
 //! and takes parameters.
 //! ```
-//! use extendr_api::*;
+//! use extendr_api::prelude::*;
 //! test! {
 //!     // The text "1.0+1.0" is parsed as Rust source code.
 //!     let one = 1.0;
@@ -142,7 +142,7 @@
 //!
 //! You can call R functions and primitives using the [call!] macro.
 //! ```
-//! use extendr_api::*;
+//! use extendr_api::prelude::*;
 //! test! {
 //!
 //!     // As one R! macro call
@@ -174,7 +174,7 @@
 //! original R object to be alive or the data will be corrupted.
 //!
 //! ```
-//! use extendr_api::*;
+//! use extendr_api::prelude::*;
 //! test! {
 //!     // robj is an "Owned" object that controls the memory allocated.
 //!     let robj = r!([1, 2, 3]);
@@ -193,12 +193,13 @@
 pub mod error;
 pub mod functions;
 pub mod iter;
-pub mod lang;
 pub mod logical;
 pub mod matrix;
 pub mod metadata;
 pub mod prelude;
 pub mod rmacros;
+pub mod lang_macros;
+
 pub mod robj;
 pub mod thread_safety;
 pub mod wrapper;
@@ -215,7 +216,7 @@ pub mod robj_ndarray;
 
 pub use error::*;
 pub use functions::*;
-pub use lang::*;
+pub use lang_macros::*;
 pub use logical::*;
 pub use matrix::*;
 pub use rmacros::*;
@@ -230,6 +231,27 @@ pub use robj_ndarray::*;
 
 pub use extendr_macros::*;
 //////////////////////////////////////////////////
+
+/// TRUE value eg. `r!(TRUE)`
+pub const TRUE: Bool = Bool(1);
+
+/// FALSE value eg. `r!(FALSE)`
+pub const FALSE: Bool = Bool(0);
+
+/// NULL value eg. `r!(NULL)`
+pub const NULL: () = ();
+
+/// NA value for integers eg. `r!(NA_INTEGER)`
+pub const NA_INTEGER: Option<i32> = None;
+
+/// NA value for real values eg. `r!(NA_REAL)`
+pub const NA_REAL: Option<f64> = None;
+
+/// NA value for strings. `r!(NA_STRING)`
+pub const NA_STRING: Option<&str> = None;
+
+/// NA value for logical. `r!(NA_LOGICAL)`
+pub const NA_LOGICAL: Bool = Bool(std::i32::MIN);
 
 #[doc(hidden)]
 pub use std::collections::HashMap;
