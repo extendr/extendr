@@ -38,7 +38,7 @@ pub use rinternals::*;
 ///
 /// ```
 /// use extendr_api::prelude::*;
-/// extendr_engine::start_r(); // Start test environment.
+/// test! {
 ///
 /// // Different ways of making integer scalar 1.
 /// let non_na : Option<i32> = Some(1);
@@ -68,43 +68,47 @@ pub use rinternals::*;
 /// // Use an iterator (like (1:10)[(1:10) %% 3 == 0])
 /// let a = (1 ..= 10).filter(|v| v % 3 == 0).collect_robj();
 /// assert_eq!(a, c!(3, 6, 9));
+/// }
 /// ```
 ///
 /// Use iterators to get the contents of R objects.
 ///
 /// ```
 /// use extendr_api::prelude::*;
-/// extendr_engine::start_r(); // Start test environment.
+/// test! {
 ///
 /// let a : Robj = c!(1, 2, 3, 4, 5);
 /// let iter = a.as_integer_iter().unwrap();
 /// let robj = iter.filter(|&x| x < 3).collect_robj();
 /// assert_eq!(robj, c!(1, 2));
+/// }
 /// ```
 ///
 /// Convert to/from Rust vectors.
 ///
 /// ```
 /// use extendr_api::prelude::*;
-/// extendr_engine::start_r(); // Start test environment.
+/// test! {
 ///
 /// let a : Robj = r!(vec![1., 2., 3., 4.]);
 /// let b : Vec<f64> = a.as_real_vector().unwrap();
 /// assert_eq!(a.len(), 4);
 /// assert_eq!(b, vec![1., 2., 3., 4.]);
+/// }
 /// ```
 ///
 /// Iterate over names and values.
 ///
 /// ```
 /// use extendr_api::prelude::*;
-/// extendr_engine::start_r(); // Start test environment.
+/// test! {
 ///
 /// let abc = list!(a = 1, b = "x", c = vec![1, 2]);
 /// let names : Vec<_> = abc.names().unwrap().collect();
 /// let names_and_values : Vec<_> = abc.as_named_list_iter().unwrap().collect();
 /// assert_eq!(names, vec!["a", "b", "c"]);
 /// assert_eq!(names_and_values, vec![("a", r!(1)), ("b", r!("x")), ("c", r!(vec![1, 2]))]);
+/// }
 /// ```
 ///
 /// NOTE: as much as possible we wish to make this object safe (ie. no segfaults).
@@ -172,10 +176,11 @@ impl Robj {
     /// Get the extended length of the object.
     /// ```
     /// use extendr_api::prelude::*;
-    /// extendr_engine::start_r(); // Start test environment.
+    /// test! {
     ///
     /// let a : Robj = r!(vec![1., 2., 3., 4.]);
     /// assert_eq!(a.len(), 4);
+    /// }
     /// ```
     pub fn len(&self) -> usize {
         unsafe { Rf_xlength(self.get()) as usize }
@@ -184,11 +189,12 @@ impl Robj {
     /// Get a variable from an enviroment, but not its ancestors.
     /// ```
     /// use extendr_api::prelude::*;
-    /// extendr_engine::start_r(); // Start test environment.
+    /// test! {
     ///
     /// let env = new_env();
     /// env.set_local(sym!(x), "fred");
     /// assert_eq!(env.local(sym!(x)), Some(r!("fred")));
+    /// }
     /// ```
     pub fn local<K: Into<Robj>>(&self, key: K) -> Option<Robj> {
         let key = key.into();
@@ -202,12 +208,13 @@ impl Robj {
     /// Set or define a variable in an enviroment.
     /// ```
     /// use extendr_api::prelude::*;
-    /// extendr_engine::start_r(); // Start test environment.
+    /// test! {
     ///
     /// let env = new_env();
     /// env.set_local(sym!(x), "harry");
     /// env.set_local(sym!(x), "fred");
     /// assert_eq!(env.local(sym!(x)), Some(r!("fred")));
+    /// }
     /// ```
     pub fn set_local<K: Into<Robj>, V: Into<Robj>>(&self, key: K, value: V) {
         let key = key.into();
@@ -222,12 +229,13 @@ impl Robj {
     /// Get the parent of an environment.
     /// ```
     /// use extendr_api::prelude::*;
-    /// extendr_engine::start_r(); // Start test environment.
+    /// test! {
     ///
     /// let global_parent = global_env().parent().unwrap();
     /// assert_eq!(global_parent.is_environment(), true);
     /// assert_eq!(base_env().parent(), None);
     /// assert_eq!(r!(1).parent(), None);
+    /// }
     /// ```
     pub fn parent(&self) -> Option<Robj> {
         unsafe {
@@ -245,11 +253,12 @@ impl Robj {
     /// Works for character, integer and numeric types.
     /// ```
     /// use extendr_api::prelude::*;
-    /// extendr_engine::start_r(); // Start test environment.
+    /// test! {
     ///
     /// assert_eq!(r!(NA_INTEGER).is_na(), true);
     /// assert_eq!(r!(NA_REAL).is_na(), true);
     /// assert_eq!(r!(NA_STRING).is_na(), true);
+    /// }
     /// ```
     pub fn is_na(&self) -> bool {
         if self.len() != 1 {
@@ -271,10 +280,11 @@ impl Robj {
     /// Get a read-only reference to the content of an integer vector.
     /// ```
     /// use extendr_api::prelude::*;
-    /// extendr_engine::start_r(); // Start test environment.
+    /// test! {
     ///
     /// let robj = r!([1, 2, 3]);
     /// assert_eq!(robj.as_integer_slice().unwrap(), [1, 2, 3]);
+    /// }
     /// ```
     pub fn as_integer_slice<'a>(&self) -> Option<&'a [i32]> {
         self.as_typed_slice()
@@ -283,7 +293,7 @@ impl Robj {
     /// Get an iterator over integer elements of this slice.
     /// ```
     /// use extendr_api::prelude::*;
-    /// extendr_engine::start_r(); // Start test environment.
+    /// test! {
     ///
     /// let robj = r!([1, 2, 3]);
     /// let mut tot = 0;
@@ -291,6 +301,7 @@ impl Robj {
     ///   tot += val;
     /// }
     /// assert_eq!(tot, 6);
+    /// }
     /// ```
     pub fn as_integer_iter<'a>(&self) -> Option<IntegerIter<'a>>
     where
@@ -306,10 +317,11 @@ impl Robj {
     /// Get a Vec<i32> copied from the object.
     /// ```
     /// use extendr_api::prelude::*;
-    /// extendr_engine::start_r(); // Start test environment.
+    /// test! {
     ///
     /// let robj = r!([1, 2, 3]);
     /// assert_eq!(robj.as_integer_slice().unwrap(), vec![1, 2, 3]);
+    /// }
     /// ```
     pub fn as_integer_vector(&self) -> Option<Vec<i32>> {
         if let Some(value) = self.as_integer_slice() {
@@ -323,10 +335,10 @@ impl Robj {
     /// using the tri-state [Bool]. Returns None if not a logical vector.
     /// ```
     /// use extendr_api::prelude::*;
-    /// extendr_engine::start_r(); // Start test environment.
-    ///
-    /// let robj = r!([TRUE, FALSE, NA_LOGICAL]);
-    /// assert_eq!(robj.as_logical_slice().unwrap(), [TRUE, FALSE, NA_LOGICAL]);
+    /// test! {
+    ///     let robj = r!([TRUE, FALSE, NA_LOGICAL]);
+    ///     assert_eq!(robj.as_logical_slice().unwrap(), [TRUE, FALSE, NA_LOGICAL]);
+    /// }
     /// ```
     pub fn as_logical_slice(&self) -> Option<&[Bool]> {
         self.as_typed_slice()
@@ -337,10 +349,10 @@ impl Robj {
     /// Returns None if not a logical vector.
     /// ```
     /// use extendr_api::prelude::*;
-    /// extendr_engine::start_r(); // Start test environment.
-    ///
-    /// let robj = r!([TRUE, FALSE, NA_LOGICAL]);
-    /// assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, NA_LOGICAL]);
+    /// test! {
+    ///     let robj = r!([TRUE, FALSE, NA_LOGICAL]);
+    ///     assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, NA_LOGICAL]);
+    /// }
     /// ```
     pub fn as_logical_vector(&self) -> Option<Vec<Bool>> {
         if let Some(value) = self.as_logical_slice() {
@@ -353,19 +365,19 @@ impl Robj {
     /// Get an iterator over logical elements of this slice.
     /// ```
     /// use extendr_api::prelude::*;
-    /// extendr_engine::start_r(); // Start test environment.
-    ///
-    /// let robj = r!([TRUE, FALSE, NA_LOGICAL]);
-    /// let (mut nt, mut nf, mut nna) = (0, 0, 0);
-    /// for val in robj.as_logical_iter().unwrap() {
-    ///   match val {
-    ///     TRUE => nt += 1,
-    ///     FALSE => nf += 1,
-    ///     NA_LOGICAL => nna += 1,
-    ///     _ => ()
-    ///   }
+    /// test! {
+    ///     let robj = r!([TRUE, FALSE, NA_LOGICAL]);
+    ///     let (mut nt, mut nf, mut nna) = (0, 0, 0);
+    ///     for val in robj.as_logical_iter().unwrap() {
+    ///       match val {
+    ///         TRUE => nt += 1,
+    ///         FALSE => nf += 1,
+    ///         NA_LOGICAL => nna += 1,
+    ///         _ => ()
+    ///       }
+    ///     }
+    ///     assert_eq!((nt, nf, nna), (1, 1, 1));
     /// }
-    /// assert_eq!((nt, nf, nna), (1, 1, 1));
     /// ```
     pub fn as_logical_iter(&self) -> Option<LogicalIter> {
         if let Some(slice) = self.as_logical_slice() {
@@ -380,16 +392,16 @@ impl Robj {
     /// We may introduce a "Real" type to handle this like the Bool type.
     /// ```
     /// use extendr_api::prelude::*;
-    /// extendr_engine::start_r(); // Start test environment.
-    ///
-    /// let robj = r!([Some(1.), None, Some(3.)]);
-    /// let mut tot = 0.;
-    /// for val in robj.as_real_slice().unwrap() {
-    ///   if !val.is_na() {
-    ///     tot += val;
-    ///   }
+    /// test! {
+    ///     let robj = r!([Some(1.), None, Some(3.)]);
+    ///     let mut tot = 0.;
+    ///     for val in robj.as_real_slice().unwrap() {
+    ///       if !val.is_na() {
+    ///         tot += val;
+    ///       }
+    ///     }
+    ///     assert_eq!(tot, 4.);
     /// }
-    /// assert_eq!(tot, 4.);
     /// ```
     pub fn as_real_slice(&self) -> Option<&[f64]> {
         self.as_typed_slice()
@@ -398,16 +410,16 @@ impl Robj {
     /// Get an iterator over real elements of this slice.
     /// ```
     /// use extendr_api::prelude::*;
-    /// extendr_engine::start_r(); // Start test environment.
-    ///
-    /// let robj = r!([1., 2., 3.]);
-    /// let mut tot = 0.;
-    /// for val in robj.as_real_iter().unwrap() {
-    ///   if !val.is_na() {
-    ///     tot += val;
-    ///   }
+    /// test! {
+    ///     let robj = r!([1., 2., 3.]);
+    ///     let mut tot = 0.;
+    ///     for val in robj.as_real_iter().unwrap() {
+    ///       if !val.is_na() {
+    ///         tot += val;
+    ///       }
+    ///     }
+    ///     assert_eq!(tot, 6.);
     /// }
-    /// assert_eq!(tot, 6.);
     /// ```
     pub fn as_real_iter(&self) -> Option<RealIter> {
         if let Some(slice) = self.as_real_slice() {
@@ -420,10 +432,10 @@ impl Robj {
     /// Get a Vec<f64> copied from the object.
     /// ```
     /// use extendr_api::prelude::*;
-    /// extendr_engine::start_r(); // Start test environment.
-    ///
-    /// let robj = r!([1., 2., 3.]);
-    /// assert_eq!(robj.as_real_vector().unwrap(), vec![1., 2., 3.])
+    /// test! {
+    ///     let robj = r!([1., 2., 3.]);
+    ///     assert_eq!(robj.as_real_vector().unwrap(), vec![1., 2., 3.]);
+    /// }
     /// ```
     pub fn as_real_vector(&self) -> Option<Vec<f64>> {
         if let Some(value) = self.as_real_slice() {
@@ -436,10 +448,10 @@ impl Robj {
     /// Get a read-only reference to the content of an integer or logical vector.
     /// ```
     /// use extendr_api::prelude::*;
-    /// extendr_engine::start_r(); // Start test environment.
-    ///
-    /// let robj = r!(Raw(&[1, 2, 3]));
-    /// assert_eq!(robj.as_raw_slice().unwrap(), &[1, 2, 3]);
+    /// test! {
+    ///     let robj = r!(Raw(&[1, 2, 3]));
+    ///     assert_eq!(robj.as_raw_slice().unwrap(), &[1, 2, 3]);
+    /// }
     /// ```
     pub fn as_raw_slice(&self) -> Option<&[u8]> {
         self.as_typed_slice()
@@ -449,12 +461,12 @@ impl Robj {
     /// Note that rust slices are 0-based so `slice[1]` is the middle value.
     /// ```
     /// use extendr_api::prelude::*;
-    /// extendr_engine::start_r(); // Start test environment.
-    ///
-    /// let mut robj = r!([1, 2, 3]);
-    /// let slice : & mut [i32] = robj.as_integer_slice_mut().unwrap();
-    /// slice[1] = 100;
-    /// assert_eq!(robj, r!([1, 100, 3]));
+    /// test! {
+    ///     let mut robj = r!([1, 2, 3]);
+    ///     let slice : & mut [i32] = robj.as_integer_slice_mut().unwrap();
+    ///     slice[1] = 100;
+    ///     assert_eq!(robj, r!([1, 100, 3]));
+    /// }
     /// ```
     pub fn as_integer_slice_mut(&mut self) -> Option<&mut [i32]> {
         self.as_typed_slice_mut()
@@ -464,12 +476,12 @@ impl Robj {
     /// Note that rust slices are 0-based so `slice[1]` is the middle value.
     /// ```
     /// use extendr_api::prelude::*;
-    /// extendr_engine::start_r(); // Start test environment.
-    ///
-    /// let mut robj = r!([1.0, 2.0, 3.0]);
-    /// let slice = robj.as_real_slice_mut().unwrap();
-    /// slice[1] = 100.0;
-    /// assert_eq!(robj, r!([1.0, 100.0, 3.0]));
+    /// test! {
+    ///     let mut robj = r!([1.0, 2.0, 3.0]);
+    ///     let slice = robj.as_real_slice_mut().unwrap();
+    ///     slice[1] = 100.0;
+    ///     assert_eq!(robj, r!([1.0, 100.0, 3.0]));
+    /// }
     /// ```
     pub fn as_real_slice_mut(&mut self) -> Option<&mut [f64]> {
         self.as_typed_slice_mut()
@@ -478,12 +490,12 @@ impl Robj {
     /// Get a read-write reference to the content of a raw vector.
     /// ```
     /// use extendr_api::prelude::*;
-    /// extendr_engine::start_r(); // Start test environment.
-    ///
-    /// let mut robj = r!(Raw(&[1, 2, 3]));
-    /// let slice = robj.as_raw_slice_mut().unwrap();
-    /// slice[1] = 100;
-    /// assert_eq!(robj, r!(Raw(&[1, 100, 3])));
+    /// test! {
+    ///     let mut robj = r!(Raw(&[1, 2, 3]));
+    ///     let slice = robj.as_raw_slice_mut().unwrap();
+    ///     slice[1] = 100;
+    ///     assert_eq!(robj, r!(Raw(&[1, 100, 3])));
+    /// }
     /// ```
     pub fn as_raw_slice_mut(&mut self) -> Option<&mut [u8]> {
         self.as_typed_slice_mut()
