@@ -37,4 +37,8 @@ test_that("Wrapper code is up-to-date", {
 
 test_that("Call to Rust via wrapper functions works", {
   expect_equal(hello_world(), "Hello world!")
+  expect_visible(hello_world())
+  
+  expect_equal(do_nothing(), NULL)
+  expect_invisible(do_nothing())
 })
