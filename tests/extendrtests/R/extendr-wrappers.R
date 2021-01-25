@@ -43,9 +43,9 @@ char_vec <- function(x) .Call(wrap__char_vec, x)
 
 #' Test whether `_arg` parameters are treated correctly in R
 #' @param _x an integer scalar, ignored
-#' @param _y an integer scalar, ignored
+#' @param `_y` an integer scalar, ignored
 #' @export
-special_param_names <- function(`_x`, `_y`) .Call(wrap__special_param_names, `_x`, `_y`)
+special_param_names <- function(`_x`, `_y`) invisible(.Call(wrap__special_param_names, `_x`, `_y`))
 
 #' Class for testing (exported)
 #' @examples
