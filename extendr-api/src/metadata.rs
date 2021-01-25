@@ -160,10 +160,10 @@ fn write_method_wrapper(
     let formal_args = if !actual_args.is_empty() && actual_args[0] == "self" {
         // Skip a leading "self" argument.
         // This is supplied by the environment.
-        func.args
+        actual_args
             .iter()
             .skip(1)
-            .map(sanitize_arg_name)
+            .map(|x| x.to_string())
             .collect::<Vec<_>>()
     } else {
         actual_args.clone()
