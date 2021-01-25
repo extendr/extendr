@@ -97,10 +97,10 @@ fn write_doc(w: &mut Vec<u8>, doc: &str) -> std::io::Result<()> {
 }
 
 /// Wraps invalid R identifers, like `_function_name`, into back quotes.
-fn sanitize_identifier(name : &str) -> String{
+fn sanitize_identifier(name: &str) -> String {
     match name.chars().next() {
         Some('_') => format!("`{}`", name),
-        _ => name.to_string()
+        _ => name.to_string(),
     }
 }
 
@@ -124,7 +124,12 @@ fn write_function_wrapper(
         .collect::<Vec<_>>()
         .join(", ");
 
-    write!(w, "{} <- function({}) .Call(", sanitize_identifier(func.name), args)?;
+    write!(
+        w,
+        "{} <- function({}) .Call(",
+        sanitize_identifier(func.name),
+        args
+    )?;
 
     if use_symbols {
         write!(w, "wrap__{}", func.name)?;
@@ -157,7 +162,11 @@ fn write_method_wrapper(
         return Ok(());
     }
 
-    let actual_args = func.args.iter().map(|arg| sanitize_identifier(arg.name)).collect::<Vec<_>>();
+    let actual_args = func
+        .args
+        .iter()
+        .map(|arg| sanitize_identifier(arg.name))
+        .collect::<Vec<_>>();
     let formal_args = if !actual_args.is_empty() && actual_args[0] == "self" {
         // Skip a leading "self" argument.
         // This is supplied by the environment.
@@ -176,8 +185,8 @@ fn write_method_wrapper(
     write!(
         w,
         "{}${} <- function({}) .Call(",
-        class_name,
-        sanitize_identifier(func.name), 
+        sanitize_identifier(class_name),
+        sanitize_identifier(func.name),
         formal_args
     )?;
 
@@ -216,15 +225,15 @@ fn write_impl_wrapper(
 
     for func in &imp.methods {
         // write_doc(& mut w, func.doc)?;
-        write_method_wrapper(w, func, package_name, use_symbols, &imp_name)?;
+        write_method_wrapper(w, func, package_name, use_symbols, imp.name)?;
     }
 
     if exported {
-        writeln!(w, "#' @rdname {}", imp_name)?;
+        writeln!(w, "#' @rdname {}", imp.name)?;
         writeln!(w, "#' @usage NULL")?;
         writeln!(w, "#' @export")?;
     }
-    writeln!(w, "`$.{}` <- function (self, name) {{ func <- {}[[name]]; environment(func) <- environment(); func }}\n", imp_name, imp_name)?;
+    writeln!(w, "`$.{}` <- function (self, name) {{ func <- {}[[name]]; environment(func) <- environment(); func }}\n", imp.name, imp_name)?;
 
     Ok(())
 }
