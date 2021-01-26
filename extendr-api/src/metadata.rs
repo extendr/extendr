@@ -98,9 +98,10 @@ fn write_doc(w: &mut Vec<u8>, doc: &str) -> std::io::Result<()> {
 
 /// Wraps invalid R identifers, like `_function_name`, into backticks.
 fn sanitize_identifier(name: &str) -> String {
-    match name.chars().next() {
-        Some('_') => format!("`{}`", name),
-        _ => name.to_string(),
+    if name.starts_with('_') {
+        format!("`{}`", name)
+    } else {
+        name.to_string()
     }
 }
 
