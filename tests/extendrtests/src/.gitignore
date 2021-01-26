@@ -1,4 +1,5 @@
 *.o
 *.so
+*.dll
 target
 Cargo.lock

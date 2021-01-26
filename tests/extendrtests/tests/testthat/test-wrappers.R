@@ -35,6 +35,21 @@ test_that("Wrapper code is up-to-date", {
   expect_equal(x, y)
 })
 
+test_that("Rust function prefixed with `_` can be called", {
+  expect_invisible(`__00__special_function_name`())
+})
+
+test_that("Rust classes and methods prefixed with `_` can be invoked", {
+  x <- `__MyClass`$new()
+  expect_invisible(x$`__name_test`())
+})
+
+test_that("Rust `_arg` is correctly wrapped in R", {
+  x <- 100L
+  y <- 42L
+  expect_equal(special_param_names(`_y` = y, `_x` = x), x - y)
+})
+
 test_that("Call to Rust via wrapper functions works", {
   expect_equal(hello_world(), "Hello world!")
   expect_visible(hello_world())

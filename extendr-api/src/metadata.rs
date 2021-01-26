@@ -96,6 +96,15 @@ fn write_doc(w: &mut Vec<u8>, doc: &str) -> std::io::Result<()> {
     Ok(())
 }
 
+/// Wraps invalid R identifers, like `_function_name`, into backticks.
+fn sanitize_identifier(name: &str) -> String {
+    if name.starts_with('_') {
+        format!("`{}`", name)
+    } else {
+        name.to_string()
+    }
+}
+
 /// Generate a wrapper for a non-method function.
 fn write_function_wrapper(
     w: &mut Vec<u8>,
@@ -112,14 +121,24 @@ fn write_function_wrapper(
     let args = func
         .args
         .iter()
-        .map(|arg| arg.name)
+        .map(|arg| sanitize_identifier(arg.name))
         .collect::<Vec<_>>()
         .join(", ");
 
     if func.return_type == "()" {
-        write!(w, "{} <- function({}) invisible(.Call(", func.name, args)?;
+        write!(
+            w,
+            "{} <- function({}) invisible(.Call(",
+            sanitize_identifier(func.name),
+            args
+        )?;
     } else {
-        write!(w, "{} <- function({}) .Call(", func.name, args)?;
+        write!(
+            w,
+            "{} <- function({}) .Call(",
+            sanitize_identifier(func.name),
+            args
+        )?;
     }
 
     if use_symbols {
@@ -157,14 +176,18 @@ fn write_method_wrapper(
         return Ok(());
     }
 
-    let actual_args = func.args.iter().map(|arg| arg.name).collect::<Vec<_>>();
+    let actual_args = func
+        .args
+        .iter()
+        .map(|arg| sanitize_identifier(arg.name))
+        .collect::<Vec<_>>();
     let formal_args = if !actual_args.is_empty() && actual_args[0] == "self" {
         // Skip a leading "self" argument.
         // This is supplied by the environment.
-        func.args
+        actual_args
             .iter()
             .skip(1)
-            .map(|arg| arg.name)
+            .map(|x| x.to_string())
             .collect::<Vec<_>>()
     } else {
         actual_args.clone()
@@ -173,20 +196,27 @@ fn write_method_wrapper(
     let formal_args = formal_args.join(", ");
     let actual_args = actual_args.join(", ");
 
+    // Both `class_name` and `func.name` should be processed
+    // because they are exposed to R
     if func.return_type == "()" {
         write!(
             w,
             "{}${} <- function({}) invisible(.Call(",
-            class_name, func.name, formal_args
+            sanitize_identifier(class_name),
+            sanitize_identifier(func.name),
+            formal_args
         )?;
     } else {
         write!(
             w,
             "{}${} <- function({}) .Call(",
-            class_name, func.name, formal_args
+            sanitize_identifier(class_name),
+            sanitize_identifier(func.name),
+            formal_args
         )?;
     }
 
+    // Here no processing is needed because of `wrap__` prefix
     if use_symbols {
         write!(w, "wrap__{}__{}", class_name, func.name)?;
     } else {
@@ -220,10 +250,15 @@ fn write_impl_wrapper(
     let exported = imp.doc.contains("@export");
 
     write_doc(w, imp.doc)?;
-    writeln!(w, "{} <- new.env(parent = emptyenv())\n", imp.name)?;
+
+    let imp_name_fixed = sanitize_identifier(imp.name);
+
+    // Using fixed name because it is exposed to R
+    writeln!(w, "{} <- new.env(parent = emptyenv())\n", imp_name_fixed)?;
 
     for func in &imp.methods {
         // write_doc(& mut w, func.doc)?;
+        // `imp.name` is passed as is and sanitized within the function
         write_method_wrapper(w, func, package_name, use_symbols, imp.name)?;
     }
 
@@ -232,7 +267,10 @@ fn write_impl_wrapper(
         writeln!(w, "#' @usage NULL")?;
         writeln!(w, "#' @export")?;
     }
-    writeln!(w, "`$.{}` <- function (self, name) {{ func <- {}[[name]]; environment(func) <- environment(); func }}\n", imp.name, imp.name)?;
+    // LHS with dollar operator is wrapped in ``, so pass name as is,
+    // but in the body `imp_name_fixed` is called as valid R function,
+    // so we pass preprocessed value
+    writeln!(w, "`$.{}` <- function (self, name) {{ func <- {}[[name]]; environment(func) <- environment(); func }}\n", imp.name, imp_name_fixed)?;
 
     Ok(())
 }
