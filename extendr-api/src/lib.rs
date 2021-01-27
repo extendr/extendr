@@ -555,52 +555,53 @@ mod tests {
 
     #[test]
     fn export_test() {
-        extendr_engine::start_r();
-        use super::*;
-        // Call the exported functions through their generated C wrappers.
-        unsafe {
-            wrap__inttypes(
-                Robj::from(1).get(),
-                Robj::from(2).get(),
-                Robj::from(3).get(),
-                Robj::from(4).get(),
-                Robj::from(5).get(),
-                Robj::from(6).get(),
-                Robj::from(7).get(),
-                Robj::from(8).get(),
-            );
-            wrap__inttypes(
-                Robj::from(1.).get(),
-                Robj::from(2.).get(),
-                Robj::from(3.).get(),
-                Robj::from(4.).get(),
-                Robj::from(5.).get(),
-                Robj::from(6.).get(),
-                Robj::from(7.).get(),
-                Robj::from(8.).get(),
-            );
-            wrap__floattypes(Robj::from(1.).get(), Robj::from(2.).get());
-            wrap__floattypes(Robj::from(1).get(), Robj::from(2).get());
-            wrap__strtypes(Robj::from("abc").get(), Robj::from("def").get());
-            wrap__vectortypes(
-                Robj::from(&[1, 2, 3] as &[i32]).get(),
-                Robj::from(&[4., 5., 6.] as &[f64]).get(),
-            );
-            wrap__robjtype(Robj::from(1).get());
+        test! {
+            use super::*;
+            // Call the exported functions through their generated C wrappers.
+            unsafe {
+                wrap__inttypes(
+                    Robj::from(1).get(),
+                    Robj::from(2).get(),
+                    Robj::from(3).get(),
+                    Robj::from(4).get(),
+                    Robj::from(5).get(),
+                    Robj::from(6).get(),
+                    Robj::from(7).get(),
+                    Robj::from(8).get(),
+                );
+                wrap__inttypes(
+                    Robj::from(1.).get(),
+                    Robj::from(2.).get(),
+                    Robj::from(3.).get(),
+                    Robj::from(4.).get(),
+                    Robj::from(5.).get(),
+                    Robj::from(6.).get(),
+                    Robj::from(7.).get(),
+                    Robj::from(8.).get(),
+                );
+                wrap__floattypes(Robj::from(1.).get(), Robj::from(2.).get());
+                wrap__floattypes(Robj::from(1).get(), Robj::from(2).get());
+                wrap__strtypes(Robj::from("abc").get(), Robj::from("def").get());
+                wrap__vectortypes(
+                    Robj::from(&[1, 2, 3] as &[i32]).get(),
+                    Robj::from(&[4., 5., 6.] as &[f64]).get(),
+                );
+                wrap__robjtype(Robj::from(1).get());
 
-            // General integer types.
-            assert_eq!(new_borrowed(wrap__return_u8()), Robj::from(123));
-            assert_eq!(new_borrowed(wrap__return_u16()), Robj::from(123));
-            assert_eq!(new_borrowed(wrap__return_u32()), Robj::from(123));
-            assert_eq!(new_borrowed(wrap__return_u64()), Robj::from(123));
-            assert_eq!(new_borrowed(wrap__return_i8()), Robj::from(123));
-            assert_eq!(new_borrowed(wrap__return_i16()), Robj::from(123));
-            assert_eq!(new_borrowed(wrap__return_i32()), Robj::from(123));
-            assert_eq!(new_borrowed(wrap__return_i64()), Robj::from(123));
+                // General integer types.
+                assert_eq!(new_borrowed(wrap__return_u8()), Robj::from(123));
+                assert_eq!(new_borrowed(wrap__return_u16()), Robj::from(123));
+                assert_eq!(new_borrowed(wrap__return_u32()), Robj::from(123));
+                assert_eq!(new_borrowed(wrap__return_u64()), Robj::from(123));
+                assert_eq!(new_borrowed(wrap__return_i8()), Robj::from(123));
+                assert_eq!(new_borrowed(wrap__return_i16()), Robj::from(123));
+                assert_eq!(new_borrowed(wrap__return_i32()), Robj::from(123));
+                assert_eq!(new_borrowed(wrap__return_i64()), Robj::from(123));
 
-            // Floating point types.
-            assert_eq!(new_borrowed(wrap__return_f32()), Robj::from(123.));
-            assert_eq!(new_borrowed(wrap__return_f64()), Robj::from(123.));
+                // Floating point types.
+                assert_eq!(new_borrowed(wrap__return_f32()), Robj::from(123.));
+                assert_eq!(new_borrowed(wrap__return_f64()), Robj::from(123.));
+            }
         }
     }
 
@@ -690,14 +691,15 @@ mod tests {
         // > expect_equal(test_con, "Hello world")
         //
 
-        extendr_engine::start_r();
-        let txt_con = R!(textConnection("test_con", open = "w")).unwrap();
-        call!("sink", &txt_con).unwrap();
-        rprintln!("Hello world");
-        call!("sink").unwrap();
-        call!("close", &txt_con).unwrap();
-        let result = R!(test_con).unwrap();
-        assert_eq!(result, r!("Hello world"));
+        test! {
+            let txt_con = R!(textConnection("test_con", open = "w")).unwrap();
+            call!("sink", &txt_con).unwrap();
+            rprintln!("Hello world");
+            call!("sink").unwrap();
+            call!("close", &txt_con).unwrap();
+            let result = R!(test_con).unwrap();
+            assert_eq!(result, r!("Hello world"));
+        }
     }
 
     #[test]

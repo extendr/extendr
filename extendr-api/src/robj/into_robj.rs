@@ -363,8 +363,7 @@ pub trait RobjItertools: Iterator {
     /// ```
     /// use extendr_api::prelude::*;
     ///
-    /// extendr_engine::start_r();
-    ///
+    /// test! {
     /// // Integer iterators.
     /// let robj = (0..3).collect_robj();
     /// assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);
@@ -380,6 +379,7 @@ pub trait RobjItertools: Iterator {
     /// // String iterators.
     /// let robj = (0..3).map(|x| format!("{}", x)).collect_robj();
     /// assert_eq!(robj.as_str_vector(), Some(vec!["0", "1", "2"]));
+    /// }
     /// ```
     fn collect_robj(self) -> Robj
     where

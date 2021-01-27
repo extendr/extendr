@@ -39,35 +39,34 @@ pub use rinternals::*;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///
-/// // Different ways of making integer scalar 1.
-/// let non_na : Option<i32> = Some(1);
-/// let a : Robj = vec![1].into();
-/// let b = r!(1);
-/// let c = r!(vec![1]);
-/// let d = r!(non_na);
-/// let e = r!([1]);
-/// assert_eq!(a, b);
-/// assert_eq!(a, c);
-/// assert_eq!(a, d);
-/// assert_eq!(a, e);
-///
-/// // Different ways of making boolean scalar TRUE.
-/// let a : Robj = true.into();
-/// let b = r!(TRUE);
-/// assert_eq!(a, b);
-///
-/// // Create a named list
-/// let a = list!(a = 1, b = "x");
-/// assert_eq!(a.len(), 2);
-///
-/// // Use an iterator (like 1:10)
-/// let a = r!(1 ..= 10);
-/// assert_eq!(a, r!([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));
-///
-/// // Use an iterator (like (1:10)[(1:10) %% 3 == 0])
-/// let a = (1 ..= 10).filter(|v| v % 3 == 0).collect_robj();
-/// assert_eq!(a, c!(3, 6, 9));
+///     // Different ways of making integer scalar 1.
+///     let non_na : Option<i32> = Some(1);
+///     let a : Robj = vec![1].into();
+///     let b = r!(1);
+///     let c = r!(vec![1]);
+///     let d = r!(non_na);
+///     let e = r!([1]);
+///     assert_eq!(a, b);
+///     assert_eq!(a, c);
+///     assert_eq!(a, d);
+///     assert_eq!(a, e);
+/// 
+///     // Different ways of making boolean scalar TRUE.
+///     let a : Robj = true.into();
+///     let b = r!(TRUE);
+///     assert_eq!(a, b);
+/// 
+///     // Create a named list
+///     let a = list!(a = 1, b = "x");
+///     assert_eq!(a.len(), 2);
+/// 
+///     // Use an iterator (like 1:10)
+///     let a = r!(1 ..= 10);
+///     assert_eq!(a, r!([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));
+/// 
+///     // Use an iterator (like (1:10)[(1:10) %% 3 == 0])
+///     let a = (1 ..= 10).filter(|v| v % 3 == 0).collect_robj();
+///     assert_eq!(a, c!(3, 6, 9));
 /// }
 /// ```
 ///
@@ -76,11 +75,10 @@ pub use rinternals::*;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///
-/// let a : Robj = c!(1, 2, 3, 4, 5);
-/// let iter = a.as_integer_iter().unwrap();
-/// let robj = iter.filter(|&x| x < 3).collect_robj();
-/// assert_eq!(robj, c!(1, 2));
+///     let a : Robj = c!(1, 2, 3, 4, 5);
+///     let iter = a.as_integer_iter().unwrap();
+///     let robj = iter.filter(|&x| x < 3).collect_robj();
+///     assert_eq!(robj, c!(1, 2));
 /// }
 /// ```
 ///
@@ -89,11 +87,10 @@ pub use rinternals::*;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///
-/// let a : Robj = r!(vec![1., 2., 3., 4.]);
-/// let b : Vec<f64> = a.as_real_vector().unwrap();
-/// assert_eq!(a.len(), 4);
-/// assert_eq!(b, vec![1., 2., 3., 4.]);
+///     let a : Robj = r!(vec![1., 2., 3., 4.]);
+///     let b : Vec<f64> = a.as_real_vector().unwrap();
+///     assert_eq!(a.len(), 4);
+///     assert_eq!(b, vec![1., 2., 3., 4.]);
 /// }
 /// ```
 ///
@@ -102,12 +99,11 @@ pub use rinternals::*;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///
-/// let abc = list!(a = 1, b = "x", c = vec![1, 2]);
-/// let names : Vec<_> = abc.names().unwrap().collect();
-/// let names_and_values : Vec<_> = abc.as_named_list_iter().unwrap().collect();
-/// assert_eq!(names, vec!["a", "b", "c"]);
-/// assert_eq!(names_and_values, vec![("a", r!(1)), ("b", r!("x")), ("c", r!(vec![1, 2]))]);
+///     let abc = list!(a = 1, b = "x", c = vec![1, 2]);
+///     let names : Vec<_> = abc.names().unwrap().collect();
+///     let names_and_values : Vec<_> = abc.as_named_list_iter().unwrap().collect();
+///     assert_eq!(names, vec!["a", "b", "c"]);
+///     assert_eq!(names_and_values, vec![("a", r!(1)), ("b", r!("x")), ("c", r!(vec![1, 2]))]);
 /// }
 /// ```
 ///
@@ -504,12 +500,13 @@ impl Robj {
     /// Get a vector of owned strings.
     /// Owned strings have long lifetimes, but are much slower than references.
     /// ```
-    ///    use extendr_api::prelude::*;
-    ///    extendr_engine::start_r();
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///    let robj1 = Robj::from("xyz");
     ///    assert_eq!(robj1.as_string_vector(), Some(vec!["xyz".to_string()]));
     ///    let robj2 = Robj::from(1);
     ///    assert_eq!(robj2.as_string_vector(), None);
+    /// }
     /// ```
     pub fn as_string_vector(&self) -> Option<Vec<String>> {
         if let Some(iter) = self.as_str_iter() {
@@ -522,12 +519,13 @@ impl Robj {
     /// Get a vector of string references.
     /// String references (&str) are faster, but have short lifetimes.
     /// ```
-    ///    use extendr_api::prelude::*;
-    ///    extendr_engine::start_r();
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///    let robj1 = Robj::from("xyz");
     ///    assert_eq!(robj1.as_str_vector(), Some(vec!["xyz"]));
     ///    let robj2 = Robj::from(1);
     ///    assert_eq!(robj2.as_str_vector(), None);
+    /// }
     /// ```
     pub fn as_str_vector(&self) -> Option<Vec<&str>> {
         if let Some(iter) = self.as_str_iter() {
@@ -539,12 +537,13 @@ impl Robj {
 
     /// Get a read-only reference to a scalar string type.
     /// ```
-    ///    use extendr_api::prelude::*;
-    ///    extendr_engine::start_r();
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///    let robj1 = Robj::from("xyz");
     ///    let robj2 = Robj::from(1);
     ///    assert_eq!(robj1.as_str(), Some("xyz"));
     ///    assert_eq!(robj2.as_str(), None);
+    /// }
     /// ```
     pub fn as_str<'a>(&self) -> Option<&'a str> {
         unsafe {
@@ -565,14 +564,15 @@ impl Robj {
 
     /// Get a scalar integer.
     /// ```
-    ///    use extendr_api::prelude::*;
-    ///    extendr_engine::start_r();
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///    let robj1 = Robj::from("xyz");
     ///    let robj2 = Robj::from(1);
     ///    let robj3 = Robj::from(NA_INTEGER);
     ///    assert_eq!(robj1.as_integer(), None);
     ///    assert_eq!(robj2.as_integer(), Some(1));
     ///    assert_eq!(robj3.as_integer(), None);
+    /// }
     /// ```
     pub fn as_integer(&self) -> Option<i32> {
         match self.as_integer_slice() {
@@ -583,14 +583,15 @@ impl Robj {
 
     /// Get a scalar real.
     /// ```
-    ///    use extendr_api::prelude::*;
-    ///    extendr_engine::start_r();
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///    let robj1 = Robj::from(1);
     ///    let robj2 = Robj::from(1.);
     ///    let robj3 = Robj::from(NA_REAL);
     ///    assert_eq!(robj1.as_real(), None);
     ///    assert_eq!(robj2.as_real(), Some(1.));
     ///    assert_eq!(robj3.as_real(), None);
+    /// }
     /// ```
     pub fn as_real(&self) -> Option<f64> {
         match self.as_real_slice() {
@@ -601,14 +602,15 @@ impl Robj {
 
     /// Get a scalar rust boolean.
     /// ```
-    ///    use extendr_api::prelude::*;
-    ///    extendr_engine::start_r();
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///    let robj1 = Robj::from(TRUE);
     ///    let robj2 = Robj::from(1.);
     ///    let robj3 = Robj::from(NA_LOGICAL);
     ///    assert_eq!(robj1.as_bool(), Some(true));
     ///    assert_eq!(robj2.as_bool(), None);
     ///    assert_eq!(robj3.as_bool(), None);
+    /// }
     /// ```
     pub fn as_bool(&self) -> Option<bool> {
         match self.as_logical_slice() {
@@ -619,14 +621,15 @@ impl Robj {
 
     /// Get a scalar boolean as a tri-boolean [Bool] value.
     /// ```
-    ///    use extendr_api::prelude::*;
-    ///    extendr_engine::start_r();
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///    let robj1 = Robj::from(TRUE);
     ///    let robj2 = Robj::from([TRUE, FALSE]);
     ///    let robj3 = Robj::from(NA_LOGICAL);
     ///    assert_eq!(robj1.as_logical(), Some(TRUE));
     ///    assert_eq!(robj2.as_logical(), None);
     ///    assert_eq!(robj3.as_logical(), Some(NA_LOGICAL));
+    /// }
     /// ```
     pub fn as_logical(&self) -> Option<Bool> {
         match self.as_logical_slice() {
@@ -637,11 +640,12 @@ impl Robj {
 
     /// Evaluate the expression in R and return an error or an R object.
     /// ```
-    ///    use extendr_api::prelude::*;
-    ///    extendr_engine::start_r();
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///
     ///    let add = lang!("+", 1, 2);
     ///    assert_eq!(add.eval().unwrap(), r!(3));
+    /// }
     /// ```
     pub fn eval(&self) -> Result<Robj> {
         single_threaded(|| unsafe {
@@ -660,10 +664,11 @@ impl Robj {
 
     /// Evaluate the expression and return NULL or an R object.
     /// ```
-    ///    use extendr_api::prelude::*;
-    ///    extendr_engine::start_r();
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///    let bad = lang!("imnotavalidfunctioninR", 1, 2);
     ///    assert_eq!(bad.eval_blind(), r!(NULL));
+    /// }
     /// ```
     pub fn eval_blind(&self) -> Robj {
         let res = self.eval();
@@ -676,10 +681,11 @@ impl Robj {
 
     /// Parse a string into an R executable object
     /// ```
-    ///    use extendr_api::prelude::*;
-    ///    extendr_engine::start_r();
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///    let expr = Robj::parse("1 + 2").unwrap();
     ///    assert!(expr.is_expr());
+    /// }
     /// ```
     pub fn parse(code: &str) -> Result<Robj> {
         single_threaded(|| unsafe {
@@ -700,10 +706,11 @@ impl Robj {
 
     /// Parse a string into an R executable object and run it.
     /// ```
-    ///    use extendr_api::prelude::*;
-    ///    extendr_engine::start_r();
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///    let res = Robj::eval_string("1 + 2").unwrap();
     ///    assert_eq!(res, r!(3.));
+    /// }
     /// ```
     pub fn eval_string(code: &str) -> Result<Robj> {
         single_threaded(|| {
@@ -734,12 +741,13 @@ impl Robj {
     /// Return true if the object is owned by this wrapper.
     /// If so, it will be released when the wrapper drops.
     /// ```
-    ///    use extendr_api::prelude::*;
-    ///    extendr_engine::start_r();
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///    let owned = r!(1);      // Allocated vector.
     ///    let borrowed = r!(());  // R_NilValue
     ///    assert_eq!(owned.is_owned(), true);
     ///    assert_eq!(borrowed.is_owned(), false);
+    /// }
     /// ```
     pub fn is_owned(&self) -> bool {
         match self {
@@ -821,12 +829,13 @@ make_typed_slice!(u8, RAW, RAWSXP);
 impl Robj {
     /// Get a specific attribute as a borrowed robj if it exists.
     /// ```
-    ///    use extendr_api::prelude::*;
-    ///    extendr_engine::start_r();
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///
     ///    let mut robj = r!("hello");
     ///    robj.set_attrib(Symbol("xyz"), 1);
     ///    assert_eq!(robj.get_attrib(Symbol("xyz")), Some(r!(1)));
+    /// }
     /// ```
     pub fn get_attrib<'a, N>(&self, name: N) -> Option<Robj>
     where
@@ -848,12 +857,13 @@ impl Robj {
 
     /// Set a specific attribute and return the value.
     /// ```
-    ///    use extendr_api::prelude::*;
-    ///    extendr_engine::start_r();
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///
     ///    let mut robj = r!("hello");
     ///    let value = robj.set_attrib(Symbol("xyz"), 1);
     ///    assert_eq!(robj.get_attrib(Symbol("xyz")), Some(value));
+    /// }
     /// ```
     pub fn set_attrib<N, V>(&self, name: N, value: V) -> Robj
     where
@@ -869,12 +879,12 @@ impl Robj {
 
     /// Get the names attribute as a string iterator if one exists.
     /// ```
-    ///    use extendr_api::prelude::*;
-    ///    extendr_engine::start_r();
-    ///
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///    let list = list!(a = 1, b = 2, c = 3);
     ///    let names : Vec<_> = list.names().unwrap().collect();
     ///    assert_eq!(names, vec!["a", "b", "c"]);
+    /// }
     /// ```
     pub fn names(&self) -> Option<StrIter> {
         if let Some(names) = self.get_attrib(names_symbol()) {
@@ -886,12 +896,13 @@ impl Robj {
 
     /// Get the dim attribute as an integer iterator if one exists.
     /// ```
-    ///    use extendr_api::prelude::*;
-    ///    extendr_engine::start_r();
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///
     ///    let array = R!(array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c("x", "y"), c("a","b")))).unwrap();
     ///    let dim : Vec<_> = array.dim().unwrap().collect();
     ///    assert_eq!(dim, vec![2, 2]);
+    /// }
     /// ```
     pub fn dim<'a>(&self) -> Option<IntegerIter<'a>>
     where
@@ -907,12 +918,12 @@ impl Robj {
 
     /// Get the dimnames attribute as a list iterator if one exists.
     /// ```
-    ///    use extendr_api::prelude::*;
-    ///    extendr_engine::start_r();
-    ///
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///    let array = R!(array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c("x", "y"), c("a","b")))).unwrap();
     ///    let names : Vec<_> = array.dimnames().unwrap().collect();
     ///    assert_eq!(names, vec![r!(["x", "y"]), r!(["a", "b"])]);
+    /// }
     /// ```
     pub fn dimnames(&self) -> Option<ListIter> {
         if let Some(names) = self.get_attrib(dimnames_symbol()) {
@@ -924,12 +935,12 @@ impl Robj {
 
     /// Return an iterator over names and values of a list if they exist.
     /// ```
-    ///    use extendr_api::prelude::*;
-    ///    extendr_engine::start_r();
-    ///
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///    let list = list!(a = 1, b = 2, c = 3);
     ///    let names_and_values : Vec<_> = list.as_named_list_iter().unwrap().collect();
     ///    assert_eq!(names_and_values, vec![("a", r!(1)), ("b", r!(2)), ("c", r!(3))]);
+    /// }
     /// ```
     pub fn as_named_list_iter(&self) -> Option<NamedListIter> {
         if let Some(names) = self.names() {
@@ -942,12 +953,12 @@ impl Robj {
 
     /// Get the class attribute as a string iterator if one exists.
     /// ```
-    ///    use extendr_api::prelude::*;
-    ///    extendr_engine::start_r();
-    ///
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///    let formula = R!(y ~ A * x + b).unwrap();
     ///    let class : Vec<_> = formula.class().unwrap().collect();
     ///    assert_eq!(class, ["formula"]);
+    /// }
     /// ```
     pub fn class(&self) -> Option<StrIter> {
         if let Some(class) = self.get_attrib(class_symbol()) {
@@ -959,11 +970,11 @@ impl Robj {
 
     /// Return true if this class inherits this class.
     /// ```
-    ///    use extendr_api::prelude::*;
-    ///    extendr_engine::start_r();
-    ///
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///    let formula = R!(y ~ A * x + b).unwrap();
     ///    assert_eq!(formula.inherits("formula"), true);
+    /// }
     /// ```
     pub fn inherits(&self, classname: &str) -> bool {
         if let Some(mut iter) = self.class() {
@@ -975,12 +986,12 @@ impl Robj {
 
     /// Get the levels attribute as a string iterator if one exists.
     /// ```
-    ///    use extendr_api::prelude::*;
-    ///    extendr_engine::start_r();
-    ///
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///    let factor = factor!(vec!["abcd", "def", "fg", "fg"]);
     ///    let levels : Vec<_> = factor.levels().unwrap().collect();
     ///    assert_eq!(levels, vec!["abcd", "def", "fg"]);
+    /// }
     /// ```
     pub fn levels(&self) -> Option<StrIter> {
         if let Some(levels) = self.get_attrib(levels_symbol()) {
@@ -992,12 +1003,12 @@ impl Robj {
 
     /// Get the names in an environment.
     /// ```
-    ///    use extendr_api::prelude::*;
-    ///    extendr_engine::start_r();
-    ///
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///    let names_and_values : std::collections::HashMap<_, _> = (0..4).map(|i| (format!("n{}", i), r!(i))).collect();
     ///    let env = r!(Env{parent: global_env(), names_and_values});
     ///    assert_eq!(env.ls().unwrap(), vec!["n0", "n1", "n2", "n3"]);
+    /// }
     /// ```
     pub fn ls(&self) -> Option<Vec<&str>> {
         self.as_env_iter()

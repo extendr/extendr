@@ -57,20 +57,20 @@ pub type LogicalIter<'a> = std::iter::Cloned<std::slice::Iter<'a, Bool>>;
 /// Iterator over the objects in a vector or string.
 ///
 /// ```
-/// use extendr_api::*;        // Put API in scope.
-/// extendr_engine::start_r(); // Start test environment.
-///
-/// let my_list = list!(a = 1, b = 2);
-/// let mut total = 0;
-/// for robj in my_list.as_list_iter().unwrap() {
-///   if let Some(val) = robj.as_integer() {
-///     total += val;
-///   }
-/// }
-/// assert_eq!(total, 3);
-///
-/// for name in my_list.names().unwrap() {
-///    assert!(name == "a" || name == "b")
+/// use extendr_api::prelude::*;
+/// test! {
+///     let my_list = list!(a = 1, b = 2);
+///     let mut total = 0;
+///     for robj in my_list.as_list_iter().unwrap() {
+///       if let Some(val) = robj.as_integer() {
+///         total += val;
+///       }
+///     }
+///     assert_eq!(total, 3);
+///    
+///     for name in my_list.names().unwrap() {
+///        assert!(name == "a" || name == "b")
+///     }
 /// }
 /// ```
 #[derive(Clone)]
@@ -110,13 +110,12 @@ impl Iterator for PairlistIter {
 #[derive(Clone)]
 /// Iterator over pairlist tag names.
 /// ```
-/// use extendr_api::*;        // Put API in scope.
-/// extendr_engine::start_r(); // Start test environment.
-///
-/// let mut robj = R!(pairlist(a = 1, b = 2, 3)).unwrap();
-/// // let mut robj = pairlist!(a = 1, b = 2, 3);
-/// let tags : Vec<_> = robj.as_pairlist_tag_iter().unwrap().collect();
-/// assert_eq!(tags, vec!["a", "b", na_str()]);
+/// use extendr_api::prelude::*;
+/// test! {
+///     let mut robj = R!(pairlist(a = 1, b = 2, 3)).unwrap();
+///     let tags : Vec<_> = robj.as_pairlist_tag_iter().unwrap().collect();
+///     assert_eq!(tags, vec!["a", "b", na_str()]);
+/// }
 /// ```
 pub struct PairlistTagIter {
     root_obj: Robj,
@@ -158,17 +157,17 @@ impl Iterator for PairlistTagIter {
 /// Iterator over strings or string factors.
 ///
 /// ```
-/// use extendr_api::*;        // Put API in scope.
-/// extendr_engine::start_r(); // Start test environment.
+/// use extendr_api::prelude::*;
+/// test! {
+///     let robj = r!(["a", "b", "c"]);
+///     assert_eq!(robj.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["a", "b", "c"]);
 ///
-/// let robj = r!(["a", "b", "c"]);
-/// assert_eq!(robj.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["a", "b", "c"]);
-///
-/// let factor = factor!(["abcd", "def", "fg", "fg"]);
-/// assert_eq!(factor.levels().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg"]);
-/// assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);
-/// assert_eq!(factor.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
-/// assert_eq!(factor.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
+///     let factor = factor!(["abcd", "def", "fg", "fg"]);
+///     assert_eq!(factor.levels().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg"]);
+///     assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);
+///     assert_eq!(factor.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
+///     assert_eq!(factor.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
+/// }
 /// ```
 #[derive(Clone)]
 pub struct StrIter {
@@ -262,7 +261,7 @@ macro_rules! impl_iter_debug {
 /// Iterator over the names and values of an environment
 ///
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// test! {
 ///     let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
 ///     let env = Env{parent: global_env(), names_and_values};
@@ -338,12 +337,12 @@ impl_iter_debug!(EnvIter);
 impl Robj {
     /// Get an iterator over a pairlist objects.
     /// ```
-    /// use extendr_api::*;        // Put API in scope.
-    /// extendr_engine::start_r(); // Start test environment.
-    ///
-    /// let mut robj = R!(pairlist(a = 1, b = 2, 3)).unwrap();
-    /// let objects : Vec<_> = robj.as_pairlist_iter().unwrap().collect();
-    /// assert_eq!(objects, vec![r!(1.0), r!(2.0), r!(3.0)])
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let mut robj = R!(pairlist(a = 1, b = 2, 3)).unwrap();
+    ///     let objects : Vec<_> = robj.as_pairlist_iter().unwrap().collect();
+    ///     assert_eq!(objects, vec![r!(1.0), r!(2.0), r!(3.0)]);
+    /// }
     /// ```
     pub fn as_pairlist_iter(&self) -> Option<PairlistIter> {
         match self.sexptype() {
@@ -359,13 +358,13 @@ impl Robj {
 
     /// Get an iterator over pairlist tags.
     /// ```
-    /// use extendr_api::*;        // Put API in scope.
-    /// extendr_engine::start_r(); // Start test environment.
-    ///
-    /// let mut robj = R!(pairlist(a = 1, b = 2, 3)).unwrap();
-    /// // let mut robj = pairlist!(a = 1, b = 2, 3);
-    /// let tags : Vec<_> = robj.as_pairlist_tag_iter().unwrap().collect();
-    /// assert_eq!(tags, vec!["a", "b", na_str()]);
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let mut robj = R!(pairlist(a = 1, b = 2, 3)).unwrap();
+    ///     // let mut robj = pairlist!(a = 1, b = 2, 3);
+    ///     let tags : Vec<_> = robj.as_pairlist_tag_iter().unwrap().collect();
+    ///     assert_eq!(tags, vec!["a", "b", na_str()]);
+    /// }
     /// ```
     pub fn as_pairlist_tag_iter(&self) -> Option<PairlistTagIter> {
         match self.sexptype() {
@@ -381,12 +380,12 @@ impl Robj {
 
     /// Get an iterator over a list (VECSXP).
     /// ```
-    /// use extendr_api::*;        // Put API in scope.
-    /// extendr_engine::start_r(); // Start test environment.
-    ///
-    /// let mut robj = list!(1, 2, 3);
-    /// let objects : Vec<_> = robj.as_list_iter().unwrap().collect();
-    /// assert_eq!(objects, vec![r!(1), r!(2), r!(3)])
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let mut robj = list!(1, 2, 3);
+    ///     let objects : Vec<_> = robj.as_list_iter().unwrap().collect();
+    ///     assert_eq!(objects, vec![r!(1), r!(2), r!(3)]);
+    /// }
     /// ```
     pub fn as_list_iter(&self) -> Option<ListIter> {
         match self.sexptype() {
@@ -404,27 +403,27 @@ impl Robj {
     /// but works for factors.
     ///
     /// ```
-    /// use extendr_api::*;
+    /// use extendr_api::prelude::*;
     ///
-    /// extendr_engine::start_r();
+    /// test! {
+    ///     let obj = Robj::from(vec!["a", "b", "c"]);
+    ///     assert_eq!(obj.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["a", "b", "c"]);
     ///
-    /// let obj = Robj::from(vec!["a", "b", "c"]);
-    /// assert_eq!(obj.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["a", "b", "c"]);
+    ///     let factor = factor!(vec!["abcd", "def", "fg", "fg"]);
+    ///     assert_eq!(factor.levels().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg"]);
+    ///     assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);
+    ///     assert_eq!(factor.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
+    ///     assert_eq!(factor.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
     ///
-    /// let factor = factor!(vec!["abcd", "def", "fg", "fg"]);
-    /// assert_eq!(factor.levels().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg"]);
-    /// assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);
-    /// assert_eq!(factor.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
-    /// assert_eq!(factor.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
+    ///     let obj = Robj::from(vec![Some("a"), Some("b"), None]);
+    ///     assert_eq!(obj.as_str_iter().unwrap().map(|s| s.is_na()).collect::<Vec<_>>(), vec![false, false, true]);
     ///
-    /// let obj = Robj::from(vec![Some("a"), Some("b"), None]);
-    /// assert_eq!(obj.as_str_iter().unwrap().map(|s| s.is_na()).collect::<Vec<_>>(), vec![false, false, true]);
+    ///     let obj = Robj::from(vec!["a", "b", na_str()]);
+    ///     assert_eq!(obj.as_str_iter().unwrap().map(|s| s.is_na()).collect::<Vec<_>>(), vec![false, false, true]);
     ///
-    /// let obj = Robj::from(vec!["a", "b", na_str()]);
-    /// assert_eq!(obj.as_str_iter().unwrap().map(|s| s.is_na()).collect::<Vec<_>>(), vec![false, false, true]);
-    ///
-    /// let obj = Robj::from(vec!["a", "b", "NA"]);
-    /// assert_eq!(obj.as_str_iter().unwrap().map(|s| s.is_na()).collect::<Vec<_>>(), vec![false, false, false]);
+    ///     let obj = Robj::from(vec!["a", "b", "NA"]);
+    ///     assert_eq!(obj.as_str_iter().unwrap().map(|s| s.is_na()).collect::<Vec<_>>(), vec![false, false, false]);
+    /// }
     /// ```
     pub fn as_str_iter(&self) -> Option<StrIter> {
         let i = 0;

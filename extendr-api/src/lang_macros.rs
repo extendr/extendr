@@ -99,17 +99,17 @@ macro_rules! append_lang {
 /// Example:
 /// ```
 /// use extendr_api::prelude::*;
-/// extendr_engine::start_r();
+/// test! {
+///     let vec = call!("c", 1.0, 2.0, 3.0).unwrap();
+///     assert_eq!(vec, r!([1., 2., 3.]));
+///     assert_eq!(vec.is_owned(), true);
 ///
-/// let vec = call!("c", 1.0, 2.0, 3.0).unwrap();
-/// assert_eq!(vec, r!([1., 2., 3.]));
-/// assert_eq!(vec.is_owned(), true);
+///     let list = call!("list", a=1, b=2).unwrap();
+///     assert_eq!(list.len(), 2);
 ///
-/// let list = call!("list", a=1, b=2).unwrap();
-/// assert_eq!(list.len(), 2);
-///
-/// let three = call!("+", 1, 2).unwrap();
-/// assert_eq!(three, r!(3));
+///     let three = call!("+", 1, 2).unwrap();
+///     assert_eq!(three, r!(3));
+/// }
 /// ```
 #[macro_export]
 macro_rules! call {
@@ -123,14 +123,14 @@ macro_rules! call {
 /// Example:
 /// ```
 /// use extendr_api::prelude::*;
-/// extendr_engine::start_r();
+/// test! {
+///     let call_to_c = lang!("c", 1., 2., 3.);
+///     let vec = call_to_c.eval().unwrap();
+///     assert_eq!(vec, r!([1., 2., 3.]));
 ///
-/// let call_to_c = lang!("c", 1., 2., 3.);
-/// let vec = call_to_c.eval().unwrap();
-/// assert_eq!(vec, r!([1., 2., 3.]));
-///
-/// let list = lang!("list", a=1, b=2).eval().unwrap();
-/// assert_eq!(list.len(), 2);
+///     let list = lang!("list", a=1, b=2).eval().unwrap();
+///     assert_eq!(list.len(), 2);
+/// }
 /// ```
 #[macro_export]
 macro_rules! lang {
