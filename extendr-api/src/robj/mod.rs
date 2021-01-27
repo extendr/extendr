@@ -50,20 +50,20 @@ pub use rinternals::*;
 ///     assert_eq!(a, c);
 ///     assert_eq!(a, d);
 ///     assert_eq!(a, e);
-/// 
+///
 ///     // Different ways of making boolean scalar TRUE.
 ///     let a : Robj = true.into();
 ///     let b = r!(TRUE);
 ///     assert_eq!(a, b);
-/// 
+///
 ///     // Create a named list
 ///     let a = list!(a = 1, b = "x");
 ///     assert_eq!(a.len(), 2);
-/// 
+///
 ///     // Use an iterator (like 1:10)
 ///     let a = r!(1 ..= 10);
 ///     assert_eq!(a, r!([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));
-/// 
+///
 ///     // Use an iterator (like (1:10)[(1:10) %% 3 == 0])
 ///     let a = (1 ..= 10).filter(|v| v % 3 == 0).collect_robj();
 ///     assert_eq!(a, c!(3, 6, 9));
