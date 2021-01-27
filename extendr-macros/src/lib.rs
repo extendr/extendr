@@ -728,7 +728,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         pub extern "C" fn #wrap_make_module_wrappers(
             use_symbols_sexp: extendr_api::SEXP,
             package_name_sexp: extendr_api::SEXP,
-        ) -> SEXP {
+        ) -> extendr_api::SEXP {
             unsafe {
                 let robj = new_borrowed(use_symbols_sexp);
                 let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
