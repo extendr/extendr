@@ -18,8 +18,8 @@ function try-cargo {
         if ($ActionName -ne $null -and $ActionName -ne "") {
             $ActionName = "'$ActionName':"
         }
-        $err_msg = "::error::$ActionName cargo failed with code $LASTEXITCODE (args: $CargoArgs)"
-        echo $err_msg
+        $err_msg = "$ActionName cargo failed with code $LASTEXITCODE (args: $CargoArgs)"
+        echo "::error::$err_msg"
         Write-Error -Message "$err_msg" -ErrorAction Stop 
     }
     finally {
