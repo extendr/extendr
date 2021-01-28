@@ -163,6 +163,7 @@ jobs:
       # Identical to the build process, but running more test commands
       - name: Run tests
         run: |
+          . ./try-cargo.ps1
           $targets = $env:BUILD_TARGETS.Split(',')
           $libclang_paths = $env:LIBCLANG_PATHS.Split([System.IO.Path]::PathSeparator)
           $itt = 0..($targets.Length - 1)
