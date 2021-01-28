@@ -367,7 +367,7 @@ fn make_function_wrappers(
         #[allow(non_snake_case)]
         pub extern "C" fn #wrap_name(#formal_args) -> extendr_api::SEXP {
             unsafe {
-                use extendr_api::robj::FromRobj;
+                use extendr_api::robj::*;
                 #( #convert_args )*
                 extendr_api::handle_panic(#panic_str, ||
                     extendr_api::Robj::from(#call_name(#actual_args)).get()
