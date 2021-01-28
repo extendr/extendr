@@ -730,6 +730,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
             package_name_sexp: extendr_api::SEXP,
         ) -> extendr_api::SEXP {
             unsafe {
+                use extendr_api::robj::*;
                 let robj = new_borrowed(use_symbols_sexp);
                 let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
 
