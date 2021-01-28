@@ -82,34 +82,6 @@ jobs:
           r-version: ${{ matrix.config.r }}
           windows-path-include-mingw: false
       
-      - name: Setup 'try-cargo'
-        run: | 
-          function try-cargo {
-              param(
-                  [Parameter(Position = 0, ValueFromRemainingArguments)]
-                  [String[]]
-                  $CargoArgs,
-                  [String]
-                  $ActionName
-              )
-              try {    
-                  echo "::group::$ActionName"
-                  echo "Running cargo $CargoArgs"
-                  cargo $CargoArgs
-              }
-              catch {
-                  $err_msg = "::error::$ActionName cargo failed with code $LASTEXITCODE (args: $CargoArgs)"
-                  Write-Error -Message "$err_msg" -ErrorAction Stop 
-              }
-              finally {
-                  echo "::endgroup::"
-              }
-              
-          }
-
-          try-cargo --version
-
-
       # 1. Inspect targets. If empty, assume 'x86_64' arch
       # 1.5 Make symlink to please i686 toolchain (https://github.com/rust-lang/cargo/issues/8990)
       # 2. Install msys2 packages (--needed skips already installed)
@@ -158,6 +130,7 @@ jobs:
       # 3.x Run build commands, checking for errors, providing explicit toolchain & target
       - name: Build
         run: |
+          . ./try-cargo.ps1
           $targets = $env:BUILD_TARGETS.Split(',')
           $libclang_paths = $env:LIBCLANG_PATHS.Split([System.IO.Path]::PathSeparator)
           $itt = 0..($targets.Length - 1)
