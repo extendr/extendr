@@ -10,9 +10,16 @@ function try-cargo {
         echo "::group::$ActionName"
         echo "Running cargo $CargoArgs"
         cargo $CargoArgs
+        if($LASTEXITCODE -ne  0) {
+            throw $LASTEXITCODE
+        }
     }
     catch {
+        if ($ActionName -ne $null -and $ActionName -ne "") {
+            $ActionName = "'$ActionName':"
+        }
         $err_msg = "::error::$ActionName cargo failed with code $LASTEXITCODE (args: $CargoArgs)"
+        echo $err_msg
         Write-Error -Message "$err_msg" -ErrorAction Stop 
     }
     finally {
