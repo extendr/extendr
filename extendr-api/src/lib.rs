@@ -12,7 +12,7 @@
 //!
 //! Use attributes and macros to export to R.
 //! ```ignore
-//! use extendr_api::*;
+//! use extendr_api::prelude::*;
 //! // Export a function or impl to R.
 //! #[extendr]
 //! fn fred(a: i32) -> i32 {
@@ -37,7 +37,7 @@
 //! The r!() and R!() macros let you build R objects
 //! using Rust and R syntax respectively.
 //! ```
-//! use extendr_api::*;
+//! use extendr_api::prelude::*;
 //! test! {
 //!     // An R object with a single string "hello"
 //!     let character = r!("hello");
@@ -67,7 +67,7 @@
 //! In Rust, we prefer to use iterators rather than loops.
 //!
 //! ```
-//! use extendr_api::*;
+//! use extendr_api::prelude::*;
 //! test! {
 //!     // 1 ..= 100 is the same as 1:100
 //!     let res = r!(1 ..= 100);
@@ -88,7 +88,7 @@
 //! remember to use 0-based indexing. In Rust, going out of bounds
 //! will cause and error (a panic) unlike C++ which may crash.
 //! ```
-//! use extendr_api::*;
+//! use extendr_api::prelude::*;
 //! test! {
 //!     let vals = r!([1.0, 2.0]);
 //!     let slice = vals.as_real_slice().ok_or("expected slice")?;
@@ -102,7 +102,7 @@
 //!
 //! Much slower, but more general are these methods:
 //! ```
-//! use extendr_api::*;
+//! use extendr_api::prelude::*;
 //! test! {
 //!     let vals = r!([1.0, 2.0, 3.0]);
 //!    
@@ -121,7 +121,7 @@
 //! The [R!] macro lets you embed R code in Rust
 //! but does not take variables.
 //! ```
-//! use extendr_api::*;
+//! use extendr_api::prelude::*;
 //! test! {
 //!     // The text "1 + 1" is parsed as R source code.
 //!     // The result is 1.0 + 1.0 in Rust.
@@ -132,7 +132,7 @@
 //! The [r!] macro converts a rust object to an R object
 //! and takes parameters.
 //! ```
-//! use extendr_api::*;
+//! use extendr_api::prelude::*;
 //! test! {
 //!     // The text "1.0+1.0" is parsed as Rust source code.
 //!     let one = 1.0;
@@ -142,7 +142,7 @@
 //!
 //! You can call R functions and primitives using the [call!] macro.
 //! ```
-//! use extendr_api::*;
+//! use extendr_api::prelude::*;
 //! test! {
 //!
 //!     // As one R! macro call
@@ -174,7 +174,7 @@
 //! original R object to be alive or the data will be corrupted.
 //!
 //! ```
-//! use extendr_api::*;
+//! use extendr_api::prelude::*;
 //! test! {
 //!     // robj is an "Owned" object that controls the memory allocated.
 //!     let robj = r!([1, 2, 3]);
@@ -190,23 +190,33 @@
     html_logo_url = "https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png"
 )]
 
-mod error;
-mod functions;
-mod lang;
-mod logical;
-mod matrix;
+pub mod error;
+pub mod functions;
+pub mod iter;
+pub mod lang_macros;
+pub mod logical;
+pub mod matrix;
 pub mod metadata;
-mod rmacros;
-mod robj;
-mod thread_safety;
-mod wrapper;
+pub mod prelude;
+pub mod rmacros;
+
+pub mod robj;
+pub mod thread_safety;
+pub mod wrapper;
 
 #[cfg(feature = "ndarray")]
-mod robj_ndarray;
+pub mod robj_ndarray;
+
+//////////////////////////////////////////////////
+// Note these pub use statements are deprectaed
+//
+// `use extendr_api::prelude::*;`
+//
+// instead.
 
 pub use error::*;
 pub use functions::*;
-pub use lang::*;
+pub use lang_macros::*;
 pub use logical::*;
 pub use matrix::*;
 pub use rmacros::*;
@@ -220,6 +230,28 @@ pub use wrapper::*;
 pub use robj_ndarray::*;
 
 pub use extendr_macros::*;
+//////////////////////////////////////////////////
+
+/// TRUE value eg. `r!(TRUE)`
+pub const TRUE: Bool = Bool(1);
+
+/// FALSE value eg. `r!(FALSE)`
+pub const FALSE: Bool = Bool(0);
+
+/// NULL value eg. `r!(NULL)`
+pub const NULL: () = ();
+
+/// NA value for integers eg. `r!(NA_INTEGER)`
+pub const NA_INTEGER: Option<i32> = None;
+
+/// NA value for real values eg. `r!(NA_REAL)`
+pub const NA_REAL: Option<f64> = None;
+
+/// NA value for strings. `r!(NA_STRING)`
+pub const NA_STRING: Option<&str> = None;
+
+/// NA value for logical. `r!(NA_LOGICAL)`
+pub const NA_LOGICAL: Bool = Bool(std::i32::MIN);
 
 #[doc(hidden)]
 pub use std::collections::HashMap;
@@ -523,52 +555,53 @@ mod tests {
 
     #[test]
     fn export_test() {
-        extendr_engine::start_r();
-        use super::*;
-        // Call the exported functions through their generated C wrappers.
-        unsafe {
-            wrap__inttypes(
-                Robj::from(1).get(),
-                Robj::from(2).get(),
-                Robj::from(3).get(),
-                Robj::from(4).get(),
-                Robj::from(5).get(),
-                Robj::from(6).get(),
-                Robj::from(7).get(),
-                Robj::from(8).get(),
-            );
-            wrap__inttypes(
-                Robj::from(1.).get(),
-                Robj::from(2.).get(),
-                Robj::from(3.).get(),
-                Robj::from(4.).get(),
-                Robj::from(5.).get(),
-                Robj::from(6.).get(),
-                Robj::from(7.).get(),
-                Robj::from(8.).get(),
-            );
-            wrap__floattypes(Robj::from(1.).get(), Robj::from(2.).get());
-            wrap__floattypes(Robj::from(1).get(), Robj::from(2).get());
-            wrap__strtypes(Robj::from("abc").get(), Robj::from("def").get());
-            wrap__vectortypes(
-                Robj::from(&[1, 2, 3] as &[i32]).get(),
-                Robj::from(&[4., 5., 6.] as &[f64]).get(),
-            );
-            wrap__robjtype(Robj::from(1).get());
+        test! {
+            use super::*;
+            // Call the exported functions through their generated C wrappers.
+            unsafe {
+                wrap__inttypes(
+                    Robj::from(1).get(),
+                    Robj::from(2).get(),
+                    Robj::from(3).get(),
+                    Robj::from(4).get(),
+                    Robj::from(5).get(),
+                    Robj::from(6).get(),
+                    Robj::from(7).get(),
+                    Robj::from(8).get(),
+                );
+                wrap__inttypes(
+                    Robj::from(1.).get(),
+                    Robj::from(2.).get(),
+                    Robj::from(3.).get(),
+                    Robj::from(4.).get(),
+                    Robj::from(5.).get(),
+                    Robj::from(6.).get(),
+                    Robj::from(7.).get(),
+                    Robj::from(8.).get(),
+                );
+                wrap__floattypes(Robj::from(1.).get(), Robj::from(2.).get());
+                wrap__floattypes(Robj::from(1).get(), Robj::from(2).get());
+                wrap__strtypes(Robj::from("abc").get(), Robj::from("def").get());
+                wrap__vectortypes(
+                    Robj::from(&[1, 2, 3] as &[i32]).get(),
+                    Robj::from(&[4., 5., 6.] as &[f64]).get(),
+                );
+                wrap__robjtype(Robj::from(1).get());
 
-            // General integer types.
-            assert_eq!(new_borrowed(wrap__return_u8()), Robj::from(123));
-            assert_eq!(new_borrowed(wrap__return_u16()), Robj::from(123));
-            assert_eq!(new_borrowed(wrap__return_u32()), Robj::from(123));
-            assert_eq!(new_borrowed(wrap__return_u64()), Robj::from(123));
-            assert_eq!(new_borrowed(wrap__return_i8()), Robj::from(123));
-            assert_eq!(new_borrowed(wrap__return_i16()), Robj::from(123));
-            assert_eq!(new_borrowed(wrap__return_i32()), Robj::from(123));
-            assert_eq!(new_borrowed(wrap__return_i64()), Robj::from(123));
+                // General integer types.
+                assert_eq!(new_borrowed(wrap__return_u8()), Robj::from(123));
+                assert_eq!(new_borrowed(wrap__return_u16()), Robj::from(123));
+                assert_eq!(new_borrowed(wrap__return_u32()), Robj::from(123));
+                assert_eq!(new_borrowed(wrap__return_u64()), Robj::from(123));
+                assert_eq!(new_borrowed(wrap__return_i8()), Robj::from(123));
+                assert_eq!(new_borrowed(wrap__return_i16()), Robj::from(123));
+                assert_eq!(new_borrowed(wrap__return_i32()), Robj::from(123));
+                assert_eq!(new_borrowed(wrap__return_i64()), Robj::from(123));
 
-            // Floating point types.
-            assert_eq!(new_borrowed(wrap__return_f32()), Robj::from(123.));
-            assert_eq!(new_borrowed(wrap__return_f64()), Robj::from(123.));
+                // Floating point types.
+                assert_eq!(new_borrowed(wrap__return_f32()), Robj::from(123.));
+                assert_eq!(new_borrowed(wrap__return_f64()), Robj::from(123.));
+            }
         }
     }
 
@@ -658,14 +691,15 @@ mod tests {
         // > expect_equal(test_con, "Hello world")
         //
 
-        extendr_engine::start_r();
-        let txt_con = R!(textConnection("test_con", open = "w")).unwrap();
-        call!("sink", &txt_con).unwrap();
-        rprintln!("Hello world");
-        call!("sink").unwrap();
-        call!("close", &txt_con).unwrap();
-        let result = R!(test_con).unwrap();
-        assert_eq!(result, r!("Hello world"));
+        test! {
+            let txt_con = R!(textConnection("test_con", open = "w")).unwrap();
+            call!("sink", &txt_con).unwrap();
+            rprintln!("Hello world");
+            call!("sink").unwrap();
+            call!("close", &txt_con).unwrap();
+            let result = R!(test_con).unwrap();
+            assert_eq!(result, r!("Hello world"));
+        }
     }
 
     #[test]

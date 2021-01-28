@@ -8,8 +8,8 @@
 ///
 /// Example:
 /// ```
-/// use extendr_api::*;
-/// extendr_engine::start_r();
+/// use extendr_api::prelude::*;
+/// test! {
 /// let fred = r!(1);
 /// assert_eq!(fred, Robj::from(1));
 ///
@@ -24,7 +24,7 @@
 ///
 /// let numeric_array_with_na = r!([Some(1.), None, Some(3.)]);
 /// assert_eq!(numeric_array_with_na.len(), 3);
-///
+/// }
 /// ```
 #[macro_export]
 macro_rules! r {
@@ -39,14 +39,15 @@ macro_rules! r {
 /// Note that the performance of this function is not good.
 ///
 /// ```
-/// use extendr_api::*;
-/// extendr_engine::start_r();
+/// use extendr_api::prelude::*;
+/// test! {
 ///
 /// let formula = R!(y ~ z + 1).unwrap();
 /// assert!(formula.inherits("formula"));
 ///
 /// let function = R!(function(x,y) x+y).unwrap();
 /// assert!(function.is_function());
+/// }
 /// ```
 #[macro_export]
 macro_rules! R {
@@ -60,11 +61,12 @@ macro_rules! R {
 ///
 /// Variables with embedded "." may not work.
 /// ```
-/// use extendr_api::*;
-/// extendr_engine::start_r();
+/// use extendr_api::prelude::*;
+/// test! {
 ///
 /// current_env().set_local(sym!(myvar), 1.0);
 /// assert_eq!(var!(myvar), Ok(r!(1.0)));
+/// }
 /// ```
 #[macro_export]
 macro_rules! var {
@@ -77,7 +79,7 @@ macro_rules! var {
 ///
 /// Variables with embedded "." may not work.
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// test! {
 ///      // The "iris" dataset is a dataframe.
 ///      assert_eq!(global!(iris)?.is_frame(), true);
@@ -94,11 +96,12 @@ macro_rules! global {
 /// You should cache your symbols in variables
 /// as generating them is costly.
 /// ```
-/// use extendr_api::*;
-/// extendr_engine::start_r();
+/// use extendr_api::prelude::*;
+/// test! {
 ///
 /// let wombat = sym!(wombat);
 /// assert_eq!(wombat, r!(Symbol("wombat")));
+/// }
 /// ```
 #[macro_export]
 macro_rules! sym {
@@ -111,10 +114,11 @@ macro_rules! sym {
 ///
 /// Example:
 /// ```
-/// use extendr_api::*;
-/// extendr_engine::start_r();
+/// use extendr_api::prelude::*;
+/// test! {
 /// let fred = c!(1, 2, 3);
 /// assert_eq!(fred, r!([1, 2, 3]));
+/// }
 /// ```
 /// Note: make sure to use rust syntax for numbers: 1 is integer, 1. is numeric.
 /// For vectors of primitives, prefer to use `r!([1, 2, 3])`.
@@ -134,10 +138,11 @@ macro_rules! c {
 ///
 /// Example:
 /// ```
-/// use extendr_api::*;
-/// extendr_engine::start_r();
+/// use extendr_api::prelude::*;
+/// test! {
 /// let fred = rep!(1., 3);
 /// assert_eq!(fred, r!([1., 1., 1.]));
+/// }
 /// ```
 /// Note: make sure to use rust syntax for numbers: 1 is integer, 1. is numeric.
 #[macro_export]
@@ -151,9 +156,10 @@ macro_rules! rep {
 ///
 /// Example:
 /// ```no_run
-/// use extendr_api::*;
-/// extendr_engine::start_r();
+/// use extendr_api::prelude::*;
+/// test! {
 /// let mydata = read_table!("mydata.csv").unwrap();
+/// }
 /// ```
 #[macro_export]
 macro_rules! read_table {
@@ -166,10 +172,11 @@ macro_rules! read_table {
 ///
 /// Example:
 /// ```
-/// use extendr_api::*;
-/// extendr_engine::start_r();
+/// use extendr_api::prelude::*;
+/// test! {
 /// let mylist = list!(x=1, y=2);
 /// assert_eq!(mylist, r!(List(&[r!(1), r!(2)])));
+/// }
 /// ```
 ///
 /// Panics on error.
@@ -187,10 +194,11 @@ macro_rules! list {
 ///
 /// Example:
 /// ```
-/// use extendr_api::*;
-/// extendr_engine::start_r();
+/// use extendr_api::prelude::*;
+/// test! {
 /// let mydata = data_frame!(x=1, y=2);
 /// assert_eq!(mydata, r!(List(&[r!(1), r!(2)])));
+/// }
 /// ```
 ///
 /// Panics on error.
@@ -208,12 +216,13 @@ macro_rules! data_frame {
 ///
 /// Example:
 /// ```
-/// use extendr_api::*;
-/// extendr_engine::start_r();
+/// use extendr_api::prelude::*;
+/// test! {
 /// let factor = factor!(vec!["abcd", "def", "fg", "fg"]);
 /// assert_eq!(factor.levels().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg"]);
 /// assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);
 /// assert_eq!(factor.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
+/// }
 /// ```
 ///
 /// Panics on error.

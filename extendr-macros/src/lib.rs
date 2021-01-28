@@ -367,7 +367,7 @@ fn make_function_wrappers(
         #[allow(non_snake_case)]
         pub extern "C" fn #wrap_name(#formal_args) -> extendr_api::SEXP {
             unsafe {
-                use extendr_api::FromRobj;
+                use extendr_api::robj::*;
                 #( #convert_args )*
                 extendr_api::handle_panic(#panic_str, ||
                     extendr_api::Robj::from(#call_name(#actual_args)).get()
@@ -399,7 +399,7 @@ fn make_function_wrappers(
 ///
 /// Example:
 /// ```ignore
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// #[derive(Debug)]
 /// struct Person {
 ///     pub name: String,
@@ -719,17 +719,18 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
 
         #[no_mangle]
         #[allow(non_snake_case)]
-        pub extern "C" fn #wrap_module_metadata_name() -> SEXP {
+        pub extern "C" fn #wrap_module_metadata_name() -> extendr_api::SEXP {
             unsafe { extendr_api::Robj::from(#module_metadata_name()).get() }
         }
 
         #[no_mangle]
         #[allow(non_snake_case)]
         pub extern "C" fn #wrap_make_module_wrappers(
-            use_symbols_sexp: SEXP,
-            package_name_sexp: SEXP,
-        ) -> SEXP {
+            use_symbols_sexp: extendr_api::SEXP,
+            package_name_sexp: extendr_api::SEXP,
+        ) -> extendr_api::SEXP {
             unsafe {
+                use extendr_api::robj::*;
                 let robj = new_borrowed(use_symbols_sexp);
                 let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
 

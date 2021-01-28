@@ -19,7 +19,7 @@ pub fn this_thread_id() -> u32 {
 /// Note: This will fail badly if the called function panics or calls RF_error.
 ///
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// use std::sync::atomic::{AtomicU32, Ordering};
 /// static GLOBAL_THREAD_COUNT: AtomicU32 = AtomicU32::new(0);
 ///
@@ -97,7 +97,7 @@ pub fn throw_r_error<S: AsRef<str>>(s: S) {
 
 /// Wrap an R function such as Rf_findFunction and convert errors and panics into results.
 /// ```
-/// use extendr_api::*;
+/// use extendr_api::prelude::*;
 /// test! {
 ///    let res = catch_r_error(|| unsafe {
 ///        throw_r_error("bad things!");

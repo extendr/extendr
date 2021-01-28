@@ -1,5 +1,5 @@
 
-use extendr_api::*;
+use extendr_api::prelude::*;
 #[doc(hidden)]
 use ndarray::prelude::*;
 

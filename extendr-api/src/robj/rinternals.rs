@@ -107,12 +107,12 @@ impl Robj {
     ///
     /// See also [global_function()].
     /// ```
-    ///    use extendr_api::*;
-    ///    extendr_engine::start_r();
-    ///
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///    let my_fun = base_env().find_function(sym!(ls)).unwrap();
     ///    assert_eq!(my_fun.is_function(), true);
     ///    assert!(base_env().find_function(sym!(qwertyuiop)).is_none());
+    /// }
     /// ```
     pub fn find_function<K: Into<Robj>>(&self, key: K) -> Option<Robj> {
         let key = key.into();
@@ -151,14 +151,14 @@ impl Robj {
     /// Note that many common variables and functions are contained in promises
     /// which must be evaluated and this function may throw an R error.
     /// ```
-    ///    use extendr_api::*;
-    ///    extendr_engine::start_r();
-    ///
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///    let iris_dataframe = global_env()
     ///        .find_var(sym!(iris)).unwrap().eval_promise().unwrap();
     ///    assert_eq!(iris_dataframe.is_frame(), true);
     ///    assert_eq!(iris_dataframe.len(), 5);
     ///    assert_eq!(global_env().find_var(sym!(imnotasymbol)), None);
+    /// }
     /// ```
     pub fn find_var<K: Into<Robj>>(&self, key: K) -> Option<Robj> {
         let key = key.into();
@@ -193,12 +193,12 @@ impl Robj {
 
     /// If this object is a promise, evaluate it, otherwise return the object.
     /// ```
-    ///    use extendr_api::*;
-    ///    extendr_engine::start_r();
-    ///
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///    let iris_promise = global_env().find_var(sym!(iris)).unwrap();
     ///    let iris_dataframe = iris_promise.eval_promise().unwrap();
     ///    assert_eq!(iris_dataframe.is_frame(), true);
+    /// }
     /// ```
     pub fn eval_promise(&self) -> Result<Robj> {
         if self.is_promise() {

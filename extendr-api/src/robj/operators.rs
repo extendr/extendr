@@ -7,13 +7,14 @@ use std::ops::{Add, Div, Mul, Sub};
 impl Robj {
     /// Do the equivalent of x$y
     /// ```
-    /// use extendr_api::*;
-    /// extendr_engine::start_r();
+    /// use extendr_api::prelude::*;
+    /// test! {
     /// let env = r!(Env{
     ///    parent: global_env(),
     ///    names_and_values: vec![("a".to_string(), r!(1)), ("b".to_string(), r!(2))]});
     /// assert_eq!(env.dollar("a").unwrap(), r!(1));
     /// assert_eq!(env.dollar("b").unwrap(), r!(2));
+    /// }
     /// ```
     pub fn dollar<'a, T>(&self, symbol: T) -> Result<Robj>
     where
@@ -25,11 +26,12 @@ impl Robj {
 
     /// Do the equivalent of `x[y]`
     /// ```
-    /// use extendr_api::*;
-    /// extendr_engine::start_r();
+    /// use extendr_api::prelude::*;
+    /// test! {
     /// let vec = r!([10, 20, 30]);
     /// assert_eq!(vec.slice(2).unwrap(), r!(20));
     /// assert_eq!(vec.slice(2..=3).unwrap(), r!([20, 30]));
+    /// }
     /// ```
     pub fn slice<T>(&self, rhs: T) -> Result<Robj>
     where
@@ -40,11 +42,12 @@ impl Robj {
 
     /// Do the equivalent of `x[[y]]`
     /// ```
-    /// use extendr_api::*;
-    /// extendr_engine::start_r();
+    /// use extendr_api::prelude::*;
+    /// test! {
     /// let vec = r!([10, 20, 30]);
     /// assert_eq!(vec.index(2).unwrap(), r!(20));
     /// assert_eq!(vec.index(2..=3).is_err(), true);
+    /// }
     /// ```
     pub fn index<T>(&self, rhs: T) -> Result<Robj>
     where
@@ -55,13 +58,14 @@ impl Robj {
 
     /// Do the equivalent of x ~ y
     /// ```
-    /// use extendr_api::*;
-    /// extendr_engine::start_r();
+    /// use extendr_api::prelude::*;
+    /// test! {
     /// let x = r!(Symbol("x"));
     /// let y = r!(Symbol("y"));
     /// let tilde = x.tilde(y).unwrap();
     /// assert_eq!(tilde, r!(Lang(&[r!(Symbol("~")), r!(Symbol("x")), r!(Symbol("y"))])));
     /// assert_eq!(tilde.inherits("formula"), true);
+    /// }
     /// ```
     pub fn tilde<T>(&self, rhs: T) -> Result<Robj>
     where
@@ -72,12 +76,13 @@ impl Robj {
 
     /// Do the equivalent of x :: y
     /// ```
-    /// use extendr_api::*;
-    /// extendr_engine::start_r();
+    /// use extendr_api::prelude::*;
+    /// test! {
     /// let base = r!(Symbol("base"));
     /// let env = r!(Symbol(".getNamespace"));
     /// let base_env = base.double_colon(env).unwrap();
     /// assert_eq!(base_env.is_function(), true);
+    /// }
     /// ```
     pub fn double_colon<T>(&self, rhs: T) -> Result<Robj>
     where
@@ -88,8 +93,8 @@ impl Robj {
 
     // /// Do the equivalent of x(a, b, c)
     // /// ```
-    // /// use extendr_api::*;
-    // /// extendr_engine::start_r();
+    // /// use extendr_api::prelude::*;
+    // /// test! {
     // /// let function = R!(function(a, b) a + b).unwrap();
     // /// assert_eq!(function.is_function(), true);
     // /// assert_eq!(function.call((1, 2)), r!(3));
@@ -108,8 +113,8 @@ where
     /// Add two R objects, consuming the left hand side.
     /// panics on error.
     /// ```
-    /// use extendr_api::*;
-    /// extendr_engine::start_r();
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///
     /// // lhs and rhs get dropped here
     /// let lhs = r!([1, 2]);
@@ -124,6 +129,7 @@ where
     /// let lhs = r!([1, 2]);
     /// let rhs = r!([10, 20]);
     /// assert_eq!(lhs + &rhs, r!([11, 22]));
+    /// }
     /// ```
     fn add(self, rhs: Rhs) -> Self::Output {
         call!("+", self, rhs.into()).expect("Robj add failed")
@@ -139,8 +145,8 @@ where
     /// Subtract two R objects, consuming the left hand side.
     /// panics on error.
     /// ```
-    /// use extendr_api::*;
-    /// extendr_engine::start_r();
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///
     /// // lhs and rhs get dropped here
     /// let lhs = r!([10, 20]);
@@ -155,6 +161,7 @@ where
     /// let lhs = r!([10, 20]);
     /// let rhs = r!([1, 2]);
     /// assert_eq!(lhs - &rhs, r!([9, 18]));
+    /// }
     /// ```
     fn sub(self, rhs: Rhs) -> Self::Output {
         call!("-", self, rhs.into()).expect("Robj subtract failed")
@@ -170,8 +177,8 @@ where
     /// Multiply two R objects, consuming the left hand side.
     /// panics on error.
     /// ```
-    /// use extendr_api::*;
-    /// extendr_engine::start_r();
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///
     /// // lhs and rhs get dropped here
     /// let lhs = r!([10.0, 20.0]);
@@ -186,6 +193,7 @@ where
     /// let lhs = r!([10.0, 20.0]);
     /// let rhs = r!([1.0, 2.0]);
     /// assert_eq!(lhs * &rhs, r!([10.0, 40.0]));
+    /// }
     /// ```
     fn mul(self, rhs: Rhs) -> Self::Output {
         call!("*", self, rhs.into()).expect("Robj multiply failed")
@@ -201,8 +209,8 @@ where
     /// Divide two R objects, consuming the left hand side.
     /// panics on error.
     /// ```
-    /// use extendr_api::*;
-    /// extendr_engine::start_r();
+    /// use extendr_api::prelude::*;
+    /// test! {
     ///
     /// // lhs and rhs get dropped here
     /// let lhs = r!([10.0, 20.0]);
@@ -217,6 +225,7 @@ where
     /// let lhs = r!([10.0, 20.0]);
     /// let rhs = r!([1.0, 2.0]);
     /// assert_eq!(lhs / &rhs, r!([10.0, 10.0]));
+    /// }
     /// ```
     fn div(self, rhs: Rhs) -> Self::Output {
         call!("/", self, rhs.into()).expect("Robj divide failed")
