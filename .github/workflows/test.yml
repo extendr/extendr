@@ -210,7 +210,7 @@ jobs:
             try-cargo +$toolchain test --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) '--' --nocapture -ActionName "Test extendr-engine \w tests-all for $target target"
             
             try-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) '--' --nocapture -ActionName "Test extendr-api \w tests-all for $target target"
-"                    
+            
             try-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests-minimal $(if($target -ne 'default') {"--target=$target"} ) '--' --nocapture -ActionName "Test extendr-api \w tests-minimal for $target target"
                       
             try-cargo +$toolchain test --manifest-path extendr-macros/Cargo.toml  $(if($target -ne 'default') {"--target=$target"} ) '--' --nocapture -ActionName "Test extendr-macros for $target target"
