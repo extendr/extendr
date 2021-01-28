@@ -107,6 +107,8 @@ jobs:
               
           }
 
+          try-cargo --version
+
 
       # 1. Inspect targets. If empty, assume 'x86_64' arch
       # 1.5 Make symlink to please i686 toolchain (https://github.com/rust-lang/cargo/issues/8990)
