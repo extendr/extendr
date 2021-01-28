@@ -547,12 +547,12 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// See also [global_function()].</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
-    <span class="doccomment">///</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///    let my_fun = base_env().find_function(sym!(ls)).unwrap();</span>
     <span class="doccomment">///    assert_eq!(my_fun.is_function(), true);</span>
     <span class="doccomment">///    assert!(base_env().find_function(sym!(qwertyuiop)).is_none());</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_function</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">into</span>();
@@ -591,14 +591,14 @@
     <span class="doccomment">/// Note that many common variables and functions are contained in promises</span>
     <span class="doccomment">/// which must be evaluated and this function may throw an R error.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
-    <span class="doccomment">///</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///    let iris_dataframe = global_env()</span>
     <span class="doccomment">///        .find_var(sym!(iris)).unwrap().eval_promise().unwrap();</span>
     <span class="doccomment">///    assert_eq!(iris_dataframe.is_frame(), true);</span>
     <span class="doccomment">///    assert_eq!(iris_dataframe.len(), 5);</span>
     <span class="doccomment">///    assert_eq!(global_env().find_var(sym!(imnotasymbol)), None);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_var</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">into</span>();
@@ -633,12 +633,12 @@
 
     <span class="doccomment">/// If this object is a promise, evaluate it, otherwise return the object.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
-    <span class="doccomment">///</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///    let iris_promise = global_env().find_var(sym!(iris)).unwrap();</span>
     <span class="doccomment">///    let iris_dataframe = iris_promise.eval_promise().unwrap();</span>
     <span class="doccomment">///    assert_eq!(iris_dataframe.is_frame(), true);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">eval_promise</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_promise</span>() {

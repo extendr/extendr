@@ -284,6 +284,15 @@
 <span id="281">281</span>
 <span id="282">282</span>
 <span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::{<span class="ident">Add</span>, <span class="ident">Div</span>, <span class="ident">Mul</span>, <span class="ident">Sub</span>};
@@ -294,13 +303,14 @@
 <span class="kw">impl</span> <span class="ident">Robj</span> {
     <span class="doccomment">/// Do the equivalent of x$y</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;</span>
-    <span class="doccomment">/// extendr_engine::start_r();</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">/// let env = r!(Env{</span>
     <span class="doccomment">///    parent: global_env(),</span>
     <span class="doccomment">///    names_and_values: vec![(&quot;a&quot;.to_string(), r!(1)), (&quot;b&quot;.to_string(), r!(2))]});</span>
     <span class="doccomment">/// assert_eq!(env.dollar(&quot;a&quot;).unwrap(), r!(1));</span>
     <span class="doccomment">/// assert_eq!(env.dollar(&quot;b&quot;).unwrap(), r!(2));</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dollar</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">symbol</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
     <span class="kw">where</span>
@@ -312,11 +322,12 @@
 
     <span class="doccomment">/// Do the equivalent of `x[y]`</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;</span>
-    <span class="doccomment">/// extendr_engine::start_r();</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">/// let vec = r!([10, 20, 30]);</span>
     <span class="doccomment">/// assert_eq!(vec.slice(2).unwrap(), r!(20));</span>
     <span class="doccomment">/// assert_eq!(vec.slice(2..=3).unwrap(), r!([20, 30]));</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">slice</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
     <span class="kw">where</span>
@@ -327,11 +338,12 @@
 
     <span class="doccomment">/// Do the equivalent of `x[[y]]`</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;</span>
-    <span class="doccomment">/// extendr_engine::start_r();</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">/// let vec = r!([10, 20, 30]);</span>
     <span class="doccomment">/// assert_eq!(vec.index(2).unwrap(), r!(20));</span>
     <span class="doccomment">/// assert_eq!(vec.index(2..=3).is_err(), true);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">index</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
     <span class="kw">where</span>
@@ -342,13 +354,14 @@
 
     <span class="doccomment">/// Do the equivalent of x ~ y</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;</span>
-    <span class="doccomment">/// extendr_engine::start_r();</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">/// let x = r!(Symbol(&quot;x&quot;));</span>
     <span class="doccomment">/// let y = r!(Symbol(&quot;y&quot;));</span>
     <span class="doccomment">/// let tilde = x.tilde(y).unwrap();</span>
     <span class="doccomment">/// assert_eq!(tilde, r!(Lang(&amp;[r!(Symbol(&quot;~&quot;)), r!(Symbol(&quot;x&quot;)), r!(Symbol(&quot;y&quot;))])));</span>
     <span class="doccomment">/// assert_eq!(tilde.inherits(&quot;formula&quot;), true);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">tilde</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
     <span class="kw">where</span>
@@ -359,12 +372,13 @@
 
     <span class="doccomment">/// Do the equivalent of x :: y</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;</span>
-    <span class="doccomment">/// extendr_engine::start_r();</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">/// let base = r!(Symbol(&quot;base&quot;));</span>
     <span class="doccomment">/// let env = r!(Symbol(&quot;.getNamespace&quot;));</span>
     <span class="doccomment">/// let base_env = base.double_colon(env).unwrap();</span>
     <span class="doccomment">/// assert_eq!(base_env.is_function(), true);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">double_colon</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
     <span class="kw">where</span>
@@ -375,8 +389,8 @@
 
     <span class="comment">// /// Do the equivalent of x(a, b, c)</span>
     <span class="comment">// /// ```</span>
-    <span class="comment">// /// use extendr_api::*;</span>
-    <span class="comment">// /// extendr_engine::start_r();</span>
+    <span class="comment">// /// use extendr_api::prelude::*;</span>
+    <span class="comment">// /// test! {</span>
     <span class="comment">// /// let function = R!(function(a, b) a + b).unwrap();</span>
     <span class="comment">// /// assert_eq!(function.is_function(), true);</span>
     <span class="comment">// /// assert_eq!(function.call((1, 2)), r!(3));</span>
@@ -395,8 +409,8 @@
     <span class="doccomment">/// Add two R objects, consuming the left hand side.</span>
     <span class="doccomment">/// panics on error.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;</span>
-    <span class="doccomment">/// extendr_engine::start_r();</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// // lhs and rhs get dropped here</span>
     <span class="doccomment">/// let lhs = r!([1, 2]);</span>
@@ -411,6 +425,7 @@
     <span class="doccomment">/// let lhs = r!([1, 2]);</span>
     <span class="doccomment">/// let rhs = r!([10, 20]);</span>
     <span class="doccomment">/// assert_eq!(lhs + &amp;rhs, r!([11, 22]));</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">fn</span> <span class="ident">add</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">Rhs</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
         <span class="macro">call</span><span class="macro">!</span>(<span class="string">&quot;+&quot;</span>, <span class="self">self</span>, <span class="ident">rhs</span>.<span class="ident">into</span>()).<span class="ident">expect</span>(<span class="string">&quot;Robj add failed&quot;</span>)
@@ -426,8 +441,8 @@
     <span class="doccomment">/// Subtract two R objects, consuming the left hand side.</span>
     <span class="doccomment">/// panics on error.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;</span>
-    <span class="doccomment">/// extendr_engine::start_r();</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// // lhs and rhs get dropped here</span>
     <span class="doccomment">/// let lhs = r!([10, 20]);</span>
@@ -442,6 +457,7 @@
     <span class="doccomment">/// let lhs = r!([10, 20]);</span>
     <span class="doccomment">/// let rhs = r!([1, 2]);</span>
     <span class="doccomment">/// assert_eq!(lhs - &amp;rhs, r!([9, 18]));</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">fn</span> <span class="ident">sub</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">Rhs</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
         <span class="macro">call</span><span class="macro">!</span>(<span class="string">&quot;-&quot;</span>, <span class="self">self</span>, <span class="ident">rhs</span>.<span class="ident">into</span>()).<span class="ident">expect</span>(<span class="string">&quot;Robj subtract failed&quot;</span>)
@@ -457,8 +473,8 @@
     <span class="doccomment">/// Multiply two R objects, consuming the left hand side.</span>
     <span class="doccomment">/// panics on error.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;</span>
-    <span class="doccomment">/// extendr_engine::start_r();</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// // lhs and rhs get dropped here</span>
     <span class="doccomment">/// let lhs = r!([10.0, 20.0]);</span>
@@ -473,6 +489,7 @@
     <span class="doccomment">/// let lhs = r!([10.0, 20.0]);</span>
     <span class="doccomment">/// let rhs = r!([1.0, 2.0]);</span>
     <span class="doccomment">/// assert_eq!(lhs * &amp;rhs, r!([10.0, 40.0]));</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">fn</span> <span class="ident">mul</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">Rhs</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
         <span class="macro">call</span><span class="macro">!</span>(<span class="string">&quot;*&quot;</span>, <span class="self">self</span>, <span class="ident">rhs</span>.<span class="ident">into</span>()).<span class="ident">expect</span>(<span class="string">&quot;Robj multiply failed&quot;</span>)
@@ -488,8 +505,8 @@
     <span class="doccomment">/// Divide two R objects, consuming the left hand side.</span>
     <span class="doccomment">/// panics on error.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;</span>
-    <span class="doccomment">/// extendr_engine::start_r();</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// // lhs and rhs get dropped here</span>
     <span class="doccomment">/// let lhs = r!([10.0, 20.0]);</span>
@@ -504,6 +521,7 @@
     <span class="doccomment">/// let lhs = r!([10.0, 20.0]);</span>
     <span class="doccomment">/// let rhs = r!([1.0, 2.0]);</span>
     <span class="doccomment">/// assert_eq!(lhs / &amp;rhs, r!([10.0, 10.0]));</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">fn</span> <span class="ident">div</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">Rhs</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
         <span class="macro">call</span><span class="macro">!</span>(<span class="string">&quot;/&quot;</span>, <span class="self">self</span>, <span class="ident">rhs</span>.<span class="ident">into</span>()).<span class="ident">expect</span>(<span class="string">&quot;Robj divide failed&quot;</span>)

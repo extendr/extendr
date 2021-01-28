@@ -558,7 +558,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// Panics if there is an error.</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">/// fn my_func() -&gt; Result&lt;f64&gt; {</span>
 <span class="doccomment">///     Ok(1.0)</span>
 <span class="doccomment">/// }</span>
@@ -894,10 +894,9 @@
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">RobjItertools</span>: <span class="ident">Iterator</span> {
     <span class="doccomment">/// Convert a wide range of iterators to Robj.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// extendr_engine::start_r();</span>
-    <span class="doccomment">///</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">/// // Integer iterators.</span>
     <span class="doccomment">/// let robj = (0..3).collect_robj();</span>
     <span class="doccomment">/// assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);</span>
@@ -913,6 +912,7 @@
     <span class="doccomment">/// // String iterators.</span>
     <span class="doccomment">/// let robj = (0..3).map(|x| format!(&quot;{}&quot;, x)).collect_robj();</span>
     <span class="doccomment">/// assert_eq!(robj.as_str_vector(), Some(vec![&quot;0&quot;, &quot;1&quot;, &quot;2&quot;]));</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">fn</span> <span class="ident">collect_robj</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span>
     <span class="kw">where</span>

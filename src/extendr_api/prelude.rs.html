@@ -1,0 +1,106 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/prelude.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>prelude.rs - source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script id="default-settings"></script><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="alternate icon" type="image/png" href="../../favicon-16x16.png">
+<link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../extendr_api/index.html'><div class='logo-container'><img src='https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
+                <a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1"> 1</span>
+<span id="2"> 2</span>
+<span id="3"> 3</span>
+<span id="4"> 4</span>
+<span id="5"> 5</span>
+<span id="6"> 6</span>
+<span id="7"> 7</span>
+<span id="8"> 8</span>
+<span id="9"> 9</span>
+<span id="10">10</span>
+<span id="11">11</span>
+<span id="12">12</span>
+<span id="13">13</span>
+<span id="14">14</span>
+<span id="15">15</span>
+<span id="16">16</span>
+<span id="17">17</span>
+<span id="18">18</span>
+<span id="19">19</span>
+<span id="20">20</span>
+<span id="21">21</span>
+<span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
+<span id="49">49</span>
+<span id="50">50</span>
+</pre><div class="example-wrap"><pre class="rust ">
+<span class="doccomment">//! # Common exports for extendr-api.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! This allows us to be more selective about exports and avoid users</span>
+<span class="doccomment">//! using deprecated features.</span>
+
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">IsNA</span>, <span class="ident">FALSE</span>, <span class="ident">NA_INTEGER</span>, <span class="ident">NA_LOGICAL</span>, <span class="ident">NA_REAL</span>, <span class="ident">NA_STRING</span>, <span class="ident">NULL</span>, <span class="ident">TRUE</span>};
+
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">error</span>::{<span class="ident">Error</span>, <span class="prelude-ty">Result</span>};
+
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">functions</span>::{
+    <span class="ident">base_env</span>, <span class="ident">base_namespace</span>, <span class="ident">base_symbol</span>, <span class="ident">blank_scalar_string</span>, <span class="ident">blank_string</span>, <span class="ident">brace_symbol</span>,
+    <span class="ident">bracket_2_symbol</span>, <span class="ident">bracket_symbol</span>, <span class="ident">class_symbol</span>, <span class="ident">current_env</span>, <span class="ident">device_symbol</span>, <span class="ident">dim_symbol</span>,
+    <span class="ident">dimnames_symbol</span>, <span class="ident">dollar_symbol</span>, <span class="ident">dot_defined</span>, <span class="ident">dot_method</span>, <span class="ident">dot_package_name</span>, <span class="ident">dot_target</span>,
+    <span class="ident">dots_symbol</span>, <span class="ident">double_colon_symbol</span>, <span class="ident">empty_env</span>, <span class="ident">find_namespace</span>, <span class="ident">global_env</span>, <span class="ident">global_function</span>,
+    <span class="ident">global_var</span>, <span class="ident">lastvalue_symbol</span>, <span class="ident">levels_symbol</span>, <span class="ident">local_var</span>, <span class="ident">missing_arg</span>, <span class="ident">mode_symbol</span>, <span class="ident">na_rm_symbol</span>,
+    <span class="ident">na_str</span>, <span class="ident">na_string</span>, <span class="ident">name_symbol</span>, <span class="ident">names_symbol</span>, <span class="ident">namespace_env_symbol</span>, <span class="ident">namespace_registry</span>,
+    <span class="ident">new_env</span>, <span class="ident">new_env_with_capacity</span>, <span class="ident">nil_value</span>, <span class="ident">package_symbol</span>, <span class="ident">previous_symbol</span>, <span class="ident">quote_symbol</span>,
+    <span class="ident">row_names_symbol</span>, <span class="ident">seeds_symbol</span>, <span class="ident">sort_list_symbol</span>, <span class="ident">source_symbol</span>, <span class="ident">spec_symbol</span>, <span class="ident">srcref</span>,
+    <span class="ident">triple_colon_symbol</span>, <span class="ident">tsp_symbol</span>, <span class="ident">unbound_value</span>,
+};
+
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">append</span>, <span class="ident">append_lang</span>, <span class="ident">append_with_name</span>, <span class="ident">args</span>, <span class="ident">call</span>, <span class="ident">lang</span>, <span class="ident">make_lang</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::{
+    <span class="ident">c</span>, <span class="ident">data_frame</span>, <span class="ident">factor</span>, <span class="ident">global</span>, <span class="ident">list</span>, <span class="ident">r</span>, <span class="ident">read_table</span>, <span class="ident">rep</span>, <span class="ident">reprint</span>, <span class="ident">reprintln</span>, <span class="ident">rprint</span>, <span class="ident">rprintln</span>,
+    <span class="ident">sym</span>, <span class="ident">test</span>, <span class="ident">var</span>, <span class="ident">R</span>,
+};
+
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">logical</span>::<span class="ident">Bool</span>;
+
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">matrix</span>::{<span class="ident">RArray</span>, <span class="ident">RColumn</span>, <span class="ident">RMatrix</span>, <span class="ident">RMatrix3D</span>};
+
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">robj</span>::{<span class="ident">Robj</span>, <span class="ident">RobjItertools</span>};
+
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">thread_safety</span>::{
+    <span class="ident">catch_r_error</span>, <span class="ident">handle_panic</span>, <span class="ident">single_threaded</span>, <span class="ident">this_thread_id</span>, <span class="ident">throw_r_error</span>,
+};
+
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">wrapper</span>::{
+    <span class="ident">Character</span>, <span class="ident">Env</span>, <span class="ident">Expr</span>, <span class="ident">Func</span>, <span class="ident">Lang</span>, <span class="ident">List</span>, <span class="ident">Pairlist</span>, <span class="ident">Primitive</span>, <span class="ident">Promise</span>, <span class="ident">Raw</span>, <span class="ident">Symbol</span>,
+};
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">robj_ndarray</span>::<span class="kw-2">*</span>;
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">ndarray</span>::<span class="kw-2">*</span>;
+
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">extendr_macros</span>::{<span class="ident">extendr</span>, <span class="ident">extendr_module</span>};
+
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">iter</span>::{<span class="ident">EnvIter</span>, <span class="ident">ListIter</span>, <span class="ident">PairlistIter</span>, <span class="ident">PairlistTagIter</span>, <span class="ident">StrIter</span>};
+</pre></div>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "extendr_api";</script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>

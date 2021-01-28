@@ -306,6 +306,15 @@
 <span id="303">303</span>
 <span id="304">304</span>
 <span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
+<span id="312">312</span>
+<span id="313">313</span>
+<span id="314">314</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! rmacros - a set of macros to call actual R functions in a rusty way.</span>
@@ -317,8 +326,8 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// Example:</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;</span>
-<span class="doccomment">/// extendr_engine::start_r();</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
+<span class="doccomment">/// test! {</span>
 <span class="doccomment">/// let fred = r!(1);</span>
 <span class="doccomment">/// assert_eq!(fred, Robj::from(1));</span>
 <span class="doccomment">///</span>
@@ -333,7 +342,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// let numeric_array_with_na = r!([Some(1.), None, Some(3.)]);</span>
 <span class="doccomment">/// assert_eq!(numeric_array_with_na.len(), 3);</span>
-<span class="doccomment">///</span>
+<span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">r</span> {
@@ -348,14 +357,15 @@
 <span class="doccomment">/// Note that the performance of this function is not good.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;</span>
-<span class="doccomment">/// extendr_engine::start_r();</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
+<span class="doccomment">/// test! {</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// let formula = R!(y ~ z + 1).unwrap();</span>
 <span class="doccomment">/// assert!(formula.inherits(&quot;formula&quot;));</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// let function = R!(function(x,y) x+y).unwrap();</span>
 <span class="doccomment">/// assert!(function.is_function());</span>
+<span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">R</span> {
@@ -369,11 +379,12 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// Variables with embedded &quot;.&quot; may not work.</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;</span>
-<span class="doccomment">/// extendr_engine::start_r();</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
+<span class="doccomment">/// test! {</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// current_env().set_local(sym!(myvar), 1.0);</span>
 <span class="doccomment">/// assert_eq!(var!(myvar), Ok(r!(1.0)));</span>
+<span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">var</span> {
@@ -386,7 +397,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// Variables with embedded &quot;.&quot; may not work.</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">/// test! {</span>
 <span class="doccomment">///      // The &quot;iris&quot; dataset is a dataframe.</span>
 <span class="doccomment">///      assert_eq!(global!(iris)?.is_frame(), true);</span>
@@ -403,11 +414,12 @@
 <span class="doccomment">/// You should cache your symbols in variables</span>
 <span class="doccomment">/// as generating them is costly.</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;</span>
-<span class="doccomment">/// extendr_engine::start_r();</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
+<span class="doccomment">/// test! {</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// let wombat = sym!(wombat);</span>
 <span class="doccomment">/// assert_eq!(wombat, r!(Symbol(&quot;wombat&quot;)));</span>
+<span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">sym</span> {
@@ -420,10 +432,11 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// Example:</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;</span>
-<span class="doccomment">/// extendr_engine::start_r();</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
+<span class="doccomment">/// test! {</span>
 <span class="doccomment">/// let fred = c!(1, 2, 3);</span>
 <span class="doccomment">/// assert_eq!(fred, r!([1, 2, 3]));</span>
+<span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// Note: make sure to use rust syntax for numbers: 1 is integer, 1. is numeric.</span>
 <span class="doccomment">/// For vectors of primitives, prefer to use `r!([1, 2, 3])`.</span>
@@ -443,10 +456,11 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// Example:</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;</span>
-<span class="doccomment">/// extendr_engine::start_r();</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
+<span class="doccomment">/// test! {</span>
 <span class="doccomment">/// let fred = rep!(1., 3);</span>
 <span class="doccomment">/// assert_eq!(fred, r!([1., 1., 1.]));</span>
+<span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// Note: make sure to use rust syntax for numbers: 1 is integer, 1. is numeric.</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
@@ -460,9 +474,10 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// Example:</span>
 <span class="doccomment">/// ```no_run</span>
-<span class="doccomment">/// use extendr_api::*;</span>
-<span class="doccomment">/// extendr_engine::start_r();</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
+<span class="doccomment">/// test! {</span>
 <span class="doccomment">/// let mydata = read_table!(&quot;mydata.csv&quot;).unwrap();</span>
+<span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">read_table</span> {
@@ -475,10 +490,11 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// Example:</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;</span>
-<span class="doccomment">/// extendr_engine::start_r();</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
+<span class="doccomment">/// test! {</span>
 <span class="doccomment">/// let mylist = list!(x=1, y=2);</span>
 <span class="doccomment">/// assert_eq!(mylist, r!(List(&amp;[r!(1), r!(2)])));</span>
+<span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Panics on error.</span>
@@ -496,10 +512,11 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// Example:</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;</span>
-<span class="doccomment">/// extendr_engine::start_r();</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
+<span class="doccomment">/// test! {</span>
 <span class="doccomment">/// let mydata = data_frame!(x=1, y=2);</span>
 <span class="doccomment">/// assert_eq!(mydata, r!(List(&amp;[r!(1), r!(2)])));</span>
+<span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Panics on error.</span>
@@ -517,12 +534,13 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// Example:</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;</span>
-<span class="doccomment">/// extendr_engine::start_r();</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
+<span class="doccomment">/// test! {</span>
 <span class="doccomment">/// let factor = factor!(vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
 <span class="doccomment">/// assert_eq!(factor.levels().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;]);</span>
 <span class="doccomment">/// assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);</span>
 <span class="doccomment">/// assert_eq!(factor.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
+<span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Panics on error.</span>

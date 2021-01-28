@@ -756,6 +756,7 @@
 <span id="753">753</span>
 <span id="754">754</span>
 <span id="755">755</span>
+<span id="756">756</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Macros for generating wrappers for rust functions.</span>
@@ -1126,7 +1127,7 @@
         <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
         <span class="kw">pub</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> #<span class="ident">wrap_name</span>(#<span class="ident">formal_args</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">extendr_api</span>::<span class="ident">SEXP</span> {
             <span class="kw">unsafe</span> {
-                <span class="kw">use</span> <span class="ident">extendr_api</span>::<span class="ident">FromRobj</span>;
+                <span class="kw">use</span> <span class="ident">extendr_api</span>::<span class="ident">robj</span>::<span class="kw-2">*</span>;
                 #( #<span class="ident">convert_args</span> )<span class="op">*</span>
                 <span class="ident">extendr_api</span>::<span class="ident">handle_panic</span>(#<span class="ident">panic_str</span>, <span class="op">|</span><span class="op">|</span>
                     <span class="ident">extendr_api</span>::<span class="ident">Robj</span>::<span class="ident">from</span>(#<span class="ident">call_name</span>(#<span class="ident">actual_args</span>)).<span class="ident">get</span>()
@@ -1158,7 +1159,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// Example:</span>
 <span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// use extendr_api::*;</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">/// #[derive(Debug)]</span>
 <span class="doccomment">/// struct Person {</span>
 <span class="doccomment">///     pub name: String,</span>
@@ -1478,17 +1479,18 @@
 
         <span class="attribute">#[<span class="ident">no_mangle</span>]</span>
         <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
-        <span class="kw">pub</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> #<span class="ident">wrap_module_metadata_name</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
+        <span class="kw">pub</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> #<span class="ident">wrap_module_metadata_name</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">extendr_api</span>::<span class="ident">SEXP</span> {
             <span class="kw">unsafe</span> { <span class="ident">extendr_api</span>::<span class="ident">Robj</span>::<span class="ident">from</span>(#<span class="ident">module_metadata_name</span>()).<span class="ident">get</span>() }
         }
 
         <span class="attribute">#[<span class="ident">no_mangle</span>]</span>
         <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
         <span class="kw">pub</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> #<span class="ident">wrap_make_module_wrappers</span>(
-            <span class="ident">use_symbols_sexp</span>: <span class="ident">SEXP</span>,
-            <span class="ident">package_name_sexp</span>: <span class="ident">SEXP</span>,
-        ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
+            <span class="ident">use_symbols_sexp</span>: <span class="ident">extendr_api</span>::<span class="ident">SEXP</span>,
+            <span class="ident">package_name_sexp</span>: <span class="ident">extendr_api</span>::<span class="ident">SEXP</span>,
+        ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">extendr_api</span>::<span class="ident">SEXP</span> {
             <span class="kw">unsafe</span> {
+                <span class="kw">use</span> <span class="ident">extendr_api</span>::<span class="ident">robj</span>::<span class="kw-2">*</span>;
                 <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">new_borrowed</span>(<span class="ident">use_symbols_sexp</span>);
                 <span class="kw">let</span> <span class="ident">use_symbols</span>: <span class="ident">bool</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>::<span class="ident">from_robj</span>(<span class="kw-2">&amp;</span><span class="ident">robj</span>).<span class="ident">unwrap</span>();
 

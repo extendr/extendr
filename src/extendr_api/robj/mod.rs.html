@@ -1232,6 +1232,7 @@
 <span id="1229">1229</span>
 <span id="1230">1230</span>
 <span id="1231">1231</span>
+<span id="1232">1232</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! R object handling.</span>
 <span class="doccomment">//!</span>
@@ -1255,7 +1256,6 @@
 
 <span class="kw">mod</span> <span class="ident">from_robj</span>;
 <span class="kw">mod</span> <span class="ident">into_robj</span>;
-<span class="kw">mod</span> <span class="ident">iter</span>;
 <span class="kw">mod</span> <span class="ident">operators</span>;
 <span class="kw">mod</span> <span class="ident">rinternals</span>;
 
@@ -1273,74 +1273,74 @@
 <span class="doccomment">/// Create R objects from rust types and iterators:</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
-<span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
+<span class="doccomment">/// test! {</span>
+<span class="doccomment">///     // Different ways of making integer scalar 1.</span>
+<span class="doccomment">///     let non_na : Option&lt;i32&gt; = Some(1);</span>
+<span class="doccomment">///     let a : Robj = vec![1].into();</span>
+<span class="doccomment">///     let b = r!(1);</span>
+<span class="doccomment">///     let c = r!(vec![1]);</span>
+<span class="doccomment">///     let d = r!(non_na);</span>
+<span class="doccomment">///     let e = r!([1]);</span>
+<span class="doccomment">///     assert_eq!(a, b);</span>
+<span class="doccomment">///     assert_eq!(a, c);</span>
+<span class="doccomment">///     assert_eq!(a, d);</span>
+<span class="doccomment">///     assert_eq!(a, e);</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// // Different ways of making integer scalar 1.</span>
-<span class="doccomment">/// let non_na : Option&lt;i32&gt; = Some(1);</span>
-<span class="doccomment">/// let a : Robj = vec![1].into();</span>
-<span class="doccomment">/// let b = r!(1);</span>
-<span class="doccomment">/// let c = r!(vec![1]);</span>
-<span class="doccomment">/// let d = r!(non_na);</span>
-<span class="doccomment">/// let e = r!([1]);</span>
-<span class="doccomment">/// assert_eq!(a, b);</span>
-<span class="doccomment">/// assert_eq!(a, c);</span>
-<span class="doccomment">/// assert_eq!(a, d);</span>
-<span class="doccomment">/// assert_eq!(a, e);</span>
+<span class="doccomment">///     // Different ways of making boolean scalar TRUE.</span>
+<span class="doccomment">///     let a : Robj = true.into();</span>
+<span class="doccomment">///     let b = r!(TRUE);</span>
+<span class="doccomment">///     assert_eq!(a, b);</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// // Different ways of making boolean scalar TRUE.</span>
-<span class="doccomment">/// let a : Robj = true.into();</span>
-<span class="doccomment">/// let b = r!(TRUE);</span>
-<span class="doccomment">/// assert_eq!(a, b);</span>
+<span class="doccomment">///     // Create a named list</span>
+<span class="doccomment">///     let a = list!(a = 1, b = &quot;x&quot;);</span>
+<span class="doccomment">///     assert_eq!(a.len(), 2);</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// // Create a named list</span>
-<span class="doccomment">/// let a = list!(a = 1, b = &quot;x&quot;);</span>
-<span class="doccomment">/// assert_eq!(a.len(), 2);</span>
+<span class="doccomment">///     // Use an iterator (like 1:10)</span>
+<span class="doccomment">///     let a = r!(1 ..= 10);</span>
+<span class="doccomment">///     assert_eq!(a, r!([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// // Use an iterator (like 1:10)</span>
-<span class="doccomment">/// let a = r!(1 ..= 10);</span>
-<span class="doccomment">/// assert_eq!(a, r!([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// // Use an iterator (like (1:10)[(1:10) %% 3 == 0])</span>
-<span class="doccomment">/// let a = (1 ..= 10).filter(|v| v % 3 == 0).collect_robj();</span>
-<span class="doccomment">/// assert_eq!(a, c!(3, 6, 9));</span>
+<span class="doccomment">///     // Use an iterator (like (1:10)[(1:10) %% 3 == 0])</span>
+<span class="doccomment">///     let a = (1 ..= 10).filter(|v| v % 3 == 0).collect_robj();</span>
+<span class="doccomment">///     assert_eq!(a, c!(3, 6, 9));</span>
+<span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Use iterators to get the contents of R objects.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
-<span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let a : Robj = c!(1, 2, 3, 4, 5);</span>
-<span class="doccomment">/// let iter = a.as_integer_iter().unwrap();</span>
-<span class="doccomment">/// let robj = iter.filter(|&amp;x| x &lt; 3).collect_robj();</span>
-<span class="doccomment">/// assert_eq!(robj, c!(1, 2));</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
+<span class="doccomment">/// test! {</span>
+<span class="doccomment">///     let a : Robj = c!(1, 2, 3, 4, 5);</span>
+<span class="doccomment">///     let iter = a.as_integer_iter().unwrap();</span>
+<span class="doccomment">///     let robj = iter.filter(|&amp;x| x &lt; 3).collect_robj();</span>
+<span class="doccomment">///     assert_eq!(robj, c!(1, 2));</span>
+<span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Convert to/from Rust vectors.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
-<span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let a : Robj = r!(vec![1., 2., 3., 4.]);</span>
-<span class="doccomment">/// let b : Vec&lt;f64&gt; = a.as_real_vector().unwrap();</span>
-<span class="doccomment">/// assert_eq!(a.len(), 4);</span>
-<span class="doccomment">/// assert_eq!(b, vec![1., 2., 3., 4.]);</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
+<span class="doccomment">/// test! {</span>
+<span class="doccomment">///     let a : Robj = r!(vec![1., 2., 3., 4.]);</span>
+<span class="doccomment">///     let b : Vec&lt;f64&gt; = a.as_real_vector().unwrap();</span>
+<span class="doccomment">///     assert_eq!(a.len(), 4);</span>
+<span class="doccomment">///     assert_eq!(b, vec![1., 2., 3., 4.]);</span>
+<span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Iterate over names and values.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
-<span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let abc = list!(a = 1, b = &quot;x&quot;, c = vec![1, 2]);</span>
-<span class="doccomment">/// let names : Vec&lt;_&gt; = abc.names().unwrap().collect();</span>
-<span class="doccomment">/// let names_and_values : Vec&lt;_&gt; = abc.as_named_list_iter().unwrap().collect();</span>
-<span class="doccomment">/// assert_eq!(names, vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</span>
-<span class="doccomment">/// assert_eq!(names_and_values, vec![(&quot;a&quot;, r!(1)), (&quot;b&quot;, r!(&quot;x&quot;)), (&quot;c&quot;, r!(vec![1, 2]))]);</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
+<span class="doccomment">/// test! {</span>
+<span class="doccomment">///     let abc = list!(a = 1, b = &quot;x&quot;, c = vec![1, 2]);</span>
+<span class="doccomment">///     let names : Vec&lt;_&gt; = abc.names().unwrap().collect();</span>
+<span class="doccomment">///     let names_and_values : Vec&lt;_&gt; = abc.as_named_list_iter().unwrap().collect();</span>
+<span class="doccomment">///     assert_eq!(names, vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</span>
+<span class="doccomment">///     assert_eq!(names_and_values, vec![(&quot;a&quot;, r!(1)), (&quot;b&quot;, r!(&quot;x&quot;)), (&quot;c&quot;, r!(vec![1, 2]))]);</span>
+<span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// NOTE: as much as possible we wish to make this object safe (ie. no segfaults).</span>
@@ -1362,27 +1362,6 @@
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
     <span class="ident">Sys</span>(<span class="ident">SEXP</span>),
 }
-
-<span class="doccomment">/// TRUE value eg. `r!(TRUE)`</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">TRUE</span>: <span class="ident">Bool</span> <span class="op">=</span> <span class="ident">Bool</span>(<span class="number">1</span>);
-
-<span class="doccomment">/// FALSE value eg. `r!(FALSE)`</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">FALSE</span>: <span class="ident">Bool</span> <span class="op">=</span> <span class="ident">Bool</span>(<span class="number">0</span>);
-
-<span class="doccomment">/// NULL value eg. `r!(NULL)`</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">NULL</span>: () <span class="op">=</span> ();
-
-<span class="doccomment">/// NA value for integers eg. `r!(NA_INTEGER)`</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">NA_INTEGER</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-
-<span class="doccomment">/// NA value for real values eg. `r!(NA_REAL)`</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">NA_REAL</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-
-<span class="doccomment">/// NA value for strings. `r!(NA_STRING)`</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">NA_STRING</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-
-<span class="doccomment">/// NA value for logical. `r!(NA_LOGICAL)`</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">NA_LOGICAL</span>: <span class="ident">Bool</span> <span class="op">=</span> <span class="ident">Bool</span>(<span class="ident">std</span>::<span class="ident">i32</span>::<span class="ident">MIN</span>);
 
 <span class="kw">impl</span> <span class="ident">Clone</span> <span class="kw">for</span> <span class="ident">Robj</span> {
     <span class="kw">fn</span> <span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
@@ -1428,11 +1407,12 @@
 
     <span class="doccomment">/// Get the extended length of the object.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
-    <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// let a : Robj = r!(vec![1., 2., 3., 4.]);</span>
     <span class="doccomment">/// assert_eq!(a.len(), 4);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_xlength</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="ident">usize</span> }
@@ -1440,12 +1420,13 @@
 
     <span class="doccomment">/// Get a variable from an enviroment, but not its ancestors.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
-    <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// let env = new_env();</span>
     <span class="doccomment">/// env.set_local(sym!(x), &quot;fred&quot;);</span>
     <span class="doccomment">/// assert_eq!(env.local(sym!(x)), Some(r!(&quot;fred&quot;)));</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">local</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">into</span>();
@@ -1458,13 +1439,14 @@
 
     <span class="doccomment">/// Set or define a variable in an enviroment.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
-    <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// let env = new_env();</span>
     <span class="doccomment">/// env.set_local(sym!(x), &quot;harry&quot;);</span>
     <span class="doccomment">/// env.set_local(sym!(x), &quot;fred&quot;);</span>
     <span class="doccomment">/// assert_eq!(env.local(sym!(x)), Some(r!(&quot;fred&quot;)));</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_local</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>, <span class="ident">V</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">key</span>: <span class="ident">K</span>, <span class="ident">value</span>: <span class="ident">V</span>) {
         <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">into</span>();
@@ -1478,13 +1460,14 @@
 
     <span class="doccomment">/// Get the parent of an environment.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
-    <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// let global_parent = global_env().parent().unwrap();</span>
     <span class="doccomment">/// assert_eq!(global_parent.is_environment(), true);</span>
     <span class="doccomment">/// assert_eq!(base_env().parent(), None);</span>
     <span class="doccomment">/// assert_eq!(r!(1).parent(), None);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">parent</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
         <span class="kw">unsafe</span> {
@@ -1501,12 +1484,13 @@
     <span class="doccomment">/// Is this object is an NA scalar?</span>
     <span class="doccomment">/// Works for character, integer and numeric types.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
-    <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// assert_eq!(r!(NA_INTEGER).is_na(), true);</span>
     <span class="doccomment">/// assert_eq!(r!(NA_REAL).is_na(), true);</span>
     <span class="doccomment">/// assert_eq!(r!(NA_STRING).is_na(), true);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_na</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">len</span>() <span class="op">!</span><span class="op">=</span> <span class="number">1</span> {
@@ -1527,11 +1511,12 @@
 
     <span class="doccomment">/// Get a read-only reference to the content of an integer vector.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
-    <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// let robj = r!([1, 2, 3]);</span>
     <span class="doccomment">/// assert_eq!(robj.as_integer_slice().unwrap(), [1, 2, 3]);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_integer_slice</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">i32</span>]<span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_typed_slice</span>()
@@ -1539,8 +1524,8 @@
 
     <span class="doccomment">/// Get an iterator over integer elements of this slice.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
-    <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// let robj = r!([1, 2, 3]);</span>
     <span class="doccomment">/// let mut tot = 0;</span>
@@ -1548,6 +1533,7 @@
     <span class="doccomment">///   tot += val;</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// assert_eq!(tot, 6);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_integer_iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IntegerIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span>
     <span class="kw">where</span>
@@ -1562,11 +1548,12 @@
 
     <span class="doccomment">/// Get a Vec&lt;i32&gt; copied from the object.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
-    <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// let robj = r!([1, 2, 3]);</span>
     <span class="doccomment">/// assert_eq!(robj.as_integer_slice().unwrap(), vec![1, 2, 3]);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_integer_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_integer_slice</span>() {
@@ -1579,11 +1566,11 @@
     <span class="doccomment">/// Get a read-only reference to the content of a logical vector</span>
     <span class="doccomment">/// using the tri-state [Bool]. Returns None if not a logical vector.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
-    <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let robj = r!([TRUE, FALSE, NA_LOGICAL]);</span>
-    <span class="doccomment">/// assert_eq!(robj.as_logical_slice().unwrap(), [TRUE, FALSE, NA_LOGICAL]);</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
+    <span class="doccomment">///     let robj = r!([TRUE, FALSE, NA_LOGICAL]);</span>
+    <span class="doccomment">///     assert_eq!(robj.as_logical_slice().unwrap(), [TRUE, FALSE, NA_LOGICAL]);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_logical_slice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">Bool</span>]<span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_typed_slice</span>()
@@ -1593,11 +1580,11 @@
     <span class="doccomment">/// using the tri-state [Bool].</span>
     <span class="doccomment">/// Returns None if not a logical vector.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
-    <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let robj = r!([TRUE, FALSE, NA_LOGICAL]);</span>
-    <span class="doccomment">/// assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, NA_LOGICAL]);</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
+    <span class="doccomment">///     let robj = r!([TRUE, FALSE, NA_LOGICAL]);</span>
+    <span class="doccomment">///     assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, NA_LOGICAL]);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_logical_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Bool</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_logical_slice</span>() {
@@ -1609,20 +1596,20 @@
 
     <span class="doccomment">/// Get an iterator over logical elements of this slice.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
-    <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let robj = r!([TRUE, FALSE, NA_LOGICAL]);</span>
-    <span class="doccomment">/// let (mut nt, mut nf, mut nna) = (0, 0, 0);</span>
-    <span class="doccomment">/// for val in robj.as_logical_iter().unwrap() {</span>
-    <span class="doccomment">///   match val {</span>
-    <span class="doccomment">///     TRUE =&gt; nt += 1,</span>
-    <span class="doccomment">///     FALSE =&gt; nf += 1,</span>
-    <span class="doccomment">///     NA_LOGICAL =&gt; nna += 1,</span>
-    <span class="doccomment">///     _ =&gt; ()</span>
-    <span class="doccomment">///   }</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
+    <span class="doccomment">///     let robj = r!([TRUE, FALSE, NA_LOGICAL]);</span>
+    <span class="doccomment">///     let (mut nt, mut nf, mut nna) = (0, 0, 0);</span>
+    <span class="doccomment">///     for val in robj.as_logical_iter().unwrap() {</span>
+    <span class="doccomment">///       match val {</span>
+    <span class="doccomment">///         TRUE =&gt; nt += 1,</span>
+    <span class="doccomment">///         FALSE =&gt; nf += 1,</span>
+    <span class="doccomment">///         NA_LOGICAL =&gt; nna += 1,</span>
+    <span class="doccomment">///         _ =&gt; ()</span>
+    <span class="doccomment">///       }</span>
+    <span class="doccomment">///     }</span>
+    <span class="doccomment">///     assert_eq!((nt, nf, nna), (1, 1, 1));</span>
     <span class="doccomment">/// }</span>
-    <span class="doccomment">/// assert_eq!((nt, nf, nna), (1, 1, 1));</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_logical_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">LogicalIter</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">slice</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_logical_slice</span>() {
@@ -1636,17 +1623,17 @@
     <span class="doccomment">/// Note: the slice may contain NaN or NA values.</span>
     <span class="doccomment">/// We may introduce a &quot;Real&quot; type to handle this like the Bool type.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
-    <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let robj = r!([Some(1.), None, Some(3.)]);</span>
-    <span class="doccomment">/// let mut tot = 0.;</span>
-    <span class="doccomment">/// for val in robj.as_real_slice().unwrap() {</span>
-    <span class="doccomment">///   if !val.is_na() {</span>
-    <span class="doccomment">///     tot += val;</span>
-    <span class="doccomment">///   }</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
+    <span class="doccomment">///     let robj = r!([Some(1.), None, Some(3.)]);</span>
+    <span class="doccomment">///     let mut tot = 0.;</span>
+    <span class="doccomment">///     for val in robj.as_real_slice().unwrap() {</span>
+    <span class="doccomment">///       if !val.is_na() {</span>
+    <span class="doccomment">///         tot += val;</span>
+    <span class="doccomment">///       }</span>
+    <span class="doccomment">///     }</span>
+    <span class="doccomment">///     assert_eq!(tot, 4.);</span>
     <span class="doccomment">/// }</span>
-    <span class="doccomment">/// assert_eq!(tot, 4.);</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_real_slice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">f64</span>]<span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_typed_slice</span>()
@@ -1654,17 +1641,17 @@
 
     <span class="doccomment">/// Get an iterator over real elements of this slice.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
-    <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let robj = r!([1., 2., 3.]);</span>
-    <span class="doccomment">/// let mut tot = 0.;</span>
-    <span class="doccomment">/// for val in robj.as_real_iter().unwrap() {</span>
-    <span class="doccomment">///   if !val.is_na() {</span>
-    <span class="doccomment">///     tot += val;</span>
-    <span class="doccomment">///   }</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
+    <span class="doccomment">///     let robj = r!([1., 2., 3.]);</span>
+    <span class="doccomment">///     let mut tot = 0.;</span>
+    <span class="doccomment">///     for val in robj.as_real_iter().unwrap() {</span>
+    <span class="doccomment">///       if !val.is_na() {</span>
+    <span class="doccomment">///         tot += val;</span>
+    <span class="doccomment">///       }</span>
+    <span class="doccomment">///     }</span>
+    <span class="doccomment">///     assert_eq!(tot, 6.);</span>
     <span class="doccomment">/// }</span>
-    <span class="doccomment">/// assert_eq!(tot, 6.);</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_real_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RealIter</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">slice</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_real_slice</span>() {
@@ -1676,11 +1663,11 @@
 
     <span class="doccomment">/// Get a Vec&lt;f64&gt; copied from the object.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
-    <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let robj = r!([1., 2., 3.]);</span>
-    <span class="doccomment">/// assert_eq!(robj.as_real_vector().unwrap(), vec![1., 2., 3.])</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
+    <span class="doccomment">///     let robj = r!([1., 2., 3.]);</span>
+    <span class="doccomment">///     assert_eq!(robj.as_real_vector().unwrap(), vec![1., 2., 3.]);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_real_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">value</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_real_slice</span>() {
@@ -1692,11 +1679,11 @@
 
     <span class="doccomment">/// Get a read-only reference to the content of an integer or logical vector.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
-    <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let robj = r!(Raw(&amp;[1, 2, 3]));</span>
-    <span class="doccomment">/// assert_eq!(robj.as_raw_slice().unwrap(), &amp;[1, 2, 3]);</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
+    <span class="doccomment">///     let robj = r!(Raw(&amp;[1, 2, 3]));</span>
+    <span class="doccomment">///     assert_eq!(robj.as_raw_slice().unwrap(), &amp;[1, 2, 3]);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_raw_slice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_typed_slice</span>()
@@ -1705,13 +1692,13 @@
     <span class="doccomment">/// Get a read-write reference to the content of an integer or logical vector.</span>
     <span class="doccomment">/// Note that rust slices are 0-based so `slice[1]` is the middle value.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
-    <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let mut robj = r!([1, 2, 3]);</span>
-    <span class="doccomment">/// let slice : &amp; mut [i32] = robj.as_integer_slice_mut().unwrap();</span>
-    <span class="doccomment">/// slice[1] = 100;</span>
-    <span class="doccomment">/// assert_eq!(robj, r!([1, 100, 3]));</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
+    <span class="doccomment">///     let mut robj = r!([1, 2, 3]);</span>
+    <span class="doccomment">///     let slice : &amp; mut [i32] = robj.as_integer_slice_mut().unwrap();</span>
+    <span class="doccomment">///     slice[1] = 100;</span>
+    <span class="doccomment">///     assert_eq!(robj, r!([1, 100, 3]));</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_integer_slice_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">i32</span>]<span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_typed_slice_mut</span>()
@@ -1720,13 +1707,13 @@
     <span class="doccomment">/// Get a read-write reference to the content of a double vector.</span>
     <span class="doccomment">/// Note that rust slices are 0-based so `slice[1]` is the middle value.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
-    <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let mut robj = r!([1.0, 2.0, 3.0]);</span>
-    <span class="doccomment">/// let slice = robj.as_real_slice_mut().unwrap();</span>
-    <span class="doccomment">/// slice[1] = 100.0;</span>
-    <span class="doccomment">/// assert_eq!(robj, r!([1.0, 100.0, 3.0]));</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
+    <span class="doccomment">///     let mut robj = r!([1.0, 2.0, 3.0]);</span>
+    <span class="doccomment">///     let slice = robj.as_real_slice_mut().unwrap();</span>
+    <span class="doccomment">///     slice[1] = 100.0;</span>
+    <span class="doccomment">///     assert_eq!(robj, r!([1.0, 100.0, 3.0]));</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_real_slice_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">f64</span>]<span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_typed_slice_mut</span>()
@@ -1734,13 +1721,13 @@
 
     <span class="doccomment">/// Get a read-write reference to the content of a raw vector.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::*;        // Put API in scope.</span>
-    <span class="doccomment">/// extendr_engine::start_r(); // Start test environment.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let mut robj = r!(Raw(&amp;[1, 2, 3]));</span>
-    <span class="doccomment">/// let slice = robj.as_raw_slice_mut().unwrap();</span>
-    <span class="doccomment">/// slice[1] = 100;</span>
-    <span class="doccomment">/// assert_eq!(robj, r!(Raw(&amp;[1, 100, 3])));</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
+    <span class="doccomment">///     let mut robj = r!(Raw(&amp;[1, 2, 3]));</span>
+    <span class="doccomment">///     let slice = robj.as_raw_slice_mut().unwrap();</span>
+    <span class="doccomment">///     slice[1] = 100;</span>
+    <span class="doccomment">///     assert_eq!(robj, r!(Raw(&amp;[1, 100, 3])));</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_raw_slice_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>]<span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_typed_slice_mut</span>()
@@ -1749,12 +1736,13 @@
     <span class="doccomment">/// Get a vector of owned strings.</span>
     <span class="doccomment">/// Owned strings have long lifetimes, but are much slower than references.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///    let robj1 = Robj::from(&quot;xyz&quot;);</span>
     <span class="doccomment">///    assert_eq!(robj1.as_string_vector(), Some(vec![&quot;xyz&quot;.to_string()]));</span>
     <span class="doccomment">///    let robj2 = Robj::from(1);</span>
     <span class="doccomment">///    assert_eq!(robj2.as_string_vector(), None);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_string_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">iter</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_str_iter</span>() {
@@ -1767,12 +1755,13 @@
     <span class="doccomment">/// Get a vector of string references.</span>
     <span class="doccomment">/// String references (&amp;str) are faster, but have short lifetimes.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///    let robj1 = Robj::from(&quot;xyz&quot;);</span>
     <span class="doccomment">///    assert_eq!(robj1.as_str_vector(), Some(vec![&quot;xyz&quot;]));</span>
     <span class="doccomment">///    let robj2 = Robj::from(1);</span>
     <span class="doccomment">///    assert_eq!(robj2.as_str_vector(), None);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_str_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">iter</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_str_iter</span>() {
@@ -1784,12 +1773,13 @@
 
     <span class="doccomment">/// Get a read-only reference to a scalar string type.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///    let robj1 = Robj::from(&quot;xyz&quot;);</span>
     <span class="doccomment">///    let robj2 = Robj::from(1);</span>
     <span class="doccomment">///    assert_eq!(robj1.as_str(), Some(&quot;xyz&quot;));</span>
     <span class="doccomment">///    assert_eq!(robj2.as_str(), None);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_str</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span><span class="op">&gt;</span> {
         <span class="kw">unsafe</span> {
@@ -1810,14 +1800,15 @@
 
     <span class="doccomment">/// Get a scalar integer.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///    let robj1 = Robj::from(&quot;xyz&quot;);</span>
     <span class="doccomment">///    let robj2 = Robj::from(1);</span>
     <span class="doccomment">///    let robj3 = Robj::from(NA_INTEGER);</span>
     <span class="doccomment">///    assert_eq!(robj1.as_integer(), None);</span>
     <span class="doccomment">///    assert_eq!(robj2.as_integer(), Some(1));</span>
     <span class="doccomment">///    assert_eq!(robj3.as_integer(), None);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_integer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">as_integer_slice</span>() {
@@ -1828,14 +1819,15 @@
 
     <span class="doccomment">/// Get a scalar real.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///    let robj1 = Robj::from(1);</span>
     <span class="doccomment">///    let robj2 = Robj::from(1.);</span>
     <span class="doccomment">///    let robj3 = Robj::from(NA_REAL);</span>
     <span class="doccomment">///    assert_eq!(robj1.as_real(), None);</span>
     <span class="doccomment">///    assert_eq!(robj2.as_real(), Some(1.));</span>
     <span class="doccomment">///    assert_eq!(robj3.as_real(), None);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_real</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">as_real_slice</span>() {
@@ -1846,14 +1838,15 @@
 
     <span class="doccomment">/// Get a scalar rust boolean.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///    let robj1 = Robj::from(TRUE);</span>
     <span class="doccomment">///    let robj2 = Robj::from(1.);</span>
     <span class="doccomment">///    let robj3 = Robj::from(NA_LOGICAL);</span>
     <span class="doccomment">///    assert_eq!(robj1.as_bool(), Some(true));</span>
     <span class="doccomment">///    assert_eq!(robj2.as_bool(), None);</span>
     <span class="doccomment">///    assert_eq!(robj3.as_bool(), None);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_bool</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">as_logical_slice</span>() {
@@ -1864,14 +1857,15 @@
 
     <span class="doccomment">/// Get a scalar boolean as a tri-boolean [Bool] value.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///    let robj1 = Robj::from(TRUE);</span>
     <span class="doccomment">///    let robj2 = Robj::from([TRUE, FALSE]);</span>
     <span class="doccomment">///    let robj3 = Robj::from(NA_LOGICAL);</span>
     <span class="doccomment">///    assert_eq!(robj1.as_logical(), Some(TRUE));</span>
     <span class="doccomment">///    assert_eq!(robj2.as_logical(), None);</span>
     <span class="doccomment">///    assert_eq!(robj3.as_logical(), Some(NA_LOGICAL));</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_logical</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Bool</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">as_logical_slice</span>() {
@@ -1882,11 +1876,12 @@
 
     <span class="doccomment">/// Evaluate the expression in R and return an error or an R object.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///</span>
     <span class="doccomment">///    let add = lang!(&quot;+&quot;, 1, 2);</span>
     <span class="doccomment">///    assert_eq!(add.eval().unwrap(), r!(3));</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">eval</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
@@ -1905,10 +1900,11 @@
 
     <span class="doccomment">/// Evaluate the expression and return NULL or an R object.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///    let bad = lang!(&quot;imnotavalidfunctioninR&quot;, 1, 2);</span>
     <span class="doccomment">///    assert_eq!(bad.eval_blind(), r!(NULL));</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">eval_blind</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">eval</span>();
@@ -1921,10 +1917,11 @@
 
     <span class="doccomment">/// Parse a string into an R executable object</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///    let expr = Robj::parse(&quot;1 + 2&quot;).unwrap();</span>
     <span class="doccomment">///    assert!(expr.is_expr());</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">parse</span>(<span class="ident">code</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
@@ -1945,10 +1942,11 @@
 
     <span class="doccomment">/// Parse a string into an R executable object and run it.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///    let res = Robj::eval_string(&quot;1 + 2&quot;).unwrap();</span>
     <span class="doccomment">///    assert_eq!(res, r!(3.));</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">eval_string</span>(<span class="ident">code</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
@@ -1979,12 +1977,13 @@
     <span class="doccomment">/// Return true if the object is owned by this wrapper.</span>
     <span class="doccomment">/// If so, it will be released when the wrapper drops.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///    let owned = r!(1);      // Allocated vector.</span>
     <span class="doccomment">///    let borrowed = r!(());  // R_NilValue</span>
     <span class="doccomment">///    assert_eq!(owned.is_owned(), true);</span>
     <span class="doccomment">///    assert_eq!(borrowed.is_owned(), false);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_owned</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">match</span> <span class="self">self</span> {
@@ -2066,12 +2065,13 @@
 <span class="kw">impl</span> <span class="ident">Robj</span> {
     <span class="doccomment">/// Get a specific attribute as a borrowed robj if it exists.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///</span>
     <span class="doccomment">///    let mut robj = r!(&quot;hello&quot;);</span>
     <span class="doccomment">///    robj.set_attrib(Symbol(&quot;xyz&quot;), 1);</span>
     <span class="doccomment">///    assert_eq!(robj.get_attrib(Symbol(&quot;xyz&quot;)), Some(r!(1)));</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_attrib</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">N</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="ident">N</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
     <span class="kw">where</span>
@@ -2093,12 +2093,13 @@
 
     <span class="doccomment">/// Set a specific attribute and return the value.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///</span>
     <span class="doccomment">///    let mut robj = r!(&quot;hello&quot;);</span>
     <span class="doccomment">///    let value = robj.set_attrib(Symbol(&quot;xyz&quot;), 1);</span>
     <span class="doccomment">///    assert_eq!(robj.get_attrib(Symbol(&quot;xyz&quot;)), Some(value));</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_attrib</span><span class="op">&lt;</span><span class="ident">N</span>, <span class="ident">V</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="ident">N</span>, <span class="ident">value</span>: <span class="ident">V</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span>
     <span class="kw">where</span>
@@ -2114,12 +2115,12 @@
 
     <span class="doccomment">/// Get the names attribute as a string iterator if one exists.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
-    <span class="doccomment">///</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///    let list = list!(a = 1, b = 2, c = 3);</span>
     <span class="doccomment">///    let names : Vec&lt;_&gt; = list.names().unwrap().collect();</span>
     <span class="doccomment">///    assert_eq!(names, vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">names</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StrIter</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">names</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_attrib</span>(<span class="ident">names_symbol</span>()) {
@@ -2131,12 +2132,13 @@
 
     <span class="doccomment">/// Get the dim attribute as an integer iterator if one exists.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///</span>
     <span class="doccomment">///    let array = R!(array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c(&quot;x&quot;, &quot;y&quot;), c(&quot;a&quot;,&quot;b&quot;)))).unwrap();</span>
     <span class="doccomment">///    let dim : Vec&lt;_&gt; = array.dim().unwrap().collect();</span>
     <span class="doccomment">///    assert_eq!(dim, vec![2, 2]);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dim</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IntegerIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span>
     <span class="kw">where</span>
@@ -2152,12 +2154,12 @@
 
     <span class="doccomment">/// Get the dimnames attribute as a list iterator if one exists.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
-    <span class="doccomment">///</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///    let array = R!(array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c(&quot;x&quot;, &quot;y&quot;), c(&quot;a&quot;,&quot;b&quot;)))).unwrap();</span>
     <span class="doccomment">///    let names : Vec&lt;_&gt; = array.dimnames().unwrap().collect();</span>
     <span class="doccomment">///    assert_eq!(names, vec![r!([&quot;x&quot;, &quot;y&quot;]), r!([&quot;a&quot;, &quot;b&quot;])]);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dimnames</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ListIter</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">names</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_attrib</span>(<span class="ident">dimnames_symbol</span>()) {
@@ -2169,12 +2171,12 @@
 
     <span class="doccomment">/// Return an iterator over names and values of a list if they exist.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
-    <span class="doccomment">///</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///    let list = list!(a = 1, b = 2, c = 3);</span>
     <span class="doccomment">///    let names_and_values : Vec&lt;_&gt; = list.as_named_list_iter().unwrap().collect();</span>
     <span class="doccomment">///    assert_eq!(names_and_values, vec![(&quot;a&quot;, r!(1)), (&quot;b&quot;, r!(2)), (&quot;c&quot;, r!(3))]);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_named_list_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">NamedListIter</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">names</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">names</span>() {
@@ -2187,12 +2189,12 @@
 
     <span class="doccomment">/// Get the class attribute as a string iterator if one exists.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
-    <span class="doccomment">///</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///    let formula = R!(y ~ A * x + b).unwrap();</span>
     <span class="doccomment">///    let class : Vec&lt;_&gt; = formula.class().unwrap().collect();</span>
     <span class="doccomment">///    assert_eq!(class, [&quot;formula&quot;]);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">class</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StrIter</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">class</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_attrib</span>(<span class="ident">class_symbol</span>()) {
@@ -2204,11 +2206,11 @@
 
     <span class="doccomment">/// Return true if this class inherits this class.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
-    <span class="doccomment">///</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///    let formula = R!(y ~ A * x + b).unwrap();</span>
     <span class="doccomment">///    assert_eq!(formula.inherits(&quot;formula&quot;), true);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">inherits</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">classname</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">mut</span> <span class="ident">iter</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">class</span>() {
@@ -2220,12 +2222,12 @@
 
     <span class="doccomment">/// Get the levels attribute as a string iterator if one exists.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
-    <span class="doccomment">///</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///    let factor = factor!(vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
     <span class="doccomment">///    let levels : Vec&lt;_&gt; = factor.levels().unwrap().collect();</span>
     <span class="doccomment">///    assert_eq!(levels, vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;]);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">levels</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StrIter</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">levels</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_attrib</span>(<span class="ident">levels_symbol</span>()) {
@@ -2237,12 +2239,12 @@
 
     <span class="doccomment">/// Get the names in an environment.</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///    use extendr_api::*;</span>
-    <span class="doccomment">///    extendr_engine::start_r();</span>
-    <span class="doccomment">///</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
     <span class="doccomment">///    let names_and_values : std::collections::HashMap&lt;_, _&gt; = (0..4).map(|i| (format!(&quot;n{}&quot;, i), r!(i))).collect();</span>
     <span class="doccomment">///    let env = r!(Env{parent: global_env(), names_and_values});</span>
     <span class="doccomment">///    assert_eq!(env.ls().unwrap(), vec![&quot;n0&quot;, &quot;n1&quot;, &quot;n2&quot;, &quot;n3&quot;]);</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ls</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_env_iter</span>()

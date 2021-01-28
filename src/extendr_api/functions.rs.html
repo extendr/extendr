@@ -377,8 +377,6 @@
 <span id="374">374</span>
 <span id="375">375</span>
 <span id="376">376</span>
-<span id="377">377</span>
-<span id="378">378</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
 
@@ -386,7 +384,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// Use the Env{} wrapper for more detail.</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">/// test! {</span>
 <span class="doccomment">///     let env = new_env();</span>
 <span class="doccomment">///     assert_eq!(env.len(), 0);</span>
@@ -403,12 +401,13 @@
 <span class="doccomment">/// This function will guess the hash table size if required.</span>
 <span class="doccomment">/// Use the Env{} wrapper for more detail.</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;</span>
-<span class="doccomment">/// extendr_engine::start_r();</span>
-<span class="doccomment">/// let env = new_env_with_capacity(5);</span>
-<span class="doccomment">/// env.set_local(sym!(a), 1);</span>
-<span class="doccomment">/// env.set_local(sym!(b), 2);</span>
-<span class="doccomment">/// assert_eq!(env.len(), 2);</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
+<span class="doccomment">/// test! {</span>
+<span class="doccomment">///     let env = new_env_with_capacity(5);</span>
+<span class="doccomment">///     env.set_local(sym!(a), 1);</span>
+<span class="doccomment">///     env.set_local(sym!(b), 2);</span>
+<span class="doccomment">///     assert_eq!(env.len(), 2);</span>
+<span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_env_with_capacity</span>(<span class="ident">capacity</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
     <span class="kw">if</span> <span class="ident">capacity</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">5</span> {
@@ -426,7 +425,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// See also [global_var()].</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">/// test! {</span>
 <span class="doccomment">///    let iris = global_var(sym!(iris))?;</span>
 <span class="doccomment">///    assert_eq!(iris.len(), 5);</span>
@@ -448,7 +447,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// See also [var!].</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">/// test! {</span>
 <span class="doccomment">///    current_env().set_local(sym!(my_var), 1);</span>
 <span class="doccomment">///    assert_eq!(local_var(sym!(my_var))?, r!(1));</span>
@@ -463,13 +462,10 @@
 
 <span class="doccomment">/// Get a global function from global_env() and ancestors.</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">/// test! {</span>
 <span class="doccomment">///     let ls = global_function(sym!(ls)).ok_or(&quot;ls failed&quot;)?;</span>
 <span class="doccomment">///     assert_eq!(ls.is_function(), true);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">///     // Note that the following will throw an R error as iris is not a function.</span>
-<span class="doccomment">///     // let iris = global_function(sym!(iris));</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">global_function</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
@@ -480,11 +476,11 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// See also [Robj::double_colon].</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">///    use extendr_api::*;</span>
-<span class="doccomment">///    extendr_engine::start_r();</span>
-<span class="doccomment">///</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
+<span class="doccomment">/// test! {</span>
 <span class="doccomment">///    assert_eq!(find_namespace(&quot;base&quot;).is_some(), true);</span>
 <span class="doccomment">///    assert_eq!(find_namespace(&quot;stats&quot;).is_some(), true);</span>
+<span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_namespace</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
     <span class="comment">// single_threaded(|| unsafe { new_borrowed(R_FindNamespace(key.get())) });</span>
@@ -499,10 +495,10 @@
 <span class="doccomment">/// The current interpreter environment.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">///    use extendr_api::*;</span>
-<span class="doccomment">///    extendr_engine::start_r();</span>
-<span class="doccomment">///</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
+<span class="doccomment">/// test! {</span>
 <span class="doccomment">///    assert_eq!(current_env(), base_env());</span>
+<span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">current_env</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
     <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">R_GetCurrentEnv</span>()) }
@@ -511,7 +507,7 @@
 <span class="doccomment">/// The &quot;global&quot; environment</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">/// test! {</span>
 <span class="doccomment">///     global_env().set_local(sym!(x), &quot;hello&quot;);</span>
 <span class="doccomment">///     assert_eq!(global_env().local(sym!(x)), Some(r!(&quot;hello&quot;)));</span>
@@ -529,7 +525,7 @@
 <span class="doccomment">/// The base environment; formerly R_NilValue</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">/// test! {</span>
 <span class="doccomment">///     global_env().set_local(sym!(x), &quot;hello&quot;);</span>
 <span class="doccomment">///     assert_eq!(base_env().local(sym!(+)), Some(r!(Primitive(&quot;+&quot;))));</span>
@@ -542,7 +538,7 @@
 <span class="doccomment">/// The namespace for base.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">/// test! {</span>
 <span class="doccomment">///    assert_eq!(base_namespace().parent().ok_or(&quot;no parent&quot;)?, global_env());</span>
 <span class="doccomment">/// }</span>
@@ -554,10 +550,10 @@
 <span class="doccomment">/// For registered namespaces.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">///    use extendr_api::*;</span>
-<span class="doccomment">///    extendr_engine::start_r();</span>
-<span class="doccomment">///</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
+<span class="doccomment">/// test! {</span>
 <span class="doccomment">///    assert_eq!(namespace_registry().is_environment(), true);</span>
+<span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">namespace_registry</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
     <span class="kw">unsafe</span> { <span class="ident">new_sys</span>(<span class="ident">R_NamespaceRegistry</span>) }
@@ -747,7 +743,7 @@ pub fn dot_Generic() -&gt; Robj { unsafe { new_sys(R_dot_Generic) }}
 
 <span class="doccomment">/// Special &quot;NA&quot; string that represents null strings.</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">/// test! {</span>
 <span class="doccomment">///     assert!(na_str().as_ptr() != &quot;NA&quot;.as_ptr());</span>
 <span class="doccomment">///     assert_eq!(na_str(), &quot;NA&quot;);</span>

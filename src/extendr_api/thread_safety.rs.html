@@ -173,7 +173,7 @@
 <span class="doccomment">/// Note: This will fail badly if the called function panics or calls RF_error.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">/// use std::sync::atomic::{AtomicU32, Ordering};</span>
 <span class="doccomment">/// static GLOBAL_THREAD_COUNT: AtomicU32 = AtomicU32::new(0);</span>
 <span class="doccomment">///</span>
@@ -251,7 +251,7 @@
 
 <span class="doccomment">/// Wrap an R function such as Rf_findFunction and convert errors and panics into results.</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::*;</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">/// test! {</span>
 <span class="doccomment">///    let res = catch_r_error(|| unsafe {</span>
 <span class="doccomment">///        throw_r_error(&quot;bad things!&quot;);</span>
