@@ -345,8 +345,7 @@ jobs:
         config:
           - {os: ubuntu-20.04,   r: 'devel', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
-          # R-devel fails to install on Windows
-          - {os: windows-latest, r: 'release', rust-version: 'stable', rust-targets: ['x86_64-pc-windows-gnu', 'i686-pc-windows-gnu']}
+          - {os: windows-latest, r: 'devel', rust-version: 'stable', rust-targets: ['x86_64-pc-windows-gnu', 'i686-pc-windows-gnu']}
 
 
     env:
