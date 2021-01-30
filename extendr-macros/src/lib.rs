@@ -595,6 +595,7 @@ struct Module {
     modname: Option<Ident>,
     fnnames: Vec<Ident>,
     implnames: Vec<Type>,
+    usenames: Vec<Ident>,
 }
 
 // Custom parser for the module.
@@ -605,6 +606,7 @@ impl syn::parse::Parse for Module {
             modname: None,
             fnnames: Vec::new(),
             implnames: Vec::new(),
+            usenames: Vec::new(),
         };
         while !input.is_empty() {
             if let Ok(kmod) = input.parse::<Token![mod]>() {
@@ -617,6 +619,8 @@ impl syn::parse::Parse for Module {
                 res.fnnames.push(input.parse()?);
             } else if let Ok(_) = input.parse::<Token![impl]>() {
                 res.implnames.push(input.parse()?);
+            } else if let Ok(_) = input.parse::<Token![use]>() {
+                res.usenames.push(input.parse()?);
             } else {
                 return Err(syn::Error::new(input.span(), "expected mod, fn or impl"));
             }
@@ -658,6 +662,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         modname,
         fnnames,
         implnames,
+        usenames,
     } = module;
     let modname = modname.unwrap();
     let modname_string = modname.to_string();
@@ -677,6 +682,12 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
     let implmetanames = implnames
         .iter()
         .map(|id| format_ident!("{}{}", META_PREFIX, type_name(id)));
+    let usemetanames = usenames
+        .iter()
+        .map(|id| format_ident!("get_{}_metadata", id));
+    let usemetanames2 = usenames
+        .iter()
+        .map(|id| format_ident!("get_{}_metadata", id));
 
     TokenStream::from(quote! {
         #[no_mangle]
@@ -709,6 +720,8 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
                 func_ptr: #wrap_make_module_wrappers as * const u8,
                 hidden: true,
             });
+
+            #( functions.extend(#usemetanames().functions); )*
 
             extendr_api::metadata::Metadata {
                 name: #modname_string,
@@ -751,6 +764,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         #[allow(non_snake_case)]
         pub extern "C" fn #module_init_name(info: * mut extendr_api::DllInfo) {
             unsafe { extendr_api::register_call_methods(info, #module_metadata_name()) };
+            #( unsafe {extendr_api::register_call_methods(info, #usemetanames2())};)*
         }
     })
 }
