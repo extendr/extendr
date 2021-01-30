@@ -693,8 +693,14 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         pub fn #module_metadata_name() -> extendr_api::metadata::Metadata {
             let mut functions = Vec::new();
             let mut impls = Vec::new();
+            
+            // Pushes metadata (eg. extendr_api::metadata::Func) to functions and impl vectors.
             #( #fnmetanames(&mut functions); )*
             #( #implmetanames(&mut impls); )*
+
+            // Extends functions and impls with the submodules metadata
+            #( functions.extend(#usemetanames().functions); )*
+            #( impls.extend(#usemetanames().impls); )*
 
             // Add this function to the list, but set hidden: true.
             functions.push(extendr_api::metadata::Func {
@@ -718,9 +724,6 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
                 func_ptr: #wrap_make_module_wrappers as * const u8,
                 hidden: true,
             });
-
-            #( functions.extend(#usemetanames().functions); )*
-            #( impls.extend(#usemetanames().impls); )*
 
             extendr_api::metadata::Metadata {
                 name: #modname_string,
