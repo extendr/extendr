@@ -684,10 +684,8 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         .map(|id| format_ident!("{}{}", META_PREFIX, type_name(id)));
     let usemetanames = usenames
         .iter()
-        .map(|id| format_ident!("get_{}_metadata", id));
-    let usemetanames2 = usenames
-        .iter()
-        .map(|id| format_ident!("get_{}_metadata", id));
+        .map(|id| format_ident!("get_{}_metadata", id))
+        .collect::<Vec<Ident>>();
 
     TokenStream::from(quote! {
         #[no_mangle]
@@ -764,7 +762,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         #[allow(non_snake_case)]
         pub extern "C" fn #module_init_name(info: * mut extendr_api::DllInfo) {
             unsafe { extendr_api::register_call_methods(info, #module_metadata_name()) };
-            #( unsafe {extendr_api::register_call_methods(info, #usemetanames2())};)*
+            #( unsafe {extendr_api::register_call_methods(info, #usemetanames())};)*
         }
     })
 }
