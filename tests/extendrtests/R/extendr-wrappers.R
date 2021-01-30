@@ -53,6 +53,10 @@ special_param_names <- function(`_x`, `_y`) .Call(wrap__special_param_names, `_x
 #' @export
 `__00__special_function_name` <- function() invisible(.Call(wrap____00__special_function_name))
 
+#' Return string `"Hello world!"` to R.
+#' @export
+hello_submodule <- function() .Call(wrap__hello_submodule)
+
 #' Class for testing (exported)
 #' @examples
 #' x <- MyClass$new()
