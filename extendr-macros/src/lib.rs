@@ -684,7 +684,8 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         .map(|id| format_ident!("{}{}", META_PREFIX, type_name(id)));
     let usemetanames = usenames
         .iter()
-        .map(|id| format_ident!("get_{}_metadata", id));
+        .map(|id| format_ident!("get_{}_metadata", id))
+        .collect::<Vec<Ident>>();
 
     TokenStream::from(quote! {
         #[no_mangle]
@@ -719,6 +720,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
             });
 
             #( functions.extend(#usemetanames().functions); )*
+            #( impls.extend(#usemetanames().impls); )*
 
             extendr_api::metadata::Metadata {
                 name: #modname_string,

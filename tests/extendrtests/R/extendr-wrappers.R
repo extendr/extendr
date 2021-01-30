@@ -96,3 +96,25 @@ MyClassUnexported$a <- function() .Call(wrap__MyClassUnexported__a, self)
 
 `$.MyClassUnexported` <- function (self, name) { func <- MyClassUnexported[[name]]; environment(func) <- environment(); func }
 
+#' Class for testing (exported)
+#' @examples
+#' x <- MySubmoduleClass$new()
+#' x$a()
+#' x$set_a(10)
+#' x$a()
+#' @export
+MySubmoduleClass <- new.env(parent = emptyenv())
+
+MySubmoduleClass$new <- function() .Call(wrap__MySubmoduleClass__new)
+
+MySubmoduleClass$set_a <- function(x) invisible(.Call(wrap__MySubmoduleClass__set_a, self, x))
+
+MySubmoduleClass$a <- function() .Call(wrap__MySubmoduleClass__a, self)
+
+MySubmoduleClass$me <- function() .Call(wrap__MySubmoduleClass__me, self)
+
+#' @rdname MySubmoduleClass
+#' @usage NULL
+#' @export
+`$.MySubmoduleClass` <- function (self, name) { func <- MySubmoduleClass[[name]]; environment(func) <- environment(); func }
+
