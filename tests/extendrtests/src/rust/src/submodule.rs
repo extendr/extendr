@@ -4,7 +4,7 @@ use extendr_api::prelude::*;
 /// @export
 #[extendr]
 fn hello_submodule() -> &'static str {
-    "Hello world!"
+    "Hello World!"
 }
 
 // Macro to generate exports
