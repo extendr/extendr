@@ -190,11 +190,16 @@ jobs:
           path: check
 
 
-# All tests under this job are run with R devel and freshly generated bindings.
-  tests_R_devel_bindgen:
+  # All tests under this job are run with R devel and freshly generated bindings.
+  # Run bindgen tests without cross-compilation.
+  # Cross-compilation prevents from running doc tests
+  # if toolchain does not match target (Windows x86_64/i686 case), see
+  #  > https://github.com/rust-lang/rust/issues/64245
+  #  > https://github.com/rust-lang/cargo/issues/7040
+  bindgen_no_cross_compile:
     runs-on: ${{ matrix.config.os }}
 
-    name: ${{ matrix.config.os }} w/ bindgen (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
+    name: ${{ matrix.config.os }} w/ bindgen no cross-compile (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
             
     strategy:
       fail-fast: false
@@ -202,13 +207,13 @@ jobs:
         config:
           - {os: ubuntu-20.04,   r: 'devel', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
-          - {os: windows-latest, r: 'devel', rust-version: 'stable-msvc'}
+          - {os: windows-latest, r: 'devel', rust-version: 'stable', rust-targets: ['x86_64-pc-windows-gnu', 'i686-pc-windows-gnu']}
 
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       RSPM: ${{ matrix.config.rspm }}
-      BUILD_TARGETS: default
+      LIBCLANG_PATHS: ""
 
     # PowerShell core is available on all platforms and can be used to unify scripts
     defaults:
@@ -218,41 +223,86 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
+      # Default action allows to install only one toolchain,
+      # so Rust is set up manually.
+      # 1. Update rustup
+      # 2. For each target add respective toolchain &
+      #    update target for that toolchain
       - name: Set up Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ matrix.config.rust-version }}
-          default: true
+        run: |
+          echo "::group::Updating system's 'rustup'"
+          rustup update
+          echo "::endgroup::"
+          $targets = $env:RUST_TARGETS.Split(',')
+          foreach ($target in $targets) {
+            echo "::group::Setting up $env:RUST_TOOLCHAIN $target"
+            if ($target -eq '') {
+              rustup toolchain add $env:RUST_TOOLCHAIN
+              if(!$?) {
+                throw "Last exit code $LASTEXITCODE"
+              }
+              rustup default $env:RUST_TOOLCHAIN
+              if(!$?) {
+                throw "Last exit code $LASTEXITCODE"
+              }
+            }
+            else {
+              rustup toolchain add "$env:RUST_TOOLCHAIN-$target"
+              if(!$?) {
+                throw "Last exit code $LASTEXITCODE"
+              }
+              rustup target add $target --toolchain "$env:RUST_TOOLCHAIN-$target"
+              if(!$?) {
+                throw "Last exit code $LASTEXITCODE"
+              }
+            }
+            echo "::endgroup::"
+          }
+
+        env: 
+          RUST_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
+          RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
 
       - name: Set up R
         uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.config.r }}
+          windows-path-include-mingw: false
       
 
+      # 1. Inspect targets. If empty, assume 'x86_64' arch
+      # 1.5 Make symlink to please i686 toolchain (https://github.com/rust-lang/cargo/issues/8990)
+      # 2. Install msys2 packages (--needed skips already installed)
+      # 3. Add msys2/mingw{bits}/bin to path
+      # 4. Add R/{arch}/bin to path
+      # 5. Create array of correct (arch-dependent) paths to 'libclang.dll', export as env variable
       - name: Configure Windows
         if: startsWith(runner.os, 'Windows')
-        # 1. Add rust target
-        # 2. Add target name to the $targets variable
-        # 3. Add mingw32/mingw64 bin folders to PATH
-        # 4. Add R x64/i386 folders to PATH
         run: |
-          $targets=@()
-          if ($env:RUST_TOOLCHAIN -notlike "*x86_64*") {
-            rustup target add i686-pc-windows-gnu ;
-            $targets+="i686-pc-windows-gnu"
-            echo "C:\msys64\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
-            echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\i386"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          if (($env:BUILD_TARGETS -like "*x86_64*") -or ($env:BUILD_TARGETS -eq "")) {
+            echo "::group::Setting up x86_64"
+            C:\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm  --needed mingw-w64-x86_64-clang mingw-w64-x86_64-toolchain"
+            echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+            echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+            echo "::endgroup::"
           }
-          if ($env:RUST_TOOLCHAIN -notlike "*i686*") {
-            rustup target add x86_64-pc-windows-gnu ;
-            $targets+="x86_64-pc-windows-gnu"
-            echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
-            echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          if ($env:BUILD_TARGETS -like "*i686*") {
+            echo "::group::Setting up i686"
+            mkdir target\debug -ErrorAction Ignore
+            new-item -Type symboliclink -Path .\target\debug\libgcc_s_dw2-1.dll -Value C:\msys64\mingw32\bin\libgcc_s_dw2-1.dll
+            C:\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm --needed mingw32/mingw-w64-i686-clang mingw-w64-i686-toolchain"
+            echo "C:\msys64\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+            echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\i386"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+            echo "::endgroup::"
           }
-          echo "BUILD_TARGETS=$($targets -join ',')" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append ;
+
+          $libclang_paths = $env:BUILD_TARGETS.Split(",") | `
+            foreach {"C:\msys64\mingw$(if ($_ -like "*i686*") {"32"} else {"64"})\bin"} | `
+            Join-String -Separator $([System.IO.Path]::PathSeparator)
+
+          echo "LIBCLANG_PATHS=$libclang_paths" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
         env: 
-          RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
+          BUILD_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
 
       - name: Configure Linux
         if: startsWith(runner.os, 'linux')
@@ -260,70 +310,112 @@ jobs:
           Del alias:R
           echo "LD_LIBRARY_PATH=$(R -s -e 'cat(normalizePath(R.home()))')/lib" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
+      # 1. Retrieve targets
+      # 2. Retrieve 'libcalng' paths
+      # 3. For each target run
+      # 3.1 Select correct $target & $toolchain
+      # 3.2 Set up correct LIBCLANG_PATH
+      # 3.x Run build commands, checking for errors, providing explicit toolchain & target
       - name: Build
         run: |
-          foreach($target in ($env:BUILD_TARGETS).Split(',')) {
-            echo "::group::Build extendr-api for $target target"
+          $targets = $env:BUILD_TARGETS.Split(',')
+          $libclang_paths = $env:LIBCLANG_PATHS.Split([System.IO.Path]::PathSeparator)
+          $itt = 0..($targets.Length - 1)
+          foreach($i in $itt) {
+            if ($targets[$i] -eq "") {
+              $target = 'default'
+              $toolchain = $env:RUST_TOOLCHAIN
+            }
+            else {
+              $target = $targets[$i]
+              $toolchain = "$env:RUST_TOOLCHAIN-$target"
+            }
+            if (($libclang_paths[$i] -ne $null) -and ($libclang_paths[$i] -ne "")) {
+              $env:LIBCLANG_PATH = $libclang_paths[$i]
+            }
+            else {
+              $env:LIBCLANG_PATH = $null
+            }
 
-            cargo build --manifest-path extendr-api/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} )
+            echo "::group::Build extendr-api for $toolchain"
+
+            cargo +$toolchain build --manifest-path extendr-api/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} )
             if (!$?) { 
-              echo "::error::Build extendr-api for $target target" ;
+              echo "::error::Build extendr-api for $toolchain" 
+              throw "Last exit code $LASTEXITCODE"
+            }
+
+            echo "::endgroup::"
+          
+            echo "::group::Build extendr-engine for $toolchain"
+
+            cargo +$toolchain build --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) 
+            if (!$?) { 
+              echo "::error::Build extendr-engine for $toolchain"
               throw "Last exit code $LASTEXITCODE"
             }
 
             echo "::endgroup::"
           }
-          foreach($target in ($env:BUILD_TARGETS).Split(',')) {
-            echo "::group::Build extendr-engine for $target target"
+        env: 
+          BUILD_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
+          RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
 
-            cargo build --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) 
-            if (!$?) { 
-              echo "::error::Build extendr-engine for $target target" ;
-              throw "Last exit code $LASTEXITCODE"
-            }
-
-            echo "::endgroup::"
-          }
-
+      # Identical to the build process, but running more test commands
       - name: Run tests
         run: |
-          foreach($target in ($env:BUILD_TARGETS).Split(',')) {
+          $targets = $env:BUILD_TARGETS.Split(',')
+          $libclang_paths = $env:LIBCLANG_PATHS.Split([System.IO.Path]::PathSeparator)
+          $itt = 0..($targets.Length - 1)
+          foreach($i in $itt) {
+            if ($targets[$i] -eq "") {
+              $target = 'default'
+              $toolchain = $env:RUST_TOOLCHAIN
+            }
+            else {
+              $target = $targets[$i]
+              $toolchain = "$env:RUST_TOOLCHAIN-$target"
+            }
+            if (($libclang_paths[$i] -ne $null) -and ($libclang_paths[$i] -ne "")) {
+              $env:LIBCLANG_PATH = $libclang_paths[$i]
+            }
+            else {
+              $env:LIBCLANG_PATH = $null
+            }
+
             echo "::group::Test extendr-engine \w tests-all for $target target"
 
-            cargo test --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture 
+            cargo +$toolchain test --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture 
             if (!$?) { 
               echo "::error::Test extendr-engine \w tests-all for $target target" ;
               throw "Last exit code $LASTEXITCODE"
             }
 
             echo "::endgroup::"
-          }
-          foreach($target in ($env:BUILD_TARGETS).Split(',')) {
+          
             echo "::group::Test extendr-api \w tests-all for $target target"
 
-            cargo test --manifest-path extendr-api/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture 
+            cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture 
             if (!$?) { 
               echo "::error::Test extendr-api \w tests-all for $target target" ;
               throw "Last exit code $LASTEXITCODE"
             }
 
             echo "::endgroup::"
-          }
-          foreach($target in ($env:BUILD_TARGETS).Split(',')) {            
+                    
             echo "::group::Test extendr-api \w tests-minimal for $target target"
 
-            cargo test --manifest-path extendr-api/Cargo.toml --features tests-minimal $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture
+            cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests-minimal $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture
             if (!$?) { 
               echo "::error::Test extendr-api \w tests-minimal for $target target" ;
               throw "Last exit code $LASTEXITCODE"
             }
 
             echo "::endgroup::"
-          }
-          foreach($target in ($env:BUILD_TARGETS).Split(',')) {
+          
             echo "::group::Test extendr-macros for $target target"
 
-            cargo test --manifest-path extendr-macros/Cargo.toml  $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture
+            cargo +$toolchain test --manifest-path extendr-macros/Cargo.toml  $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture
             if (!$?) { 
               echo "::error::Test extendr-macros for $target target" ;
               throw "Last exit code $LASTEXITCODE"
@@ -331,3 +423,6 @@ jobs:
             
             echo "::endgroup::"
           }
+        env: 
+          BUILD_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
+          RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
