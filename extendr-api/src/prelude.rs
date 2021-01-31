@@ -3,7 +3,7 @@
 //! This allows us to be more selective about exports and avoid users
 //! using deprecated features.
 
-pub use super::{IsNA, FALSE, NA_INTEGER, NA_LOGICAL, NA_REAL, NA_STRING, NULL, TRUE};
+pub use super::{FromRobj, IsNA, FALSE, NA_INTEGER, NA_LOGICAL, NA_REAL, NA_STRING, NULL, TRUE};
 
 pub use super::error::{Error, Result};
 
@@ -36,7 +36,7 @@ pub use super::thread_safety::{
 };
 
 pub use super::wrapper::{
-    Character, Env, Expr, Func, Lang, List, Pairlist, Primitive, Promise, Raw, Symbol,
+    Character, Env, Expr, Func, Lang, List, Nullable, Pairlist, Primitive, Promise, Raw, Symbol,
 };
 
 #[cfg(feature = "ndarray")]
