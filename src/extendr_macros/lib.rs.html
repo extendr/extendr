@@ -757,6 +757,21 @@
 <span id="754">754</span>
 <span id="755">755</span>
 <span id="756">756</span>
+<span id="757">757</span>
+<span id="758">758</span>
+<span id="759">759</span>
+<span id="760">760</span>
+<span id="761">761</span>
+<span id="762">762</span>
+<span id="763">763</span>
+<span id="764">764</span>
+<span id="765">765</span>
+<span id="766">766</span>
+<span id="767">767</span>
+<span id="768">768</span>
+<span id="769">769</span>
+<span id="770">770</span>
+<span id="771">771</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Macros for generating wrappers for rust functions.</span>
@@ -1355,6 +1370,7 @@
     <span class="ident">modname</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ident</span><span class="op">&gt;</span>,
     <span class="ident">fnnames</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Ident</span><span class="op">&gt;</span>,
     <span class="ident">implnames</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Type</span><span class="op">&gt;</span>,
+    <span class="ident">usenames</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Ident</span><span class="op">&gt;</span>,
 }
 
 <span class="comment">// Custom parser for the module.</span>
@@ -1365,6 +1381,7 @@
             <span class="ident">modname</span>: <span class="prelude-val">None</span>,
             <span class="ident">fnnames</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
             <span class="ident">implnames</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
+            <span class="ident">usenames</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
         };
         <span class="kw">while</span> <span class="op">!</span><span class="ident">input</span>.<span class="ident">is_empty</span>() {
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">kmod</span>) <span class="op">=</span> <span class="ident">input</span>.<span class="ident">parse</span>::<span class="op">&lt;</span><span class="macro">Token</span><span class="macro">!</span>[<span class="kw">mod</span>]<span class="op">&gt;</span>() {
@@ -1377,6 +1394,8 @@
                 <span class="ident">res</span>.<span class="ident">fnnames</span>.<span class="ident">push</span>(<span class="ident">input</span>.<span class="ident">parse</span>()<span class="question-mark">?</span>);
             } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="kw">_</span>) <span class="op">=</span> <span class="ident">input</span>.<span class="ident">parse</span>::<span class="op">&lt;</span><span class="macro">Token</span><span class="macro">!</span>[<span class="kw">impl</span>]<span class="op">&gt;</span>() {
                 <span class="ident">res</span>.<span class="ident">implnames</span>.<span class="ident">push</span>(<span class="ident">input</span>.<span class="ident">parse</span>()<span class="question-mark">?</span>);
+            } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="kw">_</span>) <span class="op">=</span> <span class="ident">input</span>.<span class="ident">parse</span>::<span class="op">&lt;</span><span class="macro">Token</span><span class="macro">!</span>[<span class="kw">use</span>]<span class="op">&gt;</span>() {
+                <span class="ident">res</span>.<span class="ident">usenames</span>.<span class="ident">push</span>(<span class="ident">input</span>.<span class="ident">parse</span>()<span class="question-mark">?</span>);
             } <span class="kw">else</span> {
                 <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">syn</span>::<span class="ident">Error</span>::<span class="ident">new</span>(<span class="ident">input</span>.<span class="ident">span</span>(), <span class="string">&quot;expected mod, fn or impl&quot;</span>));
             }
@@ -1418,6 +1437,7 @@
         <span class="ident">modname</span>,
         <span class="ident">fnnames</span>,
         <span class="ident">implnames</span>,
+        <span class="ident">usenames</span>,
     } <span class="op">=</span> <span class="ident">module</span>;
     <span class="kw">let</span> <span class="ident">modname</span> <span class="op">=</span> <span class="ident">modname</span>.<span class="ident">unwrap</span>();
     <span class="kw">let</span> <span class="ident">modname_string</span> <span class="op">=</span> <span class="ident">modname</span>.<span class="ident">to_string</span>();
@@ -1437,6 +1457,10 @@
     <span class="kw">let</span> <span class="ident">implmetanames</span> <span class="op">=</span> <span class="ident">implnames</span>
         .<span class="ident">iter</span>()
         .<span class="ident">map</span>(<span class="op">|</span><span class="ident">id</span><span class="op">|</span> <span class="macro">format_ident</span><span class="macro">!</span>(<span class="string">&quot;{}{}&quot;</span>, <span class="ident">META_PREFIX</span>, <span class="ident">type_name</span>(<span class="ident">id</span>)));
+    <span class="kw">let</span> <span class="ident">usemetanames</span> <span class="op">=</span> <span class="ident">usenames</span>
+        .<span class="ident">iter</span>()
+        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">id</span><span class="op">|</span> <span class="macro">format_ident</span><span class="macro">!</span>(<span class="string">&quot;get_{}_metadata&quot;</span>, <span class="ident">id</span>))
+        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Ident</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 
     <span class="ident">TokenStream</span>::<span class="ident">from</span>(<span class="macro">quote</span><span class="macro">!</span> {
         <span class="attribute">#[<span class="ident">no_mangle</span>]</span>
@@ -1444,8 +1468,14 @@
         <span class="kw">pub</span> <span class="kw">fn</span> #<span class="ident">module_metadata_name</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">extendr_api</span>::<span class="ident">metadata</span>::<span class="ident">Metadata</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">functions</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">impls</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
+
+            <span class="comment">// Pushes metadata (eg. extendr_api::metadata::Func) to functions and impl vectors.</span>
             #( #<span class="ident">fnmetanames</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">functions</span>); )<span class="op">*</span>
             #( #<span class="ident">implmetanames</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">impls</span>); )<span class="op">*</span>
+
+            <span class="comment">// Extends functions and impls with the submodules metadata</span>
+            #( <span class="ident">functions</span>.<span class="ident">extend</span>(#<span class="ident">usemetanames</span>().<span class="ident">functions</span>); )<span class="op">*</span>
+            #( <span class="ident">impls</span>.<span class="ident">extend</span>(#<span class="ident">usemetanames</span>().<span class="ident">impls</span>); )<span class="op">*</span>
 
             <span class="comment">// Add this function to the list, but set hidden: true.</span>
             <span class="ident">functions</span>.<span class="ident">push</span>(<span class="ident">extendr_api</span>::<span class="ident">metadata</span>::<span class="ident">Func</span> {
