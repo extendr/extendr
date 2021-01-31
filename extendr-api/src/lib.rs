@@ -376,8 +376,9 @@ pub fn print_r_error<T: Into<Vec<u8>>>(s: T) {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::prelude::*;
     use crate as extendr_api;
+    use std::collections::HashMap;
 
     use extendr_macros::extendr;
     use extendr_macros::extendr_module;
