@@ -693,7 +693,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         pub fn #module_metadata_name() -> extendr_api::metadata::Metadata {
             let mut functions = Vec::new();
             let mut impls = Vec::new();
-            
+
             // Pushes metadata (eg. extendr_api::metadata::Func) to functions and impl vectors.
             #( #fnmetanames(&mut functions); )*
             #( #implmetanames(&mut impls); )*
