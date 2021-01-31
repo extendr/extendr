@@ -1,4 +1,6 @@
 use extendr_api::prelude::*;
+mod submodule;
+use submodule::*;
 
 /// Return string `"Hello world!"` to R.
 /// @export
@@ -138,7 +140,6 @@ impl MyClassUnexported {
     }
 }
 
-
 // Macro to generate exports
 extendr_module! {
     mod extendrtests;
@@ -157,4 +158,6 @@ extendr_module! {
     impl MyClass;
     impl __MyClass;
     impl MyClassUnexported;
+    
+    use submodule;
 }
