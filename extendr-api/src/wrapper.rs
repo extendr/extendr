@@ -11,9 +11,9 @@ use libR_sys::*;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-/// let symbol = r!(Symbol("xyz"));
-/// assert_eq!(symbol.as_symbol(), Some(Symbol("xyz")));
-/// assert!(symbol.is_symbol());
+///     let symbol = r!(Symbol("xyz"));
+///     assert_eq!(symbol.as_symbol(), Some(Symbol("xyz")));
+///     assert!(symbol.is_symbol());
 /// }
 /// ```
 /// Note that creating a symbol from a string is expensive
@@ -29,8 +29,8 @@ pub struct Symbol<'a>(pub &'a str);
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-/// let chr = r!(Character("xyz"));
-/// assert_eq!(chr.as_character(), Some(Character("xyz")));
+///     let chr = r!(Character("xyz"));
+///     assert_eq!(chr.as_character(), Some(Character("xyz")));
 /// }
 /// ```
 ///
@@ -42,9 +42,9 @@ pub struct Character<'a>(pub &'a str);
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-/// let bytes = r!(Raw(&[1, 2, 3]));
-/// assert_eq!(bytes.len(), 3);
-/// assert_eq!(bytes.as_raw(), Some(Raw(&[1, 2, 3])));
+///     let bytes = r!(Raw(&[1, 2, 3]));
+///     assert_eq!(bytes.len(), 3);
+///     assert_eq!(bytes.as_raw(), Some(Raw(&[1, 2, 3])));
 /// }
 /// ```
 ///
@@ -55,9 +55,9 @@ pub struct Raw<'a>(pub &'a [u8]);
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-/// let call_to_xyz = r!(Lang(&[r!(Symbol("xyz")), r!(1), r!(2)]));
-/// assert_eq!(call_to_xyz.is_language(), true);
-/// assert_eq!(call_to_xyz.len(), 3);
+///     let call_to_xyz = r!(Lang(&[r!(Symbol("xyz")), r!(1), r!(2)]));
+///     assert_eq!(call_to_xyz.is_language(), true);
+///     assert_eq!(call_to_xyz.len(), 3);
 /// }
 /// ```
 ///
@@ -83,10 +83,10 @@ pub struct Pairlist<NV> {
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-/// let list = r!(List(&[r!(0), r!(1), r!(2)]));
-/// assert_eq!(list.is_list(), true);
-/// assert_eq!(list.len(), 3);
-/// assert_eq!(format!("{:?}", list), r#"r!(List([r!(0), r!(1), r!(2)]))"#);
+///     let list = r!(List(&[r!(0), r!(1), r!(2)]));
+///     assert_eq!(list.is_list(), true);
+///     assert_eq!(list.len(), 3);
+///     assert_eq!(format!("{:?}", list), r#"r!(List([r!(0), r!(1), r!(2)]))"#);
 /// }
 /// ```
 ///
@@ -98,8 +98,8 @@ pub struct List<T>(pub T);
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-/// let expr = r!(Expr(&[r!(1.), r!("xyz")]));
-/// assert_eq!(expr.len(), 2);
+///     let expr = r!(Expr(&[r!(1.), r!("xyz")]));
+///     assert_eq!(expr.len(), 2);
 /// }
 /// ```
 #[derive(Debug, PartialEq, Clone)]
@@ -116,16 +116,16 @@ pub struct Env<P, NV> {
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-/// let expr = R!(function(a = 1, b) {c <- a + b}).unwrap();
-/// let func = expr.as_func().unwrap();
+///     let expr = R!(function(a = 1, b) {c <- a + b}).unwrap();
+///     let func = expr.as_func().unwrap();
 ///
-/// let expected_formals = Pairlist {
-///     names_and_values: vec![("a", r!(1.0)), ("b", missing_arg())] };
-/// let expected_body = lang!(
-///     "{", lang!("<-", sym!(c), lang!("+", sym!(a), sym!(b))));
-/// assert_eq!(func.formals.as_pairlist().unwrap(), expected_formals);
-/// assert_eq!(func.body, expected_body);
-/// assert_eq!(func.env, global_env());
+///     let expected_formals = Pairlist {
+///         names_and_values: vec![("a", r!(1.0)), ("b", missing_arg())] };
+///     let expected_body = lang!(
+///         "{", lang!("<-", sym!(c), lang!("+", sym!(a), sym!(b))));
+///     assert_eq!(func.formals.as_pairlist().unwrap(), expected_formals);
+///     assert_eq!(func.body, expected_body);
+///     assert_eq!(func.env, global_env());
 /// }
 /// ```
 #[derive(Debug, PartialEq, Clone)]
@@ -148,13 +148,34 @@ pub struct Promise<C, E, V> {
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-/// let robj = r!(Primitive("+"));
-/// assert!(robj.is_primitive());
-/// assert!(!r!(Primitive("not_a_primitive")).is_primitive());
+///     let robj = r!(Primitive("+"));
+///     assert!(robj.is_primitive());
+///     assert!(!r!(Primitive("not_a_primitive")).is_primitive());
 /// }
 /// ```
 #[derive(Debug, PartialEq, Clone)]
 pub struct Primitive<'a>(pub &'a str);
+
+/// Wrapper for handling potentially NULL values.
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     let s1 = r!(1);
+///     let n1 = <Nullable<i32>>::from_robj(&s1)?;
+///     assert_eq!(n1, Nullable::NotNull(1));
+///     let snull = r!(NULL);
+///     let nnull = <Nullable<i32>>::from_robj(&snull)?;
+///     assert_eq!(nnull, Nullable::Null);
+///
+///     assert_eq!(r!(Nullable::<i32>::Null), r!(NULL));
+///     assert_eq!(r!(Nullable::<i32>::NotNull(1)), r!(1));
+/// }
+/// ```
+#[derive(Debug, PartialEq, Clone)]
+pub enum Nullable<T> {
+    NotNull(T),
+    Null,
+}
 
 impl<T> From<List<T>> for Robj
 where
@@ -166,8 +187,8 @@ where
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    /// let list_of_ints = r!(List(&[1, 2]));
-    /// assert_eq!(list_of_ints.len(), 2);
+    ///     let list_of_ints = r!(List(&[1, 2]));
+    ///     assert_eq!(list_of_ints.len(), 2);
     /// }
     /// ``````
     fn from(val: List<T>) -> Self {
@@ -185,8 +206,8 @@ where
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    /// let list_of_ints = r!(Expr(&[1, 2]));
-    /// assert_eq!(list_of_ints.len(), 2);
+    ///     let list_of_ints = r!(Expr(&[1, 2]));
+    ///     assert_eq!(list_of_ints.len(), 2);
     /// }
     /// ```
     fn from(val: Expr<T>) -> Self {
@@ -222,8 +243,8 @@ impl<'a> From<Primitive<'a>> for Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    /// let builtin = r!(Primitive("+"));
-    /// let special = r!(Primitive("if"));
+    ///     let builtin = r!(Primitive("+"));
+    ///     let special = r!(Primitive("if"));
     /// }
     /// ```
     fn from(name: Primitive) -> Self {
@@ -364,8 +385,8 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    /// let fred = sym!(fred);
-    /// assert_eq!(fred.as_symbol(), Some(Symbol("fred")));
+    ///     let fred = sym!(fred);
+    ///     assert_eq!(fred.as_symbol(), Some(Symbol("fred")));
     /// }
     /// ```
     pub fn as_symbol(&self) -> Option<Symbol> {
@@ -388,8 +409,8 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    /// let fred = r!(Character("fred"));
-    /// assert_eq!(fred.as_character(), Some(Character("fred")));
+    ///     let fred = r!(Character("fred"));
+    ///     assert_eq!(fred.as_character(), Some(Character("fred")));
     /// }
     /// ```
     pub fn as_character(&self) -> Option<Character> {
@@ -406,9 +427,9 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    /// let bytes = r!(Raw(&[1, 2, 3]));
-    /// assert_eq!(bytes.len(), 3);
-    /// assert_eq!(bytes.as_raw(), Some(Raw(&[1, 2, 3])));
+    ///     let bytes = r!(Raw(&[1, 2, 3]));
+    ///     assert_eq!(bytes.len(), 3);
+    ///     assert_eq!(bytes.as_raw(), Some(Raw(&[1, 2, 3])));
     /// }
     /// ```
     pub fn as_raw(&self) -> Option<Raw> {
@@ -422,10 +443,10 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    /// let call_to_xyz = r!(Lang(&[r!(Symbol("xyz")), r!(1), r!(2)]));
-    /// assert_eq!(call_to_xyz.is_language(), true);
-    /// assert_eq!(call_to_xyz.len(), 3);
-    /// assert_eq!(format!("{:?}", call_to_xyz), r#"r!(Lang([sym!(xyz), r!(1), r!(2)]))"#);
+    ///     let call_to_xyz = r!(Lang(&[r!(Symbol("xyz")), r!(1), r!(2)]));
+    ///     assert_eq!(call_to_xyz.is_language(), true);
+    ///     assert_eq!(call_to_xyz.len(), 3);
+    ///     assert_eq!(format!("{:?}", call_to_xyz), r#"r!(Lang([sym!(xyz), r!(1), r!(2)]))"#);
     /// }
     /// ```
     pub fn as_lang(&self) -> Option<Lang<PairlistIter>> {
@@ -440,10 +461,10 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    /// let names_and_values = vec![("a", r!(1)), ("b", r!(2)), (na_str(), r!(3))];
-    /// let pairlist = Pairlist{ names_and_values };
-    /// let robj = r!(pairlist.clone());
-    /// assert_eq!(robj.as_pairlist().unwrap(), pairlist);
+    ///     let names_and_values = vec![("a", r!(1)), ("b", r!(2)), (na_str(), r!(3))];
+    ///     let pairlist = Pairlist{ names_and_values };
+    ///     let robj = r!(pairlist.clone());
+    ///     assert_eq!(robj.as_pairlist().unwrap(), pairlist);
     /// }
     /// ```
     pub fn as_pairlist(&self) -> Option<Pairlist<Vec<(&str, Robj)>>> {
@@ -461,9 +482,9 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    /// let list = r!(List(&[r!(0), r!(1), r!(2)]));
-    /// assert_eq!(list.is_list(), true);
-    /// assert_eq!(format!("{:?}", list), r#"r!(List([r!(0), r!(1), r!(2)]))"#);
+    ///     let list = r!(List(&[r!(0), r!(1), r!(2)]));
+    ///     assert_eq!(list.is_list(), true);
+    ///     assert_eq!(format!("{:?}", list), r#"r!(List([r!(0), r!(1), r!(2)]))"#);
     /// }
     /// ```
     pub fn as_list(&self) -> Option<List<ListIter>> {
@@ -474,10 +495,10 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    /// let expr = r!(Expr(&[r!(0), r!(1), r!(2)]));
-    /// assert_eq!(expr.is_expr(), true);
-    /// assert_eq!(expr.as_expr(), Some(Expr(vec![r!(0), r!(1), r!(2)])));
-    /// assert_eq!(format!("{:?}", expr), r#"r!(Expr([r!(0), r!(1), r!(2)]))"#);
+    ///     let expr = r!(Expr(&[r!(0), r!(1), r!(2)]));
+    ///     assert_eq!(expr.is_expr(), true);
+    ///     assert_eq!(expr.as_expr(), Some(Expr(vec![r!(0), r!(1), r!(2)])));
+    ///     assert_eq!(format!("{:?}", expr), r#"r!(Expr([r!(0), r!(1), r!(2)]))"#);
     /// }
     /// ```
     pub fn as_expr(&self) -> Option<Expr<Vec<Robj>>> {
@@ -520,8 +541,8 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    /// let func = R!(function(a,b) a + b).unwrap();
-    /// println!("{:?}", func.as_func());
+    ///     let func = R!(function(a,b) a + b).unwrap();
+    ///     println!("{:?}", func.as_func());
     /// }
     /// ```
     pub fn as_func(&self) -> Option<Func<Robj, Robj, Robj>> {
@@ -542,10 +563,11 @@ impl Robj {
     // /// ```
     // /// use extendr_api::prelude::*;
     // /// test! {
-    // /// let builtin = r!(Primitive("+"));
-    // /// let special = r!(Primitive("if"));
-    // /// assert_eq!(builtin.sexptype(), libR_sys::BUILTINSXP);
-    // /// assert_eq!(special.sexptype(), libR_sys::SPECIALSXP);
+    // ///  let builtin = r!(Primitive("+"));
+    // ///  let special = r!(Primitive("if"));
+    // ///  assert_eq!(builtin.sexptype(), libR_sys::BUILTINSXP);
+    // ///  assert_eq!(special.sexptype(), libR_sys::SPECIALSXP);
+    // /// }
     // /// ```
     // pub fn as_primitive(&self) -> Option<Primitive> {
     //     match self.sexptype() {
@@ -587,5 +609,50 @@ where
 {
     fn sym_pair(self) -> (Robj, Robj) {
         (r!(Symbol(self.0.as_ref())), self.1.into())
+    }
+}
+
+impl<'a, T> FromRobj<'a> for Nullable<T>
+where
+    T: FromRobj<'a>,
+{
+    /// Convert an object that may be null to a rust type.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let s1 = r!(1);
+    ///     let n1 = <Nullable<i32>>::from_robj(&s1)?;
+    ///     assert_eq!(n1, Nullable::NotNull(1));
+    ///     let snull = r!(NULL);
+    ///     let nnull = <Nullable<i32>>::from_robj(&snull)?;
+    ///     assert_eq!(nnull, Nullable::Null);
+    /// }
+    /// ```
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+        if robj.is_null() {
+            Ok(Nullable::Null)
+        } else {
+            Ok(Nullable::NotNull(<T>::from_robj(robj)?))
+        }
+    }
+}
+
+impl<T> From<Nullable<T>> for Robj
+where
+    T: Into<Robj>,
+{
+    /// Convert a rust object to NULL or another type.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     assert_eq!(r!(Nullable::<i32>::Null), r!(NULL));
+    ///     assert_eq!(r!(Nullable::<i32>::NotNull(1)), r!(1));
+    /// }
+    /// ```
+    fn from(val: Nullable<T>) -> Self {
+        match val {
+            Nullable::NotNull(t) => t.into(),
+            Nullable::Null => r!(NULL),
+        }
     }
 }
