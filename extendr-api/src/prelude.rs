@@ -39,7 +39,7 @@ pub use super::thread_safety::{
 };
 
 pub use super::wrapper::{
-    Character, Env, Expr, Func, Lang, List, Nullable, Pairlist, Primitive, Promise, Raw, Symbol,
+    Int, Real, Logical, IntIn, RealIn, LogicalIn, Character, Env, Expr, Func, Lang, List, Nullable, Pairlist, Primitive, Promise, Raw, Symbol,
 };
 
 #[cfg(feature = "ndarray")]

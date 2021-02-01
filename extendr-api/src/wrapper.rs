@@ -6,6 +6,38 @@ use crate::*;
 use libR_sys::*;
 #[doc(hidden)]
 
+use crate::iter::IntegerIter;
+
+/// Wrapper for creating integer vectors.
+///
+/// ```
+/// use extendr_api::prelude::*;
+///
+/// test! {
+///     // Convert Rust integer iterator to R vector.
+///     let rint = r!(Int(0..3));
+///     assert_eq!(rint, r!([0, 1, 2]));
+///
+///     // Convert R vector to integer iterator.
+///     let rustint = <IntIn>::from_robj(&rint)?;
+///     assert_eq!(rustint.0.collect::<Vec<_>>(), vec![0, 1, 2]);
+/// }
+/// ```
+#[derive(Debug, PartialEq, Clone)]
+pub struct Int<T>(pub T);
+
+pub type IntIn = Int<IntegerIter>;
+
+#[derive(Debug, PartialEq, Clone)]
+pub struct Real<T>(pub T);
+
+pub type RealIn = Real<RealIter>;
+
+#[derive(Debug, PartialEq, Clone)]
+pub struct Logical<T>(pub T);
+
+pub type LogicalIn = Logical<LogicalIter>;
+
 /// Wrapper for creating symbols.
 ///
 /// ```
@@ -189,13 +221,130 @@ pub enum Nullable<T> {
     Null,
 }
 
+impl<T> From<Int<T>> for Robj
+where
+    T: IntoIterator,
+    T::Item: ToVectorValue,
+{
+    /// Make a vector object from an integer iterator.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let vector = r!(Int(&[1, 2]));
+    ///     assert_eq!(vector.len(), 2);
+    /// }
+    /// ``````
+    fn from(val: Int<T>) -> Self {
+        val.0.into_iter().collect_robj()
+    }
+}
+
+impl<'a> FromRobj<'a> for IntIn {
+    /// Convert a Robj to an integer iterator.
+    /// Prefer to use [Robj::as_integer_iter].
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let robj = r!([1, 2, 3]);
+    ///     let rust = <IntIn>::from_robj(&robj)?;
+    ///     assert_eq!(rust.0.sum::<i32>(), 6);
+    ///     assert_eq!(robj.as_integer_iter().unwrap().sum::<i32>(), 6);
+    /// }
+    /// ```
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+        if let Some(iter) = robj.as_integer_iter() {
+            Ok(Int(iter))
+        } else {
+            Err("Expected integer vector.")
+        }
+    }
+}
+
+impl<T> From<Real<T>> for Robj
+where
+    T: IntoIterator,
+    T::Item: ToVectorValue,
+{
+    /// Make a vector object from an integer iterator.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let vector = r!(Real(&[1.0, 2.0]));
+    ///     assert_eq!(vector.len(), 2);
+    /// }
+    /// ``````
+    fn from(val: Real<T>) -> Self {
+        val.0.into_iter().collect_robj()
+    }
+}
+
+impl<'a> FromRobj<'a> for RealIn {
+    /// Convert a Robj to an integer iterator.
+    /// Synonymous with [Robj::as_real_iter].
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let robj = r!([1.0, 2.0, 3.0]);
+    ///     let rust = <RealIn>::from_robj(&robj)?;
+    ///     assert_eq!(rust.0.sum::<f64>(), 6.0);
+    ///     assert_eq!(robj.as_real_iter().unwrap().sum::<f64>(), 6.0);
+    /// }
+    /// ```
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+        if let Some(iter) = robj.as_real_iter() {
+            Ok(Real(iter))
+        } else {
+            Err("Expected real vector.")
+        }
+    }
+}
+
+impl<T> From<Logical<T>> for Robj
+where
+    T: IntoIterator,
+    T::Item: ToVectorValue,
+{
+    /// Make a vector object from a logical iterator.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let vector = r!(Logical(&[TRUE, FALSE]));
+    ///     assert_eq!(vector.len(), 2);
+    /// }
+    /// ``````
+    fn from(val: Logical<T>) -> Self {
+        val.0.into_iter().collect_robj()
+    }
+}
+
+impl<'a> FromRobj<'a> for LogicalIn {
+    /// Convert a Robj to an logical iterator.
+    /// Synonymous with [Robj::as_logical_iter].
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let robj = r!([TRUE, TRUE, TRUE]);
+    ///     let mut rust = <LogicalIn>::from_robj(&robj)?;
+    ///     assert_eq!(rust.0.all(|b| b.is_true()), true);
+    ///     assert_eq!(robj.as_logical_iter().unwrap().all(|b| b.is_true()), true);
+    /// }
+    /// ```
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+        if let Some(iter) = robj.as_logical_iter() {
+            Ok(Logical(iter))
+        } else {
+            Err("Expected logical vector.")
+        }
+    }
+}
+
 impl<T> From<List<T>> for Robj
 where
     T: IntoIterator,
     T::IntoIter: ExactSizeIterator,
     T::Item: Into<Robj>,
 {
-    /// Make a list object from an array of Robjs.
+    /// Make a list object from an iterator of Robjs.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -214,7 +363,7 @@ where
     T::IntoIter: ExactSizeIterator,
     T::Item: Into<Robj>,
 {
-    /// Make an expression object from an array of Robjs.
+    /// Make an expression object from an iterator of Robjs.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {

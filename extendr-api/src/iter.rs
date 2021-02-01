@@ -42,17 +42,72 @@ impl Iterator for ListIter {
     }
 }
 
+pub struct SliceIter<T> {
+    // Contol lifetime of vector to make sure the memory is not freed.
+    #[allow(dead_code)]
+    vector: Robj,
+    i: usize,
+    len: usize,
+    ptr: * const T,
+}
+
+impl<T> SliceIter<T> {
+    // A new, empty list iterator.
+    pub fn new() -> Self {
+        SliceIter {
+            vector: ().into(),
+            i: 0,
+            len: 0,
+            ptr: std::ptr::null()
+        }
+    }
+
+    pub fn from_slice(vector: Robj, slice: &[T]) -> Self {
+        SliceIter {
+            vector,
+            i: 0,
+            len: slice.len(),
+            ptr: slice.as_ptr(),
+        }
+    }
+}
+
+/// Basis of IntegerIter, RealIter and LogicalIter.
+impl<T : Copy> Iterator for SliceIter<T> {
+    type Item = T;
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        (self.len, Some(self.len))
+    }
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let i = self.i;
+        self.i += 1;
+        if i >= self.len {
+            self.i = self.len;
+            None
+        } else {
+            unsafe { Some(*self.ptr.offset(i as isize)) }
+        }
+    }
+
+    fn nth(&mut self, n: usize) -> Option<Self::Item> {
+        self.i += n;
+        self.next()
+    }
+}
+
 /// Iterator over name-value pairs in lists.
 pub type NamedListIter = std::iter::Zip<StrIter, ListIter>;
 
 /// Iterator over primitives in integer objects.
-pub type IntegerIter<'a> = std::iter::Cloned<std::slice::Iter<'a, i32>>;
+pub type IntegerIter = SliceIter<i32>;
 
 /// Iterator over primitives in real objects.
-pub type RealIter<'a> = std::iter::Cloned<std::slice::Iter<'a, f64>>;
+pub type RealIter = SliceIter<f64>;
 
 /// Iterator over primitives in logical objects.
-pub type LogicalIter<'a> = std::iter::Cloned<std::slice::Iter<'a, Bool>>;
+pub type LogicalIter = SliceIter<Bool>;
 
 /// Iterator over the objects in a vector or string.
 ///

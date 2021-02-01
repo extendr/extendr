@@ -299,12 +299,10 @@ impl Robj {
     /// assert_eq!(tot, 6);
     /// }
     /// ```
-    pub fn as_integer_iter<'a>(&self) -> Option<IntegerIter<'a>>
-    where
-        Self: 'a,
+    pub fn as_integer_iter(&self) -> Option<IntegerIter>
     {
         if let Some(slice) = self.as_integer_slice() {
-            Some(slice.iter().cloned())
+            Some(IntegerIter::from_slice(self.to_owned(), slice))
         } else {
             None
         }
@@ -377,7 +375,7 @@ impl Robj {
     /// ```
     pub fn as_logical_iter(&self) -> Option<LogicalIter> {
         if let Some(slice) = self.as_logical_slice() {
-            Some(slice.iter().cloned())
+            Some(LogicalIter::from_slice(self.to_owned(), slice))
         } else {
             None
         }
@@ -419,7 +417,7 @@ impl Robj {
     /// ```
     pub fn as_real_iter(&self) -> Option<RealIter> {
         if let Some(slice) = self.as_real_slice() {
-            Some(slice.iter().cloned())
+            Some(RealIter::from_slice(self.to_owned(), slice))
         } else {
             None
         }
@@ -904,10 +902,7 @@ impl Robj {
     ///    assert_eq!(dim, vec![2, 2]);
     /// }
     /// ```
-    pub fn dim<'a>(&self) -> Option<IntegerIter<'a>>
-    where
-        Self: 'a,
-        Robj: 'a,
+    pub fn dim(&self) -> Option<IntegerIter>
     {
         if let Some(dim) = self.get_attrib(dim_symbol()) {
             dim.as_integer_iter()
