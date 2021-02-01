@@ -659,6 +659,18 @@
 <span id="656">656</span>
 <span id="657">657</span>
 <span id="658">658</span>
+<span id="659">659</span>
+<span id="660">660</span>
+<span id="661">661</span>
+<span id="662">662</span>
+<span id="663">663</span>
+<span id="664">664</span>
+<span id="665">665</span>
+<span id="666">666</span>
+<span id="667">667</span>
+<span id="668">668</span>
+<span id="669">669</span>
+<span id="670">670</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Wrappers are lightweight proxies for references to R datatypes.</span>
 <span class="doccomment">//! They do not contain an Robj (see array.rs for an example of this).</span>
@@ -822,12 +834,24 @@
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">/// test! {</span>
+<span class="doccomment">///     use extendr_api::wrapper::Nullable::*;</span>
+<span class="doccomment">///</span>
+<span class="doccomment">///     // Plain integer.</span>
 <span class="doccomment">///     let s1 = r!(1);</span>
 <span class="doccomment">///     let n1 = &lt;Nullable&lt;i32&gt;&gt;::from_robj(&amp;s1)?;</span>
-<span class="doccomment">///     assert_eq!(n1, Nullable::NotNull(1));</span>
+<span class="doccomment">///     assert_eq!(n1, NotNull(1));</span>
+<span class="doccomment">///</span>
+<span class="doccomment">///     // NA integer - error.</span>
+<span class="doccomment">///     let sna = r!(NA_INTEGER);</span>
+<span class="doccomment">///     assert_eq!(&lt;Nullable&lt;i32&gt;&gt;::from_robj(&amp;sna).is_err(), true);</span>
+<span class="doccomment">///</span>
+<span class="doccomment">///     // NA integer - option gives none.</span>
+<span class="doccomment">///     assert_eq!(&lt;Nullable&lt;Option&lt;i32&gt;&gt;&gt;::from_robj(&amp;sna)?, NotNull(None));</span>
+<span class="doccomment">///</span>
+<span class="doccomment">///     // NULL object.</span>
 <span class="doccomment">///     let snull = r!(NULL);</span>
 <span class="doccomment">///     let nnull = &lt;Nullable&lt;i32&gt;&gt;::from_robj(&amp;snull)?;</span>
-<span class="doccomment">///     assert_eq!(nnull, Nullable::Null);</span>
+<span class="doccomment">///     assert_eq!(nnull, Null);</span>
 <span class="doccomment">///</span>
 <span class="doccomment">///     assert_eq!(r!(Nullable::&lt;i32&gt;::Null), r!(NULL));</span>
 <span class="doccomment">///     assert_eq!(r!(Nullable::&lt;i32&gt;::NotNull(1)), r!(1));</span>
