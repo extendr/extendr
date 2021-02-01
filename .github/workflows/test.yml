@@ -158,7 +158,14 @@ jobs:
       - name: Query dependencies for integration testing
         run: |
           install.packages('remotes')
-          saveRDS(unique(rbind(remotes::dev_package_deps(pkgdir = "tests/extendrtests", dependencies = TRUE), remotes::dev_package_deps(pkgdir = "tests/rextendr", dependencies = TRUE))), ".github/depends.Rds", version = 2)
+          saveRDS(
+            unique(
+              rbind(
+                remotes::dev_package_deps(pkgdir = "tests/extendrtests", dependencies = TRUE), 
+                remotes::dev_package_deps(pkgdir = "tests/rextendr", dependencies = TRUE))),
+            ".github/depends.Rds", 
+            version = 2
+          )
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
         shell: Rscript {0}
 
@@ -172,7 +179,7 @@ jobs:
       - name: Install R dependencies for integration testing
         run: |
           remotes::install_deps(pkgdir = "tests/extendrtests", dependencies = TRUE)
-          remotes::install_deps(pkgdir = "tests/rextendr", dependencies = TRUE)
+          if (as.integer(R.version$major) >= 4) { remotes::install_deps(pkgdir = "tests/rextendr", dependencies = TRUE) }
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
         
@@ -183,10 +190,20 @@ jobs:
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
         run: |
+          cat("::group::Checking 'extendrtests'\n")
           setwd("tests/extendrtests")
           rcmdcheck::rcmdcheck(path = ".", args = c("--no-manual", "--as-cran", "--force-multiarch"), error_on = "warning", check_dir = "../../../")
-          setwd("../rextendr")
-          rcmdcheck::rcmdcheck(path = ".", args = c("--no-manual", "--force-multiarch"), error_on = "warning", check_dir = "../../../")
+          cat("::endgroup::\n")
+
+          if (as.integer(R.version$major) < 4) {
+            cat("::warning:: R version is not compatible with 'rextendr'\n")
+          } 
+          else {
+            cat("::group::Checking 'rextendr'\n")
+            setwd("../rextendr")
+            rcmdcheck::rcmdcheck(path = ".", args = c("--no-manual", "--force-multiarch"), error_on = "warning", check_dir = "../../../")
+            cat("::endgroup::\n")
+          }
         shell: Rscript {0}
         
       - name: Upload check results from R integration tests
