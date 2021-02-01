@@ -3,7 +3,10 @@
 //! This allows us to be more selective about exports and avoid users
 //! using deprecated features.
 
-pub use super::{FromRobj, IsNA, FALSE, NA_INTEGER, NA_LOGICAL, NA_REAL, NA_STRING, NULL, TRUE};
+pub use super::{
+    new_borrowed, new_owned, print_r_error, print_r_output, FromRobj, IsNA, FALSE, NA_INTEGER,
+    NA_LOGICAL, NA_REAL, NA_STRING, NULL, TRUE,
+};
 
 pub use super::error::{Error, Result};
 
@@ -47,4 +50,6 @@ pub use ndarray::*;
 
 pub use extendr_macros::{extendr, extendr_module};
 
-pub use super::iter::{EnvIter, ListIter, PairlistIter, PairlistTagIter, StrIter};
+pub use super::iter::{
+    EnvIter, IntegerIter, ListIter, LogicalIter, PairlistIter, PairlistTagIter, RealIter, StrIter,
+};
