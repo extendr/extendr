@@ -48,7 +48,7 @@ pub struct SliceIter<T> {
     vector: Robj,
     i: usize,
     len: usize,
-    ptr: * const T,
+    ptr: *const T,
 }
 
 impl<T> SliceIter<T> {
@@ -58,7 +58,7 @@ impl<T> SliceIter<T> {
             vector: ().into(),
             i: 0,
             len: 0,
-            ptr: std::ptr::null()
+            ptr: std::ptr::null(),
         }
     }
 
@@ -73,7 +73,7 @@ impl<T> SliceIter<T> {
 }
 
 /// Basis of IntegerIter, RealIter and LogicalIter.
-impl<T : Copy> Iterator for SliceIter<T> {
+impl<T: Copy> Iterator for SliceIter<T> {
     type Item = T;
 
     fn size_hint(&self) -> (usize, Option<usize>) {

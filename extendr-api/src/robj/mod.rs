@@ -299,8 +299,7 @@ impl Robj {
     /// assert_eq!(tot, 6);
     /// }
     /// ```
-    pub fn as_integer_iter(&self) -> Option<IntegerIter>
-    {
+    pub fn as_integer_iter(&self) -> Option<IntegerIter> {
         if let Some(slice) = self.as_integer_slice() {
             Some(IntegerIter::from_slice(self.to_owned(), slice))
         } else {
@@ -902,8 +901,7 @@ impl Robj {
     ///    assert_eq!(dim, vec![2, 2]);
     /// }
     /// ```
-    pub fn dim(&self) -> Option<IntegerIter>
-    {
+    pub fn dim(&self) -> Option<IntegerIter> {
         if let Some(dim) = self.get_attrib(dim_symbol()) {
             dim.as_integer_iter()
         } else {

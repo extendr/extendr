@@ -1,12 +1,11 @@
 //! Wrappers are lightweight proxies for references to R datatypes.
 //! They do not contain an Robj (see array.rs for an example of this).
 
+#[doc(hidden)]
+use crate::iter::IntegerIter;
 use crate::*;
 #[doc(hidden)]
 use libR_sys::*;
-#[doc(hidden)]
-
-use crate::iter::IntegerIter;
 
 /// Wrapper for creating integer vectors.
 ///
