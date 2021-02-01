@@ -151,10 +151,14 @@ jobs:
             echo "::endgroup::"
           }
 
+      - name: Obtain 'rextendr'
+        run : |
+          git clone https://github.com/extendr/rextendr ./tests/
+
       - name: Query dependencies for integration testing
         run: |
           install.packages('remotes')
-          saveRDS(remotes::dev_package_deps(pkgdir = "tests/extendrtests", dependencies = TRUE), ".github/depends.Rds", version = 2)
+          saveRDS(unique(rbind(remotes::dev_package_deps(pkgdir = "tests/extendrtests", dependencies = TRUE), remotes::dev_package_deps(pkgdir = "tests/rextendr", dependencies = TRUE))), ".github/depends.Rds", version = 2)
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
         shell: Rscript {0}
 
@@ -179,7 +183,9 @@ jobs:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
         run: |
           setwd("tests/extendrtests")
-          rcmdcheck::rcmdcheck(path = ".", args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "../../../")
+          rcmdcheck::rcmdcheck(path = ".", args = c("--no-manual", "--as-cran", "--force-multiarch"), error_on = "warning", check_dir = "../../../")
+          setwd("../rextendr")
+          rcmdcheck::rcmdcheck(path = ".", args = c("--no-manual", "--force-multiarch"), error_on = "warning", check_dir = "../../../")
         shell: Rscript {0}
         
       - name: Upload check results from R integration tests
