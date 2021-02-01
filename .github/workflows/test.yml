@@ -200,7 +200,7 @@ jobs:
           } else {
             cat("::group::Checking 'rextendr'\n")
             setwd("../rextendr")
-            rcmdcheck::rcmdcheck(path = ".", args = c("--no-manual", "--force-multiarch"), error_on = "warning", check_dir = "../../../")
+            rcmdcheck::rcmdcheck(path = ".", args = c("--no-manual", "--as-cran", "--force-multiarch"), error_on = "warning", check_dir = "../../../")
             cat("::endgroup::\n")
           }
         shell: Rscript {0}
