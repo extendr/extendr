@@ -197,8 +197,7 @@ jobs:
 
           if (as.integer(R.version$major) < 4) {
             cat("::warning:: R version is not compatible with 'rextendr'\n")
-          } 
-          else {
+          } else {
             cat("::group::Checking 'rextendr'\n")
             setwd("../rextendr")
             rcmdcheck::rcmdcheck(path = ".", args = c("--no-manual", "--force-multiarch"), error_on = "warning", check_dir = "../../../")
