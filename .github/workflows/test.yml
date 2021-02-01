@@ -153,7 +153,7 @@ jobs:
 
       - name: Obtain 'rextendr'
         run : |
-          git clone https://github.com/extendr/rextendr ./tests/
+          git clone https://github.com/extendr/rextendr ./tests/rextendr
 
       - name: Query dependencies for integration testing
         run: |
