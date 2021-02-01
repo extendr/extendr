@@ -155,6 +155,7 @@ jobs:
         run : |
           git clone https://github.com/extendr/rextendr ./tests/rextendr
 
+      # Dependencies from both test packages are combined
       - name: Query dependencies for integration testing
         run: |
           install.packages('remotes')
@@ -176,6 +177,7 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
           restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
+      # Currently rextendr requires R > 4, so if R version is older (e.g. 3.6.3), rextendr tests are omitted
       - name: Install R dependencies for integration testing
         run: |
           remotes::install_deps(pkgdir = "tests/extendrtests", dependencies = TRUE)
@@ -185,6 +187,7 @@ jobs:
         
       # Windows: modified PATH will launch 32-bit Rscript if the build targets only i686/i386, so no conflict will arise
       # Rust pseudo multi-targeting: R CMD CHECK receives an extra argument '--no-multiarch' if BUILD_TARGETS is not 'default' and does not contain any commas
+      # If R is older than 4.0, rextendr is not tested and a warning is emitted. 
       - name: Run R integration tests
         id: r_integration_tests
         env:
