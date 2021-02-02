@@ -1,4 +1,4 @@
-function try-cargo {
+function ci-cargo {
     param(
         [Parameter(Position = 0, ValueFromRemainingArguments)]
         [String[]]
