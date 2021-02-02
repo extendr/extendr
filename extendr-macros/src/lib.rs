@@ -595,6 +595,7 @@ struct Module {
     modname: Option<Ident>,
     fnnames: Vec<Ident>,
     implnames: Vec<Type>,
+    usenames: Vec<Ident>,
 }
 
 // Custom parser for the module.
@@ -605,6 +606,7 @@ impl syn::parse::Parse for Module {
             modname: None,
             fnnames: Vec::new(),
             implnames: Vec::new(),
+            usenames: Vec::new(),
         };
         while !input.is_empty() {
             if let Ok(kmod) = input.parse::<Token![mod]>() {
@@ -617,6 +619,8 @@ impl syn::parse::Parse for Module {
                 res.fnnames.push(input.parse()?);
             } else if let Ok(_) = input.parse::<Token![impl]>() {
                 res.implnames.push(input.parse()?);
+            } else if let Ok(_) = input.parse::<Token![use]>() {
+                res.usenames.push(input.parse()?);
             } else {
                 return Err(syn::Error::new(input.span(), "expected mod, fn or impl"));
             }
@@ -658,6 +662,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         modname,
         fnnames,
         implnames,
+        usenames,
     } = module;
     let modname = modname.unwrap();
     let modname_string = modname.to_string();
@@ -677,6 +682,10 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
     let implmetanames = implnames
         .iter()
         .map(|id| format_ident!("{}{}", META_PREFIX, type_name(id)));
+    let usemetanames = usenames
+        .iter()
+        .map(|id| format_ident!("get_{}_metadata", id))
+        .collect::<Vec<Ident>>();
 
     TokenStream::from(quote! {
         #[no_mangle]
@@ -684,8 +693,14 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         pub fn #module_metadata_name() -> extendr_api::metadata::Metadata {
             let mut functions = Vec::new();
             let mut impls = Vec::new();
+
+            // Pushes metadata (eg. extendr_api::metadata::Func) to functions and impl vectors.
             #( #fnmetanames(&mut functions); )*
             #( #implmetanames(&mut impls); )*
+
+            // Extends functions and impls with the submodules metadata
+            #( functions.extend(#usemetanames().functions); )*
+            #( impls.extend(#usemetanames().impls); )*
 
             // Add this function to the list, but set hidden: true.
             functions.push(extendr_api::metadata::Func {
