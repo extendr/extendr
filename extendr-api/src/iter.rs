@@ -1,6 +1,24 @@
 use crate::*;
 
-// Iterator over the objects in a VECSXP, EXPRSXP or WEAKREFSXP.
+/// Iterator over the objects in a VECSXP, EXPRSXP or WEAKREFSXP.
+///
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     let my_list = list!(a = 1, b = 2);
+///     let mut total = 0;
+///     for robj in my_list.as_list_iter().unwrap() {
+///       if let Some(val) = robj.as_integer() {
+///         total += val;
+///       }
+///     }
+///     assert_eq!(total, 3);
+///    
+///     for name in my_list.names().unwrap() {
+///        assert!(name == "a" || name == "b")
+///     }
+/// }
+/// ```
 #[derive(Clone)]
 pub struct ListIter {
     vector: Robj,
@@ -42,8 +60,9 @@ impl Iterator for ListIter {
     }
 }
 
+/// Generalised iterator of numbers and logical. See Int, Real and Logical.
 pub struct SliceIter<T> {
-    // Contol lifetime of vector to make sure the memory is not freed.
+    // Control lifetime of vector to make sure the memory is not freed.
     #[allow(dead_code)]
     vector: Robj,
     i: usize,
@@ -130,25 +149,6 @@ pub type Real = SliceIter<f64>;
 /// ```
 pub type Logical = SliceIter<Bool>;
 
-/// Iterator over the objects in a vector or string.
-///
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///     let my_list = list!(a = 1, b = 2);
-///     let mut total = 0;
-///     for robj in my_list.as_list_iter().unwrap() {
-///       if let Some(val) = robj.as_integer() {
-///         total += val;
-///       }
-///     }
-///     assert_eq!(total, 3);
-///    
-///     for name in my_list.names().unwrap() {
-///        assert!(name == "a" || name == "b")
-///     }
-/// }
-/// ```
 #[derive(Clone)]
 pub struct PairlistIter {
     root_obj: Robj,
