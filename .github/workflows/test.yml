@@ -122,28 +122,17 @@ jobs:
       # Required by Windows builds, does not affect other platforms
       - name: Build
         run: |
+          . ./ci-cargo.ps1
           foreach($target in ($env:BUILD_TARGETS).Split(',')) {
-            echo "::group::Build for $target target"
-            cargo build $(if($target -ne 'default') {"--target=$target"} ) 
-            if (!$?) { 
-              echo "::error::Build for $target target" ;
-              throw "Last exit code $LASTEXITCODE"
-            }
-            echo "::endgroup::"
+            ci-cargo build $(if($target -ne 'default') {"--target=$target"} ) -ActionName "Building for $target target"
           }
       # For each target in the BUILD_TARGETS comma-separated list, run cargo test with appropriate target
       # Required by Windows builds, does not affect other platforms
       - name: Run tests
         run: |
+          . ./ci-cargo.ps1
           foreach($target in ($env:BUILD_TARGETS).Split(',')) {
-            echo "::group::Test for $target target"
-            
-            cargo test $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture
-            if (!$?) { 
-              echo "::error::Test for $target target" ;
-              throw "Last exit code $LASTEXITCODE"
-            }
-            echo "::endgroup::"
+            ci-cargo test $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture -ActionName "Testing for $target target"
           }
       - name: Query dependencies for integration testing
         run: |
