@@ -3,13 +3,20 @@ name: Tests
 on:
   push:
     branches:
-      - '*'
+      - main
+      - master
   pull_request:
     branches:
       - main
       - master
   workflow_dispatch:
 
+
+# cargo error handling is wrapped by ci-cargo, for simplicity and better logging.
+# To use ci-cargo in a step, source ci-cargo.ps1 (using `. ./ci-cargo.ps`, note the extra dot in front).
+# ci-cargo does not handle correctly -- separator, so wrap it in quotes ('--')
+# A special named parameter called `ActionName` can be used to set the name of current ci-cargo action,
+# used as `ci-cargo .... -ActionName "Called for documentation purposes"`.
 jobs:
   # All tests under this job are run with pre-computed libR-sys bindings.
   tests_no_bindgen:
@@ -128,6 +135,7 @@ jobs:
           }
       # For each target in the BUILD_TARGETS comma-separated list, run cargo test with appropriate target
       # Required by Windows builds, does not affect other platforms
+      # ! ci-cargo requires '--' to be wrapped in quotes (passed as an explicit string)
       - name: Run tests
         run: |
           . ./ci-cargo.ps1
@@ -329,6 +337,7 @@ jobs:
           RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
 
       # Identical to the build process, but running more test commands
+      # ! ci-cargo requires '--' to be wrapped in quotes (passed as an explicit string)
       - name: Run tests
         run: |
           . ./ci-cargo.ps1
