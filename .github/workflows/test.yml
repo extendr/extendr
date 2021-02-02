@@ -132,7 +132,7 @@ jobs:
         run: |
           . ./ci-cargo.ps1
           foreach($target in ($env:BUILD_TARGETS).Split(',')) {
-            ci-cargo test $(if($target -ne 'default') {"--target=$target"} ) -- --nocapture -ActionName "Testing for $target target"
+            ci-cargo test $(if($target -ne 'default') {"--target=$target"} ) '--' --nocapture -ActionName "Testing for $target target"
           }
       - name: Query dependencies for integration testing
         run: |
