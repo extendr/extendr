@@ -72,7 +72,7 @@ impl<T> SliceIter<T> {
     }
 }
 
-/// Basis of IntegerIter, RealIter and LogicalIter.
+/// Basis of Int, Real and Logical.
 impl<T: Copy> Iterator for SliceIter<T> {
     type Item = T;
 
@@ -101,13 +101,25 @@ impl<T: Copy> Iterator for SliceIter<T> {
 pub type NamedListIter = std::iter::Zip<StrIter, ListIter>;
 
 /// Iterator over primitives in integer objects.
+#[deprecated = "Use Int instead"]
 pub type IntegerIter = SliceIter<i32>;
 
 /// Iterator over primitives in real objects.
+#[deprecated = "Use Real instead"]
 pub type RealIter = SliceIter<f64>;
 
 /// Iterator over primitives in logical objects.
+#[deprecated = "Use Logical instead"]
 pub type LogicalIter = SliceIter<Bool>;
+
+/// Iterator over primitives in integer objects.
+pub type Int = SliceIter<i32>;
+
+/// Iterator over primitives in real objects.
+pub type Real = SliceIter<f64>;
+
+/// Iterator over primitives in logical objects.
+pub type Logical = SliceIter<Bool>;
 
 /// Iterator over the objects in a vector or string.
 ///

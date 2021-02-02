@@ -497,23 +497,23 @@ impl_from_into_iter! {&'a [T]}
 impl_from_as_iterator! {Range<T>}
 impl_from_as_iterator! {RangeInclusive<T>}
 
-impl From<RealIter> for Robj {
+impl From<Real> for Robj {
     /// Convert a real iterator into a vector.
-    fn from(val: RealIter) -> Self {
+    fn from(val: Real) -> Self {
         val.collect_robj()
     }
 }
 
-impl From<IntegerIter> for Robj {
+impl From<Int> for Robj {
     /// Convert an integer iterator into a vector.
-    fn from(val: IntegerIter) -> Self {
+    fn from(val: Int) -> Self {
         val.collect_robj()
     }
 }
 
-impl From<LogicalIter> for Robj {
+impl From<Logical> for Robj {
     /// Convert a logical iterator into a vector.
-    fn from(val: LogicalIter) -> Self {
+    fn from(val: Logical) -> Self {
         val.collect_robj()
     }
 }
