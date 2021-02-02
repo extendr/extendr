@@ -16,7 +16,7 @@ impl Bool {
 
     /// Test if TRUE
     pub fn is_true(&self) -> bool {
-        self.0 != 0
+        self.0 == 1
     }
 
     /// Test if FALSE

@@ -101,24 +101,33 @@ impl<T: Copy> Iterator for SliceIter<T> {
 pub type NamedListIter = std::iter::Zip<StrIter, ListIter>;
 
 /// Iterator over primitives in integer objects.
-#[deprecated = "Use Int instead"]
-pub type IntegerIter = SliceIter<i32>;
-
-/// Iterator over primitives in real objects.
-#[deprecated = "Use Real instead"]
-pub type RealIter = SliceIter<f64>;
-
-/// Iterator over primitives in logical objects.
-#[deprecated = "Use Logical instead"]
-pub type LogicalIter = SliceIter<Bool>;
-
-/// Iterator over primitives in integer objects.
+/// ```
+/// use extendr_api::prelude::*;
+///
+/// fn add(a: Int, b: Int) -> Robj {
+///     a.zip(b).map(|(a, b)| a+b).collect_robj()
+/// }
+/// ```
 pub type Int = SliceIter<i32>;
 
 /// Iterator over primitives in real objects.
+/// ```
+/// use extendr_api::prelude::*;
+///
+/// fn add1(a: Real) -> Robj {
+///     a.map(|a| a + 1.0).collect_robj()
+/// }
+/// ```
 pub type Real = SliceIter<f64>;
 
 /// Iterator over primitives in logical objects.
+/// ```
+/// use extendr_api::prelude::*;
+///
+/// fn all_true(mut a: Logical) -> bool {
+///     a.all(|a| a.is_true())
+/// }
+/// ```
 pub type Logical = SliceIter<Bool>;
 
 /// Iterator over the objects in a vector or string.
