@@ -39,7 +39,7 @@ function ci-cargo {
 
         .PARAMETER CargoArgs
         Arguments passed to cargo, as-is.
-        Note that `--` separator handled by powershell itself,
+        Note that `--` separator is handled by powershell itself,
         so it should be wrapped in quotes `'--'` and passed as string.
 
         .PARAMETER ActionName
@@ -53,6 +53,10 @@ function ci-cargo {
 
         .EXAMPLE
         PS> ci-cargo --version
+            ::group::
+            Running cargo --version
+            cargo 1.49.0 (d00d64df9 2020-12-05)
+            ::endgroup::
 
         .EXAMPLE
         PS> ci-cargo -ActioName "Build"  build
