@@ -5,7 +5,6 @@ on:
     branches:
       - main
       - master
-      - 'rextendr-tests'
   pull_request:
     branches:
       - main
@@ -196,6 +195,10 @@ jobs:
         shell: Rscript {0}
         
       # If R is older than 4.0, rextendr is not tested and a warning is emitted. 
+      # With https://github.com/extendr/rextendr/pull/31
+      # rextendr can be configured using environment variables.
+      # 'patch.crates_io' is used to point libraries to local copies of
+      # extendr-api and extendr-macros, so rextendr tests current version of extendr-*
       - name: Run R integration tests using {rextendr}
         id: rextendr_check
         env:
