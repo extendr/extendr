@@ -22,7 +22,7 @@ extendr-api = "*"
 ## The code is compiled in 
 ## 'extendr/extendrtests_check/extendrtests.Rcheck/00_pkg_src/extendrtests/src/rust'
 ## Cargo should go (relatively) 7 directories up (../) and then into './extendr/extendr-api'.
-extendr-api = { path = "../../../../../../../extendr/extendr-api/"}
+extendr-api = { path = "../../../../../extendr/extendr-api"}
 
 ## Build against current extendr version on github. Not recommended
 ## for development work.
