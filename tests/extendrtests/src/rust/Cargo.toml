@@ -20,7 +20,7 @@ extendr-api = "*"
 ## running rcmdcheck::rcmdcheck(check_dir = "../../../") from
 ## the root of extendrtests.
 ## The code is compiled in 
-## 'extendr/rextendr_check/extendrtests.Rcheck/00_pkg_src/extendrtests/src/rust'
+## 'extendr/extendrtests_check/extendrtests.Rcheck/00_pkg_src/extendrtests/src/rust'
 ## Cargo should go (relatively) 7 directories up (../) and then into './extendr/extendr-api'.
 extendr-api = { path = "../../../../../../../extendr/extendr-api/"}
 
