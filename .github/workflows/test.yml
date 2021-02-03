@@ -172,39 +172,62 @@ jobs:
       - name: Install R dependencies for integration testing
         run: |
           remotes::install_deps(pkgdir = "tests/extendrtests", dependencies = TRUE)
-          if (as.integer(R.version$major) >= 4) { remotes::install_deps(pkgdir = "tests/rextendr", dependencies = TRUE) }
+          if (as.integer(R.version$major) >= 4) { 
+            remotes::install_deps(pkgdir = "tests/rextendr", dependencies = TRUE)
+          }
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
         
       # Windows: modified PATH will launch 32-bit Rscript if the build targets only i686/i386, so no conflict will arise
       # Rust pseudo multi-targeting: R CMD CHECK receives an extra argument '--no-multiarch' if BUILD_TARGETS is not 'default' and does not contain any commas
-      # If R is older than 4.0, rextendr is not tested and a warning is emitted. 
-      - name: Run R integration tests
-        id: r_integration_tests
+      - name: Run R integration tests using {extendrtests}
+        id: extendrtests_check
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
         run: |
           cat("::group::Checking 'extendrtests'\n")
-          setwd("tests/extendrtests")
-          rcmdcheck::rcmdcheck(path = ".", args = c("--no-manual", "--as-cran", "--force-multiarch"), error_on = "warning", check_dir = "../../../")
+          rcmdcheck::rcmdcheck(
+            path = "tests/extendrtests", 
+            args = c("--no-manual", "--as-cran", "--force-multiarch"),
+            error_on = "warning", 
+            check_dir = "extendrtests_check"
+          )
           cat("::endgroup::\n")
-
+        shell: Rscript {0}
+        
+      # If R is older than 4.0, rextendr is not tested and a warning is emitted. 
+      - name: Run R integration tests using {rextendr}
+        id: rextendr_check
+        env:
+          _R_CHECK_CRAN_INCOMING_REMOTE_: false
+        run: |
           if (as.integer(R.version$major) < 4) {
             cat("::warning:: R version is not compatible with 'rextendr'\n")
           } else {
             cat("::group::Checking 'rextendr'\n")
-            setwd("../rextendr")
-            rcmdcheck::rcmdcheck(path = ".", args = c("--no-manual", "--as-cran", "--force-multiarch"), error_on = "warning", check_dir = "../../../")
+            rcmdcheck::rcmdcheck(
+              path = "tests/rextendr", 
+              args = c("--no-manual", "--as-cran", "--force-multiarch"), 
+              error_on = "warning", 
+              check_dir = "rextendr_check")
             cat("::endgroup::\n")
           }
         shell: Rscript {0}
-        
-      - name: Upload check results from R integration tests
-        if: failure()
+
+
+      - name: Upload extendrtests check results from R integration tests
+        if: steps.extendrtests_check.outcome != 'success'
         uses: actions/upload-artifact@main
         with:
-          name:  ${{ matrix.config.os }}-R-${{ matrix.config.r }}-rust-${{ matrix.config.rust-version }}
-          path: check
+          name:  extendrtests-${{ matrix.config.os }}-R-${{ matrix.config.r }}-rust-${{ matrix.config.rust-version }}
+          path: extendrtests_check
+
+      - name: Upload rextendr check results from R integration tests
+        if: steps.rextendr_check.outcome != 'success'
+        uses: actions/upload-artifact@main
+        with:
+          name:  rextendr-${{ matrix.config.os }}-R-${{ matrix.config.r }}-rust-${{ matrix.config.rust-version }}
+          path: rextendr_check
 
 
   # All tests under this job are run with R devel and freshly generated bindings.

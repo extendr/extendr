@@ -19,7 +19,10 @@ extendr-api = "*"
 ## Build against local extendr sources. Check locally by 
 ## running rcmdcheck::rcmdcheck(check_dir = "../../../") from
 ## the root of extendrtests.
-extendr-api = { path = "../../../../../extendr/extendr-api/"}
+## The code is compiled in 
+## 'extendr/rextendr_check/extendrtests.Rcheck/00_pkg_src/extendrtests/src/rust'
+## Cargo should go (relatively) 7 directories up (../) and then into './extendr/extendr-api'.
+extendr-api = { path = "../../../../../../../extendr/extendr-api/"}
 
 ## Build against current extendr version on github. Not recommended
 ## for development work.
