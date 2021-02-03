@@ -182,9 +182,12 @@ impl Robj {
         //     }
         // }
         unsafe {
-            let var = Rf_findVar(key.get(), self.get());
-            if var != R_UnboundValue {
-                Some(new_borrowed(var))
+            if let Ok(var) = catch_r_error(|| Rf_findVar(key.get(), self.get())) {
+                if var != R_UnboundValue {
+                    Some(new_borrowed(var))
+                } else {
+                    None
+                }
             } else {
                 None
             }
