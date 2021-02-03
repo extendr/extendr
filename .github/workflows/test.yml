@@ -205,6 +205,20 @@ jobs:
             cat("::warning:: R version is not compatible with 'rextendr'\n")
           } else {
             cat("::group::Checking 'rextendr'\n")
+            
+            patch.crates_io <-
+              paste(
+                paste0(
+                  "extendr-api = { path = \"",
+                  normalizePath(file.path(getwd(), "extendr-api"), winslash = "/"),
+                  "\" }"),
+                paste0(
+                  "extendr-macros = { path = \"",
+                  normalizePath(file.path(getwd(), "extendr-macros"), winslash = "/"),
+                  "\" }"),
+                sep = ";")
+
+            Sys.setenv(REXTENDR_PATCH_CRATES_IO = patch.crates_io)
             rcmdcheck::rcmdcheck(
               path = "tests/rextendr", 
               args = c("--no-manual", "--as-cran", "--force-multiarch"), 
