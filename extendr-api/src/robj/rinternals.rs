@@ -111,7 +111,9 @@ impl Robj {
     /// test! {
     ///    let my_fun = base_env().find_function(sym!(ls)).unwrap();
     ///    assert_eq!(my_fun.is_function(), true);
-    ///    assert!(base_env().find_function(sym!(qwertyuiop)).is_none());
+    ///
+    ///    // Note: this may crash on some versions of windows which don't support unwinding.
+    ///    // assert!(base_env().find_function(sym!(qwertyuiop)).is_none());
     /// }
     /// ```
     pub fn find_function<K: Into<Robj>>(&self, key: K) -> Option<Robj> {
