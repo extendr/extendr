@@ -34,8 +34,7 @@ pub fn new_env_with_capacity(capacity: usize) -> Robj {
         // Unhashed envirnment
         call!("new.env", FALSE, global_env(), 0).unwrap()
     } else {
-        // Hashed environment, the pidgeon hole principle
-        // ensures there are empty slots in the hash table.
+        // Hashed environment for larger hashmaps.
         call!("new.env", TRUE, global_env(), capacity as i32 * 2 + 1).unwrap()
     }
 }

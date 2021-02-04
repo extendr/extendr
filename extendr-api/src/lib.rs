@@ -41,6 +41,7 @@
 //! test! {
 //!     // An R object with a single string "hello"
 //!     let character = r!("hello");
+//!     let character = r!(["hello", "goodbye"]);
 //!    
 //!     // An R integer object with a single number 1L.
 //!     // Note that in Rust, 1 is an integer and 1.0 is a real.
@@ -52,6 +53,8 @@
 //!    
 //!     // An R real vector.
 //!     let real_vector = r!([1.0, 2.0]);
+//!     let real_vector = &[1.0, 2.0].iter().collect_robj();
+//!     let real_vector = r!(vec![1.0, 2.0]);
 //!    
 //!     // An R function object.
 //!     let function = R!(function(x, y) { x + y })?;
@@ -59,8 +62,16 @@
 //!     // A named list using the list! macro.
 //!     let list = list!(a = 1, b = 2);
 //!    
+//!     // An unnamed list (of R objects) using the List wrapper.
+//!     let list = r!(List(vec![1, 2, 3]));
+//!     let list = r!(List(vec!["a", "b", "c"]));
+//!     let list = r!(List(&[r!("a"), r!(1), r!(2.0)]));
+//!
 //!     // A symbol
 //!     let sym = sym!(wombat);
+//!
+//!     // A R vector using collect_robj()
+//!     let vector = (0..3).map(|x| x * 10).collect_robj();
 //! }
 //! ```
 //!
@@ -484,17 +495,17 @@ mod tests {
     }
 
     #[extendr]
-    pub fn f64_iter(x: RealIter) -> RealIter {
+    pub fn f64_iter(x: Real) -> Real {
         x
     }
 
     #[extendr]
-    pub fn i32_iter(x: IntegerIter) -> IntegerIter {
+    pub fn i32_iter(x: Int) -> Int {
         x
     }
 
     #[extendr]
-    pub fn bool_iter(x: LogicalIter) -> LogicalIter {
+    pub fn bool_iter(x: Logical) -> Logical {
         x
     }
 
@@ -641,19 +652,19 @@ mod tests {
                 assert_eq!(new_owned(wrap__bool_slice(robj.get())), robj);
 
                 // #[extendr]
-                // pub fn f64_iter(x: RealIter) -> RealIter { x }
+                // pub fn f64_iter(x: Real) -> Real { x }
 
                 let robj = r!([1., 2., 3.]);
                 assert_eq!(new_owned(wrap__f64_iter(robj.get())), robj);
 
                 // #[extendr]
-                // pub fn i32_iter(x: IntegerIter) -> IntegerIter { x }
+                // pub fn i32_iter(x: Int) -> Int { x }
 
                 let robj = r!([1, 2, 3]);
                 assert_eq!(new_owned(wrap__i32_iter(robj.get())), robj);
 
                 // #[extendr]
-                // pub fn bool_iter(x: LogicalIter) -> LogicalIter { x }
+                // pub fn bool_iter(x: Logical) -> Logical { x }
 
                 let robj = r!([TRUE, FALSE, TRUE]);
                 assert_eq!(new_owned(wrap__bool_iter(robj.get())), robj);

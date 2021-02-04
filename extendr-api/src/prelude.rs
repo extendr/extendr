@@ -51,5 +51,5 @@ pub use ndarray::*;
 pub use extendr_macros::{extendr, extendr_module};
 
 pub use super::iter::{
-    EnvIter, IntegerIter, ListIter, LogicalIter, PairlistIter, PairlistTagIter, RealIter, StrIter,
+    EnvIter, Int, ListIter, Logical, PairlistIter, PairlistTagIter, Real, StrIter,
 };

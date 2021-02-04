@@ -299,12 +299,9 @@ impl Robj {
     /// assert_eq!(tot, 6);
     /// }
     /// ```
-    pub fn as_integer_iter<'a>(&self) -> Option<IntegerIter<'a>>
-    where
-        Self: 'a,
-    {
+    pub fn as_integer_iter(&self) -> Option<Int> {
         if let Some(slice) = self.as_integer_slice() {
-            Some(slice.iter().cloned())
+            Some(Int::from_slice(self.to_owned(), slice))
         } else {
             None
         }
@@ -375,9 +372,9 @@ impl Robj {
     ///     assert_eq!((nt, nf, nna), (1, 1, 1));
     /// }
     /// ```
-    pub fn as_logical_iter(&self) -> Option<LogicalIter> {
+    pub fn as_logical_iter(&self) -> Option<Logical> {
         if let Some(slice) = self.as_logical_slice() {
-            Some(slice.iter().cloned())
+            Some(Logical::from_slice(self.to_owned(), slice))
         } else {
             None
         }
@@ -417,9 +414,9 @@ impl Robj {
     ///     assert_eq!(tot, 6.);
     /// }
     /// ```
-    pub fn as_real_iter(&self) -> Option<RealIter> {
+    pub fn as_real_iter(&self) -> Option<Real> {
         if let Some(slice) = self.as_real_slice() {
-            Some(slice.iter().cloned())
+            Some(Real::from_slice(self.to_owned(), slice))
         } else {
             None
         }
@@ -904,11 +901,7 @@ impl Robj {
     ///    assert_eq!(dim, vec![2, 2]);
     /// }
     /// ```
-    pub fn dim<'a>(&self) -> Option<IntegerIter<'a>>
-    where
-        Self: 'a,
-        Robj: 'a,
-    {
+    pub fn dim(&self) -> Option<Int> {
         if let Some(dim) = self.get_attrib(dim_symbol()) {
             dim.as_integer_iter()
         } else {

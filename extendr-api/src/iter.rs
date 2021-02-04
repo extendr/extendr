@@ -1,6 +1,24 @@
 use crate::*;
 
-// Iterator over the objects in a VECSXP, EXPRSXP or WEAKREFSXP.
+/// Iterator over the objects in a VECSXP, EXPRSXP or WEAKREFSXP.
+///
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     let my_list = list!(a = 1, b = 2);
+///     let mut total = 0;
+///     for robj in my_list.as_list_iter().unwrap() {
+///       if let Some(val) = robj.as_integer() {
+///         total += val;
+///       }
+///     }
+///     assert_eq!(total, 3);
+///    
+///     for name in my_list.names().unwrap() {
+///        assert!(name == "a" || name == "b")
+///     }
+/// }
+/// ```
 #[derive(Clone)]
 pub struct ListIter {
     vector: Robj,
@@ -42,37 +60,95 @@ impl Iterator for ListIter {
     }
 }
 
+/// Generalised iterator of numbers and logical. See Int, Real and Logical.
+pub struct SliceIter<T> {
+    // Control lifetime of vector to make sure the memory is not freed.
+    #[allow(dead_code)]
+    vector: Robj,
+    i: usize,
+    len: usize,
+    ptr: *const T,
+}
+
+impl<T> SliceIter<T> {
+    // A new, empty list iterator.
+    pub fn new() -> Self {
+        SliceIter {
+            vector: ().into(),
+            i: 0,
+            len: 0,
+            ptr: std::ptr::null(),
+        }
+    }
+
+    pub fn from_slice(vector: Robj, slice: &[T]) -> Self {
+        SliceIter {
+            vector,
+            i: 0,
+            len: slice.len(),
+            ptr: slice.as_ptr(),
+        }
+    }
+}
+
+/// Basis of Int, Real and Logical.
+impl<T: Copy> Iterator for SliceIter<T> {
+    type Item = T;
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        (self.len, Some(self.len))
+    }
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let i = self.i;
+        self.i += 1;
+        if i >= self.len {
+            self.i = self.len;
+            None
+        } else {
+            unsafe { Some(*self.ptr.offset(i as isize)) }
+        }
+    }
+
+    fn nth(&mut self, n: usize) -> Option<Self::Item> {
+        self.i += n;
+        self.next()
+    }
+}
+
 /// Iterator over name-value pairs in lists.
 pub type NamedListIter = std::iter::Zip<StrIter, ListIter>;
 
 /// Iterator over primitives in integer objects.
-pub type IntegerIter<'a> = std::iter::Cloned<std::slice::Iter<'a, i32>>;
-
-/// Iterator over primitives in real objects.
-pub type RealIter<'a> = std::iter::Cloned<std::slice::Iter<'a, f64>>;
-
-/// Iterator over primitives in logical objects.
-pub type LogicalIter<'a> = std::iter::Cloned<std::slice::Iter<'a, Bool>>;
-
-/// Iterator over the objects in a vector or string.
-///
 /// ```
 /// use extendr_api::prelude::*;
-/// test! {
-///     let my_list = list!(a = 1, b = 2);
-///     let mut total = 0;
-///     for robj in my_list.as_list_iter().unwrap() {
-///       if let Some(val) = robj.as_integer() {
-///         total += val;
-///       }
-///     }
-///     assert_eq!(total, 3);
-///    
-///     for name in my_list.names().unwrap() {
-///        assert!(name == "a" || name == "b")
-///     }
+///
+/// fn add(a: Int, b: Int) -> Robj {
+///     a.zip(b).map(|(a, b)| a+b).collect_robj()
 /// }
 /// ```
+pub type Int = SliceIter<i32>;
+
+/// Iterator over primitives in real objects.
+/// ```
+/// use extendr_api::prelude::*;
+///
+/// fn add1(a: Real) -> Robj {
+///     a.map(|a| a + 1.0).collect_robj()
+/// }
+/// ```
+pub type Real = SliceIter<f64>;
+
+/// Iterator over primitives in logical objects.
+/// ```
+/// use extendr_api::prelude::*;
+///
+/// fn all_true(mut a: Logical) -> bool {
+///     a.all(|a| a.is_true())
+/// }
+/// ```
+pub type Logical = SliceIter<Bool>;
+
 #[derive(Clone)]
 pub struct PairlistIter {
     root_obj: Robj,

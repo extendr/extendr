@@ -1,10 +1,10 @@
 //! Wrappers are lightweight proxies for references to R datatypes.
 //! They do not contain an Robj (see array.rs for an example of this).
 
+#[doc(hidden)]
 use crate::*;
 #[doc(hidden)]
 use libR_sys::*;
-#[doc(hidden)]
 
 /// Wrapper for creating symbols.
 ///
@@ -195,7 +195,7 @@ where
     T::IntoIter: ExactSizeIterator,
     T::Item: Into<Robj>,
 {
-    /// Make a list object from an array of Robjs.
+    /// Make a list object from an iterator of Robjs.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -214,7 +214,7 @@ where
     T::IntoIter: ExactSizeIterator,
     T::Item: Into<Robj>,
 {
-    /// Make an expression object from an array of Robjs.
+    /// Make an expression object from an iterator of Robjs.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {

@@ -227,7 +227,7 @@ fn output_iterator_test() {
 // Test that we can use Iterators as the input to functions.
 // eg.
 // #[extendr]
-// fn fred(a: RealIter, b: RealIter) -> RealIter {
+// fn fred(a: Real, b: Real) -> Robj {
 // }
 #[test]
 fn input_iterator_test() {
@@ -244,18 +244,18 @@ fn input_iterator_test() {
 
         let src: &[i32] = &[1, 2, 3];
         let robj = Robj::from(src);
-        let iter = <IntegerIter>::from_robj(&robj).unwrap();
+        let iter = <Int>::from_robj(&robj).unwrap();
         assert_eq!(iter.collect::<Vec<_>>(), src);
 
         let src: &[f64] = &[1., 2., 3.];
         let robj = Robj::from(src);
-        let iter = <RealIter>::from_robj(&robj).unwrap();
+        let iter = <Real>::from_robj(&robj).unwrap();
         assert_eq!(iter.collect::<Vec<_>>(), src);
 
         /*
         let src: &[Bool] = &[TRUE, FALSE, TRUE];
         let robj = Robj::from(src);
-        let iter = <LogicalIter>::from_robj(&robj).unwrap();
+        let iter = <Logical>::from_robj(&robj).unwrap();
         assert_eq!(iter.collect::<Vec<_>>(), src);
         */
     }
