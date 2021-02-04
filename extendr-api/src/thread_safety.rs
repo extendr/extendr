@@ -96,7 +96,7 @@ pub fn throw_r_error<S: AsRef<str>>(s: S) {
 }
 
 /// Wrap an R function such as Rf_findFunction and convert errors and panics into results.
-/// ```
+/// ```ignore
 /// use extendr_api::prelude::*;
 /// test! {
 ///    let res = catch_r_error(|| unsafe {
@@ -138,6 +138,8 @@ where
         let cleandata = std::mem::transmute(&x);
         let cont = R_MakeUnwindCont();
         Rf_protect(cont);
+
+        // Note that catch_unwind does not work for 32 bit windows targets.
         let res = match std::panic::catch_unwind(|| {
             R_UnwindProtect(fun, data, cleanfun, cleandata, cont)
         }) {
