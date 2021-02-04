@@ -735,6 +735,17 @@
 <span id="732">732</span>
 <span id="733">733</span>
 <span id="734">734</span>
+<span id="735">735</span>
+<span id="736">736</span>
+<span id="737">737</span>
+<span id="738">738</span>
+<span id="739">739</span>
+<span id="740">740</span>
+<span id="741">741</span>
+<span id="742">742</span>
+<span id="743">743</span>
+<span id="744">744</span>
+<span id="745">745</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! A safe and user friendly R extension interface.</span>
@@ -779,6 +790,7 @@
 <span class="doccomment">//! test! {</span>
 <span class="doccomment">//!     // An R object with a single string &quot;hello&quot;</span>
 <span class="doccomment">//!     let character = r!(&quot;hello&quot;);</span>
+<span class="doccomment">//!     let character = r!([&quot;hello&quot;, &quot;goodbye&quot;]);</span>
 <span class="doccomment">//!    </span>
 <span class="doccomment">//!     // An R integer object with a single number 1L.</span>
 <span class="doccomment">//!     // Note that in Rust, 1 is an integer and 1.0 is a real.</span>
@@ -790,6 +802,8 @@
 <span class="doccomment">//!    </span>
 <span class="doccomment">//!     // An R real vector.</span>
 <span class="doccomment">//!     let real_vector = r!([1.0, 2.0]);</span>
+<span class="doccomment">//!     let real_vector = &amp;[1.0, 2.0].iter().collect_robj();</span>
+<span class="doccomment">//!     let real_vector = r!(vec![1.0, 2.0]);</span>
 <span class="doccomment">//!    </span>
 <span class="doccomment">//!     // An R function object.</span>
 <span class="doccomment">//!     let function = R!(function(x, y) { x + y })?;</span>
@@ -797,8 +811,16 @@
 <span class="doccomment">//!     // A named list using the list! macro.</span>
 <span class="doccomment">//!     let list = list!(a = 1, b = 2);</span>
 <span class="doccomment">//!    </span>
+<span class="doccomment">//!     // An unnamed list (of R objects) using the List wrapper.</span>
+<span class="doccomment">//!     let list = r!(List(vec![1, 2, 3]));</span>
+<span class="doccomment">//!     let list = r!(List(vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]));</span>
+<span class="doccomment">//!     let list = r!(List(&amp;[r!(&quot;a&quot;), r!(1), r!(2.0)]));</span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//!     // A symbol</span>
 <span class="doccomment">//!     let sym = sym!(wombat);</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//!     // A R vector using collect_robj()</span>
+<span class="doccomment">//!     let vector = (0..3).map(|x| x * 10).collect_robj();</span>
 <span class="doccomment">//! }</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
@@ -1222,17 +1244,17 @@
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">f64_iter</span>(<span class="ident">x</span>: <span class="ident">RealIter</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">RealIter</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">f64_iter</span>(<span class="ident">x</span>: <span class="ident">Real</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Real</span> {
         <span class="ident">x</span>
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">i32_iter</span>(<span class="ident">x</span>: <span class="ident">IntegerIter</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">IntegerIter</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">i32_iter</span>(<span class="ident">x</span>: <span class="ident">Int</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Int</span> {
         <span class="ident">x</span>
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bool_iter</span>(<span class="ident">x</span>: <span class="ident">LogicalIter</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">LogicalIter</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bool_iter</span>(<span class="ident">x</span>: <span class="ident">Logical</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Logical</span> {
         <span class="ident">x</span>
     }
 
@@ -1379,19 +1401,19 @@
                 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__bool_slice</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
 
                 <span class="comment">// #[extendr]</span>
-                <span class="comment">// pub fn f64_iter(x: RealIter) -&gt; RealIter { x }</span>
+                <span class="comment">// pub fn f64_iter(x: Real) -&gt; Real { x }</span>
 
                 <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r</span><span class="macro">!</span>([<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>]);
                 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__f64_iter</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
 
                 <span class="comment">// #[extendr]</span>
-                <span class="comment">// pub fn i32_iter(x: IntegerIter) -&gt; IntegerIter { x }</span>
+                <span class="comment">// pub fn i32_iter(x: Int) -&gt; Int { x }</span>
 
                 <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r</span><span class="macro">!</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);
                 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__i32_iter</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
 
                 <span class="comment">// #[extendr]</span>
-                <span class="comment">// pub fn bool_iter(x: LogicalIter) -&gt; LogicalIter { x }</span>
+                <span class="comment">// pub fn bool_iter(x: Logical) -&gt; Logical { x }</span>
 
                 <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r</span><span class="macro">!</span>([<span class="ident">TRUE</span>, <span class="ident">FALSE</span>, <span class="ident">TRUE</span>]);
                 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__bool_iter</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);

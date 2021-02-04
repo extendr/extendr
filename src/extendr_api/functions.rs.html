@@ -376,7 +376,6 @@
 <span id="373">373</span>
 <span id="374">374</span>
 <span id="375">375</span>
-<span id="376">376</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
 
@@ -414,8 +413,7 @@
         <span class="comment">// Unhashed envirnment</span>
         <span class="macro">call</span><span class="macro">!</span>(<span class="string">&quot;new.env&quot;</span>, <span class="ident">FALSE</span>, <span class="ident">global_env</span>(), <span class="number">0</span>).<span class="ident">unwrap</span>()
     } <span class="kw">else</span> {
-        <span class="comment">// Hashed environment, the pidgeon hole principle</span>
-        <span class="comment">// ensures there are empty slots in the hash table.</span>
+        <span class="comment">// Hashed environment for larger hashmaps.</span>
         <span class="macro">call</span><span class="macro">!</span>(<span class="string">&quot;new.env&quot;</span>, <span class="ident">TRUE</span>, <span class="ident">global_env</span>(), <span class="ident">capacity</span> <span class="kw">as</span> <span class="ident">i32</span> <span class="op">*</span> <span class="number">2</span> <span class="op">+</span> <span class="number">1</span>).<span class="ident">unwrap</span>()
     }
 }

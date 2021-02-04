@@ -440,6 +440,10 @@
 <span id="437">437</span>
 <span id="438">438</span>
 <span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">os</span>::<span class="ident">raw</span>;
@@ -554,7 +558,9 @@
     <span class="doccomment">/// test! {</span>
     <span class="doccomment">///    let my_fun = base_env().find_function(sym!(ls)).unwrap();</span>
     <span class="doccomment">///    assert_eq!(my_fun.is_function(), true);</span>
-    <span class="doccomment">///    assert!(base_env().find_function(sym!(qwertyuiop)).is_none());</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">///    // Note: this may crash on some versions of windows which don&#39;t support unwinding.</span>
+    <span class="doccomment">///    // assert!(base_env().find_function(sym!(qwertyuiop)).is_none());</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_function</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
@@ -600,7 +606,9 @@
     <span class="doccomment">///        .find_var(sym!(iris)).unwrap().eval_promise().unwrap();</span>
     <span class="doccomment">///    assert_eq!(iris_dataframe.is_frame(), true);</span>
     <span class="doccomment">///    assert_eq!(iris_dataframe.len(), 5);</span>
-    <span class="doccomment">///    assert_eq!(global_env().find_var(sym!(imnotasymbol)), None);</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">///    // Note: this may crash on some versions of windows which don&#39;t support unwinding.</span>
+    <span class="doccomment">///    //assert_eq!(global_env().find_var(sym!(imnotasymbol)), None);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_var</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {

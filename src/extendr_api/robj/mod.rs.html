@@ -1226,13 +1226,6 @@
 <span id="1223">1223</span>
 <span id="1224">1224</span>
 <span id="1225">1225</span>
-<span id="1226">1226</span>
-<span id="1227">1227</span>
-<span id="1228">1228</span>
-<span id="1229">1229</span>
-<span id="1230">1230</span>
-<span id="1231">1231</span>
-<span id="1232">1232</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! R object handling.</span>
 <span class="doccomment">//!</span>
@@ -1535,12 +1528,9 @@
     <span class="doccomment">/// assert_eq!(tot, 6);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_integer_iter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IntegerIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
-    {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_integer_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Int</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">slice</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_integer_slice</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">slice</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>())
+            <span class="prelude-val">Some</span>(<span class="ident">Int</span>::<span class="ident">from_slice</span>(<span class="self">self</span>.<span class="ident">to_owned</span>(), <span class="ident">slice</span>))
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
         }
@@ -1611,9 +1601,9 @@
     <span class="doccomment">///     assert_eq!((nt, nf, nna), (1, 1, 1));</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_logical_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">LogicalIter</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_logical_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Logical</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">slice</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_logical_slice</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">slice</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>())
+            <span class="prelude-val">Some</span>(<span class="ident">Logical</span>::<span class="ident">from_slice</span>(<span class="self">self</span>.<span class="ident">to_owned</span>(), <span class="ident">slice</span>))
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
         }
@@ -1653,9 +1643,9 @@
     <span class="doccomment">///     assert_eq!(tot, 6.);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_real_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RealIter</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_real_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Real</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">slice</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_real_slice</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">slice</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>())
+            <span class="prelude-val">Some</span>(<span class="ident">Real</span>::<span class="ident">from_slice</span>(<span class="self">self</span>.<span class="ident">to_owned</span>(), <span class="ident">slice</span>))
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
         }
@@ -2140,11 +2130,7 @@
     <span class="doccomment">///    assert_eq!(dim, vec![2, 2]);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dim</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IntegerIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
-        <span class="ident">Robj</span>: <span class="lifetime">&#39;a</span>,
-    {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dim</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Int</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">dim</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_attrib</span>(<span class="ident">dim_symbol</span>()) {
             <span class="ident">dim</span>.<span class="ident">as_integer_iter</span>()
         } <span class="kw">else</span> {

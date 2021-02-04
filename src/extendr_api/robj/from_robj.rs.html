@@ -465,9 +465,9 @@
 
 <span class="macro">impl_iter_from_robj</span><span class="macro">!</span>(<span class="ident">StrIter</span>, <span class="ident">as_str_iter</span>, <span class="string">&quot;Not a character vector.&quot;</span>);
 <span class="macro">impl_iter_from_robj</span><span class="macro">!</span>(<span class="ident">ListIter</span>, <span class="ident">as_list_iter</span>, <span class="string">&quot;Not a list.&quot;</span>);
-<span class="macro">impl_iter_from_robj</span><span class="macro">!</span>(<span class="ident">IntegerIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>, <span class="ident">as_integer_iter</span>, <span class="string">&quot;Not an integer vector.&quot;</span>);
-<span class="macro">impl_iter_from_robj</span><span class="macro">!</span>(<span class="ident">RealIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>, <span class="ident">as_real_iter</span>, <span class="string">&quot;Not a real vector.&quot;</span>);
-<span class="macro">impl_iter_from_robj</span><span class="macro">!</span>(<span class="ident">LogicalIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>, <span class="ident">as_logical_iter</span>, <span class="string">&quot;Not a logical vector.&quot;</span>);
+<span class="macro">impl_iter_from_robj</span><span class="macro">!</span>(<span class="ident">Int</span>, <span class="ident">as_integer_iter</span>, <span class="string">&quot;Not an integer vector.&quot;</span>);
+<span class="macro">impl_iter_from_robj</span><span class="macro">!</span>(<span class="ident">Real</span>, <span class="ident">as_real_iter</span>, <span class="string">&quot;Not a real vector.&quot;</span>);
+<span class="macro">impl_iter_from_robj</span><span class="macro">!</span>(<span class="ident">Logical</span>, <span class="ident">as_logical_iter</span>, <span class="string">&quot;Not a logical vector.&quot;</span>);
 
 <span class="doccomment">/// Pass-through Robj conversion.</span>
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">FromRobj</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {

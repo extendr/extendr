@@ -151,6 +151,8 @@
 <span id="148">148</span>
 <span id="149">149</span>
 <span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Provide limited protection for multithreaded access to the R API.</span>
 
@@ -250,7 +252,7 @@
 }
 
 <span class="doccomment">/// Wrap an R function such as Rf_findFunction and convert errors and panics into results.</span>
-<span class="doccomment">/// ```</span>
+<span class="doccomment">/// ```ignore</span>
 <span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">/// test! {</span>
 <span class="doccomment">///    let res = catch_r_error(|| unsafe {</span>
@@ -292,6 +294,8 @@
         <span class="kw">let</span> <span class="ident">cleandata</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">mem</span>::<span class="ident">transmute</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>);
         <span class="kw">let</span> <span class="ident">cont</span> <span class="op">=</span> <span class="ident">R_MakeUnwindCont</span>();
         <span class="ident">Rf_protect</span>(<span class="ident">cont</span>);
+
+        <span class="comment">// Note that catch_unwind does not work for 32 bit windows targets.</span>
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">std</span>::<span class="ident">panic</span>::<span class="ident">catch_unwind</span>(<span class="op">|</span><span class="op">|</span> {
             <span class="ident">R_UnwindProtect</span>(<span class="ident">fun</span>, <span class="ident">data</span>, <span class="ident">cleanfun</span>, <span class="ident">cleandata</span>, <span class="ident">cont</span>)
         }) {
