@@ -527,3 +527,10 @@ impl<'a> From<HashMap<&'a str, Robj>> for Robj {
         res
     }
 }
+
+impl<'a> From<Vec<Robj>> for Robj {
+    /// Convert a vector of Robj into a list.
+    fn from(val: Vec<Robj>) -> Self {
+        List(val.iter()).into()
+    }
+}
