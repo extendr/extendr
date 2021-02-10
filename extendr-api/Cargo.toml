@@ -18,6 +18,7 @@ libR-sys = "0.2.0"
 extendr-macros = { path = "../extendr-macros", version="0.1.11" }
 extendr-engine = { path = "../extendr-engine", version="0.1.11" }
 ndarray = { version = "0.13.1", optional = true }
+lazy_static = "1.4"
 
 [features]
 default = []
