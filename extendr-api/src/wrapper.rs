@@ -233,7 +233,7 @@ impl<'a> From<Raw<'a>> for Robj {
         single_threaded(|| unsafe {
             let val = val.0;
             let sexp = Rf_allocVector(RAWSXP, val.len() as R_xlen_t);
-            R_PreserveObject(sexp);
+            ownership::protect(sexp);
             let ptr = RAW(sexp);
             for (i, &v) in val.iter().enumerate() {
                 *ptr.offset(i as isize) = v;
@@ -377,7 +377,7 @@ where
     single_threaded(|| unsafe {
         let values = values.into_iter();
         let sexp = Rf_allocVector(sexptype, values.len() as R_xlen_t);
-        R_PreserveObject(sexp);
+        ownership::protect(sexp);
         for (i, val) in values.enumerate() {
             SET_VECTOR_ELT(sexp, i as R_xlen_t, val.into().get());
         }

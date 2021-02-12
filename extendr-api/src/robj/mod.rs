@@ -129,7 +129,13 @@ pub enum Robj {
 
 impl Clone for Robj {
     fn clone(&self) -> Self {
-        self.duplicate()
+        unsafe {
+            match *self {
+                Robj::Owned(sexp) => new_owned(sexp),
+                Robj::Borrowed(sexp) => new_borrowed(sexp),
+                Robj::Sys(sexp) => new_sys(sexp),
+            }
+        }
     }
 }
 
@@ -728,7 +734,7 @@ impl Robj {
     pub unsafe fn unprotected(self) -> Robj {
         match self {
             Robj::Owned(sexp) => {
-                single_threaded(|| R_ReleaseObject(sexp));
+                single_threaded(|| ownership::unprotect(sexp));
                 Robj::Borrowed(sexp)
             }
             _ => self,
@@ -1011,7 +1017,7 @@ impl Robj {
 
 #[doc(hidden)]
 pub unsafe fn new_owned(sexp: SEXP) -> Robj {
-    single_threaded(|| R_PreserveObject(sexp));
+    single_threaded(|| ownership::protect(sexp));
     Robj::Owned(sexp)
 }
 
@@ -1216,7 +1222,7 @@ impl Drop for Robj {
     fn drop(&mut self) {
         unsafe {
             match self {
-                Robj::Owned(sexp) => single_threaded(|| R_ReleaseObject(*sexp)),
+                Robj::Owned(sexp) => single_threaded(|| ownership::unprotect(*sexp)),
                 Robj::Borrowed(_) => (),
                 Robj::Sys(_) => (),
             }
