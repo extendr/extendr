@@ -140,10 +140,23 @@ jobs:
           foreach($target in ($env:BUILD_TARGETS).Split(',')) {
             ci-cargo test $(if($target -ne 'default') {"--target=$target"} ) '--' --nocapture -ActionName "Testing for $target target"
           }
+
+      - name: Obtain 'rextendr'
+        run : |
+          git clone https://github.com/extendr/rextendr ./tests/rextendr
+
+      # Dependencies from both test packages are combined
       - name: Query dependencies for integration testing
         run: |
           install.packages('remotes')
-          saveRDS(remotes::dev_package_deps(pkgdir = "tests/extendrtests", dependencies = TRUE), ".github/depends.Rds", version = 2)
+          saveRDS(
+            unique(
+              rbind(
+                remotes::dev_package_deps(pkgdir = "tests/extendrtests", dependencies = TRUE), 
+                remotes::dev_package_deps(pkgdir = "tests/rextendr", dependencies = TRUE))),
+            ".github/depends.Rds", 
+            version = 2
+          )
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
         shell: Rscript {0}
 
@@ -154,29 +167,97 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
           restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
-      - name: Install R dependencies for integration testing
+      # Currently rextendr requires R > 4, so if R version is older (e.g. 3.6.3), rextendr tests are omitted
+      # Regex is used to inject absolute path into Cargo.toml
+      - name: Install dependencies & configure R for integration testing
         run: |
           remotes::install_deps(pkgdir = "tests/extendrtests", dependencies = TRUE)
+          if (as.integer(R.version$major) >= 4) { 
+            remotes::install_deps(pkgdir = "tests/rextendr", dependencies = TRUE)
+          }
           remotes::install_cran("rcmdcheck")
+
+          api_path <- normalizePath(file.path(getwd(), "extendr-api"), winslash = "/")
+          toml_path <- file.path(getwd(), "tests", "extendrtests", "src", "rust", "Cargo.toml")
+          lines <- readLines(toml_path)
+          lines <- gsub(
+            "(^\\s*extendr-api\\s*=\\s*\\{\\s*path\\s*=\\s*\")(.*?)(\"\\s*\\})",
+            paste0("\\1", api_path, "\\3"),
+            lines
+          )
+          writeLines(lines, toml_path)
         shell: Rscript {0}
         
       # Windows: modified PATH will launch 32-bit Rscript if the build targets only i686/i386, so no conflict will arise
       # Rust pseudo multi-targeting: R CMD CHECK receives an extra argument '--no-multiarch' if BUILD_TARGETS is not 'default' and does not contain any commas
-      - name: Run R integration tests
-        id: r_integration_tests
+      # To enable RStudio support, extendrtests should be installable from 'extendr/tests/extendrtests',
+      # for this work directory should be modified and then reverted back
+      - name: Run R integration tests using {extendrtests}
+        id: extendrtests_check
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
         run: |
-          setwd("tests/extendrtests")
-          rcmdcheck::rcmdcheck(path = ".", args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "../../../")
+          cat("::group::Checking 'extendrtests'\n")
+          rcmdcheck::rcmdcheck(
+            path = "tests/extendrtests", 
+            args = c("--no-manual", "--as-cran", "--force-multiarch"),
+            error_on = "warning", 
+            check_dir = "extendrtests_check"
+          )
+          cat("::endgroup::\n")
         shell: Rscript {0}
         
-      - name: Upload check results from R integration tests
-        if: failure()
+      # If R is older than 4.0, rextendr is not tested and a warning is emitted. 
+      # With https://github.com/extendr/rextendr/pull/31
+      # rextendr can be configured using environment variables.
+      # 'patch.crates_io' is used to point libraries to local copies of
+      # extendr-api and extendr-macros, so rextendr tests current version of extendr-*
+      - name: Run R integration tests using {rextendr}
+        id: rextendr_check
+        env:
+          _R_CHECK_CRAN_INCOMING_REMOTE_: false
+        run: |
+          if (as.integer(R.version$major) < 4) {
+            cat("::warning:: R version is not compatible with 'rextendr'\n")
+          } else {
+            cat("::group::Checking 'rextendr'\n")
+            
+            patch.crates_io <-
+              paste(
+                paste0(
+                  "extendr-api = { path = \"",
+                  normalizePath(file.path(getwd(), "extendr-api"), winslash = "/"),
+                  "\" }"),
+                paste0(
+                  "extendr-macros = { path = \"",
+                  normalizePath(file.path(getwd(), "extendr-macros"), winslash = "/"),
+                  "\" }"),
+                sep = ";")
+
+            Sys.setenv(REXTENDR_PATCH_CRATES_IO = patch.crates_io)
+            rcmdcheck::rcmdcheck(
+              path = "tests/rextendr", 
+              args = c("--no-manual", "--as-cran", "--force-multiarch"), 
+              error_on = "warning", 
+              check_dir = "rextendr_check")
+            cat("::endgroup::\n")
+          }
+        shell: Rscript {0}
+
+
+      - name: Upload extendrtests check results from R integration tests
+        if: steps.extendrtests_check.outcome != 'success'
         uses: actions/upload-artifact@main
         with:
-          name:  ${{ matrix.config.os }}-R-${{ matrix.config.r }}-rust-${{ matrix.config.rust-version }}
-          path: check
+          name:  extendrtests-${{ matrix.config.os }}-R-${{ matrix.config.r }}-rust-${{ matrix.config.rust-version }}
+          path: extendrtests_check
+
+      - name: Upload rextendr check results from R integration tests
+        if: steps.rextendr_check.outcome != 'success'
+        uses: actions/upload-artifact@main
+        with:
+          name:  rextendr-${{ matrix.config.os }}-R-${{ matrix.config.r }}-rust-${{ matrix.config.rust-version }}
+          path: rextendr_check
 
 
   # All tests under this job are run with R devel and freshly generated bindings.

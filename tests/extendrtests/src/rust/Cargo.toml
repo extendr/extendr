@@ -16,10 +16,10 @@ crate-type = ["staticlib"]
 extendr-api = "*"
 
 [patch.crates-io]
-## Build against local extendr sources. Check locally by 
-## running rcmdcheck::rcmdcheck(check_dir = "../../../") from
-## the root of extendrtests.
-extendr-api = { path = "../../../../../extendr/extendr-api/"}
+## This is configured to work with RStudio features.
+## Replace by absolute path to simplify testing.
+## CI overrides this path.
+extendr-api = { path = "../../../../../extendr/extendr-api"}
 
 ## Build against current extendr version on github. Not recommended
 ## for development work.
