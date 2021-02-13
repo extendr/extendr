@@ -316,6 +316,11 @@
 <span id="313">313</span>
 <span id="314">314</span>
 <span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
+<span id="318">318</span>
+<span id="319">319</span>
+<span id="320">320</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Module metadata</span>
 <span class="doccomment">//!</span>
@@ -584,6 +589,11 @@
     <span class="kw">if</span> <span class="ident">exported</span> {
         <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;#&#39; @rdname {}&quot;</span>, <span class="ident">imp</span>.<span class="ident">name</span>)<span class="question-mark">?</span>;
         <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;#&#39; @usage NULL&quot;</span>)<span class="question-mark">?</span>;
+        <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;#&#39; @export&quot;</span>)<span class="question-mark">?</span>;
+    } <span class="kw">else</span> {
+        <span class="comment">// we always export the `$` method so the method is correctly</span>
+        <span class="comment">// added to the NAMESPACE even if we don&#39;t export the class</span>
+        <span class="comment">// itself and its initializers.</span>
         <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;#&#39; @export&quot;</span>)<span class="question-mark">?</span>;
     }
     <span class="comment">// LHS with dollar operator is wrapped in ``, so pass name as is,</span>
