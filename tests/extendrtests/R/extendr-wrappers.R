@@ -85,6 +85,7 @@ MyClass$me <- function() .Call(wrap__MyClass__me, self)
 
 `__MyClass`$`__name_test` <- function() invisible(.Call(wrap____MyClass____name_test, self))
 
+#' @export
 `$.__MyClass` <- function (self, name) { func <- `__MyClass`[[name]]; environment(func) <- environment(); func }
 
 #' Class for testing (unexported)
@@ -94,6 +95,7 @@ MyClassUnexported$new <- function() .Call(wrap__MyClassUnexported__new)
 
 MyClassUnexported$a <- function() .Call(wrap__MyClassUnexported__a, self)
 
+#' @export
 `$.MyClassUnexported` <- function (self, name) { func <- MyClassUnexported[[name]]; environment(func) <- environment(); func }
 
 #' Class for testing (exported)

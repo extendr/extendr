@@ -266,6 +266,11 @@ fn write_impl_wrapper(
         writeln!(w, "#' @rdname {}", imp.name)?;
         writeln!(w, "#' @usage NULL")?;
         writeln!(w, "#' @export")?;
+    } else {
+        // we always export the `$` method so the method is correctly
+        // added to the NAMESPACE even if we don't export the class
+        // itself and its initializers.
+        writeln!(w, "#' @export")?;
     }
     // LHS with dollar operator is wrapped in ``, so pass name as is,
     // but in the body `imp_name_fixed` is called as valid R function,
