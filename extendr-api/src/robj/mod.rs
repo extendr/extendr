@@ -128,7 +128,6 @@ impl Clone for Robj {
         unsafe {
             match *self {
                 Robj::Owned(sexp) => new_owned(sexp),
-                Robj::Borrowed(sexp) => new_borrowed(sexp),
                 Robj::Sys(sexp) => new_sys(sexp),
             }
         }
@@ -148,7 +147,6 @@ impl Robj {
     pub unsafe fn get(&self) -> SEXP {
         match self {
             Robj::Owned(sexp) => *sexp,
-            Robj::Borrowed(sexp) => *sexp,
             Robj::Sys(sexp) => *sexp,
         }
     }
@@ -160,7 +158,6 @@ impl Robj {
     pub unsafe fn get_mut(&mut self) -> Option<SEXP> {
         match self {
             Robj::Owned(sexp) => Some(*sexp),
-            Robj::Borrowed(_) => None,
             Robj::Sys(_) => None,
         }
     }
@@ -724,19 +721,6 @@ impl Robj {
         })
     }
 
-    /// Unprotect an object - assumes a transfer of ownership.
-    /// This is unsafe because the object pointer may be left dangling.
-    #[doc(hidden)]
-    pub unsafe fn unprotected(self) -> Robj {
-        match self {
-            Robj::Owned(sexp) => {
-                single_threaded(|| ownership::unprotect(sexp));
-                Robj::Borrowed(sexp)
-            }
-            _ => self,
-        }
-    }
-
     /// Return true if the object is owned by this wrapper.
     /// If so, it will be released when the wrapper drops.
     /// ```
@@ -1264,7 +1248,6 @@ impl Drop for Robj {
         unsafe {
             match self {
                 Robj::Owned(sexp) => single_threaded(|| ownership::unprotect(*sexp)),
-                Robj::Borrowed(_) => (),
                 Robj::Sys(_) => (),
             }
         }
