@@ -319,7 +319,7 @@ mod test {
 
                 // Make some test objects.
                 let sexp_pres = Rf_allocVector(VECSXP, test_size as R_xlen_t);
-                R_PreserveObject(sexp_pres);
+                Rf_protect(sexp_pres);
 
                 let sexps = (0..test_size).map(|i| {
                     let sexp = Rf_ScalarInteger(1);
@@ -341,7 +341,7 @@ mod test {
                     own.check_objects();
                 }
 
-                R_ReleaseObject(sexp_pres);
+                Rf_unprotect(1);
             });
         }
     }
