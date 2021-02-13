@@ -208,6 +208,7 @@ pub mod lang_macros;
 pub mod logical;
 pub mod matrix;
 pub mod metadata;
+pub mod ownership;
 pub mod prelude;
 pub mod rmacros;
 

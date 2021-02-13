@@ -321,7 +321,7 @@ where
         let sexptype = I::Item::sexptype();
         if sexptype != 0 {
             let sexp = Rf_allocVector(sexptype, len as R_xlen_t);
-            R_PreserveObject(sexp);
+            ownership::protect(sexp);
             match sexptype {
                 REALSXP => {
                     let ptr = REAL(sexp);
