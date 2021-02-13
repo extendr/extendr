@@ -30,6 +30,7 @@ pub enum Error {
     NotAVectorType,
     EvalError { code: Robj, error: i32 },
     ParseError { code: String, status: u32 },
+    NamesLengthMismatch,
     Other(String),
 }
 

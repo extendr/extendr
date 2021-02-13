@@ -42,8 +42,7 @@ pub struct Metadata {
 impl From<Arg> for Robj {
     fn from(val: Arg) -> Self {
         let res: Robj = List(&[r!(val.name), r!(val.arg_type)]).into();
-        res.set_attrib(names_symbol(), r!(["name", "arg_type"]));
-        res
+        res.set_names(&["name", "arg_type"]).unwrap()
     }
 }
 
@@ -57,27 +56,22 @@ impl From<Func> for Robj {
             r!(val.hidden),
         ])
         .into();
-        res.set_attrib(
-            names_symbol(),
-            r!(["doc", "name", "args", "return.type", "hidden"]),
-        );
-        res
+        res.set_names(&["doc", "name", "args", "return.type", "hidden"])
+            .unwrap()
     }
 }
 
 impl From<Impl> for Robj {
     fn from(val: Impl) -> Self {
         let res: Robj = List(&[r!(val.doc), r!(val.name), r!(List(val.methods))]).into();
-        res.set_attrib(names_symbol(), r!(["doc", "name", "methods"]));
-        res
+        res.set_names(&["doc", "name", "methods"]).unwrap()
     }
 }
 
 impl From<Metadata> for Robj {
     fn from(val: Metadata) -> Self {
         let res: Robj = List(&[r!(val.name), r!(List(val.functions)), r!(List(val.impls))]).into();
-        res.set_attrib(names_symbol(), r!(["name", "functions", "impls"]));
-        res
+        res.set_names(&["name", "functions", "impls"]).unwrap()
     }
 }
 

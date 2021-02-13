@@ -102,7 +102,6 @@ pub fn global_function<K: Into<Robj>>(key: K) -> Option<Robj> {
 /// }
 /// ```
 pub fn find_namespace<K: Into<Robj>>(key: K) -> Option<Robj> {
-    // single_threaded(|| unsafe { new_borrowed(R_FindNamespace(key.get())) });
     let res = single_threaded(|| call!(".getNamespace", key.into()));
     if let Ok(res) = res {
         Some(res)

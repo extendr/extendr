@@ -135,13 +135,13 @@ fn translate_to_robj(input: &FnArg) -> syn::Stmt {
             let pat = &pattype.pat.as_ref();
             if let syn::Pat::Ident(ref ident) = pat {
                 let varname = format_ident!("_{}_robj", ident.ident);
-                parse_quote! { let #varname = extendr_api::new_borrowed(#pat); }
+                parse_quote! { let #varname = extendr_api::new_owned(#pat); }
             } else {
                 panic!("expect identifier as arg name")
             }
         }
         FnArg::Receiver(_) => {
-            parse_quote! { let mut _self_robj = extendr_api::new_borrowed(_self); }
+            parse_quote! { let mut _self_robj = extendr_api::new_owned(_self); }
         }
     }
 }
@@ -530,7 +530,7 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
                 unsafe {
                     let ptr = Box::into_raw(Box::new(value));
                     let res = Robj::makeExternalPtr(ptr, Robj::from(#self_ty_name), Robj::from(()));
-                    res.set_attrib(class_symbol(), #self_ty_name);
+                    res.set_attrib(class_symbol(), #self_ty_name).unwrap();
                     res.registerCFinalizer(Some(#finalizer_name));
                     res
                 }
@@ -543,7 +543,7 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
                 unsafe {
                     let ptr = Box::into_raw(Box::new(value));
                     let res = Robj::makeExternalPtr(ptr, Robj::from(#self_ty_name), Robj::from(()));
-                    res.set_attrib(class_symbol(), #self_ty_name);
+                    res.set_attrib(class_symbol(), #self_ty_name).unwrap();
                     res.registerCFinalizer(Some(#finalizer_name));
                     res
                 }
@@ -553,7 +553,7 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
         // Function to free memory for this type.
         extern "C" fn #finalizer_name (sexp: extendr_api::SEXP) {
             unsafe {
-                let robj = extendr_api::new_borrowed(sexp);
+                let robj = extendr_api::new_owned(sexp);
                 if robj.check_external_ptr(#self_ty_name) {
                     //eprintln!("finalize {}", #self_ty_name);
                     let ptr = robj.externalPtrAddr::<#self_ty>();
@@ -746,10 +746,10 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         ) -> extendr_api::SEXP {
             unsafe {
                 use extendr_api::robj::*;
-                let robj = new_borrowed(use_symbols_sexp);
+                let robj = new_owned(use_symbols_sexp);
                 let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
 
-                let robj = new_borrowed(package_name_sexp);
+                let robj = new_owned(package_name_sexp);
                 let package_name: &str = <&str>::from_robj(&robj).unwrap();
 
                 extendr_api::Robj::from(

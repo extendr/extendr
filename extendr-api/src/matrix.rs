@@ -161,9 +161,10 @@ where
     fn from(array: RArray<T, [usize; 2]>) -> Self {
         let res = array.data.into();
         let dim = [array.dim[0] as i32, array.dim[1] as i32];
-        res.set_attrib(Symbol("dim"), dim);
-        res.set_attrib(Symbol("class"), "matrix");
-        res
+        res.set_attrib(dim_symbol(), dim)
+            .unwrap()
+            .set_attrib(class_symbol(), "matrix")
+            .unwrap()
     }
 }
 
@@ -178,9 +179,10 @@ where
             array.dim[1] as i32,
             array.dim[2] as i32,
         ];
-        res.set_attrib(Symbol("dim"), dim);
-        res.set_attrib(Symbol("class"), "array");
-        res
+        res.set_attrib(dim_symbol(), dim)
+            .unwrap()
+            .set_attrib(class_symbol(), "array")
+            .unwrap()
     }
 }
 

@@ -118,10 +118,6 @@ pub enum Robj {
     #[doc(hidden)]
     Owned(SEXP),
 
-    //  This object references a SEXP such as an input parameter.
-    #[doc(hidden)]
-    Borrowed(SEXP),
-
     //  This object references a SEXP owned by libR.
     #[doc(hidden)]
     Sys(SEXP),
@@ -849,7 +845,7 @@ impl Robj {
         if self.sexptype() == CHARSXP {
             None
         } else {
-            let res = unsafe { new_borrowed(Rf_getAttrib(self.get(), name.get())) };
+            let res = unsafe { new_owned(Rf_getAttrib(self.get(), name.get())) };
             if res.is_null() {
                 None
             } else {
@@ -858,26 +854,31 @@ impl Robj {
         }
     }
 
-    /// Set a specific attribute and return the value.
+    /// Set a specific attribute and return the object.
+    ///
+    /// Note that some combinations of attributes are illegal and this will
+    /// return an error.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
     ///
-    ///    let mut robj = r!("hello");
-    ///    let value = robj.set_attrib(Symbol("xyz"), 1);
-    ///    assert_eq!(robj.get_attrib(Symbol("xyz")), Some(value));
+    ///    let mut robj = r!("hello").set_attrib(Symbol("xyz"), 1)?;
+    ///    assert_eq!(robj.get_attrib(Symbol("xyz")), Some(r!(1)));
     /// }
     /// ```
-    pub fn set_attrib<N, V>(&self, name: N, value: V) -> Robj
+    pub fn set_attrib<N, V>(&self, name: N, value: V) -> Result<Robj>
     where
         N: Into<Robj>,
         V: Into<Robj>,
     {
         let name = name.into();
         let value = value.into();
-        single_threaded(|| unsafe {
-            new_borrowed(Rf_setAttrib(self.get(), name.get(), value.get()))
-        })
+        unsafe {
+            single_threaded(|| {
+                catch_r_error(|| Rf_setAttrib(self.get(), name.get(), value.get()))
+                    .map(|_| self.clone())
+            })
+        }
     }
 
     /// Get the names attribute as a string iterator if one exists.
@@ -894,6 +895,33 @@ impl Robj {
             names.as_str_iter()
         } else {
             None
+        }
+    }
+
+    /// Set the names attribute from a string iterator.
+    ///
+    /// Returns Error::NamesLengthMismatch if the length of the names does
+    /// not match the length of the object.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let mut obj = r!([1, 2, 3]).set_names(&["a", "b", "c"]).unwrap();
+    ///     assert_eq!(obj.names().unwrap().collect::<Vec<_>>(), vec!["a", "b", "c"]);
+    ///     assert_eq!(r!([1, 2, 3]).set_names(&["a", "b"]), Err(Error::NamesLengthMismatch));
+    /// }
+    /// ```
+    pub fn set_names<T>(&self, names: T) -> Result<Robj>
+    where
+        T: IntoIterator,
+        T::IntoIter: Iterator,
+        T::Item: ToVectorValue + AsRef<str>,
+    {
+        let iter = names.into_iter();
+        let robj = iter.collect_robj();
+        if robj.len() == self.len() {
+            Ok(self.set_attrib(names_symbol(), robj).unwrap())
+        } else {
+            Err(Error::NamesLengthMismatch)
         }
     }
 
@@ -967,6 +995,27 @@ impl Robj {
         }
     }
 
+    /// Set the class attribute from a string iterator.
+    ///
+    /// May return an error for some class names.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let mut obj = r!([1, 2, 3]).set_class(&["a", "b", "c"])?;
+    ///     assert_eq!(obj.class().unwrap().collect::<Vec<_>>(), vec!["a", "b", "c"]);
+    ///     assert_eq!(obj.inherits("a"), true);
+    /// }
+    /// ```
+    pub fn set_class<T>(&self, class: T) -> Result<Robj>
+    where
+        T: IntoIterator,
+        T::IntoIter: Iterator,
+        T::Item: ToVectorValue + AsRef<str>,
+    {
+        let iter = class.into_iter();
+        self.set_attrib(class_symbol(), iter.collect_robj())
+    }
+
     /// Return true if this class inherits this class.
     /// ```
     /// use extendr_api::prelude::*;
@@ -1019,14 +1068,6 @@ impl Robj {
 pub unsafe fn new_owned(sexp: SEXP) -> Robj {
     single_threaded(|| ownership::protect(sexp));
     Robj::Owned(sexp)
-}
-
-#[doc(hidden)]
-pub unsafe fn new_borrowed<'a>(sexp: SEXP) -> Robj
-where
-    Robj: 'a,
-{
-    Robj::Borrowed(sexp)
 }
 
 #[doc(hidden)]
