@@ -60,6 +60,19 @@ impl From<&Robj> for Robj {
     }
 }
 
+pub trait IntoRobj {
+    fn into_robj(self) -> Robj;
+}
+
+impl<T> IntoRobj for T
+where
+    Robj: From<T>,
+{
+    fn into_robj(self) -> Robj {
+        self.into()
+    }
+}
+
 /// `ToVectorValue` is a trait that allows many different types
 /// to be converted to vectors. It is used as a type parameter
 /// to `collect_robj()`.

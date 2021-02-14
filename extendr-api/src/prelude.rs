@@ -32,7 +32,7 @@ pub use super::logical::Bool;
 
 pub use super::matrix::{RArray, RColumn, RMatrix, RMatrix3D};
 
-pub use super::robj::{Robj, RobjItertools};
+pub use super::robj::{IntoRobj, Robj, RobjItertools};
 
 pub use super::thread_safety::{
     catch_r_error, handle_panic, single_threaded, this_thread_id, throw_r_error,

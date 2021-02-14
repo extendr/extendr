@@ -1247,7 +1247,7 @@ impl Drop for Robj {
     fn drop(&mut self) {
         unsafe {
             match self {
-                Robj::Owned(sexp) => single_threaded(|| ownership::unprotect(*sexp)),
+                Robj::Owned(sexp) => ownership::unprotect(*sexp),
                 Robj::Sys(_) => (),
             }
         }
