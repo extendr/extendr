@@ -903,7 +903,7 @@ impl Robj {
         let iter = names.into_iter();
         let robj = iter.collect_robj();
         if robj.len() == self.len() {
-            Ok(self.set_attrib(names_symbol(), robj).unwrap())
+            self.set_attrib(names_symbol(), robj)
         } else {
             Err(Error::NamesLengthMismatch)
         }

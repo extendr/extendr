@@ -45,7 +45,7 @@ impl From<Arg> for Robj {
         List(&[r!(val.name), r!(val.arg_type)])
             .into_robj()
             .set_names(&["name", "arg_type"])
-            .unwrap()
+            .expect("From<Arg> failed")
     }
 }
 
@@ -60,7 +60,7 @@ impl From<Func> for Robj {
         ])
         .into_robj()
         .set_names(&["doc", "name", "args", "return.type", "hidden"])
-        .unwrap()
+        .expect("From<Func> failed")
     }
 }
 
@@ -69,7 +69,7 @@ impl From<Impl> for Robj {
         List(&[r!(val.doc), r!(val.name), r!(List(val.methods))])
             .into_robj()
             .set_names(&["doc", "name", "methods"])
-            .unwrap()
+            .expect("From<Impl> failed")
     }
 }
 
@@ -78,7 +78,7 @@ impl From<Metadata> for Robj {
         List(&[r!(val.name), r!(List(val.functions)), r!(List(val.impls))])
             .into_robj()
             .set_names(&["name", "functions", "impls"])
-            .unwrap()
+            .expect("From<Metadata> failed")
     }
 }
 
