@@ -72,7 +72,7 @@ fn test_from_robj() {
         );
 
         use std::collections::HashMap;
-        let list = Robj::eval_string("list(a = 1L, b = 2L)").unwrap();
+        let list = eval_string("list(a = 1L, b = 2L)").unwrap();
         let hmap1 = [("a".into(), 1.into()), ("b".into(), 2.into())]
             .iter()
             .cloned()
@@ -93,31 +93,31 @@ fn test_from_robj() {
         assert_eq!(hmap_borrowed["a"], Robj::from(1));
         assert_eq!(hmap_borrowed["b"], Robj::from(2));
 
-        let na_integer = Robj::eval_string("NA_integer_").unwrap();
+        let na_integer = eval_string("NA_integer_").unwrap();
         assert!(<i32>::from_robj(&na_integer).is_err());
         assert_eq!(<Option<i32>>::from_robj(&na_integer), Ok(None));
         assert_eq!(<Option<i32>>::from_robj(&Robj::from(1)), Ok(Some(1)));
         assert!(<Option<i32>>::from_robj(&Robj::from([1, 2])).is_err());
 
-        let na_bool = Robj::eval_string("TRUE == NA").unwrap();
+        let na_bool = eval_string("TRUE == NA").unwrap();
         assert!(<bool>::from_robj(&na_bool).is_err());
         assert_eq!(<Option<bool>>::from_robj(&na_bool), Ok(None));
         assert_eq!(<Option<bool>>::from_robj(&Robj::from(true)), Ok(Some(true)));
         assert!(<Option<bool>>::from_robj(&Robj::from([true, false])).is_err());
 
-        let na_real = Robj::eval_string("NA_real_").unwrap();
+        let na_real = eval_string("NA_real_").unwrap();
         assert!(<f64>::from_robj(&na_real).is_err());
         assert_eq!(<Option<f64>>::from_robj(&na_real), Ok(None));
         assert_eq!(<Option<f64>>::from_robj(&Robj::from(1.)), Ok(Some(1.)));
         assert!(<Option<f64>>::from_robj(&Robj::from([1., 2.])).is_err());
 
-        let na_string = Robj::eval_string("NA_character_").unwrap();
+        let na_string = eval_string("NA_character_").unwrap();
         assert!(<&str>::from_robj(&na_string).is_err());
         assert_eq!(<Option<&str>>::from_robj(&na_string), Ok(None));
         assert_eq!(<Option<&str>>::from_robj(&Robj::from("1")), Ok(Some("1")));
         assert!(<Option<&str>>::from_robj(&Robj::from(["1", "2"])).is_err());
 
-        let na_string = Robj::eval_string("NA_character_").unwrap();
+        let na_string = eval_string("NA_character_").unwrap();
         assert!(<String>::from_robj(&na_string).is_err());
         assert_eq!(<Option<String>>::from_robj(&na_string), Ok(None));
         assert_eq!(
@@ -169,14 +169,14 @@ fn test_to_robj() {
 #[test]
 fn parse_test() {
     test! {
-    let p = Robj::parse("print(1L);print(1L);")?;
+    let p = parse("print(1L);print(1L);")?;
     let q = r!(Expr(&[
         r!(Lang(&[r!(Symbol("print")), r!(1)])),
         r!(Lang(&[r!(Symbol("print")), r!(1)]))
     ]));
     assert_eq!(p, q);
 
-    let p = Robj::eval_string("1L + 1L")?;
+    let p = eval_string("1L + 1L")?;
     assert_eq!(p, Robj::from(2));
     }
 }

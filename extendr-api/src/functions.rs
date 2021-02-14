@@ -372,3 +372,49 @@ pub fn blank_scalar_string() -> Robj {
 pub fn na_str() -> &'static str {
     unsafe { std::str::from_utf8_unchecked(&[b'N', b'A']) }
 }
+
+/// Parse a string into an R executable object
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///    let expr = parse("1 + 2").unwrap();
+///    assert!(expr.is_expr());
+/// }
+/// ```
+pub fn parse(code: &str) -> Result<Robj> {
+    single_threaded(|| unsafe {
+        use libR_sys::*;
+        let mut status = 0_u32;
+        let status_ptr = &mut status as *mut u32;
+        let codeobj: Robj = code.into();
+        let parsed = new_owned(R_ParseVector(codeobj.get(), -1, status_ptr, R_NilValue));
+        match status {
+            1 => Ok(parsed),
+            _ => Err(Error::ParseError {
+                code: code.into(),
+                status,
+            }),
+        }
+    })
+}
+
+/// Parse a string into an R executable object and run it.
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///    let res = eval_string("1 + 2").unwrap();
+///    assert_eq!(res, r!(3.));
+/// }
+/// ```
+pub fn eval_string(code: &str) -> Result<Robj> {
+    single_threaded(|| {
+        let expr = parse(code)?;
+        let mut res = Robj::from(());
+        if let Some(iter) = expr.as_list_iter() {
+            for lang in iter {
+                res = lang.eval()?
+            }
+        }
+        Ok(res)
+    })
+}

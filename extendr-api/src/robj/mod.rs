@@ -168,6 +168,60 @@ impl Robj {
         unsafe { TYPEOF(self.get()) as u32 }
     }
 
+    /// Get the type of an R object.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     assert_eq!(r!(NULL).rtype(), RType::NILSXP);
+    ///     assert_eq!(sym!(xyz).rtype(), RType::SYMSXP);
+    ///     assert_eq!(r!(Pairlist{names_and_values: vec![("a", r!(1))]}).rtype(), RType::LISTSXP);
+    ///     assert_eq!(R!(function() {})?.rtype(), RType::CLOSXP);
+    ///     assert_eq!(new_env().rtype(), RType::ENVSXP);
+    ///     assert_eq!(lang!("+", 1, 2).rtype(), RType::LANGSXP);
+    ///     assert_eq!(r!(Primitive("if")).rtype(), RType::SPECIALSXP);
+    ///     assert_eq!(r!(Primitive("+")).rtype(), RType::BUILTINSXP);
+    ///     assert_eq!(r!(Character("hello")).rtype(), RType::CHARSXP);
+    ///     assert_eq!(r!(TRUE).rtype(), RType::LGLSXP);
+    ///     assert_eq!(r!(1).rtype(), RType::INTSXP);
+    ///     assert_eq!(r!(1.0).rtype(), RType::REALSXP);
+    ///     assert_eq!(r!("1").rtype(), RType::STRSXP);
+    ///     assert_eq!(r!(List(&[1, 2])).rtype(), RType::VECSXP);
+    ///     assert_eq!(parse("x + y")?.rtype(), RType::EXPRSXP);
+    ///     assert_eq!(r!(Raw(&[1_u8, 2, 3])).rtype(), RType::RAWSXP);
+    /// }
+    /// ```
+    pub fn rtype(&self) -> RType {
+        match self.sexptype() {
+            NILSXP => RType::NILSXP,
+            SYMSXP => RType::SYMSXP,
+            LISTSXP => RType::LISTSXP,
+            CLOSXP => RType::CLOSXP,
+            ENVSXP => RType::ENVSXP,
+            PROMSXP => RType::PROMSXP,
+            LANGSXP => RType::LANGSXP,
+            SPECIALSXP => RType::SPECIALSXP,
+            BUILTINSXP => RType::BUILTINSXP,
+            CHARSXP => RType::CHARSXP,
+            LGLSXP => RType::LGLSXP,
+            INTSXP => RType::INTSXP,
+            REALSXP => RType::REALSXP,
+            CPLXSXP => RType::CPLXSXP,
+            STRSXP => RType::STRSXP,
+            DOTSXP => RType::DOTSXP,
+            ANYSXP => RType::ANYSXP,
+            VECSXP => RType::VECSXP,
+            EXPRSXP => RType::EXPRSXP,
+            BCODESXP => RType::BCODESXP,
+            EXTPTRSXP => RType::EXTPTRSXP,
+            WEAKREFSXP => RType::WEAKREFSXP,
+            RAWSXP => RType::RAWSXP,
+            S4SXP => RType::S4SXP,
+            NEWSXP => RType::NEWSXP,
+            FREESXP => RType::FREESXP,
+            _ => RType::UNKNOWN,
+        }
+    }
+
     /// Get the extended length of the object.
     /// ```
     /// use extendr_api::prelude::*;
@@ -673,52 +727,6 @@ impl Robj {
         } else {
             Robj::from(res.unwrap())
         }
-    }
-
-    /// Parse a string into an R executable object
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///    let expr = Robj::parse("1 + 2").unwrap();
-    ///    assert!(expr.is_expr());
-    /// }
-    /// ```
-    pub fn parse(code: &str) -> Result<Robj> {
-        single_threaded(|| unsafe {
-            use libR_sys::*;
-            let mut status = 0_u32;
-            let status_ptr = &mut status as *mut u32;
-            let codeobj: Robj = code.into();
-            let parsed = new_owned(R_ParseVector(codeobj.get(), -1, status_ptr, R_NilValue));
-            match status {
-                1 => Ok(parsed),
-                _ => Err(Error::ParseError {
-                    code: code.into(),
-                    status,
-                }),
-            }
-        })
-    }
-
-    /// Parse a string into an R executable object and run it.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///    let res = Robj::eval_string("1 + 2").unwrap();
-    ///    assert_eq!(res, r!(3.));
-    /// }
-    /// ```
-    pub fn eval_string(code: &str) -> Result<Robj> {
-        single_threaded(|| {
-            let expr = Robj::parse(code)?;
-            let mut res = Robj::from(());
-            if let Some(iter) = expr.as_list_iter() {
-                for lang in iter {
-                    res = lang.eval()?
-                }
-            }
-            Ok(res)
-        })
     }
 
     /// Return true if the object is owned by this wrapper.
