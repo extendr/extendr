@@ -469,10 +469,10 @@
 <span class="macro">impl_iter_from_robj</span><span class="macro">!</span>(<span class="ident">Real</span>, <span class="ident">as_real_iter</span>, <span class="string">&quot;Not a real vector.&quot;</span>);
 <span class="macro">impl_iter_from_robj</span><span class="macro">!</span>(<span class="ident">Logical</span>, <span class="ident">as_logical_iter</span>, <span class="string">&quot;Not a logical vector.&quot;</span>);
 
-<span class="doccomment">/// Pass-through Robj conversion.</span>
+<span class="doccomment">/// Pass-through Robj conversion, essentially a clone.</span>
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">FromRobj</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
     <span class="kw">fn</span> <span class="ident">from_robj</span>(<span class="ident">robj</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">result</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="kw">unsafe</span> { <span class="ident">new_borrowed</span>(<span class="ident">robj</span>.<span class="ident">get</span>()) })
+        <span class="prelude-val">Ok</span>(<span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">robj</span>.<span class="ident">get</span>()) })
     }
 }
 

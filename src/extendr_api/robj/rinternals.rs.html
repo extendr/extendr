@@ -586,7 +586,7 @@
         <span class="comment">// }</span>
         <span class="kw">unsafe</span> {
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">var</span>) <span class="op">=</span> <span class="ident">catch_r_error</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Rf_findFun</span>(<span class="ident">key</span>.<span class="ident">get</span>(), <span class="self">self</span>.<span class="ident">get</span>())) {
-                <span class="prelude-val">Some</span>(<span class="ident">new_borrowed</span>(<span class="ident">var</span>))
+                <span class="prelude-val">Some</span>(<span class="ident">new_owned</span>(<span class="ident">var</span>))
             } <span class="kw">else</span> {
                 <span class="prelude-val">None</span>
             }
@@ -635,7 +635,7 @@
         <span class="kw">unsafe</span> {
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">var</span>) <span class="op">=</span> <span class="ident">catch_r_error</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Rf_findVar</span>(<span class="ident">key</span>.<span class="ident">get</span>(), <span class="self">self</span>.<span class="ident">get</span>())) {
                 <span class="kw">if</span> <span class="ident">var</span> <span class="op">!</span><span class="op">=</span> <span class="ident">R_UnboundValue</span> {
-                    <span class="prelude-val">Some</span>(<span class="ident">new_borrowed</span>(<span class="ident">var</span>))
+                    <span class="prelude-val">Some</span>(<span class="ident">new_owned</span>(<span class="ident">var</span>))
                 } <span class="kw">else</span> {
                     <span class="prelude-val">None</span>
                 }
@@ -712,13 +712,13 @@
     <span class="doccomment">/// Internal function used to implement `#[extendr]` impl</span>
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">external_ptr_tag</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="ident">new_borrowed</span>(<span class="ident">R_ExternalPtrTag</span>(<span class="self">self</span>.<span class="ident">get</span>()))
+        <span class="ident">new_owned</span>(<span class="ident">R_ExternalPtrTag</span>(<span class="self">self</span>.<span class="ident">get</span>()))
     }
 
     <span class="doccomment">/// Internal function used to implement `#[extendr]` impl</span>
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">external_ptr_protected</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="ident">new_borrowed</span>(<span class="ident">R_ExternalPtrProtected</span>(<span class="self">self</span>.<span class="ident">get</span>()))
+        <span class="ident">new_owned</span>(<span class="ident">R_ExternalPtrProtected</span>(<span class="self">self</span>.<span class="ident">get</span>()))
     }
 
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
@@ -877,7 +877,7 @@
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">package_env_name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
-        <span class="kw">unsafe</span> { <span class="ident">new_borrowed</span>(<span class="ident">R_PackageEnvName</span>(<span class="self">self</span>.<span class="ident">get</span>())) }
+        <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">R_PackageEnvName</span>(<span class="self">self</span>.<span class="ident">get</span>())) }
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_namespace_env</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
@@ -885,7 +885,7 @@
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">namespace_env_spec</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
-        <span class="kw">unsafe</span> { <span class="ident">new_borrowed</span>(<span class="ident">R_NamespaceEnvSpec</span>(<span class="self">self</span>.<span class="ident">get</span>())) }
+        <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">R_NamespaceEnvSpec</span>(<span class="self">self</span>.<span class="ident">get</span>())) }
     }
 }
 </pre></div>

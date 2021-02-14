@@ -315,6 +315,8 @@
 <span id="312">312</span>
 <span id="313">313</span>
 <span id="314">314</span>
+<span id="315">315</span>
+<span id="316">316</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Wrappers for matrices with deferred arithmetic.</span>
 
@@ -479,9 +481,10 @@
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">array</span>: <span class="ident">RArray</span><span class="op">&lt;</span><span class="ident">T</span>, [<span class="ident">usize</span>; <span class="number">2</span>]<span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">array</span>.<span class="ident">data</span>.<span class="ident">into</span>();
         <span class="kw">let</span> <span class="ident">dim</span> <span class="op">=</span> [<span class="ident">array</span>.<span class="ident">dim</span>[<span class="number">0</span>] <span class="kw">as</span> <span class="ident">i32</span>, <span class="ident">array</span>.<span class="ident">dim</span>[<span class="number">1</span>] <span class="kw">as</span> <span class="ident">i32</span>];
-        <span class="ident">res</span>.<span class="ident">set_attrib</span>(<span class="ident">Symbol</span>(<span class="string">&quot;dim&quot;</span>), <span class="ident">dim</span>);
-        <span class="ident">res</span>.<span class="ident">set_attrib</span>(<span class="ident">Symbol</span>(<span class="string">&quot;class&quot;</span>), <span class="string">&quot;matrix&quot;</span>);
-        <span class="ident">res</span>
+        <span class="ident">res</span>.<span class="ident">set_attrib</span>(<span class="ident">dim_symbol</span>(), <span class="ident">dim</span>)
+            .<span class="ident">expect</span>(<span class="string">&quot;From&lt;Matrix&gt; failed&quot;</span>)
+            .<span class="ident">set_attrib</span>(<span class="ident">class_symbol</span>(), <span class="string">&quot;matrix&quot;</span>)
+            .<span class="ident">expect</span>(<span class="string">&quot;From&lt;Matrix&gt; failed&quot;</span>)
     }
 }
 
@@ -496,9 +499,10 @@
             <span class="ident">array</span>.<span class="ident">dim</span>[<span class="number">1</span>] <span class="kw">as</span> <span class="ident">i32</span>,
             <span class="ident">array</span>.<span class="ident">dim</span>[<span class="number">2</span>] <span class="kw">as</span> <span class="ident">i32</span>,
         ];
-        <span class="ident">res</span>.<span class="ident">set_attrib</span>(<span class="ident">Symbol</span>(<span class="string">&quot;dim&quot;</span>), <span class="ident">dim</span>);
-        <span class="ident">res</span>.<span class="ident">set_attrib</span>(<span class="ident">Symbol</span>(<span class="string">&quot;class&quot;</span>), <span class="string">&quot;array&quot;</span>);
-        <span class="ident">res</span>
+        <span class="ident">res</span>.<span class="ident">set_attrib</span>(<span class="ident">dim_symbol</span>(), <span class="ident">dim</span>)
+            .<span class="ident">expect</span>(<span class="string">&quot;From&lt;Matrix3D&gt; failed&quot;</span>)
+            .<span class="ident">set_attrib</span>(<span class="ident">class_symbol</span>(), <span class="string">&quot;array&quot;</span>)
+            .<span class="ident">expect</span>(<span class="string">&quot;From&lt;Matrix3D&gt; failed&quot;</span>)
     }
 }
 

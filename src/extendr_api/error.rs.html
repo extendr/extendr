@@ -75,6 +75,7 @@
 <span id="72">72</span>
 <span id="73">73</span>
 <span id="74">74</span>
+<span id="75">75</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Error handling in Rust called from R.</span>
 
@@ -108,6 +109,7 @@
     <span class="ident">NotAVectorType</span>,
     <span class="ident">EvalError</span> { <span class="ident">code</span>: <span class="ident">Robj</span>, <span class="ident">error</span>: <span class="ident">i32</span> },
     <span class="ident">ParseError</span> { <span class="ident">code</span>: <span class="ident">String</span>, <span class="ident">status</span>: <span class="ident">u32</span> },
+    <span class="ident">NamesLengthMismatch</span>,
     <span class="ident">Other</span>(<span class="ident">String</span>),
 }
 

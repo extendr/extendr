@@ -63,8 +63,8 @@
 <span class="doccomment">//! using deprecated features.</span>
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::{
-    <span class="ident">new_borrowed</span>, <span class="ident">new_owned</span>, <span class="ident">print_r_error</span>, <span class="ident">print_r_output</span>, <span class="ident">FromRobj</span>, <span class="ident">IsNA</span>, <span class="ident">FALSE</span>, <span class="ident">NA_INTEGER</span>,
-    <span class="ident">NA_LOGICAL</span>, <span class="ident">NA_REAL</span>, <span class="ident">NA_STRING</span>, <span class="ident">NULL</span>, <span class="ident">TRUE</span>,
+    <span class="ident">new_owned</span>, <span class="ident">print_r_error</span>, <span class="ident">print_r_output</span>, <span class="ident">FromRobj</span>, <span class="ident">IsNA</span>, <span class="ident">FALSE</span>, <span class="ident">NA_INTEGER</span>, <span class="ident">NA_LOGICAL</span>,
+    <span class="ident">NA_REAL</span>, <span class="ident">NA_STRING</span>, <span class="ident">NULL</span>, <span class="ident">TRUE</span>,
 };
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">error</span>::{<span class="ident">Error</span>, <span class="prelude-ty">Result</span>};
@@ -91,7 +91,7 @@
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">matrix</span>::{<span class="ident">RArray</span>, <span class="ident">RColumn</span>, <span class="ident">RMatrix</span>, <span class="ident">RMatrix3D</span>};
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">robj</span>::{<span class="ident">Robj</span>, <span class="ident">RobjItertools</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">robj</span>::{<span class="ident">IntoRobj</span>, <span class="ident">Robj</span>, <span class="ident">RobjItertools</span>};
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">thread_safety</span>::{
     <span class="ident">catch_r_error</span>, <span class="ident">handle_panic</span>, <span class="ident">single_threaded</span>, <span class="ident">this_thread_id</span>, <span class="ident">throw_r_error</span>,

@@ -1232,6 +1232,30 @@
 <span id="1229">1229</span>
 <span id="1230">1230</span>
 <span id="1231">1231</span>
+<span id="1232">1232</span>
+<span id="1233">1233</span>
+<span id="1234">1234</span>
+<span id="1235">1235</span>
+<span id="1236">1236</span>
+<span id="1237">1237</span>
+<span id="1238">1238</span>
+<span id="1239">1239</span>
+<span id="1240">1240</span>
+<span id="1241">1241</span>
+<span id="1242">1242</span>
+<span id="1243">1243</span>
+<span id="1244">1244</span>
+<span id="1245">1245</span>
+<span id="1246">1246</span>
+<span id="1247">1247</span>
+<span id="1248">1248</span>
+<span id="1249">1249</span>
+<span id="1250">1250</span>
+<span id="1251">1251</span>
+<span id="1252">1252</span>
+<span id="1253">1253</span>
+<span id="1254">1254</span>
+<span id="1255">1255</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! R object handling.</span>
 <span class="doccomment">//!</span>
@@ -1353,10 +1377,6 @@
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
     <span class="ident">Owned</span>(<span class="ident">SEXP</span>),
 
-    <span class="comment">//  This object references a SEXP such as an input parameter.</span>
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-    <span class="ident">Borrowed</span>(<span class="ident">SEXP</span>),
-
     <span class="comment">//  This object references a SEXP owned by libR.</span>
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
     <span class="ident">Sys</span>(<span class="ident">SEXP</span>),
@@ -1367,7 +1387,6 @@
         <span class="kw">unsafe</span> {
             <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
                 <span class="ident">Robj</span>::<span class="ident">Owned</span>(<span class="ident">sexp</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">new_owned</span>(<span class="ident">sexp</span>),
-                <span class="ident">Robj</span>::<span class="ident">Borrowed</span>(<span class="ident">sexp</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">new_borrowed</span>(<span class="ident">sexp</span>),
                 <span class="ident">Robj</span>::<span class="ident">Sys</span>(<span class="ident">sexp</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">new_sys</span>(<span class="ident">sexp</span>),
             }
         }
@@ -1387,7 +1406,6 @@
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">Robj</span>::<span class="ident">Owned</span>(<span class="ident">sexp</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="ident">sexp</span>,
-            <span class="ident">Robj</span>::<span class="ident">Borrowed</span>(<span class="ident">sexp</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="ident">sexp</span>,
             <span class="ident">Robj</span>::<span class="ident">Sys</span>(<span class="ident">sexp</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="ident">sexp</span>,
         }
     }
@@ -1399,7 +1417,6 @@
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">get_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">SEXP</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">Robj</span>::<span class="ident">Owned</span>(<span class="ident">sexp</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="kw-2">*</span><span class="ident">sexp</span>),
-            <span class="ident">Robj</span>::<span class="ident">Borrowed</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
             <span class="ident">Robj</span>::<span class="ident">Sys</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
         }
     }
@@ -1963,19 +1980,6 @@
         })
     }
 
-    <span class="doccomment">/// Unprotect an object - assumes a transfer of ownership.</span>
-    <span class="doccomment">/// This is unsafe because the object pointer may be left dangling.</span>
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">unprotected</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Robj</span>::<span class="ident">Owned</span>(<span class="ident">sexp</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">ownership</span>::<span class="ident">unprotect</span>(<span class="ident">sexp</span>));
-                <span class="ident">Robj</span>::<span class="ident">Borrowed</span>(<span class="ident">sexp</span>)
-            }
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>,
-        }
-    }
-
     <span class="doccomment">/// Return true if the object is owned by this wrapper.</span>
     <span class="doccomment">/// If so, it will be released when the wrapper drops.</span>
     <span class="doccomment">/// ```</span>
@@ -2084,7 +2088,7 @@
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">sexptype</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">CHARSXP</span> {
             <span class="prelude-val">None</span>
         } <span class="kw">else</span> {
-            <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">new_borrowed</span>(<span class="ident">Rf_getAttrib</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">name</span>.<span class="ident">get</span>())) };
+            <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">Rf_getAttrib</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">name</span>.<span class="ident">get</span>())) };
             <span class="kw">if</span> <span class="ident">res</span>.<span class="ident">is_null</span>() {
                 <span class="prelude-val">None</span>
             } <span class="kw">else</span> {
@@ -2093,26 +2097,31 @@
         }
     }
 
-    <span class="doccomment">/// Set a specific attribute and return the value.</span>
+    <span class="doccomment">/// Set a specific attribute and return the object.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that some combinations of attributes are illegal and this will</span>
+    <span class="doccomment">/// return an error.</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::prelude::*;</span>
     <span class="doccomment">/// test! {</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">///    let mut robj = r!(&quot;hello&quot;);</span>
-    <span class="doccomment">///    let value = robj.set_attrib(Symbol(&quot;xyz&quot;), 1);</span>
-    <span class="doccomment">///    assert_eq!(robj.get_attrib(Symbol(&quot;xyz&quot;)), Some(value));</span>
+    <span class="doccomment">///    let mut robj = r!(&quot;hello&quot;).set_attrib(Symbol(&quot;xyz&quot;), 1)?;</span>
+    <span class="doccomment">///    assert_eq!(robj.get_attrib(Symbol(&quot;xyz&quot;)), Some(r!(1)));</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_attrib</span><span class="op">&lt;</span><span class="ident">N</span>, <span class="ident">V</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="ident">N</span>, <span class="ident">value</span>: <span class="ident">V</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_attrib</span><span class="op">&lt;</span><span class="ident">N</span>, <span class="ident">V</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="ident">N</span>, <span class="ident">value</span>: <span class="ident">V</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
     <span class="kw">where</span>
         <span class="ident">N</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
         <span class="ident">V</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
     {
         <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">name</span>.<span class="ident">into</span>();
         <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">into</span>();
-        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
-            <span class="ident">new_borrowed</span>(<span class="ident">Rf_setAttrib</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">name</span>.<span class="ident">get</span>(), <span class="ident">value</span>.<span class="ident">get</span>()))
-        })
+        <span class="kw">unsafe</span> {
+            <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
+                <span class="ident">catch_r_error</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Rf_setAttrib</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">name</span>.<span class="ident">get</span>(), <span class="ident">value</span>.<span class="ident">get</span>()))
+                    .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">clone</span>())
+            })
+        }
     }
 
     <span class="doccomment">/// Get the names attribute as a string iterator if one exists.</span>
@@ -2129,6 +2138,33 @@
             <span class="ident">names</span>.<span class="ident">as_str_iter</span>()
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
+        }
+    }
+
+    <span class="doccomment">/// Set the names attribute from a string iterator.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns Error::NamesLengthMismatch if the length of the names does</span>
+    <span class="doccomment">/// not match the length of the object.</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
+    <span class="doccomment">///     let mut obj = r!([1, 2, 3]).set_names(&amp;[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]).unwrap();</span>
+    <span class="doccomment">///     assert_eq!(obj.names().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</span>
+    <span class="doccomment">///     assert_eq!(r!([1, 2, 3]).set_names(&amp;[&quot;a&quot;, &quot;b&quot;]), Err(Error::NamesLengthMismatch));</span>
+    <span class="doccomment">/// }</span>
+    <span class="doccomment">/// ```</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_names</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">names</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
+    <span class="kw">where</span>
+        <span class="ident">T</span>: <span class="ident">IntoIterator</span>,
+        <span class="ident">T</span>::<span class="ident">IntoIter</span>: <span class="ident">Iterator</span>,
+        <span class="ident">T</span>::<span class="ident">Item</span>: <span class="ident">ToVectorValue</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>,
+    {
+        <span class="kw">let</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">names</span>.<span class="ident">into_iter</span>();
+        <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">iter</span>.<span class="ident">collect_robj</span>();
+        <span class="kw">if</span> <span class="ident">robj</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span>() {
+            <span class="self">self</span>.<span class="ident">set_attrib</span>(<span class="ident">names_symbol</span>(), <span class="ident">robj</span>)
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">NamesLengthMismatch</span>)
         }
     }
 
@@ -2202,6 +2238,27 @@
         }
     }
 
+    <span class="doccomment">/// Set the class attribute from a string iterator.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// May return an error for some class names.</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// use extendr_api::prelude::*;</span>
+    <span class="doccomment">/// test! {</span>
+    <span class="doccomment">///     let mut obj = r!([1, 2, 3]).set_class(&amp;[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;])?;</span>
+    <span class="doccomment">///     assert_eq!(obj.class().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</span>
+    <span class="doccomment">///     assert_eq!(obj.inherits(&quot;a&quot;), true);</span>
+    <span class="doccomment">/// }</span>
+    <span class="doccomment">/// ```</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_class</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">class</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
+    <span class="kw">where</span>
+        <span class="ident">T</span>: <span class="ident">IntoIterator</span>,
+        <span class="ident">T</span>::<span class="ident">IntoIter</span>: <span class="ident">Iterator</span>,
+        <span class="ident">T</span>::<span class="ident">Item</span>: <span class="ident">ToVectorValue</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>,
+    {
+        <span class="kw">let</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">class</span>.<span class="ident">into_iter</span>();
+        <span class="self">self</span>.<span class="ident">set_attrib</span>(<span class="ident">class_symbol</span>(), <span class="ident">iter</span>.<span class="ident">collect_robj</span>())
+    }
+
     <span class="doccomment">/// Return true if this class inherits this class.</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::prelude::*;</span>
@@ -2254,14 +2311,6 @@
 <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">new_owned</span>(<span class="ident">sexp</span>: <span class="ident">SEXP</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
     <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">ownership</span>::<span class="ident">protect</span>(<span class="ident">sexp</span>));
     <span class="ident">Robj</span>::<span class="ident">Owned</span>(<span class="ident">sexp</span>)
-}
-
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">new_borrowed</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">sexp</span>: <span class="ident">SEXP</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span>
-<span class="kw">where</span>
-    <span class="ident">Robj</span>: <span class="lifetime">&#39;a</span>,
-{
-    <span class="ident">Robj</span>::<span class="ident">Borrowed</span>(<span class="ident">sexp</span>)
 }
 
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
@@ -2457,8 +2506,7 @@
     <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
         <span class="kw">unsafe</span> {
             <span class="kw">match</span> <span class="self">self</span> {
-                <span class="ident">Robj</span>::<span class="ident">Owned</span>(<span class="ident">sexp</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">ownership</span>::<span class="ident">unprotect</span>(<span class="kw-2">*</span><span class="ident">sexp</span>)),
-                <span class="ident">Robj</span>::<span class="ident">Borrowed</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> (),
+                <span class="ident">Robj</span>::<span class="ident">Owned</span>(<span class="ident">sexp</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">ownership</span>::<span class="ident">unprotect</span>(<span class="kw-2">*</span><span class="ident">sexp</span>),
                 <span class="ident">Robj</span>::<span class="ident">Sys</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> (),
             }
         }
