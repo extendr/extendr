@@ -139,7 +139,7 @@ impl Robj {
         // }
         unsafe {
             if let Ok(var) = catch_r_error(|| Rf_findFun(key.get(), self.get())) {
-                Some(new_borrowed(var))
+                Some(new_owned(var))
             } else {
                 None
             }
@@ -188,7 +188,7 @@ impl Robj {
         unsafe {
             if let Ok(var) = catch_r_error(|| Rf_findVar(key.get(), self.get())) {
                 if var != R_UnboundValue {
-                    Some(new_borrowed(var))
+                    Some(new_owned(var))
                 } else {
                     None
                 }
@@ -265,13 +265,13 @@ impl Robj {
     /// Internal function used to implement `#[extendr]` impl
     #[doc(hidden)]
     pub unsafe fn external_ptr_tag(&self) -> Self {
-        new_borrowed(R_ExternalPtrTag(self.get()))
+        new_owned(R_ExternalPtrTag(self.get()))
     }
 
     /// Internal function used to implement `#[extendr]` impl
     #[doc(hidden)]
     pub unsafe fn external_ptr_protected(&self) -> Self {
-        new_borrowed(R_ExternalPtrProtected(self.get()))
+        new_owned(R_ExternalPtrProtected(self.get()))
     }
 
     #[doc(hidden)]
@@ -430,7 +430,7 @@ impl Robj {
     }
 
     pub fn package_env_name(&self) -> Robj {
-        unsafe { new_borrowed(R_PackageEnvName(self.get())) }
+        unsafe { new_owned(R_PackageEnvName(self.get())) }
     }
 
     pub fn is_namespace_env(&self) -> bool {
@@ -438,6 +438,6 @@ impl Robj {
     }
 
     pub fn namespace_env_spec(&self) -> Robj {
-        unsafe { new_borrowed(R_NamespaceEnvSpec(self.get())) }
+        unsafe { new_owned(R_NamespaceEnvSpec(self.get())) }
     }
 }

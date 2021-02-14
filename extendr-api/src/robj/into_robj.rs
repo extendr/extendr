@@ -56,7 +56,20 @@ impl From<&Robj> for Robj {
     // Note: we should probably have a much better reference
     // mechanism as double-free or underprotection is a distinct possibility.
     fn from(val: &Robj) -> Self {
-        unsafe { new_borrowed(val.get()) }
+        unsafe { new_owned(val.get()) }
+    }
+}
+
+pub trait IntoRobj {
+    fn into_robj(self) -> Robj;
+}
+
+impl<T> IntoRobj for T
+where
+    Robj: From<T>,
+{
+    fn into_robj(self) -> Robj {
+        self.into()
     }
 }
 
@@ -522,9 +535,7 @@ impl<'a> From<HashMap<&'a str, Robj>> for Robj {
     /// Convert a hashmap into a list.
     fn from(val: HashMap<&'a str, Robj>) -> Self {
         let res: Robj = List(val.iter().map(|(_, v)| v)).into();
-        let names = val.into_iter().map(|(k, _)| k).collect_robj();
-        res.set_attrib(names_symbol(), names);
-        res
+        res.set_names(val.into_iter().map(|(k, _)| k)).unwrap()
     }
 }
 

@@ -177,7 +177,7 @@ impl Iterator for PairlistIter {
                 None
             } else {
                 self.list_elem = CDR(sexp);
-                Some(new_borrowed(CAR(sexp)))
+                Some(new_owned(CAR(sexp)))
             }
         }
     }
@@ -220,7 +220,7 @@ impl Iterator for PairlistTagIter {
                 None
             } else {
                 self.list_elem = CDR(sexp);
-                if let Some(symbol) = new_borrowed(TAG(sexp)).as_symbol() {
+                if let Some(symbol) = new_owned(TAG(sexp)).as_symbol() {
                     Some(std::mem::transmute(symbol.0))
                 } else {
                     Some(na_str())

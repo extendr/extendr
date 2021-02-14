@@ -4,8 +4,8 @@
 //! using deprecated features.
 
 pub use super::{
-    new_borrowed, new_owned, print_r_error, print_r_output, FromRobj, IsNA, FALSE, NA_INTEGER,
-    NA_LOGICAL, NA_REAL, NA_STRING, NULL, TRUE,
+    new_owned, print_r_error, print_r_output, FromRobj, IsNA, FALSE, NA_INTEGER, NA_LOGICAL,
+    NA_REAL, NA_STRING, NULL, TRUE,
 };
 
 pub use super::error::{Error, Result};
@@ -32,7 +32,7 @@ pub use super::logical::Bool;
 
 pub use super::matrix::{RArray, RColumn, RMatrix, RMatrix3D};
 
-pub use super::robj::{Robj, RobjItertools};
+pub use super::robj::{IntoRobj, Robj, RobjItertools};
 
 pub use super::thread_safety::{
     catch_r_error, handle_panic, single_threaded, this_thread_id, throw_r_error,
