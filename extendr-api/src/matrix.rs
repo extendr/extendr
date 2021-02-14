@@ -162,9 +162,9 @@ where
         let res = array.data.into();
         let dim = [array.dim[0] as i32, array.dim[1] as i32];
         res.set_attrib(dim_symbol(), dim)
-            .unwrap()
+            .expect("From<Matrix> failed")
             .set_attrib(class_symbol(), "matrix")
-            .unwrap()
+            .expect("From<Matrix> failed")
     }
 }
 
@@ -180,9 +180,9 @@ where
             array.dim[2] as i32,
         ];
         res.set_attrib(dim_symbol(), dim)
-            .unwrap()
+            .expect("From<Matrix3D> failed")
             .set_attrib(class_symbol(), "array")
-            .unwrap()
+            .expect("From<Matrix3D> failed")
     }
 }
 
