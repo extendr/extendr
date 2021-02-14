@@ -172,53 +172,51 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     assert_eq!(r!(NULL).rtype(), RType::NILSXP);
-    ///     assert_eq!(sym!(xyz).rtype(), RType::SYMSXP);
-    ///     assert_eq!(r!(Pairlist{names_and_values: vec![("a", r!(1))]}).rtype(), RType::LISTSXP);
-    ///     assert_eq!(R!(function() {})?.rtype(), RType::CLOSXP);
-    ///     assert_eq!(new_env().rtype(), RType::ENVSXP);
-    ///     assert_eq!(lang!("+", 1, 2).rtype(), RType::LANGSXP);
-    ///     assert_eq!(r!(Primitive("if")).rtype(), RType::SPECIALSXP);
-    ///     assert_eq!(r!(Primitive("+")).rtype(), RType::BUILTINSXP);
-    ///     assert_eq!(r!(Character("hello")).rtype(), RType::CHARSXP);
-    ///     assert_eq!(r!(TRUE).rtype(), RType::LGLSXP);
-    ///     assert_eq!(r!(1).rtype(), RType::INTSXP);
-    ///     assert_eq!(r!(1.0).rtype(), RType::REALSXP);
-    ///     assert_eq!(r!("1").rtype(), RType::STRSXP);
-    ///     assert_eq!(r!(List(&[1, 2])).rtype(), RType::VECSXP);
-    ///     assert_eq!(parse("x + y")?.rtype(), RType::EXPRSXP);
-    ///     assert_eq!(r!(Raw(&[1_u8, 2, 3])).rtype(), RType::RAWSXP);
+    ///     assert_eq!(r!(NULL).rtype(), RType::Null);
+    ///     assert_eq!(sym!(xyz).rtype(), RType::Symbol);
+    ///     assert_eq!(r!(Pairlist{names_and_values: vec![("a", r!(1))]}).rtype(), RType::Pairlist);
+    ///     assert_eq!(R!(function() {})?.rtype(), RType::Function);
+    ///     assert_eq!(new_env().rtype(), RType::Enviroment);
+    ///     assert_eq!(lang!("+", 1, 2).rtype(), RType::Language);
+    ///     assert_eq!(r!(Primitive("if")).rtype(), RType::Special);
+    ///     assert_eq!(r!(Primitive("+")).rtype(), RType::Builtin);
+    ///     assert_eq!(r!(Character("hello")).rtype(), RType::Character);
+    ///     assert_eq!(r!(TRUE).rtype(), RType::Logical);
+    ///     assert_eq!(r!(1).rtype(), RType::Integer);
+    ///     assert_eq!(r!(1.0).rtype(), RType::Real);
+    ///     assert_eq!(r!("1").rtype(), RType::String);
+    ///     assert_eq!(r!(List(&[1, 2])).rtype(), RType::List);
+    ///     assert_eq!(parse("x + y")?.rtype(), RType::Expression);
+    ///     assert_eq!(r!(Raw(&[1_u8, 2, 3])).rtype(), RType::Raw);
     /// }
     /// ```
     pub fn rtype(&self) -> RType {
         match self.sexptype() {
-            NILSXP => RType::NILSXP,
-            SYMSXP => RType::SYMSXP,
-            LISTSXP => RType::LISTSXP,
-            CLOSXP => RType::CLOSXP,
-            ENVSXP => RType::ENVSXP,
-            PROMSXP => RType::PROMSXP,
-            LANGSXP => RType::LANGSXP,
-            SPECIALSXP => RType::SPECIALSXP,
-            BUILTINSXP => RType::BUILTINSXP,
-            CHARSXP => RType::CHARSXP,
-            LGLSXP => RType::LGLSXP,
-            INTSXP => RType::INTSXP,
-            REALSXP => RType::REALSXP,
-            CPLXSXP => RType::CPLXSXP,
-            STRSXP => RType::STRSXP,
-            DOTSXP => RType::DOTSXP,
-            ANYSXP => RType::ANYSXP,
-            VECSXP => RType::VECSXP,
-            EXPRSXP => RType::EXPRSXP,
-            BCODESXP => RType::BCODESXP,
-            EXTPTRSXP => RType::EXTPTRSXP,
-            WEAKREFSXP => RType::WEAKREFSXP,
-            RAWSXP => RType::RAWSXP,
-            S4SXP => RType::S4SXP,
-            NEWSXP => RType::NEWSXP,
-            FREESXP => RType::FREESXP,
-            _ => RType::UNKNOWN,
+            NILSXP => RType::Null,
+            SYMSXP => RType::Symbol,
+            LISTSXP => RType::Pairlist,
+            CLOSXP => RType::Function,
+            ENVSXP => RType::Enviroment,
+            PROMSXP => RType::Promise,
+            LANGSXP => RType::Language,
+            SPECIALSXP => RType::Special,
+            BUILTINSXP => RType::Builtin,
+            CHARSXP => RType::Character,
+            LGLSXP => RType::Logical,
+            INTSXP => RType::Integer,
+            REALSXP => RType::Real,
+            CPLXSXP => RType::Complex,
+            STRSXP => RType::String,
+            DOTSXP => RType::Dot,
+            ANYSXP => RType::Any,
+            VECSXP => RType::List,
+            EXPRSXP => RType::Expression,
+            BCODESXP => RType::Bytecode,
+            EXTPTRSXP => RType::ExternalPtr,
+            WEAKREFSXP => RType::WeakRef,
+            RAWSXP => RType::Raw,
+            S4SXP => RType::S4,
+            _ => RType::Unknown,
         }
     }
 
