@@ -747,6 +747,36 @@
 <span id="744">744</span>
 <span id="745">745</span>
 <span id="746">746</span>
+<span id="747">747</span>
+<span id="748">748</span>
+<span id="749">749</span>
+<span id="750">750</span>
+<span id="751">751</span>
+<span id="752">752</span>
+<span id="753">753</span>
+<span id="754">754</span>
+<span id="755">755</span>
+<span id="756">756</span>
+<span id="757">757</span>
+<span id="758">758</span>
+<span id="759">759</span>
+<span id="760">760</span>
+<span id="761">761</span>
+<span id="762">762</span>
+<span id="763">763</span>
+<span id="764">764</span>
+<span id="765">765</span>
+<span id="766">766</span>
+<span id="767">767</span>
+<span id="768">768</span>
+<span id="769">769</span>
+<span id="770">770</span>
+<span id="771">771</span>
+<span id="772">772</span>
+<span id="773">773</span>
+<span id="774">774</span>
+<span id="775">775</span>
+<span id="776">776</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! A safe and user friendly R extension interface.</span>
@@ -1118,6 +1148,36 @@
     <span class="kw">fn</span> <span class="ident">is_na</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="self">self</span>.<span class="ident">as_ptr</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">na_str</span>().<span class="ident">as_ptr</span>()
     }
+}
+
+<span class="doccomment">/// Type of R objects used by [Robj::rtype].</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">RType</span> {
+    <span class="ident">Null</span>,        <span class="comment">// NILSXP</span>
+    <span class="ident">Symbol</span>,      <span class="comment">// SYMSXP</span>
+    <span class="ident">Pairlist</span>,    <span class="comment">// LISTSXP</span>
+    <span class="ident">Function</span>,    <span class="comment">// CLOSXP</span>
+    <span class="ident">Enviroment</span>,  <span class="comment">// ENVSXP</span>
+    <span class="ident">Promise</span>,     <span class="comment">// PROMSXP</span>
+    <span class="ident">Language</span>,    <span class="comment">// LANGSXP</span>
+    <span class="ident">Special</span>,     <span class="comment">// SPECIALSXP</span>
+    <span class="ident">Builtin</span>,     <span class="comment">// BUILTINSXP</span>
+    <span class="ident">Character</span>,   <span class="comment">// CHARSXP</span>
+    <span class="ident">Logical</span>,     <span class="comment">// LGLSXP</span>
+    <span class="ident">Integer</span>,     <span class="comment">// INTSXP</span>
+    <span class="ident">Real</span>,        <span class="comment">// REALSXP</span>
+    <span class="ident">Complex</span>,     <span class="comment">// CPLXSXP</span>
+    <span class="ident">String</span>,      <span class="comment">// STRSXP</span>
+    <span class="ident">Dot</span>,         <span class="comment">// DOTSXP</span>
+    <span class="ident">Any</span>,         <span class="comment">// ANYSXP</span>
+    <span class="ident">List</span>,        <span class="comment">// VECSXP</span>
+    <span class="ident">Expression</span>,  <span class="comment">// EXPRSXP</span>
+    <span class="ident">Bytecode</span>,    <span class="comment">// BCODESXP</span>
+    <span class="ident">ExternalPtr</span>, <span class="comment">// EXTPTRSXP</span>
+    <span class="ident">WeakRef</span>,     <span class="comment">// WEAKREFSXP</span>
+    <span class="ident">Raw</span>,         <span class="comment">// RAWSXP</span>
+    <span class="ident">S4</span>,          <span class="comment">// S4SXP</span>
+    <span class="ident">Unknown</span>,
 }
 
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>

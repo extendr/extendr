@@ -370,7 +370,7 @@
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">R</span> {
     ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
-        <span class="ident">Robj</span>::<span class="ident">eval_string</span>(<span class="macro">stringify</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>)<span class="kw-2">*</span>))
+        <span class="ident">eval_string</span>(<span class="macro">stringify</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>)<span class="kw-2">*</span>))
     };
 }
 
