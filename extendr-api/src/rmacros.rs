@@ -52,7 +52,7 @@ macro_rules! r {
 #[macro_export]
 macro_rules! R {
     ($($t:tt)*) => {
-        Robj::eval_string(stringify!($($t)*))
+        eval_string(stringify!($($t)*))
     };
 }
 

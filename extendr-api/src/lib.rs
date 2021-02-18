@@ -370,6 +370,36 @@ impl IsNA for &str {
     }
 }
 
+/// Type of R objects used by [Robj::rtype].
+#[derive(Debug, PartialEq)]
+pub enum RType {
+    Null,        // NILSXP
+    Symbol,      // SYMSXP
+    Pairlist,    // LISTSXP
+    Function,    // CLOSXP
+    Enviroment,  // ENVSXP
+    Promise,     // PROMSXP
+    Language,    // LANGSXP
+    Special,     // SPECIALSXP
+    Builtin,     // BUILTINSXP
+    Character,   // CHARSXP
+    Logical,     // LGLSXP
+    Integer,     // INTSXP
+    Real,        // REALSXP
+    Complex,     // CPLXSXP
+    String,      // STRSXP
+    Dot,         // DOTSXP
+    Any,         // ANYSXP
+    List,        // VECSXP
+    Expression,  // EXPRSXP
+    Bytecode,    // BCODESXP
+    ExternalPtr, // EXTPTRSXP
+    WeakRef,     // WEAKREFSXP
+    Raw,         // RAWSXP
+    S4,          // S4SXP
+    Unknown,
+}
+
 #[doc(hidden)]
 pub fn print_r_output<T: Into<Vec<u8>>>(s: T) {
     let cs = CString::new(s).expect("NulError");

@@ -168,6 +168,58 @@ impl Robj {
         unsafe { TYPEOF(self.get()) as u32 }
     }
 
+    /// Get the type of an R object.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     assert_eq!(r!(NULL).rtype(), RType::Null);
+    ///     assert_eq!(sym!(xyz).rtype(), RType::Symbol);
+    ///     assert_eq!(r!(Pairlist{names_and_values: vec![("a", r!(1))]}).rtype(), RType::Pairlist);
+    ///     assert_eq!(R!(function() {})?.rtype(), RType::Function);
+    ///     assert_eq!(new_env().rtype(), RType::Enviroment);
+    ///     assert_eq!(lang!("+", 1, 2).rtype(), RType::Language);
+    ///     assert_eq!(r!(Primitive("if")).rtype(), RType::Special);
+    ///     assert_eq!(r!(Primitive("+")).rtype(), RType::Builtin);
+    ///     assert_eq!(r!(Character("hello")).rtype(), RType::Character);
+    ///     assert_eq!(r!(TRUE).rtype(), RType::Logical);
+    ///     assert_eq!(r!(1).rtype(), RType::Integer);
+    ///     assert_eq!(r!(1.0).rtype(), RType::Real);
+    ///     assert_eq!(r!("1").rtype(), RType::String);
+    ///     assert_eq!(r!(List(&[1, 2])).rtype(), RType::List);
+    ///     assert_eq!(parse("x + y")?.rtype(), RType::Expression);
+    ///     assert_eq!(r!(Raw(&[1_u8, 2, 3])).rtype(), RType::Raw);
+    /// }
+    /// ```
+    pub fn rtype(&self) -> RType {
+        match self.sexptype() {
+            NILSXP => RType::Null,
+            SYMSXP => RType::Symbol,
+            LISTSXP => RType::Pairlist,
+            CLOSXP => RType::Function,
+            ENVSXP => RType::Enviroment,
+            PROMSXP => RType::Promise,
+            LANGSXP => RType::Language,
+            SPECIALSXP => RType::Special,
+            BUILTINSXP => RType::Builtin,
+            CHARSXP => RType::Character,
+            LGLSXP => RType::Logical,
+            INTSXP => RType::Integer,
+            REALSXP => RType::Real,
+            CPLXSXP => RType::Complex,
+            STRSXP => RType::String,
+            DOTSXP => RType::Dot,
+            ANYSXP => RType::Any,
+            VECSXP => RType::List,
+            EXPRSXP => RType::Expression,
+            BCODESXP => RType::Bytecode,
+            EXTPTRSXP => RType::ExternalPtr,
+            WEAKREFSXP => RType::WeakRef,
+            RAWSXP => RType::Raw,
+            S4SXP => RType::S4,
+            _ => RType::Unknown,
+        }
+    }
+
     /// Get the extended length of the object.
     /// ```
     /// use extendr_api::prelude::*;
@@ -673,52 +725,6 @@ impl Robj {
         } else {
             Robj::from(res.unwrap())
         }
-    }
-
-    /// Parse a string into an R executable object
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///    let expr = Robj::parse("1 + 2").unwrap();
-    ///    assert!(expr.is_expr());
-    /// }
-    /// ```
-    pub fn parse(code: &str) -> Result<Robj> {
-        single_threaded(|| unsafe {
-            use libR_sys::*;
-            let mut status = 0_u32;
-            let status_ptr = &mut status as *mut u32;
-            let codeobj: Robj = code.into();
-            let parsed = new_owned(R_ParseVector(codeobj.get(), -1, status_ptr, R_NilValue));
-            match status {
-                1 => Ok(parsed),
-                _ => Err(Error::ParseError {
-                    code: code.into(),
-                    status,
-                }),
-            }
-        })
-    }
-
-    /// Parse a string into an R executable object and run it.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///    let res = Robj::eval_string("1 + 2").unwrap();
-    ///    assert_eq!(res, r!(3.));
-    /// }
-    /// ```
-    pub fn eval_string(code: &str) -> Result<Robj> {
-        single_threaded(|| {
-            let expr = Robj::parse(code)?;
-            let mut res = Robj::from(());
-            if let Some(iter) = expr.as_list_iter() {
-                for lang in iter {
-                    res = lang.eval()?
-                }
-            }
-            Ok(res)
-        })
     }
 
     /// Return true if the object is owned by this wrapper.
