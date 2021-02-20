@@ -24,7 +24,7 @@ pub use super::functions::{
 
 pub use crate::{append, append_lang, append_with_name, args, call, lang, make_lang};
 pub use crate::{
-    c, data_frame, factor, global, list, r, read_table, rep, reprint, reprintln, rprint, rprintln,
+    data_frame, factor, global, list, r, reprint, reprintln, rprint, rprintln,
     sym, test, var, R,
 };
 
