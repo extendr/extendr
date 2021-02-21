@@ -66,7 +66,7 @@ pub use rinternals::*;
 ///
 ///     // Use an iterator (like (1:10)[(1:10) %% 3 == 0])
 ///     let a = (1 ..= 10).filter(|v| v % 3 == 0).collect_robj();
-///     assert_eq!(a, c!(3, 6, 9));
+///     assert_eq!(a, r!([3, 6, 9]));
 /// }
 /// ```
 ///
@@ -75,10 +75,10 @@ pub use rinternals::*;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let a : Robj = c!(1, 2, 3, 4, 5);
+///     let a : Robj = r!([1, 2, 3, 4, 5]);
 ///     let iter = a.as_integer_iter().unwrap();
 ///     let robj = iter.filter(|&x| x < 3).collect_robj();
-///     assert_eq!(robj, c!(1, 2));
+///     assert_eq!(robj, r!([1, 2]));
 /// }
 /// ```
 ///

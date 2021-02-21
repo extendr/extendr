@@ -110,64 +110,6 @@ macro_rules! sym {
     };
 }
 
-/// Concatenation operator.
-///
-/// Example:
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-/// let fred = c!(1, 2, 3);
-/// assert_eq!(fred, r!([1, 2, 3]));
-/// }
-/// ```
-/// Note: make sure to use rust syntax for numbers: 1 is integer, 1. is numeric.
-/// For vectors of primitives, prefer to use `r!([1, 2, 3])`.
-///
-/// Panics on error.
-#[macro_export]
-macro_rules! c {
-    () => {
-        call!("c").unwrap()
-    };
-    ($($rest: tt)*) => {
-        call!("c", $($rest)*).unwrap()
-    };
-}
-
-/// Create a vector with repeating elements.
-///
-/// Example:
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-/// let fred = rep!(1., 3);
-/// assert_eq!(fred, r!([1., 1., 1.]));
-/// }
-/// ```
-/// Note: make sure to use rust syntax for numbers: 1 is integer, 1. is numeric.
-#[macro_export]
-macro_rules! rep {
-    ($($rest: tt)*) => {
-        call!("rep", $($rest)*).unwrap()
-    };
-}
-
-/// Read a CSV file.
-///
-/// Example:
-/// ```no_run
-/// use extendr_api::prelude::*;
-/// test! {
-/// let mydata = read_table!("mydata.csv").unwrap();
-/// }
-/// ```
-#[macro_export]
-macro_rules! read_table {
-    ($($rest: tt)*) => {
-        call!("read.table", $($rest)*)
-    };
-}
-
 /// Create a list.
 ///
 /// Example:
