@@ -306,3 +306,18 @@ where
         }
     }
 }
+
+impl<'a, T> FromRobj<'a> for Vec<T> 
+where
+    T: FromRobj<'a>
+{
+    fn from_robj (robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+        let output : Vec<T>;
+        if let Some(x) = robj.as_list_iter() {
+            x.map(|v| output.push(v.into());
+            Ok(output)
+        } else {
+            Err("Expected a vector object.")
+        }
+    }
+}
