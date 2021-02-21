@@ -64,8 +64,6 @@ use syn::{
     Type,
 };
 
-mod output_r;
-
 const META_PREFIX: &str = "meta__";
 const WRAP_PREFIX: &str = "wrap__";
 
@@ -283,7 +281,6 @@ fn make_function_wrappers(
 ) {
     let func_name = &sig.ident;
 
-    let raw_wrap_name = format!("{}{}{}", WRAP_PREFIX, prefix, func_name);
     let wrap_name = format_ident!("{}{}{}", WRAP_PREFIX, prefix, func_name);
     let meta_name = format_ident!("{}{}{}", META_PREFIX, prefix, func_name);
 
@@ -342,13 +339,6 @@ fn make_function_wrappers(
         .iter()
         .map(|input| translate_meta_arg(input, self_ty))
         .collect();
-
-    output_r::output_r_wrapper(
-        func_name,
-        &raw_wrap_name,
-        sig.inputs.clone().into_iter().collect(),
-        &sig.output,
-    );
 
     // Generate wrappers for rust functions to be called from R.
     // Example:
