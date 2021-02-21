@@ -1,7 +1,5 @@
 # extendr - A safe and user friendly R extension interface using Rust.
 
-Low-level R library bindings
-
 [![Github Actions Build Status](https://github.com/extendr/extendr/workflows/Tests/badge.svg)](https://github.com/extendr/extendr/actions)
 [![Crates.io](http://meritbadge.herokuapp.com/extendr-api)](https://crates.io/crates/extendr-api)
 [![Documentation](https://docs.rs/extendr-api/badge.svg)](https://docs.rs/extendr-api)
@@ -18,7 +16,7 @@ You will then be able to call R code from Rust.
 
 ```toml
 [dependencies]
-extendr-api = "0.1.10"
+extendr-api = "0.2"
 ```
 ## Installation - R
 
