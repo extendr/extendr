@@ -1,5 +1,0 @@
-
-export(hello)
-useDynLib(hello)
-
-

@@ -1,3 +1,0 @@
-
-useDynLib(classes, .registration = TRUE)
-export(aux_func)
