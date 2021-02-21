@@ -195,7 +195,6 @@ original R object to be alive or the data will be corrupted.</p>
 They do not contain an Robj (see array.rs for an example of this).</p>
 </td></tr></table><h2 id="macros" class="section-header"><a href="#macros">Macros</a></h2>
 <table><tr class="module-item"><td><a class="macro" href="macro.R.html" title="extendr_api::R macro">R</a></td><td class="docblock-short"><p>Call inline R source code from Rust.</p>
-</td></tr><tr class="module-item"><td><a class="macro" href="macro.c.html" title="extendr_api::c macro">c</a></td><td class="docblock-short"><p>Concatenation operator.</p>
 </td></tr><tr class="module-item"><td><a class="macro" href="macro.call.html" title="extendr_api::call macro">call</a></td><td class="docblock-short"><p>The call! macro calls an R function with Rust parameters.
 Equivalent to <code>lang!(sym, params).eval()</code>
 This returns a Rust Result.</p>
@@ -207,8 +206,6 @@ Example:</p>
 </td></tr><tr class="module-item"><td><a class="macro" href="macro.lang.html" title="extendr_api::lang macro">lang</a></td><td class="docblock-short"><p>A macro for constructing R langage objects.</p>
 </td></tr><tr class="module-item"><td><a class="macro" href="macro.list.html" title="extendr_api::list macro">list</a></td><td class="docblock-short"><p>Create a list.</p>
 </td></tr><tr class="module-item"><td><a class="macro" href="macro.r.html" title="extendr_api::r macro">r</a></td><td class="docblock-short"><p>Convert a rust expression to an R object.</p>
-</td></tr><tr class="module-item"><td><a class="macro" href="macro.read_table.html" title="extendr_api::read_table macro">read_table</a></td><td class="docblock-short"><p>Read a CSV file.</p>
-</td></tr><tr class="module-item"><td><a class="macro" href="macro.rep.html" title="extendr_api::rep macro">rep</a></td><td class="docblock-short"><p>Create a vector with repeating elements.</p>
 </td></tr><tr class="module-item"><td><a class="macro" href="macro.reprint.html" title="extendr_api::reprint macro">reprint</a></td><td class="docblock-short"><p>Print via the R error stream.</p>
 </td></tr><tr class="module-item"><td><a class="macro" href="macro.reprintln.html" title="extendr_api::reprintln macro">reprintln</a></td><td class="docblock-short"><p>Print with a newline via the R output stream.</p>
 </td></tr><tr class="module-item"><td><a class="macro" href="macro.rprint.html" title="extendr_api::rprint macro">rprint</a></td><td class="docblock-short"><p>Print via the R output stream.</p>

@@ -1331,7 +1331,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">///     // Use an iterator (like (1:10)[(1:10) %% 3 == 0])</span>
 <span class="doccomment">///     let a = (1 ..= 10).filter(|v| v % 3 == 0).collect_robj();</span>
-<span class="doccomment">///     assert_eq!(a, c!(3, 6, 9));</span>
+<span class="doccomment">///     assert_eq!(a, r!([3, 6, 9]));</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
@@ -1340,10 +1340,10 @@
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">/// test! {</span>
-<span class="doccomment">///     let a : Robj = c!(1, 2, 3, 4, 5);</span>
+<span class="doccomment">///     let a : Robj = r!([1, 2, 3, 4, 5]);</span>
 <span class="doccomment">///     let iter = a.as_integer_iter().unwrap();</span>
 <span class="doccomment">///     let robj = iter.filter(|&amp;x| x &lt; 3).collect_robj();</span>
-<span class="doccomment">///     assert_eq!(robj, c!(1, 2));</span>
+<span class="doccomment">///     assert_eq!(robj, r!([1, 2]));</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
