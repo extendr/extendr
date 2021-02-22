@@ -60,9 +60,9 @@ hello_submodule <- function() .Call(wrap__hello_submodule)
 #' Class for testing (exported)
 #' @examples
 #' x <- MyClass$new()
-#' x$a()
-#' x$set_a(10)
-#' x$a()
+#' x$a
+#' x$a <- 10
+#' x$a
 #' @export
 MyClass <- new.env(parent = emptyenv())
 
