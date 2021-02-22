@@ -92,7 +92,7 @@ impl MyClass {
     }
     
     /// Method for getting stuff.
-    fn a(&self) -> i32 {
+    fn get_a(&self) -> i32 {
         self.a
     }
     
@@ -135,7 +135,7 @@ impl MyClassUnexported {
     }
     
     /// Method for getting stuff.
-    fn a(&self) -> i32 {
+    fn get_a(&self) -> i32 {
         self.a
     }
 }

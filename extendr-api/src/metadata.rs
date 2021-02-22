@@ -286,7 +286,7 @@ fn write_impl_wrapper(
     method
   }} else {{
     getter <- get0(paste0(\"get_\", name), {impl_name})
-    if (is.null(getter)) {{
+    if (!is.null(getter)) {{
       environment(getter) <- environment()
       getter()
     }} else {{
@@ -300,6 +300,30 @@ fn write_impl_wrapper(
         call. = FALSE
       )
     }}
+  }}
+}}",
+        class_name = imp.name,
+        impl_name = imp_name_fixed
+    )?;
+
+    writeln!(
+        w,
+        "
+`$<-.{class_name}` <- function (self, name, value) {{
+  setter <- get0(paste0(\"set_\", name), {impl_name})
+  if (!is.null(setter)) {{
+      environment(setter) <- environment()
+      setter(value)
+      self
+  }} else {{
+      stop(
+      paste(
+          \"Class member not found.\",
+          paste0(\"x No setter `set_\", name, \"` found in `{impl_name}`.\"),
+          sep = \"\\n\"
+      ),
+      call. = FALSE
+      )
   }}
 }}",
         class_name = imp.name,
