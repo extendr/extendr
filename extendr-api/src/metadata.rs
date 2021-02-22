@@ -277,31 +277,32 @@ fn write_impl_wrapper(
     // but in the body `imp_name_fixed` is called as valid R function,
     // so we pass preprocessed value
     writeln!(
-        w, "
-        `$.{class_name}` <- function (self, name) {{
-            method <- get0(name, {impl_name})
-            if (!is.null(method)) {{
-                environment(method) <- environment
-                method
-            }} else {{
-                getter <- get0(paste0(\"get_\", name), {impl_name})
-                if (is.null(getter)) {{
-                    environment(getter) <- environment()
-                    getter()
-                }} else {{
-                    stop(
-                        paste(
-                            \"Class member not found.\",
-                            paste0(\"x No method `\", name, \"` found in `{impl_name}`.\"),
-                            paste0(\"x No getter `get_\", name, \"` found in `{impl_name}`.\"),
-                            sep = \"\\n\"
-                        )
-                        call. = FALSE
-                    )
-                }}
-            }}
-        }}", 
-        class_name = imp.name, 
+        w,
+        "
+`$.{class_name}` <- function (self, name) {{
+  method <- get0(name, {impl_name})
+  if (!is.null(method)) {{
+    environment(method) <- environment()
+    method
+  }} else {{
+    getter <- get0(paste0(\"get_\", name), {impl_name})
+    if (is.null(getter)) {{
+      environment(getter) <- environment()
+      getter()
+    }} else {{
+      stop(
+        paste(
+          \"Class member not found.\",
+          paste0(\"x No method `\", name, \"` found in `{impl_name}`.\"),
+          paste0(\"x No getter `get_\", name, \"` found in `{impl_name}`.\"),
+          sep = \"\\n\"
+        ),
+        call. = FALSE
+      )
+    }}
+  }}
+}}",
+        class_name = imp.name,
         impl_name = imp_name_fixed
     )?;
 
