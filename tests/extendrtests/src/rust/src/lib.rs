@@ -74,9 +74,9 @@ struct MyClass {
 /// Class for testing (exported)
 /// @examples
 /// x <- MyClass$new()
-/// x$a
-/// x$a <- 10
-/// x$a
+/// x$get_a()
+/// x$set_a(10)
+/// x$get_a()
 /// @export
 #[extendr]
 impl MyClass {
