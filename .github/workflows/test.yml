@@ -246,14 +246,14 @@ jobs:
 
 
       - name: Upload extendrtests check results from R integration tests
-        if: steps.extendrtests_check.outcome != 'success'
+        if: failure() && steps.extendrtests_check.outcome != 'success'
         uses: actions/upload-artifact@main
         with:
           name:  extendrtests-${{ matrix.config.os }}-R-${{ matrix.config.r }}-rust-${{ matrix.config.rust-version }}
           path: extendrtests_check
 
       - name: Upload rextendr check results from R integration tests
-        if: steps.rextendr_check.outcome != 'success'
+        if: failure() && steps.rextendr_check.outcome != 'success'
         uses: actions/upload-artifact@main
         with:
           name:  rextendr-${{ matrix.config.os }}-R-${{ matrix.config.r }}-rust-${{ matrix.config.rust-version }}
