@@ -240,7 +240,6 @@ jobs:
               args = c("--no-manual", "--as-cran", "--force-multiarch"), 
               error_on = "warning", 
               check_dir = "rextendr_check")
-            stop()
             cat("::endgroup::\n")
           }
         shell: Rscript {0}
