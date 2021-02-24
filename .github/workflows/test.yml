@@ -217,6 +217,7 @@ jobs:
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
         run: |
+          stop()
           if (as.integer(R.version$major) < 4) {
             cat("::warning:: R version is not compatible with 'rextendr'\n")
           } else {
