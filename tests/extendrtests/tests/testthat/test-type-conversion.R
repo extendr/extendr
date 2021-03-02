@@ -36,3 +36,12 @@ test_that("Conversion of R types to Rust types and vice versa works", {
   expect_error(char_vec(c("hello", NA)), "Input vector cannot contain NA's")
 })
 
+test_that("Generic vector convertion", {
+  
+  expect_equal(
+    vec_generic_class(as.list(1:10)),
+    sum(1:10)
+  )
+  
+})
+

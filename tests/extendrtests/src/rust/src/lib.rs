@@ -1,6 +1,8 @@
 use extendr_api::prelude::*;
 mod submodule;
+mod generic;
 use submodule::*;
+use generic::*;
 
 /// Return string `"Hello world!"` to R.
 /// @export
@@ -160,4 +162,5 @@ extendr_module! {
     impl MyClassUnexported;
     
     use submodule;
+    use generics;
 }

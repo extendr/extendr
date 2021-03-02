@@ -307,17 +307,36 @@ where
     }
 }
 
-impl<'a, T> FromRobj<'a> for Vec<T> 
+/// Implements a generic FromRobj for Vec<T> if
+/// std::convert::TryFrom<Robj> for T is implemented, for example:
+///
+/// ```ignore
+/// use extendr_api::prelude::*;
+/// use std::convert::TryFrom;
+///
+/// impl TryFrom<Robj> for i32 {
+///     type Error = &'static str;
+///
+///     fn try_from(robj: Robj) -> std::result::Result<Self, Self::Error> {
+///         if let Some(val) = robj.as_integer() {
+///             Ok(val)
+///         } else {
+///             Err("Input must be an integer.")
+///         }
+///     }
+/// }
+/// ```
+impl<'a, T: std::convert::TryFrom<Robj>> FromRobj<'a> for Vec<T>
 where
-    T: FromRobj<'a>
+    <T as std::convert::TryFrom<Robj>>::Error: Into<&'static str>,
+    Vec<T>: std::iter::FromIterator<T>,
 {
-    fn from_robj (robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        let output : Vec<T>;
-        if let Some(x) = robj.as_list_iter() {
-            x.map(|v| output.push(v.into());
-            Ok(output)
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+        if let Some(iter) = robj.as_list_iter() {
+            iter.map(|r| <T>::try_from(r).map_err(|e| e.into()))
+                .collect::<std::result::Result<Vec<T>, &'static str>>()
         } else {
-            Err("Expected a vector object.")
+            Err("Input must be a list.")
         }
     }
 }

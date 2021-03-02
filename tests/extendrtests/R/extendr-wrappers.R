@@ -57,6 +57,8 @@ special_param_names <- function(`_x`, `_y`) .Call(wrap__special_param_names, `_x
 #' @export
 hello_submodule <- function() .Call(wrap__hello_submodule)
 
+vec_generic_class <- function(v) .Call(wrap__vec_generic_class, v)
+
 #' Class for testing (exported)
 #' @examples
 #' x <- MyClass$new()
@@ -119,4 +121,11 @@ MySubmoduleClass$me <- function() .Call(wrap__MySubmoduleClass__me, self)
 #' @usage NULL
 #' @export
 `$.MySubmoduleClass` <- function (self, name) { func <- MySubmoduleClass[[name]]; environment(func) <- environment(); func }
+
+GenericClass <- new.env(parent = emptyenv())
+
+GenericClass$new <- function(a) .Call(wrap__GenericClass__new, a)
+
+#' @export
+`$.GenericClass` <- function (self, name) { func <- GenericClass[[name]]; environment(func) <- environment(); func }
 
