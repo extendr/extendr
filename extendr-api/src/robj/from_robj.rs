@@ -326,6 +326,7 @@ where
 ///     }
 /// }
 /// ```
+/// 
 impl<'a, T: std::convert::TryFrom<Robj>> FromRobj<'a> for Vec<T>
 where
     <T as std::convert::TryFrom<Robj>>::Error: Into<&'static str>,
