@@ -1,4 +1,3 @@
-
 use super::*;
 
 /// Wrapper for creating functions (CLOSSXP).
