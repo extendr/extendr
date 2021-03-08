@@ -129,10 +129,10 @@ pub struct Env<P, NV> {
 /// }
 /// ```
 #[derive(Debug, PartialEq, Clone)]
-pub struct Func<F, B, E> {
-    pub formals: F,
-    pub body: B,
-    pub env: E,
+pub struct Function {
+    pub formals: Robj,
+    pub body: Robj,
+    pub env: Robj,
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -549,7 +549,7 @@ impl Robj {
         }
     }
 
-    /// Convert a function object (CLOSXP) to a Func wrapper.
+    /// Convert a function object (CLOSXP) to a Function wrapper.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -557,14 +557,14 @@ impl Robj {
     ///     println!("{:?}", func.as_func());
     /// }
     /// ```
-    pub fn as_func(&self) -> Option<Func<Robj, Robj, Robj>> {
+    pub fn as_func(&self) -> Option<Function> {
         if self.sexptype() == CLOSXP {
             unsafe {
                 let sexp = self.get();
                 let formals = new_owned(FORMALS(sexp));
                 let body = new_owned(BODY(sexp));
                 let env = new_owned(CLOENV(sexp));
-                Some(Func { formals, body, env })
+                Some(Function { formals, body, env })
             }
         } else {
             None
@@ -666,5 +666,96 @@ where
             Nullable::NotNull(t) => t.into(),
             Nullable::Null => r!(NULL),
         }
+    }
+}
+
+
+impl<'a> FromRobj<'a> for Function
+{
+    /// Convert an object that may be null to a rust type.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let s1 = r!(1);
+    ///     let n1 = <Nullable<i32>>::from_robj(&s1)?;
+    ///     assert_eq!(n1, Nullable::NotNull(1));
+    ///     let snull = r!(NULL);
+    ///     let nnull = <Nullable<i32>>::from_robj(&snull)?;
+    ///     assert_eq!(nnull, Nullable::Null);
+    /// }
+    /// ```
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+        if let Some(f) = robj.as_func() {
+            Ok(f)
+        } else {
+            Err("Not a function")
+        }
+    }
+}
+
+impl From<Function> for Robj
+{
+    /// Make a function object from components.
+    /// Returns NULL if the components are not appropriate.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let formals = pairlist!(a=NULL);
+    ///     let body = lang!("+", sym!(a), r!(1));
+    ///     let env = global_env();
+    ///     let f = r!(Function { formals, body, env });
+    ///     assert_eq!(f.call(pairlist!(a=1))?, r!(2));
+    /// }
+    /// ```
+    fn from(val: Function) -> Self {
+        if !val.formals.is_pairlist() || !val.env.is_environment() {
+            return r!(NULL)
+        }
+        unsafe {
+            let sexp = Rf_allocSExp(CLOSXP);
+            let func = new_owned(sexp);
+            SET_FORMALS(sexp, val.formals.get());
+            SET_BODY(sexp, val.body.get());
+            SET_CLOENV(sexp, val.env.get());
+            func
+        }
+    }
+}
+
+impl Function {
+    /// Do the equivalent of x(a, b, c)
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let function = R!(function(a, b) a + b).unwrap().as_func().unwrap();
+    ///     assert_eq!(function.call(pairlist!(a=1, b=2)).unwrap(), r!(3));
+    /// }
+    /// ```
+    pub fn call(self, args: Robj) -> Result<Robj> {
+        if args.rtype() != RType::Pairlist {
+            return Err(Error::ExpectedPairlist(args));
+        }
+
+        let func = Robj::from(self);
+        if func.is_null() {
+            return Err(Error::ExpectedFunction(func));
+        }
+
+        func.call(args)
+    }
+
+    /// Get the formal arguments of the function.
+    pub fn formals(&self) -> Robj {
+        self.formals.clone()
+    }
+
+    /// Get the body of the function.
+    pub fn body(&self) -> Robj {
+        self.body.clone()
+    }
+
+    /// Get the environment of the function.
+    pub fn env(&self) -> Robj {
+        self.env.clone()
     }
 }
