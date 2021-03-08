@@ -669,9 +669,7 @@ where
     }
 }
 
-
-impl<'a> FromRobj<'a> for Function
-{
+impl<'a> FromRobj<'a> for Function {
     /// Convert an object that may be null to a rust type.
     /// ```
     /// use extendr_api::prelude::*;
@@ -693,8 +691,7 @@ impl<'a> FromRobj<'a> for Function
     }
 }
 
-impl From<Function> for Robj
-{
+impl From<Function> for Robj {
     /// Make a function object from components.
     /// Returns NULL if the components are not appropriate.
     /// ```
@@ -709,7 +706,7 @@ impl From<Function> for Robj
     /// ```
     fn from(val: Function) -> Self {
         if !val.formals.is_pairlist() || !val.env.is_environment() {
-            return r!(NULL)
+            return r!(NULL);
         }
         unsafe {
             let sexp = Rf_allocSExp(CLOSXP);
