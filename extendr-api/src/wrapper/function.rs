@@ -45,7 +45,7 @@ impl<'a> FromRobj<'a> for Function {
 
 impl From<Function> for Robj {
     /// Make an robj from a function wrapper.
-    /// The function wrapper is guaranteed to cntain a function object.
+    /// The function wrapper is guaranteed to contain a function object.
     fn from(val: Function) -> Self {
         val.robj
     }
@@ -97,17 +97,8 @@ impl Function {
     ///     assert_eq!(function.call(pairlist!(a=1, b=2)).unwrap(), r!(3));
     /// }
     /// ```
-    pub fn call(self, args: Robj) -> Result<Robj> {
-        if args.rtype() != RType::Pairlist {
-            return Err(Error::ExpectedPairlist(args));
-        }
-
-        let func = Robj::from(self);
-        if func.is_null() {
-            return Err(Error::ExpectedFunction(func));
-        }
-
-        func.call(args)
+    pub fn call(&self, args: Robj) -> Result<Robj> {
+        self.robj.call(args)
     }
 
     /// Get the formal arguments of the function.
