@@ -340,7 +340,7 @@ macro_rules! impl_iter_debug {
 /// use extendr_api::prelude::*;
 /// test! {
 ///     let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
-///     let env = Env{parent: global_env(), names_and_values};
+///     let env = Environment::from_pairs(names_and_values);
 ///     let robj = r!(env);
 ///     let names_and_values = robj.as_env_iter().unwrap().collect::<Vec<_>>();
 ///     assert_eq!(names_and_values.len(), 100);

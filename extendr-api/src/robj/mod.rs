@@ -1044,7 +1044,7 @@ impl Robj {
     /// use extendr_api::prelude::*;
     /// test! {
     ///    let names_and_values : std::collections::HashMap<_, _> = (0..4).map(|i| (format!("n{}", i), r!(i))).collect();
-    ///    let env = r!(Env{parent: global_env(), names_and_values});
+    ///    let env = Environment::from_pairs(names_and_values);
     ///    assert_eq!(env.ls().unwrap(), vec!["n0", "n1", "n2", "n3"]);
     /// }
     /// ```

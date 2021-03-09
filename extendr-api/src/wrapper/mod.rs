@@ -19,7 +19,7 @@ pub mod raw;
 pub mod symbol;
 
 pub use character::Character;
-pub use environment::Env;
+pub use environment::Environment;
 pub use expr::Expr;
 pub use function::Function;
 pub use lang::Lang;
@@ -107,6 +107,12 @@ make_conversions!(
     ExpectedCharacter,
     is_character,
     "Not a character object"
+);
+make_conversions!(
+    Environment,
+    ExpectedEnviroment,
+    is_environment,
+    "Not an Environment"
 );
 
 impl Robj {
@@ -231,23 +237,16 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let names_and_values = (0..100).map(|i| (format!("n{}", i), r!(i)));
-    ///     let env = Env{parent: global_env(), names_and_values};
-    ///     let expr = r!(env.clone());
+    ///     let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
+    ///     let env = Environment::from_pairs(names_and_values);
+    ///     let expr = env.clone();
     ///     assert_eq!(expr.len(), 100);
     ///     let env2 = expr.as_environment().unwrap();
-    ///     assert_eq!(env2.names_and_values.count(), 100);
+    ///     assert_eq!(env2.len(), 100);
     /// }
     /// ```
-    pub fn as_environment(&self) -> Option<Env<Robj, EnvIter>> {
-        if self.is_environment() {
-            Some(Env {
-                parent: self.parent().unwrap(),
-                names_and_values: self.as_env_iter().unwrap(),
-            })
-        } else {
-            None
-        }
+    pub fn as_environment(&self) -> Option<Environment> {
+        Environment::try_from(self.clone()).ok()
     }
 
     /// Convert a function object (CLOSXP) to a Function wrapper.
