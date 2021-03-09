@@ -1,7 +1,7 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>wrapper.rs - source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script id="default-settings"></script><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../favicon.svg">
-<link rel="alternate icon" type="image/png" href="../../favicon-16x16.png">
-<link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../extendr_api/index.html'><div class='logo-container'><img src='https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
-                <a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings"></script><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
+<link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png">
+<link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../extendr_api/index.html'><div class='logo-container'><img src='https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
+                <a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -646,31 +646,6 @@
 <span id="643">643</span>
 <span id="644">644</span>
 <span id="645">645</span>
-<span id="646">646</span>
-<span id="647">647</span>
-<span id="648">648</span>
-<span id="649">649</span>
-<span id="650">650</span>
-<span id="651">651</span>
-<span id="652">652</span>
-<span id="653">653</span>
-<span id="654">654</span>
-<span id="655">655</span>
-<span id="656">656</span>
-<span id="657">657</span>
-<span id="658">658</span>
-<span id="659">659</span>
-<span id="660">660</span>
-<span id="661">661</span>
-<span id="662">662</span>
-<span id="663">663</span>
-<span id="664">664</span>
-<span id="665">665</span>
-<span id="666">666</span>
-<span id="667">667</span>
-<span id="668">668</span>
-<span id="669">669</span>
-<span id="670">670</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Wrappers are lightweight proxies for references to R datatypes.</span>
 <span class="doccomment">//! They do not contain an Robj (see array.rs for an example of this).</span>
@@ -679,6 +654,10 @@
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
 <span class="kw">use</span> <span class="ident">libR_sys</span>::<span class="kw-2">*</span>;
+
+<span class="kw">mod</span> <span class="ident">function</span>;
+
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">function</span>::<span class="ident">Function</span>;
 
 <span class="doccomment">/// Wrapper for creating symbols.</span>
 <span class="doccomment">///</span>
@@ -784,29 +763,6 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Env</span><span class="op">&lt;</span><span class="ident">P</span>, <span class="ident">NV</span><span class="op">&gt;</span> {
     <span class="kw">pub</span> <span class="ident">parent</span>: <span class="ident">P</span>,
     <span class="kw">pub</span> <span class="ident">names_and_values</span>: <span class="ident">NV</span>,
-}
-
-<span class="doccomment">/// Wrapper for creating functions (CLOSSXP).</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///     let expr = R!(function(a = 1, b) {c &lt;- a + b}).unwrap();</span>
-<span class="doccomment">///     let func = expr.as_func().unwrap();</span>
-<span class="doccomment">///</span>
-<span class="doccomment">///     let expected_formals = Pairlist {</span>
-<span class="doccomment">///         names_and_values: vec![(&quot;a&quot;, r!(1.0)), (&quot;b&quot;, missing_arg())] };</span>
-<span class="doccomment">///     let expected_body = lang!(</span>
-<span class="doccomment">///         &quot;{&quot;, lang!(&quot;&lt;-&quot;, sym!(c), lang!(&quot;+&quot;, sym!(a), sym!(b))));</span>
-<span class="doccomment">///     assert_eq!(func.formals.as_pairlist().unwrap(), expected_formals);</span>
-<span class="doccomment">///     assert_eq!(func.body, expected_body);</span>
-<span class="doccomment">///     assert_eq!(func.env, global_env());</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Func</span><span class="op">&lt;</span><span class="ident">F</span>, <span class="ident">B</span>, <span class="ident">E</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="ident">formals</span>: <span class="ident">F</span>,
-    <span class="kw">pub</span> <span class="ident">body</span>: <span class="ident">B</span>,
-    <span class="kw">pub</span> <span class="ident">env</span>: <span class="ident">E</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Clone</span>)]</span>
@@ -1223,7 +1179,7 @@
         }
     }
 
-    <span class="doccomment">/// Convert a function object (CLOSXP) to a Func wrapper.</span>
+    <span class="doccomment">/// Convert a function object (CLOSXP) to a Function wrapper.</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::prelude::*;</span>
     <span class="doccomment">/// test! {</span>
@@ -1231,15 +1187,9 @@
     <span class="doccomment">///     println!(&quot;{:?}&quot;, func.as_func());</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_func</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Func</span><span class="op">&lt;</span><span class="ident">Robj</span>, <span class="ident">Robj</span>, <span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">sexptype</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">CLOSXP</span> {
-            <span class="kw">unsafe</span> {
-                <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get</span>();
-                <span class="kw">let</span> <span class="ident">formals</span> <span class="op">=</span> <span class="ident">new_owned</span>(<span class="ident">FORMALS</span>(<span class="ident">sexp</span>));
-                <span class="kw">let</span> <span class="ident">body</span> <span class="op">=</span> <span class="ident">new_owned</span>(<span class="ident">BODY</span>(<span class="ident">sexp</span>));
-                <span class="kw">let</span> <span class="ident">env</span> <span class="op">=</span> <span class="ident">new_owned</span>(<span class="ident">CLOENV</span>(<span class="ident">sexp</span>));
-                <span class="prelude-val">Some</span>(<span class="ident">Func</span> { <span class="ident">formals</span>, <span class="ident">body</span>, <span class="ident">env</span> })
-            }
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_func</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Function</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">f</span>) <span class="op">=</span> <span class="ident">Function</span>::<span class="ident">new</span>(<span class="self">self</span>.<span class="ident">clone</span>()) {
+            <span class="prelude-val">Some</span>(<span class="ident">f</span>)
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
         }
@@ -1343,4 +1293,4 @@
     }
 }
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "extendr_api";</script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../";window.currentCrate = "extendr_api";</script><script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>

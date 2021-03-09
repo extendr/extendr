@@ -55,6 +55,7 @@
 <span id="52">52</span>
 <span id="53">53</span>
 <span id="54">54</span>
+<span id="55">55</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # Common exports for extendr-api.</span>
 <span class="doccomment">//!</span>
@@ -82,7 +83,8 @@
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">append</span>, <span class="ident">append_lang</span>, <span class="ident">append_with_name</span>, <span class="ident">args</span>, <span class="ident">call</span>, <span class="ident">lang</span>, <span class="ident">make_lang</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">data_frame</span>, <span class="ident">factor</span>, <span class="ident">global</span>, <span class="ident">list</span>, <span class="ident">r</span>, <span class="ident">reprint</span>, <span class="ident">reprintln</span>, <span class="ident">rprint</span>, <span class="ident">rprintln</span>, <span class="ident">sym</span>, <span class="ident">test</span>, <span class="ident">var</span>, <span class="ident">R</span>,
+    <span class="ident">data_frame</span>, <span class="ident">factor</span>, <span class="ident">global</span>, <span class="ident">list</span>, <span class="ident">pairlist</span>, <span class="ident">r</span>, <span class="ident">reprint</span>, <span class="ident">reprintln</span>, <span class="ident">rprint</span>, <span class="ident">rprintln</span>, <span class="ident">sym</span>, <span class="ident">test</span>,
+    <span class="ident">var</span>, <span class="ident">R</span>,
 };
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">logical</span>::<span class="ident">Bool</span>;
@@ -96,7 +98,7 @@
 };
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">wrapper</span>::{
-    <span class="ident">Character</span>, <span class="ident">Env</span>, <span class="ident">Expr</span>, <span class="ident">Func</span>, <span class="ident">Lang</span>, <span class="ident">List</span>, <span class="ident">Nullable</span>, <span class="ident">Pairlist</span>, <span class="ident">Primitive</span>, <span class="ident">Promise</span>, <span class="ident">Raw</span>, <span class="ident">Symbol</span>,
+    <span class="ident">Character</span>, <span class="ident">Env</span>, <span class="ident">Expr</span>, <span class="ident">Function</span>, <span class="ident">Lang</span>, <span class="ident">List</span>, <span class="ident">Nullable</span>, <span class="ident">Pairlist</span>, <span class="ident">Primitive</span>, <span class="ident">Promise</span>, <span class="ident">Raw</span>, <span class="ident">Symbol</span>,
 };
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
