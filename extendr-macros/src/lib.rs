@@ -288,7 +288,7 @@ fn make_function_wrappers(
     let doc_string = get_doc_string(attrs);
     let return_type_string = get_return_type(&sig);
 
-    let panic_str = format!("{} paniced.\0", func_name);
+    let panic_str = format!("{} panicked.\0", func_name);
 
     let inputs = &sig.inputs;
     let has_self = match inputs.iter().next() {
