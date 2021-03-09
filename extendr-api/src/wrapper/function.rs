@@ -5,10 +5,9 @@ use super::*;
 /// use extendr_api::prelude::*;
 /// test! {
 ///     let expr = R!(function(a = 1, b) {c <- a + b}).unwrap();
-///     let func = expr.as_func().unwrap();
+///     let func = expr.as_function().unwrap();
 ///
-///     let expected_formals = Pairlist {
-///         names_and_values: vec![("a", r!(1.0)), ("b", missing_arg())] };
+///     let expected_formals = Pairlist::from_pairs(vec![("a", r!(1.0)), ("b", missing_arg())]);
 ///     let expected_body = lang!(
 ///         "{", lang!("<-", sym!(c), lang!("+", sym!(a), sym!(b))));
 ///     assert_eq!(func.formals().as_pairlist().unwrap(), expected_formals);
@@ -22,20 +21,8 @@ pub struct Function {
 }
 
 impl<'a> FromRobj<'a> for Function {
-    /// Convert an object that may be null to a rust type.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///     let s1 = r!(1);
-    ///     let n1 = <Nullable<i32>>::from_robj(&s1)?;
-    ///     assert_eq!(n1, Nullable::NotNull(1));
-    ///     let snull = r!(NULL);
-    ///     let nnull = <Nullable<i32>>::from_robj(&snull)?;
-    ///     assert_eq!(nnull, Nullable::Null);
-    /// }
-    /// ```
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if let Some(f) = robj.as_func() {
+        if let Ok(f) = Function::try_from(robj.clone()) {
             Ok(f)
         } else {
             Err("Not a function")
@@ -51,16 +38,20 @@ impl From<Function> for Robj {
     }
 }
 
-impl Function {
-    /// Make a function from an Robj or return an error.
-    pub fn new(robj: Robj) -> Result<Self> {
-        if robj.is_function() {
+impl TryFrom<Robj> for Function {
+    type Error = crate::Error;
+
+    /// Make an Function from an robj if it matches.
+    fn try_from(robj: Robj) -> Result<Self> {
+        if robj.rtype() == RType::Function {
             Ok(Function { robj })
         } else {
             Err(Error::ExpectedFunction(robj))
         }
     }
+}
 
+impl Function {
     /// Make a function from parts.
     /// ```
     /// use extendr_api::prelude::*;
@@ -93,7 +84,7 @@ impl Function {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let function = R!(function(a, b) a + b).unwrap().as_func().unwrap();
+    ///     let function = R!(function(a, b) a + b).unwrap().as_function().unwrap();
     ///     assert_eq!(function.call(pairlist!(a=1, b=2)).unwrap(), r!(3));
     /// }
     /// ```

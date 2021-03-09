@@ -174,7 +174,7 @@ impl Robj {
     /// test! {
     ///     assert_eq!(r!(NULL).rtype(), RType::Null);
     ///     assert_eq!(sym!(xyz).rtype(), RType::Symbol);
-    ///     assert_eq!(r!(Pairlist{names_and_values: vec![("a", r!(1))]}).rtype(), RType::Pairlist);
+    ///     assert_eq!(r!(Pairlist::from_pairs(vec![("a", r!(1))])).rtype(), RType::Pairlist);
     ///     assert_eq!(R!(function() {})?.rtype(), RType::Function);
     ///     assert_eq!(new_env().rtype(), RType::Enviroment);
     ///     assert_eq!(lang!("+", 1, 2).rtype(), RType::Language);

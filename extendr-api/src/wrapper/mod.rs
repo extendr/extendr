@@ -138,20 +138,13 @@ impl Robj {
     /// use extendr_api::prelude::*;
     /// test! {
     ///     let names_and_values = vec![("a", r!(1)), ("b", r!(2)), (na_str(), r!(3))];
-    ///     let pairlist = Pairlist{ names_and_values };
+    ///     let pairlist = Pairlist::from_pairs(names_and_values);
     ///     let robj = r!(pairlist.clone());
     ///     assert_eq!(robj.as_pairlist().unwrap(), pairlist);
     /// }
     /// ```
-    pub fn as_pairlist(&self) -> Option<Pairlist<Vec<(&str, Robj)>>> {
-        if self.sexptype() == LISTSXP {
-            let names = self.as_pairlist_tag_iter().unwrap();
-            let values = self.as_pairlist_iter().unwrap();
-            let names_and_values: Vec<_> = names.zip(values).collect();
-            Some(Pairlist { names_and_values })
-        } else {
-            None
-        }
+    pub fn as_pairlist(&self) -> Option<Pairlist> {
+        Pairlist::try_from(self.clone()).ok()
     }
 
     /// Convert a list object (VECSXP) to a List wrapper.
@@ -218,15 +211,11 @@ impl Robj {
     /// use extendr_api::prelude::*;
     /// test! {
     ///     let func = R!(function(a,b) a + b).unwrap();
-    ///     println!("{:?}", func.as_func());
+    ///     println!("{:?}", func.as_function());
     /// }
     /// ```
-    pub fn as_func(&self) -> Option<Function> {
-        if let Ok(f) = Function::new(self.clone()) {
-            Some(f)
-        } else {
-            None
-        }
+    pub fn as_function(&self) -> Option<Function> {
+        Function::try_from(self.clone()).ok()
     }
 
     // /// Convert a primitive object (BUILTINSXP or SPECIALSXP) to a wrapper.
@@ -282,11 +271,22 @@ where
     }
 }
 
-impl<R> SymPair for R
+impl<S, R> SymPair for &(S, R)
 where
+    S: AsRef<str>,
     R: Into<Robj>,
+    R: Clone,
 {
     fn sym_pair(self) -> (Robj, Robj) {
-        (r!(NULL), self.into())
+        (r!(Symbol(self.0.as_ref())), self.1.clone().into())
     }
 }
+
+// impl<R> SymPair for R
+// where
+//     R: Into<Robj>,
+// {
+//     fn sym_pair(self) -> (Robj, Robj) {
+//         (r!(NULL), self.into())
+//     }
+// }

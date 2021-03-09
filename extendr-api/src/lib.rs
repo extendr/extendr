@@ -218,6 +218,9 @@ pub mod wrapper;
 #[cfg(feature = "ndarray")]
 pub mod robj_ndarray;
 
+pub use std::convert::TryFrom;
+pub use std::ops::Deref;
+
 //////////////////////////////////////////////////
 // Note these pub use statements are deprectaed
 //
