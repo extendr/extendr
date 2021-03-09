@@ -29,3 +29,21 @@ impl<'a> From<Raw<'a>> for Robj {
         })
     }
 }
+
+impl<'a> FromRobj<'a> for Raw<'a> {
+    /// Convert an input value to a Raw wrapper around bytes.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let robj = r!(Raw(&[1, 2]));
+    ///     assert_eq!(<Raw>::from_robj(&robj).unwrap(), Raw(&[1, 2]));
+    /// }
+    /// ```
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+        if let Some(f) = robj.as_raw() {
+            Ok(f)
+        } else {
+            Err("Not a raw object.")
+        }
+    }
+}
