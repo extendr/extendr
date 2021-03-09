@@ -21,3 +21,21 @@ impl<'a> From<Character<'a>> for Robj {
         single_threaded(|| unsafe { new_owned(str_to_character(val.0)) })
     }
 }
+
+impl<'a> FromRobj<'a> for Character<'a> {
+    /// Convert an input value to a Character wrapper around a string.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let robj = r!(Character("xyz"));
+    ///     assert_eq!(<Character>::from_robj(&robj).unwrap(), Character("xyz"));
+    /// }
+    /// ```
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+        if let Some(f) = robj.as_character() {
+            Ok(f)
+        } else {
+            Err("Not a character object.")
+        }
+    }
+}
