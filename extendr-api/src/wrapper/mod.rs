@@ -74,10 +74,10 @@ macro_rules! make_conversions {
                 val.robj
             }
         }
-        
+
         impl TryFrom<Robj> for $typename {
             type Error = crate::Error;
-        
+
             /// Make a wrapper from a robj if it matches.
             fn try_from(robj: Robj) -> Result<Self> {
                 if robj.$isfunc() {
@@ -87,22 +87,21 @@ macro_rules! make_conversions {
                 }
             }
         }
-        
+
         impl Deref for $typename {
             type Target = Robj;
-        
+
             /// Make a wrapper behave like an Robj.
             fn deref(&self) -> &Self::Target {
                 &self.robj
             }
         }
-    }
+    };
 }
 
 make_conversions!(Pairlist, ExpectedPairlist, is_pairlist, "Not a pairlist");
 make_conversions!(Function, ExpectedFunction, is_function, "Not a function");
 make_conversions!(Raw, ExpectedRaw, is_raw, "Not a raw object");
-
 
 impl Robj {
     /// Convert a symbol object to a Symbol wrapper.

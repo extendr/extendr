@@ -13,7 +13,7 @@ use super::*;
 ///
 #[derive(Debug, PartialEq, Clone)]
 pub struct Raw {
-    pub (crate) robj : Robj
+    pub(crate) robj: Robj,
 }
 
 impl Raw {

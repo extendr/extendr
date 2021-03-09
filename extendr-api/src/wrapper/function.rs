@@ -17,7 +17,7 @@ use super::*;
 /// ```
 #[derive(Debug, PartialEq, Clone)]
 pub struct Function {
-    pub (crate) robj: Robj,
+    pub(crate) robj: Robj,
 }
 
 impl Function {

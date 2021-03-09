@@ -1156,7 +1156,11 @@ impl std::fmt::Debug for Robj {
                 let formals = func.formals();
                 let body = func.body();
                 let enviroment = func.env();
-                write!(f, "r!(Function::from_parts({:?}, {:?}, {:?}))", formals, body, enviroment)
+                write!(
+                    f,
+                    "r!(Function::from_parts({:?}, {:?}, {:?}))",
+                    formals, body, enviroment
+                )
             }
             ENVSXP => unsafe {
                 let sexp = self.get();
@@ -1233,7 +1237,11 @@ impl std::fmt::Debug for Robj {
             BCODESXP => write!(f, "r!(Bcode())"),
             EXTPTRSXP => write!(f, "r!(Extptr())"),
             RAWSXP => {
-                write!(f, "r!(Raw::from_bytes({:?}))", self.as_raw().unwrap().as_slice())
+                write!(
+                    f,
+                    "r!(Raw::from_bytes({:?}))",
+                    self.as_raw().unwrap().as_slice()
+                )
             }
             S4SXP => write!(f, "r!(S4())"),
             NEWSXP => write!(f, "r!(New())"),

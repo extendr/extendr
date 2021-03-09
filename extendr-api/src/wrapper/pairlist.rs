@@ -2,7 +2,7 @@ use super::*;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Pairlist {
-    pub (crate) robj: Robj,
+    pub(crate) robj: Robj,
 }
 
 impl Pairlist {
