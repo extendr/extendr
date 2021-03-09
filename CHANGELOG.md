@@ -2,6 +2,8 @@
 
 ## extendr devel
 
+## extendr 0.2.0
+
 - Added contributing guidelines and code of conduct.
 
 - Made use of ndarray optional.
