@@ -2,7 +2,7 @@ use super::*;
 use crate::single_threaded;
 use std::collections::HashMap;
 
-fn str_to_character(s: &str) -> SEXP {
+pub(crate) fn str_to_character(s: &str) -> SEXP {
     unsafe {
         if s.is_na() {
             R_NaString
@@ -41,13 +41,6 @@ where
     fn from(res: Result<T>) -> Self {
         // Force a panic on error.
         res.unwrap().into()
-    }
-}
-
-/// Convert a wrapped string ref to an Robj char object.
-impl<'a> From<Character<'a>> for Robj {
-    fn from(val: Character) -> Self {
-        single_threaded(|| unsafe { new_owned(str_to_character(val.0)) })
     }
 }
 

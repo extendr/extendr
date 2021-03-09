@@ -1,0 +1,31 @@
+use super::*;
+
+/// Wrapper for creating raw (byte) objects.
+///
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     let bytes = r!(Raw(&[1, 2, 3]));
+///     assert_eq!(bytes.len(), 3);
+///     assert_eq!(bytes.as_raw(), Some(Raw(&[1, 2, 3])));
+/// }
+/// ```
+///
+#[derive(Debug, PartialEq, Clone)]
+pub struct Raw<'a>(pub &'a [u8]);
+
+impl<'a> From<Raw<'a>> for Robj {
+    /// Make a raw object from bytes.
+    fn from(val: Raw<'a>) -> Self {
+        single_threaded(|| unsafe {
+            let val = val.0;
+            let sexp = Rf_allocVector(RAWSXP, val.len() as R_xlen_t);
+            ownership::protect(sexp);
+            let ptr = RAW(sexp);
+            for (i, &v) in val.iter().enumerate() {
+                *ptr.offset(i as isize) = v;
+            }
+            Robj::Owned(sexp)
+        })
+    }
+}

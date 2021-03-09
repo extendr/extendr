@@ -1,6 +1,6 @@
 //! Wrappers for matrices with deferred arithmetic.
 
-use crate::*;
+use super::*;
 use std::ops::{Index, IndexMut};
 
 /// Wrapper for creating and using matrices and arrays.

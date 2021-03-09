@@ -266,17 +266,6 @@ where
     }
 }
 
-// Symbol input parameters.
-impl<'a> FromRobj<'a> for Symbol<'a> {
-    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if let Some(x) = robj.as_symbol() {
-            Ok(x)
-        } else {
-            Err("Expected a symbol.")
-        }
-    }
-}
-
 // Matrix input parameters.
 impl<'a, T> FromRobj<'a> for RArray<&'a [T], [usize; 2]>
 where

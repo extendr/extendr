@@ -206,7 +206,6 @@ pub mod functions;
 pub mod iter;
 pub mod lang_macros;
 pub mod logical;
-pub mod matrix;
 pub mod metadata;
 pub mod ownership;
 pub mod prelude;
@@ -230,7 +229,6 @@ pub use error::*;
 pub use functions::*;
 pub use lang_macros::*;
 pub use logical::*;
-pub use matrix::*;
 pub use rmacros::*;
 pub use robj::*;
 pub use thread_safety::{
