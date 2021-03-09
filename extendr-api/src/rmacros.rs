@@ -132,6 +132,28 @@ macro_rules! list {
     };
 }
 
+/// Create a pairlist.
+///
+/// Example:
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+/// let mylist = pairlist!(x=1, y=2);
+/// ///assert_eq!(mylist, r!(Pairlist(&[r!(1), r!(2)])));
+/// }
+/// ```
+///
+/// Panics on error.
+#[macro_export]
+macro_rules! pairlist {
+    () => {
+        call!("pairlist").unwrap()
+    };
+    ($($rest: tt)*) => {
+        call!("pairlist", $($rest)*).unwrap()
+    };
+}
+
 /// Create a dataframe.
 ///
 /// Example:

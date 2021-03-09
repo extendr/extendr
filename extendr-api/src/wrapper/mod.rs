@@ -6,6 +6,10 @@ use crate::*;
 #[doc(hidden)]
 use libR_sys::*;
 
+mod function;
+
+pub use function::Function;
+
 /// Wrapper for creating symbols.
 ///
 /// ```
@@ -110,29 +114,6 @@ pub struct Expr<T>(pub T);
 pub struct Env<P, NV> {
     pub parent: P,
     pub names_and_values: NV,
-}
-
-/// Wrapper for creating functions (CLOSSXP).
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///     let expr = R!(function(a = 1, b) {c <- a + b}).unwrap();
-///     let func = expr.as_func().unwrap();
-///
-///     let expected_formals = Pairlist {
-///         names_and_values: vec![("a", r!(1.0)), ("b", missing_arg())] };
-///     let expected_body = lang!(
-///         "{", lang!("<-", sym!(c), lang!("+", sym!(a), sym!(b))));
-///     assert_eq!(func.formals.as_pairlist().unwrap(), expected_formals);
-///     assert_eq!(func.body, expected_body);
-///     assert_eq!(func.env, global_env());
-/// }
-/// ```
-#[derive(Debug, PartialEq, Clone)]
-pub struct Func<F, B, E> {
-    pub formals: F,
-    pub body: B,
-    pub env: E,
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -549,7 +530,7 @@ impl Robj {
         }
     }
 
-    /// Convert a function object (CLOSXP) to a Func wrapper.
+    /// Convert a function object (CLOSXP) to a Function wrapper.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -557,15 +538,9 @@ impl Robj {
     ///     println!("{:?}", func.as_func());
     /// }
     /// ```
-    pub fn as_func(&self) -> Option<Func<Robj, Robj, Robj>> {
-        if self.sexptype() == CLOSXP {
-            unsafe {
-                let sexp = self.get();
-                let formals = new_owned(FORMALS(sexp));
-                let body = new_owned(BODY(sexp));
-                let env = new_owned(CLOENV(sexp));
-                Some(Func { formals, body, env })
-            }
+    pub fn as_func(&self) -> Option<Function> {
+        if let Ok(f) = Function::new(self.clone()) {
+            Some(f)
         } else {
             None
         }

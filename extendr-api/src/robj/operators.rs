@@ -91,17 +91,29 @@ impl Robj {
         call!("::", self, rhs.into())
     }
 
-    // /// Do the equivalent of x(a, b, c)
-    // /// ```
-    // /// use extendr_api::prelude::*;
-    // /// test! {
-    // /// let function = R!(function(a, b) a + b).unwrap();
-    // /// assert_eq!(function.is_function(), true);
-    // /// assert_eq!(function.call((1, 2)), r!(3));
-    // /// ```
-    // pub fn call<Args>(&self, _args: Args) -> Robj {
-    //     r!(NULL)
-    // }
+    /// Do the equivalent of x(a, b, c)
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let function = R!(function(a, b) a + b).unwrap();
+    ///     assert_eq!(function.is_function(), true);
+    ///     assert_eq!(function.call(pairlist!(a=1, b=2)).unwrap(), r!(3));
+    /// }
+    /// ```
+    pub fn call(&self, args: Robj) -> Result<Robj> {
+        if self.rtype() != RType::Function {
+            return Err(Error::ExpectedFunction(self.clone()));
+        }
+
+        if args.rtype() != RType::Pairlist {
+            return Err(Error::ExpectedPairlist(args.clone()));
+        }
+
+        unsafe {
+            let call = new_owned(Rf_lcons(self.get(), args.get()));
+            call.eval()
+        }
+    }
 }
 
 impl<Rhs> Add<Rhs> for Robj
