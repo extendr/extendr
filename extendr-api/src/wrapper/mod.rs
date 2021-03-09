@@ -102,6 +102,12 @@ macro_rules! make_conversions {
 make_conversions!(Pairlist, ExpectedPairlist, is_pairlist, "Not a pairlist");
 make_conversions!(Function, ExpectedFunction, is_function, "Not a function");
 make_conversions!(Raw, ExpectedRaw, is_raw, "Not a raw object");
+make_conversions!(
+    Character,
+    ExpectedCharacter,
+    is_character,
+    "Not a character object"
+);
 
 impl Robj {
     /// Convert a symbol object to a Symbol wrapper.
@@ -132,18 +138,12 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let fred = r!(Character("fred"));
-    ///     assert_eq!(fred.as_character(), Some(Character("fred")));
+    ///     let fred = r!(Character::from_str("fred"));
+    ///     assert_eq!(fred.as_character(), Some(Character::from_str("fred")));
     /// }
     /// ```
     pub fn as_character(&self) -> Option<Character> {
-        if self.sexptype() == CHARSXP {
-            Some(Character(unsafe {
-                to_str(R_CHAR(self.get()) as *const u8)
-            }))
-        } else {
-            None
-        }
+        Character::try_from(self.clone()).ok()
     }
 
     /// Convert a raw object to a Character wrapper.

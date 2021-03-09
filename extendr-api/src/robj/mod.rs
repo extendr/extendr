@@ -180,7 +180,7 @@ impl Robj {
     ///     assert_eq!(lang!("+", 1, 2).rtype(), RType::Language);
     ///     assert_eq!(r!(Primitive("if")).rtype(), RType::Special);
     ///     assert_eq!(r!(Primitive("+")).rtype(), RType::Builtin);
-    ///     assert_eq!(r!(Character("hello")).rtype(), RType::Character);
+    ///     assert_eq!(r!(Character::from_str("hello")).rtype(), RType::Character);
     ///     assert_eq!(r!(TRUE).rtype(), RType::Logical);
     ///     assert_eq!(r!(1).rtype(), RType::Integer);
     ///     assert_eq!(r!(1.0).rtype(), RType::Real);
@@ -1178,7 +1178,10 @@ impl std::fmt::Debug for Robj {
             LANGSXP => write!(f, "r!({:?})", self.as_lang().unwrap()),
             SPECIALSXP => write!(f, "r!(Special())"),
             BUILTINSXP => write!(f, "r!(Builtin())"),
-            CHARSXP => write!(f, "r!({:?})", self.as_character().unwrap()),
+            CHARSXP => {
+                let c = Character::try_from(self.clone()).unwrap();
+                write!(f, "r!(Character::from_str({:?}))", c.as_str())
+            }
             LGLSXP => {
                 let slice = self.as_logical_slice().unwrap();
                 if slice.len() == 1 {

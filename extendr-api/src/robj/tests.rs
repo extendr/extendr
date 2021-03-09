@@ -22,7 +22,7 @@ fn test_debug() {
 
         // Wrappers
         assert_eq!(format!("{:?}", r!(Symbol("x"))), "sym!(x)");
-        assert_eq!(format!("{:?}", r!(Character("x"))), "r!(Character(\"x\"))");
+        assert_eq!(format!("{:?}", r!(Character::from_str("x"))), "r!(Character::from_str(\"x\"))");
         assert_eq!(
             format!("{:?}", r!(Lang(&[r!(Symbol("x"))]))),
             "r!(Lang([sym!(x)]))"

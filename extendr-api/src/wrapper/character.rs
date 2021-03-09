@@ -7,35 +7,36 @@ use super::*;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let chr = r!(Character("xyz"));
-///     assert_eq!(chr.as_character(), Some(Character("xyz")));
+///     let chr = r!(Character::from_str("xyz"));
+///     assert_eq!(chr.as_character().unwrap().as_str(), "xyz");
 /// }
 /// ```
 ///
 #[derive(Debug, PartialEq, Clone)]
-pub struct Character<'a>(pub &'a str);
-
-/// Convert a wrapped string ref to an R character object (element of a character vector).
-impl<'a> From<Character<'a>> for Robj {
-    fn from(val: Character) -> Self {
-        single_threaded(|| unsafe { new_owned(str_to_character(val.0)) })
-    }
+pub struct Character {
+    pub(crate) robj: Robj,
 }
 
-impl<'a> FromRobj<'a> for Character<'a> {
-    /// Convert an input value to a Character wrapper around a string.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///     let robj = r!(Character("xyz"));
-    ///     assert_eq!(<Character>::from_robj(&robj).unwrap(), Character("xyz"));
-    /// }
-    /// ```
-    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if let Some(f) = robj.as_character() {
-            Ok(f)
-        } else {
-            Err("Not a character object.")
+impl Character {
+    /// Make a character object from a string.
+    pub fn from_str(val: &str) -> Self {
+        unsafe {
+            Character {
+                robj: new_owned(str_to_character(val)),
+            }
+        }
+    }
+
+    /// Get the string from a character object.
+    /// If the string is NA, then the special na_str() is returned.
+    pub fn as_str(&self) -> &str {
+        unsafe {
+            let sexp = self.robj.get();
+            if sexp == R_NaString {
+                na_str()
+            } else {
+                to_str(R_CHAR(sexp) as *const u8)
+            }
         }
     }
 }

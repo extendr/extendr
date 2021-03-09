@@ -409,6 +409,11 @@ impl Robj {
         self.rtype() == RType::Raw
     }
 
+    /// Return true if this is CHARSXP.
+    pub fn is_character(&self) -> bool {
+        self.rtype() == RType::Character
+    }
+
     /// Check an external pointer tag.
     /// This is used to wrap R objects.
     #[doc(hidden)]
