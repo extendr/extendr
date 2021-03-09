@@ -56,6 +56,54 @@ where
     })
 }
 
+macro_rules! make_conversions {
+    ($typename: ident, $errname: ident, $isfunc: ident, $errstr: expr) => {
+        impl<'a> FromRobj<'a> for $typename {
+            fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+                if let Ok(f) = $typename::try_from(robj.clone()) {
+                    Ok(f)
+                } else {
+                    Err($errstr)
+                }
+            }
+        }
+
+        impl From<$typename> for Robj {
+            /// Make an robj from a wrapper.
+            fn from(val: $typename) -> Self {
+                val.robj
+            }
+        }
+        
+        impl TryFrom<Robj> for $typename {
+            type Error = crate::Error;
+        
+            /// Make a wrapper from a robj if it matches.
+            fn try_from(robj: Robj) -> Result<Self> {
+                if robj.$isfunc() {
+                    Ok($typename { robj })
+                } else {
+                    Err(Error::$errname(robj))
+                }
+            }
+        }
+        
+        impl Deref for $typename {
+            type Target = Robj;
+        
+            /// Make a wrapper behave like an Robj.
+            fn deref(&self) -> &Self::Target {
+                &self.robj
+            }
+        }
+    }
+}
+
+make_conversions!(Pairlist, ExpectedPairlist, is_pairlist, "Not a pairlist");
+make_conversions!(Function, ExpectedFunction, is_function, "Not a function");
+make_conversions!(Raw, ExpectedRaw, is_raw, "Not a raw object");
+
+
 impl Robj {
     /// Convert a symbol object to a Symbol wrapper.
     /// ```
@@ -103,18 +151,15 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let bytes = r!(Raw(&[1, 2, 3]));
+    ///     let bytes = r!(Raw::from_bytes(&[1, 2, 3]));
     ///     assert_eq!(bytes.len(), 3);
-    ///     assert_eq!(bytes.as_raw(), Some(Raw(&[1, 2, 3])));
+    ///     assert_eq!(bytes.as_raw(), Some(Raw::from_bytes(&[1, 2, 3])));
     /// }
     /// ```
     pub fn as_raw(&self) -> Option<Raw> {
-        if self.sexptype() == RAWSXP {
-            Some(Raw(self.as_raw_slice().unwrap()))
-        } else {
-            None
-        }
+        Raw::try_from(self.clone()).ok()
     }
+
     /// Convert a language object to a Lang wrapper.
     /// ```
     /// use extendr_api::prelude::*;

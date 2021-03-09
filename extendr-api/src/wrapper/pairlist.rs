@@ -2,25 +2,7 @@ use super::*;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Pairlist {
-    robj: Robj,
-}
-
-impl<'a> FromRobj<'a> for Pairlist {
-    /// Convert an object that may be null to a rust type.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///     let robj = pairlist!(a=1, b=2);
-    ///     let pairlist = <Pairlist>::from_robj(&robj);
-    /// }
-    /// ```
-    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if let Some(f) = robj.as_pairlist() {
-            Ok(f)
-        } else {
-            Err("Not a pairlist")
-        }
-    }
+    pub (crate) robj: Robj,
 }
 
 impl Pairlist {
@@ -57,34 +39,5 @@ impl Pairlist {
             Rf_unprotect(num_protects as i32);
             res
         })
-    }
-}
-
-impl From<Pairlist> for Robj {
-    /// Make an robj from a pairlist wrapper.
-    fn from(val: Pairlist) -> Self {
-        val.robj
-    }
-}
-
-impl TryFrom<Robj> for Pairlist {
-    type Error = crate::Error;
-
-    /// Make an pairlist from a robj if it matches.
-    fn try_from(robj: Robj) -> Result<Self> {
-        if robj.is_pairlist() {
-            Ok(Pairlist { robj })
-        } else {
-            Err(Error::ExpectedPairlist(robj))
-        }
-    }
-}
-
-impl Deref for Pairlist {
-    type Target = Robj;
-
-    /// Make a Pairlist behave like an Robj.
-    fn deref(&self) -> &Self::Target {
-        &self.robj
     }
 }

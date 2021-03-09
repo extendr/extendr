@@ -187,7 +187,7 @@ impl Robj {
     ///     assert_eq!(r!("1").rtype(), RType::String);
     ///     assert_eq!(r!(List(&[1, 2])).rtype(), RType::List);
     ///     assert_eq!(parse("x + y")?.rtype(), RType::Expression);
-    ///     assert_eq!(r!(Raw(&[1_u8, 2, 3])).rtype(), RType::Raw);
+    ///     assert_eq!(r!(Raw::from_bytes(&[1_u8, 2, 3])).rtype(), RType::Raw);
     /// }
     /// ```
     pub fn rtype(&self) -> RType {
@@ -493,7 +493,7 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let robj = r!(Raw(&[1, 2, 3]));
+    ///     let robj = r!(Raw::from_bytes(&[1, 2, 3]));
     ///     assert_eq!(robj.as_raw_slice().unwrap(), &[1, 2, 3]);
     /// }
     /// ```
@@ -535,10 +535,10 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let mut robj = r!(Raw(&[1, 2, 3]));
+    ///     let mut robj = r!(Raw::from_bytes(&[1, 2, 3]));
     ///     let slice = robj.as_raw_slice_mut().unwrap();
     ///     slice[1] = 100;
-    ///     assert_eq!(robj, r!(Raw(&[1, 100, 3])));
+    ///     assert_eq!(robj, r!(Raw::from_bytes(&[1, 100, 3])));
     /// }
     /// ```
     pub fn as_raw_slice_mut(&mut self) -> Option<&mut [u8]> {
@@ -1147,8 +1147,17 @@ impl std::fmt::Debug for Robj {
                     write!(f, "sym!({})", self.as_symbol().unwrap().0)
                 }
             }
-            LISTSXP => write!(f, "r!({:?})", self.as_pairlist().unwrap()),
-            CLOSXP => write!(f, "r!(Function())"),
+            LISTSXP => {
+                let pairlist = self.as_pairlist_iter().unwrap();
+                write!(f, "r!({:?})", pairlist)
+            }
+            CLOSXP => {
+                let func = self.as_function().unwrap();
+                let formals = func.formals();
+                let body = func.body();
+                let enviroment = func.env();
+                write!(f, "r!(Function::from_parts({:?}, {:?}, {:?}))", formals, body, enviroment)
+            }
             ENVSXP => unsafe {
                 let sexp = self.get();
                 if sexp == R_GlobalEnv {
@@ -1224,7 +1233,7 @@ impl std::fmt::Debug for Robj {
             BCODESXP => write!(f, "r!(Bcode())"),
             EXTPTRSXP => write!(f, "r!(Extptr())"),
             RAWSXP => {
-                write!(f, "r!({:?})", self.as_raw().unwrap())
+                write!(f, "r!(Raw::from_bytes({:?}))", self.as_raw().unwrap().as_slice())
             }
             S4SXP => write!(f, "r!(S4())"),
             NEWSXP => write!(f, "r!(New())"),

@@ -404,6 +404,11 @@ impl Robj {
         unsafe { Rf_isVectorizable(self.get()) != 0 }
     }
 
+    /// Return true if this is RAWSXP.
+    pub fn is_raw(&self) -> bool {
+        self.rtype() == RType::Raw
+    }
+
     /// Check an external pointer tag.
     /// This is used to wrap R objects.
     #[doc(hidden)]

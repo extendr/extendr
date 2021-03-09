@@ -18,7 +18,7 @@ fn test_debug() {
         // Vectors
         assert_eq!(format!("{:?}", r!([1, 2, 3])), "r!([1, 2, 3])");
         assert_eq!(format!("{:?}", r!([1., 2., 3.])), "r!([1.0, 2.0, 3.0])");
-        assert_eq!(format!("{:?}", r!(Raw(&[1, 2, 3]))), "r!(Raw([1, 2, 3]))");
+        assert_eq!(format!("{:?}", r!(Raw::from_bytes(&[1, 2, 3]))), "r!(Raw::from_bytes([1, 2, 3]))");
 
         // Wrappers
         assert_eq!(format!("{:?}", r!(Symbol("x"))), "sym!(x)");

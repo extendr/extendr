@@ -5,45 +5,40 @@ use super::*;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let bytes = r!(Raw(&[1, 2, 3]));
+///     let bytes = r!(Raw::from_bytes(&[1, 2, 3]));
 ///     assert_eq!(bytes.len(), 3);
-///     assert_eq!(bytes.as_raw(), Some(Raw(&[1, 2, 3])));
+///     assert_eq!(bytes.as_raw(), Some(Raw::from_bytes(&[1, 2, 3])));
 /// }
 /// ```
 ///
 #[derive(Debug, PartialEq, Clone)]
-pub struct Raw<'a>(pub &'a [u8]);
-
-impl<'a> From<Raw<'a>> for Robj {
-    /// Make a raw object from bytes.
-    fn from(val: Raw<'a>) -> Self {
-        single_threaded(|| unsafe {
-            let val = val.0;
-            let sexp = Rf_allocVector(RAWSXP, val.len() as R_xlen_t);
-            ownership::protect(sexp);
-            let ptr = RAW(sexp);
-            for (i, &v) in val.iter().enumerate() {
-                *ptr.offset(i as isize) = v;
-            }
-            Robj::Owned(sexp)
-        })
-    }
+pub struct Raw {
+    pub (crate) robj : Robj
 }
 
-impl<'a> FromRobj<'a> for Raw<'a> {
-    /// Convert an input value to a Raw wrapper around bytes.
+impl Raw {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let robj = r!(Raw(&[1, 2]));
-    ///     assert_eq!(<Raw>::from_robj(&robj).unwrap(), Raw(&[1, 2]));
+    ///     let bytes = r!(Raw::from_bytes(&[1, 2, 3]));
+    ///     assert_eq!(bytes.len(), 3);
+    ///     assert_eq!(bytes.as_raw(), Some(Raw::from_bytes(&[1, 2, 3])));
     /// }
     /// ```
-    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if let Some(f) = robj.as_raw() {
-            Ok(f)
-        } else {
-            Err("Not a raw object.")
-        }
+    pub fn from_bytes(bytes: &[u8]) -> Self {
+        single_threaded(|| unsafe {
+            let sexp = Rf_allocVector(RAWSXP, bytes.len() as R_xlen_t);
+            let robj = new_owned(sexp);
+            let ptr = RAW(sexp);
+            for (i, &v) in bytes.into_iter().enumerate() {
+                *ptr.offset(i as isize) = v;
+            }
+            Raw { robj }
+        })
+    }
+
+    /// Get a slice of bytes from the Raw object.
+    pub fn as_slice(&self) -> &[u8] {
+        self.robj.as_typed_slice().unwrap()
     }
 }

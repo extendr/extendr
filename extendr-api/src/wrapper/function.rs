@@ -17,38 +17,7 @@ use super::*;
 /// ```
 #[derive(Debug, PartialEq, Clone)]
 pub struct Function {
-    robj: Robj,
-}
-
-impl<'a> FromRobj<'a> for Function {
-    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if let Ok(f) = Function::try_from(robj.clone()) {
-            Ok(f)
-        } else {
-            Err("Not a function")
-        }
-    }
-}
-
-impl From<Function> for Robj {
-    /// Make an robj from a function wrapper.
-    /// The function wrapper is guaranteed to contain a function object.
-    fn from(val: Function) -> Self {
-        val.robj
-    }
-}
-
-impl TryFrom<Robj> for Function {
-    type Error = crate::Error;
-
-    /// Make an Function from an robj if it matches.
-    fn try_from(robj: Robj) -> Result<Self> {
-        if robj.rtype() == RType::Function {
-            Ok(Function { robj })
-        } else {
-            Err(Error::ExpectedFunction(robj))
-        }
-    }
+    pub (crate) robj: Robj,
 }
 
 impl Function {
