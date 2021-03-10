@@ -117,7 +117,7 @@ macro_rules! sym {
 /// use extendr_api::prelude::*;
 /// test! {
 /// let mylist = list!(x=1, y=2);
-/// assert_eq!(mylist, r!(List(&[r!(1), r!(2)])));
+/// assert_eq!(mylist, r!(List::from_objects(&[r!(1), r!(2)])));
 /// }
 /// ```
 ///
@@ -161,7 +161,7 @@ macro_rules! pairlist {
 /// use extendr_api::prelude::*;
 /// test! {
 /// let mydata = data_frame!(x=1, y=2);
-/// assert_eq!(mydata, r!(List(&[r!(1), r!(2)])));
+/// assert_eq!(mydata, r!(List::from_objects(&[r!(1), r!(2)])));
 /// }
 /// ```
 ///

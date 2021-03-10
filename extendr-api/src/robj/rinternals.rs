@@ -31,7 +31,7 @@ impl Robj {
     }
 
     /// Return true if this is an expression.
-    pub fn is_expr(&self) -> bool {
+    pub fn is_expression(&self) -> bool {
         unsafe { Rf_isExpression(self.get()) != 0 }
     }
 

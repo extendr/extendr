@@ -1,35 +1,29 @@
 use super::*;
 
-/// Wrapper for creating list (VECSXP) objects.
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///     let list = r!(List(&[r!(0), r!(1), r!(2)]));
-///     assert_eq!(list.is_list(), true);
-///     assert_eq!(list.len(), 3);
-///     assert_eq!(format!("{:?}", list), r#"r!(List([r!(0), r!(1), r!(2)]))"#);
-/// }
-/// ```
-///
-/// Note: you can use the [list!] macro for named lists.
 #[derive(Debug, PartialEq, Clone)]
-pub struct List<T>(pub T);
+pub struct List {
+    pub(crate) robj: Robj,
+}
 
-impl<T> From<List<T>> for Robj
-where
-    T: IntoIterator,
-    T::IntoIter: ExactSizeIterator,
-    T::Item: Into<Robj>,
-{
-    /// Make a list object from an iterator of Robjs.
+impl List {
+    /// Wrapper for creating list (VECSXP) objects.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let list_of_ints = r!(List(&[1, 2]));
-    ///     assert_eq!(list_of_ints.len(), 2);
+    ///     let list = r!(List::from_objects(&[r!(0), r!(1), r!(2)]));
+    ///     assert_eq!(list.is_list(), true);
+    ///     assert_eq!(list.len(), 3);
+    ///     assert_eq!(format!("{:?}", list), r#"r!(List::from_objects([r!(0), r!(1), r!(2)]))"#);
     /// }
-    /// ``````
-    fn from(val: List<T>) -> Self {
-        make_vector(VECSXP, val.0)
+    /// ```
+    pub fn from_objects<V>(values: V) -> Self
+    where
+        V: IntoIterator,
+        V::IntoIter: ExactSizeIterator,
+        V::Item: Into<Robj>,
+    {
+        Self {
+            robj: make_vector(VECSXP, values),
+        }
     }
 }

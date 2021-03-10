@@ -20,9 +20,9 @@ pub mod symbol;
 
 pub use character::Character;
 pub use environment::Environment;
-pub use expr::Expr;
+pub use expr::Expression;
 pub use function::Function;
-pub use lang::Lang;
+pub use lang::Language;
 pub use list::List;
 pub use matrix::{RArray, RColumn, RMatrix, RMatrix3D};
 pub use nullable::Nullable;
@@ -102,17 +102,35 @@ macro_rules! make_conversions {
 make_conversions!(Pairlist, ExpectedPairlist, is_pairlist, "Not a pairlist");
 make_conversions!(Function, ExpectedFunction, is_function, "Not a function");
 make_conversions!(Raw, ExpectedRaw, is_raw, "Not a raw object");
+
 make_conversions!(
     Character,
     ExpectedCharacter,
     is_character,
     "Not a character object"
 );
+
 make_conversions!(
     Environment,
     ExpectedEnviroment,
     is_environment,
     "Not an Environment"
+);
+
+make_conversions!(List, ExpectedList, is_list, "Not a List");
+
+make_conversions!(
+    Expression,
+    ExpectedExpression,
+    is_expression,
+    "Not an Expression"
+);
+
+make_conversions!(
+    Language,
+    ExpectedLanguage,
+    is_language,
+    "Not a Language object"
 );
 
 impl Robj {
@@ -165,22 +183,18 @@ impl Robj {
         Raw::try_from(self.clone()).ok()
     }
 
-    /// Convert a language object to a Lang wrapper.
+    /// Convert a language object to a Language wrapper.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let call_to_xyz = r!(Lang(&[r!(Symbol("xyz")), r!(1), r!(2)]));
+    ///     let call_to_xyz = r!(Language::from_objects(&[r!(Symbol("xyz")), r!(1), r!(2)]));
     ///     assert_eq!(call_to_xyz.is_language(), true);
     ///     assert_eq!(call_to_xyz.len(), 3);
-    ///     assert_eq!(format!("{:?}", call_to_xyz), r#"r!(Lang([sym!(xyz), r!(1), r!(2)]))"#);
+    ///     assert_eq!(format!("{:?}", call_to_xyz), r#"r!(Language::from_objects([sym!(xyz), r!(1), r!(2)]))"#);
     /// }
     /// ```
-    pub fn as_lang(&self) -> Option<Lang<PairlistIter>> {
-        if self.sexptype() == LANGSXP {
-            Some(Lang(self.as_pairlist_iter().unwrap()))
-        } else {
-            None
-        }
+    pub fn as_language(&self) -> Option<Language> {
+        Language::try_from(self.clone()).ok()
     }
 
     /// Convert a pair list object (LISTSXP) to a Pairlist wrapper.
@@ -201,36 +215,27 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let list = r!(List(&[r!(0), r!(1), r!(2)]));
+    ///     let list = r!(List::from_objects(&[r!(0), r!(1), r!(2)]));
     ///     assert_eq!(list.is_list(), true);
-    ///     assert_eq!(format!("{:?}", list), r#"r!(List([r!(0), r!(1), r!(2)]))"#);
+    ///     assert_eq!(format!("{:?}", list), r#"r!(List::from_objects([r!(0), r!(1), r!(2)]))"#);
     /// }
     /// ```
-    pub fn as_list(&self) -> Option<List<ListIter>> {
-        self.as_list_iter().map(|l| List(l))
+    pub fn as_list(&self) -> Option<List> {
+        List::try_from(self.clone()).ok()
     }
 
     /// Convert an expression object (EXPRSXP) to a Expr wrapper.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let expr = r!(Expr(&[r!(0), r!(1), r!(2)]));
-    ///     assert_eq!(expr.is_expr(), true);
-    ///     assert_eq!(expr.as_expr(), Some(Expr(vec![r!(0), r!(1), r!(2)])));
-    ///     assert_eq!(format!("{:?}", expr), r#"r!(Expr([r!(0), r!(1), r!(2)]))"#);
+    ///     let expr = r!(Expression::from_objects(&[r!(0), r!(1), r!(2)]));
+    ///     assert_eq!(expr.is_expression(), true);
+    ///     assert_eq!(expr.as_expression(), Some(Expression::from_objects(vec![r!(0), r!(1), r!(2)])));
+    ///     assert_eq!(format!("{:?}", expr), r#"r!(Expression::from_objects([r!(0), r!(1), r!(2)]))"#);
     /// }
     /// ```
-    pub fn as_expr(&self) -> Option<Expr<Vec<Robj>>> {
-        if self.sexptype() == EXPRSXP {
-            let res: Vec<_> = self
-                .as_list_iter()
-                .unwrap()
-                .map(|robj| robj.to_owned())
-                .collect();
-            Some(Expr(res))
-        } else {
-            None
-        }
+    pub fn as_expression(&self) -> Option<Expression> {
+        Expression::try_from(self.clone()).ok()
     }
 
     /// Convert an environment object (ENVSXP) to a Env wrapper.
@@ -324,12 +329,3 @@ where
         (r!(Symbol(self.0.as_ref())), self.1.clone().into())
     }
 }
-
-// impl<R> SymPair for R
-// where
-//     R: Into<Robj>,
-// {
-//     fn sym_pair(self) -> (Robj, Robj) {
-//         (r!(NULL), self.into())
-//     }
-// }

@@ -62,7 +62,7 @@ impl Robj {
     /// let x = r!(Symbol("x"));
     /// let y = r!(Symbol("y"));
     /// let tilde = x.tilde(y).unwrap();
-    /// assert_eq!(tilde, r!(Lang(&[r!(Symbol("~")), r!(Symbol("x")), r!(Symbol("y"))])));
+    /// assert_eq!(tilde, r!(Language::from_objects(&[r!(Symbol("~")), r!(Symbol("x")), r!(Symbol("y"))])));
     /// assert_eq!(tilde.inherits("formula"), true);
     /// }
     /// ```

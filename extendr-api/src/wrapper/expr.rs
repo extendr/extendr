@@ -1,31 +1,29 @@
 use super::*;
 
-/// Wrapper for creating expression objects.
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///     let expr = r!(Expr(&[r!(1.), r!("xyz")]));
-///     assert_eq!(expr.len(), 2);
-/// }
-/// ```
 #[derive(Debug, PartialEq, Clone)]
-pub struct Expr<T>(pub T);
+pub struct Expression {
+    pub(crate) robj: Robj,
+}
 
-impl<T> From<Expr<T>> for Robj
-where
-    T: IntoIterator,
-    T::IntoIter: ExactSizeIterator,
-    T::Item: Into<Robj>,
-{
-    /// Make an expression object from an iterator of Robjs.
+impl Expression {
+    /// Wrapper for creating Expression (EXPRSXP) objects.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let list_of_ints = r!(Expr(&[1, 2]));
-    ///     assert_eq!(list_of_ints.len(), 2);
+    ///     let expr = r!(Expression::from_objects(&[r!(0), r!(1), r!(2)]));
+    ///     assert_eq!(expr.is_expression(), true);
+    ///     assert_eq!(expr.len(), 3);
+    ///     assert_eq!(format!("{:?}", expr), r#"r!(Expression::from_objects([r!(0), r!(1), r!(2)]))"#);
     /// }
     /// ```
-    fn from(val: Expr<T>) -> Self {
-        make_vector(EXPRSXP, val.0)
+    pub fn from_objects<V>(values: V) -> Self
+    where
+        V: IntoIterator,
+        V::IntoIter: ExactSizeIterator,
+        V::Item: Into<Robj>,
+    {
+        Self {
+            robj: make_vector(EXPRSXP, values),
+        }
     }
 }

@@ -63,9 +63,9 @@
 //!     let list = list!(a = 1, b = 2);
 //!    
 //!     // An unnamed list (of R objects) using the List wrapper.
-//!     let list = r!(List(vec![1, 2, 3]));
-//!     let list = r!(List(vec!["a", "b", "c"]));
-//!     let list = r!(List(&[r!("a"), r!(1), r!(2.0)]));
+//!     let list = r!(List::from_objects(vec![1, 2, 3]));
+//!     let list = r!(List::from_objects(vec!["a", "b", "c"]));
+//!     let list = r!(List::from_objects(&[r!("a"), r!(1), r!(2.0)]));
 //!
 //!     // A symbol
 //!     let sym = sym!(wombat);
@@ -716,7 +716,7 @@ mod tests {
 
                 // #[extendr]
                 // pub fn hash_map(x: HashMap<&str, Robj>) -> HashMap<&str, Robj> { x }
-                let robj = r!(List(&[1, 2]));
+                let robj = r!(List::from_objects(&[1, 2]));
                 robj.set_attrib(names_symbol(), r!(["a", "b"]))?;
                 let res = new_owned(wrap__hash_map(robj.get()));
                 assert_eq!(res.len(), 2);

@@ -24,8 +24,8 @@ fn test_debug() {
         assert_eq!(format!("{:?}", r!(Symbol("x"))), "sym!(x)");
         assert_eq!(format!("{:?}", r!(Character::from_str("x"))), "r!(Character::from_str(\"x\"))");
         assert_eq!(
-            format!("{:?}", r!(Lang(&[r!(Symbol("x"))]))),
-            "r!(Lang([sym!(x)]))"
+            format!("{:?}", r!(Language::from_objects(&[r!(Symbol("x"))]))),
+            "r!(Language::from_objects([sym!(x)]))"
         );
 
         // Logical
@@ -170,9 +170,9 @@ fn test_to_robj() {
 fn parse_test() {
     test! {
     let p = parse("print(1L);print(1L);")?;
-    let q = r!(Expr(&[
-        r!(Lang(&[r!(Symbol("print")), r!(1)])),
-        r!(Lang(&[r!(Symbol("print")), r!(1)]))
+    let q = r!(Expression::from_objects(&[
+        r!(Language::from_objects(&[r!(Symbol("print")), r!(1)])),
+        r!(Language::from_objects(&[r!(Symbol("print")), r!(1)]))
     ]));
     assert_eq!(p, q);
 
@@ -238,7 +238,7 @@ fn input_iterator_test() {
         assert_eq!(iter.collect::<Vec<_>>(), src);
 
         let src = &[Robj::from(1), Robj::from(2), Robj::from(3)];
-        let robj = Robj::from(List(src));
+        let robj = Robj::from(List::from_objects(src));
         let iter = <ListIter>::from_robj(&robj).unwrap();
         assert_eq!(iter.collect::<Vec<_>>(), src);
 

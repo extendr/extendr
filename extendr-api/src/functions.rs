@@ -378,7 +378,7 @@ pub fn na_str() -> &'static str {
 /// use extendr_api::prelude::*;
 /// test! {
 ///    let expr = parse("1 + 2").unwrap();
-///    assert!(expr.is_expr());
+///    assert!(expr.is_expression());
 /// }
 /// ```
 pub fn parse(code: &str) -> Result<Robj> {

@@ -185,7 +185,7 @@ impl Robj {
     ///     assert_eq!(r!(1).rtype(), RType::Integer);
     ///     assert_eq!(r!(1.0).rtype(), RType::Real);
     ///     assert_eq!(r!("1").rtype(), RType::String);
-    ///     assert_eq!(r!(List(&[1, 2])).rtype(), RType::List);
+    ///     assert_eq!(r!(List::from_objects(&[1, 2])).rtype(), RType::List);
     ///     assert_eq!(parse("x + y")?.rtype(), RType::Expression);
     ///     assert_eq!(r!(Raw::from_bytes(&[1_u8, 2, 3])).rtype(), RType::Raw);
     /// }
@@ -1175,7 +1175,11 @@ impl std::fmt::Debug for Robj {
                 }
             },
             PROMSXP => write!(f, "r!(Promise())"),
-            LANGSXP => write!(f, "r!({:?})", self.as_lang().unwrap()),
+            LANGSXP => write!(
+                f,
+                "r!(Language::from_objects({:?}))",
+                self.as_pairlist_iter().unwrap()
+            ),
             SPECIALSXP => write!(f, "r!(Special())"),
             BUILTINSXP => write!(f, "r!(Builtin())"),
             CHARSXP => {
@@ -1214,8 +1218,16 @@ impl std::fmt::Debug for Robj {
                     write!(f, "r!({:?})", slice)
                 }
             }
-            VECSXP => write!(f, "r!({:?})", self.as_list().unwrap()),
-            EXPRSXP => write!(f, "r!({:?})", self.as_expr().unwrap()),
+            VECSXP => write!(
+                f,
+                "r!(List::from_objects({:?}))",
+                self.as_list_iter().unwrap()
+            ),
+            EXPRSXP => write!(
+                f,
+                "r!(Expression::from_objects({:?}))",
+                self.as_list_iter().unwrap()
+            ),
             WEAKREFSXP => write!(
                 f,
                 "r!(Weakref({:?}))",
