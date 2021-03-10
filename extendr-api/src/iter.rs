@@ -221,7 +221,7 @@ impl Iterator for PairlistTagIter {
             } else {
                 self.list_elem = CDR(sexp);
                 if let Some(symbol) = new_owned(TAG(sexp)).as_symbol() {
-                    Some(std::mem::transmute(symbol.0))
+                    Some(std::mem::transmute(symbol.as_str()))
                 } else {
                     Some(na_str())
                 }

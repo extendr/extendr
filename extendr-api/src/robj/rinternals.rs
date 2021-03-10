@@ -210,8 +210,8 @@ impl Robj {
     pub fn eval_promise(&self) -> Result<Robj> {
         if self.is_promise() {
             let promise = self.as_promise().unwrap();
-            if !promise.value.is_unbound_value() {
-                Ok(promise.value)
+            if !promise.value().is_unbound_value() {
+                Ok(promise.value())
             } else {
                 self.eval()
             }

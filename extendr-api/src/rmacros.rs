@@ -100,13 +100,13 @@ macro_rules! global {
 /// test! {
 ///
 /// let wombat = sym!(wombat);
-/// assert_eq!(wombat, r!(Symbol("wombat")));
+/// assert_eq!(wombat, r!(Symbol::from_str("wombat")));
 /// }
 /// ```
 #[macro_export]
 macro_rules! sym {
     ($($tokens: tt)*) => {
-        Robj::from(Symbol(stringify!($($tokens)*)))
+        Robj::from(Symbol::from_str(stringify!($($tokens)*)))
     };
 }
 

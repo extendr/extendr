@@ -17,9 +17,9 @@ impl Robj {
     /// ```
     pub fn dollar<'a, T>(&self, symbol: T) -> Result<Robj>
     where
-        Symbol<'a>: From<T>,
+        T: AsRef<str>,
     {
-        let symbol: Symbol = Symbol::from(symbol);
+        let symbol: Symbol = Symbol::from_str(symbol.as_ref());
         call!("$", self, symbol)
     }
 
@@ -59,10 +59,10 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    /// let x = r!(Symbol("x"));
-    /// let y = r!(Symbol("y"));
+    /// let x = r!(Symbol::from_str("x"));
+    /// let y = r!(Symbol::from_str("y"));
     /// let tilde = x.tilde(y).unwrap();
-    /// assert_eq!(tilde, r!(Language::from_objects(&[r!(Symbol("~")), r!(Symbol("x")), r!(Symbol("y"))])));
+    /// assert_eq!(tilde, r!(Language::from_objects(&[r!(Symbol::from_str("~")), r!(Symbol::from_str("x")), r!(Symbol::from_str("y"))])));
     /// assert_eq!(tilde.inherits("formula"), true);
     /// }
     /// ```
@@ -77,8 +77,8 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    /// let base = r!(Symbol("base"));
-    /// let env = r!(Symbol(".getNamespace"));
+    /// let base = r!(Symbol::from_str("base"));
+    /// let env = r!(Symbol::from_str(".getNamespace"));
     /// let base_env = base.double_colon(env).unwrap();
     /// assert_eq!(base_env.is_function(), true);
     /// }

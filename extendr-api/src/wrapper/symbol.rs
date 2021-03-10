@@ -1,42 +1,48 @@
 use super::*;
 
-/// Wrapper for creating symbols.
+/// Wrapper for creating symbol objects.
 ///
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let symbol = r!(Symbol("xyz"));
-///     assert_eq!(symbol.as_symbol(), Some(Symbol("xyz")));
-///     assert!(symbol.is_symbol());
+///     let chr = r!(Symbol::from_str("xyz"));
+///     assert_eq!(chr.as_symbol().unwrap().as_str(), "xyz");
 /// }
 /// ```
-/// Note that creating a symbol from a string is expensive
-/// and so you may want to cache them.
 ///
 #[derive(Debug, PartialEq, Clone)]
-pub struct Symbol<'a>(pub &'a str);
-
-impl<'a> From<Symbol<'a>> for Robj {
-    /// Make a symbol object.
-    fn from(name: Symbol) -> Self {
-        single_threaded(|| unsafe { new_owned(make_symbol(name.0)) })
-    }
+pub struct Symbol {
+    pub(crate) robj: Robj,
 }
 
-/// Allow you to skip the Symbol() in some cases.
-impl<'a> From<&'a str> for Symbol<'a> {
-    fn from(val: &'a str) -> Self {
-        Self(val)
+impl Symbol {
+    /// Make a symbol object from a string.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let chr = r!(Symbol::from_str("xyz"));
+    ///     assert_eq!(chr, sym!(xyz));
+    /// }
+    /// ```
+    pub fn from_str(val: &str) -> Self {
+        Symbol {
+            robj: unsafe { new_owned(make_symbol(val)) },
+        }
     }
-}
 
-impl<'a> FromRobj<'a> for Symbol<'a> {
-    /// Convert an Robj to a Symbol wrapper.
-    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if let Some(x) = robj.as_symbol() {
-            Ok(x)
-        } else {
-            Err("Expected a symbol.")
+    /// Get the string from a symbol object.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     assert_eq!(sym!(xyz).as_symbol().unwrap().as_str(), "xyz");
+    /// }
+    /// ```
+    pub fn as_str(&self) -> &str {
+        unsafe {
+            let sexp = self.robj.get();
+            let printname = PRINTNAME(sexp);
+            assert!(TYPEOF(printname) as u32 == CHARSXP);
+            to_str(R_CHAR(printname) as *const u8)
         }
     }
 }

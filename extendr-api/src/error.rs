@@ -56,6 +56,7 @@ pub enum Error {
     ExpectedWeakRef(Robj),
     ExpectedRaw(Robj),
     ExpectedS4(Robj),
+    ExpectedPrimitive(Robj),
 
     Other(String),
 }

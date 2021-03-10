@@ -178,8 +178,8 @@ impl Robj {
     ///     assert_eq!(R!(function() {})?.rtype(), RType::Function);
     ///     assert_eq!(new_env().rtype(), RType::Enviroment);
     ///     assert_eq!(lang!("+", 1, 2).rtype(), RType::Language);
-    ///     assert_eq!(r!(Primitive("if")).rtype(), RType::Special);
-    ///     assert_eq!(r!(Primitive("+")).rtype(), RType::Builtin);
+    ///     assert_eq!(r!(Primitive::from_str("if")).rtype(), RType::Special);
+    ///     assert_eq!(r!(Primitive::from_str("+")).rtype(), RType::Builtin);
     ///     assert_eq!(r!(Character::from_str("hello")).rtype(), RType::Character);
     ///     assert_eq!(r!(TRUE).rtype(), RType::Logical);
     ///     assert_eq!(r!(1).rtype(), RType::Integer);
@@ -822,8 +822,8 @@ impl Robj {
     /// test! {
     ///
     ///    let mut robj = r!("hello");
-    ///    robj.set_attrib(Symbol("xyz"), 1);
-    ///    assert_eq!(robj.get_attrib(Symbol("xyz")), Some(r!(1)));
+    ///    robj.set_attrib(Symbol::from_str("xyz"), 1);
+    ///    assert_eq!(robj.get_attrib(Symbol::from_str("xyz")), Some(r!(1)));
     /// }
     /// ```
     pub fn get_attrib<'a, N>(&self, name: N) -> Option<Robj>
@@ -852,8 +852,8 @@ impl Robj {
     /// use extendr_api::prelude::*;
     /// test! {
     ///
-    ///    let mut robj = r!("hello").set_attrib(Symbol("xyz"), 1)?;
-    ///    assert_eq!(robj.get_attrib(Symbol("xyz")), Some(r!(1)));
+    ///    let mut robj = r!("hello").set_attrib(Symbol::from_str("xyz"), 1)?;
+    ///    assert_eq!(robj.get_attrib(Symbol::from_str("xyz")), Some(r!(1)));
     /// }
     /// ```
     pub fn set_attrib<N, V>(&self, name: N, value: V) -> Result<Robj>
@@ -1144,7 +1144,7 @@ impl std::fmt::Debug for Robj {
                 } else if self.is_unbound_value() {
                     write!(f, "unbound_value()")
                 } else {
-                    write!(f, "sym!({})", self.as_symbol().unwrap().0)
+                    write!(f, "sym!({})", self.as_symbol().unwrap().as_str())
                 }
             }
             LISTSXP => {

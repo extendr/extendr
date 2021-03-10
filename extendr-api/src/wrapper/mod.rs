@@ -133,29 +133,28 @@ make_conversions!(
     "Not a Language object"
 );
 
+make_conversions!(Symbol, ExpectedSymbol, is_symbol, "Not a Symbol object");
+
+make_conversions!(
+    Primitive,
+    ExpectedPrimitive,
+    is_primitive,
+    "Not a Primitive object"
+);
+
+make_conversions!(Promise, ExpectedPromise, is_promise, "Not a Promise object");
+
 impl Robj {
     /// Convert a symbol object to a Symbol wrapper.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
     ///     let fred = sym!(fred);
-    ///     assert_eq!(fred.as_symbol(), Some(Symbol("fred")));
+    ///     assert_eq!(fred.as_symbol(), Some(Symbol::from_str("fred")));
     /// }
     /// ```
     pub fn as_symbol(&self) -> Option<Symbol> {
-        if self.is_symbol() {
-            unsafe {
-                let printname = PRINTNAME(self.get());
-                if TYPEOF(printname) as u32 == CHARSXP {
-                    Some(Symbol(to_str(R_CHAR(printname) as *const u8)))
-                } else {
-                    // This should never occur.
-                    None
-                }
-            }
-        } else {
-            None
-        }
+        Symbol::try_from(self.clone()).ok()
     }
 
     /// Convert a character object to a Character wrapper.
@@ -187,7 +186,7 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let call_to_xyz = r!(Language::from_objects(&[r!(Symbol("xyz")), r!(1), r!(2)]));
+    ///     let call_to_xyz = r!(Language::from_objects(&[r!(Symbol::from_str("xyz")), r!(1), r!(2)]));
     ///     assert_eq!(call_to_xyz.is_language(), true);
     ///     assert_eq!(call_to_xyz.len(), 3);
     ///     assert_eq!(format!("{:?}", call_to_xyz), r#"r!(Language::from_objects([sym!(xyz), r!(1), r!(2)]))"#);
@@ -266,42 +265,9 @@ impl Robj {
         Function::try_from(self.clone()).ok()
     }
 
-    // /// Convert a primitive object (BUILTINSXP or SPECIALSXP) to a wrapper.
-    // /// ```
-    // /// use extendr_api::prelude::*;
-    // /// test! {
-    // ///  let builtin = r!(Primitive("+"));
-    // ///  let special = r!(Primitive("if"));
-    // ///  assert_eq!(builtin.sexptype(), libR_sys::BUILTINSXP);
-    // ///  assert_eq!(special.sexptype(), libR_sys::SPECIALSXP);
-    // /// }
-    // /// ```
-    // pub fn as_primitive(&self) -> Option<Primitive> {
-    //     match self.sexptype() {
-    //         BUILTINSXP | SPECIALSXP => {
-    //             // Unfortunately, for now PRIMNAME is out of bounds.
-    //             //Some(Primitive(unsafe {to_str(PRIMNAME(self.get()) as * const u8)}))
-    //             None
-    //         }
-    //         _ => None,
-    //     }
-    // }
-
     /// Get a wrapper for a promise.
-    pub fn as_promise(&self) -> Option<Promise<Robj, Robj, Robj>> {
-        if self.is_promise() {
-            unsafe {
-                let sexp = self.get();
-                Some(Promise {
-                    code: new_owned(PRCODE(sexp)),
-                    env: new_owned(PRENV(sexp)),
-                    value: new_owned(PRVALUE(sexp)),
-                    seen: PRSEEN(sexp) != 0,
-                })
-            }
-        } else {
-            None
-        }
+    pub fn as_promise(&self) -> Option<Promise> {
+        Promise::try_from(self.clone()).ok()
     }
 }
 
@@ -315,7 +281,7 @@ where
     R: Into<Robj>,
 {
     fn sym_pair(self) -> (Robj, Robj) {
-        (r!(Symbol(self.0.as_ref())), self.1.into())
+        (r!(Symbol::from_str(self.0.as_ref())), self.1.into())
     }
 }
 
@@ -326,6 +292,6 @@ where
     R: Clone,
 {
     fn sym_pair(self) -> (Robj, Robj) {
-        (r!(Symbol(self.0.as_ref())), self.1.clone().into())
+        (r!(Symbol::from_str(self.0.as_ref())), self.1.clone().into())
     }
 }

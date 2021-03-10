@@ -146,7 +146,7 @@ pub fn empty_env() -> Robj {
 /// use extendr_api::prelude::*;
 /// test! {
 ///     global_env().set_local(sym!(x), "hello");
-///     assert_eq!(base_env().local(sym!(+)), Some(r!(Primitive("+"))));
+///     assert_eq!(base_env().local(sym!(+)), Some(r!(Primitive::from_str("+"))));
 /// }
 /// ```
 pub fn base_env() -> Robj {
