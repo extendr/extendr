@@ -1176,7 +1176,12 @@ impl std::fmt::Debug for Robj {
             },
             PROMSXP => {
                 let p = self.as_promise().unwrap();
-                write!(f, "r!(Promise::from_parts({:?}, {:?}))", p.code(), p.environment())
+                write!(
+                    f,
+                    "r!(Promise::from_parts({:?}, {:?}))",
+                    p.code(),
+                    p.environment()
+                )
             }
             LANGSXP => write!(
                 f,
