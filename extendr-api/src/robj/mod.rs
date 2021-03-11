@@ -1174,7 +1174,10 @@ impl std::fmt::Debug for Robj {
                     write!(f, "r!({:?})", self.as_environment().unwrap())
                 }
             },
-            PROMSXP => write!(f, "r!(Promise())"),
+            PROMSXP => {
+                let p = self.as_promise().unwrap();
+                write!(f, "r!(Promise::from_parts({:?}, {:?}))", p.code(), p.environment())
+            }
             LANGSXP => write!(
                 f,
                 "r!(Language::from_objects({:?}))",
@@ -1189,15 +1192,7 @@ impl std::fmt::Debug for Robj {
             LGLSXP => {
                 let slice = self.as_logical_slice().unwrap();
                 if slice.len() == 1 {
-                    write!(
-                        f,
-                        "{}",
-                        if slice[0].0 == 0 {
-                            "r!(FALSE)"
-                        } else {
-                            "r!(TRUE)"
-                        }
-                    )
+                    write!(f, "r!({:?})", slice[0])
                 } else {
                     write!(f, "r!({:?})", slice)
                 }
