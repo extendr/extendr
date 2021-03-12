@@ -95,8 +95,8 @@ impl Robj {
         single_threaded(|| unsafe { new_owned(Rf_allocMatrix(sexptype, rows, cols)) })
     }
 
-    /// Compatible way to duplicate an object. Use obj.clone() instead
-    /// for Rust compatibility.
+    /// Do a deep copy of this object.
+    /// Note that clone() only adds a reference.
     pub fn duplicate(&self) -> Self {
         single_threaded(|| unsafe { new_owned(Rf_duplicate(self.get())) })
     }
@@ -209,12 +209,7 @@ impl Robj {
     /// ```
     pub fn eval_promise(&self) -> Result<Robj> {
         if self.is_promise() {
-            let promise = self.as_promise().unwrap();
-            if !promise.value().is_unbound_value() {
-                Ok(promise.value())
-            } else {
-                self.eval()
-            }
+            self.as_promise().unwrap().eval()
         } else {
             Ok(self.into())
         }
@@ -230,12 +225,6 @@ impl Robj {
         unsafe { Rf_nrows(self.get()) as usize }
     }
 
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    pub unsafe fn makeExternalPtr<T>(p: *mut T, tag: Robj, prot: Robj) -> Self {
-        Robj::make_external_ptr(p, tag, prot)
-    }
-
     /// Internal function used to implement `#[extendr]` impl
     #[doc(hidden)]
     pub unsafe fn make_external_ptr<T>(p: *mut T, tag: Robj, prot: Robj) -> Self {
@@ -244,22 +233,10 @@ impl Robj {
         }))
     }
 
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    pub unsafe fn externalPtrAddr<T>(&self) -> *mut T {
-        R_ExternalPtrAddr(self.get()) as *mut T
-    }
-
     /// Internal function used to implement `#[extendr]` impl
     #[doc(hidden)]
     pub unsafe fn external_ptr_addr<T>(&self) -> *mut T {
         R_ExternalPtrAddr(self.get()) as *mut T
-    }
-
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    pub unsafe fn externalPtrTag(&self) -> Self {
-        self.external_ptr_tag()
     }
 
     /// Internal function used to implement `#[extendr]` impl
@@ -272,12 +249,6 @@ impl Robj {
     #[doc(hidden)]
     pub unsafe fn external_ptr_protected(&self) -> Self {
         new_owned(R_ExternalPtrProtected(self.get()))
-    }
-
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    pub unsafe fn registerCFinalizer(&self, func: R_CFinalizer_t) {
-        single_threaded(|| self.register_c_finalizer(func))
     }
 
     #[doc(hidden)]
@@ -419,7 +390,7 @@ impl Robj {
     #[doc(hidden)]
     pub fn check_external_ptr(&self, expected_tag: &str) -> bool {
         if self.sexptype() == libR_sys::EXTPTRSXP {
-            let tag = unsafe { self.externalPtrTag() };
+            let tag = unsafe { self.external_ptr_tag() };
             if tag.as_str() == Some(expected_tag) {
                 return true;
             }

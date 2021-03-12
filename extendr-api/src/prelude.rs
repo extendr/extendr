@@ -39,8 +39,8 @@ pub use super::thread_safety::{
 };
 
 pub use super::wrapper::{
-    Character, Environment, Expression, Function, Language, List, Nullable, Pairlist, Primitive,
-    Promise, Raw, Symbol,
+    Character, EnvIter, Environment, Expression, Function, Language, List, ListIter, Nullable,
+    Pairlist, Primitive, Promise, Raw, Symbol,
 };
 
 #[cfg(feature = "ndarray")]
@@ -51,6 +51,4 @@ pub use ndarray::*;
 
 pub use extendr_macros::{extendr, extendr_module};
 
-pub use super::iter::{
-    EnvIter, Int, ListIter, Logical, PairlistIter, PairlistTagIter, Real, StrIter,
-};
+pub use super::iter::{Int, Logical, PairlistTagIter, PairlistValueIter, Real, StrIter};

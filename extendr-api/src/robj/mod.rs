@@ -101,7 +101,7 @@ pub use rinternals::*;
 /// test! {
 ///     let abc = list!(a = 1, b = "x", c = vec![1, 2]);
 ///     let names : Vec<_> = abc.names().unwrap().collect();
-///     let names_and_values : Vec<_> = abc.as_named_list_iter().unwrap().collect();
+///     let names_and_values : Vec<_> = abc.as_list().unwrap().iter().collect();
 ///     assert_eq!(names, vec!["a", "b", "c"]);
 ///     assert_eq!(names_and_values, vec![("a", r!(1)), ("b", r!("x")), ("c", r!(vec![1, 2]))]);
 /// }
@@ -944,28 +944,10 @@ impl Robj {
     /// ```
     pub fn dimnames(&self) -> Option<ListIter> {
         if let Some(names) = self.get_attrib(dimnames_symbol()) {
-            names.as_list_iter()
+            names.as_list().map(|v| v.values())
         } else {
             None
         }
-    }
-
-    /// Return an iterator over names and values of a list if they exist.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///    let list = list!(a = 1, b = 2, c = 3);
-    ///    let names_and_values : Vec<_> = list.as_named_list_iter().unwrap().collect();
-    ///    assert_eq!(names_and_values, vec![("a", r!(1)), ("b", r!(2)), ("c", r!(3))]);
-    /// }
-    /// ```
-    pub fn as_named_list_iter(&self) -> Option<NamedListIter> {
-        if let Some(names) = self.names() {
-            if let Some(values) = self.as_list_iter() {
-                return Some(names.zip(values));
-            }
-        }
-        None
     }
 
     /// Get the class attribute as a string iterator if one exists.
@@ -1038,20 +1020,6 @@ impl Robj {
             None
         }
     }
-
-    /// Get the names in an environment.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///    let names_and_values : std::collections::HashMap<_, _> = (0..4).map(|i| (format!("n{}", i), r!(i))).collect();
-    ///    let env = Environment::from_pairs(names_and_values);
-    ///    assert_eq!(env.ls().unwrap(), vec!["n0", "n1", "n2", "n3"]);
-    /// }
-    /// ```
-    pub fn ls(&self) -> Option<Vec<&str>> {
-        self.as_env_iter()
-            .map(|iter| iter.map(|(k, _)| k).collect::<Vec<_>>())
-    }
 }
 
 #[doc(hidden)]
@@ -1114,9 +1082,17 @@ impl PartialEq<Robj> for Robj {
                     REALSXP => self.as_real_slice() == rhs.as_real_slice(),
                     CPLXSXP => false,
                     ANYSXP => false,
-                    VECSXP | EXPRSXP | WEAKREFSXP => {
-                        self.as_list_iter().unwrap().eq(rhs.as_list_iter().unwrap())
-                    }
+                    VECSXP => self
+                        .as_list()
+                        .unwrap()
+                        .values()
+                        .eq(rhs.as_list().unwrap().values()),
+                    EXPRSXP => self
+                        .as_expression()
+                        .unwrap()
+                        .iter()
+                        .eq(rhs.as_expression().unwrap().iter()),
+                    WEAKREFSXP => false,
                     STRSXP => self.as_str_iter().unwrap().eq(rhs.as_str_iter().unwrap()),
                     BCODESXP => false,
                     EXTPTRSXP => false,
@@ -1221,18 +1197,14 @@ impl std::fmt::Debug for Robj {
             VECSXP => write!(
                 f,
                 "r!(List::from_objects({:?}))",
-                self.as_list_iter().unwrap()
+                self.as_list().unwrap().values()
             ),
             EXPRSXP => write!(
                 f,
                 "r!(Expression::from_objects({:?}))",
-                self.as_list_iter().unwrap()
+                self.as_expression().unwrap().iter()
             ),
-            WEAKREFSXP => write!(
-                f,
-                "r!(Weakref({:?}))",
-                self.as_list_iter().unwrap().collect::<Vec<_>>()
-            ),
+            WEAKREFSXP => write!(f, "r!(Weakref())"),
             // CPLXSXP => false,
             STRSXP => {
                 write!(f, "r!([")?;

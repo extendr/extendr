@@ -410,8 +410,8 @@ pub fn eval_string(code: &str) -> Result<Robj> {
     single_threaded(|| {
         let expr = parse(code)?;
         let mut res = Robj::from(());
-        if let Some(iter) = expr.as_list_iter() {
-            for lang in iter {
+        if let Some(expr) = expr.as_expression() {
+            for lang in expr.iter() {
                 res = lang.eval()?
             }
         }

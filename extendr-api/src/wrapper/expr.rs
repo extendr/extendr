@@ -26,4 +26,9 @@ impl Expression {
             robj: make_vector(EXPRSXP, values),
         }
     }
+
+    /// Return an iterator over the values of this expression list.
+    pub fn iter(&self) -> ListIter {
+        ListIter::from_parts(self.robj.clone(), 0, self.robj.len())
+    }
 }

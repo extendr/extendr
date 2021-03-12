@@ -19,14 +19,14 @@ pub mod raw;
 pub mod symbol;
 
 pub use character::Character;
-pub use environment::Environment;
+pub use environment::{EnvIter, Environment};
 pub use expr::Expression;
 pub use function::Function;
 pub use lang::Language;
-pub use list::List;
+pub use list::{List, ListIter};
 pub use matrix::{RArray, RColumn, RMatrix, RMatrix3D};
 pub use nullable::Nullable;
-pub use pairlist::Pairlist;
+pub use pairlist::{Pairlist, PairlistIter};
 pub use primitive::Primitive;
 pub use promise::Promise;
 pub use raw::Raw;

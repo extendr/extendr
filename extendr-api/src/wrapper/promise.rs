@@ -64,4 +64,22 @@ impl Promise {
             PRSEEN(sexp)
         }
     }
+
+    /// If this promise has not been evaluated, evaluate it, otherwise return the value.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///    let iris_promise = global_env().find_var(sym!(iris)).unwrap();
+    ///    let iris_dataframe = iris_promise.as_promise().unwrap().eval().unwrap();
+    ///    assert_eq!(iris_dataframe.is_frame(), true);
+    /// }
+    /// ```
+    pub fn eval(&self) -> Result<Robj> {
+        assert!(self.is_promise());
+        if !self.value().is_unbound_value() {
+            Ok(self.value())
+        } else {
+            self.robj.eval()
+        }
+    }
 }
