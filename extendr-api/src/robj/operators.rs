@@ -59,11 +59,10 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    /// let x = r!(Symbol::from_str("x"));
-    /// let y = r!(Symbol::from_str("y"));
-    /// let tilde = x.tilde(y).unwrap();
-    /// assert_eq!(tilde, r!(Language::from_objects(&[r!(Symbol::from_str("~")), r!(Symbol::from_str("x")), r!(Symbol::from_str("y"))])));
-    /// assert_eq!(tilde.inherits("formula"), true);
+    ///     let x = r!(Symbol::from_str("x"));
+    ///     let y = r!(Symbol::from_str("y"));
+    ///     let tilde = x.tilde(y).unwrap();
+    ///     assert_eq!(tilde.inherits("formula"), true);
     /// }
     /// ```
     pub fn tilde<T>(&self, rhs: T) -> Result<Robj>

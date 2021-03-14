@@ -266,31 +266,27 @@ where
 }
 
 // Matrix input parameters.
-impl<'a, T> FromRobj<'a> for RArray<&'a [T], [usize; 2]>
+impl<'a, T : 'a> FromRobj<'a> for RArray<T, [usize; 2]>
 where
     Robj: AsTypedSlice<'a, T>,
 {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if let Some(x) = robj.as_matrix() {
-            Ok(x)
-        } else if !robj.as_typed_slice().is_some() {
-            Err("Matrix type mismatch.")
-        } else {
-            Err("Expected a matrix.")
+        match robj.as_matrix() {
+            Some(x) => Ok(x),
+            _ => Err("Expected a matrix."),
         }
     }
 }
 
 // Matrix input parameters.
-impl<'a, T> FromRobj<'a> for RMatrix3D<&'a [T]>
+impl<'a, T : 'a> FromRobj<'a> for RMatrix3D<T>
 where
     Robj: AsTypedSlice<'a, T>,
 {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if let Some(x) = robj.as_matrix3d() {
-            Ok(x)
-        } else {
-            Err("Expected a 3d matrix.")
+        match robj.as_matrix3d() {
+            Some(x) => Ok(x),
+            _ => Err("Expected a matrix."),
         }
     }
 }

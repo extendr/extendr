@@ -4,7 +4,7 @@ use super::*;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let call_to_xyz = r!(Language::from_objects(&[sym!(xyz), r!(1), r!(2)]));
+///     let call_to_xyz = r!(Language::from_values(&[sym!(xyz), r!(1), r!(2)]));
 ///     assert_eq!(call_to_xyz.is_language(), true);
 ///     assert_eq!(call_to_xyz.len(), 3);
 /// }
@@ -17,7 +17,7 @@ pub struct Language {
 }
 
 impl Language {
-    pub fn from_objects<T>(values: T) -> Self
+    pub fn from_values<T>(values: T) -> Self
     where
         T: IntoIterator,
         T::IntoIter: DoubleEndedIterator,
@@ -35,5 +35,22 @@ impl Language {
             Rf_unprotect(num_protected);
             Language { robj }
         })
+    }
+
+    pub fn iter(&self) -> PairlistIter {
+        unsafe {
+            PairlistIter {
+                robj: self.robj.clone(),
+                list_elem: self.robj.get(),
+            }
+        }
+    }
+
+    pub fn names(&self) -> impl Iterator<Item=&'static str> {
+        self.iter().map(|(tag, _)| tag)
+    }
+
+    pub fn values(&self) -> impl Iterator<Item=Robj> {
+        self.iter().map(|(_, robj)| robj)
     }
 }

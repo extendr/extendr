@@ -95,87 +95,6 @@ pub type Real = SliceIter<f64>;
 /// ```
 pub type Logical = SliceIter<Bool>;
 
-#[derive(Clone)]
-pub struct PairlistValueIter {
-    root_obj: Robj,
-    list_elem: SEXP,
-}
-
-impl PairlistValueIter {
-    /// Make an empty list iterator.
-    pub fn new() -> Self {
-        unsafe {
-            Self {
-                root_obj: ().into(),
-                list_elem: R_NilValue,
-            }
-        }
-    }
-}
-
-impl Iterator for PairlistValueIter {
-    type Item = Robj;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        unsafe {
-            let sexp = self.list_elem;
-            if sexp == R_NilValue {
-                None
-            } else {
-                self.list_elem = CDR(sexp);
-                Some(new_owned(CAR(sexp)))
-            }
-        }
-    }
-}
-
-#[derive(Clone)]
-/// Iterator over pairlist tag names.
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///     let mut robj = R!(pairlist(a = 1, b = 2, 3)).unwrap();
-///     let tags : Vec<_> = robj.as_pairlist_tag_iter().unwrap().collect();
-///     assert_eq!(tags, vec!["a", "b", na_str()]);
-/// }
-/// ```
-pub struct PairlistTagIter {
-    root_obj: Robj,
-    list_elem: SEXP,
-}
-
-impl PairlistTagIter {
-    /// Make an empty list iterator.
-    pub fn new() -> Self {
-        unsafe {
-            Self {
-                root_obj: ().into(),
-                list_elem: R_NilValue,
-            }
-        }
-    }
-}
-
-impl Iterator for PairlistTagIter {
-    type Item = &'static str;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        unsafe {
-            let sexp = self.list_elem;
-            if sexp == R_NilValue {
-                None
-            } else {
-                self.list_elem = CDR(sexp);
-                if let Some(symbol) = new_owned(TAG(sexp)).as_symbol() {
-                    Some(std::mem::transmute(symbol.as_str()))
-                } else {
-                    Some(na_str())
-                }
-            }
-        }
-    }
-}
-
 /// Iterator over strings or string factors.
 ///
 /// ```
@@ -294,55 +213,11 @@ macro_rules! impl_iter_debug {
 }
 
 impl_iter_debug!(ListIter);
-impl_iter_debug!(PairlistValueIter);
-impl_iter_debug!(PairlistTagIter);
+impl_iter_debug!(PairlistIter);
 impl_iter_debug!(StrIter);
 impl_iter_debug!(EnvIter);
 
 impl Robj {
-    /// Get an iterator over a pairlist objects.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///     let mut robj = R!(pairlist(a = 1, b = 2, 3)).unwrap();
-    ///     let objects : Vec<_> = robj.as_pairlist_iter().unwrap().collect();
-    ///     assert_eq!(objects, vec![r!(1.0), r!(2.0), r!(3.0)]);
-    /// }
-    /// ```
-    pub fn as_pairlist_iter(&self) -> Option<PairlistValueIter> {
-        match self.sexptype() {
-            LISTSXP | LANGSXP | DOTSXP => unsafe {
-                Some(PairlistValueIter {
-                    root_obj: self.into(),
-                    list_elem: self.get(),
-                })
-            },
-            _ => None,
-        }
-    }
-
-    /// Get an iterator over pairlist tags.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///     let mut robj = R!(pairlist(a = 1, b = 2, 3)).unwrap();
-    ///     // let mut robj = pairlist!(a = 1, b = 2, 3);
-    ///     let tags : Vec<_> = robj.as_pairlist_tag_iter().unwrap().collect();
-    ///     assert_eq!(tags, vec!["a", "b", na_str()]);
-    /// }
-    /// ```
-    pub fn as_pairlist_tag_iter(&self) -> Option<PairlistTagIter> {
-        match self.sexptype() {
-            LISTSXP | LANGSXP | DOTSXP => unsafe {
-                Some(PairlistTagIter {
-                    root_obj: self.into(),
-                    list_elem: self.get(),
-                })
-            },
-            _ => None,
-        }
-    }
-
     /// Get an iterator over a string vector.
     /// Returns None if the object is not a string vector
     /// but works for factors.

@@ -10,13 +10,13 @@ impl Expression {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let expr = r!(Expression::from_objects(&[r!(0), r!(1), r!(2)]));
+    ///     let expr = r!(Expression::from_values(&[r!(0), r!(1), r!(2)]));
     ///     assert_eq!(expr.is_expression(), true);
     ///     assert_eq!(expr.len(), 3);
-    ///     assert_eq!(format!("{:?}", expr), r#"r!(Expression::from_objects([r!(0), r!(1), r!(2)]))"#);
+    ///     assert_eq!(format!("{:?}", expr), r#"r!(Expression::from_values([r!(0), r!(1), r!(2)]))"#);
     /// }
     /// ```
-    pub fn from_objects<V>(values: V) -> Self
+    pub fn from_values<V>(values: V) -> Self
     where
         V: IntoIterator,
         V::IntoIter: ExactSizeIterator,
@@ -28,7 +28,7 @@ impl Expression {
     }
 
     /// Return an iterator over the values of this expression list.
-    pub fn iter(&self) -> ListIter {
+    pub fn values(&self) -> ListIter {
         ListIter::from_parts(self.robj.clone(), 0, self.robj.len())
     }
 }

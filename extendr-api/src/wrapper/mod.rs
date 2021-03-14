@@ -186,10 +186,10 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let call_to_xyz = r!(Language::from_objects(&[r!(Symbol::from_str("xyz")), r!(1), r!(2)]));
+    ///     let call_to_xyz = r!(Language::from_values(&[r!(Symbol::from_str("xyz")), r!(1), r!(2)]));
     ///     assert_eq!(call_to_xyz.is_language(), true);
     ///     assert_eq!(call_to_xyz.len(), 3);
-    ///     assert_eq!(format!("{:?}", call_to_xyz), r#"r!(Language::from_objects([sym!(xyz), r!(1), r!(2)]))"#);
+    ///     assert_eq!(format!("{:?}", call_to_xyz), r#"r!(Language::from_values([sym!(xyz), r!(1), r!(2)]))"#);
     /// }
     /// ```
     pub fn as_language(&self) -> Option<Language> {
@@ -214,9 +214,9 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let list = r!(List::from_objects(&[r!(0), r!(1), r!(2)]));
+    ///     let list = r!(List::from_values(&[r!(0), r!(1), r!(2)]));
     ///     assert_eq!(list.is_list(), true);
-    ///     assert_eq!(format!("{:?}", list), r#"r!(List::from_objects([r!(0), r!(1), r!(2)]))"#);
+    ///     assert_eq!(format!("{:?}", list), r#"r!(List::from_values([r!(0), r!(1), r!(2)]))"#);
     /// }
     /// ```
     pub fn as_list(&self) -> Option<List> {
@@ -227,10 +227,10 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let expr = r!(Expression::from_objects(&[r!(0), r!(1), r!(2)]));
+    ///     let expr = r!(Expression::from_values(&[r!(0), r!(1), r!(2)]));
     ///     assert_eq!(expr.is_expression(), true);
-    ///     assert_eq!(expr.as_expression(), Some(Expression::from_objects(vec![r!(0), r!(1), r!(2)])));
-    ///     assert_eq!(format!("{:?}", expr), r#"r!(Expression::from_objects([r!(0), r!(1), r!(2)]))"#);
+    ///     assert_eq!(expr.as_expression(), Some(Expression::from_values(vec![r!(0), r!(1), r!(2)])));
+    ///     assert_eq!(format!("{:?}", expr), r#"r!(Expression::from_values([r!(0), r!(1), r!(2)]))"#);
     /// }
     /// ```
     pub fn as_expression(&self) -> Option<Expression> {

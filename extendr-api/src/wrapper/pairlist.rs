@@ -61,6 +61,14 @@ impl Pairlist {
             }
         }
     }
+
+    pub fn names(&self) -> impl Iterator<Item=&'static str> {
+        self.iter().map(|(tag, _)| tag)
+    }
+
+    pub fn values(&self) -> impl Iterator<Item=Robj> {
+        self.iter().map(|(_, robj)| robj)
+    }
 }
 
 /// Generate paits of names and values.
@@ -75,8 +83,8 @@ impl Pairlist {
 /// ```
 #[derive(Clone)]
 pub struct PairlistIter {
-    robj: Robj,
-    list_elem: SEXP,
+    pub (crate) robj: Robj,
+    pub (crate) list_elem: SEXP,
 }
 
 impl PairlistIter {

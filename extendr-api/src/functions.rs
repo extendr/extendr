@@ -372,7 +372,7 @@ pub fn eval_string(code: &str) -> Result<Robj> {
         let expr = parse(code)?;
         let mut res = Robj::from(());
         if let Some(expr) = expr.as_expression() {
-            for lang in expr.iter() {
+            for lang in expr.values() {
                 res = lang.eval()?
             }
         }

@@ -17,19 +17,19 @@ impl List {
     /// ```
     pub fn new() -> List {
         let values: &[Robj] = &[];
-        List::from_objects(values)
+        List::from_values(values)
     }
 
     /// Wrapper for creating list (VECSXP) objects.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let list = r!(List::from_objects(&[r!(0), r!(1), r!(2)]));
+    ///     let list = r!(List::from_values(&[r!(0), r!(1), r!(2)]));
     ///     assert_eq!(list.is_list(), true);
     ///     assert_eq!(list.len(), 3);
     /// }
     /// ```
-    pub fn from_objects<V>(values: V) -> Self
+    pub fn from_values<V>(values: V) -> Self
     where
         V: IntoIterator,
         V::IntoIter: ExactSizeIterator,
@@ -38,6 +38,27 @@ impl List {
         Self {
             robj: make_vector(VECSXP, values),
         }
+    }
+
+    pub fn from_pairs<V>(pairs: V) -> Self
+    where
+        V: IntoIterator,
+        V::IntoIter: ExactSizeIterator + Clone,
+        V::Item: Into<(&'static str, Robj)>,
+    {
+        let iter = pairs.into_iter();
+        let res = List::from_values(
+            iter.clone().map(|kv| {
+                let (_, v) = kv.into();
+                v
+            })
+        );
+        res.set_names(
+            iter.map(|kv| {
+                let (k, _) = kv.into();
+                k
+            })
+        ).unwrap().as_list().unwrap()
     }
 
     /// Return an iterator over the values of this list.

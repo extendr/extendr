@@ -188,7 +188,7 @@ impl Robj {
     ///     assert_eq!(r!(1).rtype(), RType::Integer);
     ///     assert_eq!(r!(1.0).rtype(), RType::Real);
     ///     assert_eq!(r!("1").rtype(), RType::String);
-    ///     assert_eq!(r!(List::from_objects(&[1, 2])).rtype(), RType::List);
+    ///     assert_eq!(r!(List::from_values(&[1, 2])).rtype(), RType::List);
     ///     assert_eq!(parse("x + y")?.rtype(), RType::Expression);
     ///     assert_eq!(r!(Raw::from_bytes(&[1_u8, 2, 3])).rtype(), RType::Raw);
     /// }
@@ -1064,51 +1064,56 @@ impl PartialEq<Robj> for Robj {
             if self.get() == rhs.get() {
                 return true;
             }
-            if self.sexptype() == rhs.sexptype() && self.len() == rhs.len() {
-                let lsexp = self.get();
-                let rsexp = rhs.get();
-                match self.sexptype() {
-                    NILSXP => true,
-                    SYMSXP => PRINTNAME(lsexp) == PRINTNAME(rsexp),
-                    LISTSXP | LANGSXP | DOTSXP => self
-                        .as_pairlist_iter()
-                        .unwrap()
-                        .eq(rhs.as_pairlist_iter().unwrap()),
-                    CLOSXP => false,
-                    ENVSXP => false, // objects must match.
-                    PROMSXP => false,
-                    SPECIALSXP => false,
-                    BUILTINSXP => false,
-                    CHARSXP => self.as_character() == rhs.as_character(),
-                    LGLSXP => self.as_logical_slice() == rhs.as_logical_slice(),
-                    INTSXP => self.as_integer_slice() == rhs.as_integer_slice(),
-                    REALSXP => self.as_real_slice() == rhs.as_real_slice(),
-                    CPLXSXP => false,
-                    ANYSXP => false,
-                    VECSXP => self
-                        .as_list()
-                        .unwrap()
-                        .values()
-                        .eq(rhs.as_list().unwrap().values()),
-                    EXPRSXP => self
-                        .as_expression()
-                        .unwrap()
-                        .iter()
-                        .eq(rhs.as_expression().unwrap().iter()),
-                    WEAKREFSXP => false,
-                    STRSXP => self.as_str_iter().unwrap().eq(rhs.as_str_iter().unwrap()),
-                    BCODESXP => false,
-                    EXTPTRSXP => false,
-                    RAWSXP => self.as_raw_slice() == rhs.as_raw_slice(),
-                    S4SXP => false,
-                    NEWSXP => false,
-                    FREESXP => false,
-                    _ => false,
-                }
-            } else {
-                false
-            }
+
+            // see https://github.com/hadley/r-internals/blob/master/misc.md
+            R_compute_identical(self.get(), rhs.get(), 16) != 0
         }
+        // unsafe {
+        //     if self.get() == rhs.get() {
+        //         return true;
+        //     }
+        //     if self.sexptype() == rhs.sexptype() && self.len() == rhs.len() {
+        //         let lsexp = self.get();
+        //         let rsexp = rhs.get();
+        //         match self.sexptype() {
+        //             NILSXP => true,
+        //             SYMSXP => PRINTNAME(lsexp) == PRINTNAME(rsexp),
+        //             LISTSXP | LANGSXP | DOTSXP => self.as_pairlist().iter() == rhs.as_pairlist().iter(),
+        //             CLOSXP => false,
+        //             ENVSXP => false, // objects must match.
+        //             PROMSXP => false,
+        //             SPECIALSXP => false,
+        //             BUILTINSXP => false,
+        //             CHARSXP => self.as_character() == rhs.as_character(),
+        //             LGLSXP => self.as_logical_slice() == rhs.as_logical_slice(),
+        //             INTSXP => self.as_integer_slice() == rhs.as_integer_slice(),
+        //             REALSXP => self.as_real_slice() == rhs.as_real_slice(),
+        //             CPLXSXP => false,
+        //             ANYSXP => false,
+        //             VECSXP => self
+        //                 .as_list()
+        //                 .unwrap()
+        //                 .values()
+        //                 .eq(rhs.as_list().unwrap().values()),
+        //             EXPRSXP => self
+        //                 .as_expression()
+        //                 .unwrap()
+        //                 .values()
+        //                 .eq(rhs.as_expression().unwrap().values()),
+        //             WEAKREFSXP => false,
+        //             STRSXP => self.as_str_iter().unwrap().eq(rhs.as_str_iter().unwrap()),
+        //             BCODESXP => false,
+        //             EXTPTRSXP => false,
+        //             RAWSXP => self.as_raw_slice() == rhs.as_raw_slice(),
+        //             S4SXP => false,
+        //             NEWSXP => false,
+        //             FREESXP => false,
+        //             _ => false,
+        //         }
+        //     } else {
+        //         false
+        //     }
+        // }
     }
 }
 
@@ -1127,7 +1132,7 @@ impl std::fmt::Debug for Robj {
                 }
             }
             LISTSXP => {
-                let pairlist = self.as_pairlist_iter().unwrap();
+                let pairlist = self.as_pairlist().unwrap().iter();
                 write!(f, "r!({:?})", pairlist)
             }
             CLOSXP => {
@@ -1164,8 +1169,8 @@ impl std::fmt::Debug for Robj {
             }
             LANGSXP => write!(
                 f,
-                "r!(Language::from_objects({:?}))",
-                self.as_pairlist_iter().unwrap()
+                "r!(Language::from_values({:?}))",
+                self.as_language().unwrap().values().collect::<Vec<_>>()
             ),
             SPECIALSXP => write!(f, "r!(Special())"),
             BUILTINSXP => write!(f, "r!(Builtin())"),
@@ -1197,15 +1202,18 @@ impl std::fmt::Debug for Robj {
                     write!(f, "r!({:?})", slice)
                 }
             }
-            VECSXP => write!(
-                f,
-                "r!(List::from_objects({:?}))",
-                self.as_list().unwrap().values()
-            ),
+            VECSXP => {
+                let list = self.as_list().unwrap();
+                if self.names().is_some() {
+                    write!(f, "r!(List::from_pairs({:?}))", list.iter())
+                } else {
+                    write!(f, "r!(List::from_values({:?}))", list.values())
+                }
+            }
             EXPRSXP => write!(
                 f,
-                "r!(Expression::from_objects({:?}))",
-                self.as_expression().unwrap().iter()
+                "r!(Expression::from_values({:?}))",
+                self.as_expression().unwrap().values()
             ),
             WEAKREFSXP => write!(f, "r!(Weakref())"),
             // CPLXSXP => false,
@@ -1237,7 +1245,11 @@ impl std::fmt::Debug for Robj {
             NEWSXP => write!(f, "r!(New())"),
             FREESXP => write!(f, "r!(Free())"),
             _ => write!(f, "??"),
+        }?;
+        if let Some(c) = self.class() {
+            write!(f, ".set_class({:?}", c)?;
         }
+        Ok(())
     }
 }
 

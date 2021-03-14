@@ -51,6 +51,8 @@ pub use ndarray::*;
 
 pub use extendr_macros::{extendr, extendr_module};
 
-pub use super::iter::{Int, Logical, PairlistTagIter, PairlistValueIter, Real, StrIter};
+pub use super::iter::{Int, Logical, Real, StrIter};
 
 pub use std::convert::{TryFrom, TryInto};
+
+pub use std::ops::Index;

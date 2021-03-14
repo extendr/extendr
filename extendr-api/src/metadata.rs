@@ -42,7 +42,7 @@ pub struct Metadata {
 
 impl From<Arg> for Robj {
     fn from(val: Arg) -> Self {
-        List::from_objects(&[r!(val.name), r!(val.arg_type)])
+        List::from_values(&[r!(val.name), r!(val.arg_type)])
             .into_robj()
             .set_names(&["name", "arg_type"])
             .expect("From<Arg> failed")
@@ -51,10 +51,10 @@ impl From<Arg> for Robj {
 
 impl From<Func> for Robj {
     fn from(val: Func) -> Self {
-        List::from_objects(&[
+        List::from_values(&[
             r!(val.doc),
             r!(val.name),
-            r!(List::from_objects(val.args)),
+            r!(List::from_values(val.args)),
             r!(val.return_type),
             r!(val.hidden),
         ])
@@ -66,10 +66,10 @@ impl From<Func> for Robj {
 
 impl From<Impl> for Robj {
     fn from(val: Impl) -> Self {
-        List::from_objects(&[
+        List::from_values(&[
             r!(val.doc),
             r!(val.name),
-            r!(List::from_objects(val.methods)),
+            r!(List::from_values(val.methods)),
         ])
         .into_robj()
         .set_names(&["doc", "name", "methods"])
@@ -79,10 +79,10 @@ impl From<Impl> for Robj {
 
 impl From<Metadata> for Robj {
     fn from(val: Metadata) -> Self {
-        List::from_objects(&[
+        List::from_values(&[
             r!(val.name),
-            r!(List::from_objects(val.functions)),
-            r!(List::from_objects(val.impls)),
+            r!(List::from_values(val.functions)),
+            r!(List::from_values(val.impls)),
         ])
         .into_robj()
         .set_names(&["name", "functions", "impls"])
