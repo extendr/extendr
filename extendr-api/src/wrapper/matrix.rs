@@ -28,7 +28,7 @@ pub struct RArray<T, D> {
     robj: Robj,
 
     /// Slice of the data references the Robj.
-    data: * mut T,
+    data: *mut T,
 
     /// Dimensions of the array.
     dim: D,
@@ -85,7 +85,7 @@ impl<T> Offset<[usize; 3]> for RArray<T, [usize; 3]> {
 }
 
 impl<T, D> RArray<T, D> {
-    pub fn from_parts(robj: Robj, data: * mut T, dim: D) -> Self {
+    pub fn from_parts(robj: Robj, data: *mut T, dim: D) -> Self {
         Self { robj, data, dim }
     }
 
@@ -109,7 +109,7 @@ where
         let robj = (0..nrows).map(|r| f(r)).collect_robj();
         let dim = [nrows];
         let mut robj = robj.set_attrib(dim_symbol(), dim).unwrap();
-        let slice = robj.as_typed_slice_mut().unwrap(); 
+        let slice = robj.as_typed_slice_mut().unwrap();
         let data = slice.as_mut_ptr();
         RArray::from_parts(robj, data, dim)
     }
@@ -165,14 +165,15 @@ where
         nmatrix: usize,
         f: F,
     ) -> Self {
-        let robj = (0..nmatrix).map(|m| {
-            let h = f.clone();
-            (0..ncols)
-                .map(move |c| {
-                    let mut g = h.clone();
-                    (0..nrows).map(move |r| g(r, c, m))
-                })
-                .flatten()
+        let robj = (0..nmatrix)
+            .map(|m| {
+                let h = f.clone();
+                (0..ncols)
+                    .map(move |c| {
+                        let mut g = h.clone();
+                        (0..nrows).map(move |r| g(r, c, m))
+                    })
+                    .flatten()
             })
             .flatten()
             .collect_robj();
@@ -198,7 +199,7 @@ where
     }
 }
 
-impl<'a, T : 'a> TryFrom<Robj> for RColumn<T>
+impl<'a, T: 'a> TryFrom<Robj> for RColumn<T>
 where
     Robj: AsTypedSlice<'a, T>,
 {
@@ -213,7 +214,7 @@ where
     }
 }
 
-impl<'a, T : 'a> TryFrom<Robj> for RMatrix<T>
+impl<'a, T: 'a> TryFrom<Robj> for RMatrix<T>
 where
     Robj: AsTypedSlice<'a, T>,
 {
@@ -228,7 +229,11 @@ where
                 if dim.len() != 2 {
                     Err(Error::ExpectedMatrix(robj))
                 } else {
-                    Ok(RArray::from_parts(robj, slice.as_mut_ptr(), [dim[0], dim[1]]))
+                    Ok(RArray::from_parts(
+                        robj,
+                        slice.as_mut_ptr(),
+                        [dim[0], dim[1]],
+                    ))
                 }
             } else {
                 Err(Error::ExpectedMatrix(robj))
@@ -239,7 +244,7 @@ where
     }
 }
 
-impl<'a, T : 'a> TryFrom<Robj> for RMatrix3D<T>
+impl<'a, T: 'a> TryFrom<Robj> for RMatrix3D<T>
 where
     Robj: AsTypedSlice<'a, T>,
 {
@@ -252,7 +257,11 @@ where
                     Err(Error::ExpectedMatrix3D(robj))
                 } else {
                     let dim: Vec<_> = dim.map(|d| d as usize).collect();
-                    Ok(RArray::from_parts(robj, slice.as_mut_ptr(), [dim[0], dim[1], dim[2]]))
+                    Ok(RArray::from_parts(
+                        robj,
+                        slice.as_mut_ptr(),
+                        [dim[0], dim[1], dim[2]],
+                    ))
                 }
             } else {
                 Err(Error::ExpectedMatrix3D(robj))
@@ -271,21 +280,21 @@ impl<T, D> From<RArray<T, D>> for Robj {
 }
 
 impl Robj {
-    pub fn as_column<'a, E : 'a>(&self) -> Option<RColumn<E>>
+    pub fn as_column<'a, E: 'a>(&self) -> Option<RColumn<E>>
     where
         Self: AsTypedSlice<'a, E>,
     {
         <RColumn<E>>::try_from(self.clone()).ok()
     }
 
-    pub fn as_matrix<'a, E : 'a>(&self) -> Option<RMatrix<E>>
+    pub fn as_matrix<'a, E: 'a>(&self) -> Option<RMatrix<E>>
     where
         Self: AsTypedSlice<'a, E>,
     {
         <RMatrix<E>>::try_from(self.clone()).ok()
     }
 
-    pub fn as_matrix3d<'a, E : 'a>(&self) -> Option<RMatrix3D<E>>
+    pub fn as_matrix3d<'a, E: 'a>(&self) -> Option<RMatrix3D<E>>
     where
         Self: AsTypedSlice<'a, E>,
     {
@@ -293,8 +302,7 @@ impl Robj {
     }
 }
 
-impl<T> Index<[usize; 2]> for RArray<T, [usize; 2]>
-{
+impl<T> Index<[usize; 2]> for RArray<T, [usize; 2]> {
     type Output = T;
 
     /// Zero-based indexing in row, column order.
@@ -312,12 +320,16 @@ impl<T> Index<[usize; 2]> for RArray<T, [usize; 2]>
     /// }
     /// ```
     fn index(&self, index: [usize; 2]) -> &Self::Output {
-        unsafe { self.data.offset(self.offset(index) as isize).as_ref().unwrap() }
+        unsafe {
+            self.data
+                .offset(self.offset(index) as isize)
+                .as_ref()
+                .unwrap()
+        }
     }
 }
 
-impl<T> IndexMut<[usize; 2]> for RArray<T, [usize; 2]>
-{
+impl<T> IndexMut<[usize; 2]> for RArray<T, [usize; 2]> {
     /// Zero-based mutable indexing in row, column order.
     ///
     /// Panics if out of bounds.
@@ -333,7 +345,12 @@ impl<T> IndexMut<[usize; 2]> for RArray<T, [usize; 2]>
     /// }
     /// ```
     fn index_mut(&mut self, index: [usize; 2]) -> &mut Self::Output {
-        unsafe { self.data.offset(self.offset(index) as isize).as_mut().unwrap() }
+        unsafe {
+            self.data
+                .offset(self.offset(index) as isize)
+                .as_mut()
+                .unwrap()
+        }
     }
 }
 

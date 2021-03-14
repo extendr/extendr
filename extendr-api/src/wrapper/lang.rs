@@ -46,11 +46,11 @@ impl Language {
         }
     }
 
-    pub fn names(&self) -> impl Iterator<Item=&'static str> {
+    pub fn names(&self) -> impl Iterator<Item = &'static str> {
         self.iter().map(|(tag, _)| tag)
     }
 
-    pub fn values(&self) -> impl Iterator<Item=Robj> {
+    pub fn values(&self) -> impl Iterator<Item = Robj> {
         self.iter().map(|(_, robj)| robj)
     }
 }

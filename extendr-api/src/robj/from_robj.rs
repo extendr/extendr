@@ -266,7 +266,7 @@ where
 }
 
 // Matrix input parameters.
-impl<'a, T : 'a> FromRobj<'a> for RArray<T, [usize; 2]>
+impl<'a, T: 'a> FromRobj<'a> for RArray<T, [usize; 2]>
 where
     Robj: AsTypedSlice<'a, T>,
 {
@@ -279,7 +279,7 @@ where
 }
 
 // Matrix input parameters.
-impl<'a, T : 'a> FromRobj<'a> for RMatrix3D<T>
+impl<'a, T: 'a> FromRobj<'a> for RMatrix3D<T>
 where
     Robj: AsTypedSlice<'a, T>,
 {

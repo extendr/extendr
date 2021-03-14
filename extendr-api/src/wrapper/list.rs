@@ -47,18 +47,17 @@ impl List {
         V::Item: Into<(&'static str, Robj)>,
     {
         let iter = pairs.into_iter();
-        let res = List::from_values(
-            iter.clone().map(|kv| {
-                let (_, v) = kv.into();
-                v
-            })
-        );
-        res.set_names(
-            iter.map(|kv| {
-                let (k, _) = kv.into();
-                k
-            })
-        ).unwrap().as_list().unwrap()
+        let res = List::from_values(iter.clone().map(|kv| {
+            let (_, v) = kv.into();
+            v
+        }));
+        res.set_names(iter.map(|kv| {
+            let (k, _) = kv.into();
+            k
+        }))
+        .unwrap()
+        .as_list()
+        .unwrap()
     }
 
     /// Return an iterator over the values of this list.
