@@ -6,6 +6,45 @@ pub struct Environment {
 }
 
 impl Environment {
+    /// Create a new, empty environment parented on global_env()
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let env = Environment::new();
+    ///     assert_eq!(env.len(), 0);
+    /// }
+    /// ```
+    pub fn new() -> Self {
+        // 14 is a reasonable default.
+        Environment::new_with_capacity(14)
+    }
+
+    /// Create a new, empty environment parented on global_env()
+    /// with a reserved size.
+    ///
+    /// This function will guess the hash table size if required.
+    /// Use the Env{} wrapper for more detail.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let env = Environment::new_with_capacity(5);
+    ///     env.set_local(sym!(a), 1);
+    ///     env.set_local(sym!(b), 2);
+    ///     assert_eq!(env.len(), 2);
+    /// }
+    /// ```
+    pub fn new_with_capacity(capacity: usize) -> Self {
+        let robj = if capacity <= 5 {
+            // Unhashed envirnment
+            call!("new.env", FALSE, global_env(), 0).unwrap()
+        } else {
+            // Hashed environment for larger hashmaps.
+            call!("new.env", TRUE, global_env(), capacity as i32 * 2 + 1).unwrap()
+        };
+        assert!(robj.is_environment());
+        Self { robj }
+    }
+
     /// Make an R environment object.
     /// ```
     /// use extendr_api::prelude::*;
@@ -33,6 +72,7 @@ impl Environment {
         })
     }
 
+    /// Get the enclosing (parent) environment.
     pub fn enclos(&self) -> Robj {
         unsafe {
             let sexp = self.robj.get();
@@ -40,6 +80,7 @@ impl Environment {
         }
     }
 
+    /// Set the enclosing (parent) environment.
     pub fn set_enclos(&mut self, parent: Environment) -> &mut Self {
         single_threaded(|| unsafe {
             let sexp = self.robj.get();
@@ -48,6 +89,7 @@ impl Environment {
         self
     }
 
+    /// Get the environment flags.
     pub fn envflags(&self) -> i32 {
         unsafe {
             let sexp = self.robj.get();
@@ -55,6 +97,7 @@ impl Environment {
         }
     }
 
+    /// Set the environment flags.
     pub fn set_envflags(&mut self, flags: i32) -> &mut Self {
         unsafe {
             let sexp = self.robj.get();
@@ -71,14 +114,12 @@ impl Environment {
             if hashtab.is_null() && frame.is_pairlist() {
                 EnvIter {
                     hash_table: ListIter::new(),
-                    pairlisttags: frame.as_pairlist_tag_iter().unwrap(),
-                    pairlist: frame.as_pairlist_iter().unwrap(),
+                    pairlist: frame.as_pairlist().unwrap().iter(),
                 }
             } else {
                 EnvIter {
                     hash_table: hashtab.as_list().unwrap().values(),
-                    pairlist: PairlistValueIter::new(),
-                    pairlisttags: PairlistTagIter::new(),
+                    pairlist: PairlistIter::new(),
                 }
             }
         }
@@ -96,6 +137,44 @@ impl Environment {
     pub fn names(&self) -> impl Iterator<Item = &str> {
         self.iter().map(|(k, _)| k)
     }
+
+    /// Set or define a variable in an enviroment.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let env = Environment::new();
+    ///     env.set_local(sym!(x), "harry");
+    ///     env.set_local(sym!(x), "fred");
+    ///     assert_eq!(env.local(sym!(x)), Some(r!("fred")));
+    /// }
+    /// ```
+    pub fn set_local<K: Into<Robj>, V: Into<Robj>>(&self, key: K, value: V) {
+        let key = key.into();
+        let value = value.into();
+        if key.is_symbol() {
+            single_threaded(|| unsafe {
+                Rf_defineVar(key.get(), value.get(), self.get());
+            })
+        }
+    }
+
+    /// Get a variable from an enviroment, but not its ancestors.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let env = Environment::new();
+    ///     env.set_local(sym!(x), "fred");
+    ///     assert_eq!(env.local(sym!(x)), Some(r!("fred")));
+    /// }
+    /// ```
+    pub fn local<K: Into<Robj>>(&self, key: K) -> Option<Robj> {
+        let key = key.into();
+        if key.is_symbol() {
+            unsafe { Some(new_owned(Rf_findVarInFrame3(self.get(), key.get(), 1))) }
+        } else {
+            None
+        }
+    }
 }
 
 /// Iterator over the names and values of an environment
@@ -109,12 +188,12 @@ impl Environment {
 ///     let names_and_values = robj.as_environment().unwrap().iter().collect::<Vec<_>>();
 ///     assert_eq!(names_and_values.len(), 100);
 ///
-///     let small_env = new_env_with_capacity(1);
+///     let small_env = Environment::new_with_capacity(1);
 ///     small_env.set_local(sym!(x), 1);
 ///     let names_and_values = small_env.as_environment().unwrap().iter().collect::<Vec<_>>();
 ///     assert_eq!(names_and_values, vec![("x", r!(1))]);
 ///
-///     let large_env = new_env_with_capacity(1000);
+///     let large_env = Environment::new_with_capacity(1000);
 ///     large_env.set_local(sym!(x), 1);
 ///     let names_and_values = large_env.as_environment().unwrap().iter().collect::<Vec<_>>();
 ///     assert_eq!(names_and_values, vec![("x", r!(1))]);
@@ -124,8 +203,7 @@ impl Environment {
 #[derive(Clone)]
 pub struct EnvIter {
     hash_table: ListIter,
-    pairlist: PairlistValueIter,
-    pairlisttags: PairlistTagIter,
+    pairlist: PairlistIter,
 }
 
 impl Iterator for EnvIter {
@@ -136,11 +214,10 @@ impl Iterator for EnvIter {
             // Environments are a hash table (list) or pair lists (pairlist)
             // Get the first available value from the pair list.
             loop {
-                match (self.pairlisttags.next(), self.pairlist.next()) {
-                    (Some(key), Some(value)) => {
+                match self.pairlist.next() {
+                    Some((key, value)) => {
                         // if the key and value are valid, return a pair.
                         if !key.is_na() && !value.is_unbound_value() {
-                            println!("value: {:?}", (&key, &value));
                             return Some((key, value));
                         }
                     }
@@ -154,8 +231,7 @@ impl Iterator for EnvIter {
             loop {
                 if let Some(obj) = self.hash_table.next() {
                     if !obj.is_null() && obj.is_pairlist() {
-                        self.pairlisttags = obj.as_pairlist_tag_iter().unwrap();
-                        self.pairlist = obj.as_pairlist_iter().unwrap();
+                        self.pairlist = obj.as_pairlist().unwrap().iter();
                         break;
                     }
                 // continue hash table loop.

@@ -17,9 +17,9 @@ pub use super::functions::{
     dots_symbol, double_colon_symbol, empty_env, eval_string, find_namespace, global_env,
     global_function, global_var, lastvalue_symbol, levels_symbol, local_var, missing_arg,
     mode_symbol, na_rm_symbol, na_str, na_string, name_symbol, names_symbol, namespace_env_symbol,
-    namespace_registry, new_env, new_env_with_capacity, nil_value, package_symbol, parse,
-    previous_symbol, quote_symbol, row_names_symbol, seeds_symbol, sort_list_symbol, source_symbol,
-    spec_symbol, srcref, triple_colon_symbol, tsp_symbol, unbound_value,
+    namespace_registry, nil_value, package_symbol, parse, previous_symbol, quote_symbol,
+    row_names_symbol, seeds_symbol, sort_list_symbol, source_symbol, spec_symbol, srcref,
+    triple_colon_symbol, tsp_symbol, unbound_value,
 };
 
 pub use crate::{append, append_lang, append_with_name, args, call, lang, make_lang};
@@ -39,8 +39,8 @@ pub use super::thread_safety::{
 };
 
 pub use super::wrapper::{
-    Character, EnvIter, Environment, Expression, Function, Language, List, ListIter, Nullable,
-    Pairlist, Primitive, Promise, Raw, Symbol,
+    Character, EnvIter, Environment, Expression, FromList, Function, Language, List, ListIter,
+    Nullable, Pairlist, Primitive, Promise, Raw, Symbol,
 };
 
 #[cfg(feature = "ndarray")]
@@ -52,3 +52,5 @@ pub use ndarray::*;
 pub use extendr_macros::{extendr, extendr_module};
 
 pub use super::iter::{Int, Logical, PairlistTagIter, PairlistValueIter, Real, StrIter};
+
+pub use std::convert::{TryFrom, TryInto};

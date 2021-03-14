@@ -27,7 +27,6 @@ pub fn unwrap_or_throw<T>(r: std::result::Result<T, &'static str>) -> T {
 pub enum Error {
     Panic {},
     NotFound,
-    NotAVectorType,
     EvalError { code: Robj, error: i32 },
     ParseError { code: String, status: u32 },
     NamesLengthMismatch,
@@ -57,6 +56,16 @@ pub enum Error {
     ExpectedRaw(Robj),
     ExpectedS4(Robj),
     ExpectedPrimitive(Robj),
+
+    ExpectedScalar(Robj),
+    ExpectedVector(Robj),
+    ExpectedMatrix(Robj),
+    ExpectedMatrix3D(Robj),
+    ExpectedNumeric(Robj),
+    OutOfRange(Robj),
+    MustNotBeNA(Robj),
+    ExpectedNonZeroLength(Robj),
+    TypeMismatch(Robj),
 
     Other(String),
 }

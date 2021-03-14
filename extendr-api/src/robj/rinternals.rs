@@ -265,7 +265,7 @@ impl Robj {
                     new_owned(Rf_xlengthgets(self.get(), new_len as R_xlen_t))
                 }))
             } else {
-                Err(Error::NotAVectorType)
+                Err(Error::ExpectedVector(self.clone()))
             }
         }
     }

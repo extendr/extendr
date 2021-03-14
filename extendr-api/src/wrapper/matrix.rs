@@ -186,6 +186,76 @@ where
     }
 }
 
+impl<'a, T> TryFrom<Robj> for RColumn<&'a [T]>
+where
+    Robj: AsTypedSlice<'a, T>,
+{
+    type Error = Error;
+
+    fn try_from(robj: Robj) -> Result<Self> {
+        if let Some(slice) = robj.as_typed_slice() {
+            Ok(RColumn::new(slice, slice.len()))
+        } else {
+            Err(Error::ExpectedVector(robj))
+        }
+    }
+}
+
+impl<'a, T> TryFrom<Robj> for RMatrix<&'a [T]>
+where
+    Robj: AsTypedSlice<'a, T>,
+{
+    type Error = Error;
+
+    fn try_from(robj: Robj) -> Result<Self> {
+        if !robj.is_matrix() {
+            Err(Error::ExpectedMatrix(robj))
+        } else if let Some(slice) = robj.as_typed_slice() {
+            if let Some(dim) = robj.dim() {
+                let dim: Vec<_> = dim.collect();
+                if dim.len() != 2 {
+                    Err(Error::ExpectedMatrix(robj))
+                } else {
+                    Ok(RMatrix::new(slice, dim[0] as usize, dim[1] as usize))
+                }
+            } else {
+                Err(Error::ExpectedMatrix(robj))
+            }
+        } else {
+            Err(Error::TypeMismatch(robj))
+        }
+    }
+}
+
+impl<'a, T> TryFrom<Robj> for RMatrix3D<&'a [T]>
+where
+    Robj: AsTypedSlice<'a, T>,
+{
+    type Error = Error;
+
+    fn try_from(robj: Robj) -> Result<Self> {
+        if let Some(slice) = robj.as_typed_slice() {
+            if let Some(dim) = robj.dim() {
+                if dim.len() != 3 {
+                    Err(Error::ExpectedMatrix3D(robj))
+                } else {
+                    let dim: Vec<_> = dim.collect();
+                    return Ok(RMatrix3D::new(
+                        slice,
+                        dim[0] as usize,
+                        dim[1] as usize,
+                        dim[2] as usize,
+                    ));
+                }
+            } else {
+                Err(Error::ExpectedMatrix(robj))
+            }
+        } else {
+            Err(Error::TypeMismatch(robj))
+        }
+    }
+}
+
 impl Robj {
     pub fn as_vector<'a, E>(&self) -> Option<RColumn<&'a [E]>>
     where

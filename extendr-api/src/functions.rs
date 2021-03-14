@@ -1,44 +1,5 @@
 use crate::*;
 
-/// Create a new, empty environment parented on global_env()
-///
-/// Use the Env{} wrapper for more detail.
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///     let env = new_env();
-///     assert_eq!(env.len(), 0);
-/// }
-/// ```
-pub fn new_env() -> Robj {
-    // 14 is a reasonable default.
-    new_env_with_capacity(14)
-}
-
-/// Create a new, empty environment parented on global_env()
-/// with a reserved size.
-///
-/// This function will guess the hash table size if required.
-/// Use the Env{} wrapper for more detail.
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///     let env = new_env_with_capacity(5);
-///     env.set_local(sym!(a), 1);
-///     env.set_local(sym!(b), 2);
-///     assert_eq!(env.len(), 2);
-/// }
-/// ```
-pub fn new_env_with_capacity(capacity: usize) -> Robj {
-    if capacity <= 5 {
-        // Unhashed envirnment
-        call!("new.env", FALSE, global_env(), 0).unwrap()
-    } else {
-        // Hashed environment for larger hashmaps.
-        call!("new.env", TRUE, global_env(), capacity as i32 * 2 + 1).unwrap()
-    }
-}
-
 /// Get a global variable from global_env() and ancestors.
 /// If the result is a promise, evaulate the promise.
 ///

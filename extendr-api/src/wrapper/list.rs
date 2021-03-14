@@ -6,6 +6,20 @@ pub struct List {
 }
 
 impl List {
+    /// Create a new, empty list.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let list = List::new();
+    ///     assert_eq!(list.is_list(), true);
+    ///     assert_eq!(list.len(), 0);
+    /// }
+    /// ```
+    pub fn new() -> List {
+        let values: &[Robj] = &[];
+        List::from_objects(values)
+    }
+
     /// Wrapper for creating list (VECSXP) objects.
     /// ```
     /// use extendr_api::prelude::*;
@@ -13,7 +27,6 @@ impl List {
     ///     let list = r!(List::from_objects(&[r!(0), r!(1), r!(2)]));
     ///     assert_eq!(list.is_list(), true);
     ///     assert_eq!(list.len(), 3);
-    ///     assert_eq!(format!("{:?}", list), r#"r!(List::from_objects([r!(0), r!(1), r!(2)]))"#);
     /// }
     /// ```
     pub fn from_objects<V>(values: V) -> Self
@@ -60,7 +73,7 @@ impl IntoIterator for List {
     type IntoIter = NamedListIter;
     type Item = (&'static str, Robj);
 
-    /// Convert a List into an interator, consuming th epairlist.
+    /// Convert a List into an interator, consuming the pairlist.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -106,7 +119,7 @@ impl ListIter {
         ListIter::from_parts(().into(), 0, 0)
     }
 
-    pub fn from_parts(robj: Robj, i: usize, len: usize) -> Self {
+    pub(crate) fn from_parts(robj: Robj, i: usize, len: usize) -> Self {
         Self { robj, i, len }
     }
 }
@@ -134,18 +147,76 @@ impl Iterator for ListIter {
     }
 }
 
+impl ExactSizeIterator for ListIter {
+    /// Length of a list iterator.
+    fn len(&self) -> usize {
+        self.len - self.i
+    }
+}
+
+/// You can use the FromList wrapper to coerce a Robj into a list.
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     let list = list!(1, 2);
+///     let vec : FromList<Vec<i32>> = list.try_into()?;
+///     assert_eq!(vec.0, vec![1, 2]);
+/// }
+/// ```
+pub struct FromList<T>(pub T);
+
+impl<T> TryFrom<Robj> for FromList<Vec<T>>
+where
+    T: TryFrom<Robj>,
+    <T as TryFrom<Robj>>::Error: Into<Error>,
+{
+    type Error = Error;
+
+    /// You can use the FromList wrapper to coerce a Robj into a list.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let list = list!(1, 2);
+    ///     let vec : FromList<Vec<i32>> = list.try_into()?;
+    ///     assert_eq!(vec.0, vec![1, 2]);
+    /// }
+    /// ```
+    fn try_from(robj: Robj) -> Result<Self> {
+        let listiter: ListIter = robj.try_into()?;
+        let res: Result<Vec<_>> = listiter
+            .map(|robj| T::try_from(robj).map_err(|e| e.into()))
+            .collect();
+        res.map(|v| FromList(v))
+    }
+}
+
 impl TryFrom<Robj> for ListIter {
     type Error = Error;
 
-    /// You pass a ListIter to a function.
+    /// You can pass a ListIter to a function.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let list = list!(1, 2);
+    ///     let vec : ListIter = list.try_into()?;
+    ///     assert_eq!(vec.collect::<Vec<_>>(), vec![r!(1), r!(2)]);
+    /// }
+    /// ```
     fn try_from(robj: Robj) -> Result<Self> {
-        let pairlist: ListIter = robj.try_into()?;
-        Ok(pairlist.into_iter())
+        let list: List = robj.try_into()?;
+        Ok(list.values())
     }
 }
 
 impl From<ListIter> for Robj {
     /// You can return a ListIter from a function.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let listiter = list!(1, 2).as_list().unwrap().values();
+    ///     assert_eq!(Robj::from(listiter), list!(1, 2));
+    /// }
+    /// ```
     fn from(iter: ListIter) -> Self {
         iter.robj.clone()
     }

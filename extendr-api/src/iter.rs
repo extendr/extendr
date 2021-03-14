@@ -56,6 +56,12 @@ impl<T: Copy> Iterator for SliceIter<T> {
     }
 }
 
+impl<T: Copy> ExactSizeIterator for SliceIter<T> {
+    fn len(&self) -> usize {
+        self.len - self.i
+    }
+}
+
 /// Iterator over name-value pairs in lists.
 pub type NamedListIter = std::iter::Zip<StrIter, ListIter>;
 

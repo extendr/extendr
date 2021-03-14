@@ -18,10 +18,13 @@ use std::collections::HashMap;
 use std::iter::IntoIterator;
 use std::ops::{Range, RangeInclusive};
 
+// deprecated
 mod from_robj;
+
 mod into_robj;
 mod operators;
 mod rinternals;
+mod try_from_robj;
 
 #[cfg(test)]
 mod tests;
@@ -176,7 +179,7 @@ impl Robj {
     ///     assert_eq!(sym!(xyz).rtype(), RType::Symbol);
     ///     assert_eq!(r!(Pairlist::from_pairs(vec![("a", r!(1))])).rtype(), RType::Pairlist);
     ///     assert_eq!(R!(function() {})?.rtype(), RType::Function);
-    ///     assert_eq!(new_env().rtype(), RType::Enviroment);
+    ///     assert_eq!(Environment::new().rtype(), RType::Enviroment);
     ///     assert_eq!(lang!("+", 1, 2).rtype(), RType::Language);
     ///     assert_eq!(r!(Primitive::from_str("if")).rtype(), RType::Special);
     ///     assert_eq!(r!(Primitive::from_str("+")).rtype(), RType::Builtin);
@@ -238,7 +241,7 @@ impl Robj {
     /// use extendr_api::prelude::*;
     /// test! {
     ///
-    /// let env = new_env();
+    /// let env = Environment::new();
     /// env.set_local(sym!(x), "fred");
     /// assert_eq!(env.local(sym!(x)), Some(r!("fred")));
     /// }
@@ -257,7 +260,7 @@ impl Robj {
     /// use extendr_api::prelude::*;
     /// test! {
     ///
-    /// let env = new_env();
+    /// let env = Environment::new();
     /// env.set_local(sym!(x), "harry");
     /// env.set_local(sym!(x), "fred");
     /// assert_eq!(env.local(sym!(x)), Some(r!("fred")));
