@@ -10,13 +10,13 @@ impl Environment {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let env = Environment::new();
+    ///     let env = Environment::new(global_env());
     ///     assert_eq!(env.len(), 0);
     /// }
     /// ```
-    pub fn new() -> Self {
+    pub fn new(parent: Environment) -> Self {
         // 14 is a reasonable default.
-        Environment::new_with_capacity(14)
+        Environment::new_with_capacity(parent, 14)
     }
 
     /// Create a new, empty environment parented on global_env()
@@ -27,19 +27,19 @@ impl Environment {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let env = Environment::new_with_capacity(5);
+    ///     let env = Environment::new_with_capacity(global_env(), 5);
     ///     env.set_local(sym!(a), 1);
     ///     env.set_local(sym!(b), 2);
     ///     assert_eq!(env.len(), 2);
     /// }
     /// ```
-    pub fn new_with_capacity(capacity: usize) -> Self {
+    pub fn new_with_capacity(parent: Environment, capacity: usize) -> Self {
         let robj = if capacity <= 5 {
             // Unhashed envirnment
-            call!("new.env", FALSE, global_env(), 0).unwrap()
+            call!("new.env", FALSE, parent, 0).unwrap()
         } else {
             // Hashed environment for larger hashmaps.
-            call!("new.env", TRUE, global_env(), capacity as i32 * 2 + 1).unwrap()
+            call!("new.env", TRUE, parent, capacity as i32 * 2 + 1).unwrap()
         };
         assert!(robj.is_environment());
         Self { robj }
@@ -51,19 +51,18 @@ impl Environment {
     /// use std::convert::TryInto;
     /// test! {
     ///     let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
-    ///     let mut env = Environment::from_pairs(names_and_values);
-    ///     env.set_enclos(global_env().try_into()?);
+    ///     let mut env = Environment::from_pairs(global_env(), names_and_values);
     ///     assert_eq!(env.len(), 100);
     /// }
     /// ```
-    pub fn from_pairs<NV>(names_and_values: NV) -> Self
+    pub fn from_pairs<NV>(parent: Environment, names_and_values: NV) -> Self
     where
         NV: IntoIterator,
         NV::Item: SymPair,
     {
         single_threaded(|| {
             let dict_len = 29;
-            let robj = call!("new.env", TRUE, global_env(), dict_len).unwrap();
+            let robj = call!("new.env", TRUE, parent, dict_len).unwrap();
             for nv in names_and_values {
                 let (n, v) = nv.sym_pair();
                 unsafe { Rf_defineVar(n.get(), v.get(), robj.get()) }
@@ -73,15 +72,16 @@ impl Environment {
     }
 
     /// Get the enclosing (parent) environment.
-    pub fn enclos(&self) -> Robj {
+    pub fn parent(&self) -> Option<Environment> {
         unsafe {
             let sexp = self.robj.get();
-            new_owned(ENCLOS(sexp))
+            let robj = new_owned(ENCLOS(sexp));
+            robj.try_into().ok()
         }
     }
 
     /// Set the enclosing (parent) environment.
-    pub fn set_enclos(&mut self, parent: Environment) -> &mut Self {
+    pub fn set_parent(&mut self, parent: Environment) -> &mut Self {
         single_threaded(|| unsafe {
             let sexp = self.robj.get();
             SET_ENCLOS(sexp, parent.robj.get());
@@ -130,7 +130,7 @@ impl Environment {
     /// use extendr_api::prelude::*;
     /// test! {
     ///    let names_and_values : std::collections::HashMap<_, _> = (0..4).map(|i| (format!("n{}", i), r!(i))).collect();
-    ///    let env = Environment::from_pairs(names_and_values);
+    ///    let env = Environment::from_pairs(global_env(), names_and_values);
     ///    assert_eq!(env.names().collect::<Vec<_>>(), vec!["n0", "n1", "n2", "n3"]);
     /// }
     /// ```
@@ -142,7 +142,7 @@ impl Environment {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let env = Environment::new();
+    ///     let env = Environment::new(global_env());
     ///     env.set_local(sym!(x), "harry");
     ///     env.set_local(sym!(x), "fred");
     ///     assert_eq!(env.local(sym!(x)), Some(r!("fred")));
@@ -162,7 +162,7 @@ impl Environment {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let env = Environment::new();
+    ///     let env = Environment::new(global_env());
     ///     env.set_local(sym!(x), "fred");
     ///     assert_eq!(env.local(sym!(x)), Some(r!("fred")));
     /// }
@@ -183,17 +183,17 @@ impl Environment {
 /// use extendr_api::prelude::*;
 /// test! {
 ///     let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
-///     let env = Environment::from_pairs(names_and_values);
+///     let env = Environment::from_pairs(global_env(), names_and_values);
 ///     let robj = r!(env);
 ///     let names_and_values = robj.as_environment().unwrap().iter().collect::<Vec<_>>();
 ///     assert_eq!(names_and_values.len(), 100);
 ///
-///     let small_env = Environment::new_with_capacity(1);
+///     let small_env = Environment::new_with_capacity(global_env(), 1);
 ///     small_env.set_local(sym!(x), 1);
 ///     let names_and_values = small_env.as_environment().unwrap().iter().collect::<Vec<_>>();
 ///     assert_eq!(names_and_values, vec![("x", r!(1))]);
 ///
-///     let large_env = Environment::new_with_capacity(1000);
+///     let large_env = Environment::new_with_capacity(global_env(), 1000);
 ///     large_env.set_local(sym!(x), 1);
 ///     let names_and_values = large_env.as_environment().unwrap().iter().collect::<Vec<_>>();
 ///     assert_eq!(names_and_values, vec![("x", r!(1))]);

@@ -25,20 +25,14 @@ impl Function {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let formals = pairlist!(a=NULL);
-    ///     let body = lang!("+", sym!(a), r!(1));
+    ///     let formals = pairlist!(a=NULL).try_into()?;
+    ///     let body = lang!("+", sym!(a), r!(1)).try_into()?;
     ///     let env = global_env();
     ///     let f = r!(Function::from_parts(formals, body, env )?);
     ///     assert_eq!(f.call(pairlist!(a=1))?, r!(2));
     /// }
     /// ```
-    pub fn from_parts(formals: Robj, body: Robj, env: Robj) -> Result<Self> {
-        if !formals.is_pairlist() {
-            return Err(Error::ExpectedPairlist(formals));
-        }
-        if !env.is_environment() {
-            return Err(Error::ExpectedEnviroment(env));
-        }
+    pub fn from_parts(formals: Pairlist, body: Language, env: Environment) -> Result<Self> {
         unsafe {
             let sexp = Rf_allocSExp(CLOSXP);
             let robj = new_owned(sexp);
@@ -78,10 +72,12 @@ impl Function {
     }
 
     /// Get the environment of the function.
-    pub fn env(&self) -> Robj {
+    pub fn env(&self) -> Environment {
         unsafe {
             let sexp = self.robj.get();
             new_owned(CLOENV(sexp))
+                .try_into()
+                .expect("Should be an environment")
         }
     }
 }

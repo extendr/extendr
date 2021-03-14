@@ -179,7 +179,7 @@ impl Robj {
     ///     assert_eq!(sym!(xyz).rtype(), RType::Symbol);
     ///     assert_eq!(r!(Pairlist::from_pairs(vec![("a", r!(1))])).rtype(), RType::Pairlist);
     ///     assert_eq!(R!(function() {})?.rtype(), RType::Function);
-    ///     assert_eq!(Environment::new().rtype(), RType::Enviroment);
+    ///     assert_eq!(Environment::new(global_env()).rtype(), RType::Enviroment);
     ///     assert_eq!(lang!("+", 1, 2).rtype(), RType::Language);
     ///     assert_eq!(r!(Primitive::from_str("if")).rtype(), RType::Special);
     ///     assert_eq!(r!(Primitive::from_str("+")).rtype(), RType::Builtin);
@@ -236,68 +236,68 @@ impl Robj {
         unsafe { Rf_xlength(self.get()) as usize }
     }
 
-    /// Get a variable from an enviroment, but not its ancestors.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///
-    /// let env = Environment::new();
-    /// env.set_local(sym!(x), "fred");
-    /// assert_eq!(env.local(sym!(x)), Some(r!("fred")));
-    /// }
-    /// ```
-    pub fn local<K: Into<Robj>>(&self, key: K) -> Option<Robj> {
-        let key = key.into();
-        if self.is_environment() && key.is_symbol() {
-            unsafe { Some(new_owned(Rf_findVarInFrame3(self.get(), key.get(), 1))) }
-        } else {
-            None
-        }
-    }
+    // /// Get a variable from an enviroment, but not its ancestors.
+    // /// ```
+    // /// use extendr_api::prelude::*;
+    // /// test! {
+    // ///
+    // /// let env = Environment::new(global_env());
+    // /// env.set_local(sym!(x), "fred");
+    // /// assert_eq!(env.local(sym!(x)), Some(r!("fred")));
+    // /// }
+    // /// ```
+    // pub fn local<K: Into<Robj>>(&self, key: K) -> Option<Robj> {
+    //     let key = key.into();
+    //     if self.is_environment() && key.is_symbol() {
+    //         unsafe { Some(new_owned(Rf_findVarInFrame3(self.get(), key.get(), 1))) }
+    //     } else {
+    //         None
+    //     }
+    // }
 
-    /// Set or define a variable in an enviroment.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///
-    /// let env = Environment::new();
-    /// env.set_local(sym!(x), "harry");
-    /// env.set_local(sym!(x), "fred");
-    /// assert_eq!(env.local(sym!(x)), Some(r!("fred")));
-    /// }
-    /// ```
-    pub fn set_local<K: Into<Robj>, V: Into<Robj>>(&self, key: K, value: V) {
-        let key = key.into();
-        let value = value.into();
-        if self.is_environment() && key.is_symbol() {
-            single_threaded(|| unsafe {
-                Rf_defineVar(key.get(), value.get(), self.get());
-            })
-        }
-    }
+    // /// Set or define a variable in an enviroment.
+    // /// ```
+    // /// use extendr_api::prelude::*;
+    // /// test! {
+    // ///
+    // /// let env = Environment::new(global_env());
+    // /// env.set_local(sym!(x), "harry");
+    // /// env.set_local(sym!(x), "fred");
+    // /// assert_eq!(env.local(sym!(x)), Some(r!("fred")));
+    // /// }
+    // /// ```
+    // pub fn set_local<K: Into<Robj>, V: Into<Robj>>(&self, key: K, value: V) {
+    //     let key = key.into();
+    //     let value = value.into();
+    //     if self.is_environment() && key.is_symbol() {
+    //         single_threaded(|| unsafe {
+    //             Rf_defineVar(key.get(), value.get(), self.get());
+    //         })
+    //     }
+    // }
 
-    /// Get the parent of an environment.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///
-    /// let global_parent = global_env().parent().unwrap();
-    /// assert_eq!(global_parent.is_environment(), true);
-    /// assert_eq!(base_env().parent(), None);
-    /// assert_eq!(r!(1).parent(), None);
-    /// }
-    /// ```
-    pub fn parent(&self) -> Option<Robj> {
-        unsafe {
-            if self.is_environment() {
-                let parent = ENCLOS(self.get());
-                if Rf_isEnvironment(parent) != 0 && parent != R_EmptyEnv {
-                    return Some(new_owned(parent));
-                }
-            }
-            None
-        }
-    }
+    // /// Get the parent of an environment.
+    // /// ```
+    // /// use extendr_api::prelude::*;
+    // /// test! {
+    // ///
+    // /// let global_parent = global_env().parent().unwrap();
+    // /// assert_eq!(global_parent.is_environment(), true);
+    // /// assert_eq!(base_env().parent(), None);
+    // /// assert_eq!(r!(1).parent(), None);
+    // /// }
+    // /// ```
+    // pub fn parent(&self) -> Option<Robj> {
+    //     unsafe {
+    //         if self.is_environment() {
+    //             let parent = ENCLOS(self.get());
+    //             if Rf_isEnvironment(parent) != 0 && parent != R_EmptyEnv {
+    //                 return Some(new_owned(parent));
+    //             }
+    //         }
+    //         None
+    //     }
+    // }
 
     /// Is this object is an NA scalar?
     /// Works for character, integer and numeric types.

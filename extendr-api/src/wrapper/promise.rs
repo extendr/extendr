@@ -17,16 +17,12 @@ impl Promise {
     ///     assert_eq!(promise.value(), r!(1));
     /// }
     /// ```
-    pub fn from_parts(code: Robj, environment: Robj) -> Result<Self> {
-        if !environment.is_environment() {
-            return Err(Error::ExpectedEnviroment(environment));
-        }
-
+    pub fn from_parts(code: Robj, environment: Environment) -> Result<Self> {
         unsafe {
             let sexp = Rf_allocSExp(PROMSXP);
             let robj = new_owned(sexp);
             SET_PRCODE(sexp, code.get());
-            SET_PRENV(sexp, environment.get());
+            SET_PRENV(sexp, environment.robj.get());
             SET_PRVALUE(sexp, R_UnboundValue);
             SET_PRSEEN(sexp, 0);
             Ok(Promise { robj })
@@ -42,10 +38,10 @@ impl Promise {
     }
 
     /// Get the environment for the execution from the promise.
-    pub fn environment(&self) -> Robj {
+    pub fn environment(&self) -> Environment {
         unsafe {
             let sexp = self.robj.get();
-            new_owned(PRENV(sexp))
+            new_owned(PRENV(sexp)).try_into().unwrap()
         }
     }
 

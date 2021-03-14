@@ -93,7 +93,7 @@ impl IntoIterator for List {
     type IntoIter = NamedListIter;
     type Item = (&'static str, Robj);
 
-    /// Convert a List into an interator, consuming the pairlist.
+    /// Convert a List into an interator, consuming the list.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {

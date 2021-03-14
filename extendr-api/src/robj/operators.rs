@@ -9,8 +9,8 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    /// let env = Environment::from_pairs({
-    ///    vec![("a".to_string(), r!(1)), ("b".to_string(), r!(2))]});
+    /// let env = Environment::from_pairs(global_env(),
+    ///    vec![("a".to_string(), r!(1)), ("b".to_string(), r!(2))]);
     /// assert_eq!(env.dollar("a").unwrap(), r!(1));
     /// assert_eq!(env.dollar("b").unwrap(), r!(2));
     /// }

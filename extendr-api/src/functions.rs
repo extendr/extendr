@@ -79,8 +79,8 @@ pub fn find_namespace<K: Into<Robj>>(key: K) -> Option<Robj> {
 ///    assert_eq!(current_env(), base_env());
 /// }
 /// ```
-pub fn current_env() -> Robj {
-    unsafe { new_owned(R_GetCurrentEnv()) }
+pub fn current_env() -> Environment {
+    unsafe { new_owned(R_GetCurrentEnv()).try_into().unwrap() }
 }
 
 /// The "global" environment
@@ -92,13 +92,13 @@ pub fn current_env() -> Robj {
 ///     assert_eq!(global_env().local(sym!(x)), Some(r!("hello")));
 /// }
 /// ```
-pub fn global_env() -> Robj {
-    unsafe { new_sys(R_GlobalEnv) }
+pub fn global_env() -> Environment {
+    unsafe { new_sys(R_GlobalEnv).try_into().unwrap() }
 }
 
 /// An empty environment at the root of the environment tree
-pub fn empty_env() -> Robj {
-    unsafe { new_sys(R_EmptyEnv) }
+pub fn empty_env() -> Environment {
+    unsafe { new_sys(R_EmptyEnv).try_into().unwrap() }
 }
 
 /// The base environment; formerly R_NilValue
@@ -110,8 +110,8 @@ pub fn empty_env() -> Robj {
 ///     assert_eq!(base_env().local(sym!(+)), Some(r!(Primitive::from_str("+"))));
 /// }
 /// ```
-pub fn base_env() -> Robj {
-    unsafe { new_sys(R_BaseEnv) }
+pub fn base_env() -> Environment {
+    unsafe { new_sys(R_BaseEnv).try_into().unwrap() }
 }
 
 /// The namespace for base.
@@ -122,8 +122,8 @@ pub fn base_env() -> Robj {
 ///    assert_eq!(base_namespace().parent().ok_or("no parent")?, global_env());
 /// }
 /// ```
-pub fn base_namespace() -> Robj {
-    unsafe { new_sys(R_BaseNamespace) }
+pub fn base_namespace() -> Environment {
+    unsafe { new_sys(R_BaseNamespace).try_into().unwrap() }
 }
 
 /// For registered namespaces.
@@ -134,8 +134,8 @@ pub fn base_namespace() -> Robj {
 ///    assert_eq!(namespace_registry().is_environment(), true);
 /// }
 /// ```
-pub fn namespace_registry() -> Robj {
-    unsafe { new_sys(R_NamespaceRegistry) }
+pub fn namespace_registry() -> Environment {
+    unsafe { new_sys(R_NamespaceRegistry).try_into().unwrap() }
 }
 
 /// Current srcref, for debuggers

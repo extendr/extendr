@@ -242,7 +242,7 @@ impl Robj {
     /// use extendr_api::prelude::*;
     /// test! {
     ///     let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
-    ///     let env = Environment::from_pairs(names_and_values);
+    ///     let env = Environment::from_pairs(global_env(), names_and_values);
     ///     let expr = env.clone();
     ///     assert_eq!(expr.len(), 100);
     ///     let env2 = expr.as_environment().unwrap();
