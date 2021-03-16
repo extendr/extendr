@@ -1028,7 +1028,7 @@ impl std::fmt::Debug for Robj {
                 let func = self.as_function().unwrap();
                 let formals = func.formals();
                 let body = func.body();
-                let enviroment = func.env();
+                let enviroment = func.environment();
                 write!(
                     f,
                     "r!(Function::from_parts({:?}, {:?}, {:?}))",

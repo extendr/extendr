@@ -12,7 +12,7 @@ use super::*;
 ///         "{", lang!("<-", sym!(c), lang!("+", sym!(a), sym!(b))));
 ///     assert_eq!(func.formals().as_pairlist().unwrap(), expected_formals);
 ///     assert_eq!(func.body(), expected_body);
-///     assert_eq!(func.env(), global_env());
+///     assert_eq!(func.environment(), global_env());
 /// }
 /// ```
 #[derive(Debug, PartialEq, Clone)]
@@ -72,7 +72,7 @@ impl Function {
     }
 
     /// Get the environment of the function.
-    pub fn env(&self) -> Environment {
+    pub fn environment(&self) -> Environment {
         unsafe {
             let sexp = self.robj.get();
             new_owned(CLOENV(sexp))
