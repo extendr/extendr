@@ -119,10 +119,6 @@ jobs:
           Del alias:R
           echo "LD_LIBRARY_PATH=$(R -s -e 'cat(normalizePath(R.home()))')/lib" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
-          # Install system dependencies
-          foreach($apt_cmd in $(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')) {
-            Invoke-Expression "sudo $apt_cmd"
-          }
       # Check code formatting. As this doesn't depend on the platform, do this only on one platform.
       - name: Check code formatting
         if: matrix.config.check_fmt
@@ -171,6 +167,13 @@ jobs:
           path: ${{ env.R_LIBS_USER }}
           key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
           restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
+
+      - name: Install system dependencies
+        if: startsWith(runner.os, 'linux')
+        run: |
+          foreach($apt_cmd in $(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')) {
+            Invoke-Expression "sudo $apt_cmd"
+          }
 
       # Currently rextendr requires R > 4, so if R version is older (e.g. 3.6.3), rextendr tests are omitted
       # Regex is used to inject absolute path into Cargo.toml
