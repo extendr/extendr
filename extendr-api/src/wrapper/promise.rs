@@ -12,7 +12,7 @@ impl Promise {
     /// use extendr_api::prelude::*;
     /// test! {
     ///     let promise = Promise::from_parts(r!(1), global_env())?;
-    ///     assert_eq!(promise.value(), unbound_value());
+    ///     assert!(promise.value().is_unbound_value());
     ///     assert_eq!(promise.eval_promise()?, r!(1));
     ///     assert_eq!(promise.value(), r!(1));
     /// }

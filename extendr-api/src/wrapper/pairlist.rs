@@ -31,7 +31,7 @@ impl Pairlist {
                 let val = Rf_protect(val.get());
                 res = Rf_protect(Rf_cons(val, res));
                 num_protects += 2;
-                if !name.is_na() {
+                if !name.is_unbound_value() {
                     SET_TAG(res, name.get());
                 }
             }
@@ -131,7 +131,7 @@ impl IntoIterator for Pairlist {
     type IntoIter = PairlistIter;
     type Item = (&'static str, Robj);
 
-    /// Convert a PairList into an interator, consuming th epairlist.
+    /// Convert a PairList into an interator, consuming the pairlist.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {

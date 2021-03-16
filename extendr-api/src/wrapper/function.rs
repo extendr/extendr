@@ -7,7 +7,7 @@ use super::*;
 ///     let expr = R!(function(a = 1, b) {c <- a + b}).unwrap();
 ///     let func = expr.as_function().unwrap();
 ///
-///     let expected_formals = Pairlist::from_pairs(vec![("a", r!(1.0)), ("b", missing_arg())]);
+///     let expected_formals = Pairlist::from_pairs(vec![("a", r!(1.0)), ("b", missing_arg().into())]);
 ///     let expected_body = lang!(
 ///         "{", lang!("<-", sym!(c), lang!("+", sym!(a), sym!(b))));
 ///     assert_eq!(func.formals().as_pairlist().unwrap(), expected_formals);

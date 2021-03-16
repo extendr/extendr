@@ -1,5 +1,7 @@
 use crate::*;
 
+use wrapper::symbol::levels_symbol;
+
 /// Generalised iterator of numbers and logical. See Int, Real and Logical.
 pub struct SliceIter<T> {
     // Control lifetime of vector to make sure the memory is not freed.
@@ -193,6 +195,12 @@ impl Iterator for StrIter {
     fn nth(&mut self, n: usize) -> Option<Self::Item> {
         self.i += n;
         self.next()
+    }
+}
+
+impl ExactSizeIterator for StrIter {
+    fn len(&self) -> usize {
+        self.len - self.i
     }
 }
 

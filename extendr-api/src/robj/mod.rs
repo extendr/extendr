@@ -236,69 +236,6 @@ impl Robj {
         unsafe { Rf_xlength(self.get()) as usize }
     }
 
-    // /// Get a variable from an enviroment, but not its ancestors.
-    // /// ```
-    // /// use extendr_api::prelude::*;
-    // /// test! {
-    // ///
-    // /// let env = Environment::new(global_env());
-    // /// env.set_local(sym!(x), "fred");
-    // /// assert_eq!(env.local(sym!(x)), Some(r!("fred")));
-    // /// }
-    // /// ```
-    // pub fn local<K: Into<Robj>>(&self, key: K) -> Option<Robj> {
-    //     let key = key.into();
-    //     if self.is_environment() && key.is_symbol() {
-    //         unsafe { Some(new_owned(Rf_findVarInFrame3(self.get(), key.get(), 1))) }
-    //     } else {
-    //         None
-    //     }
-    // }
-
-    // /// Set or define a variable in an enviroment.
-    // /// ```
-    // /// use extendr_api::prelude::*;
-    // /// test! {
-    // ///
-    // /// let env = Environment::new(global_env());
-    // /// env.set_local(sym!(x), "harry");
-    // /// env.set_local(sym!(x), "fred");
-    // /// assert_eq!(env.local(sym!(x)), Some(r!("fred")));
-    // /// }
-    // /// ```
-    // pub fn set_local<K: Into<Robj>, V: Into<Robj>>(&self, key: K, value: V) {
-    //     let key = key.into();
-    //     let value = value.into();
-    //     if self.is_environment() && key.is_symbol() {
-    //         single_threaded(|| unsafe {
-    //             Rf_defineVar(key.get(), value.get(), self.get());
-    //         })
-    //     }
-    // }
-
-    // /// Get the parent of an environment.
-    // /// ```
-    // /// use extendr_api::prelude::*;
-    // /// test! {
-    // ///
-    // /// let global_parent = global_env().parent().unwrap();
-    // /// assert_eq!(global_parent.is_environment(), true);
-    // /// assert_eq!(base_env().parent(), None);
-    // /// assert_eq!(r!(1).parent(), None);
-    // /// }
-    // /// ```
-    // pub fn parent(&self) -> Option<Robj> {
-    //     unsafe {
-    //         if self.is_environment() {
-    //             let parent = ENCLOS(self.get());
-    //             if Rf_isEnvironment(parent) != 0 && parent != R_EmptyEnv {
-    //                 return Some(new_owned(parent));
-    //             }
-    //         }
-    //         None
-    //     }
-    // }
-
     /// Is this object is an NA scalar?
     /// Works for character, integer and numeric types.
     /// ```
@@ -881,7 +818,7 @@ impl Robj {
     /// }
     /// ```
     pub fn names(&self) -> Option<StrIter> {
-        if let Some(names) = self.get_attrib(names_symbol()) {
+        if let Some(names) = self.get_attrib(wrapper::symbol::names_symbol()) {
             names.as_str_iter()
         } else {
             None
@@ -903,13 +840,13 @@ impl Robj {
     pub fn set_names<T>(&self, names: T) -> Result<Robj>
     where
         T: IntoIterator,
-        T::IntoIter: Iterator,
+        T::IntoIter: ExactSizeIterator,
         T::Item: ToVectorValue + AsRef<str>,
     {
         let iter = names.into_iter();
         let robj = iter.collect_robj();
         if robj.len() == self.len() {
-            self.set_attrib(names_symbol(), robj)
+            self.set_attrib(wrapper::symbol::names_symbol(), robj)
         } else {
             Err(Error::NamesLengthMismatch)
         }
@@ -926,7 +863,7 @@ impl Robj {
     /// }
     /// ```
     pub fn dim(&self) -> Option<Int> {
-        if let Some(dim) = self.get_attrib(dim_symbol()) {
+        if let Some(dim) = self.get_attrib(wrapper::symbol::dim_symbol()) {
             dim.as_integer_iter()
         } else {
             None
@@ -943,7 +880,7 @@ impl Robj {
     /// }
     /// ```
     pub fn dimnames(&self) -> Option<ListIter> {
-        if let Some(names) = self.get_attrib(dimnames_symbol()) {
+        if let Some(names) = self.get_attrib(wrapper::symbol::dimnames_symbol()) {
             names.as_list().map(|v| v.values())
         } else {
             None
@@ -960,14 +897,15 @@ impl Robj {
     /// }
     /// ```
     pub fn class(&self) -> Option<StrIter> {
-        if let Some(class) = self.get_attrib(class_symbol()) {
+        if let Some(class) = self.get_attrib(wrapper::symbol::class_symbol()) {
             class.as_str_iter()
         } else {
             None
         }
     }
 
-    /// Set the class attribute from a string iterator.
+    /// Set the class attribute from a string iterator, returning
+    /// a new object.
     ///
     /// May return an error for some class names.
     /// ```
@@ -981,11 +919,11 @@ impl Robj {
     pub fn set_class<T>(&self, class: T) -> Result<Robj>
     where
         T: IntoIterator,
-        T::IntoIter: Iterator,
+        T::IntoIter: ExactSizeIterator,
         T::Item: ToVectorValue + AsRef<str>,
     {
         let iter = class.into_iter();
-        self.set_attrib(class_symbol(), iter.collect_robj())
+        self.set_attrib(wrapper::symbol::class_symbol(), iter.collect_robj())
     }
 
     /// Return true if this class inherits this class.
@@ -1014,7 +952,7 @@ impl Robj {
     /// }
     /// ```
     pub fn levels(&self) -> Option<StrIter> {
-        if let Some(levels) = self.get_attrib(levels_symbol()) {
+        if let Some(levels) = self.get_attrib(wrapper::symbol::levels_symbol()) {
             levels.as_str_iter()
         } else {
             None
