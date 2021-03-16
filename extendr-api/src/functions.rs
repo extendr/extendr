@@ -148,7 +148,6 @@ pub fn nil_value() -> Robj {
     unsafe { new_sys(R_NilValue) }
 }
 
-
 /* fix version issues.
 /// ".Generic"
 pub fn dot_Generic() -> Robj { unsafe { new_sys(R_dot_Generic) }}

@@ -40,7 +40,9 @@ impl Symbol {
     }
 
     fn from_sexp(sexp: SEXP) -> Symbol {
-        unsafe { assert!(TYPEOF(sexp) == SYMSXP as i32); }
+        unsafe {
+            assert!(TYPEOF(sexp) == SYMSXP as i32);
+        }
         Symbol {
             robj: unsafe { new_sys(sexp) },
         }
