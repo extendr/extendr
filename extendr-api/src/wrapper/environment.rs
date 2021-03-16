@@ -145,7 +145,7 @@ impl Environment {
     ///     let env = Environment::new(global_env());
     ///     env.set_local(sym!(x), "harry");
     ///     env.set_local(sym!(x), "fred");
-    ///     assert_eq!(env.local(sym!(x)), Some(r!("fred")));
+    ///     assert_eq!(env.local(sym!(x)), Ok(r!("fred")));
     /// }
     /// ```
     pub fn set_local<K: Into<Robj>, V: Into<Robj>>(&self, key: K, value: V) {
@@ -164,15 +164,15 @@ impl Environment {
     /// test! {
     ///     let env = Environment::new(global_env());
     ///     env.set_local(sym!(x), "fred");
-    ///     assert_eq!(env.local(sym!(x)), Some(r!("fred")));
+    ///     assert_eq!(env.local(sym!(x)), Ok(r!("fred")));
     /// }
     /// ```
-    pub fn local<K: Into<Robj>>(&self, key: K) -> Option<Robj> {
+    pub fn local<K: Into<Robj>>(&self, key: K) -> Result<Robj> {
         let key = key.into();
         if key.is_symbol() {
-            unsafe { Some(new_owned(Rf_findVarInFrame3(self.get(), key.get(), 1))) }
+            unsafe { Ok(new_owned(Rf_findVarInFrame3(self.get(), key.get(), 1))) }
         } else {
-            None
+            Err(Error::NotFound(key))
         }
     }
 }

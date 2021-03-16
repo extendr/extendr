@@ -116,10 +116,10 @@ impl Robj {
     ///    // assert!(base_env().find_function(sym!(qwertyuiop)).is_none());
     /// }
     /// ```
-    pub fn find_function<K: Into<Robj>>(&self, key: K) -> Option<Robj> {
-        let key = key.into();
-        if !self.is_environment() || !key.is_symbol() {
-            return None;
+    pub fn find_function<K: TryInto<Symbol, Error=Error>>(&self, key: K) -> Result<Robj> {
+        let key : Symbol = key.try_into()?;
+        if !self.is_environment() {
+            return Err(Error::NotFound(key.into()));
         }
         // This may be better:
         // let mut env: Robj = self.into();
@@ -139,9 +139,9 @@ impl Robj {
         // }
         unsafe {
             if let Ok(var) = catch_r_error(|| Rf_findFun(key.get(), self.get())) {
-                Some(new_owned(var))
+                Ok(new_owned(var))
             } else {
-                None
+                Err(Error::NotFound(key.into()))
             }
         }
     }
@@ -164,10 +164,10 @@ impl Robj {
     ///    //assert_eq!(global_env().find_var(sym!(imnotasymbol)), None);
     /// }
     /// ```
-    pub fn find_var<K: Into<Robj>>(&self, key: K) -> Option<Robj> {
-        let key = key.into();
-        if !self.is_environment() || !key.is_symbol() {
-            return None;
+    pub fn find_var<K: TryInto<Symbol, Error=Error>>(&self, key: K) -> Result<Robj> {
+        let key : Symbol = key.try_into()?;
+        if !self.is_environment() {
+            return Err(Error::NotFound(key.into()));
         }
         // Alterative:
         // let mut env: Robj = self.into();
@@ -188,12 +188,12 @@ impl Robj {
         unsafe {
             if let Ok(var) = catch_r_error(|| Rf_findVar(key.get(), self.get())) {
                 if var != R_UnboundValue {
-                    Some(new_owned(var))
+                    Ok(new_owned(var))
                 } else {
-                    None
+                    Err(Error::NotFound(key.into()))
                 }
             } else {
-                None
+                Err(Error::NotFound(key.into()))
             }
         }
     }

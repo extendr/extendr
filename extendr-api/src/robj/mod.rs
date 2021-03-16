@@ -834,7 +834,7 @@ impl Robj {
     /// test! {
     ///     let mut obj = r!([1, 2, 3]).set_names(&["a", "b", "c"]).unwrap();
     ///     assert_eq!(obj.names().unwrap().collect::<Vec<_>>(), vec!["a", "b", "c"]);
-    ///     assert_eq!(r!([1, 2, 3]).set_names(&["a", "b"]), Err(Error::NamesLengthMismatch));
+    ///     assert_eq!(r!([1, 2, 3]).set_names(&["a", "b"]), Err(Error::NamesLengthMismatch(r!(["a", "b"]))));
     /// }
     /// ```
     pub fn set_names<T>(&self, names: T) -> Result<Robj>
@@ -848,7 +848,7 @@ impl Robj {
         if robj.len() == self.len() {
             self.set_attrib(wrapper::symbol::names_symbol(), robj)
         } else {
-            Err(Error::NamesLengthMismatch)
+            Err(Error::NamesLengthMismatch(robj))
         }
     }
 
@@ -1044,7 +1044,7 @@ impl std::fmt::Debug for Robj {
                 } else if sexp == R_EmptyEnv {
                     write!(f, "empty_env()")
                 } else {
-                    write!(f, "r!({:?})", self.as_environment().unwrap())
+                    write!(f, "r!(Environment::from_pairs(...))")
                 }
             },
             PROMSXP => {

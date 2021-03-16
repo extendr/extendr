@@ -25,11 +25,11 @@ pub fn unwrap_or_throw<T>(r: std::result::Result<T, &'static str>) -> T {
 
 #[derive(Debug, PartialEq)]
 pub enum Error {
-    Panic,
-    NotFound,
+    Panic(Robj),
+    NotFound(Robj),
     EvalError(Robj),
-    ParseError(String),
-    NamesLengthMismatch,
+    ParseError(Robj),
+    NamesLengthMismatch(Robj),
 
     ExpectedNull(Robj),
     ExpectedSymbol(Robj),
@@ -66,6 +66,7 @@ pub enum Error {
     MustNotBeNA(Robj),
     ExpectedNonZeroLength(Robj),
     TypeMismatch(Robj),
+    NamespaceNotFound(Robj),
 
     Other(String),
 }
@@ -73,11 +74,11 @@ pub enum Error {
 impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Error::Panic => write!(f, "Panic detected."),
-            Error::NotFound => write!(f, "Not found."),
+            Error::Panic(robj) => write!(f, "Panic detected {:?}.", robj),
+            Error::NotFound(robj) => write!(f, "Not found. {:?}", robj),
             Error::EvalError(robj) => write!(f, "Evalualtion error in {:?}.", robj),
-            Error::ParseError(code) => write!(f, "Parse error in {}.", code),
-            Error::NamesLengthMismatch => write!(f, "Length of names does not match vector."),
+            Error::ParseError(code) => write!(f, "Parse error in {:?}.", code),
+            Error::NamesLengthMismatch(robj) => write!(f, "Length of names does not match vector. {:?}", robj),
 
             Error::ExpectedNull(robj) => write!(f, "Expected Null got {:?}", robj.rtype()),
             Error::ExpectedSymbol(robj) => write!(f, "Expected Symbol got {:?}", robj.rtype()),
@@ -125,6 +126,7 @@ impl std::fmt::Display for Error {
             Error::ExpectedNonZeroLength(_robj) => write!(f, "Expected non zero length"),
             Error::TypeMismatch(_robj) => write!(f, "Type mismatch"),
 
+            Error::NamespaceNotFound(robj) => write!(f, "Namespace {:?} not found", robj),
             Error::Other(str) => write!(f, "{}", str),
         }
     }

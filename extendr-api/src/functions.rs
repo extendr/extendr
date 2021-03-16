@@ -12,10 +12,10 @@ use crate::*;
 /// }
 /// ```
 pub fn global_var<K: Into<Robj>>(key: K) -> Result<Robj> {
-    global_env()
-        .find_var(key)
-        .ok_or_else(|| Error::NotFound)
-        .and_then(|v| v.eval_promise())
+    let key = key.into();
+    Ok(global_env()
+        .find_var(key)?
+        .eval_promise()?)
 }
 
 /// Get a local variable from current_env() and ancestors.
@@ -34,21 +34,22 @@ pub fn global_var<K: Into<Robj>>(key: K) -> Result<Robj> {
 /// }
 /// ```
 pub fn local_var<K: Into<Robj>>(key: K) -> Result<Robj> {
-    current_env()
-        .find_var(key)
-        .ok_or_else(|| Error::NotFound)
-        .and_then(|v| v.eval_promise())
+    let key = key.into();
+    Ok(current_env()
+        .find_var(key)?
+        .eval_promise()?)
 }
 
 /// Get a global function from global_env() and ancestors.
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let ls = global_function(sym!(ls)).ok_or("ls failed")?;
+///     let ls = global_function(sym!(ls))?;
 ///     assert_eq!(ls.is_function(), true);
 /// }
 /// ```
-pub fn global_function<K: Into<Robj>>(key: K) -> Option<Robj> {
+pub fn global_function<K: Into<Robj>>(key: K) -> Result<Robj> {
+    let key = key.into();
     global_env().find_function(key)
 }
 
@@ -58,16 +59,17 @@ pub fn global_function<K: Into<Robj>>(key: K) -> Option<Robj> {
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///    assert_eq!(find_namespace("base").is_some(), true);
-///    assert_eq!(find_namespace("stats").is_some(), true);
+///    assert_eq!(find_namespace("base").is_ok(), true);
+///    assert_eq!(find_namespace("stats").is_ok(), true);
 /// }
 /// ```
-pub fn find_namespace<K: Into<Robj>>(key: K) -> Option<Robj> {
-    let res = single_threaded(|| call!(".getNamespace", key.into()));
+pub fn find_namespace<K: Into<Robj>>(key: K) -> Result<Environment> {
+    let key = key.into();
+    let res = single_threaded(|| call!(".getNamespace", key.clone()));
     if let Ok(res) = res {
-        Some(res)
+        Ok(res.try_into()?)
     } else {
-        None
+        Err(Error::NamespaceNotFound(key))
     }
 }
 
@@ -89,7 +91,7 @@ pub fn current_env() -> Environment {
 /// use extendr_api::prelude::*;
 /// test! {
 ///     global_env().set_local(sym!(x), "hello");
-///     assert_eq!(global_env().local(sym!(x)), Some(r!("hello")));
+///     assert_eq!(global_env().local(sym!(x)), Ok(r!("hello")));
 /// }
 /// ```
 pub fn global_env() -> Environment {
@@ -107,7 +109,7 @@ pub fn empty_env() -> Environment {
 /// use extendr_api::prelude::*;
 /// test! {
 ///     global_env().set_local(sym!(x), "hello");
-///     assert_eq!(base_env().local(sym!(+)), Some(r!(Primitive::from_str("+"))));
+///     assert_eq!(base_env().local(sym!(+)), Ok(r!(Primitive::from_str("+"))));
 /// }
 /// ```
 pub fn base_env() -> Environment {
@@ -223,4 +225,33 @@ pub fn eval_string(code: &str) -> Result<Robj> {
         }
         Ok(res)
     })
+}
+
+
+/// Find a function or primitive that may be in a namespace.
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///    assert!(find_namespaced_function("+").is_ok());
+///    assert!(find_namespaced_function("ls").is_ok());
+///    assert!(find_namespaced_function("base::ls").is_ok());
+///    assert!(find_namespaced_function("ls")?.is_language());
+///    assert!(!find_namespaced_function("basex::ls").is_ok());
+/// }
+/// ```
+pub fn find_namespaced_function(name: &str) -> Result<Language> {
+    let mut iter = name.split("::");
+    match (iter.next(), iter.next(), iter.next()) {
+        (Some(key), None, None) => {
+            let gf = global_function(Symbol::from_str(key))?;
+            Ok(Language::from_values(&[gf]))
+        }
+        (Some(ns), Some(key), None) => {
+            let namespace = find_namespace(ns)?;
+            Ok(Language::from_values(&[namespace.local(Symbol::from_str(key))?]))
+        }
+        _ => {
+            Err(Error::NotFound(r!(name)))
+        }
+    }
 }

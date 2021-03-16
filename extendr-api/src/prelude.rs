@@ -13,7 +13,7 @@ pub use super::error::{Error, Result};
 pub use super::functions::{
     base_env, base_namespace, blank_scalar_string, blank_string, current_env, empty_env,
     eval_string, find_namespace, global_env, global_function, global_var, local_var, na_str,
-    na_string, namespace_registry, nil_value, parse, srcref,
+    na_string, namespace_registry, nil_value, parse, srcref, find_namespaced_function,
 };
 
 pub use super::wrapper::symbol::{

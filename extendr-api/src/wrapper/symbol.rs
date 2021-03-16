@@ -39,6 +39,7 @@ impl Symbol {
         }
     }
 
+    // Internal conversion for constant symbols.
     fn from_sexp(sexp: SEXP) -> Symbol {
         unsafe {
             assert!(TYPEOF(sexp) == SYMSXP as i32);
@@ -62,6 +63,13 @@ impl Symbol {
             assert!(TYPEOF(printname) as u32 == CHARSXP);
             to_str(R_CHAR(printname) as *const u8)
         }
+    }
+}
+
+impl From<&str> for Symbol {
+    /// Convert a string to a symbol.
+    fn from(name: &str) -> Self {
+        Symbol::from_str(name)
     }
 }
 
