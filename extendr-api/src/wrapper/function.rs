@@ -56,10 +56,10 @@ impl Function {
     }
 
     /// Get the formal arguments of the function.
-    pub fn formals(&self) -> Robj {
+    pub fn formals(&self) -> Pairlist {
         unsafe {
             let sexp = self.robj.get();
-            new_owned(FORMALS(sexp))
+            new_owned(FORMALS(sexp)).try_into().unwrap()
         }
     }
 
