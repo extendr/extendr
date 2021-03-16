@@ -171,7 +171,7 @@ jobs:
       - name: Install system dependencies
         if: startsWith(runner.os, 'linux')
         run: |
-          foreach($apt_cmd in $(Rscript -e "writeLines(remotes::system_requirements('ubuntu', '20.04'))")) {
+          foreach($apt_cmd in $(Rscript -e "writeLines(remotes::system_requirements('ubuntu', '20.04', path = 'tests/extendrtests'))")) {
             Invoke-Expression "sudo $apt_cmd"
           }
 
