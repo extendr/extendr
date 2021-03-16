@@ -116,8 +116,8 @@ impl Robj {
     ///    // assert!(base_env().find_function(sym!(qwertyuiop)).is_none());
     /// }
     /// ```
-    pub fn find_function<K: TryInto<Symbol, Error=Error>>(&self, key: K) -> Result<Robj> {
-        let key : Symbol = key.try_into()?;
+    pub fn find_function<K: TryInto<Symbol, Error = Error>>(&self, key: K) -> Result<Robj> {
+        let key: Symbol = key.try_into()?;
         if !self.is_environment() {
             return Err(Error::NotFound(key.into()));
         }
@@ -164,8 +164,8 @@ impl Robj {
     ///    //assert_eq!(global_env().find_var(sym!(imnotasymbol)), None);
     /// }
     /// ```
-    pub fn find_var<K: TryInto<Symbol, Error=Error>>(&self, key: K) -> Result<Robj> {
-        let key : Symbol = key.try_into()?;
+    pub fn find_var<K: TryInto<Symbol, Error = Error>>(&self, key: K) -> Result<Robj> {
+        let key: Symbol = key.try_into()?;
         if !self.is_environment() {
             return Err(Error::NotFound(key.into()));
         }

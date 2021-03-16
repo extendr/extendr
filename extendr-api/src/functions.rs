@@ -13,9 +13,7 @@ use crate::*;
 /// ```
 pub fn global_var<K: Into<Robj>>(key: K) -> Result<Robj> {
     let key = key.into();
-    Ok(global_env()
-        .find_var(key)?
-        .eval_promise()?)
+    Ok(global_env().find_var(key)?.eval_promise()?)
 }
 
 /// Get a local variable from current_env() and ancestors.
@@ -35,9 +33,7 @@ pub fn global_var<K: Into<Robj>>(key: K) -> Result<Robj> {
 /// ```
 pub fn local_var<K: Into<Robj>>(key: K) -> Result<Robj> {
     let key = key.into();
-    Ok(current_env()
-        .find_var(key)?
-        .eval_promise()?)
+    Ok(current_env().find_var(key)?.eval_promise()?)
 }
 
 /// Get a global function from global_env() and ancestors.
@@ -227,7 +223,6 @@ pub fn eval_string(code: &str) -> Result<Robj> {
     })
 }
 
-
 /// Find a function or primitive that may be in a namespace.
 /// ```
 /// use extendr_api::prelude::*;
@@ -248,10 +243,10 @@ pub fn find_namespaced_function(name: &str) -> Result<Language> {
         }
         (Some(ns), Some(key), None) => {
             let namespace = find_namespace(ns)?;
-            Ok(Language::from_values(&[namespace.local(Symbol::from_str(key))?]))
+            Ok(Language::from_values(&[
+                namespace.local(Symbol::from_str(key))?
+            ]))
         }
-        _ => {
-            Err(Error::NotFound(r!(name)))
-        }
+        _ => Err(Error::NotFound(r!(name))),
     }
 }

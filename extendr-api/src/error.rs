@@ -78,7 +78,9 @@ impl std::fmt::Display for Error {
             Error::NotFound(robj) => write!(f, "Not found. {:?}", robj),
             Error::EvalError(robj) => write!(f, "Evalualtion error in {:?}.", robj),
             Error::ParseError(code) => write!(f, "Parse error in {:?}.", code),
-            Error::NamesLengthMismatch(robj) => write!(f, "Length of names does not match vector. {:?}", robj),
+            Error::NamesLengthMismatch(robj) => {
+                write!(f, "Length of names does not match vector. {:?}", robj)
+            }
 
             Error::ExpectedNull(robj) => write!(f, "Expected Null got {:?}", robj.rtype()),
             Error::ExpectedSymbol(robj) => write!(f, "Expected Symbol got {:?}", robj.rtype()),
