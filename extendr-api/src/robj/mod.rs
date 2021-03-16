@@ -703,10 +703,7 @@ impl Robj {
             let mut error: raw::c_int = 0;
             let res = R_tryEval(self.get(), R_GlobalEnv, &mut error as *mut raw::c_int);
             if error != 0 {
-                Err(Error::EvalError {
-                    code: r!(self),
-                    error,
-                })
+                Err(Error::EvalError(self.clone()))
             } else {
                 Ok(new_owned(res))
             }
@@ -825,8 +822,8 @@ impl Robj {
     /// test! {
     ///
     ///    let mut robj = r!("hello");
-    ///    robj.set_attrib(Symbol::from_str("xyz"), 1);
-    ///    assert_eq!(robj.get_attrib(Symbol::from_str("xyz")), Some(r!(1)));
+    ///    robj.set_attrib(sym!(xyz), 1);
+    ///    assert_eq!(robj.get_attrib(sym!(xyz)), Some(r!(1)));
     /// }
     /// ```
     pub fn get_attrib<'a, N>(&self, name: N) -> Option<Robj>
@@ -855,8 +852,8 @@ impl Robj {
     /// use extendr_api::prelude::*;
     /// test! {
     ///
-    ///    let mut robj = r!("hello").set_attrib(Symbol::from_str("xyz"), 1)?;
-    ///    assert_eq!(robj.get_attrib(Symbol::from_str("xyz")), Some(r!(1)));
+    ///    let mut robj = r!("hello").set_attrib(sym!(xyz), 1)?;
+    ///    assert_eq!(robj.get_attrib(sym!(xyz)), Some(r!(1)));
     /// }
     /// ```
     pub fn set_attrib<N, V>(&self, name: N, value: V) -> Result<Robj>
@@ -1068,52 +1065,6 @@ impl PartialEq<Robj> for Robj {
             // see https://github.com/hadley/r-internals/blob/master/misc.md
             R_compute_identical(self.get(), rhs.get(), 16) != 0
         }
-        // unsafe {
-        //     if self.get() == rhs.get() {
-        //         return true;
-        //     }
-        //     if self.sexptype() == rhs.sexptype() && self.len() == rhs.len() {
-        //         let lsexp = self.get();
-        //         let rsexp = rhs.get();
-        //         match self.sexptype() {
-        //             NILSXP => true,
-        //             SYMSXP => PRINTNAME(lsexp) == PRINTNAME(rsexp),
-        //             LISTSXP | LANGSXP | DOTSXP => self.as_pairlist().iter() == rhs.as_pairlist().iter(),
-        //             CLOSXP => false,
-        //             ENVSXP => false, // objects must match.
-        //             PROMSXP => false,
-        //             SPECIALSXP => false,
-        //             BUILTINSXP => false,
-        //             CHARSXP => self.as_character() == rhs.as_character(),
-        //             LGLSXP => self.as_logical_slice() == rhs.as_logical_slice(),
-        //             INTSXP => self.as_integer_slice() == rhs.as_integer_slice(),
-        //             REALSXP => self.as_real_slice() == rhs.as_real_slice(),
-        //             CPLXSXP => false,
-        //             ANYSXP => false,
-        //             VECSXP => self
-        //                 .as_list()
-        //                 .unwrap()
-        //                 .values()
-        //                 .eq(rhs.as_list().unwrap().values()),
-        //             EXPRSXP => self
-        //                 .as_expression()
-        //                 .unwrap()
-        //                 .values()
-        //                 .eq(rhs.as_expression().unwrap().values()),
-        //             WEAKREFSXP => false,
-        //             STRSXP => self.as_str_iter().unwrap().eq(rhs.as_str_iter().unwrap()),
-        //             BCODESXP => false,
-        //             EXTPTRSXP => false,
-        //             RAWSXP => self.as_raw_slice() == rhs.as_raw_slice(),
-        //             S4SXP => false,
-        //             NEWSXP => false,
-        //             FREESXP => false,
-        //             _ => false,
-        //         }
-        //     } else {
-        //         false
-        //     }
-        // }
     }
 }
 

@@ -351,10 +351,7 @@ pub fn parse(code: &str) -> Result<Robj> {
         let parsed = new_owned(R_ParseVector(codeobj.get(), -1, status_ptr, R_NilValue));
         match status {
             1 => Ok(parsed),
-            _ => Err(Error::ParseError {
-                code: code.into(),
-                status,
-            }),
+            _ => Err(Error::ParseError(code.into()))
         }
     })
 }

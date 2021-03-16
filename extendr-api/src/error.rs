@@ -25,10 +25,10 @@ pub fn unwrap_or_throw<T>(r: std::result::Result<T, &'static str>) -> T {
 
 #[derive(Debug, PartialEq)]
 pub enum Error {
-    Panic {},
+    Panic,
     NotFound,
-    EvalError { code: Robj, error: i32 },
-    ParseError { code: String, status: u32 },
+    EvalError(Robj),
+    ParseError(String),
     NamesLengthMismatch,
 
     ExpectedNull(Robj),
@@ -70,13 +70,62 @@ pub enum Error {
     Other(String),
 }
 
-pub type Result<T> = std::result::Result<T, Error>;
-
 impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{:?}", self)
+        match self {
+            Error::Panic => write!(f, "Panic detected."),
+            Error::NotFound => write!(f, "Not found."),
+            Error::EvalError(robj) => write!(f, "Evalualtion error in {:?}.", robj),
+            Error::ParseError(code) => write!(f, "Parse error in {}.", code),
+            Error::NamesLengthMismatch => write!(f, "Length of names does not match vector."),
+        
+            Error::ExpectedNull(robj) => write!(f, "Expected Null got {:?}", robj.rtype()),
+            Error::ExpectedSymbol(robj) => write!(f, "Expected Symbol got {:?}", robj.rtype()),
+            Error::ExpectedPairlist(robj) => write!(f, "Expected Pairlist got {:?}", robj.rtype()),
+            Error::ExpectedFunction(robj) => write!(f, "Expected Function got {:?}", robj.rtype()),
+            Error::ExpectedEnviroment(robj) => write!(f, "Expected Enviroment got {:?}", robj.rtype()),
+            Error::ExpectedPromise(robj) => write!(f, "Expected Promise got {:?}", robj.rtype()),
+            Error::ExpectedLanguage(robj) => write!(f, "Expected Language got {:?}", robj.rtype()),
+            Error::ExpectedSpecial(robj) => write!(f, "Expected Special got {:?}", robj.rtype()),
+            Error::ExpectedBuiltin(robj) => write!(f, "Expected Builtin got {:?}", robj.rtype()),
+            Error::ExpectedCharacter(robj) => write!(f, "Expected Character got {:?}", robj.rtype()),
+            Error::ExpectedLogical(robj) => write!(f, "Expected Logical got {:?}", robj.rtype()),
+            Error::ExpectedInteger(robj) => write!(f, "Expected Integer got {:?}", robj.rtype()),
+            Error::ExpectedReal(robj) => write!(f, "Expected Real got {:?}", robj.rtype()),
+            Error::ExpectedComplex(robj) => write!(f, "Expected Complex got {:?}", robj.rtype()),
+            Error::ExpectedString(robj) => write!(f, "Expected String got {:?}", robj.rtype()),
+            Error::ExpectedDot(robj) => write!(f, "Expected Dot got {:?}", robj.rtype()),
+            Error::ExpectedAny(robj) => write!(f, "Expected Any got {:?}", robj.rtype()),
+            Error::ExpectedList(robj) => write!(f, "Expected List got {:?}", robj.rtype()),
+            Error::ExpectedExpression(robj) => write!(f, "Expected Expression got {:?}", robj.rtype()),
+            Error::ExpectedBytecode(robj) => write!(f, "Expected Bytecode got {:?}", robj.rtype()),
+            Error::ExpectedExternalPtr(robj) => write!(f, "Expected ExternalPtr got {:?}", robj.rtype()),
+            Error::ExpectedWeakRef(robj) => write!(f, "Expected WeakRef got {:?}", robj.rtype()),
+            Error::ExpectedRaw(robj) => write!(f, "Expected Raw got {:?}", robj.rtype()),
+            Error::ExpectedS4(robj) => write!(f, "Expected S4 got {:?}", robj.rtype()),
+            Error::ExpectedPrimitive(robj) => write!(f, "Expected Primitive got {:?}", robj.rtype()),
+        
+            Error::ExpectedScalar(robj) => write!(f, "Expected Scalar, got {:?}", robj.rtype()),
+            Error::ExpectedVector(robj) => write!(f, "Expected Vector, got {:?}", robj.rtype()),
+            Error::ExpectedMatrix(robj) => write!(f, "Expected Matrix, got {:?}", robj.rtype()),
+            Error::ExpectedMatrix3D(robj) => write!(f, "Expected Matrix3D, got {:?}", robj.rtype()),
+            Error::ExpectedNumeric(robj) => write!(f, "Expected Numeric, got {:?}", robj.rtype()),
+            Error::OutOfRange(_robj) => write!(f, "Out of range."),
+            Error::MustNotBeNA(_robj) => write!(f, "Must not be NA."),
+            Error::ExpectedNonZeroLength(_robj) => write!(f, "Expected non zero length"),
+            Error::TypeMismatch(_robj) => write!(f, "Type mismatch"),
+        
+            Error::Other(str) => write!(f, "{}", str),
+        }
     }
 }
+pub type Result<T> = std::result::Result<T, Error>;
+
+// impl std::fmt::Display for Error {
+//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+//         write!(f, "{:?}", self)
+//     }
+// }
 
 impl std::error::Error for Error {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
