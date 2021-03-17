@@ -168,10 +168,10 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
           restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
-      - name: Install system dependencies
+      - name: Install system dependencies for rextendr
         if: startsWith(runner.os, 'linux')
         run: |
-          foreach($apt_cmd in $(Rscript -e "writeLines(remotes::system_requirements('ubuntu', '20.04', path = 'tests/extendrtests'))")) {
+          foreach($apt_cmd in $(Rscript -e "writeLines(remotes::system_requirements('ubuntu', '20.04', path = 'tests/rextendr'))")) {
             Invoke-Expression "sudo $apt_cmd"
           }
 
