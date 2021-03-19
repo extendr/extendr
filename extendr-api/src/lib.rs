@@ -215,6 +215,7 @@ pub mod rmacros;
 pub mod robj;
 pub mod thread_safety;
 pub mod wrapper;
+pub mod maths;
 
 #[cfg(feature = "ndarray")]
 pub mod robj_ndarray;
