@@ -207,9 +207,9 @@ fn get_doc_string(attrs: &Vec<syn::Attribute>) -> String {
                     if let syn::Meta::NameValue(nv) = meta {
                         if let syn::Lit::Str(litstr) = nv.lit {
                             if !res.is_empty() {
-                                res.extend("\n".chars());
+                                res.push_str("\n");
                             }
-                            res.extend(litstr.value().chars());
+                            res.push_str(&litstr.value());
                         }
                     }
                 }
@@ -235,7 +235,7 @@ fn mangled_type_name(type_: &Type) -> String {
                 res.push(c)
             } else {
                 let f = format!("_{:02x}", c as u32);
-                res.extend(f.chars());
+                res.push_str(&f);
             }
         }
     }
