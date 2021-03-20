@@ -54,7 +54,7 @@ impl<T: Copy> Iterator for SliceIter<T> {
             self.i = self.len;
             None
         } else {
-            unsafe { Some(*self.ptr.offset(i as isize)) }
+            unsafe { Some(*self.ptr.add(i)) }
         }
     }
 
@@ -190,7 +190,7 @@ impl Iterator for StrIter {
             } else if TYPEOF(vector) as u32 == STRSXP {
                 Some(str_from_strsxp(vector, i as isize))
             } else if TYPEOF(vector) as u32 == INTSXP && TYPEOF(self.levels) as u32 == STRSXP {
-                let j = *(INTEGER(vector).offset(i as isize));
+                let j = *(INTEGER(vector).add(i));
                 Some(str_from_strsxp(self.levels, j as isize - 1))
             } else if TYPEOF(vector) as u32 == NILSXP {
                 Some(na_str())

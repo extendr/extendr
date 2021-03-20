@@ -320,12 +320,7 @@ impl<T> Index<[usize; 2]> for RArray<T, [usize; 2]> {
     /// }
     /// ```
     fn index(&self, index: [usize; 2]) -> &Self::Output {
-        unsafe {
-            self.data
-                .offset(self.offset(index) as isize)
-                .as_ref()
-                .unwrap()
-        }
+        unsafe { self.data.add(self.offset(index)).as_ref().unwrap() }
     }
 }
 
@@ -345,12 +340,7 @@ impl<T> IndexMut<[usize; 2]> for RArray<T, [usize; 2]> {
     /// }
     /// ```
     fn index_mut(&mut self, index: [usize; 2]) -> &mut Self::Output {
-        unsafe {
-            self.data
-                .offset(self.offset(index) as isize)
-                .as_mut()
-                .unwrap()
-        }
+        unsafe { self.data.add(self.offset(index)).as_mut().unwrap() }
     }
 }
 

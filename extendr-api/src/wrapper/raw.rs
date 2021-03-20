@@ -31,7 +31,7 @@ impl Raw {
             let robj = new_owned(sexp);
             let ptr = RAW(sexp);
             for (i, &v) in bytes.into_iter().enumerate() {
-                *ptr.offset(i as isize) = v;
+                *ptr.add(i) = v;
             }
             Raw { robj }
         })
