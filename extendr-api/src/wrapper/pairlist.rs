@@ -87,6 +87,12 @@ pub struct PairlistIter {
     pub(crate) list_elem: SEXP,
 }
 
+impl Default for PairlistIter {
+    fn default() -> Self {
+        PairlistIter::new()
+    }
+}
+
 impl PairlistIter {
     /// Make an empty pairlist iterator.
     pub fn new() -> Self {
