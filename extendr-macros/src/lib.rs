@@ -605,11 +605,11 @@ impl syn::parse::Parse for Module {
                     return Err(syn::Error::new(kmod.span(), "only one mod allowed"));
                 }
                 res.modname = Some(name);
-            } else if let Ok(_) = input.parse::<Token![fn]>() {
+            } else if input.parse::<Token![fn]>().is_ok() {
                 res.fnnames.push(input.parse()?);
-            } else if let Ok(_) = input.parse::<Token![impl]>() {
+            } else if input.parse::<Token![impl]>().is_ok() {
                 res.implnames.push(input.parse()?);
-            } else if let Ok(_) = input.parse::<Token![use]>() {
+            } else if input.parse::<Token![use]>().is_ok() {
                 res.usenames.push(input.parse()?);
             } else {
                 return Err(syn::Error::new(input.span(), "expected mod, fn or impl"));
