@@ -218,7 +218,7 @@ where
         let res: Result<Vec<_>> = listiter
             .map(|robj| T::try_from(robj).map_err(|e| e.into()))
             .collect();
-        res.map(|v| FromList(v))
+        res.map(FromList)
     }
 }
 
