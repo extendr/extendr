@@ -293,22 +293,6 @@
 <span id="290">290</span>
 <span id="291">291</span>
 <span id="292">292</span>
-<span id="293">293</span>
-<span id="294">294</span>
-<span id="295">295</span>
-<span id="296">296</span>
-<span id="297">297</span>
-<span id="298">298</span>
-<span id="299">299</span>
-<span id="300">300</span>
-<span id="301">301</span>
-<span id="302">302</span>
-<span id="303">303</span>
-<span id="304">304</span>
-<span id="305">305</span>
-<span id="306">306</span>
-<span id="307">307</span>
-<span id="308">308</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
@@ -464,7 +448,6 @@
 }
 
 <span class="macro">impl_iter_from_robj</span><span class="macro">!</span>(<span class="ident">StrIter</span>, <span class="ident">as_str_iter</span>, <span class="string">&quot;Not a character vector.&quot;</span>);
-<span class="macro">impl_iter_from_robj</span><span class="macro">!</span>(<span class="ident">ListIter</span>, <span class="ident">as_list_iter</span>, <span class="string">&quot;Not a list.&quot;</span>);
 <span class="macro">impl_iter_from_robj</span><span class="macro">!</span>(<span class="ident">Int</span>, <span class="ident">as_integer_iter</span>, <span class="string">&quot;Not an integer vector.&quot;</span>);
 <span class="macro">impl_iter_from_robj</span><span class="macro">!</span>(<span class="ident">Real</span>, <span class="ident">as_real_iter</span>, <span class="string">&quot;Not a real vector.&quot;</span>);
 <span class="macro">impl_iter_from_robj</span><span class="macro">!</span>(<span class="ident">Logical</span>, <span class="ident">as_logical_iter</span>, <span class="string">&quot;Not a logical vector.&quot;</span>);
@@ -478,7 +461,7 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">FromRobj</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Robj</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">from_robj</span>(<span class="ident">robj</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">result</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">iter</span>) <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_named_list_iter</span>() {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">iter</span>) <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_list</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">l</span><span class="op">|</span> <span class="ident">l</span>.<span class="ident">iter</span>()) {
             <span class="prelude-val">Ok</span>(<span class="ident">iter</span>
                 .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">k</span>, <span class="ident">v</span>)<span class="op">|</span> (<span class="ident">k</span>.<span class="ident">to_string</span>(), <span class="ident">v</span>.<span class="ident">to_owned</span>()))
                 .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>())
@@ -490,7 +473,7 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">FromRobj</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">HashMap</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">Robj</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">from_robj</span>(<span class="ident">robj</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">result</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">iter</span>) <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_named_list_iter</span>() {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">iter</span>) <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_list</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">l</span><span class="op">|</span> <span class="ident">l</span>.<span class="ident">iter</span>()) {
             <span class="prelude-val">Ok</span>(<span class="ident">iter</span>.<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">k</span>, <span class="ident">v</span>)<span class="op">|</span> (<span class="ident">k</span>, <span class="ident">v</span>)).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>())
         } <span class="kw">else</span> {
             <span class="prelude-val">Err</span>(<span class="string">&quot;expected a list&quot;</span>)
@@ -578,43 +561,28 @@
     }
 }
 
-<span class="comment">// Symbol input parameters.</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">FromRobj</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Symbol</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+<span class="comment">// Matrix input parameters.</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">FromRobj</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">RArray</span><span class="op">&lt;</span><span class="ident">T</span>, [<span class="ident">usize</span>; <span class="number">2</span>]<span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">Robj</span>: <span class="ident">AsTypedSlice</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span>,
+{
     <span class="kw">fn</span> <span class="ident">from_robj</span>(<span class="ident">robj</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">result</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_symbol</span>() {
-            <span class="prelude-val">Ok</span>(<span class="ident">x</span>)
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="string">&quot;Expected a symbol.&quot;</span>)
+        <span class="kw">match</span> <span class="ident">robj</span>.<span class="ident">as_matrix</span>() {
+            <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">x</span>),
+            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Err</span>(<span class="string">&quot;Expected a matrix.&quot;</span>),
         }
     }
 }
 
 <span class="comment">// Matrix input parameters.</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">FromRobj</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">RArray</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">T</span>], [<span class="ident">usize</span>; <span class="number">2</span>]<span class="op">&gt;</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">FromRobj</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">RMatrix3D</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">Robj</span>: <span class="ident">AsTypedSlice</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span>,
 {
     <span class="kw">fn</span> <span class="ident">from_robj</span>(<span class="ident">robj</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">result</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_matrix</span>() {
-            <span class="prelude-val">Ok</span>(<span class="ident">x</span>)
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">robj</span>.<span class="ident">as_typed_slice</span>().<span class="ident">is_some</span>() {
-            <span class="prelude-val">Err</span>(<span class="string">&quot;Matrix type mismatch.&quot;</span>)
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="string">&quot;Expected a matrix.&quot;</span>)
-        }
-    }
-}
-
-<span class="comment">// Matrix input parameters.</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">FromRobj</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">RMatrix3D</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">T</span>]<span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">Robj</span>: <span class="ident">AsTypedSlice</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span>,
-{
-    <span class="kw">fn</span> <span class="ident">from_robj</span>(<span class="ident">robj</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">result</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_matrix3d</span>() {
-            <span class="prelude-val">Ok</span>(<span class="ident">x</span>)
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="string">&quot;Expected a 3d matrix.&quot;</span>)
+        <span class="kw">match</span> <span class="ident">robj</span>.<span class="ident">as_matrix3d</span>() {
+            <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">x</span>),
+            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Err</span>(<span class="string">&quot;Expected a matrix.&quot;</span>),
         }
     }
 }

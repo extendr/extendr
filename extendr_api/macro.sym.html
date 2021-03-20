@@ -14,6 +14,6 @@ as generating them is costly.</p>
 <span class="macro">test</span><span class="macro">!</span> {
 
 <span class="kw">let</span> <span class="ident">wombat</span> <span class="op">=</span> <span class="macro">sym</span><span class="macro">!</span>(<span class="ident">wombat</span>);
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">wombat</span>, <span class="macro">r</span><span class="macro">!</span>(<span class="ident">Symbol</span>(<span class="string">&quot;wombat&quot;</span>)));
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">wombat</span>, <span class="macro">r</span><span class="macro">!</span>(<span class="ident">Symbol</span>::<span class="ident">from_str</span>(<span class="string">&quot;wombat&quot;</span>)));
 }</pre></div>
 </div></section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../";window.currentCrate = "extendr_api";</script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>

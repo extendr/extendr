@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Promise","Wrapper for creating promises (PROMSXP)."]]});

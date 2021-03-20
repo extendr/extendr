@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["extendr_api"] = [{"text":"impl&lt;T:&nbsp;Copy&gt; ExactSizeIterator for SliceIter&lt;T&gt;","synthetic":false,"types":[]},{"text":"impl ExactSizeIterator for StrIter","synthetic":false,"types":[]},{"text":"impl ExactSizeIterator for ListIter","synthetic":false,"types":[]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

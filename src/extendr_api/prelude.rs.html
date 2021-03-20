@@ -56,6 +56,12 @@
 <span id="53">53</span>
 <span id="54">54</span>
 <span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # Common exports for extendr-api.</span>
 <span class="doccomment">//!</span>
@@ -70,15 +76,18 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">error</span>::{<span class="ident">Error</span>, <span class="prelude-ty">Result</span>};
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">functions</span>::{
-    <span class="ident">base_env</span>, <span class="ident">base_namespace</span>, <span class="ident">base_symbol</span>, <span class="ident">blank_scalar_string</span>, <span class="ident">blank_string</span>, <span class="ident">brace_symbol</span>,
-    <span class="ident">bracket_2_symbol</span>, <span class="ident">bracket_symbol</span>, <span class="ident">class_symbol</span>, <span class="ident">current_env</span>, <span class="ident">device_symbol</span>, <span class="ident">dim_symbol</span>,
-    <span class="ident">dimnames_symbol</span>, <span class="ident">dollar_symbol</span>, <span class="ident">dot_defined</span>, <span class="ident">dot_method</span>, <span class="ident">dot_package_name</span>, <span class="ident">dot_target</span>,
-    <span class="ident">dots_symbol</span>, <span class="ident">double_colon_symbol</span>, <span class="ident">empty_env</span>, <span class="ident">eval_string</span>, <span class="ident">find_namespace</span>, <span class="ident">global_env</span>,
-    <span class="ident">global_function</span>, <span class="ident">global_var</span>, <span class="ident">lastvalue_symbol</span>, <span class="ident">levels_symbol</span>, <span class="ident">local_var</span>, <span class="ident">missing_arg</span>,
-    <span class="ident">mode_symbol</span>, <span class="ident">na_rm_symbol</span>, <span class="ident">na_str</span>, <span class="ident">na_string</span>, <span class="ident">name_symbol</span>, <span class="ident">names_symbol</span>, <span class="ident">namespace_env_symbol</span>,
-    <span class="ident">namespace_registry</span>, <span class="ident">new_env</span>, <span class="ident">new_env_with_capacity</span>, <span class="ident">nil_value</span>, <span class="ident">package_symbol</span>, <span class="ident">parse</span>,
+    <span class="ident">base_env</span>, <span class="ident">base_namespace</span>, <span class="ident">blank_scalar_string</span>, <span class="ident">blank_string</span>, <span class="ident">current_env</span>, <span class="ident">empty_env</span>,
+    <span class="ident">eval_string</span>, <span class="ident">find_namespace</span>, <span class="ident">find_namespaced_function</span>, <span class="ident">global_env</span>, <span class="ident">global_function</span>, <span class="ident">global_var</span>,
+    <span class="ident">local_var</span>, <span class="ident">na_str</span>, <span class="ident">na_string</span>, <span class="ident">namespace_registry</span>, <span class="ident">nil_value</span>, <span class="ident">parse</span>, <span class="ident">srcref</span>,
+};
+
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">wrapper</span>::<span class="ident">symbol</span>::{
+    <span class="ident">base_symbol</span>, <span class="ident">brace_symbol</span>, <span class="ident">bracket_2_symbol</span>, <span class="ident">bracket_symbol</span>, <span class="ident">class_symbol</span>, <span class="ident">device_symbol</span>,
+    <span class="ident">dim_symbol</span>, <span class="ident">dimnames_symbol</span>, <span class="ident">dollar_symbol</span>, <span class="ident">dot_defined</span>, <span class="ident">dot_method</span>, <span class="ident">dot_package_name</span>,
+    <span class="ident">dot_target</span>, <span class="ident">dots_symbol</span>, <span class="ident">double_colon_symbol</span>, <span class="ident">lastvalue_symbol</span>, <span class="ident">levels_symbol</span>, <span class="ident">missing_arg</span>,
+    <span class="ident">mode_symbol</span>, <span class="ident">na_rm_symbol</span>, <span class="ident">name_symbol</span>, <span class="ident">names_symbol</span>, <span class="ident">namespace_env_symbol</span>, <span class="ident">package_symbol</span>,
     <span class="ident">previous_symbol</span>, <span class="ident">quote_symbol</span>, <span class="ident">row_names_symbol</span>, <span class="ident">seeds_symbol</span>, <span class="ident">sort_list_symbol</span>, <span class="ident">source_symbol</span>,
-    <span class="ident">spec_symbol</span>, <span class="ident">srcref</span>, <span class="ident">triple_colon_symbol</span>, <span class="ident">tsp_symbol</span>, <span class="ident">unbound_value</span>,
+    <span class="ident">spec_symbol</span>, <span class="ident">triple_colon_symbol</span>, <span class="ident">tsp_symbol</span>, <span class="ident">unbound_value</span>,
 };
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">append</span>, <span class="ident">append_lang</span>, <span class="ident">append_with_name</span>, <span class="ident">args</span>, <span class="ident">call</span>, <span class="ident">lang</span>, <span class="ident">make_lang</span>};
@@ -89,7 +98,7 @@
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">logical</span>::<span class="ident">Bool</span>;
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">matrix</span>::{<span class="ident">RArray</span>, <span class="ident">RColumn</span>, <span class="ident">RMatrix</span>, <span class="ident">RMatrix3D</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">wrapper</span>::{<span class="ident">RArray</span>, <span class="ident">RColumn</span>, <span class="ident">RMatrix</span>, <span class="ident">RMatrix3D</span>};
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">robj</span>::{<span class="ident">IntoRobj</span>, <span class="ident">Robj</span>, <span class="ident">RobjItertools</span>};
 
@@ -98,7 +107,8 @@
 };
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">wrapper</span>::{
-    <span class="ident">Character</span>, <span class="ident">Env</span>, <span class="ident">Expr</span>, <span class="ident">Function</span>, <span class="ident">Lang</span>, <span class="ident">List</span>, <span class="ident">Nullable</span>, <span class="ident">Pairlist</span>, <span class="ident">Primitive</span>, <span class="ident">Promise</span>, <span class="ident">Raw</span>, <span class="ident">Symbol</span>,
+    <span class="ident">Character</span>, <span class="ident">EnvIter</span>, <span class="ident">Environment</span>, <span class="ident">Expression</span>, <span class="ident">FromList</span>, <span class="ident">Function</span>, <span class="ident">Language</span>, <span class="ident">List</span>, <span class="ident">ListIter</span>,
+    <span class="ident">Nullable</span>, <span class="ident">Pairlist</span>, <span class="ident">Primitive</span>, <span class="ident">Promise</span>, <span class="ident">Raw</span>, <span class="ident">Symbol</span>,
 };
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
@@ -109,8 +119,10 @@
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">extendr_macros</span>::{<span class="ident">extendr</span>, <span class="ident">extendr_module</span>};
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">iter</span>::{
-    <span class="ident">EnvIter</span>, <span class="ident">Int</span>, <span class="ident">ListIter</span>, <span class="ident">Logical</span>, <span class="ident">PairlistIter</span>, <span class="ident">PairlistTagIter</span>, <span class="ident">Real</span>, <span class="ident">StrIter</span>,
-};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">iter</span>::{<span class="ident">Int</span>, <span class="ident">Logical</span>, <span class="ident">Real</span>, <span class="ident">StrIter</span>};
+
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">convert</span>::{<span class="ident">TryFrom</span>, <span class="ident">TryInto</span>};
+
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">Index</span>;
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "extendr_api";</script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>

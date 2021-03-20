@@ -777,6 +777,7 @@
 <span id="774">774</span>
 <span id="775">775</span>
 <span id="776">776</span>
+<span id="777">777</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! A safe and user friendly R extension interface.</span>
@@ -843,9 +844,9 @@
 <span class="doccomment">//!     let list = list!(a = 1, b = 2);</span>
 <span class="doccomment">//!    </span>
 <span class="doccomment">//!     // An unnamed list (of R objects) using the List wrapper.</span>
-<span class="doccomment">//!     let list = r!(List(vec![1, 2, 3]));</span>
-<span class="doccomment">//!     let list = r!(List(vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]));</span>
-<span class="doccomment">//!     let list = r!(List(&amp;[r!(&quot;a&quot;), r!(1), r!(2.0)]));</span>
+<span class="doccomment">//!     let list = r!(List::from_values(vec![1, 2, 3]));</span>
+<span class="doccomment">//!     let list = r!(List::from_values(vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]));</span>
+<span class="doccomment">//!     let list = r!(List::from_values(&amp;[r!(&quot;a&quot;), r!(1), r!(2.0)]));</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//!     // A symbol</span>
 <span class="doccomment">//!     let sym = sym!(wombat);</span>
@@ -986,7 +987,6 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">iter</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">lang_macros</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">logical</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">matrix</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">metadata</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">ownership</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">prelude</span>;
@@ -999,6 +999,9 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">robj_ndarray</span>;
 
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">convert</span>::{<span class="ident">TryFrom</span>, <span class="ident">TryInto</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">Deref</span>;
+
 <span class="comment">//////////////////////////////////////////////////</span>
 <span class="comment">// Note these pub use statements are deprectaed</span>
 <span class="comment">//</span>
@@ -1010,7 +1013,6 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">functions</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">lang_macros</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">logical</span>::<span class="kw-2">*</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">matrix</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">rmacros</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">robj</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">thread_safety</span>::{
@@ -1326,7 +1328,7 @@
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">matrix</span>(<span class="ident">x</span>: <span class="ident">RMatrix</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">f64</span>]<span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">RMatrix</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">f64</span>]<span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">matrix</span>(<span class="ident">x</span>: <span class="ident">RMatrix</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">RMatrix</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
         <span class="ident">x</span>
     }
 
@@ -1489,13 +1491,13 @@
                 <span class="comment">// #[extendr]</span>
                 <span class="comment">// pub fn matrix(x: Matrix&lt;&amp;[f64]&gt;) -&gt; Matrix&lt;&amp;[f64]&gt; { x }</span>
 
-                <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">RMatrix</span>::<span class="ident">new</span>([<span class="number">1.</span>, <span class="number">2.</span>], <span class="number">1</span>, <span class="number">2</span>);
+                <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">RMatrix</span>::<span class="ident">new_matrix</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="op">|</span><span class="ident">r</span>, <span class="ident">c</span><span class="op">|</span> <span class="kw">if</span> <span class="ident">r</span> <span class="op">=</span><span class="op">=</span> <span class="ident">c</span> {<span class="number">1.0</span>} <span class="kw">else</span> {<span class="number">0.</span>});
                 <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r</span><span class="macro">!</span>(<span class="ident">m</span>);
                 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__matrix</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
 
                 <span class="comment">// #[extendr]</span>
                 <span class="comment">// pub fn hash_map(x: HashMap&lt;&amp;str, Robj&gt;) -&gt; HashMap&lt;&amp;str, Robj&gt; { x }</span>
-                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r</span><span class="macro">!</span>(<span class="ident">List</span>(<span class="kw-2">&amp;</span>[<span class="number">1</span>, <span class="number">2</span>]));
+                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r</span><span class="macro">!</span>(<span class="ident">List</span>::<span class="ident">from_values</span>(<span class="kw-2">&amp;</span>[<span class="number">1</span>, <span class="number">2</span>]));
                 <span class="ident">robj</span>.<span class="ident">set_attrib</span>(<span class="ident">names_symbol</span>(), <span class="macro">r</span><span class="macro">!</span>([<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>]))<span class="question-mark">?</span>;
                 <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">new_owned</span>(<span class="ident">wrap__hash_map</span>(<span class="ident">robj</span>.<span class="ident">get</span>()));
                 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">res</span>.<span class="ident">len</span>(), <span class="number">2</span>);

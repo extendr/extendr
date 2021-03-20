@@ -279,6 +279,7 @@
 <span id="276">276</span>
 <span id="277">277</span>
 <span id="278">278</span>
+<span id="279">279</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! rmacros - a set of macros to call actual R functions in a rusty way.</span>
@@ -382,13 +383,13 @@
 <span class="doccomment">/// test! {</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// let wombat = sym!(wombat);</span>
-<span class="doccomment">/// assert_eq!(wombat, r!(Symbol(&quot;wombat&quot;)));</span>
+<span class="doccomment">/// assert_eq!(wombat, r!(Symbol::from_str(&quot;wombat&quot;)));</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">sym</span> {
     ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
-        <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="ident">Symbol</span>(<span class="macro">stringify</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>)<span class="kw-2">*</span>)))
+        <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="ident">Symbol</span>::<span class="ident">from_str</span>(<span class="macro">stringify</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>)<span class="kw-2">*</span>)))
     };
 }
 
@@ -398,8 +399,8 @@
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">/// test! {</span>
-<span class="doccomment">/// let mylist = list!(x=1, y=2);</span>
-<span class="doccomment">/// assert_eq!(mylist, r!(List(&amp;[r!(1), r!(2)])));</span>
+<span class="doccomment">///     let mylist = list!(x=1, y=2);</span>
+<span class="doccomment">///     assert_eq!(mylist, r!(List::from_pairs(vec![(&quot;x&quot;, r!(1)), (&quot;y&quot;, r!(2))])));</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
@@ -420,8 +421,8 @@
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">/// test! {</span>
-<span class="doccomment">/// let mylist = pairlist!(x=1, y=2);</span>
-<span class="doccomment">/// ///assert_eq!(mylist, r!(Pairlist(&amp;[r!(1), r!(2)])));</span>
+<span class="doccomment">///     let mylist = pairlist!(x=1, y=2);</span>
+<span class="doccomment">///     assert_eq!(mylist, r!(Pairlist::from_pairs(vec![(&quot;x&quot;, r!(1)), (&quot;y&quot;, r!(2))])));</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
@@ -442,8 +443,9 @@
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">/// test! {</span>
-<span class="doccomment">/// let mydata = data_frame!(x=1, y=2);</span>
-<span class="doccomment">/// assert_eq!(mydata, r!(List(&amp;[r!(1), r!(2)])));</span>
+<span class="doccomment">///     let mydata = data_frame!(x=1, y=2);</span>
+<span class="doccomment">///     assert_eq!(mydata.inherits(&quot;data.frame&quot;), true);</span>
+<span class="doccomment">///     //assert_eq!(mydata, r!(List::from_pairs(vec![(&quot;x&quot;, r!(1)), (&quot;y&quot;, r!(2))])).set_class(&amp;[&quot;data.frame&quot;])?);</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>

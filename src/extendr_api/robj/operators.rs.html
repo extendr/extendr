@@ -303,8 +303,6 @@
 <span id="300">300</span>
 <span id="301">301</span>
 <span id="302">302</span>
-<span id="303">303</span>
-<span id="304">304</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::{<span class="ident">Add</span>, <span class="ident">Div</span>, <span class="ident">Mul</span>, <span class="ident">Sub</span>};
@@ -317,18 +315,17 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::prelude::*;</span>
     <span class="doccomment">/// test! {</span>
-    <span class="doccomment">/// let env = r!(Env{</span>
-    <span class="doccomment">///    parent: global_env(),</span>
-    <span class="doccomment">///    names_and_values: vec![(&quot;a&quot;.to_string(), r!(1)), (&quot;b&quot;.to_string(), r!(2))]});</span>
+    <span class="doccomment">/// let env = Environment::from_pairs(global_env(),</span>
+    <span class="doccomment">///    vec![(&quot;a&quot;.to_string(), r!(1)), (&quot;b&quot;.to_string(), r!(2))]);</span>
     <span class="doccomment">/// assert_eq!(env.dollar(&quot;a&quot;).unwrap(), r!(1));</span>
     <span class="doccomment">/// assert_eq!(env.dollar(&quot;b&quot;).unwrap(), r!(2));</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dollar</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">symbol</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
     <span class="kw">where</span>
-        <span class="ident">Symbol</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
+        <span class="ident">T</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>,
     {
-        <span class="kw">let</span> <span class="ident">symbol</span>: <span class="ident">Symbol</span> <span class="op">=</span> <span class="ident">Symbol</span>::<span class="ident">from</span>(<span class="ident">symbol</span>);
+        <span class="kw">let</span> <span class="ident">symbol</span>: <span class="ident">Symbol</span> <span class="op">=</span> <span class="ident">Symbol</span>::<span class="ident">from_str</span>(<span class="ident">symbol</span>.<span class="ident">as_ref</span>());
         <span class="macro">call</span><span class="macro">!</span>(<span class="string">&quot;$&quot;</span>, <span class="self">self</span>, <span class="ident">symbol</span>)
     }
 
@@ -368,11 +365,10 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::prelude::*;</span>
     <span class="doccomment">/// test! {</span>
-    <span class="doccomment">/// let x = r!(Symbol(&quot;x&quot;));</span>
-    <span class="doccomment">/// let y = r!(Symbol(&quot;y&quot;));</span>
-    <span class="doccomment">/// let tilde = x.tilde(y).unwrap();</span>
-    <span class="doccomment">/// assert_eq!(tilde, r!(Lang(&amp;[r!(Symbol(&quot;~&quot;)), r!(Symbol(&quot;x&quot;)), r!(Symbol(&quot;y&quot;))])));</span>
-    <span class="doccomment">/// assert_eq!(tilde.inherits(&quot;formula&quot;), true);</span>
+    <span class="doccomment">///     let x = r!(Symbol::from_str(&quot;x&quot;));</span>
+    <span class="doccomment">///     let y = r!(Symbol::from_str(&quot;y&quot;));</span>
+    <span class="doccomment">///     let tilde = x.tilde(y).unwrap();</span>
+    <span class="doccomment">///     assert_eq!(tilde.inherits(&quot;formula&quot;), true);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">tilde</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
@@ -386,8 +382,8 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::prelude::*;</span>
     <span class="doccomment">/// test! {</span>
-    <span class="doccomment">/// let base = r!(Symbol(&quot;base&quot;));</span>
-    <span class="doccomment">/// let env = r!(Symbol(&quot;.getNamespace&quot;));</span>
+    <span class="doccomment">/// let base = r!(Symbol::from_str(&quot;base&quot;));</span>
+    <span class="doccomment">/// let env = r!(Symbol::from_str(&quot;.getNamespace&quot;));</span>
     <span class="doccomment">/// let base_env = base.double_colon(env).unwrap();</span>
     <span class="doccomment">/// assert_eq!(base_env.is_function(), true);</span>
     <span class="doccomment">/// }</span>
