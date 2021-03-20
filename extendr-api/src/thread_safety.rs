@@ -118,7 +118,7 @@ where
         F: FnOnce() -> SEXP + Copy,
     {
         let data = data as *const ();
-        let f: &F = std::mem::transmute(data);
+        let f: &F = &*(data as *const F);
         f()
     }
 
