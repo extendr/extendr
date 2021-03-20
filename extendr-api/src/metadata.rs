@@ -100,7 +100,7 @@ fn write_doc(w: &mut Vec<u8>, doc: &str) -> std::io::Result<()> {
                 write!(w, "{}", c)?;
             }
         }
-        writeln!(w, "")?;
+        writeln!(w)?;
     }
     Ok(())
 }
@@ -314,7 +314,7 @@ impl Metadata {
             writeln!(w, "#' @usage NULL")?;
             writeln!(w, "#' @useDynLib {}, .registration = TRUE", package_name)?;
             writeln!(w, "NULL")?;
-            writeln!(w, "")?;
+            writeln!(w)?;
         }
 
         for func in &self.functions {
