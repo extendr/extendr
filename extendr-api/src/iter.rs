@@ -178,7 +178,7 @@ impl Iterator for StrIter {
             self.i += 1;
             let vector = self.vector.get();
             if i >= self.len {
-                return None;
+                None
             } else if TYPEOF(vector) as u32 == STRSXP {
                 Some(str_from_strsxp(vector, i as isize))
             } else if TYPEOF(vector) as u32 == INTSXP && TYPEOF(self.levels) as u32 == STRSXP {
@@ -187,7 +187,7 @@ impl Iterator for StrIter {
             } else if TYPEOF(vector) as u32 == NILSXP {
                 Some(na_str())
             } else {
-                return None;
+                None
             }
         }
     }

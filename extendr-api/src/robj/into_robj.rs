@@ -356,9 +356,9 @@ where
                     panic!("unexpected SEXPTYPE in collect_robj");
                 }
             }
-            return Robj::Owned(sexp);
+            Robj::Owned(sexp)
         } else {
-            return Robj::from(());
+            Robj::from(())
         }
     })
 }

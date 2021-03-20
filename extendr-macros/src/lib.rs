@@ -570,8 +570,8 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
 pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
     let args = parse_macro_input!(attr as syn::AttributeArgs);
     match parse_macro_input!(item as Item) {
-        Item::Fn(func) => return extendr_function(args, func),
-        Item::Impl(item_impl) => return extendr_impl(item_impl),
+        Item::Fn(func) => extendr_function(args, func),
+        Item::Impl(item_impl) => extendr_impl(item_impl),
         other_item => TokenStream::from(quote! {#other_item}),
     }
 }
