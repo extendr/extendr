@@ -309,7 +309,7 @@ impl Robj {
     /// ```
     pub fn as_integer_vector(&self) -> Option<Vec<i32>> {
         if let Some(value) = self.as_integer_slice() {
-            Some(value.iter().cloned().collect::<Vec<_>>())
+            Some(value.to_vec())
         } else {
             None
         }
@@ -340,7 +340,7 @@ impl Robj {
     /// ```
     pub fn as_logical_vector(&self) -> Option<Vec<Bool>> {
         if let Some(value) = self.as_logical_slice() {
-            Some(value.iter().cloned().collect::<Vec<_>>())
+            Some(value.to_vec())
         } else {
             None
         }
@@ -423,7 +423,7 @@ impl Robj {
     /// ```
     pub fn as_real_vector(&self) -> Option<Vec<f64>> {
         if let Some(value) = self.as_real_slice() {
-            Some(value.iter().cloned().collect::<Vec<_>>())
+            Some(value.to_vec())
         } else {
             None
         }
