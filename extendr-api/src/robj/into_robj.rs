@@ -393,7 +393,7 @@ pub trait RobjItertools: Iterator {
         Self: Sized,
         Self::Item: ToVectorValue,
     {
-        if let (len, Some(max)) = self.size_hint().clone() {
+        if let (len, Some(max)) = self.size_hint() {
             if len == max {
                 return fixed_size_collect(self, len);
             }
