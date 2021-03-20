@@ -658,7 +658,7 @@ impl Robj {
     pub fn eval_blind(&self) -> Robj {
         let res = self.eval();
         if let Ok(robj) = res {
-            Robj::from(robj)
+            robj
         } else {
             Robj::from(())
         }

@@ -101,7 +101,7 @@ impl Environment {
     pub fn set_envflags(&mut self, flags: i32) -> &mut Self {
         unsafe {
             let sexp = self.robj.get();
-            SET_ENVFLAGS(sexp, flags.into())
+            SET_ENVFLAGS(sexp, flags)
         }
         self
     }
