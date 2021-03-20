@@ -291,10 +291,7 @@ fn make_function_wrappers(
     let panic_str = format!("{} panicked.\0", func_name);
 
     let inputs = &sig.inputs;
-    let has_self = match inputs.iter().next() {
-        Some(FnArg::Receiver(_)) => true,
-        _ => false,
-    };
+    let has_self = matches!(inputs.iter().next(), Some(FnArg::Receiver(_)));
 
     let call_name = if has_self {
         let is_mut = match inputs.iter().next() {
