@@ -936,7 +936,7 @@ impl Robj {
     /// ```
     pub fn inherits(&self, classname: &str) -> bool {
         if let Some(mut iter) = self.class() {
-            iter.find(|&n| n == classname).is_some()
+            iter.any(|n| n == classname)
         } else {
             false
         }
