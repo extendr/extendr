@@ -167,7 +167,7 @@ impl Iterator for ListIter {
         let i = self.i;
         self.i += 1;
         if i >= self.len {
-            return None;
+            None
         } else {
             Some(unsafe { new_owned(VECTOR_ELT(self.robj.get(), i as isize)) })
         }
