@@ -676,10 +676,7 @@ impl Robj {
     /// }
     /// ```
     pub fn is_owned(&self) -> bool {
-        match self {
-            Robj::Owned(_) => true,
-            _ => false,
-        }
+        matches!(self, Robj::Owned(_))
     }
 
     // Convert the Robj to an owned one.
