@@ -5,6 +5,12 @@ pub struct List {
     pub(crate) robj: Robj,
 }
 
+impl Default for List {
+    fn default() -> Self {
+        List::new()
+    }
+}
+
 impl List {
     /// Create a new, empty list.
     /// ```
@@ -131,6 +137,12 @@ pub struct ListIter {
     robj: Robj,
     i: usize,
     len: usize,
+}
+
+impl Default for ListIter {
+    fn default() -> Self {
+        ListIter::new()
+    }
 }
 
 impl ListIter {

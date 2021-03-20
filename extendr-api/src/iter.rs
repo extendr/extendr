@@ -12,6 +12,12 @@ pub struct SliceIter<T> {
     ptr: *const T,
 }
 
+impl<T> Default for SliceIter<T> {
+    fn default() -> Self {
+        SliceIter::new()
+    }
+}
+
 impl<T> SliceIter<T> {
     // A new, empty list iterator.
     pub fn new() -> Self {
@@ -26,9 +32,9 @@ impl<T> SliceIter<T> {
     pub fn from_slice(vector: Robj, slice: &[T]) -> Self {
         SliceIter {
             vector,
-            i: 0,
             len: slice.len(),
             ptr: slice.as_ptr(),
+            ..Default::default()
         }
     }
 }
@@ -120,6 +126,12 @@ pub struct StrIter {
     levels: SEXP,
 }
 
+impl Default for StrIter {
+    fn default() -> Self {
+        StrIter::new()
+    }
+}
+
 impl StrIter {
     /// Make an empty str iterator.
     pub fn new() -> Self {
@@ -134,13 +146,9 @@ impl StrIter {
     }
 
     pub fn na_iter(len: usize) -> StrIter {
-        unsafe {
-            Self {
-                vector: ().into(),
-                i: 0,
-                len,
-                levels: R_NilValue,
-            }
+        Self {
+            len,
+            ..Default::default()
         }
     }
 }
