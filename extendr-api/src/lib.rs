@@ -63,9 +63,9 @@
 //!     let list = list!(a = 1, b = 2);
 //!    
 //!     // An unnamed list (of R objects) using the List wrapper.
-//!     let list = r!(List(vec![1, 2, 3]));
-//!     let list = r!(List(vec!["a", "b", "c"]));
-//!     let list = r!(List(&[r!("a"), r!(1), r!(2.0)]));
+//!     let list = r!(List::from_values(vec![1, 2, 3]));
+//!     let list = r!(List::from_values(vec!["a", "b", "c"]));
+//!     let list = r!(List::from_values(&[r!("a"), r!(1), r!(2.0)]));
 //!
 //!     // A symbol
 //!     let sym = sym!(wombat);
@@ -206,7 +206,6 @@ pub mod functions;
 pub mod iter;
 pub mod lang_macros;
 pub mod logical;
-pub mod matrix;
 pub mod metadata;
 pub mod ownership;
 pub mod prelude;
@@ -219,6 +218,9 @@ pub mod wrapper;
 #[cfg(feature = "ndarray")]
 pub mod robj_ndarray;
 
+pub use std::convert::{TryFrom, TryInto};
+pub use std::ops::Deref;
+
 //////////////////////////////////////////////////
 // Note these pub use statements are deprectaed
 //
@@ -230,7 +232,6 @@ pub use error::*;
 pub use functions::*;
 pub use lang_macros::*;
 pub use logical::*;
-pub use matrix::*;
 pub use rmacros::*;
 pub use robj::*;
 pub use thread_safety::{
@@ -546,7 +547,7 @@ mod tests {
     }
 
     #[extendr]
-    pub fn matrix(x: RMatrix<&[f64]>) -> RMatrix<&[f64]> {
+    pub fn matrix(x: RMatrix<f64>) -> RMatrix<f64> {
         x
     }
 
@@ -709,13 +710,13 @@ mod tests {
                 // #[extendr]
                 // pub fn matrix(x: Matrix<&[f64]>) -> Matrix<&[f64]> { x }
 
-                let m = RMatrix::new([1., 2.], 1, 2);
+                let m = RMatrix::new_matrix(1, 2, |r, c| if r == c {1.0} else {0.});
                 let robj = r!(m);
                 assert_eq!(new_owned(wrap__matrix(robj.get())), robj);
 
                 // #[extendr]
                 // pub fn hash_map(x: HashMap<&str, Robj>) -> HashMap<&str, Robj> { x }
-                let robj = r!(List(&[1, 2]));
+                let robj = r!(List::from_values(&[1, 2]));
                 robj.set_attrib(names_symbol(), r!(["a", "b"]))?;
                 let res = new_owned(wrap__hash_map(robj.get()));
                 assert_eq!(res.len(), 2);

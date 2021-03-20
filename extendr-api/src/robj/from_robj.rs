@@ -152,7 +152,6 @@ macro_rules! impl_iter_from_robj {
 }
 
 impl_iter_from_robj!(StrIter, as_str_iter, "Not a character vector.");
-impl_iter_from_robj!(ListIter, as_list_iter, "Not a list.");
 impl_iter_from_robj!(Int, as_integer_iter, "Not an integer vector.");
 impl_iter_from_robj!(Real, as_real_iter, "Not a real vector.");
 impl_iter_from_robj!(Logical, as_logical_iter, "Not a logical vector.");
@@ -166,7 +165,7 @@ impl<'a> FromRobj<'a> for Robj {
 
 impl<'a> FromRobj<'a> for HashMap<String, Robj> {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if let Some(iter) = robj.as_named_list_iter() {
+        if let Some(iter) = robj.as_list().map(|l| l.iter()) {
             Ok(iter
                 .map(|(k, v)| (k.to_string(), v.to_owned()))
                 .collect::<HashMap<String, Robj>>())
@@ -178,7 +177,7 @@ impl<'a> FromRobj<'a> for HashMap<String, Robj> {
 
 impl<'a> FromRobj<'a> for HashMap<&str, Robj> {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if let Some(iter) = robj.as_named_list_iter() {
+        if let Some(iter) = robj.as_list().map(|l| l.iter()) {
             Ok(iter.map(|(k, v)| (k, v)).collect::<HashMap<&str, Robj>>())
         } else {
             Err("expected a list")
@@ -266,43 +265,28 @@ where
     }
 }
 
-// Symbol input parameters.
-impl<'a> FromRobj<'a> for Symbol<'a> {
+// Matrix input parameters.
+impl<'a, T: 'a> FromRobj<'a> for RArray<T, [usize; 2]>
+where
+    Robj: AsTypedSlice<'a, T>,
+{
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if let Some(x) = robj.as_symbol() {
-            Ok(x)
-        } else {
-            Err("Expected a symbol.")
+        match robj.as_matrix() {
+            Some(x) => Ok(x),
+            _ => Err("Expected a matrix."),
         }
     }
 }
 
 // Matrix input parameters.
-impl<'a, T> FromRobj<'a> for RArray<&'a [T], [usize; 2]>
+impl<'a, T: 'a> FromRobj<'a> for RMatrix3D<T>
 where
     Robj: AsTypedSlice<'a, T>,
 {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if let Some(x) = robj.as_matrix() {
-            Ok(x)
-        } else if !robj.as_typed_slice().is_some() {
-            Err("Matrix type mismatch.")
-        } else {
-            Err("Expected a matrix.")
-        }
-    }
-}
-
-// Matrix input parameters.
-impl<'a, T> FromRobj<'a> for RMatrix3D<&'a [T]>
-where
-    Robj: AsTypedSlice<'a, T>,
-{
-    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if let Some(x) = robj.as_matrix3d() {
-            Ok(x)
-        } else {
-            Err("Expected a 3d matrix.")
+        match robj.as_matrix3d() {
+            Some(x) => Ok(x),
+            _ => Err("Expected a matrix."),
         }
     }
 }

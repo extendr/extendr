@@ -2,7 +2,7 @@ use super::*;
 use crate::single_threaded;
 use std::collections::HashMap;
 
-fn str_to_character(s: &str) -> SEXP {
+pub(crate) fn str_to_character(s: &str) -> SEXP {
     unsafe {
         if s.is_na() {
             R_NaString
@@ -41,13 +41,6 @@ where
     fn from(res: Result<T>) -> Self {
         // Force a panic on error.
         res.unwrap().into()
-    }
-}
-
-/// Convert a wrapped string ref to an Robj char object.
-impl<'a> From<Character<'a>> for Robj {
-    fn from(val: Character) -> Self {
-        single_threaded(|| unsafe { new_owned(str_to_character(val.0)) })
     }
 }
 
@@ -534,7 +527,7 @@ impl From<Logical> for Robj {
 impl<'a> From<HashMap<&'a str, Robj>> for Robj {
     /// Convert a hashmap into a list.
     fn from(val: HashMap<&'a str, Robj>) -> Self {
-        let res: Robj = List(val.iter().map(|(_, v)| v)).into();
+        let res: Robj = List::from_values(val.iter().map(|(_, v)| v)).into();
         res.set_names(val.into_iter().map(|(k, _)| k)).unwrap()
     }
 }
@@ -542,6 +535,6 @@ impl<'a> From<HashMap<&'a str, Robj>> for Robj {
 impl<'a> From<Vec<Robj>> for Robj {
     /// Convert a vector of Robj into a list.
     fn from(val: Vec<Robj>) -> Self {
-        List(val.iter()).into()
+        List::from_values(val.iter()).into()
     }
 }

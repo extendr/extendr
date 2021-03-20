@@ -1,44 +1,5 @@
 use crate::*;
 
-/// Create a new, empty environment parented on global_env()
-///
-/// Use the Env{} wrapper for more detail.
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///     let env = new_env();
-///     assert_eq!(env.len(), 0);
-/// }
-/// ```
-pub fn new_env() -> Robj {
-    // 14 is a reasonable default.
-    new_env_with_capacity(14)
-}
-
-/// Create a new, empty environment parented on global_env()
-/// with a reserved size.
-///
-/// This function will guess the hash table size if required.
-/// Use the Env{} wrapper for more detail.
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///     let env = new_env_with_capacity(5);
-///     env.set_local(sym!(a), 1);
-///     env.set_local(sym!(b), 2);
-///     assert_eq!(env.len(), 2);
-/// }
-/// ```
-pub fn new_env_with_capacity(capacity: usize) -> Robj {
-    if capacity <= 5 {
-        // Unhashed envirnment
-        call!("new.env", FALSE, global_env(), 0).unwrap()
-    } else {
-        // Hashed environment for larger hashmaps.
-        call!("new.env", TRUE, global_env(), capacity as i32 * 2 + 1).unwrap()
-    }
-}
-
 /// Get a global variable from global_env() and ancestors.
 /// If the result is a promise, evaulate the promise.
 ///
@@ -51,10 +12,8 @@ pub fn new_env_with_capacity(capacity: usize) -> Robj {
 /// }
 /// ```
 pub fn global_var<K: Into<Robj>>(key: K) -> Result<Robj> {
-    global_env()
-        .find_var(key)
-        .ok_or_else(|| Error::NotFound)
-        .and_then(|v| v.eval_promise())
+    let key = key.into();
+    Ok(global_env().find_var(key)?.eval_promise()?)
 }
 
 /// Get a local variable from current_env() and ancestors.
@@ -73,21 +32,20 @@ pub fn global_var<K: Into<Robj>>(key: K) -> Result<Robj> {
 /// }
 /// ```
 pub fn local_var<K: Into<Robj>>(key: K) -> Result<Robj> {
-    current_env()
-        .find_var(key)
-        .ok_or_else(|| Error::NotFound)
-        .and_then(|v| v.eval_promise())
+    let key = key.into();
+    Ok(current_env().find_var(key)?.eval_promise()?)
 }
 
 /// Get a global function from global_env() and ancestors.
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let ls = global_function(sym!(ls)).ok_or("ls failed")?;
+///     let ls = global_function(sym!(ls))?;
 ///     assert_eq!(ls.is_function(), true);
 /// }
 /// ```
-pub fn global_function<K: Into<Robj>>(key: K) -> Option<Robj> {
+pub fn global_function<K: Into<Robj>>(key: K) -> Result<Robj> {
+    let key = key.into();
     global_env().find_function(key)
 }
 
@@ -97,16 +55,17 @@ pub fn global_function<K: Into<Robj>>(key: K) -> Option<Robj> {
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///    assert_eq!(find_namespace("base").is_some(), true);
-///    assert_eq!(find_namespace("stats").is_some(), true);
+///    assert_eq!(find_namespace("base").is_ok(), true);
+///    assert_eq!(find_namespace("stats").is_ok(), true);
 /// }
 /// ```
-pub fn find_namespace<K: Into<Robj>>(key: K) -> Option<Robj> {
-    let res = single_threaded(|| call!(".getNamespace", key.into()));
+pub fn find_namespace<K: Into<Robj>>(key: K) -> Result<Environment> {
+    let key = key.into();
+    let res = single_threaded(|| call!(".getNamespace", key.clone()));
     if let Ok(res) = res {
-        Some(res)
+        Ok(res.try_into()?)
     } else {
-        None
+        Err(Error::NamespaceNotFound(key))
     }
 }
 
@@ -118,8 +77,8 @@ pub fn find_namespace<K: Into<Robj>>(key: K) -> Option<Robj> {
 ///    assert_eq!(current_env(), base_env());
 /// }
 /// ```
-pub fn current_env() -> Robj {
-    unsafe { new_owned(R_GetCurrentEnv()) }
+pub fn current_env() -> Environment {
+    unsafe { new_owned(R_GetCurrentEnv()).try_into().unwrap() }
 }
 
 /// The "global" environment
@@ -128,16 +87,16 @@ pub fn current_env() -> Robj {
 /// use extendr_api::prelude::*;
 /// test! {
 ///     global_env().set_local(sym!(x), "hello");
-///     assert_eq!(global_env().local(sym!(x)), Some(r!("hello")));
+///     assert_eq!(global_env().local(sym!(x)), Ok(r!("hello")));
 /// }
 /// ```
-pub fn global_env() -> Robj {
-    unsafe { new_sys(R_GlobalEnv) }
+pub fn global_env() -> Environment {
+    unsafe { new_sys(R_GlobalEnv).try_into().unwrap() }
 }
 
 /// An empty environment at the root of the environment tree
-pub fn empty_env() -> Robj {
-    unsafe { new_sys(R_EmptyEnv) }
+pub fn empty_env() -> Environment {
+    unsafe { new_sys(R_EmptyEnv).try_into().unwrap() }
 }
 
 /// The base environment; formerly R_NilValue
@@ -146,11 +105,11 @@ pub fn empty_env() -> Robj {
 /// use extendr_api::prelude::*;
 /// test! {
 ///     global_env().set_local(sym!(x), "hello");
-///     assert_eq!(base_env().local(sym!(+)), Some(r!(Primitive("+"))));
+///     assert_eq!(base_env().local(sym!(+)), Ok(r!(Primitive::from_str("+"))));
 /// }
 /// ```
-pub fn base_env() -> Robj {
-    unsafe { new_sys(R_BaseEnv) }
+pub fn base_env() -> Environment {
+    unsafe { new_sys(R_BaseEnv).try_into().unwrap() }
 }
 
 /// The namespace for base.
@@ -161,8 +120,8 @@ pub fn base_env() -> Robj {
 ///    assert_eq!(base_namespace().parent().ok_or("no parent")?, global_env());
 /// }
 /// ```
-pub fn base_namespace() -> Robj {
-    unsafe { new_sys(R_BaseNamespace) }
+pub fn base_namespace() -> Environment {
+    unsafe { new_sys(R_BaseNamespace).try_into().unwrap() }
 }
 
 /// For registered namespaces.
@@ -173,8 +132,8 @@ pub fn base_namespace() -> Robj {
 ///    assert_eq!(namespace_registry().is_environment(), true);
 /// }
 /// ```
-pub fn namespace_registry() -> Robj {
-    unsafe { new_sys(R_NamespaceRegistry) }
+pub fn namespace_registry() -> Environment {
+    unsafe { new_sys(R_NamespaceRegistry).try_into().unwrap() }
 }
 
 /// Current srcref, for debuggers
@@ -185,158 +144,6 @@ pub fn srcref() -> Robj {
 /// The nil object
 pub fn nil_value() -> Robj {
     unsafe { new_sys(R_NilValue) }
-}
-
-/// Unbound marker
-pub fn unbound_value() -> Robj {
-    unsafe { new_sys(R_UnboundValue) }
-}
-
-/// Missing argument marker
-pub fn missing_arg() -> Robj {
-    unsafe { new_sys(R_MissingArg) }
-}
-
-/// "base"
-pub fn base_symbol() -> Robj {
-    unsafe { new_sys(R_BaseSymbol) }
-}
-
-/// "{"
-pub fn brace_symbol() -> Robj {
-    unsafe { new_sys(R_BraceSymbol) }
-}
-
-/// "[["
-pub fn bracket_2_symbol() -> Robj {
-    unsafe { new_sys(R_Bracket2Symbol) }
-}
-
-/// "["
-pub fn bracket_symbol() -> Robj {
-    unsafe { new_sys(R_BracketSymbol) }
-}
-
-/// "class"
-pub fn class_symbol() -> Robj {
-    unsafe { new_sys(R_ClassSymbol) }
-}
-
-/// ".Device"
-pub fn device_symbol() -> Robj {
-    unsafe { new_sys(R_DeviceSymbol) }
-}
-
-/// "dimnames"
-pub fn dimnames_symbol() -> Robj {
-    unsafe { new_sys(R_DimNamesSymbol) }
-}
-
-/// "dim"
-pub fn dim_symbol() -> Robj {
-    unsafe { new_sys(R_DimSymbol) }
-}
-
-/// "$"
-pub fn dollar_symbol() -> Robj {
-    unsafe { new_sys(R_DollarSymbol) }
-}
-
-/// "..."
-pub fn dots_symbol() -> Robj {
-    unsafe { new_sys(R_DotsSymbol) }
-}
-//     pub fn drop_symbol() -> Robj { unsafe { new_sys(R_DropSymbol) }}"drop"
-
-/// "::"
-pub fn double_colon_symbol() -> Robj {
-    unsafe { new_sys(R_DoubleColonSymbol) }
-}
-
-/// ".Last.value"
-pub fn lastvalue_symbol() -> Robj {
-    unsafe { new_sys(R_LastvalueSymbol) }
-}
-/// "levels"
-pub fn levels_symbol() -> Robj {
-    unsafe { new_sys(R_LevelsSymbol) }
-}
-/// "mode"
-pub fn mode_symbol() -> Robj {
-    unsafe { new_sys(R_ModeSymbol) }
-}
-/// "na.rm"
-pub fn na_rm_symbol() -> Robj {
-    unsafe { new_sys(R_NaRmSymbol) }
-}
-/// "name"
-pub fn name_symbol() -> Robj {
-    unsafe { new_sys(R_NameSymbol) }
-}
-/// "names"
-pub fn names_symbol() -> Robj {
-    unsafe { new_sys(R_NamesSymbol) }
-}
-/// _NAMESPACE__."
-pub fn namespace_env_symbol() -> Robj {
-    unsafe { new_sys(R_NamespaceEnvSymbol) }
-}
-/// "package"
-pub fn package_symbol() -> Robj {
-    unsafe { new_sys(R_PackageSymbol) }
-}
-/// "previous"
-pub fn previous_symbol() -> Robj {
-    unsafe { new_sys(R_PreviousSymbol) }
-}
-/// "quote"
-pub fn quote_symbol() -> Robj {
-    unsafe { new_sys(R_QuoteSymbol) }
-}
-/// "row.names"
-pub fn row_names_symbol() -> Robj {
-    unsafe { new_sys(R_RowNamesSymbol) }
-}
-/// ".Random.seed"
-pub fn seeds_symbol() -> Robj {
-    unsafe { new_sys(R_SeedsSymbol) }
-}
-/// "sort.list"
-pub fn sort_list_symbol() -> Robj {
-    unsafe { new_sys(R_SortListSymbol) }
-}
-/// "source"
-pub fn source_symbol() -> Robj {
-    unsafe { new_sys(R_SourceSymbol) }
-}
-/// "spec"
-pub fn spec_symbol() -> Robj {
-    unsafe { new_sys(R_SpecSymbol) }
-}
-/// "tsp"
-pub fn tsp_symbol() -> Robj {
-    unsafe { new_sys(R_TspSymbol) }
-}
-/// ":::"
-pub fn triple_colon_symbol() -> Robj {
-    unsafe { new_sys(R_TripleColonSymbol) }
-}
-/// ".defined"
-pub fn dot_defined() -> Robj {
-    unsafe { new_sys(R_dot_defined) }
-}
-/// ".Method"
-pub fn dot_method() -> Robj {
-    unsafe { new_sys(R_dot_Method) }
-}
-/// "packageName"
-pub fn dot_package_name() -> Robj {
-    unsafe { new_sys(R_dot_packageName) }
-}
-
-/// ".target"
-pub fn dot_target() -> Robj {
-    unsafe { new_sys(R_dot_target) }
 }
 
 /* fix version issues.
@@ -378,7 +185,7 @@ pub fn na_str() -> &'static str {
 /// use extendr_api::prelude::*;
 /// test! {
 ///    let expr = parse("1 + 2").unwrap();
-///    assert!(expr.is_expr());
+///    assert!(expr.is_expression());
 /// }
 /// ```
 pub fn parse(code: &str) -> Result<Robj> {
@@ -390,10 +197,7 @@ pub fn parse(code: &str) -> Result<Robj> {
         let parsed = new_owned(R_ParseVector(codeobj.get(), -1, status_ptr, R_NilValue));
         match status {
             1 => Ok(parsed),
-            _ => Err(Error::ParseError {
-                code: code.into(),
-                status,
-            }),
+            _ => Err(Error::ParseError(code.into())),
         }
     })
 }
@@ -410,11 +214,39 @@ pub fn eval_string(code: &str) -> Result<Robj> {
     single_threaded(|| {
         let expr = parse(code)?;
         let mut res = Robj::from(());
-        if let Some(iter) = expr.as_list_iter() {
-            for lang in iter {
+        if let Some(expr) = expr.as_expression() {
+            for lang in expr.values() {
                 res = lang.eval()?
             }
         }
         Ok(res)
     })
+}
+
+/// Find a function or primitive that may be in a namespace.
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///    assert!(find_namespaced_function("+").is_ok());
+///    assert!(find_namespaced_function("ls").is_ok());
+///    assert!(find_namespaced_function("base::ls").is_ok());
+///    assert!(find_namespaced_function("ls")?.is_language());
+///    assert!(!find_namespaced_function("basex::ls").is_ok());
+/// }
+/// ```
+pub fn find_namespaced_function(name: &str) -> Result<Language> {
+    let mut iter = name.split("::");
+    match (iter.next(), iter.next(), iter.next()) {
+        (Some(key), None, None) => {
+            let gf = global_function(Symbol::from_str(key))?;
+            Ok(Language::from_values(&[gf]))
+        }
+        (Some(ns), Some(key), None) => {
+            let namespace = find_namespace(ns)?;
+            Ok(Language::from_values(&[
+                namespace.local(Symbol::from_str(key))?
+            ]))
+        }
+        _ => Err(Error::NotFound(r!(name))),
+    }
 }

@@ -496,7 +496,7 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
         impl<'a> extendr_api::FromRobj<'a> for &#self_ty {
             fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
                 if robj.check_external_ptr(#self_ty_name) {
-                    Ok(unsafe { std::mem::transmute(robj.externalPtrAddr::<#self_ty>()) })
+                    Ok(unsafe { std::mem::transmute(robj.external_ptr_addr::<#self_ty>()) })
                 } else {
                     Err(concat!("expected ", #self_ty_name))
                 }
@@ -507,7 +507,7 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
         impl<'a> extendr_api::FromRobj<'a> for &mut #self_ty {
             fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
                 if robj.check_external_ptr(#self_ty_name) {
-                    Ok(unsafe { std::mem::transmute(robj.externalPtrAddr::<#self_ty>()) })
+                    Ok(unsafe { std::mem::transmute(robj.external_ptr_addr::<#self_ty>()) })
                 } else {
                     Err(concat!("expected ", #self_ty_name))
                 }
@@ -519,9 +519,9 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
             fn from(value: #self_ty) -> Self {
                 unsafe {
                     let ptr = Box::into_raw(Box::new(value));
-                    let res = Robj::makeExternalPtr(ptr, Robj::from(#self_ty_name), Robj::from(()));
+                    let res = Robj::make_external_ptr(ptr, Robj::from(#self_ty_name), Robj::from(()));
                     res.set_attrib(class_symbol(), #self_ty_name).unwrap();
-                    res.registerCFinalizer(Some(#finalizer_name));
+                    res.register_c_finalizer(Some(#finalizer_name));
                     res
                 }
             }
@@ -532,9 +532,9 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
             fn from(value: &'a #self_ty) -> Self {
                 unsafe {
                     let ptr = Box::into_raw(Box::new(value));
-                    let res = Robj::makeExternalPtr(ptr, Robj::from(#self_ty_name), Robj::from(()));
+                    let res = Robj::make_external_ptr(ptr, Robj::from(#self_ty_name), Robj::from(()));
                     res.set_attrib(class_symbol(), #self_ty_name).unwrap();
-                    res.registerCFinalizer(Some(#finalizer_name));
+                    res.register_c_finalizer(Some(#finalizer_name));
                     res
                 }
             }
@@ -546,7 +546,7 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
                 let robj = extendr_api::new_owned(sexp);
                 if robj.check_external_ptr(#self_ty_name) {
                     //eprintln!("finalize {}", #self_ty_name);
-                    let ptr = robj.externalPtrAddr::<#self_ty>();
+                    let ptr = robj.external_ptr_addr::<#self_ty>();
                     Box::from_raw(ptr);
                 }
             }

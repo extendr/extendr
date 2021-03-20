@@ -31,7 +31,7 @@ impl Robj {
     }
 
     /// Return true if this is an expression.
-    pub fn is_expr(&self) -> bool {
+    pub fn is_expression(&self) -> bool {
         unsafe { Rf_isExpression(self.get()) != 0 }
     }
 
@@ -95,8 +95,8 @@ impl Robj {
         single_threaded(|| unsafe { new_owned(Rf_allocMatrix(sexptype, rows, cols)) })
     }
 
-    /// Compatible way to duplicate an object. Use obj.clone() instead
-    /// for Rust compatibility.
+    /// Do a deep copy of this object.
+    /// Note that clone() only adds a reference.
     pub fn duplicate(&self) -> Self {
         single_threaded(|| unsafe { new_owned(Rf_duplicate(self.get())) })
     }
@@ -116,10 +116,10 @@ impl Robj {
     ///    // assert!(base_env().find_function(sym!(qwertyuiop)).is_none());
     /// }
     /// ```
-    pub fn find_function<K: Into<Robj>>(&self, key: K) -> Option<Robj> {
-        let key = key.into();
-        if !self.is_environment() || !key.is_symbol() {
-            return None;
+    pub fn find_function<K: TryInto<Symbol, Error = Error>>(&self, key: K) -> Result<Robj> {
+        let key: Symbol = key.try_into()?;
+        if !self.is_environment() {
+            return Err(Error::NotFound(key.into()));
         }
         // This may be better:
         // let mut env: Robj = self.into();
@@ -139,9 +139,9 @@ impl Robj {
         // }
         unsafe {
             if let Ok(var) = catch_r_error(|| Rf_findFun(key.get(), self.get())) {
-                Some(new_owned(var))
+                Ok(new_owned(var))
             } else {
-                None
+                Err(Error::NotFound(key.into()))
             }
         }
     }
@@ -164,10 +164,10 @@ impl Robj {
     ///    //assert_eq!(global_env().find_var(sym!(imnotasymbol)), None);
     /// }
     /// ```
-    pub fn find_var<K: Into<Robj>>(&self, key: K) -> Option<Robj> {
-        let key = key.into();
-        if !self.is_environment() || !key.is_symbol() {
-            return None;
+    pub fn find_var<K: TryInto<Symbol, Error = Error>>(&self, key: K) -> Result<Robj> {
+        let key: Symbol = key.try_into()?;
+        if !self.is_environment() {
+            return Err(Error::NotFound(key.into()));
         }
         // Alterative:
         // let mut env: Robj = self.into();
@@ -188,12 +188,12 @@ impl Robj {
         unsafe {
             if let Ok(var) = catch_r_error(|| Rf_findVar(key.get(), self.get())) {
                 if var != R_UnboundValue {
-                    Some(new_owned(var))
+                    Ok(new_owned(var))
                 } else {
-                    None
+                    Err(Error::NotFound(key.into()))
                 }
             } else {
-                None
+                Err(Error::NotFound(key.into()))
             }
         }
     }
@@ -209,12 +209,7 @@ impl Robj {
     /// ```
     pub fn eval_promise(&self) -> Result<Robj> {
         if self.is_promise() {
-            let promise = self.as_promise().unwrap();
-            if !promise.value.is_unbound_value() {
-                Ok(promise.value)
-            } else {
-                self.eval()
-            }
+            self.as_promise().unwrap().eval()
         } else {
             Ok(self.into())
         }
@@ -230,12 +225,6 @@ impl Robj {
         unsafe { Rf_nrows(self.get()) as usize }
     }
 
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    pub unsafe fn makeExternalPtr<T>(p: *mut T, tag: Robj, prot: Robj) -> Self {
-        Robj::make_external_ptr(p, tag, prot)
-    }
-
     /// Internal function used to implement `#[extendr]` impl
     #[doc(hidden)]
     pub unsafe fn make_external_ptr<T>(p: *mut T, tag: Robj, prot: Robj) -> Self {
@@ -244,22 +233,10 @@ impl Robj {
         }))
     }
 
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    pub unsafe fn externalPtrAddr<T>(&self) -> *mut T {
-        R_ExternalPtrAddr(self.get()) as *mut T
-    }
-
     /// Internal function used to implement `#[extendr]` impl
     #[doc(hidden)]
     pub unsafe fn external_ptr_addr<T>(&self) -> *mut T {
         R_ExternalPtrAddr(self.get()) as *mut T
-    }
-
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    pub unsafe fn externalPtrTag(&self) -> Self {
-        self.external_ptr_tag()
     }
 
     /// Internal function used to implement `#[extendr]` impl
@@ -272,12 +249,6 @@ impl Robj {
     #[doc(hidden)]
     pub unsafe fn external_ptr_protected(&self) -> Self {
         new_owned(R_ExternalPtrProtected(self.get()))
-    }
-
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    pub unsafe fn registerCFinalizer(&self, func: R_CFinalizer_t) {
-        single_threaded(|| self.register_c_finalizer(func))
     }
 
     #[doc(hidden)]
@@ -294,7 +265,7 @@ impl Robj {
                     new_owned(Rf_xlengthgets(self.get(), new_len as R_xlen_t))
                 }))
             } else {
-                Err(Error::NotAVectorType)
+                Err(Error::ExpectedVector(self.clone()))
             }
         }
     }
@@ -404,12 +375,22 @@ impl Robj {
         unsafe { Rf_isVectorizable(self.get()) != 0 }
     }
 
+    /// Return true if this is RAWSXP.
+    pub fn is_raw(&self) -> bool {
+        self.rtype() == RType::Raw
+    }
+
+    /// Return true if this is CHARSXP.
+    pub fn is_character(&self) -> bool {
+        self.rtype() == RType::Character
+    }
+
     /// Check an external pointer tag.
     /// This is used to wrap R objects.
     #[doc(hidden)]
     pub fn check_external_ptr(&self, expected_tag: &str) -> bool {
         if self.sexptype() == libR_sys::EXTPTRSXP {
-            let tag = unsafe { self.externalPtrTag() };
+            let tag = unsafe { self.external_ptr_tag() };
             if tag.as_str() == Some(expected_tag) {
                 return true;
             }

@@ -100,13 +100,13 @@ macro_rules! global {
 /// test! {
 ///
 /// let wombat = sym!(wombat);
-/// assert_eq!(wombat, r!(Symbol("wombat")));
+/// assert_eq!(wombat, r!(Symbol::from_str("wombat")));
 /// }
 /// ```
 #[macro_export]
 macro_rules! sym {
     ($($tokens: tt)*) => {
-        Robj::from(Symbol(stringify!($($tokens)*)))
+        Robj::from(Symbol::from_str(stringify!($($tokens)*)))
     };
 }
 
@@ -116,8 +116,8 @@ macro_rules! sym {
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-/// let mylist = list!(x=1, y=2);
-/// assert_eq!(mylist, r!(List(&[r!(1), r!(2)])));
+///     let mylist = list!(x=1, y=2);
+///     assert_eq!(mylist, r!(List::from_pairs(vec![("x", r!(1)), ("y", r!(2))])));
 /// }
 /// ```
 ///
@@ -138,8 +138,8 @@ macro_rules! list {
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-/// let mylist = pairlist!(x=1, y=2);
-/// ///assert_eq!(mylist, r!(Pairlist(&[r!(1), r!(2)])));
+///     let mylist = pairlist!(x=1, y=2);
+///     assert_eq!(mylist, r!(Pairlist::from_pairs(vec![("x", r!(1)), ("y", r!(2))])));
 /// }
 /// ```
 ///
@@ -160,8 +160,9 @@ macro_rules! pairlist {
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-/// let mydata = data_frame!(x=1, y=2);
-/// assert_eq!(mydata, r!(List(&[r!(1), r!(2)])));
+///     let mydata = data_frame!(x=1, y=2);
+///     assert_eq!(mydata.inherits("data.frame"), true);
+///     //assert_eq!(mydata, r!(List::from_pairs(vec![("x", r!(1)), ("y", r!(2))])).set_class(&["data.frame"])?);
 /// }
 /// ```
 ///

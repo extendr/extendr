@@ -18,10 +18,13 @@ use std::collections::HashMap;
 use std::iter::IntoIterator;
 use std::ops::{Range, RangeInclusive};
 
+// deprecated
 mod from_robj;
+
 mod into_robj;
 mod operators;
 mod rinternals;
+mod try_from_robj;
 
 #[cfg(test)]
 mod tests;
@@ -101,7 +104,7 @@ pub use rinternals::*;
 /// test! {
 ///     let abc = list!(a = 1, b = "x", c = vec![1, 2]);
 ///     let names : Vec<_> = abc.names().unwrap().collect();
-///     let names_and_values : Vec<_> = abc.as_named_list_iter().unwrap().collect();
+///     let names_and_values : Vec<_> = abc.as_list().unwrap().iter().collect();
 ///     assert_eq!(names, vec!["a", "b", "c"]);
 ///     assert_eq!(names_and_values, vec![("a", r!(1)), ("b", r!("x")), ("c", r!(vec![1, 2]))]);
 /// }
@@ -174,20 +177,20 @@ impl Robj {
     /// test! {
     ///     assert_eq!(r!(NULL).rtype(), RType::Null);
     ///     assert_eq!(sym!(xyz).rtype(), RType::Symbol);
-    ///     assert_eq!(r!(Pairlist{names_and_values: vec![("a", r!(1))]}).rtype(), RType::Pairlist);
+    ///     assert_eq!(r!(Pairlist::from_pairs(vec![("a", r!(1))])).rtype(), RType::Pairlist);
     ///     assert_eq!(R!(function() {})?.rtype(), RType::Function);
-    ///     assert_eq!(new_env().rtype(), RType::Enviroment);
+    ///     assert_eq!(Environment::new(global_env()).rtype(), RType::Enviroment);
     ///     assert_eq!(lang!("+", 1, 2).rtype(), RType::Language);
-    ///     assert_eq!(r!(Primitive("if")).rtype(), RType::Special);
-    ///     assert_eq!(r!(Primitive("+")).rtype(), RType::Builtin);
-    ///     assert_eq!(r!(Character("hello")).rtype(), RType::Character);
+    ///     assert_eq!(r!(Primitive::from_str("if")).rtype(), RType::Special);
+    ///     assert_eq!(r!(Primitive::from_str("+")).rtype(), RType::Builtin);
+    ///     assert_eq!(r!(Character::from_str("hello")).rtype(), RType::Character);
     ///     assert_eq!(r!(TRUE).rtype(), RType::Logical);
     ///     assert_eq!(r!(1).rtype(), RType::Integer);
     ///     assert_eq!(r!(1.0).rtype(), RType::Real);
     ///     assert_eq!(r!("1").rtype(), RType::String);
-    ///     assert_eq!(r!(List(&[1, 2])).rtype(), RType::List);
+    ///     assert_eq!(r!(List::from_values(&[1, 2])).rtype(), RType::List);
     ///     assert_eq!(parse("x + y")?.rtype(), RType::Expression);
-    ///     assert_eq!(r!(Raw(&[1_u8, 2, 3])).rtype(), RType::Raw);
+    ///     assert_eq!(r!(Raw::from_bytes(&[1_u8, 2, 3])).rtype(), RType::Raw);
     /// }
     /// ```
     pub fn rtype(&self) -> RType {
@@ -231,69 +234,6 @@ impl Robj {
     /// ```
     pub fn len(&self) -> usize {
         unsafe { Rf_xlength(self.get()) as usize }
-    }
-
-    /// Get a variable from an enviroment, but not its ancestors.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///
-    /// let env = new_env();
-    /// env.set_local(sym!(x), "fred");
-    /// assert_eq!(env.local(sym!(x)), Some(r!("fred")));
-    /// }
-    /// ```
-    pub fn local<K: Into<Robj>>(&self, key: K) -> Option<Robj> {
-        let key = key.into();
-        if self.is_environment() && key.is_symbol() {
-            unsafe { Some(new_owned(Rf_findVarInFrame3(self.get(), key.get(), 1))) }
-        } else {
-            None
-        }
-    }
-
-    /// Set or define a variable in an enviroment.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///
-    /// let env = new_env();
-    /// env.set_local(sym!(x), "harry");
-    /// env.set_local(sym!(x), "fred");
-    /// assert_eq!(env.local(sym!(x)), Some(r!("fred")));
-    /// }
-    /// ```
-    pub fn set_local<K: Into<Robj>, V: Into<Robj>>(&self, key: K, value: V) {
-        let key = key.into();
-        let value = value.into();
-        if self.is_environment() && key.is_symbol() {
-            single_threaded(|| unsafe {
-                Rf_defineVar(key.get(), value.get(), self.get());
-            })
-        }
-    }
-
-    /// Get the parent of an environment.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///
-    /// let global_parent = global_env().parent().unwrap();
-    /// assert_eq!(global_parent.is_environment(), true);
-    /// assert_eq!(base_env().parent(), None);
-    /// assert_eq!(r!(1).parent(), None);
-    /// }
-    /// ```
-    pub fn parent(&self) -> Option<Robj> {
-        unsafe {
-            if self.is_environment() {
-                let parent = ENCLOS(self.get());
-                if Rf_isEnvironment(parent) != 0 && parent != R_EmptyEnv {
-                    return Some(new_owned(parent));
-                }
-            }
-            None
-        }
     }
 
     /// Is this object is an NA scalar?
@@ -493,7 +433,7 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let robj = r!(Raw(&[1, 2, 3]));
+    ///     let robj = r!(Raw::from_bytes(&[1, 2, 3]));
     ///     assert_eq!(robj.as_raw_slice().unwrap(), &[1, 2, 3]);
     /// }
     /// ```
@@ -535,10 +475,10 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let mut robj = r!(Raw(&[1, 2, 3]));
+    ///     let mut robj = r!(Raw::from_bytes(&[1, 2, 3]));
     ///     let slice = robj.as_raw_slice_mut().unwrap();
     ///     slice[1] = 100;
-    ///     assert_eq!(robj, r!(Raw(&[1, 100, 3])));
+    ///     assert_eq!(robj, r!(Raw::from_bytes(&[1, 100, 3])));
     /// }
     /// ```
     pub fn as_raw_slice_mut(&mut self) -> Option<&mut [u8]> {
@@ -700,10 +640,7 @@ impl Robj {
             let mut error: raw::c_int = 0;
             let res = R_tryEval(self.get(), R_GlobalEnv, &mut error as *mut raw::c_int);
             if error != 0 {
-                Err(Error::EvalError {
-                    code: r!(self),
-                    error,
-                })
+                Err(Error::EvalError(self.clone()))
             } else {
                 Ok(new_owned(res))
             }
@@ -822,8 +759,8 @@ impl Robj {
     /// test! {
     ///
     ///    let mut robj = r!("hello");
-    ///    robj.set_attrib(Symbol("xyz"), 1);
-    ///    assert_eq!(robj.get_attrib(Symbol("xyz")), Some(r!(1)));
+    ///    robj.set_attrib(sym!(xyz), 1);
+    ///    assert_eq!(robj.get_attrib(sym!(xyz)), Some(r!(1)));
     /// }
     /// ```
     pub fn get_attrib<'a, N>(&self, name: N) -> Option<Robj>
@@ -852,8 +789,8 @@ impl Robj {
     /// use extendr_api::prelude::*;
     /// test! {
     ///
-    ///    let mut robj = r!("hello").set_attrib(Symbol("xyz"), 1)?;
-    ///    assert_eq!(robj.get_attrib(Symbol("xyz")), Some(r!(1)));
+    ///    let mut robj = r!("hello").set_attrib(sym!(xyz), 1)?;
+    ///    assert_eq!(robj.get_attrib(sym!(xyz)), Some(r!(1)));
     /// }
     /// ```
     pub fn set_attrib<N, V>(&self, name: N, value: V) -> Result<Robj>
@@ -881,7 +818,7 @@ impl Robj {
     /// }
     /// ```
     pub fn names(&self) -> Option<StrIter> {
-        if let Some(names) = self.get_attrib(names_symbol()) {
+        if let Some(names) = self.get_attrib(wrapper::symbol::names_symbol()) {
             names.as_str_iter()
         } else {
             None
@@ -897,21 +834,21 @@ impl Robj {
     /// test! {
     ///     let mut obj = r!([1, 2, 3]).set_names(&["a", "b", "c"]).unwrap();
     ///     assert_eq!(obj.names().unwrap().collect::<Vec<_>>(), vec!["a", "b", "c"]);
-    ///     assert_eq!(r!([1, 2, 3]).set_names(&["a", "b"]), Err(Error::NamesLengthMismatch));
+    ///     assert_eq!(r!([1, 2, 3]).set_names(&["a", "b"]), Err(Error::NamesLengthMismatch(r!(["a", "b"]))));
     /// }
     /// ```
     pub fn set_names<T>(&self, names: T) -> Result<Robj>
     where
         T: IntoIterator,
-        T::IntoIter: Iterator,
+        T::IntoIter: ExactSizeIterator,
         T::Item: ToVectorValue + AsRef<str>,
     {
         let iter = names.into_iter();
         let robj = iter.collect_robj();
         if robj.len() == self.len() {
-            self.set_attrib(names_symbol(), robj)
+            self.set_attrib(wrapper::symbol::names_symbol(), robj)
         } else {
-            Err(Error::NamesLengthMismatch)
+            Err(Error::NamesLengthMismatch(robj))
         }
     }
 
@@ -926,7 +863,7 @@ impl Robj {
     /// }
     /// ```
     pub fn dim(&self) -> Option<Int> {
-        if let Some(dim) = self.get_attrib(dim_symbol()) {
+        if let Some(dim) = self.get_attrib(wrapper::symbol::dim_symbol()) {
             dim.as_integer_iter()
         } else {
             None
@@ -943,29 +880,11 @@ impl Robj {
     /// }
     /// ```
     pub fn dimnames(&self) -> Option<ListIter> {
-        if let Some(names) = self.get_attrib(dimnames_symbol()) {
-            names.as_list_iter()
+        if let Some(names) = self.get_attrib(wrapper::symbol::dimnames_symbol()) {
+            names.as_list().map(|v| v.values())
         } else {
             None
         }
-    }
-
-    /// Return an iterator over names and values of a list if they exist.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///    let list = list!(a = 1, b = 2, c = 3);
-    ///    let names_and_values : Vec<_> = list.as_named_list_iter().unwrap().collect();
-    ///    assert_eq!(names_and_values, vec![("a", r!(1)), ("b", r!(2)), ("c", r!(3))]);
-    /// }
-    /// ```
-    pub fn as_named_list_iter(&self) -> Option<NamedListIter> {
-        if let Some(names) = self.names() {
-            if let Some(values) = self.as_list_iter() {
-                return Some(names.zip(values));
-            }
-        }
-        None
     }
 
     /// Get the class attribute as a string iterator if one exists.
@@ -978,14 +897,15 @@ impl Robj {
     /// }
     /// ```
     pub fn class(&self) -> Option<StrIter> {
-        if let Some(class) = self.get_attrib(class_symbol()) {
+        if let Some(class) = self.get_attrib(wrapper::symbol::class_symbol()) {
             class.as_str_iter()
         } else {
             None
         }
     }
 
-    /// Set the class attribute from a string iterator.
+    /// Set the class attribute from a string iterator, returning
+    /// a new object.
     ///
     /// May return an error for some class names.
     /// ```
@@ -999,11 +919,11 @@ impl Robj {
     pub fn set_class<T>(&self, class: T) -> Result<Robj>
     where
         T: IntoIterator,
-        T::IntoIter: Iterator,
+        T::IntoIter: ExactSizeIterator,
         T::Item: ToVectorValue + AsRef<str>,
     {
         let iter = class.into_iter();
-        self.set_attrib(class_symbol(), iter.collect_robj())
+        self.set_attrib(wrapper::symbol::class_symbol(), iter.collect_robj())
     }
 
     /// Return true if this class inherits this class.
@@ -1032,25 +952,11 @@ impl Robj {
     /// }
     /// ```
     pub fn levels(&self) -> Option<StrIter> {
-        if let Some(levels) = self.get_attrib(levels_symbol()) {
+        if let Some(levels) = self.get_attrib(wrapper::symbol::levels_symbol()) {
             levels.as_str_iter()
         } else {
             None
         }
-    }
-
-    /// Get the names in an environment.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///    let names_and_values : std::collections::HashMap<_, _> = (0..4).map(|i| (format!("n{}", i), r!(i))).collect();
-    ///    let env = r!(Env{parent: global_env(), names_and_values});
-    ///    assert_eq!(env.ls().unwrap(), vec!["n0", "n1", "n2", "n3"]);
-    /// }
-    /// ```
-    pub fn ls(&self) -> Option<Vec<&str>> {
-        self.as_env_iter()
-            .map(|iter| iter.map(|(k, _)| k).collect::<Vec<_>>())
     }
 }
 
@@ -1093,42 +999,9 @@ impl PartialEq<Robj> for Robj {
             if self.get() == rhs.get() {
                 return true;
             }
-            if self.sexptype() == rhs.sexptype() && self.len() == rhs.len() {
-                let lsexp = self.get();
-                let rsexp = rhs.get();
-                match self.sexptype() {
-                    NILSXP => true,
-                    SYMSXP => PRINTNAME(lsexp) == PRINTNAME(rsexp),
-                    LISTSXP | LANGSXP | DOTSXP => self
-                        .as_pairlist_iter()
-                        .unwrap()
-                        .eq(rhs.as_pairlist_iter().unwrap()),
-                    CLOSXP => false,
-                    ENVSXP => false, // objects must match.
-                    PROMSXP => false,
-                    SPECIALSXP => false,
-                    BUILTINSXP => false,
-                    CHARSXP => self.as_character() == rhs.as_character(),
-                    LGLSXP => self.as_logical_slice() == rhs.as_logical_slice(),
-                    INTSXP => self.as_integer_slice() == rhs.as_integer_slice(),
-                    REALSXP => self.as_real_slice() == rhs.as_real_slice(),
-                    CPLXSXP => false,
-                    ANYSXP => false,
-                    VECSXP | EXPRSXP | WEAKREFSXP => {
-                        self.as_list_iter().unwrap().eq(rhs.as_list_iter().unwrap())
-                    }
-                    STRSXP => self.as_str_iter().unwrap().eq(rhs.as_str_iter().unwrap()),
-                    BCODESXP => false,
-                    EXTPTRSXP => false,
-                    RAWSXP => self.as_raw_slice() == rhs.as_raw_slice(),
-                    S4SXP => false,
-                    NEWSXP => false,
-                    FREESXP => false,
-                    _ => false,
-                }
-            } else {
-                false
-            }
+
+            // see https://github.com/hadley/r-internals/blob/master/misc.md
+            R_compute_identical(self.get(), rhs.get(), 16) != 0
         }
     }
 }
@@ -1144,11 +1017,24 @@ impl std::fmt::Debug for Robj {
                 } else if self.is_unbound_value() {
                     write!(f, "unbound_value()")
                 } else {
-                    write!(f, "sym!({})", self.as_symbol().unwrap().0)
+                    write!(f, "sym!({})", self.as_symbol().unwrap().as_str())
                 }
             }
-            LISTSXP => write!(f, "r!({:?})", self.as_pairlist().unwrap()),
-            CLOSXP => write!(f, "r!(Function())"),
+            LISTSXP => {
+                let pairlist = self.as_pairlist().unwrap().iter();
+                write!(f, "r!({:?})", pairlist)
+            }
+            CLOSXP => {
+                let func = self.as_function().unwrap();
+                let formals = func.formals();
+                let body = func.body();
+                let enviroment = func.environment();
+                write!(
+                    f,
+                    "r!(Function::from_parts({:?}, {:?}, {:?}))",
+                    formals, body, enviroment
+                )
+            }
             ENVSXP => unsafe {
                 let sexp = self.get();
                 if sexp == R_GlobalEnv {
@@ -1158,26 +1044,33 @@ impl std::fmt::Debug for Robj {
                 } else if sexp == R_EmptyEnv {
                     write!(f, "empty_env()")
                 } else {
-                    write!(f, "r!({:?})", self.as_environment().unwrap())
+                    write!(f, "r!(Environment::from_pairs(...))")
                 }
             },
-            PROMSXP => write!(f, "r!(Promise())"),
-            LANGSXP => write!(f, "r!({:?})", self.as_lang().unwrap()),
+            PROMSXP => {
+                let p = self.as_promise().unwrap();
+                write!(
+                    f,
+                    "r!(Promise::from_parts({:?}, {:?}))",
+                    p.code(),
+                    p.environment()
+                )
+            }
+            LANGSXP => write!(
+                f,
+                "r!(Language::from_values({:?}))",
+                self.as_language().unwrap().values().collect::<Vec<_>>()
+            ),
             SPECIALSXP => write!(f, "r!(Special())"),
             BUILTINSXP => write!(f, "r!(Builtin())"),
-            CHARSXP => write!(f, "r!({:?})", self.as_character().unwrap()),
+            CHARSXP => {
+                let c = Character::try_from(self.clone()).unwrap();
+                write!(f, "r!(Character::from_str({:?}))", c.as_str())
+            }
             LGLSXP => {
                 let slice = self.as_logical_slice().unwrap();
                 if slice.len() == 1 {
-                    write!(
-                        f,
-                        "{}",
-                        if slice[0].0 == 0 {
-                            "r!(FALSE)"
-                        } else {
-                            "r!(TRUE)"
-                        }
-                    )
+                    write!(f, "r!({:?})", slice[0])
                 } else {
                     write!(f, "r!({:?})", slice)
                 }
@@ -1198,13 +1091,20 @@ impl std::fmt::Debug for Robj {
                     write!(f, "r!({:?})", slice)
                 }
             }
-            VECSXP => write!(f, "r!({:?})", self.as_list().unwrap()),
-            EXPRSXP => write!(f, "r!({:?})", self.as_expr().unwrap()),
-            WEAKREFSXP => write!(
+            VECSXP => {
+                let list = self.as_list().unwrap();
+                if self.names().is_some() {
+                    write!(f, "r!(List::from_pairs({:?}))", list.iter())
+                } else {
+                    write!(f, "r!(List::from_values({:?}))", list.values())
+                }
+            }
+            EXPRSXP => write!(
                 f,
-                "r!(Weakref({:?}))",
-                self.as_list_iter().unwrap().collect::<Vec<_>>()
+                "r!(Expression::from_values({:?}))",
+                self.as_expression().unwrap().values()
             ),
+            WEAKREFSXP => write!(f, "r!(Weakref())"),
             // CPLXSXP => false,
             STRSXP => {
                 write!(f, "r!([")?;
@@ -1224,13 +1124,21 @@ impl std::fmt::Debug for Robj {
             BCODESXP => write!(f, "r!(Bcode())"),
             EXTPTRSXP => write!(f, "r!(Extptr())"),
             RAWSXP => {
-                write!(f, "r!({:?})", self.as_raw().unwrap())
+                write!(
+                    f,
+                    "r!(Raw::from_bytes({:?}))",
+                    self.as_raw().unwrap().as_slice()
+                )
             }
             S4SXP => write!(f, "r!(S4())"),
             NEWSXP => write!(f, "r!(New())"),
             FREESXP => write!(f, "r!(Free())"),
             _ => write!(f, "??"),
+        }?;
+        if let Some(c) = self.class() {
+            write!(f, ".set_class({:?}", c)?;
         }
+        Ok(())
     }
 }
 
