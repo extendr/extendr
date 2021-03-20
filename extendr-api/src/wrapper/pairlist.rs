@@ -164,6 +164,6 @@ impl TryFrom<Robj> for PairlistIter {
 impl From<PairlistIter> for Robj {
     /// You can return a PairlistIter from a function.
     fn from(iter: PairlistIter) -> Self {
-        iter.robj.clone()
+        iter.robj
     }
 }

@@ -109,7 +109,7 @@ impl IntoIterator for List {
     /// }
     /// ```
     fn into_iter(self) -> Self::IntoIter {
-        self.iter().clone()
+        self.iter()
     }
 }
 
@@ -250,7 +250,7 @@ impl From<ListIter> for Robj {
     /// }
     /// ```
     fn from(iter: ListIter) -> Self {
-        iter.robj.clone()
+        iter.robj
     }
 }
 

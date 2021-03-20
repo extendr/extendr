@@ -104,7 +104,7 @@ impl Robj {
         }
 
         if args.rtype() != RType::Pairlist {
-            return Err(Error::ExpectedPairlist(args.clone()));
+            return Err(Error::ExpectedPairlist(args));
         }
 
         unsafe {

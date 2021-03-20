@@ -275,7 +275,7 @@ where
 impl<T, D> From<RArray<T, D>> for Robj {
     /// Convert a column, matrix or matrix3d to an Robj.
     fn from(array: RArray<T, D>) -> Self {
-        array.robj.clone()
+        array.robj
     }
 }
 
