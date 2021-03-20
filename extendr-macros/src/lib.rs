@@ -598,7 +598,7 @@ impl syn::parse::Parse for Module {
         while !input.is_empty() {
             if let Ok(kmod) = input.parse::<Token![mod]>() {
                 let name: Ident = input.parse()?;
-                if !res.modname.is_none() {
+                if res.modname.is_some() {
                     return Err(syn::Error::new(kmod.span(), "only one mod allowed"));
                 }
                 res.modname = Some(name);
