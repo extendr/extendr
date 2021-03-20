@@ -657,10 +657,10 @@ impl Robj {
     /// ```
     pub fn eval_blind(&self) -> Robj {
         let res = self.eval();
-        if res.is_err() {
-            Robj::from(())
+        if let Ok(robj) = res {
+            Robj::from(robj)
         } else {
-            Robj::from(res.unwrap())
+            Robj::from(())
         }
     }
 
