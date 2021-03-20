@@ -15,7 +15,7 @@ impl Robj {
     /// assert_eq!(env.dollar("b").unwrap(), r!(2));
     /// }
     /// ```
-    pub fn dollar<'a, T>(&self, symbol: T) -> Result<Robj>
+    pub fn dollar<T>(&self, symbol: T) -> Result<Robj>
     where
         T: AsRef<str>,
     {
