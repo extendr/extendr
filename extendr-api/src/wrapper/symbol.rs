@@ -30,7 +30,7 @@ impl Symbol {
     /// }
     /// ```
     pub fn from_str(val: &str) -> Self {
-        if val == "" || val.is_na() {
+        if val.is_empty() || val.is_na() {
             unbound_value()
         } else {
             Symbol {
