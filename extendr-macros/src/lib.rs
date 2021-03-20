@@ -202,7 +202,7 @@ fn get_doc_string(attrs: &Vec<syn::Attribute>) -> String {
     let mut res = String::new();
     for attr in attrs {
         if let Some(id) = attr.path.get_ident() {
-            if id.to_string() == "doc" {
+            if *id == "doc" {
                 if let Ok(meta) = attr.parse_meta() {
                     if let syn::Meta::NameValue(nv) = meta {
                         if let syn::Lit::Str(litstr) = nv.lit {
