@@ -138,7 +138,7 @@ impl StrIter {
             Self {
                 vector: ().into(),
                 i: 0,
-                len: len,
+                len,
                 levels: R_NilValue,
             }
         }
