@@ -198,7 +198,7 @@ fn extendr_function(args: Vec<syn::NestedMeta>, func: ItemFn) -> TokenStream {
 }
 
 // Extract doc strings from attributes.
-fn get_doc_string(attrs: &Vec<syn::Attribute>) -> String {
+fn get_doc_string(attrs: &[syn::Attribute]) -> String {
     let mut res = String::new();
     for attr in attrs {
         if let Some(id) = attr.path.get_ident() {
@@ -275,7 +275,7 @@ fn make_function_wrappers(
     _opts: &ExtendrOptions,
     wrappers: &mut Vec<ItemFn>,
     prefix: &str,
-    attrs: &Vec<syn::Attribute>,
+    attrs: &[syn::Attribute],
     sig: &syn::Signature,
     self_ty: Option<&syn::Type>,
 ) {
