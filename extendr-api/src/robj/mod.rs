@@ -236,6 +236,19 @@ impl Robj {
         unsafe { Rf_xlength(self.get()) as usize }
     }
 
+    /// Returns `true` if the `Robj` contains no elements.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///
+    /// let a : Robj = r!(vec![0.; 0]); // length zero of numeric vector
+    /// assert_eq!(a.is_empty(), true);
+    /// }
+    /// ```
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     /// Is this object is an NA scalar?
     /// Works for character, integer and numeric types.
     /// ```
