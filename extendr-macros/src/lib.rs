@@ -207,7 +207,7 @@ fn get_doc_string(attrs: &Vec<syn::Attribute>) -> String {
                     if let syn::Meta::NameValue(nv) = meta {
                         if let syn::Lit::Str(litstr) = nv.lit {
                             if !res.is_empty() {
-                                res.push_str("\n");
+                                res.push('\n');
                             }
                             res.push_str(&litstr.value());
                         }
