@@ -3,7 +3,7 @@
 //! This provides the functions protect() and unprotect()
 //! A single preserved vector holds ownership of all protected objects.
 //!
-//! Objects are refernce counted, so multiple calls are possible,
+//! Objects are reference counted, so multiple calls are possible,
 //! unlike R_PreserveObject.
 //!
 //! This module exports two functions, protect(sexp) and unprotect(sexp).
