@@ -332,19 +332,19 @@ where
                 REALSXP => {
                     let ptr = REAL(sexp);
                     for (i, v) in iter.enumerate() {
-                        *ptr.offset(i as isize) = v.to_real();
+                        *ptr.add(i) = v.to_real();
                     }
                 }
                 INTSXP => {
                     let ptr = INTEGER(sexp);
                     for (i, v) in iter.enumerate() {
-                        *ptr.offset(i as isize) = v.to_integer();
+                        *ptr.add(i) = v.to_integer();
                     }
                 }
                 LGLSXP => {
                     let ptr = LOGICAL(sexp);
                     for (i, v) in iter.enumerate() {
-                        *ptr.offset(i as isize) = v.to_logical();
+                        *ptr.add(i) = v.to_logical();
                     }
                 }
                 STRSXP => {
@@ -356,9 +356,9 @@ where
                     panic!("unexpected SEXPTYPE in collect_robj");
                 }
             }
-            return Robj::Owned(sexp);
+            Robj::Owned(sexp)
         } else {
-            return Robj::from(());
+            Robj::from(())
         }
     })
 }
@@ -393,7 +393,7 @@ pub trait RobjItertools: Iterator {
         Self: Sized,
         Self::Item: ToVectorValue,
     {
-        if let (len, Some(max)) = self.size_hint().clone() {
+        if let (len, Some(max)) = self.size_hint() {
             if len == max {
                 return fixed_size_collect(self, len);
             }

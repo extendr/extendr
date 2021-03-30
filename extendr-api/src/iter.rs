@@ -12,6 +12,12 @@ pub struct SliceIter<T> {
     ptr: *const T,
 }
 
+impl<T> Default for SliceIter<T> {
+    fn default() -> Self {
+        SliceIter::new()
+    }
+}
+
 impl<T> SliceIter<T> {
     // A new, empty list iterator.
     pub fn new() -> Self {
@@ -26,9 +32,9 @@ impl<T> SliceIter<T> {
     pub fn from_slice(vector: Robj, slice: &[T]) -> Self {
         SliceIter {
             vector,
-            i: 0,
             len: slice.len(),
             ptr: slice.as_ptr(),
+            ..Default::default()
         }
     }
 }
@@ -48,7 +54,7 @@ impl<T: Copy> Iterator for SliceIter<T> {
             self.i = self.len;
             None
         } else {
-            unsafe { Some(*self.ptr.offset(i as isize)) }
+            unsafe { Some(*self.ptr.add(i)) }
         }
     }
 
@@ -120,6 +126,12 @@ pub struct StrIter {
     levels: SEXP,
 }
 
+impl Default for StrIter {
+    fn default() -> Self {
+        StrIter::new()
+    }
+}
+
 impl StrIter {
     /// Make an empty str iterator.
     pub fn new() -> Self {
@@ -134,13 +146,9 @@ impl StrIter {
     }
 
     pub fn na_iter(len: usize) -> StrIter {
-        unsafe {
-            Self {
-                vector: ().into(),
-                i: 0,
-                len: len,
-                levels: R_NilValue,
-            }
+        Self {
+            len,
+            ..Default::default()
         }
     }
 }
@@ -178,16 +186,16 @@ impl Iterator for StrIter {
             self.i += 1;
             let vector = self.vector.get();
             if i >= self.len {
-                return None;
+                None
             } else if TYPEOF(vector) as u32 == STRSXP {
                 Some(str_from_strsxp(vector, i as isize))
             } else if TYPEOF(vector) as u32 == INTSXP && TYPEOF(self.levels) as u32 == STRSXP {
-                let j = *(INTEGER(vector).offset(i as isize));
+                let j = *(INTEGER(vector).add(i));
                 Some(str_from_strsxp(self.levels, j as isize - 1))
             } else if TYPEOF(vector) as u32 == NILSXP {
                 Some(na_str())
             } else {
-                return None;
+                None
             }
         }
     }

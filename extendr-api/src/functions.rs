@@ -13,7 +13,7 @@ use crate::*;
 /// ```
 pub fn global_var<K: Into<Robj>>(key: K) -> Result<Robj> {
     let key = key.into();
-    Ok(global_env().find_var(key)?.eval_promise()?)
+    global_env().find_var(key)?.eval_promise()
 }
 
 /// Get a local variable from current_env() and ancestors.
@@ -33,7 +33,7 @@ pub fn global_var<K: Into<Robj>>(key: K) -> Result<Robj> {
 /// ```
 pub fn local_var<K: Into<Robj>>(key: K) -> Result<Robj> {
     let key = key.into();
-    Ok(current_env().find_var(key)?.eval_promise()?)
+    current_env().find_var(key)?.eval_promise()
 }
 
 /// Get a global function from global_env() and ancestors.

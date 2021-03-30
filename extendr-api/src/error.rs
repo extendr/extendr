@@ -76,7 +76,7 @@ impl std::fmt::Display for Error {
         match self {
             Error::Panic(robj) => write!(f, "Panic detected {:?}.", robj),
             Error::NotFound(robj) => write!(f, "Not found. {:?}", robj),
-            Error::EvalError(robj) => write!(f, "Evalualtion error in {:?}.", robj),
+            Error::EvalError(robj) => write!(f, "Evaluation error in {:?}.", robj),
             Error::ParseError(code) => write!(f, "Parse error in {:?}.", code),
             Error::NamesLengthMismatch(robj) => {
                 write!(f, "Length of names does not match vector. {:?}", robj)

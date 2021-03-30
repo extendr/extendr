@@ -15,7 +15,7 @@ impl Robj {
     /// assert_eq!(env.dollar("b").unwrap(), r!(2));
     /// }
     /// ```
-    pub fn dollar<'a, T>(&self, symbol: T) -> Result<Robj>
+    pub fn dollar<T>(&self, symbol: T) -> Result<Robj>
     where
         T: AsRef<str>,
     {
@@ -104,7 +104,7 @@ impl Robj {
         }
 
         if args.rtype() != RType::Pairlist {
-            return Err(Error::ExpectedPairlist(args.clone()));
+            return Err(Error::ExpectedPairlist(args));
         }
 
         unsafe {

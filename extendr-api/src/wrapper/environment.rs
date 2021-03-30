@@ -101,7 +101,7 @@ impl Environment {
     pub fn set_envflags(&mut self, flags: i32) -> &mut Self {
         unsafe {
             let sexp = self.robj.get();
-            SET_ENVFLAGS(sexp, flags.into())
+            SET_ENVFLAGS(sexp, flags)
         }
         self
     }
@@ -213,18 +213,11 @@ impl Iterator for EnvIter {
         loop {
             // Environments are a hash table (list) or pair lists (pairlist)
             // Get the first available value from the pair list.
-            loop {
-                match self.pairlist.next() {
-                    Some((key, value)) => {
-                        // if the key and value are valid, return a pair.
-                        if !key.is_na() && !value.is_unbound_value() {
-                            return Some((key, value));
-                        }
-                    }
-                    // if the key and value are invalid, move on to the hash table.
-                    _ => break,
+            while let Some((key, value)) = self.pairlist.next() {
+                // if the key and value are valid, return a pair.
+                if !key.is_na() && !value.is_unbound_value() {
+                    return Some((key, value));
                 }
-                // continue pair list loop.
             }
 
             // Get the first pairlist from the hash table.

@@ -198,20 +198,20 @@ fn extendr_function(args: Vec<syn::NestedMeta>, func: ItemFn) -> TokenStream {
 }
 
 // Extract doc strings from attributes.
-fn get_doc_string(attrs: &Vec<syn::Attribute>) -> String {
+fn get_doc_string(attrs: &[syn::Attribute]) -> String {
     let mut res = String::new();
     for attr in attrs {
         if let Some(id) = attr.path.get_ident() {
-            if id.to_string() == "doc" {
-                if let Ok(meta) = attr.parse_meta() {
-                    if let syn::Meta::NameValue(nv) = meta {
-                        if let syn::Lit::Str(litstr) = nv.lit {
-                            if !res.is_empty() {
-                                res.extend("\n".chars());
-                            }
-                            res.extend(litstr.value().chars());
-                        }
+            if *id != "doc" {
+                continue;
+            }
+
+            if let Ok(syn::Meta::NameValue(nv)) = attr.parse_meta() {
+                if let syn::Lit::Str(litstr) = nv.lit {
+                    if !res.is_empty() {
+                        res.push('\n');
                     }
+                    res.push_str(&litstr.value());
                 }
             }
         }
@@ -235,7 +235,7 @@ fn mangled_type_name(type_: &Type) -> String {
                 res.push(c)
             } else {
                 let f = format!("_{:02x}", c as u32);
-                res.extend(f.chars());
+                res.push_str(&f);
             }
         }
     }
@@ -275,7 +275,7 @@ fn make_function_wrappers(
     _opts: &ExtendrOptions,
     wrappers: &mut Vec<ItemFn>,
     prefix: &str,
-    attrs: &Vec<syn::Attribute>,
+    attrs: &[syn::Attribute],
     sig: &syn::Signature,
     self_ty: Option<&syn::Type>,
 ) {
@@ -291,10 +291,7 @@ fn make_function_wrappers(
     let panic_str = format!("{} panicked.\0", func_name);
 
     let inputs = &sig.inputs;
-    let has_self = match inputs.iter().next() {
-        Some(FnArg::Receiver(_)) => true,
-        _ => false,
-    };
+    let has_self = matches!(inputs.iter().next(), Some(FnArg::Receiver(_)));
 
     let call_name = if has_self {
         let is_mut = match inputs.iter().next() {
@@ -573,8 +570,8 @@ fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
 pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
     let args = parse_macro_input!(attr as syn::AttributeArgs);
     match parse_macro_input!(item as Item) {
-        Item::Fn(func) => return extendr_function(args, func),
-        Item::Impl(item_impl) => return extendr_impl(item_impl),
+        Item::Fn(func) => extendr_function(args, func),
+        Item::Impl(item_impl) => extendr_impl(item_impl),
         other_item => TokenStream::from(quote! {#other_item}),
     }
 }
@@ -601,15 +598,15 @@ impl syn::parse::Parse for Module {
         while !input.is_empty() {
             if let Ok(kmod) = input.parse::<Token![mod]>() {
                 let name: Ident = input.parse()?;
-                if !res.modname.is_none() {
+                if res.modname.is_some() {
                     return Err(syn::Error::new(kmod.span(), "only one mod allowed"));
                 }
                 res.modname = Some(name);
-            } else if let Ok(_) = input.parse::<Token![fn]>() {
+            } else if input.parse::<Token![fn]>().is_ok() {
                 res.fnnames.push(input.parse()?);
-            } else if let Ok(_) = input.parse::<Token![impl]>() {
+            } else if input.parse::<Token![impl]>().is_ok() {
                 res.implnames.push(input.parse()?);
-            } else if let Ok(_) = input.parse::<Token![use]>() {
+            } else if input.parse::<Token![use]>().is_ok() {
                 res.usenames.push(input.parse()?);
             } else {
                 return Err(syn::Error::new(input.span(), "expected mod, fn or impl"));

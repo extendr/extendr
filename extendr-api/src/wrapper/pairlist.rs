@@ -87,6 +87,12 @@ pub struct PairlistIter {
     pub(crate) list_elem: SEXP,
 }
 
+impl Default for PairlistIter {
+    fn default() -> Self {
+        PairlistIter::new()
+    }
+}
+
 impl PairlistIter {
     /// Make an empty pairlist iterator.
     pub fn new() -> Self {
@@ -164,6 +170,6 @@ impl TryFrom<Robj> for PairlistIter {
 impl From<PairlistIter> for Robj {
     /// You can return a PairlistIter from a function.
     fn from(iter: PairlistIter) -> Self {
-        iter.robj.clone()
+        iter.robj
     }
 }

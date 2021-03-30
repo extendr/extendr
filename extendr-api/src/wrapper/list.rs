@@ -5,6 +5,12 @@ pub struct List {
     pub(crate) robj: Robj,
 }
 
+impl Default for List {
+    fn default() -> Self {
+        List::new()
+    }
+}
+
 impl List {
     /// Create a new, empty list.
     /// ```
@@ -103,7 +109,7 @@ impl IntoIterator for List {
     /// }
     /// ```
     fn into_iter(self) -> Self::IntoIter {
-        self.iter().clone()
+        self.iter()
     }
 }
 
@@ -133,6 +139,12 @@ pub struct ListIter {
     len: usize,
 }
 
+impl Default for ListIter {
+    fn default() -> Self {
+        ListIter::new()
+    }
+}
+
 impl ListIter {
     // A new, empty list iterator.
     pub fn new() -> Self {
@@ -155,7 +167,7 @@ impl Iterator for ListIter {
         let i = self.i;
         self.i += 1;
         if i >= self.len {
-            return None;
+            None
         } else {
             Some(unsafe { new_owned(VECTOR_ELT(self.robj.get(), i as isize)) })
         }
@@ -206,7 +218,7 @@ where
         let res: Result<Vec<_>> = listiter
             .map(|robj| T::try_from(robj).map_err(|e| e.into()))
             .collect();
-        res.map(|v| FromList(v))
+        res.map(FromList)
     }
 }
 
@@ -238,7 +250,7 @@ impl From<ListIter> for Robj {
     /// }
     /// ```
     fn from(iter: ListIter) -> Self {
-        iter.robj.clone()
+        iter.robj
     }
 }
 

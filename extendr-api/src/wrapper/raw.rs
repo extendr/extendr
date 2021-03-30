@@ -30,8 +30,8 @@ impl Raw {
             let sexp = Rf_allocVector(RAWSXP, bytes.len() as R_xlen_t);
             let robj = new_owned(sexp);
             let ptr = RAW(sexp);
-            for (i, &v) in bytes.into_iter().enumerate() {
-                *ptr.offset(i as isize) = v;
+            for (i, &v) in bytes.iter().enumerate() {
+                *ptr.add(i) = v;
             }
             Raw { robj }
         })

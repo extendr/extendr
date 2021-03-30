@@ -3,7 +3,7 @@
 //! This provides the functions protect() and unprotect()
 //! A single preserved vector holds ownership of all protected objects.
 //!
-//! Objects are refernce counted, so multiple calls are possible,
+//! Objects are reference counted, so multiple calls are possible,
 //! unlike R_PreserveObject.
 //!
 //! This module exports two functions, protect(sexp) and unprotect(sexp).
@@ -74,94 +74,80 @@ impl Ownership {
         }
 
         let sexp_usize = sexp as usize;
-        match *self {
-            Ownership {
-                ref mut preservation,
-                ref mut cur_index,
-                ref mut max_index,
-                ref mut objects,
-            } => {
-                let mut entry = objects.entry(sexp_usize);
-                let preservation_sexp = *preservation as SEXP;
-                match entry {
-                    Entry::Occupied(ref mut occupied) => {
-                        if occupied.get().refcount == 0 {
-                            // Address re-used - re-set the sexp.
-                            SET_VECTOR_ELT(
-                                preservation_sexp,
-                                occupied.get().index as R_xlen_t,
-                                sexp,
-                            );
-                        }
-                        occupied.get_mut().refcount += 1;
-                    }
-                    Entry::Vacant(vacant) => {
-                        let index = *cur_index;
-                        SET_VECTOR_ELT(preservation_sexp, index as R_xlen_t, sexp);
-                        *cur_index += 1;
-                        assert!(index != *max_index);
-                        let refcount = 1;
-                        vacant.insert(Object { refcount, index });
-                    }
+        let Ownership {
+            ref mut preservation,
+            ref mut cur_index,
+            ref mut max_index,
+            ref mut objects,
+        } = *self;
+
+        let mut entry = objects.entry(sexp_usize);
+        let preservation_sexp = *preservation as SEXP;
+        match entry {
+            Entry::Occupied(ref mut occupied) => {
+                if occupied.get().refcount == 0 {
+                    // Address re-used - re-set the sexp.
+                    SET_VECTOR_ELT(preservation_sexp, occupied.get().index as R_xlen_t, sexp);
                 }
+                occupied.get_mut().refcount += 1;
+            }
+            Entry::Vacant(vacant) => {
+                let index = *cur_index;
+                SET_VECTOR_ELT(preservation_sexp, index as R_xlen_t, sexp);
+                *cur_index += 1;
+                assert!(index != *max_index);
+                let refcount = 1;
+                vacant.insert(Object { refcount, index });
             }
         }
     }
 
     pub unsafe fn unprotect(&mut self, sexp: SEXP) {
         let sexp_usize = sexp as usize;
-        match *self {
-            Ownership {
-                preservation,
-                cur_index: _,
-                max_index: _,
-                ref mut objects,
-            } => {
-                let mut entry = objects.entry(sexp_usize);
-                match entry {
-                    Entry::Occupied(ref mut occupied) => {
-                        let object = occupied.get_mut();
-                        if object.refcount == 0 {
-                            panic!("Attempt to unprotect an already unprotected object.")
-                        } else {
-                            object.refcount -= 1;
-                            if object.refcount == 0 {
-                                // Clear the preservation vector, but keep the hash table entry.
-                                // It is hard to clear the hash table entry here because we don't
-                                // have a ref to objects anymore and it is faster to clear them up en-masse.
-                                let preservation_sexp = preservation as SEXP;
-                                SET_VECTOR_ELT(
-                                    preservation_sexp,
-                                    object.index as R_xlen_t,
-                                    R_NilValue,
-                                );
-                            }
-                        }
-                    }
-                    Entry::Vacant(_) => {
-                        panic!("Attempt to unprotect a never protected object.")
+        let Ownership {
+            preservation,
+            cur_index: _,
+            max_index: _,
+            ref mut objects,
+        } = *self;
+
+        let mut entry = objects.entry(sexp_usize);
+        match entry {
+            Entry::Occupied(ref mut occupied) => {
+                let object = occupied.get_mut();
+                if object.refcount == 0 {
+                    panic!("Attempt to unprotect an already unprotected object.")
+                } else {
+                    object.refcount -= 1;
+                    if object.refcount == 0 {
+                        // Clear the preservation vector, but keep the hash table entry.
+                        // It is hard to clear the hash table entry here because we don't
+                        // have a ref to objects anymore and it is faster to clear them up en-masse.
+                        let preservation_sexp = preservation as SEXP;
+                        SET_VECTOR_ELT(preservation_sexp, object.index as R_xlen_t, R_NilValue);
                     }
                 }
+            }
+            Entry::Vacant(_) => {
+                panic!("Attempt to unprotect a never protected object.")
             }
         }
     }
 
     #[allow(dead_code)]
     unsafe fn ref_count(&mut self, sexp: SEXP) -> usize {
-        match *self {
-            Ownership {
-                preservation: _,
-                cur_index: _,
-                max_index: _,
-                ref mut objects,
-            } => {
-                let sexp_usize = sexp as usize;
-                let mut entry = objects.entry(sexp_usize);
-                match entry {
-                    Entry::Occupied(ref mut occupied) => occupied.get().refcount,
-                    Entry::Vacant(_) => 0,
-                }
-            }
+        let Ownership {
+            preservation: _,
+            cur_index: _,
+            max_index: _,
+            ref mut objects,
+        } = *self;
+
+        let sexp_usize = sexp as usize;
+        let mut entry = objects.entry(sexp_usize);
+        match entry {
+            Entry::Occupied(ref mut occupied) => occupied.get().refcount,
+            Entry::Vacant(_) => 0,
         }
     }
 

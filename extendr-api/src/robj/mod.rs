@@ -236,6 +236,19 @@ impl Robj {
         unsafe { Rf_xlength(self.get()) as usize }
     }
 
+    /// Returns `true` if the `Robj` contains no elements.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///
+    /// let a : Robj = r!(vec![0.; 0]); // length zero of numeric vector
+    /// assert_eq!(a.is_empty(), true);
+    /// }
+    /// ```
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     /// Is this object is an NA scalar?
     /// Works for character, integer and numeric types.
     /// ```
@@ -291,11 +304,8 @@ impl Robj {
     /// }
     /// ```
     pub fn as_integer_iter(&self) -> Option<Int> {
-        if let Some(slice) = self.as_integer_slice() {
-            Some(Int::from_slice(self.to_owned(), slice))
-        } else {
-            None
-        }
+        self.as_integer_slice()
+            .map(|slice| Int::from_slice(self.to_owned(), slice))
     }
 
     /// Get a Vec<i32> copied from the object.
@@ -308,11 +318,7 @@ impl Robj {
     /// }
     /// ```
     pub fn as_integer_vector(&self) -> Option<Vec<i32>> {
-        if let Some(value) = self.as_integer_slice() {
-            Some(value.iter().cloned().collect::<Vec<_>>())
-        } else {
-            None
-        }
+        self.as_integer_slice().map(|value| value.to_vec())
     }
 
     /// Get a read-only reference to the content of a logical vector
@@ -339,11 +345,7 @@ impl Robj {
     /// }
     /// ```
     pub fn as_logical_vector(&self) -> Option<Vec<Bool>> {
-        if let Some(value) = self.as_logical_slice() {
-            Some(value.iter().cloned().collect::<Vec<_>>())
-        } else {
-            None
-        }
+        self.as_logical_slice().map(|value| value.to_vec())
     }
 
     /// Get an iterator over logical elements of this slice.
@@ -364,11 +366,8 @@ impl Robj {
     /// }
     /// ```
     pub fn as_logical_iter(&self) -> Option<Logical> {
-        if let Some(slice) = self.as_logical_slice() {
-            Some(Logical::from_slice(self.to_owned(), slice))
-        } else {
-            None
-        }
+        self.as_logical_slice()
+            .map(|slice| Logical::from_slice(self.to_owned(), slice))
     }
 
     /// Get a read-only reference to the content of a double vector.
@@ -406,11 +405,8 @@ impl Robj {
     /// }
     /// ```
     pub fn as_real_iter(&self) -> Option<Real> {
-        if let Some(slice) = self.as_real_slice() {
-            Some(Real::from_slice(self.to_owned(), slice))
-        } else {
-            None
-        }
+        self.as_real_slice()
+            .map(|slice| Real::from_slice(self.to_owned(), slice))
     }
 
     /// Get a Vec<f64> copied from the object.
@@ -422,11 +418,7 @@ impl Robj {
     /// }
     /// ```
     pub fn as_real_vector(&self) -> Option<Vec<f64>> {
-        if let Some(value) = self.as_real_slice() {
-            Some(value.iter().cloned().collect::<Vec<_>>())
-        } else {
-            None
-        }
+        self.as_real_slice().map(|value| value.to_vec())
     }
 
     /// Get a read-only reference to the content of an integer or logical vector.
@@ -497,11 +489,8 @@ impl Robj {
     /// }
     /// ```
     pub fn as_string_vector(&self) -> Option<Vec<String>> {
-        if let Some(iter) = self.as_str_iter() {
-            Some(iter.map(str::to_string).collect())
-        } else {
-            None
-        }
+        self.as_str_iter()
+            .map(|iter| iter.map(str::to_string).collect())
     }
 
     /// Get a vector of string references.
@@ -516,11 +505,7 @@ impl Robj {
     /// }
     /// ```
     pub fn as_str_vector(&self) -> Option<Vec<&str>> {
-        if let Some(iter) = self.as_str_iter() {
-            Some(iter.collect())
-        } else {
-            None
-        }
+        self.as_str_iter().map(|iter| iter.collect())
     }
 
     /// Get a read-only reference to a scalar string type.
@@ -657,10 +642,10 @@ impl Robj {
     /// ```
     pub fn eval_blind(&self) -> Robj {
         let res = self.eval();
-        if res.is_err() {
-            Robj::from(())
+        if let Ok(robj) = res {
+            robj
         } else {
-            Robj::from(res.unwrap())
+            Robj::from(())
         }
     }
 
@@ -676,10 +661,7 @@ impl Robj {
     /// }
     /// ```
     pub fn is_owned(&self) -> bool {
-        match self {
-            Robj::Owned(_) => true,
-            _ => false,
-        }
+        matches!(self, Robj::Owned(_))
     }
 
     // Convert the Robj to an owned one.
@@ -936,7 +918,7 @@ impl Robj {
     /// ```
     pub fn inherits(&self, classname: &str) -> bool {
         if let Some(mut iter) = self.class() {
-            iter.find(|&n| n == classname).is_some()
+            iter.any(|n| n == classname)
         } else {
             false
         }
