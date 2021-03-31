@@ -1,0 +1,291 @@
+
+use quote::{format_ident, quote};
+use syn::{ItemFn, FnArg, punctuated::Punctuated, Token, Expr, parse_quote, Type, };
+
+pub const META_PREFIX: &str = "meta__";
+pub const WRAP_PREFIX: &str = "wrap__";
+
+#[derive(Debug)]
+pub struct ExtendrOptions {}
+
+// Generate wrappers for a specific function.
+pub fn make_function_wrappers(
+    _opts: &ExtendrOptions,
+    wrappers: &mut Vec<ItemFn>,
+    prefix: &str,
+    attrs: &[syn::Attribute],
+    sig: &syn::Signature,
+    self_ty: Option<&syn::Type>,
+) {
+    let func_name = &sig.ident;
+
+    let wrap_name = format_ident!("{}{}{}", WRAP_PREFIX, prefix, func_name);
+    let meta_name = format_ident!("{}{}{}", META_PREFIX, prefix, func_name);
+
+    let name_str = format!("{}", func_name);
+    let doc_string = get_doc_string(attrs);
+    let return_type_string = get_return_type(&sig);
+
+    let panic_str = format!("{} panicked.\0", func_name);
+
+    let inputs = &sig.inputs;
+    let has_self = matches!(inputs.iter().next(), Some(FnArg::Receiver(_)));
+
+    let call_name = if has_self {
+        let is_mut = match inputs.iter().next() {
+            Some(FnArg::Receiver(ref reciever)) => reciever.mutability.is_some(),
+            _ => false,
+        };
+        if is_mut {
+            // eg. Person::name(&mut self)
+            quote! { extendr_api::unwrap_or_throw(
+                <&mut #self_ty>::from_robj(&_self_robj)
+            ).#func_name }
+        } else {
+            // eg. Person::name(&self)
+            quote! { extendr_api::unwrap_or_throw(
+                <&#self_ty>::from_robj(&_self_robj)
+            ).#func_name }
+        }
+    } else if let Some(ref self_ty) = &self_ty {
+        // eg. Person::new()
+        quote! { <#self_ty>::#func_name }
+    } else {
+        // eg. aux_func()
+        quote! { #func_name }
+    };
+
+    let formal_args: Punctuated<FnArg, Token![,]> = inputs
+        .iter()
+        .map(|input| translate_formal(input, self_ty))
+        .collect();
+
+    let convert_args: Vec<syn::Stmt> = inputs
+        .iter()
+        .map(|input| translate_to_robj(input))
+        .collect();
+
+    let actual_args: Punctuated<Expr, Token![,]> = inputs
+        .iter()
+        .filter_map(|input| translate_actual(input))
+        .collect();
+
+    let meta_args: Vec<Expr> = inputs
+        .iter()
+        .map(|input| translate_meta_arg(input, self_ty))
+        .collect();
+
+    // Generate wrappers for rust functions to be called from R.
+    // Example:
+    // ```
+    // #[no_mangle]
+    // #[allow(non_snake_case)]
+    // pub extern "C" fn wrap__hello() -> extendr_api::SEXP {
+    //     unsafe {
+    //         use extendr_api::FromRobj;
+    //         extendr_api::Robj::from(hello()).get()
+    //     }
+    // }
+    // ```
+    wrappers.push(parse_quote!(
+        #[no_mangle]
+        #[allow(non_snake_case)]
+        pub extern "C" fn #wrap_name(#formal_args) -> extendr_api::SEXP {
+            unsafe {
+                use extendr_api::robj::*;
+                #( #convert_args )*
+                extendr_api::handle_panic(#panic_str, ||
+                    extendr_api::Robj::from(#call_name(#actual_args)).get()
+                )
+            }
+        }
+    ));
+
+    // Generate a function to push the metadata for a function.
+    wrappers.push(parse_quote!(
+        #[allow(non_snake_case)]
+        fn #meta_name(metadata: &mut Vec<extendr_api::metadata::Func>) {
+            let mut args = vec![
+                #( #meta_args, )*
+            ];
+            metadata.push(extendr_api::metadata::Func {
+                doc: #doc_string,
+                name: #name_str,
+                args: args,
+                return_type: #return_type_string,
+                func_ptr: #wrap_name as * const u8,
+                hidden: false,
+            })
+        }
+    ));
+}
+
+// Extract doc strings from attributes.
+pub fn get_doc_string(attrs: &[syn::Attribute]) -> String {
+    let mut res = String::new();
+    for attr in attrs {
+        if let Some(id) = attr.path.get_ident() {
+            if *id != "doc" {
+                continue;
+            }
+
+            if let Ok(syn::Meta::NameValue(nv)) = attr.parse_meta() {
+                if let syn::Lit::Str(litstr) = nv.lit {
+                    if !res.is_empty() {
+                        res.push('\n');
+                    }
+                    res.push_str(&litstr.value());
+                }
+            }
+        }
+    }
+    res
+}
+
+pub fn get_return_type(sig: &syn::Signature) -> String {
+    match &sig.output {
+        syn::ReturnType::Default => "()".into(),
+        syn::ReturnType::Type(_, ref rettype) => type_name(rettype),
+    }
+}
+
+pub fn mangled_type_name(type_: &Type) -> String {
+    let src = quote!( #type_ ).to_string();
+    let mut res = String::new();
+    for c in src.chars() {
+        if c != ' ' {
+            if c.is_alphanumeric() {
+                res.push(c)
+            } else {
+                let f = format!("_{:02x}", c as u32);
+                res.push_str(&f);
+            }
+        }
+    }
+    res
+}
+
+// Return a simplified type name that will be meaningful to R. Defaults to a digest.
+// For example:
+// & Fred -> Fred
+// * Fred -> Fred
+// && Fred -> Fred
+// Fred<'a> -> Fred
+// &[i32] -> _hex_hex_hex_hex
+//
+pub fn type_name(type_: &Type) -> String {
+    match type_ {
+        Type::Path(syn::TypePath { path, .. }) => {
+            if let Some(ident) = path.get_ident() {
+                ident.to_string()
+            } else if path.segments.len() == 1 {
+                let seg = path.segments.clone().into_iter().next().unwrap();
+                seg.ident.to_string()
+            } else {
+                mangled_type_name(type_)
+            }
+        }
+        Type::Group(syn::TypeGroup { elem, .. }) => type_name(elem),
+        Type::Reference(syn::TypeReference { elem, .. }) => type_name(elem),
+        Type::Paren(syn::TypeParen { elem, .. }) => type_name(elem),
+        Type::Ptr(syn::TypePtr { elem, .. }) => type_name(elem),
+        _ => mangled_type_name(type_),
+    }
+}
+
+
+// Generate a list of arguments for the wrapper. All arguments are SEXP for .Call in R.
+pub fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> FnArg {
+    match input {
+        // function argument.
+        FnArg::Typed(ref pattype) => {
+            let pat = &pattype.pat.as_ref();
+            return parse_quote! { #pat : extendr_api::SEXP };
+        }
+        // &self
+        FnArg::Receiver(ref reciever) => {
+            if !reciever.attrs.is_empty() || reciever.reference.is_none() {
+                panic!("expected &self or &mut self");
+            }
+            if self_ty.is_none() {
+                panic!("found &self in non-impl function - have you missed the #[extendr] before the impl?");
+            }
+            return parse_quote! { _self : extendr_api::SEXP };
+        }
+    }
+}
+
+// Generate code to make a metadata::Arg.
+fn translate_meta_arg(input: &FnArg, self_ty: Option<&syn::Type>) -> Expr {
+    match input {
+        // function argument.
+        FnArg::Typed(ref pattype) => {
+            let pat = pattype.pat.as_ref();
+            let ty = pattype.ty.as_ref();
+            let name_string = quote! { #pat }.to_string();
+            let type_string = type_name(ty);
+            return parse_quote! {
+                extendr_api::metadata::Arg {
+                    name: #name_string,
+                    arg_type: #type_string
+                }
+            };
+        }
+        // &self
+        FnArg::Receiver(ref reciever) => {
+            if !reciever.attrs.is_empty() || reciever.reference.is_none() {
+                panic!("expected &self or &mut self");
+            }
+            if self_ty.is_none() {
+                panic!("found &self in non-impl function - have you missed the #[extendr] before the impl?");
+            }
+            let type_string = type_name(self_ty.unwrap());
+            return parse_quote! {
+                extendr_api::metadata::Arg {
+                    name: "self",
+                    arg_type: #type_string
+                }
+            };
+        }
+    }
+}
+
+// Convert SEXP arguments into Robj. This maintains the lifetime of references.
+fn translate_to_robj(input: &FnArg) -> syn::Stmt {
+    match input {
+        FnArg::Typed(ref pattype) => {
+            let pat = &pattype.pat.as_ref();
+            if let syn::Pat::Ident(ref ident) = pat {
+                let varname = format_ident!("_{}_robj", ident.ident);
+                parse_quote! { let #varname = extendr_api::new_owned(#pat); }
+            } else {
+                panic!("expect identifier as arg name")
+            }
+        }
+        FnArg::Receiver(_) => {
+            parse_quote! { let mut _self_robj = extendr_api::new_owned(_self); }
+        }
+    }
+}
+
+// Generate actual argument list for the call (ie. a list of conversions).
+fn translate_actual(input: &FnArg) -> Option<Expr> {
+    match input {
+        FnArg::Typed(ref pattype) => {
+            let pat = &pattype.pat.as_ref();
+            let ty = &pattype.ty.as_ref();
+            if let syn::Pat::Ident(ref ident) = pat {
+                let varname = format_ident!("_{}_robj", ident.ident);
+                Some(parse_quote! { extendr_api::unwrap_or_throw(<#ty>::from_robj(&#varname)) })
+            } else {
+                None
+            }
+        }
+        FnArg::Receiver(_) => {
+            // Do not use self explicitly as an actual arg.
+            None
+        }
+    }
+}
+
+
