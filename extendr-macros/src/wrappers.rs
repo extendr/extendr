@@ -1,6 +1,5 @@
-
 use quote::{format_ident, quote};
-use syn::{ItemFn, FnArg, punctuated::Punctuated, Token, Expr, parse_quote, Type, };
+use syn::{parse_quote, punctuated::Punctuated, Expr, FnArg, ItemFn, Token, Type};
 
 pub const META_PREFIX: &str = "meta__";
 pub const WRAP_PREFIX: &str = "wrap__";
@@ -193,7 +192,6 @@ pub fn type_name(type_: &Type) -> String {
     }
 }
 
-
 // Generate a list of arguments for the wrapper. All arguments are SEXP for .Call in R.
 pub fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> FnArg {
     match input {
@@ -287,5 +285,3 @@ fn translate_actual(input: &FnArg) -> Option<Expr> {
         }
     }
 }
-
-

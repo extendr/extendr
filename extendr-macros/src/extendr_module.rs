@@ -1,8 +1,7 @@
-
-use syn::{parse_macro_input, Ident, Type, parse::ParseStream, Token};
-use quote::{format_ident, quote};
-use proc_macro::TokenStream;
 use crate::wrappers;
+use proc_macro::TokenStream;
+use quote::{format_ident, quote};
+use syn::{parse::ParseStream, parse_macro_input, Ident, Token, Type};
 
 pub fn extendr_module(item: TokenStream) -> TokenStream {
     let module = parse_macro_input!(item as Module);
@@ -18,11 +17,13 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
 
     let module_metadata_name = format_ident!("get_{}_metadata", modname);
     let module_metadata_name_string = module_metadata_name.to_string();
-    let wrap_module_metadata_name = format_ident!("{}get_{}_metadata", wrappers::WRAP_PREFIX, modname);
+    let wrap_module_metadata_name =
+        format_ident!("{}get_{}_metadata", wrappers::WRAP_PREFIX, modname);
 
     let make_module_wrappers_name = format_ident!("make_{}_wrappers", modname);
     let make_module_wrappers_name_string = make_module_wrappers_name.to_string();
-    let wrap_make_module_wrappers = format_ident!("{}make_{}_wrappers", wrappers::WRAP_PREFIX, modname);
+    let wrap_make_module_wrappers =
+        format_ident!("{}make_{}_wrappers", wrappers::WRAP_PREFIX, modname);
 
     let fnmetanames = fnnames
         .iter()
@@ -161,4 +162,3 @@ impl syn::parse::Parse for Module {
         Ok(res)
     }
 }
-

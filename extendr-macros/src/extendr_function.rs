@@ -1,8 +1,7 @@
-
-use proc_macro::TokenStream;
-use syn::{ItemFn};
-use quote::{quote};
 use crate::wrappers;
+use proc_macro::TokenStream;
+use quote::quote;
+use syn::ItemFn;
 
 /// Generate bindings for a single function.
 pub fn extendr_function(args: Vec<syn::NestedMeta>, func: ItemFn) -> TokenStream {
@@ -12,7 +11,7 @@ pub fn extendr_function(args: Vec<syn::NestedMeta>, func: ItemFn) -> TokenStream
         parse_options(&mut opts, arg);
     }
 
-    let mut wrappers : Vec<ItemFn> = Vec::new();
+    let mut wrappers: Vec<ItemFn> = Vec::new();
     wrappers::make_function_wrappers(&opts, &mut wrappers, "", &func.attrs, &func.sig, None);
 
     TokenStream::from(quote! {
@@ -36,4 +35,3 @@ pub fn parse_options(_opts: &mut wrappers::ExtendrOptions, _arg: &syn::NestedMet
         _ => panic!("expected #[extendr(opt = \"string\", ...)]"),
     }*/
 }
-

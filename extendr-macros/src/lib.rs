@@ -60,8 +60,8 @@ mod extendr_module;
 mod wrappers;
 
 use proc_macro::TokenStream;
-use syn::{parse_macro_input, Item};
 use quote::quote;
+use syn::{parse_macro_input, Item};
 
 #[proc_macro_attribute]
 pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
