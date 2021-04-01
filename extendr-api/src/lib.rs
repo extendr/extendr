@@ -425,6 +425,7 @@ mod tests {
 
     use extendr_macros::extendr;
     use extendr_macros::extendr_module;
+    use extendr_macros::pairlist;
 
     #[extendr]
     pub fn inttypes(a: i8, b: u8, c: i16, d: u16, e: i32, f: u32, g: i64, h: u64) {
@@ -772,6 +773,18 @@ mod tests {
             let impls = robj.dollar("impls").unwrap();
             assert_eq!(functions.len(), 3);
             assert_eq!(impls.len(), 1);
+        }
+    }
+
+    #[test]
+    fn pairlist_macro_works() {
+        test! {
+            assert_eq!(pairlist!(1, 2, 3), Pairlist::from_pairs(&[("", 1), ("", 2), ("", 3)]));
+            assert_eq!(pairlist!(a=1, 2, 3), Pairlist::from_pairs(&[("a", 1), ("", 2), ("", 3)]));
+            assert_eq!(pairlist!(1, b=2, 3), Pairlist::from_pairs(&[("", 1), ("b", 2), ("", 3)]));
+            assert_eq!(pairlist!(a=1, b=2, c=3), Pairlist::from_pairs(&[("a", 1), ("b", 2), ("c", 3)]));
+            assert_eq!(pairlist!(a=NULL), Pairlist::from_pairs(&[("a", ())]));
+            assert_eq!(pairlist!(), Pairlist::from(()));
         }
     }
 }

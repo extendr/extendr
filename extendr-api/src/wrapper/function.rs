@@ -25,7 +25,7 @@ impl Function {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let formals = pairlist!(a=NULL).try_into()?;
+    ///     let formals = pairlist!(a=NULL);
     ///     let body = lang!("+", sym!(a), r!(1)).try_into()?;
     ///     let env = global_env();
     ///     let f = r!(Function::from_parts(formals, body, env )?);
@@ -51,7 +51,7 @@ impl Function {
     ///     assert_eq!(function.call(pairlist!(a=1, b=2)).unwrap(), r!(3));
     /// }
     /// ```
-    pub fn call(&self, args: Robj) -> Result<Robj> {
+    pub fn call(&self, args: Pairlist) -> Result<Robj> {
         self.robj.call(args)
     }
 
