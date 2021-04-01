@@ -876,19 +876,19 @@
                 <span class="ident">REALSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">REAL</span>(<span class="ident">sexp</span>);
                     <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">v</span>) <span class="kw">in</span> <span class="ident">iter</span>.<span class="ident">enumerate</span>() {
-                        <span class="kw-2">*</span><span class="ident">ptr</span>.<span class="ident">offset</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">isize</span>) <span class="op">=</span> <span class="ident">v</span>.<span class="ident">to_real</span>();
+                        <span class="kw-2">*</span><span class="ident">ptr</span>.<span class="ident">add</span>(<span class="ident">i</span>) <span class="op">=</span> <span class="ident">v</span>.<span class="ident">to_real</span>();
                     }
                 }
                 <span class="ident">INTSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">INTEGER</span>(<span class="ident">sexp</span>);
                     <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">v</span>) <span class="kw">in</span> <span class="ident">iter</span>.<span class="ident">enumerate</span>() {
-                        <span class="kw-2">*</span><span class="ident">ptr</span>.<span class="ident">offset</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">isize</span>) <span class="op">=</span> <span class="ident">v</span>.<span class="ident">to_integer</span>();
+                        <span class="kw-2">*</span><span class="ident">ptr</span>.<span class="ident">add</span>(<span class="ident">i</span>) <span class="op">=</span> <span class="ident">v</span>.<span class="ident">to_integer</span>();
                     }
                 }
                 <span class="ident">LGLSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">LOGICAL</span>(<span class="ident">sexp</span>);
                     <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">v</span>) <span class="kw">in</span> <span class="ident">iter</span>.<span class="ident">enumerate</span>() {
-                        <span class="kw-2">*</span><span class="ident">ptr</span>.<span class="ident">offset</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">isize</span>) <span class="op">=</span> <span class="ident">v</span>.<span class="ident">to_logical</span>();
+                        <span class="kw-2">*</span><span class="ident">ptr</span>.<span class="ident">add</span>(<span class="ident">i</span>) <span class="op">=</span> <span class="ident">v</span>.<span class="ident">to_logical</span>();
                     }
                 }
                 <span class="ident">STRSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
@@ -900,9 +900,9 @@
                     <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;unexpected SEXPTYPE in collect_robj&quot;</span>);
                 }
             }
-            <span class="kw">return</span> <span class="ident">Robj</span>::<span class="ident">Owned</span>(<span class="ident">sexp</span>);
+            <span class="ident">Robj</span>::<span class="ident">Owned</span>(<span class="ident">sexp</span>)
         } <span class="kw">else</span> {
-            <span class="kw">return</span> <span class="ident">Robj</span>::<span class="ident">from</span>(());
+            <span class="ident">Robj</span>::<span class="ident">from</span>(())
         }
     })
 }
@@ -937,7 +937,7 @@
         <span class="self">Self</span>: <span class="ident">Sized</span>,
         <span class="self">Self</span>::<span class="ident">Item</span>: <span class="ident">ToVectorValue</span>,
     {
-        <span class="kw">if</span> <span class="kw">let</span> (<span class="ident">len</span>, <span class="prelude-val">Some</span>(<span class="ident">max</span>)) <span class="op">=</span> <span class="self">self</span>.<span class="ident">size_hint</span>().<span class="ident">clone</span>() {
+        <span class="kw">if</span> <span class="kw">let</span> (<span class="ident">len</span>, <span class="prelude-val">Some</span>(<span class="ident">max</span>)) <span class="op">=</span> <span class="self">self</span>.<span class="ident">size_hint</span>() {
             <span class="kw">if</span> <span class="ident">len</span> <span class="op">=</span><span class="op">=</span> <span class="ident">max</span> {
                 <span class="kw">return</span> <span class="ident">fixed_size_collect</span>(<span class="self">self</span>, <span class="ident">len</span>);
             }
@@ -1083,4 +1083,5 @@
     }
 }
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../";window.currentCrate = "extendr_api";</script><script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api"></div>
+    <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>

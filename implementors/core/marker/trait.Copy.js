@@ -1,3 +1,3 @@
 (function() {var implementors = {};
-implementors["extendr_api"] = [{"text":"impl Copy for Bool","synthetic":false,"types":[]}];
+implementors["extendr_api"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html\" title=\"trait core::marker::Copy\">Copy</a> for <a class=\"struct\" href=\"extendr_api/logical/struct.Bool.html\" title=\"struct extendr_api::logical::Bool\">Bool</a>","synthetic":false,"types":["extendr_api::logical::Bool"]}];
 if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

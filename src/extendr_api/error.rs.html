@@ -254,7 +254,7 @@
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">Error</span>::<span class="ident">Panic</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;Panic detected {:?}.&quot;</span>, <span class="ident">robj</span>),
             <span class="ident">Error</span>::<span class="ident">NotFound</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;Not found. {:?}&quot;</span>, <span class="ident">robj</span>),
-            <span class="ident">Error</span>::<span class="ident">EvalError</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;Evalualtion error in {:?}.&quot;</span>, <span class="ident">robj</span>),
+            <span class="ident">Error</span>::<span class="ident">EvalError</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;Evaluation error in {:?}.&quot;</span>, <span class="ident">robj</span>),
             <span class="ident">Error</span>::<span class="ident">ParseError</span>(<span class="ident">code</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;Parse error in {:?}.&quot;</span>, <span class="ident">code</span>),
             <span class="ident">Error</span>::<span class="ident">NamesLengthMismatch</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;Length of names does not match vector. {:?}&quot;</span>, <span class="ident">robj</span>)
@@ -351,4 +351,5 @@
 <span class="comment">//     }</span>
 <span class="comment">// }</span>
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "extendr_api";</script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_api"></div>
+    <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>

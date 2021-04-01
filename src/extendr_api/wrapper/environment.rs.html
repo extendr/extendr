@@ -239,13 +239,6 @@
 <span id="236">236</span>
 <span id="237">237</span>
 <span id="238">238</span>
-<span id="239">239</span>
-<span id="240">240</span>
-<span id="241">241</span>
-<span id="242">242</span>
-<span id="243">243</span>
-<span id="244">244</span>
-<span id="245">245</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
@@ -350,7 +343,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_envflags</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">flags</span>: <span class="ident">i32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>();
-            <span class="ident">SET_ENVFLAGS</span>(<span class="ident">sexp</span>, <span class="ident">flags</span>.<span class="ident">into</span>())
+            <span class="ident">SET_ENVFLAGS</span>(<span class="ident">sexp</span>, <span class="ident">flags</span>)
         }
         <span class="self">self</span>
     }
@@ -462,18 +455,11 @@
         <span class="kw">loop</span> {
             <span class="comment">// Environments are a hash table (list) or pair lists (pairlist)</span>
             <span class="comment">// Get the first available value from the pair list.</span>
-            <span class="kw">loop</span> {
-                <span class="kw">match</span> <span class="self">self</span>.<span class="ident">pairlist</span>.<span class="ident">next</span>() {
-                    <span class="prelude-val">Some</span>((<span class="ident">key</span>, <span class="ident">value</span>)) <span class="op">=</span><span class="op">&gt;</span> {
-                        <span class="comment">// if the key and value are valid, return a pair.</span>
-                        <span class="kw">if</span> <span class="op">!</span><span class="ident">key</span>.<span class="ident">is_na</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">value</span>.<span class="ident">is_unbound_value</span>() {
-                            <span class="kw">return</span> <span class="prelude-val">Some</span>((<span class="ident">key</span>, <span class="ident">value</span>));
-                        }
-                    }
-                    <span class="comment">// if the key and value are invalid, move on to the hash table.</span>
-                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">break</span>,
+            <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>((<span class="ident">key</span>, <span class="ident">value</span>)) <span class="op">=</span> <span class="self">self</span>.<span class="ident">pairlist</span>.<span class="ident">next</span>() {
+                <span class="comment">// if the key and value are valid, return a pair.</span>
+                <span class="kw">if</span> <span class="op">!</span><span class="ident">key</span>.<span class="ident">is_na</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">value</span>.<span class="ident">is_unbound_value</span>() {
+                    <span class="kw">return</span> <span class="prelude-val">Some</span>((<span class="ident">key</span>, <span class="ident">value</span>));
                 }
-                <span class="comment">// continue pair list loop.</span>
             }
 
             <span class="comment">// Get the first pairlist from the hash table.</span>
@@ -493,4 +479,5 @@
     }
 }
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../";window.currentCrate = "extendr_api";</script><script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api"></div>
+    <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>

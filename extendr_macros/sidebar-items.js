@@ -1,1 +1,1 @@
-initSidebarItems({"attr":[["extendr","Generate bindings for a single function."]],"macro":[["extendr_module","Define a module and export symbols to R Example:"]]});
+initSidebarItems({"attr":[["extendr",""]],"macro":[["extendr_module","Define a module and export symbols to R Example:"]]});

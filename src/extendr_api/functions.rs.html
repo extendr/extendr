@@ -269,7 +269,7 @@
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">global_var</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">into</span>();
-    <span class="prelude-val">Ok</span>(<span class="ident">global_env</span>().<span class="ident">find_var</span>(<span class="ident">key</span>)<span class="question-mark">?</span>.<span class="ident">eval_promise</span>()<span class="question-mark">?</span>)
+    <span class="ident">global_env</span>().<span class="ident">find_var</span>(<span class="ident">key</span>)<span class="question-mark">?</span>.<span class="ident">eval_promise</span>()
 }
 
 <span class="doccomment">/// Get a local variable from current_env() and ancestors.</span>
@@ -289,7 +289,7 @@
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">local_var</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">into</span>();
-    <span class="prelude-val">Ok</span>(<span class="ident">current_env</span>().<span class="ident">find_var</span>(<span class="ident">key</span>)<span class="question-mark">?</span>.<span class="ident">eval_promise</span>()<span class="question-mark">?</span>)
+    <span class="ident">current_env</span>().<span class="ident">find_var</span>(<span class="ident">key</span>)<span class="question-mark">?</span>.<span class="ident">eval_promise</span>()
 }
 
 <span class="doccomment">/// Get a global function from global_env() and ancestors.</span>
@@ -507,4 +507,5 @@ pub fn dot_Generic() -&gt; Robj { unsafe { new_sys(R_dot_Generic) }}
     }
 }
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "extendr_api";</script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_api"></div>
+    <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
