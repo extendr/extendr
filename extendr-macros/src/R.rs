@@ -55,11 +55,6 @@ mod test {
     #[test]
     fn test_r_macro() {
         assert_eq!(
-            format!("{}", R(quote!(data.frame))),
-            "eval_string ( \"data . frame\" )"
-        );
-
-        assert_eq!(
             format!("{}", R(quote!("data.frame"))),
             "eval_string ( \"data.frame\" )"
         );
