@@ -54,16 +54,20 @@ mod test {
 
     #[test]
     fn test_r_macro() {
+        // Note: strip spaces to cover differences between compilers.
+
         assert_eq!(
-            format!("{}", R(quote!("data.frame"))),
-            "eval_string ( \"data.frame\" )"
+            format!("{}", R(quote!("data.frame"))).replace(" ", ""),
+            "eval_string(\"data.frame\")"
         );
 
-        assert_eq!(format!("{}", R(quote!("a <- {{1}}"))), "{ let params = & [ & extendr_api :: Robj :: from ( 1 ) ] ; eval_string_with_params ( \"a <-  param.0 \" , params ) }");
+        assert_eq!(format!("{}", R(quote!("a <- {{1}}"))).replace(" ", ""),
+        "{letparams=&[&extendr_api::Robj::from(1)];eval_string_with_params(\"a<-param.0\",params)}");
 
         assert_eq!(format!("{}", R(quote!(r"
         a <- 1
         b <- {{1}}
-        "))), "{ let params = & [ & extendr_api :: Robj :: from ( 1 ) ] ; eval_string_with_params ( \"\\n        a <- 1\\n        b <-  param.0 \\n        \" , params ) }");
+        "))).replace(" ", ""),
+        "{letparams=&[&extendr_api::Robj::from(1)];eval_string_with_params(\"\\na<-1\\nb<-param.0\\n\",params)}");
     }
 }
