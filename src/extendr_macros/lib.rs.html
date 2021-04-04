@@ -101,6 +101,17 @@
 <span id="98"> 98</span>
 <span id="99"> 99</span>
 <span id="100">100</span>
+<span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Macros for generating wrappers for rust functions.</span>
@@ -161,6 +172,8 @@
 <span class="kw">mod</span> <span class="ident">extendr_function</span>;
 <span class="kw">mod</span> <span class="ident">extendr_impl</span>;
 <span class="kw">mod</span> <span class="ident">extendr_module</span>;
+<span class="kw">mod</span> <span class="ident">pairlist</span>;
+<span class="kw">mod</span> <span class="ident">pairs</span>;
 <span class="kw">mod</span> <span class="ident">wrappers</span>;
 
 <span class="kw">use</span> <span class="ident">proc_macro</span>::<span class="ident">TokenStream</span>;
@@ -201,6 +214,15 @@
 <span class="attribute">#[<span class="ident">proc_macro</span>]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extendr_module</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">TokenStream</span> {
     <span class="ident">extendr_module</span>::<span class="ident">extendr_module</span>(<span class="ident">item</span>)
+}
+
+<span class="doccomment">/// Create a Pairlist R object from a list of name-value pairs.</span>
+<span class="doccomment">/// ```ignore</span>
+<span class="doccomment">///     assert_eq!(pairlist!(a=1, 2, 3), Pairlist::from_pairs(&amp;[(&quot;a&quot;, 1), (&quot;&quot;, 2), (&quot;&quot;, 3)]));</span>
+<span class="doccomment">/// ```</span>
+<span class="attribute">#[<span class="ident">proc_macro</span>]</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pairlist</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">TokenStream</span> {
+    <span class="ident">pairlist</span>::<span class="ident">pairlist</span>(<span class="ident">item</span>)
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_macros"></div>

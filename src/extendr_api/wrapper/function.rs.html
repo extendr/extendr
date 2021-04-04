@@ -112,7 +112,7 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::prelude::*;</span>
     <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let formals = pairlist!(a=NULL).try_into()?;</span>
+    <span class="doccomment">///     let formals = pairlist!(a=NULL);</span>
     <span class="doccomment">///     let body = lang!(&quot;+&quot;, sym!(a), r!(1)).try_into()?;</span>
     <span class="doccomment">///     let env = global_env();</span>
     <span class="doccomment">///     let f = r!(Function::from_parts(formals, body, env )?);</span>
@@ -138,7 +138,7 @@
     <span class="doccomment">///     assert_eq!(function.call(pairlist!(a=1, b=2)).unwrap(), r!(3));</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">call</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">args</span>: <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">call</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">args</span>: <span class="ident">Pairlist</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">call</span>(<span class="ident">args</span>)
     }
 

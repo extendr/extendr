@@ -1,1 +1,1 @@
-initSidebarItems({"attr":[["extendr",""]],"macro":[["extendr_module","Define a module and export symbols to R Example:"]]});
+initSidebarItems({"attr":[["extendr",""]],"macro":[["extendr_module","Define a module and export symbols to R Example:"],["pairlist","Create a Pairlist R object from a list of name-value pairs."]]});

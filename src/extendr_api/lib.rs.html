@@ -778,6 +778,19 @@
 <span id="775">775</span>
 <span id="776">776</span>
 <span id="777">777</span>
+<span id="778">778</span>
+<span id="779">779</span>
+<span id="780">780</span>
+<span id="781">781</span>
+<span id="782">782</span>
+<span id="783">783</span>
+<span id="784">784</span>
+<span id="785">785</span>
+<span id="786">786</span>
+<span id="787">787</span>
+<span id="788">788</span>
+<span id="789">789</span>
+<span id="790">790</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! A safe and user friendly R extension interface.</span>
@@ -1206,6 +1219,7 @@
 
     <span class="kw">use</span> <span class="ident">extendr_macros</span>::<span class="ident">extendr</span>;
     <span class="kw">use</span> <span class="ident">extendr_macros</span>::<span class="ident">extendr_module</span>;
+    <span class="kw">use</span> <span class="ident">extendr_macros</span>::<span class="ident">pairlist</span>;
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">inttypes</span>(<span class="ident">a</span>: <span class="ident">i8</span>, <span class="ident">b</span>: <span class="ident">u8</span>, <span class="ident">c</span>: <span class="ident">i16</span>, <span class="ident">d</span>: <span class="ident">u16</span>, <span class="ident">e</span>: <span class="ident">i32</span>, <span class="ident">f</span>: <span class="ident">u32</span>, <span class="ident">g</span>: <span class="ident">i64</span>, <span class="ident">h</span>: <span class="ident">u64</span>) {
@@ -1553,6 +1567,18 @@
             <span class="kw">let</span> <span class="ident">impls</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">dollar</span>(<span class="string">&quot;impls&quot;</span>).<span class="ident">unwrap</span>();
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">functions</span>.<span class="ident">len</span>(), <span class="number">3</span>);
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">impls</span>.<span class="ident">len</span>(), <span class="number">1</span>);
+        }
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">pairlist_macro_works</span>() {
+        <span class="macro">test</span><span class="macro">!</span> {
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">pairlist</span><span class="macro">!</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>), <span class="ident">Pairlist</span>::<span class="ident">from_pairs</span>(<span class="kw-2">&amp;</span>[(<span class="string">&quot;&quot;</span>, <span class="number">1</span>), (<span class="string">&quot;&quot;</span>, <span class="number">2</span>), (<span class="string">&quot;&quot;</span>, <span class="number">3</span>)]));
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">pairlist</span><span class="macro">!</span>(<span class="ident">a</span><span class="op">=</span><span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>), <span class="ident">Pairlist</span>::<span class="ident">from_pairs</span>(<span class="kw-2">&amp;</span>[(<span class="string">&quot;a&quot;</span>, <span class="number">1</span>), (<span class="string">&quot;&quot;</span>, <span class="number">2</span>), (<span class="string">&quot;&quot;</span>, <span class="number">3</span>)]));
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">pairlist</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">b</span><span class="op">=</span><span class="number">2</span>, <span class="number">3</span>), <span class="ident">Pairlist</span>::<span class="ident">from_pairs</span>(<span class="kw-2">&amp;</span>[(<span class="string">&quot;&quot;</span>, <span class="number">1</span>), (<span class="string">&quot;b&quot;</span>, <span class="number">2</span>), (<span class="string">&quot;&quot;</span>, <span class="number">3</span>)]));
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">pairlist</span><span class="macro">!</span>(<span class="ident">a</span><span class="op">=</span><span class="number">1</span>, <span class="ident">b</span><span class="op">=</span><span class="number">2</span>, <span class="ident">c</span><span class="op">=</span><span class="number">3</span>), <span class="ident">Pairlist</span>::<span class="ident">from_pairs</span>(<span class="kw-2">&amp;</span>[(<span class="string">&quot;a&quot;</span>, <span class="number">1</span>), (<span class="string">&quot;b&quot;</span>, <span class="number">2</span>), (<span class="string">&quot;c&quot;</span>, <span class="number">3</span>)]));
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">pairlist</span><span class="macro">!</span>(<span class="ident">a</span><span class="op">=</span><span class="ident">NULL</span>), <span class="ident">Pairlist</span>::<span class="ident">from_pairs</span>(<span class="kw-2">&amp;</span>[(<span class="string">&quot;a&quot;</span>, ())]));
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">pairlist</span><span class="macro">!</span>(), <span class="ident">Pairlist</span>::<span class="ident">from</span>(()));
         }
     }
 }
