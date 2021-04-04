@@ -57,6 +57,8 @@
 mod extendr_function;
 mod extendr_impl;
 mod extendr_module;
+mod pairlist;
+mod pairs;
 mod wrappers;
 
 use proc_macro::TokenStream;
@@ -97,4 +99,13 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
 #[proc_macro]
 pub fn extendr_module(item: TokenStream) -> TokenStream {
     extendr_module::extendr_module(item)
+}
+
+/// Create a Pairlist R object from a list of name-value pairs.
+/// ```ignore
+///     assert_eq!(pairlist!(a=1, 2, 3), Pairlist::from_pairs(&[("a", 1), ("", 2), ("", 3)]));
+/// ```
+#[proc_macro]
+pub fn pairlist(item: TokenStream) -> TokenStream {
+    pairlist::pairlist(item)
 }

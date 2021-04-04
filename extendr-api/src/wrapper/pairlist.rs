@@ -173,3 +173,12 @@ impl From<PairlistIter> for Robj {
         iter.robj
     }
 }
+
+impl From<()> for Pairlist {
+    /// Construct a NULL pairlist (which is a NULL).
+    fn from(_: ()) -> Self {
+        Pairlist {
+            robj: Robj::from(()),
+        }
+    }
+}

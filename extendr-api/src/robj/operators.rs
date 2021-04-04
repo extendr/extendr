@@ -98,13 +98,9 @@ impl Robj {
     ///     assert_eq!(function.call(pairlist!(a=1, b=2)).unwrap(), r!(3));
     /// }
     /// ```
-    pub fn call(&self, args: Robj) -> Result<Robj> {
+    pub fn call(&self, args: Pairlist) -> Result<Robj> {
         if self.rtype() != RType::Function {
             return Err(Error::ExpectedFunction(self.clone()));
-        }
-
-        if args.rtype() != RType::Pairlist {
-            return Err(Error::ExpectedPairlist(args));
         }
 
         unsafe {
