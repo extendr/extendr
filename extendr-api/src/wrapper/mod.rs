@@ -150,7 +150,7 @@ impl Robj {
     /// use extendr_api::prelude::*;
     /// test! {
     ///     let fred = sym!(fred);
-    ///     assert_eq!(fred.as_symbol(), Some(Symbol::from_str("fred")));
+    ///     assert_eq!(fred.as_symbol(), Some(Symbol::from_string("fred")));
     /// }
     /// ```
     pub fn as_symbol(&self) -> Option<Symbol> {
@@ -186,7 +186,7 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let call_to_xyz = r!(Language::from_values(&[r!(Symbol::from_str("xyz")), r!(1), r!(2)]));
+    ///     let call_to_xyz = r!(Language::from_values(&[r!(Symbol::from_string("xyz")), r!(1), r!(2)]));
     ///     assert_eq!(call_to_xyz.is_language(), true);
     ///     assert_eq!(call_to_xyz.len(), 3);
     ///     assert_eq!(format!("{:?}", call_to_xyz), r#"r!(Language::from_values([sym!(xyz), r!(1), r!(2)]))"#);
@@ -257,7 +257,7 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let func = R!(function(a,b) a + b).unwrap();
+    ///     let func = R!("function(a,b) a + b").unwrap();
     ///     println!("{:?}", func.as_function());
     /// }
     /// ```
@@ -281,7 +281,7 @@ where
     R: Into<Robj>,
 {
     fn sym_pair(self) -> (Robj, Robj) {
-        (r!(Symbol::from_str(self.0.as_ref())), self.1.into())
+        (r!(Symbol::from_string(self.0.as_ref())), self.1.into())
     }
 }
 
@@ -292,6 +292,9 @@ where
     R: Clone,
 {
     fn sym_pair(self) -> (Robj, Robj) {
-        (r!(Symbol::from_str(self.0.as_ref())), self.1.clone().into())
+        (
+            r!(Symbol::from_string(self.0.as_ref())),
+            self.1.clone().into(),
+        )
     }
 }

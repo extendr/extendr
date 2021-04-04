@@ -19,7 +19,7 @@ impl Robj {
     where
         T: AsRef<str>,
     {
-        let symbol: Symbol = Symbol::from_str(symbol.as_ref());
+        let symbol: Symbol = Symbol::from_string(symbol.as_ref());
         call!("$", self, symbol)
     }
 
@@ -59,8 +59,8 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let x = r!(Symbol::from_str("x"));
-    ///     let y = r!(Symbol::from_str("y"));
+    ///     let x = r!(Symbol::from_string("x"));
+    ///     let y = r!(Symbol::from_string("y"));
     ///     let tilde = x.tilde(y).unwrap();
     ///     assert_eq!(tilde.inherits("formula"), true);
     /// }
@@ -76,8 +76,8 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    /// let base = r!(Symbol::from_str("base"));
-    /// let env = r!(Symbol::from_str(".getNamespace"));
+    /// let base = r!(Symbol::from_string("base"));
+    /// let env = r!(Symbol::from_string(".getNamespace"));
     /// let base_env = base.double_colon(env).unwrap();
     /// assert_eq!(base_env.is_function(), true);
     /// }
@@ -93,7 +93,7 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let function = R!(function(a, b) a + b).unwrap();
+    ///     let function = R!("function(a, b) a + b").unwrap();
     ///     assert_eq!(function.is_function(), true);
     ///     assert_eq!(function.call(pairlist!(a=1, b=2)).unwrap(), r!(3));
     /// }

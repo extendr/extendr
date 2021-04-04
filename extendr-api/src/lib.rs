@@ -57,7 +57,7 @@
 //!     let real_vector = r!(vec![1.0, 2.0]);
 //!    
 //!     // An R function object.
-//!     let function = R!(function(x, y) { x + y })?;
+//!     let function = R!("function(x, y) { x + y }")?;
 //!    
 //!     // A named list using the list! macro.
 //!     let list = list!(a = 1, b = 2);
@@ -82,7 +82,7 @@
 //! test! {
 //!     // 1 ..= 100 is the same as 1:100
 //!     let res = r!(1 ..= 100);
-//!     assert_eq!(res, R!(1:100)?);
+//!     assert_eq!(res, R!("1:100")?);
 //!    
 //!     // Rust arrays are zero-indexed so it is more common to use 0 .. 100.
 //!     let res = r!(0 .. 100);
@@ -130,13 +130,26 @@
 //! ```
 //!
 //! The [R!] macro lets you embed R code in Rust
-//! but does not take variables.
+//! and takes Rust expressions in {{ }} pairs.
 //! ```
 //! use extendr_api::prelude::*;
 //! test! {
 //!     // The text "1 + 1" is parsed as R source code.
 //!     // The result is 1.0 + 1.0 in Rust.
-//!     assert_eq!(R!(1 + 1)?, r!(2.0));
+//!     assert_eq!(R!("1 + 1")?, r!(2.0));
+//!
+//!     let a = 1.0;
+//!     assert_eq!(R!("1 + {{a}}")?, r!(2.0));
+//!
+//!     assert_eq!(R!(r"
+//!         x <- {{ a }}
+//!         x + 1
+//!     ")?, r!(2.0));
+//!
+//!     assert_eq!(R!(r#"
+//!         x <- "hello"
+//!         x
+//!     "#)?, r!("hello"));
 //! }
 //! ```
 //!
@@ -785,6 +798,30 @@ mod tests {
             assert_eq!(pairlist!(a=1, b=2, c=3), Pairlist::from_pairs(&[("a", 1), ("b", 2), ("c", 3)]));
             assert_eq!(pairlist!(a=NULL), Pairlist::from_pairs(&[("a", ())]));
             assert_eq!(pairlist!(), Pairlist::from(()));
+        }
+    }
+
+    #[test]
+    fn big_r_macro_works() {
+        test! {
+            assert_eq!(R!("1")?, r!(1.0));
+            assert_eq!(R!(r"1")?, r!(1.0));
+            assert_eq!(R!(r"
+                x <- 1
+                x
+            ")?, r!(1.0));
+            assert_eq!(R!(r"
+                x <- {{ 1.0 }}
+                x
+            ")?, r!(1.0));
+            assert_eq!(R!(r"
+                x <- {{ (0..4).collect_robj() }}
+                x
+            ")?, r!([0, 1, 2, 3]));
+            assert_eq!(R!(r#"
+                x <- "hello"
+                x
+            "#)?, r!("hello"));
         }
     }
 }

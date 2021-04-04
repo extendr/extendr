@@ -21,10 +21,10 @@ fn test_debug() {
         assert_eq!(format!("{:?}", r!(Raw::from_bytes(&[1, 2, 3]))), "r!(Raw::from_bytes([1, 2, 3]))");
 
         // Wrappers
-        assert_eq!(format!("{:?}", r!(Symbol::from_str("x"))), "sym!(x)");
+        assert_eq!(format!("{:?}", r!(Symbol::from_string("x"))), "sym!(x)");
         assert_eq!(format!("{:?}", r!(Character::from_str("x"))), "r!(Character::from_str(\"x\"))");
         assert_eq!(
-            format!("{:?}", r!(Language::from_values(&[r!(Symbol::from_str("x"))]))),
+            format!("{:?}", r!(Language::from_values(&[r!(Symbol::from_string("x"))]))),
             "r!(Language::from_values([sym!(x)]))"
         );
 
@@ -265,8 +265,8 @@ fn parse_test() {
     test! {
     let p = parse("print(1L);print(1L);")?;
     let q = r!(Expression::from_values(&[
-        r!(Language::from_values(&[r!(Symbol::from_str("print")), r!(1)])),
-        r!(Language::from_values(&[r!(Symbol::from_str("print")), r!(1)]))
+        r!(Language::from_values(&[r!(Symbol::from_string("print")), r!(1)])),
+        r!(Language::from_values(&[r!(Symbol::from_string("print")), r!(1)]))
     ]));
     assert_eq!(p, q);
 

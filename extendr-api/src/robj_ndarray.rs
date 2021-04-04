@@ -72,7 +72,7 @@ fn test_from_robj() {
             Ok(ArrayView1::<Bool>::from(&[Bool(1)][..]))
         );
 
-        let robj = R!(matrix(c(1, 2, 3, 4, 5, 6, 7, 8), ncol=2, nrow=4))?;
+        let robj = R!("matrix(c(1, 2, 3, 4, 5, 6, 7, 8), ncol=2, nrow=4)")?;
         let mx = <ArrayView2<f64>>::from_robj(&robj)?;
         assert_eq!(mx[[0, 0]], 1.0);
         assert_eq!(mx[[1, 0]], 2.0);
@@ -91,7 +91,7 @@ fn test_from_robj() {
         assert_eq!(col0[3], 4.0);
 
         // check integer matrices
-        let robj = R!(matrix(c(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L), ncol=2, nrow=4))?;
+        let robj = R!("matrix(c(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L), ncol=2, nrow=4)")?;
         let mx = <ArrayView2<i32>>::from_robj(&robj)?;
         assert_eq!(mx[[0, 0]], 1);
         assert_eq!(mx[[1, 0]], 2);
@@ -103,7 +103,7 @@ fn test_from_robj() {
         assert_eq!(mx[[3, 1]], 8);
 
         // check logical matrices
-        let robj = R!(matrix(c(T, T, T, T, F, F, F, F), ncol=2, nrow=4))?;
+        let robj = R!("matrix(c(T, T, T, T, F, F, F, F), ncol=2, nrow=4)")?;
         let mx = <ArrayView2<Bool>>::from_robj(&robj)?;
         assert_eq!(mx[[0, 0]], TRUE);
         assert_eq!(mx[[1, 0]], TRUE);
