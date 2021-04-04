@@ -56,18 +56,34 @@ mod test {
     fn test_r_macro() {
         // Note: strip spaces to cover differences between compilers.
 
+        // Naked R!
         assert_eq!(
-            format!("{}", R(quote!("data.frame"))).replace(" ", ""),
-            "eval_string(\"data.frame\")"
+            format!("{}", R(quote!(data.frame))),
+            format!("{}", quote!(eval_string("data . frame")))
         );
 
-        assert_eq!(format!("{}", R(quote!("a <- {{1}}"))).replace(" ", ""),
-        "{letparams=&[&extendr_api::Robj::from(1)];eval_string_with_params(\"a<-param.0\",params)}");
+        // Quoted R!
+        assert_eq!(
+            format!("{}", R(quote!("data.frame"))),
+            format!("{}", quote!(eval_string("data.frame")))
+        );
 
-        assert_eq!(format!("{}", R(quote!(r"
-        a <- 1
-        b <- {{1}}
-        "))).replace(" ", ""),
-        "{letparams=&[&extendr_api::Robj::from(1)];eval_string_with_params(\"\\na<-1\\nb<-param.0\\n\",params)}");
+        // Param R!
+        assert_eq!(
+            format!("{}", R(quote!("a <- {{1}}"))),
+            format!(
+                "{}",
+                quote!({
+                    let params = &[&extendr_api::Robj::from(1)];
+                    eval_string_with_params("a <-  param.0 ", params)
+                })
+            )
+        );
+
+        // Raw R!
+        assert_eq!(
+            format!("{}", R(quote!(r#""hello""#))),
+            format!("{}", quote!(eval_string("\"hello\"")))
+        );
     }
 }
