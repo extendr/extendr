@@ -19,7 +19,7 @@ pub struct Character {
 
 impl Character {
     /// Make a character object from a string.
-    pub fn from_str(val: &str) -> Self {
+    pub fn from_string(val: &str) -> Self {
         unsafe {
             Character {
                 robj: new_owned(str_to_character(val)),

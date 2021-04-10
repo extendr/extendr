@@ -21,12 +21,12 @@ lazy_static! {
     static ref OWNERSHIP: Mutex<Ownership> = Mutex::new(Ownership::new());
 }
 
-pub unsafe fn protect(sexp: SEXP) {
+pub(crate) unsafe fn protect(sexp: SEXP) {
     let mut own = OWNERSHIP.lock().expect("protect failed");
     own.protect(sexp);
 }
 
-pub unsafe fn unprotect(sexp: SEXP) {
+pub(crate) unsafe fn unprotect(sexp: SEXP) {
     let mut own = OWNERSHIP.lock().expect("unprotect failed");
     own.unprotect(sexp);
 }

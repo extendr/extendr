@@ -167,7 +167,7 @@ impl<'a> FromRobj<'a> for HashMap<String, Robj> {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
         if let Some(iter) = robj.as_list().map(|l| l.iter()) {
             Ok(iter
-                .map(|(k, v)| (k.to_string(), v.to_owned()))
+                .map(|(k, v)| (k.to_string(), v))
                 .collect::<HashMap<String, Robj>>())
         } else {
             Err("expected a list")

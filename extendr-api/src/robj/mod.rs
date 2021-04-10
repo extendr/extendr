@@ -661,30 +661,6 @@ impl Robj {
             Robj::from(())
         }
     }
-
-    /// Return true if the object is owned by this wrapper.
-    /// If so, it will be released when the wrapper drops.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///    let owned = r!(1);      // Allocated vector.
-    ///    let borrowed = r!(());  // R_NilValue
-    ///    assert_eq!(owned.is_owned(), true);
-    ///    assert_eq!(borrowed.is_owned(), false);
-    /// }
-    /// ```
-    pub fn is_owned(&self) -> bool {
-        matches!(self, Robj::Owned(_))
-    }
-
-    // Convert the Robj to an owned one.
-    #[doc(hidden)]
-    pub fn to_owned(self) -> Robj {
-        match self {
-            Robj::Owned(_) => self,
-            _ => unsafe { new_owned(self.get()) },
-        }
-    }
 }
 
 /// Generic access to typed slices in an Robj.
