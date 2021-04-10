@@ -131,6 +131,8 @@
 //!
 //! The [R!] macro lets you embed R code in Rust
 //! and takes Rust expressions in {{ }} pairs.
+//!
+//! The [Rraw!] macro will not expand the {{ }} pairs.
 //! ```
 //! use extendr_api::prelude::*;
 //! test! {
@@ -150,6 +152,12 @@
 //!         x <- "hello"
 //!         x
 //!     "#)?, r!("hello"));
+//!
+//!     // Use the R meaning of {{ }} and do not expand.
+//!     assert_eq!(Rraw!(r"
+//!         x <- {{ 1 }}
+//!         x + 1
+//!     ")?, r!(2.0));
 //! }
 //! ```
 //!
@@ -203,7 +211,7 @@
 //!     // robj is an "Owned" object that controls the memory allocated.
 //!     let robj = r!([1, 2, 3]);
 //!    
-//!     // slice is a "borrowed" reference to the bytes in robj.
+//!     // Here slice is a "borrowed" reference to the bytes in robj.
 //!     // and cannot live longer than robj.
 //!     let slice = robj.as_integer_slice().ok_or("expected slice")?;
 //!     assert_eq!(slice.len(), 3);
@@ -822,6 +830,10 @@ mod tests {
                 x <- "hello"
                 x
             "#)?, r!("hello"));
+            assert_eq!(Rraw!(r"
+                x <- {{ 1 }}
+                x
+            ")?, r!(1.0));
         }
     }
 }
