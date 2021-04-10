@@ -321,7 +321,7 @@
     <span class="kw">where</span>
         <span class="ident">T</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>,
     {
-        <span class="kw">let</span> <span class="ident">symbol</span>: <span class="ident">Symbol</span> <span class="op">=</span> <span class="ident">Symbol</span>::<span class="ident">from_str</span>(<span class="ident">symbol</span>.<span class="ident">as_ref</span>());
+        <span class="kw">let</span> <span class="ident">symbol</span>: <span class="ident">Symbol</span> <span class="op">=</span> <span class="ident">Symbol</span>::<span class="ident">from_string</span>(<span class="ident">symbol</span>.<span class="ident">as_ref</span>());
         <span class="macro">call</span><span class="macro">!</span>(<span class="string">&quot;$&quot;</span>, <span class="self">self</span>, <span class="ident">symbol</span>)
     }
 
@@ -361,8 +361,8 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::prelude::*;</span>
     <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let x = r!(Symbol::from_str(&quot;x&quot;));</span>
-    <span class="doccomment">///     let y = r!(Symbol::from_str(&quot;y&quot;));</span>
+    <span class="doccomment">///     let x = r!(Symbol::from_string(&quot;x&quot;));</span>
+    <span class="doccomment">///     let y = r!(Symbol::from_string(&quot;y&quot;));</span>
     <span class="doccomment">///     let tilde = x.tilde(y).unwrap();</span>
     <span class="doccomment">///     assert_eq!(tilde.inherits(&quot;formula&quot;), true);</span>
     <span class="doccomment">/// }</span>
@@ -378,8 +378,8 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::prelude::*;</span>
     <span class="doccomment">/// test! {</span>
-    <span class="doccomment">/// let base = r!(Symbol::from_str(&quot;base&quot;));</span>
-    <span class="doccomment">/// let env = r!(Symbol::from_str(&quot;.getNamespace&quot;));</span>
+    <span class="doccomment">/// let base = r!(Symbol::from_string(&quot;base&quot;));</span>
+    <span class="doccomment">/// let env = r!(Symbol::from_string(&quot;.getNamespace&quot;));</span>
     <span class="doccomment">/// let base_env = base.double_colon(env).unwrap();</span>
     <span class="doccomment">/// assert_eq!(base_env.is_function(), true);</span>
     <span class="doccomment">/// }</span>
@@ -395,7 +395,7 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::prelude::*;</span>
     <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let function = R!(function(a, b) a + b).unwrap();</span>
+    <span class="doccomment">///     let function = R!(&quot;function(a, b) a + b&quot;).unwrap();</span>
     <span class="doccomment">///     assert_eq!(function.is_function(), true);</span>
     <span class="doccomment">///     assert_eq!(function.call(pairlist!(a=1, b=2)).unwrap(), r!(3));</span>
     <span class="doccomment">/// }</span>

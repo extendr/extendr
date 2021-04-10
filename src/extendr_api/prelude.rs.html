@@ -77,8 +77,9 @@
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">functions</span>::{
     <span class="ident">base_env</span>, <span class="ident">base_namespace</span>, <span class="ident">blank_scalar_string</span>, <span class="ident">blank_string</span>, <span class="ident">current_env</span>, <span class="ident">empty_env</span>,
-    <span class="ident">eval_string</span>, <span class="ident">find_namespace</span>, <span class="ident">find_namespaced_function</span>, <span class="ident">global_env</span>, <span class="ident">global_function</span>, <span class="ident">global_var</span>,
-    <span class="ident">local_var</span>, <span class="ident">na_str</span>, <span class="ident">na_string</span>, <span class="ident">namespace_registry</span>, <span class="ident">nil_value</span>, <span class="ident">parse</span>, <span class="ident">srcref</span>,
+    <span class="ident">eval_string</span>, <span class="ident">eval_string_with_params</span>, <span class="ident">find_namespace</span>, <span class="ident">find_namespaced_function</span>, <span class="ident">global_env</span>,
+    <span class="ident">global_function</span>, <span class="ident">global_var</span>, <span class="ident">local_var</span>, <span class="ident">na_str</span>, <span class="ident">na_string</span>, <span class="ident">namespace_registry</span>, <span class="ident">nil_value</span>,
+    <span class="ident">parse</span>, <span class="ident">srcref</span>,
 };
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">wrapper</span>::<span class="ident">symbol</span>::{
@@ -92,8 +93,7 @@
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">append</span>, <span class="ident">append_lang</span>, <span class="ident">append_with_name</span>, <span class="ident">args</span>, <span class="ident">call</span>, <span class="ident">lang</span>, <span class="ident">make_lang</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">data_frame</span>, <span class="ident">factor</span>, <span class="ident">global</span>, <span class="ident">list</span>, <span class="ident">pairlist</span>, <span class="ident">r</span>, <span class="ident">reprint</span>, <span class="ident">reprintln</span>, <span class="ident">rprint</span>, <span class="ident">rprintln</span>, <span class="ident">sym</span>, <span class="ident">test</span>,
-    <span class="ident">var</span>, <span class="ident">R</span>,
+    <span class="ident">data_frame</span>, <span class="ident">factor</span>, <span class="ident">global</span>, <span class="ident">list</span>, <span class="ident">r</span>, <span class="ident">reprint</span>, <span class="ident">reprintln</span>, <span class="ident">rprint</span>, <span class="ident">rprintln</span>, <span class="ident">sym</span>, <span class="ident">test</span>, <span class="ident">var</span>,
 };
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">logical</span>::<span class="ident">Bool</span>;
@@ -117,7 +117,7 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">ndarray</span>::<span class="kw-2">*</span>;
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">extendr_macros</span>::{<span class="ident">extendr</span>, <span class="ident">extendr_module</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">extendr_macros</span>::{<span class="ident">extendr</span>, <span class="ident">extendr_module</span>, <span class="ident">pairlist</span>, <span class="ident">Rraw</span>, <span class="ident">R</span>};
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">iter</span>::{<span class="ident">Int</span>, <span class="ident">Logical</span>, <span class="ident">Real</span>, <span class="ident">StrIter</span>};
 

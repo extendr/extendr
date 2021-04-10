@@ -298,6 +298,9 @@
 <span id="295">295</span>
 <span id="296">296</span>
 <span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Wrappers are lightweight proxies for references to R datatypes.</span>
 <span class="doccomment">//! They do not contain an Robj (see array.rs for an example of this).</span>
@@ -451,7 +454,7 @@
     <span class="doccomment">/// use extendr_api::prelude::*;</span>
     <span class="doccomment">/// test! {</span>
     <span class="doccomment">///     let fred = sym!(fred);</span>
-    <span class="doccomment">///     assert_eq!(fred.as_symbol(), Some(Symbol::from_str(&quot;fred&quot;)));</span>
+    <span class="doccomment">///     assert_eq!(fred.as_symbol(), Some(Symbol::from_string(&quot;fred&quot;)));</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_symbol</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Symbol</span><span class="op">&gt;</span> {
@@ -487,7 +490,7 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::prelude::*;</span>
     <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let call_to_xyz = r!(Language::from_values(&amp;[r!(Symbol::from_str(&quot;xyz&quot;)), r!(1), r!(2)]));</span>
+    <span class="doccomment">///     let call_to_xyz = r!(Language::from_values(&amp;[r!(Symbol::from_string(&quot;xyz&quot;)), r!(1), r!(2)]));</span>
     <span class="doccomment">///     assert_eq!(call_to_xyz.is_language(), true);</span>
     <span class="doccomment">///     assert_eq!(call_to_xyz.len(), 3);</span>
     <span class="doccomment">///     assert_eq!(format!(&quot;{:?}&quot;, call_to_xyz), r#&quot;r!(Language::from_values([sym!(xyz), r!(1), r!(2)]))&quot;#);</span>
@@ -558,7 +561,7 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::prelude::*;</span>
     <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let func = R!(function(a,b) a + b).unwrap();</span>
+    <span class="doccomment">///     let func = R!(&quot;function(a,b) a + b&quot;).unwrap();</span>
     <span class="doccomment">///     println!(&quot;{:?}&quot;, func.as_function());</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
@@ -582,7 +585,7 @@
     <span class="ident">R</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
 {
     <span class="kw">fn</span> <span class="ident">sym_pair</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">Robj</span>, <span class="ident">Robj</span>) {
-        (<span class="macro">r</span><span class="macro">!</span>(<span class="ident">Symbol</span>::<span class="ident">from_str</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">as_ref</span>())), <span class="self">self</span>.<span class="number">1</span>.<span class="ident">into</span>())
+        (<span class="macro">r</span><span class="macro">!</span>(<span class="ident">Symbol</span>::<span class="ident">from_string</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">as_ref</span>())), <span class="self">self</span>.<span class="number">1</span>.<span class="ident">into</span>())
     }
 }
 
@@ -593,7 +596,10 @@
     <span class="ident">R</span>: <span class="ident">Clone</span>,
 {
     <span class="kw">fn</span> <span class="ident">sym_pair</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">Robj</span>, <span class="ident">Robj</span>) {
-        (<span class="macro">r</span><span class="macro">!</span>(<span class="ident">Symbol</span>::<span class="ident">from_str</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">as_ref</span>())), <span class="self">self</span>.<span class="number">1</span>.<span class="ident">clone</span>().<span class="ident">into</span>())
+        (
+            <span class="macro">r</span><span class="macro">!</span>(<span class="ident">Symbol</span>::<span class="ident">from_string</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">as_ref</span>())),
+            <span class="self">self</span>.<span class="number">1</span>.<span class="ident">clone</span>().<span class="ident">into</span>(),
+        )
     }
 }
 </pre></div>

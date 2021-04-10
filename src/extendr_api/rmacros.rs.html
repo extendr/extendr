@@ -235,29 +235,6 @@
 <span id="232">232</span>
 <span id="233">233</span>
 <span id="234">234</span>
-<span id="235">235</span>
-<span id="236">236</span>
-<span id="237">237</span>
-<span id="238">238</span>
-<span id="239">239</span>
-<span id="240">240</span>
-<span id="241">241</span>
-<span id="242">242</span>
-<span id="243">243</span>
-<span id="244">244</span>
-<span id="245">245</span>
-<span id="246">246</span>
-<span id="247">247</span>
-<span id="248">248</span>
-<span id="249">249</span>
-<span id="250">250</span>
-<span id="251">251</span>
-<span id="252">252</span>
-<span id="253">253</span>
-<span id="254">254</span>
-<span id="255">255</span>
-<span id="256">256</span>
-<span id="257">257</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! rmacros - a set of macros to call actual R functions in a rusty way.</span>
@@ -291,29 +268,6 @@
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">r</span> {
     (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">e</span>: <span class="ident">expr</span>) <span class="op">=</span><span class="op">&gt;</span> {
         <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">e</span>)
-    };
-}
-
-<span class="doccomment">/// Call inline R source code from Rust.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Multiline expressions and variables with embedded &quot;.&quot; may not work.</span>
-<span class="doccomment">/// Note that the performance of this function is not good.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let formula = R!(y ~ z + 1).unwrap();</span>
-<span class="doccomment">/// assert!(formula.inherits(&quot;formula&quot;));</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let function = R!(function(x,y) x+y).unwrap();</span>
-<span class="doccomment">/// assert!(function.is_function());</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">R</span> {
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
-        <span class="ident">eval_string</span>(<span class="macro">stringify</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>)<span class="kw-2">*</span>))
     };
 }
 
@@ -361,13 +315,13 @@
 <span class="doccomment">/// test! {</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// let wombat = sym!(wombat);</span>
-<span class="doccomment">/// assert_eq!(wombat, r!(Symbol::from_str(&quot;wombat&quot;)));</span>
+<span class="doccomment">/// assert_eq!(wombat, r!(Symbol::from_string(&quot;wombat&quot;)));</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">sym</span> {
     ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
-        <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="ident">Symbol</span>::<span class="ident">from_str</span>(<span class="macro">stringify</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>)<span class="kw-2">*</span>)))
+        <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="ident">Symbol</span>::<span class="ident">from_string</span>(<span class="macro">stringify</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>)<span class="kw-2">*</span>)))
     };
 }
 

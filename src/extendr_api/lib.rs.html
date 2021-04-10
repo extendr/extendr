@@ -791,6 +791,55 @@
 <span id="788">788</span>
 <span id="789">789</span>
 <span id="790">790</span>
+<span id="791">791</span>
+<span id="792">792</span>
+<span id="793">793</span>
+<span id="794">794</span>
+<span id="795">795</span>
+<span id="796">796</span>
+<span id="797">797</span>
+<span id="798">798</span>
+<span id="799">799</span>
+<span id="800">800</span>
+<span id="801">801</span>
+<span id="802">802</span>
+<span id="803">803</span>
+<span id="804">804</span>
+<span id="805">805</span>
+<span id="806">806</span>
+<span id="807">807</span>
+<span id="808">808</span>
+<span id="809">809</span>
+<span id="810">810</span>
+<span id="811">811</span>
+<span id="812">812</span>
+<span id="813">813</span>
+<span id="814">814</span>
+<span id="815">815</span>
+<span id="816">816</span>
+<span id="817">817</span>
+<span id="818">818</span>
+<span id="819">819</span>
+<span id="820">820</span>
+<span id="821">821</span>
+<span id="822">822</span>
+<span id="823">823</span>
+<span id="824">824</span>
+<span id="825">825</span>
+<span id="826">826</span>
+<span id="827">827</span>
+<span id="828">828</span>
+<span id="829">829</span>
+<span id="830">830</span>
+<span id="831">831</span>
+<span id="832">832</span>
+<span id="833">833</span>
+<span id="834">834</span>
+<span id="835">835</span>
+<span id="836">836</span>
+<span id="837">837</span>
+<span id="838">838</span>
+<span id="839">839</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! A safe and user friendly R extension interface.</span>
@@ -851,7 +900,7 @@
 <span class="doccomment">//!     let real_vector = r!(vec![1.0, 2.0]);</span>
 <span class="doccomment">//!    </span>
 <span class="doccomment">//!     // An R function object.</span>
-<span class="doccomment">//!     let function = R!(function(x, y) { x + y })?;</span>
+<span class="doccomment">//!     let function = R!(&quot;function(x, y) { x + y }&quot;)?;</span>
 <span class="doccomment">//!    </span>
 <span class="doccomment">//!     // A named list using the list! macro.</span>
 <span class="doccomment">//!     let list = list!(a = 1, b = 2);</span>
@@ -876,7 +925,7 @@
 <span class="doccomment">//! test! {</span>
 <span class="doccomment">//!     // 1 ..= 100 is the same as 1:100</span>
 <span class="doccomment">//!     let res = r!(1 ..= 100);</span>
-<span class="doccomment">//!     assert_eq!(res, R!(1:100)?);</span>
+<span class="doccomment">//!     assert_eq!(res, R!(&quot;1:100&quot;)?);</span>
 <span class="doccomment">//!    </span>
 <span class="doccomment">//!     // Rust arrays are zero-indexed so it is more common to use 0 .. 100.</span>
 <span class="doccomment">//!     let res = r!(0 .. 100);</span>
@@ -924,13 +973,34 @@
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! The [R!] macro lets you embed R code in Rust</span>
-<span class="doccomment">//! but does not take variables.</span>
+<span class="doccomment">//! and takes Rust expressions in {{ }} pairs.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! The [Rraw!] macro will not expand the {{ }} pairs.</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//! use extendr_api::prelude::*;</span>
 <span class="doccomment">//! test! {</span>
 <span class="doccomment">//!     // The text &quot;1 + 1&quot; is parsed as R source code.</span>
 <span class="doccomment">//!     // The result is 1.0 + 1.0 in Rust.</span>
-<span class="doccomment">//!     assert_eq!(R!(1 + 1)?, r!(2.0));</span>
+<span class="doccomment">//!     assert_eq!(R!(&quot;1 + 1&quot;)?, r!(2.0));</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//!     let a = 1.0;</span>
+<span class="doccomment">//!     assert_eq!(R!(&quot;1 + {{a}}&quot;)?, r!(2.0));</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//!     assert_eq!(R!(r&quot;</span>
+<span class="doccomment">//!         x &lt;- {{ a }}</span>
+<span class="doccomment">//!         x + 1</span>
+<span class="doccomment">//!     &quot;)?, r!(2.0));</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//!     assert_eq!(R!(r#&quot;</span>
+<span class="doccomment">//!         x &lt;- &quot;hello&quot;</span>
+<span class="doccomment">//!         x</span>
+<span class="doccomment">//!     &quot;#)?, r!(&quot;hello&quot;));</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//!     // Use the R meaning of {{ }} and do not expand.</span>
+<span class="doccomment">//!     assert_eq!(Rraw!(r&quot;</span>
+<span class="doccomment">//!         x &lt;- {{ 1 }}</span>
+<span class="doccomment">//!         x + 1</span>
+<span class="doccomment">//!     &quot;)?, r!(2.0));</span>
 <span class="doccomment">//! }</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
@@ -984,7 +1054,7 @@
 <span class="doccomment">//!     // robj is an &quot;Owned&quot; object that controls the memory allocated.</span>
 <span class="doccomment">//!     let robj = r!([1, 2, 3]);</span>
 <span class="doccomment">//!    </span>
-<span class="doccomment">//!     // slice is a &quot;borrowed&quot; reference to the bytes in robj.</span>
+<span class="doccomment">//!     // Here slice is a &quot;borrowed&quot; reference to the bytes in robj.</span>
 <span class="doccomment">//!     // and cannot live longer than robj.</span>
 <span class="doccomment">//!     let slice = robj.as_integer_slice().ok_or(&quot;expected slice&quot;)?;</span>
 <span class="doccomment">//!     assert_eq!(slice.len(), 3);</span>
@@ -1579,6 +1649,34 @@
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">pairlist</span><span class="macro">!</span>(<span class="ident">a</span><span class="op">=</span><span class="number">1</span>, <span class="ident">b</span><span class="op">=</span><span class="number">2</span>, <span class="ident">c</span><span class="op">=</span><span class="number">3</span>), <span class="ident">Pairlist</span>::<span class="ident">from_pairs</span>(<span class="kw-2">&amp;</span>[(<span class="string">&quot;a&quot;</span>, <span class="number">1</span>), (<span class="string">&quot;b&quot;</span>, <span class="number">2</span>), (<span class="string">&quot;c&quot;</span>, <span class="number">3</span>)]));
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">pairlist</span><span class="macro">!</span>(<span class="ident">a</span><span class="op">=</span><span class="ident">NULL</span>), <span class="ident">Pairlist</span>::<span class="ident">from_pairs</span>(<span class="kw-2">&amp;</span>[(<span class="string">&quot;a&quot;</span>, ())]));
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">pairlist</span><span class="macro">!</span>(), <span class="ident">Pairlist</span>::<span class="ident">from</span>(()));
+        }
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">big_r_macro_works</span>() {
+        <span class="macro">test</span><span class="macro">!</span> {
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">R</span><span class="macro">!</span>(<span class="string">&quot;1&quot;</span>)<span class="question-mark">?</span>, <span class="macro">r</span><span class="macro">!</span>(<span class="number">1.0</span>));
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">R</span><span class="macro">!</span>(<span class="string">r&quot;1&quot;</span>)<span class="question-mark">?</span>, <span class="macro">r</span><span class="macro">!</span>(<span class="number">1.0</span>));
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">R</span><span class="macro">!</span>(<span class="string">r&quot;
+                x &lt;- 1
+                x
+            &quot;</span>)<span class="question-mark">?</span>, <span class="macro">r</span><span class="macro">!</span>(<span class="number">1.0</span>));
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">R</span><span class="macro">!</span>(<span class="string">r&quot;
+                x &lt;- {{ 1.0 }}
+                x
+            &quot;</span>)<span class="question-mark">?</span>, <span class="macro">r</span><span class="macro">!</span>(<span class="number">1.0</span>));
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">R</span><span class="macro">!</span>(<span class="string">r&quot;
+                x &lt;- {{ (0..4).collect_robj() }}
+                x
+            &quot;</span>)<span class="question-mark">?</span>, <span class="macro">r</span><span class="macro">!</span>([<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]));
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">R</span><span class="macro">!</span>(<span class="string">r#&quot;
+                x &lt;- &quot;hello&quot;
+                x
+            &quot;#</span>)<span class="question-mark">?</span>, <span class="macro">r</span><span class="macro">!</span>(<span class="string">&quot;hello&quot;</span>));
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">Rraw</span><span class="macro">!</span>(<span class="string">r&quot;
+                x &lt;- {{ 1 }}
+                x
+            &quot;</span>)<span class="question-mark">?</span>, <span class="macro">r</span><span class="macro">!</span>(<span class="number">1.0</span>));
         }
     }
 }

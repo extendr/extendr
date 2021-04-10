@@ -91,7 +91,7 @@
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">/// test! {</span>
-<span class="doccomment">///     let expr = R!(function(a = 1, b) {c &lt;- a + b}).unwrap();</span>
+<span class="doccomment">///     let expr = R!(&quot;function(a = 1, b) {c &lt;- a + b}&quot;).unwrap();</span>
 <span class="doccomment">///     let func = expr.as_function().unwrap();</span>
 <span class="doccomment">///</span>
 <span class="doccomment">///     let expected_formals = Pairlist::from_pairs(vec![(&quot;a&quot;, r!(1.0)), (&quot;b&quot;, missing_arg().into())]);</span>
