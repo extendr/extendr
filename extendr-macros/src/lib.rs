@@ -54,6 +54,8 @@
 // * An output converstion from that type to an owned external pointer object.
 // * A finalizer for that type to free memory allocated.
 
+#[allow(non_snake_case)]
+mod R;
 mod extendr_function;
 mod extendr_impl;
 mod extendr_module;
@@ -108,4 +110,37 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
 #[proc_macro]
 pub fn pairlist(item: TokenStream) -> TokenStream {
     pairlist::pairlist(item)
+}
+
+/// Execute R code by parsing and evaluating tokens.
+///
+/// ```ignore
+///     R!("c(1, 2, 3)");
+///     R!("{{(0..3).collect_robj()}} + 1");
+///     R!(r#"
+///       print("hello")
+///     "#);
+/// ```
+#[proc_macro]
+#[allow(non_snake_case)]
+pub fn R(item: TokenStream) -> TokenStream {
+    R::R(item.into(), true).into()
+}
+
+/// Execute R code by parsing and evaluating tokens
+/// but without expanding parameters.
+///
+/// ```ignore
+/// // c.f. https://dplyr.tidyverse.org/articles/programming.html
+/// Rraw!(r#"
+/// var_summary <- function(data, var) {
+///   data %>%
+///     summarise(n = n(), min = min({{ var }}), max = max({{ var }}))
+/// }
+/// "#)
+/// ```
+#[proc_macro]
+#[allow(non_snake_case)]
+pub fn Rraw(item: TokenStream) -> TokenStream {
+    R::R(item.into(), false).into()
 }

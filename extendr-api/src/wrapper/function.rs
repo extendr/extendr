@@ -4,7 +4,7 @@ use super::*;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let expr = R!(function(a = 1, b) {c <- a + b}).unwrap();
+///     let expr = R!("function(a = 1, b) {c <- a + b}").unwrap();
 ///     let func = expr.as_function().unwrap();
 ///
 ///     let expected_formals = Pairlist::from_pairs(vec![("a", r!(1.0)), ("b", missing_arg().into())]);

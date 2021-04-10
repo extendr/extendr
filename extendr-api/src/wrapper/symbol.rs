@@ -5,7 +5,7 @@ use super::*;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let chr = r!(Symbol::from_str("xyz"));
+///     let chr = r!(Symbol::from_string("xyz"));
 ///     assert_eq!(chr.as_symbol().unwrap().as_str(), "xyz");
 /// }
 /// ```
@@ -23,13 +23,14 @@ impl Symbol {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let chr = r!(Symbol::from_str("xyz"));
+    ///     let chr = r!(Symbol::from_string("xyz"));
     ///     assert_eq!(chr, sym!(xyz));
-    ///     assert_eq!(Symbol::from_str(na_str()).is_unbound_value(), true);
-    ///     assert_eq!(Symbol::from_str("").is_unbound_value(), true);
+    ///     assert_eq!(Symbol::from_string(na_str()).is_unbound_value(), true);
+    ///     assert_eq!(Symbol::from_string("").is_unbound_value(), true);
     /// }
     /// ```
-    pub fn from_str(val: &str) -> Self {
+    pub fn from_string<S: AsRef<str>>(val: S) -> Self {
+        let val = val.as_ref();
         if val.is_empty() || val.is_na() {
             unbound_value()
         } else {
@@ -69,7 +70,7 @@ impl Symbol {
 impl From<&str> for Symbol {
     /// Convert a string to a symbol.
     fn from(name: &str) -> Self {
-        Symbol::from_str(name)
+        Symbol::from_string(name)
     }
 }
 

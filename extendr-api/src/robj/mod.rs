@@ -178,7 +178,7 @@ impl Robj {
     ///     assert_eq!(r!(NULL).rtype(), RType::Null);
     ///     assert_eq!(sym!(xyz).rtype(), RType::Symbol);
     ///     assert_eq!(r!(Pairlist::from_pairs(vec![("a", r!(1))])).rtype(), RType::Pairlist);
-    ///     assert_eq!(R!(function() {})?.rtype(), RType::Function);
+    ///     assert_eq!(R!("function() {}")?.rtype(), RType::Function);
     ///     assert_eq!(Environment::new(global_env()).rtype(), RType::Enviroment);
     ///     assert_eq!(lang!("+", 1, 2).rtype(), RType::Language);
     ///     assert_eq!(r!(Primitive::from_str("if")).rtype(), RType::Special);
@@ -621,9 +621,22 @@ impl Robj {
     /// }
     /// ```
     pub fn eval(&self) -> Result<Robj> {
+        self.eval_with_env(&global_env())
+    }
+
+    /// Evaluate the expression in R and return an error or an R object.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///
+    ///    let add = lang!("+", 1, 2);
+    ///    assert_eq!(add.eval_with_env(&global_env()).unwrap(), r!(3));
+    /// }
+    /// ```
+    pub fn eval_with_env(&self, env: &Environment) -> Result<Robj> {
         single_threaded(|| unsafe {
             let mut error: raw::c_int = 0;
-            let res = R_tryEval(self.get(), R_GlobalEnv, &mut error as *mut raw::c_int);
+            let res = R_tryEval(self.get(), env.get(), &mut error as *mut raw::c_int);
             if error != 0 {
                 Err(Error::EvalError(self.clone()))
             } else {
@@ -873,7 +886,7 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let formula = R!(y ~ A * x + b).unwrap();
+    ///    let formula = R!("y ~ A * x + b").unwrap();
     ///    let class : Vec<_> = formula.class().unwrap().collect();
     ///    assert_eq!(class, ["formula"]);
     /// }
@@ -912,7 +925,7 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let formula = R!(y ~ A * x + b).unwrap();
+    ///    let formula = R!("y ~ A * x + b").unwrap();
     ///    assert_eq!(formula.inherits("formula"), true);
     /// }
     /// ```

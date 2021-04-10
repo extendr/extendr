@@ -30,7 +30,7 @@ impl Primitive {
     pub fn from_str(val: &str) -> Result<Self> {
         single_threaded(|| unsafe {
             // Primitives have a special "SYMVALUE" entry in their symbol.
-            let sym = Symbol::from_str(val);
+            let sym = Symbol::from_string(val);
             let symvalue = new_owned(SYMVALUE(sym.get()));
             if symvalue.is_primitive() {
                 Ok(Primitive { robj: symvalue })

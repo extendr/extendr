@@ -33,29 +33,6 @@ macro_rules! r {
     };
 }
 
-/// Call inline R source code from Rust.
-///
-/// Multiline expressions and variables with embedded "." may not work.
-/// Note that the performance of this function is not good.
-///
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///
-/// let formula = R!(y ~ z + 1).unwrap();
-/// assert!(formula.inherits("formula"));
-///
-/// let function = R!(function(x,y) x+y).unwrap();
-/// assert!(function.is_function());
-/// }
-/// ```
-#[macro_export]
-macro_rules! R {
-    ($($t:tt)*) => {
-        eval_string(stringify!($($t)*))
-    };
-}
-
 /// Get a local variable from the calling function
 /// or a global variable if no such variable exists.
 ///
@@ -100,13 +77,13 @@ macro_rules! global {
 /// test! {
 ///
 /// let wombat = sym!(wombat);
-/// assert_eq!(wombat, r!(Symbol::from_str("wombat")));
+/// assert_eq!(wombat, r!(Symbol::from_string("wombat")));
 /// }
 /// ```
 #[macro_export]
 macro_rules! sym {
     ($($tokens: tt)*) => {
-        Robj::from(Symbol::from_str(stringify!($($tokens)*)))
+        Robj::from(Symbol::from_string(stringify!($($tokens)*)))
     };
 }
 

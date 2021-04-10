@@ -203,6 +203,7 @@ pub fn parse(code: &str) -> Result<Robj> {
 }
 
 /// Parse a string into an R executable object and run it.
+/// Used by the R! macro.
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
@@ -223,6 +224,37 @@ pub fn eval_string(code: &str) -> Result<Robj> {
     })
 }
 
+/// Parse a string into an R executable object and run it using
+///   parameters param.0, param.1, ...
+///
+/// Used by the R! macro.
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///    let res = eval_string_with_params("param.0", &[&r!(3.)]).unwrap();
+///    assert_eq!(res, r!(3.));
+/// }
+/// ```
+pub fn eval_string_with_params(code: &str, values: &[&Robj]) -> Result<Robj> {
+    single_threaded(|| {
+        let env = Environment::new(global_env());
+        for (i, &v) in values.into_iter().enumerate() {
+            let key = Symbol::from_string(format!("param.{}", i));
+            env.set_local(key, v);
+        }
+
+        let expr = parse(code)?;
+        let mut res = Robj::from(());
+        if let Some(expr) = expr.as_expression() {
+            for lang in expr.values() {
+                res = lang.eval_with_env(&env)?
+            }
+        }
+
+        Ok(res)
+    })
+}
+
 /// Find a function or primitive that may be in a namespace.
 /// ```
 /// use extendr_api::prelude::*;
@@ -238,13 +270,13 @@ pub fn find_namespaced_function(name: &str) -> Result<Language> {
     let mut iter = name.split("::");
     match (iter.next(), iter.next(), iter.next()) {
         (Some(key), None, None) => {
-            let gf = global_function(Symbol::from_str(key))?;
+            let gf = global_function(Symbol::from_string(key))?;
             Ok(Language::from_values(&[gf]))
         }
         (Some(ns), Some(key), None) => {
             let namespace = find_namespace(ns)?;
             Ok(Language::from_values(&[
-                namespace.local(Symbol::from_str(key))?
+                namespace.local(Symbol::from_string(key))?
             ]))
         }
         _ => Err(Error::NotFound(r!(name))),

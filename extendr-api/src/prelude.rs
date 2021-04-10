@@ -12,8 +12,9 @@ pub use super::error::{Error, Result};
 
 pub use super::functions::{
     base_env, base_namespace, blank_scalar_string, blank_string, current_env, empty_env,
-    eval_string, find_namespace, find_namespaced_function, global_env, global_function, global_var,
-    local_var, na_str, na_string, namespace_registry, nil_value, parse, srcref,
+    eval_string, eval_string_with_params, find_namespace, find_namespaced_function, global_env,
+    global_function, global_var, local_var, na_str, na_string, namespace_registry, nil_value,
+    parse, srcref,
 };
 
 pub use super::wrapper::symbol::{
@@ -27,8 +28,7 @@ pub use super::wrapper::symbol::{
 
 pub use crate::{append, append_lang, append_with_name, args, call, lang, make_lang};
 pub use crate::{
-    data_frame, factor, global, list, pairlist, r, reprint, reprintln, rprint, rprintln, sym, test,
-    var, R,
+    data_frame, factor, global, list, r, reprint, reprintln, rprint, rprintln, sym, test, var,
 };
 
 pub use super::logical::Bool;
@@ -52,7 +52,7 @@ pub use super::robj_ndarray::*;
 #[cfg(feature = "ndarray")]
 pub use ndarray::*;
 
-pub use extendr_macros::{extendr, extendr_module};
+pub use extendr_macros::{extendr, extendr_module, pairlist, Rraw, R};
 
 pub use super::iter::{Int, Logical, Real, StrIter};
 
