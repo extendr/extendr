@@ -179,11 +179,11 @@ impl Robj {
     ///     assert_eq!(sym!(xyz).rtype(), RType::Symbol);
     ///     assert_eq!(r!(Pairlist::from_pairs(vec![("a", r!(1))])).rtype(), RType::Pairlist);
     ///     assert_eq!(R!("function() {}")?.rtype(), RType::Function);
-    ///     assert_eq!(Environment::new(global_env()).rtype(), RType::Enviroment);
+    ///     assert_eq!(Environment::new_with_parent(global_env()).rtype(), RType::Enviroment);
     ///     assert_eq!(lang!("+", 1, 2).rtype(), RType::Language);
-    ///     assert_eq!(r!(Primitive::from_str("if")).rtype(), RType::Special);
-    ///     assert_eq!(r!(Primitive::from_str("+")).rtype(), RType::Builtin);
-    ///     assert_eq!(r!(Character::from_str("hello")).rtype(), RType::Character);
+    ///     assert_eq!(r!(Primitive::from_string("if")).rtype(), RType::Special);
+    ///     assert_eq!(r!(Primitive::from_string("+")).rtype(), RType::Builtin);
+    ///     assert_eq!(r!(Character::from_string("hello")).rtype(), RType::Character);
     ///     assert_eq!(r!(TRUE).rtype(), RType::Logical);
     ///     assert_eq!(r!(1).rtype(), RType::Integer);
     ///     assert_eq!(r!(1.0).rtype(), RType::Real);
@@ -1036,7 +1036,7 @@ impl std::fmt::Debug for Robj {
             BUILTINSXP => write!(f, "r!(Builtin())"),
             CHARSXP => {
                 let c = Character::try_from(self.clone()).unwrap();
-                write!(f, "r!(Character::from_str({:?}))", c.as_str())
+                write!(f, "r!(Character::from_string({:?}))", c.as_str())
             }
             LGLSXP => {
                 let slice = self.as_logical_slice().unwrap();

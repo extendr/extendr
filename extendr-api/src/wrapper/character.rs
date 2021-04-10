@@ -7,7 +7,7 @@ use super::*;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let chr = r!(Character::from_str("xyz"));
+///     let chr = r!(Character::from_string("xyz"));
 ///     assert_eq!(chr.as_character().unwrap().as_str(), "xyz");
 /// }
 /// ```

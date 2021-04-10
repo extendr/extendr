@@ -6,8 +6,8 @@ use super::*;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let builtin = r!(Primitive::from_str("+"));
-///     let special = r!(Primitive::from_str("if"));
+///     let builtin = r!(Primitive::from_string("+"));
+///     let special = r!(Primitive::from_string("if"));
 /// }
 /// ```
 ///

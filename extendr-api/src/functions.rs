@@ -105,7 +105,7 @@ pub fn empty_env() -> Environment {
 /// use extendr_api::prelude::*;
 /// test! {
 ///     global_env().set_local(sym!(x), "hello");
-///     assert_eq!(base_env().local(sym!(+)), Ok(r!(Primitive::from_str("+"))));
+///     assert_eq!(base_env().local(sym!(+)), Ok(r!(Primitive::from_string("+"))));
 /// }
 /// ```
 pub fn base_env() -> Environment {

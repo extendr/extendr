@@ -22,7 +22,7 @@ fn test_debug() {
 
         // Wrappers
         assert_eq!(format!("{:?}", r!(Symbol::from_string("x"))), "sym!(x)");
-        assert_eq!(format!("{:?}", r!(Character::from_str("x"))), "r!(Character::from_str(\"x\"))");
+        assert_eq!(format!("{:?}", r!(Character::from_string("x"))), "r!(Character::from_string(\"x\"))");
         assert_eq!(
             format!("{:?}", r!(Language::from_values(&[r!(Symbol::from_string("x"))]))),
             "r!(Language::from_values([sym!(x)]))"
@@ -86,7 +86,6 @@ fn test_from_robj() {
         assert_eq!(hmap_owned, hmap1);
         assert_eq!(hmap_borrowed, hmap2);
 
-        assert!(hmap_owned["a"].is_owned());
         assert_eq!(hmap_owned["a"], Robj::from(1));
         assert_eq!(hmap_owned["b"], Robj::from(2));
 
@@ -180,7 +179,6 @@ fn test_try_from_robj() {
         assert_eq!(hmap_owned, hmap1);
         assert_eq!(hmap_borrowed, hmap2);
 
-        assert!(hmap_owned["a"].is_owned());
         assert_eq!(hmap_owned["a"], Robj::from(1));
         assert_eq!(hmap_owned["b"], Robj::from(2));
 

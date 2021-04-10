@@ -142,7 +142,7 @@ impl Environment {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let env = Environment::new(global_env());
+    ///     let env = Environment::new_with_parent(global_env());
     ///     env.set_local(sym!(x), "harry");
     ///     env.set_local(sym!(x), "fred");
     ///     assert_eq!(env.local(sym!(x)), Ok(r!("fred")));
@@ -162,7 +162,7 @@ impl Environment {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let env = Environment::new(global_env());
+    ///     let env = Environment::new_with_parent(global_env());
     ///     env.set_local(sym!(x), "fred");
     ///     assert_eq!(env.local(sym!(x)), Ok(r!("fred")));
     /// }
