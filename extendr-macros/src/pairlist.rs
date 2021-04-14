@@ -20,7 +20,7 @@ pub fn pairlist(item: TokenStream) -> TokenStream {
         })
         .collect::<Vec<Expr>>();
 
-    if pairs.len() == 0 {
+    if pairs.is_empty() {
         TokenStream::from(quote!(Pairlist::from(())))
     } else {
         TokenStream::from(quote!(
