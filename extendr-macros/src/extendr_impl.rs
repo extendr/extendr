@@ -163,6 +163,7 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
         }
 
         // Function to free memory for this type.
+        #[allow(non_snake_case)]
         extern "C" fn #finalizer_name (sexp: extendr_api::SEXP) {
             unsafe {
                 let robj = extendr_api::new_owned(sexp);
