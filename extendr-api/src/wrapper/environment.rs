@@ -6,21 +6,20 @@ pub struct Environment {
 }
 
 impl Environment {
-    /// Create a new, empty environment parented on global_env()
+    /// Create a new, empty environment.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let env = Environment::new(global_env());
+    ///     let env = Environment::new_with_parent(global_env());
     ///     assert_eq!(env.len(), 0);
     /// }
     /// ```
-    pub fn new(parent: Environment) -> Self {
+    pub fn new_with_parent(parent: Environment) -> Self {
         // 14 is a reasonable default.
         Environment::new_with_capacity(parent, 14)
     }
 
-    /// Create a new, empty environment parented on global_env()
-    /// with a reserved size.
+    /// Create a new, empty environment with a reserved size.
     ///
     /// This function will guess the hash table size if required.
     /// Use the Env{} wrapper for more detail.
@@ -55,6 +54,7 @@ impl Environment {
     ///     assert_eq!(env.len(), 100);
     /// }
     /// ```
+    #[allow(clippy::wrong_self_convention)]
     pub fn from_pairs<NV>(parent: Environment, names_and_values: NV) -> Self
     where
         NV: IntoIterator,
@@ -142,7 +142,7 @@ impl Environment {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let env = Environment::new(global_env());
+    ///     let env = Environment::new_with_parent(global_env());
     ///     env.set_local(sym!(x), "harry");
     ///     env.set_local(sym!(x), "fred");
     ///     assert_eq!(env.local(sym!(x)), Ok(r!("fred")));
@@ -162,7 +162,7 @@ impl Environment {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let env = Environment::new(global_env());
+    ///     let env = Environment::new_with_parent(global_env());
     ///     env.set_local(sym!(x), "fred");
     ///     assert_eq!(env.local(sym!(x)), Ok(r!("fred")));
     /// }

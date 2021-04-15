@@ -7,7 +7,7 @@ use super::*;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let chr = r!(Character::from_str("xyz"));
+///     let chr = r!(Character::from_string("xyz"));
 ///     assert_eq!(chr.as_character().unwrap().as_str(), "xyz");
 /// }
 /// ```
@@ -19,7 +19,7 @@ pub struct Character {
 
 impl Character {
     /// Make a character object from a string.
-    pub fn from_str(val: &str) -> Self {
+    pub fn from_string(val: &str) -> Self {
         unsafe {
             Character {
                 robj: new_owned(str_to_character(val)),

@@ -102,7 +102,6 @@ macro_rules! append_lang {
 /// test! {
 ///     let vec = call!("c", 1.0, 2.0, 3.0).unwrap();
 ///     assert_eq!(vec, r!([1., 2., 3.]));
-///     assert_eq!(vec.is_owned(), true);
 ///
 ///     let list = call!("list", a=1, b=2).unwrap();
 ///     assert_eq!(list.len(), 2);

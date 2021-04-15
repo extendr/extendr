@@ -179,11 +179,11 @@ impl Robj {
     ///     assert_eq!(sym!(xyz).rtype(), RType::Symbol);
     ///     assert_eq!(r!(Pairlist::from_pairs(vec![("a", r!(1))])).rtype(), RType::Pairlist);
     ///     assert_eq!(R!("function() {}")?.rtype(), RType::Function);
-    ///     assert_eq!(Environment::new(global_env()).rtype(), RType::Enviroment);
+    ///     assert_eq!(Environment::new_with_parent(global_env()).rtype(), RType::Enviroment);
     ///     assert_eq!(lang!("+", 1, 2).rtype(), RType::Language);
-    ///     assert_eq!(r!(Primitive::from_str("if")).rtype(), RType::Special);
-    ///     assert_eq!(r!(Primitive::from_str("+")).rtype(), RType::Builtin);
-    ///     assert_eq!(r!(Character::from_str("hello")).rtype(), RType::Character);
+    ///     assert_eq!(r!(Primitive::from_string("if")).rtype(), RType::Special);
+    ///     assert_eq!(r!(Primitive::from_string("+")).rtype(), RType::Builtin);
+    ///     assert_eq!(r!(Character::from_string("hello")).rtype(), RType::Character);
     ///     assert_eq!(r!(TRUE).rtype(), RType::Logical);
     ///     assert_eq!(r!(1).rtype(), RType::Integer);
     ///     assert_eq!(r!(1.0).rtype(), RType::Real);
@@ -661,30 +661,6 @@ impl Robj {
             Robj::from(())
         }
     }
-
-    /// Return true if the object is owned by this wrapper.
-    /// If so, it will be released when the wrapper drops.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///    let owned = r!(1);      // Allocated vector.
-    ///    let borrowed = r!(());  // R_NilValue
-    ///    assert_eq!(owned.is_owned(), true);
-    ///    assert_eq!(borrowed.is_owned(), false);
-    /// }
-    /// ```
-    pub fn is_owned(&self) -> bool {
-        matches!(self, Robj::Owned(_))
-    }
-
-    // Convert the Robj to an owned one.
-    #[doc(hidden)]
-    pub fn to_owned(self) -> Robj {
-        match self {
-            Robj::Owned(_) => self,
-            _ => unsafe { new_owned(self.get()) },
-        }
-    }
 }
 
 /// Generic access to typed slices in an Robj.
@@ -1060,7 +1036,7 @@ impl std::fmt::Debug for Robj {
             BUILTINSXP => write!(f, "r!(Builtin())"),
             CHARSXP => {
                 let c = Character::try_from(self.clone()).unwrap();
-                write!(f, "r!(Character::from_str({:?}))", c.as_str())
+                write!(f, "r!(Character::from_string({:?}))", c.as_str())
             }
             LGLSXP => {
                 let slice = self.as_logical_slice().unwrap();
