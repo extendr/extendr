@@ -54,7 +54,7 @@
         })
         .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Expr</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 
-    <span class="kw">if</span> <span class="ident">pairs</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+    <span class="kw">if</span> <span class="ident">pairs</span>.<span class="ident">is_empty</span>() {
         <span class="ident">TokenStream</span>::<span class="ident">from</span>(<span class="macro">quote</span><span class="macro">!</span>(<span class="ident">Pairlist</span>::<span class="ident">from</span>(())))
     } <span class="kw">else</span> {
         <span class="ident">TokenStream</span>::<span class="ident">from</span>(<span class="macro">quote</span><span class="macro">!</span>(

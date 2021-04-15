@@ -248,21 +248,20 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Environment</span> {
-    <span class="doccomment">/// Create a new, empty environment parented on global_env()</span>
+    <span class="doccomment">/// Create a new, empty environment.</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::prelude::*;</span>
     <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let env = Environment::new(global_env());</span>
+    <span class="doccomment">///     let env = Environment::new_with_parent(global_env());</span>
     <span class="doccomment">///     assert_eq!(env.len(), 0);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">parent</span>: <span class="ident">Environment</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_with_parent</span>(<span class="ident">parent</span>: <span class="ident">Environment</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="comment">// 14 is a reasonable default.</span>
         <span class="ident">Environment</span>::<span class="ident">new_with_capacity</span>(<span class="ident">parent</span>, <span class="number">14</span>)
     }
 
-    <span class="doccomment">/// Create a new, empty environment parented on global_env()</span>
-    <span class="doccomment">/// with a reserved size.</span>
+    <span class="doccomment">/// Create a new, empty environment with a reserved size.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// This function will guess the hash table size if required.</span>
     <span class="doccomment">/// Use the Env{} wrapper for more detail.</span>
@@ -297,6 +296,7 @@
     <span class="doccomment">///     assert_eq!(env.len(), 100);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
+    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">wrong_self_convention</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_pairs</span><span class="op">&lt;</span><span class="ident">NV</span><span class="op">&gt;</span>(<span class="ident">parent</span>: <span class="ident">Environment</span>, <span class="ident">names_and_values</span>: <span class="ident">NV</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>
     <span class="kw">where</span>
         <span class="ident">NV</span>: <span class="ident">IntoIterator</span>,
@@ -384,7 +384,7 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::prelude::*;</span>
     <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let env = Environment::new(global_env());</span>
+    <span class="doccomment">///     let env = Environment::new_with_parent(global_env());</span>
     <span class="doccomment">///     env.set_local(sym!(x), &quot;harry&quot;);</span>
     <span class="doccomment">///     env.set_local(sym!(x), &quot;fred&quot;);</span>
     <span class="doccomment">///     assert_eq!(env.local(sym!(x)), Ok(r!(&quot;fred&quot;)));</span>
@@ -404,7 +404,7 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::prelude::*;</span>
     <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let env = Environment::new(global_env());</span>
+    <span class="doccomment">///     let env = Environment::new_with_parent(global_env());</span>
     <span class="doccomment">///     env.set_local(sym!(x), &quot;fred&quot;);</span>
     <span class="doccomment">///     assert_eq!(env.local(sym!(x)), Ok(r!(&quot;fred&quot;)));</span>
     <span class="doccomment">/// }</span>

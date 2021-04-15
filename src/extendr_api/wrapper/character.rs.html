@@ -53,7 +53,7 @@
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">/// test! {</span>
-<span class="doccomment">///     let chr = r!(Character::from_str(&quot;xyz&quot;));</span>
+<span class="doccomment">///     let chr = r!(Character::from_string(&quot;xyz&quot;));</span>
 <span class="doccomment">///     assert_eq!(chr.as_character().unwrap().as_str(), &quot;xyz&quot;);</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
@@ -65,7 +65,7 @@
 
 <span class="kw">impl</span> <span class="ident">Character</span> {
     <span class="doccomment">/// Make a character object from a string.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_str</span>(<span class="ident">val</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_string</span>(<span class="ident">val</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="kw">unsafe</span> {
             <span class="ident">Character</span> {
                 <span class="ident">robj</span>: <span class="ident">new_owned</span>(<span class="ident">str_to_character</span>(<span class="ident">val</span>)),

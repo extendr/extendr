@@ -7,7 +7,7 @@
 <span class="kw">use</span> <span class="ident">extendr_api</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
 <span class="macro">test</span><span class="macro">!</span> {
     <span class="ident">global_env</span>().<span class="ident">set_local</span>(<span class="macro">sym</span><span class="macro">!</span>(<span class="ident">x</span>), <span class="string">&quot;hello&quot;</span>);
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">base_env</span>().<span class="ident">local</span>(<span class="macro">sym</span><span class="macro">!</span>(<span class="op">+</span>)), <span class="prelude-val">Ok</span>(<span class="macro">r</span><span class="macro">!</span>(<span class="ident">Primitive</span>::<span class="ident">from_str</span>(<span class="string">&quot;+&quot;</span>))));
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">base_env</span>().<span class="ident">local</span>(<span class="macro">sym</span><span class="macro">!</span>(<span class="op">+</span>)), <span class="prelude-val">Ok</span>(<span class="macro">r</span><span class="macro">!</span>(<span class="ident">Primitive</span>::<span class="ident">from_string</span>(<span class="string">&quot;+&quot;</span>))));
 }</pre></div>
 </div></section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_api"></div>
     <script src="../../main.js"></script><script defer src="../../search-index.js"></script></body></html>

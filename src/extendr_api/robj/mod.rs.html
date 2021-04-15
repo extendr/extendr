@@ -1141,30 +1141,6 @@
 <span id="1138">1138</span>
 <span id="1139">1139</span>
 <span id="1140">1140</span>
-<span id="1141">1141</span>
-<span id="1142">1142</span>
-<span id="1143">1143</span>
-<span id="1144">1144</span>
-<span id="1145">1145</span>
-<span id="1146">1146</span>
-<span id="1147">1147</span>
-<span id="1148">1148</span>
-<span id="1149">1149</span>
-<span id="1150">1150</span>
-<span id="1151">1151</span>
-<span id="1152">1152</span>
-<span id="1153">1153</span>
-<span id="1154">1154</span>
-<span id="1155">1155</span>
-<span id="1156">1156</span>
-<span id="1157">1157</span>
-<span id="1158">1158</span>
-<span id="1159">1159</span>
-<span id="1160">1160</span>
-<span id="1161">1161</span>
-<span id="1162">1162</span>
-<span id="1163">1163</span>
-<span id="1164">1164</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! R object handling.</span>
 <span class="doccomment">//!</span>
@@ -1347,11 +1323,11 @@
     <span class="doccomment">///     assert_eq!(sym!(xyz).rtype(), RType::Symbol);</span>
     <span class="doccomment">///     assert_eq!(r!(Pairlist::from_pairs(vec![(&quot;a&quot;, r!(1))])).rtype(), RType::Pairlist);</span>
     <span class="doccomment">///     assert_eq!(R!(&quot;function() {}&quot;)?.rtype(), RType::Function);</span>
-    <span class="doccomment">///     assert_eq!(Environment::new(global_env()).rtype(), RType::Enviroment);</span>
+    <span class="doccomment">///     assert_eq!(Environment::new_with_parent(global_env()).rtype(), RType::Enviroment);</span>
     <span class="doccomment">///     assert_eq!(lang!(&quot;+&quot;, 1, 2).rtype(), RType::Language);</span>
-    <span class="doccomment">///     assert_eq!(r!(Primitive::from_str(&quot;if&quot;)).rtype(), RType::Special);</span>
-    <span class="doccomment">///     assert_eq!(r!(Primitive::from_str(&quot;+&quot;)).rtype(), RType::Builtin);</span>
-    <span class="doccomment">///     assert_eq!(r!(Character::from_str(&quot;hello&quot;)).rtype(), RType::Character);</span>
+    <span class="doccomment">///     assert_eq!(r!(Primitive::from_string(&quot;if&quot;)).rtype(), RType::Special);</span>
+    <span class="doccomment">///     assert_eq!(r!(Primitive::from_string(&quot;+&quot;)).rtype(), RType::Builtin);</span>
+    <span class="doccomment">///     assert_eq!(r!(Character::from_string(&quot;hello&quot;)).rtype(), RType::Character);</span>
     <span class="doccomment">///     assert_eq!(r!(TRUE).rtype(), RType::Logical);</span>
     <span class="doccomment">///     assert_eq!(r!(1).rtype(), RType::Integer);</span>
     <span class="doccomment">///     assert_eq!(r!(1.0).rtype(), RType::Real);</span>
@@ -1829,30 +1805,6 @@
             <span class="ident">Robj</span>::<span class="ident">from</span>(())
         }
     }
-
-    <span class="doccomment">/// Return true if the object is owned by this wrapper.</span>
-    <span class="doccomment">/// If so, it will be released when the wrapper drops.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///    let owned = r!(1);      // Allocated vector.</span>
-    <span class="doccomment">///    let borrowed = r!(());  // R_NilValue</span>
-    <span class="doccomment">///    assert_eq!(owned.is_owned(), true);</span>
-    <span class="doccomment">///    assert_eq!(borrowed.is_owned(), false);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_owned</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="macro">matches</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">Robj</span>::<span class="ident">Owned</span>(<span class="kw">_</span>))
-    }
-
-    <span class="comment">// Convert the Robj to an owned one.</span>
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_owned</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Robj</span>::<span class="ident">Owned</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="self">self</span>,
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="self">self</span>.<span class="ident">get</span>()) },
-        }
-    }
 }
 
 <span class="doccomment">/// Generic access to typed slices in an Robj.</span>
@@ -2228,7 +2180,7 @@
             <span class="ident">BUILTINSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Builtin())&quot;</span>),
             <span class="ident">CHARSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">Character</span>::<span class="ident">try_from</span>(<span class="self">self</span>.<span class="ident">clone</span>()).<span class="ident">unwrap</span>();
-                <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Character::from_str({:?}))&quot;</span>, <span class="ident">c</span>.<span class="ident">as_str</span>())
+                <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Character::from_string({:?}))&quot;</span>, <span class="ident">c</span>.<span class="ident">as_str</span>())
             }
             <span class="ident">LGLSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_logical_slice</span>().<span class="ident">unwrap</span>();
