@@ -24,7 +24,11 @@ pub fn global_var<K: Into<Robj>>(key: K) -> Result<Robj> {
 /// from the caller.
 ///
 /// See also [var!].
-/// ```
+///
+/// Note that outside of R, current_env() will be base_env()
+/// and cannot be modified.
+///
+/// ```no_run
 /// use extendr_api::prelude::*;
 /// test! {
 ///    current_env().set_local(sym!(my_var), 1);
