@@ -174,7 +174,7 @@ impl TryFrom<Robj> for HashMap<String, Robj> {
     fn try_from(robj: Robj) -> Result<Self> {
         if let Some(iter) = robj.as_list().map(|l| l.iter()) {
             Ok(iter
-                .map(|(k, v)| (k.to_string(), v.to_owned()))
+                .map(|(k, v)| (k.to_string(), v))
                 .collect::<HashMap<String, Robj>>())
         } else {
             Err(Error::ExpectedList(robj))
@@ -187,9 +187,7 @@ impl TryFrom<Robj> for HashMap<&str, Robj> {
 
     fn try_from(robj: Robj) -> Result<Self> {
         if let Some(iter) = robj.as_list().map(|l| l.iter()) {
-            Ok(iter
-                .map(|(k, v)| (k, v.to_owned()))
-                .collect::<HashMap<&str, Robj>>())
+            Ok(iter.map(|(k, v)| (k, v)).collect::<HashMap<&str, Robj>>())
         } else {
             Err(Error::ExpectedList(robj))
         }

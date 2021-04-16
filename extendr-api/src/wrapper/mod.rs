@@ -161,8 +161,8 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let fred = r!(Character::from_str("fred"));
-    ///     assert_eq!(fred.as_character(), Some(Character::from_str("fred")));
+    ///     let fred = r!(Character::from_string("fred"));
+    ///     assert_eq!(fred.as_character(), Some(Character::from_string("fred")));
     /// }
     /// ```
     pub fn as_character(&self) -> Option<Character> {

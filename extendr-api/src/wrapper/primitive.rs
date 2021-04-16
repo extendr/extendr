@@ -6,8 +6,8 @@ use super::*;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let builtin = r!(Primitive::from_str("+"));
-///     let special = r!(Primitive::from_str("if"));
+///     let builtin = r!(Primitive::from_string("+"));
+///     let special = r!(Primitive::from_string("if"));
 /// }
 /// ```
 ///
@@ -21,13 +21,13 @@ impl Primitive {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let builtin = r!(Primitive::from_str("+")?);
-    ///     let special = r!(Primitive::from_str("if")?);
+    ///     let builtin = r!(Primitive::from_string("+")?);
+    ///     let special = r!(Primitive::from_string("if")?);
     ///     assert_eq!(builtin.rtype(), RType::Builtin);
     ///     assert_eq!(special.rtype(), RType::Special);
     /// }
     /// ```
-    pub fn from_str(val: &str) -> Result<Self> {
+    pub fn from_string(val: &str) -> Result<Self> {
         single_threaded(|| unsafe {
             // Primitives have a special "SYMVALUE" entry in their symbol.
             let sym = Symbol::from_string(val);
