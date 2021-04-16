@@ -285,6 +285,10 @@
 <span id="282">282</span>
 <span id="283">283</span>
 <span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
 
@@ -312,7 +316,11 @@
 <span class="doccomment">/// from the caller.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// See also [var!].</span>
-<span class="doccomment">/// ```</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Note that outside of R, current_env() will be base_env()</span>
+<span class="doccomment">/// and cannot be modified.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ```no_run</span>
 <span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">/// test! {</span>
 <span class="doccomment">///    current_env().set_local(sym!(my_var), 1);</span>
