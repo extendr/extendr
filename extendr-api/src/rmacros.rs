@@ -37,12 +37,11 @@ macro_rules! r {
 /// or a global variable if no such variable exists.
 ///
 /// Variables with embedded "." may not work.
-/// ```
+/// ```no_run
 /// use extendr_api::prelude::*;
 /// test! {
-///
-/// current_env().set_local(sym!(myvar), 1.0);
-/// assert_eq!(var!(myvar), Ok(r!(1.0)));
+///     current_env().set_local(sym!(myvar), 1.0);
+///     assert_eq!(var!(myvar), Ok(r!(1.0)));
 /// }
 /// ```
 #[macro_export]
@@ -138,10 +137,10 @@ macro_rules! data_frame {
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-/// let factor = factor!(vec!["abcd", "def", "fg", "fg"]);
-/// assert_eq!(factor.levels().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg"]);
-/// assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);
-/// assert_eq!(factor.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
+///     let factor = factor!(vec!["abcd", "def", "fg", "fg"]);
+///     assert_eq!(factor.levels().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg"]);
+///     assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);
+///     assert_eq!(factor.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
 /// }
 /// ```
 ///
