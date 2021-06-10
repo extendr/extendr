@@ -234,6 +234,11 @@
 <span id="231">231</span>
 <span id="232">232</span>
 <span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! rmacros - a set of macros to call actual R functions in a rusty way.</span>
@@ -274,6 +279,11 @@
 <span class="doccomment">/// or a global variable if no such variable exists.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Variables with embedded &quot;.&quot; may not work.</span>
+<span class="comment">/*
+TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
+      test outside of R process, so this doc test is disabled for now. See #211
+      for the details.
+*/</span>
 <span class="doccomment">/// ```no_run</span>
 <span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">/// test! {</span>
