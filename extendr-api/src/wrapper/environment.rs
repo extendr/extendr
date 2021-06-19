@@ -213,7 +213,7 @@ impl Iterator for EnvIter {
         loop {
             // Environments are a hash table (list) or pair lists (pairlist)
             // Get the first available value from the pair list.
-            while let Some((key, value)) = self.pairlist.next() {
+            for (key, value) in &mut self.pairlist {
                 // if the key and value are valid, return a pair.
                 if !key.is_na() && !value.is_unbound_value() {
                     return Some((key, value));

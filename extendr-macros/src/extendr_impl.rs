@@ -64,7 +64,7 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
 
     let opts = wrappers::ExtendrOptions {};
     let self_ty = item_impl.self_ty.as_ref();
-    let self_ty_name = wrappers::type_name(&self_ty);
+    let self_ty_name = wrappers::type_name(self_ty);
     let prefix = format!("{}__", self_ty_name);
     let mut method_meta_names = Vec::new();
     let doc_string = wrappers::get_doc_string(&item_impl.attrs);

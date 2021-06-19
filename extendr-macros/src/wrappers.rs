@@ -23,7 +23,7 @@ pub fn make_function_wrappers(
 
     let name_str = format!("{}", func_name);
     let doc_string = get_doc_string(attrs);
-    let return_type_string = get_return_type(&sig);
+    let return_type_string = get_return_type(sig);
 
     let panic_str = format!("{} panicked.\0", func_name);
 
