@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script id="default-settings"></script><script src="../../storage.js"></script><script src="../../crates.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../favicon.svg">
 <link rel="alternate icon" type="image/png" href="../../favicon-16x16.png">
-<link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../extendr_api/index.html'><div class='logo-container'><img src='https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
+<link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../extendr_api/index.html'><div class='logo-container'><img src='https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
                 <a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
@@ -1082,8 +1082,8 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">robj_ndarray</span>;
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">convert</span>::{<span class="ident">TryFrom</span>, <span class="ident">TryInto</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">Deref</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">std::convert</span>::{<span class="ident">TryFrom</span>, <span class="ident">TryInto</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">std::ops::Deref</span>;
 
 <span class="comment">//////////////////////////////////////////////////</span>
 <span class="comment">// Note these pub use statements are deprectaed</span>
@@ -1128,42 +1128,42 @@
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">NA_STRING</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">None</span>;
 
 <span class="doccomment">/// NA value for logical. `r!(NA_LOGICAL)`</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">NA_LOGICAL</span>: <span class="ident">Bool</span> <span class="op">=</span> <span class="ident">Bool</span>(<span class="ident">std</span>::<span class="ident">i32</span>::<span class="ident">MIN</span>);
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">NA_LOGICAL</span>: <span class="ident">Bool</span> <span class="op">=</span> <span class="ident">Bool</span>(<span class="ident">std::i32::MIN</span>);
 
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
 
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">libR_sys</span>::<span class="ident">DllInfo</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">libR_sys::DllInfo</span>;
 
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">libR_sys</span>::<span class="ident">SEXP</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">libR_sys::SEXP</span>;
 
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
 <span class="kw">use</span> <span class="ident">libR_sys</span>::<span class="kw-2">*</span>;
 
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ffi</span>::<span class="ident">CString</span>;
+<span class="kw">use</span> <span class="ident">std::ffi::CString</span>;
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">metadata</span>::<span class="ident">Metadata</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">metadata::Metadata</span>;
 
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CallMethod</span> {
-    <span class="kw">pub</span> <span class="ident">call_symbol</span>: <span class="ident">std</span>::<span class="ident">ffi</span>::<span class="ident">CString</span>,
+    <span class="kw">pub</span> <span class="ident">call_symbol</span>: <span class="ident">std::ffi::CString</span>,
     <span class="kw">pub</span> <span class="ident">func_ptr</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>,
     <span class="kw">pub</span> <span class="ident">num_args</span>: <span class="ident">i32</span>,
 }
 
 <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">make_method_def</span>(
-    <span class="ident">cstrings</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">std</span>::<span class="ident">ffi</span>::<span class="ident">CString</span><span class="op">&gt;</span>,
-    <span class="ident">rmethods</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">libR_sys</span>::<span class="ident">R_CallMethodDef</span><span class="op">&gt;</span>,
-    <span class="ident">func</span>: <span class="kw-2">&amp;</span><span class="ident">metadata</span>::<span class="ident">Func</span>,
+    <span class="ident">cstrings</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">std::ffi::CString</span><span class="op">&gt;</span>,
+    <span class="ident">rmethods</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">libR_sys::R_CallMethodDef</span><span class="op">&gt;</span>,
+    <span class="ident">func</span>: <span class="kw-2">&amp;</span><span class="ident">metadata::Func</span>,
     <span class="ident">wrapped_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
 ) {
-    <span class="ident">cstrings</span>.<span class="ident">push</span>(<span class="ident">std</span>::<span class="ident">ffi</span>::<span class="ident">CString</span>::<span class="ident">new</span>(<span class="ident">wrapped_name</span>).<span class="ident">unwrap</span>());
-    <span class="ident">rmethods</span>.<span class="ident">push</span>(<span class="ident">libR_sys</span>::<span class="ident">R_CallMethodDef</span> {
+    <span class="ident">cstrings</span>.<span class="ident">push</span>(<span class="ident">std::ffi::CString::new</span>(<span class="ident">wrapped_name</span>).<span class="ident">unwrap</span>());
+    <span class="ident">rmethods</span>.<span class="ident">push</span>(<span class="ident">libR_sys::R_CallMethodDef</span> {
         <span class="ident">name</span>: <span class="ident">cstrings</span>.<span class="ident">last</span>().<span class="ident">unwrap</span>().<span class="ident">as_ptr</span>(),
-        <span class="ident">fun</span>: <span class="prelude-val">Some</span>(<span class="ident">std</span>::<span class="ident">mem</span>::<span class="ident">transmute</span>(<span class="ident">func</span>.<span class="ident">func_ptr</span>)),
+        <span class="ident">fun</span>: <span class="prelude-val">Some</span>(<span class="ident">std::mem::transmute</span>(<span class="ident">func</span>.<span class="ident">func_ptr</span>)),
         <span class="ident">numArgs</span>: <span class="ident">func</span>.<span class="ident">args</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">i32</span>,
     });
 }
@@ -1171,38 +1171,38 @@
 <span class="comment">// Internal function used to implement the .Call interface.</span>
 <span class="comment">// This is called from the code generated by the #[extendr] attribute.</span>
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">register_call_methods</span>(<span class="ident">info</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">libR_sys</span>::<span class="ident">DllInfo</span>, <span class="ident">metadata</span>: <span class="ident">Metadata</span>) {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rmethods</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cstrings</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
+<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">register_call_methods</span>(<span class="ident">info</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">libR_sys::DllInfo</span>, <span class="ident">metadata</span>: <span class="ident">Metadata</span>) {
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rmethods</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cstrings</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
     <span class="kw">for</span> <span class="ident">func</span> <span class="kw">in</span> <span class="ident">metadata</span>.<span class="ident">functions</span> {
-        <span class="kw">let</span> <span class="ident">wrapped_name</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;wrap__{}&quot;</span>, <span class="ident">func</span>.<span class="ident">name</span>);
+        <span class="kw">let</span> <span class="ident">wrapped_name</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;wrap__{}&quot;</span>, <span class="ident">func</span>.<span class="ident">name</span>);
         <span class="ident">make_method_def</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">cstrings</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rmethods</span>, <span class="kw-2">&amp;</span><span class="ident">func</span>, <span class="ident">wrapped_name</span>.<span class="ident">as_str</span>());
     }
 
     <span class="kw">for</span> <span class="ident">imp</span> <span class="kw">in</span> <span class="ident">metadata</span>.<span class="ident">impls</span> {
         <span class="kw">for</span> <span class="ident">func</span> <span class="kw">in</span> <span class="ident">imp</span>.<span class="ident">methods</span> {
-            <span class="kw">let</span> <span class="ident">wrapped_name</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;wrap__{}__{}&quot;</span>, <span class="ident">imp</span>.<span class="ident">name</span>, <span class="ident">func</span>.<span class="ident">name</span>);
+            <span class="kw">let</span> <span class="ident">wrapped_name</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;wrap__{}__{}&quot;</span>, <span class="ident">imp</span>.<span class="ident">name</span>, <span class="ident">func</span>.<span class="ident">name</span>);
             <span class="ident">make_method_def</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">cstrings</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rmethods</span>, <span class="kw-2">&amp;</span><span class="ident">func</span>, <span class="ident">wrapped_name</span>.<span class="ident">as_str</span>());
         }
     }
 
-    <span class="ident">rmethods</span>.<span class="ident">push</span>(<span class="ident">libR_sys</span>::<span class="ident">R_CallMethodDef</span> {
-        <span class="ident">name</span>: <span class="ident">std</span>::<span class="ident">ptr</span>::<span class="ident">null</span>(),
+    <span class="ident">rmethods</span>.<span class="ident">push</span>(<span class="ident">libR_sys::R_CallMethodDef</span> {
+        <span class="ident">name</span>: <span class="ident">std::ptr::null</span>(),
         <span class="ident">fun</span>: <span class="prelude-val">None</span>,
         <span class="ident">numArgs</span>: <span class="number">0</span>,
     });
 
-    <span class="ident">libR_sys</span>::<span class="ident">R_registerRoutines</span>(
+    <span class="ident">libR_sys::R_registerRoutines</span>(
         <span class="ident">info</span>,
-        <span class="ident">std</span>::<span class="ident">ptr</span>::<span class="ident">null</span>(),
+        <span class="ident">std::ptr::null</span>(),
         <span class="ident">rmethods</span>.<span class="ident">as_ptr</span>(),
-        <span class="ident">std</span>::<span class="ident">ptr</span>::<span class="ident">null</span>(),
-        <span class="ident">std</span>::<span class="ident">ptr</span>::<span class="ident">null</span>(),
+        <span class="ident">std::ptr::null</span>(),
+        <span class="ident">std::ptr::null</span>(),
     );
 
     <span class="comment">// This seems to allow both symbols and strings,</span>
-    <span class="ident">libR_sys</span>::<span class="ident">R_useDynamicSymbols</span>(<span class="ident">info</span>, <span class="number">0</span>);
-    <span class="ident">libR_sys</span>::<span class="ident">R_forceSymbols</span>(<span class="ident">info</span>, <span class="number">0</span>);
+    <span class="ident">libR_sys::R_useDynamicSymbols</span>(<span class="ident">info</span>, <span class="number">0</span>);
+    <span class="ident">libR_sys::R_forceSymbols</span>(<span class="ident">info</span>, <span class="number">0</span>);
 }
 
 <span class="doccomment">/// Return true if this primitive is NA.</span>
@@ -1218,13 +1218,13 @@
 
 <span class="kw">impl</span> <span class="ident">IsNA</span> <span class="kw">for</span> <span class="ident">i32</span> {
     <span class="kw">fn</span> <span class="ident">is_na</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span><span class="op">=</span> <span class="ident">std</span>::<span class="ident">i32</span>::<span class="ident">MIN</span>
+        <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span><span class="op">=</span> <span class="ident">std::i32::MIN</span>
     }
 }
 
 <span class="kw">impl</span> <span class="ident">IsNA</span> <span class="kw">for</span> <span class="ident">Bool</span> {
     <span class="kw">fn</span> <span class="ident">is_na</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="number">0</span> <span class="op">=</span><span class="op">=</span> <span class="ident">std</span>::<span class="ident">i32</span>::<span class="ident">MIN</span>
+        <span class="self">self</span>.<span class="number">0</span> <span class="op">=</span><span class="op">=</span> <span class="ident">std::i32::MIN</span>
     }
 }
 
@@ -1267,7 +1267,7 @@
 
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">print_r_output</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">s</span>: <span class="ident">T</span>) {
-    <span class="kw">let</span> <span class="ident">cs</span> <span class="op">=</span> <span class="ident">CString</span>::<span class="ident">new</span>(<span class="ident">s</span>).<span class="ident">expect</span>(<span class="string">&quot;NulError&quot;</span>);
+    <span class="kw">let</span> <span class="ident">cs</span> <span class="op">=</span> <span class="ident">CString::new</span>(<span class="ident">s</span>).<span class="ident">expect</span>(<span class="string">&quot;NulError&quot;</span>);
     <span class="kw">unsafe</span> {
         <span class="ident">Rprintf</span>(<span class="ident">cs</span>.<span class="ident">as_ptr</span>());
     }
@@ -1275,7 +1275,7 @@
 
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">print_r_error</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">s</span>: <span class="ident">T</span>) {
-    <span class="kw">let</span> <span class="ident">cs</span> <span class="op">=</span> <span class="ident">CString</span>::<span class="ident">new</span>(<span class="ident">s</span>).<span class="ident">expect</span>(<span class="string">&quot;NulError&quot;</span>);
+    <span class="kw">let</span> <span class="ident">cs</span> <span class="op">=</span> <span class="ident">CString::new</span>(<span class="ident">s</span>).<span class="ident">expect</span>(<span class="string">&quot;NulError&quot;</span>);
     <span class="kw">unsafe</span> {
         <span class="ident">REprintf</span>(<span class="ident">cs</span>.<span class="ident">as_ptr</span>());
     }
@@ -1283,47 +1283,47 @@
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
+    <span class="kw">use</span> <span class="kw">super</span><span class="ident">::prelude</span>::<span class="kw-2">*</span>;
     <span class="kw">use</span> <span class="kw">crate</span> <span class="kw">as</span> <span class="ident">extendr_api</span>;
-    <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
+    <span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
 
-    <span class="kw">use</span> <span class="ident">extendr_macros</span>::<span class="ident">extendr</span>;
-    <span class="kw">use</span> <span class="ident">extendr_macros</span>::<span class="ident">extendr_module</span>;
-    <span class="kw">use</span> <span class="ident">extendr_macros</span>::<span class="ident">pairlist</span>;
+    <span class="kw">use</span> <span class="ident">extendr_macros::extendr</span>;
+    <span class="kw">use</span> <span class="ident">extendr_macros::extendr_module</span>;
+    <span class="kw">use</span> <span class="ident">extendr_macros::pairlist</span>;
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">inttypes</span>(<span class="ident">a</span>: <span class="ident">i8</span>, <span class="ident">b</span>: <span class="ident">u8</span>, <span class="ident">c</span>: <span class="ident">i16</span>, <span class="ident">d</span>: <span class="ident">u16</span>, <span class="ident">e</span>: <span class="ident">i32</span>, <span class="ident">f</span>: <span class="ident">u32</span>, <span class="ident">g</span>: <span class="ident">i64</span>, <span class="ident">h</span>: <span class="ident">u64</span>) {
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">a</span>, <span class="number">1</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>, <span class="number">2</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">c</span>, <span class="number">3</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">d</span>, <span class="number">4</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">e</span>, <span class="number">5</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="number">6</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">g</span>, <span class="number">7</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">h</span>, <span class="number">8</span>);
+        <span class="macro">assert_eq!</span>(<span class="ident">a</span>, <span class="number">1</span>);
+        <span class="macro">assert_eq!</span>(<span class="ident">b</span>, <span class="number">2</span>);
+        <span class="macro">assert_eq!</span>(<span class="ident">c</span>, <span class="number">3</span>);
+        <span class="macro">assert_eq!</span>(<span class="ident">d</span>, <span class="number">4</span>);
+        <span class="macro">assert_eq!</span>(<span class="ident">e</span>, <span class="number">5</span>);
+        <span class="macro">assert_eq!</span>(<span class="ident">f</span>, <span class="number">6</span>);
+        <span class="macro">assert_eq!</span>(<span class="ident">g</span>, <span class="number">7</span>);
+        <span class="macro">assert_eq!</span>(<span class="ident">h</span>, <span class="number">8</span>);
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">floattypes</span>(<span class="ident">a</span>: <span class="ident">f32</span>, <span class="ident">b</span>: <span class="ident">f64</span>) {
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">a</span>, <span class="number">1.</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>, <span class="number">2.</span>);
+        <span class="macro">assert_eq!</span>(<span class="ident">a</span>, <span class="number">1.</span>);
+        <span class="macro">assert_eq!</span>(<span class="ident">b</span>, <span class="number">2.</span>);
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">strtypes</span>(<span class="ident">a</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">b</span>: <span class="ident">String</span>) {
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">a</span>, <span class="string">&quot;abc&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>, <span class="string">&quot;def&quot;</span>);
+        <span class="macro">assert_eq!</span>(<span class="ident">a</span>, <span class="string">&quot;abc&quot;</span>);
+        <span class="macro">assert_eq!</span>(<span class="ident">b</span>, <span class="string">&quot;def&quot;</span>);
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">vectortypes</span>(<span class="ident">a</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>, <span class="ident">b</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) {
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">a</span>, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">b</span>, [<span class="number">4.</span>, <span class="number">5.</span>, <span class="number">6.</span>]);
+        <span class="macro">assert_eq!</span>(<span class="ident">a</span>, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);
+        <span class="macro">assert_eq!</span>(<span class="ident">b</span>, [<span class="number">4.</span>, <span class="number">5.</span>, <span class="number">6.</span>]);
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">robjtype</span>(<span class="ident">a</span>: <span class="ident">Robj</span>) {
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">a</span>, <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">1</span>))
+        <span class="macro">assert_eq!</span>(<span class="ident">a</span>, <span class="ident">Robj::from</span>(<span class="number">1</span>))
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
@@ -1456,7 +1456,7 @@
     <span class="kw">fn</span> <span class="ident">aux_func</span>(<span class="ident">_person</span>: <span class="kw-2">&amp;</span><span class="ident">Person</span>) {}
 
     <span class="comment">// Macro to generate exports</span>
-    <span class="macro">extendr_module</span><span class="macro">!</span> {
+    <span class="macro">extendr_module!</span> {
         <span class="kw">mod</span> <span class="ident">my_module</span>;
         <span class="kw">fn</span> <span class="ident">aux_func</span>;
         <span class="kw">impl</span> <span class="ident">Person</span>;
@@ -1464,127 +1464,127 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">export_test</span>() {
-        <span class="macro">test</span><span class="macro">!</span> {
+        <span class="macro">test!</span> {
             <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
             <span class="comment">// Call the exported functions through their generated C wrappers.</span>
             <span class="kw">unsafe</span> {
                 <span class="ident">wrap__inttypes</span>(
-                    <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">1</span>).<span class="ident">get</span>(),
-                    <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">2</span>).<span class="ident">get</span>(),
-                    <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">3</span>).<span class="ident">get</span>(),
-                    <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">4</span>).<span class="ident">get</span>(),
-                    <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">5</span>).<span class="ident">get</span>(),
-                    <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">6</span>).<span class="ident">get</span>(),
-                    <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">7</span>).<span class="ident">get</span>(),
-                    <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">8</span>).<span class="ident">get</span>(),
+                    <span class="ident">Robj::from</span>(<span class="number">1</span>).<span class="ident">get</span>(),
+                    <span class="ident">Robj::from</span>(<span class="number">2</span>).<span class="ident">get</span>(),
+                    <span class="ident">Robj::from</span>(<span class="number">3</span>).<span class="ident">get</span>(),
+                    <span class="ident">Robj::from</span>(<span class="number">4</span>).<span class="ident">get</span>(),
+                    <span class="ident">Robj::from</span>(<span class="number">5</span>).<span class="ident">get</span>(),
+                    <span class="ident">Robj::from</span>(<span class="number">6</span>).<span class="ident">get</span>(),
+                    <span class="ident">Robj::from</span>(<span class="number">7</span>).<span class="ident">get</span>(),
+                    <span class="ident">Robj::from</span>(<span class="number">8</span>).<span class="ident">get</span>(),
                 );
                 <span class="ident">wrap__inttypes</span>(
-                    <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">1.</span>).<span class="ident">get</span>(),
-                    <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">2.</span>).<span class="ident">get</span>(),
-                    <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">3.</span>).<span class="ident">get</span>(),
-                    <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">4.</span>).<span class="ident">get</span>(),
-                    <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">5.</span>).<span class="ident">get</span>(),
-                    <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">6.</span>).<span class="ident">get</span>(),
-                    <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">7.</span>).<span class="ident">get</span>(),
-                    <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">8.</span>).<span class="ident">get</span>(),
+                    <span class="ident">Robj::from</span>(<span class="number">1.</span>).<span class="ident">get</span>(),
+                    <span class="ident">Robj::from</span>(<span class="number">2.</span>).<span class="ident">get</span>(),
+                    <span class="ident">Robj::from</span>(<span class="number">3.</span>).<span class="ident">get</span>(),
+                    <span class="ident">Robj::from</span>(<span class="number">4.</span>).<span class="ident">get</span>(),
+                    <span class="ident">Robj::from</span>(<span class="number">5.</span>).<span class="ident">get</span>(),
+                    <span class="ident">Robj::from</span>(<span class="number">6.</span>).<span class="ident">get</span>(),
+                    <span class="ident">Robj::from</span>(<span class="number">7.</span>).<span class="ident">get</span>(),
+                    <span class="ident">Robj::from</span>(<span class="number">8.</span>).<span class="ident">get</span>(),
                 );
-                <span class="ident">wrap__floattypes</span>(<span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">1.</span>).<span class="ident">get</span>(), <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">2.</span>).<span class="ident">get</span>());
-                <span class="ident">wrap__floattypes</span>(<span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">1</span>).<span class="ident">get</span>(), <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">2</span>).<span class="ident">get</span>());
-                <span class="ident">wrap__strtypes</span>(<span class="ident">Robj</span>::<span class="ident">from</span>(<span class="string">&quot;abc&quot;</span>).<span class="ident">get</span>(), <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="string">&quot;def&quot;</span>).<span class="ident">get</span>());
+                <span class="ident">wrap__floattypes</span>(<span class="ident">Robj::from</span>(<span class="number">1.</span>).<span class="ident">get</span>(), <span class="ident">Robj::from</span>(<span class="number">2.</span>).<span class="ident">get</span>());
+                <span class="ident">wrap__floattypes</span>(<span class="ident">Robj::from</span>(<span class="number">1</span>).<span class="ident">get</span>(), <span class="ident">Robj::from</span>(<span class="number">2</span>).<span class="ident">get</span>());
+                <span class="ident">wrap__strtypes</span>(<span class="ident">Robj::from</span>(<span class="string">&quot;abc&quot;</span>).<span class="ident">get</span>(), <span class="ident">Robj::from</span>(<span class="string">&quot;def&quot;</span>).<span class="ident">get</span>());
                 <span class="ident">wrap__vectortypes</span>(
-                    <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="kw-2">&amp;</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>] <span class="kw">as</span> <span class="kw-2">&amp;</span>[<span class="ident">i32</span>]).<span class="ident">get</span>(),
-                    <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="kw-2">&amp;</span>[<span class="number">4.</span>, <span class="number">5.</span>, <span class="number">6.</span>] <span class="kw">as</span> <span class="kw-2">&amp;</span>[<span class="ident">f64</span>]).<span class="ident">get</span>(),
+                    <span class="ident">Robj::from</span>(<span class="kw-2">&amp;</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>] <span class="kw">as</span> <span class="kw-2">&amp;</span>[<span class="ident">i32</span>]).<span class="ident">get</span>(),
+                    <span class="ident">Robj::from</span>(<span class="kw-2">&amp;</span>[<span class="number">4.</span>, <span class="number">5.</span>, <span class="number">6.</span>] <span class="kw">as</span> <span class="kw-2">&amp;</span>[<span class="ident">f64</span>]).<span class="ident">get</span>(),
                 );
-                <span class="ident">wrap__robjtype</span>(<span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">1</span>).<span class="ident">get</span>());
+                <span class="ident">wrap__robjtype</span>(<span class="ident">Robj::from</span>(<span class="number">1</span>).<span class="ident">get</span>());
 
                 <span class="comment">// General integer types.</span>
-                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__return_u8</span>()), <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">123</span>));
-                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__return_u16</span>()), <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">123</span>));
-                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__return_u32</span>()), <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">123</span>));
-                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__return_u64</span>()), <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">123</span>));
-                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__return_i8</span>()), <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">123</span>));
-                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__return_i16</span>()), <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">123</span>));
-                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__return_i32</span>()), <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">123</span>));
-                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__return_i64</span>()), <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">123</span>));
+                <span class="macro">assert_eq!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__return_u8</span>()), <span class="ident">Robj::from</span>(<span class="number">123</span>));
+                <span class="macro">assert_eq!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__return_u16</span>()), <span class="ident">Robj::from</span>(<span class="number">123</span>));
+                <span class="macro">assert_eq!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__return_u32</span>()), <span class="ident">Robj::from</span>(<span class="number">123</span>));
+                <span class="macro">assert_eq!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__return_u64</span>()), <span class="ident">Robj::from</span>(<span class="number">123</span>));
+                <span class="macro">assert_eq!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__return_i8</span>()), <span class="ident">Robj::from</span>(<span class="number">123</span>));
+                <span class="macro">assert_eq!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__return_i16</span>()), <span class="ident">Robj::from</span>(<span class="number">123</span>));
+                <span class="macro">assert_eq!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__return_i32</span>()), <span class="ident">Robj::from</span>(<span class="number">123</span>));
+                <span class="macro">assert_eq!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__return_i64</span>()), <span class="ident">Robj::from</span>(<span class="number">123</span>));
 
                 <span class="comment">// Floating point types.</span>
-                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__return_f32</span>()), <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">123.</span>));
-                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__return_f64</span>()), <span class="ident">Robj</span>::<span class="ident">from</span>(<span class="number">123.</span>));
+                <span class="macro">assert_eq!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__return_f32</span>()), <span class="ident">Robj::from</span>(<span class="number">123.</span>));
+                <span class="macro">assert_eq!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__return_f64</span>()), <span class="ident">Robj::from</span>(<span class="number">123.</span>));
             }
         }
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">class_wrapper_test</span>() {
-        <span class="macro">test</span><span class="macro">!</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">person</span> <span class="op">=</span> <span class="ident">Person</span>::<span class="ident">new</span>();
+        <span class="macro">test!</span> {
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">person</span> <span class="op">=</span> <span class="ident">Person::new</span>();
             <span class="ident">person</span>.<span class="ident">set_name</span>(<span class="string">&quot;fred&quot;</span>);
-            <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r</span><span class="macro">!</span>(<span class="ident">person</span>);
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">robj</span>.<span class="ident">check_external_ptr</span>(<span class="string">&quot;Person&quot;</span>), <span class="bool-val">true</span>);
-            <span class="kw">let</span> <span class="ident">person2</span> <span class="op">=</span> <span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Person</span><span class="op">&gt;</span>::<span class="ident">from_robj</span>(<span class="kw-2">&amp;</span><span class="ident">robj</span>).<span class="ident">unwrap</span>();
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">person2</span>.<span class="ident">name</span>(), <span class="string">&quot;fred&quot;</span>);
+            <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r!</span>(<span class="ident">person</span>);
+            <span class="macro">assert_eq!</span>(<span class="ident">robj</span>.<span class="ident">check_external_ptr</span>(<span class="string">&quot;Person&quot;</span>), <span class="bool-val">true</span>);
+            <span class="kw">let</span> <span class="ident">person2</span> <span class="op">=</span> <span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Person</span><span class="op">&gt;</span><span class="ident">::from_robj</span>(<span class="kw-2">&amp;</span><span class="ident">robj</span>).<span class="ident">unwrap</span>();
+            <span class="macro">assert_eq!</span>(<span class="ident">person2</span>.<span class="ident">name</span>(), <span class="string">&quot;fred&quot;</span>);
         }
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">slice_test</span>() {
-        <span class="macro">test</span><span class="macro">!</span> {
+        <span class="macro">test!</span> {
             <span class="kw">unsafe</span> {
                 <span class="comment">// #[extendr]</span>
                 <span class="comment">// pub fn f64_slice(x: &amp;[f64]) -&gt; &amp;[f64] { x }</span>
 
-                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r</span><span class="macro">!</span>([<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>]);
-                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__f64_slice</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
+                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r!</span>([<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>]);
+                <span class="macro">assert_eq!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__f64_slice</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
 
                 <span class="comment">// #[extendr]</span>
                 <span class="comment">// pub fn i32_slice(x: &amp;[i32]) -&gt; &amp;[i32] { x }</span>
 
-                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r</span><span class="macro">!</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);
-                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__i32_slice</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
+                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r!</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);
+                <span class="macro">assert_eq!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__i32_slice</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
 
                 <span class="comment">// #[extendr]</span>
                 <span class="comment">// pub fn bool_slice(x: &amp;[Bool]) -&gt; &amp;[Bool] { x }</span>
 
-                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r</span><span class="macro">!</span>([<span class="ident">TRUE</span>, <span class="ident">FALSE</span>, <span class="ident">TRUE</span>]);
-                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__bool_slice</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
+                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r!</span>([<span class="ident">TRUE</span>, <span class="ident">FALSE</span>, <span class="ident">TRUE</span>]);
+                <span class="macro">assert_eq!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__bool_slice</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
 
                 <span class="comment">// #[extendr]</span>
                 <span class="comment">// pub fn f64_iter(x: Real) -&gt; Real { x }</span>
 
-                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r</span><span class="macro">!</span>([<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>]);
-                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__f64_iter</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
+                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r!</span>([<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>]);
+                <span class="macro">assert_eq!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__f64_iter</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
 
                 <span class="comment">// #[extendr]</span>
                 <span class="comment">// pub fn i32_iter(x: Int) -&gt; Int { x }</span>
 
-                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r</span><span class="macro">!</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);
-                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__i32_iter</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
+                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r!</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);
+                <span class="macro">assert_eq!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__i32_iter</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
 
                 <span class="comment">// #[extendr]</span>
                 <span class="comment">// pub fn bool_iter(x: Logical) -&gt; Logical { x }</span>
 
-                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r</span><span class="macro">!</span>([<span class="ident">TRUE</span>, <span class="ident">FALSE</span>, <span class="ident">TRUE</span>]);
-                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__bool_iter</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
+                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r!</span>([<span class="ident">TRUE</span>, <span class="ident">FALSE</span>, <span class="ident">TRUE</span>]);
+                <span class="macro">assert_eq!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__bool_iter</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
 
                 <span class="comment">// #[extendr]</span>
                 <span class="comment">// pub fn symbol(x: Symbol) -&gt; Symbol { x }</span>
 
-                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">sym</span><span class="macro">!</span>(<span class="ident">fred</span>);
-                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__symbol</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
+                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">sym!</span>(<span class="ident">fred</span>);
+                <span class="macro">assert_eq!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__symbol</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
 
                 <span class="comment">// #[extendr]</span>
                 <span class="comment">// pub fn matrix(x: Matrix&lt;&amp;[f64]&gt;) -&gt; Matrix&lt;&amp;[f64]&gt; { x }</span>
 
-                <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">RMatrix</span>::<span class="ident">new_matrix</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="op">|</span><span class="ident">r</span>, <span class="ident">c</span><span class="op">|</span> <span class="kw">if</span> <span class="ident">r</span> <span class="op">=</span><span class="op">=</span> <span class="ident">c</span> {<span class="number">1.0</span>} <span class="kw">else</span> {<span class="number">0.</span>});
-                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r</span><span class="macro">!</span>(<span class="ident">m</span>);
-                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__matrix</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
+                <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">RMatrix::new_matrix</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="op">|</span><span class="ident">r</span>, <span class="ident">c</span><span class="op">|</span> <span class="kw">if</span> <span class="ident">r</span> <span class="op">=</span><span class="op">=</span> <span class="ident">c</span> {<span class="number">1.0</span>} <span class="kw">else</span> {<span class="number">0.</span>});
+                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r!</span>(<span class="ident">m</span>);
+                <span class="macro">assert_eq!</span>(<span class="ident">new_owned</span>(<span class="ident">wrap__matrix</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
 
                 <span class="comment">// #[extendr]</span>
                 <span class="comment">// pub fn hash_map(x: HashMap&lt;&amp;str, Robj&gt;) -&gt; HashMap&lt;&amp;str, Robj&gt; { x }</span>
-                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r</span><span class="macro">!</span>(<span class="ident">List</span>::<span class="ident">from_values</span>(<span class="kw-2">&amp;</span>[<span class="number">1</span>, <span class="number">2</span>]));
-                <span class="ident">robj</span>.<span class="ident">set_attrib</span>(<span class="ident">names_symbol</span>(), <span class="macro">r</span><span class="macro">!</span>([<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>]))<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r!</span>(<span class="ident">List::from_values</span>(<span class="kw-2">&amp;</span>[<span class="number">1</span>, <span class="number">2</span>]));
+                <span class="ident">robj</span>.<span class="ident">set_attrib</span>(<span class="ident">names_symbol</span>(), <span class="macro">r!</span>([<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>]))<span class="question-mark">?</span>;
                 <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">new_owned</span>(<span class="ident">wrap__hash_map</span>(<span class="ident">robj</span>.<span class="ident">get</span>()));
-                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">res</span>.<span class="ident">len</span>(), <span class="number">2</span>);
+                <span class="macro">assert_eq!</span>(<span class="ident">res</span>.<span class="ident">len</span>(), <span class="number">2</span>);
             }
         }
     }
@@ -1600,86 +1600,86 @@
         <span class="comment">// &gt; expect_equal(test_con, &quot;Hello world&quot;)</span>
         <span class="comment">//</span>
 
-        <span class="macro">test</span><span class="macro">!</span> {
-            <span class="kw">let</span> <span class="ident">txt_con</span> <span class="op">=</span> <span class="macro">R</span><span class="macro">!</span>(<span class="ident">textConnection</span>(<span class="string">&quot;test_con&quot;</span>, <span class="ident">open</span> <span class="op">=</span> <span class="string">&quot;w&quot;</span>)).<span class="ident">unwrap</span>();
-            <span class="macro">call</span><span class="macro">!</span>(<span class="string">&quot;sink&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">txt_con</span>).<span class="ident">unwrap</span>();
-            <span class="macro">rprintln</span><span class="macro">!</span>(<span class="string">&quot;Hello world&quot;</span>);
-            <span class="macro">call</span><span class="macro">!</span>(<span class="string">&quot;sink&quot;</span>).<span class="ident">unwrap</span>();
-            <span class="macro">call</span><span class="macro">!</span>(<span class="string">&quot;close&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">txt_con</span>).<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="macro">R</span><span class="macro">!</span>(<span class="ident">test_con</span>).<span class="ident">unwrap</span>();
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">result</span>, <span class="macro">r</span><span class="macro">!</span>(<span class="string">&quot;Hello world&quot;</span>));
+        <span class="macro">test!</span> {
+            <span class="kw">let</span> <span class="ident">txt_con</span> <span class="op">=</span> <span class="macro">R!</span>(<span class="ident">textConnection</span>(<span class="string">&quot;test_con&quot;</span>, <span class="ident">open</span> <span class="op">=</span> <span class="string">&quot;w&quot;</span>)).<span class="ident">unwrap</span>();
+            <span class="macro">call!</span>(<span class="string">&quot;sink&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">txt_con</span>).<span class="ident">unwrap</span>();
+            <span class="macro">rprintln!</span>(<span class="string">&quot;Hello world&quot;</span>);
+            <span class="macro">call!</span>(<span class="string">&quot;sink&quot;</span>).<span class="ident">unwrap</span>();
+            <span class="macro">call!</span>(<span class="string">&quot;close&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">txt_con</span>).<span class="ident">unwrap</span>();
+            <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="macro">R!</span>(<span class="ident">test_con</span>).<span class="ident">unwrap</span>();
+            <span class="macro">assert_eq!</span>(<span class="ident">result</span>, <span class="macro">r!</span>(<span class="string">&quot;Hello world&quot;</span>));
         }
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_na_str</span>() {
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">na_str</span>().<span class="ident">as_ptr</span>() <span class="op">!</span><span class="op">=</span> <span class="string">&quot;NA&quot;</span>.<span class="ident">as_ptr</span>());
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">na_str</span>(), <span class="string">&quot;NA&quot;</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&quot;NA&quot;</span>.<span class="ident">is_na</span>(), <span class="bool-val">false</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">na_str</span>().<span class="ident">is_na</span>(), <span class="bool-val">true</span>);
+        <span class="macro">assert!</span>(<span class="ident">na_str</span>().<span class="ident">as_ptr</span>() <span class="op">!</span><span class="op">=</span> <span class="string">&quot;NA&quot;</span>.<span class="ident">as_ptr</span>());
+        <span class="macro">assert_eq!</span>(<span class="ident">na_str</span>(), <span class="string">&quot;NA&quot;</span>);
+        <span class="macro">assert_eq!</span>(<span class="string">&quot;NA&quot;</span>.<span class="ident">is_na</span>(), <span class="bool-val">false</span>);
+        <span class="macro">assert_eq!</span>(<span class="ident">na_str</span>().<span class="ident">is_na</span>(), <span class="bool-val">true</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">metadata_test</span>() {
-        <span class="macro">test</span><span class="macro">!</span> {
+        <span class="macro">test!</span> {
             <span class="comment">// Rust interface.</span>
             <span class="kw">let</span> <span class="ident">metadata</span> <span class="op">=</span> <span class="ident">get_my_module_metadata</span>();
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">metadata</span>.<span class="ident">functions</span>[<span class="number">0</span>].<span class="ident">doc</span>, <span class="string">&quot; comment #1\n comment #2\n\n        comment #3\n        comment #4\n    *\n aux_func doc comment.&quot;</span>);
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">metadata</span>.<span class="ident">functions</span>[<span class="number">0</span>].<span class="ident">name</span>, <span class="string">&quot;aux_func&quot;</span>);
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">metadata</span>.<span class="ident">functions</span>[<span class="number">0</span>].<span class="ident">args</span>[<span class="number">0</span>].<span class="ident">name</span>, <span class="string">&quot;_person&quot;</span>);
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">metadata</span>.<span class="ident">functions</span>[<span class="number">1</span>].<span class="ident">name</span>, <span class="string">&quot;get_my_module_metadata&quot;</span>);
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">metadata</span>.<span class="ident">impls</span>[<span class="number">0</span>].<span class="ident">name</span>, <span class="string">&quot;Person&quot;</span>);
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">metadata</span>.<span class="ident">impls</span>[<span class="number">0</span>].<span class="ident">methods</span>.<span class="ident">len</span>(), <span class="number">3</span>);
+            <span class="macro">assert_eq!</span>(<span class="ident">metadata</span>.<span class="ident">functions</span>[<span class="number">0</span>].<span class="ident">doc</span>, <span class="string">&quot; comment #1\n comment #2\n\n        comment #3\n        comment #4\n    *\n aux_func doc comment.&quot;</span>);
+            <span class="macro">assert_eq!</span>(<span class="ident">metadata</span>.<span class="ident">functions</span>[<span class="number">0</span>].<span class="ident">name</span>, <span class="string">&quot;aux_func&quot;</span>);
+            <span class="macro">assert_eq!</span>(<span class="ident">metadata</span>.<span class="ident">functions</span>[<span class="number">0</span>].<span class="ident">args</span>[<span class="number">0</span>].<span class="ident">name</span>, <span class="string">&quot;_person&quot;</span>);
+            <span class="macro">assert_eq!</span>(<span class="ident">metadata</span>.<span class="ident">functions</span>[<span class="number">1</span>].<span class="ident">name</span>, <span class="string">&quot;get_my_module_metadata&quot;</span>);
+            <span class="macro">assert_eq!</span>(<span class="ident">metadata</span>.<span class="ident">impls</span>[<span class="number">0</span>].<span class="ident">name</span>, <span class="string">&quot;Person&quot;</span>);
+            <span class="macro">assert_eq!</span>(<span class="ident">metadata</span>.<span class="ident">impls</span>[<span class="number">0</span>].<span class="ident">methods</span>.<span class="ident">len</span>(), <span class="number">3</span>);
 
             <span class="comment">// R interface</span>
             <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">wrap__get_my_module_metadata</span>()) };
             <span class="kw">let</span> <span class="ident">functions</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">dollar</span>(<span class="string">&quot;functions&quot;</span>).<span class="ident">unwrap</span>();
             <span class="kw">let</span> <span class="ident">impls</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">dollar</span>(<span class="string">&quot;impls&quot;</span>).<span class="ident">unwrap</span>();
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">functions</span>.<span class="ident">len</span>(), <span class="number">3</span>);
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">impls</span>.<span class="ident">len</span>(), <span class="number">1</span>);
+            <span class="macro">assert_eq!</span>(<span class="ident">functions</span>.<span class="ident">len</span>(), <span class="number">3</span>);
+            <span class="macro">assert_eq!</span>(<span class="ident">impls</span>.<span class="ident">len</span>(), <span class="number">1</span>);
         }
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">pairlist_macro_works</span>() {
-        <span class="macro">test</span><span class="macro">!</span> {
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">pairlist</span><span class="macro">!</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>), <span class="ident">Pairlist</span>::<span class="ident">from_pairs</span>(<span class="kw-2">&amp;</span>[(<span class="string">&quot;&quot;</span>, <span class="number">1</span>), (<span class="string">&quot;&quot;</span>, <span class="number">2</span>), (<span class="string">&quot;&quot;</span>, <span class="number">3</span>)]));
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">pairlist</span><span class="macro">!</span>(<span class="ident">a</span><span class="op">=</span><span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>), <span class="ident">Pairlist</span>::<span class="ident">from_pairs</span>(<span class="kw-2">&amp;</span>[(<span class="string">&quot;a&quot;</span>, <span class="number">1</span>), (<span class="string">&quot;&quot;</span>, <span class="number">2</span>), (<span class="string">&quot;&quot;</span>, <span class="number">3</span>)]));
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">pairlist</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">b</span><span class="op">=</span><span class="number">2</span>, <span class="number">3</span>), <span class="ident">Pairlist</span>::<span class="ident">from_pairs</span>(<span class="kw-2">&amp;</span>[(<span class="string">&quot;&quot;</span>, <span class="number">1</span>), (<span class="string">&quot;b&quot;</span>, <span class="number">2</span>), (<span class="string">&quot;&quot;</span>, <span class="number">3</span>)]));
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">pairlist</span><span class="macro">!</span>(<span class="ident">a</span><span class="op">=</span><span class="number">1</span>, <span class="ident">b</span><span class="op">=</span><span class="number">2</span>, <span class="ident">c</span><span class="op">=</span><span class="number">3</span>), <span class="ident">Pairlist</span>::<span class="ident">from_pairs</span>(<span class="kw-2">&amp;</span>[(<span class="string">&quot;a&quot;</span>, <span class="number">1</span>), (<span class="string">&quot;b&quot;</span>, <span class="number">2</span>), (<span class="string">&quot;c&quot;</span>, <span class="number">3</span>)]));
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">pairlist</span><span class="macro">!</span>(<span class="ident">a</span><span class="op">=</span><span class="ident">NULL</span>), <span class="ident">Pairlist</span>::<span class="ident">from_pairs</span>(<span class="kw-2">&amp;</span>[(<span class="string">&quot;a&quot;</span>, ())]));
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">pairlist</span><span class="macro">!</span>(), <span class="ident">Pairlist</span>::<span class="ident">from</span>(()));
+        <span class="macro">test!</span> {
+            <span class="macro">assert_eq!</span>(<span class="macro">pairlist!</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>), <span class="ident">Pairlist::from_pairs</span>(<span class="kw-2">&amp;</span>[(<span class="string">&quot;&quot;</span>, <span class="number">1</span>), (<span class="string">&quot;&quot;</span>, <span class="number">2</span>), (<span class="string">&quot;&quot;</span>, <span class="number">3</span>)]));
+            <span class="macro">assert_eq!</span>(<span class="macro">pairlist!</span>(<span class="ident">a</span><span class="op">=</span><span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>), <span class="ident">Pairlist::from_pairs</span>(<span class="kw-2">&amp;</span>[(<span class="string">&quot;a&quot;</span>, <span class="number">1</span>), (<span class="string">&quot;&quot;</span>, <span class="number">2</span>), (<span class="string">&quot;&quot;</span>, <span class="number">3</span>)]));
+            <span class="macro">assert_eq!</span>(<span class="macro">pairlist!</span>(<span class="number">1</span>, <span class="ident">b</span><span class="op">=</span><span class="number">2</span>, <span class="number">3</span>), <span class="ident">Pairlist::from_pairs</span>(<span class="kw-2">&amp;</span>[(<span class="string">&quot;&quot;</span>, <span class="number">1</span>), (<span class="string">&quot;b&quot;</span>, <span class="number">2</span>), (<span class="string">&quot;&quot;</span>, <span class="number">3</span>)]));
+            <span class="macro">assert_eq!</span>(<span class="macro">pairlist!</span>(<span class="ident">a</span><span class="op">=</span><span class="number">1</span>, <span class="ident">b</span><span class="op">=</span><span class="number">2</span>, <span class="ident">c</span><span class="op">=</span><span class="number">3</span>), <span class="ident">Pairlist::from_pairs</span>(<span class="kw-2">&amp;</span>[(<span class="string">&quot;a&quot;</span>, <span class="number">1</span>), (<span class="string">&quot;b&quot;</span>, <span class="number">2</span>), (<span class="string">&quot;c&quot;</span>, <span class="number">3</span>)]));
+            <span class="macro">assert_eq!</span>(<span class="macro">pairlist!</span>(<span class="ident">a</span><span class="op">=</span><span class="ident">NULL</span>), <span class="ident">Pairlist::from_pairs</span>(<span class="kw-2">&amp;</span>[(<span class="string">&quot;a&quot;</span>, ())]));
+            <span class="macro">assert_eq!</span>(<span class="macro">pairlist!</span>(), <span class="ident">Pairlist::from</span>(()));
         }
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">big_r_macro_works</span>() {
-        <span class="macro">test</span><span class="macro">!</span> {
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">R</span><span class="macro">!</span>(<span class="string">&quot;1&quot;</span>)<span class="question-mark">?</span>, <span class="macro">r</span><span class="macro">!</span>(<span class="number">1.0</span>));
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">R</span><span class="macro">!</span>(<span class="string">r&quot;1&quot;</span>)<span class="question-mark">?</span>, <span class="macro">r</span><span class="macro">!</span>(<span class="number">1.0</span>));
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">R</span><span class="macro">!</span>(<span class="string">r&quot;
+        <span class="macro">test!</span> {
+            <span class="macro">assert_eq!</span>(<span class="macro">R!</span>(<span class="string">&quot;1&quot;</span>)<span class="question-mark">?</span>, <span class="macro">r!</span>(<span class="number">1.0</span>));
+            <span class="macro">assert_eq!</span>(<span class="macro">R!</span>(<span class="string">r&quot;1&quot;</span>)<span class="question-mark">?</span>, <span class="macro">r!</span>(<span class="number">1.0</span>));
+            <span class="macro">assert_eq!</span>(<span class="macro">R!</span>(<span class="string">r&quot;
                 x &lt;- 1
                 x
-            &quot;</span>)<span class="question-mark">?</span>, <span class="macro">r</span><span class="macro">!</span>(<span class="number">1.0</span>));
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">R</span><span class="macro">!</span>(<span class="string">r&quot;
+            &quot;</span>)<span class="question-mark">?</span>, <span class="macro">r!</span>(<span class="number">1.0</span>));
+            <span class="macro">assert_eq!</span>(<span class="macro">R!</span>(<span class="string">r&quot;
                 x &lt;- {{ 1.0 }}
                 x
-            &quot;</span>)<span class="question-mark">?</span>, <span class="macro">r</span><span class="macro">!</span>(<span class="number">1.0</span>));
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">R</span><span class="macro">!</span>(<span class="string">r&quot;
+            &quot;</span>)<span class="question-mark">?</span>, <span class="macro">r!</span>(<span class="number">1.0</span>));
+            <span class="macro">assert_eq!</span>(<span class="macro">R!</span>(<span class="string">r&quot;
                 x &lt;- {{ (0..4).collect_robj() }}
                 x
-            &quot;</span>)<span class="question-mark">?</span>, <span class="macro">r</span><span class="macro">!</span>([<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]));
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">R</span><span class="macro">!</span>(<span class="string">r#&quot;
+            &quot;</span>)<span class="question-mark">?</span>, <span class="macro">r!</span>([<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]));
+            <span class="macro">assert_eq!</span>(<span class="macro">R!</span>(<span class="string">r#&quot;
                 x &lt;- &quot;hello&quot;
                 x
-            &quot;#</span>)<span class="question-mark">?</span>, <span class="macro">r</span><span class="macro">!</span>(<span class="string">&quot;hello&quot;</span>));
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">Rraw</span><span class="macro">!</span>(<span class="string">r&quot;
+            &quot;#</span>)<span class="question-mark">?</span>, <span class="macro">r!</span>(<span class="string">&quot;hello&quot;</span>));
+            <span class="macro">assert_eq!</span>(<span class="macro">Rraw!</span>(<span class="string">r&quot;
                 x &lt;- {{ 1 }}
                 x
-            &quot;</span>)<span class="question-mark">?</span>, <span class="macro">r</span><span class="macro">!</span>(<span class="number">1.0</span>));
+            &quot;</span>)<span class="question-mark">?</span>, <span class="macro">r!</span>(<span class="number">1.0</span>));
         }
     }
 }
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_api" data-search-js="../../search-index.js"></div>
+</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_api" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>
     <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script></body></html>
