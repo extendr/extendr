@@ -2,6 +2,27 @@
 
 ## extendr devel
 
+- Fixed Clippy warnings
+
+- Fixed "myvar" test failures - related to base_env() being the "local" enviroment in the tests.
+
+- Fixes for builds on ARM and PPC platforms.
+
+- Converted R! to a procedural macro, allowing parameters.
+
+- Converted pairlist! to a procedural macro.
+
+- Refactor extendr_macros.
+
+- Remove unused lazy_static
+
+- Continued improvments to wrappers for specific R types such as environments, functions and symbols.
+
+- Install system dependencies on Linux.
+
+- Use Use failure() to trigger steps on failures
+
+
 ## extendr 0.2.0
 
 - Added contributing guidelines and code of conduct.
