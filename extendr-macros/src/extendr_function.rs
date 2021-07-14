@@ -23,7 +23,7 @@ pub fn extendr_function(args: Vec<syn::NestedMeta>, func: ItemFn) -> TokenStream
 
 /// Parse a set of attribute arguments for #[extendr(opts...)]
 pub fn parse_options(opts: &mut wrappers::ExtendrOptions, arg: &syn::NestedMeta) {
-    use syn::{Lit, Meta, MetaNameValue, NestedMeta, LitBool};
+    use syn::{Lit, LitBool, Meta, MetaNameValue, NestedMeta};
 
     match arg {
         NestedMeta::Meta(Meta::NameValue(MetaNameValue {
@@ -32,7 +32,7 @@ pub fn parse_options(opts: &mut wrappers::ExtendrOptions, arg: &syn::NestedMeta)
             lit,
         })) => {
             if path.is_ident("use_try_from") {
-                if let Lit::Bool(LitBool { value, ..}) = lit {
+                if let Lit::Bool(LitBool { value, .. }) = lit {
                     opts.use_try_from = *value;
                 }
             } else {

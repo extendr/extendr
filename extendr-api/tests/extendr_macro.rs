@@ -1,17 +1,17 @@
-use extendr_macros::*;
 use extendr_api::prelude::*;
+use extendr_macros::*;
 
-#[extendr(use_try_from=true)]
+#[extendr(use_try_from = true)]
 fn test_i32(val: i32) -> i32 {
     val
 }
 
-#[extendr(use_try_from=true)]
+#[extendr(use_try_from = true)]
 fn test_i16(val: i16) -> i16 {
     val
 }
 
-#[extendr(use_try_from=true)]
+#[extendr(use_try_from = true)]
 fn test_option_i32(val: Option<i32>) -> i32 {
     if let Some(i) = val {
         i
@@ -20,7 +20,7 @@ fn test_option_i32(val: Option<i32>) -> i32 {
     }
 }
 
-#[extendr(use_try_from=true)]
+#[extendr(use_try_from = true)]
 fn test_option_f64(val: Option<f64>) -> f64 {
     if let Some(i) = val {
         i
@@ -29,7 +29,7 @@ fn test_option_f64(val: Option<f64>) -> f64 {
     }
 }
 
-#[extendr(use_try_from=true)]
+#[extendr(use_try_from = true)]
 fn test_option_i16(val: Option<i16>) -> i16 {
     if let Some(i) = val {
         i
@@ -91,7 +91,7 @@ fn happy_path() {
 }
 
 // Win32 does not support catch_unwind.
-#[cfg(not(target_arch="x86"))]
+#[cfg(not(target_arch = "x86"))]
 #[test]
 fn sad_path() {
     unsafe {

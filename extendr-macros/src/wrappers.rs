@@ -76,7 +76,7 @@ pub fn make_function_wrappers(
 
     let actual_args: Punctuated<Expr, Token![,]> = inputs
         .iter()
-        .filter_map(|input| translate_actual(&opts, input))
+        .filter_map(|input| translate_actual(opts, input))
         .collect();
 
     let meta_args: Vec<Expr> = inputs
