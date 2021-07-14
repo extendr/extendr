@@ -86,11 +86,13 @@ where
     }
 }
 
+static mut R_ERROR_BUF: Option<std::ffi::CString> = None;
+
 pub fn throw_r_error<S: AsRef<str>>(s: S) {
     let s = s.as_ref();
     unsafe {
-        let cstring = std::ffi::CString::new(s).unwrap();
-        libR_sys::Rf_error(cstring.as_ptr());
+        R_ERROR_BUF = Some(std::ffi::CString::new(s).unwrap());
+        libR_sys::Rf_error(R_ERROR_BUF.as_ref().unwrap().as_ptr());
         unreachable!("Rf_error does not return");
     };
 }
