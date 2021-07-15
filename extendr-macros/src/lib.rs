@@ -60,6 +60,7 @@ mod extendr_function;
 mod extendr_impl;
 mod extendr_module;
 mod pairlist;
+mod call;
 mod pairs;
 mod wrappers;
 
@@ -110,6 +111,15 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
 #[proc_macro]
 pub fn pairlist(item: TokenStream) -> TokenStream {
     pairlist::pairlist(item)
+}
+
+/// Call a 
+/// ```ignore
+///     assert_eq!(pairlist!(a=1, 2, 3), Pairlist::from_pairs(&[("a", 1), ("", 2), ("", 3)]));
+/// ```
+#[proc_macro]
+pub fn call(item: TokenStream) -> TokenStream {
+    call::call(item)
 }
 
 /// Execute R code by parsing and evaluating tokens.

@@ -1,5 +1,6 @@
 use crate::*;
 use std::ops::{Add, Div, Mul, Sub};
+use crate as extendr_api;
 
 ///////////////////////////////////////////////////////////////
 /// The following impls add operators to Robj.

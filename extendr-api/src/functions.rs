@@ -1,4 +1,5 @@
 use crate::*;
+use crate as extendr_api;
 
 /// Get a global variable from global_env() and ancestors.
 /// If the result is a promise, evaulate the promise.

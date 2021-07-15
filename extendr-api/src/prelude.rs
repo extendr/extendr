@@ -26,7 +26,7 @@ pub use super::wrapper::symbol::{
     spec_symbol, triple_colon_symbol, tsp_symbol, unbound_value,
 };
 
-pub use crate::{append, append_lang, append_with_name, args, call, lang, make_lang};
+pub use crate::{append, append_lang, append_with_name, args, lang, make_lang};
 pub use crate::{
     data_frame, factor, global, list, r, reprint, reprintln, rprint, rprintln, sym, test, var,
 };
@@ -52,7 +52,7 @@ pub use super::robj_ndarray::*;
 #[cfg(feature = "ndarray")]
 pub use ndarray::*;
 
-pub use extendr_macros::{extendr, extendr_module, pairlist, Rraw, R};
+pub use extendr_macros::{extendr, extendr_module, pairlist, Rraw, R, call};
 
 pub use super::iter::{Int, Logical, Real, StrIter};
 

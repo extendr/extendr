@@ -8,6 +8,11 @@ pub struct Pairlist {
 }
 
 impl Pairlist {
+    pub fn new() -> Self {
+        let robj = Robj::from(());
+        Self { robj }
+    }
+
     /// Convert an iterator of names and values to a pairlist object.
     /// ```
     /// use extendr_api::prelude::*;

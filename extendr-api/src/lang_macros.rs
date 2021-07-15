@@ -110,12 +110,12 @@ macro_rules! append_lang {
 ///     assert_eq!(three, r!(3));
 /// }
 /// ```
-#[macro_export]
-macro_rules! call {
-    ($($toks: tt)*) => {
-        lang!($($toks)*).eval()
-    }
-}
+// #[macro_export]
+// macro_rules! call {
+//     ($($toks: tt)*) => {
+//         lang!($($toks)*).eval()
+//     }
+// }
 
 /// A macro for constructing R langage objects.
 ///
