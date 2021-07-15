@@ -1,6 +1,6 @@
 //! R object handling.
 //!
-//! See. https://cran.r-project.org/doc/manuals/R-exts.html
+//! See. <https://cran.r-project.org/doc/manuals/R-exts.html>
 //!
 //! Fundamental principals:
 //!
