@@ -56,11 +56,11 @@
 
 #[allow(non_snake_case)]
 mod R;
+mod call;
 mod extendr_function;
 mod extendr_impl;
 mod extendr_module;
 mod pairlist;
-mod call;
 mod pairs;
 mod wrappers;
 
@@ -113,7 +113,7 @@ pub fn pairlist(item: TokenStream) -> TokenStream {
     pairlist::pairlist(item)
 }
 
-/// Call a 
+/// Call a
 /// ```ignore
 ///     assert_eq!(pairlist!(a=1, 2, 3), Pairlist::from_pairs(&[("a", 1), ("", 2), ("", 3)]));
 /// ```

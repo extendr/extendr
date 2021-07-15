@@ -82,6 +82,12 @@ impl Pairlist {
     }
 }
 
+impl Default for wrapper::pairlist::Pairlist {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 /// Generate paits of names and values.
 /// ```
 /// use extendr_api::prelude::*;

@@ -52,7 +52,7 @@ pub use super::robj_ndarray::*;
 #[cfg(feature = "ndarray")]
 pub use ndarray::*;
 
-pub use extendr_macros::{extendr, extendr_module, pairlist, Rraw, R, call};
+pub use extendr_macros::{call, extendr, extendr_module, pairlist, Rraw, R};
 
 pub use super::iter::{Int, Logical, Real, StrIter};
 
