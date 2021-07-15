@@ -257,7 +257,7 @@
         <span class="kw">return</span> <span class="macro">quote!</span> { <span class="macro">compile_error!</span>(<span class="string">&quot;where clause not allowed in #[extendr] impl&quot;</span>); }.<span class="ident">into</span>();
     }
 
-    <span class="kw">let</span> <span class="ident">opts</span> <span class="op">=</span> <span class="ident">wrappers::ExtendrOptions</span> {};
+    <span class="kw">let</span> <span class="ident">opts</span> <span class="op">=</span> <span class="ident">wrappers::ExtendrOptions::default</span>();
     <span class="kw">let</span> <span class="ident">self_ty</span> <span class="op">=</span> <span class="ident">item_impl</span>.<span class="ident">self_ty</span>.<span class="ident">as_ref</span>();
     <span class="kw">let</span> <span class="ident">self_ty_name</span> <span class="op">=</span> <span class="ident">wrappers::type_name</span>(<span class="ident">self_ty</span>);
     <span class="kw">let</span> <span class="ident">prefix</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{}__&quot;</span>, <span class="ident">self_ty_name</span>);

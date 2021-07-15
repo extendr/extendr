@@ -196,6 +196,14 @@
 <span id="193">193</span>
 <span id="194">194</span>
 <span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Conversions to Robj</span>
 
@@ -357,7 +365,15 @@
     };
 }
 
+<span class="macro">impl_option!</span>(<span class="ident">u8</span>);
+<span class="macro">impl_option!</span>(<span class="ident">u16</span>);
+<span class="macro">impl_option!</span>(<span class="ident">u32</span>);
+<span class="macro">impl_option!</span>(<span class="ident">u64</span>);
+<span class="macro">impl_option!</span>(<span class="ident">i8</span>);
+<span class="macro">impl_option!</span>(<span class="ident">i16</span>);
 <span class="macro">impl_option!</span>(<span class="ident">i32</span>);
+<span class="macro">impl_option!</span>(<span class="ident">i64</span>);
+<span class="macro">impl_option!</span>(<span class="ident">f32</span>);
 <span class="macro">impl_option!</span>(<span class="ident">f64</span>);
 <span class="macro">impl_option!</span>(<span class="ident">Bool</span>);
 <span class="macro">impl_option!</span>(<span class="ident">bool</span>);
