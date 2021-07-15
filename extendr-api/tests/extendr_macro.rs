@@ -1,5 +1,4 @@
 use extendr_api::prelude::*;
-use extendr_macros::*;
 
 #[extendr(use_try_from = true)]
 fn test_i32(val: i32) -> i32 {
@@ -39,7 +38,7 @@ fn test_option_i16(val: Option<i16>) -> i16 {
 }
 
 #[test]
-fn happy_path() {
+fn tests_with_successful_outcomes() {
     unsafe {
         test! {
             // Matching integer.
@@ -93,7 +92,7 @@ fn happy_path() {
 // Win32 does not support catch_unwind.
 #[cfg(not(target_arch = "x86"))]
 #[test]
-fn sad_path() {
+fn tests_with_unsuccessful_outcomes() {
     unsafe {
         test! {
             // These should throw R errors.
