@@ -42,6 +42,18 @@ fn bool_scalar(x: bool) -> bool { x }
 #[extendr]
 fn char_scalar(x: String) -> String { x }
 
+/// Convert a vector of doubles to itself
+/// @param x a vector of doubles
+/// @export
+#[extendr]
+fn double_vec(x: Vec<f64>) -> Vec<f64> {x}
+
+/// Convert a vector of ints to itself
+/// @param x a vector of ints
+/// @export
+#[extendr]
+fn int_vec(x: Vec<i32>) -> Vec<i32> {x}
+
 /// Convert a vector of strings to itself
 /// @param x a vector of strings
 /// @export

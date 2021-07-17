@@ -28,10 +28,30 @@ test_that("Conversion of R types to Rust types and vice versa works", {
   expect_error(char_scalar(NA_character_), "Input must not be NA")
   expect_error(char_scalar(c("hello", "world")), "not a string object") # why this error message and not "Input must be of length 1"?
 
+  expect_equal(double_vec(c(0, 1)), c(0, 1))
+  expect_equal(double_vec(c(0, NA_real_)), c(0, NA)) # R type coercion 
+  expect_false(identical(double_vec(NA_real_), NA))
+  expect_error(double_vec("hooey"), "not a floating point vector")
+  expect_error(double_vec(c("more", "hooey")), "not a floating point vector")
+  expect_error(double_vec(15L), "not a floating point vector")
+  expect_error(double_vec(TRUE), "not a floating point vector")
+  expect_error(double_vec(NA), "not a floating point vector")
+  expect_error(double_vec(NULL), "not a floating point vector")
+
+  expect_equal(int_vec(c(0L, 1L)), c(0L, 1L))
+  expect_equal(int_vec(c(0L, TRUE)), c(0L, 1L)) # R type conversion
+  expect_equal(int_vec(c(0L, NA_integer_)), c(0L, NA_integer_)) 
+  expect_error(int_vec(c(0L, 0)), "not an integer or logical vector")
+  expect_error(int_vec(TRUE), "not an integer or logical vector") # awkward err msg here because of R type conversion behavior. change?
+  expect_error(int_vec(.45), "not an integer or logical vector")
+  expect_error(int_vec("hooey"), "not an integer or logical vector")
+  expect_error(int_vec(NA_character_), "not an integer or logical vector")
+
   expect_equal(char_vec(c("hello", "world")), c("hello", "world"))
   expect_error(char_vec(.45), "Input must be a character vector")
   expect_error(char_vec(15L), "Input must be a character vector")
   expect_error(char_vec(TRUE), "Input must be a character vector")
+  # Is it indended that character vectors reject NA when others do not? see above
   expect_error(char_vec(NA_character_), "Input must be a character vector. Got 'NA'.")
   expect_error(char_vec(c("hello", NA)), "Input vector cannot contain NA's")
 })
