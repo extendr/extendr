@@ -15,6 +15,12 @@ impl Pairlist {
     ///     let pairs = (0..100).map(|i| (format!("n{}", i), i));
     ///     let pairlist = Pairlist::from_pairs(pairs);
     ///     assert_eq!(pairlist.len(), 100);
+    ///
+    ///     // Use "" to indicate the absense of the name
+    ///     let unnamed_pairlist = Pairlist::from_pairs([("", "a"), ("", "b")]);
+    ///     assert_eq!(call!("names", unnamed_pairlist)?, r!(NULL));
+    ///     let unnamed_pairlist_r = R!(pairlist("a", "b"))?.as_pairlist().unwrap();
+    ///     assert_eq!(unnamed_pairlist_r.names().collect::<Vec<_>>(), vec!["", ""]);
     /// }
     /// ```
     pub fn from_pairs<NV>(pairs: NV) -> Self
@@ -31,7 +37,7 @@ impl Pairlist {
                 let val = Rf_protect(val.get());
                 res = Rf_protect(Rf_cons(val, res));
                 num_protects += 2;
-                if !name.is_unbound_value() {
+                if let Some(name) = name {
                     SET_TAG(res, name.get());
                 }
             }
@@ -126,7 +132,8 @@ impl Iterator for PairlistIter {
                     let name = to_str(R_CHAR(printname) as *const u8);
                     Some((std::mem::transmute(name), value))
                 } else {
-                    Some((na_str(), value))
+                    // empty string represents the absense of the name
+                    Some(("", value))
                 }
             }
         }

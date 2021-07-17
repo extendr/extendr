@@ -200,7 +200,7 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let names_and_values = vec![("a", r!(1)), ("b", r!(2)), (na_str(), r!(3))];
+    ///     let names_and_values = vec![("a", r!(1)), ("b", r!(2)), ("", r!(3))];
     ///     let pairlist = Pairlist::from_pairs(names_and_values);
     ///     let robj = r!(pairlist.clone());
     ///     assert_eq!(robj.as_pairlist().unwrap(), pairlist);
@@ -272,7 +272,7 @@ impl Robj {
 }
 
 pub trait SymPair {
-    fn sym_pair(self) -> (Robj, Robj);
+    fn sym_pair(self) -> (Option<Robj>, Robj);
 }
 
 impl<S, R> SymPair for (S, R)
@@ -280,8 +280,15 @@ where
     S: AsRef<str>,
     R: Into<Robj>,
 {
-    fn sym_pair(self) -> (Robj, Robj) {
-        (r!(Symbol::from_string(self.0.as_ref())), self.1.into())
+    fn sym_pair(self) -> (Option<Robj>, Robj) {
+        let val = self.0.as_ref();
+        // "" represents the absense of the name
+        let nm = if val.is_empty() {
+            None
+        } else {
+            Some(r!(Symbol::from_string(val)))
+        };
+        (nm, self.1.into())
     }
 }
 
@@ -291,10 +298,13 @@ where
     R: Into<Robj>,
     R: Clone,
 {
-    fn sym_pair(self) -> (Robj, Robj) {
-        (
-            r!(Symbol::from_string(self.0.as_ref())),
-            self.1.clone().into(),
-        )
+    fn sym_pair(self) -> (Option<Robj>, Robj) {
+        let val = self.0.as_ref();
+        let nm = if val.is_empty() {
+            None
+        } else {
+            Some(r!(Symbol::from_string(val)))
+        };
+        (nm, self.1.clone().into())
     }
 }
