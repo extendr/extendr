@@ -150,7 +150,7 @@ impl IntoIterator for Pairlist {
     /// test! {
     ///     let pairlist = pairlist!(a=1, 2).as_pairlist().unwrap();
     ///     let vec : Vec<_> = pairlist.into_iter().collect();
-    ///     assert_eq!(vec, vec![("a", r!(1)), (na_str(), r!(2))]);
+    ///     assert_eq!(vec, vec![("a", r!(1)), ("", r!(2))]);
     /// }
     /// ```
     fn into_iter(self) -> Self::IntoIter {
