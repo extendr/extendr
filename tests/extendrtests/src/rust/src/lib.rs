@@ -162,6 +162,9 @@ extendr_module! {
     fn int_scalar;
     fn bool_scalar;
     fn char_scalar;
+    
+    fn double_vec;
+    fn int_vec;
     fn char_vec;
     
     fn special_param_names;

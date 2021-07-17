@@ -36,6 +36,16 @@ bool_scalar <- function(x) .Call(wrap__bool_scalar, x)
 #' @export
 char_scalar <- function(x) .Call(wrap__char_scalar, x)
 
+#' Convert a vector of doubles to itself
+#' @param x a vector of doubles
+#' @export
+double_vec <- function(x) .Call(wrap__double_vec, x)
+
+#' Convert a vector of ints to itself
+#' @param x a vector of ints
+#' @export
+int_vec <- function(x) .Call(wrap__int_vec, x)
+
 #' Convert a vector of strings to itself
 #' @param x a vector of strings
 #' @export
