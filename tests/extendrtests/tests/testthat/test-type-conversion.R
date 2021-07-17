@@ -39,12 +39,24 @@ test_that("From conversion of R types to Rust types and vice versa works", {
   expect_error(double_vec(NA), "not a floating point vector")
   expect_error(double_vec(NULL), "not a floating point vector")
 
+  expect_equal(double_slice(c(0, 1)), c(0, 1))
+  expect_equal(double_slice(numeric()), numeric())
+  expect_equal(double_slice(c(0, NA_real_)), c(0, NA)) # R type coercion 
+  expect_false(identical(double_slice(NA_real_), NA))
+  expect_error(double_slice(c("more", "hooey")), "Expected a vector type.")
+  expect_error(double_slice(15L), "Expected a vector type.")
+  expect_error(double_slice(TRUE), "Expected a vector type.")
+  expect_error(double_slice(NA), "Expected a vector type.")
+  expect_error(double_slice(NULL), "Expected a vector type.")
+
   expect_equal(int_vec(c(0L, 1L)), c(0L, 1L))
   expect_equal(int_vec(integer()), integer())
-  expect_equal(int_vec(c(0L, TRUE)), c(0L, 1L)) # R type conversion
+  # R type conversion
+  expect_equal(int_vec(c(0L, TRUE)), c(0L, 1L)) 
   expect_equal(int_vec(c(0L, NA_integer_)), c(0L, NA_integer_)) 
   expect_error(int_vec(c(0L, 0)), "not an integer or logical vector")
-  expect_error(int_vec(TRUE), "not an integer or logical vector") # awkward err msg here because of R type conversion behavior. change?
+  # awkward err msg here because of R type conversion behavior 
+  expect_error(int_vec(TRUE), "not an integer or logical vector") 
   expect_error(int_vec(.45), "not an integer or logical vector")
   expect_error(int_vec(c("more", "hooey")), "not an integer or logical vector")
   expect_error(int_vec(NA_character_), "not an integer or logical vector")
@@ -54,14 +66,16 @@ test_that("From conversion of R types to Rust types and vice versa works", {
   expect_error(char_string_vec(.45), "Input must be a character vector")
   expect_error(char_string_vec(15L), "Input must be a character vector")
   expect_error(char_string_vec(TRUE), "Input must be a character vector")
-  # Is it indended that character vectors reject NA when others do not? see above
+  # Is it indended that character vectors reject NA when other types do not? see above
   expect_error(char_string_vec(NA_character_), "Input must be a character vector. Got 'NA'.")
   expect_error(char_string_vec(c("hello", NA)), "Input vector cannot contain NA's")
 
-  # Test matrices and arrays
-  # TODO:
+  # From matrices and arrays
+  # see force panicked tests below
+  
+  x <- matrix(as.numeric(1:50), ncol = 5)
 
-  # Test non-atomic types
+  # From non-atomic types
 
   x <- list(a = 1, b = NA_integer_, u = data.frame(a = 1:4),
             v = c(1, 2), z = "who", f = function(x) x^2)
@@ -83,12 +97,11 @@ test_that("From conversion of R types to Rust types and vice versa works", {
   expect_error(list_str_hash(NA), "expected a list")
   expect_error(list_str_hash(e), "expected a list")
 
-
   # Forced failures for unimplemented conversions
   expect_success(list_string_hash())
   expect_success(char_str_vec())
   expect_success(bool_vec())
-
+  expect_success(double_mat())
 })
 
 test_that("TryFrom conversions work", {
@@ -160,7 +173,7 @@ test_that("TryFrom conversions work", {
   expect_error(try_char_vec(NA_character_), "Must not be NA")
   expect_error(try_char_vec(c("hello", NA)), "Must not be NA")
 
-  # Test matrices and arrays
+  # Test slices, matrices and arrays
   # TODO:
 
   # Test non-atomic types

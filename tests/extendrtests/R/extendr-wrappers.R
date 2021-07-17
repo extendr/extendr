@@ -61,6 +61,16 @@ char_str_vec <- function() invisible(.Call(wrap__char_str_vec))
 #' @export
 bool_vec <- function() invisible(.Call(wrap__bool_vec))
 
+#' Convert a numeric vector to itself
+#' @param x a numeric vector
+#' @export
+double_slice <- function(x) .Call(wrap__double_slice, x)
+
+#' Convert a numeric matrix RArray RArray<&[f64], [usize;2]> and back
+#' @param x a numeric matrix
+#' @export
+double_mat <- function() invisible(.Call(wrap__double_mat))
+
 #' Convert a list to a HashMap<&str, Robj> in rust and back. Does not preserve list order
 #' @param x a list
 #' @export

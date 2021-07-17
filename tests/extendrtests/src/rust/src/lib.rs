@@ -82,7 +82,21 @@ fn bool_vec() {
 }
 
 
-// TODO matrices and arrays
+// From slices, matrices and arrays
+
+/// Convert a numeric vector to itself
+/// @param x a numeric vector
+/// @export
+#[extendr]
+fn double_slice(x: &[f64]) -> &[f64] {x}
+
+/// Convert a numeric matrix RArray RArray<&[f64], [usize;2]> and back
+/// @param x a numeric matrix
+/// @export
+#[extendr]
+fn double_mat() {
+    todo!("Robj in RArray<T, D> doesn't satisfy AsTypedSlice, in extendr-api/src/wrapper/matrix.rs")
+}
 
 // Non-atomic types
 
@@ -102,11 +116,9 @@ fn list_string_hash() {
 }
 
 
-
 // TryFrom
 // functions to test input/output conversion
 // atomic types
-// TODO Vec<bool>
 
 /// Convert a double scalar to itself
 /// @param x a number
@@ -287,9 +299,12 @@ extendr_module! {
     fn char_str_vec;
     fn bool_vec;
     
+    fn double_slice;
+    fn double_mat;
+
     fn list_str_hash;
     fn list_string_hash;
- 
+
     fn try_double_scalar;
     fn try_int_scalar;
     fn try_bool_scalar;
