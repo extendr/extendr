@@ -22,34 +22,104 @@ do_nothing <- function() invisible(.Call(wrap__do_nothing))
 double_scalar <- function(x) .Call(wrap__double_scalar, x)
 
 #' Convert an int scalar to itself
-#' @param x a number
+#' @param x an integer
 #' @export
 int_scalar <- function(x) .Call(wrap__int_scalar, x)
 
 #' Convert a bool scalar to itself
-#' @param x a number
+#' @param x a logical
 #' @export
 bool_scalar <- function(x) .Call(wrap__bool_scalar, x)
+
+#' Convert a length-one character type in R to String and back
+#' @param x a length-one character type in R
+#' @export
+char_scalar <- function(x) .Call(wrap__char_scalar, x)
+
+#' Convert a numeric vector to itself
+#' @param x a numeric vector
+#' @export
+double_vec <- function(x) .Call(wrap__double_vec, x)
+
+#' Convert an integer vector to itself
+#' @param x an integer vector
+#' @export
+int_vec <- function(x) .Call(wrap__int_vec, x)
+
+#' Convert a character vector in R to Vec<String> and back
+#' @param x a character vector
+#' @export
+char_string_vec <- function(x) .Call(wrap__char_string_vec, x)
+
+#' Convert a character vector in R to Vec<String> and back
+#' @param x a character vector
+#' @export
+char_str_vec <- function() invisible(.Call(wrap__char_str_vec))
+
+#' Convert a logical vector to itself
+#' @param x a logical vector
+#' @export
+bool_vec <- function() invisible(.Call(wrap__bool_vec))
+
+#' Convert a list to a HashMap<&str, Robj> in rust and back. Does not preserve list order
+#' @param x a list
+#' @export
+list_str_hash <- function(x) .Call(wrap__list_str_hash, x)
+
+#' Convert a list to a HashMap<String, Robj> in rust and back. Does not preserve list order
+#' @param x a list
+#' @export
+list_string_hash <- function() invisible(.Call(wrap__list_string_hash))
+
+#' Convert a double scalar to itself
+#' @param x a number
+#' @export
+try_double_scalar <- function(x) .Call(wrap__try_double_scalar, x)
+
+#' Convert an int scalar to itself
+#' @param x a number
+#' @export
+try_int_scalar <- function(x) .Call(wrap__try_int_scalar, x)
+
+#' Convert a bool scalar to itself
+#' @param x a number
+#' @export
+try_bool_scalar <- function(x) .Call(wrap__try_bool_scalar, x)
 
 #' Convert a string to itself
 #' @param x a string
 #' @export
-char_scalar <- function(x) .Call(wrap__char_scalar, x)
+try_char_scalar <- function(x) .Call(wrap__try_char_scalar, x)
 
 #' Convert a vector of doubles to itself
 #' @param x a vector of doubles
 #' @export
-double_vec <- function(x) .Call(wrap__double_vec, x)
+try_double_vec <- function(x) .Call(wrap__try_double_vec, x)
 
 #' Convert a vector of ints to itself
 #' @param x a vector of ints
 #' @export
-int_vec <- function(x) .Call(wrap__int_vec, x)
+try_int_vec <- function(x) .Call(wrap__try_int_vec, x)
 
 #' Convert a vector of strings to itself
 #' @param x a vector of strings
 #' @export
-char_vec <- function(x) .Call(wrap__char_vec, x)
+try_char_vec <- function(x) .Call(wrap__try_char_vec, x)
+
+#' Convert a logical vector to itself
+#' @param x a logical vector
+#' @export
+try_bool_vec <- function() invisible(.Call(wrap__try_bool_vec))
+
+#' Convert a list to a HashMap<&str, Robj> in rust and back. Does not preserve list order
+#' @param x a list
+#' @export
+try_list_str_hash <- function(x) .Call(wrap__try_list_str_hash, x)
+
+#' Convert a list to a HashMap<String, Robj> in rust and back. Does not preserve list order
+#' @param x a list
+#' @export
+try_list_string_hash <- function() invisible(.Call(wrap__try_list_string_hash))
 
 #' Test whether `_arg` parameters are treated correctly in R
 #' Executes \code{`_x` - `_y`}

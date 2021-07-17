@@ -1,6 +1,7 @@
 use extendr_api::prelude::*;
 mod submodule;
 use submodule::*;
+use std::collections::HashMap;
 
 /// Return string `"Hello world!"` to R.
 /// @export
@@ -15,8 +16,12 @@ fn hello_world() -> &'static str {
 fn do_nothing() {
 }
 
+// Conversions
 
+// From
 // functions to test input/output conversion
+// atomic types
+// TODO Vec<bool>, HashMap<String, Robj>
 
 /// Convert a double scalar to itself
 /// @param x a number
@@ -25,43 +30,156 @@ fn do_nothing() {
 fn double_scalar(x: f64) -> f64 { x }
 
 /// Convert an int scalar to itself
-/// @param x a number
+/// @param x an integer
 /// @export
 #[extendr]
 fn int_scalar(x: i32) -> i32 { x }
 
 /// Convert a bool scalar to itself
-/// @param x a number
+/// @param x a logical
 /// @export
 #[extendr]
 fn bool_scalar(x: bool) -> bool { x }
 
-/// Convert a string to itself
-/// @param x a string
+/// Convert a length-one character type in R to String and back
+/// @param x a length-one character type in R
 /// @export
 #[extendr]
 fn char_scalar(x: String) -> String { x }
 
-/// Convert a vector of doubles to itself
-/// @param x a vector of doubles
+/// Convert a numeric vector to itself
+/// @param x a numeric vector
 /// @export
 #[extendr]
 fn double_vec(x: Vec<f64>) -> Vec<f64> {x}
 
-/// Convert a vector of ints to itself
-/// @param x a vector of ints
+/// Convert an integer vector to itself
+/// @param x an integer vector
 /// @export
 #[extendr]
 fn int_vec(x: Vec<i32>) -> Vec<i32> {x}
 
+/// Convert a character vector in R to Vec<String> and back
+/// @param x a character vector
+/// @export
+#[extendr]
+fn char_string_vec(x: Vec<String>) -> Vec<String> {x}
+
+/// Convert a character vector in R to Vec<String> and back
+/// @param x a character vector
+/// @export
+#[extendr]
+fn char_str_vec() {
+    todo!("FromRobj not found for Vec<&str>")
+}
+
+/// Convert a logical vector to itself
+/// @param x a logical vector
+/// @export
+#[extendr]
+fn bool_vec() {
+    todo!("FromRobj not found for Vec<bool>")
+}
+
+
+// TODO matrices and arrays
+
+// Non-atomic types
+
+/// Convert a list to a HashMap<&str, Robj> in rust and back. Does not preserve list order
+/// @param x a list
+/// @export
+#[extendr]
+fn list_str_hash(x: HashMap<&str, Robj>) -> HashMap<&str, Robj> {x}
+
+/// Convert a list to a HashMap<String, Robj> in rust and back. Does not preserve list order
+/// @param x a list
+/// @export
+#[extendr]
+fn list_string_hash() {
+    // into_robj.rs missing From<HashMap<String, Robj>> for Robj
+    todo!("trait bound `HashMap<String, Robj>: From<HashMap<String, Robj>>` is not satisfied")
+}
+
+
+
+// TryFrom
+// functions to test input/output conversion
+// atomic types
+// TODO Vec<bool>
+
+/// Convert a double scalar to itself
+/// @param x a number
+/// @export
+#[extendr(use_try_from = true)]
+fn try_double_scalar(x: f64) -> f64 { x }
+
+/// Convert an int scalar to itself
+/// @param x a number
+/// @export
+#[extendr(use_try_from = true)]
+fn try_int_scalar(x: i32) -> i32 { x }
+
+/// Convert a bool scalar to itself
+/// @param x a number
+/// @export
+#[extendr(use_try_from = true)]
+fn try_bool_scalar(x: bool) -> bool { x }
+
+/// Convert a string to itself
+/// @param x a string
+/// @export
+#[extendr(use_try_from = true)]
+fn try_char_scalar(x: String) -> String { x }
+
+/// Convert a vector of doubles to itself
+/// @param x a vector of doubles
+/// @export
+#[extendr(use_try_from = true)]
+fn try_double_vec(x: Vec<f64>) -> Vec<f64> {x}
+
+/// Convert a vector of ints to itself
+/// @param x a vector of ints
+/// @export
+#[extendr(use_try_from = true)]
+fn try_int_vec(x: Vec<i32>) -> Vec<i32> {x}
+
 /// Convert a vector of strings to itself
 /// @param x a vector of strings
 /// @export
-#[extendr]
-fn char_vec(x: Vec<String>) -> Vec<String> {x}
+#[extendr(use_try_from = true)]
+fn try_char_vec(x: Vec<String>) -> Vec<String> {x}
+
+/// Convert a logical vector to itself
+/// @param x a logical vector
+/// @export
+#[extendr(use_try_from = true)]
+fn try_bool_vec() {
+    todo!("`From<Robj>` is not implemented for `Vec<bool>`")
+}
+
+
+// Non-atomic types
+
+/// Convert a list to a HashMap<&str, Robj> in rust and back. Does not preserve list order
+/// @param x a list
+/// @export
+#[extendr(use_try_from = true)]
+fn try_list_str_hash(x: HashMap<&str, Robj>) -> HashMap<&str, Robj> {x}
+
+/// Convert a list to a HashMap<String, Robj> in rust and back. Does not preserve list order
+/// @param x a list
+/// @export
+#[extendr(use_try_from = true)]
+fn try_list_string_hash() {
+    todo!("trait bound `HashMap<String, Robj >: From<HashMap<String, Robj>>` is not satisfied")
+}
+
+
 
 // Weird behavior of parameter descriptions:
 // first passes tests as is, second -- only in backqutoes.
+
 /// Test whether `_arg` parameters are treated correctly in R
 /// Executes \code{`_x` - `_y`}
 /// @param _x an integer scalar, ignored
@@ -165,8 +283,26 @@ extendr_module! {
     
     fn double_vec;
     fn int_vec;
-    fn char_vec;
+    fn char_string_vec;
+    fn char_str_vec;
+    fn bool_vec;
     
+    fn list_str_hash;
+    fn list_string_hash;
+ 
+    fn try_double_scalar;
+    fn try_int_scalar;
+    fn try_bool_scalar;
+    fn try_char_scalar;
+    
+    fn try_double_vec;
+    fn try_int_vec;   
+    fn try_char_vec;
+    fn try_bool_vec;
+
+    fn try_list_str_hash;
+    fn try_list_string_hash;
+
     fn special_param_names;
     fn __00__special_function_name;
 

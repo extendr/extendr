@@ -2,13 +2,13 @@
 % Please edit documentation in R/extendr-wrappers.R
 \name{int_vec}
 \alias{int_vec}
-\title{Convert a vector of ints to itself}
+\title{Convert an integer vector to itself}
 \usage{
 int_vec(x)
 }
 \arguments{
-\item{x}{a vector of ints}
+\item{x}{an integer vector}
 }
 \description{
-Convert a vector of ints to itself
+Convert an integer vector to itself
 }

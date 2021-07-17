@@ -2,13 +2,13 @@
 % Please edit documentation in R/extendr-wrappers.R
 \name{double_vec}
 \alias{double_vec}
-\title{Convert a vector of doubles to itself}
+\title{Convert a numeric vector to itself}
 \usage{
 double_vec(x)
 }
 \arguments{
-\item{x}{a vector of doubles}
+\item{x}{a numeric vector}
 }
 \description{
-Convert a vector of doubles to itself
+Convert a numeric vector to itself
 }

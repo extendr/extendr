@@ -2,13 +2,13 @@
 % Please edit documentation in R/extendr-wrappers.R
 \name{char_scalar}
 \alias{char_scalar}
-\title{Convert a string to itself}
+\title{Convert a length-one character type in R to String and back}
 \usage{
 char_scalar(x)
 }
 \arguments{
-\item{x}{a string}
+\item{x}{a length-one character type in R}
 }
 \description{
-Convert a string to itself
+Convert a length-one character type in R to String and back
 }
