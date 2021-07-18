@@ -20,6 +20,7 @@ extendr-api = "*"
 ## Replace by absolute path to simplify testing.
 ## CI overrides this path.
 extendr-api = { path = "../../../../../extendr/extendr-api"}
+libR-sys = { git = "https://github.com/extendr/libR-sys" }
 
 ## Build against current extendr version on github. Not recommended
 ## for development work.
