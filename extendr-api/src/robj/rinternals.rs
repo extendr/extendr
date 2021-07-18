@@ -257,7 +257,7 @@ impl Robj {
     }
 
     /// Copy a vector and resize it.
-    /// See. https://github.com/hadley/r-internals/blob/master/vectors.md
+    /// See. <https://github.com/hadley/r-internals/blob/master/vectors.md>
     pub fn xlengthgets(&self, new_len: usize) -> Result<Robj> {
         unsafe {
             if self.is_vector() {
