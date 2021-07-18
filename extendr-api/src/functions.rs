@@ -113,19 +113,21 @@ pub fn empty_env() -> Environment {
 ///     assert_eq!(env.local(sym!(x)), Ok(r!("hello")));
 /// }
 /// ```
-// TODO: should return Environment?
 #[cfg(use_r_newenv)]
-pub fn new_env(parent: Environment, hash: bool, capacity: i32) -> Robj {
+pub fn new_env(parent: Environment, hash: bool, capacity: i32) -> Environment {
     unsafe {
         let env = R_NewEnv(parent.robj.get(), hash as i32, capacity);
-        new_sys(env)
+        new_sys(env).try_into().unwrap()
     }
 }
 
 // R_NewEnv is available as of R 4.1.0. For the older version, we call an R function `new.env()`.
 #[cfg(not(use_r_newenv))]
-pub fn new_env(parent: Environment, hash: bool, capacity: i32) -> Robj {
-    call!("new.env", hash, parent, capacity).unwrap()
+pub fn new_env(parent: Environment, hash: bool, capacity: i32) -> Environment {
+    call!("new.env", hash, parent, capacity)
+        .unwrap()
+        .try_into()
+        .unwrap()
 }
 
 /// The base environment; formerly R_NilValue

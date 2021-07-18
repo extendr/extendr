@@ -33,15 +33,13 @@ impl Environment {
     /// }
     /// ```
     pub fn new_with_capacity(parent: Environment, capacity: usize) -> Self {
-        let robj = if capacity <= 5 {
+        if capacity <= 5 {
             // Unhashed envirnment
             new_env(parent, false, 0)
         } else {
             // Hashed environment for larger hashmaps.
             new_env(parent, true, capacity as i32 * 2 + 1)
-        };
-        assert!(robj.is_environment());
-        Self { robj }
+        }
     }
 
     /// Make an R environment object.
