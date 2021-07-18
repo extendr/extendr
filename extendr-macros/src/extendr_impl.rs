@@ -62,7 +62,7 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
         return quote! { compile_error!("where clause not allowed in #[extendr] impl"); }.into();
     }
 
-    let opts = wrappers::ExtendrOptions {};
+    let opts = wrappers::ExtendrOptions::default();
     let self_ty = item_impl.self_ty.as_ref();
     let self_ty_name = wrappers::type_name(self_ty);
     let prefix = format!("{}__", self_ty_name);

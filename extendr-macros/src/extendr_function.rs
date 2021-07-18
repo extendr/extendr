@@ -5,7 +5,7 @@ use syn::ItemFn;
 
 /// Generate bindings for a single function.
 pub fn extendr_function(args: Vec<syn::NestedMeta>, func: ItemFn) -> TokenStream {
-    let mut opts = wrappers::ExtendrOptions {};
+    let mut opts = wrappers::ExtendrOptions::default();
 
     for arg in &args {
         parse_options(&mut opts, arg);
@@ -22,16 +22,23 @@ pub fn extendr_function(args: Vec<syn::NestedMeta>, func: ItemFn) -> TokenStream
 }
 
 /// Parse a set of attribute arguments for #[extendr(opts...)]
-pub fn parse_options(_opts: &mut wrappers::ExtendrOptions, _arg: &syn::NestedMeta) {
-    /*use syn::{Lit, Meta, MetaNameValue, NestedMeta};
+pub fn parse_options(opts: &mut wrappers::ExtendrOptions, arg: &syn::NestedMeta) {
+    use syn::{Lit, LitBool, Meta, MetaNameValue, NestedMeta};
 
     match arg {
         NestedMeta::Meta(Meta::NameValue(MetaNameValue {
             ref path,
             eq_token: _,
-            lit: Lit::Str(ref _lit_str),
+            lit,
         })) => {
+            if path.is_ident("use_try_from") {
+                if let Lit::Bool(LitBool { value, .. }) = lit {
+                    opts.use_try_from = *value;
+                }
+            } else {
+                panic!("expected use_try_from");
+            }
         }
         _ => panic!("expected #[extendr(opt = \"string\", ...)]"),
-    }*/
+    }
 }
