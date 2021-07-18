@@ -158,7 +158,15 @@ macro_rules! impl_option {
     };
 }
 
+impl_option!(u8);
+impl_option!(u16);
+impl_option!(u32);
+impl_option!(u64);
+impl_option!(i8);
+impl_option!(i16);
 impl_option!(i32);
+impl_option!(i64);
+impl_option!(f32);
 impl_option!(f64);
 impl_option!(Bool);
 impl_option!(bool);

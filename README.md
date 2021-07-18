@@ -112,15 +112,15 @@ accidental segfaults and failures.
 - [x] Begin documentation.
 - [ ] Begin book-form documentation.
 - [ ] Paper for Bioinformatics.
-- [ ] Build and publish CRAN R package.
+- [x] Build and publish CRAN R package.
 - [ ] Publish Use R! series book.
 
 ### Automation
 - [x] Auto-generate binding wrappers.
-- [ ] Auto-generate NAMESPACE and lib.R.
+- [x] Auto-generate NAMESPACE and lib.R.
 
 ### Features
-- [ ] Feature-gated support for ndarray.
+- [x] Feature-gated support for ndarray.
 - [ ] Feature-gated support for rayon.
 
 ### R packages

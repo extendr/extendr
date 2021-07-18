@@ -5,11 +5,21 @@ pub const META_PREFIX: &str = "meta__";
 pub const WRAP_PREFIX: &str = "wrap__";
 
 #[derive(Debug)]
-pub struct ExtendrOptions {}
+pub struct ExtendrOptions {
+    pub use_try_from: bool,
+}
+
+impl Default for ExtendrOptions {
+    fn default() -> Self {
+        ExtendrOptions {
+            use_try_from: false,
+        }
+    }
+}
 
 // Generate wrappers for a specific function.
 pub fn make_function_wrappers(
-    _opts: &ExtendrOptions,
+    opts: &ExtendrOptions,
     wrappers: &mut Vec<ItemFn>,
     prefix: &str,
     attrs: &[syn::Attribute],
@@ -66,7 +76,7 @@ pub fn make_function_wrappers(
 
     let actual_args: Punctuated<Expr, Token![,]> = inputs
         .iter()
-        .filter_map(|input| translate_actual(input))
+        .filter_map(|input| translate_actual(opts, input))
         .collect();
 
     let meta_args: Vec<Expr> = inputs
@@ -267,14 +277,18 @@ fn translate_to_robj(input: &FnArg) -> syn::Stmt {
 }
 
 // Generate actual argument list for the call (ie. a list of conversions).
-fn translate_actual(input: &FnArg) -> Option<Expr> {
+fn translate_actual(opts: &ExtendrOptions, input: &FnArg) -> Option<Expr> {
     match input {
         FnArg::Typed(ref pattype) => {
             let pat = &pattype.pat.as_ref();
             let ty = &pattype.ty.as_ref();
             if let syn::Pat::Ident(ref ident) = pat {
                 let varname = format_ident!("_{}_robj", ident.ident);
-                Some(parse_quote! { extendr_api::unwrap_or_throw(<#ty>::from_robj(&#varname)) })
+                if opts.use_try_from {
+                    Some(parse_quote! { extendr_api::unwrap_or_throw_error(#varname.try_into()) })
+                } else {
+                    Some(parse_quote! { extendr_api::unwrap_or_throw(<#ty>::from_robj(&#varname)) })
+                }
             } else {
                 None
             }
