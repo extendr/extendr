@@ -60,12 +60,12 @@ impl Environment {
     {
         single_threaded(|| {
             let dict_len = 29;
-            let robj = call!("new.env", TRUE, parent, dict_len).unwrap();
+            let env = new_env(parent, true, dict_len);
             for nv in names_and_values {
                 let (n, v) = nv.sym_pair();
-                unsafe { Rf_defineVar(n.get(), v.get(), robj.get()) }
+                unsafe { Rf_defineVar(n.get(), v.get(), env.get()) }
             }
-            Environment { robj }
+            env
         })
     }
 
