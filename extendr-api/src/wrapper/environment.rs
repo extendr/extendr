@@ -35,10 +35,10 @@ impl Environment {
     pub fn new_with_capacity(parent: Environment, capacity: usize) -> Self {
         let robj = if capacity <= 5 {
             // Unhashed envirnment
-            call!("new.env", FALSE, parent, 0).unwrap()
+            new_env(parent, false, 0)
         } else {
             // Hashed environment for larger hashmaps.
-            call!("new.env", TRUE, parent, capacity as i32 * 2 + 1).unwrap()
+            new_env(parent, true, capacity as i32 * 2 + 1)
         };
         assert!(robj.is_environment());
         Self { robj }

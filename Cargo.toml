@@ -7,4 +7,4 @@ members = [
 ]
 
 [patch.crates-io]
-#libR-sys = { git = "https://github.com/extendr/libR-sys" }
+libR-sys = { git = "https://github.com/extendr/libR-sys" }
