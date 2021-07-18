@@ -114,16 +114,18 @@ pub fn empty_env() -> Environment {
 /// }
 /// ```
 // TODO: should return Environment?
+#[cfg(use_r_newenv)]
 pub fn new_env(parent: Environment, hash: bool, capacity: i32) -> Robj {
-    // TODO: how to detect the R version on compile time?
-    if true {
-        unsafe {
-            let env = R_NewEnv(parent.robj.get(), hash as i32, capacity);
-            new_sys(env)
-        }
-    } else {
-        call!("new.env", hash, parent, capacity).unwrap()
+    unsafe {
+        let env = R_NewEnv(parent.robj.get(), hash as i32, capacity);
+        new_sys(env)
     }
+}
+
+// R_NewEnv is available as of R 4.1.0. For the older version, we call an R function `new.env()`.
+#[cfg(not(use_r_newenv))]
+pub fn new_env(parent: Environment, hash: bool, capacity: i32) -> Robj {
+    call!("new.env", hash, parent, capacity).unwrap()
 }
 
 /// The base environment; formerly R_NilValue
