@@ -185,6 +185,13 @@
 <span id="182">182</span>
 <span id="183">183</span>
 <span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! A pairlist is a linked list of values with optional symbol tags.</span>
 
@@ -203,6 +210,12 @@
     <span class="doccomment">///     let pairs = (0..100).map(|i| (format!(&quot;n{}&quot;, i), i));</span>
     <span class="doccomment">///     let pairlist = Pairlist::from_pairs(pairs);</span>
     <span class="doccomment">///     assert_eq!(pairlist.len(), 100);</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">///     // Use &quot;&quot; to indicate the absense of the name</span>
+    <span class="doccomment">///     let unnamed_pairlist = Pairlist::from_pairs([(&quot;&quot;, &quot;a&quot;), (&quot;&quot;, &quot;b&quot;)]);</span>
+    <span class="doccomment">///     assert_eq!(call!(&quot;names&quot;, unnamed_pairlist)?, r!(NULL));</span>
+    <span class="doccomment">///     let unnamed_pairlist_r = R!(pairlist(&quot;a&quot;, &quot;b&quot;))?.as_pairlist().unwrap();</span>
+    <span class="doccomment">///     assert_eq!(unnamed_pairlist_r.names().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;&quot;, &quot;&quot;]);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_pairs</span><span class="op">&lt;</span><span class="ident">NV</span><span class="op">&gt;</span>(<span class="ident">pairs</span>: <span class="ident">NV</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>
@@ -219,7 +232,7 @@
                 <span class="kw">let</span> <span class="ident">val</span> <span class="op">=</span> <span class="ident">Rf_protect</span>(<span class="ident">val</span>.<span class="ident">get</span>());
                 <span class="ident">res</span> <span class="op">=</span> <span class="ident">Rf_protect</span>(<span class="ident">Rf_cons</span>(<span class="ident">val</span>, <span class="ident">res</span>));
                 <span class="ident">num_protects</span> <span class="op">+</span><span class="op">=</span> <span class="number">2</span>;
-                <span class="kw">if</span> <span class="op">!</span><span class="ident">name</span>.<span class="ident">is_unbound_value</span>() {
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>) <span class="op">=</span> <span class="ident">name</span> {
                     <span class="ident">SET_TAG</span>(<span class="ident">res</span>, <span class="ident">name</span>.<span class="ident">get</span>());
                 }
             }
@@ -314,7 +327,8 @@
                     <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">to_str</span>(<span class="ident">R_CHAR</span>(<span class="ident">printname</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>);
                     <span class="prelude-val">Some</span>((<span class="ident">std::mem::transmute</span>(<span class="ident">name</span>), <span class="ident">value</span>))
                 } <span class="kw">else</span> {
-                    <span class="prelude-val">Some</span>((<span class="ident">na_str</span>(), <span class="ident">value</span>))
+                    <span class="comment">// empty string represents the absense of the name</span>
+                    <span class="prelude-val">Some</span>((<span class="string">&quot;&quot;</span>, <span class="ident">value</span>))
                 }
             }
         }
@@ -331,7 +345,7 @@
     <span class="doccomment">/// test! {</span>
     <span class="doccomment">///     let pairlist = pairlist!(a=1, 2).as_pairlist().unwrap();</span>
     <span class="doccomment">///     let vec : Vec&lt;_&gt; = pairlist.into_iter().collect();</span>
-    <span class="doccomment">///     assert_eq!(vec, vec![(&quot;a&quot;, r!(1)), (na_str(), r!(2))]);</span>
+    <span class="doccomment">///     assert_eq!(vec, vec![(&quot;a&quot;, r!(1)), (&quot;&quot;, r!(2))]);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::IntoIter</span> {

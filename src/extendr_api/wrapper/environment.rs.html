@@ -239,6 +239,8 @@
 <span id="236">236</span>
 <span id="237">237</span>
 <span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
@@ -307,7 +309,9 @@
             <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">call!</span>(<span class="string">&quot;new.env&quot;</span>, <span class="ident">TRUE</span>, <span class="ident">parent</span>, <span class="ident">dict_len</span>).<span class="ident">unwrap</span>();
             <span class="kw">for</span> <span class="ident">nv</span> <span class="kw">in</span> <span class="ident">names_and_values</span> {
                 <span class="kw">let</span> (<span class="ident">n</span>, <span class="ident">v</span>) <span class="op">=</span> <span class="ident">nv</span>.<span class="ident">sym_pair</span>();
-                <span class="kw">unsafe</span> { <span class="ident">Rf_defineVar</span>(<span class="ident">n</span>.<span class="ident">get</span>(), <span class="ident">v</span>.<span class="ident">get</span>(), <span class="ident">robj</span>.<span class="ident">get</span>()) }
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">n</span>) <span class="op">=</span> <span class="ident">n</span> {
+                    <span class="kw">unsafe</span> { <span class="ident">Rf_defineVar</span>(<span class="ident">n</span>.<span class="ident">get</span>(), <span class="ident">v</span>.<span class="ident">get</span>(), <span class="ident">robj</span>.<span class="ident">get</span>()) }
+                }
             }
             <span class="ident">Environment</span> { <span class="ident">robj</span> }
         })

@@ -601,7 +601,7 @@ a new object.</p>
 <div class="example-wrap"><pre class="rust rust-example-rendered">
 <span class="kw">use</span> <span class="ident">extendr_api::prelude</span>::<span class="kw-2">*</span>;
 <span class="macro">test!</span> {
-    <span class="kw">let</span> <span class="ident">names_and_values</span> <span class="op">=</span> <span class="macro">vec!</span>[(<span class="string">&quot;a&quot;</span>, <span class="macro">r!</span>(<span class="number">1</span>)), (<span class="string">&quot;b&quot;</span>, <span class="macro">r!</span>(<span class="number">2</span>)), (<span class="ident">na_str</span>(), <span class="macro">r!</span>(<span class="number">3</span>))];
+    <span class="kw">let</span> <span class="ident">names_and_values</span> <span class="op">=</span> <span class="macro">vec!</span>[(<span class="string">&quot;a&quot;</span>, <span class="macro">r!</span>(<span class="number">1</span>)), (<span class="string">&quot;b&quot;</span>, <span class="macro">r!</span>(<span class="number">2</span>)), (<span class="string">&quot;&quot;</span>, <span class="macro">r!</span>(<span class="number">3</span>))];
     <span class="kw">let</span> <span class="ident">pairlist</span> <span class="op">=</span> <span class="ident">Pairlist::from_pairs</span>(<span class="ident">names_and_values</span>);
     <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r!</span>(<span class="ident">pairlist</span>.<span class="ident">clone</span>());
     <span class="macro">assert_eq!</span>(<span class="ident">robj</span>.<span class="ident">as_pairlist</span>().<span class="ident">unwrap</span>(), <span class="ident">pairlist</span>);
