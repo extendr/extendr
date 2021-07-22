@@ -217,7 +217,7 @@
     <span class="ident">ExpectedSymbol</span>(<span class="ident">Robj</span>),
     <span class="ident">ExpectedPairlist</span>(<span class="ident">Robj</span>),
     <span class="ident">ExpectedFunction</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedEnviroment</span>(<span class="ident">Robj</span>),
+    <span class="ident">ExpectedEnvironment</span>(<span class="ident">Robj</span>),
     <span class="ident">ExpectedPromise</span>(<span class="ident">Robj</span>),
     <span class="ident">ExpectedLanguage</span>(<span class="ident">Robj</span>),
     <span class="ident">ExpectedSpecial</span>(<span class="ident">Robj</span>),
@@ -268,8 +268,8 @@
             <span class="ident">Error::ExpectedSymbol</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Symbol got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
             <span class="ident">Error::ExpectedPairlist</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Pairlist got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
             <span class="ident">Error::ExpectedFunction</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Function got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedEnviroment</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Enviroment got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>())
+            <span class="ident">Error::ExpectedEnvironment</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Environment got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>())
             }
             <span class="ident">Error::ExpectedPromise</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Promise got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
             <span class="ident">Error::ExpectedLanguage</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Language got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),

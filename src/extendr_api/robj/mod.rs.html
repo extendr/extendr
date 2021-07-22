@@ -1323,7 +1323,7 @@
     <span class="doccomment">///     assert_eq!(sym!(xyz).rtype(), RType::Symbol);</span>
     <span class="doccomment">///     assert_eq!(r!(Pairlist::from_pairs(vec![(&quot;a&quot;, r!(1))])).rtype(), RType::Pairlist);</span>
     <span class="doccomment">///     assert_eq!(R!(&quot;function() {}&quot;)?.rtype(), RType::Function);</span>
-    <span class="doccomment">///     assert_eq!(Environment::new_with_parent(global_env()).rtype(), RType::Enviroment);</span>
+    <span class="doccomment">///     assert_eq!(Environment::new_with_parent(global_env()).rtype(), RType::Environment);</span>
     <span class="doccomment">///     assert_eq!(lang!(&quot;+&quot;, 1, 2).rtype(), RType::Language);</span>
     <span class="doccomment">///     assert_eq!(r!(Primitive::from_string(&quot;if&quot;)).rtype(), RType::Special);</span>
     <span class="doccomment">///     assert_eq!(r!(Primitive::from_string(&quot;+&quot;)).rtype(), RType::Builtin);</span>
@@ -1343,7 +1343,7 @@
             <span class="ident">SYMSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Symbol</span>,
             <span class="ident">LISTSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Pairlist</span>,
             <span class="ident">CLOSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Function</span>,
-            <span class="ident">ENVSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Enviroment</span>,
+            <span class="ident">ENVSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Environment</span>,
             <span class="ident">PROMSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Promise</span>,
             <span class="ident">LANGSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Language</span>,
             <span class="ident">SPECIALSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Special</span>,
@@ -2143,11 +2143,11 @@
                 <span class="kw">let</span> <span class="ident">func</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_function</span>().<span class="ident">unwrap</span>();
                 <span class="kw">let</span> <span class="ident">formals</span> <span class="op">=</span> <span class="ident">func</span>.<span class="ident">formals</span>();
                 <span class="kw">let</span> <span class="ident">body</span> <span class="op">=</span> <span class="ident">func</span>.<span class="ident">body</span>();
-                <span class="kw">let</span> <span class="ident">enviroment</span> <span class="op">=</span> <span class="ident">func</span>.<span class="ident">environment</span>();
+                <span class="kw">let</span> <span class="ident">environment</span> <span class="op">=</span> <span class="ident">func</span>.<span class="ident">environment</span>();
                 <span class="macro">write!</span>(
                     <span class="ident">f</span>,
                     <span class="string">&quot;r!(Function::from_parts({:?}, {:?}, {:?}))&quot;</span>,
-                    <span class="ident">formals</span>, <span class="ident">body</span>, <span class="ident">enviroment</span>
+                    <span class="ident">formals</span>, <span class="ident">body</span>, <span class="ident">environment</span>
                 )
             }
             <span class="ident">ENVSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">unsafe</span> {
