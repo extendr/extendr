@@ -100,7 +100,12 @@ macro_rules! make_conversions {
 }
 
 make_conversions!(Pairlist, ExpectedPairlist, is_pairlist, "Not a pairlist");
-make_conversions!(Function, ExpectedFunction, is_function, "Not a function or primitive.");
+make_conversions!(
+    Function,
+    ExpectedFunction,
+    is_function,
+    "Not a function or primitive."
+);
 make_conversions!(Raw, ExpectedRaw, is_raw, "Not a raw object");
 
 make_conversions!(

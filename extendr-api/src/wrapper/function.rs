@@ -95,9 +95,11 @@ impl Function {
         unsafe {
             if self.rtype() == RType::Function {
                 let sexp = self.robj.get();
-                Some(new_owned(CLOENV(sexp))
-                    .try_into()
-                    .expect("Should be an environment"))
+                Some(
+                    new_owned(CLOENV(sexp))
+                        .try_into()
+                        .expect("Should be an environment"),
+                )
             } else {
                 None
             }
