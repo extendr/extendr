@@ -4,15 +4,23 @@ use super::*;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let expr = R!("function(a = 1, b) {c <- a + b}").unwrap();
+///     // Closures are functions.
+///     let expr = R!("function(a = 1, b) {c <- a + b}")?;
 ///     let func = expr.as_function().unwrap();
 ///
 ///     let expected_formals = Pairlist::from_pairs(vec![("a", r!(1.0)), ("b", missing_arg().into())]);
 ///     let expected_body = lang!(
 ///         "{", lang!("<-", sym!(c), lang!("+", sym!(a), sym!(b))));
-///     assert_eq!(func.formals().as_pairlist().unwrap(), expected_formals);
-///     assert_eq!(func.body(), expected_body);
-///     assert_eq!(func.environment(), global_env());
+///     assert_eq!(func.formals().unwrap(), expected_formals);
+///     assert_eq!(func.body().unwrap(), expected_body);
+///     assert_eq!(func.environment().unwrap(), global_env());
+///
+///     // Primitives can also be functions.
+///     let expr = R!("`~`")?;
+///     let func = expr.as_function().unwrap();
+///     assert_eq!(func.formals(), None);
+///     assert_eq!(func.body(), None);
+///     assert_eq!(func.environment(), None);
 /// }
 /// ```
 #[derive(Debug, PartialEq, Clone)]
@@ -52,32 +60,47 @@ impl Function {
     /// }
     /// ```
     pub fn call(&self, args: Pairlist) -> Result<Robj> {
-        self.robj.call(args)
-    }
-
-    /// Get the formal arguments of the function.
-    pub fn formals(&self) -> Pairlist {
         unsafe {
-            let sexp = self.robj.get();
-            new_owned(FORMALS(sexp)).try_into().unwrap()
+            let call = new_owned(Rf_lcons(self.get(), args.get()));
+            call.eval()
         }
     }
 
-    /// Get the body of the function.
-    pub fn body(&self) -> Robj {
+    /// Get the formal arguments of the function or None if it is a primitive.
+    pub fn formals(&self) -> Option<Pairlist> {
         unsafe {
-            let sexp = self.robj.get();
-            new_owned(BODY(sexp))
+            if self.rtype() == RType::Function {
+                let sexp = self.robj.get();
+                Some(new_owned(FORMALS(sexp)).try_into().unwrap())
+            } else {
+                None
+            }
         }
     }
 
-    /// Get the environment of the function.
-    pub fn environment(&self) -> Environment {
+    /// Get the body of the function or None if it is a primitive.
+    pub fn body(&self) -> Option<Robj> {
         unsafe {
-            let sexp = self.robj.get();
-            new_owned(CLOENV(sexp))
-                .try_into()
-                .expect("Should be an environment")
+            if self.rtype() == RType::Function {
+                let sexp = self.robj.get();
+                Some(new_owned(BODY(sexp)))
+            } else {
+                None
+            }
+        }
+    }
+
+    /// Get the environment of the function or None if it is a primitive.
+    pub fn environment(&self) -> Option<Environment> {
+        unsafe {
+            if self.rtype() == RType::Function {
+                let sexp = self.robj.get();
+                Some(new_owned(CLOENV(sexp))
+                    .try_into()
+                    .expect("Should be an environment"))
+            } else {
+                None
+            }
         }
     }
 }
