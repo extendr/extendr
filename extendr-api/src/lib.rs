@@ -181,7 +181,7 @@
 //!     let confint1 = R!(confint(lm(weight ~ group - 1, PlantGrowth)))?;
 //!    
 //!     // As many parameterized calls.
-//!     let formula = call!("~", sym!(weight), lang!("-", sym!(group), 1))?;
+//!     let formula = call!("`~`", sym!(weight), lang!("-", sym!(group), 1))?;
 //!     let plant_growth = global!(PlantGrowth)?;
 //!     let model = call!("lm", formula, plant_growth)?;
 //!     let confint2 = call!("confint", model)?;
