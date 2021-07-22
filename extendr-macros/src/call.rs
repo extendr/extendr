@@ -26,7 +26,12 @@ impl syn::parse::Parse for Call {
 }
 
 pub fn call(item: TokenStream) -> TokenStream {
+    // Get a [Call] object from the input token stream.
+    // This consists of a literal string followed by named or unnamed arguments
+    // as in the pairlist macro.
     let call = parse_macro_input!(item as Call);
+
+    // Convert the pairs into tuples of ("name", Robj::from(value))
     let pairs = call
         .pairs
         .iter()
@@ -41,8 +46,12 @@ pub fn call(item: TokenStream) -> TokenStream {
         })
         .collect::<Vec<Expr>>();
 
+    // us eval_string to convert the literal string into a callable object.
     let caller = &call.caller;
     let caller = quote!(eval_string(#caller));
+
+    // Use the "call" method of Robj to call the function or primitive.
+    // This will error if the object is not callable.
     let res = if pairs.is_empty() {
         quote!(
             (#caller).and_then(|caller| caller.call(Pairlist::new()))
@@ -52,8 +61,6 @@ pub fn call(item: TokenStream) -> TokenStream {
             (#caller).and_then(|caller| caller.call(Pairlist::from_pairs(&[# ( #pairs ),*])))
         )
     };
-
-    // println!("res={}", res.to_string());
 
     TokenStream::from(res)
 }
