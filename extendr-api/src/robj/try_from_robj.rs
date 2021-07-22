@@ -120,7 +120,7 @@ impl TryFrom<Robj> for Vec<f64> {
         if let Some(v) = robj.as_real_slice() {
             Ok(Vec::from(v))
         } else {
-            Err(Error::ExpectedInteger(robj))
+            Err(Error::ExpectedReal(robj))
         }
     }
 }

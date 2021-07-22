@@ -112,7 +112,7 @@ make_conversions!(
 
 make_conversions!(
     Environment,
-    ExpectedEnviroment,
+    ExpectedEnvironment,
     is_environment,
     "Not an Environment"
 );
