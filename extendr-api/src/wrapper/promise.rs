@@ -24,7 +24,6 @@ impl Promise {
             SET_PRCODE(sexp, code.get());
             SET_PRENV(sexp, environment.robj.get());
             SET_PRVALUE(sexp, R_UnboundValue);
-            SET_PRSEEN(sexp, 0);
             Ok(Promise { robj })
         }
     }

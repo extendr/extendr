@@ -37,7 +37,7 @@ pub enum Error {
     ExpectedSymbol(Robj),
     ExpectedPairlist(Robj),
     ExpectedFunction(Robj),
-    ExpectedEnviroment(Robj),
+    ExpectedEnvironment(Robj),
     ExpectedPromise(Robj),
     ExpectedLanguage(Robj),
     ExpectedSpecial(Robj),
@@ -88,8 +88,8 @@ impl std::fmt::Display for Error {
             Error::ExpectedSymbol(robj) => write!(f, "Expected Symbol got {:?}", robj.rtype()),
             Error::ExpectedPairlist(robj) => write!(f, "Expected Pairlist got {:?}", robj.rtype()),
             Error::ExpectedFunction(robj) => write!(f, "Expected Function got {:?}", robj.rtype()),
-            Error::ExpectedEnviroment(robj) => {
-                write!(f, "Expected Enviroment got {:?}", robj.rtype())
+            Error::ExpectedEnvironment(robj) => {
+                write!(f, "Expected Environment got {:?}", robj.rtype())
             }
             Error::ExpectedPromise(robj) => write!(f, "Expected Promise got {:?}", robj.rtype()),
             Error::ExpectedLanguage(robj) => write!(f, "Expected Language got {:?}", robj.rtype()),

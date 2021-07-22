@@ -179,7 +179,7 @@ impl Robj {
     ///     assert_eq!(sym!(xyz).rtype(), RType::Symbol);
     ///     assert_eq!(r!(Pairlist::from_pairs(vec![("a", r!(1))])).rtype(), RType::Pairlist);
     ///     assert_eq!(R!("function() {}")?.rtype(), RType::Function);
-    ///     assert_eq!(Environment::new_with_parent(global_env()).rtype(), RType::Enviroment);
+    ///     assert_eq!(Environment::new_with_parent(global_env()).rtype(), RType::Environment);
     ///     assert_eq!(lang!("+", 1, 2).rtype(), RType::Language);
     ///     assert_eq!(r!(Primitive::from_string("if")).rtype(), RType::Special);
     ///     assert_eq!(r!(Primitive::from_string("+")).rtype(), RType::Builtin);
@@ -199,7 +199,7 @@ impl Robj {
             SYMSXP => RType::Symbol,
             LISTSXP => RType::Pairlist,
             CLOSXP => RType::Function,
-            ENVSXP => RType::Enviroment,
+            ENVSXP => RType::Environment,
             PROMSXP => RType::Promise,
             LANGSXP => RType::Language,
             SPECIALSXP => RType::Special,
@@ -999,11 +999,11 @@ impl std::fmt::Debug for Robj {
                 let func = self.as_function().unwrap();
                 let formals = func.formals();
                 let body = func.body();
-                let enviroment = func.environment();
+                let environment = func.environment();
                 write!(
                     f,
                     "r!(Function::from_parts({:?}, {:?}, {:?}))",
-                    formals, body, enviroment
+                    formals, body, environment
                 )
             }
             ENVSXP => unsafe {
