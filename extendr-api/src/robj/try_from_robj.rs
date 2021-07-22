@@ -84,11 +84,18 @@ impl TryFrom<Robj> for &str {
 
     fn try_from(robj: Robj) -> Result<Self> {
         if robj.is_na() {
-            Err(Error::MustNotBeNA(robj))
-        } else if let Some(s) = robj.as_str() {
-            Ok(s)
-        } else {
-            Err(Error::ExpectedString(robj))
+            return Err(Error::MustNotBeNA(robj));
+        }
+        match robj.len() {
+            0 => Err(Error::ExpectedNonZeroLength(robj)),
+            1 => {
+                if let Some(s) = robj.as_str() {
+                    Ok(s)
+                } else {
+                    Err(Error::ExpectedString(robj))
+                }
+            }
+            _ => Err(Error::ExpectedScalar(robj)),
         }
     }
 }

@@ -63,7 +63,9 @@ impl Environment {
             let env = new_env(parent, true, dict_len);
             for nv in names_and_values {
                 let (n, v) = nv.sym_pair();
-                unsafe { Rf_defineVar(n.get(), v.get(), env.get()) }
+                if let Some(n) = n {
+                    unsafe { Rf_defineVar(n.get(), v.get(), env.get()) }
+                }
             }
             env
         })

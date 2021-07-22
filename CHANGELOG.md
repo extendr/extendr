@@ -22,6 +22,7 @@
 
 - Use Use failure() to trigger steps on failures
 
+- `SymPair::sym_pair()` now returns `(Option<Robj>, Robj)`
 
 ## extendr 0.2.0
 

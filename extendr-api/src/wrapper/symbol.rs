@@ -18,25 +18,17 @@ pub struct Symbol {
 impl Symbol {
     /// Make a symbol object from a string.
     ///
-    /// The values na_str() and "" give unbound_value().
-    ///
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
     ///     let chr = r!(Symbol::from_string("xyz"));
     ///     assert_eq!(chr, sym!(xyz));
-    ///     assert_eq!(Symbol::from_string(na_str()).is_unbound_value(), true);
-    ///     assert_eq!(Symbol::from_string("").is_unbound_value(), true);
     /// }
     /// ```
     pub fn from_string<S: AsRef<str>>(val: S) -> Self {
         let val = val.as_ref();
-        if val.is_empty() || val.is_na() {
-            unbound_value()
-        } else {
-            Symbol {
-                robj: unsafe { new_owned(make_symbol(val)) },
-            }
+        Symbol {
+            robj: unsafe { new_owned(make_symbol(val)) },
         }
     }
 
