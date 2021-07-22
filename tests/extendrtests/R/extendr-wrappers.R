@@ -8,38 +8,27 @@
 #' @useDynLib extendrtests, .registration = TRUE
 NULL
 
-#' Return string `"Hello world!"` to R.
-#' @export
 hello_world <- function() .Call(wrap__hello_world)
 
-#' Do nothing.
-#' @export
 do_nothing <- function() invisible(.Call(wrap__do_nothing))
 
-#' Convert a double scalar to itself
-#' @param x a number
-#' @export
 double_scalar <- function(x) .Call(wrap__double_scalar, x)
 
-#' Convert an int scalar to itself
-#' @param x a number
-#' @export
 int_scalar <- function(x) .Call(wrap__int_scalar, x)
 
-#' Convert a bool scalar to itself
-#' @param x a number
-#' @export
 bool_scalar <- function(x) .Call(wrap__bool_scalar, x)
 
-#' Convert a string to itself
-#' @param x a string
-#' @export
 char_scalar <- function(x) .Call(wrap__char_scalar, x)
 
-#' Convert a vector of strings to itself
-#' @param x a vector of strings
-#' @export
 char_vec <- function(x) .Call(wrap__char_vec, x)
+
+double_vec <- function(x) .Call(wrap__double_vec, x)
+
+list_str_hash <- function(x) .Call(wrap__list_str_hash, x)
+
+try_double_vec <- function(x) .Call(wrap__try_double_vec, x)
+
+try_list_str_hash <- function(x) .Call(wrap__try_list_str_hash, x)
 
 #' Test whether `_arg` parameters are treated correctly in R
 #' Executes \code{`_x` - `_y`}

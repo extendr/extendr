@@ -140,7 +140,7 @@ impl Environment {
         self.iter().map(|(k, _)| k)
     }
 
-    /// Set or define a variable in an enviroment.
+    /// Set or define a variable in an environment.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -160,7 +160,7 @@ impl Environment {
         }
     }
 
-    /// Get a variable from an enviroment, but not its ancestors.
+    /// Get a variable from an environment, but not its ancestors.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {

@@ -399,7 +399,7 @@ pub enum RType {
     Symbol,      // SYMSXP
     Pairlist,    // LISTSXP
     Function,    // CLOSXP
-    Enviroment,  // ENVSXP
+    Environment, // ENVSXP
     Promise,     // PROMSXP
     Language,    // LANGSXP
     Special,     // SPECIALSXP

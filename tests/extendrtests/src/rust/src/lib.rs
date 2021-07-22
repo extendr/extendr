@@ -1,52 +1,79 @@
 use extendr_api::prelude::*;
 mod submodule;
 use submodule::*;
+use std::collections::HashMap;
 
-/// Return string `"Hello world!"` to R.
-/// @export
+// Return string `"Hello world!"` to R.
 #[extendr]
 fn hello_world() -> &'static str {
     "Hello world!"
 }
 
-/// Do nothing.
-/// @export
+// Do nothing.
 #[extendr]
 fn do_nothing() {
 }
 
 
-// functions to test input/output conversion
+// From: input/output conversion
 
-/// Convert a double scalar to itself
-/// @param x a number
-/// @export
+// Atomic types
+
+// Convert a double scalar to itself
+// x a number
 #[extendr]
 fn double_scalar(x: f64) -> f64 { x }
 
-/// Convert an int scalar to itself
-/// @param x a number
-/// @export
+// Convert an int scalar to itself
+// x a number
 #[extendr]
 fn int_scalar(x: i32) -> i32 { x }
 
-/// Convert a bool scalar to itself
-/// @param x a number
-/// @export
+// Convert a bool scalar to itself
+// x a number
 #[extendr]
 fn bool_scalar(x: bool) -> bool { x }
 
-/// Convert a string to itself
-/// @param x a string
-/// @export
+// Convert a string to itself
+// x a string
 #[extendr]
 fn char_scalar(x: String) -> String { x }
 
-/// Convert a vector of strings to itself
-/// @param x a vector of strings
-/// @export
+// Convert a vector of strings to itself
+// x a vector of strings
 #[extendr]
 fn char_vec(x: Vec<String>) -> Vec<String> {x}
+
+// Convert a numeric vector to itself
+// x a numeric vector
+#[extendr]
+fn double_vec(x: Vec<f64>) -> Vec<f64> {x}
+
+
+// Non-atomic types
+
+// Convert a list to a HashMap<&str, Robj> in rust and back. Does not preserve list order
+// x a list
+#[extendr]
+fn list_str_hash(x: HashMap<&str, Robj>) -> HashMap<&str, Robj> {x}
+
+// TryFrom: conversions
+
+// Atomic types
+
+// Convert a vector of doubles to itself
+// x a vector of doubles
+#[extendr(use_try_from = true)]
+fn try_double_vec(x: Vec<f64>) -> Vec<f64> {x}
+
+// Non-atomic types
+
+// Convert a list to a HashMap<&str, Robj> in rust and back. Does not preserve list order
+// x a list
+#[extendr(use_try_from = true)]
+fn try_list_str_hash(x: HashMap<&str, Robj>) -> HashMap<&str, Robj> {x}
+
+// Parsing
 
 // Weird behavior of parameter descriptions:
 // first passes tests as is, second -- only in backqutoes.
@@ -150,8 +177,15 @@ extendr_module! {
     fn int_scalar;
     fn bool_scalar;
     fn char_scalar;
-    fn char_vec;
     
+    fn char_vec;
+    fn double_vec;
+
+    fn list_str_hash;
+
+    fn try_double_vec;
+    fn try_list_str_hash;
+
     fn special_param_names;
     fn __00__special_function_name;
 
