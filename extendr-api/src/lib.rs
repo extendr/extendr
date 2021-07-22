@@ -178,7 +178,7 @@
 //! test! {
 //!
 //!     // As one R! macro call
-//!     let confint1 = R!(confint(lm(weight ~ group - 1, PlantGrowth)))?;
+//!     let confint1 = R!("confint(lm(weight ~ group - 1, PlantGrowth))")?;
 //!    
 //!     // As many parameterized calls.
 //!     let formula = lang!("~", sym!(weight), lang!("-", sym!(group), 1.0)).set_class(["formula"])?;
@@ -758,12 +758,12 @@ mod tests {
         //
 
         test! {
-            let txt_con = R!(textConnection("test_con", open = "w")).unwrap();
+            let txt_con = R!(r#"textConnection("test_con", open = "w")"#).unwrap();
             call!("sink", &txt_con).unwrap();
             rprintln!("Hello world");
             call!("sink").unwrap();
             call!("close", &txt_con).unwrap();
-            let result = R!(test_con).unwrap();
+            let result = R!("test_con").unwrap();
             assert_eq!(result, r!("Hello world"));
         }
     }

@@ -24,7 +24,7 @@ impl Pairlist {
     ///     // Use "" to indicate the absense of the name
     ///     let unnamed_pairlist = Pairlist::from_pairs([("", "a"), ("", "b")]);
     ///     assert_eq!(call!("names", unnamed_pairlist)?, r!(NULL));
-    ///     let unnamed_pairlist_r = R!(pairlist("a", "b"))?.as_pairlist().unwrap();
+    ///     let unnamed_pairlist_r = R!(r#"pairlist("a", "b")"#)?.as_pairlist().unwrap();
     ///     assert_eq!(unnamed_pairlist_r.names().collect::<Vec<_>>(), vec!["", ""]);
     /// }
     /// ```

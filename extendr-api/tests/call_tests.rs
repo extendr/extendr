@@ -4,7 +4,7 @@ use extendr_api::prelude::*;
 fn formula_test() {
     test! {
         // As one R! macro call
-        let confint1 = R!(confint(lm(weight ~ group - 1, PlantGrowth)))?;
+        let confint1 = R!("confint(lm(weight ~ group - 1, PlantGrowth))")?;
 
         // As many parameterized calls.
         let formula = lang!("~", sym!(weight), lang!("-", sym!(group), 1.0)).set_class(["formula"])?;

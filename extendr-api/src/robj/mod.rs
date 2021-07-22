@@ -828,7 +828,7 @@ impl Robj {
     /// use extendr_api::prelude::*;
     /// test! {
     ///
-    ///    let array = R!(array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c("x", "y"), c("a","b")))).unwrap();
+    ///    let array = R!(r#"array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c("x", "y"), c("a","b")))"#).unwrap();
     ///    let dim : Vec<_> = array.dim().unwrap().collect();
     ///    assert_eq!(dim, vec![2, 2]);
     /// }
@@ -845,7 +845,7 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let array = R!(array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c("x", "y"), c("a","b")))).unwrap();
+    ///    let array = R!(r#"array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c("x", "y"), c("a","b")))"#).unwrap();
     ///    let names : Vec<_> = array.dimnames().unwrap().collect();
     ///    assert_eq!(names, vec![r!(["x", "y"]), r!(["a", "b"])]);
     /// }

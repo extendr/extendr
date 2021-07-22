@@ -55,7 +55,7 @@ impl Function {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let function = R!(function(a, b) a + b).unwrap().as_function().unwrap();
+    ///     let function = R!("function(a, b) a + b").unwrap().as_function().unwrap();
     ///     assert_eq!(function.call(pairlist!(a=1, b=2)).unwrap(), r!(3));
     /// }
     /// ```
