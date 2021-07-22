@@ -112,10 +112,10 @@ fn test_call_macro() {
     test! {
         let vec = call!("c", 1.0, 2.0, 3.0).unwrap();
         assert_eq!(vec, r!([1., 2., 3.]));
-    
+
         let list = call!("list", a=1, b=2).unwrap();
         assert_eq!(list.len(), 2);
-    
+
         let three = call!("`+`", 1, 2).unwrap();
         assert_eq!(three, r!(3));
     }
