@@ -38,15 +38,17 @@ pub fn call(item: TokenStream) -> TokenStream {
         .map(|e| {
             if let Expr::Assign(ExprAssign { left, right, .. }) = e {
                 if let Expr::Path(ExprPath { path, .. }) = &**left {
-                    let s = path.get_ident().unwrap().to_string();
-                    return parse_quote!( (#s, extendr_api::Robj::from(#right)) );
+                    if let Some(ident) = path.get_ident() {
+                        let s = ident.to_string();
+                        return parse_quote!( (#s, extendr_api::Robj::from(#right)) );
+                    }
                 }
             }
             parse_quote!( ("", extendr_api::Robj::from(#e)) )
         })
         .collect::<Vec<Expr>>();
 
-    // us eval_string to convert the literal string into a callable object.
+    // Use eval_string to convert the literal string into a callable object.
     let caller = &call.caller;
     let caller = quote!(eval_string(#caller));
 
