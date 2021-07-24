@@ -225,12 +225,13 @@ fn test_to_robj() {
         assert_eq!(Robj::from(true), Robj::from([Bool::from(true)]));
         //assert_eq!(Robj::from(1_u8), Robj::from(1));
         assert_eq!(Robj::from(1_u16), Robj::from(1));
-        assert_eq!(Robj::from(1_u32), Robj::from(1));
-        assert_eq!(Robj::from(1_u64), Robj::from(1));
+        assert_eq!(Robj::from(1_u32), Robj::from(1.));
+        assert_eq!(Robj::from(1_u64), Robj::from(1.));
+        assert_eq!(Robj::from(1_usize), Robj::from(1.));
         assert_eq!(Robj::from(1_i8), Robj::from(1));
         assert_eq!(Robj::from(1_i16), Robj::from(1));
         assert_eq!(Robj::from(1_i32), Robj::from(1));
-        assert_eq!(Robj::from(1_i64), Robj::from(1));
+        assert_eq!(Robj::from(1_i64), Robj::from(1.));
         assert_eq!(Robj::from(1.0_f32), Robj::from(1.));
         assert_eq!(Robj::from(1.0_f64), Robj::from(1.));
 
