@@ -541,6 +541,9 @@
 <span id="538">538</span>
 <span id="539">539</span>
 <span id="540">540</span>
+<span id="541">541</span>
+<span id="542">542</span>
+<span id="543">543</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="kw">crate</span><span class="ident">::single_threaded</span>;
@@ -694,6 +697,12 @@
 
 <span class="macro">impl_real_tvv!</span>(<span class="ident">f64</span>);
 <span class="macro">impl_real_tvv!</span>(<span class="ident">f32</span>);
+
+<span class="comment">// Since these types might exceeds the max or min of R&#39;s 32bit integer, we need</span>
+<span class="comment">// to return as REALSXP</span>
+<span class="macro">impl_real_tvv!</span>(<span class="ident">i64</span>);
+<span class="macro">impl_real_tvv!</span>(<span class="ident">u32</span>);
+<span class="macro">impl_real_tvv!</span>(<span class="ident">u64</span>);
 <span class="macro">impl_real_tvv!</span>(<span class="ident">usize</span>);
 
 <span class="macro">macro_rules!</span> <span class="ident">impl_integer_tvv</span> {
@@ -737,11 +746,8 @@
 <span class="macro">impl_integer_tvv!</span>(<span class="ident">i8</span>);
 <span class="macro">impl_integer_tvv!</span>(<span class="ident">i16</span>);
 <span class="macro">impl_integer_tvv!</span>(<span class="ident">i32</span>);
-<span class="macro">impl_integer_tvv!</span>(<span class="ident">i64</span>);
 <span class="macro">impl_integer_tvv!</span>(<span class="ident">u8</span>);
 <span class="macro">impl_integer_tvv!</span>(<span class="ident">u16</span>);
-<span class="macro">impl_integer_tvv!</span>(<span class="ident">u32</span>);
-<span class="macro">impl_integer_tvv!</span>(<span class="ident">u64</span>);
 
 <span class="macro">macro_rules!</span> <span class="ident">impl_str_tvv</span> {
     (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>: <span class="ident">ty</span>) <span class="op">=</span><span class="op">&gt;</span> {
