@@ -67,6 +67,8 @@ pub enum Error {
     OutOfRange(Robj),
     MustNotBeNA(Robj),
     ExpectedNonZeroLength(Robj),
+    ExpectedIntegerish(Robj),
+    OutOfLimits(Robj),
     TypeMismatch(Robj),
     NamespaceNotFound(Robj),
 
@@ -128,6 +130,10 @@ impl std::fmt::Display for Error {
             Error::OutOfRange(_robj) => write!(f, "Out of range."),
             Error::MustNotBeNA(_robj) => write!(f, "Must not be NA."),
             Error::ExpectedNonZeroLength(_robj) => write!(f, "Expected non zero length"),
+            Error::ExpectedIntegerish(robj) => {
+                write!(f, "Expected an integer-ish value, got {:?}", robj)
+            }
+            Error::OutOfLimits(robj) => write!(f, "The value is too big: {:?}", robj),
             Error::TypeMismatch(_robj) => write!(f, "Type mismatch"),
 
             Error::NamespaceNotFound(robj) => write!(f, "Namespace {:?} not found", robj),

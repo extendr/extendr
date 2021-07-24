@@ -142,6 +142,15 @@ fn test_try_from_robj() {
         assert_eq!(<f32>::try_from(Robj::from(1)), Ok(1.));
         assert_eq!(<f64>::try_from(Robj::from(1)), Ok(1.));
 
+        // conversion from non-integer-ish value to integer should fail
+        let robj = Robj::from(1.5);
+        assert_eq!(<i32>::try_from(robj.clone()), Err(Error::ExpectedIntegerish(robj)));
+        // conversion from out-of-limit value should fail
+        let robj = Robj::from(32768);
+        assert_eq!(<i16>::try_from(robj.clone()), Err(Error::OutOfLimits(robj)));
+        let robj = Robj::from(-1);
+        assert_eq!(<u32>::try_from(robj.clone()), Err(Error::OutOfLimits(robj)));
+
         assert_eq!(<Vec::<i32>>::try_from(Robj::from(1)), Ok(vec![1]));
         assert_eq!(<Vec::<f64>>::try_from(Robj::from(1.)), Ok(vec![1.]));
 
