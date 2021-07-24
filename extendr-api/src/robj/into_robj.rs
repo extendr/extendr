@@ -150,6 +150,12 @@ macro_rules! impl_real_tvv {
 
 impl_real_tvv!(f64);
 impl_real_tvv!(f32);
+
+// Since these types might exceeds the max or min of R's 32bit integer, we need
+// to return as REALSXP
+impl_real_tvv!(i64);
+impl_real_tvv!(u32);
+impl_real_tvv!(u64);
 impl_real_tvv!(usize);
 
 macro_rules! impl_integer_tvv {
@@ -193,11 +199,8 @@ macro_rules! impl_integer_tvv {
 impl_integer_tvv!(i8);
 impl_integer_tvv!(i16);
 impl_integer_tvv!(i32);
-impl_integer_tvv!(i64);
 impl_integer_tvv!(u8);
 impl_integer_tvv!(u16);
-impl_integer_tvv!(u32);
-impl_integer_tvv!(u64);
 
 macro_rules! impl_str_tvv {
     ($t: ty) => {

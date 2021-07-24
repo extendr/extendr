@@ -657,12 +657,12 @@ mod tests {
                 // General integer types.
                 assert_eq!(new_owned(wrap__return_u8()), Robj::from(123));
                 assert_eq!(new_owned(wrap__return_u16()), Robj::from(123));
-                assert_eq!(new_owned(wrap__return_u32()), Robj::from(123));
-                assert_eq!(new_owned(wrap__return_u64()), Robj::from(123));
+                assert_eq!(new_owned(wrap__return_u32()), Robj::from(123.));
+                assert_eq!(new_owned(wrap__return_u64()), Robj::from(123.));
                 assert_eq!(new_owned(wrap__return_i8()), Robj::from(123));
                 assert_eq!(new_owned(wrap__return_i16()), Robj::from(123));
                 assert_eq!(new_owned(wrap__return_i32()), Robj::from(123));
-                assert_eq!(new_owned(wrap__return_i64()), Robj::from(123));
+                assert_eq!(new_owned(wrap__return_i64()), Robj::from(123.));
 
                 // Floating point types.
                 assert_eq!(new_owned(wrap__return_f32()), Robj::from(123.));

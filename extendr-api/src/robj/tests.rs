@@ -225,14 +225,24 @@ fn test_to_robj() {
         assert_eq!(Robj::from(true), Robj::from([Bool::from(true)]));
         //assert_eq!(Robj::from(1_u8), Robj::from(1));
         assert_eq!(Robj::from(1_u16), Robj::from(1));
-        assert_eq!(Robj::from(1_u32), Robj::from(1));
-        assert_eq!(Robj::from(1_u64), Robj::from(1));
+        assert_eq!(Robj::from(1_u32), Robj::from(1.));
+        assert_eq!(Robj::from(1_u64), Robj::from(1.));
+        assert_eq!(Robj::from(1_usize), Robj::from(1.));
         assert_eq!(Robj::from(1_i8), Robj::from(1));
         assert_eq!(Robj::from(1_i16), Robj::from(1));
         assert_eq!(Robj::from(1_i32), Robj::from(1));
-        assert_eq!(Robj::from(1_i64), Robj::from(1));
+        assert_eq!(Robj::from(1_i64), Robj::from(1.));
         assert_eq!(Robj::from(1.0_f32), Robj::from(1.));
         assert_eq!(Robj::from(1.0_f64), Robj::from(1.));
+
+        // check large values
+        assert_eq!(Robj::from(i64::MAX), Robj::from(i64::MAX as f64));
+        assert_eq!(Robj::from(i64::MIN), Robj::from(i64::MIN as f64));
+
+        // check NaN and Inf
+        assert_eq!(Robj::from(f64::NAN), R!("NaN")?);
+        assert_eq!(Robj::from(f64::INFINITY), R!("Inf")?);
+        assert_eq!(Robj::from(-f64::INFINITY), R!("-Inf")?);
 
         let ab = Robj::from(vec!["a", "b"]);
         let ab2 = Robj::from(vec!["a".to_string(), "b".to_string()]);
