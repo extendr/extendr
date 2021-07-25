@@ -40,7 +40,7 @@ macro_rules! impl_try_from_scalar_integer {
                     if ((result as f64 - v).abs() < f64::EPSILON) {
                         return Ok(result);
                     } else {
-                        return Err(Error::ExpectedIntegerish(robj));
+                        return Err(Error::ExpectedWholeNumber(robj));
                     }
                 }
 
