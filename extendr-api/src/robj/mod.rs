@@ -41,24 +41,24 @@
 //! - **`<a subtype of Robj>::from_xxx()`**: This is conversion constructor.
 //!   This might be fallible or non-fallible depending on the case.
 //!   (TODO: maybe we need to review if fallible conversion correctly returns `Result`?)
-//! 
+//!
 //! ### Integer types and floating-point types
-//! 
+//!
 //! * (TODO: explain `u32`, `u64` and `i64` are converted to `REALSXP`, not `INTSXP`).
 //! * (TODO: explain the check on the limits and the roundings of R-to-Rust conversion)
-//! 
+//!
 //! ### Scalar and Vector
-//! 
+//!
 //! TBD
-//! 
+//!
 //! ### Missing values
-//! 
+//!
 //! TBD
-//! 
+//!
 //! ### `NULL`
-//! 
+//!
 //! * (TODO: explain [Nullable])
-//! 
+//!
 
 use libR_sys::*;
 use std::os::raw;
