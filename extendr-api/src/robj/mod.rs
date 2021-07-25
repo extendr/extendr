@@ -8,6 +8,57 @@
 //! * Users should be able to do almost everything without using libR_sys.
 //! * The interface should be friendly to R users without Rust experience.
 //!
+//! ## Conversion between R and Rust
+//!
+//! The following types of traits and methods are provided for conversions from
+//! R objects to Rust objects:
+//!
+//! - **`try_from()`** ([TryFrom] trait): This is the main way of doing
+//!   conversions from R to Rust. The conversion might fail when
+//!     1. the type or value of the R object is incompatible with the
+//!        destination type (e.g. `CHARSXP` to `i32`)
+//!     1. the value cannot be represented by the destination type (e.g. `NA` to
+//!        a non-`Option` type, and a multi-element vector to a scalar type)
+//!     1. the conversion would be lossy (e.g. `1.5` to `i32`)
+//! - **`as_xxx()`**: This is rather "casting" than conversion. This returns
+//!   `Some(T)` only when the underlying SEXP has the corresponding type (e.g.
+//!   `<INTSXP>::as_integer()` returns `Some(i32)`, while
+//!   `<REALSXP>::as_integer()` returns `None`). Note that, while this might
+//!   look a bit tricky to those who are familiar with R's `as.xxx()` functions,
+//!   which kindly converts between types. But, this just follows the Rust API
+//!   guidelines' [naming convention on conversion methods][c-conv].
+//! - **`from_robj()`** ([FromRobj] trait): (The trait in the process of
+//!   deprecation)
+//!
+//! [c-conv]:
+//! https://rust-lang.github.io/api-guidelines/naming.html#ad-hoc-conversions-follow-as_-to_-into_-conventions-c-conv
+//!
+//! Also, the following types of traits and methods are provided for conversions
+//! from Rust objects to R objects:
+//!
+//! - **`<Robj>::from()`** ([From] trait): This conversion never fails and is
+//!   lossless.
+//! - **`<a subtype of Robj>::from_xxx()`**: This is conversion constructor.
+//!   This might be fallible or non-fallible depending on the case.
+//!   (TODO: maybe we need to review if fallible conversion correctly returns `Result`?)
+//! 
+//! ### Integer types and floating-point types
+//! 
+//! * (TODO: explain `u32`, `u64` and `i64` are converted to `REALSXP`, not `INTSXP`).
+//! * (TODO: explain the check on the limits and the roundings of R-to-Rust conversion)
+//! 
+//! ### Scalar and Vector
+//! 
+//! TBD
+//! 
+//! ### Missing values
+//! 
+//! TBD
+//! 
+//! ### `NULL`
+//! 
+//! * (TODO: explain [Nullable])
+//! 
 
 use libR_sys::*;
 use std::os::raw;
