@@ -68,10 +68,10 @@ macro_rules! impl_try_from_scalar_real {
                     return Err(Error::MustNotBeNA(robj));
                 }
 
-                if let Some(v) = robj.as_integer() {
+                if let Some(v) = robj.as_real() {
                     return Ok(v as Self);
                 }
-                if let Some(v) = robj.as_real() {
+                if let Some(v) = robj.as_integer() {
                     return Ok(v as Self);
                 }
 
