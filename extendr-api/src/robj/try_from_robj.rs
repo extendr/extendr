@@ -70,6 +70,9 @@ macro_rules! impl_try_from_scalar_real {
                     return Err(Error::MustNotBeNA(robj));
                 }
 
+                // <Robj>::as_xxx() methods can work only when the underlying
+                // SEXP is the corresponding type, so we cannot use as_real()
+                // directly on INTSXP.
                 if let Some(v) = robj.as_real() {
                     return Ok(v as Self);
                 }
