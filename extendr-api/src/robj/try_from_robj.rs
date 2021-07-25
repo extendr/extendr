@@ -21,8 +21,9 @@ macro_rules! impl_try_from_scalar_integer {
                 }
 
                 // If the conversion is int-to-int, check the limits. This
-                // needs to be down by `TryFrom` because the conversion by `as`
-                // is problematic on unsigned integer types.
+                // needs to be done by `TryFrom` because the conversion by `as`
+                // is problematic when converting a negative value to unsigned
+                // integer types (e.g. `-1i32 as u8` becomes 255).
                 if let Some(v) = robj.as_integer() {
                     if let Ok(v) = Self::try_from(v) {
                         return Ok(v);
@@ -32,9 +33,10 @@ macro_rules! impl_try_from_scalar_integer {
                 }
 
                 // If the conversion is float-to-int, check if the value is
-                // integer-ish. This needs to be down with `as`, as no `TryFrom`
-                // is implemented for float types. `FloatToInt` trait might
-                // eventually become available in future, though.
+                // integer-like (i.e., an integer, or a float representing a
+                // whole number). This needs to be down with `as`, as no
+                // `TryFrom` is implemented for float types. `FloatToInt` trait
+                // might eventually become available in future, though.
                 if let Some(v) = robj.as_real() {
                     let result = v as Self;
                     if ((result as f64 - v).abs() < f64::EPSILON) {
