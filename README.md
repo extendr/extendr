@@ -1,7 +1,7 @@
 # extendr - A safe and user friendly R extension interface using Rust.
 
 [![Github Actions Build Status](https://github.com/extendr/extendr/workflows/Tests/badge.svg)](https://github.com/extendr/extendr/actions)
-[![Crates.io](http://meritbadge.herokuapp.com/extendr-api)](https://crates.io/crates/extendr-api)
+[![Crates.io](https://img.shields.io/crates/v/extendr-api.svg)](https://crates.io/crates/extendr-api)
 [![Documentation](https://docs.rs/extendr-api/badge.svg)](https://docs.rs/extendr-api)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
