@@ -295,7 +295,7 @@ impl Robj {
         unsafe { Rf_isFrame(self.get()) != 0 }
     }
 
-    /// Return true if this is a function.
+    /// Return true if this is a function or a primitive (CLOSXP, BUILTINSXP or SPECIALSXP)
     pub fn is_function(&self) -> bool {
         unsafe { Rf_isFunction(self.get()) != 0 }
     }

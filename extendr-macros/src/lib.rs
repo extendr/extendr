@@ -56,6 +56,7 @@
 
 #[allow(non_snake_case)]
 mod R;
+mod call;
 mod extendr_function;
 mod extendr_impl;
 mod extendr_module;
@@ -110,6 +111,19 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
 #[proc_macro]
 pub fn pairlist(item: TokenStream) -> TokenStream {
     pairlist::pairlist(item)
+}
+
+/// Call a function or primitive defined by a text expression with arbitrary parameters.
+/// This currently works by parsing and evaluating the string in R, but will probably acquire
+/// some shortcuts for simple expessions, for example by caching symbols and constant values.
+///
+/// ```ignore
+///     assert_eq!(call!("`+`", 1, 2), r!(3));
+///     assert_eq!(call!("list", 1, 2), r!([r!(1), r!(2)]));
+/// ```
+#[proc_macro]
+pub fn call(item: TokenStream) -> TokenStream {
+    call::call(item)
 }
 
 /// Execute R code by parsing and evaluating tokens.

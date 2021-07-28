@@ -92,31 +92,6 @@ macro_rules! append_lang {
     };
 }
 
-/// The call! macro calls an R function with Rust parameters.
-/// Equivalent to `lang!(sym, params).eval()`
-/// This returns a Rust Result.
-///
-/// Example:
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///     let vec = call!("c", 1.0, 2.0, 3.0).unwrap();
-///     assert_eq!(vec, r!([1., 2., 3.]));
-///
-///     let list = call!("list", a=1, b=2).unwrap();
-///     assert_eq!(list.len(), 2);
-///
-///     let three = call!("+", 1, 2).unwrap();
-///     assert_eq!(three, r!(3));
-/// }
-/// ```
-#[macro_export]
-macro_rules! call {
-    ($($toks: tt)*) => {
-        lang!($($toks)*).eval()
-    }
-}
-
 /// A macro for constructing R langage objects.
 ///
 /// Example:

@@ -1,4 +1,5 @@
 use super::*;
+use crate as extendr_api;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Environment {

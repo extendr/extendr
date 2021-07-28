@@ -1,3 +1,4 @@
+use crate as extendr_api;
 use crate::*;
 use std::ops::{Add, Div, Mul, Sub};
 
@@ -20,7 +21,7 @@ impl Robj {
         T: AsRef<str>,
     {
         let symbol: Symbol = Symbol::from_string(symbol.as_ref());
-        call!("$", self, symbol)
+        call!("`$`", self, symbol)
     }
 
     /// Do the equivalent of `x[y]`
@@ -36,7 +37,7 @@ impl Robj {
     where
         T: Into<Robj>,
     {
-        call!("[", self, rhs.into())
+        call!("`[`", self, rhs.into())
     }
 
     /// Do the equivalent of `x[[y]]`
@@ -52,7 +53,7 @@ impl Robj {
     where
         T: Into<Robj>,
     {
-        call!("[[", self, rhs.into())
+        call!("`[[`", self, rhs.into())
     }
 
     /// Do the equivalent of x ~ y
@@ -69,24 +70,24 @@ impl Robj {
     where
         T: Into<Robj>,
     {
-        call!("~", self, rhs.into())
+        call!("`~`", self, rhs.into())
     }
 
     /// Do the equivalent of x :: y
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    /// let base = r!(Symbol::from_string("base"));
-    /// let env = r!(Symbol::from_string(".getNamespace"));
-    /// let base_env = base.double_colon(env).unwrap();
-    /// assert_eq!(base_env.is_function(), true);
+    ///     let base = r!(Symbol::from_string("base"));
+    ///     let list = r!(Symbol::from_string("list"));
+    ///     let base_list = base.double_colon(list).unwrap();
+    ///     assert_eq!(base_list.is_function(), true);
     /// }
     /// ```
     pub fn double_colon<T>(&self, rhs: T) -> Result<Robj>
     where
         T: Into<Robj>,
     {
-        call!("::", self, rhs.into())
+        call!("`::`", self, rhs.into())
     }
 
     /// Do the equivalent of x(a, b, c)
@@ -99,13 +100,13 @@ impl Robj {
     /// }
     /// ```
     pub fn call(&self, args: Pairlist) -> Result<Robj> {
-        if self.rtype() != RType::Function {
-            return Err(Error::ExpectedFunction(self.clone()));
-        }
-
-        unsafe {
-            let call = new_owned(Rf_lcons(self.get(), args.get()));
-            call.eval()
+        if self.is_function() {
+            unsafe {
+                let call = new_owned(Rf_lcons(self.get(), args.get()));
+                call.eval()
+            }
+        } else {
+            Err(Error::ExpectedFunction(self.clone()))
         }
     }
 }
@@ -138,7 +139,7 @@ where
     /// }
     /// ```
     fn add(self, rhs: Rhs) -> Self::Output {
-        call!("+", self, rhs.into()).expect("Robj add failed")
+        call!("`+`", self, rhs.into()).expect("Robj add failed")
     }
 }
 
@@ -170,7 +171,7 @@ where
     /// }
     /// ```
     fn sub(self, rhs: Rhs) -> Self::Output {
-        call!("-", self, rhs.into()).expect("Robj subtract failed")
+        call!("`-`", self, rhs.into()).expect("Robj subtract failed")
     }
 }
 
@@ -202,7 +203,7 @@ where
     /// }
     /// ```
     fn mul(self, rhs: Rhs) -> Self::Output {
-        call!("*", self, rhs.into()).expect("Robj multiply failed")
+        call!("`*`", self, rhs.into()).expect("Robj multiply failed")
     }
 }
 
@@ -234,7 +235,7 @@ where
     /// }
     /// ```
     fn div(self, rhs: Rhs) -> Self::Output {
-        call!("/", self, rhs.into()).expect("Robj divide failed")
+        call!("`/`", self, rhs.into()).expect("Robj divide failed")
     }
 }
 

@@ -8,6 +8,11 @@ pub struct Pairlist {
 }
 
 impl Pairlist {
+    pub fn new() -> Self {
+        let robj = Robj::from(());
+        Self { robj }
+    }
+
     /// Convert an iterator of names and values to a pairlist object.
     /// ```
     /// use extendr_api::prelude::*;
@@ -19,7 +24,7 @@ impl Pairlist {
     ///     // Use "" to indicate the absense of the name
     ///     let unnamed_pairlist = Pairlist::from_pairs([("", "a"), ("", "b")]);
     ///     assert_eq!(call!("names", unnamed_pairlist)?, r!(NULL));
-    ///     let unnamed_pairlist_r = R!(pairlist("a", "b"))?.as_pairlist().unwrap();
+    ///     let unnamed_pairlist_r = R!(r#"pairlist("a", "b")"#)?.as_pairlist().unwrap();
     ///     assert_eq!(unnamed_pairlist_r.names().collect::<Vec<_>>(), vec!["", ""]);
     /// }
     /// ```
@@ -74,6 +79,12 @@ impl Pairlist {
 
     pub fn values(&self) -> impl Iterator<Item = Robj> {
         self.iter().map(|(_, robj)| robj)
+    }
+}
+
+impl Default for wrapper::pairlist::Pairlist {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

@@ -149,6 +149,20 @@ impl TryFrom<Robj> for Vec<String> {
     }
 }
 
+// The following fails because T could be Option<U>
+//
+// impl<T : TryFrom<Robj>> TryFrom<Robj> for Option<T> {
+//     type Error = Error;
+
+//     fn try_from(robj: Robj) -> Result<Self> {
+//         if robj.is_na() {
+//             Ok(None)
+//         } else {
+//             Ok(Some(T::try_from(robj)?))
+//         }
+//     }
+// }
+
 macro_rules! impl_option {
     ($type : ty) => {
         impl TryFrom<Robj> for Option<$type> {
