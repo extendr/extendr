@@ -299,7 +299,9 @@
 <span id="296">296</span>
 <span id="297">297</span>
 <span id="298">298</span>
+<span id="299">299</span>
 </pre><div class="example-wrap"><pre class="rust ">
+<span class="kw">use</span> <span class="kw">crate</span> <span class="kw">as</span> <span class="ident">extendr_api</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">std::ops</span>::{<span class="ident">Add</span>, <span class="ident">Div</span>, <span class="ident">Mul</span>, <span class="ident">Sub</span>};
 
@@ -322,7 +324,7 @@
         <span class="ident">T</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>,
     {
         <span class="kw">let</span> <span class="ident">symbol</span>: <span class="ident">Symbol</span> <span class="op">=</span> <span class="ident">Symbol::from_string</span>(<span class="ident">symbol</span>.<span class="ident">as_ref</span>());
-        <span class="macro">call!</span>(<span class="string">&quot;$&quot;</span>, <span class="self">self</span>, <span class="ident">symbol</span>)
+        <span class="macro">call!</span>(<span class="string">&quot;`$`&quot;</span>, <span class="self">self</span>, <span class="ident">symbol</span>)
     }
 
     <span class="doccomment">/// Do the equivalent of `x[y]`</span>
@@ -338,7 +340,7 @@
     <span class="kw">where</span>
         <span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
     {
-        <span class="macro">call!</span>(<span class="string">&quot;[&quot;</span>, <span class="self">self</span>, <span class="ident">rhs</span>.<span class="ident">into</span>())
+        <span class="macro">call!</span>(<span class="string">&quot;`[`&quot;</span>, <span class="self">self</span>, <span class="ident">rhs</span>.<span class="ident">into</span>())
     }
 
     <span class="doccomment">/// Do the equivalent of `x[[y]]`</span>
@@ -354,7 +356,7 @@
     <span class="kw">where</span>
         <span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
     {
-        <span class="macro">call!</span>(<span class="string">&quot;[[&quot;</span>, <span class="self">self</span>, <span class="ident">rhs</span>.<span class="ident">into</span>())
+        <span class="macro">call!</span>(<span class="string">&quot;`[[`&quot;</span>, <span class="self">self</span>, <span class="ident">rhs</span>.<span class="ident">into</span>())
     }
 
     <span class="doccomment">/// Do the equivalent of x ~ y</span>
@@ -371,24 +373,24 @@
     <span class="kw">where</span>
         <span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
     {
-        <span class="macro">call!</span>(<span class="string">&quot;~&quot;</span>, <span class="self">self</span>, <span class="ident">rhs</span>.<span class="ident">into</span>())
+        <span class="macro">call!</span>(<span class="string">&quot;`~`&quot;</span>, <span class="self">self</span>, <span class="ident">rhs</span>.<span class="ident">into</span>())
     }
 
     <span class="doccomment">/// Do the equivalent of x :: y</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::prelude::*;</span>
     <span class="doccomment">/// test! {</span>
-    <span class="doccomment">/// let base = r!(Symbol::from_string(&quot;base&quot;));</span>
-    <span class="doccomment">/// let env = r!(Symbol::from_string(&quot;.getNamespace&quot;));</span>
-    <span class="doccomment">/// let base_env = base.double_colon(env).unwrap();</span>
-    <span class="doccomment">/// assert_eq!(base_env.is_function(), true);</span>
+    <span class="doccomment">///     let base = r!(Symbol::from_string(&quot;base&quot;));</span>
+    <span class="doccomment">///     let list = r!(Symbol::from_string(&quot;list&quot;));</span>
+    <span class="doccomment">///     let base_list = base.double_colon(list).unwrap();</span>
+    <span class="doccomment">///     assert_eq!(base_list.is_function(), true);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">double_colon</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
     <span class="kw">where</span>
         <span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
     {
-        <span class="macro">call!</span>(<span class="string">&quot;::&quot;</span>, <span class="self">self</span>, <span class="ident">rhs</span>.<span class="ident">into</span>())
+        <span class="macro">call!</span>(<span class="string">&quot;`::`&quot;</span>, <span class="self">self</span>, <span class="ident">rhs</span>.<span class="ident">into</span>())
     }
 
     <span class="doccomment">/// Do the equivalent of x(a, b, c)</span>
@@ -401,13 +403,13 @@
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">call</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">args</span>: <span class="ident">Pairlist</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">rtype</span>() <span class="op">!</span><span class="op">=</span> <span class="ident">RType::Function</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::ExpectedFunction</span>(<span class="self">self</span>.<span class="ident">clone</span>()));
-        }
-
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">call</span> <span class="op">=</span> <span class="ident">new_owned</span>(<span class="ident">Rf_lcons</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">args</span>.<span class="ident">get</span>()));
-            <span class="ident">call</span>.<span class="ident">eval</span>()
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_function</span>() {
+            <span class="kw">unsafe</span> {
+                <span class="kw">let</span> <span class="ident">call</span> <span class="op">=</span> <span class="ident">new_owned</span>(<span class="ident">Rf_lcons</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">args</span>.<span class="ident">get</span>()));
+                <span class="ident">call</span>.<span class="ident">eval</span>()
+            }
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Err</span>(<span class="ident">Error::ExpectedFunction</span>(<span class="self">self</span>.<span class="ident">clone</span>()))
         }
     }
 }
@@ -440,7 +442,7 @@
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">fn</span> <span class="ident">add</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">Rhs</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Output</span> {
-        <span class="macro">call!</span>(<span class="string">&quot;+&quot;</span>, <span class="self">self</span>, <span class="ident">rhs</span>.<span class="ident">into</span>()).<span class="ident">expect</span>(<span class="string">&quot;Robj add failed&quot;</span>)
+        <span class="macro">call!</span>(<span class="string">&quot;`+`&quot;</span>, <span class="self">self</span>, <span class="ident">rhs</span>.<span class="ident">into</span>()).<span class="ident">expect</span>(<span class="string">&quot;Robj add failed&quot;</span>)
     }
 }
 
@@ -472,7 +474,7 @@
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">fn</span> <span class="ident">sub</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">Rhs</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Output</span> {
-        <span class="macro">call!</span>(<span class="string">&quot;-&quot;</span>, <span class="self">self</span>, <span class="ident">rhs</span>.<span class="ident">into</span>()).<span class="ident">expect</span>(<span class="string">&quot;Robj subtract failed&quot;</span>)
+        <span class="macro">call!</span>(<span class="string">&quot;`-`&quot;</span>, <span class="self">self</span>, <span class="ident">rhs</span>.<span class="ident">into</span>()).<span class="ident">expect</span>(<span class="string">&quot;Robj subtract failed&quot;</span>)
     }
 }
 
@@ -504,7 +506,7 @@
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">fn</span> <span class="ident">mul</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">Rhs</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Output</span> {
-        <span class="macro">call!</span>(<span class="string">&quot;*&quot;</span>, <span class="self">self</span>, <span class="ident">rhs</span>.<span class="ident">into</span>()).<span class="ident">expect</span>(<span class="string">&quot;Robj multiply failed&quot;</span>)
+        <span class="macro">call!</span>(<span class="string">&quot;`*`&quot;</span>, <span class="self">self</span>, <span class="ident">rhs</span>.<span class="ident">into</span>()).<span class="ident">expect</span>(<span class="string">&quot;Robj multiply failed&quot;</span>)
     }
 }
 
@@ -536,7 +538,7 @@
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">fn</span> <span class="ident">div</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">Rhs</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span><span class="ident">::Output</span> {
-        <span class="macro">call!</span>(<span class="string">&quot;/&quot;</span>, <span class="self">self</span>, <span class="ident">rhs</span>.<span class="ident">into</span>()).<span class="ident">expect</span>(<span class="string">&quot;Robj divide failed&quot;</span>)
+        <span class="macro">call!</span>(<span class="string">&quot;`/`&quot;</span>, <span class="self">self</span>, <span class="ident">rhs</span>.<span class="ident">into</span>()).<span class="ident">expect</span>(<span class="string">&quot;Robj divide failed&quot;</span>)
     }
 }
 

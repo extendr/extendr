@@ -126,31 +126,6 @@
 <span id="123">123</span>
 <span id="124">124</span>
 <span id="125">125</span>
-<span id="126">126</span>
-<span id="127">127</span>
-<span id="128">128</span>
-<span id="129">129</span>
-<span id="130">130</span>
-<span id="131">131</span>
-<span id="132">132</span>
-<span id="133">133</span>
-<span id="134">134</span>
-<span id="135">135</span>
-<span id="136">136</span>
-<span id="137">137</span>
-<span id="138">138</span>
-<span id="139">139</span>
-<span id="140">140</span>
-<span id="141">141</span>
-<span id="142">142</span>
-<span id="143">143</span>
-<span id="144">144</span>
-<span id="145">145</span>
-<span id="146">146</span>
-<span id="147">147</span>
-<span id="148">148</span>
-<span id="149">149</span>
-<span id="150">150</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Argument parsing and checking.</span>
 <span class="doccomment">//!</span>
@@ -244,31 +219,6 @@
         <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tail</span> <span class="op">=</span> <span class="ident">append</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tail</span>, <span class="ident">Robj::from</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">val</span>));
         <span class="macro">append_lang!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tail</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>);
     };
-}
-
-<span class="doccomment">/// The call! macro calls an R function with Rust parameters.</span>
-<span class="doccomment">/// Equivalent to `lang!(sym, params).eval()`</span>
-<span class="doccomment">/// This returns a Rust Result.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Example:</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///     let vec = call!(&quot;c&quot;, 1.0, 2.0, 3.0).unwrap();</span>
-<span class="doccomment">///     assert_eq!(vec, r!([1., 2., 3.]));</span>
-<span class="doccomment">///</span>
-<span class="doccomment">///     let list = call!(&quot;list&quot;, a=1, b=2).unwrap();</span>
-<span class="doccomment">///     assert_eq!(list.len(), 2);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">///     let three = call!(&quot;+&quot;, 1, 2).unwrap();</span>
-<span class="doccomment">///     assert_eq!(three, r!(3));</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">call</span> {
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">toks</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
-        <span class="macro">lang!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">toks</span>)<span class="kw-2">*</span>).<span class="ident">eval</span>()
-    }
 }
 
 <span class="doccomment">/// A macro for constructing R langage objects.</span>

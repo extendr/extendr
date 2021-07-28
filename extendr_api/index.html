@@ -168,10 +168,10 @@ and takes parameters.</p>
 <span class="macro">test!</span> {
 
     <span class="comment">// As one R! macro call</span>
-    <span class="kw">let</span> <span class="ident">confint1</span> <span class="op">=</span> <span class="macro">R!</span>(<span class="ident">confint</span>(<span class="ident">lm</span>(<span class="ident">weight</span> ~ <span class="ident">group</span> <span class="op">-</span> <span class="number">1</span>, <span class="ident">PlantGrowth</span>)))<span class="question-mark">?</span>;
+    <span class="kw">let</span> <span class="ident">confint1</span> <span class="op">=</span> <span class="macro">R!</span>(<span class="string">&quot;confint(lm(weight ~ group - 1, PlantGrowth))&quot;</span>)<span class="question-mark">?</span>;
     
     <span class="comment">// As many parameterized calls.</span>
-    <span class="kw">let</span> <span class="ident">formula</span> <span class="op">=</span> <span class="macro">call!</span>(<span class="string">&quot;~&quot;</span>, <span class="macro">sym!</span>(<span class="ident">weight</span>), <span class="macro">lang!</span>(<span class="string">&quot;-&quot;</span>, <span class="macro">sym!</span>(<span class="ident">group</span>), <span class="number">1</span>))<span class="question-mark">?</span>;
+    <span class="kw">let</span> <span class="ident">formula</span> <span class="op">=</span> <span class="macro">lang!</span>(<span class="string">&quot;~&quot;</span>, <span class="macro">sym!</span>(<span class="ident">weight</span>), <span class="macro">lang!</span>(<span class="string">&quot;-&quot;</span>, <span class="macro">sym!</span>(<span class="ident">group</span>), <span class="number">1.0</span>)).<span class="ident">set_class</span>([<span class="string">&quot;formula&quot;</span>])<span class="question-mark">?</span>;
     <span class="kw">let</span> <span class="ident">plant_growth</span> <span class="op">=</span> <span class="macro">global!</span>(<span class="ident">PlantGrowth</span>)<span class="question-mark">?</span>;
     <span class="kw">let</span> <span class="ident">model</span> <span class="op">=</span> <span class="macro">call!</span>(<span class="string">&quot;lm&quot;</span>, <span class="ident">formula</span>, <span class="ident">plant_growth</span>)<span class="question-mark">?</span>;
     <span class="kw">let</span> <span class="ident">confint2</span> <span class="op">=</span> <span class="macro">call!</span>(<span class="string">&quot;confint&quot;</span>, <span class="ident">model</span>)<span class="question-mark">?</span>;
@@ -216,9 +216,9 @@ They do not contain an Robj (see array.rs for an example of this).</p>
 <table><tr class="module-item"><td><a class="macro" href="macro.R.html" title="extendr_api::R macro">R</a></td><td class="docblock-short"><p>Execute R code by parsing and evaluating tokens.</p>
 </td></tr><tr class="module-item"><td><a class="macro" href="macro.Rraw.html" title="extendr_api::Rraw macro">Rraw</a></td><td class="docblock-short"><p>Execute R code by parsing and evaluating tokens
 but without expanding parameters.</p>
-</td></tr><tr class="module-item"><td><a class="macro" href="macro.call.html" title="extendr_api::call macro">call</a></td><td class="docblock-short"><p>The call! macro calls an R function with Rust parameters.
-Equivalent to <code>lang!(sym, params).eval()</code>
-This returns a Rust Result.</p>
+</td></tr><tr class="module-item"><td><a class="macro" href="macro.call.html" title="extendr_api::call macro">call</a></td><td class="docblock-short"><p>Call a function or primitive defined by a text expression with arbitrary parameters.
+This currently works by parsing and evaluating the string in R, but will probably acquire
+some shortcuts for simple expessions, for example by caching symbols and constant values.</p>
 </td></tr><tr class="module-item"><td><a class="macro" href="macro.data_frame.html" title="extendr_api::data_frame macro">data_frame</a></td><td class="docblock-short"><p>Create a dataframe.</p>
 </td></tr><tr class="module-item"><td><a class="macro" href="macro.extendr_module.html" title="extendr_api::extendr_module macro">extendr_module</a></td><td class="docblock-short"><p>Define a module and export symbols to R
 Example:</p>

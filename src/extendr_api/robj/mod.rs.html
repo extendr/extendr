@@ -1972,7 +1972,7 @@
     <span class="doccomment">/// use extendr_api::prelude::*;</span>
     <span class="doccomment">/// test! {</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">///    let array = R!(array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c(&quot;x&quot;, &quot;y&quot;), c(&quot;a&quot;,&quot;b&quot;)))).unwrap();</span>
+    <span class="doccomment">///    let array = R!(r#&quot;array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c(&quot;x&quot;, &quot;y&quot;), c(&quot;a&quot;,&quot;b&quot;)))&quot;#).unwrap();</span>
     <span class="doccomment">///    let dim : Vec&lt;_&gt; = array.dim().unwrap().collect();</span>
     <span class="doccomment">///    assert_eq!(dim, vec![2, 2]);</span>
     <span class="doccomment">/// }</span>
@@ -1989,7 +1989,7 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::prelude::*;</span>
     <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///    let array = R!(array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c(&quot;x&quot;, &quot;y&quot;), c(&quot;a&quot;,&quot;b&quot;)))).unwrap();</span>
+    <span class="doccomment">///    let array = R!(r#&quot;array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c(&quot;x&quot;, &quot;y&quot;), c(&quot;a&quot;,&quot;b&quot;)))&quot;#).unwrap();</span>
     <span class="doccomment">///    let names : Vec&lt;_&gt; = array.dimnames().unwrap().collect();</span>
     <span class="doccomment">///    assert_eq!(names, vec![r!([&quot;x&quot;, &quot;y&quot;]), r!([&quot;a&quot;, &quot;b&quot;])]);</span>
     <span class="doccomment">/// }</span>

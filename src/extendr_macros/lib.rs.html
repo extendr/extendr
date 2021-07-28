@@ -147,6 +147,20 @@
 <span id="144">144</span>
 <span id="145">145</span>
 <span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Macros for generating wrappers for rust functions.</span>
@@ -206,6 +220,7 @@
 
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
 <span class="kw">mod</span> <span class="ident">R</span>;
+<span class="kw">mod</span> <span class="ident">call</span>;
 <span class="kw">mod</span> <span class="ident">extendr_function</span>;
 <span class="kw">mod</span> <span class="ident">extendr_impl</span>;
 <span class="kw">mod</span> <span class="ident">extendr_module</span>;
@@ -260,6 +275,19 @@
 <span class="attribute">#[<span class="ident">proc_macro</span>]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pairlist</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">TokenStream</span> {
     <span class="ident">pairlist::pairlist</span>(<span class="ident">item</span>)
+}
+
+<span class="doccomment">/// Call a function or primitive defined by a text expression with arbitrary parameters.</span>
+<span class="doccomment">/// This currently works by parsing and evaluating the string in R, but will probably acquire</span>
+<span class="doccomment">/// some shortcuts for simple expessions, for example by caching symbols and constant values.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ```ignore</span>
+<span class="doccomment">///     assert_eq!(call!(&quot;`+`&quot;, 1, 2), r!(3));</span>
+<span class="doccomment">///     assert_eq!(call!(&quot;list&quot;, 1, 2), r!([r!(1), r!(2)]));</span>
+<span class="doccomment">/// ```</span>
+<span class="attribute">#[<span class="ident">proc_macro</span>]</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">call</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">TokenStream</span> {
+    <span class="ident">call::call</span>(<span class="ident">item</span>)
 }
 
 <span class="doccomment">/// Execute R code by parsing and evaluating tokens.</span>

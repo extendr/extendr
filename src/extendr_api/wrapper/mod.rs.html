@@ -311,6 +311,11 @@
 <span id="308">308</span>
 <span id="309">309</span>
 <span id="310">310</span>
+<span id="311">311</span>
+<span id="312">312</span>
+<span id="313">313</span>
+<span id="314">314</span>
+<span id="315">315</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Wrappers are lightweight proxies for references to R datatypes.</span>
 <span class="doccomment">//! They do not contain an Robj (see array.rs for an example of this).</span>
@@ -414,7 +419,12 @@
 }
 
 <span class="macro">make_conversions!</span>(<span class="ident">Pairlist</span>, <span class="ident">ExpectedPairlist</span>, <span class="ident">is_pairlist</span>, <span class="string">&quot;Not a pairlist&quot;</span>);
-<span class="macro">make_conversions!</span>(<span class="ident">Function</span>, <span class="ident">ExpectedFunction</span>, <span class="ident">is_function</span>, <span class="string">&quot;Not a function&quot;</span>);
+<span class="macro">make_conversions!</span>(
+    <span class="ident">Function</span>,
+    <span class="ident">ExpectedFunction</span>,
+    <span class="ident">is_function</span>,
+    <span class="string">&quot;Not a function or primitive.&quot;</span>
+);
 <span class="macro">make_conversions!</span>(<span class="ident">Raw</span>, <span class="ident">ExpectedRaw</span>, <span class="ident">is_raw</span>, <span class="string">&quot;Not a raw object&quot;</span>);
 
 <span class="macro">make_conversions!</span>(

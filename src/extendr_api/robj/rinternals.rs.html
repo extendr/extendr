@@ -723,7 +723,7 @@
         <span class="kw">unsafe</span> { <span class="ident">Rf_isFrame</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
-    <span class="doccomment">/// Return true if this is a function.</span>
+    <span class="doccomment">/// Return true if this is a function or a primitive (CLOSXP, BUILTINSXP or SPECIALSXP)</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_function</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isFunction</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
