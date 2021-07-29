@@ -27,6 +27,9 @@
 //!   look a bit tricky to those who are familiar with R's `as.xxx()` functions,
 //!   which kindly converts between types. But, this just follows the Rust API
 //!   guidelines' [naming convention on conversion methods][c-conv].
+//! - **`to_xxx()`**: This is a conversion that changes one representation to
+//!   another. Unlike other conversions, this can be lossy, or require some
+//!   complex work to complete.
 //! - **`from_robj()`** ([FromRobj] trait): (The trait in the process of
 //!   deprecation)
 //!
@@ -39,13 +42,15 @@
 //! - **`<Robj>::from()`** ([From] trait): This conversion never fails and is
 //!   lossless.
 //! - **`<a subtype of Robj>::from_xxx()`**: This is conversion constructor.
-//!   This might be fallible or non-fallible depending on the case.
-//!   (TODO: maybe we need to review if fallible conversion correctly returns `Result`?)
+//!   This might be fallible or non-fallible depending on the case. (TODO: maybe
+//!   we need to review if fallible conversion correctly returns `Result`?)
 //!
 //! ### Integer types and floating-point types
 //!
-//! * (TODO: explain `u32`, `u64` and `i64` are converted to `REALSXP`, not `INTSXP`).
-//! * (TODO: explain the check on the limits and the roundings of R-to-Rust conversion)
+//! * (TODO: explain `u32`, `u64` and `i64` are converted to `REALSXP`, not
+//!   `INTSXP`).
+//! * (TODO: explain the check on the limits and the roundings of R-to-Rust
+//!   conversion)
 //!
 //! ### Scalar and Vector
 //!
