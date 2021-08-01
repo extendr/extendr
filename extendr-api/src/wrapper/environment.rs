@@ -34,15 +34,13 @@ impl Environment {
     /// }
     /// ```
     pub fn new_with_capacity(parent: Environment, capacity: usize) -> Self {
-        let robj = if capacity <= 5 {
+        if capacity <= 5 {
             // Unhashed envirnment
-            call!("new.env", FALSE, parent, 0).unwrap()
+            new_env(parent, false, 0)
         } else {
             // Hashed environment for larger hashmaps.
-            call!("new.env", TRUE, parent, capacity as i32 * 2 + 1).unwrap()
-        };
-        assert!(robj.is_environment());
-        Self { robj }
+            new_env(parent, true, capacity as i32 * 2 + 1)
+        }
     }
 
     /// Make an R environment object.
@@ -63,14 +61,14 @@ impl Environment {
     {
         single_threaded(|| {
             let dict_len = 29;
-            let robj = call!("new.env", TRUE, parent, dict_len).unwrap();
+            let env = new_env(parent, true, dict_len);
             for nv in names_and_values {
                 let (n, v) = nv.sym_pair();
                 if let Some(n) = n {
-                    unsafe { Rf_defineVar(n.get(), v.get(), robj.get()) }
+                    unsafe { Rf_defineVar(n.get(), v.get(), env.get()) }
                 }
             }
-            Environment { robj }
+            env
         })
     }
 

@@ -104,6 +104,33 @@ pub fn empty_env() -> Environment {
     unsafe { new_sys(R_EmptyEnv).try_into().unwrap() }
 }
 
+/// Create a new environment
+///
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     let env: Environment = new_env(global_env(), true, 10).try_into().unwrap();
+///     env.set_local(sym!(x), "hello");
+///     assert_eq!(env.local(sym!(x)), Ok(r!("hello")));
+/// }
+/// ```
+#[cfg(use_r_newenv)]
+pub fn new_env(parent: Environment, hash: bool, capacity: i32) -> Environment {
+    unsafe {
+        let env = R_NewEnv(parent.robj.get(), hash as i32, capacity);
+        new_sys(env).try_into().unwrap()
+    }
+}
+
+// R_NewEnv is available as of R 4.1.0. For the older version, we call an R function `new.env()`.
+#[cfg(not(use_r_newenv))]
+pub fn new_env(parent: Environment, hash: bool, capacity: i32) -> Environment {
+    call!("new.env", hash, parent, capacity)
+        .unwrap()
+        .try_into()
+        .unwrap()
+}
+
 /// The base environment; formerly R_NilValue
 ///
 /// ```
