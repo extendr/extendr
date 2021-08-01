@@ -240,7 +240,6 @@ jobs:
                   "extendr-macros = { path = \"",
                   normalizePath(file.path(getwd(), "extendr-macros"), winslash = "/"),
                   "\" }"),
-                'libR-sys = {git = "https://github.com/extendr/libR-sys" }',
                 sep = ";")
 
             Sys.setenv(REXTENDR_PATCH_CRATES_IO = patch.crates_io)
