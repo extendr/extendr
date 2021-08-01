@@ -1,7 +1,6 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/functions.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>functions.rs - source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script id="default-settings"></script><script src="../../storage.js"></script><script src="../../crates.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../favicon.svg">
 <link rel="alternate icon" type="image/png" href="../../favicon-16x16.png">
-<link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../extendr_api/index.html'><div class='logo-container'><img src='https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
-                <a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../extendr_api/index.html'><div class='logo-container'><img src='https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img src="../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img src="../../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -290,7 +289,34 @@
 <span id="287">287</span>
 <span id="288">288</span>
 <span id="289">289</span>
-</pre><div class="example-wrap"><pre class="rust ">
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
+<span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
+<span id="312">312</span>
+<span id="313">313</span>
+<span id="314">314</span>
+<span id="315">315</span>
+<span id="316">316</span>
+</pre><pre class="rust">
 <span class="kw">use</span> <span class="kw">crate</span> <span class="kw">as</span> <span class="ident">extendr_api</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
 
@@ -395,6 +421,33 @@
 <span class="doccomment">/// An empty environment at the root of the environment tree</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">empty_env</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Environment</span> {
     <span class="kw">unsafe</span> { <span class="ident">new_sys</span>(<span class="ident">R_EmptyEnv</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
+}
+
+<span class="doccomment">/// Create a new environment</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
+<span class="doccomment">/// test! {</span>
+<span class="doccomment">///     let env: Environment = new_env(global_env(), true, 10).try_into().unwrap();</span>
+<span class="doccomment">///     env.set_local(sym!(x), &quot;hello&quot;);</span>
+<span class="doccomment">///     assert_eq!(env.local(sym!(x)), Ok(r!(&quot;hello&quot;)));</span>
+<span class="doccomment">/// }</span>
+<span class="doccomment">/// ```</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">use_r_newenv</span>)]</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_env</span>(<span class="ident">parent</span>: <span class="ident">Environment</span>, <span class="ident">hash</span>: <span class="ident">bool</span>, <span class="ident">capacity</span>: <span class="ident">i32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Environment</span> {
+    <span class="kw">unsafe</span> {
+        <span class="kw">let</span> <span class="ident">env</span> <span class="op">=</span> <span class="ident">R_NewEnv</span>(<span class="ident">parent</span>.<span class="ident">robj</span>.<span class="ident">get</span>(), <span class="ident">hash</span> <span class="kw">as</span> <span class="ident">i32</span>, <span class="ident">capacity</span>);
+        <span class="ident">new_sys</span>(<span class="ident">env</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>()
+    }
+}
+
+<span class="comment">// R_NewEnv is available as of R 4.1.0. For the older version, we call an R function `new.env()`.</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">use_r_newenv</span>))]</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_env</span>(<span class="ident">parent</span>: <span class="ident">Environment</span>, <span class="ident">hash</span>: <span class="ident">bool</span>, <span class="ident">capacity</span>: <span class="ident">i32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Environment</span> {
+    <span class="macro">call!</span>(<span class="string">&quot;new.env&quot;</span>, <span class="ident">hash</span>, <span class="ident">parent</span>, <span class="ident">capacity</span>)
+        .<span class="ident">unwrap</span>()
+        .<span class="ident">try_into</span>()
+        .<span class="ident">unwrap</span>()
 }
 
 <span class="doccomment">/// The base environment; formerly R_NilValue</span>
@@ -581,5 +634,4 @@ pub fn dot_Generic() -&gt; Robj { unsafe { new_sys(R_dot_Generic) }}
     }
 }
 </pre></div>
-</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_api" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>
-    <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script></body></html>
+</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_api" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script></body></html>
