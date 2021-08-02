@@ -655,7 +655,7 @@ mod tests {
                 wrap__robjtype(Robj::from(1).get());
 
                 // General integer types.
-                assert_eq!(new_owned(wrap__return_u8()), Robj::from(123));
+                assert_eq!(new_owned(wrap__return_u8()), Robj::from(123_u8));
                 assert_eq!(new_owned(wrap__return_u16()), Robj::from(123));
                 assert_eq!(new_owned(wrap__return_u32()), Robj::from(123.));
                 assert_eq!(new_owned(wrap__return_u64()), Robj::from(123.));

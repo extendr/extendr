@@ -178,6 +178,30 @@ impl TryFrom<Robj> for Vec<f64> {
     }
 }
 
+impl TryFrom<Robj> for Vec<Bool> {
+    type Error = Error;
+
+    fn try_from(robj: Robj) -> Result<Self> {
+        if let Some(v) = robj.as_logical_slice() {
+            Ok(Vec::from(v))
+        } else {
+            Err(Error::ExpectedInteger(robj))
+        }
+    }
+}
+
+impl TryFrom<Robj> for Vec<u8> {
+    type Error = Error;
+
+    fn try_from(robj: Robj) -> Result<Self> {
+        if let Some(v) = robj.as_raw_slice() {
+            Ok(Vec::from(v))
+        } else {
+            Err(Error::ExpectedInteger(robj))
+        }
+    }
+}
+
 impl TryFrom<Robj> for Vec<String> {
     type Error = Error;
 
@@ -194,20 +218,6 @@ impl TryFrom<Robj> for Vec<String> {
         }
     }
 }
-
-// The following fails because T could be Option<U>
-//
-// impl<T : TryFrom<Robj>> TryFrom<Robj> for Option<T> {
-//     type Error = Error;
-
-//     fn try_from(robj: Robj) -> Result<Self> {
-//         if robj.is_na() {
-//             Ok(None)
-//         } else {
-//             Ok(Some(T::try_from(robj)?))
-//         }
-//     }
-// }
 
 macro_rules! impl_option {
     ($type : ty) => {
@@ -242,6 +252,38 @@ impl_option!(String);
 impl_option!(Vec<i32>);
 impl_option!(Vec<f64>);
 impl_option!(Vec<String>);
+
+impl TryFrom<Robj> for &[i32] {
+    type Error = Error;
+
+    fn try_from(robj: Robj) -> Result<Self> {
+        robj.as_typed_slice().ok_or_else(|| Error::ExpectedInteger(robj))
+    }
+}
+
+impl TryFrom<Robj> for &[Bool] {
+    type Error = Error;
+
+    fn try_from(robj: Robj) -> Result<Self> {
+        robj.as_typed_slice().ok_or_else(|| Error::ExpectedLogical(robj))
+    }
+}
+
+impl TryFrom<Robj> for &[u8] {
+    type Error = Error;
+
+    fn try_from(robj: Robj) -> Result<Self> {
+        robj.as_typed_slice().ok_or_else(|| Error::ExpectedRaw(robj))
+    }
+}
+
+impl TryFrom<Robj> for &[f64] {
+    type Error = Error;
+
+    fn try_from(robj: Robj) -> Result<Self> {
+        robj.as_typed_slice().ok_or_else(|| Error::ExpectedReal(robj))
+    }
+}
 
 impl TryFrom<Robj> for HashMap<String, Robj> {
     type Error = Error;
