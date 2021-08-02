@@ -257,7 +257,8 @@ impl TryFrom<Robj> for &[i32] {
     type Error = Error;
 
     fn try_from(robj: Robj) -> Result<Self> {
-        robj.as_typed_slice().ok_or_else(|| Error::ExpectedInteger(robj))
+        robj.as_typed_slice()
+            .ok_or_else(|| Error::ExpectedInteger(robj))
     }
 }
 
@@ -265,7 +266,8 @@ impl TryFrom<Robj> for &[Bool] {
     type Error = Error;
 
     fn try_from(robj: Robj) -> Result<Self> {
-        robj.as_typed_slice().ok_or_else(|| Error::ExpectedLogical(robj))
+        robj.as_typed_slice()
+            .ok_or_else(|| Error::ExpectedLogical(robj))
     }
 }
 
@@ -273,7 +275,8 @@ impl TryFrom<Robj> for &[u8] {
     type Error = Error;
 
     fn try_from(robj: Robj) -> Result<Self> {
-        robj.as_typed_slice().ok_or_else(|| Error::ExpectedRaw(robj))
+        robj.as_typed_slice()
+            .ok_or_else(|| Error::ExpectedRaw(robj))
     }
 }
 
@@ -281,7 +284,8 @@ impl TryFrom<Robj> for &[f64] {
     type Error = Error;
 
     fn try_from(robj: Robj) -> Result<Self> {
-        robj.as_typed_slice().ok_or_else(|| Error::ExpectedReal(robj))
+        robj.as_typed_slice()
+            .ok_or_else(|| Error::ExpectedReal(robj))
     }
 }
 
