@@ -161,6 +161,12 @@ fn test_try_from_robj() {
         assert_eq!(<&[Bool]>::try_from(Robj::from(TRUE)), Ok(&[TRUE][..]));
         assert_eq!(<&[u8]>::try_from(Robj::from(0_u8)), Ok(&[0_u8][..]));
 
+        // Note the Vec<> cases use the same logic as the slices.
+        assert_eq!(<&[i32]>::try_from(Robj::from(1.0)), Err(Error::ExpectedInteger(r!(1.0))));
+        assert_eq!(<&[f64]>::try_from(Robj::from(1)), Err(Error::ExpectedReal(r!(1))));
+        assert_eq!(<&[Bool]>::try_from(Robj::from(())), Err(Error::ExpectedLogical(r!(()))));
+        assert_eq!(<&[u8]>::try_from(Robj::from(())), Err(Error::ExpectedRaw(r!(()))));
+
         let hello = Robj::from("hello");
         assert_eq!(<&str>::try_from(hello), Ok("hello"));
 
