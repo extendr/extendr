@@ -248,7 +248,7 @@ macro_rules! impl_option {
         impl TryFrom<Robj> for Option<$type> {
             type Error = Error;
 
-            /// Convert a scalar object that may be NA type to a n `Option` of a corresponding type.
+            /// Convert a scalar object that may be NA type to an `Option` of a corresponding type.
             /// Returns `None` if the scalar is NA.
             fn try_from(robj: Robj) -> Result<Self> {
                 if robj.is_na() {
