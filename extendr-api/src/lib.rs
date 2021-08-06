@@ -266,6 +266,8 @@ pub use robj_ndarray::*;
 pub use extendr_macros::*;
 //////////////////////////////////////////////////
 
+pub struct Complex(f64, f64);
+
 /// TRUE value eg. `r!(TRUE)`
 pub const TRUE: Bool = Bool(1);
 
@@ -420,6 +422,37 @@ pub enum RType {
     Raw,         // RAWSXP
     S4,          // S4SXP
     Unknown,
+}
+
+pub fn rtype_to_sxp(rtype: RType) -> i32 {
+    use RType::*;
+    (match rtype {
+        Null => NILSXP,
+        Symbol => SYMSXP,
+        Pairlist => LISTSXP,
+        Function => CLOSXP,
+        Environment => ENVSXP,
+        Promise => PROMSXP,
+        Language => LANGSXP,
+        Special => SPECIALSXP,
+        Builtin => BUILTINSXP,
+        Character => CHARSXP,
+        Logical => LGLSXP,
+        Integer => INTSXP,
+        Real => REALSXP,
+        Complex => CPLXSXP,
+        String => STRSXP,
+        Dot => DOTSXP,
+        Any => ANYSXP,
+        List => VECSXP,
+        Expression => EXPRSXP,
+        Bytecode => BCODESXP,
+        ExternalPtr => EXTPTRSXP,
+        WeakRef => WEAKREFSXP,
+        Raw => RAWSXP,
+        S4 => S4SXP,
+        Unknown => panic!("attempt to use Unknown RType"),
+    }) as i32
 }
 
 #[doc(hidden)]

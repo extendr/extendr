@@ -421,4 +421,9 @@ impl Robj {
     pub fn namespace_env_spec(&self) -> Robj {
         unsafe { new_owned(R_NamespaceEnvSpec(self.get())) }
     }
+
+    /// Returns `true` if this is an ALTREP object.
+    pub fn is_altrep(&self) -> bool {
+        unsafe { ALTREP(self.get()) != 0 }
+    }
 }

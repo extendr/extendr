@@ -154,17 +154,6 @@ impl Robj {
         }
     }
 
-    /// Get a copy of the underlying SEXP for mutable types.
-    /// This is valid only for owned objects as we are not
-    /// permitted to modify parameters or system objects.
-    #[doc(hidden)]
-    pub unsafe fn get_mut(&mut self) -> Option<SEXP> {
-        match self {
-            Robj::Owned(sexp) => Some(*sexp),
-            Robj::Sys(_) => None,
-        }
-    }
-
     #[doc(hidden)]
     /// Get the XXXSXP type of the object.
     pub fn sexptype(&self) -> u32 {

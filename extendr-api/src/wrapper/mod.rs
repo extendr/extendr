@@ -4,6 +4,7 @@
 use crate::*;
 use libR_sys::*;
 
+pub mod altrep;
 pub mod character;
 pub mod environment;
 pub mod expr;
@@ -18,6 +19,7 @@ pub mod promise;
 pub mod raw;
 pub mod symbol;
 
+pub use altrep::Altrep;
 pub use character::Character;
 pub use environment::{EnvIter, Environment};
 pub use expr::Expression;
@@ -100,12 +102,14 @@ macro_rules! make_conversions {
 }
 
 make_conversions!(Pairlist, ExpectedPairlist, is_pairlist, "Not a pairlist");
+
 make_conversions!(
     Function,
     ExpectedFunction,
     is_function,
     "Not a function or primitive."
 );
+
 make_conversions!(Raw, ExpectedRaw, is_raw, "Not a raw object");
 
 make_conversions!(
@@ -148,6 +152,8 @@ make_conversions!(
 );
 
 make_conversions!(Promise, ExpectedPromise, is_promise, "Not a Promise object");
+
+make_conversions!(Altrep, ExpectedAltrep, is_altrep, "Not an Altrep type");
 
 impl Robj {
     /// Convert a symbol object to a Symbol wrapper.
