@@ -153,9 +153,25 @@ fn test_try_from_robj() {
 
         assert_eq!(<Vec::<i32>>::try_from(Robj::from(1)), Ok(vec![1]));
         assert_eq!(<Vec::<f64>>::try_from(Robj::from(1.)), Ok(vec![1.]));
+        assert_eq!(<Vec::<Bool>>::try_from(Robj::from(TRUE)), Ok(vec![TRUE]));
+        assert_eq!(<Vec::<u8>>::try_from(Robj::from(0_u8)), Ok(vec![0_u8]));
+
+        assert_eq!(<&[i32]>::try_from(Robj::from(1)), Ok(&[1][..]));
+        assert_eq!(<&[f64]>::try_from(Robj::from(1.)), Ok(&[1.][..]));
+        assert_eq!(<&[Bool]>::try_from(Robj::from(TRUE)), Ok(&[TRUE][..]));
+        assert_eq!(<&[u8]>::try_from(Robj::from(0_u8)), Ok(&[0_u8][..]));
+
+        // Note the Vec<> cases use the same logic as the slices.
+        assert_eq!(<&[i32]>::try_from(Robj::from(1.0)), Err(Error::ExpectedInteger(r!(1.0))));
+        assert_eq!(<&[f64]>::try_from(Robj::from(1)), Err(Error::ExpectedReal(r!(1))));
+        assert_eq!(<&[Bool]>::try_from(Robj::from(())), Err(Error::ExpectedLogical(r!(()))));
+        assert_eq!(<&[u8]>::try_from(Robj::from(())), Err(Error::ExpectedRaw(r!(()))));
 
         let hello = Robj::from("hello");
         assert_eq!(<&str>::try_from(hello), Ok("hello"));
+
+        let hello = Robj::from("hello");
+        assert_eq!(<String>::try_from(hello), Ok("hello".into()));
 
         // conversion from a vector to a scalar value
         let robj = Robj::from(vec![].as_slice() as &[i32]);

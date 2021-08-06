@@ -7,6 +7,7 @@ macro_rules! impl_try_from_scalar_integer {
         impl TryFrom<Robj> for $t {
             type Error = Error;
 
+            /// Convert a numeric object to an integer value.
             fn try_from(robj: Robj) -> Result<Self> {
                 // Check if the value is a scalar
                 match robj.len() {
@@ -57,6 +58,7 @@ macro_rules! impl_try_from_scalar_real {
         impl TryFrom<Robj> for $t {
             type Error = Error;
 
+            /// Convert a numeric object to a real value.
             fn try_from(robj: Robj) -> Result<Self> {
                 // Check if the value is a scalar
                 match robj.len() {
@@ -100,6 +102,8 @@ impl_try_from_scalar_real!(f64);
 impl TryFrom<Robj> for Bool {
     type Error = Error;
 
+    /// Convert an LGLSXP object into a Bool (tri-state boolean).
+    /// Use `value.is_na()` to detect NA values.
     fn try_from(robj: Robj) -> Result<Self> {
         if let Some(v) = robj.as_logical_slice() {
             match v.len() {
@@ -116,6 +120,8 @@ impl TryFrom<Robj> for Bool {
 impl TryFrom<Robj> for bool {
     type Error = Error;
 
+    /// Convert an LGLSXP object into a boolean.
+    /// NAs are not allowed.
     fn try_from(robj: Robj) -> Result<Self> {
         if robj.is_na() {
             Err(Error::MustNotBeNA(robj))
@@ -128,6 +134,8 @@ impl TryFrom<Robj> for bool {
 impl TryFrom<Robj> for &str {
     type Error = Error;
 
+    /// Convert a scalar STRSXP object into a string slice.
+    /// NAs are not allowed.
     fn try_from(robj: Robj) -> Result<Self> {
         if robj.is_na() {
             return Err(Error::MustNotBeNA(robj));
@@ -149,6 +157,9 @@ impl TryFrom<Robj> for &str {
 impl TryFrom<Robj> for String {
     type Error = Error;
 
+    /// Convert an scalar STRSXP object into a String.
+    /// Note: Unless you plan to store the result, use a string slice instead.
+    /// NAs are not allowed.
     fn try_from(robj: Robj) -> Result<Self> {
         <&str>::try_from(robj).map(|s| s.to_string())
     }
@@ -157,6 +168,9 @@ impl TryFrom<Robj> for String {
 impl TryFrom<Robj> for Vec<i32> {
     type Error = Error;
 
+    /// Convert an INTSXP object into a vector of i32 (integer).
+    /// Note: Unless you plan to store the result, use a slice instead.
+    /// Use `value.is_na()` to detect NA values.
     fn try_from(robj: Robj) -> Result<Self> {
         if let Some(v) = robj.as_integer_slice() {
             Ok(Vec::from(v))
@@ -169,6 +183,9 @@ impl TryFrom<Robj> for Vec<i32> {
 impl TryFrom<Robj> for Vec<f64> {
     type Error = Error;
 
+    /// Convert a REALSXP object into a vector of f64 (double precision floating point).
+    /// Note: Unless you plan to store the result, use a slice instead.
+    /// Use `value.is_na()` to detect NA values.
     fn try_from(robj: Robj) -> Result<Self> {
         if let Some(v) = robj.as_real_slice() {
             Ok(Vec::from(v))
@@ -178,9 +195,40 @@ impl TryFrom<Robj> for Vec<f64> {
     }
 }
 
+impl TryFrom<Robj> for Vec<Bool> {
+    type Error = Error;
+
+    /// Convert a LGLSXP object into a vector of Bool (tri-state booleans).
+    /// Note: Unless you plan to store the result, use a slice instead.
+    /// Use `value.is_na()` to detect NA values.
+    fn try_from(robj: Robj) -> Result<Self> {
+        if let Some(v) = robj.as_logical_slice() {
+            Ok(Vec::from(v))
+        } else {
+            Err(Error::ExpectedInteger(robj))
+        }
+    }
+}
+
+impl TryFrom<Robj> for Vec<u8> {
+    type Error = Error;
+
+    /// Convert a RAWSXP object into a vector of bytes.
+    /// Note: Unless you plan to store the result, use a slice instead.
+    fn try_from(robj: Robj) -> Result<Self> {
+        if let Some(v) = robj.as_raw_slice() {
+            Ok(Vec::from(v))
+        } else {
+            Err(Error::ExpectedRaw(robj))
+        }
+    }
+}
+
 impl TryFrom<Robj> for Vec<String> {
     type Error = Error;
 
+    /// Convert a STRSXP object into a vector of `String`s.
+    /// Note: Unless you plan to store the result, use a slice instead.
     fn try_from(robj: Robj) -> Result<Self> {
         if let Some(iter) = robj.as_str_iter() {
             // check for NA's in the string vector
@@ -195,25 +243,13 @@ impl TryFrom<Robj> for Vec<String> {
     }
 }
 
-// The following fails because T could be Option<U>
-//
-// impl<T : TryFrom<Robj>> TryFrom<Robj> for Option<T> {
-//     type Error = Error;
-
-//     fn try_from(robj: Robj) -> Result<Self> {
-//         if robj.is_na() {
-//             Ok(None)
-//         } else {
-//             Ok(Some(T::try_from(robj)?))
-//         }
-//     }
-// }
-
 macro_rules! impl_option {
     ($type : ty) => {
         impl TryFrom<Robj> for Option<$type> {
             type Error = Error;
 
+            /// Convert a scalar object that may be NA type to an `Option` of a corresponding type.
+            /// Returns `None` if the scalar is NA.
             fn try_from(robj: Robj) -> Result<Self> {
                 if robj.is_na() {
                     Ok(None)
@@ -243,9 +279,53 @@ impl_option!(Vec<i32>);
 impl_option!(Vec<f64>);
 impl_option!(Vec<String>);
 
+impl TryFrom<Robj> for &[i32] {
+    type Error = Error;
+
+    /// Convert an INTSXP object into a slice of i32 (integer).
+    /// Use `value.is_na()` to detect NA values.
+    fn try_from(robj: Robj) -> Result<Self> {
+        robj.as_typed_slice()
+            .ok_or_else(|| Error::ExpectedInteger(robj))
+    }
+}
+
+impl TryFrom<Robj> for &[Bool] {
+    type Error = Error;
+
+    /// Convert a LGLSXP object into a slice of Bool (tri-state booleans).
+    /// Use `value.is_na()` to detect NA values.
+    fn try_from(robj: Robj) -> Result<Self> {
+        robj.as_typed_slice()
+            .ok_or_else(|| Error::ExpectedLogical(robj))
+    }
+}
+
+impl TryFrom<Robj> for &[u8] {
+    type Error = Error;
+
+    /// Convert a RAWSXP object into a slice of bytes.
+    fn try_from(robj: Robj) -> Result<Self> {
+        robj.as_typed_slice()
+            .ok_or_else(|| Error::ExpectedRaw(robj))
+    }
+}
+
+impl TryFrom<Robj> for &[f64] {
+    type Error = Error;
+
+    /// Convert a REALSXP object into a slice of f64 (double precision floating point).
+    /// Use `value.is_na()` to detect NA values.
+    fn try_from(robj: Robj) -> Result<Self> {
+        robj.as_typed_slice()
+            .ok_or_else(|| Error::ExpectedReal(robj))
+    }
+}
+
 impl TryFrom<Robj> for HashMap<String, Robj> {
     type Error = Error;
 
+    /// Convert a named VECSXP object into a hashmap of `String`-value pairs.
     fn try_from(robj: Robj) -> Result<Self> {
         if let Some(iter) = robj.as_list().map(|l| l.iter()) {
             Ok(iter
@@ -260,6 +340,7 @@ impl TryFrom<Robj> for HashMap<String, Robj> {
 impl TryFrom<Robj> for HashMap<&str, Robj> {
     type Error = Error;
 
+    /// Convert a named VECSXP object into a hashmap of `&str`-value pairs.
     fn try_from(robj: Robj) -> Result<Self> {
         if let Some(iter) = robj.as_list().map(|l| l.iter()) {
             Ok(iter.map(|(k, v)| (k, v)).collect::<HashMap<&str, Robj>>())
