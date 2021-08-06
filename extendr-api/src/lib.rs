@@ -424,6 +424,8 @@ pub enum RType {
     Unknown,
 }
 
+/// Convert extendr's RType to R's SEXPTYPE.
+/// Panics if the type is Unknown.
 pub fn rtype_to_sxp(rtype: RType) -> i32 {
     use RType::*;
     (match rtype {

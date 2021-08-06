@@ -10,7 +10,13 @@ pub struct Altrep {
 /// Mechanism TBD.
 trait AltrepImpl {
     /// Constructor that is called when loading an Altrep object from a file.
-    fn unserialize_ex(class: Robj, state: Robj, attributes: Robj, obj_flags: i32, levels: i32) -> Robj {
+    fn unserialize_ex(
+        class: Robj,
+        state: Robj,
+        attributes: Robj,
+        obj_flags: i32,
+        levels: i32,
+    ) -> Robj {
         let res = Self::unserialize(class, state);
         if !res.is_null() {
             unsafe {
@@ -75,7 +81,7 @@ trait AltvecImpl: AltrepImpl {
     }
 
     /// Get the data pointer for this vector, returning NULL
-    /// if the object is 
+    /// if the object is
     /// We may move this into AltIntegerImpl etc. and use a slice.
     fn dataptr_or_null(&self) -> *const u8 {
         std::ptr::null()
@@ -193,7 +199,6 @@ trait AltLogicalImpl: AltvecImpl {
     fn sum(&self, _remove_nas: bool) -> Robj {
         ().into()
     }
-
 }
 
 trait AltRawImpl: AltvecImpl {
@@ -227,9 +232,7 @@ trait AltStringImpl: AltvecImpl {
     }
 
     /// Set a single element in this vector.
-    fn set_elt(&mut self, _index: usize, _value: Robj) {
-
-    }
+    fn set_elt(&mut self, _index: usize, _value: Robj) {}
 
     /// Return true if this vector is sorted.
     fn is_sorted(&self) -> bool {
