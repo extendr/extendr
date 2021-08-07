@@ -45,21 +45,28 @@
 //!   This might be fallible or non-fallible depending on the case. (TODO: maybe
 //!   we need to review if fallible conversion correctly returns `Result`?)
 //!
-//! ### Vector
+//! ### Vector vs Scalar
 //!
 //! A vector of primitive types (e.g. integer and double) can be converted to
-//! `Vec<T>` via `TryFrom` trait.
+//! `Vec<T>` or `&[T]` via [TryFrom] trait. For efficiency purposes, the
+//! conversion rule of a vector is stricter than that of a scalar.
 //!
-//! ### Missing values
-//!
-//! A scalar that possibly be a missing value can be converted to `Option<T>`.
-//!
-//! ### Integer types and floating-point types
-//!
-//! * (TODO: explain `u32`, `u64` and `i64` are converted to `REALSXP`, not
-//!   `INTSXP`).
-//! * (TODO: explain the check on the limits and the roundings of R-to-Rust
-//!   conversion)
+//! - **Missing values**: A scalar that possibly be a missing value can be
+//!   converted to `Option<T>`. But, for a vector, there's no conversion like
+//!   `Vec<Option<T>>` or `&[Option<T>]`. If you need to handle a vector with
+//!   possible missing values on Rust's side, you need to use proxy types (e.g.,
+//!   [`Real`], [`Int`], or [`Robj`] directly) and check with [`Robj::is_na()`].
+//! - **Ineger and floating-point types**: Basically, `REALSXP` has `f64`
+//!   representation, and `INTSXP` has `i32` one, so these vectors can naturally
+//!   be converted to the corresponding types (almost) for free. But, if we want
+//!   to convert them to another variants of the integer and floating-point
+//!   types, it requires some checking on the limit and rounding (e.g. are `i32`
+//!   values within the `i16` range?), which might take some time. Thus, for
+//!   efficiency purposes, extendr doesn't provide the direct conversion from a
+//!   vector to `Vec<T>` or `&[T]` of other variants. On the other hand, a
+//!   scalar can be converted to any variants (i.e., `i8`, `i16`, `i64`, `u8`,
+//!   `u16`, `u32`, `u64`, `f32`, `f64`). Of course it fails if the conversion
+//!   is lossy (e.g. `1.5_f32` cannot be converted to integer-alikes).
 //!
 //! ### `NULL`
 //!
