@@ -1,6 +1,5 @@
 use super::*;
 use crate::single_threaded;
-use std::collections::HashMap;
 
 pub(crate) fn str_to_character(s: &str) -> SEXP {
     unsafe {
@@ -549,14 +548,6 @@ impl From<Logical> for Robj {
     /// Convert a logical iterator into a vector.
     fn from(val: Logical) -> Self {
         val.collect_robj()
-    }
-}
-
-impl<'a> From<HashMap<&'a str, Robj>> for Robj {
-    /// Convert a hashmap into a list.
-    fn from(val: HashMap<&'a str, Robj>) -> Self {
-        let res: Robj = List::from_values(val.iter().map(|(_, v)| v)).into();
-        res.set_names(val.into_iter().map(|(k, _)| k)).unwrap()
     }
 }
 

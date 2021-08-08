@@ -26,7 +26,7 @@ impl List {
         List::from_values(values)
     }
 
-    /// Wrapper for creating list (VECSXP) objects.
+    /// Wrapper for creating a list (VECSXP) object.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -64,6 +64,31 @@ impl List {
         .unwrap()
         .as_list()
         .unwrap()
+    }
+
+    /// Wrapper for creating a list (VECSXP) object from a HashMap.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// use std::collections::HashMap;
+    /// test! {
+    ///     let mut map: HashMap<&str, Robj> = HashMap::new();
+    ///     map.insert("a", r!(1));
+    ///     map.insert("b", r!(2));
+    ///
+    ///     let list = List::from_hashmap(map).unwrap();
+    ///     assert_eq!(list.is_list(), true);
+    ///
+    ///     let names : Vec<_> = list.names().unwrap().collect();
+    ///     assert_eq!(names, vec!["a", "b"]);
+    /// }
+    /// ```
+    pub fn from_hashmap<K>(val: HashMap<K, Robj>) -> Result<Self>
+    where
+        K: Into<String>,
+    {
+        let res: Self = Self::from_values(val.iter().map(|(_, v)| v)).into();
+        res.set_names(val.into_iter().map(|(k, _)| k.into()))?;
+        Ok(res)
     }
 
     /// Return an iterator over the values of this list.

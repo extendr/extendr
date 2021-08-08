@@ -442,7 +442,6 @@ pub fn print_r_error<T: Into<Vec<u8>>>(s: T) {
 mod tests {
     use super::prelude::*;
     use crate as extendr_api;
-    use std::collections::HashMap;
 
     use extendr_macros::extendr;
     use extendr_macros::extendr_module;
@@ -574,7 +573,7 @@ mod tests {
     }
 
     #[extendr]
-    pub fn hash_map(x: HashMap<&str, Robj>) -> HashMap<&str, Robj> {
+    pub fn hash_map(x: List) -> List {
         x
     }
 
