@@ -75,16 +75,19 @@ trait AltRepImpl {
 trait AltVecImpl: AltRepImpl {
     /// Get the data pointer for this vector, possibly expanding the
     /// compact representation into a full R vector.
-    fn dataptr(&self, x: SEXP, _writeable: bool) -> *mut u8 {
+    fn dataptr(x: SEXP, _writeable: bool) -> *mut u8 {
         unsafe {
             let data2 = R_altrep_data2(x);
-            if data2 == R_NilValue || TYPEOF(data2) != INTSXP as i32 {
+            if data2 == R_NilValue || TYPEOF(data2) != TYPEOF(x) {
                 Rf_protect(x);
                 let len = ALTREP_LENGTH(x);
                 let data2 = Rf_allocVector(INTSXP, len as R_xlen_t);
-                R_set_altrep_data2(x, data2);
+                Rf_protect(data2);
+                println!("here1");
                 INTEGER_GET_REGION(x, 0, len as R_xlen_t, INTEGER(data2));
-                Rf_unprotect(1);
+                println!("herex");
+                R_set_altrep_data2(x, data2);
+                Rf_unprotect(2);
                 INTEGER(data2) as *mut u8
             } else {
                 INTEGER(data2) as *mut u8
@@ -94,12 +97,14 @@ trait AltVecImpl: AltRepImpl {
 
     /// Get the data pointer for this vector, returning NULL
     /// if the object is unmaterialized.
-    fn dataptr_or_null(&self, x: SEXP) -> *const u8 {
+    fn dataptr_or_null(x: SEXP) -> *const u8 {
         unsafe {
             let data2 = R_altrep_data2(x);
-            if data2 == R_NilValue || TYPEOF(data2) != INTSXP as i32 {
+            if data2 == R_NilValue || TYPEOF(data2) != TYPEOF(x) {
+                println!("here dporn null");
                 std::ptr::null()
             } else {
+                println!("here dporn not null");
                 INTEGER(data2) as *const u8
             }
         }
@@ -117,6 +122,7 @@ trait AltIntegerImpl: AltVecImpl {
 
     /// Get a multiple elements from this vector.
     fn get_region(&self, index: usize, data: &mut [i32]) -> usize {
+        println!("here2");
         let len = self.length();
         if index > len {
             0
@@ -375,11 +381,11 @@ macro_rules! impl_new_altinteger {
                         x: SEXP,
                         writeable: Rboolean,
                     ) -> *mut c_void {
-                        get_state(x).dataptr(x, writeable != 0) as *mut c_void
+                        <$statetype>::dataptr(x, writeable != 0) as *mut c_void
                     }
 
                     unsafe extern "C" fn altvec_Dataptr_or_null(x: SEXP) -> *const c_void {
-                        get_state(x).dataptr_or_null(x) as *mut c_void
+                        <$statetype>::dataptr_or_null(x) as *mut c_void
                     }
 
                     unsafe extern "C" fn altvec_Extract_subset(
@@ -395,12 +401,14 @@ macro_rules! impl_new_altinteger {
                     }
 
                     unsafe extern "C" fn altinteger_Get_region(
-                        sx: SEXP,
+                        x: SEXP,
                         i: R_xlen_t,
                         n: R_xlen_t,
                         buf: *mut c_int,
                     ) -> R_xlen_t {
-                        0
+                        println!("here1.5");
+                        let slice = std::slice::from_raw_parts_mut(buf as *mut i32, n as usize);
+                        get_state(x).get_region(i as usize, slice) as R_xlen_t
                     }
 
                     unsafe extern "C" fn altinteger_Is_sorted(x: SEXP) -> c_int {
@@ -555,30 +563,30 @@ macro_rules! impl_new_altinteger {
                     R_set_altinteger_Min_method(class_ptr, Some(altinteger_Min));
                     R_set_altinteger_Max_method(class_ptr, Some(altinteger_Max));
 
-                    R_set_altreal_Elt_method(class_ptr, Some(altreal_Elt));
-                    R_set_altreal_Get_region_method(class_ptr, Some(altreal_Get_region));
-                    R_set_altreal_Is_sorted_method(class_ptr, Some(altreal_Is_sorted));
-                    R_set_altreal_No_NA_method(class_ptr, Some(altreal_No_NA));
-                    R_set_altreal_Sum_method(class_ptr, Some(altreal_Sum));
-                    R_set_altreal_Min_method(class_ptr, Some(altreal_Min));
-                    R_set_altreal_Max_method(class_ptr, Some(altreal_Max));
+                    // R_set_altreal_Elt_method(class_ptr, Some(altreal_Elt));
+                    // R_set_altreal_Get_region_method(class_ptr, Some(altreal_Get_region));
+                    // R_set_altreal_Is_sorted_method(class_ptr, Some(altreal_Is_sorted));
+                    // R_set_altreal_No_NA_method(class_ptr, Some(altreal_No_NA));
+                    // R_set_altreal_Sum_method(class_ptr, Some(altreal_Sum));
+                    // R_set_altreal_Min_method(class_ptr, Some(altreal_Min));
+                    // R_set_altreal_Max_method(class_ptr, Some(altreal_Max));
 
-                    R_set_altlogical_Elt_method(class_ptr, Some(altlogical_Elt));
-                    R_set_altlogical_Get_region_method(class_ptr, Some(altlogical_Get_region));
-                    R_set_altlogical_Is_sorted_method(class_ptr, Some(altlogical_Is_sorted));
-                    R_set_altlogical_No_NA_method(class_ptr, Some(altlogical_No_NA));
-                    R_set_altlogical_Sum_method(class_ptr, Some(altlogical_Sum));
+                    // R_set_altlogical_Elt_method(class_ptr, Some(altlogical_Elt));
+                    // R_set_altlogical_Get_region_method(class_ptr, Some(altlogical_Get_region));
+                    // R_set_altlogical_Is_sorted_method(class_ptr, Some(altlogical_Is_sorted));
+                    // R_set_altlogical_No_NA_method(class_ptr, Some(altlogical_No_NA));
+                    // R_set_altlogical_Sum_method(class_ptr, Some(altlogical_Sum));
 
-                    R_set_altraw_Elt_method(class_ptr, Some(altraw_Elt));
-                    R_set_altraw_Get_region_method(class_ptr, Some(altraw_Get_region));
+                    // R_set_altraw_Elt_method(class_ptr, Some(altraw_Elt));
+                    // R_set_altraw_Get_region_method(class_ptr, Some(altraw_Get_region));
 
-                    R_set_altcomplex_Elt_method(class_ptr, Some(altcomplex_Elt));
-                    R_set_altcomplex_Get_region_method(class_ptr, Some(altcomplex_Get_region));
+                    // R_set_altcomplex_Elt_method(class_ptr, Some(altcomplex_Elt));
+                    // R_set_altcomplex_Get_region_method(class_ptr, Some(altcomplex_Get_region));
 
-                    R_set_altstring_Elt_method(class_ptr, Some(altstring_Elt));
-                    R_set_altstring_Set_elt_method(class_ptr, Some(altstring_Set_elt));
-                    R_set_altstring_Is_sorted_method(class_ptr, Some(altstring_Is_sorted));
-                    R_set_altstring_No_NA_method(class_ptr, Some(altstring_No_NA));
+                    // R_set_altstring_Elt_method(class_ptr, Some(altstring_Elt));
+                    // R_set_altstring_Set_elt_method(class_ptr, Some(altstring_Set_elt));
+                    // R_set_altstring_Is_sorted_method(class_ptr, Some(altstring_Is_sorted));
+                    // R_set_altstring_No_NA_method(class_ptr, Some(altstring_No_NA));
 
                     let ptr: *mut $statetype = Box::into_raw(Box::new(state));
                     let tag = r!($name);
