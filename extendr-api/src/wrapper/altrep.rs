@@ -289,7 +289,7 @@ mod test {
                     unsafe {
                         #![allow(non_snake_case)]
                         #![allow(unused_variables)]
-                       
+
                         // Get the state for this altrep.
                         // We can bypass the type check as we know what type we have.
                         fn get_state(x: SEXP) -> &'static $statetype {
@@ -335,7 +335,12 @@ mod test {
                             deep: c_int,
                             pvec: c_int,
                             func: Option<
-                                unsafe extern "C" fn(arg1: SEXP, arg2: c_int, arg3: c_int, arg4: c_int),
+                                unsafe extern "C" fn(
+                                    arg1: SEXP,
+                                    arg2: c_int,
+                                    arg3: c_int,
+                                    arg4: c_int,
+                                ),
                             >,
                         ) -> Rboolean {
                             0
@@ -510,17 +515,23 @@ mod test {
 
                         R_set_altrep_UnserializeEX_method(class_ptr, Some(altrep_UnserializeEX));
                         R_set_altrep_Unserialize_method(class_ptr, Some(altrep_Unserialize));
-                        R_set_altrep_Serialized_state_method(class_ptr, Some(altrep_Serialized_state));
+                        R_set_altrep_Serialized_state_method(
+                            class_ptr,
+                            Some(altrep_Serialized_state),
+                        );
                         R_set_altrep_DuplicateEX_method(class_ptr, Some(altrep_DuplicateEX));
                         R_set_altrep_Duplicate_method(class_ptr, Some(altrep_Duplicate));
                         R_set_altrep_Coerce_method(class_ptr, Some(altrep_Coerce));
                         R_set_altrep_Inspect_method(class_ptr, Some(altrep_Inspect));
                         R_set_altrep_Length_method(class_ptr, Some(altrep_Length));
-                        
+
                         R_set_altvec_Dataptr_method(class_ptr, Some(altvec_Dataptr));
-                        R_set_altvec_Dataptr_or_null_method(class_ptr, Some(altvec_Dataptr_or_null));
+                        R_set_altvec_Dataptr_or_null_method(
+                            class_ptr,
+                            Some(altvec_Dataptr_or_null),
+                        );
                         R_set_altvec_Extract_subset_method(class_ptr, Some(altvec_Extract_subset));
-                        
+
                         R_set_altinteger_Elt_method(class_ptr, Some(altinteger_Elt));
                         R_set_altinteger_Get_region_method(class_ptr, Some(altinteger_Get_region));
                         R_set_altinteger_Is_sorted_method(class_ptr, Some(altinteger_Is_sorted));
@@ -528,7 +539,7 @@ mod test {
                         R_set_altinteger_Sum_method(class_ptr, Some(altinteger_Sum));
                         R_set_altinteger_Min_method(class_ptr, Some(altinteger_Min));
                         R_set_altinteger_Max_method(class_ptr, Some(altinteger_Max));
-                        
+
                         R_set_altreal_Elt_method(class_ptr, Some(altreal_Elt));
                         R_set_altreal_Get_region_method(class_ptr, Some(altreal_Get_region));
                         R_set_altreal_Is_sorted_method(class_ptr, Some(altreal_Is_sorted));
@@ -536,19 +547,19 @@ mod test {
                         R_set_altreal_Sum_method(class_ptr, Some(altreal_Sum));
                         R_set_altreal_Min_method(class_ptr, Some(altreal_Min));
                         R_set_altreal_Max_method(class_ptr, Some(altreal_Max));
-                        
+
                         R_set_altlogical_Elt_method(class_ptr, Some(altlogical_Elt));
                         R_set_altlogical_Get_region_method(class_ptr, Some(altlogical_Get_region));
                         R_set_altlogical_Is_sorted_method(class_ptr, Some(altlogical_Is_sorted));
                         R_set_altlogical_No_NA_method(class_ptr, Some(altlogical_No_NA));
                         R_set_altlogical_Sum_method(class_ptr, Some(altlogical_Sum));
-                        
+
                         R_set_altraw_Elt_method(class_ptr, Some(altraw_Elt));
                         R_set_altraw_Get_region_method(class_ptr, Some(altraw_Get_region));
-                        
+
                         R_set_altcomplex_Elt_method(class_ptr, Some(altcomplex_Elt));
                         R_set_altcomplex_Get_region_method(class_ptr, Some(altcomplex_Get_region));
-                        
+
                         R_set_altstring_Elt_method(class_ptr, Some(altstring_Elt));
                         R_set_altstring_Set_elt_method(class_ptr, Some(altstring_Set_elt));
                         R_set_altstring_Is_sorted_method(class_ptr, Some(altstring_Is_sorted));
