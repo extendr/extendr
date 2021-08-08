@@ -72,7 +72,7 @@ trait AltRepImpl {
     }
 }
 
-trait AltVecImpl : AltRepImpl {
+trait AltVecImpl: AltRepImpl {
     /// Get the data pointer for this vector, possibly expanding the
     /// compact representation into a full R vector.
     fn dataptr(&self, x: SEXP, _writeable: bool) -> *mut u8 {
@@ -111,7 +111,7 @@ trait AltVecImpl : AltRepImpl {
     }
 }
 
-trait AltIntegerImpl : AltVecImpl {
+trait AltIntegerImpl: AltVecImpl {
     /// Get a single element from this vector.
     fn elt(&self, _index: usize) -> i32;
 
@@ -307,7 +307,7 @@ macro_rules! impl_new_altinteger {
                     #![allow(unused_variables)]
                     use std::os::raw::c_int;
                     use std::os::raw::c_void;
-                
+
                     // Get the state for this altrep.
                     // We can bypass the type check as we know what type we have.
                     fn get_state(x: SEXP) -> &'static $statetype {
@@ -320,7 +320,7 @@ macro_rules! impl_new_altinteger {
                     // fn get_materialized(x: SEXP) -> Option<&'static mut [i32]> {
                     //     unsafe {
                     //         if TYPEOF(R_altrep_data2(x) == INTSXP {
-                                
+
                     //         }
                     //     }
                     // }
@@ -361,12 +361,7 @@ macro_rules! impl_new_altinteger {
                         deep: c_int,
                         pvec: c_int,
                         func: Option<
-                            unsafe extern "C" fn(
-                                arg1: SEXP,
-                                arg2: c_int,
-                                arg3: c_int,
-                                arg4: c_int,
-                            ),
+                            unsafe extern "C" fn(arg1: SEXP, arg2: c_int, arg3: c_int, arg4: c_int),
                         >,
                     ) -> Rboolean {
                         0
@@ -541,10 +536,7 @@ macro_rules! impl_new_altinteger {
 
                     R_set_altrep_UnserializeEX_method(class_ptr, Some(altrep_UnserializeEX));
                     R_set_altrep_Unserialize_method(class_ptr, Some(altrep_Unserialize));
-                    R_set_altrep_Serialized_state_method(
-                        class_ptr,
-                        Some(altrep_Serialized_state),
-                    );
+                    R_set_altrep_Serialized_state_method(class_ptr, Some(altrep_Serialized_state));
                     R_set_altrep_DuplicateEX_method(class_ptr, Some(altrep_DuplicateEX));
                     R_set_altrep_Duplicate_method(class_ptr, Some(altrep_Duplicate));
                     R_set_altrep_Coerce_method(class_ptr, Some(altrep_Coerce));
@@ -552,10 +544,7 @@ macro_rules! impl_new_altinteger {
                     R_set_altrep_Length_method(class_ptr, Some(altrep_Length));
 
                     R_set_altvec_Dataptr_method(class_ptr, Some(altvec_Dataptr));
-                    R_set_altvec_Dataptr_or_null_method(
-                        class_ptr,
-                        Some(altvec_Dataptr_or_null),
-                    );
+                    R_set_altvec_Dataptr_or_null_method(class_ptr, Some(altvec_Dataptr_or_null));
                     R_set_altvec_Extract_subset_method(class_ptr, Some(altvec_Extract_subset));
 
                     R_set_altinteger_Elt_method(class_ptr, Some(altinteger_Elt));
@@ -609,7 +598,6 @@ macro_rules! impl_new_altinteger {
 mod test {
     use super::*;
     // use libR_sys::*;
-
 
     #[test]
     fn test_altrep() {
