@@ -78,7 +78,8 @@ impl List {
     ///     let list = List::from_hashmap(map).unwrap();
     ///     assert_eq!(list.is_list(), true);
     ///
-    ///     let names : Vec<_> = list.names().unwrap().collect();
+    ///     let mut names : Vec<_> = list.names().unwrap().collect();
+    ///     names.sort();
     ///     assert_eq!(names, vec!["a", "b"]);
     /// }
     /// ```
@@ -117,6 +118,23 @@ impl List {
         self.names()
             .map(|n| n.zip(self.values()))
             .unwrap_or_else(|| StrIter::new().zip(ListIter::new()))
+    }
+
+    /// Convert a List into a HashMap, consuming the list.
+    ///
+    /// - If there are some duplicated name of elements, only one of those will be preserved.
+    /// - If an element doesn't have the name, an empty string (i.e. `""`) will be the key.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// use std::collections::HashMap;
+    /// test! {
+    ///     let mut robj = list!(a=1, 2);
+    ///     let names_and_values = robj.as_list().unwrap().into_hashmap();
+    ///     assert_eq!(names_and_values, vec![("a", r!(1)), ("", r!(2))].into_iter().collect::<HashMap<_, _>>());
+    /// }
+    /// ```
+    pub fn into_hashmap(self) -> HashMap<&'static str, Robj> {
+        self.iter().collect::<HashMap<&str, Robj>>()
     }
 }
 
