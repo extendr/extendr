@@ -457,6 +457,38 @@ pub fn rtype_to_sxp(rtype: RType) -> i32 {
     }) as i32
 }
 
+/// Convert R's SEXPTYPE to extendr's RType.
+pub fn sxp_to_rtype(sxptype: i32) -> RType {
+    use RType::*;
+    match sxptype as u32 {
+        NILSXP => Null,
+        SYMSXP => Symbol,
+        LISTSXP => Pairlist,
+        CLOSXP => Function,
+        ENVSXP => Environment,
+        PROMSXP => Promise,
+        LANGSXP => Language,
+        SPECIALSXP => Special,
+        BUILTINSXP => Builtin,
+        CHARSXP => Character,
+        LGLSXP => Logical,
+        INTSXP => Integer,
+        REALSXP => Real,
+        CPLXSXP => Complex,
+        STRSXP => String,
+        DOTSXP => Dot,
+        ANYSXP => Any,
+        VECSXP => List,
+        EXPRSXP => Expression,
+        BCODESXP => Bytecode,
+        EXTPTRSXP => ExternalPtr,
+        WEAKREFSXP => WeakRef,
+        RAWSXP => Raw,
+        S4SXP => S4,
+        _ => Unknown
+    }
+}
+
 #[doc(hidden)]
 pub fn print_r_output<T: Into<Vec<u8>>>(s: T) {
     let cs = CString::new(s).expect("NulError");
