@@ -59,8 +59,7 @@ trait AltRepImpl {
         &self,
         _pre: i32,
         _deep: bool,
-        _pvec: i32
-        // _inspect_subtree: fn(robj: Robj, pre: i32, deep: i32, pvec: i32),
+        _pvec: i32, // _inspect_subtree: fn(robj: Robj, pre: i32, deep: i32, pvec: i32),
     ) -> bool {
         false
     }
@@ -82,13 +81,23 @@ trait AltRepImpl {
                 let data2 = Rf_allocVector(TYPEOF(x) as u32, len as R_xlen_t);
                 Rf_protect(data2);
                 match TYPEOF(x) as u32 {
-                    INTSXP => { INTEGER_GET_REGION(x, 0, len as R_xlen_t, INTEGER(data2)); }
-                    LGLSXP => { LOGICAL_GET_REGION(x, 0, len as R_xlen_t, LOGICAL(data2)); }
-                    REALSXP => { REAL_GET_REGION(x, 0, len as R_xlen_t, REAL(data2)); }
-                    RAWSXP => { RAW_GET_REGION(x, 0, len as R_xlen_t, RAW(data2)); }
-                    CPLXSXP => { COMPLEX_GET_REGION(x, 0, len as R_xlen_t, COMPLEX(data2)); }
+                    INTSXP => {
+                        INTEGER_GET_REGION(x, 0, len as R_xlen_t, INTEGER(data2));
+                    }
+                    LGLSXP => {
+                        LOGICAL_GET_REGION(x, 0, len as R_xlen_t, LOGICAL(data2));
+                    }
+                    REALSXP => {
+                        REAL_GET_REGION(x, 0, len as R_xlen_t, REAL(data2));
+                    }
+                    RAWSXP => {
+                        RAW_GET_REGION(x, 0, len as R_xlen_t, RAW(data2));
+                    }
+                    CPLXSXP => {
+                        COMPLEX_GET_REGION(x, 0, len as R_xlen_t, COMPLEX(data2));
+                    }
                     // STRSXP => { STRING_GET_REGION(x, 0, len as R_xlen_t, INTEGER(data2)); }
-                    _ => panic!("unsupported ALTREP type.")
+                    _ => panic!("unsupported ALTREP type."),
                 }
                 R_set_altrep_data2(x, data2);
                 Rf_unprotect(2);
@@ -120,7 +129,6 @@ trait AltRepImpl {
     }
 }
 
-
 trait AltIntegerImpl: AltRepImpl {
     fn tot_min_max_nas(&self) -> (i64, i32, i32, usize, usize) {
         let len = self.length();
@@ -137,7 +145,7 @@ trait AltIntegerImpl: AltRepImpl {
                 nas += 1;
             }
         }
-        (tot, min, max, len-nas, len)
+        (tot, min, max, len - nas, len)
     }
 
     /// Get a single element from this vector.
@@ -350,7 +358,14 @@ macro_rules! make_altep_class {
             objf: c_int,
             levs: c_int,
         ) -> SEXP {
-            <$statetype>::unserialize_ex(new_owned(class), new_owned(state), new_owned(attr), objf as i32, levs as i32).get()
+            <$statetype>::unserialize_ex(
+                new_owned(class),
+                new_owned(state),
+                new_owned(attr),
+                objf as i32,
+                levs as i32,
+            )
+            .get()
         }
 
         unsafe extern "C" fn altrep_Unserialize(class: SEXP, state: SEXP) -> SEXP {
@@ -378,21 +393,20 @@ macro_rules! make_altep_class {
             pre: c_int,
             deep: c_int,
             pvec: c_int,
-            func: Option<
-                unsafe extern "C" fn(arg1: SEXP, arg2: c_int, arg3: c_int, arg4: c_int),
-            >,
+            func: Option<unsafe extern "C" fn(arg1: SEXP, arg2: c_int, arg3: c_int, arg4: c_int)>,
         ) -> Rboolean {
-            if get_state(x).inspect(pre, deep == 1, pvec) {1} else {0}
+            if get_state(x).inspect(pre, deep == 1, pvec) {
+                1
+            } else {
+                0
+            }
         }
 
         unsafe extern "C" fn altrep_Length(x: SEXP) -> R_xlen_t {
             get_state(x).length() as R_xlen_t
         }
 
-        unsafe extern "C" fn altvec_Dataptr(
-            x: SEXP,
-            writeable: Rboolean,
-        ) -> *mut c_void {
+        unsafe extern "C" fn altvec_Dataptr(x: SEXP, writeable: Rboolean) -> *mut c_void {
             <$statetype>::dataptr(x, writeable != 0) as *mut c_void
         }
 
@@ -400,11 +414,7 @@ macro_rules! make_altep_class {
             <$statetype>::dataptr_or_null(x) as *mut c_void
         }
 
-        unsafe extern "C" fn altvec_Extract_subset(
-            x: SEXP,
-            indx: SEXP,
-            call: SEXP,
-        ) -> SEXP {
+        unsafe extern "C" fn altvec_Extract_subset(x: SEXP, indx: SEXP, call: SEXP) -> SEXP {
             <$statetype>::extract_subset(new_owned(x), new_owned(indx), new_owned(call)).get()
         }
 
@@ -420,7 +430,7 @@ macro_rules! make_altep_class {
         R_set_altvec_Dataptr_method($class_ptr, Some(altvec_Dataptr));
         R_set_altvec_Dataptr_or_null_method($class_ptr, Some(altvec_Dataptr_or_null));
         R_set_altvec_Extract_subset_method($class_ptr, Some(altvec_Extract_subset));
-    }
+    };
 }
 
 #[macro_export]
@@ -433,7 +443,7 @@ macro_rules! impl_new_altinteger {
                     #![allow(unused_variables)]
                     use std::os::raw::c_int;
                     use std::os::raw::c_void;
-            
+
                     // Get the state for this altrep.
                     // We can bypass the type check as we know what type we have.
                     fn get_state(x: SEXP) -> &'static $statetype {
@@ -445,13 +455,13 @@ macro_rules! impl_new_altinteger {
 
                     let csname = std::ffi::CString::new($name).unwrap();
                     let csbase = std::ffi::CString::new($base).unwrap();
-            
+
                     let class_ptr = R_make_altinteger_class(
                         csname.as_ptr(),
                         csbase.as_ptr(),
                         std::ptr::null_mut(),
                     );
-            
+
                     make_altep_class!($statetype, class_ptr);
 
                     unsafe extern "C" fn altinteger_Elt(x: SEXP, i: R_xlen_t) -> c_int {
@@ -473,7 +483,11 @@ macro_rules! impl_new_altinteger {
                     }
 
                     unsafe extern "C" fn altinteger_No_NA(x: SEXP) -> c_int {
-                        if get_state(x).no_na() {1} else {0}
+                        if get_state(x).no_na() {
+                            1
+                        } else {
+                            0
+                        }
                     }
 
                     unsafe extern "C" fn altinteger_Sum(x: SEXP, narm: Rboolean) -> SEXP {

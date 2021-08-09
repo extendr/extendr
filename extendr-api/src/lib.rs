@@ -485,7 +485,7 @@ pub fn sxp_to_rtype(sxptype: i32) -> RType {
         WEAKREFSXP => WeakRef,
         RAWSXP => Raw,
         S4SXP => S4,
-        _ => Unknown
+        _ => Unknown,
     }
 }
 

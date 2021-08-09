@@ -460,30 +460,39 @@ impl Robj {
     // }
 
     /// Sum the elements, hopefully using ALTREP methods.
-    /// Returns NULL if unable to 
+    /// Returns NULL if unable to
     pub fn sum(&self, remove_na_values: bool) -> Robj {
         unsafe {
             let sexp = self.get();
             match (self.is_altrep(), self.rtype()) {
                 (true, RType::Integer) => {
-                    new_owned(ALTINTEGER_SUM(sexp, if remove_na_values {1} else {0}))
+                    new_owned(ALTINTEGER_SUM(sexp, if remove_na_values { 1 } else { 0 }))
                 }
                 (true, RType::Real) => {
-                    new_owned(ALTREAL_SUM(sexp, if remove_na_values {1} else {0}))
+                    new_owned(ALTREAL_SUM(sexp, if remove_na_values { 1 } else { 0 }))
                 }
                 (true, RType::Logical) => {
-                    new_owned(ALTLOGICAL_SUM(sexp, if remove_na_values {1} else {0}))
+                    new_owned(ALTLOGICAL_SUM(sexp, if remove_na_values { 1 } else { 0 }))
                 }
-                (false, RType::Integer) => {
-                    self.as_integer_slice().unwrap().iter().fold(0_i64, |p, v| p + *v as i64).into()
-                }
-                (false, RType::Real) => {
-                    self.as_real_slice().unwrap().iter().fold(0_f64, |p, v| p + *v).into()
-                }
-                (false, RType::Logical) => {
-                    self.as_logical_slice().unwrap().iter().fold(0_i64, |p, v| p + v.0 as i64).into()
-                }
-                _ => Robj::from(())
+                (false, RType::Integer) => self
+                    .as_integer_slice()
+                    .unwrap()
+                    .iter()
+                    .fold(0_i64, |p, v| p + *v as i64)
+                    .into(),
+                (false, RType::Real) => self
+                    .as_real_slice()
+                    .unwrap()
+                    .iter()
+                    .fold(0_f64, |p, v| p + *v)
+                    .into(),
+                (false, RType::Logical) => self
+                    .as_logical_slice()
+                    .unwrap()
+                    .iter()
+                    .fold(0_i64, |p, v| p + v.0 as i64)
+                    .into(),
+                _ => Robj::from(()),
             }
         }
     }
