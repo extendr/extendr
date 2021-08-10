@@ -158,7 +158,7 @@ trait AltIntegerImpl: AltRepImpl {
             0
         } else {
             let num_elems = data.len().min(len - index);
-            for i in 0..num_elems {
+            for i in index..index+num_elems {
                 data[i] = self.elt(i);
             }
             num_elems
