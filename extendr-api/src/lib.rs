@@ -266,7 +266,7 @@ pub use robj_ndarray::*;
 pub use extendr_macros::*;
 //////////////////////////////////////////////////
 
-pub struct Complex(f64, f64);
+pub struct Cplx(f64, f64);
 
 /// TRUE value eg. `r!(TRUE)`
 pub const TRUE: Bool = Bool(1);

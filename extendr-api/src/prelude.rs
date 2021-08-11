@@ -26,14 +26,20 @@ pub use super::wrapper::symbol::{
     spec_symbol, triple_colon_symbol, tsp_symbol, unbound_value,
 };
 
+// Exported macros have crate scope.
 pub use crate::{append, append_lang, append_with_name, args, lang, make_lang};
+
+// Exported macros have crate scope.
 pub use crate::{
     data_frame, factor, global, list, r, reprint, reprintln, rprint, rprintln, sym, test, var,
 };
 
 pub use super::logical::Bool;
 
-pub use super::wrapper::{RArray, RColumn, RMatrix, RMatrix3D};
+pub use super::wrapper::{
+    AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep, AltrepImpl,
+    RArray, RColumn, RMatrix, RMatrix3D,
+};
 
 pub use super::robj::{IntoRobj, Robj, RobjItertools};
 

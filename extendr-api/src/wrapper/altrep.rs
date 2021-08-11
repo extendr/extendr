@@ -8,7 +8,7 @@ pub struct Altrep {
 /// Rust trait for implementing ALTREP.
 /// Implement one or more of these methods to generate an Altrep class.
 /// Mechanism TBD.
-trait AltRepImpl {
+pub trait AltrepImpl: Clone + std::fmt::Debug {
     /// Constructor that is called when loading an Altrep object from a file.
     fn unserialize_ex(
         class: Robj,
@@ -61,14 +61,13 @@ trait AltRepImpl {
         _deep: bool,
         _pvec: i32, // _inspect_subtree: fn(robj: Robj, pre: i32, deep: i32, pvec: i32),
     ) -> bool {
-        false
+        rprintln!("{:?}", self);
+        true
     }
 
     /// Get the virtual length of the vector.
     /// For example for a compact range, return end - start + 1.
-    fn length(&self) -> usize {
-        0
-    }
+    fn length(&self) -> usize;
 
     /// Get the data pointer for this vector, possibly expanding the
     /// compact representation into a full R vector.
@@ -129,7 +128,7 @@ trait AltRepImpl {
     }
 }
 
-trait AltIntegerImpl: AltRepImpl {
+pub trait AltIntegerImpl: AltrepImpl {
     fn tot_min_max_nas(&self) -> (i64, i32, i32, usize, usize) {
         let len = self.length();
         let mut tot = 0;
@@ -165,7 +164,7 @@ trait AltIntegerImpl: AltRepImpl {
         }
     }
 
-    /// Return true if this vector is sorted.
+    /// Return TRUE if this vector is sorted, FALSE if not and NA_LOGICAL if unknown.
     fn is_sorted(&self) -> Bool {
         NA_LOGICAL
     }
@@ -209,18 +208,43 @@ trait AltIntegerImpl: AltRepImpl {
     }
 }
 
-trait AltRealImpl {
-    /// Get a single element from this vector.
-    fn elt(&self, _index: usize) -> f64 {
-        0.0
+pub trait AltRealImpl: AltrepImpl {
+    fn tot_min_max_nas(&self) -> (f64, f64, f64, usize, usize) {
+        let len = self.length();
+        let mut tot = 0.0;
+        let mut nas = 0;
+        let mut min = f64::MAX;
+        let mut max = f64::MIN;
+        for i in 0..len {
+            let val = self.elt(i);
+            if !val.is_na() {
+                tot = tot + val;
+                min = min.min(val);
+                max = max.max(val);
+                nas += 1;
+            }
+        }
+        (tot, min, max, len - nas, len)
     }
+
+    /// Get a single element from this vector.
+    fn elt(&self, _index: usize) -> f64;
 
     /// Get a multiple elements from this vector.
-    fn get_region(&self, _index: usize, _data: &mut [i32]) -> usize {
-        0
+    fn get_region(&self, index: usize, data: &mut [f64]) -> usize {
+        let len = self.length();
+        if index > len {
+            0
+        } else {
+            let num_elems = data.len().min(len - index);
+            for i in index..index + num_elems {
+                data[i] = self.elt(i);
+            }
+            num_elems
+        }
     }
 
-    /// Return true if this vector is sorted.
+    /// Return TRUE if this vector is sorted, FALSE if not and NA_LOGICAL if unknown.
     fn is_sorted(&self) -> Bool {
         NA_LOGICAL
     }
@@ -232,35 +256,71 @@ trait AltRealImpl {
 
     /// Return the sum of the elements in this vector.
     /// If remove_nas is true, skip and NA values.
-    fn sum(&self, _remove_nas: bool) -> Robj {
-        ().into()
+    fn sum(&self, remove_nas: bool) -> Robj {
+        let (tot, _min, _max, nas, _len) = self.tot_min_max_nas();
+        if !remove_nas && nas != 0 {
+            NA_REAL.into()
+        } else {
+            tot.into()
+        }
     }
 
     /// Return the minimum of the elements in this vector.
     /// If remove_nas is true, skip and NA values.
-    fn min(&self, _remove_nas: bool) -> Robj {
-        ().into()
+    fn min(&self, remove_nas: bool) -> Robj {
+        let (_tot, min, _max, nas, len) = self.tot_min_max_nas();
+        if !remove_nas && nas != 0 || remove_nas && nas == len {
+            NA_REAL.into()
+        } else {
+            min.into()
+        }
     }
 
     /// Return the maximum of the elements in this vector.
     /// If remove_nas is true, skip and NA values.
-    fn max(&self, _remove_nas: bool) -> Robj {
-        ().into()
+    fn max(&self, remove_nas: bool) -> Robj {
+        let (_tot, _min, max, nas, len) = self.tot_min_max_nas();
+        if !remove_nas && nas != 0 || remove_nas && nas == len {
+            NA_REAL.into()
+        } else {
+            max.into()
+        }
     }
 }
 
-trait AltLogicalImpl {
-    /// Get a single element from this vector.
-    fn elt(&self, _index: usize) -> Bool {
-        NA_LOGICAL
+pub trait AltLogicalImpl: AltrepImpl {
+    fn tot_min_max_nas(&self) -> (i64, i32, i32, usize, usize) {
+        let len = self.length();
+        let mut tot = 0;
+        let mut nas = 0;
+        for i in 0..len {
+            let val = self.elt(i);
+            if !val.is_na() {
+                tot = tot + val.0 as i64;
+                nas += 1;
+            }
+        }
+        (tot, 0, 0, len - nas, len)
     }
+
+    /// Get a single element from this vector.
+    fn elt(&self, _index: usize) -> Bool;
 
     /// Get a multiple elements from this vector.
-    fn get_region(&self, _index: usize, _data: &mut [i32]) -> usize {
-        0
+    fn get_region(&self, index: usize, data: &mut [Bool]) -> usize {
+        let len = self.length();
+        if index > len {
+            0
+        } else {
+            let num_elems = data.len().min(len - index);
+            for i in index..index + num_elems {
+                data[i] = self.elt(i);
+            }
+            num_elems
+        }
     }
 
-    /// Return true if this vector is sorted.
+    /// Return TRUE if this vector is sorted, FALSE if not and NA_LOGICAL if unknown.
     fn is_sorted(&self) -> Bool {
         NA_LOGICAL
     }
@@ -272,47 +332,64 @@ trait AltLogicalImpl {
 
     /// Return the sum of the elements in this vector.
     /// If remove_nas is true, skip and NA values.
-    fn sum(&self, _remove_nas: bool) -> Robj {
-        ().into()
+    fn sum(&self, remove_nas: bool) -> Robj {
+        let (tot, _min, _max, nas, len) = self.tot_min_max_nas();
+        if !remove_nas && nas != 0 || remove_nas && nas == len {
+            NA_LOGICAL.into()
+        } else {
+            tot.into()
+        }
     }
 }
 
-trait AltRawImpl {
+pub trait AltRawImpl: AltrepImpl {
     /// Get a single element from this vector.
-    fn elt(&self, _index: usize) -> u8 {
-        0
-    }
+    fn elt(&self, _index: usize) -> u8;
 
     /// Get a multiple elements from this vector.
-    fn get_region(&self, _index: usize, _data: &mut [u8]) -> usize {
-        0
+    fn get_region(&self, index: usize, data: &mut [u8]) -> usize {
+        let len = self.length();
+        if index > len {
+            0
+        } else {
+            let num_elems = data.len().min(len - index);
+            for i in index..index + num_elems {
+                data[i] = self.elt(i);
+            }
+            num_elems
+        }
     }
 }
 
-trait AltComplexImpl {
+pub trait AltComplexImpl: AltrepImpl {
     /// Get a single element from this vector.
-    fn elt(&self, _index: usize) -> Complex {
-        Complex(0.0, 0.0)
-    }
+    fn elt(&self, _index: usize) -> Cplx;
 
     /// Get a multiple elements from this vector.
-    fn get_region(&self, _index: usize, _data: &mut [Complex]) -> usize {
-        0
+    fn get_region(&self, index: usize, data: &mut [Cplx]) -> usize {
+        let len = self.length();
+        if index > len {
+            0
+        } else {
+            let num_elems = data.len().min(len - index);
+            for i in index..index + num_elems {
+                data[i] = self.elt(i);
+            }
+            num_elems
+        }
     }
 }
 
-trait AltStringImpl {
+pub trait AltStringImpl {
     /// Get a single element from this vector.
-    fn elt(&self, _index: usize) -> Robj {
-        ().into()
-    }
+    fn elt(&self, _index: usize) -> String;
 
     /// Set a single element in this vector.
     fn set_elt(&mut self, _index: usize, _value: Robj) {}
 
-    /// Return true if this vector is sorted.
-    fn is_sorted(&self) -> bool {
-        false
+    /// Return TRUE if this vector is sorted, FALSE if not and NA_LOGICAL if unknown.
+    fn is_sorted(&self) -> Bool {
+        NA_LOGICAL
     }
 
     /// Return true if this vector does not contain NAs.
@@ -346,19 +423,59 @@ impl Altrep {
     pub fn class(&self) -> Robj {
         unsafe { new_owned(ALTREP_CLASS(self.robj.get())) }
     }
-}
 
-#[macro_export]
-macro_rules! make_altep_class {
-    ($statetype : ty, $class_ptr: expr) => {
-        unsafe extern "C" fn altrep_UnserializeEX(
+    pub fn from_state_and_class<StateType>(state: StateType, class: Robj) -> Altrep {
+        unsafe {
+            use std::os::raw::c_void;
+
+            let ptr: *mut StateType = Box::into_raw(Box::new(state));
+            let tag = r!(());
+            let prot = r!(());
+            let state = R_MakeExternalPtr(ptr as *mut c_void, tag.get(), prot.get());
+            // TODO: finalizer
+
+            let class_ptr = R_altrep_class_t { ptr: class.get() };
+
+            Altrep {
+                robj: new_owned(R_new_altrep(class_ptr, state, R_NilValue)),
+            }
+        }
+    }
+
+    #[allow(dead_code)]
+    pub(crate) fn get_state<StateType>(x: SEXP) -> &'static StateType {
+        unsafe {
+            let state_ptr = R_ExternalPtrAddr(R_altrep_data1(x));
+            std::mem::transmute(state_ptr)
+        }
+    }
+
+    #[allow(dead_code)]
+    pub(crate) fn get_state_mut<StateType>(x: SEXP) -> &'static mut StateType {
+        unsafe {
+            let state_ptr = R_ExternalPtrAddr(R_altrep_data1(x));
+            std::mem::transmute(state_ptr)
+        }
+    }
+
+    pub fn altrep_class<StateType: AltrepImpl + 'static>(
+        ty: RType,
+        name: &str,
+        base: &str,
+    ) -> Robj {
+        #![allow(non_snake_case)]
+        #![allow(unused_variables)]
+        use std::os::raw::c_int;
+        use std::os::raw::c_void;
+
+        unsafe extern "C" fn altrep_UnserializeEX<StateType: AltrepImpl>(
             class: SEXP,
             state: SEXP,
             attr: SEXP,
             objf: c_int,
             levs: c_int,
         ) -> SEXP {
-            <$statetype>::unserialize_ex(
+            <StateType>::unserialize_ex(
                 new_owned(class),
                 new_owned(state),
                 new_owned(attr),
@@ -368,285 +485,464 @@ macro_rules! make_altep_class {
             .get()
         }
 
-        unsafe extern "C" fn altrep_Unserialize(class: SEXP, state: SEXP) -> SEXP {
-            <$statetype>::unserialize(new_owned(class), new_owned(state)).get()
+        unsafe extern "C" fn altrep_Unserialize<StateType: AltrepImpl + 'static>(
+            class: SEXP,
+            state: SEXP,
+        ) -> SEXP {
+            <StateType>::unserialize(new_owned(class), new_owned(state)).get()
         }
 
-        unsafe extern "C" fn altrep_Serialized_state(x: SEXP) -> SEXP {
-            get_state(x).serialized_state().get()
+        unsafe extern "C" fn altrep_Serialized_state<StateType: AltrepImpl + 'static>(
+            x: SEXP,
+        ) -> SEXP {
+            Altrep::get_state::<StateType>(x).serialized_state().get()
         }
 
-        unsafe extern "C" fn altrep_Coerce(x: SEXP, ty: c_int) -> SEXP {
-            get_state(x).coerce(sxp_to_rtype(ty)).get()
+        unsafe extern "C" fn altrep_Coerce<StateType: AltrepImpl + 'static>(
+            x: SEXP,
+            ty: c_int,
+        ) -> SEXP {
+            Altrep::get_state::<StateType>(x)
+                .coerce(sxp_to_rtype(ty))
+                .get()
         }
 
-        unsafe extern "C" fn altrep_Duplicate(x: SEXP, deep: Rboolean) -> SEXP {
-            get_state(x).duplicate(deep == 1).get()
+        unsafe extern "C" fn altrep_Duplicate<StateType: AltrepImpl + 'static>(
+            x: SEXP,
+            deep: Rboolean,
+        ) -> SEXP {
+            Altrep::get_state::<StateType>(x).duplicate(deep == 1).get()
         }
 
-        unsafe extern "C" fn altrep_DuplicateEX(x: SEXP, deep: Rboolean) -> SEXP {
-            get_state(x).duplicate_ex(deep == 1).get()
+        unsafe extern "C" fn altrep_DuplicateEX<StateType: AltrepImpl + 'static>(
+            x: SEXP,
+            deep: Rboolean,
+        ) -> SEXP {
+            Altrep::get_state::<StateType>(x)
+                .duplicate_ex(deep == 1)
+                .get()
         }
 
-        unsafe extern "C" fn altrep_Inspect(
+        unsafe extern "C" fn altrep_Inspect<StateType: AltrepImpl + 'static>(
             x: SEXP,
             pre: c_int,
             deep: c_int,
             pvec: c_int,
             func: Option<unsafe extern "C" fn(arg1: SEXP, arg2: c_int, arg3: c_int, arg4: c_int)>,
         ) -> Rboolean {
-            if get_state(x).inspect(pre, deep == 1, pvec) {
+            if Altrep::get_state::<StateType>(x).inspect(pre, deep == 1, pvec) {
                 1
             } else {
                 0
             }
         }
 
-        unsafe extern "C" fn altrep_Length(x: SEXP) -> R_xlen_t {
-            get_state(x).length() as R_xlen_t
+        unsafe extern "C" fn altrep_Length<StateType: AltrepImpl + 'static>(x: SEXP) -> R_xlen_t {
+            Altrep::get_state::<StateType>(x).length() as R_xlen_t
         }
 
-        unsafe extern "C" fn altvec_Dataptr(x: SEXP, writeable: Rboolean) -> *mut c_void {
-            <$statetype>::dataptr(x, writeable != 0) as *mut c_void
+        unsafe extern "C" fn altvec_Dataptr<StateType: AltrepImpl + 'static>(
+            x: SEXP,
+            writeable: Rboolean,
+        ) -> *mut c_void {
+            <StateType>::dataptr(x, writeable != 0) as *mut c_void
         }
 
-        unsafe extern "C" fn altvec_Dataptr_or_null(x: SEXP) -> *const c_void {
-            <$statetype>::dataptr_or_null(x) as *mut c_void
+        unsafe extern "C" fn altvec_Dataptr_or_null<StateType: AltrepImpl + 'static>(
+            x: SEXP,
+        ) -> *const c_void {
+            <StateType>::dataptr_or_null(x) as *mut c_void
         }
 
-        unsafe extern "C" fn altvec_Extract_subset(x: SEXP, indx: SEXP, call: SEXP) -> SEXP {
-            <$statetype>::extract_subset(new_owned(x), new_owned(indx), new_owned(call)).get()
+        unsafe extern "C" fn altvec_Extract_subset<StateType: AltrepImpl + 'static>(
+            x: SEXP,
+            indx: SEXP,
+            call: SEXP,
+        ) -> SEXP {
+            <StateType>::extract_subset(new_owned(x), new_owned(indx), new_owned(call)).get()
         }
 
-        R_set_altrep_UnserializeEX_method($class_ptr, Some(altrep_UnserializeEX));
-        R_set_altrep_Unserialize_method($class_ptr, Some(altrep_Unserialize));
-        R_set_altrep_Serialized_state_method($class_ptr, Some(altrep_Serialized_state));
-        R_set_altrep_DuplicateEX_method($class_ptr, Some(altrep_DuplicateEX));
-        R_set_altrep_Duplicate_method($class_ptr, Some(altrep_Duplicate));
-        R_set_altrep_Coerce_method($class_ptr, Some(altrep_Coerce));
-        R_set_altrep_Inspect_method($class_ptr, Some(altrep_Inspect));
-        R_set_altrep_Length_method($class_ptr, Some(altrep_Length));
+        unsafe {
+            let csname = std::ffi::CString::new(name).unwrap();
+            let csbase = std::ffi::CString::new(base).unwrap();
 
-        R_set_altvec_Dataptr_method($class_ptr, Some(altvec_Dataptr));
-        R_set_altvec_Dataptr_or_null_method($class_ptr, Some(altvec_Dataptr_or_null));
-        R_set_altvec_Extract_subset_method($class_ptr, Some(altvec_Extract_subset));
-    };
-}
+            let class_ptr = match ty {
+                RType::Integer => {
+                    R_make_altinteger_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
+                }
+                RType::Real => {
+                    R_make_altreal_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
+                }
+                RType::Logical => {
+                    R_make_altlogical_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
+                }
+                RType::Raw => {
+                    R_make_altraw_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
+                }
+                RType::Complex => {
+                    R_make_altcomplex_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
+                }
+                RType::String => {
+                    R_make_altstring_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
+                }
+                _ => panic!("expected Altvec compatible type"),
+            };
 
-#[macro_export]
-macro_rules! impl_new_altinteger {
-    ($statetype : ty, $name : expr, $base: expr) => {
-        impl From<$statetype> for Altrep {
-            fn from(state: $statetype) -> Self {
-                unsafe {
-                    #![allow(non_snake_case)]
-                    #![allow(unused_variables)]
-                    use std::os::raw::c_int;
-                    use std::os::raw::c_void;
+            R_set_altrep_UnserializeEX_method(class_ptr, Some(altrep_UnserializeEX::<StateType>));
+            R_set_altrep_Unserialize_method(class_ptr, Some(altrep_Unserialize::<StateType>));
+            R_set_altrep_Serialized_state_method(
+                class_ptr,
+                Some(altrep_Serialized_state::<StateType>),
+            );
+            R_set_altrep_DuplicateEX_method(class_ptr, Some(altrep_DuplicateEX::<StateType>));
+            R_set_altrep_Duplicate_method(class_ptr, Some(altrep_Duplicate::<StateType>));
+            R_set_altrep_Coerce_method(class_ptr, Some(altrep_Coerce::<StateType>));
+            R_set_altrep_Inspect_method(class_ptr, Some(altrep_Inspect::<StateType>));
+            R_set_altrep_Length_method(class_ptr, Some(altrep_Length::<StateType>));
 
-                    // Get the state for this altrep.
-                    // We can bypass the type check as we know what type we have.
-                    fn get_state(x: SEXP) -> &'static $statetype {
-                        unsafe {
-                            let state_ptr = R_ExternalPtrAddr(R_altrep_data1(x));
-                            std::mem::transmute(state_ptr)
-                        }
-                    }
+            R_set_altvec_Dataptr_method(class_ptr, Some(altvec_Dataptr::<StateType>));
+            R_set_altvec_Dataptr_or_null_method(
+                class_ptr,
+                Some(altvec_Dataptr_or_null::<StateType>),
+            );
+            R_set_altvec_Extract_subset_method(class_ptr, Some(altvec_Extract_subset::<StateType>));
 
-                    let csname = std::ffi::CString::new($name).unwrap();
-                    let csbase = std::ffi::CString::new($base).unwrap();
+            new_owned(class_ptr.ptr)
+        }
+    }
 
-                    let class_ptr = R_make_altinteger_class(
-                        csname.as_ptr(),
-                        csbase.as_ptr(),
-                        std::ptr::null_mut(),
-                    );
+    pub fn make_altinteger_class<StateType: AltrepImpl + AltIntegerImpl + 'static>(
+        name: &str,
+        base: &str,
+    ) -> Robj {
+        #![allow(non_snake_case)]
+        use std::os::raw::c_int;
 
-                    make_altep_class!($statetype, class_ptr);
+        unsafe {
+            let class = Altrep::altrep_class::<StateType>(RType::Integer, name, base);
+            let class_ptr = R_altrep_class_t { ptr: class.get() };
 
-                    unsafe extern "C" fn altinteger_Elt(x: SEXP, i: R_xlen_t) -> c_int {
-                        get_state(x).elt(i as usize) as c_int
-                    }
+            unsafe extern "C" fn altinteger_Elt<StateType: AltIntegerImpl + 'static>(
+                x: SEXP,
+                i: R_xlen_t,
+            ) -> c_int {
+                Altrep::get_state::<StateType>(x).elt(i as usize) as c_int
+            }
 
-                    unsafe extern "C" fn altinteger_Get_region(
-                        x: SEXP,
-                        i: R_xlen_t,
-                        n: R_xlen_t,
-                        buf: *mut c_int,
-                    ) -> R_xlen_t {
-                        let slice = std::slice::from_raw_parts_mut(buf, n as usize);
-                        get_state(x).get_region(i as usize, slice) as R_xlen_t
-                    }
+            unsafe extern "C" fn altinteger_Get_region<StateType: AltIntegerImpl + 'static>(
+                x: SEXP,
+                i: R_xlen_t,
+                n: R_xlen_t,
+                buf: *mut c_int,
+            ) -> R_xlen_t {
+                let slice = std::slice::from_raw_parts_mut(buf, n as usize);
+                Altrep::get_state::<StateType>(x).get_region(i as usize, slice) as R_xlen_t
+            }
 
-                    unsafe extern "C" fn altinteger_Is_sorted(x: SEXP) -> c_int {
-                        get_state(x).is_sorted().0 as c_int
-                    }
+            unsafe extern "C" fn altinteger_Is_sorted<StateType: AltIntegerImpl + 'static>(
+                x: SEXP,
+            ) -> c_int {
+                Altrep::get_state::<StateType>(x).is_sorted().0 as c_int
+            }
 
-                    unsafe extern "C" fn altinteger_No_NA(x: SEXP) -> c_int {
-                        if get_state(x).no_na() {
-                            1
-                        } else {
-                            0
-                        }
-                    }
-
-                    unsafe extern "C" fn altinteger_Sum(x: SEXP, narm: Rboolean) -> SEXP {
-                        get_state(x).sum(narm == 1).get()
-                    }
-
-                    unsafe extern "C" fn altinteger_Min(x: SEXP, narm: Rboolean) -> SEXP {
-                        get_state(x).min(narm == 1).get()
-                    }
-
-                    unsafe extern "C" fn altinteger_Max(x: SEXP, narm: Rboolean) -> SEXP {
-                        get_state(x).max(narm == 1).get()
-                    }
-
-                    // unsafe extern "C" fn altreal_Elt(x: SEXP, i: R_xlen_t) -> f64 {
-                    //     0.0
-                    // }
-
-                    // unsafe extern "C" fn altreal_Get_region(
-                    //     sx: SEXP,
-                    //     i: R_xlen_t,
-                    //     n: R_xlen_t,
-                    //     buf: *mut f64,
-                    // ) -> R_xlen_t {
-                    //     let slice = std::slice::from_raw_parts_mut(buf, n as usize);
-                    //     get_state(x).get_region(i as usize, slice) as R_xlen_t
-                    // }
-
-                    // unsafe extern "C" fn altreal_Is_sorted(x: SEXP) -> c_int {
-                    //     0
-                    // }
-
-                    // unsafe extern "C" fn altreal_No_NA(x: SEXP) -> c_int {
-                    //     0
-                    // }
-
-                    // unsafe extern "C" fn altreal_Sum(x: SEXP, narm: Rboolean) -> SEXP {
-                    //     R_NilValue
-                    // }
-
-                    // unsafe extern "C" fn altreal_Min(x: SEXP, narm: Rboolean) -> SEXP {
-                    //     R_NilValue
-                    // }
-
-                    // unsafe extern "C" fn altreal_Max(x: SEXP, narm: Rboolean) -> SEXP {
-                    //     R_NilValue
-                    // }
-
-                    // unsafe extern "C" fn altlogical_Elt(x: SEXP, i: R_xlen_t) -> c_int {
-                    //     get_state(x).elt(i as usize) as c_int
-                    // }
-
-                    // unsafe extern "C" fn altlogical_Get_region(
-                    //     sx: SEXP,
-                    //     i: R_xlen_t,
-                    //     n: R_xlen_t,
-                    //     buf: *mut c_int,
-                    // ) -> R_xlen_t {
-                    //     0
-                    // }
-
-                    // unsafe extern "C" fn altlogical_Is_sorted(x: SEXP) -> c_int {
-                    //     0
-                    // }
-
-                    // unsafe extern "C" fn altlogical_No_NA(x: SEXP) -> c_int {
-                    //     0
-                    // }
-
-                    // unsafe extern "C" fn altlogical_Sum(x: SEXP, narm: Rboolean) -> SEXP {
-                    //     R_NilValue
-                    // }
-
-                    // unsafe extern "C" fn altraw_Elt(x: SEXP, i: R_xlen_t) -> Rbyte {
-                    //     0
-                    // }
-
-                    // unsafe extern "C" fn altraw_Get_region(
-                    //     sx: SEXP,
-                    //     i: R_xlen_t,
-                    //     n: R_xlen_t,
-                    //     buf: *mut u8,
-                    // ) -> R_xlen_t {
-                    //     0
-                    // }
-
-                    // unsafe extern "C" fn altcomplex_Elt(x: SEXP, i: R_xlen_t) -> Rcomplex {
-                    //     Rcomplex { r: 0.0, i: 0.0 }
-                    // }
-
-                    // unsafe extern "C" fn altcomplex_Get_region(
-                    //     sx: SEXP,
-                    //     i: R_xlen_t,
-                    //     n: R_xlen_t,
-                    //     buf: *mut Rcomplex,
-                    // ) -> R_xlen_t {
-                    //     0
-                    // }
-
-                    // unsafe extern "C" fn altstring_Elt(x: SEXP, i: R_xlen_t) -> SEXP {
-                    //     R_NilValue
-                    // }
-
-                    // unsafe extern "C" fn altstring_Set_elt(x: SEXP, i: R_xlen_t, v: SEXP) {}
-
-                    // unsafe extern "C" fn altstring_Is_sorted(x: SEXP) -> c_int {
-                    //     0
-                    // }
-
-                    // unsafe extern "C" fn altstring_No_NA(x: SEXP) -> c_int {
-                    //     0
-                    // }
-
-                    // TODO: Cache the class.
-                    R_set_altinteger_Elt_method(class_ptr, Some(altinteger_Elt));
-                    R_set_altinteger_Get_region_method(class_ptr, Some(altinteger_Get_region));
-                    R_set_altinteger_Is_sorted_method(class_ptr, Some(altinteger_Is_sorted));
-                    R_set_altinteger_No_NA_method(class_ptr, Some(altinteger_No_NA));
-                    R_set_altinteger_Sum_method(class_ptr, Some(altinteger_Sum));
-                    R_set_altinteger_Min_method(class_ptr, Some(altinteger_Min));
-                    R_set_altinteger_Max_method(class_ptr, Some(altinteger_Max));
-
-                    // R_set_altreal_Elt_method(class_ptr, Some(altreal_Elt));
-                    // R_set_altreal_Get_region_method(class_ptr, Some(altreal_Get_region));
-                    // R_set_altreal_Is_sorted_method(class_ptr, Some(altreal_Is_sorted));
-                    // R_set_altreal_No_NA_method(class_ptr, Some(altreal_No_NA));
-                    // R_set_altreal_Sum_method(class_ptr, Some(altreal_Sum));
-                    // R_set_altreal_Min_method(class_ptr, Some(altreal_Min));
-                    // R_set_altreal_Max_method(class_ptr, Some(altreal_Max));
-
-                    // R_set_altlogical_Elt_method(class_ptr, Some(altlogical_Elt));
-                    // R_set_altlogical_Get_region_method(class_ptr, Some(altlogical_Get_region));
-                    // R_set_altlogical_Is_sorted_method(class_ptr, Some(altlogical_Is_sorted));
-                    // R_set_altlogical_No_NA_method(class_ptr, Some(altlogical_No_NA));
-                    // R_set_altlogical_Sum_method(class_ptr, Some(altlogical_Sum));
-
-                    // R_set_altraw_Elt_method(class_ptr, Some(altraw_Elt));
-                    // R_set_altraw_Get_region_method(class_ptr, Some(altraw_Get_region));
-
-                    // R_set_altcomplex_Elt_method(class_ptr, Some(altcomplex_Elt));
-                    // R_set_altcomplex_Get_region_method(class_ptr, Some(altcomplex_Get_region));
-
-                    // R_set_altstring_Elt_method(class_ptr, Some(altstring_Elt));
-                    // R_set_altstring_Set_elt_method(class_ptr, Some(altstring_Set_elt));
-                    // R_set_altstring_Is_sorted_method(class_ptr, Some(altstring_Is_sorted));
-                    // R_set_altstring_No_NA_method(class_ptr, Some(altstring_No_NA));
-
-                    let ptr: *mut $statetype = Box::into_raw(Box::new(state));
-                    let tag = r!($name);
-                    let prot = r!(());
-                    let state = R_MakeExternalPtr(ptr as *mut c_void, tag.get(), prot.get());
-
-                    Altrep {
-                        robj: new_owned(R_new_altrep(class_ptr, state, R_NilValue)),
-                    }
+            unsafe extern "C" fn altinteger_No_NA<StateType: AltIntegerImpl + 'static>(
+                x: SEXP,
+            ) -> c_int {
+                if Altrep::get_state::<StateType>(x).no_na() {
+                    1
+                } else {
+                    0
                 }
             }
+
+            unsafe extern "C" fn altinteger_Sum<StateType: AltIntegerImpl + 'static>(
+                x: SEXP,
+                narm: Rboolean,
+            ) -> SEXP {
+                Altrep::get_state::<StateType>(x).sum(narm == 1).get()
+            }
+
+            unsafe extern "C" fn altinteger_Min<StateType: AltIntegerImpl + 'static>(
+                x: SEXP,
+                narm: Rboolean,
+            ) -> SEXP {
+                Altrep::get_state::<StateType>(x).min(narm == 1).get()
+            }
+
+            unsafe extern "C" fn altinteger_Max<StateType: AltIntegerImpl + 'static>(
+                x: SEXP,
+                narm: Rboolean,
+            ) -> SEXP {
+                Altrep::get_state::<StateType>(x).max(narm == 1).get()
+            }
+
+            R_set_altinteger_Elt_method(class_ptr, Some(altinteger_Elt::<StateType>));
+            R_set_altinteger_Get_region_method(class_ptr, Some(altinteger_Get_region::<StateType>));
+            R_set_altinteger_Is_sorted_method(class_ptr, Some(altinteger_Is_sorted::<StateType>));
+            R_set_altinteger_No_NA_method(class_ptr, Some(altinteger_No_NA::<StateType>));
+            R_set_altinteger_Sum_method(class_ptr, Some(altinteger_Sum::<StateType>));
+            R_set_altinteger_Min_method(class_ptr, Some(altinteger_Min::<StateType>));
+            R_set_altinteger_Max_method(class_ptr, Some(altinteger_Max::<StateType>));
+
+            class
         }
-    };
+    }
+
+    pub fn make_altreal_class<StateType: AltrepImpl + AltRealImpl + 'static>(
+        name: &str,
+        base: &str,
+    ) -> Robj {
+        #![allow(non_snake_case)]
+        use std::os::raw::c_int;
+
+        unsafe {
+            let class = Altrep::altrep_class::<StateType>(RType::Real, name, base);
+            let class_ptr = R_altrep_class_t { ptr: class.get() };
+
+            unsafe extern "C" fn altreal_Elt<StateType: AltRealImpl + 'static>(
+                x: SEXP,
+                i: R_xlen_t,
+            ) -> f64 {
+                Altrep::get_state::<StateType>(x).elt(i as usize) as f64
+            }
+
+            unsafe extern "C" fn altreal_Get_region<StateType: AltRealImpl + 'static>(
+                x: SEXP,
+                i: R_xlen_t,
+                n: R_xlen_t,
+                buf: *mut f64,
+            ) -> R_xlen_t {
+                let slice = std::slice::from_raw_parts_mut(buf, n as usize);
+                Altrep::get_state::<StateType>(x).get_region(i as usize, slice) as R_xlen_t
+            }
+
+            unsafe extern "C" fn altreal_Is_sorted<StateType: AltRealImpl + 'static>(
+                x: SEXP,
+            ) -> c_int {
+                Altrep::get_state::<StateType>(x).is_sorted().0 as c_int
+            }
+
+            unsafe extern "C" fn altreal_No_NA<StateType: AltRealImpl + 'static>(x: SEXP) -> c_int {
+                if Altrep::get_state::<StateType>(x).no_na() {
+                    1
+                } else {
+                    0
+                }
+            }
+
+            unsafe extern "C" fn altreal_Sum<StateType: AltRealImpl + 'static>(
+                x: SEXP,
+                narm: Rboolean,
+            ) -> SEXP {
+                Altrep::get_state::<StateType>(x).sum(narm == 1).get()
+            }
+
+            unsafe extern "C" fn altreal_Min<StateType: AltRealImpl + 'static>(
+                x: SEXP,
+                narm: Rboolean,
+            ) -> SEXP {
+                Altrep::get_state::<StateType>(x).min(narm == 1).get()
+            }
+
+            unsafe extern "C" fn altreal_Max<StateType: AltRealImpl + 'static>(
+                x: SEXP,
+                narm: Rboolean,
+            ) -> SEXP {
+                Altrep::get_state::<StateType>(x).max(narm == 1).get()
+            }
+
+            R_set_altreal_Elt_method(class_ptr, Some(altreal_Elt::<StateType>));
+            R_set_altreal_Get_region_method(class_ptr, Some(altreal_Get_region::<StateType>));
+            R_set_altreal_Is_sorted_method(class_ptr, Some(altreal_Is_sorted::<StateType>));
+            R_set_altreal_No_NA_method(class_ptr, Some(altreal_No_NA::<StateType>));
+            R_set_altreal_Sum_method(class_ptr, Some(altreal_Sum::<StateType>));
+            R_set_altreal_Min_method(class_ptr, Some(altreal_Min::<StateType>));
+            R_set_altreal_Max_method(class_ptr, Some(altreal_Max::<StateType>));
+            class
+        }
+    }
+
+    pub fn make_altlogical_class<StateType: AltrepImpl + AltLogicalImpl + 'static>(
+        name: &str,
+        base: &str,
+    ) -> Robj {
+        #![allow(non_snake_case)]
+        use std::os::raw::c_int;
+
+        unsafe {
+            let class = Altrep::altrep_class::<StateType>(RType::Logical, name, base);
+            let class_ptr = R_altrep_class_t { ptr: class.get() };
+
+            unsafe extern "C" fn altlogical_Elt<StateType: AltLogicalImpl + 'static>(
+                x: SEXP,
+                i: R_xlen_t,
+            ) -> c_int {
+                Altrep::get_state::<StateType>(x).elt(i as usize).0 as c_int
+            }
+
+            unsafe extern "C" fn altlogical_Get_region<StateType: AltLogicalImpl + 'static>(
+                x: SEXP,
+                i: R_xlen_t,
+                n: R_xlen_t,
+                buf: *mut c_int,
+            ) -> R_xlen_t {
+                let slice = std::slice::from_raw_parts_mut(buf as *mut Bool, n as usize);
+                Altrep::get_state::<StateType>(x).get_region(i as usize, slice) as R_xlen_t
+            }
+
+            unsafe extern "C" fn altlogical_Is_sorted<StateType: AltLogicalImpl + 'static>(
+                x: SEXP,
+            ) -> c_int {
+                Altrep::get_state::<StateType>(x).is_sorted().0 as c_int
+            }
+
+            unsafe extern "C" fn altlogical_No_NA<StateType: AltLogicalImpl + 'static>(
+                x: SEXP,
+            ) -> c_int {
+                if Altrep::get_state::<StateType>(x).no_na() {
+                    1
+                } else {
+                    0
+                }
+            }
+
+            unsafe extern "C" fn altlogical_Sum<StateType: AltLogicalImpl + 'static>(
+                x: SEXP,
+                narm: Rboolean,
+            ) -> SEXP {
+                Altrep::get_state::<StateType>(x).sum(narm == 1).get()
+            }
+
+            R_set_altlogical_Elt_method(class_ptr, Some(altlogical_Elt::<StateType>));
+            R_set_altlogical_Get_region_method(class_ptr, Some(altlogical_Get_region::<StateType>));
+            R_set_altlogical_Is_sorted_method(class_ptr, Some(altlogical_Is_sorted::<StateType>));
+            R_set_altlogical_No_NA_method(class_ptr, Some(altlogical_No_NA::<StateType>));
+            R_set_altlogical_Sum_method(class_ptr, Some(altlogical_Sum::<StateType>));
+
+            class
+        }
+    }
+
+    pub fn make_altraw_class<StateType: AltrepImpl + AltRawImpl + 'static>(
+        name: &str,
+        base: &str,
+    ) -> Robj {
+        #![allow(non_snake_case)]
+
+        unsafe {
+            let class = Altrep::altrep_class::<StateType>(RType::Raw, name, base);
+            let class_ptr = R_altrep_class_t { ptr: class.get() };
+
+            unsafe extern "C" fn altraw_Elt<StateType: AltRawImpl + 'static>(
+                x: SEXP,
+                i: R_xlen_t,
+            ) -> Rbyte {
+                Altrep::get_state::<StateType>(x).elt(i as usize) as Rbyte
+            }
+
+            unsafe extern "C" fn altraw_Get_region<StateType: AltRawImpl + 'static>(
+                x: SEXP,
+                i: R_xlen_t,
+                n: R_xlen_t,
+                buf: *mut u8,
+            ) -> R_xlen_t {
+                let slice = std::slice::from_raw_parts_mut(buf, n as usize);
+                Altrep::get_state::<StateType>(x).get_region(i as usize, slice) as R_xlen_t
+            }
+
+            R_set_altraw_Elt_method(class_ptr, Some(altraw_Elt::<StateType>));
+            R_set_altraw_Get_region_method(class_ptr, Some(altraw_Get_region::<StateType>));
+
+            class
+        }
+    }
+
+    pub fn make_altcomplex_class<StateType: AltrepImpl + AltComplexImpl + 'static>(
+        name: &str,
+        base: &str,
+    ) -> Robj {
+        #![allow(non_snake_case)]
+
+        unsafe {
+            let class = Altrep::altrep_class::<StateType>(RType::Complex, name, base);
+            let class_ptr = R_altrep_class_t { ptr: class.get() };
+
+            unsafe extern "C" fn altcomplex_Elt<StateType: AltComplexImpl + 'static>(
+                x: SEXP,
+                i: R_xlen_t,
+            ) -> Rcomplex {
+                std::mem::transmute(Altrep::get_state::<StateType>(x).elt(i as usize))
+            }
+
+            unsafe extern "C" fn altcomplex_Get_region<StateType: AltComplexImpl + 'static>(
+                x: SEXP,
+                i: R_xlen_t,
+                n: R_xlen_t,
+                buf: *mut Rcomplex,
+            ) -> R_xlen_t {
+                let slice = std::slice::from_raw_parts_mut(buf as *mut Cplx, n as usize);
+                Altrep::get_state::<StateType>(x).get_region(i as usize, slice) as R_xlen_t
+            }
+
+            R_set_altcomplex_Elt_method(class_ptr, Some(altcomplex_Elt::<StateType>));
+            R_set_altcomplex_Get_region_method(class_ptr, Some(altcomplex_Get_region::<StateType>));
+
+            class
+        }
+    }
+
+    pub fn make_altstring_class<StateType: AltrepImpl + AltStringImpl + 'static>(
+        name: &str,
+        base: &str,
+    ) -> Robj {
+        #![allow(non_snake_case)]
+        use std::os::raw::c_char;
+        use std::os::raw::c_int;
+
+        unsafe {
+            let class = Altrep::altrep_class::<StateType>(RType::String, name, base);
+            let class_ptr = R_altrep_class_t { ptr: class.get() };
+
+            unsafe extern "C" fn altstring_Elt<StateType: AltStringImpl + 'static>(
+                x: SEXP,
+                i: R_xlen_t,
+            ) -> SEXP {
+                let s = Altrep::get_state::<StateType>(x).elt(i as usize);
+                Rf_mkCharLen(s.as_ptr() as *mut c_char, s.len() as c_int)
+            }
+
+            unsafe extern "C" fn altstring_Set_elt<StateType: AltStringImpl + 'static>(
+                x: SEXP,
+                i: R_xlen_t,
+                v: SEXP,
+            ) {
+                Altrep::get_state_mut::<StateType>(x).set_elt(i as usize, new_owned(v))
+            }
+
+            unsafe extern "C" fn altstring_Is_sorted<StateType: AltStringImpl + 'static>(
+                x: SEXP,
+            ) -> c_int {
+                Altrep::get_state::<StateType>(x).is_sorted().0 as c_int
+            }
+
+            unsafe extern "C" fn altstring_No_NA<StateType: AltStringImpl + 'static>(
+                x: SEXP,
+            ) -> c_int {
+                if Altrep::get_state::<StateType>(x).no_na() {
+                    1
+                } else {
+                    0
+                }
+            }
+
+            R_set_altstring_Elt_method(class_ptr, Some(altstring_Elt::<StateType>));
+            R_set_altstring_Set_elt_method(class_ptr, Some(altstring_Set_elt::<StateType>));
+            R_set_altstring_Is_sorted_method(class_ptr, Some(altstring_Is_sorted::<StateType>));
+            R_set_altstring_No_NA_method(class_ptr, Some(altstring_No_NA::<StateType>));
+
+            class
+        }
+    }
 }
 
 #[cfg(test)]
@@ -654,7 +950,7 @@ mod test {
     use super::*;
 
     #[test]
-    fn test_altrep() {
+    fn test_altinteger() {
         test! {
             #[derive(Debug, Clone)]
             struct MyCompactIntRange {
@@ -663,7 +959,7 @@ mod test {
                 step: i32,
             }
 
-            impl AltRepImpl for MyCompactIntRange {
+            impl AltrepImpl for MyCompactIntRange {
                 fn length(&self) -> usize {
                     self.len as usize
                 }
@@ -677,13 +973,171 @@ mod test {
 
             let mystate = MyCompactIntRange { start: 0, len: 10, step: 1 };
 
-            impl_new_altinteger!(MyCompactIntRange, "cir", "mypkg");
-
-            let obj : Altrep = mystate.into();
+            let class = Altrep::make_altinteger_class::<MyCompactIntRange>("cir", "mypkg");
+            let obj = Altrep::from_state_and_class(mystate, class);
 
             assert_eq!(obj.len(), 10);
             assert_eq!(obj.sum(true), r!(45.0));
             assert_eq!(obj.as_integer_slice().unwrap(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        }
+    }
+
+    #[test]
+
+    fn test_altreal() {
+        test! {
+            #[derive(Debug, Clone)]
+            struct MyCompactRealRange {
+                start: f64,
+                len: usize,
+                step: f64,
+            }
+
+            impl AltrepImpl for MyCompactRealRange {
+                fn length(&self) -> usize {
+                    self.len as usize
+                }
+            }
+
+            impl AltRealImpl for MyCompactRealRange {
+                fn elt(&self, index: usize) -> f64 {
+                    self.start + self.step * index as f64
+                }
+            }
+
+            let mystate = MyCompactRealRange { start: 0.0, len: 10, step: 1.0 };
+
+            let class = Altrep::make_altreal_class::<MyCompactRealRange>("crr", "mypkg");
+            let obj = Altrep::from_state_and_class(mystate, class);
+
+            assert_eq!(obj.len(), 10);
+            assert_eq!(obj.sum(true), r!(45.0));
+            assert_eq!(obj.as_real_slice().unwrap(), [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]);
+        }
+    }
+
+    #[test]
+    fn test_altlogical() {
+        test! {
+            #[derive(Debug, Clone)]
+            struct IsEven {
+                len: usize,
+            }
+
+            impl AltrepImpl for IsEven {
+                fn length(&self) -> usize {
+                    self.len as usize
+                }
+            }
+
+            impl AltLogicalImpl for IsEven {
+                fn elt(&self, index: usize) -> Bool {
+                    (index % 2 == 1).into()
+                }
+            }
+
+            let mystate = IsEven { len: 10 };
+
+            let class = Altrep::make_altlogical_class::<IsEven>("iseven", "mypkg");
+            let obj = Altrep::from_state_and_class(mystate, class);
+
+            assert_eq!(obj.len(), 10);
+            assert_eq!(obj.sum(true), r!(5.0));
+            assert_eq!(obj.as_logical_slice().unwrap(), [FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE]);
+        }
+    }
+
+    #[test]
+    fn test_altraw() {
+        test! {
+            #[derive(Debug, Clone)]
+            struct MyCompactRawRange {
+                start: i32,
+                len: i32,
+                step: i32,
+            }
+
+            impl AltrepImpl for MyCompactRawRange {
+                fn length(&self) -> usize {
+                    self.len as usize
+                }
+            }
+
+            impl AltRawImpl for MyCompactRawRange {
+                fn elt(&self, index: usize) -> u8 {
+                    (self.start + self.step * index as i32) as u8
+                }
+            }
+
+            let mystate = MyCompactRawRange { start: 0, len: 10, step: 1 };
+
+            let class = Altrep::make_altraw_class::<MyCompactRawRange>("cir", "mypkg");
+            let obj = Altrep::from_state_and_class(mystate, class);
+
+            assert_eq!(obj.len(), 10);
+            assert_eq!(obj.as_raw_slice().unwrap(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        }
+    }
+
+    #[test]
+    fn test_altcomplex() {
+        test! {
+            #[derive(Debug, Clone)]
+            struct MyCompactComplexRange {
+                start: f64,
+                len: usize,
+                step: f64,
+            }
+
+            impl AltrepImpl for MyCompactComplexRange {
+                fn length(&self) -> usize {
+                    self.len as usize
+                }
+            }
+
+            impl AltComplexImpl for MyCompactComplexRange {
+                fn elt(&self, index: usize) -> Cplx {
+                    Cplx(self.start + self.step * index as f64, self.start + self.step * index as f64)
+                }
+            }
+
+            let mystate = MyCompactComplexRange { start: 0.0, len: 10, step: 1.0 };
+
+            let class = Altrep::make_altcomplex_class::<MyCompactComplexRange>("ccr", "mypkg");
+            let obj = Altrep::from_state_and_class(mystate, class);
+
+            assert_eq!(obj.len(), 10);
+            //assert_eq!(obj.as_complex_slice().unwrap(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        }
+    }
+
+    #[test]
+    fn test_altstring() {
+        test! {
+            #[derive(Debug, Clone)]
+            struct StringInts {
+                len: usize
+            }
+
+            impl AltrepImpl for StringInts {
+                fn length(&self) -> usize {
+                    self.len as usize
+                }
+            }
+
+            impl AltStringImpl for StringInts {
+                fn elt(&self, index: usize) -> String {
+                    format!("{}", index).into()
+                }
+            }
+
+            let mystate = StringInts { len: 10 };
+
+            let class = Altrep::make_altstring_class::<StringInts>("si", "mypkg");
+            let obj = Altrep::from_state_and_class(mystate, class);
+
+            assert_eq!(obj.len(), 10);
+            assert_eq!(Robj::from(obj), r!(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]));
         }
     }
 }
