@@ -424,22 +424,28 @@ impl Altrep {
         unsafe { new_owned(ALTREP_CLASS(self.robj.get())) }
     }
 
-    pub fn from_state_and_class<StateType>(state: StateType, class: Robj) -> Altrep {
-        unsafe {
+    pub fn from_state_and_class<StateType: 'static>(state: StateType, class: Robj) -> Altrep {
+        single_threaded(|| unsafe {
             use std::os::raw::c_void;
+
+            unsafe extern "C" fn finalizer<StateType: 'static>(x: SEXP) {
+                let state = Altrep::get_state_mut::<StateType>(x);
+                let ptr = state as *mut StateType;
+                Box::from_raw(ptr);
+            }
 
             let ptr: *mut StateType = Box::into_raw(Box::new(state));
             let tag = r!(());
             let prot = r!(());
             let state = R_MakeExternalPtr(ptr as *mut c_void, tag.get(), prot.get());
-            // TODO: finalizer
+            R_RegisterCFinalizer(state, Some(finalizer::<StateType>));
 
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
             Altrep {
                 robj: new_owned(R_new_altrep(class_ptr, state, R_NilValue)),
             }
-        }
+        })
     }
 
     #[allow(dead_code)]
@@ -618,7 +624,7 @@ impl Altrep {
         #![allow(non_snake_case)]
         use std::os::raw::c_int;
 
-        unsafe {
+        single_threaded(|| unsafe {
             let class = Altrep::altrep_class::<StateType>(RType::Integer, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
@@ -685,7 +691,7 @@ impl Altrep {
             R_set_altinteger_Max_method(class_ptr, Some(altinteger_Max::<StateType>));
 
             class
-        }
+        })
     }
 
     pub fn make_altreal_class<StateType: AltrepImpl + AltRealImpl + 'static>(
@@ -695,7 +701,7 @@ impl Altrep {
         #![allow(non_snake_case)]
         use std::os::raw::c_int;
 
-        unsafe {
+        single_threaded(|| unsafe {
             let class = Altrep::altrep_class::<StateType>(RType::Real, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
@@ -759,7 +765,7 @@ impl Altrep {
             R_set_altreal_Min_method(class_ptr, Some(altreal_Min::<StateType>));
             R_set_altreal_Max_method(class_ptr, Some(altreal_Max::<StateType>));
             class
-        }
+        })
     }
 
     pub fn make_altlogical_class<StateType: AltrepImpl + AltLogicalImpl + 'static>(
@@ -769,7 +775,7 @@ impl Altrep {
         #![allow(non_snake_case)]
         use std::os::raw::c_int;
 
-        unsafe {
+        single_threaded(|| unsafe {
             let class = Altrep::altrep_class::<StateType>(RType::Logical, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
@@ -820,7 +826,7 @@ impl Altrep {
             R_set_altlogical_Sum_method(class_ptr, Some(altlogical_Sum::<StateType>));
 
             class
-        }
+        })
     }
 
     pub fn make_altraw_class<StateType: AltrepImpl + AltRawImpl + 'static>(
@@ -829,7 +835,7 @@ impl Altrep {
     ) -> Robj {
         #![allow(non_snake_case)]
 
-        unsafe {
+        single_threaded(|| unsafe {
             let class = Altrep::altrep_class::<StateType>(RType::Raw, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
@@ -854,7 +860,7 @@ impl Altrep {
             R_set_altraw_Get_region_method(class_ptr, Some(altraw_Get_region::<StateType>));
 
             class
-        }
+        })
     }
 
     pub fn make_altcomplex_class<StateType: AltrepImpl + AltComplexImpl + 'static>(
@@ -863,7 +869,7 @@ impl Altrep {
     ) -> Robj {
         #![allow(non_snake_case)]
 
-        unsafe {
+        single_threaded(|| unsafe {
             let class = Altrep::altrep_class::<StateType>(RType::Complex, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
@@ -888,7 +894,7 @@ impl Altrep {
             R_set_altcomplex_Get_region_method(class_ptr, Some(altcomplex_Get_region::<StateType>));
 
             class
-        }
+        })
     }
 
     pub fn make_altstring_class<StateType: AltrepImpl + AltStringImpl + 'static>(
@@ -899,7 +905,7 @@ impl Altrep {
         use std::os::raw::c_char;
         use std::os::raw::c_int;
 
-        unsafe {
+        single_threaded(|| unsafe {
             let class = Altrep::altrep_class::<StateType>(RType::String, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
@@ -941,7 +947,7 @@ impl Altrep {
             R_set_altstring_No_NA_method(class_ptr, Some(altstring_No_NA::<StateType>));
 
             class
-        }
+        })
     }
 }
 
