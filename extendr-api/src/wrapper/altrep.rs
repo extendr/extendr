@@ -76,7 +76,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
             let data2 = R_altrep_data2(x);
             if data2 == R_NilValue || TYPEOF(data2) != TYPEOF(x) {
                 Rf_protect(x);
-                let len = ALTREP_LENGTH(x);
+                let len = XLENGTH_EX(x);
                 let data2 = Rf_allocVector(TYPEOF(x) as u32, len as R_xlen_t);
                 Rf_protect(data2);
                 match TYPEOF(x) as u32 {
