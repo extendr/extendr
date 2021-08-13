@@ -489,11 +489,7 @@ impl Altrep {
         }
     }
 
-    fn altrep_class<StateType: AltrepImpl + 'static>(
-        ty: RType,
-        name: &str,
-        base: &str,
-    ) -> Robj {
+    fn altrep_class<StateType: AltrepImpl + 'static>(ty: RType, name: &str, base: &str) -> Robj {
         #![allow(non_snake_case)]
         #![allow(unused_variables)]
         use std::os::raw::c_int;
