@@ -99,6 +99,7 @@ impl_try_from_scalar_integer!(i64);
 impl_try_from_scalar_real!(f32);
 impl_try_from_scalar_real!(f64);
 
+
 impl TryFrom<Robj> for Bool {
     type Error = Error;
 
@@ -278,6 +279,36 @@ impl_option!(String);
 impl_option!(Vec<i32>);
 impl_option!(Vec<f64>);
 impl_option!(Vec<String>);
+
+impl TryFrom<Robj> for Real {
+    type Error = Error;
+
+    /// Convert a REALSXP object into an iterator of f64 (double precision floating point).
+    fn try_from(robj: Robj) -> Result<Self> {
+        robj.as_real_iter()
+            .ok_or_else(|| Error::ExpectedReal(robj))
+    }
+}
+
+impl TryFrom<Robj> for Int {
+    type Error = Error;
+
+    /// Convert an INTSXP object into an iterator of i32 (integer).
+    fn try_from(robj: Robj) -> Result<Self> {
+        robj.as_integer_iter()
+            .ok_or_else(|| Error::ExpectedInteger(robj))
+    }
+}
+
+impl TryFrom<Robj> for Logical {
+    type Error = Error;
+
+    /// Convert a LGLSXP object into an iterator of Bool (tri-state booleans).
+    fn try_from(robj: Robj) -> Result<Self> {
+        robj.as_logical_iter()
+            .ok_or_else(|| Error::ExpectedLogical(robj))
+    }
+}
 
 impl TryFrom<Robj> for &[i32] {
     type Error = Error;

@@ -155,6 +155,18 @@ fn test_try_from_robj() {
         assert_eq!(<Vec::<f64>>::try_from(Robj::from(1.)), Ok(vec![1.]));
         assert_eq!(<Vec::<Bool>>::try_from(Robj::from(TRUE)), Ok(vec![TRUE]));
         assert_eq!(<Vec::<u8>>::try_from(Robj::from(0_u8)), Ok(vec![0_u8]));
+        
+        let v: Result<Real> = r!(NA_REAL).try_into();
+        let mut v: Vec<_> = v.unwrap().collect();
+        assert!(v.pop().unwrap().is_nan());
+        assert_eq!(<Real>::try_from(r!([1.0, 2.0])).unwrap().collect::<Vec<f64>>(), vec![1.0, 2.0]);
+        assert!(<Real>::try_from(r!([true])).is_err());
+
+        assert_eq!(<Int>::try_from(r!([1, 2])).unwrap().collect::<Vec<i32>>(), vec![1, 2]);
+        assert!(<Int>::try_from(r!([true])).is_err());
+
+        assert_eq!(<Logical>::try_from(r!([true, false])).unwrap().collect::<Vec<Bool>>(), vec![TRUE, FALSE]);
+        assert!(<Logical>::try_from(r!([1])).is_err());
 
         assert_eq!(<&[i32]>::try_from(Robj::from(1)), Ok(&[1][..]));
         assert_eq!(<&[f64]>::try_from(Robj::from(1.)), Ok(&[1.][..]));
