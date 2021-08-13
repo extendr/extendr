@@ -35,10 +35,11 @@ pub use crate::{
 };
 
 pub use super::logical::Bool;
+pub use super::Cplx;
 
 pub use super::wrapper::{
-    AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep, AltrepImpl,
-    RArray, RColumn, RMatrix, RMatrix3D,
+    AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,
+    AltrepImpl, RArray, RColumn, RMatrix, RMatrix3D,
 };
 
 pub use super::robj::{IntoRobj, Robj, RobjItertools};

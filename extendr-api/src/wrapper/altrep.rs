@@ -7,7 +7,7 @@ pub struct Altrep {
 
 /// Rust trait for implementing ALTREP.
 /// Implement one or more of these methods to generate an Altrep class.
-/// Mechanism TBD.
+/// This is likely to be unstable for a while.
 pub trait AltrepImpl: Clone + std::fmt::Debug {
     /// Constructor that is called when loading an Altrep object from a file.
     fn unserialize_ex(
@@ -31,26 +31,30 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
 
     /// Simplified constructor that is called when loading an Altrep object from a file.
     fn unserialize(_class: Robj, _state: Robj) -> Robj {
+        // We plan to hadle this via Serde by November.
         ().into()
     }
 
     /// Fetch the state of this object when writing to a file.
-    fn serialized_state(&self) -> Robj {
+    fn serialized_state(_x: SEXP) -> Robj {
+        // We plan to hadle this via Serde by November.
         ().into()
     }
 
     /// Duplicate this object, possibly duplicating attributes.
-    fn duplicate_ex(&self, _deep: bool) -> Robj {
-        ().into()
+    /// Currently this manifests the array but preserves the original object.
+    fn duplicate_ex(x: SEXP, deep: bool) -> Robj {
+        Self::duplicate(x, deep)
     }
 
     /// Duplicate this object. Called by Rf_duplicate.
-    fn duplicate(&self, _deep: bool) -> Robj {
-        ().into()
+    /// Currently this manifests the array but preserves the original object.
+    fn duplicate(x: SEXP, _deep: bool) -> Robj {
+        unsafe { new_owned(Self::manifest(x)) }
     }
 
     /// Coerce this object into some other type, if possible.
-    fn coerce(&self, _ty: RType) -> Robj {
+    fn coerce(_x: SEXP, _ty: RType) -> Robj {
         ().into()
     }
 
@@ -75,31 +79,8 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
         unsafe {
             let data2 = R_altrep_data2(x);
             if data2 == R_NilValue || TYPEOF(data2) != TYPEOF(x) {
-                Rf_protect(x);
-                let len = XLENGTH_EX(x);
-                let data2 = Rf_allocVector(TYPEOF(x) as u32, len as R_xlen_t);
-                Rf_protect(data2);
-                match TYPEOF(x) as u32 {
-                    INTSXP => {
-                        INTEGER_GET_REGION(x, 0, len as R_xlen_t, INTEGER(data2));
-                    }
-                    LGLSXP => {
-                        LOGICAL_GET_REGION(x, 0, len as R_xlen_t, LOGICAL(data2));
-                    }
-                    REALSXP => {
-                        REAL_GET_REGION(x, 0, len as R_xlen_t, REAL(data2));
-                    }
-                    RAWSXP => {
-                        RAW_GET_REGION(x, 0, len as R_xlen_t, RAW(data2));
-                    }
-                    CPLXSXP => {
-                        COMPLEX_GET_REGION(x, 0, len as R_xlen_t, COMPLEX(data2));
-                    }
-                    // STRSXP => { STRING_GET_REGION(x, 0, len as R_xlen_t, INTEGER(data2)); }
-                    _ => panic!("unsupported ALTREP type."),
-                }
+                let data2 = Self::manifest(x);
                 R_set_altrep_data2(x, data2);
-                Rf_unprotect(2);
                 DATAPTR(data2) as *mut u8
             } else {
                 DATAPTR(data2) as *mut u8
@@ -125,6 +106,34 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
         // only available in later versions of R.
         // x.extract_subset(indx, call)
         Robj::from(())
+    }
+
+    unsafe fn manifest(x: SEXP) -> SEXP {
+        Rf_protect(x);
+        let len = XLENGTH_EX(x);
+        let data2 = Rf_allocVector(TYPEOF(x) as u32, len as R_xlen_t);
+        Rf_protect(data2);
+        match TYPEOF(x) as u32 {
+            INTSXP => {
+                INTEGER_GET_REGION(x, 0, len as R_xlen_t, INTEGER(data2));
+            }
+            LGLSXP => {
+                LOGICAL_GET_REGION(x, 0, len as R_xlen_t, LOGICAL(data2));
+            }
+            REALSXP => {
+                REAL_GET_REGION(x, 0, len as R_xlen_t, REAL(data2));
+            }
+            RAWSXP => {
+                RAW_GET_REGION(x, 0, len as R_xlen_t, RAW(data2));
+            }
+            CPLXSXP => {
+                COMPLEX_GET_REGION(x, 0, len as R_xlen_t, COMPLEX(data2));
+            }
+            // STRSXP => { STRING_GET_REGION(x, 0, len as R_xlen_t, INTEGER(data2)); }
+            _ => panic!("unsupported ALTREP type."),
+        };
+        Rf_unprotect(2);
+        data2
     }
 }
 
@@ -424,7 +433,11 @@ impl Altrep {
         unsafe { new_owned(ALTREP_CLASS(self.robj.get())) }
     }
 
-    pub fn from_state_and_class<StateType: 'static>(state: StateType, class: Robj) -> Altrep {
+    pub fn from_state_and_class<StateType: 'static>(
+        state: StateType,
+        class: Robj,
+        mutable: bool,
+    ) -> Altrep {
         single_threaded(|| unsafe {
             use std::os::raw::c_void;
 
@@ -441,9 +454,14 @@ impl Altrep {
             R_RegisterCFinalizer(state, Some(finalizer::<StateType>));
 
             let class_ptr = R_altrep_class_t { ptr: class.get() };
+            let sexp = R_new_altrep(class_ptr, state, R_NilValue);
+
+            if !mutable {
+                MARK_NOT_MUTABLE(sexp);
+            }
 
             Altrep {
-                robj: new_owned(R_new_altrep(class_ptr, state, R_NilValue)),
+                robj: new_owned(sexp),
             }
         })
     }
@@ -501,32 +519,28 @@ impl Altrep {
         unsafe extern "C" fn altrep_Serialized_state<StateType: AltrepImpl + 'static>(
             x: SEXP,
         ) -> SEXP {
-            Altrep::get_state::<StateType>(x).serialized_state().get()
+            <StateType>::serialized_state(x).get()
         }
 
         unsafe extern "C" fn altrep_Coerce<StateType: AltrepImpl + 'static>(
             x: SEXP,
             ty: c_int,
         ) -> SEXP {
-            Altrep::get_state::<StateType>(x)
-                .coerce(sxp_to_rtype(ty))
-                .get()
+            <StateType>::coerce(x, sxp_to_rtype(ty)).get()
         }
 
         unsafe extern "C" fn altrep_Duplicate<StateType: AltrepImpl + 'static>(
             x: SEXP,
             deep: Rboolean,
         ) -> SEXP {
-            Altrep::get_state::<StateType>(x).duplicate(deep == 1).get()
+            <StateType>::duplicate(x, deep == 1).get()
         }
 
         unsafe extern "C" fn altrep_DuplicateEX<StateType: AltrepImpl + 'static>(
             x: SEXP,
             deep: Rboolean,
         ) -> SEXP {
-            Altrep::get_state::<StateType>(x)
-                .duplicate_ex(deep == 1)
-                .get()
+            <StateType>::duplicate_ex(x, deep == 1).get()
         }
 
         unsafe extern "C" fn altrep_Inspect<StateType: AltrepImpl + 'static>(
@@ -948,202 +962,5 @@ impl Altrep {
 
             class
         })
-    }
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn test_altinteger() {
-        test! {
-            #[derive(Debug, Clone)]
-            struct MyCompactIntRange {
-                start: i32,
-                len: i32,
-                step: i32,
-            }
-
-            impl AltrepImpl for MyCompactIntRange {
-                fn length(&self) -> usize {
-                    self.len as usize
-                }
-            }
-
-            impl AltIntegerImpl for MyCompactIntRange {
-                fn elt(&self, index: usize) -> i32 {
-                    self.start + self.step * index as i32
-                }
-            }
-
-            let mystate = MyCompactIntRange { start: 0, len: 10, step: 1 };
-
-            let class = Altrep::make_altinteger_class::<MyCompactIntRange>("cir", "mypkg");
-            let obj = Altrep::from_state_and_class(mystate, class);
-
-            assert_eq!(obj.len(), 10);
-            // assert_eq!(obj.sum(true), r!(45.0));
-            assert_eq!(obj.as_integer_slice().unwrap(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
-        }
-    }
-
-    #[test]
-
-    fn test_altreal() {
-        test! {
-            #[derive(Debug, Clone)]
-            struct MyCompactRealRange {
-                start: f64,
-                len: usize,
-                step: f64,
-            }
-
-            impl AltrepImpl for MyCompactRealRange {
-                fn length(&self) -> usize {
-                    self.len as usize
-                }
-            }
-
-            impl AltRealImpl for MyCompactRealRange {
-                fn elt(&self, index: usize) -> f64 {
-                    self.start + self.step * index as f64
-                }
-            }
-
-            let mystate = MyCompactRealRange { start: 0.0, len: 10, step: 1.0 };
-
-            let class = Altrep::make_altreal_class::<MyCompactRealRange>("crr", "mypkg");
-            let obj = Altrep::from_state_and_class(mystate, class);
-
-            assert_eq!(obj.len(), 10);
-            // assert_eq!(obj.sum(true), r!(45.0));
-            assert_eq!(obj.as_real_slice().unwrap(), [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]);
-        }
-    }
-
-    #[test]
-    fn test_altlogical() {
-        test! {
-            #[derive(Debug, Clone)]
-            struct IsEven {
-                len: usize,
-            }
-
-            impl AltrepImpl for IsEven {
-                fn length(&self) -> usize {
-                    self.len as usize
-                }
-            }
-
-            impl AltLogicalImpl for IsEven {
-                fn elt(&self, index: usize) -> Bool {
-                    (index % 2 == 1).into()
-                }
-            }
-
-            let mystate = IsEven { len: 10 };
-
-            let class = Altrep::make_altlogical_class::<IsEven>("iseven", "mypkg");
-            let obj = Altrep::from_state_and_class(mystate, class);
-
-            assert_eq!(obj.len(), 10);
-            // assert_eq!(obj.sum(true), r!(5.0));
-            assert_eq!(obj.as_logical_slice().unwrap(), [FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE]);
-        }
-    }
-
-    #[test]
-    fn test_altraw() {
-        test! {
-            #[derive(Debug, Clone)]
-            struct MyCompactRawRange {
-                start: i32,
-                len: i32,
-                step: i32,
-            }
-
-            impl AltrepImpl for MyCompactRawRange {
-                fn length(&self) -> usize {
-                    self.len as usize
-                }
-            }
-
-            impl AltRawImpl for MyCompactRawRange {
-                fn elt(&self, index: usize) -> u8 {
-                    (self.start + self.step * index as i32) as u8
-                }
-            }
-
-            let mystate = MyCompactRawRange { start: 0, len: 10, step: 1 };
-
-            let class = Altrep::make_altraw_class::<MyCompactRawRange>("cir", "mypkg");
-            let obj = Altrep::from_state_and_class(mystate, class);
-
-            assert_eq!(obj.len(), 10);
-            assert_eq!(obj.as_raw_slice().unwrap(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
-        }
-    }
-
-    #[test]
-    fn test_altcomplex() {
-        test! {
-            #[derive(Debug, Clone)]
-            struct MyCompactComplexRange {
-                start: f64,
-                len: usize,
-                step: f64,
-            }
-
-            impl AltrepImpl for MyCompactComplexRange {
-                fn length(&self) -> usize {
-                    self.len as usize
-                }
-            }
-
-            impl AltComplexImpl for MyCompactComplexRange {
-                fn elt(&self, index: usize) -> Cplx {
-                    Cplx(self.start + self.step * index as f64, self.start + self.step * index as f64)
-                }
-            }
-
-            let mystate = MyCompactComplexRange { start: 0.0, len: 10, step: 1.0 };
-
-            let class = Altrep::make_altcomplex_class::<MyCompactComplexRange>("ccr", "mypkg");
-            let obj = Altrep::from_state_and_class(mystate, class);
-
-            assert_eq!(obj.len(), 10);
-            //assert_eq!(obj.as_complex_slice().unwrap(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
-        }
-    }
-
-    #[test]
-    fn test_altstring() {
-        test! {
-            #[derive(Debug, Clone)]
-            struct StringInts {
-                len: usize
-            }
-
-            impl AltrepImpl for StringInts {
-                fn length(&self) -> usize {
-                    self.len as usize
-                }
-            }
-
-            impl AltStringImpl for StringInts {
-                fn elt(&self, index: usize) -> String {
-                    format!("{}", index).into()
-                }
-            }
-
-            let mystate = StringInts { len: 10 };
-
-            let class = Altrep::make_altstring_class::<StringInts>("si", "mypkg");
-            let obj = Altrep::from_state_and_class(mystate, class);
-
-            assert_eq!(obj.len(), 10);
-            assert_eq!(Robj::from(obj), r!(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]));
-        }
     }
 }

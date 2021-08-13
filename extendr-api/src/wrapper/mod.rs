@@ -20,7 +20,8 @@ pub mod raw;
 pub mod symbol;
 
 pub use altrep::{
-    AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep, AltrepImpl,
+    AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,
+    AltrepImpl,
 };
 pub use character::Character;
 pub use environment::{EnvIter, Environment};
