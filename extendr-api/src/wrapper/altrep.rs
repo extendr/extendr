@@ -50,7 +50,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
     /// Duplicate this object. Called by Rf_duplicate.
     /// Currently this manifests the array but preserves the original object.
     fn duplicate(x: SEXP, _deep: bool) -> Robj {
-        unsafe { new_owned(Self::manifest(x)) }
+        unsafe { new_owned(manifest(x)) }
     }
 
     /// Coerce this object into some other type, if possible.
@@ -79,7 +79,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
         unsafe {
             let data2 = R_altrep_data2(x);
             if data2 == R_NilValue || TYPEOF(data2) != TYPEOF(x) {
-                let data2 = Self::manifest(x);
+                let data2 = manifest(x);
                 R_set_altrep_data2(x, data2);
                 DATAPTR(data2) as *mut u8
             } else {
@@ -107,8 +107,10 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
         // x.extract_subset(indx, call)
         Robj::from(())
     }
+}
 
-    unsafe fn manifest(x: SEXP) -> SEXP {
+fn manifest(x: SEXP) -> SEXP {
+    unsafe {
         Rf_protect(x);
         let len = XLENGTH_EX(x);
         let data2 = Rf_allocVector(TYPEOF(x) as u32, len as R_xlen_t);
@@ -147,7 +149,7 @@ pub trait AltIntegerImpl: AltrepImpl {
         for i in 0..len {
             let val = self.elt(i);
             if !val.is_na() {
-                tot = tot + val as i64;
+                tot += val as i64;
                 min = min.min(val);
                 max = max.max(val);
                 nas += 1;
@@ -166,8 +168,9 @@ pub trait AltIntegerImpl: AltrepImpl {
             0
         } else {
             let num_elems = data.len().min(len - index);
-            for i in index..index + num_elems {
-                data[i] = self.elt(i);
+            let dest = &mut data[0..num_elems];
+            for (i, d) in dest.iter_mut().enumerate() {
+                *d = self.elt(i);
             }
             num_elems
         }
@@ -227,7 +230,7 @@ pub trait AltRealImpl: AltrepImpl {
         for i in 0..len {
             let val = self.elt(i);
             if !val.is_na() {
-                tot = tot + val;
+                tot += val;
                 min = min.min(val);
                 max = max.max(val);
                 nas += 1;
@@ -246,8 +249,9 @@ pub trait AltRealImpl: AltrepImpl {
             0
         } else {
             let num_elems = data.len().min(len - index);
-            for i in index..index + num_elems {
-                data[i] = self.elt(i);
+            let dest = &mut data[0..num_elems];
+            for (i, d) in dest.iter_mut().enumerate() {
+                *d = self.elt(i);
             }
             num_elems
         }
@@ -305,7 +309,7 @@ pub trait AltLogicalImpl: AltrepImpl {
         for i in 0..len {
             let val = self.elt(i);
             if !val.is_na() {
-                tot = tot + val.0 as i64;
+                tot += val.0 as i64;
                 nas += 1;
             }
         }
@@ -322,8 +326,9 @@ pub trait AltLogicalImpl: AltrepImpl {
             0
         } else {
             let num_elems = data.len().min(len - index);
-            for i in index..index + num_elems {
-                data[i] = self.elt(i);
+            let dest = &mut data[0..num_elems];
+            for (i, d) in dest.iter_mut().enumerate() {
+                *d = self.elt(i);
             }
             num_elems
         }
@@ -362,8 +367,9 @@ pub trait AltRawImpl: AltrepImpl {
             0
         } else {
             let num_elems = data.len().min(len - index);
-            for i in index..index + num_elems {
-                data[i] = self.elt(i);
+            let dest = &mut data[0..num_elems];
+            for (i, d) in dest.iter_mut().enumerate() {
+                *d = self.elt(i);
             }
             num_elems
         }
@@ -381,8 +387,9 @@ pub trait AltComplexImpl: AltrepImpl {
             0
         } else {
             let num_elems = data.len().min(len - index);
-            for i in index..index + num_elems {
-                data[i] = self.elt(i);
+            let dest = &mut data[0..num_elems];
+            for (i, d) in dest.iter_mut().enumerate() {
+                *d = self.elt(i);
             }
             num_elems
         }
@@ -470,7 +477,7 @@ impl Altrep {
     pub(crate) fn get_state<StateType>(x: SEXP) -> &'static StateType {
         unsafe {
             let state_ptr = R_ExternalPtrAddr(R_altrep_data1(x));
-            std::mem::transmute(state_ptr)
+            &*(state_ptr as *const StateType)
         }
     }
 
@@ -478,11 +485,11 @@ impl Altrep {
     pub(crate) fn get_state_mut<StateType>(x: SEXP) -> &'static mut StateType {
         unsafe {
             let state_ptr = R_ExternalPtrAddr(R_altrep_data1(x));
-            std::mem::transmute(state_ptr)
+            &mut *(state_ptr as *mut StateType)
         }
     }
 
-    pub fn altrep_class<StateType: AltrepImpl + 'static>(
+    fn altrep_class<StateType: AltrepImpl + 'static>(
         ty: RType,
         name: &str,
         base: &str,
@@ -631,6 +638,7 @@ impl Altrep {
         }
     }
 
+    /// Make an integer ALTREP class that can be used to make vectors.
     pub fn make_altinteger_class<StateType: AltrepImpl + AltIntegerImpl + 'static>(
         name: &str,
         base: &str,
@@ -708,6 +716,7 @@ impl Altrep {
         })
     }
 
+    /// Make a real ALTREP class that can be used to make vectors.
     pub fn make_altreal_class<StateType: AltrepImpl + AltRealImpl + 'static>(
         name: &str,
         base: &str,
@@ -782,6 +791,7 @@ impl Altrep {
         })
     }
 
+    /// Make a logical ALTREP class that can be used to make vectors.
     pub fn make_altlogical_class<StateType: AltrepImpl + AltLogicalImpl + 'static>(
         name: &str,
         base: &str,
@@ -843,6 +853,7 @@ impl Altrep {
         })
     }
 
+    /// Make a raw ALTREP class that can be used to make vectors.
     pub fn make_altraw_class<StateType: AltrepImpl + AltRawImpl + 'static>(
         name: &str,
         base: &str,
@@ -877,6 +888,7 @@ impl Altrep {
         })
     }
 
+    /// Make a complex ALTREP class that can be used to make vectors.
     pub fn make_altcomplex_class<StateType: AltrepImpl + AltComplexImpl + 'static>(
         name: &str,
         base: &str,
@@ -911,6 +923,7 @@ impl Altrep {
         })
     }
 
+    /// Make a complex ALTREP class that can be used to make vectors.
     pub fn make_altstring_class<StateType: AltrepImpl + AltStringImpl + 'static>(
         name: &str,
         base: &str,

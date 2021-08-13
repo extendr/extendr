@@ -286,7 +286,7 @@ impl TryFrom<Robj> for &[i32] {
     /// Use `value.is_na()` to detect NA values.
     fn try_from(robj: Robj) -> Result<Self> {
         robj.as_typed_slice()
-            .ok_or_else(|| Error::ExpectedInteger(robj))
+            .ok_or(Error::ExpectedInteger(robj))
     }
 }
 
@@ -297,7 +297,7 @@ impl TryFrom<Robj> for &[Bool] {
     /// Use `value.is_na()` to detect NA values.
     fn try_from(robj: Robj) -> Result<Self> {
         robj.as_typed_slice()
-            .ok_or_else(|| Error::ExpectedLogical(robj))
+            .ok_or(Error::ExpectedLogical(robj))
     }
 }
 
@@ -307,7 +307,7 @@ impl TryFrom<Robj> for &[u8] {
     /// Convert a RAWSXP object into a slice of bytes.
     fn try_from(robj: Robj) -> Result<Self> {
         robj.as_typed_slice()
-            .ok_or_else(|| Error::ExpectedRaw(robj))
+            .ok_or(Error::ExpectedRaw(robj))
     }
 }
 
@@ -318,7 +318,7 @@ impl TryFrom<Robj> for &[f64] {
     /// Use `value.is_na()` to detect NA values.
     fn try_from(robj: Robj) -> Result<Self> {
         robj.as_typed_slice()
-            .ok_or_else(|| Error::ExpectedReal(robj))
+            .ok_or(Error::ExpectedReal(robj))
     }
 }
 
