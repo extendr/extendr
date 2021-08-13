@@ -99,7 +99,6 @@ impl_try_from_scalar_integer!(i64);
 impl_try_from_scalar_real!(f32);
 impl_try_from_scalar_real!(f64);
 
-
 impl TryFrom<Robj> for Bool {
     type Error = Error;
 
@@ -285,8 +284,7 @@ impl TryFrom<Robj> for Real {
 
     /// Convert a REALSXP object into an iterator of f64 (double precision floating point).
     fn try_from(robj: Robj) -> Result<Self> {
-        robj.as_real_iter()
-            .ok_or_else(|| Error::ExpectedReal(robj))
+        robj.as_real_iter().ok_or_else(|| Error::ExpectedReal(robj))
     }
 }
 
