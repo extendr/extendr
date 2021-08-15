@@ -109,6 +109,8 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
     }
 }
 
+// Manifest a vector by storing the "elt" values to memory.
+// Return the new vector.
 fn manifest(x: SEXP) -> SEXP {
     unsafe {
         Rf_protect(x);
@@ -131,7 +133,6 @@ fn manifest(x: SEXP) -> SEXP {
             CPLXSXP => {
                 COMPLEX_GET_REGION(x, 0, len as R_xlen_t, COMPLEX(data2));
             }
-            // STRSXP => { STRING_GET_REGION(x, 0, len as R_xlen_t, INTEGER(data2)); }
             _ => panic!("unsupported ALTREP type."),
         };
         Rf_unprotect(2);
