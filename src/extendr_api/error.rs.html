@@ -186,6 +186,9 @@
 <span id="184">184</span>
 <span id="185">185</span>
 <span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
 </pre><pre class="rust">
 <span class="doccomment">//! Error handling in Rust called from R.</span>
 
@@ -253,6 +256,8 @@
     <span class="ident">ExpectedMatrix</span>(<span class="ident">Robj</span>),
     <span class="ident">ExpectedMatrix3D</span>(<span class="ident">Robj</span>),
     <span class="ident">ExpectedNumeric</span>(<span class="ident">Robj</span>),
+    <span class="ident">ExpectedAltrep</span>(<span class="ident">Robj</span>),
+
     <span class="ident">OutOfRange</span>(<span class="ident">Robj</span>),
     <span class="ident">MustNotBeNA</span>(<span class="ident">Robj</span>),
     <span class="ident">ExpectedNonZeroLength</span>(<span class="ident">Robj</span>),
@@ -316,6 +321,7 @@
             <span class="ident">Error::ExpectedMatrix</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Matrix, got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
             <span class="ident">Error::ExpectedMatrix3D</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Matrix3D, got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
             <span class="ident">Error::ExpectedNumeric</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Numeric, got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedAltrep</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Altrep, got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
             <span class="ident">Error::OutOfRange</span>(<span class="ident">_robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Out of range.&quot;</span>),
             <span class="ident">Error::MustNotBeNA</span>(<span class="ident">_robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Must not be NA.&quot;</span>),
             <span class="ident">Error::ExpectedNonZeroLength</span>(<span class="ident">_robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected non zero length&quot;</span>),

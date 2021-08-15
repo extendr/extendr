@@ -1129,17 +1129,6 @@
 <span id="1127">1127</span>
 <span id="1128">1128</span>
 <span id="1129">1129</span>
-<span id="1130">1130</span>
-<span id="1131">1131</span>
-<span id="1132">1132</span>
-<span id="1133">1133</span>
-<span id="1134">1134</span>
-<span id="1135">1135</span>
-<span id="1136">1136</span>
-<span id="1137">1137</span>
-<span id="1138">1138</span>
-<span id="1139">1139</span>
-<span id="1140">1140</span>
 </pre><pre class="rust">
 <span class="doccomment">//! R object handling.</span>
 <span class="doccomment">//!</span>
@@ -1294,17 +1283,6 @@
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">Robj::Owned</span>(<span class="ident">sexp</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="ident">sexp</span>,
             <span class="ident">Robj::Sys</span>(<span class="ident">sexp</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="ident">sexp</span>,
-        }
-    }
-
-    <span class="doccomment">/// Get a copy of the underlying SEXP for mutable types.</span>
-    <span class="doccomment">/// This is valid only for owned objects as we are not</span>
-    <span class="doccomment">/// permitted to modify parameters or system objects.</span>
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">get_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">SEXP</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Robj::Owned</span>(<span class="ident">sexp</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="kw-2">*</span><span class="ident">sexp</span>),
-            <span class="ident">Robj::Sys</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
         }
     }
 

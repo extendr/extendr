@@ -315,6 +315,15 @@
 <span id="313">313</span>
 <span id="314">314</span>
 <span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
+<span id="318">318</span>
+<span id="319">319</span>
+<span id="320">320</span>
+<span id="321">321</span>
+<span id="322">322</span>
+<span id="323">323</span>
+<span id="324">324</span>
 </pre><pre class="rust">
 <span class="doccomment">//! Wrappers are lightweight proxies for references to R datatypes.</span>
 <span class="doccomment">//! They do not contain an Robj (see array.rs for an example of this).</span>
@@ -322,6 +331,7 @@
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">libR_sys</span>::<span class="kw-2">*</span>;
 
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">altrep</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">character</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">environment</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">expr</span>;
@@ -336,6 +346,10 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">raw</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">symbol</span>;
 
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">altrep</span>::{
+    <span class="ident">AltComplexImpl</span>, <span class="ident">AltIntegerImpl</span>, <span class="ident">AltLogicalImpl</span>, <span class="ident">AltRawImpl</span>, <span class="ident">AltRealImpl</span>, <span class="ident">AltStringImpl</span>, <span class="ident">Altrep</span>,
+    <span class="ident">AltrepImpl</span>,
+};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">character::Character</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">environment</span>::{<span class="ident">EnvIter</span>, <span class="ident">Environment</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">expr::Expression</span>;
@@ -418,12 +432,14 @@
 }
 
 <span class="macro">make_conversions!</span>(<span class="ident">Pairlist</span>, <span class="ident">ExpectedPairlist</span>, <span class="ident">is_pairlist</span>, <span class="string">&quot;Not a pairlist&quot;</span>);
+
 <span class="macro">make_conversions!</span>(
     <span class="ident">Function</span>,
     <span class="ident">ExpectedFunction</span>,
     <span class="ident">is_function</span>,
     <span class="string">&quot;Not a function or primitive.&quot;</span>
 );
+
 <span class="macro">make_conversions!</span>(<span class="ident">Raw</span>, <span class="ident">ExpectedRaw</span>, <span class="ident">is_raw</span>, <span class="string">&quot;Not a raw object&quot;</span>);
 
 <span class="macro">make_conversions!</span>(
@@ -466,6 +482,8 @@
 );
 
 <span class="macro">make_conversions!</span>(<span class="ident">Promise</span>, <span class="ident">ExpectedPromise</span>, <span class="ident">is_promise</span>, <span class="string">&quot;Not a Promise object&quot;</span>);
+
+<span class="macro">make_conversions!</span>(<span class="ident">Altrep</span>, <span class="ident">ExpectedAltrep</span>, <span class="ident">is_altrep</span>, <span class="string">&quot;Not an Altrep type&quot;</span>);
 
 <span class="kw">impl</span> <span class="ident">Robj</span> {
     <span class="doccomment">/// Convert a symbol object to a Symbol wrapper.</span>

@@ -61,6 +61,13 @@
 <span id="59">59</span>
 <span id="60">60</span>
 <span id="61">61</span>
+<span id="62">62</span>
+<span id="63">63</span>
+<span id="64">64</span>
+<span id="65">65</span>
+<span id="66">66</span>
+<span id="67">67</span>
+<span id="68">68</span>
 </pre><pre class="rust">
 <span class="doccomment">//! # Common exports for extendr-api.</span>
 <span class="doccomment">//!</span>
@@ -90,14 +97,21 @@
     <span class="ident">spec_symbol</span>, <span class="ident">triple_colon_symbol</span>, <span class="ident">tsp_symbol</span>, <span class="ident">unbound_value</span>,
 };
 
+<span class="comment">// Exported macros have crate scope.</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">append</span>, <span class="ident">append_lang</span>, <span class="ident">append_with_name</span>, <span class="ident">args</span>, <span class="ident">lang</span>, <span class="ident">make_lang</span>};
+
+<span class="comment">// Exported macros have crate scope.</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::{
     <span class="ident">data_frame</span>, <span class="ident">factor</span>, <span class="ident">global</span>, <span class="ident">list</span>, <span class="ident">r</span>, <span class="ident">reprint</span>, <span class="ident">reprintln</span>, <span class="ident">rprint</span>, <span class="ident">rprintln</span>, <span class="ident">sym</span>, <span class="ident">test</span>, <span class="ident">var</span>,
 };
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span><span class="ident">::logical::Bool</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span><span class="ident">::Cplx</span>;
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span><span class="ident">::wrapper</span>::{<span class="ident">RArray</span>, <span class="ident">RColumn</span>, <span class="ident">RMatrix</span>, <span class="ident">RMatrix3D</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span><span class="ident">::wrapper</span>::{
+    <span class="ident">AltComplexImpl</span>, <span class="ident">AltIntegerImpl</span>, <span class="ident">AltLogicalImpl</span>, <span class="ident">AltRawImpl</span>, <span class="ident">AltRealImpl</span>, <span class="ident">AltStringImpl</span>, <span class="ident">Altrep</span>,
+    <span class="ident">AltrepImpl</span>, <span class="ident">RArray</span>, <span class="ident">RColumn</span>, <span class="ident">RMatrix</span>, <span class="ident">RMatrix3D</span>,
+};
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span><span class="ident">::robj</span>::{<span class="ident">IntoRobj</span>, <span class="ident">Robj</span>, <span class="ident">RobjItertools</span>};
 
