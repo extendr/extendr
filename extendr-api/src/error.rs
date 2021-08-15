@@ -64,6 +64,8 @@ pub enum Error {
     ExpectedMatrix(Robj),
     ExpectedMatrix3D(Robj),
     ExpectedNumeric(Robj),
+    ExpectedAltrep(Robj),
+
     OutOfRange(Robj),
     MustNotBeNA(Robj),
     ExpectedNonZeroLength(Robj),
@@ -127,6 +129,7 @@ impl std::fmt::Display for Error {
             Error::ExpectedMatrix(robj) => write!(f, "Expected Matrix, got {:?}", robj.rtype()),
             Error::ExpectedMatrix3D(robj) => write!(f, "Expected Matrix3D, got {:?}", robj.rtype()),
             Error::ExpectedNumeric(robj) => write!(f, "Expected Numeric, got {:?}", robj.rtype()),
+            Error::ExpectedAltrep(robj) => write!(f, "Expected Altrep, got {:?}", robj.rtype()),
             Error::OutOfRange(_robj) => write!(f, "Out of range."),
             Error::MustNotBeNA(_robj) => write!(f, "Must not be NA."),
             Error::ExpectedNonZeroLength(_robj) => write!(f, "Expected non zero length"),

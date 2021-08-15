@@ -266,6 +266,8 @@ pub use robj_ndarray::*;
 pub use extendr_macros::*;
 //////////////////////////////////////////////////
 
+pub struct Cplx(pub f64, pub f64);
+
 /// TRUE value eg. `r!(TRUE)`
 pub const TRUE: Bool = Bool(1);
 
@@ -420,6 +422,71 @@ pub enum RType {
     Raw,         // RAWSXP
     S4,          // S4SXP
     Unknown,
+}
+
+/// Convert extendr's RType to R's SEXPTYPE.
+/// Panics if the type is Unknown.
+pub fn rtype_to_sxp(rtype: RType) -> i32 {
+    use RType::*;
+    (match rtype {
+        Null => NILSXP,
+        Symbol => SYMSXP,
+        Pairlist => LISTSXP,
+        Function => CLOSXP,
+        Environment => ENVSXP,
+        Promise => PROMSXP,
+        Language => LANGSXP,
+        Special => SPECIALSXP,
+        Builtin => BUILTINSXP,
+        Character => CHARSXP,
+        Logical => LGLSXP,
+        Integer => INTSXP,
+        Real => REALSXP,
+        Complex => CPLXSXP,
+        String => STRSXP,
+        Dot => DOTSXP,
+        Any => ANYSXP,
+        List => VECSXP,
+        Expression => EXPRSXP,
+        Bytecode => BCODESXP,
+        ExternalPtr => EXTPTRSXP,
+        WeakRef => WEAKREFSXP,
+        Raw => RAWSXP,
+        S4 => S4SXP,
+        Unknown => panic!("attempt to use Unknown RType"),
+    }) as i32
+}
+
+/// Convert R's SEXPTYPE to extendr's RType.
+pub fn sxp_to_rtype(sxptype: i32) -> RType {
+    use RType::*;
+    match sxptype as u32 {
+        NILSXP => Null,
+        SYMSXP => Symbol,
+        LISTSXP => Pairlist,
+        CLOSXP => Function,
+        ENVSXP => Environment,
+        PROMSXP => Promise,
+        LANGSXP => Language,
+        SPECIALSXP => Special,
+        BUILTINSXP => Builtin,
+        CHARSXP => Character,
+        LGLSXP => Logical,
+        INTSXP => Integer,
+        REALSXP => Real,
+        CPLXSXP => Complex,
+        STRSXP => String,
+        DOTSXP => Dot,
+        ANYSXP => Any,
+        VECSXP => List,
+        EXPRSXP => Expression,
+        BCODESXP => Bytecode,
+        EXTPTRSXP => ExternalPtr,
+        WEAKREFSXP => WeakRef,
+        RAWSXP => Raw,
+        S4SXP => S4,
+        _ => Unknown,
+    }
 }
 
 #[doc(hidden)]
