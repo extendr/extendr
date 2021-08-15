@@ -9,6 +9,7 @@ pub mod char;
 pub mod doubles;
 pub mod environment;
 pub mod expr;
+pub mod externalptr;
 pub mod function;
 pub mod integers;
 pub mod lang;
@@ -31,6 +32,7 @@ pub use altrep::{
 pub use doubles::Doubles;
 pub use environment::{EnvIter, Environment};
 pub use expr::Expression;
+pub use externalptr::ExternalPtr;
 pub use function::Function;
 pub use integers::Integers;
 pub use lang::Language;

@@ -60,6 +60,11 @@ impl Robj {
         unsafe { Rf_isS4(self.get()) != 0 }
     }
 
+    /// Return true if this is an expression.
+    pub fn is_external_pointer(&self) -> bool {
+        self.rtype() == RType::ExternalPtr
+    }
+
     /// Get the source ref.
     pub fn get_current_srcref(val: i32) -> Robj {
         unsafe { new_owned(R_GetCurrentSrcref(val as raw::c_int)) }
