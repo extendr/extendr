@@ -290,6 +290,8 @@ impl TryFrom<Robj> for Real {
 
 impl TryFrom<Robj> for Int {
     type Error = Error;
+    // TODO: check if robj is another type (e.g. Real) that can be converted
+    // into integer, and do the conversion
 
     /// Convert an INTSXP object into an iterator of i32 (integer).
     fn try_from(robj: Robj) -> Result<Self> {
@@ -300,8 +302,6 @@ impl TryFrom<Robj> for Int {
 
 impl TryFrom<Robj> for Logical {
     type Error = Error;
-    // TODO: check if robj is another type (e.g. Real) that can be converted
-    // into integer, and do the conversion
 
     /// Convert a LGLSXP object into an iterator of Bool (tri-state booleans).
     fn try_from(robj: Robj) -> Result<Self> {
