@@ -8,6 +8,7 @@ pub mod altrep;
 pub mod char;
 pub mod environment;
 pub mod expr;
+pub mod externalptr;
 pub mod function;
 pub mod lang;
 pub mod list;
@@ -27,6 +28,7 @@ pub use altrep::{
 };
 pub use environment::{EnvIter, Environment};
 pub use expr::Expression;
+pub use externalptr::ExternalPtr;
 pub use function::Function;
 pub use lang::Language;
 pub use list::{FromList, List, ListIter};
