@@ -14,9 +14,18 @@ The following configurations can be applied to each exported `Rust` function usi
   - `UnfoldToVec (default)` -- allocates memory for ALTREP vectors if parameter type is a `&[T]` or `Vec<T>`. Can potentially waste memory;
   - `IteratorOnly` -- panics if parameter type is not an iterator;
 - Type coercion
-  - `NoCoercion` -- exact `R` <--> `Rust` type matches. If input is `1:10` and parameter type if `&[Rint]`, panics because of the type mismatch;
+  - `NoCoercion` -- exact `R` <--> `Rust` type matches. If input is `c(1, 2, 3)` and parameter type is `&[Rint]`, panics because of the type mismatch;
   - `SafeCoercion (default)` -- inspired by [`{vctrs}`](https://vctrs.r-lib.org/reference/theory-faq-coercion.html), allows coercion `logical` --> `integer` --> `double` (and possibly --> `complex`) with no restrictions. The reverse coercion happens only if the coerced value falls within the value range of the target type. `1 + 0i` can be coerced to `1.0`, then to `1L`, and finally to `TRUE`. Otherwise, panics. Introduces overhead;
   - (optionally) `RCoercion` -- relies on `R` coercion rules (`as._` methods). Produces unpredictable results (e.g., `as.logical("cat") == NA`).
+
+| Validation |   ALTREP       | Allowed `Rust` types |
+| ---------- | ---------      | ------------ |
+| `Strict`   | `UnfoldToVec`  | `Vec<Rint>`; `&[Rint]`; `Either<&[Rint], AltRepInt>` |
+| `Strict`   | `IteratorOnly` | `Either<&[Rint], AltRepInt>` |
+| `Relaxed`  | `UnfoldToVec`  | `Vec<Rint>`; `&[Rint]`; `Either<&[Rint], AltRepInt>`; `Vec<i32>`; `&[i32]`; `Either<&[i32], AltRepInt>` |
+| `Relaxed`  | `IteratorOnly` | `Either<&[Rint], AltRepInt>` ; `Either<&[i32], AltRepInt>`|
+| `Runtime`  | `UnfoldToVec`  | Any |
+| `Runtime`  | `IteratorOnly` | `Either<&[Rint], AltRepInt>` ; `Either<&[i32], AltRepInt>` |
 
 # Vector Types
 ## Terminology
@@ -87,8 +96,7 @@ fn fn_1(x : &[i32])
 | ---------------------- | ----------- | -------- | ---------------- | ------------------ |
 | `integer()`            | No          | No       |  If `NA` found   | Runtime            |
 | `altrep_integer()`     | Yes         | No       |  If `NA` found   | Runtime            |
-| `real()` / `complex()` | Yes         | Yes      |  If `NA` found   | Runtime            |
-| `logical()`            | Yes         | Yes      |  If `NA` found   | Runtime            |
+| `real()` / `complex()` | Yes         | Yes      |  If `NA` found   | Runtime |
 
 2. Close to metal (aka performance)
 ```Rust
@@ -109,5 +117,5 @@ fn fn_3(x : &[Rint])
 | ---------------------- | ----------- | -------- | ------------------- | ------------------ |
 | `integer()`            | No          | No       |  No                 | User               |
 | `altrep_integer()`     | Yes         | No       |  No                 | User               |
-| `real()` / `complex()` | Yes         | Yes      |  If `x != floor(x)` | Runtime & User     |
-| `logical()`            | Yes         | Yes      |  No                 | User               |
+| `real()` / `complex()` | Yes         | Yes      |  If `x != floor(x)` | Runtime & User               |
+
