@@ -3,6 +3,7 @@
 This document outlines conversion and validation rules between `R` and `Rust` types.
 The aim is to maintain type safety on the `Rust` side without sacrificing usability on the `R` side.
 
+
 # Conversion and validation configuration
 The following configurations can be applied to each exported `Rust` function using the `#[extendr(...)]` syntax:
 - Validation:
@@ -54,7 +55,10 @@ Assume there are ALTREP wrappers for each type
 - `AltRepCmpl`
 - `AltRepStr`
 
-**ALTREP types should not be allowed as function parameters, but may be used as return types**.
+Altreps should be iterators of types `Rxxx`, so `AltRepInt` should produce `Rint`.
+If altreps cannot produce `NA`s, then they can iterate over primitive types like `i32` (i.e. with no `NA` validation mechanism).
+
+**Bare ALTREP types should not be allowed as function parameters, but may be used as return types**.
 
 ### Handling both plain and ALTREP vectors
 To enable direct consumption of ALTREP vector wrappers (without explicit memory allocations), a simple approach can be used. The monad `Either` is an excellent solution for representing either plain vector or its ALTREP wrapper.
@@ -71,3 +75,39 @@ This type covers **all** possible vector inputs (disallowing `NULL`) of `R` type
 
 
 
+## TL;DR
+Here is a set of functions with different parameter types and allowed arguments.
+
+1. Default (aka comfortable on both ends)
+```Rust
+#[extendr]
+fn fn_1(x : &[i32])
+```
+| `R` type               | Allocation  | Coercion | Error            | Validation         |
+| ---------------------- | ----------- | -------- | ---------------- | ------------------ |
+| `integer()`            | No          | No       |  If `NA` found   | Runtime            |
+| `altrep_integer()`     | Yes         | No       |  If `NA` found   | Runtime            |
+| `real()` / `complex()` | Yes         | Yes      |  If `NA` found   | Runtime            |
+| `logical()`            | Yes         | Yes      |  If `NA` found   | Runtime            |
+
+2. Close to metal (aka performance)
+```Rust
+#[extendr(validation = Relaxed, altrep_handling = IteratorOnly, coercion = NoCoercion)]
+fn fn_2(x : Either<&[i32], AltRepInt>)
+```
+| `R` type               | Allocation  | Coercion | Error            | Validation                |
+| ---------------------- | ----------- | -------- | ---------------- | ------------------------- |
+| `integer()`            | No          | No       |  No              | None (`NA` is `i32::MIN`) |
+| `altrep_integer()`     | No          | No       |  No              | None                      |
+
+3. Reasonable 
+```Rust
+#[extendr(validation = Strict, altrep_handling = UnfoldToVec, coercion = SafeCoercion)]
+fn fn_3(x : &[Rint])
+```
+| `R` type               | Allocation  | Coercion | Error               | Validation         |
+| ---------------------- | ----------- | -------- | ------------------- | ------------------ |
+| `integer()`            | No          | No       |  No                 | User               |
+| `altrep_integer()`     | Yes         | No       |  No                 | User               |
+| `real()` / `complex()` | Yes         | Yes      |  If `x != floor(x)` | Runtime & User     |
+| `logical()`            | Yes         | Yes      |  No                 | User               |
