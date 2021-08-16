@@ -156,6 +156,10 @@ fn test_try_from_robj() {
         assert_eq!(<Vec::<Bool>>::try_from(Robj::from(TRUE)), Ok(vec![TRUE]));
         assert_eq!(<Vec::<u8>>::try_from(Robj::from(0_u8)), Ok(vec![0_u8]));
 
+        // TODO: once related todos resolved in try_from_robj.rs, add tests for
+        // Real to Int successful case (e.g. 1.0 to 1) and failing case
+        // Int to Real
+        // NA handling
         let v: Result<Real> = r!(NA_REAL).try_into();
         let mut v: Vec<_> = v.unwrap().collect();
         assert!(v.pop().unwrap().is_nan());

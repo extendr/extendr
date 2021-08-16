@@ -281,6 +281,8 @@ impl_option!(Vec<String>);
 
 impl TryFrom<Robj> for Real {
     type Error = Error;
+    // TODO: check if robj is another type (e.g. Int) that can be converted
+    // into Real, and do the conversion
 
     /// Convert a REALSXP object into an iterator of f64 (double precision floating point).
     fn try_from(robj: Robj) -> Result<Self> {
@@ -291,7 +293,7 @@ impl TryFrom<Robj> for Real {
 impl TryFrom<Robj> for Int {
     type Error = Error;
     // TODO: check if robj is another type (e.g. Real) that can be converted
-    // into integer, and do the conversion
+    // into Int, and do the conversion
 
     /// Convert an INTSXP object into an iterator of i32 (integer).
     fn try_from(robj: Robj) -> Result<Self> {
