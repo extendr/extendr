@@ -286,7 +286,7 @@ impl TryFrom<Robj> for Real {
 
     /// Convert a REALSXP object into an iterator of f64 (double precision floating point).
     fn try_from(robj: Robj) -> Result<Self> {
-        robj.as_real_iter().ok_or_else(|| Error::ExpectedReal(robj))
+        robj.as_real_iter().ok_or(Error::ExpectedReal(robj))
     }
 }
 
@@ -297,8 +297,7 @@ impl TryFrom<Robj> for Int {
 
     /// Convert an INTSXP object into an iterator of i32 (integer).
     fn try_from(robj: Robj) -> Result<Self> {
-        robj.as_integer_iter()
-            .ok_or_else(|| Error::ExpectedInteger(robj))
+        robj.as_integer_iter().ok_or(Error::ExpectedInteger(robj))
     }
 }
 
@@ -307,8 +306,7 @@ impl TryFrom<Robj> for Logical {
 
     /// Convert a LGLSXP object into an iterator of Bool (tri-state booleans).
     fn try_from(robj: Robj) -> Result<Self> {
-        robj.as_logical_iter()
-            .ok_or_else(|| Error::ExpectedLogical(robj))
+        robj.as_logical_iter().ok_or(Error::ExpectedLogical(robj))
     }
 }
 
