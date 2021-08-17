@@ -378,8 +378,6 @@
 <span id="376">376</span>
 <span id="377">377</span>
 <span id="378">378</span>
-<span id="379">379</span>
-<span id="380">380</span>
 </pre><pre class="rust">
 <span class="doccomment">//! Conversions to Robj</span>
 
@@ -669,7 +667,7 @@
 
     <span class="doccomment">/// Convert a REALSXP object into an iterator of f64 (double precision floating point).</span>
     <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">robj</span>: <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="ident">robj</span>.<span class="ident">as_real_iter</span>().<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Error::ExpectedReal</span>(<span class="ident">robj</span>))
+        <span class="ident">robj</span>.<span class="ident">as_real_iter</span>().<span class="ident">ok_or</span>(<span class="ident">Error::ExpectedReal</span>(<span class="ident">robj</span>))
     }
 }
 
@@ -680,8 +678,7 @@
 
     <span class="doccomment">/// Convert an INTSXP object into an iterator of i32 (integer).</span>
     <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">robj</span>: <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="ident">robj</span>.<span class="ident">as_integer_iter</span>()
-            .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Error::ExpectedInteger</span>(<span class="ident">robj</span>))
+        <span class="ident">robj</span>.<span class="ident">as_integer_iter</span>().<span class="ident">ok_or</span>(<span class="ident">Error::ExpectedInteger</span>(<span class="ident">robj</span>))
     }
 }
 
@@ -690,8 +687,7 @@
 
     <span class="doccomment">/// Convert a LGLSXP object into an iterator of Bool (tri-state booleans).</span>
     <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">robj</span>: <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="ident">robj</span>.<span class="ident">as_logical_iter</span>()
-            .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Error::ExpectedLogical</span>(<span class="ident">robj</span>))
+        <span class="ident">robj</span>.<span class="ident">as_logical_iter</span>().<span class="ident">ok_or</span>(<span class="ident">Error::ExpectedLogical</span>(<span class="ident">robj</span>))
     }
 }
 
