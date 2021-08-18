@@ -68,7 +68,7 @@ Each vector can contain special `NA` values. None of the primitive types have bu
 - `struct Rcmpl(f64, f64)`
 - `struct Rstr(usize)` (?)
 
-Each of these types is binary compatible with their underlying type. An array of, say `i32`, represented by a `*i32` pointer and length, can be reinterpreted as `*Rint` of the safe length. 
+Each of these types is binary compatible with their underlying type. An array of, say `i32`, represented by a `*i32` pointer and length, can be viewed as `*Rint` of the same length. 
 This can be the preferred solution when dealing with `R` plain vectors.
 
 [comment01](https://github.com/extendr/extendr/pull/261#issuecomment-901096354):
@@ -100,6 +100,7 @@ A separate public API for altreps is not needed, there are no real use cases for
 
 These opaque iterators wrap either plain data vectors (e.g., storing pointer & length) or altreps. 
 They should likely implement `std::iter::Iterator<Item = Rt>` to support `NA` validation, as well as `std::ops::Index<Output = Rt>`.
+
 Another suggested methods:
 - `len() -> usize` as both plain data and altrep know their size,
 - `is_altrep() -> bool` to avoid unnecessary random access in case of altrep
