@@ -83,6 +83,30 @@ pub type NamedListIter = std::iter::Zip<StrIter, ListIter>;
 /// ```
 pub type Int = SliceIter<i32>;
 
+impl TryFrom<Real> for Int {
+    type Error = Error;
+
+    fn try_from(it_real: Real) -> Result<Self> {
+        // collect_robj does not handle Result<Robj>, so collect to Vec first.
+        let mut v = Vec::with_capacity(it_real.len());
+
+        // mirrors relevant part of impl_try_from_scalar_integer
+        for r in it_real {
+            let i = r as i32;
+            if (i as f64 - r).abs() < f64::EPSILON {
+                v.push(i);
+            } else {
+                return Err(Error::ExpectedWholeNumber(r.into()));
+            }
+        }
+
+        let robj = v.into_robj();
+        let out = robj.as_integer_iter();
+
+        out.ok_or(Error::ExpectedInteger(robj))
+    }
+}
+
 /// Iterator over primitives in real objects.
 /// ```
 /// use extendr_api::prelude::*;
@@ -92,6 +116,26 @@ pub type Int = SliceIter<i32>;
 /// }
 /// ```
 pub type Real = SliceIter<f64>;
+
+impl From<Int> for Real {
+    /// Convert iterator of i32 (Int) to iterator of f64 (Real)
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let iter = r!([i32::MAX, 1]).as_integer_iter().unwrap();
+    ///     let r_iter: Real = iter.into();
+    ///
+    ///     assert_eq!(r_iter.collect::<Vec<_>>(), vec![2147483647.0, 1.0]);
+    /// }
+    /// ```
+    fn from(it_int: Int) -> Self {
+        // NOTE it_int.collect_robj().as_real_iter() actually fails here
+        let robj = it_int.map(|i| i as f64).collect_robj();
+
+        robj.as_real_iter()
+            .expect("Int to Real infallible since From<i32> for f64")
+    }
+}
 
 /// Iterator over primitives in logical objects.
 /// ```

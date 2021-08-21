@@ -156,17 +156,18 @@ fn test_try_from_robj() {
         assert_eq!(<Vec::<Bool>>::try_from(Robj::from(TRUE)), Ok(vec![TRUE]));
         assert_eq!(<Vec::<u8>>::try_from(Robj::from(0_u8)), Ok(vec![0_u8]));
 
-        // TODO: once related todos resolved in try_from_robj.rs, add tests for
-        // Real to Int successful case (e.g. 1.0 to 1) and failing case
-        // Int to Real
-        // NA handling
         let v: Result<Real> = r!(NA_REAL).try_into();
         let mut v: Vec<_> = v.unwrap().collect();
         assert!(v.pop().unwrap().is_nan());
         assert_eq!(<Real>::try_from(r!([1.0, 2.0])).unwrap().collect::<Vec<f64>>(), vec![1.0, 2.0]);
+        // see also the docs test for From<Int> for Real
+        assert_eq!(<Real>::try_from(r!([0, i32::MAX])).unwrap().collect::<Vec<f64>>(), vec![0.0, i32::MAX as f64]);
         assert!(<Real>::try_from(r!([true])).is_err());
 
         assert_eq!(<Int>::try_from(r!([1, 2])).unwrap().collect::<Vec<i32>>(), vec![1, 2]);
+        assert_eq!(<Int>::try_from(r!([1.0, 2.0])).unwrap().collect::<Vec<i32>>(), vec![1, 2]);
+        //assert_eq!(<Int>::try_from(r!([f64::MAX])).unwrap().collect::<Vec<i32>>(), vec![2147483647]);
+        assert!(<Int>::try_from(r!([1.5])).is_err());
         assert!(<Int>::try_from(r!([true])).is_err());
 
         assert_eq!(<Logical>::try_from(r!([true, false])).unwrap().collect::<Vec<Bool>>(), vec![TRUE, FALSE]);

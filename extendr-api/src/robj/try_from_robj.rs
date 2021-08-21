@@ -281,23 +281,34 @@ impl_option!(Vec<String>);
 
 impl TryFrom<Robj> for Real {
     type Error = Error;
-    // TODO: check if robj is another type (e.g. Int) that can be converted
-    // into Real, and do the conversion
-
     /// Convert a REALSXP object into an iterator of f64 (double precision floating point).
+    /// Also will convert Robj that can be converted to Int, an iterator of i32, using From<i32>
+    /// for f64.
     fn try_from(robj: Robj) -> Result<Self> {
-        robj.as_real_iter().ok_or(Error::ExpectedReal(robj))
+        if let Some(v) = robj.as_real_iter() {
+            Ok(v)
+        } else {
+            // TODO awkward error type here.
+            let it_int = robj.as_integer_iter().ok_or(Error::ExpectedInteger(robj))?;
+
+            Ok(Real::from(it_int))
+        }
     }
 }
 
 impl TryFrom<Robj> for Int {
     type Error = Error;
-    // TODO: check if robj is another type (e.g. Real) that can be converted
-    // into Int, and do the conversion
-
     /// Convert an INTSXP object into an iterator of i32 (integer).
+    /// Also will convert a  REALSXP object that can be converted to i32 without loss, e.g. 0.0.
     fn try_from(robj: Robj) -> Result<Self> {
-        robj.as_integer_iter().ok_or(Error::ExpectedInteger(robj))
+        if let Some(v) = robj.as_integer_iter() {
+            Ok(v)
+        } else {
+            // TODO awkward error type here.
+            let it_real = robj.as_real_iter().ok_or(Error::ExpectedReal(robj))?;
+
+            Int::try_from(it_real)
+        }
     }
 }
 
