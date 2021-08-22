@@ -4,20 +4,39 @@ This document outlines conversion and validation rules between `R` and `Rust` ty
 The aim is to maintain type safety on the `Rust` side without sacrificing usability on the `R` side.
 
 
-# Conversion and validation configuration
-[comment01](https://github.com/extendr/extendr/pull/261#discussion_r690303432)
+# Conversion and validation 
 
-Configurations described below cover all possible cases. However, some of the combinations may not be needed in a real-life application. Suggested approach is to implement type-based configuration, which depends on the argument types defined in the user code. Here are some (top of the head) examples:
+`extendr` takes into account the following problems when converting `R` object to `Rust` object:
 
-- `Vec<i32>` triggers `NA` validation, altrep unfolding, and type coercion if compatible (so `1.0` converts to `1L`). Heavy on overhead and memory allocation, good for prototypes and testing things out.
-- `&[Rint]` is a responsible approach, which for array-based vectors of type `integer()` results in no allocations and no validation (zero overhead in the wrapper). **Unclear if type coercion should be performed**
-- `Integer` is an obscure wrapper of either `&[Rint]` or some `AltRepInt`. Acts as iterator with indexing capabilities, items are of type `Rint`, providing correct `NA` handling. Preferred way to handle vectors, mimics that of `{cpp11}`. **Unclear if type coercion should be performed**
-- (**Undecided**) `Numeric` is a discriminated union of `Integer | Real`. Accepts all numeric inputs, but leaves it up to the user to decipher what exactly was received from `R`. No runtime validation, no extra allocation, altreps remain altreps. 
+- `NA` handling
+  - If `Rust` type is `NA`-aware, `NA`-validation falls onto the user code
+  - If `Rust` type is `NA`-oblivious (e.g., vector of basic type), `extendr` performs `NA` validation at runtime and `panic!`s if `NA` value is found (introduces overhead)
+- ALTREP handling
+  - If `extendr`-provided iterator is used, then ALTREP is exposed as an obscure type with iteration and indexing capabilities
+  - If `Rust` type has no notion of ALTREP, then `extendr` unfolds ALTREP vector into an array, allocating memory (introduces overhead)
+- Type conversion
+  - `logical()`, `raw()`, `character()` are treated as-is. If there is a `Rust` - `R` type mismatch, `extendr` wrapper `panic!`s
+  - `integer()` can be passed to functions that expect `double()` or `complex()`. `extendr` performs type cast, allocating memory for the new vector
+  - `double()` can be safely passed as `complex()` 
+  - `double()` can sometimes be passed as `integer()`, if its values are representable by `i32`
+  - `complex()` can sometimes be passed as `double()` or `integer()` (see reasoning above)
+  - Whenever a numeric type-mismatch happens, a guaranteed allocation occurs
+  - An obscure iterator that accepts one of `integer()`, `double()` (and maybe `complex()`) handles both vectors and ALTREPs, does not allocate and offloads all validation and type checks onto user
+
+
+Here is a list of examples:
+- `Vec<i32>` triggers `NA` validation, altrep unfolding, and type coercion if compatible (so `1.0` or `1.0 + 0i` convert to `1L`). Heavy on overhead and memory allocation, good for prototypes and testing things out.
+
+- `&[Rint]` is a responsible approach, which for array-based vectors of type `integer()` results in no allocations and no validation (zero overhead in the wrapper). `double()` or `complex()` are coerced, allocating memory
+  
+- `Integer` is an obscure wrapper of either `&[Rint]` or some `AltRepInt`. Acts as iterator with indexing capabilities, items are of type `Rint`, providing correct `NA` handling. Preferred way to handle vectors, mimics that of `{cpp11}`. `complex()` and `double()` are coerced, allocating memory.
+
+- `Numeric` is a discriminated union of `Integer | Real (| Complex)`. Accepts all numeric inputs, but leaves it up to the user to decipher what exactly was received from `R`. No runtime validation, no extra allocation, ALTREPS remain unfolded. 
 
 
 ----------------------------------------------------------------------------
 
-# Vector Types
+# Underlying vector types
 ## Terminology
 A 'vector' is a primitive type used in `R`. Vectors are designed to behave as a strongly typed 1D array of objects. There are two different implementations of vector types: one is basically a pointer to a contiguous block of memory with known length (and some additional metadata), another is an iterator deigned to store rules for generating sequences of elements (instead of storing potentially very large vectors in memory). Array-based vectors shall be referred to as 'plain old data' (POD), iterators -- as ALTREP.
 
