@@ -161,3 +161,6 @@ fn fn_3(x : &[Rint])
 
 
 </details>
+
+# Return type conversions
+The procedure is reversed. The preferred way it so return a `Vec<Rt>`, which is correctly encodes `NA`s. If `Vec<T>` is returned, then validation is performed by the wrapper, and `panic!` occurs if an invalid value is found (i.e., if `Vec<i32>` contains `i32::MIN`, which is an invalid value in `R`).
