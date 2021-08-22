@@ -31,7 +31,8 @@ Here is a list of examples:
   
 - `Integer` is an obscure wrapper of either `&[Rint]` or some `AltRepInt`. Acts as iterator with indexing capabilities, items are of type `Rint`, providing correct `NA` handling. Preferred way to handle vectors, mimics that of `{cpp11}`. `complex()` and `double()` are coerced, allocating memory.
 
-- `Numeric` is a discriminated union of `Integer | Real (| Complex)`. Accepts all numeric inputs, but leaves it up to the user to decipher what exactly was received from `R`. No runtime validation, no extra allocation, ALTREPS remain unfolded. 
+- `Numeric` is a discriminated union of `Integer | Real`. Accepts all numeric inputs, but leaves it up to the user to decipher what exactly was received from `R`. No runtime validation, no extra allocation, ALTREPS remain unfolded. 
+- `ComplexNumeric` represents either `Complex` or `Numeric`
 
 
 ----------------------------------------------------------------------------
@@ -84,7 +85,7 @@ For `Rint` the following is allowed:
   
 For `Rfloat`
 - `Into<Rcomplex>`, (`Real(f64)` are within `(Real(f64), Imaginary(f64))`)
-- `TryInto<Rint>`; this conversion is not lossy and succeeds only when `f64` can be precisely represented as `i32`, e.g. `1.0f64` convert to `1i32`
+- `TryInto<Rint>`; this conversion succeeds only when `f64` can be precisely represented as `i32` (lossless), e.g. `1.0f64` convert to `1i32`
 
 For `Rcomplex` (see reasoning above)
 - `TryInto<Rfloat>`
@@ -94,7 +95,7 @@ Other primitive types are treated as-is and any type conversion should be perfor
 
 ### ALTREP
 
-A separate public API for altreps is not needed, there are no real use cases for a method to only accept altreps. Instead, expose the following iterator types:
+A separate public API for ALTREPs is not needed, there are no real use cases for a method to only accept ALTREPs. Instead, expose the following iterator types:
 - `Integer`
 - `Logical`
 - `Double`
@@ -102,15 +103,20 @@ A separate public API for altreps is not needed, there are no real use cases for
 - `Complex`
 - `Character`
 
-These opaque iterators wrap either plain data vectors (e.g., storing pointer & length) or altreps. 
-They should likely implement `std::iter::Iterator<Item = Rt>` to support `NA` validation, as well as `std::ops::Index<Output = Rt>`.
+
+These opaque iterators wrap either plain data vectors (e.g., storing pointer & length) or ALTREPs. 
+They should implement `std::iter::Iterator<Item = Rt>` to support `NA` validation, as well as `std::ops::Index<Output = Rt>`.
 
 Another suggested methods:
-- `len() -> usize` as both plain data and altrep know their size,
-- `is_altrep() -> bool` to avoid unnecessary random access in case of altrep
+- `len() -> usize` as both plain data and ALTREP know their size,
+- `is_altrep() -> bool` to avoid unnecessary random access in case of ALTREP
 
 *Note*: It seems `Rust` has no standard trait for collections (that is, something that has a length and an indexer).
 
+
+The iterators are enriched with the following discriminated unions:
+- `Numeric = Integer | Double`
+- `ComplexNumeric = Integer | Double | Complex`
 
 <details>
 <summary> TL;DR </summary>
@@ -125,27 +131,33 @@ fn fn_1(x : &[i32])
 | ---------------------- | ----------- | -------- | ---------------- | ------------------ |
 | `integer()`            | No          | No       |  If `NA` found   | Runtime            |
 | `altrep_integer()`     | Yes         | No       |  If `NA` found   | Runtime            |
-| `real()` / `complex()` | Yes         | Yes      |  If `NA` found   | Runtime |
+| `real()` / `complex()` | Yes         | Yes      |  If `NA` found   | Runtime            |
 
 2. Close to metal (aka performance)
 ```Rust
-#[extendr(validation = Relaxed, altrep_handling = IteratorOnly, coercion = NoCoercion)]
-fn fn_2(x : Integer)
+#[extendr]
+fn fn_2(x : ComplexNumeric)
 ```
 | `R` type               | Allocation  | Coercion | Error            | Validation  |
 | ---------------------- | ----------- | -------- | ---------------- | ----------- |
-| `integer()`            | No          | No       |  No              | None        |
-| `altrep_integer()`     | No          | No       |  No              | None        |
+| `integer()`            | No          | No       |  No              | User        |
+| `altrep_integer()`     | No          | No       |  No              | User        |
+| `double()`             | No          | No       |  No              | User        |
+| `altrep_double()`      | No          | No       |  No              | User        |
+| `complex()`            | No          | No       |  No              | User        |
+| `altrep_complex()`     | No          | No       |  No              | User        |
 
 3. Reasonable 
 ```Rust
-#[extendr(validation = Strict, altrep_handling = UnfoldToVec, coercion = SafeCoercion)]
+#[extendr]
 fn fn_3(x : &[Rint])
 ```
 | `R` type               | Allocation  | Coercion | Error               | Validation         |
 | ---------------------- | ----------- | -------- | ------------------- | ------------------ |
 | `integer()`            | No          | No       |  No                 | User               |
 | `altrep_integer()`     | Yes         | No       |  No                 | User               |
-| `real()` / `complex()` | Yes         | Yes      |  If `x != floor(x)` | Runtime & User     |
+| `(altrep_)real()`      | Yes         | Yes      |  If `x != floor(x)` | Runtime & User     |
+| `(altrep_)complex()`   | Yes         | Yes      |  If `x != floor(x)` | Runtime & User     |
+
 
 </details>
