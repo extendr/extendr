@@ -12,35 +12,8 @@ Configurations described below cover all possible cases. However, some of the co
 - `Vec<i32>` triggers `NA` validation, altrep unfolding, and type coercion if compatible (so `1.0` converts to `1L`). Heavy on overhead and memory allocation, good for prototypes and testing things out.
 - `&[Rint]` is a responsible approach, which for array-based vectors of type `integer()` results in no allocations and no validation (zero overhead in the wrapper). **Unclear if type coercion should be performed**
 - `Integer` is an obscure wrapper of either `&[Rint]` or some `AltRepInt`. Acts as iterator with indexing capabilities, items are of type `Rint`, providing correct `NA` handling. Preferred way to handle vectors, mimics that of `{cpp11}`. **Unclear if type coercion should be performed**
-- (**Undecided**) `Numeric` is a discriminated union of `Integer | Real | Complex`. Accepts all numeric inputs, but leaves it up to the user to decipher what exactly was received from `R`. No runtime validation, no extra allocation, altreps remain altreps. 
+- (**Undecided**) `Numeric` is a discriminated union of `Integer | Real`. Accepts all numeric inputs, but leaves it up to the user to decipher what exactly was received from `R`. No runtime validation, no extra allocation, altreps remain altreps. 
 
-
-The following configurations can be applied to each exported `Rust` function using the `#[extendr(...)]` syntax:
-- Validation (**Suggested implementation -- type-based**):
-  - `Strict` -- no compromises, disallows usage of built-in types like `i32`, which mistreat `NA` values;
-  - `Relaxed` -- allows usage of built-in types, user is responsible for correctly handling input data. Maximizes performance as there are no extra checks or conversions;
-  - `Runtime (default)` -- allows usage of built-in types, but performs runtime validation of the input, panicking if `NA` is detected. Introduces some overhead;
-- ALTREP handling (**Suggested implementation -- type-based**)
-  - `UnfoldToVec (default)` -- allocates memory for ALTREP vectors if parameter type is a `&[T]` or `Vec<T>`. Can potentially waste memory;
-  - `IteratorOnly` -- panics if parameter type is not an iterator;
-- Type coercion (**Undecided**)
-  - `NoCoercion` -- exact `R` <--> `Rust` type matches. If input is `c(1, 2, 3)` and parameter type is `&[Rint]`, panics because of the type mismatch;
-  - `SafeCoercion (default)` -- inspired by [`{vctrs}`](https://vctrs.r-lib.org/reference/theory-faq-coercion.html), allows coercion `logical` --> `integer` --> `double` (and possibly --> `complex`) with no restrictions. The reverse coercion happens only if the coerced value falls within the value range of the target type. `1 + 0i` can be coerced to `1.0`, then to `1L`, and finally to `TRUE`. Otherwise, panics. Introduces overhead;
-  - (optionally) `RCoercion` -- relies on `R` coercion rules (`as._` methods). Produces unpredictable results (e.g., `as.logical("cat") == NA`).
-
-<details>
-<summary>Allowed types as function of configuration</summary>
-
-| Validation |   ALTREP       | Allowed `Rust` types |
-| ---------- | ---------      | ------------ |
-| `Strict`   | `UnfoldToVec`  | `Vec<Rint>`; `&[Rint]`; `Integer` |
-| `Strict`   | `IteratorOnly` | `Integer` |
-| `Relaxed`  | `UnfoldToVec`  | `Vec<Rint>`; `&[Rint]`; `Integer`; `Vec<i32>`; `&[i32]` |
-| `Relaxed`  | `IteratorOnly` | `Integer` ; `Integer`|
-| `Runtime`  | `UnfoldToVec`  | Any |
-| `Runtime`  | `IteratorOnly` | `Integer` |
-
-</details>
 
 ----------------------------------------------------------------------------
 
@@ -65,7 +38,7 @@ Each vector can contain special `NA` values. None of the primitive types have bu
 - `struct Rbool(i32)`
 - `struct Rfloat(f64)`
 - `struct Rbyte(u8)`
-- `struct Rcmpl(f64, f64)`
+- `struct Rcomplex(f64, f64)`
 - `struct Rstr(usize)` (?)
 
 Each of these types is binary compatible with their underlying type. An array of, say `i32`, represented by a `*i32` pointer and length, can be viewed as `*Rint` of the same length. 
@@ -82,7 +55,21 @@ Suggested type conversion traits for `Rt` are:
 
 These conversions can be grouped in a trait `CanBeNA<T>` or `Rtype<T>` (**name can be discussed**), which exposes conversions `Rt` <--> `T` mentioned above, as well as some `is_na() -> bool` method (and perhaps some other useful ones).
 
+A limited number of type conversions are also allowed. These are required to support common use scenarios on `R` side.
 
+For `Rint` the following should be implemented
+- `Into<Rfloat>`, this is always correct (all `i32` are within `f64` with no loss of accuracy)
+- `Into<Rcomplex>`, for the same reason
+  
+For `Rfloat`
+- `Into<Rcomplex>`, (`Real(f64)` are within `(Real(f64), Imaginary(f64))`)
+- `TryInto<Rint>`; this conversion is not lossy and succeeds only when `f64` can be precisely represented as `i32`, e.g. `1.0f64` convert to `1i32`
+
+For `Rcomplex` (see reasoning above)
+- `TryInto<Rfloat>`
+- `TryInto<Rint>`
+
+Other primitive types are treated as-is and any type conversion should be performed by extracting the underlying value (or `NA`) and casting/converting it to another type manually.
 
 ### ALTREP
 **TODO: make a detailed description of ALTREP**
@@ -106,7 +93,6 @@ Another suggested methods:
 - `is_altrep() -> bool` to avoid unnecessary random access in case of altrep
 
 *Note*: It seems `Rust` has no standard trait for collections (that is, something that has a length and an indexer).
-
 
 
 <details>
