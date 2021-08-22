@@ -57,26 +57,28 @@ Each vector can contain special `NA` values. None of the primitive types have bu
 - `struct Rbool(i32)`
 - `struct Rfloat(f64)`
 - `struct Rbyte(u8)`
-- `struct Rcomplex(f64, f64)`
+- `struct Rcomplex((f64, f64))`
 - `struct Rstr(usize)` (?)
+
+Note: `complex` is an `(f64, f64)` struct
 
 Each of these types is binary compatible with their underlying type. An array of, say `i32`, represented by a `*i32` pointer and length, can be viewed as `*Rint` of the same length. 
 This can be the preferred solution when dealing with `R` plain vectors.
 
-[comment01](https://github.com/extendr/extendr/pull/261#issuecomment-901096354):
-Prefer `Rt` over `T` types. Parameters that use `T`-derived types will require runtime `NA` validation, introducing implicit overhead.
+For each supported primitive type `T` `Rt` would be its minimal wrapper. E.g., for `T = i32`, `Rt = Rint`.
+`extendr` prefers `Rt` over `T` types. Parameters that use `T`-derived types will require runtime `NA` validation, introducing implicit overhead.
 
-Suggested type conversion traits for `Rt` are:
+Type conversion traits for `Rt` are:
 - `Into<Option<T>>` (this is always a valid conversion)
 - `TryInto<T>`, errors on `NA`
 - `TryFrom<T>`, errors if provided argument equals to the value reserved for `NA`
 - `TryFrom<Option<T>>` for the same reason, as `Some(i32::MIN)` is invalid `Rint` value (instead, `None` should be used)
 
-These conversions can be grouped in a trait `CanBeNA<T>` or `Rtype<T>` (**name can be discussed**), which exposes conversions `Rt` <--> `T` mentioned above, as well as some `is_na() -> bool` method (and perhaps some other useful ones).
+These conversions can be grouped in a trait `Rtype<T>`, which exposes conversions `Rt` <--> `T` mentioned above, as well as some `is_na() -> bool` method (and perhaps some other useful ones).
 
-A limited number of type conversions are also allowed. These are required to support common use scenarios on `R` side.
+A limited number of binary-incompatible type conversions is also allowed. These rules are required to support common use scenarios on `R` side.
 
-For `Rint` the following should be implemented
+For `Rint` the following is allowed:
 - `Into<Rfloat>`, this is always correct (all `i32` are within `f64` with no loss of accuracy)
 - `Into<Rcomplex>`, for the same reason
   
@@ -91,10 +93,6 @@ For `Rcomplex` (see reasoning above)
 Other primitive types are treated as-is and any type conversion should be performed by extracting the underlying value (or `NA`) and casting/converting it to another type manually.
 
 ### ALTREP
-**TODO: make a detailed description of ALTREP**
-
-[comment01](https://github.com/extendr/extendr/pull/261#discussion_r690781040); 
-[comment02](https://github.com/extendr/extendr/pull/261#discussion_r690786944)
 
 A separate public API for altreps is not needed, there are no real use cases for a method to only accept altreps. Instead, expose the following iterator types:
 - `Integer`
