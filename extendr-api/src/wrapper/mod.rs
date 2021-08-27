@@ -17,6 +17,7 @@ pub mod pairlist;
 pub mod primitive;
 pub mod promise;
 pub mod raw;
+pub mod s4;
 pub mod symbol;
 
 pub use altrep::{
@@ -35,6 +36,7 @@ pub use pairlist::{Pairlist, PairlistIter};
 pub use primitive::Primitive;
 pub use promise::Promise;
 pub use raw::Raw;
+pub use s4::S4;
 pub use symbol::Symbol;
 
 pub(crate) fn make_symbol(name: &str) -> SEXP {
@@ -157,6 +159,8 @@ make_conversions!(
 make_conversions!(Promise, ExpectedPromise, is_promise, "Not a Promise object");
 
 make_conversions!(Altrep, ExpectedAltrep, is_altrep, "Not an Altrep type");
+
+make_conversions!(S4, ExpectedS4, is_s4, "Not a S4 type");
 
 impl Robj {
     /// Convert a symbol object to a Symbol wrapper.

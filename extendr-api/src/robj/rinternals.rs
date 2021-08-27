@@ -50,9 +50,14 @@ impl Robj {
         unsafe { Rf_isString(self.get()) != 0 }
     }
 
-    /// Return true if this is an object.
+    /// Return true if this is an object (ie. has a class attribute).
     pub fn is_object(&self) -> bool {
         unsafe { Rf_isObject(self.get()) != 0 }
+    }
+
+    /// Return true if this is a S4 object.
+    pub fn is_s4(&self) -> bool {
+        unsafe { Rf_isS4(self.get()) != 0 }
     }
 
     /// Get the source ref.
