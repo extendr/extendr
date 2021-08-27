@@ -14,7 +14,7 @@ The aim is to maintain type safety on the `Rust` side without sacrificing usabil
 - ALTREP handling
   - If `extendr`-provided iterator is used, then ALTREP is exposed as an obscure type with iteration and indexing capabilities
   - If `Rust` type has no notion of ALTREP, then `extendr` unfolds ALTREP vector into an array, allocating memory (introduces overhead)
-- Type conversion
+- Type conversion (applicable to `Vec<T>`)
   - `logical()`, `raw()`, `character()` are treated as-is. If there is a `Rust` - `R` type mismatch, `extendr` wrapper `panic!`s
   - `integer()` can be passed to functions that expect `double()` or `complex()`. `extendr` performs type cast, allocating memory for the new vector
   - `double()` can be safely passed as `complex()` 
@@ -27,9 +27,7 @@ The aim is to maintain type safety on the `Rust` side without sacrificing usabil
 Here is a list of examples:
 - `Vec<i32>` triggers `NA` validation, altrep unfolding, and type coercion if compatible (so `1.0` or `1.0 + 0i` convert to `1L`). Heavy on overhead and memory allocation, good for prototypes and testing things out.
 
-- `&[Rint]` is a responsible approach, which for array-based vectors of type `integer()` results in no allocations and no validation (zero overhead in the wrapper). `double()` or `complex()` are coerced, allocating memory
-  
-- `Integer` is an obscure wrapper of either `&[Rint]` or some `AltRepInt`. Acts as iterator with indexing capabilities, items are of type `Rint`, providing correct `NA` handling. Preferred way to handle vectors, mimics that of `{cpp11}`. `complex()` and `double()` are coerced, allocating memory.
+- `Integer` is an obscure wrapper of either `&[Rint]` or some `AltRepInt`. Acts as iterator with indexing capabilities, items are of type `Rint`, providing correct `NA` handling. Preferred way to handle vectors, mimics that of `{cpp11}`. 
 
 - `Numeric` is a discriminated union of `Integer | Real`. Accepts all numeric inputs, but leaves it up to the user to decipher what exactly was received from `R`. No runtime validation, no extra allocation, ALTREPS remain unfolded. 
 - `ComplexNumeric` represents either `Complex` or `Numeric`
