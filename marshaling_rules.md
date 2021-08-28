@@ -27,10 +27,10 @@ The aim is to maintain type safety on the `Rust` side without sacrificing usabil
 Here is a list of examples:
 - `Vec<i32>` triggers `NA` validation, altrep unfolding, and type coercion if compatible (so `1.0` or `1.0 + 0i` convert to `1L`). Heavy on overhead and memory allocation, good for prototypes and testing things out.
 
-- `Integer` is an obscure wrapper of either `&[Rint]` or some `AltRepInt`. Acts as iterator with indexing capabilities, items are of type `Rint`, providing correct `NA` handling. Preferred way to handle vectors, mimics that of `{cpp11}`. 
+- `Integers` is an obscure wrapper of either `&[Rint]` or some `AltRepInt`. Acts as iterator with indexing capabilities, items are of type `Rint`, providing correct `NA` handling. Preferred way to handle vectors, mimics that of `{cpp11}`. 
 
-- `Numeric` is a discriminated union of `Integer | Real`. Accepts all numeric inputs, but leaves it up to the user to decipher what exactly was received from `R`. No runtime validation, no extra allocation, ALTREPS remain unfolded. 
-- `ComplexNumeric` represents either `Complex` or `Numeric`
+- `Numerics` is a discriminated union of `Integers | Doubles`. Accepts all numeric inputs, but leaves it up to the user to decipher what exactly was received from `R`. No runtime validation, no extra allocation, ALTREPS remain unfolded. 
+- `ComplexNumerics` represents either `Complexes` or `Numerics`
 
 
 ----------------------------------------------------------------------------
@@ -94,12 +94,12 @@ Other primitive types are treated as-is and any type conversion should be perfor
 ### ALTREP
 
 A separate public API for ALTREPs is not needed, there are no real use cases for a method to only accept ALTREPs. Instead, expose the following iterator types:
-- `Integer`
-- `Logical`
-- `Double`
-- `Raw`
-- `Complex`
-- `Character`
+- `Integers`
+- `Logicals`
+- `Doubles`
+- `Raws`
+- `Complexes`
+- `Strings`
 
 
 These opaque iterators wrap either plain data vectors (e.g., storing pointer & length) or ALTREPs. 
@@ -113,8 +113,8 @@ Another suggested methods:
 
 
 The iterators are enriched with the following discriminated unions:
-- `Numeric = Integer | Double`
-- `ComplexNumeric = Integer | Double | Complex`
+- `Numerics = Integers | Doubles`
+- `ComplexNumerics = Integers | Doubles | Complexes`
 
 <details>
 <summary> TL;DR </summary>
@@ -134,7 +134,7 @@ fn fn_1(x : &[i32])
 2. Close to metal (aka performance)
 ```Rust
 #[extendr]
-fn fn_2(x : ComplexNumeric)
+fn fn_2(x : ComplexNumerics)
 ```
 | `R` type               | Allocation  | Coercion | Error            | Validation  |
 | ---------------------- | ----------- | -------- | ---------------- | ----------- |
