@@ -123,11 +123,11 @@ Here is a set of functions with different parameter types and allowed arguments.
 1. Default (aka comfortable on both ends)
 ```Rust
 #[extendr]
-fn fn_1(x : &[i32])
+fn fn_1(x : Vec<i32>)
 ```
 | `R` type               | Allocation  | Coercion | Error            | Validation         |
 | ---------------------- | ----------- | -------- | ---------------- | ------------------ |
-| `integer()`            | No          | No       |  If `NA` found   | Runtime            |
+| `integer()`            | Yes         | No       |  If `NA` found   | Runtime            |
 | `altrep_integer()`     | Yes         | No       |  If `NA` found   | Runtime            |
 | `real()` / `complex()` | Yes         | Yes      |  If `NA` found   | Runtime            |
 
@@ -145,17 +145,7 @@ fn fn_2(x : ComplexNumerics)
 | `complex()`            | No          | No       |  No              | User        |
 | `altrep_complex()`     | No          | No       |  No              | User        |
 
-3. Reasonable 
-```Rust
-#[extendr]
-fn fn_3(x : &[Rint])
-```
-| `R` type               | Allocation  | Coercion | Error               | Validation         |
-| ---------------------- | ----------- | -------- | ------------------- | ------------------ |
-| `integer()`            | No          | No       |  No                 | User               |
-| `altrep_integer()`     | Yes         | No       |  No                 | User               |
-| `(altrep_)real()`      | Yes         | Yes      |  If `x != floor(x)` | Runtime & User     |
-| `(altrep_)complex()`   | Yes         | Yes      |  If `x != floor(x)` | Runtime & User     |
+
 
 
 </details>
