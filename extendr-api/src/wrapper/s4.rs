@@ -2,26 +2,44 @@
 
 use super::*;
 
+
 #[derive(Debug, PartialEq, Clone)]
 pub struct S4 {
     pub(crate) robj: Robj,
 }
 
 impl S4 {
-    /// Make a new S4 type.
+    /// Create a S4 class.
     ///
     /// Example:
     /// ```
     /// use extendr_api::prelude::*;
     ///
     /// test! {
-    ///     let robj = S4::new();
-    ///     assert_eq!(robj.rtype(), RType::S4);
+    ///     let class = S4::set_class("fred", pairlist!(x="numeric"), r!(()))?;
     /// }
     /// ```
-    pub fn new() -> Self {
-        let robj = single_threaded(|| unsafe { new_owned(Rf_allocS4Object()) });
-        Self { robj }
+    pub fn set_class(name: &str, representation: Pairlist, contains: Robj) -> Result<S4> {
+        use crate as extendr_api;
+        let res = R!(r#"setClass({{name}}, {{representation}}, {{contains}})"#)?;
+        res.try_into()
+    }
+
+    /// Create a S4 object.
+    ///
+    /// Example:
+    /// ```
+    /// use extendr_api::prelude::*;
+    ///
+    /// test! {
+    ///     S4::set_class("fred", pairlist!(x="numeric"), r!(()))?;
+    ///     let mut robj : S4 = R!(r#"new("fred")"#)?.try_into()?;
+    /// }
+    /// ```
+    pub fn new(name: &str) -> Result<S4> {
+        use crate as extendr_api;
+        let res = R!(r#"new({{name}})"#)?;
+        res.try_into()
     }
 
     /// Get a named slot from a S4 object.
@@ -31,11 +49,9 @@ impl S4 {
     /// use extendr_api::prelude::*;
     ///
     /// test! {
-    ///     let mut robj = S4::new();
-    ///     let xyz = sym!(xyz);
-    ///     assert_eq!(robj.get_slot(xyz.clone()), None);
-    ///     robj.set_slot(xyz.clone(), 1234);
-    ///     assert_eq!(robj.get_slot(xyz), Some(r!(1234)));
+    ///     S4::set_class("fred", pairlist!(xyz="numeric"), r!(()))?;
+    ///     let robj : S4 = R!(r#"new("fred")"#)?.try_into()?;
+    ///     assert_eq!(robj.get_slot("xyz").unwrap().len(), 0);
     /// }
     /// ```
     pub fn get_slot<'a, N>(&self, name: N) -> Option<Robj>
@@ -60,11 +76,12 @@ impl S4 {
     /// use extendr_api::prelude::*;
     ///
     /// test! {
-    ///     let mut robj = S4::new();
+    ///     S4::set_class("fred", pairlist!(xyz="numeric"), r!(()))?;
+    ///     let mut robj : S4 = R!(r#"new("fred")"#)?.try_into()?;
     ///     let xyz = sym!(xyz);
-    ///     assert_eq!(robj.get_slot(xyz.clone()), None);
-    ///     robj.set_slot(xyz.clone(), 1234);
-    ///     assert_eq!(robj.get_slot(xyz), Some(r!(1234)));
+    ///     assert_eq!(robj.get_slot(xyz.clone()).unwrap().len(), 0);
+    ///     robj.set_slot(xyz.clone(), r!([0.0, 1.0]));
+    ///     assert_eq!(robj.get_slot(xyz), Some(r!([0.0, 1.0])));
     /// }
     /// ```
     pub fn set_slot<N, V>(&mut self, name: N, value: V) -> Result<S4>
@@ -89,11 +106,9 @@ impl S4 {
     /// use extendr_api::prelude::*;
     ///
     /// test! {
-    ///     let mut robj = S4::new();
-    ///     let xyz = sym!(xyz);
-    ///     assert_eq!(robj.has_slot(xyz.clone()), false);
-    ///     robj.set_slot(xyz.clone(), 1234);
-    ///     assert_eq!(robj.has_slot(xyz.clone()), true);
+    ///     S4::set_class("fred", pairlist!(xyz="numeric"), r!(()))?;
+    ///     let robj : S4 = R!(r#"new("fred")"#)?.try_into()?;
+    ///     assert_eq!(robj.has_slot("xyz"), true);
     /// }
     /// ```
     pub fn has_slot<'a, N>(&self, name: N) -> bool
@@ -106,19 +121,10 @@ impl S4 {
     }
 }
 
-impl Default for wrapper::s4::S4 {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
 // Think about these in the future.
 //
 // extern "C" {
 //     pub fn R_S4_extends(klass: SEXP, useTable: SEXP) -> SEXP;
-// }
-// extern "C" {
-//     pub fn R_do_MAKE_CLASS(what: *const ::std::os::raw::c_char) -> SEXP;
 // }
 // extern "C" {
 //     pub fn R_getClassDef(what: *const ::std::os::raw::c_char) -> SEXP;
@@ -134,9 +140,6 @@ impl Default for wrapper::s4::S4 {
 // }
 // extern "C" {
 //     pub fn R_extends(class1: SEXP, class2: SEXP, env: SEXP) -> Rboolean;
-// }
-// extern "C" {
-//     pub fn R_do_new_object(class_def: SEXP) -> SEXP;
 // }
 // extern "C" {
 //     pub fn R_check_class_and_super(
