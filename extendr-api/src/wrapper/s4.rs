@@ -2,7 +2,6 @@
 
 use super::*;
 
-
 #[derive(Debug, PartialEq, Clone)]
 pub struct S4 {
     pub(crate) robj: Robj,
