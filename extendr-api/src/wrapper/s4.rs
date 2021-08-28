@@ -120,7 +120,10 @@ impl S4 {
     }
 }
 
-// Think about these in the future.
+// TODO: Think about these functions in the future.
+//
+// Currently, S4 support is not a top priority, but we hope that what we have
+// covered the basics for now.
 //
 // extern "C" {
 //     pub fn R_S4_extends(klass: SEXP, useTable: SEXP) -> SEXP;
