@@ -5,7 +5,7 @@ use crate::*;
 use libR_sys::*;
 
 pub mod altrep;
-pub mod character;
+pub mod char;
 pub mod environment;
 pub mod expr;
 pub mod function;
@@ -19,11 +19,11 @@ pub mod promise;
 pub mod raw;
 pub mod symbol;
 
+pub use self::char::Char;
 pub use altrep::{
     AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,
     AltrepImpl,
 };
-pub use character::Character;
 pub use environment::{EnvIter, Environment};
 pub use expr::Expression;
 pub use function::Function;
@@ -115,12 +115,7 @@ make_conversions!(
 
 make_conversions!(Raw, ExpectedRaw, is_raw, "Not a raw object");
 
-make_conversions!(
-    Character,
-    ExpectedCharacter,
-    is_character,
-    "Not a character object"
-);
+make_conversions!(Char, ExpectedChar, is_char, "Not a character object");
 
 make_conversions!(
     Environment,
@@ -171,19 +166,19 @@ impl Robj {
         Symbol::try_from(self.clone()).ok()
     }
 
-    /// Convert a character object to a Character wrapper.
+    /// Convert a CHARSXP object to a Char wrapper.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let fred = r!(Character::from_string("fred"));
-    ///     assert_eq!(fred.as_character(), Some(Character::from_string("fred")));
+    ///     let fred = r!(Char::from_string("fred"));
+    ///     assert_eq!(fred.as_char(), Some(Char::from_string("fred")));
     /// }
     /// ```
-    pub fn as_character(&self) -> Option<Character> {
-        Character::try_from(self.clone()).ok()
+    pub fn as_char(&self) -> Option<Char> {
+        Char::try_from(self.clone()).ok()
     }
 
-    /// Convert a raw object to a Character wrapper.
+    /// Convert a raw object to a Char wrapper.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {

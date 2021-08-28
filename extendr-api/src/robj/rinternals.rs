@@ -66,7 +66,7 @@ impl Robj {
     }
 
     /// Convert to a string vector.
-    pub fn as_char(&self) -> Robj {
+    pub fn as_character_vector(&self) -> Robj {
         unsafe { new_owned(Rf_asChar(self.get())) }
     }
 
@@ -381,8 +381,8 @@ impl Robj {
     }
 
     /// Return true if this is CHARSXP.
-    pub fn is_character(&self) -> bool {
-        self.rtype() == RType::Character
+    pub fn is_char(&self) -> bool {
+        self.rtype() == RType::Char
     }
 
     /// Check an external pointer tag.

@@ -406,7 +406,7 @@ pub enum RType {
     Language,    // LANGSXP
     Special,     // SPECIALSXP
     Builtin,     // BUILTINSXP
-    Character,   // CHARSXP
+    Char,        // CHARSXP
     Logical,     // LGLSXP
     Integer,     // INTSXP
     Real,        // REALSXP
@@ -438,7 +438,7 @@ pub fn rtype_to_sxp(rtype: RType) -> i32 {
         Language => LANGSXP,
         Special => SPECIALSXP,
         Builtin => BUILTINSXP,
-        Character => CHARSXP,
+        Char => CHARSXP,
         Logical => LGLSXP,
         Integer => INTSXP,
         Real => REALSXP,
@@ -470,7 +470,7 @@ pub fn sxp_to_rtype(sxptype: i32) -> RType {
         LANGSXP => Language,
         SPECIALSXP => Special,
         BUILTINSXP => Builtin,
-        CHARSXP => Character,
+        CHARSXP => Char,
         LGLSXP => Logical,
         INTSXP => Integer,
         REALSXP => Real,
