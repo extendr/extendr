@@ -27,7 +27,7 @@ The aim is to maintain type safety on the `Rust` side without sacrificing usabil
 Here is a list of examples:
 - `Vec<i32>` triggers `NA` validation, altrep unfolding, and type coercion if compatible (so `1.0` or `1.0 + 0i` convert to `1L`). Heavy on overhead and memory allocation, good for prototypes and testing things out.
 
-- `Integers` is an obscure wrapper of either `&[Rint]` or some `AltRepInt`. Acts as iterator with indexing capabilities, items are of type `Rint`, providing correct `NA` handling. Preferred way to handle vectors, mimics that of `{cpp11}`. 
+- `Integers` is an obscure wrapper of either `&[Rint]` or some `AltIntegers`. Can be used to obtain an iterator, items of which are of type `Rint`, providing correct `NA` handling. Preferred way to handle vectors, similar to that of `{cpp11}`. 
 
 - `Numerics` is a discriminated union of `Integers | Doubles`. Accepts all numeric inputs, but leaves it up to the user to decipher what exactly was received from `R`. No runtime validation, no extra allocation, ALTREPS remain unfolded. 
 - `ComplexNumerics` represents either `Complexes` or `Numerics`
@@ -93,7 +93,7 @@ Other primitive types are treated as-is and any type conversion should be perfor
 
 ### ALTREP
 
-A separate public API for ALTREPs is not needed, there are no real use cases for a method to only accept ALTREPs. Instead, expose the following iterator types:
+A separate public API for ALTREPs is not needed, there are no real use cases for a method to only accept ALTREPs. Instead, expose the following wrapper types:
 - `Integers`
 - `Logicals`
 - `Doubles`
@@ -102,20 +102,31 @@ A separate public API for ALTREPs is not needed, there are no real use cases for
 - `Strings`
 
 
-These opaque iterators wrap either plain data vectors (e.g., storing pointer & length) or ALTREPs. 
+These opaque types wrap either plain data vectors (e.g., storing pointer & length) or ALTREPs. 
 They should implement `std::iter::Iterator<Item = Rt>` to support `NA` validation, as well as `std::ops::Index<Output = Rt>`.
 
 Another suggested methods:
 - `len() -> usize` as both plain data and ALTREP know their size,
 - `is_altrep() -> bool` to avoid unnecessary random access in case of ALTREP
 
-*Note*: It seems `Rust` has no standard trait for collections (that is, something that has a length and an indexer).
-
-
 The iterators are enriched with the following discriminated unions:
 - `Numerics = Integers | Doubles`
 - `ComplexNumerics = Integers | Doubles | Complexes`
 
+
+## Naming convention
+- Public (exported) wrapper types should have simple and concise names, possibly derived from names of their counterparts on `R` side, or from `{cpp11}` naming convention. Types that wrap vectors should have pluralized names, e.g. `Integers` (not `Integer`), to emphasize that they wrap a collection, not a single value. The notable exception is `Strings`, which is the preferred name for `R`'s `character()` (which is not a *character* collection, but rather a collection of pointers to strings, thus *strings*). Wrappers of non-vector types should (in most cases) have the same name as the type they wrap, e.g. `List`, `PairList`, `Environment`, `DataFrame` (period is removed).
+
+
+- Rust iterator types should be suffixed with `Iter`, e.g. `IntegersIter` or `ListIter`. This establishes a 1-to-1 relationship between a wrapper and its iterator.
+
+
+- Rust types wrapping altreps should have `Alt` prefix, e.g. `AltIntegers`. This is somewhat similar to the naming convention adopted in `R`' headers (see `include/R_ext/Altrep.h`). If an iterator type is provided for `AltT`, then both prefix and suffix should be used, e.g. `AltIntegersIter` or `AltNumericsIter`.
+
+
+
+
+-----------------------------------------------------------------------------------------------
 <details>
 <summary> TL;DR </summary>
 Here is a set of functions with different parameter types and allowed arguments.
