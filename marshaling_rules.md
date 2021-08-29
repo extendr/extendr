@@ -68,10 +68,10 @@ For each supported primitive type `T` `Rt` would be its minimal wrapper. E.g., f
 `extendr` prefers `Rt` over `T` types. Parameters that use `T`-derived types will require runtime `NA` validation, introducing implicit overhead.
 
 Type conversion traits for `Rt` are:
-- `Into<Option<T>>` (this is always a valid conversion)
-- `TryInto<T>`, errors on `NA`
-- `TryFrom<T>`, errors if provided argument equals to the value reserved for `NA`
-- `TryFrom<Option<T>>` for the same reason, as `Some(i32::MIN)` is invalid `Rint` value (instead, `None` should be used)
+- `Into<Option<T>>` (this is always a valid conversion),
+- `TryInto<T>`, errors on `NA`,
+- `TryFrom<T>`, errors if provided argument equals to the value reserved for `NA`,
+- `TryFrom<Option<T>>`, errors if provided argument is `Some(NA)`, i.e. wraps value reserved for `NA`. 
 
 These conversions can be grouped in a trait `Rtype<T>`, which exposes conversions `Rt` <--> `T` mentioned above, as well as some `is_na() -> bool` method (and perhaps some other useful ones).
 
