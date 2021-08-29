@@ -15,16 +15,19 @@ fn test_externalptr() {
 #[test]
 fn test_externalptr_drop() {
     test! {
+        // This flag will get set when we do the drop.
         lazy_static! {
             static ref Z : std::sync::Mutex<bool> = std::sync::Mutex::new(false);
         }
 
+        // Dummy structure that will show if we drop correctly.
         struct X {
         }
 
         // Check that drop() is called after the owning object is dropped.
         impl Drop for X {
             fn drop(&mut self) {
+                // Set the flag to show that we have dropped.
                 let mut lck = Z.lock().unwrap();
                 *lck = true;
             }
