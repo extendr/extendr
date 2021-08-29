@@ -42,6 +42,8 @@ pub use super::wrapper::{
     AltrepImpl, RArray, RColumn, RMatrix, RMatrix3D,
 };
 
+pub use super::wrapper::s4::S4;
+
 pub use super::robj::{IntoRobj, Robj, RobjItertools};
 
 pub use super::thread_safety::{
