@@ -34,6 +34,9 @@ impl<T> Deref for ExternalPtr<T> {
 
 impl<T: Any> ExternalPtr<T> {
     /// Construct an external pointer object from any type T.
+    /// In this case, the R object owns the data and will drop the Rust object
+    /// when the last reference is removed via register_c_finalizer.
+    ///
     pub fn from_val(val: T) -> Self {
         unsafe {
             // This gets the type name of T as a string. eg. "i32".
@@ -66,6 +69,8 @@ impl<T: Any> ExternalPtr<T> {
             }
         }
     }
+
+    // TODO: make a constructor for references?
 
     /// Get the "tag" of an external pointer. This is the type name in the common case.
     pub fn external_ptr_tag(&self) -> Robj {
