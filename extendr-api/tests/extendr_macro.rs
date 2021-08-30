@@ -93,8 +93,15 @@ fn tests_with_successful_outcomes() {
 #[cfg(not(target_arch = "x86"))]
 #[test]
 fn tests_with_unsuccessful_outcomes() {
-    unsafe {
+    // Using [single_threaded] here may help with sporadic test failures.
+    single_threaded(|| unsafe {
         test! {
+            let old_hook = std::panic::take_hook();
+
+            // Suppress backtrace with a custom hook.
+            std::panic::set_hook(Box::new(|_| {
+            }));
+
             // These should throw R errors.
             // They may cause stack traces, but this is harmless.
             assert!(catch_r_error(|| wrap__test_i32(r!("xyz").get())).is_err());
@@ -103,8 +110,9 @@ fn tests_with_unsuccessful_outcomes() {
 
             // TODO: check for overflow.
             // assert!(catch_r_error(|| wrap__test_i16(r!(1234567890).get())).is_err());
+            std::panic::set_hook(old_hook);
         }
-    }
+    });
 }
 
 #[test]
