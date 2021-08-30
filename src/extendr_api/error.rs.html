@@ -234,7 +234,7 @@
     <span class="ident">ExpectedLanguage</span>(<span class="ident">Robj</span>),
     <span class="ident">ExpectedSpecial</span>(<span class="ident">Robj</span>),
     <span class="ident">ExpectedBuiltin</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedCharacter</span>(<span class="ident">Robj</span>),
+    <span class="ident">ExpectedRstr</span>(<span class="ident">Robj</span>),
     <span class="ident">ExpectedLogical</span>(<span class="ident">Robj</span>),
     <span class="ident">ExpectedInteger</span>(<span class="ident">Robj</span>),
     <span class="ident">ExpectedReal</span>(<span class="ident">Robj</span>),
@@ -291,8 +291,8 @@
             <span class="ident">Error::ExpectedLanguage</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Language got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
             <span class="ident">Error::ExpectedSpecial</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Special got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
             <span class="ident">Error::ExpectedBuiltin</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Builtin got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedCharacter</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Character got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>())
+            <span class="ident">Error::ExpectedRstr</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Rstr got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>())
             }
             <span class="ident">Error::ExpectedLogical</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Logical got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
             <span class="ident">Error::ExpectedInteger</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Integer got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),

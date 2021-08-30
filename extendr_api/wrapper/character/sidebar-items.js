@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["Character","Wrapper for creating character objects. These are used only as the contents of a character vector."]]});

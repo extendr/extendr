@@ -323,11 +323,6 @@
 <span id="321">321</span>
 <span id="322">322</span>
 <span id="323">323</span>
-<span id="324">324</span>
-<span id="325">325</span>
-<span id="326">326</span>
-<span id="327">327</span>
-<span id="328">328</span>
 </pre><pre class="rust">
 <span class="doccomment">//! Wrappers are lightweight proxies for references to R datatypes.</span>
 <span class="doccomment">//! They do not contain an Robj (see array.rs for an example of this).</span>
@@ -336,7 +331,7 @@
 <span class="kw">use</span> <span class="ident">libR_sys</span>::<span class="kw-2">*</span>;
 
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">altrep</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">character</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">char</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">environment</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">expr</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">function</span>;
@@ -351,11 +346,11 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">s4</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">symbol</span>;
 
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span><span class="ident">::char::Rstr</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">altrep</span>::{
     <span class="ident">AltComplexImpl</span>, <span class="ident">AltIntegerImpl</span>, <span class="ident">AltLogicalImpl</span>, <span class="ident">AltRawImpl</span>, <span class="ident">AltRealImpl</span>, <span class="ident">AltStringImpl</span>, <span class="ident">Altrep</span>,
     <span class="ident">AltrepImpl</span>,
 };
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">character::Character</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">environment</span>::{<span class="ident">EnvIter</span>, <span class="ident">Environment</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">expr::Expression</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">function::Function</span>;
@@ -448,12 +443,7 @@
 
 <span class="macro">make_conversions!</span>(<span class="ident">Raw</span>, <span class="ident">ExpectedRaw</span>, <span class="ident">is_raw</span>, <span class="string">&quot;Not a raw object&quot;</span>);
 
-<span class="macro">make_conversions!</span>(
-    <span class="ident">Character</span>,
-    <span class="ident">ExpectedCharacter</span>,
-    <span class="ident">is_character</span>,
-    <span class="string">&quot;Not a character object&quot;</span>
-);
+<span class="macro">make_conversions!</span>(<span class="ident">Rstr</span>, <span class="ident">ExpectedRstr</span>, <span class="ident">is_char</span>, <span class="string">&quot;Not a character object&quot;</span>);
 
 <span class="macro">make_conversions!</span>(
     <span class="ident">Environment</span>,
@@ -506,19 +496,19 @@
         <span class="ident">Symbol::try_from</span>(<span class="self">self</span>.<span class="ident">clone</span>()).<span class="ident">ok</span>()
     }
 
-    <span class="doccomment">/// Convert a character object to a Character wrapper.</span>
+    <span class="doccomment">/// Convert a CHARSXP object to a Rstr wrapper.</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::prelude::*;</span>
     <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let fred = r!(Character::from_string(&quot;fred&quot;));</span>
-    <span class="doccomment">///     assert_eq!(fred.as_character(), Some(Character::from_string(&quot;fred&quot;)));</span>
+    <span class="doccomment">///     let fred = r!(Rstr::from_string(&quot;fred&quot;));</span>
+    <span class="doccomment">///     assert_eq!(fred.as_char(), Some(Rstr::from_string(&quot;fred&quot;)));</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_character</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Character</span><span class="op">&gt;</span> {
-        <span class="ident">Character::try_from</span>(<span class="self">self</span>.<span class="ident">clone</span>()).<span class="ident">ok</span>()
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_char</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Rstr</span><span class="op">&gt;</span> {
+        <span class="ident">Rstr::try_from</span>(<span class="self">self</span>.<span class="ident">clone</span>()).<span class="ident">ok</span>()
     }
 
-    <span class="doccomment">/// Convert a raw object to a Character wrapper.</span>
+    <span class="doccomment">/// Convert a raw object to a Rstr wrapper.</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::prelude::*;</span>
     <span class="doccomment">/// test! {</span>
