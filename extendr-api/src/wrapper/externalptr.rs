@@ -1,7 +1,7 @@
 use super::*;
 use std::any::Any;
 
-/// Wrapper for creating R objects containing Any Rust object.
+/// Wrapper for creating R objects containing any Rust object.
 ///
 /// ```
 /// use extendr_api::prelude::*;

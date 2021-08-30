@@ -33,7 +33,7 @@ fn test_externalptr_drop() {
             }
         }
 
-        // Create and external pointer to test the drop.
+        // Create an external pointer to test the drop.
         let extptr = ExternalPtr::from_val(X {});
 
         // The object should be protected here - drop not called yet.
