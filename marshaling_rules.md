@@ -13,7 +13,7 @@ The aim is to maintain type safety on the `Rust` side without sacrificing usabil
   - If `Rust` type is `NA`-oblivious (e.g., vector of basic type), `extendr` performs `NA` validation at runtime and `panic!`s if `NA` value is found (introduces overhead)
 - ALTREP handling
   - If `extendr`-provided iterator is used, then ALTREP is exposed as an obscure type with iteration and indexing capabilities
-  - If `Rust` type has no notion of ALTREP, then `extendr` unfolds ALTREP vector into an array, allocating memory (introduces overhead)
+  - If `Rust` type has no notion of ALTREP, then `extendr` expands ALTREP vector into an array, allocating memory (introduces overhead)
 - Type conversion (applicable to `Vec<T>`)
   - `logical()`, `raw()`, `character()` are treated as-is. If there is a `Rust` - `R` type mismatch, `extendr` wrapper `panic!`s
   - `integer()` can be passed to functions that expect `double()` or `complex()`. `extendr` performs type cast, allocating memory for the new vector
@@ -25,11 +25,11 @@ The aim is to maintain type safety on the `Rust` side without sacrificing usabil
 
 
 Here is a list of examples:
-- `Vec<i32>` triggers `NA` validation, altrep unfolding, and type coercion if compatible (so `1.0` or `1.0 + 0i` convert to `1L`). Heavy on overhead and memory allocation, good for prototypes and testing things out.
+- `Vec<i32>` triggers `NA` validation, altrep expanding, and type coercion if compatible (so `1.0` or `1.0 + 0i` convert to `1L`). Heavy on overhead and memory allocation, good for prototypes and testing things out.
 
 - `Integers` is an obscure wrapper of either `&[Rint]` or some `AltIntegers`. Can be used to obtain an iterator, items of which are of type `Rint`, providing correct `NA` handling. Preferred way to handle vectors, similar to that of `{cpp11}`. 
 
-- `Numerics` is a discriminated union of `Integers | Doubles`. Accepts all numeric inputs, but leaves it up to the user to decipher what exactly was received from `R`. No runtime validation, no extra allocation, ALTREPS remain unfolded. 
+- `Numerics` is a discriminated union of `Integers | Doubles`. Accepts all numeric inputs, but leaves it up to the user to decipher what exactly was received from `R`. No runtime validation, no extra allocation, ALTREPS remain not expanded. 
 - `ComplexNumerics` represents either `Complexes` or `Numerics`
 
 
