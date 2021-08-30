@@ -1,27 +1,27 @@
 use super::*;
 
-/// Wrapper for creating character objects.
+/// Wrapper for creating CHARSXP objects.
 /// These are used only as the contents of a character
 /// vector.
 ///
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let chr = r!(Character::from_string("xyz"));
-///     assert_eq!(chr.as_character().unwrap().as_str(), "xyz");
+///     let chr = r!(Rstr::from_string("xyz"));
+///     assert_eq!(chr.as_char().unwrap().as_str(), "xyz");
 /// }
 /// ```
 ///
 #[derive(Debug, PartialEq, Clone)]
-pub struct Character {
+pub struct Rstr {
     pub(crate) robj: Robj,
 }
 
-impl Character {
+impl Rstr {
     /// Make a character object from a string.
     pub fn from_string(val: &str) -> Self {
         unsafe {
-            Character {
+            Rstr {
                 robj: new_owned(str_to_character(val)),
             }
         }

@@ -172,7 +172,7 @@ impl Robj {
     ///     assert_eq!(lang!("+", 1, 2).rtype(), RType::Language);
     ///     assert_eq!(r!(Primitive::from_string("if")).rtype(), RType::Special);
     ///     assert_eq!(r!(Primitive::from_string("+")).rtype(), RType::Builtin);
-    ///     assert_eq!(r!(Character::from_string("hello")).rtype(), RType::Character);
+    ///     assert_eq!(r!(Rstr::from_string("hello")).rtype(), RType::Rstr);
     ///     assert_eq!(r!(TRUE).rtype(), RType::Logical);
     ///     assert_eq!(r!(1).rtype(), RType::Integer);
     ///     assert_eq!(r!(1.0).rtype(), RType::Real);
@@ -193,7 +193,7 @@ impl Robj {
             LANGSXP => RType::Language,
             SPECIALSXP => RType::Special,
             BUILTINSXP => RType::Builtin,
-            CHARSXP => RType::Character,
+            CHARSXP => RType::Rstr,
             LGLSXP => RType::Logical,
             INTSXP => RType::Integer,
             REALSXP => RType::Real,
@@ -1024,8 +1024,8 @@ impl std::fmt::Debug for Robj {
             SPECIALSXP => write!(f, "r!(Special())"),
             BUILTINSXP => write!(f, "r!(Builtin())"),
             CHARSXP => {
-                let c = Character::try_from(self.clone()).unwrap();
-                write!(f, "r!(Character::from_string({:?}))", c.as_str())
+                let c = Rstr::try_from(self.clone()).unwrap();
+                write!(f, "r!(Rstr::from_string({:?}))", c.as_str())
             }
             LGLSXP => {
                 let slice = self.as_logical_slice().unwrap();
