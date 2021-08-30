@@ -7,21 +7,21 @@ use super::*;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let chr = r!(Char::from_string("xyz"));
+///     let chr = r!(Rstr::from_string("xyz"));
 ///     assert_eq!(chr.as_char().unwrap().as_str(), "xyz");
 /// }
 /// ```
 ///
 #[derive(Debug, PartialEq, Clone)]
-pub struct Char {
+pub struct Rstr {
     pub(crate) robj: Robj,
 }
 
-impl Char {
+impl Rstr {
     /// Make a character object from a string.
     pub fn from_string(val: &str) -> Self {
         unsafe {
-            Char {
+            Rstr {
                 robj: new_owned(str_to_character(val)),
             }
         }

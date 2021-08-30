@@ -382,7 +382,7 @@ impl Robj {
 
     /// Return true if this is CHARSXP.
     pub fn is_char(&self) -> bool {
-        self.rtype() == RType::Char
+        self.rtype() == RType::Rstr
     }
 
     /// Check an external pointer tag.

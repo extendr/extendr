@@ -19,7 +19,7 @@ pub mod promise;
 pub mod raw;
 pub mod symbol;
 
-pub use self::char::Char;
+pub use self::char::Rstr;
 pub use altrep::{
     AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,
     AltrepImpl,
@@ -115,7 +115,7 @@ make_conversions!(
 
 make_conversions!(Raw, ExpectedRaw, is_raw, "Not a raw object");
 
-make_conversions!(Char, ExpectedChar, is_char, "Not a character object");
+make_conversions!(Rstr, ExpectedRstr, is_char, "Not a character object");
 
 make_conversions!(
     Environment,
@@ -166,19 +166,19 @@ impl Robj {
         Symbol::try_from(self.clone()).ok()
     }
 
-    /// Convert a CHARSXP object to a Char wrapper.
+    /// Convert a CHARSXP object to a Rstr wrapper.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let fred = r!(Char::from_string("fred"));
-    ///     assert_eq!(fred.as_char(), Some(Char::from_string("fred")));
+    ///     let fred = r!(Rstr::from_string("fred"));
+    ///     assert_eq!(fred.as_char(), Some(Rstr::from_string("fred")));
     /// }
     /// ```
-    pub fn as_char(&self) -> Option<Char> {
-        Char::try_from(self.clone()).ok()
+    pub fn as_char(&self) -> Option<Rstr> {
+        Rstr::try_from(self.clone()).ok()
     }
 
-    /// Convert a raw object to a Char wrapper.
+    /// Convert a raw object to a Rstr wrapper.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
