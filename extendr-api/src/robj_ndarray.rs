@@ -6,8 +6,8 @@ use crate::prelude::{class_symbol, dim_symbol};
 use crate::*;
 
 impl<'a, T> FromRobj<'a> for ArrayView1<'a, T>
-where
-    Robj: AsTypedSlice<'a, T>,
+    where
+        Robj: AsTypedSlice<'a, T>,
 {
     /// Convert an R object to a `ndarray` ArrayView1.
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
@@ -58,10 +58,10 @@ make_array_view_2!(f64, "Not a floating point matrix.");
 //     }
 // }
 impl<A, S, D> From<ArrayBase<S, D>> for Robj
-where
-    S: Data<Elem = A>,
-    A: Copy + ToVectorValue,
-    D: Dimension,
+    where
+        S: Data<Elem=A>,
+        A: Copy + ToVectorValue,
+        D: Dimension,
 {
     fn from(arr: ArrayBase<S, D>) -> Self {
         let dims: Vec<i32> = arr.shape().iter().map(|x| *x as i32).collect();
@@ -71,15 +71,15 @@ where
             .unwrap()
             .iter()
             .copied()
-            .collect_robj()
-            .set_attrib(dim_symbol(), dims.clone())
-            .unwrap();
+            .collect_robj();
 
-        if dims.len() == 2 {
-            ret = ret.set_attrib(class_symbol(), "matrix").unwrap()
-        }
         if dims.len() > 1 {
-            ret = ret.set_attrib(class_symbol(), "array").unwrap()
+            ret = ret.set_attrib(dim_symbol(), dims.clone()).unwrap();
+            if dims.len() == 2 {
+                ret = ret.set_attrib(class_symbol(), ["matrix", "array"]).unwrap()
+            } else {
+                ret = ret.set_attrib(class_symbol(), ["array"]).unwrap()
+            }
         }
 
         ret
@@ -157,22 +157,35 @@ fn test_from_robj() {
         // assert_eq!(mx[[3, 1]], 8);
     }
 }
+
+fn compare_robj_arrays<'a, T>(a: &Robj, b: &Robj)
+    where T: 'a + std::fmt::Debug + PartialEq,
+          Robj: AsTypedSlice<'a, T>
+{
+    assert!(a.is_vector() || a.is_array());
+    assert!(b.is_vector() || b.is_array());
+    assert_eq!(a.len(), b.len());
+    // assert_eq!(a.get_attrib(class_symbol()), b.get_attrib(class_symbol()));
+    assert_eq!(a.get_attrib(dim_symbol()), b.get_attrib(dim_symbol()));
+    assert_eq!(AsTypedSlice::<T>::as_typed_slice(a), AsTypedSlice::<T>::as_typed_slice(b));
+}
+
 #[test]
 fn test_to_robj() {
     test! {
-    assert_eq!(
-        Robj::from(array![1., 2., 3.]),
-        R!("c(1, 2, 3)").unwrap()
+    compare_robj_arrays::<i32>(
+        &Robj::from(array![1., 2., 3.]),
+        &R!("c(1, 2, 3)").unwrap()
     );
 
-    assert_eq!(
-        Robj::from(array![[1, 2, 3], [4, 5, 6]]),
-        R!("matrix(c(1, 2, 3, 4, 5, 6), nrow=2, byrow=T)").unwrap()
-    );
+    // compare_robj_arrays::<i32>(
+    //     &Robj::from(array![[1, 2, 3], [4, 5, 6]]),
+    //     &R!("matrix(c(1, 2, 3, 4, 5, 6), nrow=2, byrow=T)").unwrap()
+    // );
 
-    assert_eq!(
-        Robj::from( array![[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-        R!("array(1:8, dim=c(2, 2, 2))").unwrap()
+    compare_robj_arrays::<i32>(
+        &Robj::from( array![[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+        &R!("array(1:8, dim=c(2, 2, 2))").unwrap()
     );
     }
 }
