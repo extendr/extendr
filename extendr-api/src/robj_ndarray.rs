@@ -1,6 +1,8 @@
 #[doc(hidden)]
 use ndarray::prelude::*;
+use ndarray::Data;
 
+use crate::prelude::{class_symbol, dim_symbol};
 use crate::*;
 
 impl<'a, T> FromRobj<'a> for ArrayView1<'a, T>
@@ -55,6 +57,34 @@ make_array_view_2!(f64, "Not a floating point matrix.");
 //         r!(mx)
 //     }
 // }
+impl<A, S, D> From<ArrayBase<S, D>> for Robj
+where
+    S: Data<Elem = A>,
+    A: Copy + ToVectorValue,
+    D: Dimension,
+{
+    fn from(arr: ArrayBase<S, D>) -> Self {
+        let dims: Vec<i32> = arr.shape().iter().map(|x| *x as i32).collect();
+        let mut ret = arr
+            .as_slice()
+            .ok_or("Could not convert")
+            .unwrap()
+            .iter()
+            .copied()
+            .collect_robj()
+            .set_attrib(dim_symbol(), dims.clone())
+            .unwrap();
+
+        if dims.len() == 2 {
+            ret = ret.set_attrib(class_symbol(), "matrix").unwrap()
+        }
+        if dims.len() > 1 {
+            ret = ret.set_attrib(class_symbol(), "array").unwrap()
+        }
+
+        ret
+    }
+}
 
 #[test]
 fn test_from_robj() {
@@ -125,5 +155,24 @@ fn test_from_robj() {
         // assert_eq!(mx[[1, 1]], 6);
         // assert_eq!(mx[[2, 1]], 7);
         // assert_eq!(mx[[3, 1]], 8);
+    }
+}
+#[test]
+fn test_to_robj() {
+    test! {
+    assert_eq!(
+        Robj::from(array![1., 2., 3.]),
+        R!("c(1, 2, 3)").unwrap()
+    );
+
+    assert_eq!(
+        Robj::from(array![[1, 2, 3], [4, 5, 6]]),
+        R!("matrix(c(1, 2, 3, 4, 5, 6), nrow=2, byrow=T)").unwrap()
+    );
+
+    assert_eq!(
+        Robj::from( array![[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+        R!("array(1:8, dim=c(2, 2, 2))").unwrap()
+    );
     }
 }
