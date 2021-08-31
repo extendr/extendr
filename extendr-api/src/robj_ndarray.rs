@@ -182,10 +182,10 @@ fn test_to_robj() {
         &R!("c(1, 2, 3)").unwrap()
     );
 
-    // compare_robj_arrays::<i32>(
-    //     &Robj::from(array![[1, 2, 3], [4, 5, 6]]),
-    //     &R!("matrix(c(1, 2, 3, 4, 5, 6), nrow=2, byrow=T)").unwrap()
-    // );
+    compare_robj_arrays::<i32>(
+        &Robj::from(array![[1, 2, 3], [4, 5, 6]]),
+        &R!("matrix(c(1, 2, 3, 4, 5, 6), nrow=2, byrow=T)").unwrap()
+    );
 
     compare_robj_arrays::<i32>(
         &Robj::from( array![[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
