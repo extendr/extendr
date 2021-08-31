@@ -59,7 +59,7 @@ Each vector can contain special `NA` values. None of the primitive types have bu
 - `struct Rcomplex((f64, f64))`
 - `struct Rstr(usize)` (?)
 
-Note: `complex` is an `(f64, f64)` struct
+Note: `complex` is an `(f64, f64)` struct. Support of implementations such as `num::complex::Complex` can be enabled using feature-guards (see example of arrays and `ndarray`).
 
 Each of these types is binary compatible with their underlying type. An array of, say `i32`, represented by a `*i32` pointer and length, can be viewed as `*Rint` of the same length. 
 This can be the preferred solution when dealing with `R` plain vectors.
