@@ -233,6 +233,7 @@ pub mod prelude;
 pub mod rmacros;
 
 pub mod robj;
+pub mod scalar;
 pub mod thread_safety;
 pub mod wrapper;
 
