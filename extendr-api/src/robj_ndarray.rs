@@ -163,9 +163,7 @@ where
     T: 'a + std::fmt::Debug + PartialEq,
     Robj: AsTypedSlice<'a, T>,
 {
-    assert!(a.is_vector() || a.is_array());
-    assert!(b.is_vector() || b.is_array());
-    assert_eq!(a.sexptype(), b.sexptype());
+    assert_eq!(a.rtype(), b.rtype());
     assert_eq!(a.len(), b.len());
     // assert_eq!(a.get_attrib(class_symbol()), b.get_attrib(class_symbol()));
     assert_eq!(a.get_attrib(dim_symbol()), b.get_attrib(dim_symbol()));
