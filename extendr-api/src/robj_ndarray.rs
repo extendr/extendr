@@ -1,8 +1,8 @@
 #[doc(hidden)]
 use ndarray::prelude::*;
-use ndarray::{Data, IntoDimension, ShapeBuilder};
+use ndarray::{Data, ShapeBuilder};
 
-use crate::prelude::{class_symbol, dim_symbol};
+use crate::prelude::dim_symbol;
 use crate::*;
 
 impl<'a, T> FromRobj<'a> for ArrayView1<'a, T>
@@ -65,8 +65,8 @@ where
 {
     fn from(arr: ArrayBase<S, D>) -> Self {
         let dims: Vec<i32>;
-        let inverse = arr.t();
         let reshaped: ArrayView<A, D>;
+        let inverse = arr.t();
         if arr.is_standard_layout() {
             // If we have a standard layout array, we have to keep the current dimensions
             // but transpose the memory layout
@@ -78,13 +78,12 @@ where
             reshaped = arr.view();
             dims = inverse.shape().iter().map(|x| *x as i32).collect();
         }
-        let mut ret = reshaped.iter().copied().collect_robj();
-
-        if dims.len() > 1 {
-            ret = ret.set_attrib(dim_symbol(), dims.clone()).unwrap();
-        }
-
-        ret
+        reshaped
+            .iter()
+            .copied()
+            .collect_robj()
+            .set_attrib(dim_symbol(), dims.clone())
+            .unwrap()
     }
 }
 
@@ -165,7 +164,7 @@ fn test_to_robj() {
     test! {
     assert_eq!(
         &Robj::from(array![1., 2., 3.]),
-        &R!("c(1, 2, 3)").unwrap()
+        &R!("array(c(1, 2, 3))").unwrap()
     );
 
     assert_eq!(
