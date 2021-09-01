@@ -82,7 +82,7 @@ where
             .iter()
             .copied()
             .collect_robj()
-            .set_attrib(dim_symbol(), dims.clone())
+            .set_attrib(dim_symbol(), dims)
             .unwrap()
     }
 }
