@@ -60,7 +60,7 @@ make_array_view_2!(f64, "Not a floating point matrix.");
 impl<A, S, D> From<ArrayBase<S, D>> for Robj
 where
     S: Data<Elem = A>,
-    A: Copy + ToVectorValue + std::fmt::Debug,
+    A: Copy + ToVectorValue,
     D: Dimension,
 {
     fn from(arr: ArrayBase<S, D>) -> Self {
