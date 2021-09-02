@@ -163,6 +163,12 @@ fn test_from_robj() {
 #[test]
 fn test_to_robj() {
     test! {
+        // An empty array should still convert to an empty R array with the same shape
+        assert_eq!(
+            &Robj::try_from(&Array4::<i32>::zeros((0, 1, 2, 3).f()))?,
+            &R!("array(integer(), c(0, 1, 2, 3))")?
+        );
+
         assert_eq!(
             &Robj::try_from(&array![1., 2., 3.])?,
             &R!("array(c(1, 2, 3))")?
@@ -172,14 +178,14 @@ fn test_to_robj() {
         // in C order. Therefore these arrays should be the same.
         assert_eq!(
             &Robj::try_from(&Array::from_shape_vec((2, 3), vec![1., 2., 3., 4., 5., 6.]).unwrap())?,
-            &R!("matrix(c(1, 2, 3, 4, 5, 6), nrow=2, byrow=T)")?
+            &R!("matrix(c(1, 2, 3, 4, 5, 6), nrow=2, byrow=TRUE)")?
         );
 
         // We give both R and Rust the same 1d vector and tell them both to read it as a matrix
         // in fortran order. Therefore these arrays should be the same.
         assert_eq!(
             &Robj::try_from(&Array::from_shape_vec((2, 3).f(), vec![1., 2., 3., 4., 5., 6.]).unwrap())?,
-            &R!("matrix(c(1, 2, 3, 4, 5, 6), nrow=2, byrow=F)")?
+            &R!("matrix(c(1, 2, 3, 4, 5, 6), nrow=2, byrow=FALSE)")?
         );
 
         // We give both R and Rust the same 1d vector and tell them both to read it as a 3d array
