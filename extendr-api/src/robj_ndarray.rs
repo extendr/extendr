@@ -66,10 +66,16 @@ where
     type Error = Error;
 
     fn try_from(value: &ArrayBase<S, D>) -> Result<Self> {
+        // Refer to https://github.com/rust-ndarray/ndarray/issues/1060 for an excellent discussion
+        // on how to convert from `ndarray` types to R/fortran arrays
+        // This thread has informed the design decisions made here.
+
+        // In general, transposing and then iterating an ndarray in C-order (`iter()`) is exactly
+        // equivalent to iterating that same array in Fortan-order (which `ndarray` doesn't currently support)
         value
-            .as_standard_layout()
             .t()
             .iter()
+            // Since we only have a reference, we have to copy all elements so that we can own the entire R array
             .copied()
             .collect_robj()
             .set_attrib(
