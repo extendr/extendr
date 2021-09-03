@@ -17,7 +17,7 @@ repository = "https://github.com/extendr/extendr"
 libR-sys = "0.2.2"
 extendr-macros = { path = "../extendr-macros", version="0.2.0" }
 extendr-engine = { path = "../extendr-engine", version="0.2.0" }
-ndarray = { version = "0.13.1", optional = true }
+ndarray = { version = "0.15.3", optional = true }
 lazy_static = "1.4"
 
 [features]
