@@ -105,6 +105,13 @@ macro_rules! make_conversions {
                 &self.robj
             }
         }
+
+        impl DerefMut for $typename {
+            /// Make a wrapper behave like a writable Robj.
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.robj
+            }
+        }
     };
 }
 

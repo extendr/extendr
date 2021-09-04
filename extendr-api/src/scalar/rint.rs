@@ -169,6 +169,7 @@ macro_rules! gen_unnop {
     };
 }
 
+// Generate binary ops for +, -, * and /
 gen_binop!(
     Add,
     add,
@@ -193,6 +194,8 @@ gen_binop!(
     |lhs: i32, rhs| lhs.checked_div(rhs),
     "Divide two Rint values or an option of i32, overflows to NA."
 );
+
+// Generate unary ops for -, !
 gen_unnop!(
     Neg,
     neg,

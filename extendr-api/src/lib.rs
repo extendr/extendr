@@ -242,6 +242,7 @@ pub mod robj_ndarray;
 
 pub use std::convert::{TryFrom, TryInto};
 pub use std::ops::Deref;
+pub use std::ops::DerefMut;
 
 //////////////////////////////////////////////////
 // Note these pub use statements are deprectaed
