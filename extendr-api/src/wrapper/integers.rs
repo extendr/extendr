@@ -136,23 +136,23 @@ impl Integers {
     }
 }
 
-impl FromIterator<i32> for Integers {
+impl FromIterator<Rint> for Integers {
     /// A more generalised iterator collector for small vectors.
     /// Generates a non-ALTREP vector.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let vec : Integers = (0..3).collect();
+    ///     let vec : Integers = (0..3).map(|i| i.into()).collect();
     ///     assert_eq!(vec, Integers::from_values([0, 1, 2]));
     /// }
     /// ```
-    fn from_iter<T: IntoIterator<Item = i32>>(iter: T) -> Self {
+    fn from_iter<T: IntoIterator<Item = Rint>>(iter: T) -> Self {
         // Collect into a vector first.
         // TODO: specialise for ExactSizeIterator.
-        let values: Vec<i32> = iter.into_iter().collect();
+        let values: Vec<Rint> = iter.into_iter().collect();
 
         let mut robj = Robj::alloc_vector(INTSXP, values.len());
-        let dest: &mut [i32] = robj.as_typed_slice_mut().unwrap();
+        let dest: &mut [Rint] = robj.as_typed_slice_mut().unwrap();
 
         for (d, v) in dest.iter_mut().zip(values) {
             *d = v;
