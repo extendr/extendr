@@ -208,3 +208,18 @@ gen_unnop!(
     |lhs: i32| Some(!lhs),
     "Logical not a Rint value, overflows to NA."
 );
+
+impl std::iter::Sum for Rint {
+    /// Sum an integer iterator over Rint.
+    /// Yields NA on overflow of NAs present.
+    fn sum<I: Iterator<Item = Rint>>(iter: I) -> Rint {
+        iter.fold(Rint::from(0), |a, b| a + b)
+    }
+}
+
+impl PartialEq<i32> for Rint {
+    /// Compare a Rint with an integer. NA always fails.
+    fn eq(&self, other: &i32) -> bool {
+        !self.is_na() && self.0 == *other
+    }
+}

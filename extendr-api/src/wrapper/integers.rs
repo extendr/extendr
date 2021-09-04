@@ -1,3 +1,4 @@
+use super::scalar::Rint;
 use super::*;
 use std::iter::FromIterator;
 
@@ -13,7 +14,7 @@ impl Default for Integers {
 }
 
 // Under this size, vectors are manifest.
-// Above this size, vectors are lazy altrep objects.
+// Above this size, vectors are lazy ALTREP objects.
 const SHORT_VECTOR_LENGTH: usize = 64 * 1024;
 
 impl Integers {
@@ -48,7 +49,7 @@ impl Integers {
     ///     vec.get_region(1, &mut dest);
     ///     assert_eq!(dest, [1, 0]);
     ///
-    ///     // Long (>=64k) vectors are lazy altrep objects.
+    ///     // Long (>=64k) vectors are lazy ALTREP objects.
     ///     let vec = Integers::from_values(0..1000000000);
     ///     assert_eq!(vec.is_altrep(), true);
     ///     assert_eq!(vec.elt(12345678), 12345678);
@@ -85,8 +86,8 @@ impl Integers {
 
     /// Get a single element from the vector.
     /// Note that this is very inefficient in a tight loop.
-    pub fn elt(&self, index: usize) -> i32 {
-        unsafe { INTEGER_ELT(self.get(), index as R_xlen_t) }
+    pub fn elt(&self, index: usize) -> Rint {
+        unsafe { INTEGER_ELT(self.get(), index as R_xlen_t).into() }
     }
 
     /// Get a region of elements from the vector.
@@ -107,37 +108,37 @@ impl Integers {
         unsafe { INTEGER_NO_NA(self.get()).into() }
     }
 
-    /// Return an iterator for a non-altrep object.
-    /// Suitable for short vectors.
+    /// Return an iterator for for an integer object.
+    /// Forces ALTREP objects to manifest.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
     ///     let vec = Integers::from_values(0..3);
-    ///     assert_eq!(vec.iter().cloned().sum::<i32>(), 3);
+    ///     assert_eq!(vec.iter().sum::<Rint>(), 3);
     /// }
     /// ```
-    pub fn iter(&self) -> impl Iterator<Item = &i32> {
-        self.as_typed_slice().unwrap().iter()
+    pub fn iter(&self) -> impl Iterator<Item = Rint> {
+        self.as_typed_slice().unwrap().iter().cloned()
     }
 
-    /// Return a writable iterator for a non-altrep object.
-    /// Suitable for short vectors.
+    /// Return a writable iterator for an integer object.
+    /// Forces ALTREP objects to manifest.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
     ///     let mut vec = Integers::from_values(0..3);
-    ///     vec.iter_mut().for_each(|v| *v += 1);
+    ///     vec.iter_mut().for_each(|v| *v = *v + 1);
     ///     assert_eq!(vec, Integers::from_values(1..4));
     /// }
     /// ```
-    pub fn iter_mut(&mut self) -> impl Iterator<Item = &mut i32> {
+    pub fn iter_mut(&mut self) -> impl Iterator<Item = &mut Rint> {
         self.as_typed_slice_mut().unwrap().iter_mut()
     }
 }
 
 impl FromIterator<i32> for Integers {
-    /// A more genralised iterator converter for small vectors.
-    /// Generates a non-altvec vector.
+    /// A more generalised iterator collector for small vectors.
+    /// Generates a non-ALTREP vector.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
