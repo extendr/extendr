@@ -2,21 +2,21 @@ use crate::*;
 use libR_sys::*;
 
 pub struct Context {
-    inner: R_GE_gcontext
+    inner: R_GE_gcontext,
 }
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct DevDesc {
-    inner: pGEDevDesc
+    inner: pGEDevDesc,
 }
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Pattern {
-    inner: Robj
+    inner: Robj,
 }
 
 impl DevDesc {
-    pub (crate) fn inner(&self) -> pGEDevDesc {
+    pub(crate) fn inner(&self) -> pGEDevDesc {
         self.inner
     }
 }
@@ -65,7 +65,7 @@ impl Context {
     //     Self { inner }
     // }
 
-    pub (crate) fn inner(&self) -> pGEcontext {
+    pub(crate) fn inner(&self) -> pGEcontext {
         unsafe { std::mem::transmute(&self.inner) }
     }
 
@@ -77,7 +77,11 @@ impl Context {
 #[allow(non_snake_case)]
 impl DevDesc {
     pub fn current() -> DevDesc {
-        unsafe { DevDesc{ inner: GEcurrentDevice() } }
+        unsafe {
+            DevDesc {
+                inner: GEcurrentDevice(),
+            }
+        }
     }
 
     pub fn deviceNumber(&self) -> i32 {
@@ -85,7 +89,11 @@ impl DevDesc {
     }
 
     pub fn getDevice(number: i32) -> DevDesc {
-        unsafe { DevDesc { inner: GEgetDevice(number) } }
+        unsafe {
+            DevDesc {
+                inner: GEgetDevice(number),
+            }
+        }
     }
 
     pub fn fromDeviceX(&self, value: f64, to: GEUnit) -> f64 {
@@ -143,4 +151,3 @@ impl DevDesc {
     // pub fn GEText(&self,         x: f64,        y: f64,        str: *const ::std::os::raw::c_char,        enc: cetype_t,        xc: f64,        yc: f64,        rot: f64,        gc: pGEcontext);
     // pub fn GEMode(&self, mode: ::std::os::raw::c_int);
 }
-

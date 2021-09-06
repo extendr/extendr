@@ -1,5 +1,5 @@
-use extendr_api::prelude::*;
 use extendr_api::graphics::{Context, DevDesc};
+use extendr_api::prelude::*;
 
 #[test]
 fn graphics_test() {
