@@ -236,6 +236,7 @@ pub mod robj;
 pub mod scalar;
 pub mod thread_safety;
 pub mod wrapper;
+pub mod graphics;
 
 #[cfg(feature = "ndarray")]
 pub mod robj_ndarray;
