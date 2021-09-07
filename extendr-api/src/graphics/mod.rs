@@ -21,17 +21,54 @@ impl DevDesc {
     }
 }
 
+pub enum LineEnd {
+    RoundCap,
+    ButtCap,
+    SquareCap,
+}
+  
+pub enum LineJoin {
+    RoundJoin,
+    MitreJoin,
+    BevelJoin,
+}
+  
+ pub enum LineType {
+    Blank,
+    Solid,
+    Dashed,
+    Dotted,
+    Dotdash,
+    Longdash,
+    Twodash,
+}
+
+pub enum Mode {
+    Off,
+    On,
+    InputOn,
+}
+
+pub enum FontFace {
+    PlainFont,
+    BoldFont,
+    ItalicFont,
+    BoldItalicFont,
+    SymbolFont,
+}
+
 impl Context {
     pub fn new() -> Self {
+        // See GInit()
         let inner = R_GE_gcontext {
-            col: 0,
-            fill: 0,
+            col: -1,
+            fill: -1,
             gamma: 1.0,
-            lwd: 1.0,
+            lwd: 5.0,
             lty: 0,
             lend: R_GE_lineend_GE_ROUND_CAP,
-            ljoin: R_GE_linejoin_GE_BEVEL_JOIN,
-            lmitre: 1.0,
+            ljoin: R_GE_linejoin_GE_ROUND_JOIN,
+            lmitre: 10.0,
             cex: 1.0,
             ps: 1.0,
             lineheight: 1.0,
@@ -42,28 +79,110 @@ impl Context {
         Self { inner }
     }
 
-    // pub fn from_GP(dd: &DevDesc) -> Self {
-    //     // let mut x = Self::new();
-    //     // unsafe { gcontextFromGP(x.inner_mut(), dd.inner()) };
-    //     // let gpptr = Rf_gpptr(dd.inner_mut());
-    //     let inner = R_GE_gcontext {
-    //         col: gpptr(dd),
-    //         fill: 0,
-    //         gamma: 1.0,
-    //         lwd: 1.0,
-    //         lty: 0,
-    //         lend: R_GE_lineend_GE_ROUND_CAP,
-    //         ljoin: R_GE_linejoin_GE_BEVEL_JOIN,
-    //         lmitre: 1.0,
-    //         cex: 1.0,
-    //         ps: 1.0,
-    //         lineheight: 1.0,
-    //         fontface: 0,
-    //         fontfamily: [0; 201],
-    //         // patternFill: R_NilValue,
-    //     };
-    //     Self { inner }
-    // }
+    pub fn rgb(red: u8, green: u8, blue: u8) -> i32 {
+        red as i32 | (green as i32) << 8 | (blue as i32) << 16 | 0xff << 24
+    }
+
+    pub fn rgba(red: u8, green: u8, blue: u8, alpha: u8) -> i32 {
+        red as i32 | (green as i32) << 8 | (blue as i32) << 16 | (alpha as i32) << 24
+    }
+
+    pub fn color(&mut self, col: i32) -> &mut Self {
+        self.inner.col = col;
+        self
+    }
+
+    pub fn fill(&mut self, fill: i32) -> &mut Self {
+        self.inner.fill = fill;
+        self
+    }
+
+    pub fn gamma(&mut self, gamma: f64) -> &mut Self {
+        self.inner.gamma = gamma;
+        self
+    }
+
+    pub fn line_width(&mut self, lwd: f64) -> &mut Self {
+        self.inner.lwd = lwd;
+        self
+    }
+
+    pub fn line_type(&mut self, lty: LineType) -> &mut Self {
+        use LineType::*;
+        self.inner.lty = match lty {
+            Blank => -1,
+            Solid => 0,
+            Dashed => 4 + (4<<4),
+            Dotted => 1 + (3<<4),
+            Dotdash => 1 + (3<<4) + (4<<8) + (3<<12),
+            Longdash => 7 + (3<<4),
+            Twodash => 2 + (2<<4) + (6<<8) + (2<<12),
+        };
+        self
+    }
+
+    pub fn line_end(&mut self, lend: LineEnd) -> &mut Self {
+        self.inner.lend = match lend {
+            LineEnd::RoundCap => 1,
+            LineEnd::ButtCap => 2,
+            LineEnd::SquareCap => 3
+        };
+        self
+    }
+
+    pub fn line_join(&mut self, ljoin: LineJoin) -> &mut Self {
+        self.inner.ljoin = match ljoin {
+            LineJoin::RoundJoin => 1,
+            LineJoin::MitreJoin => 2,
+            LineJoin::BevelJoin => 3
+        };
+        self
+    }
+
+    pub fn point_size(&mut self, ps: f64) -> &mut Self {
+        self.inner.ps = ps;
+        self
+    }
+
+    pub fn line_mitre(&mut self, lmitre: f64) -> &mut Self {
+        self.inner.lmitre = lmitre;
+        self
+    }
+
+    pub fn line_height(&mut self, lineheight: f64) -> &mut Self {
+        self.inner.lineheight = lineheight;
+        self
+    }
+
+    pub fn char_extension(&mut self, cex: f64) -> &mut Self {
+        self.inner.cex = cex;
+        self
+    }
+
+    pub fn font_face(&mut self, fontface: FontFace) -> &mut Self {
+        use FontFace::*;
+        self.inner.fontface = match fontface {
+            PlainFont => 1,
+            BoldFont => 2,
+            ItalicFont => 3,
+            BoldItalicFont => 4,
+            SymbolFont => 5
+        };
+        self
+    }
+
+    pub fn font_family(&mut self, fontfamily: &str) -> &mut Self {
+        let maxlen = self.inner.fontfamily.len() - 1;
+
+        for c in self.inner.fontfamily.iter_mut() {
+            *c = 0;
+        }
+
+        for (i, b) in fontfamily.bytes().enumerate().take(maxlen) {
+            self.inner.fontfamily[i] = b as std::os::raw::c_char;
+        }
+        self
+    }
 
     pub(crate) fn inner(&self) -> pGEcontext {
         unsafe { std::mem::transmute(&self.inner) }
@@ -82,6 +201,15 @@ impl DevDesc {
                 inner: GEcurrentDevice(),
             }
         }
+    }
+
+    pub fn mode(&self, mode: Mode) {
+        use Mode::*;
+        unsafe { GEMode(match mode {
+            Off => 0,
+            On => 1,
+            InputOn => 2,
+        }, self.inner()) };
     }
 
     pub fn deviceNumber(&self) -> i32 {
