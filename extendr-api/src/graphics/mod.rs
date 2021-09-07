@@ -26,14 +26,14 @@ pub enum LineEnd {
     ButtCap,
     SquareCap,
 }
-  
+
 pub enum LineJoin {
     RoundJoin,
     MitreJoin,
     BevelJoin,
 }
-  
- pub enum LineType {
+
+pub enum LineType {
     Blank,
     Solid,
     Dashed,
@@ -112,11 +112,11 @@ impl Context {
         self.inner.lty = match lty {
             Blank => -1,
             Solid => 0,
-            Dashed => 4 + (4<<4),
-            Dotted => 1 + (3<<4),
-            Dotdash => 1 + (3<<4) + (4<<8) + (3<<12),
-            Longdash => 7 + (3<<4),
-            Twodash => 2 + (2<<4) + (6<<8) + (2<<12),
+            Dashed => 4 + (4 << 4),
+            Dotted => 1 + (3 << 4),
+            Dotdash => 1 + (3 << 4) + (4 << 8) + (3 << 12),
+            Longdash => 7 + (3 << 4),
+            Twodash => 2 + (2 << 4) + (6 << 8) + (2 << 12),
         };
         self
     }
@@ -125,7 +125,7 @@ impl Context {
         self.inner.lend = match lend {
             LineEnd::RoundCap => 1,
             LineEnd::ButtCap => 2,
-            LineEnd::SquareCap => 3
+            LineEnd::SquareCap => 3,
         };
         self
     }
@@ -134,7 +134,7 @@ impl Context {
         self.inner.ljoin = match ljoin {
             LineJoin::RoundJoin => 1,
             LineJoin::MitreJoin => 2,
-            LineJoin::BevelJoin => 3
+            LineJoin::BevelJoin => 3,
         };
         self
     }
@@ -166,7 +166,7 @@ impl Context {
             BoldFont => 2,
             ItalicFont => 3,
             BoldItalicFont => 4,
-            SymbolFont => 5
+            SymbolFont => 5,
         };
         self
     }
@@ -205,11 +205,16 @@ impl DevDesc {
 
     pub fn mode(&self, mode: Mode) {
         use Mode::*;
-        unsafe { GEMode(match mode {
-            Off => 0,
-            On => 1,
-            InputOn => 2,
-        }, self.inner()) };
+        unsafe {
+            GEMode(
+                match mode {
+                    Off => 0,
+                    On => 1,
+                    InputOn => 2,
+                },
+                self.inner(),
+            )
+        };
     }
 
     pub fn deviceNumber(&self) -> i32 {
