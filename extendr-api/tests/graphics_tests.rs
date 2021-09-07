@@ -3,10 +3,11 @@ use extendr_api::prelude::*;
 
 #[test]
 fn graphics_test() {
-    // TODO: use tmpfile.
-    let path = "/tmp/test.ps";
+    let dir = std::env::temp_dir();
+    let path = dir.join("test.ps");
+    let path_str = path.to_string_lossy().to_string();
     test! {
-        R!("postscript({{path}})")?;
+        R!("postscript({{path_str}})")?;
         let dev = DevDesc::current();
         let gc = Context::new();
         dev.mode(Mode::On);
