@@ -2,7 +2,11 @@ use crate::*;
 use libR_sys::*;
 
 pub struct Context {
-    inner: R_GE_gcontext,
+    context: R_GE_gcontext,
+    xscale: (f64, f64),
+    yscale: (f64, f64),
+    offset: (f64, f64),
+    scalar: f64,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -19,20 +23,31 @@ impl Device {
     pub(crate) fn inner(&self) -> pGEDevDesc {
         self.inner
     }
+
+    pub(crate) fn asref(&self) -> &GEDevDesc {
+        unsafe { &*self.inner }
+    }
+
+    pub(crate) fn dev(&self) -> &DevDesc {
+        unsafe { &*self.asref().dev }
+    }
 }
 
+#[derive(PartialEq, Debug, Clone)]
 pub enum LineEnd {
     RoundCap,
     ButtCap,
     SquareCap,
 }
 
+#[derive(PartialEq, Debug, Clone)]
 pub enum LineJoin {
     RoundJoin,
     MitreJoin,
     BevelJoin,
 }
 
+#[derive(PartialEq, Debug, Clone)]
 pub enum LineType {
     Blank,
     Solid,
@@ -43,6 +58,7 @@ pub enum LineType {
     Twodash,
 }
 
+#[derive(PartialEq, Debug, Clone)]
 pub enum Unit {
     Device,
     Normalized,
@@ -50,12 +66,7 @@ pub enum Unit {
     CM,
 }
 
-// pub enum Mode {
-//     Off,
-//     On,
-//     InputOn,
-// }
-
+#[derive(PartialEq, Debug, Clone)]
 pub enum FontFace {
     PlainFont,
     BoldFont,
@@ -82,14 +93,24 @@ fn unit_to_ge(unit: Unit) -> GEUnit {
 }
 
 impl Context {
-    pub fn new() -> Self {
+    pub fn from_device(dev: &Device, unit: Unit) -> Self {
         #[allow(unused_unsafe)]
         unsafe {
-            let inner = R_GE_gcontext {
-                col: -1,
-                fill: -1,
+            let offset = dev.to_device_coords((0., 0.), unit.clone());
+            let mut xscale = dev.to_device_coords((1., 0.), unit.clone());
+            let mut yscale = dev.to_device_coords((0., 1.), unit);
+            xscale.0 -= offset.0;
+            xscale.1 -= offset.1;
+            yscale.0 -= offset.0;
+            yscale.1 -= offset.1;
+            let scalar = (xscale.0 * yscale.1 - xscale.1 * yscale.0).sqrt();
+            println!("canClip={}", dev.dev().canClip);
+
+            let context = R_GE_gcontext {
+                col: rgb(0xff, 0xff, 0xff),
+                fill: rgb(0xc0, 0xc0, 0xc0),
                 gamma: 1.0,
-                lwd: 5.0,
+                lwd: 1.0,
                 lty: 0,
                 lend: R_GE_lineend_GE_ROUND_CAP,
                 ljoin: R_GE_linejoin_GE_ROUND_JOIN,
@@ -103,33 +124,40 @@ impl Context {
                 #[cfg(use_r_patternfill)]
                 patternFill: R_NilValue,
             };
-            Self { inner }
+
+            Self {
+                context,
+                xscale,
+                yscale,
+                offset,
+                scalar,
+            }
         }
     }
 
     pub fn color(&mut self, col: i32) -> &mut Self {
-        self.inner.col = col;
+        self.context.col = col;
         self
     }
 
     pub fn fill(&mut self, fill: i32) -> &mut Self {
-        self.inner.fill = fill;
+        self.context.fill = fill;
         self
     }
 
     pub fn gamma(&mut self, gamma: f64) -> &mut Self {
-        self.inner.gamma = gamma;
+        self.context.gamma = gamma;
         self
     }
 
     pub fn line_width(&mut self, lwd: f64) -> &mut Self {
-        self.inner.lwd = lwd;
+        self.context.lwd = lwd * self.scalar;
         self
     }
 
     pub fn line_type(&mut self, lty: LineType) -> &mut Self {
         use LineType::*;
-        self.inner.lty = match lty {
+        self.context.lty = match lty {
             Blank => -1,
             Solid => 0,
             Dashed => 4 + (4 << 4),
@@ -142,7 +170,7 @@ impl Context {
     }
 
     pub fn line_end(&mut self, lend: LineEnd) -> &mut Self {
-        self.inner.lend = match lend {
+        self.context.lend = match lend {
             LineEnd::RoundCap => 1,
             LineEnd::ButtCap => 2,
             LineEnd::SquareCap => 3,
@@ -151,7 +179,7 @@ impl Context {
     }
 
     pub fn line_join(&mut self, ljoin: LineJoin) -> &mut Self {
-        self.inner.ljoin = match ljoin {
+        self.context.ljoin = match ljoin {
             LineJoin::RoundJoin => 1,
             LineJoin::MitreJoin => 2,
             LineJoin::BevelJoin => 3,
@@ -160,28 +188,28 @@ impl Context {
     }
 
     pub fn point_size(&mut self, ps: f64) -> &mut Self {
-        self.inner.ps = ps;
+        self.context.ps = ps;
         self
     }
 
     pub fn line_mitre(&mut self, lmitre: f64) -> &mut Self {
-        self.inner.lmitre = lmitre;
+        self.context.lmitre = lmitre * self.scalar;
         self
     }
 
     pub fn line_height(&mut self, lineheight: f64) -> &mut Self {
-        self.inner.lineheight = lineheight;
+        self.context.lineheight = lineheight;
         self
     }
 
     // pub fn char_extra_size(&mut self, cex: f64) -> &mut Self {
-    //     self.inner.cex = cex;
+    //     self.context.cex = cex;
     //     self
     // }
 
     pub fn font_face(&mut self, fontface: FontFace) -> &mut Self {
         use FontFace::*;
-        self.inner.fontface = match fontface {
+        self.context.fontface = match fontface {
             PlainFont => 1,
             BoldFont => 2,
             ItalicFont => 3,
@@ -192,30 +220,45 @@ impl Context {
     }
 
     pub fn font_family(&mut self, fontfamily: &str) -> &mut Self {
-        let maxlen = self.inner.fontfamily.len() - 1;
+        let maxlen = self.context.fontfamily.len() - 1;
 
-        for c in self.inner.fontfamily.iter_mut() {
+        for c in self.context.fontfamily.iter_mut() {
             *c = 0;
         }
 
         for (i, b) in fontfamily.bytes().enumerate().take(maxlen) {
-            self.inner.fontfamily[i] = b as std::os::raw::c_char;
+            self.context.fontfamily[i] = b as std::os::raw::c_char;
         }
         self
     }
 
-    pub(crate) fn inner(&self) -> pGEcontext {
-        unsafe { std::mem::transmute(&self.inner) }
+    pub fn transform(
+        &mut self,
+        xscale: (f64, f64),
+        yscale: (f64, f64),
+        offset: (f64, f64),
+    ) -> &mut Self {
+        self.xscale = xscale;
+        self.yscale = yscale;
+        self.offset = offset;
+        self
     }
 
-    // pub (crate) fn inner_mut(&mut self) -> pGEcontext {
-    //     &mut self.inner as pGEcontext
-    // }
-}
+    pub(crate) fn context(&self) -> pGEcontext {
+        unsafe { std::mem::transmute(&self.context) }
+    }
 
-impl Default for Context {
-    fn default() -> Self {
-        Self::new()
+    // Affine transform.
+    pub(crate) fn t(&self, xy: (f64, f64)) -> (f64, f64) {
+        (
+            self.offset.0 + xy.0 * self.xscale.0 + xy.1 * self.yscale.0,
+            self.offset.1 + xy.0 * self.xscale.1 + xy.1 * self.yscale.1,
+        )
+    }
+
+    // Scalar transform (eg. radius etc).
+    pub(crate) fn ts(&self, value: f64) -> f64 {
+        value * self.scalar
     }
 }
 
@@ -229,23 +272,23 @@ impl Device {
         }
     }
 
-    pub fn off(&self) {
+    pub fn mode_off(&self) {
         unsafe {
             GEMode(0, self.inner());
         }
     }
 
-    pub fn on(&self) {
+    pub fn mode_on(&self) {
         unsafe {
             GEMode(1, self.inner());
         }
     }
 
-    pub fn deviceNumber(&self) -> i32 {
+    pub fn device_number(&self) -> i32 {
         unsafe { GEdeviceNumber(self.inner()) }
     }
 
-    pub fn getDevice(number: i32) -> Device {
+    pub fn get_device(number: i32) -> Device {
         unsafe {
             Device {
                 inner: GEgetDevice(number),
@@ -264,16 +307,20 @@ impl Device {
     }
 
     pub fn to_device_coords(&self, value: (f64, f64), to: Unit) -> (f64, f64) {
-        let to = unit_to_ge(to);
-        unsafe {
-            (
-                GEtoDeviceX(value.0, to, self.inner()),
-                GEtoDeviceY(value.1, to, self.inner()),
-            )
+        if to == Unit::Device {
+            value
+        } else {
+            let to = unit_to_ge(to);
+            unsafe {
+                (
+                    GEtoDeviceX(value.0, to, self.inner()),
+                    GEtoDeviceY(value.1, to, self.inner()),
+                )
+            }
         }
     }
 
-    pub fn from_device_dims(&self, value: (f64, f64), from: Unit) -> (f64, f64) {
+    pub fn from_device_wh(&self, value: (f64, f64), from: Unit) -> (f64, f64) {
         let from = unit_to_ge(from);
         unsafe {
             (
@@ -283,7 +330,7 @@ impl Device {
         }
     }
 
-    pub fn to_device_dims(&self, value: (f64, f64), to: Unit) -> (f64, f64) {
+    pub fn to_device_wh(&self, value: (f64, f64), to: Unit) -> (f64, f64) {
         let to = unit_to_ge(to);
         unsafe {
             (
@@ -293,26 +340,129 @@ impl Device {
         }
     }
 
-    pub fn setClip(&self, x1: f64, y1: f64, x2: f64, y2: f64) {
-        unsafe { GESetClip(x1, y1, x2, y2, self.inner()) }
+    pub fn new_page(&self, gc: &Context) {
+        unsafe { GENewPage(gc.context(), self.inner()) }
     }
 
-    pub fn newPage(&self, gc: &mut Context) {
-        unsafe { GENewPage(gc.inner(), self.inner()) }
+    pub fn line(&self, from: (f64, f64), to: (f64, f64), gc: &Context) {
+        let from = gc.t(from);
+        let to = gc.t(to);
+        unsafe { GELine(from.0, from.1, to.0, to.1, gc.context(), self.inner()) }
     }
 
-    pub fn line(&self, x1: f64, y1: f64, x2: f64, y2: f64, gc: &Context) {
-        unsafe { GELine(x1, y1, x2, y2, gc.inner(), self.inner()) }
+    pub fn polyline<T: IntoIterator<Item = (f64, f64)>>(&self, coords: T, gc: &Context) {
+        let (mut x, mut y): (Vec<_>, Vec<_>) = coords.into_iter().map(|xy| gc.t(xy)).unzip();
+        let xptr = x.as_mut_slice().as_mut_ptr();
+        let yptr = y.as_mut_slice().as_mut_ptr();
+        unsafe {
+            GEPolyline(
+                x.len() as std::os::raw::c_int,
+                xptr,
+                yptr,
+                gc.context(),
+                self.inner(),
+            )
+        }
     }
 
-    // pub fn GEPolyline(&self,         n: ::std::os::raw::c_int,        x: *mut f64,        y: *mut f64,        gc: pGEcontext);
-    // pub fn GEPolygon(&self,         n: ::std::os::raw::c_int,        x: *mut f64,        y: *mut f64,        gc: pGEcontext);
-    // pub fn GEXspline(&self,         n: ::std::os::raw::c_int,        x: *mut f64,        y: *mut f64,        s: *mut f64,        open: Rboolean,        repEnds: Rboolean,        draw: Rboolean,        gc: pGEcontext) -> SEXP;
-    // pub fn GECircle(&self, x: f64, y: f64, radius: f64, gc: pGEcontext);
-    // pub fn GERect(&self, x0: f64, y0: f64, x1: f64, y1: f64, gc: pGEcontext);
-    // pub fn GEPath(&self,         x: *mut f64,        y: *mut f64,        npoly: ::std::os::raw::c_int,        nper: *mut ::std::os::raw::c_int,        winding: Rboolean,        gc: pGEcontext);
+    pub fn polygon<T: IntoIterator<Item = (f64, f64)>>(&self, coords: T, gc: &Context) {
+        let (mut x, mut y): (Vec<_>, Vec<_>) = coords.into_iter().map(|xy| gc.t(xy)).unzip();
+        let xptr = x.as_mut_slice().as_mut_ptr();
+        let yptr = y.as_mut_slice().as_mut_ptr();
+        unsafe {
+            GEPolygon(
+                x.len() as std::os::raw::c_int,
+                xptr,
+                yptr,
+                gc.context(),
+                self.inner(),
+            )
+        }
+    }
+
+    // /// Return a list of (x, y) points generated from a spline.
+    // /// The iterator returns ((x, y), s) where s is -1 to 1.
+    // pub fn xspline<T: Iterator<Item = ((f64, f64), f64)> + Clone>(
+    //     &self,
+    //     coords: T,
+    //     open: bool,
+    //     rep_ends: bool,
+    //     draw: bool,
+    //     gc: &Context,
+    // ) -> Robj {
+    //     let (mut x, mut y): (Vec<_>, Vec<_>) = coords
+    //         .clone()
+    //         .map(|(xy, _s)| gc.t(xy))
+    //         .unzip();
+    //     let mut s: Vec<_> = coords.map(|(_xy, s)| s).collect();
+    //     let xptr = x.as_mut_slice().as_mut_ptr();
+    //     let yptr = y.as_mut_slice().as_mut_ptr();
+    //     let sptr = s.as_mut_slice().as_mut_ptr();
+    //     unsafe {
+    //         new_owned(GEXspline(
+    //             x.len() as std::os::raw::c_int,
+    //             xptr,
+    //             yptr,
+    //             sptr,
+    //             if open { 1 } else { 0 },
+    //             if rep_ends { 1 } else { 0 },
+    //             if draw { 1 } else { 0 },
+    //             gc.context(),
+    //             self.inner(),
+    //         ))
+    //     }
+    // }
+
+    pub fn circle(&self, center: (f64, f64), radius: f64, gc: &Context) {
+        let center = gc.t(center);
+        let radius = gc.ts(radius);
+        unsafe { GECircle(center.0, center.1, radius, gc.context(), self.inner()) }
+    }
+
+    pub fn rectangle(&self, from: (f64, f64), to: (f64, f64), gc: &Context) {
+        let from = gc.t(from);
+        let to = gc.t(to);
+        unsafe { GELine(from.0, from.1, to.0, to.1, gc.context(), self.inner()) }
+    }
+
+    pub fn path<T: IntoIterator<Item = impl IntoIterator<Item = (f64, f64)>>>(
+        &self,
+        coords: T,
+        winding: bool,
+        gc: &Context,
+    ) {
+        let mut x = Vec::new();
+        let mut y = Vec::new();
+        let mut nper: Vec<std::os::raw::c_int> = Vec::new();
+        let coords = coords.into_iter();
+        for segment in coords {
+            let mut n = 0;
+            for xy in segment {
+                let xy = gc.t(xy);
+                x.push(xy.0);
+                y.push(xy.1);
+                n += 1;
+            }
+            nper.push(n);
+        }
+
+        let xptr = x.as_mut_slice().as_mut_ptr();
+        let yptr = y.as_mut_slice().as_mut_ptr();
+        let nperptr = nper.as_mut_slice().as_mut_ptr();
+        unsafe {
+            GEPath(
+                xptr,
+                yptr,
+                nper.len() as std::os::raw::c_int,
+                nperptr,
+                if winding { 1 } else { 0 },
+                gc.context(),
+                self.inner(),
+            )
+        }
+    }
+
     // pub fn GERaster(&self,         raster: *mut ::std::os::raw::c_uint,        w: ::std::os::raw::c_int,        h: ::std::os::raw::c_int,        x: f64,        y: f64,        width: f64,        height: f64,        angle: f64,        interpolate: Rboolean,        gc: pGEcontext);
     // pub fn GECap(&self, dd: pGEDevDesc) -> SEXP;
     // pub fn GEText(&self,         x: f64,        y: f64,        str: *const ::std::os::raw::c_char,        enc: cetype_t,        xc: f64,        yc: f64,        rot: f64,        gc: pGEcontext);
-    // pub fn GEMode(&self, mode: ::std::os::raw::c_int);
 }
