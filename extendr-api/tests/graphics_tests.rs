@@ -47,17 +47,17 @@ fn graphics_test() {
     }
 
     let ps = std::fs::read_to_string(path).expect("PS file not written.");
-    if let Some(split) = ps.split_once("%%EndProlog\n") {
+    if let Some(split) = ps.split_once("%%EndProlog") {
         let epilogue = split.1;
         println!("epilogue:\n{}", epilogue);
 
         // Graphics commands.
-        // assert!(epilogue.contains("1 0 0 srgb\n"));
-        // assert!(epilogue.contains("bg { 0 1 0 srgb } def\n"));
-        // assert!(epilogue.contains("o\n"));
-        // assert!(epilogue.contains("cp p3\n"));
+        // Note windows version uses \r\n, hence the newline at the start.
+        // assert!(epilogue.contains("\no"));
+        // assert!(epilogue.contains("\ncp p3"));
+        // assert!(epilogue.contains("\nc p3"));
     } else {
         println!("ps:\n{}", ps);
-        assert!(false);
+        assert!(("epilogue not found", false).1);
     }
 }
