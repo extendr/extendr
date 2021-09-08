@@ -43,6 +43,13 @@ pub enum LineType {
     Twodash,
 }
 
+pub enum Unit {
+    Device,
+    Normalized,
+    Inches,
+    CM
+}
+
 // pub enum Mode {
 //     Off,
 //     On,
@@ -55,6 +62,23 @@ pub enum FontFace {
     ItalicFont,
     BoldItalicFont,
     SymbolFont,
+}
+
+pub fn rgb(red: u8, green: u8, blue: u8) -> i32 {
+    red as i32 | (green as i32) << 8 | (blue as i32) << 16 | 0xff << 24
+}
+
+pub fn rgba(red: u8, green: u8, blue: u8, alpha: u8) -> i32 {
+    red as i32 | (green as i32) << 8 | (blue as i32) << 16 | (alpha as i32) << 24
+}
+
+fn unit_to_ge(unit: Unit) -> GEUnit {
+    match unit {
+        Unit::Device => GEUnit_GE_DEVICE,
+        Unit::Normalized => GEUnit_GE_NDC,
+        Unit::Inches => GEUnit_GE_INCHES,
+        Unit::CM => GEUnit_GE_CM,
+    }
 }
 
 impl Context {
@@ -81,14 +105,6 @@ impl Context {
             };
             Self { inner }
         }
-    }
-
-    pub fn rgb(red: u8, green: u8, blue: u8) -> i32 {
-        red as i32 | (green as i32) << 8 | (blue as i32) << 16 | 0xff << 24
-    }
-
-    pub fn rgba(red: u8, green: u8, blue: u8, alpha: u8) -> i32 {
-        red as i32 | (green as i32) << 8 | (blue as i32) << 16 | (alpha as i32) << 24
     }
 
     pub fn color(&mut self, col: i32) -> &mut Self {
@@ -237,36 +253,24 @@ impl Device {
         }
     }
 
-    pub fn fromDeviceX(&self, value: f64, to: GEUnit) -> f64 {
-        unsafe { GEfromDeviceX(value, to, self.inner()) }
+    pub fn from_device_coords(&self, value: (f64, f64), from: Unit) -> (f64, f64) {
+        let from = unit_to_ge(from);
+        unsafe { (GEfromDeviceX(value.0, from, self.inner()), GEfromDeviceY(value.1, from, self.inner())) }
     }
 
-    pub fn toDeviceX(&self, value: f64, from: GEUnit) -> f64 {
-        unsafe { GEtoDeviceX(value, from, self.inner()) }
+    pub fn to_device_coords(&self, value: (f64, f64), to: Unit) -> (f64, f64) {
+        let to = unit_to_ge(to);
+        unsafe { (GEtoDeviceX(value.0, to, self.inner()), GEtoDeviceY(value.1, to, self.inner())) }
     }
 
-    pub fn fromDeviceY(&self, value: f64, to: GEUnit) -> f64 {
-        unsafe { GEfromDeviceY(value, to, self.inner()) }
+    pub fn from_device_dims(&self, value: (f64, f64), from: Unit) -> (f64, f64) {
+        let from = unit_to_ge(from);
+        unsafe { (GEfromDeviceWidth(value.0, from, self.inner()), GEfromDeviceHeight(value.1, from, self.inner())) }
     }
 
-    pub fn toDeviceY(&self, value: f64, from: GEUnit) -> f64 {
-        unsafe { GEtoDeviceY(value, from, self.inner()) }
-    }
-
-    pub fn fromDeviceWidth(&self, value: f64, to: GEUnit) -> f64 {
-        unsafe { GEfromDeviceWidth(value, to, self.inner()) }
-    }
-
-    pub fn toDeviceWidth(&self, value: f64, from: GEUnit) -> f64 {
-        unsafe { GEtoDeviceWidth(value, from, self.inner()) }
-    }
-
-    pub fn fromDeviceHeight(&self, value: f64, to: GEUnit) -> f64 {
-        unsafe { GEfromDeviceHeight(value, to, self.inner()) }
-    }
-
-    pub fn toDeviceHeight(&self, value: f64, from: GEUnit) -> f64 {
-        unsafe { GEtoDeviceHeight(value, from, self.inner()) }
+    pub fn to_device_dims(&self, value: (f64, f64), to: Unit) -> (f64, f64) {
+        let to = unit_to_ge(to);
+        unsafe { (GEtoDeviceWidth(value.0, to, self.inner()), GEtoDeviceHeight(value.1, to, self.inner())) }
     }
 
     pub fn setClip(&self, x1: f64, y1: f64, x2: f64, y2: f64) {
