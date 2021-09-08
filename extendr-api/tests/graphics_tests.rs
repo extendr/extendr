@@ -1,4 +1,4 @@
-use extendr_api::graphics::{Context, DevDesc, Mode};
+use extendr_api::graphics::{Context, Device};
 use extendr_api::prelude::*;
 
 #[test]
@@ -8,14 +8,21 @@ fn graphics_test() {
     let path_str = path.to_string_lossy().to_string();
     test! {
         R!("postscript({{path_str}})")?;
-        let dev = DevDesc::current();
-        let gc = Context::new();
-        dev.mode(Mode::On);
+        let dev = Device::current();
+        let mut gc = Context::new();
+
+        // Graphics commands.
+        gc.color(Context::rgb(0xff, 0x00, 0x00));
+        gc.line_width(10.0);
         dev.line(0.0, 0.0, 100.0, 100.0, &gc);
         R!("dev.off()")?;
     }
 
     let ps = std::fs::read_to_string(path).unwrap();
-    // println!("ps={:?}", ps);
+    let epilogue = ps.split_once("%%EndProlog\n").unwrap().1;
+    println!("ps={}", epilogue);
+
+    // Graphics commands.
+    assert!(ps.contains("1 0 0 srgb\n"));
     assert!(ps.contains("100.00 100.00 l\n"));
 }

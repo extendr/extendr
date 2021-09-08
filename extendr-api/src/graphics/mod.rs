@@ -6,7 +6,7 @@ pub struct Context {
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct DevDesc {
+pub struct Device {
     inner: pGEDevDesc,
 }
 
@@ -15,7 +15,7 @@ pub struct Pattern {
     inner: Robj,
 }
 
-impl DevDesc {
+impl Device {
     pub(crate) fn inner(&self) -> pGEDevDesc {
         self.inner
     }
@@ -43,11 +43,11 @@ pub enum LineType {
     Twodash,
 }
 
-pub enum Mode {
-    Off,
-    On,
-    InputOn,
-}
+// pub enum Mode {
+//     Off,
+//     On,
+//     InputOn,
+// }
 
 pub enum FontFace {
     PlainFont,
@@ -59,24 +59,28 @@ pub enum FontFace {
 
 impl Context {
     pub fn new() -> Self {
-        // See GInit()
-        let inner = R_GE_gcontext {
-            col: -1,
-            fill: -1,
-            gamma: 1.0,
-            lwd: 5.0,
-            lty: 0,
-            lend: R_GE_lineend_GE_ROUND_CAP,
-            ljoin: R_GE_linejoin_GE_ROUND_JOIN,
-            lmitre: 10.0,
-            cex: 1.0,
-            ps: 1.0,
-            lineheight: 1.0,
-            fontface: 0,
-            fontfamily: [0; 201],
-            // patternFill: R_NilValue,
-        };
-        Self { inner }
+        #[allow(unused_unsafe)]
+        unsafe {
+            let inner = R_GE_gcontext {
+                col: -1,
+                fill: -1,
+                gamma: 1.0,
+                lwd: 5.0,
+                lty: 0,
+                lend: R_GE_lineend_GE_ROUND_CAP,
+                ljoin: R_GE_linejoin_GE_ROUND_JOIN,
+                lmitre: 10.0,
+                cex: 1.0,
+                ps: 1.0,
+                lineheight: 1.0,
+                fontface: 0,
+                fontfamily: [0; 201],
+
+                #[cfg(use_r_patternfill)]
+                patternFill: R_NilValue,
+            };
+            Self { inner }
+        }
     }
 
     pub fn rgb(red: u8, green: u8, blue: u8) -> i32 {
@@ -154,10 +158,10 @@ impl Context {
         self
     }
 
-    pub fn char_extension(&mut self, cex: f64) -> &mut Self {
-        self.inner.cex = cex;
-        self
-    }
+    // pub fn char_extra_size(&mut self, cex: f64) -> &mut Self {
+    //     self.inner.cex = cex;
+    //     self
+    // }
 
     pub fn font_face(&mut self, fontface: FontFace) -> &mut Self {
         use FontFace::*;
@@ -193,37 +197,41 @@ impl Context {
     // }
 }
 
+impl Default for Context {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[allow(non_snake_case)]
-impl DevDesc {
-    pub fn current() -> DevDesc {
+impl Device {
+    pub fn current() -> Device {
         unsafe {
-            DevDesc {
+            Device {
                 inner: GEcurrentDevice(),
             }
         }
     }
 
-    pub fn mode(&self, mode: Mode) {
-        use Mode::*;
+    pub fn off(&self) {
         unsafe {
-            GEMode(
-                match mode {
-                    Off => 0,
-                    On => 1,
-                    InputOn => 2,
-                },
-                self.inner(),
-            )
-        };
+            GEMode(0, self.inner());
+        }
+    }
+
+    pub fn on(&self) {
+        unsafe {
+            GEMode(1, self.inner());
+        }
     }
 
     pub fn deviceNumber(&self) -> i32 {
         unsafe { GEdeviceNumber(self.inner()) }
     }
 
-    pub fn getDevice(number: i32) -> DevDesc {
+    pub fn getDevice(number: i32) -> Device {
         unsafe {
-            DevDesc {
+            Device {
                 inner: GEgetDevice(number),
             }
         }
