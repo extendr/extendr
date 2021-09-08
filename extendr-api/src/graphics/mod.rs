@@ -47,7 +47,7 @@ pub enum Unit {
     Device,
     Normalized,
     Inches,
-    CM
+    CM,
 }
 
 // pub enum Mode {
@@ -255,22 +255,42 @@ impl Device {
 
     pub fn from_device_coords(&self, value: (f64, f64), from: Unit) -> (f64, f64) {
         let from = unit_to_ge(from);
-        unsafe { (GEfromDeviceX(value.0, from, self.inner()), GEfromDeviceY(value.1, from, self.inner())) }
+        unsafe {
+            (
+                GEfromDeviceX(value.0, from, self.inner()),
+                GEfromDeviceY(value.1, from, self.inner()),
+            )
+        }
     }
 
     pub fn to_device_coords(&self, value: (f64, f64), to: Unit) -> (f64, f64) {
         let to = unit_to_ge(to);
-        unsafe { (GEtoDeviceX(value.0, to, self.inner()), GEtoDeviceY(value.1, to, self.inner())) }
+        unsafe {
+            (
+                GEtoDeviceX(value.0, to, self.inner()),
+                GEtoDeviceY(value.1, to, self.inner()),
+            )
+        }
     }
 
     pub fn from_device_dims(&self, value: (f64, f64), from: Unit) -> (f64, f64) {
         let from = unit_to_ge(from);
-        unsafe { (GEfromDeviceWidth(value.0, from, self.inner()), GEfromDeviceHeight(value.1, from, self.inner())) }
+        unsafe {
+            (
+                GEfromDeviceWidth(value.0, from, self.inner()),
+                GEfromDeviceHeight(value.1, from, self.inner()),
+            )
+        }
     }
 
     pub fn to_device_dims(&self, value: (f64, f64), to: Unit) -> (f64, f64) {
         let to = unit_to_ge(to);
-        unsafe { (GEtoDeviceWidth(value.0, to, self.inner()), GEtoDeviceHeight(value.1, to, self.inner())) }
+        unsafe {
+            (
+                GEtoDeviceWidth(value.0, to, self.inner()),
+                GEtoDeviceHeight(value.1, to, self.inner()),
+            )
+        }
     }
 
     pub fn setClip(&self, x1: f64, y1: f64, x2: f64, y2: f64) {

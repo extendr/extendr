@@ -1,4 +1,4 @@
-use extendr_api::graphics::{Context, Device, rgb};
+use extendr_api::graphics::{rgb, Context, Device};
 use extendr_api::prelude::*;
 
 #[test]
@@ -22,11 +22,10 @@ fn graphics_test() {
     if let Some(split) = ps.split_once("%%EndProlog\n") {
         let epilogue = split.1;
         println!("epilogue:\n{}", epilogue);
-    
+
         // Graphics commands.
         assert!(ps.contains("1 0 0 srgb\n"));
         assert!(ps.contains("100.00 100.00 l\n"));
-    
     } else {
         println!("ps:\n{}", ps);
         assert!(false);
