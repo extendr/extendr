@@ -51,7 +51,7 @@ pub use super::thread_safety::{
 };
 
 pub use super::wrapper::{
-    EnvIter, Environment, Expression, ExternalPtr, FromList, Function, Language, List, ListIter,
+    EnvIter, Environment, Expression, ExternalPtr, FromList, Function, Integers, Language, List, ListIter,
     Nullable, Pairlist, Primitive, Promise, Raw, Rstr, Symbol,
 };
 
