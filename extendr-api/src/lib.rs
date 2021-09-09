@@ -233,6 +233,7 @@ pub mod prelude;
 pub mod rmacros;
 
 pub mod robj;
+pub mod scalar;
 pub mod thread_safety;
 pub mod wrapper;
 
@@ -241,6 +242,7 @@ pub mod robj_ndarray;
 
 pub use std::convert::{TryFrom, TryInto};
 pub use std::ops::Deref;
+pub use std::ops::DerefMut;
 
 //////////////////////////////////////////////////
 // Note these pub use statements are deprectaed

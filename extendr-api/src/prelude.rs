@@ -68,3 +68,5 @@ pub use super::iter::{Int, Logical, Real, StrIter};
 pub use std::convert::{TryFrom, TryInto};
 
 pub use std::ops::Index;
+
+pub use super::scalar::*;

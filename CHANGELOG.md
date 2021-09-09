@@ -24,6 +24,10 @@
 
 - `SymPair::sym_pair()` now returns `(Option<Robj>, Robj)`
 
+- Bump `ndarray` to 0.15.3. Under [RFC 1977](https://github.com/rust-lang/rfcs/pull/1977) this is a "public dependency" change, and therefore can be considered a breaking change, as consumers of `extendr` that use an older version of `ndarray` will no longer be compatible until they also bump `ndarray` to a compatible version.
+
+- Implement `TryFrom<&ArrayBase> for Robj`, allowing `extendr`-annotated functions to return Arrays from the `ndarray` crate and have them automatically converted to R arrays. Note, even if 1D arrays are returned they will not be returned as vectors.
+
 ## extendr 0.2.0
 
 - Added contributing guidelines and code of conduct.

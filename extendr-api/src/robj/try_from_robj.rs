@@ -40,7 +40,7 @@ macro_rules! impl_try_from_scalar_integer {
                 // might eventually become available in future, though.
                 if let Some(v) = robj.as_real() {
                     let result = v as Self;
-                    if ((result as f64 - v).abs() < f64::EPSILON) {
+                    if (result as f64 - v).abs() < f64::EPSILON {
                         return Ok(result);
                     } else {
                         return Err(Error::ExpectedWholeNumber(robj));
