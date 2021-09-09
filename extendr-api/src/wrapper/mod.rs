@@ -9,6 +9,7 @@ pub mod char;
 pub mod environment;
 pub mod expr;
 pub mod function;
+pub mod integers;
 pub mod lang;
 pub mod list;
 pub mod matrix;
@@ -28,6 +29,7 @@ pub use altrep::{
 pub use environment::{EnvIter, Environment};
 pub use expr::Expression;
 pub use function::Function;
+pub use integers::Integers;
 pub use lang::Language;
 pub use list::{FromList, List, ListIter};
 pub use matrix::{RArray, RColumn, RMatrix, RMatrix3D};
@@ -103,6 +105,13 @@ macro_rules! make_conversions {
                 &self.robj
             }
         }
+
+        impl DerefMut for $typename {
+            /// Make a wrapper behave like a writable Robj.
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.robj
+            }
+        }
     };
 }
 
@@ -156,6 +165,8 @@ make_conversions!(Promise, ExpectedPromise, is_promise, "Not a Promise object");
 make_conversions!(Altrep, ExpectedAltrep, is_altrep, "Not an Altrep type");
 
 make_conversions!(S4, ExpectedS4, is_s4, "Not a S4 type");
+
+make_conversions!(Integers, ExpectedInteger, is_integer, "Not an integer type");
 
 impl Robj {
     /// Convert a symbol object to a Symbol wrapper.
