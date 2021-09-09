@@ -14,49 +14,11 @@ use std::ops::{Add, Div, Mul, Neg, Not, Sub};
 #[derive(PartialEq, Eq)]
 pub struct Rint(pub i32);
 
-impl Rint {
-    /// Construct a NA Rint.
-    pub fn na() -> Self {
-        Rint(i32::MIN)
-    }
-
-    /// Get an integer or i32::MIN for NA.
-    pub fn inner(&self) -> i32 {
-        self.0
-    }
-}
-
-impl Clone for Rint {
-    fn clone(&self) -> Self {
-        Self(self.0)
-    }
-}
-
-impl Copy for Rint {}
-
-impl IsNA for Rint {
-    /// Return true is the is a NA value.
-    fn is_na(&self) -> bool {
-        self.0 == std::i32::MIN
-    }
-}
+gen_scalar_impl!(Rint, i32, i32::MIN);
 
 gen_from!(Rint, i32);
 
-impl std::fmt::Debug for Rint {
-    /// Debug format an Rint.
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let z: Option<i32> = (*self).into();
-        if let Some(val) = z {
-            write!(f, "{}", val)
-        } else {
-            write!(f, "na")
-        }
-    }
-}
-
-
-
+gen_sum_iter!(Rint, 0i32);
 
 // Generate binary ops for +, -, * and /
 gen_binop!(
@@ -107,21 +69,6 @@ gen_unop!(
     |lhs: i32| Some(!lhs),
     "Logical not a Rint value, overflows to NA."
 );
-
-impl std::iter::Sum for Rint {
-    /// Sum an integer iterator over Rint.
-    /// Yields NA on overflow of NAs present.
-    fn sum<I: Iterator<Item = Rint>>(iter: I) -> Rint {
-        iter.fold(Rint::from(0), |a, b| a + b)
-    }
-}
-
-impl PartialEq<i32> for Rint {
-    /// Compare a Rint with an integer. NA always fails.
-    fn eq(&self, other: &i32) -> bool {
-        !self.is_na() && self.0 == *other
-    }
-}
 
 impl TryFrom<Robj> for Rint {
     type Error = Error;

@@ -91,6 +91,7 @@ macro_rules! gen_binop {
 
 
 macro_rules! gen_from {
+    // TODO: Should conversions fail if `NA` is provided?
     ($type : tt, $type_prim : tt) => {
         impl From<$type_prim> for $type {
             fn from(v: $type_prim) -> Self {
@@ -127,6 +128,70 @@ macro_rules! gen_from {
     }
 }
 
+macro_rules! gen_scalar_impl {
+    ($type : tt, $type_prim : tt, $na_val : expr) => {
+
+        impl $type {
+            /// Construct a NA.
+            pub fn na() -> Self {
+                $type($na_val)
+            }
+
+            /// Get underlying value.
+            pub fn inner(&self) -> $type_prim {
+                self.0
+            }
+        }
+
+        impl Clone for $type {
+            fn clone(&self) -> Self {
+                Self(self.0)
+            }
+        }
+
+        impl Copy for $type {}
+
+        impl IsNA for $type {
+            /// Return true is the is a NA value.
+            fn is_na(&self) -> bool {
+                self.0 == $na_val
+            }
+        }
+        impl std::fmt::Debug for $type {
+            /// Debug format.
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                let z: Option<$type_prim> = (*self).into();
+                if let Some(val) = z {
+                    write!(f, "{}", val)
+                } else {
+                    write!(f, "na")
+                }
+            }
+        }
+
+        impl PartialEq<$type_prim> for $type {
+            /// NA always fails.
+            fn eq(&self, other: &$type_prim) -> bool {
+                !self.is_na() && self.0 == *other
+            }
+        }
+    }
+}
+
+macro_rules! gen_sum_iter {
+    ($type : tt, $zero : expr) => {
+        impl std::iter::Sum for $type {
+            /// Yields NA on overflow if NAs present.
+            fn sum<I: Iterator<Item = $type>>(iter: I) -> $type {
+                iter.fold($type::from($zero), |a, b| a + b)
+            }
+        }
+
+    }
+}
+
 pub(in crate::scalar) use gen_unop;
 pub(in crate::scalar) use gen_binop;
 pub(in crate::scalar) use gen_from;
+pub(in crate::scalar) use gen_scalar_impl;
+pub(in crate::scalar) use gen_sum_iter;
