@@ -93,14 +93,14 @@ gen_binop!(
 );
 
 // Generate unary ops for -, !
-gen_unnop!(
+gen_unop!(
     Rint,
     Neg,
     neg,
     |lhs: i32| Some(-lhs),
     "Negate a Rint value, overflows to NA."
 );
-gen_unnop!(
+gen_unop!(
     Rint,
     Not,
     not,

@@ -1,4 +1,4 @@
-macro_rules! gen_unnop {
+macro_rules! gen_unop {
     ($type : tt, $opname1 : ident, $opname2: ident, $expr: expr, $docstring: expr) => {
         impl $opname1 for $type {
             type Output = $type;
@@ -127,6 +127,6 @@ macro_rules! gen_from {
     }
 }
 
-pub(in crate::scalar) use gen_unnop;
+pub(in crate::scalar) use gen_unop;
 pub(in crate::scalar) use gen_binop;
 pub(in crate::scalar) use gen_from;
