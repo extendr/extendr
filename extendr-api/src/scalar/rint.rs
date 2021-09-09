@@ -41,37 +41,7 @@ impl IsNA for Rint {
     }
 }
 
-impl From<i32> for Rint {
-    /// Construct a Rint from an integer.
-    /// i32::MIN gives an NA.
-    fn from(v: i32) -> Self {
-        Self(v)
-    }
-}
-
-impl From<Option<i32>> for Rint {
-    /// Construct an Rint from an optional integer.
-    /// None or Some(i32::MIN) gives an NA.
-    fn from(v: Option<i32>) -> Self {
-        if let Some(v) = v {
-            v.into()
-        } else {
-            Rint::na()
-        }
-    }
-}
-
-impl From<Rint> for Option<i32> {
-    /// Convert an Rint to an optional integer.
-    /// NA gives None.
-    fn from(v: Rint) -> Self {
-        if v.is_na() {
-            None
-        } else {
-            Some(v.0)
-        }
-    }
-}
+gen_from!(Rint, i32);
 
 impl std::fmt::Debug for Rint {
     /// Debug format an Rint.
@@ -199,9 +169,3 @@ impl TryFrom<Robj> for Rint {
     }
 }
 
-impl From<Rint> for Robj {
-    /// Convert am Rint into an robj.
-    fn from(value: Rint) -> Self {
-        Robj::from(value.0)
-    }
-}

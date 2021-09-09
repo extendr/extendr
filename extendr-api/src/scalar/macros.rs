@@ -90,5 +90,43 @@ macro_rules! gen_binop {
 }
 
 
+macro_rules! gen_from {
+    ($type : tt, $type_prim : tt) => {
+        impl From<$type_prim> for $type {
+            fn from(v: $type_prim) -> Self {
+                Self(v)
+            }
+        }
+
+        impl From<Option<$type_prim>> for $type {
+            fn from(v: Option<$type_prim>) -> Self {
+                if let Some(v) = v {
+                    v.into()
+                } else {
+                    $type::na()
+                }
+            }
+        }
+
+        impl From<$type> for Option<$type_prim> {
+            fn from(v: $type) -> Self {
+                if v.is_na() {
+                    None
+                } else {
+                    Some(v.0)
+                }
+            }
+        }
+
+        impl From<$type> for Robj {
+            fn from(value: $type) -> Self {
+                Robj::from(value.0)
+            }
+        }
+
+    }
+}
+
 pub(in crate::scalar) use gen_unnop;
 pub(in crate::scalar) use gen_binop;
+pub(in crate::scalar) use gen_from;
