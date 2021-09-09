@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["extendr_api"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.54.0/core/iter/traits/collect/trait.FromIterator.html\" title=\"trait core::iter::traits::collect::FromIterator\">FromIterator</a>&lt;<a class=\"struct\" href=\"extendr_api/scalar/struct.Rint.html\" title=\"struct extendr_api::scalar::Rint\">Rint</a>&gt; for <a class=\"struct\" href=\"extendr_api/wrapper/integers/struct.Integers.html\" title=\"struct extendr_api::wrapper::integers::Integers\">Integers</a>","synthetic":false,"types":["extendr_api::wrapper::integers::Integers"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

@@ -421,7 +421,7 @@
                 <span class="comment">// might eventually become available in future, though.</span>
                 <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_real</span>() {
                     <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">v</span> <span class="kw">as</span> <span class="self">Self</span>;
-                    <span class="kw">if</span> ((<span class="ident">result</span> <span class="kw">as</span> <span class="ident">f64</span> <span class="op">-</span> <span class="ident">v</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">f64::EPSILON</span>) {
+                    <span class="kw">if</span> (<span class="ident">result</span> <span class="kw">as</span> <span class="ident">f64</span> <span class="op">-</span> <span class="ident">v</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">f64::EPSILON</span> {
                         <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">result</span>);
                     } <span class="kw">else</span> {
                         <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::ExpectedWholeNumber</span>(<span class="ident">robj</span>));

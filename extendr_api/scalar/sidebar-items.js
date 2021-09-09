@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Rint","Rint is a wrapper for i32 in the context of an R’s integer vector."]]});

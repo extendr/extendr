@@ -1129,6 +1129,8 @@
 <span id="1127">1127</span>
 <span id="1128">1128</span>
 <span id="1129">1129</span>
+<span id="1130">1130</span>
+<span id="1131">1131</span>
 </pre><pre class="rust">
 <span class="doccomment">//! R object handling.</span>
 <span class="doccomment">//!</span>
@@ -1146,6 +1148,7 @@
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
 
+<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::scalar::Rint</span>;
 <span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
 <span class="kw">use</span> <span class="ident">std::iter::IntoIterator</span>;
 <span class="kw">use</span> <span class="ident">std::ops</span>::{<span class="ident">Range</span>, <span class="ident">RangeInclusive</span>};
@@ -1839,6 +1842,7 @@
 
 <span class="macro">make_typed_slice!</span>(<span class="ident">Bool</span>, <span class="ident">INTEGER</span>, <span class="ident">LGLSXP</span>);
 <span class="macro">make_typed_slice!</span>(<span class="ident">i32</span>, <span class="ident">INTEGER</span>, <span class="ident">INTSXP</span>);
+<span class="macro">make_typed_slice!</span>(<span class="ident">Rint</span>, <span class="ident">INTEGER</span>, <span class="ident">INTSXP</span>);
 <span class="macro">make_typed_slice!</span>(<span class="ident">f64</span>, <span class="ident">REAL</span>, <span class="ident">REALSXP</span>);
 <span class="macro">make_typed_slice!</span>(<span class="ident">u8</span>, <span class="ident">RAW</span>, <span class="ident">RAWSXP</span>);
 

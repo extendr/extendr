@@ -323,6 +323,17 @@
 <span id="321">321</span>
 <span id="322">322</span>
 <span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
+<span id="326">326</span>
+<span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
 </pre><pre class="rust">
 <span class="doccomment">//! Wrappers are lightweight proxies for references to R datatypes.</span>
 <span class="doccomment">//! They do not contain an Robj (see array.rs for an example of this).</span>
@@ -335,6 +346,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">environment</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">expr</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">function</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">integers</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">lang</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">list</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">matrix</span>;
@@ -354,6 +366,7 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">environment</span>::{<span class="ident">EnvIter</span>, <span class="ident">Environment</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">expr::Expression</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">function::Function</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">integers::Integers</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">lang::Language</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">list</span>::{<span class="ident">FromList</span>, <span class="ident">List</span>, <span class="ident">ListIter</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">matrix</span>::{<span class="ident">RArray</span>, <span class="ident">RColumn</span>, <span class="ident">RMatrix</span>, <span class="ident">RMatrix3D</span>};
@@ -429,6 +442,13 @@
                 <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">robj</span>
             }
         }
+
+        <span class="kw">impl</span> <span class="ident">DerefMut</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {
+            <span class="doccomment">/// Make a wrapper behave like a writable Robj.</span>
+            <span class="kw">fn</span> <span class="ident">deref_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span><span class="ident">::Target</span> {
+                <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">robj</span>
+            }
+        }
     };
 }
 
@@ -482,6 +502,8 @@
 <span class="macro">make_conversions!</span>(<span class="ident">Altrep</span>, <span class="ident">ExpectedAltrep</span>, <span class="ident">is_altrep</span>, <span class="string">&quot;Not an Altrep type&quot;</span>);
 
 <span class="macro">make_conversions!</span>(<span class="ident">S4</span>, <span class="ident">ExpectedS4</span>, <span class="ident">is_s4</span>, <span class="string">&quot;Not a S4 type&quot;</span>);
+
+<span class="macro">make_conversions!</span>(<span class="ident">Integers</span>, <span class="ident">ExpectedInteger</span>, <span class="ident">is_integer</span>, <span class="string">&quot;Not an integer type&quot;</span>);
 
 <span class="kw">impl</span> <span class="ident">Robj</span> {
     <span class="doccomment">/// Convert a symbol object to a Symbol wrapper.</span>
