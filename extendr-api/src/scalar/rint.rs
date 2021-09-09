@@ -1,6 +1,8 @@
 use crate::*;
+use crate::scalar::macros::*;
 use std::convert::TryFrom;
 use std::ops::{Add, Div, Mul, Neg, Not, Sub};
+
 
 /// Rint is a wrapper for i32 in the context of an R's integer vector.
 ///
@@ -83,118 +85,37 @@ impl std::fmt::Debug for Rint {
     }
 }
 
-macro_rules! gen_binop {
-    ($opname1 : ident, $opname2: ident, $expr: expr, $docstring: expr) => {
-        impl $opname1<Rint> for Rint {
-            type Output = Rint;
 
-            #[doc = $docstring]
-            fn $opname2(self, rhs: Rint) -> Self::Output {
-                if let Some(lhs) = self.clone().into() {
-                    if let Some(rhs) = rhs.into() {
-                        let f = $expr;
-                        if let Some(res) = f(lhs, rhs) {
-                            // Note that if res = i32::MIN, this will also be NA.
-                            return Rint::from(res);
-                        }
-                    }
-                }
-                Rint::na()
-            }
-        }
 
-        impl $opname1<Rint> for &Rint {
-            type Output = Rint;
-
-            #[doc = $docstring]
-            fn $opname2(self, rhs: Rint) -> Self::Output {
-                if let Some(lhs) = self.clone().into() {
-                    if let Some(rhs) = rhs.into() {
-                        let f = $expr;
-                        if let Some(res) = f(lhs, rhs) {
-                            // Note that if res = i32::MIN, this will also be NA.
-                            return Rint::from(res);
-                        }
-                    }
-                }
-                Rint::na()
-            }
-        }
-
-        impl $opname1<i32> for Rint {
-            type Output = Rint;
-
-            #[doc = $docstring]
-            fn $opname2(self, rhs: i32) -> Self::Output {
-                if let Some(lhs) = self.clone().into() {
-                    let f = $expr;
-                    if let Some(res) = f(lhs, rhs) {
-                        // Note that if res = i32::MIN, this will also be NA.
-                        return Rint::from(res);
-                    }
-                }
-                Rint::na()
-            }
-        }
-    };
-}
-
-macro_rules! gen_unnop {
-    ($opname1 : ident, $opname2: ident, $expr: expr, $docstring: expr) => {
-        impl $opname1 for Rint {
-            type Output = Rint;
-
-            #[doc = $docstring]
-            fn $opname2(self) -> Self::Output {
-                if let Some(lhs) = self.into() {
-                    let f = $expr;
-                    if let Some(res) = f(lhs) {
-                        // Note that if res = i32::MIN, this will also be NA.
-                        return Rint::from(res);
-                    }
-                }
-                Rint::na()
-            }
-        }
-
-        impl $opname1 for &Rint {
-            type Output = Rint;
-
-            #[doc = $docstring]
-            fn $opname2(self) -> Self::Output {
-                if let Some(lhs) = (*self).into() {
-                    let f = $expr;
-                    if let Some(res) = f(lhs) {
-                        // Note that if res = i32::MIN, this will also be NA.
-                        return Rint::from(res);
-                    }
-                }
-                Rint::na()
-            }
-        }
-    };
-}
 
 // Generate binary ops for +, -, * and /
 gen_binop!(
+    Rint,
+    i32,
     Add,
     add,
     |lhs: i32, rhs| lhs.checked_add(rhs),
     "Add two Rint values or an option of i32, overflows to NA."
 );
 gen_binop!(
+    Rint,
+    i32,
     Sub,
     sub,
     |lhs: i32, rhs| lhs.checked_sub(rhs),
     "Subtract two Rint values or an option of i32, overflows to NA."
 );
 gen_binop!(
+    Rint,
+    i32,
     Mul,
     mul,
     |lhs: i32, rhs| lhs.checked_mul(rhs),
     "Multiply two Rint values or an option of i32, overflows to NA."
 );
 gen_binop!(
+    Rint,
+    i32,
     Div,
     div,
     |lhs: i32, rhs| lhs.checked_div(rhs),
@@ -203,12 +124,14 @@ gen_binop!(
 
 // Generate unary ops for -, !
 gen_unnop!(
+    Rint,
     Neg,
     neg,
     |lhs: i32| Some(-lhs),
     "Negate a Rint value, overflows to NA."
 );
 gen_unnop!(
+    Rint,
     Not,
     not,
     |lhs: i32| Some(!lhs),
