@@ -13,11 +13,9 @@ use std::ops::{Add, Div, Mul, Neg, Sub};
 #[derive(PartialEq)]
 pub struct Rfloat(pub f64);
 
-
 gen_scalar_impl!(Rfloat, f64, unsafe {libR_sys::R_NaReal});
-
-gen_from!(Rfloat, f64);
-
+gen_from_primitive!(Rfloat, f64);
+gen_from_scalar!(Rfloat, f64);
 gen_sum_iter!(Rfloat, 0f64);
 
 // Generate binary ops for +, -, * and /

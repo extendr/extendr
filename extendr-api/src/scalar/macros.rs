@@ -1,3 +1,4 @@
+/// Generates unary operators for scalar types.
 macro_rules! gen_unop {
     ($type : tt, $opname1 : ident, $opname2: ident, $expr: expr, $docstring: expr) => {
         impl $opname1 for $type {
@@ -33,6 +34,8 @@ macro_rules! gen_unop {
         }
     };
 }
+
+/// Generates binary operators for scalar types.
 macro_rules! gen_binop {
     ($type : tt, $type_prim : tt, $opname1 : ident, $opname2: ident, $expr: expr, $docstring: expr) => {
         impl $opname1<$type> for $type {
@@ -89,11 +92,10 @@ macro_rules! gen_binop {
     };
 }
 
-
-macro_rules! gen_from {
-    // TODO: Should conversions fail if `NA` is provided?
+/// Generates conversions from primitive to scalar type.
+macro_rules! gen_from_primitive {
     ($type : tt, $type_prim : tt) => {
-        impl From<$type_prim> for $type {
+       impl From<$type_prim> for $type {
             fn from(v: $type_prim) -> Self {
                 Self(v)
             }
@@ -109,6 +111,12 @@ macro_rules! gen_from {
             }
         }
 
+    }
+}
+
+/// Generates conversions from scalar type.
+macro_rules! gen_from_scalar {
+    ($type : tt, $type_prim : tt) => {
         impl From<$type> for Option<$type_prim> {
             fn from(v: $type) -> Self {
                 if v.is_na() {
@@ -124,10 +132,15 @@ macro_rules! gen_from {
                 Robj::from(value.0)
             }
         }
-
     }
 }
 
+/// Generates primary scalar type implementations, including the following traits;
+/// 1. `Clone`
+/// 2. `Copy`
+/// 3. `IsNA`
+/// 4. `Debug`
+/// 5. `PartialEq`
 macro_rules! gen_scalar_impl {
     ($type : tt, $type_prim : tt, $na_val : expr) => {
 
@@ -178,6 +191,7 @@ macro_rules! gen_scalar_impl {
     }
 }
 
+/// Generates `std::iter::Sum` for scalar types.
 macro_rules! gen_sum_iter {
     ($type : tt, $zero : expr) => {
         impl std::iter::Sum for $type {
@@ -192,6 +206,7 @@ macro_rules! gen_sum_iter {
 
 pub(in crate::scalar) use gen_unop;
 pub(in crate::scalar) use gen_binop;
-pub(in crate::scalar) use gen_from;
+pub(in crate::scalar) use gen_from_primitive;
+pub(in crate::scalar) use gen_from_scalar;
 pub(in crate::scalar) use gen_scalar_impl;
 pub(in crate::scalar) use gen_sum_iter;
