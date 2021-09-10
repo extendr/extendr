@@ -36,6 +36,7 @@ macro_rules! gen_unop {
 }
 
 /// Generates binary operators for scalar types.
+// TODO: binary operators for pairs `(Rtype, Type)` and `(Type, Rtype)` using references?
 macro_rules! gen_binop {
     ($type : tt, $type_prim : tt, $opname1 : ident, $opname2: ident, $expr: expr, $docstring: expr) => {
         impl $opname1<$type> for $type {
@@ -82,6 +83,22 @@ macro_rules! gen_binop {
                 if let Some(lhs) = self.clone().into() {
                     let f = $expr;
                     if let Some(res) = f(lhs, rhs) {
+                        // Note that if res is NA, this will also be NA.
+                        return $type::from(res);
+                    }
+                }
+                $type::na()
+            }
+        }
+
+        impl $opname1<$type> for $type_prim {
+            type Output = $type;
+
+            #[doc = $docstring]
+            fn $opname2(self, rhs: $type) -> Self::Output {
+                if let Some(rhs) = rhs.clone().into() {
+                    let f = $expr;
+                    if let Some(res) = f(self, rhs) {
                         // Note that if res is NA, this will also be NA.
                         return $type::from(res);
                     }
