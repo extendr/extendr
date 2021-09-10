@@ -48,3 +48,38 @@ fn test_rint() {
     let b = Rint::from(-10);
     assert_eq!(a + b, Rint::na());
 }
+
+#[test]
+fn test_rfloat() {
+    let a = Rfloat::from(20.);
+    let b = Rfloat::from(10.);
+    assert_eq!(a + b, Rfloat::from(30.));
+    assert_eq!(a - b, Rfloat::from(10.));
+    assert_eq!(a * b, Rfloat::from(200.));
+    assert_eq!(a / b, Rfloat::from(2.));
+    assert_eq!(-a, Rfloat::from(-20.));
+
+    assert_eq!(&a + b, Rfloat::from(30.));
+    assert_eq!(&a - b, Rfloat::from(10.));
+    assert_eq!(&a * b, Rfloat::from(200.));
+    assert_eq!(&a / b, Rfloat::from(2.));
+    assert_eq!(-&a, Rfloat::from(-20.));
+
+    // NA lhs
+    let a = Rfloat::na();
+    let b = Rfloat::from(10.);
+    assert_eq!(a + b, Rfloat::na());
+    assert_eq!(a - b, Rfloat::na());
+    assert_eq!(a * b, Rfloat::na());
+    assert_eq!(a / b, Rfloat::na());
+    assert_eq!(-a, Rfloat::na());
+
+    // NA rhs
+    let a = Rfloat::from(10.);
+    let b = Rfloat::na();
+    assert_eq!(a + b, Rfloat::na());
+    assert_eq!(a - b, Rfloat::na());
+    assert_eq!(a * b, Rfloat::na());
+    assert_eq!(a / b, Rfloat::na());
+
+}

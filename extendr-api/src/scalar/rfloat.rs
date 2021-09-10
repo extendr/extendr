@@ -9,6 +9,7 @@ use std::ops::{Add, Div, Mul, Neg, Sub};
 /// Rfloat has a special NA value, obtained from R headers via R_NaReal.
 ///
 /// Rfloat has the same footprint as an f64 value allowing us to use it in zero copy slices.
+// TODO: Should this support `Eq`?
 #[derive(PartialEq)]
 pub struct Rfloat(pub f64);
 
