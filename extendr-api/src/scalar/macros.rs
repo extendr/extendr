@@ -112,7 +112,7 @@ macro_rules! gen_binop {
 /// Generates conversions from primitive to scalar type.
 macro_rules! gen_from_primitive {
     ($type : tt, $type_prim : tt) => {
-       impl From<$type_prim> for $type {
+        impl From<$type_prim> for $type {
             fn from(v: $type_prim) -> Self {
                 Self(v)
             }
@@ -127,8 +127,7 @@ macro_rules! gen_from_primitive {
                 }
             }
         }
-
-    }
+    };
 }
 
 /// Generates conversions from scalar type.
@@ -149,7 +148,7 @@ macro_rules! gen_from_scalar {
                 Robj::from(value.0)
             }
         }
-    }
+    };
 }
 
 /// Generates required methods:
@@ -157,7 +156,7 @@ macro_rules! gen_from_scalar {
 /// 2. instance `inner()`
 macro_rules! gen_impl {
     ($type : tt, $type_prim : tt, $na_val : expr) => {
-       /// Construct a NA.
+        /// Construct a NA.
         pub fn na() -> Self {
             $type($na_val)
         }
@@ -166,7 +165,7 @@ macro_rules! gen_impl {
         pub fn inner(&self) -> $type_prim {
             self.0
         }
-    }
+    };
 }
 
 /// Generates scalar trait implementations:
@@ -177,7 +176,6 @@ macro_rules! gen_impl {
 /// 5. `PartialEq`
 macro_rules! gen_trait_impl {
     ($type : tt, $type_prim : tt, $na_val : expr) => {
-
         impl Clone for $type {
             fn clone(&self) -> Self {
                 Self(self.0)
@@ -210,7 +208,7 @@ macro_rules! gen_trait_impl {
                 !self.is_na() && self.0 == *other
             }
         }
-    }
+    };
 }
 
 /// Generates `std::iter::Sum` for scalar types.
@@ -222,14 +220,13 @@ macro_rules! gen_sum_iter {
                 iter.fold($type::from($zero), |a, b| a + b)
             }
         }
-
-    }
+    };
 }
 
-pub(in crate::scalar) use gen_unop;
 pub(in crate::scalar) use gen_binop;
 pub(in crate::scalar) use gen_from_primitive;
 pub(in crate::scalar) use gen_from_scalar;
-pub(in crate::scalar) use gen_trait_impl;
-pub(in crate::scalar) use gen_sum_iter;
 pub(in crate::scalar) use gen_impl;
+pub(in crate::scalar) use gen_sum_iter;
+pub(in crate::scalar) use gen_trait_impl;
+pub(in crate::scalar) use gen_unop;

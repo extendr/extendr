@@ -82,7 +82,6 @@ fn test_rfloat() {
     assert_eq!(a * b, Rfloat::na());
     assert_eq!(a / b, Rfloat::na());
 
-
     // Inf is a single value, so can be tested for equality
     let a = Rfloat::from(f64::INFINITY);
     let b = Rfloat::from(42.);

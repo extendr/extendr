@@ -1,5 +1,5 @@
-mod rint;
-mod rfloat;
 mod macros;
-pub use rint::Rint;
+mod rfloat;
+mod rint;
 pub use rfloat::Rfloat;
+pub use rint::Rint;

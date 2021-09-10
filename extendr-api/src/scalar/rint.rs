@@ -1,8 +1,7 @@
-use crate::*;
 use crate::scalar::macros::*;
+use crate::*;
 use std::convert::TryFrom;
 use std::ops::{Add, Div, Mul, Neg, Not, Sub};
-
 
 /// Rint is a wrapper for i32 in the context of an R's integer vector.
 ///
@@ -118,4 +117,3 @@ impl TryFrom<Robj> for Rint {
         Err(Error::ExpectedNumeric(robj))
     }
 }
-
