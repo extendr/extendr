@@ -82,4 +82,46 @@ fn test_rfloat() {
     assert_eq!(a * b, Rfloat::na());
     assert_eq!(a / b, Rfloat::na());
 
+
+    // Inf is a single value, so can be tested for equality
+    let a = Rfloat::from(f64::INFINITY);
+    let b = Rfloat::from(42.);
+    assert_eq!(a + b, a);
+    assert_eq!(a - b, a);
+    assert_eq!(b - a, Rfloat::from(f64::NEG_INFINITY));
+    assert_eq!(a * b, a);
+    assert_eq!(a / b, a);
+    assert_eq!(-a, Rfloat::from(f64::NEG_INFINITY));
+
+    let a = Rfloat::from(f64::NEG_INFINITY);
+    assert_eq!(a + b, a);
+    assert_eq!(a - b, a);
+    assert_eq!(b - a, Rfloat::from(f64::INFINITY));
+    assert_eq!(a * b, a);
+    assert_eq!(a / b, a);
+    assert_eq!(-a, Rfloat::from(f64::INFINITY));
+
+    // Operations with NaN produce NaN
+    let a = Rfloat::from(f64::NAN);
+    assert!((a + b).is_nan());
+    assert!((a - b).is_nan());
+    assert!((a * b).is_nan());
+    assert!((a / b).is_nan());
+    assert!((-a).is_nan());
+
+    // Signs
+    assert!(Rfloat::from(0.).is_sign_positive());
+    assert!(Rfloat::from(f64::INFINITY).is_sign_positive());
+
+    assert!(Rfloat::from(-0.).is_sign_negative());
+    assert!(Rfloat::from(f64::NEG_INFINITY).is_sign_negative());
+
+    // Infinity
+    assert!(Rfloat::from(f64::INFINITY).is_infinite());
+    assert!(Rfloat::from(f64::NEG_INFINITY).is_infinite());
+    assert!(!Rfloat::from(0.).is_infinite());
+
+    // Some more, testing mixed binary operators
+    assert!((Rfloat::from(f64::INFINITY) + 1.).is_infinite());
+    assert!((42. - Rfloat::from(f64::INFINITY)).is_sign_negative());
 }
