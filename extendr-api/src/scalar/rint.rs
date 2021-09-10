@@ -14,7 +14,11 @@ use std::ops::{Add, Div, Mul, Neg, Not, Sub};
 #[derive(PartialEq, Eq)]
 pub struct Rint(pub i32);
 
-gen_scalar_impl!(Rint, i32, i32::MIN);
+impl Rint {
+    gen_impl!(Rint, i32, i32::MIN);
+}
+
+gen_trait_impl!(Rint, i32, i32::MIN);
 gen_from_primitive!(Rint, i32);
 gen_from_scalar!(Rint, i32);
 gen_sum_iter!(Rint, 0i32);

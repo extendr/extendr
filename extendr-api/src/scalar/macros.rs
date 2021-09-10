@@ -135,26 +135,31 @@ macro_rules! gen_from_scalar {
     }
 }
 
-/// Generates primary scalar type implementations, including the following traits;
+/// Generates required methods:
+/// 1. static `na()`
+/// 2. instance `inner()`
+macro_rules! gen_impl {
+    ($type : tt, $type_prim : tt, $na_val : expr) => {
+       /// Construct a NA.
+        pub fn na() -> Self {
+            $type($na_val)
+        }
+
+        /// Get underlying value.
+        pub fn inner(&self) -> $type_prim {
+            self.0
+        }
+    }
+}
+
+/// Generates scalar trait implementations:
 /// 1. `Clone`
 /// 2. `Copy`
 /// 3. `IsNA`
 /// 4. `Debug`
 /// 5. `PartialEq`
-macro_rules! gen_scalar_impl {
+macro_rules! gen_trait_impl {
     ($type : tt, $type_prim : tt, $na_val : expr) => {
-
-        impl $type {
-            /// Construct a NA.
-            pub fn na() -> Self {
-                $type($na_val)
-            }
-
-            /// Get underlying value.
-            pub fn inner(&self) -> $type_prim {
-                self.0
-            }
-        }
 
         impl Clone for $type {
             fn clone(&self) -> Self {
@@ -208,5 +213,6 @@ pub(in crate::scalar) use gen_unop;
 pub(in crate::scalar) use gen_binop;
 pub(in crate::scalar) use gen_from_primitive;
 pub(in crate::scalar) use gen_from_scalar;
-pub(in crate::scalar) use gen_scalar_impl;
+pub(in crate::scalar) use gen_trait_impl;
 pub(in crate::scalar) use gen_sum_iter;
+pub(in crate::scalar) use gen_impl;
