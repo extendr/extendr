@@ -1,35 +1,39 @@
 /// Generates unary operators for scalar types.
 macro_rules! gen_unop {
-    ($type : tt, $opname1 : ident, $opname2: ident, $expr: expr, $docstring: expr) => {
-        impl $opname1 for $type {
+    ($type : tt, $opname : ident, $expr: expr, $docstring: expr) => {
+        impl $opname for $type {
             type Output = $type;
 
-            #[doc = $docstring]
-            fn $opname2(self) -> Self::Output {
-                if let Some(lhs) = self.into() {
-                    let f = $expr;
-                    if let Some(res) = f(lhs) {
-                        // Note that if res is NA, this will also be NA.
-                        return $type::from(res);
+            paste::paste! {
+                #[doc = $docstring]
+                fn [<$opname:lower>](self) -> Self::Output {
+                    if let Some(lhs) = self.into() {
+                        let f = $expr;
+                        if let Some(res) = f(lhs) {
+                            // Note that if res is NA, this will also be NA.
+                            return $type::from(res);
+                        }
                     }
+                    $type::na()
                 }
-                $type::na()
             }
         }
 
-        impl $opname1 for &$type {
+        impl $opname for &$type {
             type Output = $type;
 
-            #[doc = $docstring]
-            fn $opname2(self) -> Self::Output {
-                if let Some(lhs) = (*self).into() {
-                    let f = $expr;
-                    if let Some(res) = f(lhs) {
-                        // Note that if res is NA, this will also be NA.
-                        return $type::from(res);
+            paste::paste! {
+                #[doc = $docstring]
+                fn [< $opname:lower >](self) -> Self::Output {
+                    if let Some(lhs) = (*self).into() {
+                        let f = $expr;
+                        if let Some(res) = f(lhs) {
+                            // Note that if res is NA, this will also be NA.
+                            return $type::from(res);
+                        }
                     }
+                    $type::na()
                 }
-                $type::na()
             }
         }
     };

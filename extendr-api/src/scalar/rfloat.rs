@@ -72,13 +72,7 @@ gen_binop!(
 );
 
 // Generate unary ops for -, !
-gen_unop!(
-    Rfloat,
-    Neg,
-    neg,
-    |lhs: f64| Some(-lhs),
-    "Negate a Rfloat value."
-);
+gen_unop!(Rfloat, Neg, |lhs: f64| Some(-lhs), "Negate a Rfloat value.");
 
 impl TryFrom<Robj> for Rfloat {
     type Error = Error;

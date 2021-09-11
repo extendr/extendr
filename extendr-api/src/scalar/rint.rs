@@ -60,14 +60,12 @@ gen_binop!(
 gen_unop!(
     Rint,
     Neg,
-    neg,
     |lhs: i32| Some(-lhs),
     "Negate a Rint value, overflows to NA."
 );
 gen_unop!(
     Rint,
     Not,
-    not,
     |lhs: i32| Some(!lhs),
     "Logical not a Rint value, overflows to NA."
 );
