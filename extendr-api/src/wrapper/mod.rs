@@ -21,6 +21,7 @@ pub mod promise;
 pub mod raw;
 pub mod s4;
 pub mod symbol;
+mod macros;
 
 pub use self::char::Rstr;
 pub use altrep::{

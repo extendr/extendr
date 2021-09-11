@@ -1,0 +1,90 @@
+// Under this size, vectors are manifest.
+// Above this size, vectors are lazy ALTREP objects.
+const SHORT_VECTOR_LENGTH: usize = 64 * 1024;
+
+macro_rules! gen_vector_wrapper_impl {
+    ($type : ty, $type_elem : ty, $type_prim : ty, $default : expr, $r_type : ident, $doc_name : ident) => {
+        impl $type {
+            paste::paste!{
+                #[doc = "Create a new vector of " $type:lower "."]
+                pub fn new(len: usize) -> $type {
+                    let iter = (0..len).map(|_| $default);
+                    <$type>::from_values(iter)
+                }
+            }
+            paste::paste!{
+                #[doc = "Wrapper for creating ALTREP " $doc_name " (" $r_type "SXP) vectors from iterators."]
+                #[doc = "The iterator must be exact, cloneable and implement Debug."]
+                #[doc = "If you want a more generalised constructor, use `iter.collect::<" $type ">()`."]
+                pub fn from_values<V>(values: V) -> Self
+                where
+                    V: IntoIterator,
+                    V::IntoIter: ExactSizeIterator + std::fmt::Debug + Clone + 'static + std::any::Any,
+                    V::Item: Into<$type_prim>,
+                {
+                    single_threaded(|| {
+                        let values: V::IntoIter = values.into_iter();
+
+                        let robj = if values.len() >= SHORT_VECTOR_LENGTH {
+                            Altrep::[<make_alt $r_type:lower _from_iterator>](values)
+                                .try_into()
+                                .unwrap()
+                        } else {
+                            let mut robj = Robj::alloc_vector([<$r_type SXP>], values.len());
+                            let dest: &mut [$type_prim] = robj.as_typed_slice_mut().unwrap();
+
+                            for (d, v) in dest.iter_mut().zip(values) {
+                                *d = v.into();
+                            }
+                            robj
+                        };
+                        Self { robj }
+                    })
+                }
+            }
+
+            /// Get a single element from the vector.
+            /// Note that this is very inefficient in a tight loop.
+            pub fn elt(&self, index: usize) -> $type_elem {
+                unsafe { paste::paste!{[<$r_type _ELT>](self.get(), index as R_xlen_t).into()} }
+            }
+
+            /// Get a region of elements from the vector.
+            pub fn get_region(&self, index: usize, dest: &mut [$type_prim]) {
+                unsafe {
+                    let ptr = dest.as_mut_ptr();
+                    paste::paste!{ [<$r_type _GET_REGION>](self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr); }
+                }
+            }
+
+            /// Return `TRUE` if the vector is sorted, `FALSE` if not, or `NA_BOOL` if unknown.
+            pub fn is_sorted(&self) -> Bool {
+                unsafe { paste::paste!{ [<$r_type _IS_SORTED>](self.get()).into() } }
+            }
+
+            /// Return `TRUE` if the vector has `NA`s, `FALSE` if not, or `NA_BOOL` if unknown.
+            pub fn no_na(&self) -> Bool {
+                unsafe { paste::paste!{ [<$r_type _NO_NA>](self.get()).into() } }
+            }
+
+            paste::paste!{
+                #[doc = "Return an iterator for a " $doc_name " object."]
+                #[doc = "Forces ALTREP objects to manifest."]
+                pub fn iter(&self) -> impl Iterator<Item = $type_elem> {
+                    self.as_typed_slice().unwrap().iter().cloned()
+                }
+            }
+
+            paste::paste!{
+                #[doc = "Return a writable iterator for a " $doc_name " object."]
+                #[doc = "Forces ALTREP objects to manifest."]
+                pub fn iter_mut(&mut self) -> impl Iterator<Item = &mut $type_elem> {
+                    self.as_typed_slice_mut().unwrap().iter_mut()
+                }
+            }
+        }
+
+    }
+}
+
+pub (in crate::wrapper) use gen_vector_wrapper_impl;
