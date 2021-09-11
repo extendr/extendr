@@ -7,7 +7,14 @@ pub struct Integers {
     pub(crate) robj: Robj,
 }
 
-crate::wrapper::macros::gen_vector_wrapper_impl!(Integers, Rint, i32, 0i32, INTEGER, INTSXP, integer);
+crate::wrapper::macros::gen_vector_wrapper_impl!(
+    Integers, // Implements for
+    Rint,     // Element type
+    i32,      // Raw element type
+    INTEGER,  // `R` functions prefix
+    INTSXP,   // `SEXP`
+    integer   // Singular type name used in docs
+);
 
 #[cfg(test)]
 mod tests {

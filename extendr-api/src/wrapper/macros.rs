@@ -4,7 +4,6 @@ macro_rules! gen_vector_wrapper_impl {
         $type : ident,
         $type_elem : ty,
         $type_prim : ty,
-        $default : expr,
         $r_type : ident,
         $sexp : ident,
         $doc_name : ident
@@ -24,7 +23,7 @@ macro_rules! gen_vector_wrapper_impl {
             paste::paste!{
                 #[doc = "Create a new vector of " $type:lower "."]
                 pub fn new(len: usize) -> $type {
-                    let iter = (0..len).map(|_| $default);
+                    let iter = (0..len).map(|_| <$type_prim as std::default::Default>::default());
                     <$type>::from_values(iter)
                 }
             }

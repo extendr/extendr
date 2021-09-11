@@ -7,7 +7,14 @@ pub struct Doubles {
     pub(crate) robj: Robj,
 }
 
-crate::wrapper::macros::gen_vector_wrapper_impl!(Doubles, Rfloat, f64, 0f64, REAL, REALSXP, double);
+crate::wrapper::macros::gen_vector_wrapper_impl!(
+    Doubles, // Implements for
+    Rfloat,  // Element type
+    f64,     // Raw element type
+    REAL,    // `R` functions prefix
+    REALSXP, // `SEXP`
+    double   // Singular type name used in docs
+);
 
 #[cfg(test)]
 mod tests {
