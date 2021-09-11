@@ -27,7 +27,6 @@ gen_binop!(
     Rint,
     i32,
     Add,
-    add,
     |lhs: i32, rhs| lhs.checked_add(rhs),
     "Add two Rint values or an option of i32, overflows to NA."
 );
@@ -35,7 +34,6 @@ gen_binop!(
     Rint,
     i32,
     Sub,
-    sub,
     |lhs: i32, rhs| lhs.checked_sub(rhs),
     "Subtract two Rint values or an option of i32, overflows to NA."
 );
@@ -43,7 +41,6 @@ gen_binop!(
     Rint,
     i32,
     Mul,
-    mul,
     |lhs: i32, rhs| lhs.checked_mul(rhs),
     "Multiply two Rint values or an option of i32, overflows to NA."
 );
@@ -51,7 +48,6 @@ gen_binop!(
     Rint,
     i32,
     Div,
-    div,
     |lhs: i32, rhs| lhs.checked_div(rhs),
     "Divide two Rint values or an option of i32, overflows to NA."
 );

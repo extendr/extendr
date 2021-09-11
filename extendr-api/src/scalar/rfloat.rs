@@ -42,7 +42,6 @@ gen_binop!(
     Rfloat,
     f64,
     Add,
-    add,
     |lhs: f64, rhs: f64| Some(lhs + rhs),
     "Add two Rfloat values or an option of f64."
 );
@@ -50,7 +49,6 @@ gen_binop!(
     Rfloat,
     f64,
     Sub,
-    sub,
     |lhs: f64, rhs: f64| Some(lhs - rhs),
     "Subtract two Rfloat values or an option of f64."
 );
@@ -58,7 +56,6 @@ gen_binop!(
     Rfloat,
     f64,
     Mul,
-    mul,
     |lhs: f64, rhs: f64| Some(lhs * rhs),
     "Multiply two Rfloat values or an option of f64."
 );
@@ -66,7 +63,6 @@ gen_binop!(
     Rfloat,
     f64,
     Div,
-    div,
     |lhs: f64, rhs: f64| Some(lhs / rhs),
     "Divide two Rfloat values or an option of f64."
 );
