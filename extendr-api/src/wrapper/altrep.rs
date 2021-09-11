@@ -1,6 +1,5 @@
 use super::*;
 
-
 macro_rules! make_from_iterator {
     ($fn_name : ident, $make_class : ident, $impl : ident, $type : ty) => {
         pub fn $fn_name<Iter>(iter: Iter) -> Altrep
@@ -8,7 +7,6 @@ macro_rules! make_from_iterator {
             Iter: ExactSizeIterator + std::fmt::Debug + Clone + 'static + std::any::Any,
             Iter::Item: Into<$type>,
         {
-
             impl<Iter: ExactSizeIterator + std::fmt::Debug + Clone> $impl for Iter
             where
                 Iter::Item: Into<$type>,
@@ -37,7 +35,7 @@ macro_rules! make_from_iterator {
             let robj: Robj = Altrep::from_state_and_class(iter, class, false).into();
             Altrep { robj }
         }
-    }
+    };
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -1019,9 +1017,18 @@ impl Altrep {
         })
     }
 
-    make_from_iterator!(make_altinteger_from_iterator, make_altinteger_class, AltIntegerImpl, i32);
-    make_from_iterator!(make_altreal_from_iterator, make_altreal_class, AltRealImpl, f64);
-
+    make_from_iterator!(
+        make_altinteger_from_iterator,
+        make_altinteger_class,
+        AltIntegerImpl,
+        i32
+    );
+    make_from_iterator!(
+        make_altreal_from_iterator,
+        make_altreal_class,
+        AltRealImpl,
+        f64
+    );
 }
 
 impl<Iter: ExactSizeIterator + std::fmt::Debug + Clone> AltrepImpl for Iter {

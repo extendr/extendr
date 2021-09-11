@@ -1,4 +1,3 @@
-
 macro_rules! gen_vector_wrapper_impl {
     (
         $type : ident,
@@ -23,6 +22,7 @@ macro_rules! gen_vector_wrapper_impl {
             paste::paste!{
                 #[doc = "Create a new vector of " $type:lower "."]
                 pub fn new(len: usize) -> $type {
+                    // TODO: Check if impacts performance.
                     let iter = (0..len).map(|_| <$type_prim as std::default::Default>::default());
                     <$type>::from_values(iter)
                 }
@@ -120,4 +120,4 @@ macro_rules! gen_vector_wrapper_impl {
     }
 }
 
-pub (in crate::wrapper) use gen_vector_wrapper_impl;
+pub(in crate::wrapper) use gen_vector_wrapper_impl;

@@ -6,13 +6,14 @@ use libR_sys::*;
 
 pub mod altrep;
 pub mod char;
+pub mod doubles;
 pub mod environment;
 pub mod expr;
 pub mod function;
 pub mod integers;
-pub mod doubles;
 pub mod lang;
 pub mod list;
+mod macros;
 pub mod matrix;
 pub mod nullable;
 pub mod pairlist;
@@ -21,18 +22,17 @@ pub mod promise;
 pub mod raw;
 pub mod s4;
 pub mod symbol;
-mod macros;
 
 pub use self::char::Rstr;
 pub use altrep::{
     AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,
     AltrepImpl,
 };
+pub use doubles::Doubles;
 pub use environment::{EnvIter, Environment};
 pub use expr::Expression;
 pub use function::Function;
 pub use integers::Integers;
-pub use doubles::Doubles;
 pub use lang::Language;
 pub use list::{FromList, List, ListIter};
 pub use matrix::{RArray, RColumn, RMatrix, RMatrix3D};

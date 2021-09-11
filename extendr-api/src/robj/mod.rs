@@ -14,7 +14,7 @@ use std::os::raw;
 
 use crate::*;
 
-use crate::scalar::{Rint, Rfloat};
+use crate::scalar::{Rfloat, Rint};
 use std::collections::HashMap;
 use std::iter::IntoIterator;
 use std::ops::{Range, RangeInclusive};
