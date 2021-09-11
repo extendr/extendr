@@ -7,118 +7,16 @@ pub struct Doubles {
     pub(crate) robj: Robj,
 }
 
-impl Default for Doubles {
-    fn default() -> Self {
-        Doubles::new(0)
-    }
-}
 
-// Under this size, vectors are manifest.
-// Above this size, vectors are lazy ALTREP objects.
-const SHORT_VECTOR_LENGTH: usize = 64 * 1024;
-//
-// impl Doubles {
-//     /// Create a new vector of doubles.
-//     pub fn new(len: usize) -> Doubles {
-//         let iter = (0..len).map(|_| 0f64);
-//         Doubles::from_values(iter)
-//     }
-//
-//     /// Wrapper for creating ALTREP double (REALSXP) vectors from iterators.
-//     /// The iterator must be exact, cloneable and implement Debug.
-//     ///
-//     /// If you want a more generalised constructor, use `iter.collect::<Doubles>()`.
-//     pub fn from_values<V>(values: V) -> Self
-//     where
-//         V: IntoIterator,
-//         V::IntoIter: ExactSizeIterator + std::fmt::Debug + Clone + 'static + std::any::Any,
-//         V::Item: Into<f64>,
-//     {
-//         single_threaded(|| {
-//             let values: V::IntoIter = values.into_iter();
-//
-//             let robj = if values.len() >= SHORT_VECTOR_LENGTH {
-//                 Altrep::make_altreal_from_iterator(values)
-//                     .try_into()
-//                     .unwrap()
-//             } else {
-//                 let mut robj = Robj::alloc_vector(REALSXP, values.len());
-//                 let dest: &mut [f64] = robj.as_typed_slice_mut().unwrap();
-//
-//                 for (d, v) in dest.iter_mut().zip(values) {
-//                     *d = v.into();
-//                 }
-//                 robj
-//             };
-//             Self { robj }
-//         })
-//     }
-//
-//     /// Get a single element from the vector.
-//     /// Note that this is very inefficient in a tight loop.
-//     pub fn elt(&self, index: usize) -> Rfloat {
-//         unsafe { REAL_ELT(self.get(), index as R_xlen_t).into() }
-//     }
-//
-//     /// Get a region of elements from the vector.
-//     pub fn get_region(&self, index: usize, dest: &mut [f64]) {
-//         unsafe {
-//             let ptr = dest.as_mut_ptr();
-//             REAL_GET_REGION(self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr);
-//         }
-//     }
-//
-//     /// Return TRUE if the vector is sorted, FALSE if not, or NA_BOOL if unknown.
-//     pub fn is_sorted(&self) -> Bool {
-//         unsafe { REAL_IS_SORTED(self.get()).into() }
-//     }
-//
-//     /// Return TRUE if the vector has NAs, FALSE if not, or NA_BOOL if unknown.
-//     pub fn no_na(&self) -> Bool {
-//         unsafe { REAL_NO_NA(self.get()).into() }
-//     }
-//
-//     /// Return an iterator for a double object.
-//     /// Forces ALTREP objects to manifest.
-//     pub fn iter(&self) -> impl Iterator<Item = Rfloat> {
-//         self.as_typed_slice().unwrap().iter().cloned()
-//     }
-//
-//     /// Return a writable iterator for a double object.
-//     /// Forces ALTREP objects to manifest.
-//     pub fn iter_mut(&mut self) -> impl Iterator<Item = &mut Rfloat> {
-//         self.as_typed_slice_mut().unwrap().iter_mut()
-//     }
-// }
 
 crate::wrapper::macros::gen_vector_wrapper_impl!(Doubles, Rfloat, f64, 0f64, REAL, double);
 
-impl FromIterator<Rfloat> for Doubles {
-    /// A more generalised iterator collector for small vectors.
-    /// Generates a non-ALTREP vector.
-    fn from_iter<T: IntoIterator<Item = Rfloat>>(iter: T) -> Self {
-        // Collect into a vector first.
-        // TODO: specialise for ExactSizeIterator.
-        let values: Vec<Rfloat> = iter.into_iter().collect();
 
-        let mut robj = Robj::alloc_vector(REALSXP, values.len());
-        let dest: &mut [Rfloat] = robj.as_typed_slice_mut().unwrap();
-
-        for (d, v) in dest.iter_mut().zip(values) {
-            *d = v;
-        }
-
-        Doubles { robj }
-    }
-}
 
 #[cfg(test)]
 mod tests {
     use crate::prelude::*;
-    fn test() {
-        let vec : Doubles = (0..3).map(|i| (i as f64).into()).collect();
-        let _ = vec.iter();
-    }
+
     #[test]
     fn from_iterator() {
         test! {

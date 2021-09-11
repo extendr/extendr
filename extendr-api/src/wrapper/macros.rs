@@ -1,9 +1,17 @@
-// Under this size, vectors are manifest.
-// Above this size, vectors are lazy ALTREP objects.
-const SHORT_VECTOR_LENGTH: usize = 64 * 1024;
 
 macro_rules! gen_vector_wrapper_impl {
-    ($type : ty, $type_elem : ty, $type_prim : ty, $default : expr, $r_type : ident, $doc_name : ident) => {
+    ($type : ident, $type_elem : ty, $type_prim : ty, $default : expr, $r_type : ident, $doc_name : ident) => {
+
+        // Under this size, vectors are manifest.
+        // Above this size, vectors are lazy ALTREP objects.
+        const SHORT_VECTOR_LENGTH: usize = 64 * 1024;
+
+        impl Default for $type {
+            fn default() -> Self {
+                $type::new(0)
+            }
+        }
+
         impl $type {
             paste::paste!{
                 #[doc = "Create a new vector of " $type:lower "."]
@@ -84,6 +92,24 @@ macro_rules! gen_vector_wrapper_impl {
             }
         }
 
+        impl FromIterator<$type_elem> for $type {
+            /// A more generalised iterator collector for small vectors.
+            /// Generates a non-ALTREP vector.
+            fn from_iter<T: IntoIterator<Item = $type_elem>>(iter: T) -> Self {
+                // Collect into a vector first.
+                // TODO: specialise for ExactSizeIterator.
+                let values: Vec<$type_elem> = iter.into_iter().collect();
+
+                let mut robj = Robj::alloc_vector(paste::paste!{[< $r_type SXP >]}, values.len());
+                let dest: &mut [$type_elem] = robj.as_typed_slice_mut().unwrap();
+
+                for (d, v) in dest.iter_mut().zip(values) {
+                    *d = v;
+                }
+
+                $type { robj }
+            }
+        }
     }
 }
 
