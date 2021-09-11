@@ -1,10 +1,17 @@
+/// Generates `impl` block and required traits for a vector type.
 macro_rules! gen_vector_wrapper_impl {
     (
+        /// Vector type for which traits are implemented.
         $type : ident,
+        /// `NA`-aware element type.
         $type_elem : ty,
+        /// Underlying primitive type.
         $type_prim : ty,
+        /// `R` type name.
         $r_type : ident,
+        /// `R` `SEXP`.
         $sexp : ident,
+        /// Singular name of the type, used in doc strings.
         $doc_name : ident
     ) => {
 
