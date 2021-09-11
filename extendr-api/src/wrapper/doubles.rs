@@ -41,7 +41,7 @@ impl Doubles {
     /// use extendr_api::prelude::*;
     /// test! {
     ///     // Short (<64k) vectors are allocated.
-    ///     let vec = Doubles::from_values((0..3).map(|i| 2f64-i));
+    ///     let vec = Doubles::from_values((0..3).map(|i| 2f64 - i as f64));
     ///     assert_eq!(vec.is_altrep(), false);
     ///     assert_eq!(r!(vec.clone()), r!([2f64, 1f64, 0f64]));
     ///     assert_eq!(vec.elt(1), 1f64);
@@ -50,7 +50,7 @@ impl Doubles {
     ///     assert_eq!(dest, [1f64, 0f64]);
     ///
     ///     // Long (>=64k) vectors are lazy ALTREP objects.
-    ///     let vec = Doubles::from_values(0..1000000000);
+    ///     let vec = Doubles::from_values((0..1000000000).map(|x| x as f64));
     ///     assert_eq!(vec.is_altrep(), true);
     ///     assert_eq!(vec.elt(12345678), 12345678f64);
     ///     let mut dest = [0f64; 2];
@@ -108,7 +108,7 @@ impl Doubles {
         unsafe { REAL_NO_NA(self.get()).into() }
     }
 
-    /// Return an iterator for for an integer object.
+    /// Return an iterator for a double object.
     /// Forces ALTREP objects to manifest.
     /// ```
     /// use extendr_api::prelude::*;
@@ -121,14 +121,14 @@ impl Doubles {
         self.as_typed_slice().unwrap().iter().cloned()
     }
 
-    /// Return a writable iterator for an integer object.
+    /// Return a writable iterator for a double object.
     /// Forces ALTREP objects to manifest.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
     ///     let mut vec = Doubles::from_values([0f64, 1f64, 2f64, 3f64]);
-    ///     vec.iter_mut().for_each(|v| *v = *v + 1);
-    ///     assert_eq!(vec, Doubles::from_values([1f64, 2f64, 2f64, 4f64]));
+    ///     vec.iter_mut().for_each(|v| *v = *v + 1f64);
+    ///     assert_eq!(vec, Doubles::from_values([1f64, 2f64, 3f64, 4f64]));
     /// }
     /// ```
     pub fn iter_mut(&mut self) -> impl Iterator<Item = &mut Rfloat> {
@@ -142,7 +142,7 @@ impl FromIterator<Rfloat> for Doubles {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let vec : Doubles = (0..3).map(|i| i.into()).collect();
+    ///     let vec : Doubles = (0..3).map(|i| (i as f64).into()).collect();
     ///     assert_eq!(vec, Doubles::from_values([0f64, 1f64, 2f64]));
     /// }
     /// ```
