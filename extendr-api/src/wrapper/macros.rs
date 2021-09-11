@@ -28,6 +28,14 @@ macro_rules! gen_vector_wrapper_impl {
         impl $type {
             paste::paste!{
                 #[doc = "Create a new vector of " $type:lower "."]
+                #[doc = "```"]
+                #[doc = "use extendr_api::prelude::*;"]
+                #[doc = "test! {"]
+                #[doc = "   let vec = " $type "::new(10);"]
+                #[doc = "   assert_eq!(vec.is_" $r_type:lower "(), true);"]
+                #[doc = "   assert_eq!(vec.len(), 10);"]
+                #[doc = "}"]
+                #[doc = "```"]
                 pub fn new(len: usize) -> $type {
                     // TODO: Check if impacts performance.
                     let iter = (0..len).map(|_| <$type_prim as std::default::Default>::default());
