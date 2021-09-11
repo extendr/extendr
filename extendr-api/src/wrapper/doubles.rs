@@ -7,11 +7,7 @@ pub struct Doubles {
     pub(crate) robj: Robj,
 }
 
-
-
-crate::wrapper::macros::gen_vector_wrapper_impl!(Doubles, Rfloat, f64, 0f64, REAL, double);
-
-
+crate::wrapper::macros::gen_vector_wrapper_impl!(Doubles, Rfloat, f64, 0f64, REAL, REALSXP, double);
 
 #[cfg(test)]
 mod tests {

@@ -1,6 +1,14 @@
 
 macro_rules! gen_vector_wrapper_impl {
-    ($type : ident, $type_elem : ty, $type_prim : ty, $default : expr, $r_type : ident, $doc_name : ident) => {
+    (
+        $type : ident,
+        $type_elem : ty,
+        $type_prim : ty,
+        $default : expr,
+        $r_type : ident,
+        $sexp : ident,
+        $doc_name : ident
+    ) => {
 
         // Under this size, vectors are manifest.
         // Above this size, vectors are lazy ALTREP objects.
@@ -21,7 +29,7 @@ macro_rules! gen_vector_wrapper_impl {
                 }
             }
             paste::paste!{
-                #[doc = "Wrapper for creating ALTREP " $doc_name " (" $r_type "SXP) vectors from iterators."]
+                #[doc = "Wrapper for creating ALTREP " $doc_name " (" $sexp ") vectors from iterators."]
                 #[doc = "The iterator must be exact, cloneable and implement Debug."]
                 #[doc = "If you want a more generalised constructor, use `iter.collect::<" $type ">()`."]
                 pub fn from_values<V>(values: V) -> Self
@@ -38,7 +46,7 @@ macro_rules! gen_vector_wrapper_impl {
                                 .try_into()
                                 .unwrap()
                         } else {
-                            let mut robj = Robj::alloc_vector([<$r_type SXP>], values.len());
+                            let mut robj = Robj::alloc_vector($sexp, values.len());
                             let dest: &mut [$type_prim] = robj.as_typed_slice_mut().unwrap();
 
                             for (d, v) in dest.iter_mut().zip(values) {
@@ -100,7 +108,7 @@ macro_rules! gen_vector_wrapper_impl {
                 // TODO: specialise for ExactSizeIterator.
                 let values: Vec<$type_elem> = iter.into_iter().collect();
 
-                let mut robj = Robj::alloc_vector(paste::paste!{[< $r_type SXP >]}, values.len());
+                let mut robj = Robj::alloc_vector($sexp, values.len());
                 let dest: &mut [$type_elem] = robj.as_typed_slice_mut().unwrap();
 
                 for (d, v) in dest.iter_mut().zip(values) {
