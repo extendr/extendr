@@ -167,7 +167,7 @@ macro_rules! gen_from_scalar {
 /// 1. static `na()`
 /// 2. instance `inner()`
 macro_rules! gen_impl {
-    ($type : tt, $type_prim : tt, $na_val : expr) => {
+    ($type : ident, $type_prim : ty, $na_val : expr) => {
         /// Construct a NA.
         pub fn na() -> Self {
             $type($na_val)
@@ -187,7 +187,7 @@ macro_rules! gen_impl {
 /// 4. `Debug`
 /// 5. `PartialEq`
 macro_rules! gen_trait_impl {
-    ($type : tt, $type_prim : tt, $na_val : expr) => {
+    ($type : ident, $type_prim : ty, $na_val : expr) => {
         impl Clone for $type {
             fn clone(&self) -> Self {
                 Self(self.0)
@@ -218,6 +218,12 @@ macro_rules! gen_trait_impl {
             /// NA always fails.
             fn eq(&self, other: &$type_prim) -> bool {
                 !self.is_na() && self.0 == *other
+            }
+        }
+
+        impl std::default::Default for $type {
+            fn default() -> Self {
+                $type(<$type_prim>::default())
             }
         }
     };
