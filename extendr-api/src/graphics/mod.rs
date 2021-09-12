@@ -1,6 +1,8 @@
 use crate::*;
 use libR_sys::*;
 
+pub mod color;
+
 pub struct Context {
     context: R_GE_gcontext,
     xscale: (f64, f64),
@@ -24,13 +26,13 @@ impl Device {
         self.inner
     }
 
-    pub(crate) fn asref(&self) -> &GEDevDesc {
-        unsafe { &*self.inner }
-    }
+    // pub(crate) fn asref(&self) -> &GEDevDesc {
+    //     unsafe { &*self.inner }
+    // }
 
-    pub(crate) fn dev(&self) -> &DevDesc {
-        unsafe { &*self.asref().dev }
-    }
+    // pub(crate) fn dev(&self) -> &DevDesc {
+    //     unsafe { &*self.asref().dev }
+    // }
 }
 
 #[derive(PartialEq, Debug, Clone)]
@@ -75,14 +77,6 @@ pub enum FontFace {
     SymbolFont,
 }
 
-pub fn rgb(red: u8, green: u8, blue: u8) -> i32 {
-    red as i32 | (green as i32) << 8 | (blue as i32) << 16 | 0xff << 24
-}
-
-pub fn rgba(red: u8, green: u8, blue: u8, alpha: u8) -> i32 {
-    red as i32 | (green as i32) << 8 | (blue as i32) << 16 | (alpha as i32) << 24
-}
-
 fn unit_to_ge(unit: Unit) -> GEUnit {
     match unit {
         Unit::Device => GEUnit_GE_DEVICE,
@@ -103,12 +97,13 @@ impl Context {
             xscale.1 -= offset.1;
             yscale.0 -= offset.0;
             yscale.1 -= offset.1;
-            let scalar = (xscale.0 * yscale.1 - xscale.1 * yscale.0).sqrt();
-            println!("canClip={}", dev.dev().canClip);
+
+            // sqrt(abs(det(m)))
+            let scalar = (xscale.0 * yscale.1 - xscale.1 * yscale.0).abs().sqrt();
 
             let context = R_GE_gcontext {
-                col: rgb(0xff, 0xff, 0xff),
-                fill: rgb(0xc0, 0xc0, 0xc0),
+                col: color::rgb(0xff, 0xff, 0xff).to_i32(),
+                fill: color::rgb(0xc0, 0xc0, 0xc0).to_i32(),
                 gamma: 1.0,
                 lwd: 1.0,
                 lty: 0,
@@ -135,13 +130,13 @@ impl Context {
         }
     }
 
-    pub fn color(&mut self, col: i32) -> &mut Self {
-        self.context.col = col;
+    pub fn color(&mut self, col: color::Color) -> &mut Self {
+        self.context.col = col.to_i32();
         self
     }
 
-    pub fn fill(&mut self, fill: i32) -> &mut Self {
-        self.context.fill = fill;
+    pub fn fill(&mut self, fill: color::Color) -> &mut Self {
+        self.context.fill = fill.to_i32();
         self
     }
 
@@ -151,7 +146,7 @@ impl Context {
     }
 
     pub fn line_width(&mut self, lwd: f64) -> &mut Self {
-        self.context.lwd = lwd * self.scalar;
+        self.context.lwd = (lwd * self.scalar).max(1.0);
         self
     }
 
