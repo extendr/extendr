@@ -30,6 +30,8 @@ try_double_vec <- function(x) .Call(wrap__try_double_vec, x)
 
 try_list_str_hash <- function(x) .Call(wrap__try_list_str_hash, x)
 
+get_doubles_element <- function(x, i) .Call(wrap__get_doubles_element, x, i)
+
 #' Test whether `_arg` parameters are treated correctly in R
 #' Executes \code{`_x` - `_y`}
 #' @param _x an integer scalar, ignored
