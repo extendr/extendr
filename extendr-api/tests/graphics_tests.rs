@@ -17,7 +17,7 @@ fn graphics_test() {
         let mut gc = Context::from_device(&dev, Unit::Inches);
 
         // Start a new page.
-        // Use X11 "Alice Blue" https://en.wikipedia.org/wiki/X11_color_names
+        // Use CSS "antiquewhite" https://www.w3.org/TR/2018/REC-css-color-3-20180619/
         gc.fill(antiquewhite());
         dev.new_page(&gc);
 
