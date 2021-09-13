@@ -94,6 +94,33 @@ fn get_doubles_element(x: Doubles, i: i32) -> Rfloat {
     x.elt(i as usize)
 }
 
+#[extendr(use_try_from = true)]
+fn get_integers_element(x: Integers, i: i32) -> Rint {
+    x.elt(i as usize)
+}
+
+#[extendr(use_try_from = true)]
+fn doubles_square(input: Doubles) -> Doubles {
+    let mut result = Doubles::new(input.len());
+
+    for (x, y) in result.iter_mut().zip(input.iter()) {
+        *x = y * y;
+    }
+
+    result
+}
+
+#[extendr(use_try_from = true)]
+fn integers_square(input: Integers) -> Integers {
+    let mut result = Integers::new(input.len());
+
+    for (x, y) in result.iter_mut().zip(input.iter()) {
+        *x = y * y;
+    }
+
+    result
+}
+
 // Parsing
 
 // Weird behavior of parameter descriptions:
@@ -208,6 +235,10 @@ extendr_module! {
     fn try_list_str_hash;
 
     fn get_doubles_element;
+    fn get_integers_element;
+
+    fn doubles_square;
+    fn integers_square;
 
     fn special_param_names;
     fn __00__special_function_name;

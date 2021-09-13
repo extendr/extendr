@@ -32,6 +32,12 @@ try_list_str_hash <- function(x) .Call(wrap__try_list_str_hash, x)
 
 get_doubles_element <- function(x, i) .Call(wrap__get_doubles_element, x, i)
 
+get_integers_element <- function(x, i) .Call(wrap__get_integers_element, x, i)
+
+doubles_square <- function(input) .Call(wrap__doubles_square, input)
+
+integers_square <- function(input) .Call(wrap__integers_square, input)
+
 #' Test whether `_arg` parameters are treated correctly in R
 #' Executes \code{`_x` - `_y`}
 #' @param _x an integer scalar, ignored
