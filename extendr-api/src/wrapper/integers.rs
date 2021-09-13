@@ -2,6 +2,19 @@ use super::scalar::Rint;
 use super::*;
 use std::iter::FromIterator;
 
+/// An obscure `NA`-aware wrapper for R's integer vectors.
+/// Can be used to iterate over vectors obtained from R
+/// or to create new vectors that can be returned back to R.
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     let mut vec = (0..5).map(|i| i.into()).collect::<Integers>();
+///     vec.iter_mut().for_each(|v| *v = *v + 10);
+///     assert_eq!(vec.elt(0), 10);
+///     let sum = vec.iter().sum::<Rint>();
+///     assert_eq!(sum, 60);
+/// }
+/// ```  
 #[derive(Debug, PartialEq, Clone)]
 pub struct Integers {
     pub(crate) robj: Robj,

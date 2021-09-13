@@ -2,6 +2,19 @@ use super::scalar::Rfloat;
 use super::*;
 use std::iter::FromIterator;
 
+/// An obscure `NA`-aware wrapper for R's double vectors.
+/// Can be used to iterate over vectors obtained from R
+/// or to create new vectors that can be returned back to R.
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     let mut vec = (0..5).map(|i| (i as f64).into()).collect::<Doubles>();
+///     vec.iter_mut().for_each(|v| *v = *v + 10f64);
+///     assert_eq!(vec.elt(0), 10f64);
+///     let sum = vec.iter().sum::<Rfloat>();
+///     assert_eq!(sum, 60f64);
+/// }
+/// ```  
 #[derive(Debug, PartialEq, Clone)]
 pub struct Doubles {
     pub(crate) robj: Robj,
