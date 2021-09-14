@@ -10,14 +10,13 @@ use std::ops::{Add, Div, Mul, Neg, Not, Sub};
 /// The value i32::MIN is used as "NA".
 ///
 /// Rint has the same footprint as an i32 value allowing us to use it in zero copy slices.
-#[derive(PartialEq, Eq)]
 pub struct Rint(pub i32);
 
 impl Rint {
     gen_impl!(Rint, i32, i32::MIN);
 }
 
-gen_trait_impl!(Rint, i32, i32::MIN);
+gen_trait_impl!(Rint, i32, |x: &Rint| x.0 == i32::MIN);
 gen_from_primitive!(Rint, i32);
 gen_from_scalar!(Rint, i32);
 gen_sum_iter!(Rint, 0i32);

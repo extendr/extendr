@@ -187,7 +187,7 @@ macro_rules! gen_impl {
 /// 4. `Debug`
 /// 5. `PartialEq`
 macro_rules! gen_trait_impl {
-    ($type : ident, $type_prim : ty, $na_val : expr) => {
+    ($type : ident, $type_prim : ty, $na_check : expr) => {
         impl Clone for $type {
             fn clone(&self) -> Self {
                 Self(self.0)
@@ -196,10 +196,18 @@ macro_rules! gen_trait_impl {
 
         impl Copy for $type {}
 
-        impl IsNA for $type {
-            /// Return true is the is a NA value.
-            fn is_na(&self) -> bool {
-                self.0 == $na_val
+        paste::paste! {
+            #[doc = "```"]
+            #[doc = "use extendr_api::prelude::*;"]
+            #[doc = "test! {"]
+            #[doc = "    assert!((<" $type ">::na()).is_na());"]
+            #[doc = "}"]
+            #[doc = "```"]
+            impl IsNA for $type {
+                /// Return true is the is a NA value.
+                fn is_na(&self) -> bool {
+                    $na_check(self)
+                }
             }
         }
         impl std::fmt::Debug for $type {
@@ -214,16 +222,47 @@ macro_rules! gen_trait_impl {
             }
         }
 
-        impl PartialEq<$type_prim> for $type {
-            /// NA always fails.
-            fn eq(&self, other: &$type_prim) -> bool {
-                !self.is_na() && self.0 == *other
+        paste::paste! {
+            #[doc = "```"]
+            #[doc = "use extendr_api::prelude::*;"]
+            #[doc = "test! {"]
+            #[doc = "    assert!(<" $type ">::default().eq(&<" $type ">::default()));"]
+            #[doc = "    assert!(!<" $type ">::na().eq(&<" $type ">::na()));"]
+            #[doc = "}"]
+            #[doc = "```"]
+            impl PartialEq<$type> for $type {
+                fn eq(&self, other: &$type) -> bool {
+                    !(self.is_na() || other.is_na()) && self.0 == other.0
+                }
             }
         }
 
-        impl std::default::Default for $type {
-            fn default() -> Self {
-                $type(<$type_prim>::default())
+        paste::paste! {
+            #[doc = "```"]
+            #[doc = "use extendr_api::prelude::*;"]
+            #[doc = "test! {"]
+            #[doc = "    assert!(<" $type ">::default().eq(&<" $type_prim ">::default()));"]
+            #[doc = "}"]
+            #[doc = "```"]
+            impl PartialEq<$type_prim> for $type {
+                /// NA always fails.
+                fn eq(&self, other: &$type_prim) -> bool {
+                    !self.is_na() && self.0 == *other
+                }
+            }
+        }
+
+        paste::paste! {
+            #[doc = "```"]
+            #[doc = "use extendr_api::prelude::*;"]
+            #[doc = "test! {"]
+            #[doc = "    assert_eq!(<" $type ">::default().0, <" $type_prim ">::default());"]
+            #[doc = "}"]
+            #[doc = "```"]
+            impl std::default::Default for $type {
+                fn default() -> Self {
+                    $type(<$type_prim>::default())
+                }
             }
         }
     };
@@ -233,9 +272,19 @@ macro_rules! gen_trait_impl {
 macro_rules! gen_sum_iter {
     ($type : tt, $zero : expr) => {
         impl std::iter::Sum for $type {
-            /// Yields NA on overflow if NAs present.
-            fn sum<I: Iterator<Item = $type>>(iter: I) -> $type {
-                iter.fold($type::from($zero), |a, b| a + b)
+            paste::paste! {
+                #[doc = "Yields NA on overflow if NAs present."]
+                #[doc = "```"]
+                #[doc = "use extendr_api::prelude::*;"]
+                #[doc = "use std::iter::Sum;"]
+                #[doc = "test! {"]
+                #[doc = "    let x = (0..100).map(|x| " $type "::default());"]
+                #[doc = "    assert_eq!(<" $type " as Sum>::sum(x), <" $type ">::default());"]
+                #[doc = "}"]
+                #[doc = "```"]
+                fn sum<I: Iterator<Item = $type>>(iter: I) -> $type {
+                    iter.fold($type::from($zero), |a, b| a + b)
+                }
             }
         }
     };
