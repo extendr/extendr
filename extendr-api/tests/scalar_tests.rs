@@ -21,32 +21,32 @@ fn test_rint() {
     // NA lhs
     let a = Rint::na();
     let b = Rint::from(10);
-    assert_eq!(a + b, Rint::na());
-    assert_eq!(a - b, Rint::na());
-    assert_eq!(a * b, Rint::na());
-    assert_eq!(a / b, Rint::na());
-    assert_eq!(-a, Rint::na());
-    assert_eq!(!a, Rint::na());
+    assert!((a + b).is_na());
+    assert!((a - b).is_na());
+    assert!((a * b).is_na());
+    assert!((a / b).is_na());
+    assert!((-a).is_na());
+    assert!((!a).is_na());
 
     // NA rhs
     let a = Rint::from(10);
     let b = Rint::na();
-    assert_eq!(a + b, Rint::na());
-    assert_eq!(a - b, Rint::na());
-    assert_eq!(a * b, Rint::na());
-    assert_eq!(a / b, Rint::na());
+    assert!((a + b).is_na());
+    assert!((a - b).is_na());
+    assert!((a * b).is_na());
+    assert!((a / b).is_na());
 
     // Overflow
     let a = Rint::from(i32::MAX - 1);
     let b = Rint::from(10);
-    assert_eq!(a * b, Rint::na());
-    assert_eq!(Rint::from(1) / Rint::from(0), Rint::na());
-    assert_eq!(Rint::from(-1) / Rint::na(), Rint::na());
+    assert!((a * b).is_na());
+    assert!((Rint::from(1) / Rint::from(0)).is_na());
+    assert!((Rint::from(-1) / Rint::na()).is_na());
 
     // Underflow
     let a = Rint::from(i32::MIN + 1);
     let b = Rint::from(-10);
-    assert_eq!(a + b, Rint::na());
+    assert!((a + b).is_na());
 }
 
 #[test]
@@ -68,19 +68,19 @@ fn test_rfloat() {
     // NA lhs
     let a = Rfloat::na();
     let b = Rfloat::from(10.);
-    assert_eq!(a + b, Rfloat::na());
-    assert_eq!(a - b, Rfloat::na());
-    assert_eq!(a * b, Rfloat::na());
-    assert_eq!(a / b, Rfloat::na());
-    assert_eq!(-a, Rfloat::na());
+    assert!((a + b).is_na());
+    assert!((a - b).is_na());
+    assert!((a * b).is_na());
+    assert!((a / b).is_na());
+    assert!((-a).is_na());
 
     // NA rhs
     let a = Rfloat::from(10.);
     let b = Rfloat::na();
-    assert_eq!(a + b, Rfloat::na());
-    assert_eq!(a - b, Rfloat::na());
-    assert_eq!(a * b, Rfloat::na());
-    assert_eq!(a / b, Rfloat::na());
+    assert!((a + b).is_na());
+    assert!((a - b).is_na());
+    assert!((a * b).is_na());
+    assert!((a / b).is_na());
 
     // Inf is a single value, so can be tested for equality
     let a = Rfloat::from(f64::INFINITY);
