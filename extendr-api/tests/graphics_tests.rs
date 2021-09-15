@@ -1,11 +1,11 @@
 use extendr_api::graphics::color::*;
-use extendr_api::graphics::{Context, Device, Unit};
+use extendr_api::graphics::{Context, Device, FontFace, Unit};
 use extendr_api::prelude::*;
 
 #[test]
 fn graphics_test() {
     // Set this to false to render with your local graphics device.
-    let use_postscript = true;
+    let use_postscript = false;
     let dir = std::env::temp_dir();
     let path = dir.join("test.ps");
     let path_str = path.to_string_lossy().to_string();
@@ -25,10 +25,10 @@ fn graphics_test() {
 
         // Graphics commands.
         gc.color(darkkhaki());
-        gc.line_width(0.05);
+        gc.line_width(0.1);
 
         // Draw a line.
-        dev.line((1.0, 1.0), (2.0, 2.0), &gc);
+        dev.line((2.0, 2.0), (3.0, 3.0), &gc);
 
         // Draw a circle using `polygon()`.
         let scale = std::f64::consts::PI*2.0/10.0;
@@ -42,6 +42,29 @@ fn graphics_test() {
         // Draw a circle using `circle()`.
         gc.fill(rgb(0x20, 0x20, 0xc0));
         dev.circle((1.0, 1.0), 0.5, &gc);
+
+        gc.color(black());
+        gc.point_size(36.0);
+        gc.font_face(FontFace::PlainFont);
+        gc.font_family("Helvetica");
+
+        // Draw Hello -- World with the two dashes almost touching.
+        let w = dev.text_width("Hello -", &gc);
+        dev.text((1.0, 3.0), "Hello -", (0.0, 0.0), 0.0, &gc);
+        dev.text((1.0 + w, 3.0), "- World", (0.0, 0.0), 0.0, &gc);
+
+        gc.line_width(0.01);
+        for i in 0..10 {
+            dev.symbol((1.0 + i as f64 * 0.3, 4.0), i, 0.25, &gc);
+        }
+
+        println!("{:?}", dev.char_metric('a', &gc));
+        println!("{:?}", dev.char_metric('g', &gc));
+        println!("{:?}", dev.char_metric('ê', &gc));
+
+        println!("{:?}", dev.text_metric("a", &gc));
+        println!("{:?}", dev.text_metric("g", &gc));
+        println!("{:?}", dev.text_metric("ê", &gc));
 
         dev.mode_off();
 
