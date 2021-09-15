@@ -38,7 +38,7 @@ macro_rules! gen_vector_wrapper_impl {
                 #[doc = "```"]
                 pub fn new(len: usize) -> $type {
                     // TODO: Check if impacts performance.
-                    let iter = (0..len).map(|_| <$type_prim as std::default::Default>::default());
+                    let iter = (0..len).map(|_| <$type_prim>::default());
                     <$type>::from_values(iter)
                 }
             }
@@ -73,10 +73,26 @@ macro_rules! gen_vector_wrapper_impl {
                 }
             }
 
-            /// Get a single element from the vector.
-            /// Note that this is very inefficient in a tight loop.
-            pub fn elt(&self, index: usize) -> $type_elem {
-                unsafe { paste::paste!{[<$r_type _ELT>](self.get(), index as R_xlen_t).into()} }
+            paste::paste! {
+                #[doc = "Get a single element from the vector."]
+                #[doc = "Note that this is very inefficient in a tight loop."]
+                #[doc = "```"]
+                #[doc = "use extendr_api::prelude::*;"]
+                #[doc = "test! {"]
+                #[doc = "   let vec = " $type "::new(10);"]
+                #[doc = "   assert_eq!(vec.elt(0), <"$type_elem">::default());"]
+                #[doc = "   assert_eq!(vec.elt(9), <"$type_elem">::default());"]
+                #[doc = "   assert!(vec.elt(10).is_na());"]
+                #[doc = "}"]
+                #[doc = "```"]
+                pub fn elt(&self, index: usize) -> $type_elem {
+                    // Defensive check for oob
+                    if(index >= self.len()) {
+                        <$type_elem>::na()
+                    } else {
+                        unsafe { [<$r_type _ELT>](self.get(), index as R_xlen_t).into() }
+                    }
+                }
             }
 
             /// Get a region of elements from the vector.
