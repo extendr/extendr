@@ -5,7 +5,7 @@ use extendr_api::prelude::*;
 #[test]
 fn graphics_test() {
     // Set this to false to render with your local graphics device.
-    let use_postscript = false;
+    let use_postscript = true;
     let dir = std::env::temp_dir();
     let path = dir.join("test.ps");
     let path_str = path.to_string_lossy().to_string();
