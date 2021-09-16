@@ -117,24 +117,13 @@ pub use rinternals::*;
 /// panics and segfaults. We will take great trouble to ensure that this
 /// is true.
 ///
-pub enum Robj {
-    // This object owns the SEXP and must free it.
-    #[doc(hidden)]
-    Owned(SEXP),
-
-    //  This object references a SEXP owned by libR.
-    #[doc(hidden)]
-    Sys(SEXP),
+pub struct Robj {
+    inner: SEXP,
 }
 
 impl Clone for Robj {
     fn clone(&self) -> Self {
-        unsafe {
-            match *self {
-                Robj::Owned(sexp) => new_owned(sexp),
-                Robj::Sys(sexp) => new_sys(sexp),
-            }
-        }
+        unsafe { new_owned(self.get()) }
     }
 }
 
@@ -149,10 +138,7 @@ impl Robj {
     /// Note: this is unsafe.
     #[doc(hidden)]
     pub unsafe fn get(&self) -> SEXP {
-        match self {
-            Robj::Owned(sexp) => *sexp,
-            Robj::Sys(sexp) => *sexp,
-        }
+        self.inner
     }
 
     #[doc(hidden)]
@@ -925,13 +911,18 @@ impl Robj {
 
 #[doc(hidden)]
 pub unsafe fn new_owned(sexp: SEXP) -> Robj {
-    single_threaded(|| ownership::protect(sexp));
-    Robj::Owned(sexp)
+    single_threaded(|| {
+        ownership::protect(sexp);
+        Robj { inner: sexp }
+    })
 }
 
 #[doc(hidden)]
 pub unsafe fn new_sys(sexp: SEXP) -> Robj {
-    Robj::Sys(sexp)
+    single_threaded(|| {
+        ownership::protect(sexp);
+        Robj { inner: sexp }
+    })
 }
 
 /// Compare equality with integer slices.
@@ -1125,10 +1116,7 @@ pub(crate) unsafe fn to_str<'a>(ptr: *const u8) -> &'a str {
 impl Drop for Robj {
     fn drop(&mut self) {
         unsafe {
-            match self {
-                Robj::Owned(sexp) => ownership::unprotect(*sexp),
-                Robj::Sys(_) => (),
-            }
+            ownership::unprotect(self.inner);
         }
     }
 }
