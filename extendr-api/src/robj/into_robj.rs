@@ -16,7 +16,7 @@ pub(crate) fn str_to_character(s: &str) -> SEXP {
 impl From<()> for Robj {
     fn from(_: ()) -> Self {
         // Note: we do not need to protect this.
-        unsafe { new_owned(R_NilValue) }
+        unsafe { Robj::from_sexp(R_NilValue) }
     }
 }
 
@@ -49,7 +49,7 @@ impl From<&Robj> for Robj {
     // Note: we should probably have a much better reference
     // mechanism as double-free or underprotection is a distinct possibility.
     fn from(val: &Robj) -> Self {
-        unsafe { new_owned(val.get()) }
+        unsafe { Robj::from_sexp(val.get()) }
     }
 }
 

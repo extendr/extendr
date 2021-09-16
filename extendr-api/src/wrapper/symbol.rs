@@ -28,7 +28,7 @@ impl Symbol {
     pub fn from_string<S: AsRef<str>>(val: S) -> Self {
         let val = val.as_ref();
         Symbol {
-            robj: unsafe { new_owned(make_symbol(val)) },
+            robj: Robj::from_sexp(make_symbol(val)),
         }
     }
 
@@ -38,7 +38,7 @@ impl Symbol {
             assert!(TYPEOF(sexp) == SYMSXP as i32);
         }
         Symbol {
-            robj: unsafe { new_sys(sexp) },
+            robj: Robj::from_sexp(sexp),
         }
     }
 

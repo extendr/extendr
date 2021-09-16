@@ -47,7 +47,7 @@ impl Pairlist {
                 }
             }
             let res = Pairlist {
-                robj: new_owned(res),
+                robj: Robj::from_sexp(res),
             };
             Rf_unprotect(num_protects as i32);
             res
@@ -135,7 +135,7 @@ impl Iterator for PairlistIter {
                 None
             } else {
                 let tag = TAG(sexp);
-                let value = new_owned(CAR(sexp));
+                let value = Robj::from_sexp(CAR(sexp));
                 self.list_elem = CDR(sexp);
                 if TYPEOF(tag) == SYMSXP as i32 {
                     let printname = PRINTNAME(tag);

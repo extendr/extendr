@@ -102,7 +102,7 @@ impl Robj {
     pub fn call(&self, args: Pairlist) -> Result<Robj> {
         if self.is_function() {
             unsafe {
-                let call = new_owned(Rf_lcons(self.get(), args.get()));
+                let call = Robj::from_sexp(Rf_lcons(self.get(), args.get()));
                 call.eval()
             }
         } else {

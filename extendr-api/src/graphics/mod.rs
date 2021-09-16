@@ -3,8 +3,11 @@ use libR_sys::*;
 
 pub mod color;
 
+<<<<<<< HEAD
 use color::Color;
 
+=======
+>>>>>>> Change uses of new_owned to Robj::from_sexp
 pub struct Context {
     context: R_GE_gcontext,
     xscale: (f64, f64),
@@ -70,9 +73,15 @@ pub enum LineType {
     Solid,
     Dashed,
     Dotted,
+<<<<<<< HEAD
     DotDash,
     LongDash,
     TwoDash,
+=======
+    Dotdash,
+    Longdash,
+    Twodash,
+>>>>>>> Change uses of new_owned to Robj::from_sexp
 }
 
 #[derive(PartialEq, Debug, Clone)]
@@ -117,8 +126,13 @@ impl Context {
             let scalar = (xscale.0 * yscale.1 - xscale.1 * yscale.0).abs().sqrt();
 
             let mut context = R_GE_gcontext {
+<<<<<<< HEAD
                 col: Color::rgb(0xff, 0xff, 0xff).to_i32(),
                 fill: Color::rgb(0xc0, 0xc0, 0xc0).to_i32(),
+=======
+                col: color::rgb(0xff, 0xff, 0xff).to_i32(),
+                fill: color::rgb(0xc0, 0xc0, 0xc0).to_i32(),
+>>>>>>> Change uses of new_owned to Robj::from_sexp
                 gamma: 1.0,
                 lwd: 1.0,
                 lty: 0,
@@ -152,13 +166,21 @@ impl Context {
     }
 
     /// Set the line or text color of a primitive.
+<<<<<<< HEAD
     pub fn color(&mut self, col: Color) -> &mut Self {
+=======
+    pub fn color(&mut self, col: color::Color) -> &mut Self {
+>>>>>>> Change uses of new_owned to Robj::from_sexp
         self.context.col = col.to_i32();
         self
     }
 
     /// Set the fill color of a primitive.
+<<<<<<< HEAD
     pub fn fill(&mut self, fill: Color) -> &mut Self {
+=======
+    pub fn fill(&mut self, fill: color::Color) -> &mut Self {
+>>>>>>> Change uses of new_owned to Robj::from_sexp
         self.context.fill = fill.to_i32();
         self
     }
@@ -176,14 +198,24 @@ impl Context {
     }
 
     /// Set the type of the line.
+<<<<<<< HEAD
     /// ```ignore
+=======
+    /// ```norun
+>>>>>>> Change uses of new_owned to Robj::from_sexp
     /// Blank    => <invisible>
     /// Solid    => ------
     /// Dashed   => - - - -
     /// Dotted   => . . . .
+<<<<<<< HEAD
     /// DotDash  => . - . -
     /// LongDash => --  --
     /// TwoDash  => . . - -
+=======
+    /// Dotdash  => . - . -
+    /// Longdash => --  --
+    /// Twodash  => . . - -
+>>>>>>> Change uses of new_owned to Robj::from_sexp
     /// ```
     pub fn line_type(&mut self, lty: LineType) -> &mut Self {
         use LineType::*;
@@ -192,15 +224,25 @@ impl Context {
             Solid => 0,
             Dashed => 4 + (4 << 4),
             Dotted => 1 + (3 << 4),
+<<<<<<< HEAD
             DotDash => 1 + (3 << 4) + (4 << 8) + (3 << 12),
             LongDash => 7 + (3 << 4),
             TwoDash => 2 + (2 << 4) + (6 << 8) + (2 << 12),
+=======
+            Dotdash => 1 + (3 << 4) + (4 << 8) + (3 << 12),
+            Longdash => 7 + (3 << 4),
+            Twodash => 2 + (2 << 4) + (6 << 8) + (2 << 12),
+>>>>>>> Change uses of new_owned to Robj::from_sexp
         };
         self
     }
 
     /// Set the line end type.
+<<<<<<< HEAD
     /// ```ignore
+=======
+    /// ```norun
+>>>>>>> Change uses of new_owned to Robj::from_sexp
     ///   LineEnd::RoundCap
     ///   LineEnd::ButtCap  
     ///   LineEnd::SquareCap
@@ -215,7 +257,11 @@ impl Context {
     }
 
     /// Set the line join type.
+<<<<<<< HEAD
     /// ```ignore
+=======
+    /// ```norun
+>>>>>>> Change uses of new_owned to Robj::from_sexp
     ///   LineJoin::RoundJoin
     ///   LineJoin::MitreJoin
     ///   LineJoin::BevelJoin
@@ -252,7 +298,11 @@ impl Context {
     // }
 
     /// Set the font face.
+<<<<<<< HEAD
     /// ```ignore
+=======
+    /// ```norun
+>>>>>>> Change uses of new_owned to Robj::from_sexp
     ///   FontFace::PlainFont
     ///   FontFace::BoldFont
     ///   FontFace::ItalicFont
@@ -340,6 +390,7 @@ impl Context {
 #[allow(non_snake_case)]
 impl Device {
     /// Get the current device.
+<<<<<<< HEAD
     pub fn current() -> Result<Device> {
         // At present we can't trap an R error from a function
         // that does not return a SEXP.
@@ -347,10 +398,18 @@ impl Device {
             Ok(Device {
                 inner: GEcurrentDevice(),
             })
+=======
+    pub fn current() -> Device {
+        unsafe {
+            Device {
+                inner: GEcurrentDevice(),
+            }
+>>>>>>> Change uses of new_owned to Robj::from_sexp
         }
     }
 
     /// Enable device rendering.
+<<<<<<< HEAD
     pub fn mode_on(&self) -> Result<()> {
         unsafe {
             if Rf_NoDevices() != 0 {
@@ -359,10 +418,16 @@ impl Device {
                 GEMode(1, self.inner());
                 Ok(())
             }
+=======
+    pub fn mode_on(&self) {
+        unsafe {
+            GEMode(1, self.inner());
+>>>>>>> Change uses of new_owned to Robj::from_sexp
         }
     }
 
     /// Disable device rendering and flush.
+<<<<<<< HEAD
     pub fn mode_off(&self) -> Result<()> {
         unsafe {
             if Rf_NoDevices() != 0 {
@@ -371,6 +436,11 @@ impl Device {
                 GEMode(0, self.inner());
                 Ok(())
             }
+=======
+    pub fn mode_off(&self) {
+        unsafe {
+            GEMode(0, self.inner());
+>>>>>>> Change uses of new_owned to Robj::from_sexp
         }
     }
 
@@ -380,6 +450,7 @@ impl Device {
     }
 
     /// Get a device by number.
+<<<<<<< HEAD
     pub fn get_device(number: i32) -> Result<Device> {
         unsafe {
             if number < 0 || number >= Rf_NumDevices() {
@@ -388,6 +459,12 @@ impl Device {
                 Ok(Device {
                     inner: GEgetDevice(number),
                 })
+=======
+    pub fn get_device(number: i32) -> Device {
+        unsafe {
+            Device {
+                inner: GEgetDevice(number),
+>>>>>>> Change uses of new_owned to Robj::from_sexp
             }
         }
     }
@@ -518,7 +595,11 @@ impl Device {
     //     let yptr = y.as_mut_slice().as_mut_ptr();
     //     let sptr = s.as_mut_slice().as_mut_ptr();
     //     unsafe {
+<<<<<<< HEAD
     //         new_owned(GEXspline(
+=======
+    //         Robj::from_sexp(GEXspline(
+>>>>>>> Change uses of new_owned to Robj::from_sexp
     //             x.len() as std::os::raw::c_int,
     //             xptr,
     //             yptr,
@@ -593,7 +674,11 @@ impl Device {
 
     /// Screen capture. Returns an integer matrix representing pixels if it is able.
     pub fn capture(&self) -> Robj {
+<<<<<<< HEAD
         unsafe { new_owned(GECap(self.inner())) }
+=======
+        unsafe { Robj::from_sexp(GECap(self.inner())) }
+>>>>>>> Change uses of new_owned to Robj::from_sexp
     }
 
     /// Draw a bitmap.

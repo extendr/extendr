@@ -4,7 +4,7 @@
 use libR_sys::*;
 //use crate::robj::*;
 use crate::robj::Robj;
-use crate::{new_owned, single_threaded};
+use crate::single_threaded;
 
 /// Convert a list of tokens to an array of tuples.
 #[doc(hidden)]
@@ -69,7 +69,7 @@ pub unsafe fn make_lang(sym: &str) -> Robj {
     name.push(0);
     let sexp =
         single_threaded(|| Rf_lang1(Rf_install(name.as_ptr() as *const std::os::raw::c_char)));
-    new_owned(sexp)
+    Robj::from_sexp(sexp)
 }
 
 /// Convert a list of tokens to an array of tuples.

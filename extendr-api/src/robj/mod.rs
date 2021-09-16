@@ -123,7 +123,7 @@ pub struct Robj {
 
 impl Clone for Robj {
     fn clone(&self) -> Self {
-        unsafe { new_owned(self.get()) }
+        unsafe { Robj::from_sexp(self.get()) }
     }
 }
 
@@ -134,6 +134,13 @@ impl Default for Robj {
 }
 
 impl Robj {
+    pub fn from_sexp(sexp: SEXP) -> Self {
+        single_threaded(|| {
+            unsafe { ownership::protect(sexp) };
+            Robj { inner: sexp }
+        })
+    }
+
     /// Get a copy of the underlying SEXP.
     /// Note: this is unsafe.
     #[doc(hidden)]
@@ -616,7 +623,7 @@ impl Robj {
             if error != 0 {
                 Err(Error::EvalError(self.clone()))
             } else {
-                Ok(new_owned(res))
+                Ok(Robj::from_sexp(res))
             }
         })
     }
@@ -721,7 +728,7 @@ impl Robj {
         if self.sexptype() == CHARSXP {
             None
         } else {
-            let res = unsafe { new_owned(Rf_getAttrib(self.get(), name.get())) };
+            let res = unsafe { Robj::from_sexp(Rf_getAttrib(self.get(), name.get())) };
             if res.is_null() {
                 None
             } else {
@@ -911,14 +918,6 @@ impl Robj {
 
 #[doc(hidden)]
 pub unsafe fn new_owned(sexp: SEXP) -> Robj {
-    single_threaded(|| {
-        ownership::protect(sexp);
-        Robj { inner: sexp }
-    })
-}
-
-#[doc(hidden)]
-pub unsafe fn new_sys(sexp: SEXP) -> Robj {
     single_threaded(|| {
         ownership::protect(sexp);
         Robj { inner: sexp }
