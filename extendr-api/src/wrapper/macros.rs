@@ -108,7 +108,7 @@ macro_rules! gen_vector_wrapper_impl {
                 unsafe { paste::paste!{ [<$r_type _IS_SORTED>](self.get()).into() } }
             }
 
-            /// Return `TRUE` if the vector has `NA`s, `FALSE` if not, or `NA_BOOL` if unknown.
+            /// Return `TRUE` if the vector has no `NA`s, `FALSE` if any, or `NA_BOOL` if unknown.
             pub fn no_na(&self) -> Bool {
                 unsafe { paste::paste!{ [<$r_type _NO_NA>](self.get()).into() } }
             }
