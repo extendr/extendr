@@ -14,7 +14,7 @@ use std::os::raw;
 
 use crate::*;
 
-use crate::scalar::Rint;
+use crate::scalar::{Rfloat, Rint};
 use std::collections::HashMap;
 use std::iter::IntoIterator;
 use std::ops::{Range, RangeInclusive};
@@ -710,6 +710,7 @@ make_typed_slice!(Bool, INTEGER, LGLSXP);
 make_typed_slice!(i32, INTEGER, INTSXP);
 make_typed_slice!(Rint, INTEGER, INTSXP);
 make_typed_slice!(f64, REAL, REALSXP);
+make_typed_slice!(Rfloat, REAL, REALSXP);
 make_typed_slice!(u8, RAW, RAWSXP);
 
 /// These are helper functions which give access to common properties of R objects.

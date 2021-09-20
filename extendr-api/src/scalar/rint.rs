@@ -1,3 +1,4 @@
+use crate::scalar::macros::*;
 use crate::*;
 use std::convert::TryFrom;
 use std::ops::{Add, Div, Mul, Neg, Not, Sub};
@@ -9,226 +10,60 @@ use std::ops::{Add, Div, Mul, Neg, Not, Sub};
 /// The value i32::MIN is used as "NA".
 ///
 /// Rint has the same footprint as an i32 value allowing us to use it in zero copy slices.
-#[derive(PartialEq, Eq)]
 pub struct Rint(pub i32);
 
 impl Rint {
-    /// Construct a NA Rint.
-    pub fn na() -> Self {
-        Rint(i32::MIN)
-    }
-
-    /// Get an integer or i32::MIN for NA.
-    pub fn inner(&self) -> i32 {
-        self.0
-    }
+    gen_impl!(Rint, i32, i32::MIN);
 }
 
-impl Clone for Rint {
-    fn clone(&self) -> Self {
-        Self(self.0)
-    }
-}
-
-impl Copy for Rint {}
-
-impl IsNA for Rint {
-    /// Return true is the is a NA value.
-    fn is_na(&self) -> bool {
-        self.0 == std::i32::MIN
-    }
-}
-
-impl From<i32> for Rint {
-    /// Construct a Rint from an integer.
-    /// i32::MIN gives an NA.
-    fn from(v: i32) -> Self {
-        Self(v)
-    }
-}
-
-impl From<Option<i32>> for Rint {
-    /// Construct an Rint from an optional integer.
-    /// None or Some(i32::MIN) gives an NA.
-    fn from(v: Option<i32>) -> Self {
-        if let Some(v) = v {
-            v.into()
-        } else {
-            Rint::na()
-        }
-    }
-}
-
-impl From<Rint> for Option<i32> {
-    /// Convert an Rint to an optional integer.
-    /// NA gives None.
-    fn from(v: Rint) -> Self {
-        if v.is_na() {
-            None
-        } else {
-            Some(v.0)
-        }
-    }
-}
-
-impl std::fmt::Debug for Rint {
-    /// Debug format an Rint.
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let z: Option<i32> = (*self).into();
-        if let Some(val) = z {
-            write!(f, "{}", val)
-        } else {
-            write!(f, "na")
-        }
-    }
-}
-
-macro_rules! gen_binop {
-    ($opname1 : ident, $opname2: ident, $expr: expr, $docstring: expr) => {
-        impl $opname1<Rint> for Rint {
-            type Output = Rint;
-
-            #[doc = $docstring]
-            fn $opname2(self, rhs: Rint) -> Self::Output {
-                if let Some(lhs) = self.clone().into() {
-                    if let Some(rhs) = rhs.into() {
-                        let f = $expr;
-                        if let Some(res) = f(lhs, rhs) {
-                            // Note that if res = i32::MIN, this will also be NA.
-                            return Rint::from(res);
-                        }
-                    }
-                }
-                Rint::na()
-            }
-        }
-
-        impl $opname1<Rint> for &Rint {
-            type Output = Rint;
-
-            #[doc = $docstring]
-            fn $opname2(self, rhs: Rint) -> Self::Output {
-                if let Some(lhs) = self.clone().into() {
-                    if let Some(rhs) = rhs.into() {
-                        let f = $expr;
-                        if let Some(res) = f(lhs, rhs) {
-                            // Note that if res = i32::MIN, this will also be NA.
-                            return Rint::from(res);
-                        }
-                    }
-                }
-                Rint::na()
-            }
-        }
-
-        impl $opname1<i32> for Rint {
-            type Output = Rint;
-
-            #[doc = $docstring]
-            fn $opname2(self, rhs: i32) -> Self::Output {
-                if let Some(lhs) = self.clone().into() {
-                    let f = $expr;
-                    if let Some(res) = f(lhs, rhs) {
-                        // Note that if res = i32::MIN, this will also be NA.
-                        return Rint::from(res);
-                    }
-                }
-                Rint::na()
-            }
-        }
-    };
-}
-
-macro_rules! gen_unnop {
-    ($opname1 : ident, $opname2: ident, $expr: expr, $docstring: expr) => {
-        impl $opname1 for Rint {
-            type Output = Rint;
-
-            #[doc = $docstring]
-            fn $opname2(self) -> Self::Output {
-                if let Some(lhs) = self.into() {
-                    let f = $expr;
-                    if let Some(res) = f(lhs) {
-                        // Note that if res = i32::MIN, this will also be NA.
-                        return Rint::from(res);
-                    }
-                }
-                Rint::na()
-            }
-        }
-
-        impl $opname1 for &Rint {
-            type Output = Rint;
-
-            #[doc = $docstring]
-            fn $opname2(self) -> Self::Output {
-                if let Some(lhs) = (*self).into() {
-                    let f = $expr;
-                    if let Some(res) = f(lhs) {
-                        // Note that if res = i32::MIN, this will also be NA.
-                        return Rint::from(res);
-                    }
-                }
-                Rint::na()
-            }
-        }
-    };
-}
+gen_trait_impl!(Rint, i32, |x: &Rint| x.0 == i32::MIN);
+gen_from_primitive!(Rint, i32);
+gen_from_scalar!(Rint, i32);
+gen_sum_iter!(Rint, 0i32);
 
 // Generate binary ops for +, -, * and /
 gen_binop!(
+    Rint,
+    i32,
     Add,
-    add,
     |lhs: i32, rhs| lhs.checked_add(rhs),
     "Add two Rint values or an option of i32, overflows to NA."
 );
 gen_binop!(
+    Rint,
+    i32,
     Sub,
-    sub,
     |lhs: i32, rhs| lhs.checked_sub(rhs),
     "Subtract two Rint values or an option of i32, overflows to NA."
 );
 gen_binop!(
+    Rint,
+    i32,
     Mul,
-    mul,
     |lhs: i32, rhs| lhs.checked_mul(rhs),
     "Multiply two Rint values or an option of i32, overflows to NA."
 );
 gen_binop!(
+    Rint,
+    i32,
     Div,
-    div,
     |lhs: i32, rhs| lhs.checked_div(rhs),
     "Divide two Rint values or an option of i32, overflows to NA."
 );
 
 // Generate unary ops for -, !
-gen_unnop!(
+gen_unop!(
+    Rint,
     Neg,
-    neg,
     |lhs: i32| Some(-lhs),
     "Negate a Rint value, overflows to NA."
 );
-gen_unnop!(
+gen_unop!(
+    Rint,
     Not,
-    not,
     |lhs: i32| Some(!lhs),
     "Logical not a Rint value, overflows to NA."
 );
-
-impl std::iter::Sum for Rint {
-    /// Sum an integer iterator over Rint.
-    /// Yields NA on overflow of NAs present.
-    fn sum<I: Iterator<Item = Rint>>(iter: I) -> Rint {
-        iter.fold(Rint::from(0), |a, b| a + b)
-    }
-}
-
-impl PartialEq<i32> for Rint {
-    /// Compare a Rint with an integer. NA always fails.
-    fn eq(&self, other: &i32) -> bool {
-        !self.is_na() && self.0 == *other
-    }
-}
 
 impl TryFrom<Robj> for Rint {
     type Error = Error;
@@ -273,12 +108,5 @@ impl TryFrom<Robj> for Rint {
         }
 
         Err(Error::ExpectedNumeric(robj))
-    }
-}
-
-impl From<Rint> for Robj {
-    /// Convert am Rint into an robj.
-    fn from(value: Rint) -> Self {
-        Robj::from(value.0)
     }
 }

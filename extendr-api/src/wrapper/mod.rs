@@ -6,12 +6,14 @@ use libR_sys::*;
 
 pub mod altrep;
 pub mod char;
+pub mod doubles;
 pub mod environment;
 pub mod expr;
 pub mod function;
 pub mod integers;
 pub mod lang;
 pub mod list;
+mod macros;
 pub mod matrix;
 pub mod nullable;
 pub mod pairlist;
@@ -26,6 +28,7 @@ pub use altrep::{
     AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,
     AltrepImpl,
 };
+pub use doubles::Doubles;
 pub use environment::{EnvIter, Environment};
 pub use expr::Expression;
 pub use function::Function;
@@ -167,6 +170,7 @@ make_conversions!(Altrep, ExpectedAltrep, is_altrep, "Not an Altrep type");
 make_conversions!(S4, ExpectedS4, is_s4, "Not a S4 type");
 
 make_conversions!(Integers, ExpectedInteger, is_integer, "Not an integer type");
+make_conversions!(Doubles, ExpectedReal, is_real, "Not a floating point type");
 
 impl Robj {
     /// Convert a symbol object to a Symbol wrapper.

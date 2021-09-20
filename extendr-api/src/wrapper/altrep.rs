@@ -1,5 +1,43 @@
 use super::*;
 
+macro_rules! make_from_iterator {
+    ($fn_name : ident, $make_class : ident, $impl : ident, $type : ty) => {
+        pub fn $fn_name<Iter>(iter: Iter) -> Altrep
+        where
+            Iter: ExactSizeIterator + std::fmt::Debug + Clone + 'static + std::any::Any,
+            Iter::Item: Into<$type>,
+        {
+            impl<Iter: ExactSizeIterator + std::fmt::Debug + Clone> $impl for Iter
+            where
+                Iter::Item: Into<$type>,
+            {
+                fn elt(&self, index: usize) -> $type {
+                    self.clone().nth(index).unwrap().into()
+                }
+
+                fn get_region(&self, index: usize, data: &mut [$type]) -> usize {
+                    let len = self.len();
+                    if index > len {
+                        0
+                    } else {
+                        let mut iter = self.clone().skip(index);
+                        let num_elems = data.len().min(len - index);
+                        let dest = &mut data[0..num_elems];
+                        for d in dest.iter_mut() {
+                            *d = iter.next().unwrap().into();
+                        }
+                        num_elems
+                    }
+                }
+            }
+
+            let class = Altrep::$make_class::<Iter>(std::any::type_name::<Iter>(), "extendr");
+            let robj: Robj = Altrep::from_state_and_class(iter, class, false).into();
+            Altrep { robj }
+        }
+    };
+}
+
 #[derive(Debug, PartialEq, Clone)]
 pub struct Altrep {
     pub(crate) robj: Robj,
@@ -979,43 +1017,22 @@ impl Altrep {
         })
     }
 
-    pub fn make_altinteger_from_iterator<Iter>(iter: Iter) -> Altrep
-    where
-        Iter: ExactSizeIterator + std::fmt::Debug + Clone + 'static + std::any::Any,
-        Iter::Item: Into<i32>,
-    {
-        impl<Iter: ExactSizeIterator + std::fmt::Debug + Clone> AltrepImpl for Iter {
-            fn length(&self) -> usize {
-                self.len()
-            }
-        }
+    make_from_iterator!(
+        make_altinteger_from_iterator,
+        make_altinteger_class,
+        AltIntegerImpl,
+        i32
+    );
+    make_from_iterator!(
+        make_altreal_from_iterator,
+        make_altreal_class,
+        AltRealImpl,
+        f64
+    );
+}
 
-        impl<Iter: ExactSizeIterator + std::fmt::Debug + Clone> AltIntegerImpl for Iter
-        where
-            Iter::Item: Into<i32>,
-        {
-            fn elt(&self, index: usize) -> i32 {
-                self.clone().nth(index).unwrap().into()
-            }
-
-            fn get_region(&self, index: usize, data: &mut [i32]) -> usize {
-                let len = self.len();
-                if index > len {
-                    0
-                } else {
-                    let mut iter = self.clone().skip(index);
-                    let num_elems = data.len().min(len - index);
-                    let dest = &mut data[0..num_elems];
-                    for d in dest.iter_mut() {
-                        *d = iter.next().unwrap().into();
-                    }
-                    num_elems
-                }
-            }
-        }
-
-        let class = Altrep::make_altinteger_class::<Iter>(std::any::type_name::<Iter>(), "extendr");
-        let robj: Robj = Altrep::from_state_and_class(iter, class, false).into();
-        Altrep { robj }
+impl<Iter: ExactSizeIterator + std::fmt::Debug + Clone> AltrepImpl for Iter {
+    fn length(&self) -> usize {
+        self.len()
     }
 }
