@@ -1085,7 +1085,9 @@ impl std::fmt::Debug for Robj {
             DOTSXP => write!(f, "r!(Dot())"),
             ANYSXP => write!(f, "r!(Any())"),
             BCODESXP => write!(f, "r!(Bcode())"),
-            EXTPTRSXP => write!(f, "r!(Extptr())"),
+            EXTPTRSXP => {
+                write!(f, "r!(ExternalPtr())")
+            }
             RAWSXP => {
                 write!(
                     f,

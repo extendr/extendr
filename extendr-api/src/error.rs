@@ -74,6 +74,7 @@ pub enum Error {
     TypeMismatch(Robj),
     NamespaceNotFound(Robj),
 
+    ExpectedExternalPtrType(Robj, String),
     Other(String),
 }
 
@@ -144,6 +145,9 @@ impl std::fmt::Display for Error {
             Error::TypeMismatch(_robj) => write!(f, "Type mismatch"),
 
             Error::NamespaceNotFound(robj) => write!(f, "Namespace {:?} not found", robj),
+            Error::ExpectedExternalPtrType(_robj, type_name) => {
+                write!(f, "Incorrect external pointer type {}", type_name)
+            }
             Error::Other(str) => write!(f, "{}", str),
         }
     }
