@@ -87,6 +87,7 @@ macro_rules! gen_vector_wrapper_impl {
                 #[doc = "```"]
                 pub fn elt(&self, index: usize) -> $type_elem {
                     // Defensive check for oob
+                    // This check will not be needed in later releases of R
                     if(index >= self.len()) {
                         <$type_elem>::na()
                     } else {
