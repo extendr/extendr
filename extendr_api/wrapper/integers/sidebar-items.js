@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Integers",""]]});
+initSidebarItems({"struct":[["Integers","An obscure `NA`-aware wrapper for R’s integer vectors. Can be used to iterate over vectors obtained from R or to create new vectors that can be returned back to R."]]});
