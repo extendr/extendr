@@ -18,7 +18,7 @@ impl CanBeNA for f64 {
 
 impl CanBeNA for i32 {
     fn is_na(&self) -> bool {
-        *self == i32::MIN
+        *self == i32::na()
     }
 
     fn na() -> i32 {
@@ -28,7 +28,7 @@ impl CanBeNA for i32 {
 
 impl CanBeNA for Bool {
     fn is_na(&self) -> bool {
-        self.0 == i32::MIN
+        self.0 == Bool::na().0
     }
 
     fn na() -> Bool {
@@ -39,11 +39,11 @@ impl CanBeNA for Bool {
 impl CanBeNA for &str {
     /// Check for NA in a string by address.
     fn is_na(&self) -> bool {
-        self.as_ptr() == na_str().as_ptr()
+        self.as_ptr() == <&str>::na().as_ptr()
     }
 
     fn na() -> Self {
-        na_str()
+        unsafe { std::str::from_utf8_unchecked(&[b'N', b'A']) }
     }
 }
 
@@ -58,5 +58,5 @@ impl CanBeNA for &str {
 /// }
 /// ```
 pub fn na_str() -> &'static str {
-    unsafe { std::str::from_utf8_unchecked(&[b'N', b'A']) }
+    <&str>::na()
 }
