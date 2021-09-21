@@ -3,6 +3,7 @@ use crate::{Bool, na_str};
 /// Return true if this primitive is NA.
 pub trait IsNA {
     fn is_na(&self) -> bool;
+    fn na() -> Self;
 }
 
 impl IsNA for f64 {
