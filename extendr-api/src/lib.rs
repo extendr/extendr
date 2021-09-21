@@ -237,6 +237,8 @@ pub mod scalar;
 pub mod thread_safety;
 pub mod wrapper;
 
+pub mod na;
+
 #[cfg(feature = "ndarray")]
 pub mod robj_ndarray;
 
@@ -251,6 +253,7 @@ pub use std::ops::DerefMut;
 //
 // instead.
 
+pub use na::*;
 pub use error::*;
 pub use functions::*;
 pub use lang_macros::*;
@@ -366,35 +369,7 @@ pub unsafe fn register_call_methods(info: *mut libR_sys::DllInfo, metadata: Meta
     libR_sys::R_forceSymbols(info, 0);
 }
 
-/// Return true if this primitive is NA.
-pub trait IsNA {
-    fn is_na(&self) -> bool;
-}
 
-impl IsNA for f64 {
-    fn is_na(&self) -> bool {
-        unsafe { R_IsNA(*self) != 0 }
-    }
-}
-
-impl IsNA for i32 {
-    fn is_na(&self) -> bool {
-        *self == std::i32::MIN
-    }
-}
-
-impl IsNA for Bool {
-    fn is_na(&self) -> bool {
-        self.0 == std::i32::MIN
-    }
-}
-
-impl IsNA for &str {
-    /// Check for NA in a string by address.
-    fn is_na(&self) -> bool {
-        self.as_ptr() == na_str().as_ptr()
-    }
-}
 
 /// Type of R objects used by [Robj::rtype].
 #[derive(Debug, PartialEq)]

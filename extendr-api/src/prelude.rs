@@ -4,9 +4,11 @@
 //! using deprecated features.
 
 pub use super::{
-    new_owned, print_r_error, print_r_output, FromRobj, IsNA, RType, FALSE, NA_INTEGER, NA_LOGICAL,
+    new_owned, print_r_error, print_r_output, FromRobj, RType, FALSE, NA_INTEGER, NA_LOGICAL,
     NA_REAL, NA_STRING, NULL, TRUE,
 };
+
+pub use super::na::*;
 
 pub use super::error::{Error, Result};
 
