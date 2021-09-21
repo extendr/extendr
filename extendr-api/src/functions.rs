@@ -198,7 +198,6 @@ pub fn blank_scalar_string() -> Robj {
     unsafe { new_sys(R_BlankScalarString) }
 }
 
-
 /// Parse a string into an R executable object
 /// ```
 /// use extendr_api::prelude::*;

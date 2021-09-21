@@ -1,5 +1,5 @@
-use libR_sys::{R_IsNA, R_NaReal};
 use crate::Bool;
+use libR_sys::{R_IsNA, R_NaReal};
 /// Return true if this primitive is NA.
 pub trait CanBeNA {
     fn is_na(&self) -> bool;
@@ -18,7 +18,7 @@ impl CanBeNA for f64 {
     }
 
     fn na() -> f64 {
-        unsafe{R_NaReal}
+        unsafe { R_NaReal }
     }
 }
 

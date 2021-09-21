@@ -253,11 +253,11 @@ pub use std::ops::DerefMut;
 //
 // instead.
 
-pub use na::*;
 pub use error::*;
 pub use functions::*;
 pub use lang_macros::*;
 pub use logical::*;
+pub use na::*;
 pub use rmacros::*;
 pub use robj::*;
 pub use thread_safety::{
@@ -368,8 +368,6 @@ pub unsafe fn register_call_methods(info: *mut libR_sys::DllInfo, metadata: Meta
     libR_sys::R_useDynamicSymbols(info, 0);
     libR_sys::R_forceSymbols(info, 0);
 }
-
-
 
 /// Type of R objects used by [Robj::rtype].
 #[derive(Debug, PartialEq)]

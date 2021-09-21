@@ -31,8 +31,12 @@ impl Rfloat {
 }
 // `NA_real_` is a `NaN` with specific bit representation.
 // Check that underlying `f64` equals (bitwise) to `NA_real_`.
-gen_trait_impl!(Rfloat, f64, |x: &Rfloat| x.0.to_bits()
-    == unsafe { libR_sys::R_NaReal.to_bits() }, unsafe { libR_sys::R_NaReal });
+gen_trait_impl!(
+    Rfloat,
+    f64,
+    |x: &Rfloat| x.0.to_bits() == unsafe { libR_sys::R_NaReal.to_bits() },
+    unsafe { libR_sys::R_NaReal }
+);
 gen_from_primitive!(Rfloat, f64);
 gen_from_scalar!(Rfloat, f64);
 gen_sum_iter!(Rfloat, 0f64);
