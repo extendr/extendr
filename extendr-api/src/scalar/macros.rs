@@ -198,7 +198,7 @@ macro_rules! gen_trait_impl {
             #[doc = "    assert!((<" $type ">::na()).is_na());"]
             #[doc = "}"]
             #[doc = "```"]
-            impl IsNA for $type {
+            impl CanBeNA for $type {
                 /// Return true is the is a NA value.
                 fn is_na(&self) -> bool {
                     $na_check(self)
