@@ -1,5 +1,5 @@
 use libR_sys::{R_IsNA, R_NaReal};
-use crate::{Bool, na_str};
+use crate::Bool;
 /// Return true if this primitive is NA.
 pub trait CanBeNA {
     fn is_na(&self) -> bool;
@@ -45,4 +45,18 @@ impl CanBeNA for &str {
     fn na() -> Self {
         na_str()
     }
+}
+
+/// Special "NA" string that represents null strings.
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     assert!(na_str().as_ptr() != "NA".as_ptr());
+///     assert_eq!(na_str(), "NA");
+///     assert_eq!("NA".is_na(), false);
+///     assert_eq!(na_str().is_na(), true);
+/// }
+/// ```
+pub fn na_str() -> &'static str {
+    unsafe { std::str::from_utf8_unchecked(&[b'N', b'A']) }
 }
