@@ -42,21 +42,17 @@ impl CanBeNA for &str {
         self.as_ptr() == <&str>::na().as_ptr()
     }
 
+    /// Special "NA" string that represents null strings.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     assert_ne!(<&str>::na().as_ptr(), "NA".as_ptr());
+    ///     assert_eq!(<&str>::na(), "NA");
+    ///     assert_eq!("NA".is_na(), false);
+    ///     assert_eq!(<&str>::na().is_na(), true);
+    /// }
+    /// ```
     fn na() -> Self {
         unsafe { std::str::from_utf8_unchecked(&[b'N', b'A']) }
     }
-}
-
-/// Special "NA" string that represents null strings.
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///     assert!(na_str().as_ptr() != "NA".as_ptr());
-///     assert_eq!(na_str(), "NA");
-///     assert_eq!("NA".is_na(), false);
-///     assert_eq!(na_str().is_na(), true);
-/// }
-/// ```
-pub fn na_str() -> &'static str {
-    <&str>::na()
 }

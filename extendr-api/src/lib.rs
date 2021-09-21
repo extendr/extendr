@@ -814,10 +814,10 @@ mod tests {
 
     #[test]
     fn test_na_str() {
-        assert!(na_str().as_ptr() != "NA".as_ptr());
-        assert_eq!(na_str(), "NA");
+        assert_ne!(<&str>::na().as_ptr(), "NA".as_ptr());
+        assert_eq!(<&str>::na(), "NA");
         assert_eq!("NA".is_na(), false);
-        assert_eq!(na_str().is_na(), true);
+        assert_eq!(<&str>::na().is_na(), true);
     }
 
     #[test]
