@@ -9,7 +9,7 @@ pub trait CanBeNA {
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     assert!(<f64>::na().is_na());
+///     assert!(f64::na().is_na());
 /// }
 /// ```
 impl CanBeNA for f64 {
@@ -25,7 +25,7 @@ impl CanBeNA for f64 {
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     assert!(<i32>::na().is_na());
+///     assert!(i32::na().is_na());
 /// }
 /// ```
 impl CanBeNA for i32 {
@@ -41,7 +41,7 @@ impl CanBeNA for i32 {
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     assert!(<Bool>::na().is_na());
+///     assert!(Bool::na().is_na());
 /// }
 /// ```
 impl CanBeNA for Bool {
