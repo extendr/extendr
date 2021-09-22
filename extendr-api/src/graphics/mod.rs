@@ -3,6 +3,8 @@ use libR_sys::*;
 
 pub mod color;
 
+use color::Color;
+
 pub struct Context {
     context: R_GE_gcontext,
     xscale: (f64, f64),
@@ -115,8 +117,8 @@ impl Context {
             let scalar = (xscale.0 * yscale.1 - xscale.1 * yscale.0).abs().sqrt();
 
             let mut context = R_GE_gcontext {
-                col: color::rgb(0xff, 0xff, 0xff).to_i32(),
-                fill: color::rgb(0xc0, 0xc0, 0xc0).to_i32(),
+                col: Color::rgb(0xff, 0xff, 0xff).to_i32(),
+                fill: Color::rgb(0xc0, 0xc0, 0xc0).to_i32(),
                 gamma: 1.0,
                 lwd: 1.0,
                 lty: 0,
@@ -150,13 +152,13 @@ impl Context {
     }
 
     /// Set the line or text color of a primitive.
-    pub fn color(&mut self, col: color::Color) -> &mut Self {
+    pub fn color(&mut self, col: Color) -> &mut Self {
         self.context.col = col.to_i32();
         self
     }
 
     /// Set the fill color of a primitive.
-    pub fn fill(&mut self, fill: color::Color) -> &mut Self {
+    pub fn fill(&mut self, fill: Color) -> &mut Self {
         self.context.fill = fill.to_i32();
         self
     }

@@ -1,4 +1,5 @@
-use extendr_api::graphics::color::*;
+use extendr_api::graphics::color::predefined::{antiquewhite, black, darkkhaki, deepskyblue};
+use extendr_api::graphics::color::Color;
 use extendr_api::graphics::{Context, Device, FontFace, Unit};
 use extendr_api::prelude::*;
 
@@ -40,7 +41,7 @@ fn graphics_test() {
             )), &gc);
 
         // Draw a circle using `circle()`.
-        gc.fill(rgb(0x20, 0x20, 0xc0));
+        gc.fill(Color::rgb(0x20, 0x20, 0xc0));
         dev.circle((1.0, 1.0), 0.5, &gc);
 
         gc.color(black());
