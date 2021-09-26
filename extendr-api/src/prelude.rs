@@ -4,7 +4,7 @@
 //! using deprecated features.
 
 pub use super::{
-    print_r_error, print_r_output, FromRobj, IsNA, RType, FALSE, NA_INTEGER, NA_LOGICAL, NA_REAL,
+    print_r_error, print_r_output, FromRobj, CanBeNA, RType, FALSE, NA_INTEGER, NA_LOGICAL, NA_REAL,
     NA_STRING, NULL, TRUE,
 };
 
