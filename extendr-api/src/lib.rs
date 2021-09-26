@@ -232,6 +232,7 @@ pub mod ownership;
 pub mod prelude;
 pub mod rmacros;
 
+pub mod graphics;
 pub mod robj;
 pub mod scalar;
 pub mod thread_safety;
