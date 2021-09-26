@@ -400,7 +400,7 @@
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">current_env</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Environment</span> {
-    <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">R_GetCurrentEnv</span>()).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
+    <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_GetCurrentEnv</span>()).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
 }
 
 <span class="doccomment">/// The &quot;global&quot; environment</span>
@@ -413,12 +413,12 @@
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">global_env</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Environment</span> {
-    <span class="kw">unsafe</span> { <span class="ident">new_sys</span>(<span class="ident">R_GlobalEnv</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
+    <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_GlobalEnv</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
 }
 
 <span class="doccomment">/// An empty environment at the root of the environment tree</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">empty_env</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Environment</span> {
-    <span class="kw">unsafe</span> { <span class="ident">new_sys</span>(<span class="ident">R_EmptyEnv</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
+    <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_EmptyEnv</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
 }
 
 <span class="doccomment">/// Create a new environment</span>
@@ -435,7 +435,7 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_env</span>(<span class="ident">parent</span>: <span class="ident">Environment</span>, <span class="ident">hash</span>: <span class="ident">bool</span>, <span class="ident">capacity</span>: <span class="ident">i32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Environment</span> {
     <span class="kw">unsafe</span> {
         <span class="kw">let</span> <span class="ident">env</span> <span class="op">=</span> <span class="ident">R_NewEnv</span>(<span class="ident">parent</span>.<span class="ident">robj</span>.<span class="ident">get</span>(), <span class="ident">hash</span> <span class="kw">as</span> <span class="ident">i32</span>, <span class="ident">capacity</span>);
-        <span class="ident">new_sys</span>(<span class="ident">env</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>()
+        <span class="ident">Robj::from_sexp</span>(<span class="ident">env</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>()
     }
 }
 
@@ -458,7 +458,7 @@
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">base_env</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Environment</span> {
-    <span class="kw">unsafe</span> { <span class="ident">new_sys</span>(<span class="ident">R_BaseEnv</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
+    <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_BaseEnv</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
 }
 
 <span class="doccomment">/// The namespace for base.</span>
@@ -470,7 +470,7 @@
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">base_namespace</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Environment</span> {
-    <span class="kw">unsafe</span> { <span class="ident">new_sys</span>(<span class="ident">R_BaseNamespace</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
+    <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_BaseNamespace</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
 }
 
 <span class="doccomment">/// For registered namespaces.</span>
@@ -482,37 +482,37 @@
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">namespace_registry</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Environment</span> {
-    <span class="kw">unsafe</span> { <span class="ident">new_sys</span>(<span class="ident">R_NamespaceRegistry</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
+    <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_NamespaceRegistry</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
 }
 
 <span class="doccomment">/// Current srcref, for debuggers</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">srcref</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
-    <span class="kw">unsafe</span> { <span class="ident">new_sys</span>(<span class="ident">R_Srcref</span>) }
+    <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_Srcref</span>) }
 }
 
 <span class="doccomment">/// The nil object</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">nil_value</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
-    <span class="kw">unsafe</span> { <span class="ident">new_sys</span>(<span class="ident">R_NilValue</span>) }
+    <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_NilValue</span>) }
 }
 
 <span class="comment">/* fix version issues.
 /// &quot;.Generic&quot;
-pub fn dot_Generic() -&gt; Robj { unsafe { new_sys(R_dot_Generic) }}
+pub fn dot_Generic() -&gt; Robj { unsafe { Robj::from_sexp(R_dot_Generic) }}
 */</span>
 
 <span class="doccomment">/// NA_STRING as a CHARSXP</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">na_string</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
-    <span class="kw">unsafe</span> { <span class="ident">new_sys</span>(<span class="ident">R_NaString</span>) }
+    <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_NaString</span>) }
 }
 
 <span class="doccomment">/// &quot;&quot; as a CHARSXP</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">blank_string</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
-    <span class="kw">unsafe</span> { <span class="ident">new_sys</span>(<span class="ident">R_BlankString</span>) }
+    <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_BlankString</span>) }
 }
 
 <span class="doccomment">/// &quot;&quot; as a STRSXP</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">blank_scalar_string</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
-    <span class="kw">unsafe</span> { <span class="ident">new_sys</span>(<span class="ident">R_BlankScalarString</span>) }
+    <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_BlankScalarString</span>) }
 }
 
 <span class="doccomment">/// Special &quot;NA&quot; string that represents null strings.</span>
@@ -543,7 +543,7 @@ pub fn dot_Generic() -&gt; Robj { unsafe { new_sys(R_dot_Generic) }}
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">status</span> <span class="op">=</span> <span class="number">0_u32</span>;
         <span class="kw">let</span> <span class="ident">status_ptr</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">status</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u32</span>;
         <span class="kw">let</span> <span class="ident">codeobj</span>: <span class="ident">Robj</span> <span class="op">=</span> <span class="ident">code</span>.<span class="ident">into</span>();
-        <span class="kw">let</span> <span class="ident">parsed</span> <span class="op">=</span> <span class="ident">new_owned</span>(<span class="ident">R_ParseVector</span>(<span class="ident">codeobj</span>.<span class="ident">get</span>(), <span class="op">-</span><span class="number">1</span>, <span class="ident">status_ptr</span>, <span class="ident">R_NilValue</span>));
+        <span class="kw">let</span> <span class="ident">parsed</span> <span class="op">=</span> <span class="ident">Robj::from_sexp</span>(<span class="ident">R_ParseVector</span>(<span class="ident">codeobj</span>.<span class="ident">get</span>(), <span class="op">-</span><span class="number">1</span>, <span class="ident">status_ptr</span>, <span class="ident">R_NilValue</span>));
         <span class="kw">match</span> <span class="ident">status</span> {
             <span class="number">1</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">parsed</span>),
             <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">Error::ParseError</span>(<span class="ident">code</span>.<span class="ident">into</span>())),

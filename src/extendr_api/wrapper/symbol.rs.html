@@ -292,7 +292,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_string</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">val</span>: <span class="ident">S</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">val</span> <span class="op">=</span> <span class="ident">val</span>.<span class="ident">as_ref</span>();
         <span class="ident">Symbol</span> {
-            <span class="ident">robj</span>: <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">make_symbol</span>(<span class="ident">val</span>)) },
+            <span class="ident">robj</span>: <span class="ident">Robj::from_sexp</span>(<span class="ident">make_symbol</span>(<span class="ident">val</span>)),
         }
     }
 
@@ -302,7 +302,7 @@
             <span class="macro">assert!</span>(<span class="ident">TYPEOF</span>(<span class="ident">sexp</span>) <span class="op">=</span><span class="op">=</span> <span class="ident">SYMSXP</span> <span class="kw">as</span> <span class="ident">i32</span>);
         }
         <span class="ident">Symbol</span> {
-            <span class="ident">robj</span>: <span class="kw">unsafe</span> { <span class="ident">new_sys</span>(<span class="ident">sexp</span>) },
+            <span class="ident">robj</span>: <span class="ident">Robj::from_sexp</span>(<span class="ident">sexp</span>),
         }
     }
 

@@ -402,12 +402,12 @@
 {
     <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
         <span class="kw">let</span> <span class="ident">values</span> <span class="op">=</span> <span class="ident">values</span>.<span class="ident">into_iter</span>();
-        <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="ident">Rf_allocVector</span>(<span class="ident">sexptype</span>, <span class="ident">values</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">R_xlen_t</span>);
-        <span class="ident">ownership::protect</span>(<span class="ident">sexp</span>);
+        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">Robj::alloc_vector</span>(<span class="ident">sexptype</span>, <span class="ident">values</span>.<span class="ident">len</span>());
+        <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="ident">res</span>.<span class="ident">get</span>();
         <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">val</span>) <span class="kw">in</span> <span class="ident">values</span>.<span class="ident">enumerate</span>() {
             <span class="ident">SET_VECTOR_ELT</span>(<span class="ident">sexp</span>, <span class="ident">i</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">val</span>.<span class="ident">into</span>().<span class="ident">get</span>());
         }
-        <span class="ident">Robj::Owned</span>(<span class="ident">sexp</span>)
+        <span class="ident">res</span>
     })
 }
 

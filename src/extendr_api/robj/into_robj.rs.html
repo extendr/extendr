@@ -585,7 +585,7 @@
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span>()<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="kw">_</span>: ()) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="comment">// Note: we do not need to protect this.</span>
-        <span class="kw">unsafe</span> { <span class="ident">Robj::Sys</span>(<span class="ident">R_NilValue</span>) }
+        <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_NilValue</span>) }
     }
 }
 
@@ -618,7 +618,7 @@
     <span class="comment">// Note: we should probably have a much better reference</span>
     <span class="comment">// mechanism as double-free or underprotection is a distinct possibility.</span>
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">val</span>: <span class="kw-2">&amp;</span><span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">val</span>.<span class="ident">get</span>()) }
+        <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">val</span>.<span class="ident">get</span>()) }
     }
 }
 
@@ -917,8 +917,8 @@
         <span class="comment">// Length of the vector is known in advance.</span>
         <span class="kw">let</span> <span class="ident">sexptype</span> <span class="op">=</span> <span class="ident">I::Item::sexptype</span>();
         <span class="kw">if</span> <span class="ident">sexptype</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-            <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="ident">Rf_allocVector</span>(<span class="ident">sexptype</span>, <span class="ident">len</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>);
-            <span class="ident">ownership::protect</span>(<span class="ident">sexp</span>);
+            <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">Robj::alloc_vector</span>(<span class="ident">sexptype</span>, <span class="ident">len</span>);
+            <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="ident">res</span>.<span class="ident">get</span>();
             <span class="kw">match</span> <span class="ident">sexptype</span> {
                 <span class="ident">REALSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">REAL</span>(<span class="ident">sexp</span>);
@@ -953,7 +953,7 @@
                     <span class="macro">panic!</span>(<span class="string">&quot;unexpected SEXPTYPE in collect_robj&quot;</span>);
                 }
             }
-            <span class="ident">Robj::Owned</span>(<span class="ident">sexp</span>)
+            <span class="ident">res</span>
         } <span class="kw">else</span> {
             <span class="ident">Robj::from</span>(())
         }

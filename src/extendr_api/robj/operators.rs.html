@@ -402,7 +402,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">call</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">args</span>: <span class="ident">Pairlist</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_function</span>() {
             <span class="kw">unsafe</span> {
-                <span class="kw">let</span> <span class="ident">call</span> <span class="op">=</span> <span class="ident">new_owned</span>(<span class="ident">Rf_lcons</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">args</span>.<span class="ident">get</span>()));
+                <span class="kw">let</span> <span class="ident">call</span> <span class="op">=</span> <span class="ident">Robj::from_sexp</span>(<span class="ident">Rf_lcons</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">args</span>.<span class="ident">get</span>()));
                 <span class="ident">call</span>.<span class="ident">eval</span>()
             }
         } <span class="kw">else</span> {

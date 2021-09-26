@@ -1119,19 +1119,6 @@
 <span id="1119">1119</span>
 <span id="1120">1120</span>
 <span id="1121">1121</span>
-<span id="1122">1122</span>
-<span id="1123">1123</span>
-<span id="1124">1124</span>
-<span id="1125">1125</span>
-<span id="1126">1126</span>
-<span id="1127">1127</span>
-<span id="1128">1128</span>
-<span id="1129">1129</span>
-<span id="1130">1130</span>
-<span id="1131">1131</span>
-<span id="1132">1132</span>
-<span id="1133">1133</span>
-<span id="1134">1134</span>
 </pre><pre class="rust">
 <span class="doccomment">//! R object handling.</span>
 <span class="doccomment">//!</span>
@@ -1252,24 +1239,13 @@
 <span class="doccomment">/// panics and segfaults. We will take great trouble to ensure that this</span>
 <span class="doccomment">/// is true.</span>
 <span class="doccomment">///</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Robj</span> {
-    <span class="comment">// This object owns the SEXP and must free it.</span>
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-    <span class="ident">Owned</span>(<span class="ident">SEXP</span>),
-
-    <span class="comment">//  This object references a SEXP owned by libR.</span>
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-    <span class="ident">Sys</span>(<span class="ident">SEXP</span>),
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Robj</span> {
+    <span class="ident">inner</span>: <span class="ident">SEXP</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">Clone</span> <span class="kw">for</span> <span class="ident">Robj</span> {
     <span class="kw">fn</span> <span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-                <span class="ident">Robj::Owned</span>(<span class="ident">sexp</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">new_owned</span>(<span class="ident">sexp</span>),
-                <span class="ident">Robj::Sys</span>(<span class="ident">sexp</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">new_sys</span>(<span class="ident">sexp</span>),
-            }
-        }
+        <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="self">self</span>.<span class="ident">get</span>()) }
     }
 }
 
@@ -1280,14 +1256,18 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Robj</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_sexp</span>(<span class="ident">sexp</span>: <span class="ident">SEXP</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
+            <span class="kw">unsafe</span> { <span class="ident">ownership::protect</span>(<span class="ident">sexp</span>) };
+            <span class="ident">Robj</span> { <span class="ident">inner</span>: <span class="ident">sexp</span> }
+        })
+    }
+
     <span class="doccomment">/// Get a copy of the underlying SEXP.</span>
     <span class="doccomment">/// Note: this is unsafe.</span>
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Robj::Owned</span>(<span class="ident">sexp</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="ident">sexp</span>,
-            <span class="ident">Robj::Sys</span>(<span class="ident">sexp</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="ident">sexp</span>,
-        }
+        <span class="self">self</span>.<span class="ident">inner</span>
     }
 
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
@@ -1765,7 +1745,7 @@
             <span class="kw">if</span> <span class="ident">error</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
                 <span class="prelude-val">Err</span>(<span class="ident">Error::EvalError</span>(<span class="self">self</span>.<span class="ident">clone</span>()))
             } <span class="kw">else</span> {
-                <span class="prelude-val">Ok</span>(<span class="ident">new_owned</span>(<span class="ident">res</span>))
+                <span class="prelude-val">Ok</span>(<span class="ident">Robj::from_sexp</span>(<span class="ident">res</span>))
             }
         })
     }
@@ -1870,7 +1850,7 @@
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">sexptype</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">CHARSXP</span> {
             <span class="prelude-val">None</span>
         } <span class="kw">else</span> {
-            <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">Rf_getAttrib</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">name</span>.<span class="ident">get</span>())) };
+            <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">Rf_getAttrib</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">name</span>.<span class="ident">get</span>())) };
             <span class="kw">if</span> <span class="ident">res</span>.<span class="ident">is_null</span>() {
                 <span class="prelude-val">None</span>
             } <span class="kw">else</span> {
@@ -2060,13 +2040,10 @@
 
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
 <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">new_owned</span>(<span class="ident">sexp</span>: <span class="ident">SEXP</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
-    <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">ownership::protect</span>(<span class="ident">sexp</span>));
-    <span class="ident">Robj::Owned</span>(<span class="ident">sexp</span>)
-}
-
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">new_sys</span>(<span class="ident">sexp</span>: <span class="ident">SEXP</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
-    <span class="ident">Robj::Sys</span>(<span class="ident">sexp</span>)
+    <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
+        <span class="ident">ownership::protect</span>(<span class="ident">sexp</span>);
+        <span class="ident">Robj</span> { <span class="ident">inner</span>: <span class="ident">sexp</span> }
+    })
 }
 
 <span class="doccomment">/// Compare equality with integer slices.</span>
@@ -2260,10 +2237,7 @@
 <span class="kw">impl</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">Robj</span> {
     <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
         <span class="kw">unsafe</span> {
-            <span class="kw">match</span> <span class="self">self</span> {
-                <span class="ident">Robj::Owned</span>(<span class="ident">sexp</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">ownership::unprotect</span>(<span class="kw-2">*</span><span class="ident">sexp</span>),
-                <span class="ident">Robj::Sys</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> (),
-            }
+            <span class="ident">ownership::unprotect</span>(<span class="self">self</span>.<span class="ident">inner</span>);
         }
     }
 }

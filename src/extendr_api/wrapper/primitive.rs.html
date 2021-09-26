@@ -76,7 +76,7 @@
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
             <span class="comment">// Primitives have a special &quot;SYMVALUE&quot; entry in their symbol.</span>
             <span class="kw">let</span> <span class="ident">sym</span> <span class="op">=</span> <span class="ident">Symbol::from_string</span>(<span class="ident">val</span>);
-            <span class="kw">let</span> <span class="ident">symvalue</span> <span class="op">=</span> <span class="ident">new_owned</span>(<span class="ident">SYMVALUE</span>(<span class="ident">sym</span>.<span class="ident">get</span>()));
+            <span class="kw">let</span> <span class="ident">symvalue</span> <span class="op">=</span> <span class="ident">Robj::from_sexp</span>(<span class="ident">SYMVALUE</span>(<span class="ident">sym</span>.<span class="ident">get</span>()));
             <span class="kw">if</span> <span class="ident">symvalue</span>.<span class="ident">is_primitive</span>() {
                 <span class="prelude-val">Ok</span>(<span class="ident">Primitive</span> { <span class="ident">robj</span>: <span class="ident">symvalue</span> })
             } <span class="kw">else</span> {

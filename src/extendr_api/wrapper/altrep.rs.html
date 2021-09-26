@@ -1036,6 +1036,11 @@
 <span id="1036">1036</span>
 <span id="1037">1037</span>
 <span id="1038">1038</span>
+<span id="1039">1039</span>
+<span id="1040">1040</span>
+<span id="1041">1041</span>
+<span id="1042">1042</span>
+<span id="1043">1043</span>
 </pre><pre class="rust">
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
@@ -1127,7 +1132,7 @@
     <span class="doccomment">/// Duplicate this object. Called by Rf_duplicate.</span>
     <span class="doccomment">/// Currently this manifests the array but preserves the original object.</span>
     <span class="kw">fn</span> <span class="ident">duplicate</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>, <span class="ident">_deep</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
-        <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">manifest</span>(<span class="ident">x</span>)) }
+        <span class="ident">Robj::from_sexp</span>(<span class="ident">manifest</span>(<span class="ident">x</span>))
     }
 
     <span class="doccomment">/// Coerce this object into some other type, if possible.</span>
@@ -1498,8 +1503,8 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">data</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">Robj</span>, <span class="ident">Robj</span>) {
         <span class="kw">unsafe</span> {
             (
-                <span class="ident">new_owned</span>(<span class="ident">R_altrep_data1</span>(<span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>())),
-                <span class="ident">new_owned</span>(<span class="ident">R_altrep_data1</span>(<span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>())),
+                <span class="ident">Robj::from_sexp</span>(<span class="ident">R_altrep_data1</span>(<span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>())),
+                <span class="ident">Robj::from_sexp</span>(<span class="ident">R_altrep_data1</span>(<span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>())),
             )
         }
     }
@@ -1515,7 +1520,7 @@
 
     <span class="doccomment">/// Safely implement ALTREP_CLASS.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">class</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
-        <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">ALTREP_CLASS</span>(<span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>())) }
+        <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">ALTREP_CLASS</span>(<span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>())) }
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_state_and_class</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
@@ -1546,7 +1551,7 @@
             }
 
             <span class="ident">Altrep</span> {
-                <span class="ident">robj</span>: <span class="ident">new_owned</span>(<span class="ident">sexp</span>),
+                <span class="ident">robj</span>: <span class="ident">Robj::from_sexp</span>(<span class="ident">sexp</span>),
             }
         })
     }
@@ -1586,9 +1591,9 @@
             <span class="ident">levs</span>: <span class="ident">c_int</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
             <span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span><span class="ident">::unserialize_ex</span>(
-                <span class="ident">new_owned</span>(<span class="ident">class</span>),
-                <span class="ident">new_owned</span>(<span class="ident">state</span>),
-                <span class="ident">new_owned</span>(<span class="ident">attr</span>),
+                <span class="ident">Robj::from_sexp</span>(<span class="ident">class</span>),
+                <span class="ident">Robj::from_sexp</span>(<span class="ident">state</span>),
+                <span class="ident">Robj::from_sexp</span>(<span class="ident">attr</span>),
                 <span class="ident">objf</span> <span class="kw">as</span> <span class="ident">i32</span>,
                 <span class="ident">levs</span> <span class="kw">as</span> <span class="ident">i32</span>,
             )
@@ -1599,7 +1604,7 @@
             <span class="ident">class</span>: <span class="ident">SEXP</span>,
             <span class="ident">state</span>: <span class="ident">SEXP</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
-            <span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span><span class="ident">::unserialize</span>(<span class="ident">new_owned</span>(<span class="ident">class</span>), <span class="ident">new_owned</span>(<span class="ident">state</span>)).<span class="ident">get</span>()
+            <span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span><span class="ident">::unserialize</span>(<span class="ident">Robj::from_sexp</span>(<span class="ident">class</span>), <span class="ident">Robj::from_sexp</span>(<span class="ident">state</span>)).<span class="ident">get</span>()
         }
 
         <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altrep_Serialized_state</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltrepImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
@@ -1665,7 +1670,12 @@
             <span class="ident">indx</span>: <span class="ident">SEXP</span>,
             <span class="ident">call</span>: <span class="ident">SEXP</span>,
         ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
-            <span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span><span class="ident">::extract_subset</span>(<span class="ident">new_owned</span>(<span class="ident">x</span>), <span class="ident">new_owned</span>(<span class="ident">indx</span>), <span class="ident">new_owned</span>(<span class="ident">call</span>)).<span class="ident">get</span>()
+            <span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span><span class="ident">::extract_subset</span>(
+                <span class="ident">Robj::from_sexp</span>(<span class="ident">x</span>),
+                <span class="ident">Robj::from_sexp</span>(<span class="ident">indx</span>),
+                <span class="ident">Robj::from_sexp</span>(<span class="ident">call</span>),
+            )
+            .<span class="ident">get</span>()
         }
 
         <span class="kw">unsafe</span> {
@@ -1713,7 +1723,7 @@
             );
             <span class="ident">R_set_altvec_Extract_subset_method</span>(<span class="ident">class_ptr</span>, <span class="prelude-val">Some</span>(<span class="ident">altvec_Extract_subset</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>));
 
-            <span class="ident">new_owned</span>(<span class="ident">class_ptr</span>.<span class="ident">ptr</span>)
+            <span class="ident">Robj::from_sexp</span>(<span class="ident">class_ptr</span>.<span class="ident">ptr</span>)
         }
     }
 
@@ -2028,7 +2038,7 @@
                 <span class="ident">i</span>: <span class="ident">R_xlen_t</span>,
                 <span class="ident">v</span>: <span class="ident">SEXP</span>,
             ) {
-                <span class="ident">Altrep::get_state_mut</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">set_elt</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>, <span class="ident">new_owned</span>(<span class="ident">v</span>))
+                <span class="ident">Altrep::get_state_mut</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">set_elt</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>, <span class="ident">Robj::from_sexp</span>(<span class="ident">v</span>))
             }
 
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altstring_Is_sorted</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltStringImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(

@@ -152,7 +152,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_parts</span>(<span class="ident">formals</span>: <span class="ident">Pairlist</span>, <span class="ident">body</span>: <span class="ident">Language</span>, <span class="ident">env</span>: <span class="ident">Environment</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="ident">Rf_allocSExp</span>(<span class="ident">CLOSXP</span>);
-            <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">new_owned</span>(<span class="ident">sexp</span>);
+            <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">Robj::from_sexp</span>(<span class="ident">sexp</span>);
             <span class="ident">SET_FORMALS</span>(<span class="ident">sexp</span>, <span class="ident">formals</span>.<span class="ident">get</span>());
             <span class="ident">SET_BODY</span>(<span class="ident">sexp</span>, <span class="ident">body</span>.<span class="ident">get</span>());
             <span class="ident">SET_CLOENV</span>(<span class="ident">sexp</span>, <span class="ident">env</span>.<span class="ident">get</span>());
@@ -170,7 +170,7 @@
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">call</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">args</span>: <span class="ident">Pairlist</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
         <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">call</span> <span class="op">=</span> <span class="ident">new_owned</span>(<span class="ident">Rf_lcons</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">args</span>.<span class="ident">get</span>()));
+            <span class="kw">let</span> <span class="ident">call</span> <span class="op">=</span> <span class="ident">Robj::from_sexp</span>(<span class="ident">Rf_lcons</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">args</span>.<span class="ident">get</span>()));
             <span class="ident">call</span>.<span class="ident">eval</span>()
         }
     }
@@ -180,7 +180,7 @@
         <span class="kw">unsafe</span> {
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">rtype</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">RType::Function</span> {
                 <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>();
-                <span class="prelude-val">Some</span>(<span class="ident">new_owned</span>(<span class="ident">FORMALS</span>(<span class="ident">sexp</span>)).<span class="ident">try_into</span>().<span class="ident">unwrap</span>())
+                <span class="prelude-val">Some</span>(<span class="ident">Robj::from_sexp</span>(<span class="ident">FORMALS</span>(<span class="ident">sexp</span>)).<span class="ident">try_into</span>().<span class="ident">unwrap</span>())
             } <span class="kw">else</span> {
                 <span class="prelude-val">None</span>
             }
@@ -192,7 +192,7 @@
         <span class="kw">unsafe</span> {
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">rtype</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">RType::Function</span> {
                 <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>();
-                <span class="prelude-val">Some</span>(<span class="ident">new_owned</span>(<span class="ident">BODY</span>(<span class="ident">sexp</span>)))
+                <span class="prelude-val">Some</span>(<span class="ident">Robj::from_sexp</span>(<span class="ident">BODY</span>(<span class="ident">sexp</span>)))
             } <span class="kw">else</span> {
                 <span class="prelude-val">None</span>
             }
@@ -205,7 +205,7 @@
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">rtype</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">RType::Function</span> {
                 <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>();
                 <span class="prelude-val">Some</span>(
-                    <span class="ident">new_owned</span>(<span class="ident">CLOENV</span>(<span class="ident">sexp</span>))
+                    <span class="ident">Robj::from_sexp</span>(<span class="ident">CLOENV</span>(<span class="ident">sexp</span>))
                         .<span class="ident">try_into</span>()
                         .<span class="ident">expect</span>(<span class="string">&quot;Should be an environment&quot;</span>),
                 )
