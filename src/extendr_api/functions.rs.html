@@ -300,20 +300,6 @@
 <span id="300">300</span>
 <span id="301">301</span>
 <span id="302">302</span>
-<span id="303">303</span>
-<span id="304">304</span>
-<span id="305">305</span>
-<span id="306">306</span>
-<span id="307">307</span>
-<span id="308">308</span>
-<span id="309">309</span>
-<span id="310">310</span>
-<span id="311">311</span>
-<span id="312">312</span>
-<span id="313">313</span>
-<span id="314">314</span>
-<span id="315">315</span>
-<span id="316">316</span>
 </pre><pre class="rust">
 <span class="kw">use</span> <span class="kw">crate</span> <span class="kw">as</span> <span class="ident">extendr_api</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
@@ -513,20 +499,6 @@ pub fn dot_Generic() -&gt; Robj { unsafe { Robj::from_sexp(R_dot_Generic) }}
 <span class="doccomment">/// &quot;&quot; as a STRSXP</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">blank_scalar_string</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
     <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_BlankScalarString</span>) }
-}
-
-<span class="doccomment">/// Special &quot;NA&quot; string that represents null strings.</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///     assert!(na_str().as_ptr() != &quot;NA&quot;.as_ptr());</span>
-<span class="doccomment">///     assert_eq!(na_str(), &quot;NA&quot;);</span>
-<span class="doccomment">///     assert_eq!(&quot;NA&quot;.is_na(), false);</span>
-<span class="doccomment">///     assert_eq!(na_str().is_na(), true);</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">na_str</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> {
-    <span class="kw">unsafe</span> { <span class="ident">std::str::from_utf8_unchecked</span>(<span class="kw-2">&amp;</span>[<span class="string">b&#39;N&#39;</span>, <span class="string">b&#39;A&#39;</span>]) }
 }
 
 <span class="doccomment">/// Parse a string into an R executable object</span>

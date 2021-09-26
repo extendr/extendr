@@ -72,7 +72,7 @@
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>();
             <span class="kw">if</span> <span class="ident">sexp</span> <span class="op">=</span><span class="op">=</span> <span class="ident">R_NaString</span> {
-                <span class="ident">na_str</span>()
+                <span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span><span class="ident">::na</span>()
             } <span class="kw">else</span> {
                 <span class="ident">to_str</span>(<span class="ident">R_CHAR</span>(<span class="ident">sexp</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>)
             }

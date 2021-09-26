@@ -70,6 +70,8 @@
 <span id="70">70</span>
 <span id="71">71</span>
 <span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
 </pre><pre class="rust">
 <span class="doccomment">//! # Common exports for extendr-api.</span>
 <span class="doccomment">//!</span>
@@ -77,17 +79,19 @@
 <span class="doccomment">//! using deprecated features.</span>
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::{
-    <span class="ident">print_r_error</span>, <span class="ident">print_r_output</span>, <span class="ident">FromRobj</span>, <span class="ident">IsNA</span>, <span class="ident">RType</span>, <span class="ident">FALSE</span>, <span class="ident">NA_INTEGER</span>, <span class="ident">NA_LOGICAL</span>, <span class="ident">NA_REAL</span>,
-    <span class="ident">NA_STRING</span>, <span class="ident">NULL</span>, <span class="ident">TRUE</span>,
+    <span class="ident">print_r_error</span>, <span class="ident">print_r_output</span>, <span class="ident">CanBeNA</span>, <span class="ident">FromRobj</span>, <span class="ident">RType</span>, <span class="ident">FALSE</span>, <span class="ident">NA_INTEGER</span>, <span class="ident">NA_LOGICAL</span>,
+    <span class="ident">NA_REAL</span>, <span class="ident">NA_STRING</span>, <span class="ident">NULL</span>, <span class="ident">TRUE</span>,
 };
+
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span><span class="ident">::na</span>::<span class="kw-2">*</span>;
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span><span class="ident">::error</span>::{<span class="ident">Error</span>, <span class="prelude-ty">Result</span>};
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span><span class="ident">::functions</span>::{
     <span class="ident">base_env</span>, <span class="ident">base_namespace</span>, <span class="ident">blank_scalar_string</span>, <span class="ident">blank_string</span>, <span class="ident">current_env</span>, <span class="ident">empty_env</span>,
     <span class="ident">eval_string</span>, <span class="ident">eval_string_with_params</span>, <span class="ident">find_namespace</span>, <span class="ident">find_namespaced_function</span>, <span class="ident">global_env</span>,
-    <span class="ident">global_function</span>, <span class="ident">global_var</span>, <span class="ident">local_var</span>, <span class="ident">na_str</span>, <span class="ident">na_string</span>, <span class="ident">namespace_registry</span>, <span class="ident">new_env</span>,
-    <span class="ident">nil_value</span>, <span class="ident">parse</span>, <span class="ident">srcref</span>,
+    <span class="ident">global_function</span>, <span class="ident">global_var</span>, <span class="ident">local_var</span>, <span class="ident">na_string</span>, <span class="ident">namespace_registry</span>, <span class="ident">new_env</span>, <span class="ident">nil_value</span>,
+    <span class="ident">parse</span>, <span class="ident">srcref</span>,
 };
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span><span class="ident">::wrapper::symbol</span>::{

@@ -453,17 +453,17 @@
 <span class="kw">fn</span> <span class="ident">str_from_strsxp</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">sexp</span>: <span class="ident">SEXP</span>, <span class="ident">index</span>: <span class="ident">isize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span> {
     <span class="kw">unsafe</span> {
         <span class="kw">if</span> <span class="ident">index</span> <span class="op">&lt;</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">index</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">Rf_xlength</span>(<span class="ident">sexp</span>) {
-            <span class="ident">na_str</span>()
+            <span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span><span class="ident">::na</span>()
         } <span class="kw">else</span> {
             <span class="kw">let</span> <span class="ident">charsxp</span> <span class="op">=</span> <span class="ident">STRING_ELT</span>(<span class="ident">sexp</span>, <span class="ident">index</span>);
             <span class="kw">if</span> <span class="ident">charsxp</span> <span class="op">=</span><span class="op">=</span> <span class="ident">R_NaString</span> {
-                <span class="ident">na_str</span>()
+                <span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span><span class="ident">::na</span>()
             } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">TYPEOF</span>(<span class="ident">charsxp</span>) <span class="op">=</span><span class="op">=</span> <span class="ident">CHARSXP</span> <span class="kw">as</span> <span class="ident">i32</span> {
                 <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">R_CHAR</span>(<span class="ident">charsxp</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>;
                 <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">std::slice::from_raw_parts</span>(<span class="ident">ptr</span>, <span class="ident">Rf_xlength</span>(<span class="ident">charsxp</span>) <span class="kw">as</span> <span class="ident">usize</span>);
                 <span class="ident">std::str::from_utf8_unchecked</span>(<span class="ident">slice</span>)
             } <span class="kw">else</span> {
-                <span class="ident">na_str</span>()
+                <span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span><span class="ident">::na</span>()
             }
         }
     }
@@ -489,7 +489,7 @@
                 <span class="kw">let</span> <span class="ident">j</span> <span class="op">=</span> <span class="kw-2">*</span>(<span class="ident">INTEGER</span>(<span class="ident">vector</span>).<span class="ident">add</span>(<span class="ident">i</span>));
                 <span class="prelude-val">Some</span>(<span class="ident">str_from_strsxp</span>(<span class="self">self</span>.<span class="ident">levels</span>, <span class="ident">j</span> <span class="kw">as</span> <span class="ident">isize</span> <span class="op">-</span> <span class="number">1</span>))
             } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">TYPEOF</span>(<span class="ident">vector</span>) <span class="kw">as</span> <span class="ident">u32</span> <span class="op">=</span><span class="op">=</span> <span class="ident">NILSXP</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">na_str</span>())
+                <span class="prelude-val">Some</span>(<span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span><span class="ident">::na</span>())
             } <span class="kw">else</span> {
                 <span class="prelude-val">None</span>
             }
@@ -550,7 +550,7 @@
     <span class="doccomment">///     let obj = Robj::from(vec![Some(&quot;a&quot;), Some(&quot;b&quot;), None]);</span>
     <span class="doccomment">///     assert_eq!(obj.as_str_iter().unwrap().map(|s| s.is_na()).collect::&lt;Vec&lt;_&gt;&gt;(), vec![false, false, true]);</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">///     let obj = Robj::from(vec![&quot;a&quot;, &quot;b&quot;, na_str()]);</span>
+    <span class="doccomment">///     let obj = Robj::from(vec![&quot;a&quot;, &quot;b&quot;, &lt;&amp;str&gt;::na()]);</span>
     <span class="doccomment">///     assert_eq!(obj.as_str_iter().unwrap().map(|s| s.is_na()).collect::&lt;Vec&lt;_&gt;&gt;(), vec![false, false, true]);</span>
     <span class="doccomment">///</span>
     <span class="doccomment">///     let obj = Robj::from(vec![&quot;a&quot;, &quot;b&quot;, &quot;NA&quot;]);</span>
