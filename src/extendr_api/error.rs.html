@@ -191,6 +191,8 @@
 <span id="191">191</span>
 <span id="192">192</span>
 <span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
 </pre><pre class="rust">
 <span class="doccomment">//! Error handling in Rust called from R.</span>
 
@@ -267,6 +269,7 @@
     <span class="ident">OutOfLimits</span>(<span class="ident">Robj</span>),
     <span class="ident">TypeMismatch</span>(<span class="ident">Robj</span>),
     <span class="ident">NamespaceNotFound</span>(<span class="ident">Robj</span>),
+    <span class="ident">NoGraphicsDevices</span>(<span class="ident">Robj</span>),
 
     <span class="ident">ExpectedExternalPtrType</span>(<span class="ident">Robj</span>, <span class="ident">String</span>),
     <span class="ident">Other</span>(<span class="ident">String</span>),
@@ -342,6 +345,7 @@
             <span class="ident">Error::ExpectedExternalPtrType</span>(<span class="ident">_robj</span>, <span class="ident">type_name</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Incorrect external pointer type {}&quot;</span>, <span class="ident">type_name</span>)
             }
+            <span class="ident">Error::NoGraphicsDevices</span>(<span class="ident">_robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;No graphics devices active.&quot;</span>),
             <span class="ident">Error::Other</span>(<span class="ident">str</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">str</span>),
         }
     }
