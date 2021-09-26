@@ -70,9 +70,9 @@ pub enum LineType {
     Solid,
     Dashed,
     Dotted,
-    Dotdash,
-    Longdash,
-    Twodash,
+    DotDash,
+    LongDash,
+    TwoDash,
 }
 
 #[derive(PartialEq, Debug, Clone)]
@@ -181,9 +181,9 @@ impl Context {
     /// Solid    => ------
     /// Dashed   => - - - -
     /// Dotted   => . . . .
-    /// Dotdash  => . - . -
-    /// Longdash => --  --
-    /// Twodash  => . . - -
+    /// DotDash  => . - . -
+    /// LongDash => --  --
+    /// TwoDash  => . . - -
     /// ```
     pub fn line_type(&mut self, lty: LineType) -> &mut Self {
         use LineType::*;
@@ -192,9 +192,9 @@ impl Context {
             Solid => 0,
             Dashed => 4 + (4 << 4),
             Dotted => 1 + (3 << 4),
-            Dotdash => 1 + (3 << 4) + (4 << 8) + (3 << 12),
-            Longdash => 7 + (3 << 4),
-            Twodash => 2 + (2 << 4) + (6 << 8) + (2 << 12),
+            DotDash => 1 + (3 << 4) + (4 << 8) + (3 << 12),
+            LongDash => 7 + (3 << 4),
+            TwoDash => 2 + (2 << 4) + (6 << 8) + (2 << 12),
         };
         self
     }
