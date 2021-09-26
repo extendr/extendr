@@ -176,7 +176,7 @@ impl Context {
     }
 
     /// Set the type of the line.
-    /// ```norun
+    /// ```ignore
     /// Blank    => <invisible>
     /// Solid    => ------
     /// Dashed   => - - - -
@@ -200,7 +200,7 @@ impl Context {
     }
 
     /// Set the line end type.
-    /// ```norun
+    /// ```ignore
     ///   LineEnd::RoundCap
     ///   LineEnd::ButtCap  
     ///   LineEnd::SquareCap
@@ -215,7 +215,7 @@ impl Context {
     }
 
     /// Set the line join type.
-    /// ```norun
+    /// ```ignore
     ///   LineJoin::RoundJoin
     ///   LineJoin::MitreJoin
     ///   LineJoin::BevelJoin
@@ -252,7 +252,7 @@ impl Context {
     // }
 
     /// Set the font face.
-    /// ```norun
+    /// ```ignore
     ///   FontFace::PlainFont
     ///   FontFace::BoldFont
     ///   FontFace::ItalicFont
@@ -340,25 +340,37 @@ impl Context {
 #[allow(non_snake_case)]
 impl Device {
     /// Get the current device.
-    pub fn current() -> Device {
+    pub fn current() -> Result<Device> {
+        // At present we can't trap an R error from a function
+        // that does not return a SEXP.
         unsafe {
-            Device {
+            Ok(Device {
                 inner: GEcurrentDevice(),
-            }
+            })
         }
     }
 
     /// Enable device rendering.
-    pub fn mode_on(&self) {
+    pub fn mode_on(&self) -> Result<()> {
         unsafe {
-            GEMode(1, self.inner());
+            if Rf_NoDevices() != 0 {
+                Err(Error::NoGraphicsDevices(r!(())))
+            } else {
+                GEMode(1, self.inner());
+                Ok(())
+            }
         }
     }
 
     /// Disable device rendering and flush.
-    pub fn mode_off(&self) {
+    pub fn mode_off(&self) -> Result<()> {
         unsafe {
-            GEMode(0, self.inner());
+            if Rf_NoDevices() != 0 {
+                Err(Error::NoGraphicsDevices(r!(())))
+            } else {
+                GEMode(0, self.inner());
+                Ok(())
+            }
         }
     }
 
@@ -368,10 +380,14 @@ impl Device {
     }
 
     /// Get a device by number.
-    pub fn get_device(number: i32) -> Device {
+    pub fn get_device(number: i32) -> Result<Device> {
         unsafe {
-            Device {
-                inner: GEgetDevice(number),
+            if number < 0 || number >= Rf_NumDevices() {
+                Err(Error::NoGraphicsDevices(r!(())))
+            } else {
+                Ok(Device {
+                    inner: GEgetDevice(number),
+                })
             }
         }
     }

@@ -14,7 +14,7 @@ fn graphics_test() {
         if use_postscript {
             R!("postscript({{path_str}})")?;
         }
-        let dev = Device::current();
+        let dev = Device::current()?;
         let mut gc = Context::from_device(&dev, Unit::Inches);
 
         // Start a new page.
@@ -22,7 +22,7 @@ fn graphics_test() {
         gc.fill(antiquewhite());
         dev.new_page(&gc);
 
-        dev.mode_on();
+        dev.mode_on()?;
 
         // Graphics commands.
         gc.color(darkkhaki());
@@ -67,7 +67,7 @@ fn graphics_test() {
         println!("{:?}", dev.text_metric("g", &gc));
         println!("{:?}", dev.text_metric("ê", &gc));
 
-        dev.mode_off();
+        dev.mode_off()?;
 
         if use_postscript {
             // Flush the file and kill the device.
