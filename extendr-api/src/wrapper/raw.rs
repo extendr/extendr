@@ -28,7 +28,7 @@ impl Raw {
     pub fn from_bytes(bytes: &[u8]) -> Self {
         single_threaded(|| unsafe {
             let sexp = Rf_allocVector(RAWSXP, bytes.len() as R_xlen_t);
-            let robj = new_owned(sexp);
+            let robj = Robj::from_sexp(sexp);
             let ptr = RAW(sexp);
             for (i, &v) in bytes.iter().enumerate() {
                 *ptr.add(i) = v;

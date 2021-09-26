@@ -61,7 +61,7 @@ impl S4 {
         let name = Robj::from(name);
         unsafe {
             if R_has_slot(self.get(), name.get()) != 0 {
-                Some(new_owned(R_do_slot(self.get(), name.get())))
+                Some(Robj::from_sexp(R_do_slot(self.get(), name.get())))
             } else {
                 None
             }

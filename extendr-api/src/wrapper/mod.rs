@@ -61,12 +61,12 @@ where
 {
     single_threaded(|| unsafe {
         let values = values.into_iter();
-        let sexp = Rf_allocVector(sexptype, values.len() as R_xlen_t);
-        ownership::protect(sexp);
+        let res = Robj::alloc_vector(sexptype, values.len());
+        let sexp = res.get();
         for (i, val) in values.enumerate() {
             SET_VECTOR_ELT(sexp, i as R_xlen_t, val.into().get());
         }
-        Robj::Owned(sexp)
+        res
     })
 }
 
