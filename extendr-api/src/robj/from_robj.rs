@@ -126,7 +126,8 @@ impl<'a> FromRobj<'a> for Vec<String> {
         } else if let Some(v) = robj.as_string_vector() {
             let str_vec = v.to_vec();
             // check for NA's in the string vector
-            if let Some(_str) = str_vec.iter().find(|&s| *s == na_str()) {
+            // The check is by-value, so `<&str>::is_na()` cannot be used
+            if let Some(_str) = str_vec.iter().find(|&s| *s == <&str>::na()) {
                 Err("Input vector cannot contain NA's.")
             } else {
                 Ok(str_vec)

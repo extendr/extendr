@@ -198,20 +198,6 @@ pub fn blank_scalar_string() -> Robj {
     unsafe { Robj::from_sexp(R_BlankScalarString) }
 }
 
-/// Special "NA" string that represents null strings.
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///     assert!(na_str().as_ptr() != "NA".as_ptr());
-///     assert_eq!(na_str(), "NA");
-///     assert_eq!("NA".is_na(), false);
-///     assert_eq!(na_str().is_na(), true);
-/// }
-/// ```
-pub fn na_str() -> &'static str {
-    unsafe { std::str::from_utf8_unchecked(&[b'N', b'A']) }
-}
-
 /// Parse a string into an R executable object
 /// ```
 /// use extendr_api::prelude::*;

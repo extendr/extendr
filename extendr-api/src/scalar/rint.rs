@@ -13,10 +13,10 @@ use std::ops::{Add, Div, Mul, Neg, Not, Sub};
 pub struct Rint(pub i32);
 
 impl Rint {
-    gen_impl!(Rint, i32, i32::MIN);
+    gen_impl!(Rint, i32);
 }
 
-gen_trait_impl!(Rint, i32, |x: &Rint| x.0 == i32::MIN);
+gen_trait_impl!(Rint, i32, |x: &Rint| x.0 == i32::MIN, i32::MIN);
 gen_from_primitive!(Rint, i32);
 gen_from_scalar!(Rint, i32);
 gen_sum_iter!(Rint, 0i32);

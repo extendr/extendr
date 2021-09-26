@@ -31,7 +31,7 @@ impl Rstr {
         unsafe {
             let sexp = self.robj.get();
             if sexp == R_NaString {
-                na_str()
+                <&str>::na()
             } else {
                 to_str(R_CHAR(sexp) as *const u8)
             }
