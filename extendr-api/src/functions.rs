@@ -83,7 +83,7 @@ pub fn find_namespace<K: Into<Robj>>(key: K) -> Result<Environment> {
 /// }
 /// ```
 pub fn current_env() -> Environment {
-    unsafe { new_owned(R_GetCurrentEnv()).try_into().unwrap() }
+    unsafe { Robj::from_sexp(R_GetCurrentEnv()).try_into().unwrap() }
 }
 
 /// The "global" environment
@@ -96,12 +96,12 @@ pub fn current_env() -> Environment {
 /// }
 /// ```
 pub fn global_env() -> Environment {
-    unsafe { new_sys(R_GlobalEnv).try_into().unwrap() }
+    unsafe { Robj::from_sexp(R_GlobalEnv).try_into().unwrap() }
 }
 
 /// An empty environment at the root of the environment tree
 pub fn empty_env() -> Environment {
-    unsafe { new_sys(R_EmptyEnv).try_into().unwrap() }
+    unsafe { Robj::from_sexp(R_EmptyEnv).try_into().unwrap() }
 }
 
 /// Create a new environment
@@ -118,7 +118,7 @@ pub fn empty_env() -> Environment {
 pub fn new_env(parent: Environment, hash: bool, capacity: i32) -> Environment {
     unsafe {
         let env = R_NewEnv(parent.robj.get(), hash as i32, capacity);
-        new_sys(env).try_into().unwrap()
+        Robj::from_sexp(env).try_into().unwrap()
     }
 }
 
@@ -141,7 +141,7 @@ pub fn new_env(parent: Environment, hash: bool, capacity: i32) -> Environment {
 /// }
 /// ```
 pub fn base_env() -> Environment {
-    unsafe { new_sys(R_BaseEnv).try_into().unwrap() }
+    unsafe { Robj::from_sexp(R_BaseEnv).try_into().unwrap() }
 }
 
 /// The namespace for base.
@@ -153,7 +153,7 @@ pub fn base_env() -> Environment {
 /// }
 /// ```
 pub fn base_namespace() -> Environment {
-    unsafe { new_sys(R_BaseNamespace).try_into().unwrap() }
+    unsafe { Robj::from_sexp(R_BaseNamespace).try_into().unwrap() }
 }
 
 /// For registered namespaces.
@@ -165,37 +165,37 @@ pub fn base_namespace() -> Environment {
 /// }
 /// ```
 pub fn namespace_registry() -> Environment {
-    unsafe { new_sys(R_NamespaceRegistry).try_into().unwrap() }
+    unsafe { Robj::from_sexp(R_NamespaceRegistry).try_into().unwrap() }
 }
 
 /// Current srcref, for debuggers
 pub fn srcref() -> Robj {
-    unsafe { new_sys(R_Srcref) }
+    unsafe { Robj::from_sexp(R_Srcref) }
 }
 
 /// The nil object
 pub fn nil_value() -> Robj {
-    unsafe { new_sys(R_NilValue) }
+    unsafe { Robj::from_sexp(R_NilValue) }
 }
 
 /* fix version issues.
 /// ".Generic"
-pub fn dot_Generic() -> Robj { unsafe { new_sys(R_dot_Generic) }}
+pub fn dot_Generic() -> Robj { unsafe { Robj::from_sexp(R_dot_Generic) }}
 */
 
 /// NA_STRING as a CHARSXP
 pub fn na_string() -> Robj {
-    unsafe { new_sys(R_NaString) }
+    unsafe { Robj::from_sexp(R_NaString) }
 }
 
 /// "" as a CHARSXP
 pub fn blank_string() -> Robj {
-    unsafe { new_sys(R_BlankString) }
+    unsafe { Robj::from_sexp(R_BlankString) }
 }
 
 /// "" as a STRSXP
 pub fn blank_scalar_string() -> Robj {
-    unsafe { new_sys(R_BlankScalarString) }
+    unsafe { Robj::from_sexp(R_BlankScalarString) }
 }
 
 /// Parse a string into an R executable object
@@ -212,7 +212,7 @@ pub fn parse(code: &str) -> Result<Robj> {
         let mut status = 0_u32;
         let status_ptr = &mut status as *mut u32;
         let codeobj: Robj = code.into();
-        let parsed = new_owned(R_ParseVector(codeobj.get(), -1, status_ptr, R_NilValue));
+        let parsed = Robj::from_sexp(R_ParseVector(codeobj.get(), -1, status_ptr, R_NilValue));
         match status {
             1 => Ok(parsed),
             _ => Err(Error::ParseError(code.into())),

@@ -75,7 +75,7 @@ impl Environment {
     pub fn parent(&self) -> Option<Environment> {
         unsafe {
             let sexp = self.robj.get();
-            let robj = new_owned(ENCLOS(sexp));
+            let robj = Robj::from_sexp(ENCLOS(sexp));
             robj.try_into().ok()
         }
     }
@@ -109,8 +109,8 @@ impl Environment {
     /// Iterate over an environment.
     pub fn iter(&self) -> EnvIter {
         unsafe {
-            let hashtab = new_owned(HASHTAB(self.get()));
-            let frame = new_owned(FRAME(self.get()));
+            let hashtab = Robj::from_sexp(HASHTAB(self.get()));
+            let frame = Robj::from_sexp(FRAME(self.get()));
             if hashtab.is_null() && frame.is_pairlist() {
                 EnvIter {
                     hash_table: ListIter::new(),
@@ -170,7 +170,13 @@ impl Environment {
     pub fn local<K: Into<Robj>>(&self, key: K) -> Result<Robj> {
         let key = key.into();
         if key.is_symbol() {
-            unsafe { Ok(new_owned(Rf_findVarInFrame3(self.get(), key.get(), 1))) }
+            unsafe {
+                Ok(Robj::from_sexp(Rf_findVarInFrame3(
+                    self.get(),
+                    key.get(),
+                    1,
+                )))
+            }
         } else {
             Err(Error::NotFound(key))
         }

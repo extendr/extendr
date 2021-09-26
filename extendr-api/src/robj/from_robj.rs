@@ -160,7 +160,7 @@ impl_iter_from_robj!(Logical, as_logical_iter, "Not a logical vector.");
 /// Pass-through Robj conversion, essentially a clone.
 impl<'a> FromRobj<'a> for Robj {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        Ok(unsafe { new_owned(robj.get()) })
+        Ok(unsafe { Robj::from_sexp(robj.get()) })
     }
 }
 

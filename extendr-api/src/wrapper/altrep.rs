@@ -88,7 +88,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
     /// Duplicate this object. Called by Rf_duplicate.
     /// Currently this manifests the array but preserves the original object.
     fn duplicate(x: SEXP, _deep: bool) -> Robj {
-        unsafe { new_owned(manifest(x)) }
+        Robj::from_sexp(manifest(x))
     }
 
     /// Coerce this object into some other type, if possible.
@@ -459,8 +459,8 @@ impl Altrep {
     pub fn data(&self) -> (Robj, Robj) {
         unsafe {
             (
-                new_owned(R_altrep_data1(self.robj.get())),
-                new_owned(R_altrep_data1(self.robj.get())),
+                Robj::from_sexp(R_altrep_data1(self.robj.get())),
+                Robj::from_sexp(R_altrep_data1(self.robj.get())),
             )
         }
     }
@@ -476,7 +476,7 @@ impl Altrep {
 
     /// Safely implement ALTREP_CLASS.
     pub fn class(&self) -> Robj {
-        unsafe { new_owned(ALTREP_CLASS(self.robj.get())) }
+        unsafe { Robj::from_sexp(ALTREP_CLASS(self.robj.get())) }
     }
 
     pub fn from_state_and_class<StateType: 'static>(
@@ -507,7 +507,7 @@ impl Altrep {
             }
 
             Altrep {
-                robj: new_owned(sexp),
+                robj: Robj::from_sexp(sexp),
             }
         })
     }
@@ -547,9 +547,9 @@ impl Altrep {
             levs: c_int,
         ) -> SEXP {
             <StateType>::unserialize_ex(
-                new_owned(class),
-                new_owned(state),
-                new_owned(attr),
+                Robj::from_sexp(class),
+                Robj::from_sexp(state),
+                Robj::from_sexp(attr),
                 objf as i32,
                 levs as i32,
             )
@@ -560,7 +560,7 @@ impl Altrep {
             class: SEXP,
             state: SEXP,
         ) -> SEXP {
-            <StateType>::unserialize(new_owned(class), new_owned(state)).get()
+            <StateType>::unserialize(Robj::from_sexp(class), Robj::from_sexp(state)).get()
         }
 
         unsafe extern "C" fn altrep_Serialized_state<StateType: AltrepImpl + 'static>(
@@ -626,7 +626,12 @@ impl Altrep {
             indx: SEXP,
             call: SEXP,
         ) -> SEXP {
-            <StateType>::extract_subset(new_owned(x), new_owned(indx), new_owned(call)).get()
+            <StateType>::extract_subset(
+                Robj::from_sexp(x),
+                Robj::from_sexp(indx),
+                Robj::from_sexp(call),
+            )
+            .get()
         }
 
         unsafe {
@@ -674,7 +679,7 @@ impl Altrep {
             );
             R_set_altvec_Extract_subset_method(class_ptr, Some(altvec_Extract_subset::<StateType>));
 
-            new_owned(class_ptr.ptr)
+            Robj::from_sexp(class_ptr.ptr)
         }
     }
 
@@ -989,7 +994,7 @@ impl Altrep {
                 i: R_xlen_t,
                 v: SEXP,
             ) {
-                Altrep::get_state_mut::<StateType>(x).set_elt(i as usize, new_owned(v))
+                Altrep::get_state_mut::<StateType>(x).set_elt(i as usize, Robj::from_sexp(v))
             }
 
             unsafe extern "C" fn altstring_Is_sorted<StateType: AltStringImpl + 'static>(

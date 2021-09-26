@@ -20,10 +20,8 @@ pub struct Rstr {
 impl Rstr {
     /// Make a character object from a string.
     pub fn from_string(val: &str) -> Self {
-        unsafe {
-            Rstr {
-                robj: new_owned(str_to_character(val)),
-            }
+        Rstr {
+            robj: Robj::from_sexp(str_to_character(val)),
         }
     }
 

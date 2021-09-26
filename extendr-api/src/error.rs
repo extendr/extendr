@@ -73,6 +73,7 @@ pub enum Error {
     OutOfLimits(Robj),
     TypeMismatch(Robj),
     NamespaceNotFound(Robj),
+    NoGraphicsDevices(Robj),
 
     ExpectedExternalPtrType(Robj, String),
     Other(String),
@@ -148,6 +149,7 @@ impl std::fmt::Display for Error {
             Error::ExpectedExternalPtrType(_robj, type_name) => {
                 write!(f, "Incorrect external pointer type {}", type_name)
             }
+            Error::NoGraphicsDevices(_robj) => write!(f, "No graphics devices active."),
             Error::Other(str) => write!(f, "{}", str),
         }
     }
