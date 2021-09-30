@@ -793,7 +793,7 @@ impl Robj {
     ///     assert_eq!(r!([1, 2, 3]).set_names(&["a", "b"]), Err(Error::NamesLengthMismatch(r!(["a", "b"]))));
     /// }
     /// ```
-    pub fn set_names<T>(&self, names: T) -> Result<Robj>
+    pub fn set_names<T>(&mut self, names: T) -> Result<Robj>
     where
         T: IntoIterator,
         T::IntoIter: ExactSizeIterator,
