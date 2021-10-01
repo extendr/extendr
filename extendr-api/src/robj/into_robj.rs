@@ -555,7 +555,7 @@ impl From<Logical> for Robj {
 impl<'a> From<HashMap<&'a str, Robj>> for Robj {
     /// Convert a hashmap into a list.
     fn from(val: HashMap<&'a str, Robj>) -> Self {
-        let res: Robj = List::from_values(val.iter().map(|(_, v)| v)).into();
+        let mut res: Robj = List::from_values(val.iter().map(|(_, v)| v)).into();
         res.set_names(val.into_iter().map(|(k, _)| k)).unwrap()
     }
 }

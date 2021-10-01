@@ -232,6 +232,9 @@ pub mod ownership;
 pub mod prelude;
 pub mod rmacros;
 
+#[cfg(feature = "serde")]
+pub mod serializer;
+
 pub mod graphics;
 pub mod robj;
 pub mod scalar;
