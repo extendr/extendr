@@ -882,6 +882,9 @@
 <span id="882">882</span>
 <span id="883">883</span>
 <span id="884">884</span>
+<span id="885">885</span>
+<span id="886">886</span>
+<span id="887">887</span>
 </pre><pre class="rust">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! A safe and user friendly R extension interface.</span>
@@ -1116,6 +1119,9 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">ownership</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">prelude</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">rmacros</span>;
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">serializer</span>;
 
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">graphics</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">robj</span>;

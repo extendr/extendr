@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["FromList","You can use the FromList wrapper to coerce a Robj into a list."],["List",""],["ListIter","Iterator over the objects in a VECSXP, EXPRSXP or WEAKREFSXP."]]});
+initSidebarItems({"struct":[["FromList","You can use the FromList wrapper to coerce a Robj into a list."],["List",""],["ListIter","Iterator over the objects in a VECSXP, EXPRSXP or WEAKREFSXP."]],"trait":[["KeyValue",""]]});
