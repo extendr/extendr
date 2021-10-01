@@ -26,7 +26,7 @@ serde = { version = "1.0", features = ["derive"], optional = true }
 default = []
 
 # All features to test
-tests-all = ["ndarray", "libR-sys/use-bindgen"]
+tests-all = ["ndarray", "libR-sys/use-bindgen", "serde"]
 
 # The minimal set of features without all optional ones
 tests-minimal = ["libR-sys/use-bindgen"]
