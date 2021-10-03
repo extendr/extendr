@@ -121,6 +121,98 @@ macro_rules! gen_binop {
     };
 }
 
+/// Generates binary operate-assign operators for scalar types.
+macro_rules! gen_binopassign {
+    ($type : tt, $type_prim : tt, $opname : ident, $expr: expr, $docstring: expr) => {
+        impl $opname<$type> for $type {
+            paste::paste! {
+                #[doc = $docstring]
+                fn [< $opname:snake >](&mut self, other: $type) {
+                    match (self.clone().into(), other.into()) {
+                        (Some(lhs), Some(rhs)) => {
+                            let f = $expr;
+                            match f(lhs, rhs) {
+                                Some(res) => *self = $type::from(res),
+                                None => *self = $type::na(),
+                            }
+                        },
+                        _ => *self = $type::na(),
+                    }
+                }
+            }
+        }
+
+        impl $opname<$type> for &mut $type {
+            paste::paste! {
+                #[doc = $docstring]
+                fn [< $opname:snake >](&mut self, other: $type) {
+                    match (self.clone().into(), other.into()) {
+                        (Some(lhs), Some(rhs)) => {
+                            let f = $expr;
+                            match f(lhs, rhs) {
+                                Some(res) => **self = $type::from(res),
+                                None => **self = $type::na(),
+                            }
+                        },
+                        _ => **self = $type::na(),
+                    }
+                }
+            }
+        }
+
+        impl $opname<$type_prim> for $type {
+            paste::paste! {
+                #[doc = $docstring]
+                fn [< $opname:snake >](&mut self, other: $type_prim) {
+                    match self.clone().into() {
+                        Some(lhs) => {
+                            let f = $expr;
+                            match f(lhs, other) {
+                                Some(res) => *self = $type::from(res),
+                                None => *self = $type::na(),
+                            }
+                        }
+                        None => *self = $type::na(),
+                    }
+                }
+            }
+        }
+
+        impl $opname<$type_prim> for &mut $type {
+            paste::paste! {
+                #[doc = $docstring]
+                fn [< $opname:snake >](&mut self, other: $type_prim) {
+                    match self.clone().into() {
+                        Some(lhs) => {
+                            let f = $expr;
+                            match f(lhs, other) {
+                                Some(res) => **self = $type::from(res),
+                                None => **self = $type::na(),
+                            }
+                        }
+                        None => **self = $type::na(),
+                    }
+                }
+            }
+        }
+
+        impl $opname<$type> for Option<$type_prim> {
+            paste::paste! {
+                #[doc = $docstring]
+                fn [< $opname:snake >](&mut self, other: $type) {
+                    match (self.clone(), other.clone().into()) {
+                        (Some(lhs), Some(rhs)) => {
+                            let f = $expr;
+                            *self = f(lhs, rhs);
+                        },
+                        _ => *self = None,
+                    }
+                }
+            }
+        }
+    };
+}
+
 /// Generates conversions from primitive to scalar type.
 macro_rules! gen_from_primitive {
     ($type : tt, $type_prim : tt) => {
@@ -290,6 +382,7 @@ macro_rules! gen_sum_iter {
 }
 
 pub(in crate::scalar) use gen_binop;
+pub(in crate::scalar) use gen_binopassign;
 pub(in crate::scalar) use gen_from_primitive;
 pub(in crate::scalar) use gen_from_scalar;
 pub(in crate::scalar) use gen_impl;

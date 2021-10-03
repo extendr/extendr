@@ -50,6 +50,69 @@ fn test_rint() {
 }
 
 #[test]
+fn test_rint_opassign() {
+    // LHS Rint, RHS Rint
+    let mut a = Rint::from(20);
+    a += Rint::from(10);  assert_eq!(a, Rint::from(30));
+    a -= Rint::from(20);  assert_eq!(a, Rint::from(10));
+    a *= Rint::from(20);  assert_eq!(a, Rint::from(200));
+    a /= Rint::from(100); assert_eq!(a, Rint::from(2));
+
+    // LHS &mut Rint, RHS Rint
+    let mut a = Rint::from(20);
+    let mut b = &mut a;
+    b += Rint::from(10);  assert_eq!(b, &Rint::from(30));
+    b -= Rint::from(20);  assert_eq!(b, &Rint::from(10));
+    b *= Rint::from(20);  assert_eq!(b, &Rint::from(200));
+    b /= Rint::from(100); assert_eq!(b, &Rint::from(2));
+
+    // LHS Rint, RHS i32
+    let mut a = Rint::from(20);
+    a += 10;  assert_eq!(a, Rint::from(30));
+    a -= 20;  assert_eq!(a, Rint::from(10));
+    a *= 20;  assert_eq!(a, Rint::from(200));
+    a /= 100; assert_eq!(a, Rint::from(2));
+
+    // LHS &mut Rint, RHS i32
+    let mut a = Rint::from(20);
+    let mut b = &mut a;
+    b += 10;  assert_eq!(b, &Rint::from(30));
+    b -= 20;  assert_eq!(b, &Rint::from(10));
+    b *= 20;  assert_eq!(b, &Rint::from(200));
+    b /= 100; assert_eq!(b, &Rint::from(2));
+
+    // LHS Option<i32>, RHS Rint
+    let mut a = Some(20);
+    a += Rint::from(10);  assert_eq!(a, Some(30));
+    a -= Rint::from(20);  assert_eq!(a, Some(10));
+    a *= Rint::from(20);  assert_eq!(a, Some(200));
+    a /= Rint::from(100); assert_eq!(a, Some(2));
+
+    // LHS NA
+    let mut a = Rint::na();
+    a += Rint::from(10);  assert!(a.is_na());
+    a -= Rint::from(20);  assert!(a.is_na());
+    a *= Rint::from(20);  assert!(a.is_na());
+    a /= Rint::from(100); assert!(a.is_na());
+
+    // RHS NA
+    let mut a = Rint::from(20); a += Rint::na(); assert!(a.is_na());
+    let mut a = Rint::from(20); a -= Rint::na(); assert!(a.is_na());
+    let mut a = Rint::from(20); a *= Rint::na(); assert!(a.is_na());
+    let mut a = Rint::from(20); a /= Rint::na(); assert!(a.is_na());
+
+    // Overflow | LHS Rint, RHS Rint
+    let mut a = Rint::from(i32::MAX - 1); a += Rint::from(10); assert!(a.is_na());
+    let mut a = Rint::from(i32::MAX - 1); a *= Rint::from(10); assert!(a.is_na());
+
+    let mut a = Rint::from(1);  a /= Rint::from(0); assert!(a.is_na());
+    let mut a = Rint::from(-1); a /= Rint::na();    assert!(a.is_na());
+
+    // Underflow | LHS Rint, RHS Rint
+    let mut a = Rint::from(i32::MIN + 1); a += Rint::from(-10); assert!(a.is_na());
+}
+
+#[test]
 fn test_rfloat() {
     let a = Rfloat::from(20.);
     let b = Rfloat::from(10.);
