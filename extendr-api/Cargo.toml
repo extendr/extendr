@@ -6,7 +6,8 @@ authors = [
     "Thomas Down",
     "Mossa Merhi Reimert <mossa@sund.ku.dk>",
     "Claus O. Wilke <wilke@austin.utexas.edu>",
-    "Hiroaki Yutani"
+    "Hiroaki Yutani",
+    "Ilia A. Kosenkov <ilia.kosenkov@outlook.com>"
 ]
 edition = "2018"
 description = "Safe and user friendly bindings to the R programming language."
