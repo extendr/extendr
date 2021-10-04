@@ -2,7 +2,7 @@ use crate::scalar::macros::*;
 use crate::*;
 use std::convert::TryFrom;
 use std::ops::{Add, Div, Mul, Neg, Not, Sub};
-use std::ops::{AddAssign, SubAssign, MulAssign, DivAssign};
+use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 
 /// Rint is a wrapper for i32 in the context of an R's integer vector.
 ///
@@ -79,7 +79,6 @@ gen_binopassign!(
     |lhs: i32, rhs| lhs.checked_div(rhs),
     "Divide two Rint values or an option of i32, modifying the left-hand side in place. Overflows to NA."
 );
-
 
 // Generate unary ops for -, !
 gen_unop!(

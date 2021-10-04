@@ -128,6 +128,7 @@ macro_rules! gen_binopassign {
             paste::paste! {
                 #[doc = $docstring]
                 fn [< $opname:snake >](&mut self, other: $type) {
+                    // `.clone()` is needed to convert &mut Rint -> Rint -> Option<$type_prim>
                     match (self.clone().into(), other.into()) {
                         (Some(lhs), Some(rhs)) => {
                             let f = $expr;
@@ -146,6 +147,7 @@ macro_rules! gen_binopassign {
             paste::paste! {
                 #[doc = $docstring]
                 fn [< $opname:snake >](&mut self, other: $type) {
+                    // `.clone()` is needed to convert &mut &mut Rint -> Rint -> Option<$type_prim>
                     match (self.clone().into(), other.into()) {
                         (Some(lhs), Some(rhs)) => {
                             let f = $expr;
@@ -164,6 +166,7 @@ macro_rules! gen_binopassign {
             paste::paste! {
                 #[doc = $docstring]
                 fn [< $opname:snake >](&mut self, other: $type_prim) {
+                    // `.clone()` is needed to convert &mut Rint -> Rint -> Option<$type_prim>
                     match self.clone().into() {
                         Some(lhs) => {
                             let f = $expr;
@@ -182,6 +185,7 @@ macro_rules! gen_binopassign {
             paste::paste! {
                 #[doc = $docstring]
                 fn [< $opname:snake >](&mut self, other: $type_prim) {
+                    // `.clone()` is needed to convert &mut &mut Rint -> Rint -> Option<$type_prim>
                     match self.clone().into() {
                         Some(lhs) => {
                             let f = $expr;
@@ -200,7 +204,7 @@ macro_rules! gen_binopassign {
             paste::paste! {
                 #[doc = $docstring]
                 fn [< $opname:snake >](&mut self, other: $type) {
-                    match (self.clone(), other.clone().into()) {
+                    match (*self, other.into()) {
                         (Some(lhs), Some(rhs)) => {
                             let f = $expr;
                             *self = f(lhs, rhs);
