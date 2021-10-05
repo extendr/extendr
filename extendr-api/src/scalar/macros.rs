@@ -131,12 +131,12 @@ macro_rules! gen_binopassign {
         // - impl $opname:snake<$type_prim> for $type {}
         // - impl $opname:snake<$type_prim> for &mut $type {}
         // - impl $opname:snake<$type> for Option<$type_prim> {}
-        // 
+        //
         // Note: $opname:snake snake cases the Trait name, i.e. AddAssign -> add_assign
 
         // Example call to this macro. The expansion examples below are all
         // derived from this example macro call.
-        // 
+        //
         // gen_binopassign!(
         //     Rint,                                    <= The Type the Trait is implemented for
         //     i32,                                     <= The generic for the Trait
@@ -144,7 +144,7 @@ macro_rules! gen_binopassign {
         //     |lhs: i32, rhs| lhs.checked_add(rhs),    <= Closure, provides the math logic
         //     "Doc Comment"                            <= Documentation comment for Traits
         // );
-        //  
+        //
 
         // This impl block expands to:
         //
