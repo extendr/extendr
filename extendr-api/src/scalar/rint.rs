@@ -2,6 +2,7 @@ use crate::scalar::macros::*;
 use crate::*;
 use std::convert::TryFrom;
 use std::ops::{Add, Div, Mul, Neg, Not, Sub};
+use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 
 /// Rint is a wrapper for i32 in the context of an R's integer vector.
 ///
@@ -49,6 +50,34 @@ gen_binop!(
     Div,
     |lhs: i32, rhs| lhs.checked_div(rhs),
     "Divide two Rint values or an option of i32, overflows to NA."
+);
+gen_binopassign!(
+    Rint,
+    i32,
+    AddAssign,
+    |lhs: i32, rhs| lhs.checked_add(rhs),
+    "Add two Rint values or an option of i32, modifying the left-hand side in place. Overflows to NA."
+);
+gen_binopassign!(
+    Rint,
+    i32,
+    SubAssign,
+    |lhs: i32, rhs| lhs.checked_sub(rhs),
+    "Subtract two Rint values or an option of i32, modifying the left-hand side in place. Overflows to NA."
+);
+gen_binopassign!(
+    Rint,
+    i32,
+    MulAssign,
+    |lhs: i32, rhs| lhs.checked_mul(rhs),
+    "Multiply two Rint values or an option of i32, modifying the left-hand side in place. Overflows to NA."
+);
+gen_binopassign!(
+    Rint,
+    i32,
+    DivAssign,
+    |lhs: i32, rhs| lhs.checked_div(rhs),
+    "Divide two Rint values or an option of i32, modifying the left-hand side in place. Overflows to NA."
 );
 
 // Generate unary ops for -, !

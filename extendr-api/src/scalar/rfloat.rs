@@ -2,6 +2,7 @@ use crate::scalar::macros::*;
 use crate::*;
 use std::convert::TryFrom;
 use std::ops::{Add, Div, Mul, Neg, Sub};
+use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 
 /// Rfloat is a wrapper for f64 in the context of an R's integer vector.
 ///
@@ -69,6 +70,34 @@ gen_binop!(
     Div,
     |lhs: f64, rhs: f64| Some(lhs / rhs),
     "Divide two Rfloat values or an option of f64."
+);
+gen_binopassign!(
+    Rfloat,
+    f64,
+    AddAssign,
+    |lhs: f64, rhs: f64| Some(lhs + rhs),
+    "Add two Rfloat values or an option of f64, modifying the left-hand side in place. Overflows to NA."
+);
+gen_binopassign!(
+    Rfloat,
+    f64,
+    SubAssign,
+    |lhs: f64, rhs: f64| Some(lhs - rhs),
+    "Subtract two Rfloat values or an option of f64, modifying the left-hand side in place. Overflows to NA."
+);
+gen_binopassign!(
+    Rfloat,
+    f64,
+    MulAssign,
+    |lhs: f64, rhs: f64| Some(lhs * rhs),
+    "Multiply two Rfloat values or an option of f64, modifying the left-hand side in place. Overflows to NA."
+);
+gen_binopassign!(
+    Rfloat,
+    f64,
+    DivAssign,
+    |lhs: f64, rhs: f64| Some(lhs / rhs),
+    "Divide two Rfloat values or an option of f64, modifying the left-hand side in place. Overflows to NA."
 );
 
 // Generate unary ops for -, !
