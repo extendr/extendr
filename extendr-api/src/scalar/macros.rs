@@ -124,6 +124,45 @@ macro_rules! gen_binop {
 /// Generates binary operate-assign operators for scalar types.
 macro_rules! gen_binopassign {
     ($type : tt, $type_prim : tt, $opname : ident, $expr: expr, $docstring: expr) => {
+        // Implements the following trait definitions:
+        //
+        // - impl $opname:snake<$type> for $type {}
+        // - impl $opname:snake<$type> for &mut $type {}
+        // - impl $opname:snake<$type_prim> for $type {}
+        // - impl $opname:snake<$type_prim> for &mut $type {}
+        // - impl $opname:snake<$type> for Option<$type_prim> {}
+        // 
+        // Note: $opname:snake snake cases the Trait name, i.e. AddAssign -> add_assign
+
+        // Example call to this macro. The expansion examples below are all
+        // derived from this example macro call.
+        // 
+        // gen_binopassign!(
+        //     Rint,                                    <= The Type the Trait is implemented for
+        //     i32,                                     <= The generic for the Trait
+        //     AddAssign,                               <= The Trait to implement
+        //     |lhs: i32, rhs| lhs.checked_add(rhs),    <= Closure, provides the math logic
+        //     "Doc Comment"                            <= Documentation comment for Traits
+        // );
+        //  
+
+        // This impl block expands to:
+        //
+        // impl AddAssign<Rint> for Rint {
+        //      /// Doc Comment
+        //      fn add_assign(&mut self, other: Rint) {
+        //          match (self.clone().into(), other.into()) {
+        //              (Some(lhs), Some(rhs)) => {
+        //                  let f = |lhs: i32, rhs| lhs.checked_add(rhs);
+        //                  match f(lhs, rhs) {
+        //                      Some(res) => *self = Rint::from(res),
+        //                      None => *self = Rint:na(),
+        //                  }
+        //              }
+        //              _ => *self = Rint::na(),
+        //          }
+        //      }
+        // }
         impl $opname<$type> for $type {
             paste::paste! {
                 #[doc = $docstring]
@@ -143,6 +182,23 @@ macro_rules! gen_binopassign {
             }
         }
 
+        // This impl block expands to:
+        //
+        // impl AddAssign<Rint> for &mut Rint {
+        //      /// Doc Comment
+        //      fn add_assign(&mut self, other: Rint) {
+        //          match (self.clone().into(), other.into()) {
+        //              (Some(lhs), Some(rhs)) => {
+        //                  let f = |lhs: i32, rhs| lhs.checked_add(rhs);
+        //                  match f(lhs, rhs) {
+        //                      Some(res) => **self = Rint::from(res),
+        //                      None => **self = Rint:na(),
+        //                  }
+        //              }
+        //              _ => **self = Rint::na(),
+        //          }
+        //      }
+        // }
         impl $opname<$type> for &mut $type {
             paste::paste! {
                 #[doc = $docstring]
@@ -162,6 +218,24 @@ macro_rules! gen_binopassign {
             }
         }
 
+        // This impl block expands to:
+        //
+        // impl AddAssign<i32> for Rint {
+        //      /// Doc Comment
+        //      fn add_assign(&mut self, other: i32) {
+        //          match self.clone().int() {
+        //              Some(lhs) => {
+        //                  let f = |lhs: i32, rhs| lhs.checked_add(rhs);
+        //                  match f(lhs, rhs) {
+        //                      Some(res) => *self = Rint::from(res),
+        //                      None => *self = Rint:na(),
+        //                  }
+        //              }
+        //              _ => *self = Rint::na(),
+        //              }
+        //          }
+        //      }
+        // }
         impl $opname<$type_prim> for $type {
             paste::paste! {
                 #[doc = $docstring]
@@ -181,6 +255,24 @@ macro_rules! gen_binopassign {
             }
         }
 
+        // This impl block expands to:
+        //
+        // impl AddAssign<i32> for &mut Rint {
+        //      /// Doc Comment
+        //      fn add_assign(&mut self, other: i32) {
+        //          match self.clone().int() {
+        //              Some(lhs) => {
+        //                  let f = |lhs: i32, rhs| lhs.checked_add(rhs);
+        //                  match f(lhs, rhs) {
+        //                      Some(res) => **self = Rint::from(res),
+        //                      None => **self = Rint:na(),
+        //                  }
+        //              }
+        //              _ => **self = Rint::na(),
+        //              }
+        //          }
+        //      }
+        // }
         impl $opname<$type_prim> for &mut $type {
             paste::paste! {
                 #[doc = $docstring]
@@ -200,6 +292,20 @@ macro_rules! gen_binopassign {
             }
         }
 
+        // This impl block expands to:
+        //
+        //  impl AddAssign<Rint> for Option<i32> {
+        //      /// Doc Comment
+        //      fn add_assign(&mut self, other: Rint) {
+        //          match (*self, other.into()) {
+        //              (Some(lhs), Some(rhs)) => {
+        //                  let f = |lhs: i32, rhs| lhs.checked_add(rhs);
+        //                  *self = f(lhs, rhs);
+        //              },
+        //              _ => *self = None,
+        //          }
+        //      }
+        //  }
         impl $opname<$type> for Option<$type_prim> {
             paste::paste! {
                 #[doc = $docstring]
