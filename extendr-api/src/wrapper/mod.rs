@@ -5,7 +5,6 @@ use crate::*;
 use libR_sys::*;
 
 pub mod altrep;
-pub mod char;
 pub mod doubles;
 pub mod environment;
 pub mod expr;
@@ -21,10 +20,12 @@ pub mod pairlist;
 pub mod primitive;
 pub mod promise;
 pub mod raw;
+pub mod rstr;
 pub mod s4;
+pub mod strings;
 pub mod symbol;
 
-pub use self::char::Rstr;
+pub use self::rstr::Rstr;
 pub use altrep::{
     AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,
     AltrepImpl,
@@ -44,6 +45,7 @@ pub use primitive::Primitive;
 pub use promise::Promise;
 pub use raw::Raw;
 pub use s4::S4;
+pub use strings::Strings;
 pub use symbol::Symbol;
 
 pub(crate) fn make_symbol(name: &str) -> SEXP {
@@ -173,6 +175,8 @@ make_conversions!(S4, ExpectedS4, is_s4, "Not a S4 type");
 
 make_conversions!(Integers, ExpectedInteger, is_integer, "Not an integer type");
 make_conversions!(Doubles, ExpectedReal, is_real, "Not a floating point type");
+
+make_conversions!(Strings, ExpectedString, is_string, "Not a string vector");
 
 impl Robj {
     /// Convert a symbol object to a Symbol wrapper.

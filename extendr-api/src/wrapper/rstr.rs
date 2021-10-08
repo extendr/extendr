@@ -38,3 +38,10 @@ impl Rstr {
         }
     }
 }
+
+impl AsRef<str> for Rstr {
+    /// Treat a Rstr as a string slice.
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
