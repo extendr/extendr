@@ -23,7 +23,7 @@ paste = "1.0.5"
 serde = { version = "1.0", features = ["derive"], optional = true }
 
 [features]
-default = []
+default = ["serde"]
 
 # All features to test
 tests-all = ["ndarray", "libR-sys/use-bindgen", "serde"]

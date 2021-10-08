@@ -417,8 +417,8 @@ pub enum Rany<'a> {
     Environment(&'a Environment), // ENVSXP
     Promise(&'a Promise),         // PROMSXP
     Language(&'a Language),       // LANGSXP
-    Special(&'a Robj),            // SPECIALSXP
-    Builtin(&'a Robj),            // BUILTINSXP
+    Special(&'a Primitive),       // SPECIALSXP
+    Builtin(&'a Primitive),       // BUILTINSXP
     Rstr(&'a Rstr),               // CHARSXP
     Logical(&'a Robj),            // LGLSXP
     Integer(&'a Integers),        // INTSXP
