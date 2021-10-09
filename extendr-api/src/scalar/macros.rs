@@ -459,12 +459,40 @@ macro_rules! gen_binopassign {
 /// Generates conversions from primitive to scalar type.
 macro_rules! gen_from_primitive {
     ($type : tt, $type_prim : tt) => {
+        // Implements the following trait definitions
+        //
+        //  - impl From<$type_prim> for $type
+        //  - impl From<Option<$type_prim>> for $type
+
+        // Example call to this macro. The expansion examples below are derived from
+        // this example macro call.
+        //
+        // gen_from_primitive!(Rint, i32);
+
+        // This imple block expands to:
+        //
+        // impl From<i32> for Rint {
+        //     fn from(v: i32) -> Self {
+        //         Self(v)
+        //     }
+        // }
         impl From<$type_prim> for $type {
             fn from(v: $type_prim) -> Self {
                 Self(v)
             }
         }
 
+        // This impl block expands to:
+        //
+        // impl From<Option<i32>> for Rint {
+        //     fn from(v: Option<i32>) -> Self {
+        //         if let Some(v) = v {
+        //             v.into()
+        //         } else {
+        //             Rint::na()
+        //         }
+        //     }
+        // }
         impl From<Option<$type_prim>> for $type {
             fn from(v: Option<$type_prim>) -> Self {
                 if let Some(v) = v {
