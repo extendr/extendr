@@ -91,6 +91,44 @@ macro_rules! gen_unop {
 // TODO: binary operators for pairs `(Rtype, Type)` and `(Type, Rtype)` using references?
 macro_rules! gen_binop {
     ($type : tt, $type_prim : tt, $opname : ident, $expr: expr, $docstring: expr) => {
+        // Implements the following trait definitions:
+        //
+        // - impl $opname<$type> for $type {}
+        // - impl $opname<$type> for &$type {}
+        // - impl $opname<$type_prim> for $type {}
+        // - impl $opname<$type> for $type_prim {}
+        //
+        // Note: $opname:lower lowercases the Trait name, i.e. Add -> add
+
+        // Example call to this macro. The expansion examples below are all
+        // derived from this example macro call.
+        //
+        // gen_binop!(
+        //     Rint,
+        //     i32,
+        //     Add,
+        //     |lhs: i32, rhs| lhs.checked_add(rhs),
+        //     "Doc Comment"
+        // );
+        //
+
+        // This impl block expands to:
+        //
+        // impl Add<Rint> for Rint {
+        // type Output = Rint;
+        //     /// Doc Comment
+        //     fn add(self, rhs: Rint) -> Self::Output {
+        //         if let Some(lhs) = self.clone().into() {
+        //             if let Some(rhs) = rhs.into() {
+        //                 let f = |lhs: i32, rhs| lhs.checked_add(rhs);
+        //                 if let Some(res) = f(lhs, rhs) {
+        //                     return Rint::from(res);
+        //                 }
+        //             }
+        //         }
+        //         Rint::na()
+        //     }
+        // }
         impl $opname<$type> for $type {
             type Output = $type;
 
@@ -111,6 +149,23 @@ macro_rules! gen_binop {
             }
         }
 
+        // This impl block expands to:
+        //
+        // impl Add<Rint> for &Rint {
+        //      type Output = Rint;
+        //      /// Doc Comment
+        //      fn add(self, rhs: Rint) -> Self::Output {
+        //          if let Some(lhs) = self.clone().into() {
+        //              if let Some(rhs) = rhs.into() {
+        //                  let f = |lhs:i32, rhs| lhs.checked_add(rhs);
+        //                  if let Some(res) = f(lhs, rhs) {
+        //                      return Rint::from(res);
+        //                  }
+        //              }
+        //          }
+        //          Rint::na()
+        //      }
+        // }
         impl $opname<$type> for &$type {
             type Output = $type;
 
@@ -131,6 +186,21 @@ macro_rules! gen_binop {
             }
         }
 
+        // This impl block expands to:
+        //
+        // impl Add<i32> for Rint {
+        //      type Output = Rint;
+        //      /// Doc Comment
+        //      fn add(self, rhs: i32) -> Self::Output {
+        //          if let Some(lhs) = self.clone().into() {
+        //              let f = |lhs:i32, rhs| lhs.checked_add(rhs);
+        //              if let Some(res) = f(lhs, rhs) {
+        //                  return Rint::from(res);
+        //              }
+        //          }
+        //          Rint::na()
+        //      }
+        // }
         impl $opname<$type_prim> for $type {
             type Output = $type;
 
@@ -149,6 +219,21 @@ macro_rules! gen_binop {
             }
         }
 
+        // This impl block expands to:
+        //
+        // impl Add<Rint> for i32 {
+        //      type Output = Rint;
+        //      /// Doc Comment
+        //      fn add(self, rhs: Rint) -> Self::Output {
+        //          if let Some(rhs) = self.clone().into() {
+        //              let f = |lhs:i32, rhs| lhs.checked_add(rhs);
+        //              if let Some(res) = f(lhs, rhs) {
+        //                  return Rint::from(res);
+        //              }
+        //          }
+        //          Rint::na()
+        //      }
+        // }
         impl $opname<$type> for $type_prim {
             type Output = $type;
 
