@@ -1,6 +1,39 @@
 /// Generates unary operators for scalar types.
 macro_rules! gen_unop {
     ($type : tt, $opname : ident, $expr: expr, $docstring: expr) => {
+        // Implements the following trait definitions:
+        //
+        // - impl $opname for $type {}
+        // - impl $opname for &$type {}
+        //
+        // Note: $opname:lower lowercases the Trait name, i.e. Neg -> neg
+
+        // Example call to this macro. The expansion examples below are all
+        // derived from this example macro call.
+        //
+        // gen_unop!(
+        //     Rint,                    <= The Type the Trait is implemented for
+        //     Neg,                     <= The Trait to implement
+        //     |lhs: i32| Some(-lhs),   <= Closure, provides the logic
+        //     "Doc Comment"            <= Documentation comment for Traits
+        // )
+        //
+
+        // This impl block expands to:
+        //
+        // impl Neg for Rint {
+        //      type Output = Rint;
+        //
+        //      /// Doc Comment
+        //      fn neg(self) -> Self::Output {
+        //          if let Some(lhs) = self.into() {
+        //              let f = $expr;
+        //              if let Some(res) = f(lhs) {
+        //                  return Rint::from(res);
+        //              }
+        //          }
+        //          Rint::na()
+        //      }
         impl $opname for $type {
             type Output = $type;
 
@@ -19,6 +52,21 @@ macro_rules! gen_unop {
             }
         }
 
+        // This impl block expands to:
+        //
+        // impl Neg for &Rint {
+        //      type Output = Rint;
+        //
+        //      /// Doc Comment
+        //      fn neg(self) -> Self::Output {
+        //          if let Some(lhs) = (*self).into() {
+        //              let f = $expr;
+        //              if let Some(res) = f(lhs) {
+        //                  return Rint::from(res);
+        //              }
+        //          }
+        //          Rint::na()
+        //      }
         impl $opname for &$type {
             type Output = $type;
 
