@@ -27,7 +27,7 @@ macro_rules! gen_unop {
         //      /// Doc Comment
         //      fn neg(self) -> Self::Output {
         //          if let Some(lhs) = self.into() {
-        //              let f = $expr;
+        //              let f = |lhs: i32| Some(-lhs);
         //              if let Some(res) = f(lhs) {
         //                  return Rint::from(res);
         //              }
@@ -60,7 +60,7 @@ macro_rules! gen_unop {
         //      /// Doc Comment
         //      fn neg(self) -> Self::Output {
         //          if let Some(lhs) = (*self).into() {
-        //              let f = $expr;
+        //              let f = |lhs: i32| Some(-lhs);
         //              if let Some(res) = f(lhs) {
         //                  return Rint::from(res);
         //              }
