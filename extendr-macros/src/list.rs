@@ -1,0 +1,31 @@
+use proc_macro::TokenStream;
+use quote::quote;
+use syn::{parse_macro_input};
+
+use crate::pairs::Pairs;
+
+pub fn list(item: TokenStream) -> TokenStream {
+    let list = parse_macro_input!(item as Pairs);
+
+    let nv = list.names_and_values();
+
+    if nv.is_empty() {
+        TokenStream::from(quote!(List::default()))
+    } else {
+        let values : Vec<proc_macro2::TokenStream> = nv.iter().map(|(_n, v)| {
+            quote!( extendr_api::Robj::from(#v) )
+        }).collect();
+        if nv.iter().any(|(n, _v)| n != "") {
+            let names : Vec<proc_macro2::TokenStream> = nv.iter().map(|(n, _v)| {
+                quote!( #n )
+            }).collect();
+            TokenStream::from(quote!(
+                List::from_names_and_values(&[# ( #names ),*], &[# ( #values ),*])
+            ))
+        } else {
+            TokenStream::from(quote!(
+                List::from_values(&[# ( #values ),*])
+            ))
+        }
+    }
+}

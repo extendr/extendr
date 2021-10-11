@@ -7,7 +7,7 @@ pub struct List {
 
 impl Default for List {
     fn default() -> Self {
-        List::new()
+        List::new(0)
     }
 }
 
@@ -21,9 +21,9 @@ impl List {
     ///     assert_eq!(list.len(), 0);
     /// }
     /// ```
-    pub fn new() -> List {
-        let values: &[Robj] = &[];
-        List::from_values(values)
+    pub fn new(size: usize) -> Self {
+        let robj = Robj::alloc_vector(VECSXP, size);
+        Self { robj }
     }
 
     /// Wrapper for creating a list (VECSXP) object.
@@ -88,6 +88,23 @@ impl List {
         let mut res: Self = Self::from_values(val.iter().map(|(_, v)| v));
         res.set_names(val.into_iter().map(|(k, _)| k.into()))?;
         Ok(res)
+    }
+
+    /// Build a list using separate names and values iterators.
+    /// Used internally by the list! macro.
+    /// Will panic if the length of names and values does not match.
+    pub fn from_names_and_values<N, V>(names: N, values: V) -> Self
+    where
+        N: IntoIterator,
+        N::IntoIter: ExactSizeIterator,
+        N::Item: ToVectorValue + AsRef<str>,
+        V: IntoIterator,
+        V::IntoIter: ExactSizeIterator,
+        V::Item: Into<Robj>,
+    {
+        let mut list = List::from_values(values);
+        list.set_names(names).unwrap();
+        list
     }
 
     /// Return an iterator over the values of this list.

@@ -61,6 +61,7 @@ mod extendr_function;
 mod extendr_impl;
 mod extendr_module;
 mod pairlist;
+mod list;
 mod pairs;
 mod wrappers;
 
@@ -111,6 +112,15 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
 #[proc_macro]
 pub fn pairlist(item: TokenStream) -> TokenStream {
     pairlist::pairlist(item)
+}
+
+/// Create a List R object from a list of name-value pairs.
+/// ```ignore
+///     assert_eq!(list!(a=1, 2, 3), List::from_pairs(&[("a", 1), ("", 2), ("", 3)]));
+/// ```
+#[proc_macro]
+pub fn list(item: TokenStream) -> TokenStream {
+    list::list(item)
 }
 
 /// Call a function or primitive defined by a text expression with arbitrary parameters.
