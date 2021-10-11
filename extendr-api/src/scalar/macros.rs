@@ -569,19 +569,62 @@ macro_rules! gen_impl {
 /// Generates scalar trait implementations:
 /// 1. `Clone`
 /// 2. `Copy`
-/// 3. `IsNA`
+/// 3. `CanBeNA`
 /// 4. `Debug`
 /// 5. `PartialEq`
+/// 6. `Default`
 macro_rules! gen_trait_impl {
     ($type : ident, $type_prim : ty, $na_check : expr, $na_val : expr) => {
+        // Implements the following trait definitions:
+        //
+        // - impl Clone for $type
+        // - impl Copy for $type
+        // - impl CanBeNA for $type
+        // - impl Debug for $type
+        // - impl PartialEq<$type> for $type
+        // - impl PartialEq<$type_prim> for $type
+        // - impl Default for $type
+    
+        // Example call to this macro. The expansion examples below are derived from
+        // this example macro call.
+        //
+        // gen_trait_impl!(
+        //      Rint,                           <= The Type traits are implemented for
+        //      i32,                            <= Primitive counterpart to the Type
+        //      |x: &Rint| x.0 == i32::MIN,     <= Closure to check for NA
+        //      i32::MIN                        <= Native NA value
+        //  );
+    
+        // This impl block expands to:
+        //
+        // impl Clone for Rint {
+        //     fn clone(&self) -> Self {
+        //         Self(self.0)
+        //     }
+        // }
         impl Clone for $type {
             fn clone(&self) -> Self {
                 Self(self.0)
             }
         }
-
+        
+        // This impl block expands to:
+        //
+        // impl Copy for Rint {}
         impl Copy for $type {}
 
+        // This impl block expands to:
+        //
+        // /// Documentation comments built by the #[doc] attributes
+        // impl CanBeNA for Rint {
+        //     fn is_na(&self) -> bool {
+        //         (|x: &Rint| x.0 == i32::MIN)(self)
+        //     }
+        //
+        //     fn na() -> Self {
+        //         Rint(i32::MIN)
+        //     }
+        // }
         paste::paste! {
             #[doc = "```"]
             #[doc = "use extendr_api::prelude::*;"]
@@ -600,6 +643,19 @@ macro_rules! gen_trait_impl {
                 }
             }
         }
+
+        // This impl block expands to: 
+        //
+        // impl std::fmt::Debug for Rint {
+        //     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        //         let z: Option<$i32> = (*self).into();
+        //         if let Some(val) = z {
+        //             write!(f, "{}", val)
+        //         } else {
+        //             write!(f, "na")
+        //         }
+        //     }
+        // }
         impl std::fmt::Debug for $type {
             /// Debug format.
             fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -612,6 +668,14 @@ macro_rules! gen_trait_impl {
             }
         }
 
+        // This impl block expands to:
+        // 
+        // /// Documentation comments built by the #[doc] attributes
+        // impl PartialEq<Rint> for Rint {
+        //     fn eq(&self, other: &Rint) -> bool {
+        //         !(self.is_na() || other.is_na()) && self.0 == other.0
+        //     }
+        // }
         paste::paste! {
             #[doc = "```"]
             #[doc = "use extendr_api::prelude::*;"]
@@ -627,6 +691,14 @@ macro_rules! gen_trait_impl {
             }
         }
 
+        // This impl block expands to:
+        // 
+        // /// Documentation comments built by the #[doc] attributes
+        // impl PartialEq<i32> for Rint {
+        //     fn eq(&self, other: &i32) -> bool {
+        //         !self.is_na() && self.0 == *other
+        //     }
+        // }
         paste::paste! {
             #[doc = "```"]
             #[doc = "use extendr_api::prelude::*;"]
@@ -642,6 +714,14 @@ macro_rules! gen_trait_impl {
             }
         }
 
+        // This impl block expands to:
+        // 
+        // /// Documentation comments built by the #[doc] attributes
+        // impl std::default::Default for Rint {
+        //     fn default() -> Self {
+        //         Rint(<i32>::default())
+        //     }
+        // }
         paste::paste! {
             #[doc = "```"]
             #[doc = "use extendr_api::prelude::*;"]
