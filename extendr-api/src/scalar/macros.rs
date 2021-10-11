@@ -508,6 +508,27 @@ macro_rules! gen_from_primitive {
 /// Generates conversions from scalar type.
 macro_rules! gen_from_scalar {
     ($type : tt, $type_prim : tt) => {
+        // Implements the following trait definitions:
+        //
+        // - impl From<$type> for Option<$type_prim>
+        // - impl From<$type> for Robj
+    
+        // Example call to this macro. The expansion examples below are derived from
+        // this example macro call.
+        //
+        // gen_from_scalar!(Rint, i32);
+        
+        // This impl block expands to:
+        //
+        // impl From<Rint> for Option<i32> {
+        //     fn from(v: Rint) -> Self {
+        //         if v.is_na() {
+        //             None
+        //         } else {
+        //             Some(v.0)
+        //         }
+        //     }
+        // }
         impl From<$type> for Option<$type_prim> {
             fn from(v: $type) -> Self {
                 if v.is_na() {
@@ -518,6 +539,13 @@ macro_rules! gen_from_scalar {
             }
         }
 
+        // This impl block expands to:
+        //
+        // impl From<Rint> for Robj {
+        //     fn from(value: Rint) -> Self {
+        //         Robj::from(value.0)
+        //     }
+        // }
         impl From<$type> for Robj {
             fn from(value: $type) -> Self {
                 Robj::from(value.0)
