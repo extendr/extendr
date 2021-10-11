@@ -512,12 +512,12 @@ macro_rules! gen_from_scalar {
         //
         // - impl From<$type> for Option<$type_prim>
         // - impl From<$type> for Robj
-    
+
         // Example call to this macro. The expansion examples below are derived from
         // this example macro call.
         //
         // gen_from_scalar!(Rint, i32);
-        
+
         // This impl block expands to:
         //
         // impl From<Rint> for Option<i32> {
@@ -584,7 +584,7 @@ macro_rules! gen_trait_impl {
         // - impl PartialEq<$type> for $type
         // - impl PartialEq<$type_prim> for $type
         // - impl Default for $type
-    
+
         // Example call to this macro. The expansion examples below are derived from
         // this example macro call.
         //
@@ -594,7 +594,7 @@ macro_rules! gen_trait_impl {
         //      |x: &Rint| x.0 == i32::MIN,     <= Closure to check for NA
         //      i32::MIN                        <= Native NA value
         //  );
-    
+
         // This impl block expands to:
         //
         // impl Clone for Rint {
@@ -607,7 +607,7 @@ macro_rules! gen_trait_impl {
                 Self(self.0)
             }
         }
-        
+
         // This impl block expands to:
         //
         // impl Copy for Rint {}
@@ -644,7 +644,7 @@ macro_rules! gen_trait_impl {
             }
         }
 
-        // This impl block expands to: 
+        // This impl block expands to:
         //
         // impl std::fmt::Debug for Rint {
         //     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -669,7 +669,7 @@ macro_rules! gen_trait_impl {
         }
 
         // This impl block expands to:
-        // 
+        //
         // /// Documentation comments built by the #[doc] attributes
         // impl PartialEq<Rint> for Rint {
         //     fn eq(&self, other: &Rint) -> bool {
@@ -692,7 +692,7 @@ macro_rules! gen_trait_impl {
         }
 
         // This impl block expands to:
-        // 
+        //
         // /// Documentation comments built by the #[doc] attributes
         // impl PartialEq<i32> for Rint {
         //     fn eq(&self, other: &i32) -> bool {
@@ -715,7 +715,7 @@ macro_rules! gen_trait_impl {
         }
 
         // This impl block expands to:
-        // 
+        //
         // /// Documentation comments built by the #[doc] attributes
         // impl std::default::Default for Rint {
         //     fn default() -> Self {
@@ -749,7 +749,7 @@ macro_rules! gen_sum_iter {
         //      Rint,   <= The Type to implement Sum for
         //      0i32,   <= The 'zero' value for the primitive counterpart to Type
         // )
-        
+
         // This impl block expands to:
         //
         // impl std::iter::Sum for $type {
