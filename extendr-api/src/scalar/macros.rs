@@ -741,6 +741,23 @@ macro_rules! gen_trait_impl {
 /// Generates `std::iter::Sum` for scalar types.
 macro_rules! gen_sum_iter {
     ($type : tt, $zero : expr) => {
+        // Implements std::iter::Sum for $type
+
+        // Example call to this macro:
+        //
+        // gen_sum_iter!(
+        //      Rint,   <= The Type to implement Sum for
+        //      0i32,   <= The 'zero' value for the primitive counterpart to Type
+        // )
+        
+        // This impl block expands to:
+        //
+        // impl std::iter::Sum for $type {
+        //     /// Documentation comments built by the #[doc] attributes
+        //     fn sum<I: Iterator<Item = Rint>>(iter: I) -> Rint {
+        //         iter.fold(Rint::from(0i32), |a, b| a + b)
+        //     }
+        // }
         impl std::iter::Sum for $type {
             paste::paste! {
                 #[doc = "Yields NA on overflow if NAs present."]
