@@ -97,10 +97,10 @@ macro_rules! gen_vector_wrapper_impl {
             }
 
             /// Get a region of elements from the vector.
-            pub fn get_region(&self, index: usize, dest: &mut [$type_prim]) {
+            pub fn get_region(&self, index: usize, dest: &mut [$type_prim]) -> usize {
                 unsafe {
                     let ptr = dest.as_mut_ptr();
-                    paste::paste!{ [<$r_type _GET_REGION>](self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr); }
+                    paste::paste!{ [<$r_type _GET_REGION>](self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr) as usize }
                 }
             }
 

@@ -73,14 +73,17 @@ impl Strings {
         if i >= self.len() {
             <&str>::na()
         } else {
-            self.as_slice()[i].as_str()
+            use crate::wrapper::rstr::sexp_to_str;
+            unsafe { sexp_to_str(STRING_ELT(self.get(), i as R_xlen_t)) }
         }
     }
 
     /// Set a single element of this string vector.
     pub fn set_elt<T: AsRef<str>>(&mut self, i: usize, e: T) {
         single_threaded(|| unsafe {
-            SET_STRING_ELT(self.robj.get(), i as isize, str_to_character(e.as_ref()));
+            if i < self.len() {
+                SET_STRING_ELT(self.robj.get(), i as isize, str_to_character(e.as_ref()));
+            }
         });
     }
 
