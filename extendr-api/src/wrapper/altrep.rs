@@ -437,10 +437,10 @@ pub trait AltComplexImpl: AltrepImpl {
 
 pub trait AltStringImpl {
     /// Get a single element from this vector.
-    fn elt(&self, _index: usize) -> String;
+    fn elt(&self, _index: usize) -> Rstr;
 
     /// Set a single element in this vector.
-    fn set_elt(&mut self, _index: usize, _value: Robj) {}
+    fn set_elt(&mut self, _index: usize, _value: Rstr) {}
 
     /// Return TRUE if this vector is sorted, FALSE if not and NA_LOGICAL if unknown.
     fn is_sorted(&self) -> Bool {
@@ -974,7 +974,6 @@ impl Altrep {
         base: &str,
     ) -> Robj {
         #![allow(non_snake_case)]
-        use std::os::raw::c_char;
         use std::os::raw::c_int;
 
         single_threaded(|| unsafe {
@@ -985,8 +984,7 @@ impl Altrep {
                 x: SEXP,
                 i: R_xlen_t,
             ) -> SEXP {
-                let s = Altrep::get_state::<StateType>(x).elt(i as usize);
-                Rf_mkCharLen(s.as_ptr() as *mut c_char, s.len() as c_int)
+                Altrep::get_state::<StateType>(x).elt(i as usize).get()
             }
 
             unsafe extern "C" fn altstring_Set_elt<StateType: AltStringImpl + 'static>(
@@ -994,7 +992,8 @@ impl Altrep {
                 i: R_xlen_t,
                 v: SEXP,
             ) {
-                Altrep::get_state_mut::<StateType>(x).set_elt(i as usize, Robj::from_sexp(v))
+                Altrep::get_state_mut::<StateType>(x)
+                    .set_elt(i as usize, Robj::from_sexp(v).try_into().unwrap())
             }
 
             unsafe extern "C" fn altstring_Is_sorted<StateType: AltStringImpl + 'static>(

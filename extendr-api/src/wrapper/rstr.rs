@@ -45,3 +45,17 @@ impl AsRef<str> for Rstr {
         self.as_str()
     }
 }
+
+impl From<String> for Rstr {
+    /// Convert a String to a Rstr.
+    fn from(s: String) -> Self {
+        Rstr::from_string(&s)
+    }
+}
+
+impl From<&str> for Rstr {
+    /// Convert a string slice to a Rstr.
+    fn from(s: &str) -> Self {
+        Rstr::from_string(s)
+    }
+}

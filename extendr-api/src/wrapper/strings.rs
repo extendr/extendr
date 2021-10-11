@@ -1,3 +1,4 @@
+use std::convert::From;
 use std::iter::FromIterator;
 
 use super::*;
@@ -117,5 +118,15 @@ impl<T: AsRef<str>> FromIterator<T> for Strings {
 
             Strings { robj }
         })
+    }
+}
+
+impl<T> From<T> for Strings
+where
+    T: AsRef<str>,
+{
+    /// convert string-like objects into a Strings object.
+    fn from(value: T) -> Self {
+        Strings::from_values([value.as_ref()])
     }
 }

@@ -27,5 +27,10 @@ fn test_strings() {
 
         let s = Strings::from_values(["x", <&str>::na(), "z"]);
         assert_eq!(s.elt(1).is_na(), true);
+
+        let robj = r!("xyz");
+        let s = Strings::try_from(robj)?;
+        assert_eq!(s.len(), 1);
+        assert_eq!(s.elt(0), "xyz");
     }
 }

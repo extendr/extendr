@@ -177,7 +177,7 @@ fn test_altstring() {
         }
 
         impl AltStringImpl for StringInts {
-            fn elt(&self, index: usize) -> String {
+            fn elt(&self, index: usize) -> Rstr {
                 format!("{}", index).into()
             }
         }
