@@ -60,8 +60,8 @@ mod call;
 mod extendr_function;
 mod extendr_impl;
 mod extendr_module;
-mod pairlist;
 mod list;
+mod pairlist;
 mod pairs;
 mod wrappers;
 

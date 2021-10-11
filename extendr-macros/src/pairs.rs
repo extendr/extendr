@@ -1,4 +1,4 @@
-use syn::{parse::ParseStream, punctuated::Punctuated, Expr, Token, ExprAssign, ExprPath};
+use syn::{parse::ParseStream, punctuated::Punctuated, Expr, ExprAssign, ExprPath, Token};
 
 #[derive(Debug)]
 pub struct Pairs {
@@ -23,19 +23,18 @@ impl syn::parse::Parse for Pairs {
 }
 
 impl Pairs {
-    pub (crate) fn names_and_values(&self) -> Vec<(String, &Expr)> {
-        self
-        .pairs
-        .iter()
-        .map(|e| -> (String, &Expr) {
-            if let Expr::Assign(ExprAssign { left, right, .. }) = e {
-                if let Expr::Path(ExprPath { path, .. }) = &**left {
-                    let s = path.get_ident().unwrap().to_string();
-                    return (s, right.as_ref());
+    pub(crate) fn names_and_values(&self) -> Vec<(String, &Expr)> {
+        self.pairs
+            .iter()
+            .map(|e| -> (String, &Expr) {
+                if let Expr::Assign(ExprAssign { left, right, .. }) = e {
+                    if let Expr::Path(ExprPath { path, .. }) = &**left {
+                        let s = path.get_ident().unwrap().to_string();
+                        return (s, right.as_ref());
+                    }
                 }
-            }
-            ("".to_owned(), e)
-        })
-        .collect()
+                ("".to_owned(), e)
+            })
+            .collect()
     }
 }

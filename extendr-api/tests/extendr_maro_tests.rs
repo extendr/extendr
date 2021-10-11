@@ -1,6 +1,5 @@
-
 // use extendr_api::prelude::*;
-use extendr_api::{List, test, Result, list};
+use extendr_api::{list, test, List, Result};
 
 #[test]
 fn test_list() {
