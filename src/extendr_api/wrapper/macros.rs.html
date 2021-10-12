@@ -253,10 +253,10 @@
             }
 
             <span class="doccomment">/// Get a region of elements from the vector.</span>
-            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">dest</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span>]) {
+            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">dest</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
                 <span class="kw">unsafe</span> {
                     <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">dest</span>.<span class="ident">as_mut_ptr</span>();
-                    <span class="macro">paste::paste!</span>{ [<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">r_type</span> <span class="ident">_GET_REGION</span><span class="op">&gt;</span>](<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">index</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">dest</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">ptr</span>); }
+                    <span class="macro">paste::paste!</span>{ [<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">r_type</span> <span class="ident">_GET_REGION</span><span class="op">&gt;</span>](<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">index</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">dest</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">ptr</span>) <span class="kw">as</span> <span class="ident">usize</span> }
                 }
             }
 
