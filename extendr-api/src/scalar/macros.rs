@@ -1,6 +1,6 @@
 /// Generates an implementation of a unary operator Trait for a scalar type
 ///
-/// Generates the implementation of the specified unary operator for both `Type` and 
+/// Generates the implementation of the specified unary operator for both `Type` and
 /// `&Type`, using the logic of the provided closure to provide functionality.
 ///
 /// This macro requires the following arguments:
@@ -111,7 +111,7 @@ macro_rules! gen_unop {
 /// The 'example usage' implements the following trait definitions:
 ///
 /// - `impl Add<Rint> for Rint`
-/// - `impl Add<Rint> for &Rint` 
+/// - `impl Add<Rint> for &Rint`
 /// - `impl Add<i32> for Rint`
 /// - `impl Add<Rint> for i32`
 // TODO: binary operators for pairs `(Rtype, Type)` and `(Type, Rtype)` using references?
@@ -282,10 +282,10 @@ macro_rules! gen_binop {
 /// The 'example usage' implements the following trait definitions:
 ///
 /// - `impl AddAssign<Rint> for Rint`
-/// - `impl AddAssign<Rint> for &mut Rint` 
+/// - `impl AddAssign<Rint> for &mut Rint`
 /// - `impl AddAssign<i32> for Rint`
-/// - `impl AddAssign<i32> for &mut Rint` 
-/// - `impl AddAssign<Rint> for Option<i32>` 
+/// - `impl AddAssign<i32> for &mut Rint`
+/// - `impl AddAssign<Rint> for Option<i32>`
 macro_rules! gen_binopassign {
     ($type : tt, $type_prim : tt, $opname : ident, $expr: expr, $docstring: expr) => {
         // The 'example usage' expands to...
@@ -525,7 +525,7 @@ macro_rules! gen_from_primitive {
     };
 }
 
-/// Generates an implementation of type conversion Traits from a scalar type 
+/// Generates an implementation of type conversion Traits from a scalar type
 ///
 /// This macro requires the following arguments:
 ///
