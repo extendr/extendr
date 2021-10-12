@@ -20,11 +20,11 @@ pub fn list(item: TokenStream) -> TokenStream {
             let names: Vec<proc_macro2::TokenStream> =
                 nv.iter().map(|(n, _v)| quote!( #n )).collect();
             TokenStream::from(quote!(
-                List::from_names_and_values(&[# ( #names ),*], &[# ( #values ),*])
+                extendr_api::List::from_names_and_values(&[# ( #names ),*], &[# ( #values ),*])
             ))
         } else {
             TokenStream::from(quote!(
-                List::from_values(&[# ( #values ),*])
+                extendr_api::List::from_values(&[# ( #values ),*])
             ))
         }
     }
