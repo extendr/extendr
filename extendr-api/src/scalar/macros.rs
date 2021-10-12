@@ -459,8 +459,7 @@ macro_rules! gen_binopassign {
                 fn [< $opname:snake >](&mut self, other: $type) {
                     match (*self, other.into()) {
                         (Some(lhs), Some(rhs)) => {
-                            let f = $expr;
-                            *self = f(lhs, rhs);
+                            *self = $expr(lhs, rhs);
                         },
                         _ => *self = None,
                     }
