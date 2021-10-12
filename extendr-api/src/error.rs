@@ -2,6 +2,8 @@
 
 use crate::{throw_r_error, Robj};
 
+use std::convert::Infallible;
+
 /// Throw an R error if a result is an error.
 #[doc(hidden)]
 pub fn unwrap_or_throw<T>(r: std::result::Result<T, &'static str>) -> T {
@@ -193,3 +195,9 @@ impl From<String> for Error {
 //         Error::None
 //     }
 // }
+
+impl From<Infallible> for Error {
+    fn from(_: Infallible) -> Self {
+        Error::Other("".to_string())
+    }
+}

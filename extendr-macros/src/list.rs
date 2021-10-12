@@ -16,7 +16,7 @@ pub fn list(item: TokenStream) -> TokenStream {
             .iter()
             .map(|(_n, v)| quote!( extendr_api::Robj::from(#v) ))
             .collect();
-        if nv.iter().any(|(n, _v)| n != "") {
+        if nv.iter().any(|(n, _v)| !n.is_empty()) {
             let names: Vec<proc_macro2::TokenStream> =
                 nv.iter().map(|(n, _v)| quote!( #n )).collect();
             TokenStream::from(quote!(

@@ -12,13 +12,13 @@ impl Default for List {
 }
 
 impl List {
-    /// Create a new, empty list.
+    /// Create a new list.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let list = List::new();
+    ///     let list = List::new(10);
     ///     assert_eq!(list.is_list(), true);
-    ///     assert_eq!(list.len(), 0);
+    ///     assert_eq!(list.len(), 10);
     /// }
     /// ```
     pub fn new(size: usize) -> Self {
@@ -248,7 +248,7 @@ impl ExactSizeIterator for ListIter {
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let list = list!(1, 2);
+///     let list = Robj::from(list!(1, 2));
 ///     let vec : FromList<Vec<i32>> = list.try_into()?;
 ///     assert_eq!(vec.0, vec![1, 2]);
 /// }
@@ -266,7 +266,7 @@ where
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let list = list!(1, 2);
+    ///     let list = Robj::from(list!(1, 2));
     ///     let vec : FromList<Vec<i32>> = list.try_into()?;
     ///     assert_eq!(vec.0, vec![1, 2]);
     /// }
@@ -287,7 +287,7 @@ impl TryFrom<Robj> for ListIter {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let list = list!(1, 2);
+    ///     let list = Robj::from(list!(1, 2));
     ///     let vec : ListIter = list.try_into()?;
     ///     assert_eq!(vec.collect::<Vec<_>>(), vec![r!(1), r!(2)]);
     /// }
@@ -303,8 +303,8 @@ impl From<ListIter> for Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let listiter = list!(1, 2).as_list().unwrap().values();
-    ///     assert_eq!(Robj::from(listiter), list!(1, 2));
+    ///     let listiter = list!(1, 2).values();
+    ///     assert_eq!(Robj::from(listiter), Robj::from(list!(1, 2)));
     /// }
     /// ```
     fn from(iter: ListIter) -> Self {
