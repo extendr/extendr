@@ -153,9 +153,6 @@ macro_rules! impl_iter_from_robj {
 }
 
 impl_iter_from_robj!(StrIter, as_str_iter, "Not a character vector.");
-impl_iter_from_robj!(Int, as_integer_iter, "Not an integer vector.");
-impl_iter_from_robj!(Real, as_real_iter, "Not a real vector.");
-impl_iter_from_robj!(Logical, as_logical_iter, "Not a logical vector.");
 
 /// Pass-through Robj conversion, essentially a clone.
 impl<'a> FromRobj<'a> for Robj {

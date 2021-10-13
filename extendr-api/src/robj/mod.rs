@@ -74,18 +74,6 @@ pub use rinternals::*;
 /// }
 /// ```
 ///
-/// Use iterators to get the contents of R objects.
-///
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///     let a : Robj = r!([1, 2, 3, 4, 5]);
-///     let iter = a.as_integer_iter().unwrap();
-///     let robj = iter.filter(|&x| x < 3).collect_robj();
-///     assert_eq!(robj, r!([1, 2]));
-/// }
-/// ```
-///
 /// Convert to/from Rust vectors.
 ///
 /// ```
@@ -273,22 +261,9 @@ impl Robj {
         self.as_typed_slice()
     }
 
-    /// Get an iterator over integer elements of this slice.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///
-    /// let robj = r!([1, 2, 3]);
-    /// let mut tot = 0;
-    /// for val in robj.as_integer_iter().unwrap() {
-    ///   tot += val;
-    /// }
-    /// assert_eq!(tot, 6);
-    /// }
-    /// ```
-    pub fn as_integer_iter(&self) -> Option<Int> {
-        self.as_integer_slice()
-            .map(|slice| Int::from_slice(self.to_owned(), slice))
+    /// Convert an [`Robj`] into [`Integers`].
+    pub fn as_integers(&self) -> Option<Integers> {
+        self.clone().try_into().ok()
     }
 
     /// Get a Vec<i32> copied from the object.
@@ -814,13 +789,13 @@ impl Robj {
     /// test! {
     ///
     ///    let array = R!(r#"array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c("x", "y"), c("a","b")))"#).unwrap();
-    ///    let dim : Vec<_> = array.dim().unwrap().collect();
+    ///    let dim : Vec<_> = array.dim().unwrap().iter().collect();
     ///    assert_eq!(dim, vec![2, 2]);
     /// }
     /// ```
-    pub fn dim(&self) -> Option<Int> {
+    pub fn dim(&self) -> Option<Integers> {
         if let Some(dim) = self.get_attrib(wrapper::symbol::dim_symbol()) {
-            dim.as_integer_iter()
+            dim.as_integers()
         } else {
             None
         }
