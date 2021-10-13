@@ -323,9 +323,8 @@ impl Robj {
     ///     assert_eq!((nt, nf, nna), (1, 1, 1));
     /// }
     /// ```
-    pub fn as_logical_iter(&self) -> Option<impl Iterator<Item=&Bool>> {
-        self.as_logical_slice()
-            .map(|slice| slice.iter())
+    pub fn as_logical_iter(&self) -> Option<impl Iterator<Item = &Bool>> {
+        self.as_logical_slice().map(|slice| slice.iter())
     }
 
     /// Get a read-only reference to the content of a double vector.
@@ -362,9 +361,8 @@ impl Robj {
     ///     assert_eq!(tot, 6.);
     /// }
     /// ```
-    pub fn as_real_iter(&self) -> Option<impl Iterator<Item=&f64>> {
-        self.as_real_slice()
-            .map(|slice| slice.iter())
+    pub fn as_real_iter(&self) -> Option<impl Iterator<Item = &f64>> {
+        self.as_real_slice().map(|slice| slice.iter())
     }
 
     /// Get a Vec<f64> copied from the object.
