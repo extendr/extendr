@@ -277,9 +277,8 @@ impl<'a> ser::Serializer for &'a mut Serializer {
 
     /// Start of a tuple.
     fn serialize_tuple(self, len: usize) -> Result<Self::SerializeTuple> {
-        let values = Vec::with_capacity(len);
         Ok(SerializeTuple {
-            values: values,
+            values: Vec::with_capacity(len),
             parent: self,
         })
     }
