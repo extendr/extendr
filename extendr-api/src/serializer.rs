@@ -435,12 +435,11 @@ impl<'a> ser::SerializeMap for self::SerializeMap<'a> {
         T: ?Sized + Serialize,
     {
         let key = to_robj(&key)?;
-        let s = key.as_str();
-        if s.is_none() {
-            Err(Error::ExpectedString(key))
-        } else {
-            self.key = s.unwrap().to_string();
+        if let Some(key_str) = key.as_str() {
+            self.key = key_str.to_string();
             Ok(())
+        } else {
+            Err(Error::ExpectedString(key))
         }
     }
 
