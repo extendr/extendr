@@ -447,7 +447,7 @@ impl<'a> ser::SerializeMap for self::SerializeMap<'a> {
     where
         T: ?Sized + Serialize,
     {
-        let key = std::mem::replace(&mut self.key, String::new());
+        let key = std::mem::take(&mut self.key);
         self.values.push((key, to_robj(&value)?));
         Ok(())
     }
