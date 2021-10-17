@@ -1,7 +1,7 @@
 use extendr_api::prelude::*;
 mod submodule;
-use submodule::*;
 use std::collections::HashMap;
+use submodule::*;
 
 // Return string `"Hello world!"` to R.
 #[extendr]
@@ -11,9 +11,7 @@ fn hello_world() -> &'static str {
 
 // Do nothing.
 #[extendr]
-fn do_nothing() {
-}
-
+fn do_nothing() {}
 
 // From: input/output conversion
 
@@ -22,40 +20,53 @@ fn do_nothing() {
 // Convert a double scalar to itself
 // x a number
 #[extendr]
-fn double_scalar(x: f64) -> f64 { x }
+fn double_scalar(x: f64) -> f64 {
+    x
+}
 
 // Convert an int scalar to itself
 // x a number
 #[extendr]
-fn int_scalar(x: i32) -> i32 { x }
+fn int_scalar(x: i32) -> i32 {
+    x
+}
 
 // Convert a bool scalar to itself
 // x a number
 #[extendr]
-fn bool_scalar(x: bool) -> bool { x }
+fn bool_scalar(x: bool) -> bool {
+    x
+}
 
 // Convert a string to itself
 // x a string
 #[extendr]
-fn char_scalar(x: String) -> String { x }
+fn char_scalar(x: String) -> String {
+    x
+}
 
 // Convert a vector of strings to itself
 // x a vector of strings
 #[extendr]
-fn char_vec(x: Vec<String>) -> Vec<String> {x}
+fn char_vec(x: Vec<String>) -> Vec<String> {
+    x
+}
 
 // Convert a numeric vector to itself
 // x a numeric vector
 #[extendr]
-fn double_vec(x: Vec<f64>) -> Vec<f64> {x}
-
+fn double_vec(x: Vec<f64>) -> Vec<f64> {
+    x
+}
 
 // Non-atomic types
 
 // Convert a list to a HashMap<&str, Robj> in rust and back. Does not preserve list order
 // x a list
 #[extendr]
-fn list_str_hash(x: HashMap<&str, Robj>) -> HashMap<&str, Robj> {x}
+fn list_str_hash(x: HashMap<&str, Robj>) -> HashMap<&str, Robj> {
+    x
+}
 
 // TryFrom: conversions
 
@@ -64,14 +75,51 @@ fn list_str_hash(x: HashMap<&str, Robj>) -> HashMap<&str, Robj> {x}
 // Convert a vector of doubles to itself
 // x a vector of doubles
 #[extendr(use_try_from = true)]
-fn try_double_vec(x: Vec<f64>) -> Vec<f64> {x}
+fn try_double_vec(x: Vec<f64>) -> Vec<f64> {
+    x
+}
 
 // Non-atomic types
 
 // Convert a list to a HashMap<&str, Robj> in rust and back. Does not preserve list order
 // x a list
 #[extendr(use_try_from = true)]
-fn try_list_str_hash(x: HashMap<&str, Robj>) -> HashMap<&str, Robj> {x}
+fn try_list_str_hash(x: HashMap<&str, Robj>) -> HashMap<&str, Robj> {
+    x
+}
+
+// Vector wrappers
+#[extendr(use_try_from = true)]
+fn get_doubles_element(x: Doubles, i: i32) -> Rfloat {
+    x.elt(i as usize)
+}
+
+#[extendr(use_try_from = true)]
+fn get_integers_element(x: Integers, i: i32) -> Rint {
+    x.elt(i as usize)
+}
+
+#[extendr(use_try_from = true)]
+fn doubles_square(input: Doubles) -> Doubles {
+    let mut result = Doubles::new(input.len());
+
+    for (x, y) in result.iter_mut().zip(input.iter()) {
+        *x = y * y;
+    }
+
+    result
+}
+
+#[extendr(use_try_from = true)]
+fn integers_square(input: Integers) -> Integers {
+    let mut result = Integers::new(input.len());
+
+    for (x, y) in result.iter_mut().zip(input.iter()) {
+        *x = y * y;
+    }
+
+    result
+}
 
 // Parsing
 
@@ -83,7 +131,9 @@ fn try_list_str_hash(x: HashMap<&str, Robj>) -> HashMap<&str, Robj> {x}
 /// @param `_y` an integer scalar, ignored
 /// @export
 #[extendr]
-fn special_param_names(_x : i32, _y : i32) -> i32 { _x - _y }
+fn special_param_names(_x: i32, _y: i32) -> i32 {
+    _x - _y
+}
 
 /// Test wrapping of special function name
 /// @name f__00__special_function_name
@@ -111,18 +161,18 @@ impl MyClass {
     fn new() -> Self {
         Self { a: 0 }
     }
-    
+
     /// Method for setting stuff.
     /// @param x a number
-    fn set_a(& mut self, x: i32) {
+    fn set_a(&mut self, x: i32) {
         self.a = x;
     }
-    
+
     /// Method for getting stuff.
     fn a(&self) -> i32 {
         self.a
     }
-    
+
     /// Method for getting one's self.
     fn me(&self) -> &Self {
         self
@@ -131,8 +181,7 @@ impl MyClass {
 
 // Class for testing special names
 #[derive(Default, Debug)]
-struct __MyClass {
-}
+struct __MyClass {}
 
 // Class for testing special names
 // Unexported because of documentation conflict
@@ -145,7 +194,6 @@ impl __MyClass {
     /// Method with special name unsupported by R
     fn __name_test(&self) {}
 }
-
 
 // Class for testing (unexported)
 #[derive(Default, Debug)]
@@ -160,7 +208,7 @@ impl MyClassUnexported {
     fn new() -> Self {
         Self { a: 22 }
     }
-    
+
     /// Method for getting stuff.
     fn a(&self) -> i32 {
         self.a
@@ -177,7 +225,7 @@ extendr_module! {
     fn int_scalar;
     fn bool_scalar;
     fn char_scalar;
-    
+
     fn char_vec;
     fn double_vec;
 
@@ -186,12 +234,18 @@ extendr_module! {
     fn try_double_vec;
     fn try_list_str_hash;
 
+    fn get_doubles_element;
+    fn get_integers_element;
+
+    fn doubles_square;
+    fn integers_square;
+
     fn special_param_names;
     fn __00__special_function_name;
 
     impl MyClass;
     impl __MyClass;
     impl MyClassUnexported;
-    
+
     use submodule;
 }

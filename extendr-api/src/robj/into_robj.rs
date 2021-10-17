@@ -15,7 +15,7 @@ pub(crate) fn str_to_character(s: &str) -> SEXP {
 impl From<()> for Robj {
     fn from(_: ()) -> Self {
         // Note: we do not need to protect this.
-        unsafe { Robj::Sys(R_NilValue) }
+        unsafe { Robj::from_sexp(R_NilValue) }
     }
 }
 
@@ -48,7 +48,7 @@ impl From<&Robj> for Robj {
     // Note: we should probably have a much better reference
     // mechanism as double-free or underprotection is a distinct possibility.
     fn from(val: &Robj) -> Self {
-        unsafe { new_owned(val.get()) }
+        unsafe { Robj::from_sexp(val.get()) }
     }
 }
 
@@ -347,8 +347,8 @@ where
         // Length of the vector is known in advance.
         let sexptype = I::Item::sexptype();
         if sexptype != 0 {
-            let sexp = Rf_allocVector(sexptype, len as R_xlen_t);
-            ownership::protect(sexp);
+            let res = Robj::alloc_vector(sexptype, len);
+            let sexp = res.get();
             match sexptype {
                 REALSXP => {
                     let ptr = REAL(sexp);
@@ -383,7 +383,7 @@ where
                     panic!("unexpected SEXPTYPE in collect_robj");
                 }
             }
-            Robj::Owned(sexp)
+            res
         } else {
             Robj::from(())
         }

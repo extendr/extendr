@@ -14,6 +14,7 @@ use std::os::raw;
 
 use crate::*;
 
+use crate::scalar::{Rfloat, Rint};
 use std::collections::HashMap;
 use std::iter::IntoIterator;
 use std::ops::{Range, RangeInclusive};
@@ -116,24 +117,13 @@ pub use rinternals::*;
 /// panics and segfaults. We will take great trouble to ensure that this
 /// is true.
 ///
-pub enum Robj {
-    // This object owns the SEXP and must free it.
-    #[doc(hidden)]
-    Owned(SEXP),
-
-    //  This object references a SEXP owned by libR.
-    #[doc(hidden)]
-    Sys(SEXP),
+pub struct Robj {
+    inner: SEXP,
 }
 
 impl Clone for Robj {
     fn clone(&self) -> Self {
-        unsafe {
-            match *self {
-                Robj::Owned(sexp) => new_owned(sexp),
-                Robj::Sys(sexp) => new_sys(sexp),
-            }
-        }
+        unsafe { Robj::from_sexp(self.get()) }
     }
 }
 
@@ -144,25 +134,18 @@ impl Default for Robj {
 }
 
 impl Robj {
+    pub fn from_sexp(sexp: SEXP) -> Self {
+        single_threaded(|| {
+            unsafe { ownership::protect(sexp) };
+            Robj { inner: sexp }
+        })
+    }
+
     /// Get a copy of the underlying SEXP.
     /// Note: this is unsafe.
     #[doc(hidden)]
     pub unsafe fn get(&self) -> SEXP {
-        match self {
-            Robj::Owned(sexp) => *sexp,
-            Robj::Sys(sexp) => *sexp,
-        }
-    }
-
-    /// Get a copy of the underlying SEXP for mutable types.
-    /// This is valid only for owned objects as we are not
-    /// permitted to modify parameters or system objects.
-    #[doc(hidden)]
-    pub unsafe fn get_mut(&mut self) -> Option<SEXP> {
-        match self {
-            Robj::Owned(sexp) => Some(*sexp),
-            Robj::Sys(_) => None,
-        }
+        self.inner
     }
 
     #[doc(hidden)]
@@ -183,7 +166,7 @@ impl Robj {
     ///     assert_eq!(lang!("+", 1, 2).rtype(), RType::Language);
     ///     assert_eq!(r!(Primitive::from_string("if")).rtype(), RType::Special);
     ///     assert_eq!(r!(Primitive::from_string("+")).rtype(), RType::Builtin);
-    ///     assert_eq!(r!(Character::from_string("hello")).rtype(), RType::Character);
+    ///     assert_eq!(r!(Rstr::from_string("hello")).rtype(), RType::Rstr);
     ///     assert_eq!(r!(TRUE).rtype(), RType::Logical);
     ///     assert_eq!(r!(1).rtype(), RType::Integer);
     ///     assert_eq!(r!(1.0).rtype(), RType::Real);
@@ -204,7 +187,7 @@ impl Robj {
             LANGSXP => RType::Language,
             SPECIALSXP => RType::Special,
             BUILTINSXP => RType::Builtin,
-            CHARSXP => RType::Character,
+            CHARSXP => RType::Rstr,
             LGLSXP => RType::Logical,
             INTSXP => RType::Integer,
             REALSXP => RType::Real,
@@ -640,7 +623,7 @@ impl Robj {
             if error != 0 {
                 Err(Error::EvalError(self.clone()))
             } else {
-                Ok(new_owned(res))
+                Ok(Robj::from_sexp(res))
             }
         })
     }
@@ -718,7 +701,9 @@ macro_rules! make_typed_slice {
 
 make_typed_slice!(Bool, INTEGER, LGLSXP);
 make_typed_slice!(i32, INTEGER, INTSXP);
+make_typed_slice!(Rint, INTEGER, INTSXP);
 make_typed_slice!(f64, REAL, REALSXP);
+make_typed_slice!(Rfloat, REAL, REALSXP);
 make_typed_slice!(u8, RAW, RAWSXP);
 
 /// These are helper functions which give access to common properties of R objects.
@@ -743,7 +728,7 @@ impl Robj {
         if self.sexptype() == CHARSXP {
             None
         } else {
-            let res = unsafe { new_owned(Rf_getAttrib(self.get(), name.get())) };
+            let res = unsafe { Robj::from_sexp(Rf_getAttrib(self.get(), name.get())) };
             if res.is_null() {
                 None
             } else {
@@ -808,7 +793,7 @@ impl Robj {
     ///     assert_eq!(r!([1, 2, 3]).set_names(&["a", "b"]), Err(Error::NamesLengthMismatch(r!(["a", "b"]))));
     /// }
     /// ```
-    pub fn set_names<T>(&self, names: T) -> Result<Robj>
+    pub fn set_names<T>(&mut self, names: T) -> Result<Robj>
     where
         T: IntoIterator,
         T::IntoIter: ExactSizeIterator,
@@ -933,13 +918,10 @@ impl Robj {
 
 #[doc(hidden)]
 pub unsafe fn new_owned(sexp: SEXP) -> Robj {
-    single_threaded(|| ownership::protect(sexp));
-    Robj::Owned(sexp)
-}
-
-#[doc(hidden)]
-pub unsafe fn new_sys(sexp: SEXP) -> Robj {
-    Robj::Sys(sexp)
+    single_threaded(|| {
+        ownership::protect(sexp);
+        Robj { inner: sexp }
+    })
 }
 
 /// Compare equality with integer slices.
@@ -1035,8 +1017,8 @@ impl std::fmt::Debug for Robj {
             SPECIALSXP => write!(f, "r!(Special())"),
             BUILTINSXP => write!(f, "r!(Builtin())"),
             CHARSXP => {
-                let c = Character::try_from(self.clone()).unwrap();
-                write!(f, "r!(Character::from_string({:?}))", c.as_str())
+                let c = Rstr::try_from(self.clone()).unwrap();
+                write!(f, "r!(Rstr::from_string({:?}))", c.as_str())
             }
             LGLSXP => {
                 let slice = self.as_logical_slice().unwrap();
@@ -1093,7 +1075,9 @@ impl std::fmt::Debug for Robj {
             DOTSXP => write!(f, "r!(Dot())"),
             ANYSXP => write!(f, "r!(Any())"),
             BCODESXP => write!(f, "r!(Bcode())"),
-            EXTPTRSXP => write!(f, "r!(Extptr())"),
+            EXTPTRSXP => {
+                write!(f, "r!(ExternalPtr())")
+            }
             RAWSXP => {
                 write!(
                     f,
@@ -1131,10 +1115,7 @@ pub(crate) unsafe fn to_str<'a>(ptr: *const u8) -> &'a str {
 impl Drop for Robj {
     fn drop(&mut self) {
         unsafe {
-            match self {
-                Robj::Owned(sexp) => ownership::unprotect(*sexp),
-                Robj::Sys(_) => (),
-            }
+            ownership::unprotect(self.inner);
         }
     }
 }

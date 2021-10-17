@@ -112,7 +112,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         }
 
         #[no_mangle]
-        #[allow(non_snake_case)]
+        #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
         pub extern "C" fn #module_init_name(info: * mut extendr_api::DllInfo) {
             unsafe { extendr_api::register_call_methods(info, #module_metadata_name()) };
         }

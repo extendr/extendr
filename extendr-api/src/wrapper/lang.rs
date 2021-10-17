@@ -31,7 +31,7 @@ impl Language {
                 res = Rf_protect(Rf_lcons(val, res));
                 num_protected += 2;
             }
-            let robj = new_owned(res);
+            let robj = Robj::from_sexp(res);
             Rf_unprotect(num_protected);
             Language { robj }
         })

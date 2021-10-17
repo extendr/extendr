@@ -285,7 +285,7 @@ jobs:
         config:
           - {os: ubuntu-20.04,   r: 'devel', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
-          - {os: windows-latest, r: 'devel', rust-version: 'stable', rust-targets: ['x86_64-pc-windows-gnu', 'i686-pc-windows-gnu']}
+          - {os: windows-latest, r: 'devel', rust-version: 'stable', rust-targets: ['x86_64-pc-windows-gnu']}
 
 
     env:
@@ -346,7 +346,6 @@ jobs:
           windows-path-include-mingw: false
       
       # 1. Inspect targets. If empty, assume 'x86_64' arch
-      # 1.5 Make symlink to please i686 toolchain (https://github.com/rust-lang/cargo/issues/8990)
       # 2. Install msys2 packages (--needed skips already installed)
       # 3. Add msys2/mingw{bits}/bin to path
       # 4. Add R/{arch}/bin to path
@@ -354,28 +353,13 @@ jobs:
       - name: Configure Windows
         if: startsWith(runner.os, 'Windows')
         run: |
-          if (($env:BUILD_TARGETS -like "*x86_64*") -or ($env:BUILD_TARGETS -eq "")) {
-            echo "::group::Setting up x86_64"
-            C:\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm  --needed mingw-w64-x86_64-clang mingw-w64-x86_64-toolchain"
-            echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-            echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-            echo "::endgroup::"
-          }
-          if ($env:BUILD_TARGETS -like "*i686*") {
-            echo "::group::Setting up i686"
-            mkdir target\debug -ErrorAction Ignore
-            new-item -Type symboliclink -Path .\target\debug\libgcc_s_dw2-1.dll -Value C:\msys64\mingw32\bin\libgcc_s_dw2-1.dll
-            C:\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm --needed mingw32/mingw-w64-i686-clang mingw-w64-i686-toolchain"
-            echo "C:\msys64\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-            echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\i386"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-            echo "::endgroup::"
-          }
+          echo "::group::Setting up x86_64"
+          C:\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm  --needed mingw-w64-x86_64-clang mingw-w64-x86_64-toolchain"
+          echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          echo "::endgroup::"
 
-          $libclang_paths = $env:BUILD_TARGETS.Split(",") | `
-            foreach {"C:\msys64\mingw$(if ($_ -like "*i686*") {"32"} else {"64"})\bin"} | `
-            Join-String -Separator $([System.IO.Path]::PathSeparator)
-
-          echo "LIBCLANG_PATHS=$libclang_paths" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          echo "LIBCLANG_PATHS=C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
         env: 
           BUILD_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
 

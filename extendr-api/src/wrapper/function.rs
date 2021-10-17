@@ -43,7 +43,7 @@ impl Function {
     pub fn from_parts(formals: Pairlist, body: Language, env: Environment) -> Result<Self> {
         unsafe {
             let sexp = Rf_allocSExp(CLOSXP);
-            let robj = new_owned(sexp);
+            let robj = Robj::from_sexp(sexp);
             SET_FORMALS(sexp, formals.get());
             SET_BODY(sexp, body.get());
             SET_CLOENV(sexp, env.get());
@@ -61,7 +61,7 @@ impl Function {
     /// ```
     pub fn call(&self, args: Pairlist) -> Result<Robj> {
         unsafe {
-            let call = new_owned(Rf_lcons(self.get(), args.get()));
+            let call = Robj::from_sexp(Rf_lcons(self.get(), args.get()));
             call.eval()
         }
     }
@@ -71,7 +71,7 @@ impl Function {
         unsafe {
             if self.rtype() == RType::Function {
                 let sexp = self.robj.get();
-                Some(new_owned(FORMALS(sexp)).try_into().unwrap())
+                Some(Robj::from_sexp(FORMALS(sexp)).try_into().unwrap())
             } else {
                 None
             }
@@ -83,7 +83,7 @@ impl Function {
         unsafe {
             if self.rtype() == RType::Function {
                 let sexp = self.robj.get();
-                Some(new_owned(BODY(sexp)))
+                Some(Robj::from_sexp(BODY(sexp)))
             } else {
                 None
             }
@@ -96,7 +96,7 @@ impl Function {
             if self.rtype() == RType::Function {
                 let sexp = self.robj.get();
                 Some(
-                    new_owned(CLOENV(sexp))
+                    Robj::from_sexp(CLOENV(sexp))
                         .try_into()
                         .expect("Should be an environment"),
                 )

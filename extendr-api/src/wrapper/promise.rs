@@ -20,7 +20,7 @@ impl Promise {
     pub fn from_parts(code: Robj, environment: Environment) -> Result<Self> {
         unsafe {
             let sexp = Rf_allocSExp(PROMSXP);
-            let robj = new_owned(sexp);
+            let robj = Robj::from_sexp(sexp);
             SET_PRCODE(sexp, code.get());
             SET_PRENV(sexp, environment.robj.get());
             SET_PRVALUE(sexp, R_UnboundValue);
@@ -32,7 +32,7 @@ impl Promise {
     pub fn code(&self) -> Robj {
         unsafe {
             let sexp = self.robj.get();
-            new_owned(PRCODE(sexp))
+            Robj::from_sexp(PRCODE(sexp))
         }
     }
 
@@ -40,7 +40,7 @@ impl Promise {
     pub fn environment(&self) -> Environment {
         unsafe {
             let sexp = self.robj.get();
-            new_owned(PRENV(sexp)).try_into().unwrap()
+            Robj::from_sexp(PRENV(sexp)).try_into().unwrap()
         }
     }
 
@@ -48,7 +48,7 @@ impl Promise {
     pub fn value(&self) -> Robj {
         unsafe {
             let sexp = self.robj.get();
-            new_owned(PRVALUE(sexp))
+            Robj::from_sexp(PRVALUE(sexp))
         }
     }
 

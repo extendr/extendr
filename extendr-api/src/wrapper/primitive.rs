@@ -31,7 +31,7 @@ impl Primitive {
         single_threaded(|| unsafe {
             // Primitives have a special "SYMVALUE" entry in their symbol.
             let sym = Symbol::from_string(val);
-            let symvalue = new_owned(SYMVALUE(sym.get()));
+            let symvalue = Robj::from_sexp(SYMVALUE(sym.get()));
             if symvalue.is_primitive() {
                 Ok(Primitive { robj: symvalue })
             } else {

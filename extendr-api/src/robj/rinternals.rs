@@ -50,55 +50,67 @@ impl Robj {
         unsafe { Rf_isString(self.get()) != 0 }
     }
 
-    /// Return true if this is an object.
+    /// Return true if this is an object (ie. has a class attribute).
     pub fn is_object(&self) -> bool {
         unsafe { Rf_isObject(self.get()) != 0 }
     }
 
+    /// Return true if this is a S4 object.
+    pub fn is_s4(&self) -> bool {
+        unsafe { Rf_isS4(self.get()) != 0 }
+    }
+
+    /// Return true if this is an expression.
+    pub fn is_external_pointer(&self) -> bool {
+        self.rtype() == RType::ExternalPtr
+    }
+
     /// Get the source ref.
     pub fn get_current_srcref(val: i32) -> Robj {
-        unsafe { new_owned(R_GetCurrentSrcref(val as raw::c_int)) }
+        unsafe { Robj::from_sexp(R_GetCurrentSrcref(val as raw::c_int)) }
     }
 
     /// Get the source filename.
     pub fn get_src_filename(&self) -> Robj {
-        unsafe { new_owned(R_GetSrcFilename(self.get())) }
+        unsafe { Robj::from_sexp(R_GetSrcFilename(self.get())) }
     }
 
     /// Convert to a string vector.
-    pub fn as_char(&self) -> Robj {
-        unsafe { new_owned(Rf_asChar(self.get())) }
+    pub fn as_character_vector(&self) -> Robj {
+        unsafe { Robj::from_sexp(Rf_asChar(self.get())) }
     }
 
     /// Convert to vectors of many kinds.
     pub fn coerce_vector(&self, sexptype: u32) -> Robj {
-        single_threaded(|| unsafe { new_owned(Rf_coerceVector(self.get(), sexptype as SEXPTYPE)) })
+        single_threaded(|| unsafe {
+            Robj::from_sexp(Rf_coerceVector(self.get(), sexptype as SEXPTYPE))
+        })
     }
 
     /// Convert a pairlist (LISTSXP) to a vector list (VECSXP).
     pub fn pair_to_vector_list(&self) -> Robj {
-        single_threaded(|| unsafe { new_owned(Rf_PairToVectorList(self.get())) })
+        single_threaded(|| unsafe { Robj::from_sexp(Rf_PairToVectorList(self.get())) })
     }
 
     /// Convert a vector list (VECSXP) to a pair list (LISTSXP)
     pub fn vector_to_pair_list(&self) -> Robj {
-        single_threaded(|| unsafe { new_owned(Rf_VectorToPairList(self.get())) })
+        single_threaded(|| unsafe { Robj::from_sexp(Rf_VectorToPairList(self.get())) })
     }
 
     /// Convert a factor to a string vector.
     pub fn as_character_factor(&self) -> Robj {
-        single_threaded(|| unsafe { new_owned(Rf_asCharacterFactor(self.get())) })
+        single_threaded(|| unsafe { Robj::from_sexp(Rf_asCharacterFactor(self.get())) })
     }
 
     /// Allocate a matrix object.
     pub fn alloc_matrix(sexptype: SEXPTYPE, rows: i32, cols: i32) -> Robj {
-        single_threaded(|| unsafe { new_owned(Rf_allocMatrix(sexptype, rows, cols)) })
+        single_threaded(|| unsafe { Robj::from_sexp(Rf_allocMatrix(sexptype, rows, cols)) })
     }
 
     /// Do a deep copy of this object.
     /// Note that clone() only adds a reference.
     pub fn duplicate(&self) -> Self {
-        single_threaded(|| unsafe { new_owned(Rf_duplicate(self.get())) })
+        single_threaded(|| unsafe { Robj::from_sexp(Rf_duplicate(self.get())) })
     }
 
     /// Find a function in an environment ignoring other variables.
@@ -139,7 +151,7 @@ impl Robj {
         // }
         unsafe {
             if let Ok(var) = catch_r_error(|| Rf_findFun(key.get(), self.get())) {
-                Ok(new_owned(var))
+                Ok(Robj::from_sexp(var))
             } else {
                 Err(Error::NotFound(key.into()))
             }
@@ -188,7 +200,7 @@ impl Robj {
         unsafe {
             if let Ok(var) = catch_r_error(|| Rf_findVar(key.get(), self.get())) {
                 if var != R_UnboundValue {
-                    Ok(new_owned(var))
+                    Ok(Robj::from_sexp(var))
                 } else {
                     Err(Error::NotFound(key.into()))
                 }
@@ -228,7 +240,7 @@ impl Robj {
     /// Internal function used to implement `#[extendr]` impl
     #[doc(hidden)]
     pub unsafe fn make_external_ptr<T>(p: *mut T, tag: Robj, prot: Robj) -> Self {
-        new_owned(single_threaded(|| {
+        Robj::from_sexp(single_threaded(|| {
             R_MakeExternalPtr(p as *mut ::std::os::raw::c_void, tag.get(), prot.get())
         }))
     }
@@ -242,13 +254,13 @@ impl Robj {
     /// Internal function used to implement `#[extendr]` impl
     #[doc(hidden)]
     pub unsafe fn external_ptr_tag(&self) -> Self {
-        new_owned(R_ExternalPtrTag(self.get()))
+        Robj::from_sexp(R_ExternalPtrTag(self.get()))
     }
 
     /// Internal function used to implement `#[extendr]` impl
     #[doc(hidden)]
     pub unsafe fn external_ptr_protected(&self) -> Self {
-        new_owned(R_ExternalPtrProtected(self.get()))
+        Robj::from_sexp(R_ExternalPtrProtected(self.get()))
     }
 
     #[doc(hidden)]
@@ -262,7 +274,7 @@ impl Robj {
         unsafe {
             if self.is_vector() {
                 Ok(single_threaded(|| {
-                    new_owned(Rf_xlengthgets(self.get(), new_len as R_xlen_t))
+                    Robj::from_sexp(Rf_xlengthgets(self.get(), new_len as R_xlen_t))
                 }))
             } else {
                 Err(Error::ExpectedVector(self.clone()))
@@ -272,7 +284,7 @@ impl Robj {
 
     /// Allocated an owned object of a certain type.
     pub fn alloc_vector(sexptype: u32, len: usize) -> Robj {
-        single_threaded(|| unsafe { new_owned(Rf_allocVector(sexptype, len as R_xlen_t)) })
+        single_threaded(|| unsafe { Robj::from_sexp(Rf_allocVector(sexptype, len as R_xlen_t)) })
     }
 
     /// Return true if two arrays have identical dims.
@@ -381,8 +393,8 @@ impl Robj {
     }
 
     /// Return true if this is CHARSXP.
-    pub fn is_character(&self) -> bool {
-        self.rtype() == RType::Character
+    pub fn is_char(&self) -> bool {
+        self.rtype() == RType::Rstr
     }
 
     /// Check an external pointer tag.
@@ -411,7 +423,7 @@ impl Robj {
     }
 
     pub fn package_env_name(&self) -> Robj {
-        unsafe { new_owned(R_PackageEnvName(self.get())) }
+        unsafe { Robj::from_sexp(R_PackageEnvName(self.get())) }
     }
 
     pub fn is_namespace_env(&self) -> bool {
@@ -419,6 +431,36 @@ impl Robj {
     }
 
     pub fn namespace_env_spec(&self) -> Robj {
-        unsafe { new_owned(R_NamespaceEnvSpec(self.get())) }
+        unsafe { Robj::from_sexp(R_NamespaceEnvSpec(self.get())) }
+    }
+
+    /// Returns `true` if this is an ALTREP object.
+    pub fn is_altrep(&self) -> bool {
+        unsafe { ALTREP(self.get()) != 0 }
+    }
+
+    /// Returns `true` if this is an integer ALTREP object.
+    pub fn is_altinteger(&self) -> bool {
+        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == INTSXP as i32 }
+    }
+
+    /// Returns `true` if this is an real ALTREP object.
+    pub fn is_altreal(&self) -> bool {
+        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == REALSXP as i32 }
+    }
+
+    /// Returns `true` if this is an logical ALTREP object.
+    pub fn is_altlogical(&self) -> bool {
+        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == LGLSXP as i32 }
+    }
+
+    /// Returns `true` if this is a raw ALTREP object.
+    pub fn is_altraw(&self) -> bool {
+        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == RAWSXP as i32 }
+    }
+
+    /// Returns `true` if this is an integer ALTREP object.
+    pub fn is_altstring(&self) -> bool {
+        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == STRSXP as i32 }
     }
 }

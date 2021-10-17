@@ -4,24 +4,38 @@
 use crate::*;
 use libR_sys::*;
 
-pub mod character;
+pub mod altrep;
+pub mod doubles;
 pub mod environment;
 pub mod expr;
+pub mod externalptr;
 pub mod function;
+pub mod integers;
 pub mod lang;
 pub mod list;
+mod macros;
 pub mod matrix;
 pub mod nullable;
 pub mod pairlist;
 pub mod primitive;
 pub mod promise;
 pub mod raw;
+pub mod rstr;
+pub mod s4;
+pub mod strings;
 pub mod symbol;
 
-pub use character::Character;
+pub use self::rstr::Rstr;
+pub use altrep::{
+    AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,
+    AltrepImpl,
+};
+pub use doubles::Doubles;
 pub use environment::{EnvIter, Environment};
 pub use expr::Expression;
+pub use externalptr::ExternalPtr;
 pub use function::Function;
+pub use integers::Integers;
 pub use lang::Language;
 pub use list::{FromList, List, ListIter};
 pub use matrix::{RArray, RColumn, RMatrix, RMatrix3D};
@@ -30,6 +44,8 @@ pub use pairlist::{Pairlist, PairlistIter};
 pub use primitive::Primitive;
 pub use promise::Promise;
 pub use raw::Raw;
+pub use s4::S4;
+pub use strings::Strings;
 pub use symbol::Symbol;
 
 pub(crate) fn make_symbol(name: &str) -> SEXP {
@@ -47,12 +63,12 @@ where
 {
     single_threaded(|| unsafe {
         let values = values.into_iter();
-        let sexp = Rf_allocVector(sexptype, values.len() as R_xlen_t);
-        ownership::protect(sexp);
+        let res = Robj::alloc_vector(sexptype, values.len());
+        let sexp = res.get();
         for (i, val) in values.enumerate() {
             SET_VECTOR_ELT(sexp, i as R_xlen_t, val.into().get());
         }
-        Robj::Owned(sexp)
+        res
     })
 }
 
@@ -96,24 +112,28 @@ macro_rules! make_conversions {
                 &self.robj
             }
         }
+
+        impl DerefMut for $typename {
+            /// Make a wrapper behave like a writable Robj.
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.robj
+            }
+        }
     };
 }
 
 make_conversions!(Pairlist, ExpectedPairlist, is_pairlist, "Not a pairlist");
+
 make_conversions!(
     Function,
     ExpectedFunction,
     is_function,
     "Not a function or primitive."
 );
+
 make_conversions!(Raw, ExpectedRaw, is_raw, "Not a raw object");
 
-make_conversions!(
-    Character,
-    ExpectedCharacter,
-    is_character,
-    "Not a character object"
-);
+make_conversions!(Rstr, ExpectedRstr, is_char, "Not a character object");
 
 make_conversions!(
     Environment,
@@ -149,6 +169,15 @@ make_conversions!(
 
 make_conversions!(Promise, ExpectedPromise, is_promise, "Not a Promise object");
 
+make_conversions!(Altrep, ExpectedAltrep, is_altrep, "Not an Altrep type");
+
+make_conversions!(S4, ExpectedS4, is_s4, "Not a S4 type");
+
+make_conversions!(Integers, ExpectedInteger, is_integer, "Not an integer type");
+make_conversions!(Doubles, ExpectedReal, is_real, "Not a floating point type");
+
+make_conversions!(Strings, ExpectedString, is_string, "Not a string vector");
+
 impl Robj {
     /// Convert a symbol object to a Symbol wrapper.
     /// ```
@@ -162,19 +191,19 @@ impl Robj {
         Symbol::try_from(self.clone()).ok()
     }
 
-    /// Convert a character object to a Character wrapper.
+    /// Convert a CHARSXP object to a Rstr wrapper.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let fred = r!(Character::from_string("fred"));
-    ///     assert_eq!(fred.as_character(), Some(Character::from_string("fred")));
+    ///     let fred = r!(Rstr::from_string("fred"));
+    ///     assert_eq!(fred.as_char(), Some(Rstr::from_string("fred")));
     /// }
     /// ```
-    pub fn as_character(&self) -> Option<Character> {
-        Character::try_from(self.clone()).ok()
+    pub fn as_char(&self) -> Option<Rstr> {
+        Rstr::try_from(self.clone()).ok()
     }
 
-    /// Convert a raw object to a Character wrapper.
+    /// Convert a raw object to a Rstr wrapper.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {

@@ -50,20 +50,17 @@ impl List {
     where
         V: IntoIterator,
         V::IntoIter: ExactSizeIterator + Clone,
-        V::Item: Into<(&'static str, Robj)>,
+        V::Item: KeyValue,
     {
         let iter = pairs.into_iter();
-        let res = List::from_values(iter.clone().map(|kv| {
-            let (_, v) = kv.into();
-            v
-        }));
-        res.set_names(iter.map(|kv| {
-            let (k, _) = kv.into();
-            k
-        }))
-        .unwrap()
-        .as_list()
-        .unwrap()
+        let mut names = Vec::with_capacity(iter.len());
+        let mut values = Vec::with_capacity(iter.len());
+        for pair in iter {
+            names.push(pair.key());
+            values.push(pair.value());
+        }
+        let mut res = List::from_values(values);
+        res.set_names(names).unwrap().as_list().unwrap()
     }
 
     /// Wrapper for creating a list (VECSXP) object from a HashMap.
@@ -212,7 +209,7 @@ impl Iterator for ListIter {
         if i >= self.len {
             None
         } else {
-            Some(unsafe { new_owned(VECTOR_ELT(self.robj.get(), i as isize)) })
+            Some(unsafe { Robj::from_sexp(VECTOR_ELT(self.robj.get(), i as isize)) })
         }
     }
 
@@ -300,5 +297,20 @@ impl From<ListIter> for Robj {
 impl<'a> FromRobj<'a> for ListIter {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
         robj.as_list().map(|l| l.values()).ok_or("Not a list.")
+    }
+}
+
+// TODO: use Rstr or Sym instead of String.
+pub trait KeyValue {
+    fn key(&self) -> String;
+    fn value(self) -> Robj;
+}
+
+impl<T: AsRef<str>> KeyValue for (T, Robj) {
+    fn key(&self) -> String {
+        self.0.as_ref().to_owned()
+    }
+    fn value(self) -> Robj {
+        self.1
     }
 }

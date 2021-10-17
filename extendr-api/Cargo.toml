@@ -6,7 +6,8 @@ authors = [
     "Thomas Down",
     "Mossa Merhi Reimert <mossa@sund.ku.dk>",
     "Claus O. Wilke <wilke@austin.utexas.edu>",
-    "Hiroaki Yutani"
+    "Hiroaki Yutani",
+    "Ilia A. Kosenkov <ilia.kosenkov@outlook.com>"
 ]
 edition = "2018"
 description = "Safe and user friendly bindings to the R programming language."
@@ -17,14 +18,16 @@ repository = "https://github.com/extendr/extendr"
 libR-sys = "0.2.2"
 extendr-macros = { path = "../extendr-macros", version="0.2.0" }
 extendr-engine = { path = "../extendr-engine", version="0.2.0" }
-ndarray = { version = "0.13.1", optional = true }
+ndarray = { version = "0.15.3", optional = true }
 lazy_static = "1.4"
+paste = "1.0.5"
+serde = { version = "1.0", features = ["derive"], optional = true }
 
 [features]
 default = []
 
 # All features to test
-tests-all = ["ndarray", "libR-sys/use-bindgen"]
+tests-all = ["ndarray", "libR-sys/use-bindgen", "serde"]
 
 # The minimal set of features without all optional ones
 tests-minimal = ["libR-sys/use-bindgen"]

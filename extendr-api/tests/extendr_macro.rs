@@ -37,54 +37,84 @@ fn test_option_i16(val: Option<i16>) -> i16 {
     }
 }
 
+#[extendr(use_try_from = true)]
+fn test_rint(val: Rint) -> Rint {
+    val
+}
+
+#[extendr(use_try_from = true)]
+fn test_integers(val: Integers) -> Integers {
+    val
+}
+
+#[extendr(use_try_from = true)]
+fn test_integers2(val: Integers) -> Integers {
+    val.iter().map(|i| i + 1).collect()
+}
+
+#[extendr(use_try_from = true)]
+fn test_integers3(val: Integers) -> Rint {
+    val.iter().sum()
+}
+
 #[test]
 fn tests_with_successful_outcomes() {
     unsafe {
         test! {
             // Matching integer.
-            assert_eq!(new_owned(wrap__test_i32(r!(1).get())), r!(1));
+            assert_eq!(Robj::from_sexp(wrap__test_i32(r!(1).get())), r!(1));
 
             // i32 takes any numeric.
-            assert_eq!(new_owned(wrap__test_i32(r!(1.0).get())), r!(1));
+            assert_eq!(Robj::from_sexp(wrap__test_i32(r!(1.0).get())), r!(1));
 
 
             // Matching integer.
-            assert_eq!(new_owned(wrap__test_option_i32(r!(1).get())), r!(1));
+            assert_eq!(Robj::from_sexp(wrap__test_option_i32(r!(1).get())), r!(1));
 
             // Option<i32> takes any numeric.
-            assert_eq!(new_owned(wrap__test_option_i32(r!(1.0).get())), r!(1));
+            assert_eq!(Robj::from_sexp(wrap__test_option_i32(r!(1.0).get())), r!(1));
 
             // NA input.
-            assert_eq!(new_owned(wrap__test_option_i32(r!(NA_REAL).get())), r!(-1));
+            assert_eq!(Robj::from_sexp(wrap__test_option_i32(r!(NA_REAL).get())), r!(-1));
 
             // NA input.
-            assert_eq!(new_owned(wrap__test_option_i32(r!(NA_INTEGER).get())), r!(-1));
+            assert_eq!(Robj::from_sexp(wrap__test_option_i32(r!(NA_INTEGER).get())), r!(-1));
 
 
             // Matching integer.
-            assert_eq!(new_owned(wrap__test_option_i16(r!(1).get())), r!(1));
+            assert_eq!(Robj::from_sexp(wrap__test_option_i16(r!(1).get())), r!(1));
 
             // Option<i16> takes any numeric.
-            assert_eq!(new_owned(wrap__test_option_i16(r!(1.0).get())), r!(1));
+            assert_eq!(Robj::from_sexp(wrap__test_option_i16(r!(1.0).get())), r!(1));
 
             // NA input.
-            assert_eq!(new_owned(wrap__test_option_i16(r!(NA_REAL).get())), r!(-1));
+            assert_eq!(Robj::from_sexp(wrap__test_option_i16(r!(NA_REAL).get())), r!(-1));
 
             // NA input.
-            assert_eq!(new_owned(wrap__test_option_i16(r!(NA_INTEGER).get())), r!(-1));
+            assert_eq!(Robj::from_sexp(wrap__test_option_i16(r!(NA_INTEGER).get())), r!(-1));
 
 
             // Matching integer.
-            assert_eq!(new_owned(wrap__test_option_f64(r!(1).get())), r!(1.0));
+            assert_eq!(Robj::from_sexp(wrap__test_option_f64(r!(1).get())), r!(1.0));
 
             // Option<f64> takes any numeric.
-            assert_eq!(new_owned(wrap__test_option_f64(r!(1.0).get())), r!(1.0));
+            assert_eq!(Robj::from_sexp(wrap__test_option_f64(r!(1.0).get())), r!(1.0));
 
             // NA input.
-            assert_eq!(new_owned(wrap__test_option_f64(r!(NA_REAL).get())), r!(-1.0));
+            assert_eq!(Robj::from_sexp(wrap__test_option_f64(r!(NA_REAL).get())), r!(-1.0));
 
             // NA input.
-            assert_eq!(new_owned(wrap__test_option_f64(r!(NA_INTEGER).get())), r!(-1.0));
+            assert_eq!(Robj::from_sexp(wrap__test_option_f64(r!(NA_INTEGER).get())), r!(-1.0));
+
+            // Rint.
+            assert_eq!(Robj::from_sexp(wrap__test_rint(r!(1).get())), r!(1));
+            assert_eq!(Robj::from_sexp(wrap__test_rint(r!(1.0).get())), r!(1));
+            assert_eq!(Robj::from_sexp(wrap__test_rint(r!(NA_INTEGER).get())), r!(NA_INTEGER));
+
+            // Integers
+            assert_eq!(Robj::from_sexp(wrap__test_integers(r!([1, 2]).get())), r!([1, 2]));
+            assert_eq!(Robj::from_sexp(wrap__test_integers2(r!([1, 2]).get())), r!([2, 3]));
+            assert_eq!(Robj::from_sexp(wrap__test_integers3(r!(0..4).get())), r!(6));
         }
     }
 }
@@ -93,18 +123,28 @@ fn tests_with_successful_outcomes() {
 #[cfg(not(target_arch = "x86"))]
 #[test]
 fn tests_with_unsuccessful_outcomes() {
-    unsafe {
+    // Using [single_threaded] here may help with sporadic test failures.
+    single_threaded(|| unsafe {
         test! {
+            let old_hook = std::panic::take_hook();
+
+            // Suppress backtrace with a custom hook.
+            std::panic::set_hook(Box::new(|_| {
+            }));
+
             // These should throw R errors.
             // They may cause stack traces, but this is harmless.
             assert!(catch_r_error(|| wrap__test_i32(r!("xyz").get())).is_err());
             assert!(catch_r_error(|| wrap__test_i32(r!(pairlist!(x=1)).get())).is_err());
             assert!(catch_r_error(|| wrap__test_i32(r!(list!(1, 2, 3)).get())).is_err());
 
-            // TODO: check for overflow.
-            // assert!(catch_r_error(|| wrap__test_i16(r!(1234567890).get())).is_err());
+            assert!(catch_r_error(|| wrap__test_rint(r!([1, 2]).get())).is_err());
+            assert!(catch_r_error(|| wrap__test_integers(r!([1.0, 2.0]).get())).is_err());
+
+            assert!(catch_r_error(|| wrap__test_i16(r!(1234567890).get())).is_err());
+            std::panic::set_hook(old_hook);
         }
-    }
+    });
 }
 
 #[test]

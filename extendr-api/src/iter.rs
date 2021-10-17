@@ -157,17 +157,17 @@ impl StrIter {
 fn str_from_strsxp<'a>(sexp: SEXP, index: isize) -> &'a str {
     unsafe {
         if index < 0 || index >= Rf_xlength(sexp) {
-            na_str()
+            <&str>::na()
         } else {
             let charsxp = STRING_ELT(sexp, index);
             if charsxp == R_NaString {
-                na_str()
+                <&str>::na()
             } else if TYPEOF(charsxp) == CHARSXP as i32 {
                 let ptr = R_CHAR(charsxp) as *const u8;
                 let slice = std::slice::from_raw_parts(ptr, Rf_xlength(charsxp) as usize);
                 std::str::from_utf8_unchecked(slice)
             } else {
-                na_str()
+                <&str>::na()
             }
         }
     }
@@ -193,7 +193,7 @@ impl Iterator for StrIter {
                 let j = *(INTEGER(vector).add(i));
                 Some(str_from_strsxp(self.levels, j as isize - 1))
             } else if TYPEOF(vector) as u32 == NILSXP {
-                Some(na_str())
+                Some(<&str>::na())
             } else {
                 None
             }
@@ -254,7 +254,7 @@ impl Robj {
     ///     let obj = Robj::from(vec![Some("a"), Some("b"), None]);
     ///     assert_eq!(obj.as_str_iter().unwrap().map(|s| s.is_na()).collect::<Vec<_>>(), vec![false, false, true]);
     ///
-    ///     let obj = Robj::from(vec!["a", "b", na_str()]);
+    ///     let obj = Robj::from(vec!["a", "b", <&str>::na()]);
     ///     assert_eq!(obj.as_str_iter().unwrap().map(|s| s.is_na()).collect::<Vec<_>>(), vec![false, false, true]);
     ///
     ///     let obj = Robj::from(vec!["a", "b", "NA"]);

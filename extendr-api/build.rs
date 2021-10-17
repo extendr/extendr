@@ -15,4 +15,8 @@ fn main() {
     if &*major >= "4" && &*minor >= "1" {
         println!("cargo:rustc-cfg=use_r_newenv");
     }
+
+    if &*major >= "4" && &*minor >= "1" {
+        println!("cargo:rustc-cfg=use_r_patternfill");
+    }
 }

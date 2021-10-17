@@ -42,7 +42,7 @@ pub enum Error {
     ExpectedLanguage(Robj),
     ExpectedSpecial(Robj),
     ExpectedBuiltin(Robj),
-    ExpectedCharacter(Robj),
+    ExpectedRstr(Robj),
     ExpectedLogical(Robj),
     ExpectedInteger(Robj),
     ExpectedReal(Robj),
@@ -64,6 +64,8 @@ pub enum Error {
     ExpectedMatrix(Robj),
     ExpectedMatrix3D(Robj),
     ExpectedNumeric(Robj),
+    ExpectedAltrep(Robj),
+
     OutOfRange(Robj),
     MustNotBeNA(Robj),
     ExpectedNonZeroLength(Robj),
@@ -71,7 +73,9 @@ pub enum Error {
     OutOfLimits(Robj),
     TypeMismatch(Robj),
     NamespaceNotFound(Robj),
+    NoGraphicsDevices(Robj),
 
+    ExpectedExternalPtrType(Robj, String),
     Other(String),
 }
 
@@ -97,8 +101,8 @@ impl std::fmt::Display for Error {
             Error::ExpectedLanguage(robj) => write!(f, "Expected Language got {:?}", robj.rtype()),
             Error::ExpectedSpecial(robj) => write!(f, "Expected Special got {:?}", robj.rtype()),
             Error::ExpectedBuiltin(robj) => write!(f, "Expected Builtin got {:?}", robj.rtype()),
-            Error::ExpectedCharacter(robj) => {
-                write!(f, "Expected Character got {:?}", robj.rtype())
+            Error::ExpectedRstr(robj) => {
+                write!(f, "Expected Rstr got {:?}", robj.rtype())
             }
             Error::ExpectedLogical(robj) => write!(f, "Expected Logical got {:?}", robj.rtype()),
             Error::ExpectedInteger(robj) => write!(f, "Expected Integer got {:?}", robj.rtype()),
@@ -127,6 +131,7 @@ impl std::fmt::Display for Error {
             Error::ExpectedMatrix(robj) => write!(f, "Expected Matrix, got {:?}", robj.rtype()),
             Error::ExpectedMatrix3D(robj) => write!(f, "Expected Matrix3D, got {:?}", robj.rtype()),
             Error::ExpectedNumeric(robj) => write!(f, "Expected Numeric, got {:?}", robj.rtype()),
+            Error::ExpectedAltrep(robj) => write!(f, "Expected Altrep, got {:?}", robj.rtype()),
             Error::OutOfRange(_robj) => write!(f, "Out of range."),
             Error::MustNotBeNA(_robj) => write!(f, "Must not be NA."),
             Error::ExpectedNonZeroLength(_robj) => write!(f, "Expected non zero length"),
@@ -141,6 +146,10 @@ impl std::fmt::Display for Error {
             Error::TypeMismatch(_robj) => write!(f, "Type mismatch"),
 
             Error::NamespaceNotFound(robj) => write!(f, "Namespace {:?} not found", robj),
+            Error::ExpectedExternalPtrType(_robj, type_name) => {
+                write!(f, "Incorrect external pointer type {}", type_name)
+            }
+            Error::NoGraphicsDevices(_robj) => write!(f, "No graphics devices active."),
             Error::Other(str) => write!(f, "{}", str),
         }
     }

@@ -232,15 +232,25 @@ pub mod ownership;
 pub mod prelude;
 pub mod rmacros;
 
+#[cfg(feature = "serde")]
+pub mod serializer;
+
+pub mod graphics;
 pub mod robj;
+pub mod scalar;
 pub mod thread_safety;
 pub mod wrapper;
+
+pub mod na;
 
 #[cfg(feature = "ndarray")]
 pub mod robj_ndarray;
 
 pub use std::convert::{TryFrom, TryInto};
 pub use std::ops::Deref;
+pub use std::ops::DerefMut;
+
+pub use robj::Robj;
 
 //////////////////////////////////////////////////
 // Note these pub use statements are deprectaed
@@ -253,6 +263,7 @@ pub use error::*;
 pub use functions::*;
 pub use lang_macros::*;
 pub use logical::*;
+pub use na::*;
 pub use rmacros::*;
 pub use robj::*;
 pub use thread_safety::{
@@ -265,6 +276,8 @@ pub use robj_ndarray::*;
 
 pub use extendr_macros::*;
 //////////////////////////////////////////////////
+
+pub struct Cplx(pub f64, pub f64);
 
 /// TRUE value eg. `r!(TRUE)`
 pub const TRUE: Bool = Bool(1);
@@ -362,36 +375,6 @@ pub unsafe fn register_call_methods(info: *mut libR_sys::DllInfo, metadata: Meta
     libR_sys::R_forceSymbols(info, 0);
 }
 
-/// Return true if this primitive is NA.
-pub trait IsNA {
-    fn is_na(&self) -> bool;
-}
-
-impl IsNA for f64 {
-    fn is_na(&self) -> bool {
-        unsafe { R_IsNA(*self) != 0 }
-    }
-}
-
-impl IsNA for i32 {
-    fn is_na(&self) -> bool {
-        *self == std::i32::MIN
-    }
-}
-
-impl IsNA for Bool {
-    fn is_na(&self) -> bool {
-        self.0 == std::i32::MIN
-    }
-}
-
-impl IsNA for &str {
-    /// Check for NA in a string by address.
-    fn is_na(&self) -> bool {
-        self.as_ptr() == na_str().as_ptr()
-    }
-}
-
 /// Type of R objects used by [Robj::rtype].
 #[derive(Debug, PartialEq)]
 pub enum RType {
@@ -404,7 +387,7 @@ pub enum RType {
     Language,    // LANGSXP
     Special,     // SPECIALSXP
     Builtin,     // BUILTINSXP
-    Character,   // CHARSXP
+    Rstr,        // CHARSXP
     Logical,     // LGLSXP
     Integer,     // INTSXP
     Real,        // REALSXP
@@ -420,6 +403,71 @@ pub enum RType {
     Raw,         // RAWSXP
     S4,          // S4SXP
     Unknown,
+}
+
+/// Convert extendr's RType to R's SEXPTYPE.
+/// Panics if the type is Unknown.
+pub fn rtype_to_sxp(rtype: RType) -> i32 {
+    use RType::*;
+    (match rtype {
+        Null => NILSXP,
+        Symbol => SYMSXP,
+        Pairlist => LISTSXP,
+        Function => CLOSXP,
+        Environment => ENVSXP,
+        Promise => PROMSXP,
+        Language => LANGSXP,
+        Special => SPECIALSXP,
+        Builtin => BUILTINSXP,
+        Rstr => CHARSXP,
+        Logical => LGLSXP,
+        Integer => INTSXP,
+        Real => REALSXP,
+        Complex => CPLXSXP,
+        String => STRSXP,
+        Dot => DOTSXP,
+        Any => ANYSXP,
+        List => VECSXP,
+        Expression => EXPRSXP,
+        Bytecode => BCODESXP,
+        ExternalPtr => EXTPTRSXP,
+        WeakRef => WEAKREFSXP,
+        Raw => RAWSXP,
+        S4 => S4SXP,
+        Unknown => panic!("attempt to use Unknown RType"),
+    }) as i32
+}
+
+/// Convert R's SEXPTYPE to extendr's RType.
+pub fn sxp_to_rtype(sxptype: i32) -> RType {
+    use RType::*;
+    match sxptype as u32 {
+        NILSXP => Null,
+        SYMSXP => Symbol,
+        LISTSXP => Pairlist,
+        CLOSXP => Function,
+        ENVSXP => Environment,
+        PROMSXP => Promise,
+        LANGSXP => Language,
+        SPECIALSXP => Special,
+        BUILTINSXP => Builtin,
+        CHARSXP => Rstr,
+        LGLSXP => Logical,
+        INTSXP => Integer,
+        REALSXP => Real,
+        CPLXSXP => Complex,
+        STRSXP => String,
+        DOTSXP => Dot,
+        ANYSXP => Any,
+        VECSXP => List,
+        EXPRSXP => Expression,
+        BCODESXP => Bytecode,
+        EXTPTRSXP => ExternalPtr,
+        WEAKREFSXP => WeakRef,
+        RAWSXP => Raw,
+        S4SXP => S4,
+        _ => Unknown,
+    }
 }
 
 #[doc(hidden)]
@@ -654,18 +702,18 @@ mod tests {
                 wrap__robjtype(Robj::from(1).get());
 
                 // General integer types.
-                assert_eq!(new_owned(wrap__return_u8()), Robj::from(123_u8));
-                assert_eq!(new_owned(wrap__return_u16()), Robj::from(123));
-                assert_eq!(new_owned(wrap__return_u32()), Robj::from(123.));
-                assert_eq!(new_owned(wrap__return_u64()), Robj::from(123.));
-                assert_eq!(new_owned(wrap__return_i8()), Robj::from(123));
-                assert_eq!(new_owned(wrap__return_i16()), Robj::from(123));
-                assert_eq!(new_owned(wrap__return_i32()), Robj::from(123));
-                assert_eq!(new_owned(wrap__return_i64()), Robj::from(123.));
+                assert_eq!(Robj::from_sexp(wrap__return_u8()), Robj::from(123_u8));
+                assert_eq!(Robj::from_sexp(wrap__return_u16()), Robj::from(123));
+                assert_eq!(Robj::from_sexp(wrap__return_u32()), Robj::from(123.));
+                assert_eq!(Robj::from_sexp(wrap__return_u64()), Robj::from(123.));
+                assert_eq!(Robj::from_sexp(wrap__return_i8()), Robj::from(123));
+                assert_eq!(Robj::from_sexp(wrap__return_i16()), Robj::from(123));
+                assert_eq!(Robj::from_sexp(wrap__return_i32()), Robj::from(123));
+                assert_eq!(Robj::from_sexp(wrap__return_i64()), Robj::from(123.));
 
                 // Floating point types.
-                assert_eq!(new_owned(wrap__return_f32()), Robj::from(123.));
-                assert_eq!(new_owned(wrap__return_f64()), Robj::from(123.));
+                assert_eq!(Robj::from_sexp(wrap__return_f32()), Robj::from(123.));
+                assert_eq!(Robj::from_sexp(wrap__return_f64()), Robj::from(123.));
             }
         }
     }
@@ -690,56 +738,56 @@ mod tests {
                 // pub fn f64_slice(x: &[f64]) -> &[f64] { x }
 
                 let robj = r!([1., 2., 3.]);
-                assert_eq!(new_owned(wrap__f64_slice(robj.get())), robj);
+                assert_eq!(Robj::from_sexp(wrap__f64_slice(robj.get())), robj);
 
                 // #[extendr]
                 // pub fn i32_slice(x: &[i32]) -> &[i32] { x }
 
                 let robj = r!([1, 2, 3]);
-                assert_eq!(new_owned(wrap__i32_slice(robj.get())), robj);
+                assert_eq!(Robj::from_sexp(wrap__i32_slice(robj.get())), robj);
 
                 // #[extendr]
                 // pub fn bool_slice(x: &[Bool]) -> &[Bool] { x }
 
                 let robj = r!([TRUE, FALSE, TRUE]);
-                assert_eq!(new_owned(wrap__bool_slice(robj.get())), robj);
+                assert_eq!(Robj::from_sexp(wrap__bool_slice(robj.get())), robj);
 
                 // #[extendr]
                 // pub fn f64_iter(x: Real) -> Real { x }
 
                 let robj = r!([1., 2., 3.]);
-                assert_eq!(new_owned(wrap__f64_iter(robj.get())), robj);
+                assert_eq!(Robj::from_sexp(wrap__f64_iter(robj.get())), robj);
 
                 // #[extendr]
                 // pub fn i32_iter(x: Int) -> Int { x }
 
                 let robj = r!([1, 2, 3]);
-                assert_eq!(new_owned(wrap__i32_iter(robj.get())), robj);
+                assert_eq!(Robj::from_sexp(wrap__i32_iter(robj.get())), robj);
 
                 // #[extendr]
                 // pub fn bool_iter(x: Logical) -> Logical { x }
 
                 let robj = r!([TRUE, FALSE, TRUE]);
-                assert_eq!(new_owned(wrap__bool_iter(robj.get())), robj);
+                assert_eq!(Robj::from_sexp(wrap__bool_iter(robj.get())), robj);
 
                 // #[extendr]
                 // pub fn symbol(x: Symbol) -> Symbol { x }
 
                 let robj = sym!(fred);
-                assert_eq!(new_owned(wrap__symbol(robj.get())), robj);
+                assert_eq!(Robj::from_sexp(wrap__symbol(robj.get())), robj);
 
                 // #[extendr]
                 // pub fn matrix(x: Matrix<&[f64]>) -> Matrix<&[f64]> { x }
 
                 let m = RMatrix::new_matrix(1, 2, |r, c| if r == c {1.0} else {0.});
                 let robj = r!(m);
-                assert_eq!(new_owned(wrap__matrix(robj.get())), robj);
+                assert_eq!(Robj::from_sexp(wrap__matrix(robj.get())), robj);
 
                 // #[extendr]
                 // pub fn hash_map(x: HashMap<&str, Robj>) -> HashMap<&str, Robj> { x }
                 let robj = r!(List::from_values(&[1, 2]));
                 robj.set_attrib(names_symbol(), r!(["a", "b"]))?;
-                let res = new_owned(wrap__hash_map(robj.get()));
+                let res = Robj::from_sexp(wrap__hash_map(robj.get()));
                 assert_eq!(res.len(), 2);
             }
         }
@@ -769,10 +817,10 @@ mod tests {
 
     #[test]
     fn test_na_str() {
-        assert!(na_str().as_ptr() != "NA".as_ptr());
-        assert_eq!(na_str(), "NA");
+        assert_ne!(<&str>::na().as_ptr(), "NA".as_ptr());
+        assert_eq!(<&str>::na(), "NA");
         assert_eq!("NA".is_na(), false);
-        assert_eq!(na_str().is_na(), true);
+        assert_eq!(<&str>::na().is_na(), true);
     }
 
     #[test]
@@ -788,7 +836,7 @@ mod tests {
             assert_eq!(metadata.impls[0].methods.len(), 3);
 
             // R interface
-            let robj = unsafe { new_owned(wrap__get_my_module_metadata()) };
+            let robj = Robj::from_sexp(wrap__get_my_module_metadata());
             let functions = robj.dollar("functions").unwrap();
             let impls = robj.dollar("impls").unwrap();
             assert_eq!(functions.len(), 3);

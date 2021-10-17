@@ -4,17 +4,19 @@
 //! using deprecated features.
 
 pub use super::{
-    new_owned, print_r_error, print_r_output, FromRobj, IsNA, RType, FALSE, NA_INTEGER, NA_LOGICAL,
+    print_r_error, print_r_output, CanBeNA, FromRobj, RType, FALSE, NA_INTEGER, NA_LOGICAL,
     NA_REAL, NA_STRING, NULL, TRUE,
 };
+
+pub use super::na::*;
 
 pub use super::error::{Error, Result};
 
 pub use super::functions::{
     base_env, base_namespace, blank_scalar_string, blank_string, current_env, empty_env,
     eval_string, eval_string_with_params, find_namespace, find_namespaced_function, global_env,
-    global_function, global_var, local_var, na_str, na_string, namespace_registry, new_env,
-    nil_value, parse, srcref,
+    global_function, global_var, local_var, na_string, namespace_registry, new_env, nil_value,
+    parse, srcref,
 };
 
 pub use super::wrapper::symbol::{
@@ -26,14 +28,23 @@ pub use super::wrapper::symbol::{
     spec_symbol, triple_colon_symbol, tsp_symbol, unbound_value,
 };
 
+// Exported macros have crate scope.
 pub use crate::{append, append_lang, append_with_name, args, lang, make_lang};
+
+// Exported macros have crate scope.
 pub use crate::{
     data_frame, factor, global, list, r, reprint, reprintln, rprint, rprintln, sym, test, var,
 };
 
 pub use super::logical::Bool;
+pub use super::Cplx;
 
-pub use super::wrapper::{RArray, RColumn, RMatrix, RMatrix3D};
+pub use super::wrapper::{
+    AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,
+    AltrepImpl, RArray, RColumn, RMatrix, RMatrix3D,
+};
+
+pub use super::wrapper::s4::S4;
 
 pub use super::robj::{IntoRobj, Robj, RobjItertools};
 
@@ -42,8 +53,8 @@ pub use super::thread_safety::{
 };
 
 pub use super::wrapper::{
-    Character, EnvIter, Environment, Expression, FromList, Function, Language, List, ListIter,
-    Nullable, Pairlist, Primitive, Promise, Raw, Symbol,
+    Doubles, EnvIter, Environment, Expression, ExternalPtr, FromList, Function, Integers, Language,
+    List, ListIter, Nullable, Pairlist, Primitive, Promise, Raw, Rstr, Strings, Symbol,
 };
 
 #[cfg(feature = "ndarray")]
@@ -59,3 +70,5 @@ pub use super::iter::{Int, Logical, Real, StrIter};
 pub use std::convert::{TryFrom, TryInto};
 
 pub use std::ops::Index;
+
+pub use super::scalar::*;
