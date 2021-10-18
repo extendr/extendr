@@ -59,12 +59,7 @@ fn double_vec(x: Vec<f64>) -> Vec<f64> {
 }
 
 // Non-atomic types
-
-// Convert a list to a List in rust and back.
-#[extendr]
-fn list_str_hash(x: List) -> List {
-    x
-}
+// TODO
 
 // TryFrom: conversions
 
@@ -78,12 +73,7 @@ fn try_double_vec(x: Vec<f64>) -> Vec<f64> {
 }
 
 // Non-atomic types
-
-// Convert a list to a List in rust and back.
-#[extendr(use_try_from = true)]
-fn try_list_str_hash(x: List) -> List {
-    x
-}
+// TODO
 
 // Vector wrappers
 #[extendr(use_try_from = true)]
@@ -226,10 +216,7 @@ extendr_module! {
     fn char_vec;
     fn double_vec;
 
-    fn list_str_hash;
-
     fn try_double_vec;
-    fn try_list_str_hash;
 
     fn get_doubles_element;
     fn get_integers_element;
