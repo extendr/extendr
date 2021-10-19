@@ -277,9 +277,8 @@ impl<'a> ser::Serializer for &'a mut Serializer {
 
     /// Start of a tuple.
     fn serialize_tuple(self, len: usize) -> Result<Self::SerializeTuple> {
-        let values = Vec::with_capacity(len);
         Ok(SerializeTuple {
-            values: values,
+            values: Vec::with_capacity(len),
             parent: self,
         })
     }
@@ -436,12 +435,11 @@ impl<'a> ser::SerializeMap for self::SerializeMap<'a> {
         T: ?Sized + Serialize,
     {
         let key = to_robj(&key)?;
-        let s = key.as_str();
-        if s.is_none() {
-            Err(Error::ExpectedString(key))
-        } else {
-            self.key = s.unwrap().to_string();
+        if let Some(key_str) = key.as_str() {
+            self.key = key_str.to_string();
             Ok(())
+        } else {
+            Err(Error::ExpectedString(key))
         }
     }
 

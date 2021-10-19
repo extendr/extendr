@@ -4,17 +4,9 @@ use syn::{parse_quote, punctuated::Punctuated, Expr, FnArg, ItemFn, Token, Type}
 pub const META_PREFIX: &str = "meta__";
 pub const WRAP_PREFIX: &str = "wrap__";
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct ExtendrOptions {
     pub use_try_from: bool,
-}
-
-impl Default for ExtendrOptions {
-    fn default() -> Self {
-        ExtendrOptions {
-            use_try_from: false,
-        }
-    }
 }
 
 // Generate wrappers for a specific function.
