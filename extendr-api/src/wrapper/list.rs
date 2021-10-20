@@ -120,8 +120,8 @@ impl List {
 
     /// Convert a List into a HashMap, consuming the list.
     ///
-    /// - If there are some duplicated names of elements, only one of those will be preserved.
-    /// - If an element doesn't have the name, an empty string (i.e. `""`) will be the key.
+    /// - If an element doesn't have a name, an empty string (i.e. `""`) will be used as the key.
+    /// - If there are some duplicated names (including no name, which will be translated as `""`) of elements, only one of those will be preserved.
     /// ```
     /// use extendr_api::prelude::*;
     /// use std::collections::HashMap;
