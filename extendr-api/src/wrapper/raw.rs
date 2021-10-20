@@ -17,6 +17,14 @@ pub struct Raw {
 }
 
 impl Raw {
+    /// Create a new Raw object of length `len`.
+    pub fn new(len: usize) -> Raw {
+        let mut robj = Robj::alloc_vector(RAWSXP, len);
+        let slice = robj.as_raw_slice_mut().unwrap();
+        slice.iter_mut().for_each(|v| *v = 0);
+        Raw { robj }
+    }
+
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {

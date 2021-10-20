@@ -74,18 +74,6 @@ pub use rinternals::*;
 /// }
 /// ```
 ///
-/// Use iterators to get the contents of R objects.
-///
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///     let a : Robj = r!([1, 2, 3, 4, 5]);
-///     let iter = a.as_integer_iter().unwrap();
-///     let robj = iter.filter(|&x| x < 3).collect_robj();
-///     assert_eq!(robj, r!([1, 2]));
-/// }
-/// ```
-///
 /// Convert to/from Rust vectors.
 ///
 /// ```
@@ -206,6 +194,38 @@ impl Robj {
         }
     }
 
+    pub fn as_any(&self) -> Rany {
+        unsafe {
+            match self.sexptype() {
+                NILSXP => Rany::Null(std::mem::transmute(self)),
+                SYMSXP => Rany::Symbol(std::mem::transmute(self)),
+                LISTSXP => Rany::Pairlist(std::mem::transmute(self)),
+                CLOSXP => Rany::Function(std::mem::transmute(self)),
+                ENVSXP => Rany::Environment(std::mem::transmute(self)),
+                PROMSXP => Rany::Promise(std::mem::transmute(self)),
+                LANGSXP => Rany::Language(std::mem::transmute(self)),
+                SPECIALSXP => Rany::Special(std::mem::transmute(self)),
+                BUILTINSXP => Rany::Builtin(std::mem::transmute(self)),
+                CHARSXP => Rany::Rstr(std::mem::transmute(self)),
+                LGLSXP => Rany::Logical(std::mem::transmute(self)),
+                INTSXP => Rany::Integer(std::mem::transmute(self)),
+                REALSXP => Rany::Real(std::mem::transmute(self)),
+                CPLXSXP => Rany::Complex(std::mem::transmute(self)),
+                STRSXP => Rany::String(std::mem::transmute(self)),
+                DOTSXP => Rany::Dot(std::mem::transmute(self)),
+                ANYSXP => Rany::Any(std::mem::transmute(self)),
+                VECSXP => Rany::List(std::mem::transmute(self)),
+                EXPRSXP => Rany::Expression(std::mem::transmute(self)),
+                BCODESXP => Rany::Bytecode(std::mem::transmute(self)),
+                EXTPTRSXP => Rany::ExternalPtr(std::mem::transmute(self)),
+                WEAKREFSXP => Rany::WeakRef(std::mem::transmute(self)),
+                RAWSXP => Rany::Raw(std::mem::transmute(self)),
+                S4SXP => Rany::S4(std::mem::transmute(self)),
+                _ => Rany::Unknown(std::mem::transmute(self)),
+            }
+        }
+    }
+
     /// Get the extended length of the object.
     /// ```
     /// use extendr_api::prelude::*;
@@ -273,22 +293,9 @@ impl Robj {
         self.as_typed_slice()
     }
 
-    /// Get an iterator over integer elements of this slice.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///
-    /// let robj = r!([1, 2, 3]);
-    /// let mut tot = 0;
-    /// for val in robj.as_integer_iter().unwrap() {
-    ///   tot += val;
-    /// }
-    /// assert_eq!(tot, 6);
-    /// }
-    /// ```
-    pub fn as_integer_iter(&self) -> Option<Int> {
-        self.as_integer_slice()
-            .map(|slice| Int::from_slice(self.to_owned(), slice))
+    /// Convert an [`Robj`] into [`Integers`].
+    pub fn as_integers(&self) -> Option<Integers> {
+        self.clone().try_into().ok()
     }
 
     /// Get a Vec<i32> copied from the object.
@@ -338,7 +345,7 @@ impl Robj {
     ///     let robj = r!([TRUE, FALSE, NA_LOGICAL]);
     ///     let (mut nt, mut nf, mut nna) = (0, 0, 0);
     ///     for val in robj.as_logical_iter().unwrap() {
-    ///       match val {
+    ///       match *val {
     ///         TRUE => nt += 1,
     ///         FALSE => nf += 1,
     ///         NA_LOGICAL => nna += 1,
@@ -348,9 +355,8 @@ impl Robj {
     ///     assert_eq!((nt, nf, nna), (1, 1, 1));
     /// }
     /// ```
-    pub fn as_logical_iter(&self) -> Option<Logical> {
-        self.as_logical_slice()
-            .map(|slice| Logical::from_slice(self.to_owned(), slice))
+    pub fn as_logical_iter(&self) -> Option<impl Iterator<Item = &Bool>> {
+        self.as_logical_slice().map(|slice| slice.iter())
     }
 
     /// Get a read-only reference to the content of a double vector.
@@ -387,9 +393,8 @@ impl Robj {
     ///     assert_eq!(tot, 6.);
     /// }
     /// ```
-    pub fn as_real_iter(&self) -> Option<Real> {
-        self.as_real_slice()
-            .map(|slice| Real::from_slice(self.to_owned(), slice))
+    pub fn as_real_iter(&self) -> Option<impl Iterator<Item = &f64>> {
+        self.as_real_slice().map(|slice| slice.iter())
     }
 
     /// Get a Vec<f64> copied from the object.
@@ -814,13 +819,13 @@ impl Robj {
     /// test! {
     ///
     ///    let array = R!(r#"array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c("x", "y"), c("a","b")))"#).unwrap();
-    ///    let dim : Vec<_> = array.dim().unwrap().collect();
+    ///    let dim : Vec<_> = array.dim().unwrap().iter().collect();
     ///    assert_eq!(dim, vec![2, 2]);
     /// }
     /// ```
-    pub fn dim(&self) -> Option<Int> {
+    pub fn dim(&self) -> Option<Integers> {
         if let Some(dim) = self.get_attrib(wrapper::symbol::dim_symbol()) {
-            dim.as_integer_iter()
+            dim.as_integers()
         } else {
             None
         }

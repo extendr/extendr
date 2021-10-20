@@ -175,6 +175,7 @@ make_conversions!(S4, ExpectedS4, is_s4, "Not a S4 type");
 
 make_conversions!(Integers, ExpectedInteger, is_integer, "Not an integer type");
 make_conversions!(Doubles, ExpectedReal, is_real, "Not a floating point type");
+// make_conversions!(Function, ExpectedFunction, is_function, "Not a function");
 
 make_conversions!(Strings, ExpectedString, is_string, "Not a string vector");
 
