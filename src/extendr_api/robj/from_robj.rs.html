@@ -288,9 +288,6 @@
 <span id="288">288</span>
 <span id="289">289</span>
 <span id="290">290</span>
-<span id="291">291</span>
-<span id="292">292</span>
-<span id="293">293</span>
 </pre><pre class="rust">
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
@@ -447,9 +444,6 @@
 }
 
 <span class="macro">impl_iter_from_robj!</span>(<span class="ident">StrIter</span>, <span class="ident">as_str_iter</span>, <span class="string">&quot;Not a character vector.&quot;</span>);
-<span class="macro">impl_iter_from_robj!</span>(<span class="ident">Int</span>, <span class="ident">as_integer_iter</span>, <span class="string">&quot;Not an integer vector.&quot;</span>);
-<span class="macro">impl_iter_from_robj!</span>(<span class="ident">Real</span>, <span class="ident">as_real_iter</span>, <span class="string">&quot;Not a real vector.&quot;</span>);
-<span class="macro">impl_iter_from_robj!</span>(<span class="ident">Logical</span>, <span class="ident">as_logical_iter</span>, <span class="string">&quot;Not a logical vector.&quot;</span>);
 
 <span class="doccomment">/// Pass-through Robj conversion, essentially a clone.</span>
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">FromRobj</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {

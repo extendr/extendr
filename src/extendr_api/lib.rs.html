@@ -885,6 +885,7 @@
 <span id="885">885</span>
 <span id="886">886</span>
 <span id="887">887</span>
+<span id="888">888</span>
 </pre><pre class="rust">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! A safe and user friendly R extension interface.</span>
@@ -1485,19 +1486,19 @@
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">f64_iter</span>(<span class="ident">x</span>: <span class="ident">Real</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Real</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">f64_iter</span>(<span class="ident">x</span>: <span class="ident">Doubles</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Doubles</span> {
         <span class="ident">x</span>
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">i32_iter</span>(<span class="ident">x</span>: <span class="ident">Int</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Int</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">i32_iter</span>(<span class="ident">x</span>: <span class="ident">Integers</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Integers</span> {
         <span class="ident">x</span>
     }
 
-    <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bool_iter</span>(<span class="ident">x</span>: <span class="ident">Logical</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Logical</span> {
-        <span class="ident">x</span>
-    }
+    <span class="comment">// #[extendr]</span>
+    <span class="comment">// pub fn bool_iter(x: Logicals) -&gt; Logicals {</span>
+    <span class="comment">//     x</span>
+    <span class="comment">// }</span>
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">symbol</span>(<span class="ident">x</span>: <span class="ident">Symbol</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
@@ -1642,22 +1643,23 @@
                 <span class="macro">assert_eq!</span>(<span class="ident">Robj::from_sexp</span>(<span class="ident">wrap__bool_slice</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
 
                 <span class="comment">// #[extendr]</span>
-                <span class="comment">// pub fn f64_iter(x: Real) -&gt; Real { x }</span>
+                <span class="comment">// pub fn f64_iter(x: Doubles) -&gt; Doubles { x }</span>
 
                 <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r!</span>([<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>]);
                 <span class="macro">assert_eq!</span>(<span class="ident">Robj::from_sexp</span>(<span class="ident">wrap__f64_iter</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
 
                 <span class="comment">// #[extendr]</span>
-                <span class="comment">// pub fn i32_iter(x: Int) -&gt; Int { x }</span>
+                <span class="comment">// pub fn i32_iter(x: Integers) -&gt; Integers { x }</span>
 
                 <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r!</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);
                 <span class="macro">assert_eq!</span>(<span class="ident">Robj::from_sexp</span>(<span class="ident">wrap__i32_iter</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
 
                 <span class="comment">// #[extendr]</span>
-                <span class="comment">// pub fn bool_iter(x: Logical) -&gt; Logical { x }</span>
+                <span class="comment">// pub fn bool_iter(x: Logicals) -&gt; Logicals { x }</span>
 
-                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r!</span>([<span class="ident">TRUE</span>, <span class="ident">FALSE</span>, <span class="ident">TRUE</span>]);
-                <span class="macro">assert_eq!</span>(<span class="ident">Robj::from_sexp</span>(<span class="ident">wrap__bool_iter</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
+                <span class="comment">// TODO: reinstate this test.</span>
+                <span class="comment">// let robj = r!([TRUE, FALSE, TRUE]);</span>
+                <span class="comment">// assert_eq!(Robj::from_sexp(wrap__bool_iter(robj.get())), robj);</span>
 
                 <span class="comment">// #[extendr]</span>
                 <span class="comment">// pub fn symbol(x: Symbol) -&gt; Symbol { x }</span>
