@@ -808,10 +808,12 @@ impl Robj {
     {
         let iter = names.into_iter();
         let robj = iter.collect_robj();
-        if robj.len() == self.len() {
-            self.set_attrib(wrapper::symbol::names_symbol(), robj)
-        } else {
+        if !robj.is_vector() && !robj.is_pairlist() {
+            Err(Error::ExpectedVector(robj))
+        } else if robj.len() != self.len() {
             Err(Error::NamesLengthMismatch(robj))
+        } else {
+            self.set_attrib(wrapper::symbol::names_symbol(), robj)
         }
     }
 

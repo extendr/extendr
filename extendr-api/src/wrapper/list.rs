@@ -92,8 +92,7 @@ impl List {
 
     /// Build a list using separate names and values iterators.
     /// Used internally by the list! macro.
-    /// Will panic if the length of names and values does not match.
-    pub fn from_names_and_values<N, V>(names: N, values: V) -> Self
+    pub fn from_names_and_values<N, V>(names: N, values: V) -> Result<Self>
     where
         N: IntoIterator,
         N::IntoIter: ExactSizeIterator,
@@ -103,8 +102,8 @@ impl List {
         V::Item: Into<Robj>,
     {
         let mut list = List::from_values(values);
-        list.set_names(names).unwrap();
-        list
+        list.set_names(names)?;
+        Ok(list)
     }
 
     /// Return an iterator over the values of this list.
