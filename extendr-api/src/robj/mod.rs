@@ -74,18 +74,6 @@ pub use rinternals::*;
 /// }
 /// ```
 ///
-/// Use iterators to get the contents of R objects.
-///
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///     let a : Robj = r!([1, 2, 3, 4, 5]);
-///     let iter = a.as_integer_iter().unwrap();
-///     let robj = iter.filter(|&x| x < 3).collect_robj();
-///     assert_eq!(robj, r!([1, 2]));
-/// }
-/// ```
-///
 /// Convert to/from Rust vectors.
 ///
 /// ```
@@ -273,22 +261,9 @@ impl Robj {
         self.as_typed_slice()
     }
 
-    /// Get an iterator over integer elements of this slice.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///
-    /// let robj = r!([1, 2, 3]);
-    /// let mut tot = 0;
-    /// for val in robj.as_integer_iter().unwrap() {
-    ///   tot += val;
-    /// }
-    /// assert_eq!(tot, 6);
-    /// }
-    /// ```
-    pub fn as_integer_iter(&self) -> Option<Int> {
-        self.as_integer_slice()
-            .map(|slice| Int::from_slice(self.to_owned(), slice))
+    /// Convert an [`Robj`] into [`Integers`].
+    pub fn as_integers(&self) -> Option<Integers> {
+        self.clone().try_into().ok()
     }
 
     /// Get a Vec<i32> copied from the object.
@@ -338,7 +313,7 @@ impl Robj {
     ///     let robj = r!([TRUE, FALSE, NA_LOGICAL]);
     ///     let (mut nt, mut nf, mut nna) = (0, 0, 0);
     ///     for val in robj.as_logical_iter().unwrap() {
-    ///       match val {
+    ///       match *val {
     ///         TRUE => nt += 1,
     ///         FALSE => nf += 1,
     ///         NA_LOGICAL => nna += 1,
@@ -348,9 +323,8 @@ impl Robj {
     ///     assert_eq!((nt, nf, nna), (1, 1, 1));
     /// }
     /// ```
-    pub fn as_logical_iter(&self) -> Option<Logical> {
-        self.as_logical_slice()
-            .map(|slice| Logical::from_slice(self.to_owned(), slice))
+    pub fn as_logical_iter(&self) -> Option<impl Iterator<Item = &Bool>> {
+        self.as_logical_slice().map(|slice| slice.iter())
     }
 
     /// Get a read-only reference to the content of a double vector.
@@ -387,9 +361,8 @@ impl Robj {
     ///     assert_eq!(tot, 6.);
     /// }
     /// ```
-    pub fn as_real_iter(&self) -> Option<Real> {
-        self.as_real_slice()
-            .map(|slice| Real::from_slice(self.to_owned(), slice))
+    pub fn as_real_iter(&self) -> Option<impl Iterator<Item = &f64>> {
+        self.as_real_slice().map(|slice| slice.iter())
     }
 
     /// Get a Vec<f64> copied from the object.
@@ -814,13 +787,13 @@ impl Robj {
     /// test! {
     ///
     ///    let array = R!(r#"array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c("x", "y"), c("a","b")))"#).unwrap();
-    ///    let dim : Vec<_> = array.dim().unwrap().collect();
+    ///    let dim : Vec<_> = array.dim().unwrap().iter().collect();
     ///    assert_eq!(dim, vec![2, 2]);
     /// }
     /// ```
-    pub fn dim(&self) -> Option<Int> {
+    pub fn dim(&self) -> Option<Integers> {
         if let Some(dim) = self.get_attrib(wrapper::symbol::dim_symbol()) {
-            dim.as_integer_iter()
+            dim.as_integers()
         } else {
             None
         }
