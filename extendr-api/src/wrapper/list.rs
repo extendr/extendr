@@ -120,7 +120,7 @@ impl List {
 
     /// Convert a List into a HashMap, consuming the list.
     ///
-    /// - If there are some duplicated name of elements, only one of those will be preserved.
+    /// - If there are some duplicated names of elements, only one of those will be preserved.
     /// - If an element doesn't have the name, an empty string (i.e. `""`) will be the key.
     /// ```
     /// use extendr_api::prelude::*;
