@@ -194,6 +194,38 @@ impl Robj {
         }
     }
 
+    pub fn as_any(&self) -> Rany {
+        unsafe {
+            match self.sexptype() {
+                NILSXP => Rany::Null(std::mem::transmute(self)),
+                SYMSXP => Rany::Symbol(std::mem::transmute(self)),
+                LISTSXP => Rany::Pairlist(std::mem::transmute(self)),
+                CLOSXP => Rany::Function(std::mem::transmute(self)),
+                ENVSXP => Rany::Environment(std::mem::transmute(self)),
+                PROMSXP => Rany::Promise(std::mem::transmute(self)),
+                LANGSXP => Rany::Language(std::mem::transmute(self)),
+                SPECIALSXP => Rany::Special(std::mem::transmute(self)),
+                BUILTINSXP => Rany::Builtin(std::mem::transmute(self)),
+                CHARSXP => Rany::Rstr(std::mem::transmute(self)),
+                LGLSXP => Rany::Logical(std::mem::transmute(self)),
+                INTSXP => Rany::Integer(std::mem::transmute(self)),
+                REALSXP => Rany::Real(std::mem::transmute(self)),
+                CPLXSXP => Rany::Complex(std::mem::transmute(self)),
+                STRSXP => Rany::String(std::mem::transmute(self)),
+                DOTSXP => Rany::Dot(std::mem::transmute(self)),
+                ANYSXP => Rany::Any(std::mem::transmute(self)),
+                VECSXP => Rany::List(std::mem::transmute(self)),
+                EXPRSXP => Rany::Expression(std::mem::transmute(self)),
+                BCODESXP => Rany::Bytecode(std::mem::transmute(self)),
+                EXTPTRSXP => Rany::ExternalPtr(std::mem::transmute(self)),
+                WEAKREFSXP => Rany::WeakRef(std::mem::transmute(self)),
+                RAWSXP => Rany::Raw(std::mem::transmute(self)),
+                S4SXP => Rany::S4(std::mem::transmute(self)),
+                _ => Rany::Unknown(std::mem::transmute(self)),
+            }
+        }
+    }
+
     /// Get the extended length of the object.
     /// ```
     /// use extendr_api::prelude::*;

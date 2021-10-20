@@ -463,4 +463,10 @@ impl Robj {
     pub fn is_altstring(&self) -> bool {
         unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == STRSXP as i32 }
     }
+
+    /// Generate a text representation of this object.
+    pub fn deparse(&self) -> Result<Robj> {
+        use crate as extendr_api;
+        call!("deparse", self)
+    }
 }
