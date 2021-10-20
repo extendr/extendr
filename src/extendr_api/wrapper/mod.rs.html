@@ -342,6 +342,7 @@
 <span id="342">342</span>
 <span id="343">343</span>
 <span id="344">344</span>
+<span id="345">345</span>
 </pre><pre class="rust">
 <span class="doccomment">//! Wrappers are lightweight proxies for references to R datatypes.</span>
 <span class="doccomment">//! They do not contain an Robj (see array.rs for an example of this).</span>
@@ -520,6 +521,7 @@
 
 <span class="macro">make_conversions!</span>(<span class="ident">Integers</span>, <span class="ident">ExpectedInteger</span>, <span class="ident">is_integer</span>, <span class="string">&quot;Not an integer type&quot;</span>);
 <span class="macro">make_conversions!</span>(<span class="ident">Doubles</span>, <span class="ident">ExpectedReal</span>, <span class="ident">is_real</span>, <span class="string">&quot;Not a floating point type&quot;</span>);
+<span class="comment">// make_conversions!(Function, ExpectedFunction, is_function, &quot;Not a function&quot;);</span>
 
 <span class="macro">make_conversions!</span>(<span class="ident">Strings</span>, <span class="ident">ExpectedString</span>, <span class="ident">is_string</span>, <span class="string">&quot;Not a string vector&quot;</span>);
 

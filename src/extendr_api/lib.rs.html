@@ -886,6 +886,38 @@
 <span id="886">886</span>
 <span id="887">887</span>
 <span id="888">888</span>
+<span id="889">889</span>
+<span id="890">890</span>
+<span id="891">891</span>
+<span id="892">892</span>
+<span id="893">893</span>
+<span id="894">894</span>
+<span id="895">895</span>
+<span id="896">896</span>
+<span id="897">897</span>
+<span id="898">898</span>
+<span id="899">899</span>
+<span id="900">900</span>
+<span id="901">901</span>
+<span id="902">902</span>
+<span id="903">903</span>
+<span id="904">904</span>
+<span id="905">905</span>
+<span id="906">906</span>
+<span id="907">907</span>
+<span id="908">908</span>
+<span id="909">909</span>
+<span id="910">910</span>
+<span id="911">911</span>
+<span id="912">912</span>
+<span id="913">913</span>
+<span id="914">914</span>
+<span id="915">915</span>
+<span id="916">916</span>
+<span id="917">917</span>
+<span id="918">918</span>
+<span id="919">919</span>
+<span id="920">920</span>
 </pre><pre class="rust">
 <span class="doccomment">//!</span>
 <span class="doccomment">//! A safe and user friendly R extension interface.</span>
@@ -1292,6 +1324,38 @@
     <span class="ident">Raw</span>,         <span class="comment">// RAWSXP</span>
     <span class="ident">S4</span>,          <span class="comment">// S4SXP</span>
     <span class="ident">Unknown</span>,
+}
+
+<span class="doccomment">/// Enum use to unpack R objects into their specialist wrappers.</span>
+<span class="doccomment">/// Todo: convert all Robj types to wrappers.</span>
+<span class="doccomment">/// Note: this only works if the wrappers are all just SEXPs.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Rany</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="ident">Null</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),               <span class="comment">// NILSXP</span>
+    <span class="ident">Symbol</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Symbol</span>),           <span class="comment">// SYMSXP</span>
+    <span class="ident">Pairlist</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Pairlist</span>),       <span class="comment">// LISTSXP</span>
+    <span class="ident">Function</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Function</span>),       <span class="comment">// CLOSXP</span>
+    <span class="ident">Environment</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Environment</span>), <span class="comment">// ENVSXP</span>
+    <span class="ident">Promise</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Promise</span>),         <span class="comment">// PROMSXP</span>
+    <span class="ident">Language</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Language</span>),       <span class="comment">// LANGSXP</span>
+    <span class="ident">Special</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Primitive</span>),       <span class="comment">// SPECIALSXP</span>
+    <span class="ident">Builtin</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Primitive</span>),       <span class="comment">// BUILTINSXP</span>
+    <span class="ident">Rstr</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Rstr</span>),               <span class="comment">// CHARSXP</span>
+    <span class="ident">Logical</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),            <span class="comment">// LGLSXP</span>
+    <span class="ident">Integer</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Integers</span>),        <span class="comment">// INTSXP</span>
+    <span class="ident">Real</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Doubles</span>),            <span class="comment">// REALSXP</span>
+    <span class="ident">Complex</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),            <span class="comment">// CPLXSXP</span>
+    <span class="ident">String</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),             <span class="comment">// STRSXP</span>
+    <span class="ident">Dot</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),                <span class="comment">// DOTSXP</span>
+    <span class="ident">Any</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),                <span class="comment">// ANYSXP</span>
+    <span class="ident">List</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">List</span>),               <span class="comment">// VECSXP</span>
+    <span class="ident">Expression</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Expression</span>),   <span class="comment">// EXPRSXP</span>
+    <span class="ident">Bytecode</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),           <span class="comment">// BCODESXP</span>
+    <span class="ident">ExternalPtr</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),        <span class="comment">// EXTPTRSXP</span>
+    <span class="ident">WeakRef</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),            <span class="comment">// WEAKREFSXP</span>
+    <span class="ident">Raw</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Raw</span>),                 <span class="comment">// RAWSXP</span>
+    <span class="ident">S4</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">S4</span>),                   <span class="comment">// S4SXP</span>
+    <span class="ident">Unknown</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),
 }
 
 <span class="doccomment">/// Convert extendr&#39;s RType to R&#39;s SEXPTYPE.</span>

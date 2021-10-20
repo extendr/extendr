@@ -42,6 +42,14 @@
 <span id="42">42</span>
 <span id="43">43</span>
 <span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
+<span id="49">49</span>
+<span id="50">50</span>
+<span id="51">51</span>
+<span id="52">52</span>
 </pre><pre class="rust">
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
@@ -62,6 +70,14 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Raw</span> {
+    <span class="doccomment">/// Create a new Raw object of length `len`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">len</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Raw</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">Robj::alloc_vector</span>(<span class="ident">RAWSXP</span>, <span class="ident">len</span>);
+        <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_raw_slice_mut</span>().<span class="ident">unwrap</span>();
+        <span class="ident">slice</span>.<span class="ident">iter_mut</span>().<span class="ident">for_each</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">v</span> <span class="op">=</span> <span class="number">0</span>);
+        <span class="ident">Raw</span> { <span class="ident">robj</span> }
+    }
+
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::prelude::*;</span>
     <span class="doccomment">/// test! {</span>
