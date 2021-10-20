@@ -1,3 +1,5 @@
+use std::iter::FromIterator;
+
 use super::*;
 
 #[derive(Debug, PartialEq, Clone)]
@@ -123,15 +125,49 @@ impl List {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let mut robj = list!(a=1, 2);
-    ///     let names_and_values : Vec<_> = robj.as_list().unwrap().iter().collect();
+    ///     let mut list = list!(a=1, 2);
+    ///     let names_and_values : Vec<_> = list.iter().collect();
     ///     assert_eq!(names_and_values, vec![("a", r!(1)), ("", r!(2))]);
     /// }
     /// ```
     pub fn iter(&self) -> NamedListIter {
+        // TODO: Make a proper NamedListIter.
         self.names()
             .map(|n| n.zip(self.values()))
-            .unwrap_or_else(|| StrIter::new().zip(ListIter::new()))
+            .unwrap_or_else(|| StrIter::new().zip(self.values()))
+    }
+
+    /// Get the list a slice of `Robj`s.
+    pub fn as_slice(&self) -> &[Robj] {
+        unsafe {
+            let data = DATAPTR(self.robj.get()) as *const Robj;
+            let len = self.robj.len();
+            std::slice::from_raw_parts(data, len)
+        }
+    }
+
+    /// Get a reference to an element in the list.
+    pub fn elt(&self, i: usize) -> Result<Robj> {
+        if i >= self.robj.len() {
+            Err(Error::OutOfRange(self.robj.clone()))
+        } else {
+            unsafe {
+                let sexp = VECTOR_ELT(self.robj.get(), i as R_xlen_t);
+                Ok(Robj::from_sexp(sexp))
+            }
+        }
+    }
+
+    /// Set an element in the list.
+    pub fn set_elt(&mut self, i: usize, value: Robj) -> Result<()> {
+        unsafe {
+            if i >= self.robj.len() {
+                Err(Error::OutOfRange(self.robj.clone()))
+            } else {
+                SET_VECTOR_ELT(self.robj.get(), i as R_xlen_t, value.get());
+                Ok(())
+            }
+        }
     }
 
     /// Convert a List into a HashMap, consuming the list.
@@ -329,5 +365,26 @@ impl<T: AsRef<str>> KeyValue for (T, Robj) {
     }
     fn value(self) -> Robj {
         self.1
+    }
+}
+
+impl<T: Into<Robj>> FromIterator<T> for List {
+    /// Convert an iterator to a List object.
+    fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
+        crate::single_threaded(|| unsafe {
+            let values: Vec<SEXP> = iter
+                .into_iter()
+                .map(|s| Rf_protect(s.into().get()))
+                .collect();
+
+            let len = values.len();
+            let robj = Robj::alloc_vector(VECSXP, len);
+            for (i, v) in values.into_iter().enumerate() {
+                SET_VECTOR_ELT(robj.get(), i as isize, v);
+            }
+            Rf_unprotect(len as i32);
+
+            List { robj }
+        })
     }
 }
