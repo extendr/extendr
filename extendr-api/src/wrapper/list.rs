@@ -63,7 +63,8 @@ impl List {
         res.set_names(names).unwrap().as_list().unwrap()
     }
 
-    /// Wrapper for creating a list (VECSXP) object from a HashMap.
+    /// Wrapper for creating a list (VECSXP) object from an existing `HashMap`.
+    /// The `HashMap` is consumed.
     /// ```
     /// use extendr_api::prelude::*;
     /// use std::collections::HashMap;
