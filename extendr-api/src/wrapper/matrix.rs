@@ -105,7 +105,7 @@ where
     Robj: AsTypedSlice<'a, T>,
 {
     /// Make a new column type.
-    pub fn new_column<F: FnMut(usize) -> T>(nrows: usize, mut f: F) -> Self {
+    pub fn new_column<F: FnMut(usize) -> T>(nrows: usize, f: F) -> Self {
         let robj = (0..nrows).map(f).collect_robj();
         let dim = [nrows];
         let mut robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
