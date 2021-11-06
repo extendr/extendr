@@ -1,10 +1,10 @@
 //! See https://serde.rs/impl-serializer.html
 
 use crate::error::{Error, Result};
-use crate::{call, eval_string, List, Rany, Robj};
 use crate::{
     Doubles, Environment, Function, Integers, Language, Pairlist, Promise, Raw, Rstr, Symbol,
 };
+use crate::{List, Rany, Robj};
 use serde::{ser, Serialize};
 
 impl ser::Error for Error {
@@ -654,7 +654,7 @@ impl ser::Serialize for Robj {
             Rany::Special(value) => value.serialize(serializer),
             Rany::Builtin(value) => value.serialize(serializer),
             Rany::Rstr(value) => value.serialize(serializer),
-            Rany::Logical(value) => {
+            Rany::Logical(_value) => {
                 todo!("implement Logicals")
             }
             Rany::Integer(value) => value.serialize(serializer),

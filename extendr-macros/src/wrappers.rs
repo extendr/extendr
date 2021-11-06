@@ -61,10 +61,7 @@ pub fn make_function_wrappers(
         .map(|input| translate_formal(input, self_ty))
         .collect();
 
-    let convert_args: Vec<syn::Stmt> = inputs
-        .iter()
-        .map(|input| translate_to_robj(input))
-        .collect();
+    let convert_args: Vec<syn::Stmt> = inputs.iter().map(translate_to_robj).collect();
 
     let actual_args: Punctuated<Expr, Token![,]> = inputs
         .iter()
