@@ -654,7 +654,7 @@ impl ser::Serialize for Robj {
             Rany::Special(value) => value.serialize(serializer),
             Rany::Builtin(value) => value.serialize(serializer),
             Rany::Rstr(value) => value.serialize(serializer),
-            Rany::Logical(value) => {
+            Rany::Logical(_value) => {
                 todo!("implement Logicals")
             }
             Rany::Integer(value) => value.serialize(serializer),
