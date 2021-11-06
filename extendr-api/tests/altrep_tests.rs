@@ -17,8 +17,8 @@ fn test_altinteger() {
         }
 
         impl AltIntegerImpl for MyCompactIntRange {
-            fn elt(&self, index: usize) -> i32 {
-                self.start + self.step * index as i32
+            fn elt(&self, index: usize) -> Rint {
+                Rint(self.start + self.step * index as i32)
             }
         }
 
@@ -51,8 +51,8 @@ fn test_altreal() {
         }
 
         impl AltRealImpl for MyCompactRealRange {
-            fn elt(&self, index: usize) -> f64 {
-                self.start + self.step * index as f64
+            fn elt(&self, index: usize) -> Rfloat {
+                Rfloat(self.start + self.step * index as f64)
             }
         }
 
