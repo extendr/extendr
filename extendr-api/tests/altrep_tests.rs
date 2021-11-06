@@ -8,6 +8,7 @@ fn test_altinteger() {
             start: i32,
             len: i32,
             step: i32,
+            missing_index: usize,  // For testing NA
         }
 
         impl AltrepImpl for MyCompactIntRange {
@@ -18,18 +19,32 @@ fn test_altinteger() {
 
         impl AltIntegerImpl for MyCompactIntRange {
             fn elt(&self, index: usize) -> Rint {
-                Rint(self.start + self.step * index as i32)
+                if index == self.missing_index {
+                    Rint::na()
+                } else {
+                    Rint(self.start + self.step * index as i32)
+                }
             }
         }
 
-        let mystate = MyCompactIntRange { start: 0, len: 10, step: 1 };
+        // no missing values in the range
+        let mystate = MyCompactIntRange { start: 0, len: 10, step: 1, missing_index: usize::MAX };
 
         let class = Altrep::make_altinteger_class::<MyCompactIntRange>("cir", "mypkg");
-        let obj = Altrep::from_state_and_class(mystate, class, false);
+        let obj = Altrep::from_state_and_class(mystate, class.clone(), false);
 
         assert_eq!(obj.len(), 10);
         // assert_eq!(obj.sum(true), r!(45.0));
         assert_eq!(obj.as_integer_slice().unwrap(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+
+        // index 5 is missing
+        let mystate_w_missing = MyCompactIntRange { start: 0, len: 10, step: 1, missing_index: 5 };
+
+        let obj_w_missing = Altrep::from_state_and_class(mystate_w_missing, class, false);
+        let robj_w_missing = Robj::from(obj_w_missing.clone());
+        let integers_w_missing: Integers = robj_w_missing.try_into()?;
+        assert_eq!(integers_w_missing.elt(9), Rint::from(9));
+        assert!(integers_w_missing.elt(5).is_na());
     }
 }
 
@@ -42,6 +57,7 @@ fn test_altreal() {
             start: f64,
             len: usize,
             step: f64,
+            missing_index: usize,  // For testing NA
         }
 
         impl AltrepImpl for MyCompactRealRange {
@@ -52,18 +68,32 @@ fn test_altreal() {
 
         impl AltRealImpl for MyCompactRealRange {
             fn elt(&self, index: usize) -> Rfloat {
-                Rfloat(self.start + self.step * index as f64)
+                if index == self.missing_index {
+                    Rfloat::na()
+                } else {
+                    Rfloat(self.start + self.step * index as f64)
+                }
             }
         }
 
-        let mystate = MyCompactRealRange { start: 0.0, len: 10, step: 1.0 };
+        // no missing values in the range
+        let mystate = MyCompactRealRange { start: 0.0, len: 10, step: 1.0, missing_index: usize::MAX };
 
         let class = Altrep::make_altreal_class::<MyCompactRealRange>("crr", "mypkg");
-        let obj = Altrep::from_state_and_class(mystate, class, false);
+        let obj = Altrep::from_state_and_class(mystate, class.clone(), false);
 
         assert_eq!(obj.len(), 10);
         // assert_eq!(obj.sum(true), r!(45.0));
         assert_eq!(obj.as_real_slice().unwrap(), [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]);
+
+        // index 5 is missing
+        let mystate_w_missing = MyCompactRealRange { start: 0.0, len: 10, step: 1.0, missing_index: 5 };
+
+        let obj_w_missing = Altrep::from_state_and_class(mystate_w_missing, class, false);
+        let robj_w_missing = Robj::from(obj_w_missing.clone());
+        let doubles_w_missing: Doubles = robj_w_missing.try_into()?;
+        assert_eq!(doubles_w_missing.elt(9), Rfloat::from(9.0));
+        assert!(doubles_w_missing.elt(5).is_na());
     }
 }
 
