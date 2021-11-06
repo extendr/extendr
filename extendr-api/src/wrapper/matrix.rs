@@ -106,7 +106,7 @@ where
 {
     /// Make a new column type.
     pub fn new_column<F: FnMut(usize) -> T>(nrows: usize, mut f: F) -> Self {
-        let robj = (0..nrows).map(|r| f(r)).collect_robj();
+        let robj = (0..nrows).map(f).collect_robj();
         let dim = [nrows];
         let mut robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
         let slice = robj.as_typed_slice_mut().unwrap();
