@@ -3,7 +3,7 @@
 use syn::{parse::ParseStream, punctuated::Punctuated, Expr, ExprAssign, ExprPath, Token};
 
 #[derive(Debug)]
-pub (crate) struct Pairs {
+pub(crate) struct Pairs {
     pub pairs: Punctuated<Expr, Token![,]>,
 }
 
