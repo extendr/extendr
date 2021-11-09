@@ -1,7 +1,9 @@
+//! Internal module for parsing R-like variadic arguments.
+
 use syn::{parse::ParseStream, punctuated::Punctuated, Expr, ExprAssign, ExprPath, Token};
 
 #[derive(Debug)]
-pub struct Pairs {
+pub (crate) struct Pairs {
     pub pairs: Punctuated<Expr, Token![,]>,
 }
 
