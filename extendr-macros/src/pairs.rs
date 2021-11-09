@@ -23,6 +23,7 @@ impl syn::parse::Parse for Pairs {
 }
 
 impl Pairs {
+    // Having parsed a variadic expression, extract the names and values.
     pub(crate) fn names_and_values(&self) -> Vec<(String, &Expr)> {
         self.pairs
             .iter()
