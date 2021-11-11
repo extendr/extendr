@@ -1,21 +1,23 @@
+use prelude::{Rfloat, Rint};
+
 use super::*;
 
 macro_rules! make_from_iterator {
-    ($fn_name : ident, $make_class : ident, $impl : ident, $type : ty) => {
+    ($fn_name : ident, $make_class : ident, $impl : ident, $r_type : ident, $prim_type : ty) => {
         pub fn $fn_name<Iter>(iter: Iter) -> Altrep
         where
             Iter: ExactSizeIterator + std::fmt::Debug + Clone + 'static + std::any::Any,
-            Iter::Item: Into<$type>,
+            Iter::Item: Into<$prim_type>,
         {
             impl<Iter: ExactSizeIterator + std::fmt::Debug + Clone> $impl for Iter
             where
-                Iter::Item: Into<$type>,
+                Iter::Item: Into<$prim_type>,
             {
-                fn elt(&self, index: usize) -> $type {
-                    self.clone().nth(index).unwrap().into()
+                fn elt(&self, index: usize) -> $r_type {
+                    $r_type(self.clone().nth(index).unwrap().into())
                 }
 
-                fn get_region(&self, index: usize, data: &mut [$type]) -> usize {
+                fn get_region(&self, index: usize, data: &mut [$r_type]) -> usize {
                     let len = self.len();
                     if index > len {
                         0
@@ -24,7 +26,7 @@ macro_rules! make_from_iterator {
                         let num_elems = data.len().min(len - index);
                         let dest = &mut data[0..num_elems];
                         for d in dest.iter_mut() {
-                            *d = iter.next().unwrap().into();
+                            *d = $r_type(iter.next().unwrap().into());
                         }
                         num_elems
                     }
@@ -188,9 +190,9 @@ pub trait AltIntegerImpl: AltrepImpl {
         for i in 0..len {
             let val = self.elt(i);
             if !val.is_na() {
-                tot += val as i64;
-                min = min.min(val);
-                max = max.max(val);
+                tot += val.0 as i64;
+                min = min.min(val.0);
+                max = max.max(val.0);
                 nas += 1;
             }
         }
@@ -198,10 +200,10 @@ pub trait AltIntegerImpl: AltrepImpl {
     }
 
     /// Get a single element from this vector.
-    fn elt(&self, _index: usize) -> i32;
+    fn elt(&self, _index: usize) -> Rint;
 
     /// Get a multiple elements from this vector.
-    fn get_region(&self, index: usize, data: &mut [i32]) -> usize {
+    fn get_region(&self, index: usize, data: &mut [Rint]) -> usize {
         let len = self.length();
         if index > len {
             0
@@ -269,9 +271,9 @@ pub trait AltRealImpl: AltrepImpl {
         for i in 0..len {
             let val = self.elt(i);
             if !val.is_na() {
-                tot += val;
-                min = min.min(val);
-                max = max.max(val);
+                tot += val.0;
+                min = min.min(val.0);
+                max = max.max(val.0);
                 nas += 1;
             }
         }
@@ -279,10 +281,10 @@ pub trait AltRealImpl: AltrepImpl {
     }
 
     /// Get a single element from this vector.
-    fn elt(&self, _index: usize) -> f64;
+    fn elt(&self, _index: usize) -> Rfloat;
 
     /// Get a multiple elements from this vector.
-    fn get_region(&self, index: usize, data: &mut [f64]) -> usize {
+    fn get_region(&self, index: usize, data: &mut [Rfloat]) -> usize {
         let len = self.length();
         if index > len {
             0
@@ -699,7 +701,7 @@ impl Altrep {
                 x: SEXP,
                 i: R_xlen_t,
             ) -> c_int {
-                Altrep::get_state::<StateType>(x).elt(i as usize) as c_int
+                Altrep::get_state::<StateType>(x).elt(i as usize).0 as c_int
             }
 
             unsafe extern "C" fn altinteger_Get_region<StateType: AltIntegerImpl + 'static>(
@@ -708,7 +710,7 @@ impl Altrep {
                 n: R_xlen_t,
                 buf: *mut c_int,
             ) -> R_xlen_t {
-                let slice = std::slice::from_raw_parts_mut(buf, n as usize);
+                let slice = std::slice::from_raw_parts_mut(buf as *mut Rint, n as usize);
                 Altrep::get_state::<StateType>(x).get_region(i as usize, slice) as R_xlen_t
             }
 
@@ -777,7 +779,7 @@ impl Altrep {
                 x: SEXP,
                 i: R_xlen_t,
             ) -> f64 {
-                Altrep::get_state::<StateType>(x).elt(i as usize) as f64
+                Altrep::get_state::<StateType>(x).elt(i as usize).0
             }
 
             unsafe extern "C" fn altreal_Get_region<StateType: AltRealImpl + 'static>(
@@ -786,7 +788,7 @@ impl Altrep {
                 n: R_xlen_t,
                 buf: *mut f64,
             ) -> R_xlen_t {
-                let slice = std::slice::from_raw_parts_mut(buf, n as usize);
+                let slice = std::slice::from_raw_parts_mut(buf as *mut Rfloat, n as usize);
                 Altrep::get_state::<StateType>(x).get_region(i as usize, slice) as R_xlen_t
             }
 
@@ -1025,12 +1027,14 @@ impl Altrep {
         make_altinteger_from_iterator,
         make_altinteger_class,
         AltIntegerImpl,
+        Rint,
         i32
     );
     make_from_iterator!(
         make_altreal_from_iterator,
         make_altreal_class,
         AltRealImpl,
+        Rfloat,
         f64
     );
 }
