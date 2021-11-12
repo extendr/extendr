@@ -284,9 +284,9 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          # - {os: ubuntu-20.04,   r: 'devel', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          # - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
-          - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: ['i686-pc-windows-gnu'], extra-args: ['-Zdoctest-xcompile']}
+          - {os: ubuntu-20.04,   r: 'devel', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
+          - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: ['x86-64-pc-windows-gnu', 'i686-pc-windows-gnu'], extra-args: ['-Zdoctest-xcompile']}
 
 
     env:
