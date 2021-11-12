@@ -430,4 +430,4 @@ jobs:
         env: 
           BUILD_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
           RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
-          EXTRA_ARGS: ${{ join(matrix.config.extra_args, ',') }}
+          EXTRA_ARGS: ${{ join(matrix.config.extra-args, ',') }}
