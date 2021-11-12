@@ -327,7 +327,7 @@ jobs:
               if(!$?) {
                 throw "Last exit code $LASTEXITCODE"
               }
-              rustup target add $target --toolchain "$env:RUST_TOOLCHAINs"
+              rustup target add $target --toolchain "$env:RUST_TOOLCHAIN"
               if(!$?) {
                 throw "Last exit code $LASTEXITCODE"
               }
