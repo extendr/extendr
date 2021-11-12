@@ -286,7 +286,7 @@ jobs:
         config:
           # - {os: ubuntu-20.04,   r: 'devel', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           # - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
-          - {os: windows-latest, r: 'devel', rust-version: 'stable', rust-targets: ['x86_64-pc-windows-gnu']}
+          - {os: windows-latest, r: 'devel', rust-version: 'nightly', rust-targets: ['x86_64-pc-windows-gnu', 'i686-pc-windows-gnu']}
 
 
     env:
@@ -354,15 +354,20 @@ jobs:
       - name: Configure Windows
         if: startsWith(runner.os, 'Windows')
         run: |
+
           echo "::group::Setting up x86_64"
           C:\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm  --needed mingw-w64-x86_64-clang mingw-w64-x86_64-toolchain"
           echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           echo "::endgroup::"
+          
 
-          echo "LIBCLANG_PATHS=C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-        env: 
-          BUILD_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
+          echo "::group::Setting up i686"
+          C:\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm --needed mingw32/mingw-w64-i686-clang mingw-w64-i686-toolchain"  
+          echo "C:\msys64\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\i386"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          echo "::endgroup::"
+
 
       - name: Configure Linux
         if: startsWith(runner.os, 'linux')
