@@ -292,7 +292,6 @@ jobs:
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       RSPM: ${{ matrix.config.rspm }}
-      LIBCLANG_PATHS: ""
 
     # PowerShell core is available on all platforms and can be used to unify scripts
     defaults:
@@ -379,13 +378,11 @@ jobs:
       # 2. Retrieve 'libcalng' paths
       # 3. For each target run
       # 3.1 Select correct $target & $toolchain
-      # 3.2 Set up correct LIBCLANG_PATH
       # 3.x Run build commands, checking for errors, providing explicit toolchain & target
       - name: Build
         run: |
           . ./ci-cargo.ps1
           $targets = $env:BUILD_TARGETS.Split(',')
-          $libclang_paths = $env:LIBCLANG_PATHS.Split([System.IO.Path]::PathSeparator)
           $itt = 0..($targets.Length - 1)
           foreach($i in $itt) {
             if ($targets[$i] -eq "") {
@@ -396,13 +393,6 @@ jobs:
               $target = $targets[$i]
               $toolchain = "$env:RUST_TOOLCHAIN-$target"
             }
-            if (($libclang_paths[$i] -ne $null) -and ($libclang_paths[$i] -ne "")) {
-              $env:LIBCLANG_PATH = $libclang_paths[$i]
-            }
-            else {
-              $env:LIBCLANG_PATH = $null
-            }
-
 
             ci-cargo +$toolchain build --manifest-path extendr-api/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) -ActionName "Build extendr-api for $toolchain"
          
@@ -419,7 +409,6 @@ jobs:
         run: |
           . ./ci-cargo.ps1
           $targets = $env:BUILD_TARGETS.Split(',')
-          $libclang_paths = $env:LIBCLANG_PATHS.Split([System.IO.Path]::PathSeparator)
           $itt = 0..($targets.Length - 1)
           foreach($i in $itt) {
             if ($targets[$i] -eq "") {
@@ -429,12 +418,6 @@ jobs:
             else {
               $target = $targets[$i]
               $toolchain = "$env:RUST_TOOLCHAIN-$target"
-            }
-            if (($libclang_paths[$i] -ne $null) -and ($libclang_paths[$i] -ne "")) {
-              $env:LIBCLANG_PATH = $libclang_paths[$i]
-            }
-            else {
-              $env:LIBCLANG_PATH = $null
             }
 
             ci-cargo +$toolchain test --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) '--' --nocapture -ActionName "Test extendr-engine \w tests-all for $target target"
