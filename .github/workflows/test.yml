@@ -18,255 +18,255 @@ on:
 # used as `ci-cargo .... -ActionName "Called for documentation purposes"`.
 jobs:
   # All tests under this job are run with pre-computed libR-sys bindings.
-  tests_no_bindgen:
-    runs-on: ${{ matrix.config.os }}
+  # tests_no_bindgen:
+  #   runs-on: ${{ matrix.config.os }}
 
-    name: ${{ matrix.config.os }} (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
+  #   name: ${{ matrix.config.os }} (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
             
-    strategy:
-      fail-fast: false
-      matrix:
-        config:
-          # Windows jobs with unspecific Rust architecture build for both i686 and x86_64 
-          # R integration tests are also executed for both architectures
-          # - {os: windows-latest, r: 'release', rust-version: 'stable-msvc'}
-          # - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc'}
-          # - {os: windows-latest, r: 'devel', rust-version: 'stable-msvc'}
-          # - {os: windows-latest, r: 'oldrel', rust-version: 'stable-msvc'}
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       config:
+  #         # Windows jobs with unspecific Rust architecture build for both i686 and x86_64 
+  #         # R integration tests are also executed for both architectures
+  #         - {os: windows-latest, r: 'release', rust-version: 'stable-msvc'}
+  #         # - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc'}
+  #         # - {os: windows-latest, r: 'devel', rust-version: 'stable-msvc'}
+  #         # - {os: windows-latest, r: 'oldrel', rust-version: 'stable-msvc'}
 
-          # - {os: macOS-latest,   r: 'release', rust-version: 'stable'}
-          # - {os: macOS-latest,   r: 'release', rust-version: 'nightly'}
-          # - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
-          # - {os: macOS-latest,   r: 'oldrel', rust-version: 'stable'}
+  #         - {os: macOS-latest,   r: 'release', rust-version: 'stable'}
+  #         # - {os: macOS-latest,   r: 'release', rust-version: 'nightly'}
+  #         # - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
+  #         # - {os: macOS-latest,   r: 'oldrel', rust-version: 'stable'}
 
-          # - {os: ubuntu-20.04,   r: 'release', rust-version: 'stable',  rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest", check_fmt: true}
-          # - {os: ubuntu-20.04,   r: 'release', rust-version: 'nightly', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          # R-devel requires LD_LIBRARY_PATH
-          # - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}   
-          # - {os: ubuntu-20.04,   r: 'oldrel',  rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}   
+  #         - {os: ubuntu-20.04,   r: 'release', rust-version: 'stable',  rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest", check_fmt: true}
+  #         - {os: ubuntu-20.04,   r: 'release', rust-version: 'nightly', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+  #         # R-devel requires LD_LIBRARY_PATH
+  #         - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}   
+  #         - {os: ubuntu-20.04,   r: 'oldrel',  rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}   
 
 
 
-    env:
-      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      RSPM: ${{ matrix.config.rspm }}
+  #   env:
+  #     R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+  #     RSPM: ${{ matrix.config.rspm }}
 
-      # This environment variable enables support for pseudo multi-target cargo builds.
-      # Current stable Rust does not support multi-targeting,
-      # see https://github.com/rust-lang/cargo/issues/8176
-      # The variable is treated as a comma-separated list of valid Rust targets.
-      # 'default' value emits no '--target' flag.
-      # E.g.: BUILD_TARGETS=i686-pc-windows-gnu,x86_64-pc-windows-gnu builds two times,
-      # each time providing '--target=*-pc-windows-gnu' flag to cargo.
-      BUILD_TARGETS: default
+  #     # This environment variable enables support for pseudo multi-target cargo builds.
+  #     # Current stable Rust does not support multi-targeting,
+  #     # see https://github.com/rust-lang/cargo/issues/8176
+  #     # The variable is treated as a comma-separated list of valid Rust targets.
+  #     # 'default' value emits no '--target' flag.
+  #     # E.g.: BUILD_TARGETS=i686-pc-windows-gnu,x86_64-pc-windows-gnu builds two times,
+  #     # each time providing '--target=*-pc-windows-gnu' flag to cargo.
+  #     BUILD_TARGETS: default
     
-    # PowerShell core is available on all platforms and can be used to unify scripts
-    defaults:
-      run:
-        shell: pwsh
+  #   # PowerShell core is available on all platforms and can be used to unify scripts
+  #   defaults:
+  #     run:
+  #       shell: pwsh
 
-    steps:
-      - uses: actions/checkout@v2
+  #   steps:
+  #     - uses: actions/checkout@v2
       
-      - name: Set up Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ matrix.config.rust-version }}
-          default: true
-          components: rustfmt, clippy
+  #     - name: Set up Rust
+  #       uses: actions-rs/toolchain@v1
+  #       with:
+  #         toolchain: ${{ matrix.config.rust-version }}
+  #         default: true
+  #         components: rustfmt, clippy
       
-      - name: Set up R
-        uses: r-lib/actions/setup-r@v1
-        with:
-          r-version: ${{ matrix.config.r }}
+  #     - name: Set up R
+  #       uses: r-lib/actions/setup-r@v1
+  #       with:
+  #         r-version: ${{ matrix.config.r }}
       
-      - name: Set up Pandoc
-        uses: r-lib/actions/setup-pandoc@v1
+  #     - name: Set up Pandoc
+  #       uses: r-lib/actions/setup-pandoc@v1
       
-      # All configurations for Windows go here
-      # If 'rust-version' has no architecture id, both if conditions are executed
-      # Otherwise, only one condition is met
-      # $targets variable is used to build targets list used later for cargo build/test
-      # The order of if blocks favors x86_64 over i686 paths, which is optimal for multi-targeting
-      - name: Configure Windows
-        if: startsWith(runner.os, 'Windows')
-        # 1. Add rust target
-        # 2. Add target name to the $targets variable
-        # 3. Add mingw32/mingw64 bin folders to PATH
-        # 4. Add R x64/i386 folders to PATH
-        run: |
-          $targets=@()
-          if ($env:RUST_TOOLCHAIN -notlike "*x86_64*") {
-            rustup target add i686-pc-windows-gnu ;
-            $targets+="i686-pc-windows-gnu"
-            echo "C:\msys64\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
-            echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\i386"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
-          }
-          if ($env:RUST_TOOLCHAIN -notlike "*i686*") {
-            rustup target add x86_64-pc-windows-gnu ;
-            $targets+="x86_64-pc-windows-gnu"
-            echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
-            echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
-          }
-          echo "BUILD_TARGETS=$($targets -join ',')" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append ;
-        env: 
-          RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
+  #     # All configurations for Windows go here
+  #     # If 'rust-version' has no architecture id, both if conditions are executed
+  #     # Otherwise, only one condition is met
+  #     # $targets variable is used to build targets list used later for cargo build/test
+  #     # The order of if blocks favors x86_64 over i686 paths, which is optimal for multi-targeting
+  #     - name: Configure Windows
+  #       if: startsWith(runner.os, 'Windows')
+  #       # 1. Add rust target
+  #       # 2. Add target name to the $targets variable
+  #       # 3. Add mingw32/mingw64 bin folders to PATH
+  #       # 4. Add R x64/i386 folders to PATH
+  #       run: |
+  #         $targets=@()
+  #         if ($env:RUST_TOOLCHAIN -notlike "*x86_64*") {
+  #           rustup target add i686-pc-windows-gnu ;
+  #           $targets+="i686-pc-windows-gnu"
+  #           echo "C:\msys64\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+  #           echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\i386"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+  #         }
+  #         if ($env:RUST_TOOLCHAIN -notlike "*i686*") {
+  #           rustup target add x86_64-pc-windows-gnu ;
+  #           $targets+="x86_64-pc-windows-gnu"
+  #           echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+  #           echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+  #         }
+  #         echo "BUILD_TARGETS=$($targets -join ',')" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append ;
+  #       env: 
+  #         RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
 
-      # This is required for ubuntu r-devel
-      # 'Del alias:R' removes 'R' alias which prevents running R 
-      - name: Configure Linux
-        if: startsWith(runner.os, 'linux')
-        run: |
-          Del alias:R
-          echo "LD_LIBRARY_PATH=$(R -s -e 'cat(normalizePath(R.home()))')/lib" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+  #     # This is required for ubuntu r-devel
+  #     # 'Del alias:R' removes 'R' alias which prevents running R 
+  #     - name: Configure Linux
+  #       if: startsWith(runner.os, 'linux')
+  #       run: |
+  #         Del alias:R
+  #         echo "LD_LIBRARY_PATH=$(R -s -e 'cat(normalizePath(R.home()))')/lib" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
-      # Check code formatting. As this doesn't depend on the platform, do this only on one platform.
-      - name: Check code formatting
-        if: matrix.config.check_fmt
-        run: cargo fmt -- --check
+  #     # Check code formatting. As this doesn't depend on the platform, do this only on one platform.
+  #     - name: Check code formatting
+  #       if: matrix.config.check_fmt
+  #       run: cargo fmt -- --check
 
-      # For each target in the BUILD_TARGETS comma-separated list, run cargo build with appropriate target
-      # Required by Windows builds, does not affect other platforms
-      - name: Build
-        run: |
-          . ./ci-cargo.ps1
-          foreach($target in ($env:BUILD_TARGETS).Split(',')) {
-            ci-cargo build $(if($target -ne 'default') {"--target=$target"} ) -ActionName "Building for $target target"
-          }
-      # For each target in the BUILD_TARGETS comma-separated list, run cargo test with appropriate target
-      # Required by Windows builds, does not affect other platforms
-      # ! ci-cargo requires '--' to be wrapped in quotes (passed as an explicit string)
-      - name: Run tests
-        run: |
-          . ./ci-cargo.ps1
-          foreach($target in ($env:BUILD_TARGETS).Split(',')) {
-            ci-cargo test $(if($target -ne 'default') {"--target=$target"} ) '--' --nocapture -ActionName "Testing for $target target"
-          }
+  #     # For each target in the BUILD_TARGETS comma-separated list, run cargo build with appropriate target
+  #     # Required by Windows builds, does not affect other platforms
+  #     - name: Build
+  #       run: |
+  #         . ./ci-cargo.ps1
+  #         foreach($target in ($env:BUILD_TARGETS).Split(',')) {
+  #           ci-cargo build $(if($target -ne 'default') {"--target=$target"} ) -ActionName "Building for $target target"
+  #         }
+  #     # For each target in the BUILD_TARGETS comma-separated list, run cargo test with appropriate target
+  #     # Required by Windows builds, does not affect other platforms
+  #     # ! ci-cargo requires '--' to be wrapped in quotes (passed as an explicit string)
+  #     - name: Run tests
+  #       run: |
+  #         . ./ci-cargo.ps1
+  #         foreach($target in ($env:BUILD_TARGETS).Split(',')) {
+  #           ci-cargo test $(if($target -ne 'default') {"--target=$target"} ) '--' --nocapture -ActionName "Testing for $target target"
+  #         }
 
-      - name: Obtain 'rextendr'
-        run : |
-          git clone https://github.com/extendr/rextendr ./tests/rextendr
+  #     - name: Obtain 'rextendr'
+  #       run : |
+  #         git clone https://github.com/extendr/rextendr ./tests/rextendr
 
-      # Dependencies from both test packages are combined
-      - name: Query dependencies for integration testing
-        run: |
-          install.packages('remotes')
-          saveRDS(
-            unique(
-              rbind(
-                remotes::dev_package_deps(pkgdir = "tests/extendrtests", dependencies = TRUE), 
-                remotes::dev_package_deps(pkgdir = "tests/rextendr", dependencies = TRUE))),
-            ".github/depends.Rds", 
-            version = 2
-          )
-          writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
-        shell: Rscript {0}
+  #     # Dependencies from both test packages are combined
+  #     - name: Query dependencies for integration testing
+  #       run: |
+  #         install.packages('remotes')
+  #         saveRDS(
+  #           unique(
+  #             rbind(
+  #               remotes::dev_package_deps(pkgdir = "tests/extendrtests", dependencies = TRUE), 
+  #               remotes::dev_package_deps(pkgdir = "tests/rextendr", dependencies = TRUE))),
+  #           ".github/depends.Rds", 
+  #           version = 2
+  #         )
+  #         writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
+  #       shell: Rscript {0}
 
-      - name: Cache installed R packages
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
+  #     - name: Cache installed R packages
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: ${{ env.R_LIBS_USER }}
+  #         key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
+  #         restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
-      - name: Install system dependencies for rextendr
-        if: startsWith(runner.os, 'linux')
-        run: |
-          foreach($apt_cmd in $(Rscript -e "writeLines(remotes::system_requirements('ubuntu', '20.04', path = 'tests/rextendr'))")) {
-            Invoke-Expression "sudo $apt_cmd"
-          }
+  #     - name: Install system dependencies for rextendr
+  #       if: startsWith(runner.os, 'linux')
+  #       run: |
+  #         foreach($apt_cmd in $(Rscript -e "writeLines(remotes::system_requirements('ubuntu', '20.04', path = 'tests/rextendr'))")) {
+  #           Invoke-Expression "sudo $apt_cmd"
+  #         }
 
-      # Currently rextendr requires R > 4, so if R version is older (e.g. 3.6.3), rextendr tests are omitted
-      # Regex is used to inject absolute path into Cargo.toml
-      - name: Install dependencies & configure R for integration testing
-        run: |
-          remotes::install_deps(pkgdir = "tests/extendrtests", dependencies = TRUE)
-          if (as.integer(R.version$major) >= 4) { 
-            remotes::install_deps(pkgdir = "tests/rextendr", dependencies = TRUE)
-          }
-          remotes::install_cran("rcmdcheck")
+  #     # Currently rextendr requires R > 4, so if R version is older (e.g. 3.6.3), rextendr tests are omitted
+  #     # Regex is used to inject absolute path into Cargo.toml
+  #     - name: Install dependencies & configure R for integration testing
+  #       run: |
+  #         remotes::install_deps(pkgdir = "tests/extendrtests", dependencies = TRUE)
+  #         if (as.integer(R.version$major) >= 4) { 
+  #           remotes::install_deps(pkgdir = "tests/rextendr", dependencies = TRUE)
+  #         }
+  #         remotes::install_cran("rcmdcheck")
 
-          api_path <- normalizePath(file.path(getwd(), "extendr-api"), winslash = "/")
-          toml_path <- file.path(getwd(), "tests", "extendrtests", "src", "rust", "Cargo.toml")
-          lines <- readLines(toml_path)
-          lines <- gsub(
-            "(^\\s*extendr-api\\s*=\\s*\\{\\s*path\\s*=\\s*\")(.*?)(\"\\s*\\})",
-            paste0("\\1", api_path, "\\3"),
-            lines
-          )
-          writeLines(lines, toml_path)
-        shell: Rscript {0}
+  #         api_path <- normalizePath(file.path(getwd(), "extendr-api"), winslash = "/")
+  #         toml_path <- file.path(getwd(), "tests", "extendrtests", "src", "rust", "Cargo.toml")
+  #         lines <- readLines(toml_path)
+  #         lines <- gsub(
+  #           "(^\\s*extendr-api\\s*=\\s*\\{\\s*path\\s*=\\s*\")(.*?)(\"\\s*\\})",
+  #           paste0("\\1", api_path, "\\3"),
+  #           lines
+  #         )
+  #         writeLines(lines, toml_path)
+  #       shell: Rscript {0}
         
-      # Windows: modified PATH will launch 32-bit Rscript if the build targets only i686/i386, so no conflict will arise
-      # Rust pseudo multi-targeting: R CMD CHECK receives an extra argument '--no-multiarch' if BUILD_TARGETS is not 'default' and does not contain any commas
-      # To enable RStudio support, extendrtests should be installable from 'extendr/tests/extendrtests',
-      # for this work directory should be modified and then reverted back
-      - name: Run R integration tests using {extendrtests}
-        id: extendrtests_check
-        env:
-          _R_CHECK_CRAN_INCOMING_REMOTE_: false
-        run: |
-          cat("::group::Checking 'extendrtests'\n")
-          rcmdcheck::rcmdcheck(
-            path = "tests/extendrtests", 
-            args = c("--no-manual", "--as-cran", "--force-multiarch"),
-            error_on = "warning", 
-            check_dir = "extendrtests_check"
-          )
-          cat("::endgroup::\n")
-        shell: Rscript {0}
+  #     # Windows: modified PATH will launch 32-bit Rscript if the build targets only i686/i386, so no conflict will arise
+  #     # Rust pseudo multi-targeting: R CMD CHECK receives an extra argument '--no-multiarch' if BUILD_TARGETS is not 'default' and does not contain any commas
+  #     # To enable RStudio support, extendrtests should be installable from 'extendr/tests/extendrtests',
+  #     # for this work directory should be modified and then reverted back
+  #     - name: Run R integration tests using {extendrtests}
+  #       id: extendrtests_check
+  #       env:
+  #         _R_CHECK_CRAN_INCOMING_REMOTE_: false
+  #       run: |
+  #         cat("::group::Checking 'extendrtests'\n")
+  #         rcmdcheck::rcmdcheck(
+  #           path = "tests/extendrtests", 
+  #           args = c("--no-manual", "--as-cran", "--force-multiarch"),
+  #           error_on = "warning", 
+  #           check_dir = "extendrtests_check"
+  #         )
+  #         cat("::endgroup::\n")
+  #       shell: Rscript {0}
         
-      # If R is older than 4.0, rextendr is not tested and a warning is emitted. 
-      # With https://github.com/extendr/rextendr/pull/31
-      # rextendr can be configured using environment variables.
-      # 'patch.crates_io' is used to point libraries to local copies of
-      # extendr-api and extendr-macros, so rextendr tests current version of extendr-*
-      - name: Run R integration tests using {rextendr}
-        id: rextendr_check
-        env:
-          _R_CHECK_CRAN_INCOMING_REMOTE_: false
-        run: |
-          if (as.integer(R.version$major) < 4) {
-            cat("::warning:: R version is not compatible with 'rextendr'\n")
-          } else {
-            cat("::group::Checking 'rextendr'\n")
+  #     # If R is older than 4.0, rextendr is not tested and a warning is emitted. 
+  #     # With https://github.com/extendr/rextendr/pull/31
+  #     # rextendr can be configured using environment variables.
+  #     # 'patch.crates_io' is used to point libraries to local copies of
+  #     # extendr-api and extendr-macros, so rextendr tests current version of extendr-*
+  #     - name: Run R integration tests using {rextendr}
+  #       id: rextendr_check
+  #       env:
+  #         _R_CHECK_CRAN_INCOMING_REMOTE_: false
+  #       run: |
+  #         if (as.integer(R.version$major) < 4) {
+  #           cat("::warning:: R version is not compatible with 'rextendr'\n")
+  #         } else {
+  #           cat("::group::Checking 'rextendr'\n")
             
-            patch.crates_io <-
-              paste(
-                paste0(
-                  "extendr-api = { path = \"",
-                  normalizePath(file.path(getwd(), "extendr-api"), winslash = "/"),
-                  "\" }"),
-                paste0(
-                  "extendr-macros = { path = \"",
-                  normalizePath(file.path(getwd(), "extendr-macros"), winslash = "/"),
-                  "\" }"),
-                sep = ";")
+  #           patch.crates_io <-
+  #             paste(
+  #               paste0(
+  #                 "extendr-api = { path = \"",
+  #                 normalizePath(file.path(getwd(), "extendr-api"), winslash = "/"),
+  #                 "\" }"),
+  #               paste0(
+  #                 "extendr-macros = { path = \"",
+  #                 normalizePath(file.path(getwd(), "extendr-macros"), winslash = "/"),
+  #                 "\" }"),
+  #               sep = ";")
 
-            Sys.setenv(REXTENDR_PATCH_CRATES_IO = patch.crates_io)
-            rcmdcheck::rcmdcheck(
-              path = "tests/rextendr", 
-              args = c("--no-manual", "--as-cran", "--force-multiarch"), 
-              error_on = "warning", 
-              check_dir = "rextendr_check")
-            cat("::endgroup::\n")
-          }
-        shell: Rscript {0}
+  #           Sys.setenv(REXTENDR_PATCH_CRATES_IO = patch.crates_io)
+  #           rcmdcheck::rcmdcheck(
+  #             path = "tests/rextendr", 
+  #             args = c("--no-manual", "--as-cran", "--force-multiarch"), 
+  #             error_on = "warning", 
+  #             check_dir = "rextendr_check")
+  #           cat("::endgroup::\n")
+  #         }
+  #       shell: Rscript {0}
 
 
-      - name: Upload extendrtests check results from R integration tests
-        if: failure()
-        uses: actions/upload-artifact@main
-        with:
-          name: extendrtests-${{ matrix.config.os }}-R-${{ matrix.config.r }}-rust-${{ matrix.config.rust-version }}
-          path: extendrtests_check
+  #     - name: Upload extendrtests check results from R integration tests
+  #       if: failure()
+  #       uses: actions/upload-artifact@main
+  #       with:
+  #         name: extendrtests-${{ matrix.config.os }}-R-${{ matrix.config.r }}-rust-${{ matrix.config.rust-version }}
+  #         path: extendrtests_check
 
-      - name: Upload rextendr check results from R integration tests
-        if: failure()
-        uses: actions/upload-artifact@main
-        with:
-          name: rextendr-${{ matrix.config.os }}-R-${{ matrix.config.r }}-rust-${{ matrix.config.rust-version }}
-          path: rextendr_check
+  #     - name: Upload rextendr check results from R integration tests
+  #       if: failure()
+  #       uses: actions/upload-artifact@main
+  #       with:
+  #         name: rextendr-${{ matrix.config.os }}-R-${{ matrix.config.r }}-rust-${{ matrix.config.rust-version }}
+  #         path: rextendr_check
 
 
   # All tests under this job are run with R devel and freshly generated bindings.
