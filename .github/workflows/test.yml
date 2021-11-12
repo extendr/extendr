@@ -323,11 +323,11 @@ jobs:
               }
             }
             else {
-              rustup toolchain add "$env:RUST_TOOLCHAIN-$target"
+              rustup toolchain add "$env:RUST_TOOLCHAIN"
               if(!$?) {
                 throw "Last exit code $LASTEXITCODE"
               }
-              rustup target add $target --toolchain "$env:RUST_TOOLCHAIN-$target"
+              rustup target add $target --toolchain "$env:RUST_TOOLCHAINs"
               if(!$?) {
                 throw "Last exit code $LASTEXITCODE"
               }
