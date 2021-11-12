@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - master
+      - 'windows-doctests'
   pull_request:
     branches:
       - main
@@ -28,21 +29,21 @@ jobs:
         config:
           # Windows jobs with unspecific Rust architecture build for both i686 and x86_64 
           # R integration tests are also executed for both architectures
-          - {os: windows-latest, r: 'release', rust-version: 'stable-msvc'}
+          # - {os: windows-latest, r: 'release', rust-version: 'stable-msvc'}
           # - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc'}
           # - {os: windows-latest, r: 'devel', rust-version: 'stable-msvc'}
           # - {os: windows-latest, r: 'oldrel', rust-version: 'stable-msvc'}
 
-          - {os: macOS-latest,   r: 'release', rust-version: 'stable'}
+          # - {os: macOS-latest,   r: 'release', rust-version: 'stable'}
           # - {os: macOS-latest,   r: 'release', rust-version: 'nightly'}
           # - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
           # - {os: macOS-latest,   r: 'oldrel', rust-version: 'stable'}
 
-          - {os: ubuntu-20.04,   r: 'release', rust-version: 'stable',  rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest", check_fmt: true}
-          - {os: ubuntu-20.04,   r: 'release', rust-version: 'nightly', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          # - {os: ubuntu-20.04,   r: 'release', rust-version: 'stable',  rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest", check_fmt: true}
+          # - {os: ubuntu-20.04,   r: 'release', rust-version: 'nightly', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           # R-devel requires LD_LIBRARY_PATH
-          - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}   
-          - {os: ubuntu-20.04,   r: 'oldrel',  rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}   
+          # - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}   
+          # - {os: ubuntu-20.04,   r: 'oldrel',  rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}   
 
 
 
@@ -283,9 +284,9 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: ubuntu-20.04,   r: 'devel', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
-          - {os: windows-latest, r: 'devel', rust-version: 'stable', rust-targets: ['x86_64-pc-windows-gnu']}
+          # - {os: ubuntu-20.04,   r: 'devel', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          # - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
+          # - {os: windows-latest, r: 'devel', rust-version: 'stable', rust-targets: ['x86_64-pc-windows-gnu']}
 
 
     env:
