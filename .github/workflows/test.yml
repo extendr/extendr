@@ -286,7 +286,7 @@ jobs:
         config:
           # - {os: ubuntu-20.04,   r: 'devel', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           # - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
-          - {os: windows-latest, r: 'devel', rust-version: 'nightly', rust-targets: ['x86_64-pc-windows-gnu', 'i686-pc-windows-gnu']}
+          - {os: windows-latest, r: 'release', rust-version: 'nightly', rust-targets: ['x86_64-pc-windows-gnu', 'i686-pc-windows-gnu']}
 
 
     env:
