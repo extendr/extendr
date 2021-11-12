@@ -286,7 +286,7 @@ jobs:
         config:
           # - {os: ubuntu-20.04,   r: 'devel', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           # - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
-          - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: ['i686-pc-windows-gnu']}
+          - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: ['i686-pc-windows-gnu'], extra-args: '-Zdoctest-xcompile'}
 
 
     env:
@@ -418,15 +418,16 @@ jobs:
               $target = $targets[$i]
             }
 
-            ci-cargo +$toolchain test --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) '--' --nocapture -ActionName "Test extendr-engine \w tests-all for $target target"
+            ci-cargo +$toolchain test --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-engine \w tests-all for $target target"
             
-            ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) '--' --nocapture -ActionName "Test extendr-api \w tests-all for $target target"
+            ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-api \w tests-all for $target target"
 
-            ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests-minimal $(if($target -ne 'default') {"--target=$target"} ) '--' --nocapture -ActionName "Test extendr-api \w tests-minimal for $target target"
+            ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests-minimal $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-api \w tests-minimal for $target target"
                       
-            ci-cargo +$toolchain test --manifest-path extendr-macros/Cargo.toml  $(if($target -ne 'default') {"--target=$target"} ) '--' --nocapture -ActionName "Test extendr-macros for $target target"
+            ci-cargo +$toolchain test --manifest-path extendr-macros/Cargo.toml  $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-macros for $target target"
             
           }
         env: 
           BUILD_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
           RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
+          EXTRA_ARGS: ${{ join(matrix.config.extra_args, ',') }}
