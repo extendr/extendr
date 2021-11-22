@@ -374,6 +374,18 @@ impl Device {
         }
     }
 
+    /// Close the current device (equivalent to `dev.off()` on R).
+    pub fn close(&self) -> Result<()> {
+        unsafe {
+            if Rf_NoDevices() != 0 {
+                Err(Error::NoGraphicsDevices(r!(())))
+            } else {
+                GEkillDevice(self.inner());
+                Ok(())
+            }
+        }
+    }
+
     /// Get the device number for this device.
     pub fn device_number(&self) -> i32 {
         unsafe { GEdeviceNumber(self.inner()) }

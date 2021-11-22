@@ -71,7 +71,7 @@ fn graphics_test() {
 
         if use_postscript {
             // Flush the file and kill the device.
-            R!("dev.off()")?;
+            dev.close()?;
             let ps = std::fs::read_to_string(path).expect("PS file not written.");
             if let Some(split) = ps.split_once("%%EndProlog") {
                 let epilogue = split.1;
