@@ -285,6 +285,7 @@ jobs:
         config:
           - {os: ubuntu-20.04,   r: 'devel', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
+          # This will be changed back to `R-devel` as soon as R drops 32-bit support and we no longer need cross-compilation
           - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: ['x86_64-pc-windows-gnu', 'i686-pc-windows-gnu'], extra-args: ['-Zdoctest-xcompile']}
 
 
