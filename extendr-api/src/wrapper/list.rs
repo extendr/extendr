@@ -1,4 +1,5 @@
 use std::iter::FromIterator;
+use crate::robj::Attributes;
 
 use super::*;
 
@@ -62,7 +63,11 @@ impl List {
             values.push(pair.value());
         }
         let mut res = List::from_values(values);
-        res.set_names(names).unwrap().as_list().unwrap()
+        res.as_robj_mut()
+            .set_names(names)
+            .unwrap()
+            .as_list()
+            .unwrap()
     }
 
     /// Wrapper for creating a list (VECSXP) object from an existing `HashMap`.
@@ -388,3 +393,5 @@ impl<T: Into<Robj>> FromIterator<T> for List {
         })
     }
 }
+
+impl Attributes for List {}

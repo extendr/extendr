@@ -33,8 +33,9 @@ mod tests;
 pub use from_robj::*;
 pub use into_robj::*;
 pub use iter::*;
+pub use operators::Operators;
 pub use operators::*;
-pub use rinternals::*;
+pub use rinternals::Rinternals;
 
 /// Wrapper for an R S-expression pointer (SEXP).
 ///
@@ -121,6 +122,94 @@ impl Default for Robj {
     }
 }
 
+pub trait GetSexp {
+    /// Get a copy of the underlying SEXP.
+    ///
+    /// # Safety
+    ///
+    /// Access to a raw SEXP pointer can cause undefined behaviour and is not thread safe.
+    unsafe fn get(&self) -> SEXP;
+
+    /// Get a reference to a Robj for this type.
+    fn as_robj(&self) -> &Robj;
+
+    /// Get a mutable reference to a Robj for this type.
+    fn as_robj_mut(&mut self) -> &mut Robj;
+}
+
+impl GetSexp for Robj {
+    unsafe fn get(&self) -> SEXP {
+        self.inner
+    }
+
+    fn as_robj(&self) -> &Robj {
+        unsafe { std::mem::transmute(&self.inner) }
+    }
+
+    fn as_robj_mut(&mut self) -> &mut Robj {
+        unsafe { std::mem::transmute(&mut self.inner) }
+    }
+}
+
+pub trait Slices: GetSexp {
+    /// Get an immutable slice to this object's data.
+    ///
+    /// # Safety
+    ///
+    /// Unless the type is correct, this will cause undefined behaviour.
+    /// Creating this slice will also instatiate and Altrep objects.
+    unsafe fn as_typed_slice_raw<T>(&self) -> &[T] {
+        let len = XLENGTH(self.get()) as usize;
+        let data = DATAPTR_RO(self.get()) as *const T;
+        std::slice::from_raw_parts(data, len)
+    }
+
+    /// Get a mutable slice to this object's data.
+    ///
+    /// # Safety
+    ///
+    /// Unless the type is correct, this will cause undefined behaviour.
+    /// Creating this slice will also instatiate and Altrep objects.
+    /// Not all obejects (especially not list and strings) support this.
+    unsafe fn as_typed_slice_raw_mut<T>(&mut self) -> &mut [T] {
+        let len = XLENGTH(self.get()) as usize;
+        let data = DATAPTR(self.get()) as *mut T;
+        std::slice::from_raw_parts_mut(data, len)
+    }
+}
+
+impl Slices for Robj {}
+
+pub trait Length: GetSexp {
+    /// Get the extended length of the object.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///
+    /// let a : Robj = r!(vec![1., 2., 3., 4.]);
+    /// assert_eq!(a.len(), 4);
+    /// }
+    /// ```
+    fn len(&self) -> usize {
+        unsafe { Rf_xlength(self.get()) as usize }
+    }
+
+    /// Returns `true` if the `Robj` contains no elements.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///
+    /// let a : Robj = r!(vec![0.; 0]); // length zero of numeric vector
+    /// assert_eq!(a.is_empty(), true);
+    /// }
+    /// ```
+    fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+}
+
+impl Length for Robj {}
+
 impl Robj {
     pub fn from_sexp(sexp: SEXP) -> Self {
         single_threaded(|| {
@@ -128,17 +217,12 @@ impl Robj {
             Robj { inner: sexp }
         })
     }
+}
 
-    /// Get a copy of the underlying SEXP.
-    /// Note: this is unsafe.
-    #[doc(hidden)]
-    pub unsafe fn get(&self) -> SEXP {
-        self.inner
-    }
-
+pub trait Types: GetSexp {
     #[doc(hidden)]
     /// Get the XXXSXP type of the object.
-    pub fn sexptype(&self) -> u32 {
+    fn sexptype(&self) -> u32 {
         unsafe { TYPEOF(self.get()) as u32 }
     }
 
@@ -164,7 +248,7 @@ impl Robj {
     ///     assert_eq!(r!(Raw::from_bytes(&[1_u8, 2, 3])).rtype(), RType::Raw);
     /// }
     /// ```
-    pub fn rtype(&self) -> RType {
+    fn rtype(&self) -> RType {
         match self.sexptype() {
             NILSXP => RType::Null,
             SYMSXP => RType::Symbol,
@@ -194,64 +278,42 @@ impl Robj {
         }
     }
 
-    pub fn as_any(&self) -> Rany {
+    fn as_any(&self) -> Rany {
         unsafe {
             match self.sexptype() {
-                NILSXP => Rany::Null(std::mem::transmute(self)),
-                SYMSXP => Rany::Symbol(std::mem::transmute(self)),
-                LISTSXP => Rany::Pairlist(std::mem::transmute(self)),
-                CLOSXP => Rany::Function(std::mem::transmute(self)),
-                ENVSXP => Rany::Environment(std::mem::transmute(self)),
-                PROMSXP => Rany::Promise(std::mem::transmute(self)),
-                LANGSXP => Rany::Language(std::mem::transmute(self)),
-                SPECIALSXP => Rany::Special(std::mem::transmute(self)),
-                BUILTINSXP => Rany::Builtin(std::mem::transmute(self)),
-                CHARSXP => Rany::Rstr(std::mem::transmute(self)),
-                LGLSXP => Rany::Logical(std::mem::transmute(self)),
-                INTSXP => Rany::Integer(std::mem::transmute(self)),
-                REALSXP => Rany::Real(std::mem::transmute(self)),
-                CPLXSXP => Rany::Complex(std::mem::transmute(self)),
-                STRSXP => Rany::String(std::mem::transmute(self)),
-                DOTSXP => Rany::Dot(std::mem::transmute(self)),
-                ANYSXP => Rany::Any(std::mem::transmute(self)),
-                VECSXP => Rany::List(std::mem::transmute(self)),
-                EXPRSXP => Rany::Expression(std::mem::transmute(self)),
-                BCODESXP => Rany::Bytecode(std::mem::transmute(self)),
-                EXTPTRSXP => Rany::ExternalPtr(std::mem::transmute(self)),
-                WEAKREFSXP => Rany::WeakRef(std::mem::transmute(self)),
-                RAWSXP => Rany::Raw(std::mem::transmute(self)),
-                S4SXP => Rany::S4(std::mem::transmute(self)),
-                _ => Rany::Unknown(std::mem::transmute(self)),
+                NILSXP => Rany::Null(std::mem::transmute(self.as_robj())),
+                SYMSXP => Rany::Symbol(std::mem::transmute(self.as_robj())),
+                LISTSXP => Rany::Pairlist(std::mem::transmute(self.as_robj())),
+                CLOSXP => Rany::Function(std::mem::transmute(self.as_robj())),
+                ENVSXP => Rany::Environment(std::mem::transmute(self.as_robj())),
+                PROMSXP => Rany::Promise(std::mem::transmute(self.as_robj())),
+                LANGSXP => Rany::Language(std::mem::transmute(self.as_robj())),
+                SPECIALSXP => Rany::Special(std::mem::transmute(self.as_robj())),
+                BUILTINSXP => Rany::Builtin(std::mem::transmute(self.as_robj())),
+                CHARSXP => Rany::Rstr(std::mem::transmute(self.as_robj())),
+                LGLSXP => Rany::Logical(std::mem::transmute(self.as_robj())),
+                INTSXP => Rany::Integer(std::mem::transmute(self.as_robj())),
+                REALSXP => Rany::Real(std::mem::transmute(self.as_robj())),
+                CPLXSXP => Rany::Complex(std::mem::transmute(self.as_robj())),
+                STRSXP => Rany::String(std::mem::transmute(self.as_robj())),
+                DOTSXP => Rany::Dot(std::mem::transmute(self.as_robj())),
+                ANYSXP => Rany::Any(std::mem::transmute(self.as_robj())),
+                VECSXP => Rany::List(std::mem::transmute(self.as_robj())),
+                EXPRSXP => Rany::Expression(std::mem::transmute(self.as_robj())),
+                BCODESXP => Rany::Bytecode(std::mem::transmute(self.as_robj())),
+                EXTPTRSXP => Rany::ExternalPtr(std::mem::transmute(self.as_robj())),
+                WEAKREFSXP => Rany::WeakRef(std::mem::transmute(self.as_robj())),
+                RAWSXP => Rany::Raw(std::mem::transmute(self.as_robj())),
+                S4SXP => Rany::S4(std::mem::transmute(self.as_robj())),
+                _ => Rany::Unknown(std::mem::transmute(self.as_robj())),
             }
         }
     }
+}
 
-    /// Get the extended length of the object.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///
-    /// let a : Robj = r!(vec![1., 2., 3., 4.]);
-    /// assert_eq!(a.len(), 4);
-    /// }
-    /// ```
-    pub fn len(&self) -> usize {
-        unsafe { Rf_xlength(self.get()) as usize }
-    }
+impl Types for Robj {}
 
-    /// Returns `true` if the `Robj` contains no elements.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///
-    /// let a : Robj = r!(vec![0.; 0]); // length zero of numeric vector
-    /// assert_eq!(a.is_empty(), true);
-    /// }
-    /// ```
-    pub fn is_empty(&self) -> bool {
-        self.len() == 0
-    }
-
+impl Robj {
     /// Is this object is an NA scalar?
     /// Works for character, integer and numeric types.
     /// ```
@@ -598,7 +660,9 @@ impl Robj {
             _ => None,
         }
     }
+}
 
+pub trait Eval: GetSexp {
     /// Evaluate the expression in R and return an error or an R object.
     /// ```
     /// use extendr_api::prelude::*;
@@ -608,7 +672,7 @@ impl Robj {
     ///    assert_eq!(add.eval().unwrap(), r!(3));
     /// }
     /// ```
-    pub fn eval(&self) -> Result<Robj> {
+    fn eval(&self) -> Result<Robj> {
         self.eval_with_env(&global_env())
     }
 
@@ -621,12 +685,12 @@ impl Robj {
     ///    assert_eq!(add.eval_with_env(&global_env()).unwrap(), r!(3));
     /// }
     /// ```
-    pub fn eval_with_env(&self, env: &Environment) -> Result<Robj> {
+    fn eval_with_env(&self, env: &Environment) -> Result<Robj> {
         single_threaded(|| unsafe {
             let mut error: raw::c_int = 0;
             let res = R_tryEval(self.get(), env.get(), &mut error as *mut raw::c_int);
             if error != 0 {
-                Err(Error::EvalError(self.clone()))
+                Err(Error::EvalError(Robj::from_sexp(self.get())))
             } else {
                 Ok(Robj::from_sexp(res))
             }
@@ -641,7 +705,7 @@ impl Robj {
     ///    assert_eq!(bad.eval_blind(), r!(NULL));
     /// }
     /// ```
-    pub fn eval_blind(&self) -> Robj {
+    fn eval_blind(&self) -> Robj {
         let res = self.eval();
         if let Ok(robj) = res {
             robj
@@ -650,6 +714,8 @@ impl Robj {
         }
     }
 }
+
+impl Eval for Robj {}
 
 /// Generic access to typed slices in an Robj.
 pub trait AsTypedSlice<'a, T>
@@ -715,7 +781,7 @@ make_typed_slice!(Rstr, STRING_PTR, STRSXP);
 
 /// These are helper functions which give access to common properties of R objects.
 #[allow(non_snake_case)]
-impl Robj {
+pub trait Attributes: Types + Length {
     /// Get a specific attribute as a borrowed robj if it exists.
     /// ```
     /// use extendr_api::prelude::*;
@@ -726,7 +792,7 @@ impl Robj {
     ///    assert_eq!(robj.get_attrib(sym!(xyz)), Some(r!(1)));
     /// }
     /// ```
-    pub fn get_attrib<'a, N>(&self, name: N) -> Option<Robj>
+    fn get_attrib<'a, N>(&self, name: N) -> Option<Robj>
     where
         Self: 'a,
         Robj: From<N> + 'a,
@@ -756,7 +822,7 @@ impl Robj {
     ///    assert_eq!(robj.get_attrib(sym!(xyz)), Some(r!(1)));
     /// }
     /// ```
-    pub fn set_attrib<N, V>(&self, name: N, value: V) -> Result<Robj>
+    fn set_attrib<N, V>(&self, name: N, value: V) -> Result<Robj>
     where
         N: Into<Robj>,
         V: Into<Robj>,
@@ -764,9 +830,10 @@ impl Robj {
         let name = name.into();
         let value = value.into();
         unsafe {
+            let sexp = self.get();
             single_threaded(|| {
-                catch_r_error(|| Rf_setAttrib(self.get(), name.get(), value.get()))
-                    .map(|_| self.clone())
+                catch_r_error(|| Rf_setAttrib(sexp, name.get(), value.get()))
+                    .map(|_| Robj::from_sexp(sexp))
             })
         }
     }
@@ -780,7 +847,7 @@ impl Robj {
     ///    assert_eq!(names, vec!["a", "b", "c"]);
     /// }
     /// ```
-    pub fn names(&self) -> Option<StrIter> {
+    fn names(&self) -> Option<StrIter> {
         if let Some(names) = self.get_attrib(wrapper::symbol::names_symbol()) {
             names.as_str_iter()
         } else {
@@ -800,7 +867,7 @@ impl Robj {
     ///     assert_eq!(r!([1, 2, 3]).set_names(&["a", "b"]), Err(Error::NamesLengthMismatch(r!(["a", "b"]))));
     /// }
     /// ```
-    pub fn set_names<T>(&mut self, names: T) -> Result<Robj>
+    fn set_names<T>(&mut self, names: T) -> Result<Robj>
     where
         T: IntoIterator,
         T::IntoIter: ExactSizeIterator,
@@ -827,7 +894,7 @@ impl Robj {
     ///    assert_eq!(dim, vec![2, 2]);
     /// }
     /// ```
-    pub fn dim(&self) -> Option<Integers> {
+    fn dim(&self) -> Option<Integers> {
         if let Some(dim) = self.get_attrib(wrapper::symbol::dim_symbol()) {
             dim.as_integers()
         } else {
@@ -844,7 +911,7 @@ impl Robj {
     ///    assert_eq!(names, vec![r!(["x", "y"]), r!(["a", "b"])]);
     /// }
     /// ```
-    pub fn dimnames(&self) -> Option<ListIter> {
+    fn dimnames(&self) -> Option<ListIter> {
         if let Some(names) = self.get_attrib(wrapper::symbol::dimnames_symbol()) {
             names.as_list().map(|v| v.values())
         } else {
@@ -861,7 +928,7 @@ impl Robj {
     ///    assert_eq!(class, ["formula"]);
     /// }
     /// ```
-    pub fn class(&self) -> Option<StrIter> {
+    fn class(&self) -> Option<StrIter> {
         if let Some(class) = self.get_attrib(wrapper::symbol::class_symbol()) {
             class.as_str_iter()
         } else {
@@ -881,7 +948,7 @@ impl Robj {
     ///     assert_eq!(obj.inherits("a"), true);
     /// }
     /// ```
-    pub fn set_class<T>(&self, class: T) -> Result<Robj>
+    fn set_class<T>(&self, class: T) -> Result<Robj>
     where
         T: IntoIterator,
         T::IntoIter: ExactSizeIterator,
@@ -899,7 +966,7 @@ impl Robj {
     ///    assert_eq!(formula.inherits("formula"), true);
     /// }
     /// ```
-    pub fn inherits(&self, classname: &str) -> bool {
+    fn inherits(&self, classname: &str) -> bool {
         if let Some(mut iter) = self.class() {
             iter.any(|n| n == classname)
         } else {
@@ -916,7 +983,7 @@ impl Robj {
     ///    assert_eq!(levels, vec!["abcd", "def", "fg"]);
     /// }
     /// ```
-    pub fn levels(&self) -> Option<StrIter> {
+    fn levels(&self) -> Option<StrIter> {
         if let Some(levels) = self.get_attrib(wrapper::symbol::levels_symbol()) {
             levels.as_str_iter()
         } else {
@@ -924,6 +991,8 @@ impl Robj {
         }
     }
 }
+
+impl Attributes for Robj {}
 
 #[doc(hidden)]
 pub unsafe fn new_owned(sexp: SEXP) -> Robj {
