@@ -66,3 +66,102 @@ fn test_list() {
         assert_eq!(s.elt(1)?.is_na(), true);
     }
 }
+
+#[test]
+fn test_doubles() {
+    test! {
+        let s = Doubles::new(10);
+        assert_eq!(s.len(), 10);
+        assert_eq!(s.rtype(), RType::Real);
+
+        let mut s = Doubles::from_values([1, 2, 3]);
+        assert_eq!(s.len(), 3);
+        assert_eq!(s.rtype(), RType::Real);
+        assert_eq!(s.elt(0), 1.0);
+        assert_eq!(s.elt(1), 2.0);
+        assert_eq!(s.elt(2), 3.0);
+        assert!(s.elt(3).is_na());
+
+        let v = s.iter().collect::<Vec<Rfloat>>();
+        assert_eq!(v, [1.0, 2.0, 3.0]);
+
+        s.set_elt(1, 5.0.into());
+        assert_eq!(s.elt(1), 5.0);
+
+        let s : Doubles = [1.0, 2.0, 3.0].iter().map(|i| Rfloat::from(*i)).collect();
+        let v = s.iter().collect::<Doubles>();
+        assert_eq!(v, Doubles::from_values([1.0, 2.0, 3.0]));
+
+        // Bug: from_values should be Into<Rfloat>
+        //let s = Doubles::from_values([Rint::from(1), Rint::na(), Rint::from(3)]);
+        //assert_eq!(s.elt(1).is_na(), true);
+
+        let robj = r!([1.0, 2.0, 3.0]);
+        let s = Doubles::try_from(robj)?;
+        assert_eq!(s.len(), 3);
+        assert_eq!(s.elt(0), 1.0);
+
+        // Test Deref and DerefMut.
+        let mut s = Doubles::from_values([1.0, 2.0, 3.0]);
+        assert_eq!(s[0], 1.0);
+        assert_eq!(s[1], 2.0);
+        assert_eq!(s[2], 3.0);
+
+        s[0] = 4.0.into();
+        s[1] = 5.0.into();
+        s[2] = 6.0.into();
+        assert_eq!(s[0], 4.0);
+        assert_eq!(s[1], 5.0);
+        assert_eq!(s[2], 6.0);
+    }
+}
+
+#[test]
+fn test_integers() {
+    test! {
+        let s = Integers::new(10);
+        assert_eq!(s.len(), 10);
+        assert_eq!(s.rtype(), RType::Integer);
+
+        let mut s = Integers::from_values([1, 2, 3]);
+        assert_eq!(s.len(), 3);
+        assert_eq!(s.rtype(), RType::Integer);
+        assert_eq!(s.elt(0), 1);
+        assert_eq!(s.elt(1), 2);
+        assert_eq!(s.elt(2), 3);
+        assert!(s.elt(3).is_na());
+
+        let v = s.iter().collect::<Vec<Rint>>();
+        assert_eq!(v, [1, 2, 3]);
+
+        s.set_elt(1, 5.into());
+        assert_eq!(s.elt(1), 5);
+
+        let s : Integers = [1, 2, 3].iter().map(|i| Rint::from(*i)).collect();
+        let v = s.iter().collect::<Integers>();
+        assert_eq!(v, Integers::from_values([1, 2, 3]));
+
+        // Bug: from_values should be Into<Rint>
+        //let s = Integers::from_values([Rint::from(1), Rint::na(), Rint::from(3)]);
+        //assert_eq!(s.elt(1).is_na(), true);
+
+        let robj = r!([1, 2, 3]);
+        let s = Integers::try_from(robj)?;
+        assert_eq!(s.len(), 3);
+        assert_eq!(s.elt(0), 1);
+
+        // Test Deref and DerefMut.
+        let mut s = Integers::from_values([1, 2, 3]);
+        assert_eq!(s[0], 1);
+        assert_eq!(s[1], 2);
+        assert_eq!(s[2], 3);
+
+        s[0] = 4.into();
+        s[1] = 5.into();
+        s[2] = 6.into();
+        assert_eq!(s[0], 4);
+        assert_eq!(s[1], 5);
+        assert_eq!(s[2], 6);
+    }
+}
+
