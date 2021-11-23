@@ -119,7 +119,7 @@ macro_rules! gen_vector_wrapper_impl {
                 #[doc = "Return an iterator for a " $doc_name " object."]
                 #[doc = "Forces ALTREP objects to manifest."]
                 pub fn iter(&self) -> impl Iterator<Item = $type_elem> {
-                    self.as_typed_slice().unwrap().iter().cloned()
+                    self.as_robj().as_typed_slice().unwrap().iter().cloned()
                 }
             }
 
@@ -127,7 +127,7 @@ macro_rules! gen_vector_wrapper_impl {
                 #[doc = "Return a writable iterator for a " $doc_name " object."]
                 #[doc = "Forces ALTREP objects to manifest."]
                 pub fn iter_mut(&mut self) -> impl Iterator<Item = &mut $type_elem> {
-                    self.as_typed_slice_mut().unwrap().iter_mut()
+                    self.as_robj_mut().as_typed_slice_mut().unwrap().iter_mut()
                 }
             }
         }

@@ -1,5 +1,6 @@
 //! Error handling in Rust called from R.
 
+use crate::robj::Types;
 use crate::{throw_r_error, Robj};
 
 use std::convert::Infallible;

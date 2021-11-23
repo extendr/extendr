@@ -1,6 +1,7 @@
 //! Wrappers are lightweight proxies for references to R datatypes.
 //! They do not contain an Robj (see array.rs for an example of this).
 
+use crate::robj::{GetSexp, Rinternals};
 use crate::*;
 use libR_sys::*;
 
@@ -38,7 +39,7 @@ pub use function::Function;
 pub use integers::Integers;
 pub use lang::Language;
 pub use list::{FromList, List, ListIter};
-pub use matrix::{RArray, RColumn, RMatrix, RMatrix3D};
+pub use matrix::{MatrixConversions, RArray, RColumn, RMatrix, RMatrix3D};
 pub use nullable::Nullable;
 pub use pairlist::{Pairlist, PairlistIter};
 pub use primitive::Primitive;
@@ -104,21 +105,39 @@ macro_rules! make_conversions {
             }
         }
 
-        impl Deref for $typename {
-            type Target = Robj;
+        impl GetSexp for $typename {
+            unsafe fn get(&self) -> SEXP {
+                self.robj.get()
+            }
 
-            /// Make a wrapper behave like an Robj.
-            fn deref(&self) -> &Self::Target {
+            fn as_robj(&self) -> &Robj {
                 &self.robj
             }
-        }
 
-        impl DerefMut for $typename {
-            /// Make a wrapper behave like a writable Robj.
-            fn deref_mut(&mut self) -> &mut Self::Target {
+            fn as_robj_mut(&mut self) -> &mut Robj {
                 &mut self.robj
             }
         }
+
+        // These traits all derive from GetSexp
+
+        /// len() and is_empty()
+        impl Length for $typename {}
+
+        /// rtype() and rany()
+        impl Types for $typename {}
+
+        /// as_*()
+        impl Conversions for $typename {}
+
+        /// find_var() etc.
+        impl Rinternals for $typename {}
+
+        /// as_typed_slice_raw() etc.
+        impl Slices for $typename {}
+
+        /// dollar() etc.
+        impl Operators for $typename {}
     };
 }
 
@@ -179,7 +198,15 @@ make_conversions!(Doubles, ExpectedReal, is_real, "Not a floating point type");
 
 make_conversions!(Strings, ExpectedString, is_string, "Not a string vector");
 
-impl Robj {
+// impl Deref for Integers {
+//     type Target = [Rint];
+
+//     fn deref(&self) -> &Self::Target {
+//         unsafe { self.as_typed_slice_raw() }
+//     }
+// }
+
+pub trait Conversions: GetSexp {
     /// Convert a symbol object to a Symbol wrapper.
     /// ```
     /// use extendr_api::prelude::*;
@@ -188,8 +215,8 @@ impl Robj {
     ///     assert_eq!(fred.as_symbol(), Some(Symbol::from_string("fred")));
     /// }
     /// ```
-    pub fn as_symbol(&self) -> Option<Symbol> {
-        Symbol::try_from(self.clone()).ok()
+    fn as_symbol(&self) -> Option<Symbol> {
+        Symbol::try_from(self.as_robj().clone()).ok()
     }
 
     /// Convert a CHARSXP object to a Rstr wrapper.
@@ -200,8 +227,8 @@ impl Robj {
     ///     assert_eq!(fred.as_char(), Some(Rstr::from_string("fred")));
     /// }
     /// ```
-    pub fn as_char(&self) -> Option<Rstr> {
-        Rstr::try_from(self.clone()).ok()
+    fn as_char(&self) -> Option<Rstr> {
+        Rstr::try_from(self.as_robj().clone()).ok()
     }
 
     /// Convert a raw object to a Rstr wrapper.
@@ -213,8 +240,8 @@ impl Robj {
     ///     assert_eq!(bytes.as_raw(), Some(Raw::from_bytes(&[1, 2, 3])));
     /// }
     /// ```
-    pub fn as_raw(&self) -> Option<Raw> {
-        Raw::try_from(self.clone()).ok()
+    fn as_raw(&self) -> Option<Raw> {
+        Raw::try_from(self.as_robj().clone()).ok()
     }
 
     /// Convert a language object to a Language wrapper.
@@ -227,8 +254,8 @@ impl Robj {
     ///     assert_eq!(format!("{:?}", call_to_xyz), r#"r!(Language::from_values([sym!(xyz), r!(1), r!(2)]))"#);
     /// }
     /// ```
-    pub fn as_language(&self) -> Option<Language> {
-        Language::try_from(self.clone()).ok()
+    fn as_language(&self) -> Option<Language> {
+        Language::try_from(self.as_robj().clone()).ok()
     }
 
     /// Convert a pair list object (LISTSXP) to a Pairlist wrapper.
@@ -241,8 +268,8 @@ impl Robj {
     ///     assert_eq!(robj.as_pairlist().unwrap(), pairlist);
     /// }
     /// ```
-    pub fn as_pairlist(&self) -> Option<Pairlist> {
-        Pairlist::try_from(self.clone()).ok()
+    fn as_pairlist(&self) -> Option<Pairlist> {
+        Pairlist::try_from(self.as_robj().clone()).ok()
     }
 
     /// Convert a list object (VECSXP) to a List wrapper.
@@ -254,8 +281,8 @@ impl Robj {
     ///     assert_eq!(format!("{:?}", list), r#"r!(List::from_values([r!(0), r!(1), r!(2)]))"#);
     /// }
     /// ```
-    pub fn as_list(&self) -> Option<List> {
-        List::try_from(self.clone()).ok()
+    fn as_list(&self) -> Option<List> {
+        List::try_from(self.as_robj().clone()).ok()
     }
 
     /// Convert an expression object (EXPRSXP) to a Expr wrapper.
@@ -268,8 +295,8 @@ impl Robj {
     ///     assert_eq!(format!("{:?}", expr), r#"r!(Expression::from_values([r!(0), r!(1), r!(2)]))"#);
     /// }
     /// ```
-    pub fn as_expression(&self) -> Option<Expression> {
-        Expression::try_from(self.clone()).ok()
+    fn as_expression(&self) -> Option<Expression> {
+        Expression::try_from(self.as_robj().clone()).ok()
     }
 
     /// Convert an environment object (ENVSXP) to a Env wrapper.
@@ -284,8 +311,8 @@ impl Robj {
     ///     assert_eq!(env2.len(), 100);
     /// }
     /// ```
-    pub fn as_environment(&self) -> Option<Environment> {
-        Environment::try_from(self.clone()).ok()
+    fn as_environment(&self) -> Option<Environment> {
+        Environment::try_from(self.as_robj().clone()).ok()
     }
 
     /// Convert a function object (CLOSXP) to a Function wrapper.
@@ -296,15 +323,17 @@ impl Robj {
     ///     println!("{:?}", func.as_function());
     /// }
     /// ```
-    pub fn as_function(&self) -> Option<Function> {
-        Function::try_from(self.clone()).ok()
+    fn as_function(&self) -> Option<Function> {
+        Function::try_from(self.as_robj().clone()).ok()
     }
 
     /// Get a wrapper for a promise.
-    pub fn as_promise(&self) -> Option<Promise> {
-        Promise::try_from(self.clone()).ok()
+    fn as_promise(&self) -> Option<Promise> {
+        Promise::try_from(self.as_robj().clone()).ok()
     }
 }
+
+impl Conversions for Robj {}
 
 pub trait SymPair {
     fn sym_pair(self) -> (Option<Robj>, Robj);

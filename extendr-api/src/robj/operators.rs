@@ -5,7 +5,7 @@ use std::ops::{Add, Div, Mul, Sub};
 ///////////////////////////////////////////////////////////////
 /// The following impls add operators to Robj.
 ///
-impl Robj {
+pub trait Operators: Rinternals {
     /// Do the equivalent of x$y
     /// ```
     /// use extendr_api::prelude::*;
@@ -16,12 +16,12 @@ impl Robj {
     /// assert_eq!(env.dollar("b").unwrap(), r!(2));
     /// }
     /// ```
-    pub fn dollar<T>(&self, symbol: T) -> Result<Robj>
+    fn dollar<T>(&self, symbol: T) -> Result<Robj>
     where
         T: AsRef<str>,
     {
         let symbol: Symbol = Symbol::from_string(symbol.as_ref());
-        call!("`$`", self, symbol)
+        call!("`$`", self.as_robj(), symbol)
     }
 
     /// Do the equivalent of `x[y]`
@@ -33,11 +33,11 @@ impl Robj {
     /// assert_eq!(vec.slice(2..=3).unwrap(), r!([20, 30]));
     /// }
     /// ```
-    pub fn slice<T>(&self, rhs: T) -> Result<Robj>
+    fn slice<T>(&self, rhs: T) -> Result<Robj>
     where
         T: Into<Robj>,
     {
-        call!("`[`", self, rhs.into())
+        call!("`[`", self.as_robj(), rhs.into())
     }
 
     /// Do the equivalent of `x[[y]]`
@@ -49,11 +49,11 @@ impl Robj {
     /// assert_eq!(vec.index(2..=3).is_err(), true);
     /// }
     /// ```
-    pub fn index<T>(&self, rhs: T) -> Result<Robj>
+    fn index<T>(&self, rhs: T) -> Result<Robj>
     where
         T: Into<Robj>,
     {
-        call!("`[[`", self, rhs.into())
+        call!("`[[`", self.as_robj(), rhs.into())
     }
 
     /// Do the equivalent of x ~ y
@@ -66,11 +66,11 @@ impl Robj {
     ///     assert_eq!(tilde.inherits("formula"), true);
     /// }
     /// ```
-    pub fn tilde<T>(&self, rhs: T) -> Result<Robj>
+    fn tilde<T>(&self, rhs: T) -> Result<Robj>
     where
         T: Into<Robj>,
     {
-        call!("`~`", self, rhs.into())
+        call!("`~`", self.as_robj(), rhs.into())
     }
 
     /// Do the equivalent of x :: y
@@ -83,11 +83,11 @@ impl Robj {
     ///     assert_eq!(base_list.is_function(), true);
     /// }
     /// ```
-    pub fn double_colon<T>(&self, rhs: T) -> Result<Robj>
+    fn double_colon<T>(&self, rhs: T) -> Result<Robj>
     where
         T: Into<Robj>,
     {
-        call!("`::`", self, rhs.into())
+        call!("`::`", self.as_robj(), rhs.into())
     }
 
     /// Do the equivalent of x(a, b, c)
@@ -99,14 +99,14 @@ impl Robj {
     ///     assert_eq!(function.call(pairlist!(a=1, b=2)).unwrap(), r!(3));
     /// }
     /// ```
-    pub fn call(&self, args: Pairlist) -> Result<Robj> {
+    fn call(&self, args: Pairlist) -> Result<Robj> {
         if self.is_function() {
             unsafe {
                 let call = Robj::from_sexp(Rf_lcons(self.get(), args.get()));
                 call.eval()
             }
         } else {
-            Err(Error::ExpectedFunction(self.clone()))
+            Err(Error::ExpectedFunction(self.as_robj().clone()))
         }
     }
 }
@@ -238,6 +238,8 @@ where
         call!("`/`", self, rhs.into()).expect("Robj divide failed")
     }
 }
+
+impl Operators for Robj {}
 
 // Calls are still experimental.
 //

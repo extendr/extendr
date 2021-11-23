@@ -85,7 +85,7 @@ mod test {
                 // s4: S4,
             }
 
-            let test = Test {
+            let _test = Test {
                 null: r!(()),
                 symbol: sym!("xyz").try_into()?,
                 pairlist: pairlist!(x=1),
@@ -112,7 +112,7 @@ mod test {
                 // s4: S4,
             };
 
-            let expected = list!(int=1, seq=list!(null = (), symbol = (), pairlist = (), function = (), rstr = (), integer = (), real = (), list = (), raw = ()));
+            let _expected = list!(int=1, seq=list!(null = (), symbol = (), pairlist = (), function = (), rstr = (), integer = (), real = (), list = (), raw = ()));
             // assert_eq!(to_robj(&test).unwrap(), Robj::from(expected));
         }
     }
