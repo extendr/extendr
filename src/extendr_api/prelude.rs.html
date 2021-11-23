@@ -72,6 +72,11 @@
 <span id="72">72</span>
 <span id="73">73</span>
 <span id="74">74</span>
+<span id="75">75</span>
+<span id="76">76</span>
+<span id="77">77</span>
+<span id="78">78</span>
+<span id="79">79</span>
 </pre><pre class="rust"><code><span class="doccomment">//! # Common exports for extendr-api.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This allows us to be more selective about exports and avoid users</span>
@@ -120,7 +125,12 @@
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::wrapper::s4::S4</span>;
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::robj</span>::{<span class="ident">IntoRobj</span>, <span class="ident">Robj</span>, <span class="ident">RobjItertools</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::wrapper</span>::{<span class="ident">Conversions</span>, <span class="ident">MatrixConversions</span>};
+
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::robj</span>::{
+    <span class="ident">AsStrIter</span>, <span class="ident">Attributes</span>, <span class="ident">Eval</span>, <span class="ident">GetSexp</span>, <span class="ident">IntoRobj</span>, <span class="ident">Length</span>, <span class="ident">Operators</span>, <span class="ident">Rinternals</span>, <span class="ident">Robj</span>,
+    <span class="ident">RobjItertools</span>, <span class="ident">Slices</span>, <span class="ident">Types</span>,
+};
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::thread_safety</span>::{
     <span class="ident">catch_r_error</span>, <span class="ident">handle_panic</span>, <span class="ident">single_threaded</span>, <span class="ident">this_thread_id</span>, <span class="ident">throw_r_error</span>,

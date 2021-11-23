@@ -201,8 +201,10 @@
 <span id="201">201</span>
 <span id="202">202</span>
 <span id="203">203</span>
+<span id="204">204</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Error handling in Rust called from R.</span>
 
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::robj::Types</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">throw_r_error</span>, <span class="ident">Robj</span>};
 
 <span class="kw">use</span> <span class="ident">std::convert::Infallible</span>;

@@ -470,118 +470,122 @@
 <span id="470">470</span>
 <span id="471">471</span>
 <span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">std::os::raw</span>;
 
 <span class="comment">///////////////////////////////////////////////////////////////</span>
 <span class="doccomment">/// The following impls wrap specific Rinternals.h functions.</span>
 <span class="doccomment">///</span>
-<span class="kw">impl</span> <span class="ident">Robj</span> {
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Rinternals</span>: <span class="ident">Types</span> <span class="op">+</span> <span class="ident">Conversions</span> {
     <span class="doccomment">/// Return true if this is the null object.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_null</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_null</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isNull</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is a symbol.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_symbol</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_symbol</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isSymbol</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is a boolean (logical) vector</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_logical</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_logical</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isLogical</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is a real (f64) vector.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_real</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_real</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isReal</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is a complex vector.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_complex</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_complex</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isComplex</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is an expression.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_expression</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_expression</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isExpression</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is an environment.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_environment</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_environment</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isEnvironment</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is an environment.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_promise</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_promise</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="self">self</span>.<span class="ident">sexptype</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">PROMSXP</span>
     }
 
     <span class="doccomment">/// Return true if this is a string.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isString</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is an object (ie. has a class attribute).</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_object</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_object</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isObject</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is a S4 object.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_s4</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_s4</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isS4</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is an expression.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_external_pointer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_external_pointer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="self">self</span>.<span class="ident">rtype</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">RType::ExternalPtr</span>
     }
 
     <span class="doccomment">/// Get the source ref.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_current_srcref</span>(<span class="ident">val</span>: <span class="ident">i32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">get_current_srcref</span>(<span class="ident">val</span>: <span class="ident">i32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
         <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_GetCurrentSrcref</span>(<span class="ident">val</span> <span class="kw">as</span> <span class="ident">raw::c_int</span>)) }
     }
 
     <span class="doccomment">/// Get the source filename.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_src_filename</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">get_src_filename</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
         <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_GetSrcFilename</span>(<span class="self">self</span>.<span class="ident">get</span>())) }
     }
 
     <span class="doccomment">/// Convert to a string vector.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_character_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">as_character_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
         <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">Rf_asChar</span>(<span class="self">self</span>.<span class="ident">get</span>())) }
     }
 
     <span class="doccomment">/// Convert to vectors of many kinds.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">coerce_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">sexptype</span>: <span class="ident">u32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">coerce_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">sexptype</span>: <span class="ident">u32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
             <span class="ident">Robj::from_sexp</span>(<span class="ident">Rf_coerceVector</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">sexptype</span> <span class="kw">as</span> <span class="ident">SEXPTYPE</span>))
         })
     }
 
     <span class="doccomment">/// Convert a pairlist (LISTSXP) to a vector list (VECSXP).</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pair_to_vector_list</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">pair_to_vector_list</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">Rf_PairToVectorList</span>(<span class="self">self</span>.<span class="ident">get</span>())) })
     }
 
     <span class="doccomment">/// Convert a vector list (VECSXP) to a pair list (LISTSXP)</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">vector_to_pair_list</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">vector_to_pair_list</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">Rf_VectorToPairList</span>(<span class="self">self</span>.<span class="ident">get</span>())) })
     }
 
     <span class="doccomment">/// Convert a factor to a string vector.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_character_factor</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">as_character_factor</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">Rf_asCharacterFactor</span>(<span class="self">self</span>.<span class="ident">get</span>())) })
     }
 
     <span class="doccomment">/// Allocate a matrix object.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">alloc_matrix</span>(<span class="ident">sexptype</span>: <span class="ident">SEXPTYPE</span>, <span class="ident">rows</span>: <span class="ident">i32</span>, <span class="ident">cols</span>: <span class="ident">i32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">alloc_matrix</span>(<span class="ident">sexptype</span>: <span class="ident">SEXPTYPE</span>, <span class="ident">rows</span>: <span class="ident">i32</span>, <span class="ident">cols</span>: <span class="ident">i32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">Rf_allocMatrix</span>(<span class="ident">sexptype</span>, <span class="ident">rows</span>, <span class="ident">cols</span>)) })
     }
 
     <span class="doccomment">/// Do a deep copy of this object.</span>
     <span class="doccomment">/// Note that clone() only adds a reference.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">duplicate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">duplicate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">Rf_duplicate</span>(<span class="self">self</span>.<span class="ident">get</span>())) })
     }
 
@@ -600,7 +604,7 @@
     <span class="doccomment">///    // assert!(base_env().find_function(sym!(qwertyuiop)).is_none());</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_function</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">TryInto</span><span class="op">&lt;</span><span class="ident">Symbol</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">find_function</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">TryInto</span><span class="op">&lt;</span><span class="ident">Symbol</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">key</span>: <span class="ident">Symbol</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">try_into</span>()<span class="question-mark">?</span>;
         <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_environment</span>() {
             <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::NotFound</span>(<span class="ident">key</span>.<span class="ident">into</span>()));
@@ -622,7 +626,8 @@
         <span class="comment">//     }</span>
         <span class="comment">// }</span>
         <span class="kw">unsafe</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">var</span>) <span class="op">=</span> <span class="ident">catch_r_error</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Rf_findFun</span>(<span class="ident">key</span>.<span class="ident">get</span>(), <span class="self">self</span>.<span class="ident">get</span>())) {
+            <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get</span>();
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">var</span>) <span class="op">=</span> <span class="ident">catch_r_error</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Rf_findFun</span>(<span class="ident">key</span>.<span class="ident">get</span>(), <span class="ident">sexp</span>)) {
                 <span class="prelude-val">Ok</span>(<span class="ident">Robj::from_sexp</span>(<span class="ident">var</span>))
             } <span class="kw">else</span> {
                 <span class="prelude-val">Err</span>(<span class="ident">Error::NotFound</span>(<span class="ident">key</span>.<span class="ident">into</span>()))
@@ -648,7 +653,7 @@
     <span class="doccomment">///    //assert_eq!(global_env().find_var(sym!(imnotasymbol)), None);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_var</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">TryInto</span><span class="op">&lt;</span><span class="ident">Symbol</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">find_var</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">TryInto</span><span class="op">&lt;</span><span class="ident">Symbol</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">key</span>: <span class="ident">Symbol</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">try_into</span>()<span class="question-mark">?</span>;
         <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_environment</span>() {
             <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::NotFound</span>(<span class="ident">key</span>.<span class="ident">into</span>()));
@@ -670,7 +675,8 @@
         <span class="comment">//     }</span>
         <span class="comment">// }</span>
         <span class="kw">unsafe</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">var</span>) <span class="op">=</span> <span class="ident">catch_r_error</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Rf_findVar</span>(<span class="ident">key</span>.<span class="ident">get</span>(), <span class="self">self</span>.<span class="ident">get</span>())) {
+            <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get</span>();
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">var</span>) <span class="op">=</span> <span class="ident">catch_r_error</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Rf_findVar</span>(<span class="ident">key</span>.<span class="ident">get</span>(), <span class="ident">sexp</span>)) {
                 <span class="kw">if</span> <span class="ident">var</span> <span class="op">!</span><span class="op">=</span> <span class="ident">R_UnboundValue</span> {
                     <span class="prelude-val">Ok</span>(<span class="ident">Robj::from_sexp</span>(<span class="ident">var</span>))
                 } <span class="kw">else</span> {
@@ -691,27 +697,27 @@
     <span class="doccomment">///    assert_eq!(iris_dataframe.is_frame(), true);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">eval_promise</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">eval_promise</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_promise</span>() {
             <span class="self">self</span>.<span class="ident">as_promise</span>().<span class="ident">unwrap</span>().<span class="ident">eval</span>()
         } <span class="kw">else</span> {
-            <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">into</span>())
+            <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">clone</span>())
         }
     }
 
     <span class="doccomment">/// Number of columns of a matrix</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ncols</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+    <span class="kw">fn</span> <span class="ident">ncols</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_ncols</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="ident">usize</span> }
     }
 
     <span class="doccomment">/// Number of rows of a matrix</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">nrows</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+    <span class="kw">fn</span> <span class="ident">nrows</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_nrows</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="ident">usize</span> }
     }
 
     <span class="doccomment">/// Internal function used to implement `#[extendr]` impl</span>
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">make_external_ptr</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">p</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span>, <span class="ident">tag</span>: <span class="ident">Robj</span>, <span class="ident">prot</span>: <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">make_external_ptr</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">p</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span>, <span class="ident">tag</span>: <span class="ident">Robj</span>, <span class="ident">prot</span>: <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
         <span class="ident">Robj::from_sexp</span>(<span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
             <span class="ident">R_MakeExternalPtr</span>(<span class="ident">p</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">::std::os::raw::c_void</span>, <span class="ident">tag</span>.<span class="ident">get</span>(), <span class="ident">prot</span>.<span class="ident">get</span>())
         }))
@@ -719,160 +725,160 @@
 
     <span class="doccomment">/// Internal function used to implement `#[extendr]` impl</span>
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">external_ptr_addr</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span> {
+    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">external_ptr_addr</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span> {
         <span class="ident">R_ExternalPtrAddr</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span>
     }
 
     <span class="doccomment">/// Internal function used to implement `#[extendr]` impl</span>
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">external_ptr_tag</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">external_ptr_tag</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
         <span class="ident">Robj::from_sexp</span>(<span class="ident">R_ExternalPtrTag</span>(<span class="self">self</span>.<span class="ident">get</span>()))
     }
 
     <span class="doccomment">/// Internal function used to implement `#[extendr]` impl</span>
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">external_ptr_protected</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">external_ptr_protected</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
         <span class="ident">Robj::from_sexp</span>(<span class="ident">R_ExternalPtrProtected</span>(<span class="self">self</span>.<span class="ident">get</span>()))
     }
 
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">register_c_finalizer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">func</span>: <span class="ident">R_CFinalizer_t</span>) {
+    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">register_c_finalizer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">func</span>: <span class="ident">R_CFinalizer_t</span>) {
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">R_RegisterCFinalizer</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">func</span>));
     }
 
     <span class="doccomment">/// Copy a vector and resize it.</span>
     <span class="doccomment">/// See. &lt;https://github.com/hadley/r-internals/blob/master/vectors.md&gt;</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">xlengthgets</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">new_len</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">xlengthgets</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">new_len</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_vector</span>() {
                 <span class="prelude-val">Ok</span>(<span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
                     <span class="ident">Robj::from_sexp</span>(<span class="ident">Rf_xlengthgets</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">new_len</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>))
                 }))
             } <span class="kw">else</span> {
-                <span class="prelude-val">Err</span>(<span class="ident">Error::ExpectedVector</span>(<span class="self">self</span>.<span class="ident">clone</span>()))
+                <span class="prelude-val">Err</span>(<span class="ident">Error::ExpectedVector</span>(<span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">clone</span>()))
             }
         }
     }
 
     <span class="doccomment">/// Allocated an owned object of a certain type.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">alloc_vector</span>(<span class="ident">sexptype</span>: <span class="ident">u32</span>, <span class="ident">len</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">alloc_vector</span>(<span class="ident">sexptype</span>: <span class="ident">u32</span>, <span class="ident">len</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">Rf_allocVector</span>(<span class="ident">sexptype</span>, <span class="ident">len</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>)) })
     }
 
     <span class="doccomment">/// Return true if two arrays have identical dims.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">conformable</span>(<span class="ident">a</span>: <span class="kw-2">&amp;</span><span class="ident">Robj</span>, <span class="ident">b</span>: <span class="kw-2">&amp;</span><span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">conformable</span>(<span class="ident">a</span>: <span class="kw-2">&amp;</span><span class="ident">Robj</span>, <span class="ident">b</span>: <span class="kw-2">&amp;</span><span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">Rf_conformable</span>(<span class="ident">a</span>.<span class="ident">get</span>(), <span class="ident">b</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> })
     }
 
     <span class="doccomment">/// Return true if this is an array.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_array</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_array</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isArray</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is factor.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_factor</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_factor</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isFactor</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is a data frame.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_frame</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_frame</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isFrame</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is a function or a primitive (CLOSXP, BUILTINSXP or SPECIALSXP)</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_function</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_function</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isFunction</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is an integer vector (INTSXP) but not a factor.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_integer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_integer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isInteger</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is a language object (LANGSXP).</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_language</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_language</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isLanguage</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is NILSXP or LISTSXP.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_pairlist</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_pairlist</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isList</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is a matrix.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_matrix</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_matrix</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isMatrix</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is NILSXP or VECSXP.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_list</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_list</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isNewList</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is INTSXP, LGLSXP or REALSXP but not a factor.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_number</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_number</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isNumber</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is a primitive function BUILTINSXP, SPECIALSXP.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_primitive</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_primitive</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isPrimitive</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is a time series vector (see tsp).</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_ts</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_ts</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isTs</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is a user defined binop.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_user_binop</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_user_binop</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isUserBinop</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is a valid string.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_valid_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_valid_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isValidString</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is a valid string.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_valid_string_f</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_valid_string_f</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isValidStringF</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is a vector.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isVector</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is an atomic vector.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_vector_atomic</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_vector_atomic</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isVectorAtomic</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is a vector list.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_vector_list</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_vector_list</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isVectorList</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is can be made into a vector.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_vectorizable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_vectorizable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_isVectorizable</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Return true if this is RAWSXP.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_raw</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_raw</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="self">self</span>.<span class="ident">rtype</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">RType::Raw</span>
     }
 
     <span class="doccomment">/// Return true if this is CHARSXP.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_char</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_char</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="self">self</span>.<span class="ident">rtype</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">RType::Rstr</span>
     }
 
     <span class="doccomment">/// Check an external pointer tag.</span>
     <span class="doccomment">/// This is used to wrap R objects.</span>
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">check_external_ptr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">expected_tag</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">check_external_ptr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">expected_tag</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">sexptype</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">libR_sys::EXTPTRSXP</span> {
             <span class="kw">let</span> <span class="ident">tag</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">external_ptr_tag</span>() };
             <span class="kw">if</span> <span class="ident">tag</span>.<span class="ident">as_str</span>() <span class="op">=</span><span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">expected_tag</span>) {
@@ -882,66 +888,68 @@
         <span class="bool-val">false</span>
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_missing_arg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_missing_arg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">get</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">R_MissingArg</span> }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_unbound_value</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_unbound_value</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">get</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">R_UnboundValue</span> }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_package_env</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_package_env</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">R_IsPackageEnv</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">package_env_name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">package_env_name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
         <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_PackageEnvName</span>(<span class="self">self</span>.<span class="ident">get</span>())) }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_namespace_env</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_namespace_env</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">R_IsNamespaceEnv</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">namespace_env_spec</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">namespace_env_spec</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
         <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_NamespaceEnvSpec</span>(<span class="self">self</span>.<span class="ident">get</span>())) }
     }
 
     <span class="doccomment">/// Returns `true` if this is an ALTREP object.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_altrep</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_altrep</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">ALTREP</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Returns `true` if this is an integer ALTREP object.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_altinteger</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_altinteger</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">ALTREP</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">TYPEOF</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">=</span><span class="op">=</span> <span class="ident">INTSXP</span> <span class="kw">as</span> <span class="ident">i32</span> }
     }
 
     <span class="doccomment">/// Returns `true` if this is an real ALTREP object.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_altreal</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_altreal</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">ALTREP</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">TYPEOF</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">=</span><span class="op">=</span> <span class="ident">REALSXP</span> <span class="kw">as</span> <span class="ident">i32</span> }
     }
 
     <span class="doccomment">/// Returns `true` if this is an logical ALTREP object.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_altlogical</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_altlogical</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">ALTREP</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">TYPEOF</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">=</span><span class="op">=</span> <span class="ident">LGLSXP</span> <span class="kw">as</span> <span class="ident">i32</span> }
     }
 
     <span class="doccomment">/// Returns `true` if this is a raw ALTREP object.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_altraw</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_altraw</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">ALTREP</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">TYPEOF</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">=</span><span class="op">=</span> <span class="ident">RAWSXP</span> <span class="kw">as</span> <span class="ident">i32</span> }
     }
 
     <span class="doccomment">/// Returns `true` if this is an integer ALTREP object.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_altstring</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_altstring</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">ALTREP</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">TYPEOF</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">=</span><span class="op">=</span> <span class="ident">STRSXP</span> <span class="kw">as</span> <span class="ident">i32</span> }
     }
 
     <span class="doccomment">/// Generate a text representation of this object.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deparse</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">deparse</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
         <span class="kw">use</span> <span class="kw">crate</span> <span class="kw">as</span> <span class="ident">extendr_api</span>;
-        <span class="macro">call!</span>(<span class="string">&quot;deparse&quot;</span>, <span class="self">self</span>)
+        <span class="macro">call!</span>(<span class="string">&quot;deparse&quot;</span>, <span class="self">self</span>.<span class="ident">as_robj</span>())
     }
 }
+
+<span class="kw">impl</span> <span class="ident">Rinternals</span> <span class="kw">for</span> <span class="ident">Robj</span> {}
 </code></pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>
     <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script>

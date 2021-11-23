@@ -687,11 +687,35 @@
 <span id="687">687</span>
 <span id="688">688</span>
 <span id="689">689</span>
+<span id="690">690</span>
+<span id="691">691</span>
+<span id="692">692</span>
+<span id="693">693</span>
+<span id="694">694</span>
+<span id="695">695</span>
+<span id="696">696</span>
+<span id="697">697</span>
+<span id="698">698</span>
+<span id="699">699</span>
+<span id="700">700</span>
+<span id="701">701</span>
+<span id="702">702</span>
+<span id="703">703</span>
+<span id="704">704</span>
+<span id="705">705</span>
+<span id="706">706</span>
+<span id="707">707</span>
+<span id="708">708</span>
+<span id="709">709</span>
+<span id="710">710</span>
+<span id="711">711</span>
 </pre><pre class="rust"><code><span class="doccomment">//! See https://serde.rs/impl-serializer.html</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::error</span>::{<span class="ident">Error</span>, <span class="prelude-ty">Result</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::robj</span>::{<span class="ident">AsStrIter</span>, <span class="ident">GetSexp</span>, <span class="ident">Length</span>, <span class="ident">Rinternals</span>, <span class="ident">Types</span>};
 <span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">Doubles</span>, <span class="ident">Environment</span>, <span class="ident">Function</span>, <span class="ident">Integers</span>, <span class="ident">Language</span>, <span class="ident">Pairlist</span>, <span class="ident">Promise</span>, <span class="ident">Raw</span>, <span class="ident">Rstr</span>, <span class="ident">Symbol</span>,
+    <span class="ident">Doubles</span>, <span class="ident">Environment</span>, <span class="ident">Expression</span>, <span class="ident">Function</span>, <span class="ident">Integers</span>, <span class="ident">Language</span>, <span class="ident">Pairlist</span>, <span class="ident">Primitive</span>, <span class="ident">Promise</span>,
+    <span class="ident">Raw</span>, <span class="ident">Rstr</span>, <span class="ident">Symbol</span>, <span class="ident">S4</span>,
 };
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">List</span>, <span class="ident">Rany</span>, <span class="ident">Robj</span>};
 <span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">ser</span>, <span class="ident">Serialize</span>};
@@ -1200,6 +1224,36 @@
     }
 }
 
+<span class="kw">impl</span> <span class="ident">ser::Serialize</span> <span class="kw">for</span> <span class="ident">Primitive</span> {
+    <span class="kw">fn</span> <span class="ident">serialize</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">serializer</span>: <span class="ident">S</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std::result::Result</span><span class="op">&lt;</span><span class="ident">S::Ok</span>, <span class="ident">S::Error</span><span class="op">&gt;</span>
+    <span class="kw">where</span>
+        <span class="ident">S</span>: <span class="ident">ser::Serializer</span>,
+    {
+        <span class="kw">let</span> <span class="ident">string</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">deparse</span>().<span class="ident">unwrap</span>();
+        <span class="ident">string</span>.<span class="ident">serialize</span>(<span class="ident">serializer</span>)
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">ser::Serialize</span> <span class="kw">for</span> <span class="ident">Expression</span> {
+    <span class="kw">fn</span> <span class="ident">serialize</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">serializer</span>: <span class="ident">S</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std::result::Result</span><span class="op">&lt;</span><span class="ident">S::Ok</span>, <span class="ident">S::Error</span><span class="op">&gt;</span>
+    <span class="kw">where</span>
+        <span class="ident">S</span>: <span class="ident">ser::Serializer</span>,
+    {
+        <span class="kw">let</span> <span class="ident">string</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">deparse</span>().<span class="ident">unwrap</span>();
+        <span class="ident">string</span>.<span class="ident">serialize</span>(<span class="ident">serializer</span>)
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">ser::Serialize</span> <span class="kw">for</span> <span class="ident">S4</span> {
+    <span class="kw">fn</span> <span class="ident">serialize</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">serializer</span>: <span class="ident">S</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std::result::Result</span><span class="op">&lt;</span><span class="ident">S::Ok</span>, <span class="ident">S::Error</span><span class="op">&gt;</span>
+    <span class="kw">where</span>
+        <span class="ident">S</span>: <span class="ident">ser::Serializer</span>,
+    {
+        <span class="kw">let</span> <span class="ident">string</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">deparse</span>().<span class="ident">unwrap</span>();
+        <span class="ident">string</span>.<span class="ident">serialize</span>(<span class="ident">serializer</span>)
+    }
+}
+
 <span class="kw">impl</span> <span class="ident">ser::Serialize</span> <span class="kw">for</span> <span class="ident">Pairlist</span> {
     <span class="kw">fn</span> <span class="ident">serialize</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">serializer</span>: <span class="ident">S</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std::result::Result</span><span class="op">&lt;</span><span class="ident">S::Ok</span>, <span class="ident">S::Error</span><span class="op">&gt;</span>
     <span class="kw">where</span>
@@ -1222,16 +1276,6 @@
     {
         <span class="kw">let</span> <span class="ident">string</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">deparse</span>().<span class="ident">unwrap</span>();
         <span class="ident">string</span>.<span class="ident">serialize</span>(<span class="ident">serializer</span>)
-        <span class="comment">// if let Some(s) = string.as_str() {</span>
-        <span class="comment">//     serializer.serialize_str(s)</span>
-        <span class="comment">// } else {</span>
-        <span class="comment">//     use serde::ser::SerializeSeq;</span>
-        <span class="comment">//     let mut s = serializer.serialize_seq(Some(self.len()))?;</span>
-        <span class="comment">//     for v in string.as_str_iter().unwrap() {</span>
-        <span class="comment">//         s.serialize_element(v)?;</span>
-        <span class="comment">//     }</span>
-        <span class="comment">//     s.end()</span>
-        <span class="comment">// }</span>
     }
 }
 
@@ -1272,7 +1316,7 @@
         } <span class="kw">else</span> {
             <span class="kw">use</span> <span class="ident">serde::ser::SerializeSeq</span>;
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">serializer</span>.<span class="ident">serialize_seq</span>(<span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">len</span>()))<span class="question-mark">?</span>;
-            <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">as_integer_slice</span>().<span class="ident">unwrap</span>() {
+            <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">as_integer_slice</span>().<span class="ident">unwrap</span>() {
                 <span class="comment">// TODO: use get_range when available.</span>
                 <span class="ident">s</span>.<span class="ident">serialize_element</span>(<span class="ident">v</span>)<span class="question-mark">?</span>;
             }
@@ -1300,7 +1344,7 @@
         } <span class="kw">else</span> {
             <span class="kw">use</span> <span class="ident">serde::ser::SerializeSeq</span>;
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">serializer</span>.<span class="ident">serialize_seq</span>(<span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">len</span>()))<span class="question-mark">?</span>;
-            <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">as_real_slice</span>().<span class="ident">unwrap</span>() {
+            <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">as_real_slice</span>().<span class="ident">unwrap</span>() {
                 <span class="comment">// TODO: use get_range when available.</span>
                 <span class="ident">s</span>.<span class="ident">serialize_element</span>(<span class="ident">v</span>)<span class="question-mark">?</span>;
             }
@@ -1323,7 +1367,7 @@
     <span class="kw">where</span>
         <span class="ident">S</span>: <span class="ident">ser::Serializer</span>,
     {
-        <span class="ident">serializer</span>.<span class="ident">serialize_bytes</span>(<span class="self">self</span>.<span class="ident">as_raw_slice</span>().<span class="ident">unwrap</span>())
+        <span class="ident">serializer</span>.<span class="ident">serialize_bytes</span>(<span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">as_raw_slice</span>().<span class="ident">unwrap</span>())
     }
 }
 

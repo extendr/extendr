@@ -388,7 +388,15 @@
 <span id="388">388</span>
 <span id="389">389</span>
 <span id="390">390</span>
+<span id="391">391</span>
+<span id="392">392</span>
+<span id="393">393</span>
+<span id="394">394</span>
+<span id="395">395</span>
+<span id="396">396</span>
+<span id="397">397</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::iter::FromIterator</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::robj::Attributes</span>;
 
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
@@ -452,7 +460,11 @@
             <span class="ident">values</span>.<span class="ident">push</span>(<span class="ident">pair</span>.<span class="ident">value</span>());
         }
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">List::from_values</span>(<span class="ident">values</span>);
-        <span class="ident">res</span>.<span class="ident">set_names</span>(<span class="ident">names</span>).<span class="ident">unwrap</span>().<span class="ident">as_list</span>().<span class="ident">unwrap</span>()
+        <span class="ident">res</span>.<span class="ident">as_robj_mut</span>()
+            .<span class="ident">set_names</span>(<span class="ident">names</span>)
+            .<span class="ident">unwrap</span>()
+            .<span class="ident">as_list</span>()
+            .<span class="ident">unwrap</span>()
     }
 
     <span class="doccomment">/// Wrapper for creating a list (VECSXP) object from an existing `HashMap`.</span>
@@ -778,6 +790,8 @@
         })
     }
 }
+
+<span class="kw">impl</span> <span class="ident">Attributes</span> <span class="kw">for</span> <span class="ident">List</span> {}
 </code></pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>
     <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script>

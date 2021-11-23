@@ -123,11 +123,14 @@
 <span id="123">123</span>
 <span id="124">124</span>
 <span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Argument parsing and checking.</span>
 <span class="doccomment">//!</span>
 
 <span class="kw">use</span> <span class="ident">libR_sys</span>::<span class="kw-2">*</span>;
 <span class="comment">//use crate::robj::*;</span>
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::robj::GetSexp</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::robj::Robj</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::single_threaded</span>;
 
@@ -240,6 +243,7 @@
     };
     (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">sym</span> : <span class="ident">expr</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
         <span class="kw">unsafe</span> {
+            <span class="kw">use</span> <span class="ident">extendr_api::robj::GetSexp</span>;
             <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">make_lang</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">sym</span>);
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tail</span> <span class="op">=</span> <span class="ident">res</span>.<span class="ident">get</span>();
             <span class="macro">append_lang!</span>(<span class="ident">tail</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>);
