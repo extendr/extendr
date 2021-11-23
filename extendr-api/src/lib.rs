@@ -522,7 +522,6 @@ pub fn print_r_error<T: Into<Vec<u8>>>(s: T) {
 mod tests {
     use super::prelude::*;
     use crate as extendr_api;
-    use std::collections::HashMap;
 
     use extendr_macros::extendr;
     use extendr_macros::extendr_module;
@@ -650,11 +649,6 @@ mod tests {
 
     #[extendr]
     pub fn matrix(x: RMatrix<f64>) -> RMatrix<f64> {
-        x
-    }
-
-    #[extendr]
-    pub fn hash_map(x: HashMap<&str, Robj>) -> HashMap<&str, Robj> {
         x
     }
 
@@ -816,13 +810,6 @@ mod tests {
                 let m = RMatrix::new_matrix(1, 2, |r, c| if r == c {1.0} else {0.});
                 let robj = r!(m);
                 assert_eq!(Robj::from_sexp(wrap__matrix(robj.get())), robj);
-
-                // #[extendr]
-                // pub fn hash_map(x: HashMap<&str, Robj>) -> HashMap<&str, Robj> { x }
-                let robj = r!(List::from_values(&[1, 2]));
-                robj.set_attrib(names_symbol(), r!(["a", "b"]))?;
-                let res = Robj::from_sexp(wrap__hash_map(robj.get()));
-                assert_eq!(res.len(), 2);
             }
         }
     }

@@ -317,31 +317,3 @@ impl TryFrom<Robj> for &[f64] {
         robj.as_typed_slice().ok_or(Error::ExpectedReal(robj))
     }
 }
-
-impl TryFrom<Robj> for HashMap<String, Robj> {
-    type Error = Error;
-
-    /// Convert a named VECSXP object into a hashmap of `String`-value pairs.
-    fn try_from(robj: Robj) -> Result<Self> {
-        if let Some(iter) = robj.as_list().map(|l| l.iter()) {
-            Ok(iter
-                .map(|(k, v)| (k.to_string(), v))
-                .collect::<HashMap<String, Robj>>())
-        } else {
-            Err(Error::ExpectedList(robj))
-        }
-    }
-}
-
-impl TryFrom<Robj> for HashMap<&str, Robj> {
-    type Error = Error;
-
-    /// Convert a named VECSXP object into a hashmap of `&str`-value pairs.
-    fn try_from(robj: Robj) -> Result<Self> {
-        if let Some(iter) = robj.as_list().map(|l| l.iter()) {
-            Ok(iter.map(|(k, v)| (k, v)).collect::<HashMap<&str, Robj>>())
-        } else {
-            Err(Error::ExpectedList(robj))
-        }
-    }
-}

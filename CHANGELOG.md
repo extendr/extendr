@@ -28,6 +28,8 @@
 
 - Implement `TryFrom<&ArrayBase> for Robj`, allowing `extendr`-annotated functions to return Arrays from the `ndarray` crate and have them automatically converted to R arrays. Note, even if 1D arrays are returned they will not be returned as vectors.
 
+- Removed `TryFrom` conversions between `Robj` and `HashMap` for consistency. `List::into_hashmap()` and `List::from_hashmap()` should be used instead.
+
 ## extendr 0.2.0
 
 - Added contributing guidelines and code of conduct.
