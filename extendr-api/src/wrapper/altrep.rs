@@ -211,7 +211,7 @@ pub trait AltIntegerImpl: AltrepImpl {
             let num_elems = data.len().min(len - index);
             let dest = &mut data[0..num_elems];
             for (i, d) in dest.iter_mut().enumerate() {
-                *d = self.elt(i);
+                *d = self.elt(i + index);
             }
             num_elems
         }
@@ -292,7 +292,7 @@ pub trait AltRealImpl: AltrepImpl {
             let num_elems = data.len().min(len - index);
             let dest = &mut data[0..num_elems];
             for (i, d) in dest.iter_mut().enumerate() {
-                *d = self.elt(i);
+                *d = self.elt(i + index);
             }
             num_elems
         }
@@ -369,7 +369,7 @@ pub trait AltLogicalImpl: AltrepImpl {
             let num_elems = data.len().min(len - index);
             let dest = &mut data[0..num_elems];
             for (i, d) in dest.iter_mut().enumerate() {
-                *d = self.elt(i);
+                *d = self.elt(i + index);
             }
             num_elems
         }
@@ -410,7 +410,7 @@ pub trait AltRawImpl: AltrepImpl {
             let num_elems = data.len().min(len - index);
             let dest = &mut data[0..num_elems];
             for (i, d) in dest.iter_mut().enumerate() {
-                *d = self.elt(i);
+                *d = self.elt(i + index);
             }
             num_elems
         }
@@ -430,7 +430,7 @@ pub trait AltComplexImpl: AltrepImpl {
             let num_elems = data.len().min(len - index);
             let dest = &mut data[0..num_elems];
             for (i, d) in dest.iter_mut().enumerate() {
-                *d = self.elt(i);
+                *d = self.elt(i + index);
             }
             num_elems
         }

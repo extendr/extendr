@@ -45,6 +45,11 @@ fn test_altinteger() {
         let integers_w_missing: Integers = robj_w_missing.try_into()?;
         assert_eq!(integers_w_missing.elt(9), Rint::from(9));
         assert!(integers_w_missing.elt(5).is_na());
+
+        // tests for get_region()
+        let mut dest = [0i32; 2];
+        integers_w_missing.get_region(2, &mut dest);
+        assert_eq!(dest, [2i32, 3]);
     }
 }
 
@@ -98,6 +103,11 @@ fn test_altreal() {
         if cfg!(not(target_arch = "x86")) {
             assert!(doubles_w_missing.elt(5).is_na());
         }
+
+        // tests for get_region()
+        let mut dest = [0f64; 2];
+        doubles_w_missing.get_region(2, &mut dest);
+        assert_eq!(dest, [2f64, 3f64]);
     }
 }
 
