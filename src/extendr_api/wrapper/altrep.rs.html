@@ -1257,7 +1257,7 @@
             <span class="kw">let</span> <span class="ident">num_elems</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">len</span>().<span class="ident">min</span>(<span class="ident">len</span> <span class="op">-</span> <span class="ident">index</span>);
             <span class="kw">let</span> <span class="ident">dest</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data</span>[<span class="number">0</span>..<span class="ident">num_elems</span>];
             <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">d</span>) <span class="kw">in</span> <span class="ident">dest</span>.<span class="ident">iter_mut</span>().<span class="ident">enumerate</span>() {
-                <span class="kw-2">*</span><span class="ident">d</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">elt</span>(<span class="ident">i</span>);
+                <span class="kw-2">*</span><span class="ident">d</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">elt</span>(<span class="ident">i</span> <span class="op">+</span> <span class="ident">index</span>);
             }
             <span class="ident">num_elems</span>
         }
@@ -1338,7 +1338,7 @@
             <span class="kw">let</span> <span class="ident">num_elems</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">len</span>().<span class="ident">min</span>(<span class="ident">len</span> <span class="op">-</span> <span class="ident">index</span>);
             <span class="kw">let</span> <span class="ident">dest</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data</span>[<span class="number">0</span>..<span class="ident">num_elems</span>];
             <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">d</span>) <span class="kw">in</span> <span class="ident">dest</span>.<span class="ident">iter_mut</span>().<span class="ident">enumerate</span>() {
-                <span class="kw-2">*</span><span class="ident">d</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">elt</span>(<span class="ident">i</span>);
+                <span class="kw-2">*</span><span class="ident">d</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">elt</span>(<span class="ident">i</span> <span class="op">+</span> <span class="ident">index</span>);
             }
             <span class="ident">num_elems</span>
         }
@@ -1415,7 +1415,7 @@
             <span class="kw">let</span> <span class="ident">num_elems</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">len</span>().<span class="ident">min</span>(<span class="ident">len</span> <span class="op">-</span> <span class="ident">index</span>);
             <span class="kw">let</span> <span class="ident">dest</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data</span>[<span class="number">0</span>..<span class="ident">num_elems</span>];
             <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">d</span>) <span class="kw">in</span> <span class="ident">dest</span>.<span class="ident">iter_mut</span>().<span class="ident">enumerate</span>() {
-                <span class="kw-2">*</span><span class="ident">d</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">elt</span>(<span class="ident">i</span>);
+                <span class="kw-2">*</span><span class="ident">d</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">elt</span>(<span class="ident">i</span> <span class="op">+</span> <span class="ident">index</span>);
             }
             <span class="ident">num_elems</span>
         }
@@ -1456,7 +1456,7 @@
             <span class="kw">let</span> <span class="ident">num_elems</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">len</span>().<span class="ident">min</span>(<span class="ident">len</span> <span class="op">-</span> <span class="ident">index</span>);
             <span class="kw">let</span> <span class="ident">dest</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data</span>[<span class="number">0</span>..<span class="ident">num_elems</span>];
             <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">d</span>) <span class="kw">in</span> <span class="ident">dest</span>.<span class="ident">iter_mut</span>().<span class="ident">enumerate</span>() {
-                <span class="kw-2">*</span><span class="ident">d</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">elt</span>(<span class="ident">i</span>);
+                <span class="kw-2">*</span><span class="ident">d</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">elt</span>(<span class="ident">i</span> <span class="op">+</span> <span class="ident">index</span>);
             }
             <span class="ident">num_elems</span>
         }
@@ -1476,7 +1476,7 @@
             <span class="kw">let</span> <span class="ident">num_elems</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">len</span>().<span class="ident">min</span>(<span class="ident">len</span> <span class="op">-</span> <span class="ident">index</span>);
             <span class="kw">let</span> <span class="ident">dest</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data</span>[<span class="number">0</span>..<span class="ident">num_elems</span>];
             <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">d</span>) <span class="kw">in</span> <span class="ident">dest</span>.<span class="ident">iter_mut</span>().<span class="ident">enumerate</span>() {
-                <span class="kw-2">*</span><span class="ident">d</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">elt</span>(<span class="ident">i</span>);
+                <span class="kw-2">*</span><span class="ident">d</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">elt</span>(<span class="ident">i</span> <span class="op">+</span> <span class="ident">index</span>);
             }
             <span class="ident">num_elems</span>
         }
