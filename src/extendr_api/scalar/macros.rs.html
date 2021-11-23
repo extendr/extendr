@@ -820,6 +820,8 @@
 <span id="820">820</span>
 <span id="821">821</span>
 <span id="822">822</span>
+<span id="823">823</span>
+<span id="824">824</span>
 </pre><pre class="rust"><code><span class="doccomment">/// Generates an implementation of a unary operator Trait for a scalar type</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Generates the implementation of the specified unary operator for both `Type` and</span>
@@ -1281,7 +1283,9 @@
                 <span class="kw">fn</span> [<span class="op">&lt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span>:<span class="ident">snake</span> <span class="op">&gt;</span>](<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">other</span>: <span class="macro-nonterminal">$</span><span class="kw">type</span>) {
                     <span class="kw">match</span> (<span class="kw-2">*</span><span class="macro-nonterminal">self</span>, <span class="ident">other</span>.<span class="ident">into</span>()) {
                         (<span class="prelude-val">Some</span>(<span class="ident">lhs</span>), <span class="prelude-val">Some</span>(<span class="ident">rhs</span>)) <span class="op">=</span><span class="op">&gt;</span> {
-                            <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">expr</span>(<span class="ident">lhs</span>, <span class="ident">rhs</span>);
+                            <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">expr</span>;
+                            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> (); <span class="comment">// confuse clippy.</span>
+                            <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="ident">f</span>(<span class="ident">lhs</span>, <span class="ident">rhs</span>);
                         },
                         <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="prelude-val">None</span>,
                     }

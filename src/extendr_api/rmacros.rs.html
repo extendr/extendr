@@ -214,28 +214,6 @@
 <span id="214">214</span>
 <span id="215">215</span>
 <span id="216">216</span>
-<span id="217">217</span>
-<span id="218">218</span>
-<span id="219">219</span>
-<span id="220">220</span>
-<span id="221">221</span>
-<span id="222">222</span>
-<span id="223">223</span>
-<span id="224">224</span>
-<span id="225">225</span>
-<span id="226">226</span>
-<span id="227">227</span>
-<span id="228">228</span>
-<span id="229">229</span>
-<span id="230">230</span>
-<span id="231">231</span>
-<span id="232">232</span>
-<span id="233">233</span>
-<span id="234">234</span>
-<span id="235">235</span>
-<span id="236">236</span>
-<span id="237">237</span>
-<span id="238">238</span>
 </pre><pre class="rust"><code><span class="doccomment">//!</span>
 <span class="doccomment">//! rmacros - a set of macros to call actual R functions in a rusty way.</span>
 <span class="doccomment">//!</span>
@@ -326,28 +304,6 @@ TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
 <span class="macro">macro_rules!</span> <span class="ident">sym</span> {
     ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
         <span class="ident">Robj::from</span>(<span class="ident">Symbol::from_string</span>(<span class="macro">stringify!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>)<span class="kw-2">*</span>)))
-    };
-}
-
-<span class="doccomment">/// Create a list.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Example:</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///     let mylist = list!(x=1, y=2);</span>
-<span class="doccomment">///     assert_eq!(mylist, r!(List::from_pairs(vec![(&quot;x&quot;, r!(1)), (&quot;y&quot;, r!(2))])));</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Panics on error.</span>
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">list</span> {
-    () <span class="op">=</span><span class="op">&gt;</span> {
-        <span class="macro">call!</span>(<span class="string">&quot;list&quot;</span>).<span class="ident">unwrap</span>()
-    };
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
-        <span class="macro">call!</span>(<span class="string">&quot;list&quot;</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>).<span class="ident">unwrap</span>()
     };
 }
 

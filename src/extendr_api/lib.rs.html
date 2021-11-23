@@ -905,19 +905,6 @@
 <span id="905">905</span>
 <span id="906">906</span>
 <span id="907">907</span>
-<span id="908">908</span>
-<span id="909">909</span>
-<span id="910">910</span>
-<span id="911">911</span>
-<span id="912">912</span>
-<span id="913">913</span>
-<span id="914">914</span>
-<span id="915">915</span>
-<span id="916">916</span>
-<span id="917">917</span>
-<span id="918">918</span>
-<span id="919">919</span>
-<span id="920">920</span>
 </pre><pre class="rust"><code><span class="doccomment">//!</span>
 <span class="doccomment">//! A safe and user friendly R extension interface.</span>
 <span class="doccomment">//!</span>
@@ -1442,7 +1429,6 @@
 <span class="kw">mod</span> <span class="ident">tests</span> {
     <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::prelude</span>::<span class="kw-2">*</span>;
     <span class="kw">use</span> <span class="kw">crate</span> <span class="kw">as</span> <span class="ident">extendr_api</span>;
-    <span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
 
     <span class="kw">use</span> <span class="ident">extendr_macros::extendr</span>;
     <span class="kw">use</span> <span class="ident">extendr_macros::extendr_module</span>;
@@ -1570,11 +1556,6 @@
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">matrix</span>(<span class="ident">x</span>: <span class="ident">RMatrix</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">RMatrix</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
-        <span class="ident">x</span>
-    }
-
-    <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">hash_map</span>(<span class="ident">x</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">Robj</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">HashMap</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">Robj</span><span class="op">&gt;</span> {
         <span class="ident">x</span>
     }
 
@@ -1736,13 +1717,6 @@
                 <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">RMatrix::new_matrix</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="op">|</span><span class="ident">r</span>, <span class="ident">c</span><span class="op">|</span> <span class="kw">if</span> <span class="ident">r</span> <span class="op">=</span><span class="op">=</span> <span class="ident">c</span> {<span class="number">1.0</span>} <span class="kw">else</span> {<span class="number">0.</span>});
                 <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r!</span>(<span class="ident">m</span>);
                 <span class="macro">assert_eq!</span>(<span class="ident">Robj::from_sexp</span>(<span class="ident">wrap__matrix</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
-
-                <span class="comment">// #[extendr]</span>
-                <span class="comment">// pub fn hash_map(x: HashMap&lt;&amp;str, Robj&gt;) -&gt; HashMap&lt;&amp;str, Robj&gt; { x }</span>
-                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r!</span>(<span class="ident">List::from_values</span>(<span class="kw-2">&amp;</span>[<span class="number">1</span>, <span class="number">2</span>]));
-                <span class="ident">robj</span>.<span class="ident">set_attrib</span>(<span class="ident">names_symbol</span>(), <span class="macro">r!</span>([<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>]))<span class="question-mark">?</span>;
-                <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">Robj::from_sexp</span>(<span class="ident">wrap__hash_map</span>(<span class="ident">robj</span>.<span class="ident">get</span>()));
-                <span class="macro">assert_eq!</span>(<span class="ident">res</span>.<span class="ident">len</span>(), <span class="number">2</span>);
             }
         }
     }

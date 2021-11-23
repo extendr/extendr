@@ -158,6 +158,16 @@
 <span id="158">158</span>
 <span id="159">159</span>
 <span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
 </pre><pre class="rust"><code><span class="doccomment">//!</span>
 <span class="doccomment">//! Macros for generating wrappers for rust functions.</span>
 
@@ -220,6 +230,7 @@
 <span class="kw">mod</span> <span class="ident">extendr_function</span>;
 <span class="kw">mod</span> <span class="ident">extendr_impl</span>;
 <span class="kw">mod</span> <span class="ident">extendr_module</span>;
+<span class="kw">mod</span> <span class="ident">list</span>;
 <span class="kw">mod</span> <span class="ident">pairlist</span>;
 <span class="kw">mod</span> <span class="ident">pairs</span>;
 <span class="kw">mod</span> <span class="ident">wrappers</span>;
@@ -271,6 +282,15 @@
 <span class="attribute">#[<span class="ident">proc_macro</span>]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pairlist</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">TokenStream</span> {
     <span class="ident">pairlist::pairlist</span>(<span class="ident">item</span>)
+}
+
+<span class="doccomment">/// Create a List R object from a list of name-value pairs.</span>
+<span class="doccomment">/// ```ignore</span>
+<span class="doccomment">///     assert_eq!(list!(a=1, 2, 3), List::from_pairs(&amp;[(&quot;a&quot;, 1), (&quot;&quot;, 2), (&quot;&quot;, 3)]));</span>
+<span class="doccomment">/// ```</span>
+<span class="attribute">#[<span class="ident">proc_macro</span>]</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">list</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">TokenStream</span> {
+    <span class="ident">list::list</span>(<span class="ident">item</span>)
 }
 
 <span class="doccomment">/// Call a function or primitive defined by a text expression with arbitrary parameters.</span>
