@@ -710,6 +710,8 @@ make_typed_slice!(Rint, INTEGER, INTSXP);
 make_typed_slice!(f64, REAL, REALSXP);
 make_typed_slice!(Rfloat, REAL, REALSXP);
 make_typed_slice!(u8, RAW, RAWSXP);
+make_typed_slice!(Robj, VECTOR_PTR, VECSXP);
+make_typed_slice!(Rstr, STRING_PTR, STRSXP);
 
 /// These are helper functions which give access to common properties of R objects.
 #[allow(non_snake_case)]
@@ -806,10 +808,12 @@ impl Robj {
     {
         let iter = names.into_iter();
         let robj = iter.collect_robj();
-        if robj.len() == self.len() {
-            self.set_attrib(wrapper::symbol::names_symbol(), robj)
-        } else {
+        if !robj.is_vector() && !robj.is_pairlist() {
+            Err(Error::ExpectedVector(robj))
+        } else if robj.len() != self.len() {
             Err(Error::NamesLengthMismatch(robj))
+        } else {
+            self.set_attrib(wrapper::symbol::names_symbol(), robj)
         }
     }
 
