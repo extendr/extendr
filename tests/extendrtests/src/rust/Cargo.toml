@@ -20,6 +20,9 @@ extendr-api = "*"
 ## Replace by absolute path to simplify testing.
 ## CI overrides this path.
 extendr-api = { path = "../../../../../extendr/extendr-api"}
+## This allows to run `rcmdcheck` from `./tests/extendrtests/`
+# extendr-api = { path = "../../../../../../../../../extendr/extendr-api"}
+
 
 ## Build against current extendr version on github. Not recommended
 ## for development work.
