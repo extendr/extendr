@@ -29,21 +29,13 @@ fn test_float_not_na_is_not_na() {
         assert!(!Rfloat(f64::MAX).is_na());
         assert!(!Rfloat(f64::MIN).is_na());
         assert!(!Rfloat(f64::MIN_POSITIVE).is_na());
-    }
-}
 
-// https://github.com/extendr/extendr/issues/321
-#[test]
-#[cfg(all(windows, target_arch = "x86"))]
-fn test_float_na_is_na_ignore_signalling_bit_win_x86() {
-    test! {
-        let correct_na_bits = 0x7ff00000u64 << 32 | 1954;
-        // correct_na_bits & (1u64 << 51)
-        let quietened_na_bits = 0x7ff80000u64 << 32 | 1954;
-        let correct_na = Rfloat(unsafe {std::mem::transmute(correct_na_bits)});
-        let quiet_na = Rfloat(unsafe {std::mem::transmute(quietened_na_bits)});
-
-        assert!(correct_na.is_na());
-        assert!(quiet_na.is_na());
+        assert!(!42f64.is_na());
+        assert!(!f64::NAN.is_na());
+        assert!(!f64::INFINITY.is_na());
+        assert!(!f64::NEG_INFINITY.is_na());
+        assert!(!f64::MAX.is_na());
+        assert!(!f64::MIN.is_na());
+        assert!(!f64::MIN_POSITIVE.is_na());
     }
 }
