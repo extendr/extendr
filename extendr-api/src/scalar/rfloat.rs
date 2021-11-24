@@ -35,7 +35,7 @@ impl Rfloat {
 gen_trait_impl!(
     Rfloat,
     f64,
-    |x: &Rfloat| x.0.to_bits() == unsafe { libR_sys::R_NaReal.to_bits() },
+    |x: &Rfloat| x.inner().is_na(),
     unsafe { libR_sys::R_NaReal }
 );
 gen_from_primitive!(Rfloat, f64);
