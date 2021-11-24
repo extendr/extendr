@@ -9,6 +9,7 @@ use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 /// Rfloat has a special NA value, obtained from R headers via R_NaReal.
 ///
 /// Rfloat has the same footprint as an f64 value allowing us to use it in zero copy slices.
+#[repr(C)]
 pub struct Rfloat(pub f64);
 
 impl Rfloat {
@@ -30,12 +31,40 @@ impl Rfloat {
         self.0.is_subnormal()
     }
 }
+#[cfg(not(all(windows, target_arch = "x86")))]
+fn is_float_na(x: &Rfloat) -> bool {
+    let na_bits : u64  = unsafe { std::mem::transmute(libR_sys::R_NaReal) };
+    let x_bits : u64 = unsafe { std::mem::transmute(x.0) };
+    x_bits == na_bits
+}
+
+// https://github.com/extendr/extendr/issues/321
+// Unstable behavior: NaN signalling bit can be unpredictably modified.
+#[cfg(all(windows, target_arch = "x86"))]
+fn is_float_na(x : &Rfloat) -> bool {
+    let na_bits : u64  = unsafe { std::mem::transmute(libR_sys::R_NaReal) };
+    let x_bits : u64 = unsafe { std::mem::transmute(x.0) };
+
+    // Everything except for the NaN signalling bit
+    // 0xfff7ffffffffffff
+    let mask = !(1u64 << 51);
+
+    // All equal bits are set to 0, unequal to 1
+    let xor_x_na = x_bits ^ na_bits;
+
+    // Zero-out signalling bit using mask
+    // If the remaining bits are all zero, we have a `NA_real_` with potentially modified signalling bit
+    // otherwise, definitely not a `NA_real_`
+    (xor_x_na & mask) == 0
+}
+
+
 // `NA_real_` is a `NaN` with specific bit representation.
 // Check that underlying `f64` equals (bitwise) to `NA_real_`.
 gen_trait_impl!(
     Rfloat,
     f64,
-    |x: &Rfloat| x.0.to_bits() == unsafe { libR_sys::R_NaReal.to_bits() },
+    is_float_na,
     unsafe { libR_sys::R_NaReal }
 );
 gen_from_primitive!(Rfloat, f64);
