@@ -1,8 +1,10 @@
 //! See https://serde.rs/impl-serializer.html
 
 use crate::error::{Error, Result};
+use crate::robj::{AsStrIter, GetSexp, Length, Rinternals, Types};
 use crate::{
-    Doubles, Environment, Function, Integers, Language, Pairlist, Promise, Raw, Rstr, Symbol,
+    Doubles, Environment, Expression, Function, Integers, Language, Pairlist, Primitive, Promise,
+    Raw, Rstr, Symbol, S4,
 };
 use crate::{List, Rany, Robj};
 use serde::{ser, Serialize};
@@ -511,6 +513,36 @@ impl ser::Serialize for Symbol {
     }
 }
 
+impl ser::Serialize for Primitive {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: ser::Serializer,
+    {
+        let string = self.deparse().unwrap();
+        string.serialize(serializer)
+    }
+}
+
+impl ser::Serialize for Expression {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: ser::Serializer,
+    {
+        let string = self.deparse().unwrap();
+        string.serialize(serializer)
+    }
+}
+
+impl ser::Serialize for S4 {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: ser::Serializer,
+    {
+        let string = self.deparse().unwrap();
+        string.serialize(serializer)
+    }
+}
+
 impl ser::Serialize for Pairlist {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
     where
@@ -533,16 +565,6 @@ impl ser::Serialize for Function {
     {
         let string = self.deparse().unwrap();
         string.serialize(serializer)
-        // if let Some(s) = string.as_str() {
-        //     serializer.serialize_str(s)
-        // } else {
-        //     use serde::ser::SerializeSeq;
-        //     let mut s = serializer.serialize_seq(Some(self.len()))?;
-        //     for v in string.as_str_iter().unwrap() {
-        //         s.serialize_element(v)?;
-        //     }
-        //     s.end()
-        // }
     }
 }
 
@@ -583,7 +605,7 @@ impl ser::Serialize for Integers {
         } else {
             use serde::ser::SerializeSeq;
             let mut s = serializer.serialize_seq(Some(self.len()))?;
-            for v in self.as_integer_slice().unwrap() {
+            for v in self.as_robj().as_integer_slice().unwrap() {
                 // TODO: use get_range when available.
                 s.serialize_element(v)?;
             }
@@ -611,7 +633,7 @@ impl ser::Serialize for Doubles {
         } else {
             use serde::ser::SerializeSeq;
             let mut s = serializer.serialize_seq(Some(self.len()))?;
-            for v in self.as_real_slice().unwrap() {
+            for v in self.as_robj().as_real_slice().unwrap() {
                 // TODO: use get_range when available.
                 s.serialize_element(v)?;
             }
@@ -634,7 +656,7 @@ impl ser::Serialize for Raw {
     where
         S: ser::Serializer,
     {
-        serializer.serialize_bytes(self.as_raw_slice().unwrap())
+        serializer.serialize_bytes(self.as_robj().as_raw_slice().unwrap())
     }
 }
 

@@ -208,21 +208,12 @@ fn test_try_from_robj() {
 
         use std::collections::HashMap;
         let list = eval_string("list(a = 1L, b = 2L)").unwrap();
-        let hmap1 = [("a".into(), 1.into()), ("b".into(), 2.into())]
-            .iter()
-            .cloned()
-            .collect::<HashMap<String, Robj>>();
-        let hmap2 = [("a", 1.into()), ("b", 2.into())]
+        let hmap = [("a", 1.into()), ("b", 2.into())]
             .iter()
             .cloned()
             .collect::<HashMap<&str, Robj>>();
-        let hmap_owned = <HashMap<String, Robj>>::try_from(list.clone()).unwrap();
-        let hmap_borrowed = <HashMap<&str, Robj>>::try_from(list.clone()).unwrap();
-        assert_eq!(hmap_owned, hmap1);
-        assert_eq!(hmap_borrowed, hmap2);
-
-        assert_eq!(hmap_owned["a"], Robj::from(1));
-        assert_eq!(hmap_owned["b"], Robj::from(2));
+        let hmap_borrowed = list.as_list().unwrap().into_hashmap();
+        assert_eq!(hmap_borrowed, hmap);
 
         assert_eq!(hmap_borrowed["a"], Robj::from(1));
         assert_eq!(hmap_borrowed["b"], Robj::from(2));

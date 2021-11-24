@@ -24,11 +24,7 @@ char_vec <- function(x) .Call(wrap__char_vec, x)
 
 double_vec <- function(x) .Call(wrap__double_vec, x)
 
-list_str_hash <- function(x) .Call(wrap__list_str_hash, x)
-
 try_double_vec <- function(x) .Call(wrap__try_double_vec, x)
-
-try_list_str_hash <- function(x) .Call(wrap__try_list_str_hash, x)
 
 get_doubles_element <- function(x, i) .Call(wrap__get_doubles_element, x, i)
 

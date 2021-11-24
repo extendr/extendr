@@ -38,19 +38,19 @@ mod test {
 
             let u = E::Unit;
             let expected = list!(Unit=NULL);
-            assert_eq!(to_robj(&u).unwrap(), expected);
+            assert_eq!(to_robj(&u).unwrap(), r!(expected));
 
             let n = E::Newtype(1);
             let expected = list!(Newtype=1);
-            assert_eq!(to_robj(&n).unwrap(), expected);
+            assert_eq!(to_robj(&n).unwrap(), r!(expected));
 
             let t = E::Tuple(1, 2);
             let expected = list!(Tuple=list!(1, 2));
-            assert_eq!(to_robj(&t).unwrap(), expected);
+            assert_eq!(to_robj(&t).unwrap(), r!(expected));
 
             let s = E::Struct { a: 1 };
             let expected = list!(Struct=list!(a=1));
-            assert_eq!(to_robj(&s).unwrap(), expected);
+            assert_eq!(to_robj(&s).unwrap(), r!(expected));
         }
     }
 
@@ -85,7 +85,7 @@ mod test {
                 // s4: S4,
             }
 
-            let test = Test {
+            let _test = Test {
                 null: r!(()),
                 symbol: sym!("xyz").try_into()?,
                 pairlist: pairlist!(x=1),
@@ -112,7 +112,7 @@ mod test {
                 // s4: S4,
             };
 
-            let expected = list!(int=1, seq=list!(null = (), symbol = (), pairlist = (), function = (), rstr = (), integer = (), real = (), list = (), raw = ()));
+            let _expected = list!(int=1, seq=list!(null = (), symbol = (), pairlist = (), function = (), rstr = (), integer = (), real = (), list = (), raw = ()));
             // assert_eq!(to_robj(&test).unwrap(), Robj::from(expected));
         }
     }

@@ -46,7 +46,12 @@ pub use super::wrapper::{
 
 pub use super::wrapper::s4::S4;
 
-pub use super::robj::{IntoRobj, Robj, RobjItertools};
+pub use super::wrapper::{Conversions, MatrixConversions};
+
+pub use super::robj::{
+    AsStrIter, Attributes, Eval, GetSexp, IntoRobj, Length, Operators, Rinternals, Robj,
+    RobjItertools, Slices, Types,
+};
 
 pub use super::thread_safety::{
     catch_r_error, handle_panic, single_threaded, this_thread_id, throw_r_error,

@@ -135,7 +135,7 @@ impl_iter_debug!(PairlistIter);
 impl_iter_debug!(StrIter);
 impl_iter_debug!(EnvIter);
 
-impl Robj {
+pub trait AsStrIter: GetSexp + Types + Length + Attributes + Rinternals {
     /// Get an iterator over a string vector.
     /// Returns None if the object is not a string vector
     /// but works for factors.
@@ -163,13 +163,13 @@ impl Robj {
     ///     assert_eq!(obj.as_str_iter().unwrap().map(|s| s.is_na()).collect::<Vec<_>>(), vec![false, false, false]);
     /// }
     /// ```
-    pub fn as_str_iter(&self) -> Option<StrIter> {
+    fn as_str_iter(&self) -> Option<StrIter> {
         let i = 0;
         let len = self.len();
         match self.sexptype() {
             STRSXP => unsafe {
                 Some(StrIter {
-                    vector: self.into(),
+                    vector: self.as_robj().clone(),
                     i,
                     len,
                     levels: R_NilValue,
@@ -179,7 +179,7 @@ impl Robj {
                 if let Some(levels) = self.get_attrib(levels_symbol()) {
                     if self.is_factor() && levels.sexptype() == STRSXP {
                         Some(StrIter {
-                            vector: self.into(),
+                            vector: self.as_robj().clone(),
                             i,
                             len,
                             levels: levels.get(),
@@ -195,3 +195,5 @@ impl Robj {
         }
     }
 }
+
+impl AsStrIter for Robj {}
