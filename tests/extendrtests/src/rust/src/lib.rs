@@ -58,6 +58,27 @@ fn double_vec(x: Vec<f64>) -> Vec<f64> {
     x
 }
 
+// NA-related tests
+#[extendr(use_try_from = true)]
+fn try_rfloat_na() -> Rfloat {
+    Rfloat::na()
+}
+
+#[extendr(use_try_from = true)]
+fn try_rint_na() -> Rint {
+    Rint::na()
+}
+
+#[extendr(use_try_from = true)]
+fn check_rfloat_na(x : Rfloat) -> bool {
+    x.is_na()
+}
+
+#[extendr(use_try_from = true)]
+fn check_rint_na(x : Rint) -> bool {
+    x.is_na()
+}
+
 // Non-atomic types
 // TODO
 
@@ -223,6 +244,12 @@ extendr_module! {
 
     fn doubles_square;
     fn integers_square;
+
+    fn try_rfloat_na;
+    fn try_rint_na;
+
+    fn check_rfloat_na;
+    fn check_rint_na;
 
     fn special_param_names;
     fn __00__special_function_name;
