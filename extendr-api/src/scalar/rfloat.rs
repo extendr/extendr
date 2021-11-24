@@ -33,17 +33,17 @@ impl Rfloat {
 }
 #[cfg(not(all(windows, target_arch = "x86")))]
 fn is_float_na(x: &Rfloat) -> bool {
-    let na_bits : u64  = unsafe { std::mem::transmute(libR_sys::R_NaReal) };
-    let x_bits : u64 = unsafe { std::mem::transmute(x.0) };
+    let na_bits: u64 = unsafe { std::mem::transmute(libR_sys::R_NaReal) };
+    let x_bits: u64 = unsafe { std::mem::transmute(x.0) };
     x_bits == na_bits
 }
 
 // https://github.com/extendr/extendr/issues/321
 // Unstable behavior: NaN signalling bit can be unpredictably modified.
 #[cfg(all(windows, target_arch = "x86"))]
-fn is_float_na(x : &Rfloat) -> bool {
-    let na_bits : u64  = unsafe { std::mem::transmute(libR_sys::R_NaReal) };
-    let x_bits : u64 = unsafe { std::mem::transmute(x.0) };
+fn is_float_na(x: &Rfloat) -> bool {
+    let na_bits: u64 = unsafe { std::mem::transmute(libR_sys::R_NaReal) };
+    let x_bits: u64 = unsafe { std::mem::transmute(x.0) };
 
     // Everything except for the NaN signalling bit
     // 0xfff7ffffffffffff
@@ -58,15 +58,9 @@ fn is_float_na(x : &Rfloat) -> bool {
     (xor_x_na & mask) == 0
 }
 
-
 // `NA_real_` is a `NaN` with specific bit representation.
 // Check that underlying `f64` equals (bitwise) to `NA_real_`.
-gen_trait_impl!(
-    Rfloat,
-    f64,
-    is_float_na,
-    unsafe { libR_sys::R_NaReal }
-);
+gen_trait_impl!(Rfloat, f64, is_float_na, unsafe { libR_sys::R_NaReal });
 gen_from_primitive!(Rfloat, f64);
 gen_from_scalar!(Rfloat, f64);
 gen_sum_iter!(Rfloat, 0f64);
