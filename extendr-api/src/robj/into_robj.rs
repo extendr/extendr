@@ -1,6 +1,5 @@
 use super::*;
 use crate::single_threaded;
-use std::collections::HashMap;
 
 pub(crate) fn str_to_character(s: &str) -> SEXP {
     unsafe {
@@ -530,14 +529,6 @@ impl_from_into_iter! {&'a [T]}
 
 impl_from_as_iterator! {Range<T>}
 impl_from_as_iterator! {RangeInclusive<T>}
-
-impl<'a> From<HashMap<&'a str, Robj>> for Robj {
-    /// Convert a hashmap into a list.
-    fn from(val: HashMap<&'a str, Robj>) -> Self {
-        let mut res: Robj = List::from_values(val.iter().map(|(_, v)| v)).into();
-        res.set_names(val.into_iter().map(|(k, _)| k)).unwrap()
-    }
-}
 
 impl<'a> From<Vec<Robj>> for Robj {
     /// Convert a vector of Robj into a list.

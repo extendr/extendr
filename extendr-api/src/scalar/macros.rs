@@ -459,7 +459,9 @@ macro_rules! gen_binopassign {
                 fn [< $opname:snake >](&mut self, other: $type) {
                     match (*self, other.into()) {
                         (Some(lhs), Some(rhs)) => {
-                            *self = $expr(lhs, rhs);
+                            let f = $expr;
+                            let _ = (); // confuse clippy.
+                            *self = f(lhs, rhs);
                         },
                         _ => *self = None,
                     }

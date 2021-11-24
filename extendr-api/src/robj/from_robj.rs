@@ -1,4 +1,5 @@
 use super::*;
+use crate::wrapper::matrix::MatrixConversions;
 
 /// Trait used for incomming parameter conversion.
 pub trait FromRobj<'a>: Sized {

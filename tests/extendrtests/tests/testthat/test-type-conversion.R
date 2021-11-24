@@ -47,24 +47,7 @@ test_that("From conversion of R types to Rust types and vice versa works", {
 
 
   # Non-atomic types
-  x <- list(a = 1, b = NA_integer_, u = data.frame(a = 1:4),
-            v = c(1, 2), z = "who", f = function(x) x^2)
-
-  x_noname <- x
-  names(x_noname) <- NULL
-
-  e <- new.env()
-  assign("first", 1)
-
-  # conversion does not preserve list order
-  expect_mapequal(list_str_hash(x), x)
-  # TODO: unnamed list returns empty list
-  # FromRobj for HashMap should fail for unnamed lists?
-  # expect_setequal(list_str_hash(x_noname), x_noname)
-  expect_setequal(list_str_hash(list()), list())
-  expect_error(list_str_hash(20:30), "expected a list")
-  expect_error(list_str_hash(NA), "expected a list")
-  expect_error(list_str_hash(e), "expected a list")
+  # TODO
 })
 
 test_that("TryFrom conversions work", {
@@ -80,24 +63,6 @@ test_that("TryFrom conversions work", {
   expect_error(try_double_vec(NULL), "Expected Real got Null")
 
   # Non-atomic types
-  x <- list(a = 1, b = NA_integer_, u = data.frame(a = 1:4),
-            v = c(1, 2), z = "who", f = function(x) x^2)
-
-  x_noname <- x
-  names(x_noname) <- NULL
-
-  e <- new.env()
-  assign("first", 1)
-
-
-  # conversion does not preserve list order
-  expect_mapequal(try_list_str_hash(x), x)
-  # TODO: unnamed list returns empty list
-  # TryFrom for HashMap should fail for unnamed lists?
-  # expect_setequal(try_list_str_hash(x_noname), x_noname)
-  expect_setequal(try_list_str_hash(list()), list())
-  expect_error(try_list_str_hash(20:30), "Expected List got Integer")
-  expect_error(try_list_str_hash(NA), "Expected List got Logical")
-  expect_error(try_list_str_hash(e), "Expected List got Environment")
+  # TODO
 })
 

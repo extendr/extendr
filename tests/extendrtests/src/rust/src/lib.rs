@@ -1,6 +1,5 @@
 use extendr_api::prelude::*;
 mod submodule;
-use std::collections::HashMap;
 use submodule::*;
 
 // Return string `"Hello world!"` to R.
@@ -60,13 +59,7 @@ fn double_vec(x: Vec<f64>) -> Vec<f64> {
 }
 
 // Non-atomic types
-
-// Convert a list to a HashMap<&str, Robj> in rust and back. Does not preserve list order
-// x a list
-#[extendr]
-fn list_str_hash(x: HashMap<&str, Robj>) -> HashMap<&str, Robj> {
-    x
-}
+// TODO
 
 // TryFrom: conversions
 
@@ -80,13 +73,7 @@ fn try_double_vec(x: Vec<f64>) -> Vec<f64> {
 }
 
 // Non-atomic types
-
-// Convert a list to a HashMap<&str, Robj> in rust and back. Does not preserve list order
-// x a list
-#[extendr(use_try_from = true)]
-fn try_list_str_hash(x: HashMap<&str, Robj>) -> HashMap<&str, Robj> {
-    x
-}
+// TODO
 
 // Vector wrappers
 #[extendr(use_try_from = true)]
@@ -229,10 +216,7 @@ extendr_module! {
     fn char_vec;
     fn double_vec;
 
-    fn list_str_hash;
-
     fn try_double_vec;
-    fn try_list_str_hash;
 
     fn get_doubles_element;
     fn get_integers_element;

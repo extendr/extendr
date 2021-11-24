@@ -91,28 +91,6 @@ macro_rules! sym {
     };
 }
 
-/// Create a list.
-///
-/// Example:
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///     let mylist = list!(x=1, y=2);
-///     assert_eq!(mylist, r!(List::from_pairs(vec![("x", r!(1)), ("y", r!(2))])));
-/// }
-/// ```
-///
-/// Panics on error.
-#[macro_export]
-macro_rules! list {
-    () => {
-        call!("list").unwrap()
-    };
-    ($($rest: tt)*) => {
-        call!("list", $($rest)*).unwrap()
-    };
-}
-
 /// Create a dataframe.
 ///
 /// Example:

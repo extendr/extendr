@@ -1,6 +1,7 @@
 //! Wrappers for matrices with deferred arithmetic.
 
 use super::*;
+use crate::robj::GetSexp;
 use std::ops::{Index, IndexMut};
 
 /// Wrapper for creating and using matrices and arrays.
@@ -279,28 +280,30 @@ impl<T, D> From<RArray<T, D>> for Robj {
     }
 }
 
-impl Robj {
-    pub fn as_column<'a, E: 'a>(&self) -> Option<RColumn<E>>
+pub trait MatrixConversions: GetSexp {
+    fn as_column<'a, E: 'a>(&self) -> Option<RColumn<E>>
     where
-        Self: AsTypedSlice<'a, E>,
+        Robj: AsTypedSlice<'a, E>,
     {
-        <RColumn<E>>::try_from(self.clone()).ok()
+        <RColumn<E>>::try_from(self.as_robj().clone()).ok()
     }
 
-    pub fn as_matrix<'a, E: 'a>(&self) -> Option<RMatrix<E>>
+    fn as_matrix<'a, E: 'a>(&self) -> Option<RMatrix<E>>
     where
-        Self: AsTypedSlice<'a, E>,
+        Robj: AsTypedSlice<'a, E>,
     {
-        <RMatrix<E>>::try_from(self.clone()).ok()
+        <RMatrix<E>>::try_from(self.as_robj().clone()).ok()
     }
 
-    pub fn as_matrix3d<'a, E: 'a>(&self) -> Option<RMatrix3D<E>>
+    fn as_matrix3d<'a, E: 'a>(&self) -> Option<RMatrix3D<E>>
     where
-        Self: AsTypedSlice<'a, E>,
+        Robj: AsTypedSlice<'a, E>,
     {
-        <RMatrix3D<E>>::try_from(self.clone()).ok()
+        <RMatrix3D<E>>::try_from(self.as_robj().clone()).ok()
     }
 }
+
+impl MatrixConversions for Robj {}
 
 impl<T> Index<[usize; 2]> for RArray<T, [usize; 2]> {
     type Output = T;

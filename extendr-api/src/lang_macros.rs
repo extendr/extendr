@@ -3,6 +3,7 @@
 
 use libR_sys::*;
 //use crate::robj::*;
+use crate::robj::GetSexp;
 use crate::robj::Robj;
 use crate::single_threaded;
 
@@ -115,6 +116,7 @@ macro_rules! lang {
     };
     ($sym : expr, $($rest: tt)*) => {
         unsafe {
+            use extendr_api::robj::GetSexp;
             let res = make_lang($sym);
             let mut tail = res.get();
             append_lang!(tail, $($rest)*);
