@@ -123,4 +123,3 @@ impl DerefMut for Doubles {
         }
     }
 }
-

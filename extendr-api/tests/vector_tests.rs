@@ -164,4 +164,3 @@ fn test_integers() {
         assert_eq!(s[2], 6);
     }
 }
-
