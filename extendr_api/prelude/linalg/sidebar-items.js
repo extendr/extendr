@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["general_mat_mul","General matrix-matrix multiplication."],["general_mat_vec_mul","General matrix-vector multiplication."]],"trait":[["Dot","Matrix Multiplication"]]});
+initSidebarItems({"fn":[["general_mat_mul","General matrix-matrix multiplication."],["general_mat_vec_mul","General matrix-vector multiplication."],["kron","Kronecker product of 2D matrices."]],"trait":[["Dot","Matrix Multiplication"]]});

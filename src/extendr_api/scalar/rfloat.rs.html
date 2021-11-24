@@ -170,7 +170,7 @@
 <span class="macro">gen_trait_impl!</span>(
     <span class="ident">Rfloat</span>,
     <span class="ident">f64</span>,
-    <span class="op">|</span><span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">Rfloat</span><span class="op">|</span> <span class="ident">x</span>.<span class="number">0</span>.<span class="ident">to_bits</span>() <span class="op">=</span><span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">libR_sys::R_NaReal</span>.<span class="ident">to_bits</span>() },
+    <span class="op">|</span><span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">Rfloat</span><span class="op">|</span> <span class="ident">x</span>.<span class="ident">inner</span>().<span class="ident">is_na</span>(),
     <span class="kw">unsafe</span> { <span class="ident">libR_sys::R_NaReal</span> }
 );
 <span class="macro">gen_from_primitive!</span>(<span class="ident">Rfloat</span>, <span class="ident">f64</span>);
