@@ -133,3 +133,11 @@ where
         Strings::from_values([value.as_ref()])
     }
 }
+
+impl Deref for Strings {
+    type Target = [Rstr];
+
+    fn deref(&self) -> &Self::Target {
+        self.as_slice()
+    }
+}

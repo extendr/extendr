@@ -6,7 +6,7 @@ use std::any::Any;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let extptr = ExternalPtr::from_val(1);
+///     let extptr = ExternalPtr::new(1);
 ///     assert_eq!(*extptr, 1);
 ///     let robj : Robj = extptr.into();
 ///     let extptr2 : ExternalPtr<i32> = robj.try_into().unwrap();
@@ -37,7 +37,9 @@ impl<T: Any> ExternalPtr<T> {
     /// In this case, the R object owns the data and will drop the Rust object
     /// when the last reference is removed via register_c_finalizer.
     ///
-    pub fn from_val(val: T) -> Self {
+    /// An ExternalPtr behaves like a Box except that the information is
+    /// tracked by a R object.
+    pub fn new(val: T) -> Self {
         unsafe {
             // This gets the type name of T as a string. eg. "i32".
             let type_name = std::any::type_name::<T>();

@@ -4,7 +4,7 @@ use lazy_static::lazy_static;
 #[test]
 fn test_externalptr() {
     test! {
-        let extptr = ExternalPtr::from_val(1);
+        let extptr = ExternalPtr::new(1);
         assert_eq!(*extptr, 1);
         let robj : Robj = extptr.into();
         let extptr2 : ExternalPtr<i32> = robj.try_into().unwrap();
@@ -34,7 +34,7 @@ fn test_externalptr_drop() {
         }
 
         // Create an external pointer to test the drop.
-        let extptr = ExternalPtr::from_val(X {});
+        let extptr = ExternalPtr::new(X {});
 
         // The object should be protected here - drop not called yet.
         R!("gc()").unwrap();
@@ -44,5 +44,19 @@ fn test_externalptr_drop() {
         drop(extptr);
         R!("gc()").unwrap();
         assert_eq!(*Z.lock().unwrap(), true);
+    }
+}
+
+#[test]
+fn test_externalptr_deref() {
+    test! {
+        struct X {
+            x: i32,
+            y: i32,
+        }
+
+        let extptr = ExternalPtr::new(X { x: 1, y: 2});
+        assert_eq!(extptr.x, 1);
+        assert_eq!(extptr.y, 2);
     }
 }

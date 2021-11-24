@@ -24,6 +24,10 @@ fn test_strings() {
         let s : Strings = ["x", "y", "z"].iter().collect();
         let v = s.iter().map(|c| c.as_str()).collect::<String>();
         assert_eq!(v, "xyz");
+        assert_eq!(&*s, &["x", "y", "z"]);
+
+        // Strings supports methods of &[Rstr] via Deref.
+        assert_eq!(s.contains(&"x".into()), true);
 
         let s = Strings::from_values(["x", <&str>::na(), "z"]);
         assert_eq!(s.elt(1).is_na(), true);
@@ -64,6 +68,15 @@ fn test_list() {
 
         let s = List::from_values(["x", <&str>::na(), "z"]);
         assert_eq!(s.elt(1)?.is_na(), true);
+        assert_eq!(s.as_slice().iter().any(|s| s.is_na()), true);
+
+        // Deref allows all the immutable methods from slice.
+        let v = s.as_slice().iter().map(|c| c).collect::<Vec<_>>();
+        assert_eq!(v, vec![&r!("x"), &r!(<&str>::na()), &r!("z")]);
+        assert_eq!(v[0], "x");
+        assert_eq!(v[1].is_na(), true);
+        assert_eq!(v.contains(&&r!("x")), true);
+        assert_eq!(s.as_slice().iter().any(Robj::is_na), true);
     }
 }
 
@@ -162,5 +175,19 @@ fn test_integers() {
         assert_eq!(s[0], 4);
         assert_eq!(s[1], 5);
         assert_eq!(s[2], 6);
+    }
+}
+
+#[test]
+fn test_rstr() {
+    test! {
+        let x = Rstr::from_string("xyz");
+        // All methods of &str are usable on Rstr.
+        assert_eq!(x.contains('y'), true);
+        assert_eq!(x.starts_with("xy"), true);
+        assert_eq!(x.len(), 3);
+
+        let x : Rstr = "xyz".into();
+        assert_eq!(x, "xyz");
     }
 }
