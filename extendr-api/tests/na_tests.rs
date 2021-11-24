@@ -19,6 +19,19 @@ fn test_float_from_bits_is_na() {
     }
 }
 
+#[test]
+fn test_float_not_na_is_not_na() {
+    test! {
+        assert!(!Rfloat(42f64).is_na());
+        assert!(!Rfloat(f64::NAN).is_na());
+        assert!(!Rfloat(f64::INFINITY).is_na());
+        assert!(!Rfloat(f64::NEG_INFINITY).is_na());
+        assert!(!Rfloat(f64::MAX).is_na());
+        assert!(!Rfloat(f64::MIN).is_na());
+        assert!(!Rfloat(f64::MIN_POSITIVE).is_na());
+    }
+}
+
 // https://github.com/extendr/extendr/issues/321
 #[test]
 #[cfg(all(windows, target_arch = "x86"))]
