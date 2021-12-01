@@ -34,6 +34,14 @@ doubles_square <- function(input) .Call(wrap__doubles_square, input)
 
 integers_square <- function(input) .Call(wrap__integers_square, input)
 
+try_rfloat_na <- function() .Call(wrap__try_rfloat_na)
+
+try_rint_na <- function() .Call(wrap__try_rint_na)
+
+check_rfloat_na <- function(x) .Call(wrap__check_rfloat_na, x)
+
+check_rint_na <- function(x) .Call(wrap__check_rint_na, x)
+
 #' Test whether `_arg` parameters are treated correctly in R
 #' Executes \code{`_x` - `_y`}
 #' @param _x an integer scalar, ignored

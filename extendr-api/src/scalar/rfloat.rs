@@ -9,6 +9,7 @@ use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 /// Rfloat has a special NA value, obtained from R headers via R_NaReal.
 ///
 /// Rfloat has the same footprint as an f64 value allowing us to use it in zero copy slices.
+#[repr(C)]
 pub struct Rfloat(pub f64);
 
 impl Rfloat {
@@ -30,11 +31,10 @@ impl Rfloat {
         self.0.is_subnormal()
     }
 }
+
 // `NA_real_` is a `NaN` with specific bit representation.
-// Check that underlying `f64` equals (bitwise) to `NA_real_`.
-gen_trait_impl!(Rfloat, f64, |x: &Rfloat| x.inner().is_na(), unsafe {
-    libR_sys::R_NaReal
-});
+// Check that underlying `f64` is `NA_real_`.
+gen_trait_impl!(Rfloat, f64, |x: &Rfloat| x.inner().is_na(), f64::na());
 gen_from_primitive!(Rfloat, f64);
 gen_from_scalar!(Rfloat, f64);
 gen_sum_iter!(Rfloat, 0f64);

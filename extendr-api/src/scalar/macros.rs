@@ -659,13 +659,12 @@ macro_rules! gen_trait_impl {
         //     }
         // }
         paste::paste! {
-            // BUG: Disable NA tests until #321 is resolved
-            // #[doc = "```"]
-            // #[doc = "use extendr_api::prelude::*;"]
-            // #[doc = "test! {"]
-            // #[doc = "    assert!((<" $type ">::na()).is_na());"]
-            // #[doc = "}"]
-            // #[doc = "```"]
+            #[doc = "```"]
+            #[doc = "use extendr_api::prelude::*;"]
+            #[doc = "test! {"]
+            #[doc = "    assert!((<" $type ">::na()).is_na());"]
+            #[doc = "}"]
+            #[doc = "```"]
             impl CanBeNA for $type {
                 /// Return true is the is a NA value.
                 fn is_na(&self) -> bool {
