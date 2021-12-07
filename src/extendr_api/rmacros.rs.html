@@ -244,7 +244,7 @@
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules!</span> <span class="ident">r</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">e</span>: <span class="ident">expr</span>) <span class="op">=</span><span class="op">&gt;</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">e</span>: <span class="ident">expr</span>) =&gt; {
         <span class="ident">Robj::from</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">e</span>)
     };
 }
@@ -267,7 +267,7 @@ TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules!</span> <span class="ident">var</span> {
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {{
+    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) =&gt; {{
         <span class="ident">local_var</span>(<span class="macro">sym!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>)<span class="kw-2">*</span>))
     }};
 }
@@ -284,7 +284,7 @@ TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules!</span> <span class="ident">global</span> {
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {{
+    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) =&gt; {{
         <span class="ident">global_var</span>(<span class="macro">sym!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>)<span class="kw-2">*</span>))
     }};
 }
@@ -302,7 +302,7 @@ TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules!</span> <span class="ident">sym</span> {
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
+    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) =&gt; {
         <span class="ident">Robj::from</span>(<span class="ident">Symbol::from_string</span>(<span class="macro">stringify!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>)<span class="kw-2">*</span>)))
     };
 }
@@ -322,10 +322,10 @@ TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
 <span class="doccomment">/// Panics on error.</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules!</span> <span class="ident">data_frame</span> {
-    () <span class="op">=</span><span class="op">&gt;</span> {
+    () =&gt; {
         <span class="macro">call!</span>(<span class="string">&quot;data.frame&quot;</span>).<span class="ident">unwrap</span>()
     };
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
+    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) =&gt; {
         <span class="macro">call!</span>(<span class="string">&quot;data.frame&quot;</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>).<span class="ident">unwrap</span>()
     };
 }
@@ -346,7 +346,7 @@ TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
 <span class="doccomment">/// Panics on error.</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules!</span> <span class="ident">factor</span> {
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
+    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) =&gt; {
         <span class="macro">call!</span>(<span class="string">&quot;factor&quot;</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>).<span class="ident">unwrap</span>()
     };
 }
@@ -357,9 +357,9 @@ TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
 <span class="doccomment">/// redirection with functions like `sink()` and `capture.output()`</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules!</span> <span class="ident">rprint</span> {
-    () <span class="op">=</span><span class="op">&gt;</span> {
+    () =&gt; {
     };
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
+    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) =&gt; {
         <span class="ident">print_r_output</span>(<span class="macro">format!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>));
     };
 }
@@ -370,10 +370,10 @@ TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
 <span class="doccomment">/// redirection with functions like `sink()` and `capture.output()`</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules!</span> <span class="ident">rprintln</span> {
-    () <span class="op">=</span><span class="op">&gt;</span> {
+    () =&gt; {
         <span class="ident">print_r_output</span>(<span class="string">&quot;\n&quot;</span>);
     };
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
+    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) =&gt; {
         <span class="ident">print_r_output</span>(<span class="macro">format!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>));
         <span class="ident">print_r_output</span>(<span class="string">&quot;\n&quot;</span>);
     };
@@ -382,9 +382,9 @@ TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
 <span class="doccomment">/// Print via the R error stream.</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules!</span> <span class="ident">reprint</span> {
-    () <span class="op">=</span><span class="op">&gt;</span> {
+    () =&gt; {
     };
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
+    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) =&gt; {
         <span class="ident">print_r_error</span>(<span class="macro">format!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>));
     };
 }
@@ -392,10 +392,10 @@ TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
 <span class="doccomment">/// Print with a newline via the R output stream.</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules!</span> <span class="ident">reprintln</span> {
-    () <span class="op">=</span><span class="op">&gt;</span> {
+    () =&gt; {
         <span class="ident">print_r_error</span>(<span class="string">&quot;\n&quot;</span>);
     };
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
+    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) =&gt; {
         <span class="ident">print_r_error</span>(<span class="macro">format!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>));
         <span class="ident">print_r_error</span>(<span class="string">&quot;\n&quot;</span>);
     };
@@ -411,14 +411,14 @@ TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
 <span class="doccomment">/// non-API calls.</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules!</span> <span class="ident">test</span> {
-    () <span class="op">=</span><span class="op">&gt;</span> {
+    () =&gt; {
         <span class="ident">test</span>(<span class="op">|</span><span class="op">|</span> <span class="prelude-val">Ok</span>(()))
     };
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=</span><span class="op">&gt;</span> {
+    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) =&gt; {
         {
             <span class="comment">// this helper function must reside in the macro so it doesn&#39;t get compiled</span>
             <span class="comment">// unless the macro actually gets used (e.g., in testing code)</span>
-            <span class="kw">fn</span> <span class="ident">test</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">FnOnce</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">f</span>: <span class="ident">F</span>) {
+            <span class="kw">fn</span> <span class="ident">test</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">FnOnce</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">f</span>: <span class="ident">F</span>) {
                 <span class="ident">extendr_engine::start_r</span>();
                 <span class="ident">f</span>().<span class="ident">unwrap</span>();
             }

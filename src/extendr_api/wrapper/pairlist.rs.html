@@ -210,7 +210,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Pairlist</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">Robj::from</span>(());
         <span class="self">Self</span> { <span class="ident">robj</span> }
     }
@@ -230,7 +230,7 @@
     <span class="doccomment">///     assert_eq!(unnamed_pairlist_r.names().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;&quot;, &quot;&quot;]);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_pairs</span><span class="op">&lt;</span><span class="ident">NV</span><span class="op">&gt;</span>(<span class="ident">pairs</span>: <span class="ident">NV</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_pairs</span><span class="op">&lt;</span><span class="ident">NV</span><span class="op">&gt;</span>(<span class="ident">pairs</span>: <span class="ident">NV</span>) -&gt; <span class="self">Self</span>
     <span class="kw">where</span>
         <span class="ident">NV</span>: <span class="ident">IntoIterator</span>,
         <span class="ident">NV::IntoIter</span>: <span class="ident">DoubleEndedIterator</span>,
@@ -266,7 +266,7 @@
     <span class="doccomment">///     assert_eq!(pairlist.iter().nth(50), Some((&quot;n50&quot;, r!(50))));</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">PairlistIter</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PairlistIter</span> {
         <span class="kw">unsafe</span> {
             <span class="ident">PairlistIter</span> {
                 <span class="ident">robj</span>: <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">clone</span>(),
@@ -275,17 +275,17 @@
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">names</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">names</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">tag</span>, <span class="kw">_</span>)<span class="op">|</span> <span class="ident">tag</span>)
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">values</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">Robj</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">values</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">Robj</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="kw">_</span>, <span class="ident">robj</span>)<span class="op">|</span> <span class="ident">robj</span>)
     }
 }
 
 <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">wrapper::pairlist::Pairlist</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
         <span class="ident"><span class="self">Self</span>::new</span>()
     }
 }
@@ -307,14 +307,14 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">PairlistIter</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
         <span class="ident">PairlistIter::new</span>()
     }
 }
 
 <span class="kw">impl</span> <span class="ident">PairlistIter</span> {
     <span class="doccomment">/// Make an empty pairlist iterator.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> {
         <span class="kw">unsafe</span> {
             <span class="self">Self</span> {
                 <span class="ident">robj</span>: ().<span class="ident">into</span>(),
@@ -330,18 +330,18 @@
     <span class="comment">// https://github.com/rust-lang/rfcs/blob/master/text/1598-generic_associated_types.md</span>
     <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> (<span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">Robj</span>);
 
-    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">list_elem</span>;
-            <span class="kw">if</span> <span class="ident">sexp</span> <span class="op">=</span><span class="op">=</span> <span class="ident">R_NilValue</span> {
+            <span class="kw">if</span> <span class="ident">sexp</span> <span class="op">==</span> <span class="ident">R_NilValue</span> {
                 <span class="prelude-val">None</span>
             } <span class="kw">else</span> {
                 <span class="kw">let</span> <span class="ident">tag</span> <span class="op">=</span> <span class="ident">TAG</span>(<span class="ident">sexp</span>);
                 <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">Robj::from_sexp</span>(<span class="ident">CAR</span>(<span class="ident">sexp</span>));
                 <span class="self">self</span>.<span class="ident">list_elem</span> <span class="op">=</span> <span class="ident">CDR</span>(<span class="ident">sexp</span>);
-                <span class="kw">if</span> <span class="ident">TYPEOF</span>(<span class="ident">tag</span>) <span class="op">=</span><span class="op">=</span> <span class="ident">SYMSXP</span> <span class="kw">as</span> <span class="ident">i32</span> {
+                <span class="kw">if</span> <span class="ident">TYPEOF</span>(<span class="ident">tag</span>) <span class="op">==</span> <span class="ident">SYMSXP</span> <span class="kw">as</span> <span class="ident">i32</span> {
                     <span class="kw">let</span> <span class="ident">printname</span> <span class="op">=</span> <span class="ident">PRINTNAME</span>(<span class="ident">tag</span>);
-                    <span class="macro">assert!</span>(<span class="ident">TYPEOF</span>(<span class="ident">printname</span>) <span class="kw">as</span> <span class="ident">u32</span> <span class="op">=</span><span class="op">=</span> <span class="ident">CHARSXP</span>);
+                    <span class="macro">assert!</span>(<span class="ident">TYPEOF</span>(<span class="ident">printname</span>) <span class="kw">as</span> <span class="ident">u32</span> <span class="op">==</span> <span class="ident">CHARSXP</span>);
                     <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">to_str</span>(<span class="ident">R_CHAR</span>(<span class="ident">printname</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>);
                     <span class="prelude-val">Some</span>((<span class="ident">std::mem::transmute</span>(<span class="ident">name</span>), <span class="ident">value</span>))
                 } <span class="kw">else</span> {
@@ -366,7 +366,7 @@
     <span class="doccomment">///     assert_eq!(vec, vec![(&quot;a&quot;, r!(1)), (&quot;&quot;, r!(2))]);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::IntoIter</span> {
+    <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::IntoIter</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>();
             <span class="ident">PairlistIter</span> {
@@ -381,7 +381,7 @@
     <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>;
 
     <span class="doccomment">/// You can pass a PairlistIter to a function.</span>
-    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">robj</span>: <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">robj</span>: <span class="ident">Robj</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">pairlist</span>: <span class="ident">Pairlist</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">try_into</span>()<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="ident">pairlist</span>.<span class="ident">into_iter</span>())
     }
@@ -389,14 +389,14 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">PairlistIter</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
     <span class="doccomment">/// You can return a PairlistIter from a function.</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">iter</span>: <span class="ident">PairlistIter</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">iter</span>: <span class="ident">PairlistIter</span>) -&gt; <span class="self">Self</span> {
         <span class="ident">iter</span>.<span class="ident">robj</span>
     }
 }
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span>()<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Pairlist</span> {
     <span class="doccomment">/// Construct a NULL pairlist (which is a NULL).</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="kw">_</span>: ()) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="kw">_</span>: ()) -&gt; <span class="self">Self</span> {
         <span class="ident">Pairlist</span> {
             <span class="ident">robj</span>: <span class="ident">Robj::from</span>(()),
         }

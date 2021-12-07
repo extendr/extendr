@@ -97,7 +97,7 @@
     <span class="doccomment">///     assert_eq!(promise.value(), r!(1));</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_parts</span>(<span class="ident">code</span>: <span class="ident">Robj</span>, <span class="ident">environment</span>: <span class="ident">Environment</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_parts</span>(<span class="ident">code</span>: <span class="ident">Robj</span>, <span class="ident">environment</span>: <span class="ident">Environment</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="ident">Rf_allocSExp</span>(<span class="ident">PROMSXP</span>);
             <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">Robj::from_sexp</span>(<span class="ident">sexp</span>);
@@ -109,7 +109,7 @@
     }
 
     <span class="doccomment">/// Get the code to be executed from the promise.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">code</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">code</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Robj</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>();
             <span class="ident">Robj::from_sexp</span>(<span class="ident">PRCODE</span>(<span class="ident">sexp</span>))
@@ -117,7 +117,7 @@
     }
 
     <span class="doccomment">/// Get the environment for the execution from the promise.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">environment</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Environment</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">environment</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Environment</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>();
             <span class="ident">Robj::from_sexp</span>(<span class="ident">PRENV</span>(<span class="ident">sexp</span>)).<span class="ident">try_into</span>().<span class="ident">unwrap</span>()
@@ -125,7 +125,7 @@
     }
 
     <span class="doccomment">/// Get the value of the promise, once executed.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">value</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">value</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Robj</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>();
             <span class="ident">Robj::from_sexp</span>(<span class="ident">PRVALUE</span>(<span class="ident">sexp</span>))
@@ -133,7 +133,7 @@
     }
 
     <span class="doccomment">/// Get the seen flag (avoids recursion).</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">seen</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">i32</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">seen</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">i32</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>();
             <span class="ident">PRSEEN</span>(<span class="ident">sexp</span>)
@@ -149,7 +149,7 @@
     <span class="doccomment">///    assert_eq!(iris_dataframe.is_frame(), true);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">eval</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">eval</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
         <span class="macro">assert!</span>(<span class="self">self</span>.<span class="ident">is_promise</span>());
         <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">value</span>().<span class="ident">is_unbound_value</span>() {
             <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">value</span>())

@@ -34,7 +34,7 @@
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::pairs::Pairs</span>;
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pairlist</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">TokenStream</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pairlist</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
     <span class="kw">let</span> <span class="ident">pairlist</span> <span class="op">=</span> <span class="macro">parse_macro_input!</span>(<span class="ident">item</span> <span class="kw">as</span> <span class="ident">Pairs</span>);
     <span class="kw">let</span> <span class="ident">pairs</span> <span class="op">=</span> <span class="ident">pairlist</span>
         .<span class="ident">pairs</span>

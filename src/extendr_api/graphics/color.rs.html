@@ -485,13 +485,13 @@
 
 <span class="kw">impl</span> <span class="ident">Color</span> {
     <span class="doccomment">/// Convert to an R color.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_i32</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">i32</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_i32</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">i32</span> {
         <span class="self">self</span>.<span class="number">0</span>
     }
 
     <span class="doccomment">/// Generate a color from a CSS-like hex number.</span>
     <span class="doccomment">/// eg. `Color::hex(0xF0F8FF)`</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">hex</span>(<span class="ident">hex</span>: <span class="ident">u32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">hex</span>(<span class="ident">hex</span>: <span class="ident">u32</span>) -&gt; <span class="ident">Color</span> {
         <span class="kw">let</span> <span class="ident">red</span> <span class="op">=</span> (<span class="ident">hex</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">16</span>) <span class="op">&amp;</span> <span class="number">0xff</span>;
         <span class="kw">let</span> <span class="ident">green</span> <span class="op">=</span> (<span class="ident">hex</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">8</span>) <span class="op">&amp;</span> <span class="number">0xff</span>;
         <span class="kw">let</span> <span class="ident">blue</span> <span class="op">=</span> <span class="ident">hex</span> <span class="op">&amp;</span> <span class="number">0xff</span>;
@@ -500,7 +500,7 @@
 
     <span class="doccomment">/// Generate a color from a 3 digit CSS-like hex number.</span>
     <span class="doccomment">/// eg. `Color::hex(0xF0F)`</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">hex3</span>(<span class="ident">hex</span>: <span class="ident">u32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">hex3</span>(<span class="ident">hex</span>: <span class="ident">u32</span>) -&gt; <span class="ident">Color</span> {
         <span class="kw">let</span> <span class="ident">red</span> <span class="op">=</span> ((<span class="ident">hex</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">8</span>) <span class="op">&amp;</span> <span class="number">0xf</span>) <span class="op">*</span> <span class="number">0xff</span> <span class="op">/</span> <span class="number">0x0f</span>;
         <span class="kw">let</span> <span class="ident">green</span> <span class="op">=</span> ((<span class="ident">hex</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">4</span>) <span class="op">&amp;</span> <span class="number">0xf</span>) <span class="op">*</span> <span class="number">0xff</span> <span class="op">/</span> <span class="number">0x0f</span>;
         <span class="kw">let</span> <span class="ident">blue</span> <span class="op">=</span> (<span class="ident">hex</span> <span class="op">&amp;</span> <span class="number">0xf</span>) <span class="op">*</span> <span class="number">0xff</span> <span class="op">/</span> <span class="number">0x0f</span>;
@@ -508,12 +508,12 @@
     }
 
     <span class="doccomment">/// Generate a color from rgb components (0-255).</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rgb</span>(<span class="ident">red</span>: <span class="ident">u8</span>, <span class="ident">green</span>: <span class="ident">u8</span>, <span class="ident">blue</span>: <span class="ident">u8</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rgb</span>(<span class="ident">red</span>: <span class="ident">u8</span>, <span class="ident">green</span>: <span class="ident">u8</span>, <span class="ident">blue</span>: <span class="ident">u8</span>) -&gt; <span class="ident">Color</span> {
         <span class="ident">Color</span>(<span class="ident">red</span> <span class="kw">as</span> <span class="ident">i32</span> <span class="op">|</span> (<span class="ident">green</span> <span class="kw">as</span> <span class="ident">i32</span>) <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">8</span> <span class="op">|</span> (<span class="ident">blue</span> <span class="kw">as</span> <span class="ident">i32</span>) <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">16</span> <span class="op">|</span> <span class="number">0xff</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">24</span>)
     }
 
     <span class="doccomment">/// Generate a color from rgba components (0-255).</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rgba</span>(<span class="ident">red</span>: <span class="ident">u8</span>, <span class="ident">green</span>: <span class="ident">u8</span>, <span class="ident">blue</span>: <span class="ident">u8</span>, <span class="ident">alpha</span>: <span class="ident">u8</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rgba</span>(<span class="ident">red</span>: <span class="ident">u8</span>, <span class="ident">green</span>: <span class="ident">u8</span>, <span class="ident">blue</span>: <span class="ident">u8</span>, <span class="ident">alpha</span>: <span class="ident">u8</span>) -&gt; <span class="ident">Color</span> {
         <span class="ident">Color</span>(<span class="ident">red</span> <span class="kw">as</span> <span class="ident">i32</span> <span class="op">|</span> (<span class="ident">green</span> <span class="kw">as</span> <span class="ident">i32</span>) <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">8</span> <span class="op">|</span> (<span class="ident">blue</span> <span class="kw">as</span> <span class="ident">i32</span>) <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">16</span> <span class="op">|</span> (<span class="ident">alpha</span> <span class="kw">as</span> <span class="ident">i32</span>) <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">24</span>)
     }
 }
@@ -522,445 +522,445 @@
     <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::Color</span>;
 
     <span class="doccomment">/// https://www.w3.org/TR/2018/REC-css-color-3-20180619/</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">aliceblue</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">aliceblue</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xF0F8FF</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">antiquewhite</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">antiquewhite</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFAEBD7</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">aqua</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">aqua</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x00FFFF</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">aquamarine</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">aquamarine</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x7FFFD4</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">azure</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">azure</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xF0FFFF</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">beige</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">beige</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xF5F5DC</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bisque</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bisque</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFFE4C4</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">black</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">black</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x000000</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">blanchedalmond</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">blanchedalmond</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFFEBCD</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">blue</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">blue</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x0000FF</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">blueviolet</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">blueviolet</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x8A2BE2</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">brown</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">brown</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xA52A2A</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">burlywood</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">burlywood</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xDEB887</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">cadetblue</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">cadetblue</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x5F9EA0</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">chartreuse</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">chartreuse</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x7FFF00</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">chocolate</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">chocolate</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xD2691E</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">coral</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">coral</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFF7F50</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">cornflowerblue</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">cornflowerblue</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x6495ED</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">cornsilk</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">cornsilk</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFFF8DC</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">crimson</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">crimson</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xDC143C</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">cyan</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">cyan</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x00FFFF</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkblue</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkblue</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x00008B</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkcyan</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkcyan</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x008B8B</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkgoldenrod</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkgoldenrod</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xB8860B</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkgray</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkgray</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xA9A9A9</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkgreen</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkgreen</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x006400</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkgrey</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkgrey</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xA9A9A9</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkkhaki</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkkhaki</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xBDB76B</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkmagenta</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkmagenta</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x8B008B</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkolivegreen</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkolivegreen</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x556B2F</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkorange</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkorange</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFF8C00</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkorchid</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkorchid</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x9932CC</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkred</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkred</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x8B0000</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darksalmon</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darksalmon</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xE9967A</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkseagreen</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkseagreen</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x8FBC8F</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkslateblue</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkslateblue</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x483D8B</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkslategray</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkslategray</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x2F4F4F</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkslategrey</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkslategrey</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x2F4F4F</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkturquoise</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkturquoise</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x00CED1</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkviolet</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">darkviolet</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x9400D3</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deeppink</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deeppink</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFF1493</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deepskyblue</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deepskyblue</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x00BFFF</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dimgray</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dimgray</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x696969</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dimgrey</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dimgrey</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x696969</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dodgerblue</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dodgerblue</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x1E90FF</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">firebrick</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">firebrick</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xB22222</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">floralwhite</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">floralwhite</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFFFAF0</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">forestgreen</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">forestgreen</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x228B22</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fuchsia</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fuchsia</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFF00FF</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">gainsboro</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">gainsboro</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xDCDCDC</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ghostwhite</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ghostwhite</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xF8F8FF</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">gold</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">gold</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFFD700</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">goldenrod</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">goldenrod</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xDAA520</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">gray</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">gray</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x808080</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">green</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">green</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x008000</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">greenyellow</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">greenyellow</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xADFF2F</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">grey</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">grey</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x808080</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">honeydew</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">honeydew</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xF0FFF0</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">hotpink</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">hotpink</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFF69B4</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">indianred</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">indianred</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xCD5C5C</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">indigo</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">indigo</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x4B0082</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ivory</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ivory</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFFFFF0</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">khaki</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">khaki</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xF0E68C</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lavender</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lavender</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xE6E6FA</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lavenderblush</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lavenderblush</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFFF0F5</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lawngreen</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lawngreen</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x7CFC00</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lemonchiffon</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lemonchiffon</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFFFACD</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightblue</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightblue</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xADD8E6</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightcoral</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightcoral</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xF08080</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightcyan</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightcyan</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xE0FFFF</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightgoldenrodyellow</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightgoldenrodyellow</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFAFAD2</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightgray</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightgray</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xD3D3D3</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightgreen</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightgreen</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x90EE90</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightgrey</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightgrey</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xD3D3D3</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightpink</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightpink</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFFB6C1</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightsalmon</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightsalmon</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFFA07A</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightseagreen</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightseagreen</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x20B2AA</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightskyblue</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightskyblue</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x87CEFA</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightslategray</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightslategray</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x778899</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightslategrey</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightslategrey</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x778899</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightsteelblue</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightsteelblue</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xB0C4DE</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightyellow</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lightyellow</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFFFFE0</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lime</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lime</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x00FF00</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">limegreen</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">limegreen</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x32CD32</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">linen</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">linen</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFAF0E6</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">magenta</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">magenta</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFF00FF</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">maroon</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">maroon</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x800000</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mediumaquamarine</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mediumaquamarine</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x66CDAA</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mediumblue</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mediumblue</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x0000CD</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mediumorchid</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mediumorchid</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xBA55D3</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mediumpurple</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mediumpurple</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x9370DB</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mediumseagreen</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mediumseagreen</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x3CB371</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mediumslateblue</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mediumslateblue</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x7B68EE</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mediumspringgreen</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mediumspringgreen</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x00FA9A</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mediumturquoise</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mediumturquoise</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x48D1CC</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mediumvioletred</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mediumvioletred</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xC71585</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">midnightblue</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">midnightblue</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x191970</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mintcream</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mintcream</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xF5FFFA</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mistyrose</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mistyrose</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFFE4E1</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">moccasin</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">moccasin</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFFE4B5</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">navajowhite</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">navajowhite</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFFDEAD</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">navy</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">navy</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x000080</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">oldlace</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">oldlace</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFDF5E6</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">olive</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">olive</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x808000</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">olivedrab</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">olivedrab</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x6B8E23</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">orange</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">orange</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFFA500</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">orangered</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">orangered</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFF4500</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">orchid</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">orchid</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xDA70D6</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">palegoldenrod</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">palegoldenrod</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xEEE8AA</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">palegreen</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">palegreen</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x98FB98</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">paleturquoise</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">paleturquoise</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xAFEEEE</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">palevioletred</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">palevioletred</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xDB7093</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">papayawhip</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">papayawhip</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFFEFD5</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">peachpuff</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">peachpuff</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFFDAB9</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">peru</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">peru</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xCD853F</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pink</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pink</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFFC0CB</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">plum</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">plum</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xDDA0DD</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">powderblue</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">powderblue</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xB0E0E6</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">purple</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">purple</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x800080</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">red</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">red</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFF0000</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rosybrown</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rosybrown</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xBC8F8F</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">royalblue</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">royalblue</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x4169E1</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">saddlebrown</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">saddlebrown</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x8B4513</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">salmon</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">salmon</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFA8072</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sandybrown</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sandybrown</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xF4A460</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">seagreen</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">seagreen</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x2E8B57</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">seashell</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">seashell</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFFF5EE</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sienna</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sienna</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xA0522D</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">silver</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">silver</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xC0C0C0</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">skyblue</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">skyblue</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x87CEEB</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">slateblue</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">slateblue</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x6A5ACD</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">slategray</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">slategray</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x708090</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">slategrey</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">slategrey</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x708090</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">snow</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">snow</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFFFAFA</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">springgreen</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">springgreen</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x00FF7F</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">steelblue</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">steelblue</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x4682B4</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">tan</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">tan</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xD2B48C</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">teal</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">teal</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x008080</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">thistle</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">thistle</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xD8BFD8</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">tomato</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">tomato</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFF6347</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">turquoise</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">turquoise</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x40E0D0</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">violet</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">violet</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xEE82EE</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">wheat</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">wheat</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xF5DEB3</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">white</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">white</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFFFFFF</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">whitesmoke</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">whitesmoke</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xF5F5F5</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">yellow</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">yellow</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0xFFFF00</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">yellowgreen</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Color</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">yellowgreen</span>() -&gt; <span class="ident">Color</span> {
         <span class="ident">Color::hex</span>(<span class="number">0x9ACD32</span>)
     }
 }

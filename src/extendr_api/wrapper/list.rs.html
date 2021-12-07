@@ -395,6 +395,15 @@
 <span id="395">395</span>
 <span id="396">396</span>
 <span id="397">397</span>
+<span id="398">398</span>
+<span id="399">399</span>
+<span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
+<span id="404">404</span>
+<span id="405">405</span>
+<span id="406">406</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::robj::Attributes</span>;
 <span class="kw">use</span> <span class="ident">std::iter::FromIterator</span>;
 
@@ -406,7 +415,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">List</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
         <span class="ident">List::new</span>(<span class="number">0</span>)
     }
 }
@@ -421,7 +430,7 @@
     <span class="doccomment">///     assert_eq!(list.len(), 10);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">size</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">size</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">Robj::alloc_vector</span>(<span class="ident">VECSXP</span>, <span class="ident">size</span>);
         <span class="self">Self</span> { <span class="ident">robj</span> }
     }
@@ -435,7 +444,7 @@
     <span class="doccomment">///     assert_eq!(list.len(), 3);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_values</span><span class="op">&lt;</span><span class="ident">V</span><span class="op">&gt;</span>(<span class="ident">values</span>: <span class="ident">V</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_values</span><span class="op">&lt;</span><span class="ident">V</span><span class="op">&gt;</span>(<span class="ident">values</span>: <span class="ident">V</span>) -&gt; <span class="self">Self</span>
     <span class="kw">where</span>
         <span class="ident">V</span>: <span class="ident">IntoIterator</span>,
         <span class="ident">V::IntoIter</span>: <span class="ident">ExactSizeIterator</span>,
@@ -446,7 +455,7 @@
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_pairs</span><span class="op">&lt;</span><span class="ident">V</span><span class="op">&gt;</span>(<span class="ident">pairs</span>: <span class="ident">V</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_pairs</span><span class="op">&lt;</span><span class="ident">V</span><span class="op">&gt;</span>(<span class="ident">pairs</span>: <span class="ident">V</span>) -&gt; <span class="self">Self</span>
     <span class="kw">where</span>
         <span class="ident">V</span>: <span class="ident">IntoIterator</span>,
         <span class="ident">V::IntoIter</span>: <span class="ident">ExactSizeIterator</span> <span class="op">+</span> <span class="ident">Clone</span>,
@@ -485,7 +494,7 @@
     <span class="doccomment">///     assert_eq!(names, vec![&quot;a&quot;, &quot;b&quot;]);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_hashmap</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span>(<span class="ident">val</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">K</span>, <span class="ident">Robj</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_hashmap</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span>(<span class="ident">val</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">K</span>, <span class="ident">Robj</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>
     <span class="kw">where</span>
         <span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     {
@@ -496,7 +505,7 @@
 
     <span class="doccomment">/// Build a list using separate names and values iterators.</span>
     <span class="doccomment">/// Used internally by the list! macro.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_names_and_values</span><span class="op">&lt;</span><span class="ident">N</span>, <span class="ident">V</span><span class="op">&gt;</span>(<span class="ident">names</span>: <span class="ident">N</span>, <span class="ident">values</span>: <span class="ident">V</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_names_and_values</span><span class="op">&lt;</span><span class="ident">N</span>, <span class="ident">V</span><span class="op">&gt;</span>(<span class="ident">names</span>: <span class="ident">N</span>, <span class="ident">values</span>: <span class="ident">V</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>
     <span class="kw">where</span>
         <span class="ident">N</span>: <span class="ident">IntoIterator</span>,
         <span class="ident">N::IntoIter</span>: <span class="ident">ExactSizeIterator</span>,
@@ -519,7 +528,7 @@
     <span class="doccomment">///     assert_eq!(objects, vec![r!(1), r!(2), r!(3)]);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">values</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ListIter</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">values</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ListIter</span> {
         <span class="ident">ListIter::from_parts</span>(<span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">clone</span>(), <span class="number">0</span>, <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">len</span>())
     }
 
@@ -532,7 +541,7 @@
     <span class="doccomment">///     assert_eq!(names_and_values, vec![(&quot;a&quot;, r!(1)), (&quot;&quot;, r!(2))]);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">NamedListIter</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">NamedListIter</span> {
         <span class="comment">// TODO: Make a proper NamedListIter.</span>
         <span class="self">self</span>.<span class="ident">names</span>()
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">n</span>.<span class="ident">zip</span>(<span class="self">self</span>.<span class="ident">values</span>()))
@@ -540,7 +549,7 @@
     }
 
     <span class="doccomment">/// Get the list a slice of `Robj`s.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_slice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">Robj</span>] {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_slice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[<span class="ident">Robj</span>] {
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">DATAPTR</span>(<span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">Robj</span>;
             <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">len</span>();
@@ -549,7 +558,7 @@
     }
 
     <span class="doccomment">/// Get a reference to an element in the list.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="ident">i</span> <span class="op">&gt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">len</span>() {
             <span class="prelude-val">Err</span>(<span class="ident">Error::OutOfRange</span>(<span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">clone</span>()))
         } <span class="kw">else</span> {
@@ -561,7 +570,7 @@
     }
 
     <span class="doccomment">/// Set an element in the list.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_elt</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>, <span class="ident">value</span>: <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_elt</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>, <span class="ident">value</span>: <span class="ident">Robj</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">if</span> <span class="ident">i</span> <span class="op">&gt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">len</span>() {
                 <span class="prelude-val">Err</span>(<span class="ident">Error::OutOfRange</span>(<span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">clone</span>()))
@@ -585,7 +594,7 @@
     <span class="doccomment">///     assert_eq!(names_and_values, vec![(&quot;a&quot;, r!(1)), (&quot;&quot;, r!(2))].into_iter().collect::&lt;HashMap&lt;_, _&gt;&gt;());</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">into_hashmap</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">HashMap</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">Robj</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">into_hashmap</span>(<span class="self">self</span>) -&gt; <span class="ident">HashMap</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">Robj</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">iter</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>()
     }
 }
@@ -603,7 +612,7 @@
     <span class="doccomment">///     assert_eq!(vec, vec![(&quot;a&quot;, r!(1)), (&quot;&quot;, r!(2))]);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident"><span class="self">Self</span>::IntoIter</span> {
+    <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::IntoIter</span> {
         <span class="self">self</span>.<span class="ident">iter</span>()
     }
 }
@@ -635,18 +644,18 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">ListIter</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
         <span class="ident">ListIter::new</span>()
     }
 }
 
 <span class="kw">impl</span> <span class="ident">ListIter</span> {
     <span class="comment">// A new, empty list iterator.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> {
         <span class="ident">ListIter::from_parts</span>(().<span class="ident">into</span>(), <span class="number">0</span>, <span class="number">0</span>)
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">from_parts</span>(<span class="ident">robj</span>: <span class="ident">Robj</span>, <span class="ident">i</span>: <span class="ident">usize</span>, <span class="ident">len</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">from_parts</span>(<span class="ident">robj</span>: <span class="ident">Robj</span>, <span class="ident">i</span>: <span class="ident">usize</span>, <span class="ident">len</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span> {
         <span class="self">Self</span> { <span class="ident">robj</span>, <span class="ident">i</span>, <span class="ident">len</span> }
     }
 }
@@ -654,11 +663,11 @@
 <span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">ListIter</span> {
     <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">Robj</span>;
 
-    <span class="kw">fn</span> <span class="ident">size_hint</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">usize</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) {
+    <span class="kw">fn</span> <span class="ident">size_hint</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (<span class="ident">usize</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) {
         (<span class="self">self</span>.<span class="ident">len</span>, <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">len</span>))
     }
 
-    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">i</span>;
         <span class="self">self</span>.<span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
         <span class="kw">if</span> <span class="ident">i</span> <span class="op">&gt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span> {
@@ -668,7 +677,7 @@
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">nth</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">nth</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="ident">n</span>;
         <span class="self">self</span>.<span class="ident">next</span>()
     }
@@ -676,7 +685,7 @@
 
 <span class="kw">impl</span> <span class="ident">ExactSizeIterator</span> <span class="kw">for</span> <span class="ident">ListIter</span> {
     <span class="doccomment">/// Length of a list iterator.</span>
-    <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+    <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
         <span class="self">self</span>.<span class="ident">len</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">i</span>
     }
 }
@@ -708,7 +717,7 @@
     <span class="doccomment">///     assert_eq!(vec.0, vec![1, 2]);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">robj</span>: <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">robj</span>: <span class="ident">Robj</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">listiter</span>: <span class="ident">ListIter</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">try_into</span>()<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">res</span>: <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">listiter</span>
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">robj</span><span class="op">|</span> <span class="ident">T::try_from</span>(<span class="ident">robj</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">into</span>()))
@@ -729,7 +738,7 @@
     <span class="doccomment">///     assert_eq!(vec.collect::&lt;Vec&lt;_&gt;&gt;(), vec![r!(1), r!(2)]);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">robj</span>: <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">robj</span>: <span class="ident">Robj</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">list</span>: <span class="ident">List</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">try_into</span>()<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="ident">list</span>.<span class="ident">values</span>())
     }
@@ -744,35 +753,35 @@
     <span class="doccomment">///     assert_eq!(Robj::from(listiter), Robj::from(list!(1, 2)));</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">iter</span>: <span class="ident">ListIter</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">iter</span>: <span class="ident">ListIter</span>) -&gt; <span class="self">Self</span> {
         <span class="ident">iter</span>.<span class="ident">robj</span>
     }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">FromRobj</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ListIter</span> {
-    <span class="kw">fn</span> <span class="ident">from_robj</span>(<span class="ident">robj</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std::result::Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">from_robj</span>(<span class="ident">robj</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>) -&gt; <span class="ident">std::result::Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
         <span class="ident">robj</span>.<span class="ident">as_list</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">l</span><span class="op">|</span> <span class="ident">l</span>.<span class="ident">values</span>()).<span class="ident">ok_or</span>(<span class="string">&quot;Not a list.&quot;</span>)
     }
 }
 
 <span class="comment">// TODO: use Rstr or Sym instead of String.</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">KeyValue</span> {
-    <span class="kw">fn</span> <span class="ident">key</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span>;
-    <span class="kw">fn</span> <span class="ident">value</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span>;
+    <span class="kw">fn</span> <span class="ident">key</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">String</span>;
+    <span class="kw">fn</span> <span class="ident">value</span>(<span class="self">self</span>) -&gt; <span class="ident">Robj</span>;
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">KeyValue</span> <span class="kw">for</span> (<span class="ident">T</span>, <span class="ident">Robj</span>) {
-    <span class="kw">fn</span> <span class="ident">key</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+    <span class="kw">fn</span> <span class="ident">key</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">String</span> {
         <span class="self">self</span>.<span class="number">0</span>.<span class="ident">as_ref</span>().<span class="ident">to_owned</span>()
     }
-    <span class="kw">fn</span> <span class="ident">value</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">value</span>(<span class="self">self</span>) -&gt; <span class="ident">Robj</span> {
         <span class="self">self</span>.<span class="number">1</span>
     }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">FromIterator</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">List</span> {
     <span class="doccomment">/// Convert an iterator to a List object.</span>
-    <span class="kw">fn</span> <span class="ident">from_iter</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">iter</span>: <span class="ident">I</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">from_iter</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">iter</span>: <span class="ident">I</span>) -&gt; <span class="self">Self</span> {
         <span class="ident"><span class="kw">crate</span>::single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">values</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">SEXP</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">iter</span>
                 .<span class="ident">into_iter</span>()
@@ -792,6 +801,15 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Attributes</span> <span class="kw">for</span> <span class="ident">List</span> {}
+
+<span class="kw">impl</span> <span class="ident">Deref</span> <span class="kw">for</span> <span class="ident">List</span> {
+    <span class="kw">type</span> <span class="ident">Target</span> <span class="op">=</span> [<span class="ident">Robj</span>];
+
+    <span class="doccomment">/// Lists behave like slices of Robj.</span>
+    <span class="kw">fn</span> <span class="ident">deref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::Target</span> {
+        <span class="self">self</span>.<span class="ident">as_slice</span>()
+    }
+}
 </code></pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>
     <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script>

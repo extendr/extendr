@@ -1310,13 +1310,13 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Clone</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">fn</span> <span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="self">self</span>.<span class="ident">get</span>()) }
     }
 }
 
 <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
         <span class="ident">Robj::from</span>(())
     }
 }
@@ -1327,25 +1327,25 @@
     <span class="doccomment">/// # Safety</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Access to a raw SEXP pointer can cause undefined behaviour and is not thread safe.</span>
-    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span>;
+    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">SEXP</span>;
 
     <span class="doccomment">/// Get a reference to a Robj for this type.</span>
-    <span class="kw">fn</span> <span class="ident">as_robj</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">Robj</span>;
+    <span class="kw">fn</span> <span class="ident">as_robj</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">Robj</span>;
 
     <span class="doccomment">/// Get a mutable reference to a Robj for this type.</span>
-    <span class="kw">fn</span> <span class="ident">as_robj_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Robj</span>;
+    <span class="kw">fn</span> <span class="ident">as_robj_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Robj</span>;
 }
 
 <span class="kw">impl</span> <span class="ident">GetSexp</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
+    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">SEXP</span> {
         <span class="self">self</span>.<span class="ident">inner</span>
     }
 
-    <span class="kw">fn</span> <span class="ident">as_robj</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">as_robj</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">Robj</span> {
         <span class="kw">unsafe</span> { <span class="ident">std::mem::transmute</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">inner</span>) }
     }
 
-    <span class="kw">fn</span> <span class="ident">as_robj_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">as_robj_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Robj</span> {
         <span class="kw">unsafe</span> { <span class="ident">std::mem::transmute</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">inner</span>) }
     }
 }
@@ -1357,7 +1357,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// Unless the type is correct, this will cause undefined behaviour.</span>
     <span class="doccomment">/// Creating this slice will also instatiate and Altrep objects.</span>
-    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">as_typed_slice_raw</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">T</span>] {
+    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">as_typed_slice_raw</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[<span class="ident">T</span>] {
         <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">XLENGTH</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="ident">usize</span>;
         <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">DATAPTR_RO</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">T</span>;
         <span class="ident">std::slice::from_raw_parts</span>(<span class="ident">data</span>, <span class="ident">len</span>)
@@ -1370,7 +1370,7 @@
     <span class="doccomment">/// Unless the type is correct, this will cause undefined behaviour.</span>
     <span class="doccomment">/// Creating this slice will also instatiate and Altrep objects.</span>
     <span class="doccomment">/// Not all obejects (especially not list and strings) support this.</span>
-    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">as_typed_slice_raw_mut</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">T</span>] {
+    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">as_typed_slice_raw_mut</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">T</span>] {
         <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">XLENGTH</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="ident">usize</span>;
         <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">DATAPTR</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span>;
         <span class="ident">std::slice::from_raw_parts_mut</span>(<span class="ident">data</span>, <span class="ident">len</span>)
@@ -1389,7 +1389,7 @@
     <span class="doccomment">/// assert_eq!(a.len(), 4);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+    <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
         <span class="kw">unsafe</span> { <span class="ident">Rf_xlength</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="ident">usize</span> }
     }
 
@@ -1402,15 +1402,15 @@
     <span class="doccomment">/// assert_eq!(a.is_empty(), true);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">0</span>
+    <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">0</span>
     }
 }
 
 <span class="kw">impl</span> <span class="ident">Length</span> <span class="kw">for</span> <span class="ident">Robj</span> {}
 
 <span class="kw">impl</span> <span class="ident">Robj</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_sexp</span>(<span class="ident">sexp</span>: <span class="ident">SEXP</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_sexp</span>(<span class="ident">sexp</span>: <span class="ident">SEXP</span>) -&gt; <span class="self">Self</span> {
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
             <span class="kw">unsafe</span> { <span class="ident">ownership::protect</span>(<span class="ident">sexp</span>) };
             <span class="ident">Robj</span> { <span class="ident">inner</span>: <span class="ident">sexp</span> }
@@ -1421,7 +1421,7 @@
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Types</span>: <span class="ident">GetSexp</span> {
     <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
     <span class="doccomment">/// Get the XXXSXP type of the object.</span>
-    <span class="kw">fn</span> <span class="ident">sexptype</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u32</span> {
+    <span class="kw">fn</span> <span class="ident">sexptype</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u32</span> {
         <span class="kw">unsafe</span> { <span class="ident">TYPEOF</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="ident">u32</span> }
     }
 
@@ -1447,64 +1447,64 @@
     <span class="doccomment">///     assert_eq!(r!(Raw::from_bytes(&amp;[1_u8, 2, 3])).rtype(), RType::Raw);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">rtype</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">RType</span> {
+    <span class="kw">fn</span> <span class="ident">rtype</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">RType</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
-            <span class="ident">NILSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Null</span>,
-            <span class="ident">SYMSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Symbol</span>,
-            <span class="ident">LISTSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Pairlist</span>,
-            <span class="ident">CLOSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Function</span>,
-            <span class="ident">ENVSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Environment</span>,
-            <span class="ident">PROMSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Promise</span>,
-            <span class="ident">LANGSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Language</span>,
-            <span class="ident">SPECIALSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Special</span>,
-            <span class="ident">BUILTINSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Builtin</span>,
-            <span class="ident">CHARSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Rstr</span>,
-            <span class="ident">LGLSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Logical</span>,
-            <span class="ident">INTSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Integer</span>,
-            <span class="ident">REALSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Real</span>,
-            <span class="ident">CPLXSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Complex</span>,
-            <span class="ident">STRSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::String</span>,
-            <span class="ident">DOTSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Dot</span>,
-            <span class="ident">ANYSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Any</span>,
-            <span class="ident">VECSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::List</span>,
-            <span class="ident">EXPRSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Expression</span>,
-            <span class="ident">BCODESXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Bytecode</span>,
-            <span class="ident">EXTPTRSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::ExternalPtr</span>,
-            <span class="ident">WEAKREFSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::WeakRef</span>,
-            <span class="ident">RAWSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Raw</span>,
-            <span class="ident">S4SXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::S4</span>,
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RType::Unknown</span>,
+            <span class="ident">NILSXP</span> =&gt; <span class="ident">RType::Null</span>,
+            <span class="ident">SYMSXP</span> =&gt; <span class="ident">RType::Symbol</span>,
+            <span class="ident">LISTSXP</span> =&gt; <span class="ident">RType::Pairlist</span>,
+            <span class="ident">CLOSXP</span> =&gt; <span class="ident">RType::Function</span>,
+            <span class="ident">ENVSXP</span> =&gt; <span class="ident">RType::Environment</span>,
+            <span class="ident">PROMSXP</span> =&gt; <span class="ident">RType::Promise</span>,
+            <span class="ident">LANGSXP</span> =&gt; <span class="ident">RType::Language</span>,
+            <span class="ident">SPECIALSXP</span> =&gt; <span class="ident">RType::Special</span>,
+            <span class="ident">BUILTINSXP</span> =&gt; <span class="ident">RType::Builtin</span>,
+            <span class="ident">CHARSXP</span> =&gt; <span class="ident">RType::Rstr</span>,
+            <span class="ident">LGLSXP</span> =&gt; <span class="ident">RType::Logical</span>,
+            <span class="ident">INTSXP</span> =&gt; <span class="ident">RType::Integer</span>,
+            <span class="ident">REALSXP</span> =&gt; <span class="ident">RType::Real</span>,
+            <span class="ident">CPLXSXP</span> =&gt; <span class="ident">RType::Complex</span>,
+            <span class="ident">STRSXP</span> =&gt; <span class="ident">RType::String</span>,
+            <span class="ident">DOTSXP</span> =&gt; <span class="ident">RType::Dot</span>,
+            <span class="ident">ANYSXP</span> =&gt; <span class="ident">RType::Any</span>,
+            <span class="ident">VECSXP</span> =&gt; <span class="ident">RType::List</span>,
+            <span class="ident">EXPRSXP</span> =&gt; <span class="ident">RType::Expression</span>,
+            <span class="ident">BCODESXP</span> =&gt; <span class="ident">RType::Bytecode</span>,
+            <span class="ident">EXTPTRSXP</span> =&gt; <span class="ident">RType::ExternalPtr</span>,
+            <span class="ident">WEAKREFSXP</span> =&gt; <span class="ident">RType::WeakRef</span>,
+            <span class="ident">RAWSXP</span> =&gt; <span class="ident">RType::Raw</span>,
+            <span class="ident">S4SXP</span> =&gt; <span class="ident">RType::S4</span>,
+            <span class="kw">_</span> =&gt; <span class="ident">RType::Unknown</span>,
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">as_any</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Rany</span> {
+    <span class="kw">fn</span> <span class="ident">as_any</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Rany</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
-                <span class="ident">NILSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::Null</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">SYMSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::Symbol</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">LISTSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::Pairlist</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">CLOSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::Function</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">ENVSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::Environment</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">PROMSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::Promise</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">LANGSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::Language</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">SPECIALSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::Special</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">BUILTINSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::Builtin</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">CHARSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::Rstr</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">LGLSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::Logical</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">INTSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::Integer</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">REALSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::Real</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">CPLXSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::Complex</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">STRSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::String</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">DOTSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::Dot</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">ANYSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::Any</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">VECSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::List</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">EXPRSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::Expression</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">BCODESXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::Bytecode</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">EXTPTRSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::ExternalPtr</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">WEAKREFSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::WeakRef</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">RAWSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::Raw</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">S4SXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::S4</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rany::Unknown</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">NILSXP</span> =&gt; <span class="ident">Rany::Null</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">SYMSXP</span> =&gt; <span class="ident">Rany::Symbol</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">LISTSXP</span> =&gt; <span class="ident">Rany::Pairlist</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">CLOSXP</span> =&gt; <span class="ident">Rany::Function</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">ENVSXP</span> =&gt; <span class="ident">Rany::Environment</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">PROMSXP</span> =&gt; <span class="ident">Rany::Promise</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">LANGSXP</span> =&gt; <span class="ident">Rany::Language</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">SPECIALSXP</span> =&gt; <span class="ident">Rany::Special</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">BUILTINSXP</span> =&gt; <span class="ident">Rany::Builtin</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">CHARSXP</span> =&gt; <span class="ident">Rany::Rstr</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">LGLSXP</span> =&gt; <span class="ident">Rany::Logical</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">INTSXP</span> =&gt; <span class="ident">Rany::Integer</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">REALSXP</span> =&gt; <span class="ident">Rany::Real</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">CPLXSXP</span> =&gt; <span class="ident">Rany::Complex</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">STRSXP</span> =&gt; <span class="ident">Rany::String</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">DOTSXP</span> =&gt; <span class="ident">Rany::Dot</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">ANYSXP</span> =&gt; <span class="ident">Rany::Any</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">VECSXP</span> =&gt; <span class="ident">Rany::List</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">EXPRSXP</span> =&gt; <span class="ident">Rany::Expression</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">BCODESXP</span> =&gt; <span class="ident">Rany::Bytecode</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">EXTPTRSXP</span> =&gt; <span class="ident">Rany::ExternalPtr</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">WEAKREFSXP</span> =&gt; <span class="ident">Rany::WeakRef</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">RAWSXP</span> =&gt; <span class="ident">Rany::Raw</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">S4SXP</span> =&gt; <span class="ident">Rany::S4</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="kw">_</span> =&gt; <span class="ident">Rany::Unknown</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
             }
         }
     }
@@ -1524,18 +1524,18 @@
     <span class="doccomment">/// assert_eq!(r!(NA_STRING).is_na(), true);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_na</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_na</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">len</span>() <span class="op">!</span><span class="op">=</span> <span class="number">1</span> {
             <span class="bool-val">false</span>
         } <span class="kw">else</span> {
             <span class="kw">unsafe</span> {
                 <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get</span>();
                 <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
-                    <span class="ident">STRSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">STRING_ELT</span>(<span class="ident">sexp</span>, <span class="number">0</span>) <span class="op">=</span><span class="op">=</span> <span class="ident">libR_sys::R_NaString</span>,
-                    <span class="ident">INTSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">*</span>(<span class="ident">INTEGER</span>(<span class="ident">sexp</span>)) <span class="op">=</span><span class="op">=</span> <span class="ident">libR_sys::R_NaInt</span>,
-                    <span class="ident">LGLSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw-2">*</span>(<span class="ident">LOGICAL</span>(<span class="ident">sexp</span>)) <span class="op">=</span><span class="op">=</span> <span class="ident">libR_sys::R_NaInt</span>,
-                    <span class="ident">REALSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">R_IsNA</span>(<span class="kw-2">*</span>(<span class="ident">REAL</span>(<span class="ident">sexp</span>))) <span class="op">!</span><span class="op">=</span> <span class="number">0</span>,
-                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+                    <span class="ident">STRSXP</span> =&gt; <span class="ident">STRING_ELT</span>(<span class="ident">sexp</span>, <span class="number">0</span>) <span class="op">==</span> <span class="ident">libR_sys::R_NaString</span>,
+                    <span class="ident">INTSXP</span> =&gt; <span class="kw-2">*</span>(<span class="ident">INTEGER</span>(<span class="ident">sexp</span>)) <span class="op">==</span> <span class="ident">libR_sys::R_NaInt</span>,
+                    <span class="ident">LGLSXP</span> =&gt; <span class="kw-2">*</span>(<span class="ident">LOGICAL</span>(<span class="ident">sexp</span>)) <span class="op">==</span> <span class="ident">libR_sys::R_NaInt</span>,
+                    <span class="ident">REALSXP</span> =&gt; <span class="ident">R_IsNA</span>(<span class="kw-2">*</span>(<span class="ident">REAL</span>(<span class="ident">sexp</span>))) <span class="op">!</span><span class="op">=</span> <span class="number">0</span>,
+                    <span class="kw">_</span> =&gt; <span class="bool-val">false</span>,
                 }
             }
         }
@@ -1550,12 +1550,12 @@
     <span class="doccomment">/// assert_eq!(robj.as_integer_slice().unwrap(), [1, 2, 3]);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_integer_slice</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">i32</span>]<span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_integer_slice</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">i32</span>]<span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_typed_slice</span>()
     }
 
     <span class="doccomment">/// Convert an [`Robj`] into [`Integers`].</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_integers</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integers</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_integers</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integers</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">clone</span>().<span class="ident">try_into</span>().<span class="ident">ok</span>()
     }
 
@@ -1568,7 +1568,7 @@
     <span class="doccomment">/// assert_eq!(robj.as_integer_slice().unwrap(), vec![1, 2, 3]);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_integer_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_integer_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_integer_slice</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">value</span><span class="op">|</span> <span class="ident">value</span>.<span class="ident">to_vec</span>())
     }
 
@@ -1581,7 +1581,7 @@
     <span class="doccomment">///     assert_eq!(robj.as_logical_slice().unwrap(), [TRUE, FALSE, NA_LOGICAL]);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_logical_slice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">Bool</span>]<span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_logical_slice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">Bool</span>]<span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_typed_slice</span>()
     }
 
@@ -1595,7 +1595,7 @@
     <span class="doccomment">///     assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, NA_LOGICAL]);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_logical_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Bool</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_logical_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Bool</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_logical_slice</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">value</span><span class="op">|</span> <span class="ident">value</span>.<span class="ident">to_vec</span>())
     }
 
@@ -1616,7 +1616,7 @@
     <span class="doccomment">///     assert_eq!((nt, nf, nna), (1, 1, 1));</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_logical_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">Bool</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_logical_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">Bool</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_logical_slice</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">slice</span><span class="op">|</span> <span class="ident">slice</span>.<span class="ident">iter</span>())
     }
 
@@ -1636,7 +1636,7 @@
     <span class="doccomment">///     assert_eq!(tot, 4.);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_real_slice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">f64</span>]<span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_real_slice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">f64</span>]<span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_typed_slice</span>()
     }
 
@@ -1654,7 +1654,7 @@
     <span class="doccomment">///     assert_eq!(tot, 6.);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_real_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_real_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_real_slice</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">slice</span><span class="op">|</span> <span class="ident">slice</span>.<span class="ident">iter</span>())
     }
 
@@ -1666,7 +1666,7 @@
     <span class="doccomment">///     assert_eq!(robj.as_real_vector().unwrap(), vec![1., 2., 3.]);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_real_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_real_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_real_slice</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">value</span><span class="op">|</span> <span class="ident">value</span>.<span class="ident">to_vec</span>())
     }
 
@@ -1678,7 +1678,7 @@
     <span class="doccomment">///     assert_eq!(robj.as_raw_slice().unwrap(), &amp;[1, 2, 3]);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_raw_slice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_raw_slice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_typed_slice</span>()
     }
 
@@ -1693,7 +1693,7 @@
     <span class="doccomment">///     assert_eq!(robj, r!([1, 100, 3]));</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_integer_slice_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">i32</span>]<span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_integer_slice_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">i32</span>]<span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_typed_slice_mut</span>()
     }
 
@@ -1708,7 +1708,7 @@
     <span class="doccomment">///     assert_eq!(robj, r!([1.0, 100.0, 3.0]));</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_real_slice_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">f64</span>]<span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_real_slice_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">f64</span>]<span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_typed_slice_mut</span>()
     }
 
@@ -1722,7 +1722,7 @@
     <span class="doccomment">///     assert_eq!(robj, r!(Raw::from_bytes(&amp;[1, 100, 3])));</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_raw_slice_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>]<span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_raw_slice_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>]<span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_typed_slice_mut</span>()
     }
 
@@ -1737,7 +1737,7 @@
     <span class="doccomment">///    assert_eq!(robj2.as_string_vector(), None);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_string_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_string_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_str_iter</span>()
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">iter</span><span class="op">|</span> <span class="ident">iter</span>.<span class="ident">map</span>(<span class="ident">str::to_string</span>).<span class="ident">collect</span>())
     }
@@ -1753,7 +1753,7 @@
     <span class="doccomment">///    assert_eq!(robj2.as_str_vector(), None);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_str_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_str_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">as_str_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">iter</span><span class="op">|</span> <span class="ident">iter</span>.<span class="ident">collect</span>())
     }
 
@@ -1767,10 +1767,10 @@
     <span class="doccomment">///    assert_eq!(robj2.as_str(), None);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_str</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_str</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span><span class="op">&gt;</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
-                <span class="ident">STRSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="ident">STRSXP</span> =&gt; {
                     <span class="kw">if</span> <span class="self">self</span>.<span class="ident">len</span>() <span class="op">!</span><span class="op">=</span> <span class="number">1</span> {
                         <span class="prelude-val">None</span>
                     } <span class="kw">else</span> {
@@ -1779,7 +1779,7 @@
                 }
                 <span class="comment">// CHARSXP =&gt; Some(to_str(R_CHAR(self.get()) as *const u8)),</span>
                 <span class="comment">// SYMSXP =&gt; Some(to_str(R_CHAR(PRINTNAME(self.get())) as *const u8)),</span>
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+                <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
             }
         }
     }
@@ -1796,10 +1796,10 @@
     <span class="doccomment">///    assert_eq!(robj3.as_integer(), None);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_integer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_integer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">as_integer_slice</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">slice</span>) <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">1</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">slice</span>[<span class="number">0</span>].<span class="ident">is_na</span>() <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">slice</span>[<span class="number">0</span>]),
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+            <span class="prelude-val">Some</span>(<span class="ident">slice</span>) <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">slice</span>[<span class="number">0</span>].<span class="ident">is_na</span>() =&gt; <span class="prelude-val">Some</span>(<span class="ident">slice</span>[<span class="number">0</span>]),
+            <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
         }
     }
 
@@ -1815,10 +1815,10 @@
     <span class="doccomment">///    assert_eq!(robj3.as_real(), None);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_real</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_real</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">as_real_slice</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">slice</span>) <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">1</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">slice</span>[<span class="number">0</span>].<span class="ident">is_na</span>() <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">slice</span>[<span class="number">0</span>]),
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+            <span class="prelude-val">Some</span>(<span class="ident">slice</span>) <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">slice</span>[<span class="number">0</span>].<span class="ident">is_na</span>() =&gt; <span class="prelude-val">Some</span>(<span class="ident">slice</span>[<span class="number">0</span>]),
+            <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
         }
     }
 
@@ -1834,10 +1834,10 @@
     <span class="doccomment">///    assert_eq!(robj3.as_bool(), None);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_bool</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_bool</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">as_logical_slice</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">slice</span>) <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">1</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">slice</span>[<span class="number">0</span>].<span class="ident">is_na</span>() <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">slice</span>[<span class="number">0</span>].<span class="ident">into</span>()),
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+            <span class="prelude-val">Some</span>(<span class="ident">slice</span>) <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">slice</span>[<span class="number">0</span>].<span class="ident">is_na</span>() =&gt; <span class="prelude-val">Some</span>(<span class="ident">slice</span>[<span class="number">0</span>].<span class="ident">into</span>()),
+            <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
         }
     }
 
@@ -1853,10 +1853,10 @@
     <span class="doccomment">///    assert_eq!(robj3.as_logical(), Some(NA_LOGICAL));</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_logical</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Bool</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_logical</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Bool</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">as_logical_slice</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">slice</span>) <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">1</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">slice</span>[<span class="number">0</span>]),
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
+            <span class="prelude-val">Some</span>(<span class="ident">slice</span>) <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">slice</span>[<span class="number">0</span>]),
+            <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
         }
     }
 }
@@ -1871,7 +1871,7 @@
     <span class="doccomment">///    assert_eq!(add.eval().unwrap(), r!(3));</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">eval</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">eval</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">eval_with_env</span>(<span class="kw-2">&amp;</span><span class="ident">global_env</span>())
     }
 
@@ -1884,7 +1884,7 @@
     <span class="doccomment">///    assert_eq!(add.eval_with_env(&amp;global_env()).unwrap(), r!(3));</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">eval_with_env</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">env</span>: <span class="kw-2">&amp;</span><span class="ident">Environment</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">eval_with_env</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">env</span>: <span class="kw-2">&amp;</span><span class="ident">Environment</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">error</span>: <span class="ident">raw::c_int</span> <span class="op">=</span> <span class="number">0</span>;
             <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">R_tryEval</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">env</span>.<span class="ident">get</span>(), <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">error</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">raw::c_int</span>);
@@ -1904,7 +1904,7 @@
     <span class="doccomment">///    assert_eq!(bad.eval_blind(), r!(NULL));</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">eval_blind</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">eval_blind</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Robj</span> {
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">eval</span>();
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">robj</span>) <span class="op">=</span> <span class="ident">res</span> {
             <span class="ident">robj</span>
@@ -1921,14 +1921,14 @@
 <span class="kw">where</span>
     <span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
 {
-    <span class="kw">fn</span> <span class="ident">as_typed_slice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">T</span>]<span class="op">&gt;</span>
+    <span class="kw">fn</span> <span class="ident">as_typed_slice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">T</span>]<span class="op">&gt;</span>
     <span class="kw">where</span>
         <span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
     {
         <span class="prelude-val">None</span>
     }
 
-    <span class="kw">fn</span> <span class="ident">as_typed_slice_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> [<span class="ident">T</span>]<span class="op">&gt;</span>
+    <span class="kw">fn</span> <span class="ident">as_typed_slice_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> [<span class="ident">T</span>]<span class="op">&gt;</span>
     <span class="kw">where</span>
         <span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
     {
@@ -1937,32 +1937,32 @@
 }
 
 <span class="macro">macro_rules!</span> <span class="ident">make_typed_slice</span> {
-    (<span class="macro-nonterminal">$</span><span class="kw">type</span>: <span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$</span><span class="kw">fn</span>: <span class="macro-nonterminal">tt</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">sexp</span>: <span class="ident">tt</span>),<span class="op">*</span> ) <span class="op">=</span><span class="op">&gt;</span> {
+    (<span class="macro-nonterminal">$</span><span class="kw">type</span>: <span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$</span><span class="kw">fn</span>: <span class="macro-nonterminal">tt</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">sexp</span>: <span class="ident">tt</span>),<span class="op">*</span> ) =&gt; {
         <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">AsTypedSlice</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">Robj</span>
         <span class="kw">where</span>
             <span class="self">Self</span> : <span class="lifetime">&#39;a</span>,
         {
-            <span class="kw">fn</span> <span class="ident">as_typed_slice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="macro-nonterminal">$</span><span class="kw">type</span>]<span class="op">&gt;</span> {
+            <span class="kw">fn</span> <span class="ident">as_typed_slice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="macro-nonterminal">$</span><span class="kw">type</span>]<span class="op">&gt;</span> {
                 <span class="kw">match</span> <span class="macro-nonterminal">self</span>.<span class="ident">sexptype</span>() {
-                    $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">sexp</span> )<span class="op">|</span><span class="op">*</span> <span class="op">=</span><span class="op">&gt;</span> {
+                    $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">sexp</span> )<span class="op">|</span><span class="op">*</span> =&gt; {
                         <span class="kw">unsafe</span> {
                             <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">fn</span>(<span class="macro-nonterminal">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>;
                             <span class="prelude-val">Some</span>(<span class="macro-nonterminal">std::slice::from_raw_parts</span>(<span class="ident">ptr</span>, <span class="self">self</span>.<span class="ident">len</span>()))
                         }
                     }
-                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>
+                    <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>
                 }
             }
 
-            <span class="kw">fn</span> <span class="ident">as_typed_slice_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> [<span class="macro-nonterminal">$</span><span class="kw">type</span>]<span class="op">&gt;</span> {
+            <span class="kw">fn</span> <span class="ident">as_typed_slice_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> [<span class="macro-nonterminal">$</span><span class="kw">type</span>]<span class="op">&gt;</span> {
                 <span class="kw">match</span> <span class="macro-nonterminal">self</span>.<span class="ident">sexptype</span>() {
-                    $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">sexp</span> )<span class="op">|</span><span class="op">*</span> <span class="op">=</span><span class="op">&gt;</span> {
+                    $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">sexp</span> )<span class="op">|</span><span class="op">*</span> =&gt; {
                         <span class="kw">unsafe</span> {
                             <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">fn</span>(<span class="macro-nonterminal">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>;
                             <span class="prelude-val">Some</span>(<span class="macro-nonterminal">std::slice::from_raw_parts_mut</span>(<span class="ident">ptr</span>, <span class="self">self</span>.<span class="ident">len</span>()))
                         }
                     }
-                    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>
+                    <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>
                 }
             }
         }
@@ -1991,13 +1991,13 @@
     <span class="doccomment">///    assert_eq!(robj.get_attrib(sym!(xyz)), Some(r!(1)));</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">get_attrib</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">N</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="ident">N</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
+    <span class="kw">fn</span> <span class="ident">get_attrib</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">N</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="ident">N</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
     <span class="kw">where</span>
         <span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
         <span class="ident">Robj</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">N</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>,
     {
         <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">Robj::from</span>(<span class="ident">name</span>);
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">sexptype</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">CHARSXP</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">sexptype</span>() <span class="op">==</span> <span class="ident">CHARSXP</span> {
             <span class="prelude-val">None</span>
         } <span class="kw">else</span> {
             <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">Rf_getAttrib</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">name</span>.<span class="ident">get</span>())) };
@@ -2021,7 +2021,7 @@
     <span class="doccomment">///    assert_eq!(robj.get_attrib(sym!(xyz)), Some(r!(1)));</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">set_attrib</span><span class="op">&lt;</span><span class="ident">N</span>, <span class="ident">V</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="ident">N</span>, <span class="ident">value</span>: <span class="ident">V</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
+    <span class="kw">fn</span> <span class="ident">set_attrib</span><span class="op">&lt;</span><span class="ident">N</span>, <span class="ident">V</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="ident">N</span>, <span class="ident">value</span>: <span class="ident">V</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
     <span class="kw">where</span>
         <span class="ident">N</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
         <span class="ident">V</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
@@ -2046,7 +2046,7 @@
     <span class="doccomment">///    assert_eq!(names, vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">names</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StrIter</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">names</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StrIter</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">names</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_attrib</span>(<span class="ident">wrapper::symbol::names_symbol</span>()) {
             <span class="ident">names</span>.<span class="ident">as_str_iter</span>()
         } <span class="kw">else</span> {
@@ -2066,7 +2066,7 @@
     <span class="doccomment">///     assert_eq!(r!([1, 2, 3]).set_names(&amp;[&quot;a&quot;, &quot;b&quot;]), Err(Error::NamesLengthMismatch(r!([&quot;a&quot;, &quot;b&quot;]))));</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">set_names</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">names</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
+    <span class="kw">fn</span> <span class="ident">set_names</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">names</span>: <span class="ident">T</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
     <span class="kw">where</span>
         <span class="ident">T</span>: <span class="ident">IntoIterator</span>,
         <span class="ident">T::IntoIter</span>: <span class="ident">ExactSizeIterator</span>,
@@ -2093,7 +2093,7 @@
     <span class="doccomment">///    assert_eq!(dim, vec![2, 2]);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">dim</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integers</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">dim</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integers</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">dim</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_attrib</span>(<span class="ident">wrapper::symbol::dim_symbol</span>()) {
             <span class="ident">dim</span>.<span class="ident">as_integers</span>()
         } <span class="kw">else</span> {
@@ -2110,7 +2110,7 @@
     <span class="doccomment">///    assert_eq!(names, vec![r!([&quot;x&quot;, &quot;y&quot;]), r!([&quot;a&quot;, &quot;b&quot;])]);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">dimnames</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ListIter</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">dimnames</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ListIter</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">names</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_attrib</span>(<span class="ident">wrapper::symbol::dimnames_symbol</span>()) {
             <span class="ident">names</span>.<span class="ident">as_list</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="ident">v</span>.<span class="ident">values</span>())
         } <span class="kw">else</span> {
@@ -2127,7 +2127,7 @@
     <span class="doccomment">///    assert_eq!(class, [&quot;formula&quot;]);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">class</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StrIter</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">class</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StrIter</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">class</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_attrib</span>(<span class="ident">wrapper::symbol::class_symbol</span>()) {
             <span class="ident">class</span>.<span class="ident">as_str_iter</span>()
         } <span class="kw">else</span> {
@@ -2147,7 +2147,7 @@
     <span class="doccomment">///     assert_eq!(obj.inherits(&quot;a&quot;), true);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">set_class</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">class</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
+    <span class="kw">fn</span> <span class="ident">set_class</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">class</span>: <span class="ident">T</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
     <span class="kw">where</span>
         <span class="ident">T</span>: <span class="ident">IntoIterator</span>,
         <span class="ident">T::IntoIter</span>: <span class="ident">ExactSizeIterator</span>,
@@ -2165,9 +2165,9 @@
     <span class="doccomment">///    assert_eq!(formula.inherits(&quot;formula&quot;), true);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">inherits</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">classname</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">inherits</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">classname</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">bool</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">mut</span> <span class="ident">iter</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">class</span>() {
-            <span class="ident">iter</span>.<span class="ident">any</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">n</span> <span class="op">=</span><span class="op">=</span> <span class="ident">classname</span>)
+            <span class="ident">iter</span>.<span class="ident">any</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">n</span> <span class="op">==</span> <span class="ident">classname</span>)
         } <span class="kw">else</span> {
             <span class="bool-val">false</span>
         }
@@ -2182,7 +2182,7 @@
     <span class="doccomment">///    assert_eq!(levels, vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;]);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">levels</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StrIter</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">levels</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StrIter</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">levels</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_attrib</span>(<span class="ident">wrapper::symbol::levels_symbol</span>()) {
             <span class="ident">levels</span>.<span class="ident">as_str_iter</span>()
         } <span class="kw">else</span> {
@@ -2194,7 +2194,7 @@
 <span class="kw">impl</span> <span class="ident">Attributes</span> <span class="kw">for</span> <span class="ident">Robj</span> {}
 
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">new_owned</span>(<span class="ident">sexp</span>: <span class="ident">SEXP</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">new_owned</span>(<span class="ident">sexp</span>: <span class="ident">SEXP</span>) -&gt; <span class="ident">Robj</span> {
     <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
         <span class="ident">ownership::protect</span>(<span class="ident">sexp</span>);
         <span class="ident">Robj</span> { <span class="ident">inner</span>: <span class="ident">sexp</span> }
@@ -2203,30 +2203,30 @@
 
 <span class="doccomment">/// Compare equality with integer slices.</span>
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">PartialEq</span><span class="op">&lt;</span>[<span class="ident">i32</span>]<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rhs</span>: <span class="kw-2">&amp;</span>[<span class="ident">i32</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">as_integer_slice</span>() <span class="op">=</span><span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">rhs</span>)
+    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rhs</span>: <span class="kw-2">&amp;</span>[<span class="ident">i32</span>]) -&gt; <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">as_integer_slice</span>() <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">rhs</span>)
     }
 }
 
 <span class="doccomment">/// Compare equality with slices of double.</span>
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">PartialEq</span><span class="op">&lt;</span>[<span class="ident">f64</span>]<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rhs</span>: <span class="kw-2">&amp;</span>[<span class="ident">f64</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">as_real_slice</span>() <span class="op">=</span><span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">rhs</span>)
+    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rhs</span>: <span class="kw-2">&amp;</span>[<span class="ident">f64</span>]) -&gt; <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">as_real_slice</span>() <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">rhs</span>)
     }
 }
 
 <span class="doccomment">/// Compare equality with strings.</span>
 <span class="kw">impl</span> <span class="ident">PartialEq</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rhs</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">as_str</span>() <span class="op">=</span><span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">rhs</span>)
+    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rhs</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">as_str</span>() <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">rhs</span>)
     }
 }
 
 <span class="doccomment">/// Compare equality with two Robjs.</span>
 <span class="kw">impl</span> <span class="ident">PartialEq</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rhs</span>: <span class="kw-2">&amp;</span><span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rhs</span>: <span class="kw-2">&amp;</span><span class="ident">Robj</span>) -&gt; <span class="ident">bool</span> {
         <span class="kw">unsafe</span> {
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">get</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">rhs</span>.<span class="ident">get</span>() {
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">get</span>() <span class="op">==</span> <span class="ident">rhs</span>.<span class="ident">get</span>() {
                 <span class="kw">return</span> <span class="bool-val">true</span>;
             }
 
@@ -2238,10 +2238,10 @@
 
 <span class="doccomment">/// Implement {:?} formatting.</span>
 <span class="kw">impl</span> <span class="ident">std::fmt::Debug</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std::fmt::Result</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::fmt::Result</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
-            <span class="ident">NILSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(NULL)&quot;</span>),
-            <span class="ident">SYMSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">NILSXP</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(NULL)&quot;</span>),
+            <span class="ident">SYMSXP</span> =&gt; {
                 <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_missing_arg</span>() {
                     <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;missing_arg()&quot;</span>)
                 } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_unbound_value</span>() {
@@ -2250,11 +2250,11 @@
                     <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;sym!({})&quot;</span>, <span class="self">self</span>.<span class="ident">as_symbol</span>().<span class="ident">unwrap</span>().<span class="ident">as_str</span>())
                 }
             }
-            <span class="ident">LISTSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">LISTSXP</span> =&gt; {
                 <span class="kw">let</span> <span class="ident">pairlist</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_pairlist</span>().<span class="ident">unwrap</span>().<span class="ident">iter</span>();
                 <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="ident">pairlist</span>)
             }
-            <span class="ident">CLOSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">CLOSXP</span> =&gt; {
                 <span class="kw">let</span> <span class="ident">func</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_function</span>().<span class="ident">unwrap</span>();
                 <span class="kw">let</span> <span class="ident">formals</span> <span class="op">=</span> <span class="ident">func</span>.<span class="ident">formals</span>();
                 <span class="kw">let</span> <span class="ident">body</span> <span class="op">=</span> <span class="ident">func</span>.<span class="ident">body</span>();
@@ -2265,19 +2265,19 @@
                     <span class="ident">formals</span>, <span class="ident">body</span>, <span class="ident">environment</span>
                 )
             }
-            <span class="ident">ENVSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">unsafe</span> {
+            <span class="ident">ENVSXP</span> =&gt; <span class="kw">unsafe</span> {
                 <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get</span>();
-                <span class="kw">if</span> <span class="ident">sexp</span> <span class="op">=</span><span class="op">=</span> <span class="ident">R_GlobalEnv</span> {
+                <span class="kw">if</span> <span class="ident">sexp</span> <span class="op">==</span> <span class="ident">R_GlobalEnv</span> {
                     <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;global_env()&quot;</span>)
-                } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">sexp</span> <span class="op">=</span><span class="op">=</span> <span class="ident">R_BaseEnv</span> {
+                } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">sexp</span> <span class="op">==</span> <span class="ident">R_BaseEnv</span> {
                     <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;base_env()&quot;</span>)
-                } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">sexp</span> <span class="op">=</span><span class="op">=</span> <span class="ident">R_EmptyEnv</span> {
+                } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">sexp</span> <span class="op">==</span> <span class="ident">R_EmptyEnv</span> {
                     <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;empty_env()&quot;</span>)
                 } <span class="kw">else</span> {
                     <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Environment::from_pairs(...))&quot;</span>)
                 }
             },
-            <span class="ident">PROMSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">PROMSXP</span> =&gt; {
                 <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_promise</span>().<span class="ident">unwrap</span>();
                 <span class="macro">write!</span>(
                     <span class="ident">f</span>,
@@ -2286,42 +2286,42 @@
                     <span class="ident">p</span>.<span class="ident">environment</span>()
                 )
             }
-            <span class="ident">LANGSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(
+            <span class="ident">LANGSXP</span> =&gt; <span class="macro">write!</span>(
                 <span class="ident">f</span>,
                 <span class="string">&quot;r!(Language::from_values({:?}))&quot;</span>,
                 <span class="self">self</span>.<span class="ident">as_language</span>().<span class="ident">unwrap</span>().<span class="ident">values</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()
             ),
-            <span class="ident">SPECIALSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Special())&quot;</span>),
-            <span class="ident">BUILTINSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Builtin())&quot;</span>),
-            <span class="ident">CHARSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">SPECIALSXP</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Special())&quot;</span>),
+            <span class="ident">BUILTINSXP</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Builtin())&quot;</span>),
+            <span class="ident">CHARSXP</span> =&gt; {
                 <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">Rstr::try_from</span>(<span class="self">self</span>.<span class="ident">clone</span>()).<span class="ident">unwrap</span>();
                 <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Rstr::from_string({:?}))&quot;</span>, <span class="ident">c</span>.<span class="ident">as_str</span>())
             }
-            <span class="ident">LGLSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">LGLSXP</span> =&gt; {
                 <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_logical_slice</span>().<span class="ident">unwrap</span>();
-                <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
+                <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> {
                     <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="ident">slice</span>[<span class="number">0</span>])
                 } <span class="kw">else</span> {
                     <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="ident">slice</span>)
                 }
             }
-            <span class="ident">INTSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">INTSXP</span> =&gt; {
                 <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_integer_slice</span>().<span class="ident">unwrap</span>();
-                <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
+                <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> {
                     <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="ident">slice</span>[<span class="number">0</span>])
                 } <span class="kw">else</span> {
                     <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="self">self</span>.<span class="ident">as_integer_slice</span>().<span class="ident">unwrap</span>())
                 }
             }
-            <span class="ident">REALSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">REALSXP</span> =&gt; {
                 <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_real_slice</span>().<span class="ident">unwrap</span>();
-                <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
+                <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> {
                     <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="ident">slice</span>[<span class="number">0</span>])
                 } <span class="kw">else</span> {
                     <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="ident">slice</span>)
                 }
             }
-            <span class="ident">VECSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">VECSXP</span> =&gt; {
                 <span class="kw">let</span> <span class="ident">list</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_list</span>().<span class="ident">unwrap</span>();
                 <span class="kw">if</span> <span class="self">self</span>.<span class="ident">names</span>().<span class="ident">is_some</span>() {
                     <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(List::from_pairs({:?}))&quot;</span>, <span class="ident">list</span>.<span class="ident">iter</span>())
@@ -2329,14 +2329,14 @@
                     <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(List::from_values({:?}))&quot;</span>, <span class="ident">list</span>.<span class="ident">values</span>())
                 }
             }
-            <span class="ident">EXPRSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(
+            <span class="ident">EXPRSXP</span> =&gt; <span class="macro">write!</span>(
                 <span class="ident">f</span>,
                 <span class="string">&quot;r!(Expression::from_values({:?}))&quot;</span>,
                 <span class="self">self</span>.<span class="ident">as_expression</span>().<span class="ident">unwrap</span>().<span class="ident">values</span>()
             ),
-            <span class="ident">WEAKREFSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Weakref())&quot;</span>),
+            <span class="ident">WEAKREFSXP</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Weakref())&quot;</span>),
             <span class="comment">// CPLXSXP =&gt; false,</span>
-            <span class="ident">STRSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">STRSXP</span> =&gt; {
                 <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!([&quot;</span>)<span class="question-mark">?</span>;
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sep</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>;
                 <span class="kw">for</span> <span class="ident">s</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">as_str_iter</span>().<span class="ident">unwrap</span>() {
@@ -2349,23 +2349,23 @@
                 }
                 <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;])&quot;</span>)
             }
-            <span class="ident">DOTSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Dot())&quot;</span>),
-            <span class="ident">ANYSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Any())&quot;</span>),
-            <span class="ident">BCODESXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Bcode())&quot;</span>),
-            <span class="ident">EXTPTRSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">DOTSXP</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Dot())&quot;</span>),
+            <span class="ident">ANYSXP</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Any())&quot;</span>),
+            <span class="ident">BCODESXP</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Bcode())&quot;</span>),
+            <span class="ident">EXTPTRSXP</span> =&gt; {
                 <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(ExternalPtr())&quot;</span>)
             }
-            <span class="ident">RAWSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">RAWSXP</span> =&gt; {
                 <span class="macro">write!</span>(
                     <span class="ident">f</span>,
                     <span class="string">&quot;r!(Raw::from_bytes({:?}))&quot;</span>,
                     <span class="self">self</span>.<span class="ident">as_raw</span>().<span class="ident">unwrap</span>().<span class="ident">as_slice</span>()
                 )
             }
-            <span class="ident">S4SXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(S4())&quot;</span>),
-            <span class="ident">NEWSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(New())&quot;</span>),
-            <span class="ident">FREESXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Free())&quot;</span>),
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;??&quot;</span>),
+            <span class="ident">S4SXP</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(S4())&quot;</span>),
+            <span class="ident">NEWSXP</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(New())&quot;</span>),
+            <span class="ident">FREESXP</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Free())&quot;</span>),
+            <span class="kw">_</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;??&quot;</span>),
         }<span class="question-mark">?</span>;
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">c</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">class</span>() {
             <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;.set_class({:?}&quot;</span>, <span class="ident">c</span>)<span class="question-mark">?</span>;
@@ -2376,10 +2376,10 @@
 
 <span class="comment">// Internal utf8 to str conversion.</span>
 <span class="comment">// Lets not worry about non-ascii/unicode strings for now (or ever).</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">to_str</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span> {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">to_str</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">len</span> <span class="op">=</span> <span class="number">0</span>;
     <span class="kw">loop</span> {
-        <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">ptr</span>.<span class="ident">offset</span>(<span class="ident">len</span>) <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+        <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">ptr</span>.<span class="ident">offset</span>(<span class="ident">len</span>) <span class="op">==</span> <span class="number">0</span> {
             <span class="kw">break</span>;
         }
         <span class="ident">len</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;

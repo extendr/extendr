@@ -79,7 +79,7 @@
 
 <span class="comment">// Custom parser for a call eg. call!(&quot;xyz&quot;, a=1, b, c)</span>
 <span class="kw">impl</span> <span class="ident">syn::parse::Parse</span> <span class="kw">for</span> <span class="ident">Call</span> {
-    <span class="kw">fn</span> <span class="ident">parse</span>(<span class="ident">input</span>: <span class="ident">ParseStream</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">syn::Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">parse</span>(<span class="ident">input</span>: <span class="ident">ParseStream</span>) -&gt; <span class="ident">syn::Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="self">Self</span> {
             <span class="ident">caller</span>: <span class="ident">input</span>.<span class="ident">parse</span>::<span class="op">&lt;</span><span class="ident">LitStr</span><span class="op">&gt;</span>()<span class="question-mark">?</span>,
             <span class="ident">pairs</span>: <span class="ident">Punctuated::new</span>(),
@@ -93,7 +93,7 @@
     }
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">call</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">TokenStream</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">call</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
     <span class="comment">// Get a [Call] object from the input token stream.</span>
     <span class="comment">// This consists of a literal string followed by named or unnamed arguments</span>
     <span class="comment">// as in the pairlist macro.</span>

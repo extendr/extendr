@@ -288,7 +288,7 @@
     <span class="doccomment">///     assert_eq!(chr, sym!(xyz));</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_string</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">val</span>: <span class="ident">S</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_string</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">val</span>: <span class="ident">S</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">val</span> <span class="op">=</span> <span class="ident">val</span>.<span class="ident">as_ref</span>();
         <span class="ident">Symbol</span> {
             <span class="ident">robj</span>: <span class="ident">Robj::from_sexp</span>(<span class="ident">make_symbol</span>(<span class="ident">val</span>)),
@@ -296,9 +296,9 @@
     }
 
     <span class="comment">// Internal conversion for constant symbols.</span>
-    <span class="kw">fn</span> <span class="ident">from_sexp</span>(<span class="ident">sexp</span>: <span class="ident">SEXP</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+    <span class="kw">fn</span> <span class="ident">from_sexp</span>(<span class="ident">sexp</span>: <span class="ident">SEXP</span>) -&gt; <span class="ident">Symbol</span> {
         <span class="kw">unsafe</span> {
-            <span class="macro">assert!</span>(<span class="ident">TYPEOF</span>(<span class="ident">sexp</span>) <span class="op">=</span><span class="op">=</span> <span class="ident">SYMSXP</span> <span class="kw">as</span> <span class="ident">i32</span>);
+            <span class="macro">assert!</span>(<span class="ident">TYPEOF</span>(<span class="ident">sexp</span>) <span class="op">==</span> <span class="ident">SYMSXP</span> <span class="kw">as</span> <span class="ident">i32</span>);
         }
         <span class="ident">Symbol</span> {
             <span class="ident">robj</span>: <span class="ident">Robj::from_sexp</span>(<span class="ident">sexp</span>),
@@ -312,11 +312,11 @@
     <span class="doccomment">///     assert_eq!(sym!(xyz).as_symbol().unwrap().as_str(), &quot;xyz&quot;);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_str</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">str</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_str</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">str</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>();
             <span class="kw">let</span> <span class="ident">printname</span> <span class="op">=</span> <span class="ident">PRINTNAME</span>(<span class="ident">sexp</span>);
-            <span class="macro">assert!</span>(<span class="ident">TYPEOF</span>(<span class="ident">printname</span>) <span class="kw">as</span> <span class="ident">u32</span> <span class="op">=</span><span class="op">=</span> <span class="ident">CHARSXP</span>);
+            <span class="macro">assert!</span>(<span class="ident">TYPEOF</span>(<span class="ident">printname</span>) <span class="kw">as</span> <span class="ident">u32</span> <span class="op">==</span> <span class="ident">CHARSXP</span>);
             <span class="ident">to_str</span>(<span class="ident">R_CHAR</span>(<span class="ident">printname</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>)
         }
     }
@@ -324,160 +324,160 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Symbol</span> {
     <span class="doccomment">/// Convert a string to a symbol.</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="self">Self</span> {
         <span class="ident">Symbol::from_string</span>(<span class="ident">name</span>)
     }
 }
 
 <span class="doccomment">/// Unbound marker</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unbound_value</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unbound_value</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_UnboundValue</span>) }
 }
 
 <span class="doccomment">/// Missing argument marker</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">missing_arg</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">missing_arg</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_MissingArg</span>) }
 }
 
 <span class="doccomment">/// &quot;base&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">base_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">base_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_BaseSymbol</span>) }
 }
 
 <span class="doccomment">/// &quot;{&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">brace_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">brace_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_BraceSymbol</span>) }
 }
 
 <span class="doccomment">/// &quot;[[&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bracket_2_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bracket_2_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_Bracket2Symbol</span>) }
 }
 
 <span class="doccomment">/// &quot;[&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bracket_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bracket_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_BracketSymbol</span>) }
 }
 
 <span class="doccomment">/// &quot;class&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">class_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">class_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_ClassSymbol</span>) }
 }
 
 <span class="doccomment">/// &quot;.Device&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">device_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">device_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_DeviceSymbol</span>) }
 }
 
 <span class="doccomment">/// &quot;dimnames&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dimnames_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dimnames_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_DimNamesSymbol</span>) }
 }
 
 <span class="doccomment">/// &quot;dim&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dim_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dim_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_DimSymbol</span>) }
 }
 
 <span class="doccomment">/// &quot;$&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dollar_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dollar_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_DollarSymbol</span>) }
 }
 
 <span class="doccomment">/// &quot;...&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dots_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dots_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_DotsSymbol</span>) }
 }
 <span class="comment">//     pub fn drop_symbol() -&gt; Symbol { unsafe { Symbol::from_sexp(R_DropSymbol) }}&quot;drop&quot;</span>
 
 <span class="doccomment">/// &quot;::&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">double_colon_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">double_colon_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_DoubleColonSymbol</span>) }
 }
 
 <span class="doccomment">/// &quot;.Last.value&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lastvalue_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lastvalue_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_LastvalueSymbol</span>) }
 }
 <span class="doccomment">/// &quot;levels&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">levels_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">levels_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_LevelsSymbol</span>) }
 }
 <span class="doccomment">/// &quot;mode&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mode_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mode_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_ModeSymbol</span>) }
 }
 <span class="doccomment">/// &quot;na.rm&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">na_rm_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">na_rm_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_NaRmSymbol</span>) }
 }
 <span class="doccomment">/// &quot;name&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">name_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">name_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_NameSymbol</span>) }
 }
 <span class="doccomment">/// &quot;names&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">names_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">names_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_NamesSymbol</span>) }
 }
 <span class="doccomment">/// _NAMESPACE__.&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">namespace_env_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">namespace_env_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_NamespaceEnvSymbol</span>) }
 }
 <span class="doccomment">/// &quot;package&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">package_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">package_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_PackageSymbol</span>) }
 }
 <span class="doccomment">/// &quot;previous&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">previous_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">previous_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_PreviousSymbol</span>) }
 }
 <span class="doccomment">/// &quot;quote&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">quote_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">quote_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_QuoteSymbol</span>) }
 }
 <span class="doccomment">/// &quot;row.names&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">row_names_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">row_names_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_RowNamesSymbol</span>) }
 }
 <span class="doccomment">/// &quot;.Random.seed&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">seeds_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">seeds_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_SeedsSymbol</span>) }
 }
 <span class="doccomment">/// &quot;sort.list&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sort_list_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sort_list_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_SortListSymbol</span>) }
 }
 <span class="doccomment">/// &quot;source&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">source_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">source_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_SourceSymbol</span>) }
 }
 <span class="doccomment">/// &quot;spec&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">spec_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">spec_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_SpecSymbol</span>) }
 }
 <span class="doccomment">/// &quot;tsp&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">tsp_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">tsp_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_TspSymbol</span>) }
 }
 <span class="doccomment">/// &quot;:::&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">triple_colon_symbol</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">triple_colon_symbol</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_TripleColonSymbol</span>) }
 }
 <span class="doccomment">/// &quot;.defined&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dot_defined</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dot_defined</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_dot_defined</span>) }
 }
 <span class="doccomment">/// &quot;.Method&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dot_method</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dot_method</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_dot_Method</span>) }
 }
 <span class="doccomment">/// &quot;packageName&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dot_package_name</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dot_package_name</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_dot_packageName</span>) }
 }
 
 <span class="doccomment">/// &quot;.target&quot;</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dot_target</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dot_target</span>() -&gt; <span class="ident">Symbol</span> {
     <span class="kw">unsafe</span> { <span class="ident">Symbol::from_sexp</span>(<span class="ident">R_dot_target</span>) }
 }
 

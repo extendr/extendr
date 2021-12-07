@@ -389,7 +389,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Ownership</span> {
-    <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">preservation</span> <span class="op">=</span> <span class="ident">Rf_allocVector</span>(<span class="ident">VECSXP</span>, <span class="ident">INITIAL_PRESERVATION_SIZE</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>);
             <span class="ident">R_PreserveObject</span>(<span class="ident">preservation</span>);
@@ -403,7 +403,7 @@
     }
 
     <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">protect</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">sexp</span>: <span class="ident">SEXP</span>) {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">cur_index</span> <span class="op">=</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">max_index</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">cur_index</span> <span class="op">==</span> <span class="self">self</span>.<span class="ident">max_index</span> {
             <span class="self">self</span>.<span class="ident">garbage_collect</span>();
         }
 
@@ -418,14 +418,14 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">entry</span> <span class="op">=</span> <span class="ident">objects</span>.<span class="ident">entry</span>(<span class="ident">sexp_usize</span>);
         <span class="kw">let</span> <span class="ident">preservation_sexp</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">preservation</span> <span class="kw">as</span> <span class="ident">SEXP</span>;
         <span class="kw">match</span> <span class="ident">entry</span> {
-            <span class="ident">Entry::Occupied</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">occupied</span>) <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="kw">if</span> <span class="ident">occupied</span>.<span class="ident">get</span>().<span class="ident">refcount</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+            <span class="ident">Entry::Occupied</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">occupied</span>) =&gt; {
+                <span class="kw">if</span> <span class="ident">occupied</span>.<span class="ident">get</span>().<span class="ident">refcount</span> <span class="op">==</span> <span class="number">0</span> {
                     <span class="comment">// Address re-used - re-set the sexp.</span>
                     <span class="ident">SET_VECTOR_ELT</span>(<span class="ident">preservation_sexp</span>, <span class="ident">occupied</span>.<span class="ident">get</span>().<span class="ident">index</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">sexp</span>);
                 }
                 <span class="ident">occupied</span>.<span class="ident">get_mut</span>().<span class="ident">refcount</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
             }
-            <span class="ident">Entry::Vacant</span>(<span class="ident">vacant</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">Entry::Vacant</span>(<span class="ident">vacant</span>) =&gt; {
                 <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">cur_index</span>;
                 <span class="ident">SET_VECTOR_ELT</span>(<span class="ident">preservation_sexp</span>, <span class="ident">index</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">sexp</span>);
                 <span class="kw-2">*</span><span class="ident">cur_index</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
@@ -447,13 +447,13 @@
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">entry</span> <span class="op">=</span> <span class="ident">objects</span>.<span class="ident">entry</span>(<span class="ident">sexp_usize</span>);
         <span class="kw">match</span> <span class="ident">entry</span> {
-            <span class="ident">Entry::Occupied</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">occupied</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">Entry::Occupied</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">occupied</span>) =&gt; {
                 <span class="kw">let</span> <span class="ident">object</span> <span class="op">=</span> <span class="ident">occupied</span>.<span class="ident">get_mut</span>();
-                <span class="kw">if</span> <span class="ident">object</span>.<span class="ident">refcount</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+                <span class="kw">if</span> <span class="ident">object</span>.<span class="ident">refcount</span> <span class="op">==</span> <span class="number">0</span> {
                     <span class="macro">panic!</span>(<span class="string">&quot;Attempt to unprotect an already unprotected object.&quot;</span>)
                 } <span class="kw">else</span> {
                     <span class="ident">object</span>.<span class="ident">refcount</span> <span class="op">-</span><span class="op">=</span> <span class="number">1</span>;
-                    <span class="kw">if</span> <span class="ident">object</span>.<span class="ident">refcount</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+                    <span class="kw">if</span> <span class="ident">object</span>.<span class="ident">refcount</span> <span class="op">==</span> <span class="number">0</span> {
                         <span class="comment">// Clear the preservation vector, but keep the hash table entry.</span>
                         <span class="comment">// It is hard to clear the hash table entry here because we don&#39;t</span>
                         <span class="comment">// have a ref to objects anymore and it is faster to clear them up en-masse.</span>
@@ -462,14 +462,14 @@
                     }
                 }
             }
-            <span class="ident">Entry::Vacant</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">Entry::Vacant</span>(<span class="kw">_</span>) =&gt; {
                 <span class="macro">panic!</span>(<span class="string">&quot;Attempt to unprotect a never protected object.&quot;</span>)
             }
         }
     }
 
     <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
-    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">ref_count</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">sexp</span>: <span class="ident">SEXP</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">ref_count</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">sexp</span>: <span class="ident">SEXP</span>) -&gt; <span class="ident">usize</span> {
         <span class="kw">let</span> <span class="ident">Ownership</span> {
             <span class="ident">preservation</span>: <span class="kw">_</span>,
             <span class="ident">cur_index</span>: <span class="kw">_</span>,
@@ -480,8 +480,8 @@
         <span class="kw">let</span> <span class="ident">sexp_usize</span> <span class="op">=</span> <span class="ident">sexp</span> <span class="kw">as</span> <span class="ident">usize</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">entry</span> <span class="op">=</span> <span class="ident">objects</span>.<span class="ident">entry</span>(<span class="ident">sexp_usize</span>);
         <span class="kw">match</span> <span class="ident">entry</span> {
-            <span class="ident">Entry::Occupied</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">occupied</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">occupied</span>.<span class="ident">get</span>().<span class="ident">refcount</span>,
-            <span class="ident">Entry::Vacant</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="number">0</span>,
+            <span class="ident">Entry::Occupied</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">occupied</span>) =&gt; <span class="ident">occupied</span>.<span class="ident">get</span>().<span class="ident">refcount</span>,
+            <span class="ident">Entry::Vacant</span>(<span class="kw">_</span>) =&gt; <span class="number">0</span>,
         }
     }
 
@@ -546,7 +546,7 @@
         <span class="comment">// println!(&quot;check 2&quot;);</span>
         <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="self">self</span>.<span class="ident">max_index</span> {
             <span class="kw">let</span> <span class="ident">elt</span> <span class="op">=</span> <span class="ident">VECTOR_ELT</span>(<span class="ident">preservation_sexp</span>, <span class="ident">i</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>);
-            <span class="kw">if</span> <span class="ident">elt</span> <span class="op">=</span><span class="op">=</span> <span class="ident">R_NilValue</span> {
+            <span class="kw">if</span> <span class="ident">elt</span> <span class="op">==</span> <span class="ident">R_NilValue</span> {
                 <span class="macro">assert_eq!</span>(<span class="self">self</span>.<span class="ident">ref_count</span>(<span class="ident">elt</span>), <span class="number">0</span>);
             } <span class="kw">else</span> {
                 <span class="macro">assert!</span>(<span class="self">self</span>.<span class="ident">ref_count</span>(<span class="ident">elt</span>) <span class="op">!</span><span class="op">=</span> <span class="number">0</span>);
@@ -649,7 +649,7 @@
 
                 <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">sexp</span>) <span class="kw">in</span> <span class="ident">sexps</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
                     <span class="ident">protect</span>(<span class="kw-2">*</span><span class="ident">sexp</span>);
-                    <span class="kw">if</span> <span class="ident">i</span> <span class="op">%</span> <span class="number">2</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+                    <span class="kw">if</span> <span class="ident">i</span> <span class="op">%</span> <span class="number">2</span> <span class="op">==</span> <span class="number">0</span> {
                         <span class="ident">unprotect</span>(<span class="kw-2">*</span><span class="ident">sexp</span>);
                     }
                 }

@@ -50,7 +50,7 @@
     <span class="doccomment">///     assert_eq!(format!(&quot;{:?}&quot;, expr), r#&quot;r!(Expression::from_values([r!(0), r!(1), r!(2)]))&quot;#);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_values</span><span class="op">&lt;</span><span class="ident">V</span><span class="op">&gt;</span>(<span class="ident">values</span>: <span class="ident">V</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_values</span><span class="op">&lt;</span><span class="ident">V</span><span class="op">&gt;</span>(<span class="ident">values</span>: <span class="ident">V</span>) -&gt; <span class="self">Self</span>
     <span class="kw">where</span>
         <span class="ident">V</span>: <span class="ident">IntoIterator</span>,
         <span class="ident">V::IntoIter</span>: <span class="ident">ExactSizeIterator</span>,
@@ -62,7 +62,7 @@
     }
 
     <span class="doccomment">/// Return an iterator over the values of this expression list.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">values</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ListIter</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">values</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ListIter</span> {
         <span class="ident">ListIter::from_parts</span>(<span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">clone</span>(), <span class="number">0</span>, <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">len</span>())
     }
 }

@@ -128,7 +128,7 @@
     <span class="doccomment">///     assert_eq!(nnull, Nullable::Null);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">from_robj</span>(<span class="ident">robj</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std::result::Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">from_robj</span>(<span class="ident">robj</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>) -&gt; <span class="ident">std::result::Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="ident">robj</span>.<span class="ident">is_null</span>() {
             <span class="prelude-val">Ok</span>(<span class="ident">Nullable::Null</span>)
         } <span class="kw">else</span> {
@@ -149,10 +149,10 @@
     <span class="doccomment">///     assert_eq!(r!(Nullable::&lt;i32&gt;::NotNull(1)), r!(1));</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">val</span>: <span class="ident">Nullable</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">val</span>: <span class="ident">Nullable</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">match</span> <span class="ident">val</span> {
-            <span class="ident">Nullable::NotNull</span>(<span class="ident">t</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">t</span>.<span class="ident">into</span>(),
-            <span class="ident">Nullable::Null</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">r!</span>(<span class="ident">NULL</span>),
+            <span class="ident">Nullable::NotNull</span>(<span class="ident">t</span>) =&gt; <span class="ident">t</span>.<span class="ident">into</span>(),
+            <span class="ident">Nullable::Null</span> =&gt; <span class="macro">r!</span>(<span class="ident">NULL</span>),
         }
     }
 }

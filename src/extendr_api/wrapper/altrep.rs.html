@@ -1049,8 +1049,8 @@
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
 <span class="macro">macro_rules!</span> <span class="ident">make_from_iterator</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">fn_name</span> : <span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">make_class</span> : <span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="kw">impl</span> : <span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">r_type</span> : <span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">prim_type</span> : <span class="ident">ty</span>) <span class="op">=</span><span class="op">&gt;</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">fn_name</span><span class="op">&lt;</span><span class="ident">Iter</span><span class="op">&gt;</span>(<span class="ident">iter</span>: <span class="ident">Iter</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Altrep</span>
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">fn_name</span> : <span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">make_class</span> : <span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="kw">impl</span> : <span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">r_type</span> : <span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">prim_type</span> : <span class="ident">ty</span>) =&gt; {
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">fn_name</span><span class="op">&lt;</span><span class="ident">Iter</span><span class="op">&gt;</span>(<span class="ident">iter</span>: <span class="ident">Iter</span>) -&gt; <span class="ident">Altrep</span>
         <span class="kw">where</span>
             <span class="ident">Iter</span>: <span class="ident">ExactSizeIterator</span> <span class="op">+</span> <span class="ident">std::fmt::Debug</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="lifetime">&#39;static</span> <span class="op">+</span> <span class="ident">std::any::Any</span>,
             <span class="ident">Iter::Item</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">prim_type</span><span class="op">&gt;</span>,
@@ -1059,11 +1059,11 @@
             <span class="kw">where</span>
                 <span class="ident">Iter::Item</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">prim_type</span><span class="op">&gt;</span>,
             {
-                <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">r_type</span> {
+                <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">r_type</span> {
                     <span class="macro-nonterminal">$</span><span class="macro-nonterminal">r_type</span>(<span class="self">self</span>.<span class="ident">clone</span>().<span class="ident">nth</span>(<span class="ident">index</span>).<span class="ident">unwrap</span>().<span class="ident">into</span>())
                 }
 
-                <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">r_type</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+                <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">r_type</span>]) -&gt; <span class="ident">usize</span> {
                     <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span>();
                     <span class="kw">if</span> <span class="ident">index</span> <span class="op">&gt;</span> <span class="ident">len</span> {
                         <span class="number">0</span>
@@ -1102,7 +1102,7 @@
         <span class="ident">attributes</span>: <span class="ident">Robj</span>,
         <span class="ident">obj_flags</span>: <span class="ident">i32</span>,
         <span class="ident">levels</span>: <span class="ident">i32</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    ) -&gt; <span class="ident">Robj</span> {
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::unserialize</span>(<span class="ident">class</span>, <span class="ident">state</span>);
         <span class="kw">if</span> <span class="op">!</span><span class="ident">res</span>.<span class="ident">is_null</span>() {
             <span class="kw">unsafe</span> {
@@ -1116,31 +1116,31 @@
     }
 
     <span class="doccomment">/// Simplified constructor that is called when loading an Altrep object from a file.</span>
-    <span class="kw">fn</span> <span class="ident">unserialize</span>(<span class="ident">_class</span>: <span class="ident">Robj</span>, <span class="ident">_state</span>: <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">unserialize</span>(<span class="ident">_class</span>: <span class="ident">Robj</span>, <span class="ident">_state</span>: <span class="ident">Robj</span>) -&gt; <span class="ident">Robj</span> {
         <span class="comment">// We plan to hadle this via Serde by November.</span>
         ().<span class="ident">into</span>()
     }
 
     <span class="doccomment">/// Fetch the state of this object when writing to a file.</span>
-    <span class="kw">fn</span> <span class="ident">serialized_state</span>(<span class="ident">_x</span>: <span class="ident">SEXP</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">serialized_state</span>(<span class="ident">_x</span>: <span class="ident">SEXP</span>) -&gt; <span class="ident">Robj</span> {
         <span class="comment">// We plan to hadle this via Serde by November.</span>
         ().<span class="ident">into</span>()
     }
 
     <span class="doccomment">/// Duplicate this object, possibly duplicating attributes.</span>
     <span class="doccomment">/// Currently this manifests the array but preserves the original object.</span>
-    <span class="kw">fn</span> <span class="ident">duplicate_ex</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>, <span class="ident">deep</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">duplicate_ex</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>, <span class="ident">deep</span>: <span class="ident">bool</span>) -&gt; <span class="ident">Robj</span> {
         <span class="ident"><span class="self">Self</span>::duplicate</span>(<span class="ident">x</span>, <span class="ident">deep</span>)
     }
 
     <span class="doccomment">/// Duplicate this object. Called by Rf_duplicate.</span>
     <span class="doccomment">/// Currently this manifests the array but preserves the original object.</span>
-    <span class="kw">fn</span> <span class="ident">duplicate</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>, <span class="ident">_deep</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">duplicate</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>, <span class="ident">_deep</span>: <span class="ident">bool</span>) -&gt; <span class="ident">Robj</span> {
         <span class="ident">Robj::from_sexp</span>(<span class="ident">manifest</span>(<span class="ident">x</span>))
     }
 
     <span class="doccomment">/// Coerce this object into some other type, if possible.</span>
-    <span class="kw">fn</span> <span class="ident">coerce</span>(<span class="ident">_x</span>: <span class="ident">SEXP</span>, <span class="ident">_ty</span>: <span class="ident">RType</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">coerce</span>(<span class="ident">_x</span>: <span class="ident">SEXP</span>, <span class="ident">_ty</span>: <span class="ident">RType</span>) -&gt; <span class="ident">Robj</span> {
         ().<span class="ident">into</span>()
     }
 
@@ -1150,21 +1150,21 @@
         <span class="ident">_pre</span>: <span class="ident">i32</span>,
         <span class="ident">_deep</span>: <span class="ident">bool</span>,
         <span class="ident">_pvec</span>: <span class="ident">i32</span>, <span class="comment">// _inspect_subtree: fn(robj: Robj, pre: i32, deep: i32, pvec: i32),</span>
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    ) -&gt; <span class="ident">bool</span> {
         <span class="macro">rprintln!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="self">self</span>);
         <span class="bool-val">true</span>
     }
 
     <span class="doccomment">/// Get the virtual length of the vector.</span>
     <span class="doccomment">/// For example for a compact range, return end - start + 1.</span>
-    <span class="kw">fn</span> <span class="ident">length</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span>;
+    <span class="kw">fn</span> <span class="ident">length</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span>;
 
     <span class="doccomment">/// Get the data pointer for this vector, possibly expanding the</span>
     <span class="doccomment">/// compact representation into a full R vector.</span>
-    <span class="kw">fn</span> <span class="ident">dataptr</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>, <span class="ident">_writeable</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span> {
+    <span class="kw">fn</span> <span class="ident">dataptr</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>, <span class="ident">_writeable</span>: <span class="ident">bool</span>) -&gt; <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">data2</span> <span class="op">=</span> <span class="ident">R_altrep_data2</span>(<span class="ident">x</span>);
-            <span class="kw">if</span> <span class="ident">data2</span> <span class="op">=</span><span class="op">=</span> <span class="ident">R_NilValue</span> <span class="op">|</span><span class="op">|</span> <span class="ident">TYPEOF</span>(<span class="ident">data2</span>) <span class="op">!</span><span class="op">=</span> <span class="ident">TYPEOF</span>(<span class="ident">x</span>) {
+            <span class="kw">if</span> <span class="ident">data2</span> <span class="op">==</span> <span class="ident">R_NilValue</span> <span class="op">|</span><span class="op">|</span> <span class="ident">TYPEOF</span>(<span class="ident">data2</span>) <span class="op">!</span><span class="op">=</span> <span class="ident">TYPEOF</span>(<span class="ident">x</span>) {
                 <span class="kw">let</span> <span class="ident">data2</span> <span class="op">=</span> <span class="ident">manifest</span>(<span class="ident">x</span>);
                 <span class="ident">R_set_altrep_data2</span>(<span class="ident">x</span>, <span class="ident">data2</span>);
                 <span class="ident">DATAPTR</span>(<span class="ident">data2</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>
@@ -1176,10 +1176,10 @@
 
     <span class="doccomment">/// Get the data pointer for this vector, returning NULL</span>
     <span class="doccomment">/// if the object is unmaterialized.</span>
-    <span class="kw">fn</span> <span class="ident">dataptr_or_null</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span> {
+    <span class="kw">fn</span> <span class="ident">dataptr_or_null</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>) -&gt; <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">data2</span> <span class="op">=</span> <span class="ident">R_altrep_data2</span>(<span class="ident">x</span>);
-            <span class="kw">if</span> <span class="ident">data2</span> <span class="op">=</span><span class="op">=</span> <span class="ident">R_NilValue</span> <span class="op">|</span><span class="op">|</span> <span class="ident">TYPEOF</span>(<span class="ident">data2</span>) <span class="op">!</span><span class="op">=</span> <span class="ident">TYPEOF</span>(<span class="ident">x</span>) {
+            <span class="kw">if</span> <span class="ident">data2</span> <span class="op">==</span> <span class="ident">R_NilValue</span> <span class="op">|</span><span class="op">|</span> <span class="ident">TYPEOF</span>(<span class="ident">data2</span>) <span class="op">!</span><span class="op">=</span> <span class="ident">TYPEOF</span>(<span class="ident">x</span>) {
                 <span class="ident">std::ptr::null</span>()
             } <span class="kw">else</span> {
                 <span class="ident">DATAPTR</span>(<span class="ident">data2</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>
@@ -1188,7 +1188,7 @@
     }
 
     <span class="doccomment">/// Implement subsetting (eg. x[10:19]) for this Altrep vector.</span>
-    <span class="kw">fn</span> <span class="ident">extract_subset</span>(<span class="ident">_x</span>: <span class="ident">Robj</span>, <span class="ident">_indx</span>: <span class="ident">Robj</span>, <span class="ident">_call</span>: <span class="ident">Robj</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">extract_subset</span>(<span class="ident">_x</span>: <span class="ident">Robj</span>, <span class="ident">_indx</span>: <span class="ident">Robj</span>, <span class="ident">_call</span>: <span class="ident">Robj</span>) -&gt; <span class="ident">Robj</span> {
         <span class="comment">// only available in later versions of R.</span>
         <span class="comment">// x.extract_subset(indx, call)</span>
         <span class="ident">Robj::from</span>(())
@@ -1197,29 +1197,29 @@
 
 <span class="comment">// Manifest a vector by storing the &quot;elt&quot; values to memory.</span>
 <span class="comment">// Return the new vector.</span>
-<span class="kw">fn</span> <span class="ident">manifest</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
+<span class="kw">fn</span> <span class="ident">manifest</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>) -&gt; <span class="ident">SEXP</span> {
     <span class="kw">unsafe</span> {
         <span class="ident">Rf_protect</span>(<span class="ident">x</span>);
         <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">XLENGTH_EX</span>(<span class="ident">x</span>);
         <span class="kw">let</span> <span class="ident">data2</span> <span class="op">=</span> <span class="ident">Rf_allocVector</span>(<span class="ident">TYPEOF</span>(<span class="ident">x</span>) <span class="kw">as</span> <span class="ident">u32</span>, <span class="ident">len</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>);
         <span class="ident">Rf_protect</span>(<span class="ident">data2</span>);
         <span class="kw">match</span> <span class="ident">TYPEOF</span>(<span class="ident">x</span>) <span class="kw">as</span> <span class="ident">u32</span> {
-            <span class="ident">INTSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">INTSXP</span> =&gt; {
                 <span class="ident">INTEGER_GET_REGION</span>(<span class="ident">x</span>, <span class="number">0</span>, <span class="ident">len</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">INTEGER</span>(<span class="ident">data2</span>));
             }
-            <span class="ident">LGLSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">LGLSXP</span> =&gt; {
                 <span class="ident">LOGICAL_GET_REGION</span>(<span class="ident">x</span>, <span class="number">0</span>, <span class="ident">len</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">LOGICAL</span>(<span class="ident">data2</span>));
             }
-            <span class="ident">REALSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">REALSXP</span> =&gt; {
                 <span class="ident">REAL_GET_REGION</span>(<span class="ident">x</span>, <span class="number">0</span>, <span class="ident">len</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">REAL</span>(<span class="ident">data2</span>));
             }
-            <span class="ident">RAWSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">RAWSXP</span> =&gt; {
                 <span class="ident">RAW_GET_REGION</span>(<span class="ident">x</span>, <span class="number">0</span>, <span class="ident">len</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">RAW</span>(<span class="ident">data2</span>));
             }
-            <span class="ident">CPLXSXP</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">CPLXSXP</span> =&gt; {
                 <span class="ident">COMPLEX_GET_REGION</span>(<span class="ident">x</span>, <span class="number">0</span>, <span class="ident">len</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">COMPLEX</span>(<span class="ident">data2</span>));
             }
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">panic!</span>(<span class="string">&quot;unsupported ALTREP type.&quot;</span>),
+            <span class="kw">_</span> =&gt; <span class="macro">panic!</span>(<span class="string">&quot;unsupported ALTREP type.&quot;</span>),
         };
         <span class="ident">Rf_unprotect</span>(<span class="number">2</span>);
         <span class="ident">data2</span>
@@ -1227,7 +1227,7 @@
 }
 
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">AltIntegerImpl</span>: <span class="ident">AltrepImpl</span> {
-    <span class="kw">fn</span> <span class="ident">tot_min_max_nas</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">i64</span>, <span class="ident">i32</span>, <span class="ident">i32</span>, <span class="ident">usize</span>, <span class="ident">usize</span>) {
+    <span class="kw">fn</span> <span class="ident">tot_min_max_nas</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (<span class="ident">i64</span>, <span class="ident">i32</span>, <span class="ident">i32</span>, <span class="ident">usize</span>, <span class="ident">usize</span>) {
         <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">length</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tot</span> <span class="op">=</span> <span class="number">0</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">nas</span> <span class="op">=</span> <span class="number">0</span>;
@@ -1246,10 +1246,10 @@
     }
 
     <span class="doccomment">/// Get a single element from this vector.</span>
-    <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_index</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Rint</span>;
+    <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_index</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Rint</span>;
 
     <span class="doccomment">/// Get a multiple elements from this vector.</span>
-    <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">Rint</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+    <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">Rint</span>]) -&gt; <span class="ident">usize</span> {
         <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">length</span>();
         <span class="kw">if</span> <span class="ident">index</span> <span class="op">&gt;</span> <span class="ident">len</span> {
             <span class="number">0</span>
@@ -1264,18 +1264,18 @@
     }
 
     <span class="doccomment">/// Return TRUE if this vector is sorted, FALSE if not and NA_LOGICAL if unknown.</span>
-    <span class="kw">fn</span> <span class="ident">is_sorted</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_sorted</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Bool</span> {
         <span class="ident">NA_LOGICAL</span>
     }
 
     <span class="doccomment">/// Return true if this vector does not contain NAs.</span>
-    <span class="kw">fn</span> <span class="ident">no_na</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">no_na</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
         <span class="bool-val">false</span>
     }
 
     <span class="doccomment">/// Return the sum of the elements in this vector.</span>
     <span class="doccomment">/// If remove_nas is true, skip and NA values.</span>
-    <span class="kw">fn</span> <span class="ident">sum</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">remove_nas</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">sum</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">remove_nas</span>: <span class="ident">bool</span>) -&gt; <span class="ident">Robj</span> {
         <span class="kw">let</span> (<span class="ident">tot</span>, <span class="ident">_min</span>, <span class="ident">_max</span>, <span class="ident">nas</span>, <span class="ident">_len</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">tot_min_max_nas</span>();
         <span class="kw">if</span> <span class="op">!</span><span class="ident">remove_nas</span> <span class="op">&amp;&amp;</span> <span class="ident">nas</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
             <span class="ident">NA_INTEGER</span>.<span class="ident">into</span>()
@@ -1286,9 +1286,9 @@
 
     <span class="doccomment">/// Return the minimum of the elements in this vector.</span>
     <span class="doccomment">/// If remove_nas is true, skip and NA values.</span>
-    <span class="kw">fn</span> <span class="ident">min</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">remove_nas</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">min</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">remove_nas</span>: <span class="ident">bool</span>) -&gt; <span class="ident">Robj</span> {
         <span class="kw">let</span> (<span class="ident">_tot</span>, <span class="ident">min</span>, <span class="ident">_max</span>, <span class="ident">nas</span>, <span class="ident">len</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">tot_min_max_nas</span>();
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">remove_nas</span> <span class="op">&amp;&amp;</span> <span class="ident">nas</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">remove_nas</span> <span class="op">&amp;&amp;</span> <span class="ident">nas</span> <span class="op">=</span><span class="op">=</span> <span class="ident">len</span> {
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">remove_nas</span> <span class="op">&amp;&amp;</span> <span class="ident">nas</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">remove_nas</span> <span class="op">&amp;&amp;</span> <span class="ident">nas</span> <span class="op">==</span> <span class="ident">len</span> {
             <span class="ident">NA_INTEGER</span>.<span class="ident">into</span>()
         } <span class="kw">else</span> {
             <span class="ident">min</span>.<span class="ident">into</span>()
@@ -1297,9 +1297,9 @@
 
     <span class="doccomment">/// Return the maximum of the elements in this vector.</span>
     <span class="doccomment">/// If remove_nas is true, skip and NA values.</span>
-    <span class="kw">fn</span> <span class="ident">max</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">remove_nas</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">max</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">remove_nas</span>: <span class="ident">bool</span>) -&gt; <span class="ident">Robj</span> {
         <span class="kw">let</span> (<span class="ident">_tot</span>, <span class="ident">_min</span>, <span class="ident">max</span>, <span class="ident">nas</span>, <span class="ident">len</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">tot_min_max_nas</span>();
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">remove_nas</span> <span class="op">&amp;&amp;</span> <span class="ident">nas</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">remove_nas</span> <span class="op">&amp;&amp;</span> <span class="ident">nas</span> <span class="op">=</span><span class="op">=</span> <span class="ident">len</span> {
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">remove_nas</span> <span class="op">&amp;&amp;</span> <span class="ident">nas</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">remove_nas</span> <span class="op">&amp;&amp;</span> <span class="ident">nas</span> <span class="op">==</span> <span class="ident">len</span> {
             <span class="ident">NA_INTEGER</span>.<span class="ident">into</span>()
         } <span class="kw">else</span> {
             <span class="ident">max</span>.<span class="ident">into</span>()
@@ -1308,7 +1308,7 @@
 }
 
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">AltRealImpl</span>: <span class="ident">AltrepImpl</span> {
-    <span class="kw">fn</span> <span class="ident">tot_min_max_nas</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">f64</span>, <span class="ident">f64</span>, <span class="ident">f64</span>, <span class="ident">usize</span>, <span class="ident">usize</span>) {
+    <span class="kw">fn</span> <span class="ident">tot_min_max_nas</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (<span class="ident">f64</span>, <span class="ident">f64</span>, <span class="ident">f64</span>, <span class="ident">usize</span>, <span class="ident">usize</span>) {
         <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">length</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tot</span> <span class="op">=</span> <span class="number">0.0</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">nas</span> <span class="op">=</span> <span class="number">0</span>;
@@ -1327,10 +1327,10 @@
     }
 
     <span class="doccomment">/// Get a single element from this vector.</span>
-    <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_index</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Rfloat</span>;
+    <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_index</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Rfloat</span>;
 
     <span class="doccomment">/// Get a multiple elements from this vector.</span>
-    <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">Rfloat</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+    <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">Rfloat</span>]) -&gt; <span class="ident">usize</span> {
         <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">length</span>();
         <span class="kw">if</span> <span class="ident">index</span> <span class="op">&gt;</span> <span class="ident">len</span> {
             <span class="number">0</span>
@@ -1345,18 +1345,18 @@
     }
 
     <span class="doccomment">/// Return TRUE if this vector is sorted, FALSE if not and NA_LOGICAL if unknown.</span>
-    <span class="kw">fn</span> <span class="ident">is_sorted</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_sorted</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Bool</span> {
         <span class="ident">NA_LOGICAL</span>
     }
 
     <span class="doccomment">/// Return true if this vector does not contain NAs.</span>
-    <span class="kw">fn</span> <span class="ident">no_na</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">no_na</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
         <span class="bool-val">false</span>
     }
 
     <span class="doccomment">/// Return the sum of the elements in this vector.</span>
     <span class="doccomment">/// If remove_nas is true, skip and NA values.</span>
-    <span class="kw">fn</span> <span class="ident">sum</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">remove_nas</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">sum</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">remove_nas</span>: <span class="ident">bool</span>) -&gt; <span class="ident">Robj</span> {
         <span class="kw">let</span> (<span class="ident">tot</span>, <span class="ident">_min</span>, <span class="ident">_max</span>, <span class="ident">nas</span>, <span class="ident">_len</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">tot_min_max_nas</span>();
         <span class="kw">if</span> <span class="op">!</span><span class="ident">remove_nas</span> <span class="op">&amp;&amp;</span> <span class="ident">nas</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
             <span class="ident">NA_REAL</span>.<span class="ident">into</span>()
@@ -1367,9 +1367,9 @@
 
     <span class="doccomment">/// Return the minimum of the elements in this vector.</span>
     <span class="doccomment">/// If remove_nas is true, skip and NA values.</span>
-    <span class="kw">fn</span> <span class="ident">min</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">remove_nas</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">min</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">remove_nas</span>: <span class="ident">bool</span>) -&gt; <span class="ident">Robj</span> {
         <span class="kw">let</span> (<span class="ident">_tot</span>, <span class="ident">min</span>, <span class="ident">_max</span>, <span class="ident">nas</span>, <span class="ident">len</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">tot_min_max_nas</span>();
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">remove_nas</span> <span class="op">&amp;&amp;</span> <span class="ident">nas</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">remove_nas</span> <span class="op">&amp;&amp;</span> <span class="ident">nas</span> <span class="op">=</span><span class="op">=</span> <span class="ident">len</span> {
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">remove_nas</span> <span class="op">&amp;&amp;</span> <span class="ident">nas</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">remove_nas</span> <span class="op">&amp;&amp;</span> <span class="ident">nas</span> <span class="op">==</span> <span class="ident">len</span> {
             <span class="ident">NA_REAL</span>.<span class="ident">into</span>()
         } <span class="kw">else</span> {
             <span class="ident">min</span>.<span class="ident">into</span>()
@@ -1378,9 +1378,9 @@
 
     <span class="doccomment">/// Return the maximum of the elements in this vector.</span>
     <span class="doccomment">/// If remove_nas is true, skip and NA values.</span>
-    <span class="kw">fn</span> <span class="ident">max</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">remove_nas</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">max</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">remove_nas</span>: <span class="ident">bool</span>) -&gt; <span class="ident">Robj</span> {
         <span class="kw">let</span> (<span class="ident">_tot</span>, <span class="ident">_min</span>, <span class="ident">max</span>, <span class="ident">nas</span>, <span class="ident">len</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">tot_min_max_nas</span>();
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">remove_nas</span> <span class="op">&amp;&amp;</span> <span class="ident">nas</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">remove_nas</span> <span class="op">&amp;&amp;</span> <span class="ident">nas</span> <span class="op">=</span><span class="op">=</span> <span class="ident">len</span> {
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">remove_nas</span> <span class="op">&amp;&amp;</span> <span class="ident">nas</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">remove_nas</span> <span class="op">&amp;&amp;</span> <span class="ident">nas</span> <span class="op">==</span> <span class="ident">len</span> {
             <span class="ident">NA_REAL</span>.<span class="ident">into</span>()
         } <span class="kw">else</span> {
             <span class="ident">max</span>.<span class="ident">into</span>()
@@ -1389,7 +1389,7 @@
 }
 
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">AltLogicalImpl</span>: <span class="ident">AltrepImpl</span> {
-    <span class="kw">fn</span> <span class="ident">tot_min_max_nas</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">i64</span>, <span class="ident">i32</span>, <span class="ident">i32</span>, <span class="ident">usize</span>, <span class="ident">usize</span>) {
+    <span class="kw">fn</span> <span class="ident">tot_min_max_nas</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (<span class="ident">i64</span>, <span class="ident">i32</span>, <span class="ident">i32</span>, <span class="ident">usize</span>, <span class="ident">usize</span>) {
         <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">length</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tot</span> <span class="op">=</span> <span class="number">0</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">nas</span> <span class="op">=</span> <span class="number">0</span>;
@@ -1404,10 +1404,10 @@
     }
 
     <span class="doccomment">/// Get a single element from this vector.</span>
-    <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_index</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Bool</span>;
+    <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_index</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Bool</span>;
 
     <span class="doccomment">/// Get a multiple elements from this vector.</span>
-    <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">Bool</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+    <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">Bool</span>]) -&gt; <span class="ident">usize</span> {
         <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">length</span>();
         <span class="kw">if</span> <span class="ident">index</span> <span class="op">&gt;</span> <span class="ident">len</span> {
             <span class="number">0</span>
@@ -1422,20 +1422,20 @@
     }
 
     <span class="doccomment">/// Return TRUE if this vector is sorted, FALSE if not and NA_LOGICAL if unknown.</span>
-    <span class="kw">fn</span> <span class="ident">is_sorted</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_sorted</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Bool</span> {
         <span class="ident">NA_LOGICAL</span>
     }
 
     <span class="doccomment">/// Return true if this vector does not contain NAs.</span>
-    <span class="kw">fn</span> <span class="ident">no_na</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">no_na</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
         <span class="bool-val">false</span>
     }
 
     <span class="doccomment">/// Return the sum of the elements in this vector.</span>
     <span class="doccomment">/// If remove_nas is true, skip and NA values.</span>
-    <span class="kw">fn</span> <span class="ident">sum</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">remove_nas</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">sum</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">remove_nas</span>: <span class="ident">bool</span>) -&gt; <span class="ident">Robj</span> {
         <span class="kw">let</span> (<span class="ident">tot</span>, <span class="ident">_min</span>, <span class="ident">_max</span>, <span class="ident">nas</span>, <span class="ident">len</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">tot_min_max_nas</span>();
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">remove_nas</span> <span class="op">&amp;&amp;</span> <span class="ident">nas</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">remove_nas</span> <span class="op">&amp;&amp;</span> <span class="ident">nas</span> <span class="op">=</span><span class="op">=</span> <span class="ident">len</span> {
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">remove_nas</span> <span class="op">&amp;&amp;</span> <span class="ident">nas</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">remove_nas</span> <span class="op">&amp;&amp;</span> <span class="ident">nas</span> <span class="op">==</span> <span class="ident">len</span> {
             <span class="ident">NA_LOGICAL</span>.<span class="ident">into</span>()
         } <span class="kw">else</span> {
             <span class="ident">tot</span>.<span class="ident">into</span>()
@@ -1445,10 +1445,10 @@
 
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">AltRawImpl</span>: <span class="ident">AltrepImpl</span> {
     <span class="doccomment">/// Get a single element from this vector.</span>
-    <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_index</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u8</span>;
+    <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_index</span>: <span class="ident">usize</span>) -&gt; <span class="ident">u8</span>;
 
     <span class="doccomment">/// Get a multiple elements from this vector.</span>
-    <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+    <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>]) -&gt; <span class="ident">usize</span> {
         <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">length</span>();
         <span class="kw">if</span> <span class="ident">index</span> <span class="op">&gt;</span> <span class="ident">len</span> {
             <span class="number">0</span>
@@ -1465,10 +1465,10 @@
 
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">AltComplexImpl</span>: <span class="ident">AltrepImpl</span> {
     <span class="doccomment">/// Get a single element from this vector.</span>
-    <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_index</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Cplx</span>;
+    <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_index</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Cplx</span>;
 
     <span class="doccomment">/// Get a multiple elements from this vector.</span>
-    <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">Cplx</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+    <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">Cplx</span>]) -&gt; <span class="ident">usize</span> {
         <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">length</span>();
         <span class="kw">if</span> <span class="ident">index</span> <span class="op">&gt;</span> <span class="ident">len</span> {
             <span class="number">0</span>
@@ -1485,18 +1485,18 @@
 
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">AltStringImpl</span> {
     <span class="doccomment">/// Get a single element from this vector.</span>
-    <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_index</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Rstr</span>;
+    <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_index</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Rstr</span>;
 
     <span class="doccomment">/// Set a single element in this vector.</span>
     <span class="kw">fn</span> <span class="ident">set_elt</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">_index</span>: <span class="ident">usize</span>, <span class="ident">_value</span>: <span class="ident">Rstr</span>) {}
 
     <span class="doccomment">/// Return TRUE if this vector is sorted, FALSE if not and NA_LOGICAL if unknown.</span>
-    <span class="kw">fn</span> <span class="ident">is_sorted</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_sorted</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Bool</span> {
         <span class="ident">NA_LOGICAL</span>
     }
 
     <span class="doccomment">/// Return true if this vector does not contain NAs.</span>
-    <span class="kw">fn</span> <span class="ident">no_na</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">no_na</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
         <span class="bool-val">false</span>
     }
 }
@@ -1504,7 +1504,7 @@
 <span class="kw">impl</span> <span class="ident">Altrep</span> {
     <span class="doccomment">/// Safely implement R_altrep_data1, R_altrep_data2.</span>
     <span class="doccomment">/// When implementing Altrep classes, this gets the metadata.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">data</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">Robj</span>, <span class="ident">Robj</span>) {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">data</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (<span class="ident">Robj</span>, <span class="ident">Robj</span>) {
         <span class="kw">unsafe</span> {
             (
                 <span class="ident">Robj::from_sexp</span>(<span class="ident">R_altrep_data1</span>(<span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>())),
@@ -1523,7 +1523,7 @@
     }
 
     <span class="doccomment">/// Safely implement ALTREP_CLASS.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">class</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">class</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Robj</span> {
         <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">ALTREP_CLASS</span>(<span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>())) }
     }
 
@@ -1531,7 +1531,7 @@
         <span class="ident">state</span>: <span class="ident">StateType</span>,
         <span class="ident">class</span>: <span class="ident">Robj</span>,
         <span class="ident">mutable</span>: <span class="ident">bool</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Altrep</span> {
+    ) -&gt; <span class="ident">Altrep</span> {
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
             <span class="kw">use</span> <span class="ident">std::os::raw::c_void</span>;
 
@@ -1561,12 +1561,12 @@
     }
 
     <span class="doccomment">/// Return true if the ALTREP object has been manifested (copied into memory).</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_manifest</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_manifest</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="op">!</span><span class="ident">DATAPTR_OR_NULL</span>(<span class="self">self</span>.<span class="ident">get</span>()).<span class="ident">is_null</span>() }
     }
 
     <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_state</span><span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">StateType</span> {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_state</span><span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">StateType</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">state_ptr</span> <span class="op">=</span> <span class="ident">R_ExternalPtrAddr</span>(<span class="ident">R_altrep_data1</span>(<span class="ident">x</span>));
             <span class="kw-2">&amp;</span><span class="kw-2">*</span>(<span class="ident">state_ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">StateType</span>)
@@ -1574,14 +1574,14 @@
     }
 
     <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_state_mut</span><span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="kw-2">mut</span> <span class="ident">StateType</span> {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_state_mut</span><span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="kw-2">mut</span> <span class="ident">StateType</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">state_ptr</span> <span class="op">=</span> <span class="ident">R_ExternalPtrAddr</span>(<span class="ident">R_altrep_data1</span>(<span class="ident">x</span>));
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="kw-2">*</span>(<span class="ident">state_ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">StateType</span>)
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">altrep_class</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltrepImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(<span class="ident">ty</span>: <span class="ident">RType</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">altrep_class</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltrepImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(<span class="ident">ty</span>: <span class="ident">RType</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">Robj</span> {
         <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
         <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">unused_variables</span>)]</span>
         <span class="kw">use</span> <span class="ident">std::os::raw::c_int</span>;
@@ -1593,7 +1593,7 @@
             <span class="ident">attr</span>: <span class="ident">SEXP</span>,
             <span class="ident">objf</span>: <span class="ident">c_int</span>,
             <span class="ident">levs</span>: <span class="ident">c_int</span>,
-        ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
+        ) -&gt; <span class="ident">SEXP</span> {
             <span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span><span class="ident">::unserialize_ex</span>(
                 <span class="ident">Robj::from_sexp</span>(<span class="ident">class</span>),
                 <span class="ident">Robj::from_sexp</span>(<span class="ident">state</span>),
@@ -1607,35 +1607,35 @@
         <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altrep_Unserialize</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltrepImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
             <span class="ident">class</span>: <span class="ident">SEXP</span>,
             <span class="ident">state</span>: <span class="ident">SEXP</span>,
-        ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
+        ) -&gt; <span class="ident">SEXP</span> {
             <span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span><span class="ident">::unserialize</span>(<span class="ident">Robj::from_sexp</span>(<span class="ident">class</span>), <span class="ident">Robj::from_sexp</span>(<span class="ident">state</span>)).<span class="ident">get</span>()
         }
 
         <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altrep_Serialized_state</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltrepImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
             <span class="ident">x</span>: <span class="ident">SEXP</span>,
-        ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
+        ) -&gt; <span class="ident">SEXP</span> {
             <span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span><span class="ident">::serialized_state</span>(<span class="ident">x</span>).<span class="ident">get</span>()
         }
 
         <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altrep_Coerce</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltrepImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
             <span class="ident">x</span>: <span class="ident">SEXP</span>,
             <span class="ident">ty</span>: <span class="ident">c_int</span>,
-        ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
+        ) -&gt; <span class="ident">SEXP</span> {
             <span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span><span class="ident">::coerce</span>(<span class="ident">x</span>, <span class="ident">sxp_to_rtype</span>(<span class="ident">ty</span>)).<span class="ident">get</span>()
         }
 
         <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altrep_Duplicate</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltrepImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
             <span class="ident">x</span>: <span class="ident">SEXP</span>,
             <span class="ident">deep</span>: <span class="ident">Rboolean</span>,
-        ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
-            <span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span><span class="ident">::duplicate</span>(<span class="ident">x</span>, <span class="ident">deep</span> <span class="op">=</span><span class="op">=</span> <span class="number">1</span>).<span class="ident">get</span>()
+        ) -&gt; <span class="ident">SEXP</span> {
+            <span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span><span class="ident">::duplicate</span>(<span class="ident">x</span>, <span class="ident">deep</span> <span class="op">==</span> <span class="number">1</span>).<span class="ident">get</span>()
         }
 
         <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altrep_DuplicateEX</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltrepImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
             <span class="ident">x</span>: <span class="ident">SEXP</span>,
             <span class="ident">deep</span>: <span class="ident">Rboolean</span>,
-        ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
-            <span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span><span class="ident">::duplicate_ex</span>(<span class="ident">x</span>, <span class="ident">deep</span> <span class="op">=</span><span class="op">=</span> <span class="number">1</span>).<span class="ident">get</span>()
+        ) -&gt; <span class="ident">SEXP</span> {
+            <span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span><span class="ident">::duplicate_ex</span>(<span class="ident">x</span>, <span class="ident">deep</span> <span class="op">==</span> <span class="number">1</span>).<span class="ident">get</span>()
         }
 
         <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altrep_Inspect</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltrepImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
@@ -1644,28 +1644,28 @@
             <span class="ident">deep</span>: <span class="ident">c_int</span>,
             <span class="ident">pvec</span>: <span class="ident">c_int</span>,
             <span class="ident">func</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span>(<span class="ident">arg1</span>: <span class="ident">SEXP</span>, <span class="ident">arg2</span>: <span class="ident">c_int</span>, <span class="ident">arg3</span>: <span class="ident">c_int</span>, <span class="ident">arg4</span>: <span class="ident">c_int</span>)<span class="op">&gt;</span>,
-        ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Rboolean</span> {
-            <span class="kw">if</span> <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">inspect</span>(<span class="ident">pre</span>, <span class="ident">deep</span> <span class="op">=</span><span class="op">=</span> <span class="number">1</span>, <span class="ident">pvec</span>) {
+        ) -&gt; <span class="ident">Rboolean</span> {
+            <span class="kw">if</span> <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">inspect</span>(<span class="ident">pre</span>, <span class="ident">deep</span> <span class="op">==</span> <span class="number">1</span>, <span class="ident">pvec</span>) {
                 <span class="number">1</span>
             } <span class="kw">else</span> {
                 <span class="number">0</span>
             }
         }
 
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altrep_Length</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltrepImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">R_xlen_t</span> {
+        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altrep_Length</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltrepImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>) -&gt; <span class="ident">R_xlen_t</span> {
             <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">length</span>() <span class="kw">as</span> <span class="ident">R_xlen_t</span>
         }
 
         <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altvec_Dataptr</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltrepImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
             <span class="ident">x</span>: <span class="ident">SEXP</span>,
             <span class="ident">writeable</span>: <span class="ident">Rboolean</span>,
-        ) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_void</span> {
+        ) -&gt; <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_void</span> {
             <span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span><span class="ident">::dataptr</span>(<span class="ident">x</span>, <span class="ident">writeable</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_void</span>
         }
 
         <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altvec_Dataptr_or_null</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltrepImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
             <span class="ident">x</span>: <span class="ident">SEXP</span>,
-        ) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">c_void</span> {
+        ) -&gt; <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">c_void</span> {
             <span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span><span class="ident">::dataptr_or_null</span>(<span class="ident">x</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_void</span>
         }
 
@@ -1673,7 +1673,7 @@
             <span class="ident">x</span>: <span class="ident">SEXP</span>,
             <span class="ident">indx</span>: <span class="ident">SEXP</span>,
             <span class="ident">call</span>: <span class="ident">SEXP</span>,
-        ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
+        ) -&gt; <span class="ident">SEXP</span> {
             <span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span><span class="ident">::extract_subset</span>(
                 <span class="ident">Robj::from_sexp</span>(<span class="ident">x</span>),
                 <span class="ident">Robj::from_sexp</span>(<span class="ident">indx</span>),
@@ -1687,25 +1687,25 @@
             <span class="kw">let</span> <span class="ident">csbase</span> <span class="op">=</span> <span class="ident">std::ffi::CString::new</span>(<span class="ident">base</span>).<span class="ident">unwrap</span>();
 
             <span class="kw">let</span> <span class="ident">class_ptr</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">ty</span> {
-                <span class="ident">RType::Integer</span> <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="ident">RType::Integer</span> =&gt; {
                     <span class="ident">R_make_altinteger_class</span>(<span class="ident">csname</span>.<span class="ident">as_ptr</span>(), <span class="ident">csbase</span>.<span class="ident">as_ptr</span>(), <span class="ident">std::ptr::null_mut</span>())
                 }
-                <span class="ident">RType::Real</span> <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="ident">RType::Real</span> =&gt; {
                     <span class="ident">R_make_altreal_class</span>(<span class="ident">csname</span>.<span class="ident">as_ptr</span>(), <span class="ident">csbase</span>.<span class="ident">as_ptr</span>(), <span class="ident">std::ptr::null_mut</span>())
                 }
-                <span class="ident">RType::Logical</span> <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="ident">RType::Logical</span> =&gt; {
                     <span class="ident">R_make_altlogical_class</span>(<span class="ident">csname</span>.<span class="ident">as_ptr</span>(), <span class="ident">csbase</span>.<span class="ident">as_ptr</span>(), <span class="ident">std::ptr::null_mut</span>())
                 }
-                <span class="ident">RType::Raw</span> <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="ident">RType::Raw</span> =&gt; {
                     <span class="ident">R_make_altraw_class</span>(<span class="ident">csname</span>.<span class="ident">as_ptr</span>(), <span class="ident">csbase</span>.<span class="ident">as_ptr</span>(), <span class="ident">std::ptr::null_mut</span>())
                 }
-                <span class="ident">RType::Complex</span> <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="ident">RType::Complex</span> =&gt; {
                     <span class="ident">R_make_altcomplex_class</span>(<span class="ident">csname</span>.<span class="ident">as_ptr</span>(), <span class="ident">csbase</span>.<span class="ident">as_ptr</span>(), <span class="ident">std::ptr::null_mut</span>())
                 }
-                <span class="ident">RType::String</span> <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="ident">RType::String</span> =&gt; {
                     <span class="ident">R_make_altstring_class</span>(<span class="ident">csname</span>.<span class="ident">as_ptr</span>(), <span class="ident">csbase</span>.<span class="ident">as_ptr</span>(), <span class="ident">std::ptr::null_mut</span>())
                 }
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">panic!</span>(<span class="string">&quot;expected Altvec compatible type&quot;</span>),
+                <span class="kw">_</span> =&gt; <span class="macro">panic!</span>(<span class="string">&quot;expected Altvec compatible type&quot;</span>),
             };
 
             <span class="ident">R_set_altrep_UnserializeEX_method</span>(<span class="ident">class_ptr</span>, <span class="prelude-val">Some</span>(<span class="ident">altrep_UnserializeEX</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>));
@@ -1735,7 +1735,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_altinteger_class</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltrepImpl</span> <span class="op">+</span> <span class="ident">AltIntegerImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
         <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
         <span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    ) -&gt; <span class="ident">Robj</span> {
         <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
         <span class="kw">use</span> <span class="ident">std::os::raw::c_int</span>;
 
@@ -1746,7 +1746,7 @@
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altinteger_Elt</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltIntegerImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
                 <span class="ident">i</span>: <span class="ident">R_xlen_t</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span> {
+            ) -&gt; <span class="ident">c_int</span> {
                 <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">elt</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>).<span class="number">0</span> <span class="kw">as</span> <span class="ident">c_int</span>
             }
 
@@ -1755,20 +1755,20 @@
                 <span class="ident">i</span>: <span class="ident">R_xlen_t</span>,
                 <span class="ident">n</span>: <span class="ident">R_xlen_t</span>,
                 <span class="ident">buf</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_int</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">R_xlen_t</span> {
+            ) -&gt; <span class="ident">R_xlen_t</span> {
                 <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">std::slice::from_raw_parts_mut</span>(<span class="ident">buf</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">Rint</span>, <span class="ident">n</span> <span class="kw">as</span> <span class="ident">usize</span>);
                 <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">get_region</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>, <span class="ident">slice</span>) <span class="kw">as</span> <span class="ident">R_xlen_t</span>
             }
 
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altinteger_Is_sorted</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltIntegerImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span> {
+            ) -&gt; <span class="ident">c_int</span> {
                 <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">is_sorted</span>().<span class="number">0</span> <span class="kw">as</span> <span class="ident">c_int</span>
             }
 
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altinteger_No_NA</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltIntegerImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span> {
+            ) -&gt; <span class="ident">c_int</span> {
                 <span class="kw">if</span> <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">no_na</span>() {
                     <span class="number">1</span>
                 } <span class="kw">else</span> {
@@ -1779,22 +1779,22 @@
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altinteger_Sum</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltIntegerImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
                 <span class="ident">narm</span>: <span class="ident">Rboolean</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
-                <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">sum</span>(<span class="ident">narm</span> <span class="op">=</span><span class="op">=</span> <span class="number">1</span>).<span class="ident">get</span>()
+            ) -&gt; <span class="ident">SEXP</span> {
+                <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">sum</span>(<span class="ident">narm</span> <span class="op">==</span> <span class="number">1</span>).<span class="ident">get</span>()
             }
 
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altinteger_Min</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltIntegerImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
                 <span class="ident">narm</span>: <span class="ident">Rboolean</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
-                <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">min</span>(<span class="ident">narm</span> <span class="op">=</span><span class="op">=</span> <span class="number">1</span>).<span class="ident">get</span>()
+            ) -&gt; <span class="ident">SEXP</span> {
+                <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">min</span>(<span class="ident">narm</span> <span class="op">==</span> <span class="number">1</span>).<span class="ident">get</span>()
             }
 
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altinteger_Max</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltIntegerImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
                 <span class="ident">narm</span>: <span class="ident">Rboolean</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
-                <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">max</span>(<span class="ident">narm</span> <span class="op">=</span><span class="op">=</span> <span class="number">1</span>).<span class="ident">get</span>()
+            ) -&gt; <span class="ident">SEXP</span> {
+                <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">max</span>(<span class="ident">narm</span> <span class="op">==</span> <span class="number">1</span>).<span class="ident">get</span>()
             }
 
             <span class="ident">R_set_altinteger_Elt_method</span>(<span class="ident">class_ptr</span>, <span class="prelude-val">Some</span>(<span class="ident">altinteger_Elt</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>));
@@ -1813,7 +1813,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_altreal_class</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltrepImpl</span> <span class="op">+</span> <span class="ident">AltRealImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
         <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
         <span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    ) -&gt; <span class="ident">Robj</span> {
         <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
         <span class="kw">use</span> <span class="ident">std::os::raw::c_int</span>;
 
@@ -1824,7 +1824,7 @@
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altreal_Elt</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltRealImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
                 <span class="ident">i</span>: <span class="ident">R_xlen_t</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">f64</span> {
+            ) -&gt; <span class="ident">f64</span> {
                 <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">elt</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>).<span class="number">0</span>
             }
 
@@ -1833,18 +1833,18 @@
                 <span class="ident">i</span>: <span class="ident">R_xlen_t</span>,
                 <span class="ident">n</span>: <span class="ident">R_xlen_t</span>,
                 <span class="ident">buf</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">f64</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">R_xlen_t</span> {
+            ) -&gt; <span class="ident">R_xlen_t</span> {
                 <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">std::slice::from_raw_parts_mut</span>(<span class="ident">buf</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">Rfloat</span>, <span class="ident">n</span> <span class="kw">as</span> <span class="ident">usize</span>);
                 <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">get_region</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>, <span class="ident">slice</span>) <span class="kw">as</span> <span class="ident">R_xlen_t</span>
             }
 
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altreal_Is_sorted</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltRealImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span> {
+            ) -&gt; <span class="ident">c_int</span> {
                 <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">is_sorted</span>().<span class="number">0</span> <span class="kw">as</span> <span class="ident">c_int</span>
             }
 
-            <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altreal_No_NA</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltRealImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span> {
+            <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altreal_No_NA</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltRealImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>) -&gt; <span class="ident">c_int</span> {
                 <span class="kw">if</span> <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">no_na</span>() {
                     <span class="number">1</span>
                 } <span class="kw">else</span> {
@@ -1855,22 +1855,22 @@
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altreal_Sum</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltRealImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
                 <span class="ident">narm</span>: <span class="ident">Rboolean</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
-                <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">sum</span>(<span class="ident">narm</span> <span class="op">=</span><span class="op">=</span> <span class="number">1</span>).<span class="ident">get</span>()
+            ) -&gt; <span class="ident">SEXP</span> {
+                <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">sum</span>(<span class="ident">narm</span> <span class="op">==</span> <span class="number">1</span>).<span class="ident">get</span>()
             }
 
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altreal_Min</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltRealImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
                 <span class="ident">narm</span>: <span class="ident">Rboolean</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
-                <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">min</span>(<span class="ident">narm</span> <span class="op">=</span><span class="op">=</span> <span class="number">1</span>).<span class="ident">get</span>()
+            ) -&gt; <span class="ident">SEXP</span> {
+                <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">min</span>(<span class="ident">narm</span> <span class="op">==</span> <span class="number">1</span>).<span class="ident">get</span>()
             }
 
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altreal_Max</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltRealImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
                 <span class="ident">narm</span>: <span class="ident">Rboolean</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
-                <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">max</span>(<span class="ident">narm</span> <span class="op">=</span><span class="op">=</span> <span class="number">1</span>).<span class="ident">get</span>()
+            ) -&gt; <span class="ident">SEXP</span> {
+                <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">max</span>(<span class="ident">narm</span> <span class="op">==</span> <span class="number">1</span>).<span class="ident">get</span>()
             }
 
             <span class="ident">R_set_altreal_Elt_method</span>(<span class="ident">class_ptr</span>, <span class="prelude-val">Some</span>(<span class="ident">altreal_Elt</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>));
@@ -1888,7 +1888,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_altlogical_class</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltrepImpl</span> <span class="op">+</span> <span class="ident">AltLogicalImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
         <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
         <span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    ) -&gt; <span class="ident">Robj</span> {
         <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
         <span class="kw">use</span> <span class="ident">std::os::raw::c_int</span>;
 
@@ -1899,7 +1899,7 @@
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altlogical_Elt</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltLogicalImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
                 <span class="ident">i</span>: <span class="ident">R_xlen_t</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span> {
+            ) -&gt; <span class="ident">c_int</span> {
                 <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">elt</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>).<span class="number">0</span> <span class="kw">as</span> <span class="ident">c_int</span>
             }
 
@@ -1908,20 +1908,20 @@
                 <span class="ident">i</span>: <span class="ident">R_xlen_t</span>,
                 <span class="ident">n</span>: <span class="ident">R_xlen_t</span>,
                 <span class="ident">buf</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_int</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">R_xlen_t</span> {
+            ) -&gt; <span class="ident">R_xlen_t</span> {
                 <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">std::slice::from_raw_parts_mut</span>(<span class="ident">buf</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">Bool</span>, <span class="ident">n</span> <span class="kw">as</span> <span class="ident">usize</span>);
                 <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">get_region</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>, <span class="ident">slice</span>) <span class="kw">as</span> <span class="ident">R_xlen_t</span>
             }
 
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altlogical_Is_sorted</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltLogicalImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span> {
+            ) -&gt; <span class="ident">c_int</span> {
                 <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">is_sorted</span>().<span class="number">0</span> <span class="kw">as</span> <span class="ident">c_int</span>
             }
 
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altlogical_No_NA</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltLogicalImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span> {
+            ) -&gt; <span class="ident">c_int</span> {
                 <span class="kw">if</span> <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">no_na</span>() {
                     <span class="number">1</span>
                 } <span class="kw">else</span> {
@@ -1932,8 +1932,8 @@
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altlogical_Sum</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltLogicalImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
                 <span class="ident">narm</span>: <span class="ident">Rboolean</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
-                <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">sum</span>(<span class="ident">narm</span> <span class="op">=</span><span class="op">=</span> <span class="number">1</span>).<span class="ident">get</span>()
+            ) -&gt; <span class="ident">SEXP</span> {
+                <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">sum</span>(<span class="ident">narm</span> <span class="op">==</span> <span class="number">1</span>).<span class="ident">get</span>()
             }
 
             <span class="ident">R_set_altlogical_Elt_method</span>(<span class="ident">class_ptr</span>, <span class="prelude-val">Some</span>(<span class="ident">altlogical_Elt</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>));
@@ -1950,7 +1950,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_altraw_class</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltrepImpl</span> <span class="op">+</span> <span class="ident">AltRawImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
         <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
         <span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    ) -&gt; <span class="ident">Robj</span> {
         <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
 
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
@@ -1960,7 +1960,7 @@
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altraw_Elt</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltRawImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
                 <span class="ident">i</span>: <span class="ident">R_xlen_t</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Rbyte</span> {
+            ) -&gt; <span class="ident">Rbyte</span> {
                 <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">elt</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>) <span class="kw">as</span> <span class="ident">Rbyte</span>
             }
 
@@ -1969,7 +1969,7 @@
                 <span class="ident">i</span>: <span class="ident">R_xlen_t</span>,
                 <span class="ident">n</span>: <span class="ident">R_xlen_t</span>,
                 <span class="ident">buf</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">R_xlen_t</span> {
+            ) -&gt; <span class="ident">R_xlen_t</span> {
                 <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">std::slice::from_raw_parts_mut</span>(<span class="ident">buf</span>, <span class="ident">n</span> <span class="kw">as</span> <span class="ident">usize</span>);
                 <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">get_region</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>, <span class="ident">slice</span>) <span class="kw">as</span> <span class="ident">R_xlen_t</span>
             }
@@ -1985,7 +1985,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_altcomplex_class</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltrepImpl</span> <span class="op">+</span> <span class="ident">AltComplexImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
         <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
         <span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    ) -&gt; <span class="ident">Robj</span> {
         <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
 
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
@@ -1995,7 +1995,7 @@
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altcomplex_Elt</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltComplexImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
                 <span class="ident">i</span>: <span class="ident">R_xlen_t</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Rcomplex</span> {
+            ) -&gt; <span class="ident">Rcomplex</span> {
                 <span class="ident">std::mem::transmute</span>(<span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">elt</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>))
             }
 
@@ -2004,7 +2004,7 @@
                 <span class="ident">i</span>: <span class="ident">R_xlen_t</span>,
                 <span class="ident">n</span>: <span class="ident">R_xlen_t</span>,
                 <span class="ident">buf</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">Rcomplex</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">R_xlen_t</span> {
+            ) -&gt; <span class="ident">R_xlen_t</span> {
                 <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">std::slice::from_raw_parts_mut</span>(<span class="ident">buf</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">Cplx</span>, <span class="ident">n</span> <span class="kw">as</span> <span class="ident">usize</span>);
                 <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">get_region</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>, <span class="ident">slice</span>) <span class="kw">as</span> <span class="ident">R_xlen_t</span>
             }
@@ -2020,7 +2020,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_altstring_class</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltrepImpl</span> <span class="op">+</span> <span class="ident">AltStringImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
         <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
         <span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+    ) -&gt; <span class="ident">Robj</span> {
         <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
         <span class="kw">use</span> <span class="ident">std::os::raw::c_int</span>;
 
@@ -2031,7 +2031,7 @@
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altstring_Elt</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltStringImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
                 <span class="ident">i</span>: <span class="ident">R_xlen_t</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SEXP</span> {
+            ) -&gt; <span class="ident">SEXP</span> {
                 <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">elt</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>).<span class="ident">get</span>()
             }
 
@@ -2046,13 +2046,13 @@
 
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altstring_Is_sorted</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltStringImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span> {
+            ) -&gt; <span class="ident">c_int</span> {
                 <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">is_sorted</span>().<span class="number">0</span> <span class="kw">as</span> <span class="ident">c_int</span>
             }
 
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altstring_No_NA</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltStringImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
-            ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">c_int</span> {
+            ) -&gt; <span class="ident">c_int</span> {
                 <span class="kw">if</span> <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">no_na</span>() {
                     <span class="number">1</span>
                 } <span class="kw">else</span> {
@@ -2086,7 +2086,7 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">Iter</span>: <span class="ident">ExactSizeIterator</span> <span class="op">+</span> <span class="ident">std::fmt::Debug</span> <span class="op">+</span> <span class="ident">Clone</span><span class="op">&gt;</span> <span class="ident">AltrepImpl</span> <span class="kw">for</span> <span class="ident">Iter</span> {
-    <span class="kw">fn</span> <span class="ident">length</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+    <span class="kw">fn</span> <span class="ident">length</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
         <span class="self">self</span>.<span class="ident">len</span>()
     }
 }

@@ -100,11 +100,11 @@
 <span class="kw">use</span> <span class="ident">syn</span>::{<span class="ident">parse_quote</span>, <span class="ident">punctuated::Punctuated</span>, <span class="ident">Expr</span>, <span class="ident">Token</span>};
 
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">R</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>, <span class="ident">expand_params</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">TokenStream</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">R</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>, <span class="ident">expand_params</span>: <span class="ident">bool</span>) -&gt; <span class="ident">TokenStream</span> {
     <span class="comment">// Check if the input is a string.</span>
     <span class="kw">let</span> <span class="ident">lit</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">syn::parse2</span>::<span class="op">&lt;</span><span class="ident">syn::LitStr</span><span class="op">&gt;</span>(<span class="ident">item</span>.<span class="ident">clone</span>()) {
-        <span class="prelude-val">Ok</span>(<span class="ident">lit</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">lit</span>,
-        <span class="prelude-val">Err</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="ident">lit</span>) =&gt; <span class="ident">lit</span>,
+        <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {
             <span class="comment">// If not a string, expand the tokens to make a string.</span>
             <span class="kw">let</span> <span class="ident">src</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">item</span>);
             <span class="kw">return</span> <span class="macro">quote!</span>(<span class="ident">eval_string</span>(#<span class="ident">src</span>));

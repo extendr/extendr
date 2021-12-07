@@ -240,12 +240,12 @@
 <span class="kw">use</span> <span class="ident">syn</span>::{<span class="ident">parse_macro_input</span>, <span class="ident">Item</span>};
 
 <span class="attribute">#[<span class="ident">proc_macro_attribute</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extendr</span>(<span class="ident">attr</span>: <span class="ident">TokenStream</span>, <span class="ident">item</span>: <span class="ident">TokenStream</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">TokenStream</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extendr</span>(<span class="ident">attr</span>: <span class="ident">TokenStream</span>, <span class="ident">item</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
     <span class="kw">let</span> <span class="ident">args</span> <span class="op">=</span> <span class="macro">parse_macro_input!</span>(<span class="ident">attr</span> <span class="kw">as</span> <span class="ident">syn::AttributeArgs</span>);
     <span class="kw">match</span> <span class="macro">parse_macro_input!</span>(<span class="ident">item</span> <span class="kw">as</span> <span class="ident">Item</span>) {
-        <span class="ident">Item::Fn</span>(<span class="ident">func</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">extendr_function::extendr_function</span>(<span class="ident">args</span>, <span class="ident">func</span>),
-        <span class="ident">Item::Impl</span>(<span class="ident">item_impl</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">extendr_impl::extendr_impl</span>(<span class="ident">item_impl</span>),
-        <span class="ident">other_item</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">TokenStream::from</span>(<span class="macro">quote!</span> {#<span class="ident">other_item</span>}),
+        <span class="ident">Item::Fn</span>(<span class="ident">func</span>) =&gt; <span class="ident">extendr_function::extendr_function</span>(<span class="ident">args</span>, <span class="ident">func</span>),
+        <span class="ident">Item::Impl</span>(<span class="ident">item_impl</span>) =&gt; <span class="ident">extendr_impl::extendr_impl</span>(<span class="ident">item_impl</span>),
+        <span class="ident">other_item</span> =&gt; <span class="ident">TokenStream::from</span>(<span class="macro">quote!</span> {#<span class="ident">other_item</span>}),
     }
 }
 
@@ -271,7 +271,7 @@
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">proc_macro</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extendr_module</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">TokenStream</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extendr_module</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
     <span class="ident">extendr_module::extendr_module</span>(<span class="ident">item</span>)
 }
 
@@ -280,7 +280,7 @@
 <span class="doccomment">///     assert_eq!(pairlist!(a=1, 2, 3), Pairlist::from_pairs(&amp;[(&quot;a&quot;, 1), (&quot;&quot;, 2), (&quot;&quot;, 3)]));</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">proc_macro</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pairlist</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">TokenStream</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pairlist</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
     <span class="ident">pairlist::pairlist</span>(<span class="ident">item</span>)
 }
 
@@ -289,7 +289,7 @@
 <span class="doccomment">///     assert_eq!(list!(a=1, 2, 3), List::from_pairs(&amp;[(&quot;a&quot;, 1), (&quot;&quot;, 2), (&quot;&quot;, 3)]));</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">proc_macro</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">list</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">TokenStream</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">list</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
     <span class="ident">list::list</span>(<span class="ident">item</span>)
 }
 
@@ -302,7 +302,7 @@
 <span class="doccomment">///     assert_eq!(call!(&quot;list&quot;, 1, 2), r!([r!(1), r!(2)]));</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">proc_macro</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">call</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">TokenStream</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">call</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
     <span class="ident">call::call</span>(<span class="ident">item</span>)
 }
 
@@ -317,7 +317,7 @@
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">proc_macro</span>]</span>
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">R</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">TokenStream</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">R</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
     <span class="ident">R::R</span>(<span class="ident">item</span>.<span class="ident">into</span>(), <span class="bool-val">true</span>).<span class="ident">into</span>()
 }
 
@@ -335,7 +335,7 @@
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">proc_macro</span>]</span>
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">Rraw</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">TokenStream</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">Rraw</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
     <span class="ident">R::R</span>(<span class="ident">item</span>.<span class="ident">into</span>(), <span class="bool-val">false</span>).<span class="ident">into</span>()
 }
 </code></pre></div>

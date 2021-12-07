@@ -211,24 +211,24 @@
 
 <span class="doccomment">/// Throw an R error if a result is an error.</span>
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unwrap_or_throw</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">r</span>: <span class="ident">std::result::Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">T</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unwrap_or_throw</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">r</span>: <span class="ident">std::result::Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span>) -&gt; <span class="ident">T</span> {
     <span class="kw">match</span> <span class="ident">r</span> {
-        <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; {
             <span class="ident">throw_r_error</span>(<span class="ident">e</span>.<span class="ident">to_string</span>());
             <span class="macro">unreachable!</span>(<span class="string">&quot;&quot;</span>);
         }
-        <span class="prelude-val">Ok</span>(<span class="ident">v</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">v</span>,
+        <span class="prelude-val">Ok</span>(<span class="ident">v</span>) =&gt; <span class="ident">v</span>,
     }
 }
 
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unwrap_or_throw_error</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">r</span>: <span class="ident">std::result::Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">Error</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">T</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unwrap_or_throw_error</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">r</span>: <span class="ident">std::result::Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">Error</span><span class="op">&gt;</span>) -&gt; <span class="ident">T</span> {
     <span class="kw">match</span> <span class="ident">r</span> {
-        <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; {
             <span class="ident">throw_r_error</span>(<span class="ident">e</span>.<span class="ident">to_string</span>());
             <span class="macro">unreachable!</span>(<span class="string">&quot;&quot;</span>);
         }
-        <span class="prelude-val">Ok</span>(<span class="ident">v</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">v</span>,
+        <span class="prelude-val">Ok</span>(<span class="ident">v</span>) =&gt; <span class="ident">v</span>,
     }
 }
 
@@ -287,77 +287,77 @@
 }
 
 <span class="kw">impl</span> <span class="ident">std::fmt::Display</span> <span class="kw">for</span> <span class="ident">Error</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std::fmt::Result</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::fmt::Result</span> {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Error::Panic</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Panic detected {:?}.&quot;</span>, <span class="ident">robj</span>),
-            <span class="ident">Error::NotFound</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Not found. {:?}&quot;</span>, <span class="ident">robj</span>),
-            <span class="ident">Error::EvalError</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Evaluation error in {:?}.&quot;</span>, <span class="ident">robj</span>),
-            <span class="ident">Error::ParseError</span>(<span class="ident">code</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Parse error in {:?}.&quot;</span>, <span class="ident">code</span>),
-            <span class="ident">Error::NamesLengthMismatch</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">Error::Panic</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Panic detected {:?}.&quot;</span>, <span class="ident">robj</span>),
+            <span class="ident">Error::NotFound</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Not found. {:?}&quot;</span>, <span class="ident">robj</span>),
+            <span class="ident">Error::EvalError</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Evaluation error in {:?}.&quot;</span>, <span class="ident">robj</span>),
+            <span class="ident">Error::ParseError</span>(<span class="ident">code</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Parse error in {:?}.&quot;</span>, <span class="ident">code</span>),
+            <span class="ident">Error::NamesLengthMismatch</span>(<span class="ident">robj</span>) =&gt; {
                 <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Length of names does not match vector. {:?}&quot;</span>, <span class="ident">robj</span>)
             }
 
-            <span class="ident">Error::ExpectedNull</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Null got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedSymbol</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Symbol got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedPairlist</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Pairlist got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedFunction</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Function got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedEnvironment</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">Error::ExpectedNull</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Null got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedSymbol</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Symbol got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedPairlist</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Pairlist got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedFunction</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Function got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedEnvironment</span>(<span class="ident">robj</span>) =&gt; {
                 <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Environment got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>())
             }
-            <span class="ident">Error::ExpectedPromise</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Promise got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedLanguage</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Language got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedSpecial</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Special got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedBuiltin</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Builtin got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedRstr</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">Error::ExpectedPromise</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Promise got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedLanguage</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Language got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedSpecial</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Special got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedBuiltin</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Builtin got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedRstr</span>(<span class="ident">robj</span>) =&gt; {
                 <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Rstr got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>())
             }
-            <span class="ident">Error::ExpectedLogical</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Logical got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedInteger</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Integer got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedReal</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Real got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedComplex</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Complex got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedString</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected String got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedDot</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Dot got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedAny</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Any got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedList</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected List got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedExpression</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">Error::ExpectedLogical</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Logical got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedInteger</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Integer got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedReal</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Real got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedComplex</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Complex got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedString</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected String got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedDot</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Dot got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedAny</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Any got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedList</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected List got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedExpression</span>(<span class="ident">robj</span>) =&gt; {
                 <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Expression got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>())
             }
-            <span class="ident">Error::ExpectedBytecode</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Bytecode got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedExternalPtr</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">Error::ExpectedBytecode</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Bytecode got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedExternalPtr</span>(<span class="ident">robj</span>) =&gt; {
                 <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected ExternalPtr got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>())
             }
-            <span class="ident">Error::ExpectedWeakRef</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected WeakRef got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedRaw</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Raw got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedS4</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected S4 got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedPrimitive</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">Error::ExpectedWeakRef</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected WeakRef got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedRaw</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Raw got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedS4</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected S4 got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedPrimitive</span>(<span class="ident">robj</span>) =&gt; {
                 <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Primitive got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>())
             }
 
-            <span class="ident">Error::ExpectedScalar</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Scalar, got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedVector</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Vector, got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedMatrix</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Matrix, got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedMatrix3D</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Matrix3D, got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedNumeric</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Numeric, got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedAltrep</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Altrep, got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::OutOfRange</span>(<span class="ident">_robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Out of range.&quot;</span>),
-            <span class="ident">Error::MustNotBeNA</span>(<span class="ident">_robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Must not be NA.&quot;</span>),
-            <span class="ident">Error::ExpectedNonZeroLength</span>(<span class="ident">_robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected non zero length&quot;</span>),
-            <span class="ident">Error::ExpectedWholeNumber</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">Error::ExpectedScalar</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Scalar, got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedVector</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Vector, got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedMatrix</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Matrix, got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedMatrix3D</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Matrix3D, got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedNumeric</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Numeric, got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::ExpectedAltrep</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Altrep, got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
+            <span class="ident">Error::OutOfRange</span>(<span class="ident">_robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Out of range.&quot;</span>),
+            <span class="ident">Error::MustNotBeNA</span>(<span class="ident">_robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Must not be NA.&quot;</span>),
+            <span class="ident">Error::ExpectedNonZeroLength</span>(<span class="ident">_robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected non zero length&quot;</span>),
+            <span class="ident">Error::ExpectedWholeNumber</span>(<span class="ident">robj</span>) =&gt; {
                 <span class="macro">write!</span>(
                     <span class="ident">f</span>,
                     <span class="string">&quot;Expected an integer or a float representing a whole number, got {:?}&quot;</span>,
                     <span class="ident">robj</span>
                 )
             }
-            <span class="ident">Error::OutOfLimits</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;The value is too big: {:?}&quot;</span>, <span class="ident">robj</span>),
-            <span class="ident">Error::TypeMismatch</span>(<span class="ident">_robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Type mismatch&quot;</span>),
+            <span class="ident">Error::OutOfLimits</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;The value is too big: {:?}&quot;</span>, <span class="ident">robj</span>),
+            <span class="ident">Error::TypeMismatch</span>(<span class="ident">_robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Type mismatch&quot;</span>),
 
-            <span class="ident">Error::NamespaceNotFound</span>(<span class="ident">robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Namespace {:?} not found&quot;</span>, <span class="ident">robj</span>),
-            <span class="ident">Error::ExpectedExternalPtrType</span>(<span class="ident">_robj</span>, <span class="ident">type_name</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">Error::NamespaceNotFound</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Namespace {:?} not found&quot;</span>, <span class="ident">robj</span>),
+            <span class="ident">Error::ExpectedExternalPtrType</span>(<span class="ident">_robj</span>, <span class="ident">type_name</span>) =&gt; {
                 <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Incorrect external pointer type {}&quot;</span>, <span class="ident">type_name</span>)
             }
-            <span class="ident">Error::NoGraphicsDevices</span>(<span class="ident">_robj</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;No graphics devices active.&quot;</span>),
-            <span class="ident">Error::Other</span>(<span class="ident">str</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">str</span>),
+            <span class="ident">Error::NoGraphicsDevices</span>(<span class="ident">_robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;No graphics devices active.&quot;</span>),
+            <span class="ident">Error::Other</span>(<span class="ident">str</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">str</span>),
         }
     }
 }
@@ -370,25 +370,25 @@
 <span class="comment">// }</span>
 
 <span class="kw">impl</span> <span class="ident">std::error::Error</span> <span class="kw">for</span> <span class="ident">Error</span> {
-    <span class="kw">fn</span> <span class="ident">source</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>(<span class="kw">dyn</span> <span class="ident">std::error::Error</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>)<span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">source</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>(<span class="kw">dyn</span> <span class="ident">std::error::Error</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>)<span class="op">&gt;</span> {
         <span class="prelude-val">None</span>
     }
 }
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">std::error::Error</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Error</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">err</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">std::error::Error</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Error</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">err</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">std::error::Error</span><span class="op">&gt;</span>) -&gt; <span class="ident">Error</span> {
         <span class="ident">Error::Other</span>(<span class="macro">format!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">err</span>))
     }
 }
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Error</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">err</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Error</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">err</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">Error</span> {
         <span class="ident">Error::Other</span>(<span class="ident">err</span>.<span class="ident">to_string</span>())
     }
 }
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Error</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">err</span>: <span class="ident">String</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Error</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">err</span>: <span class="ident">String</span>) -&gt; <span class="ident">Error</span> {
         <span class="ident">Error::Other</span>(<span class="ident">err</span>)
     }
 }
@@ -402,7 +402,7 @@
 <span class="comment">// }</span>
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Infallible</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Error</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="kw">_</span>: <span class="ident">Infallible</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="kw">_</span>: <span class="ident">Infallible</span>) -&gt; <span class="self">Self</span> {
         <span class="ident">Error::Other</span>(<span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>())
     }
 }

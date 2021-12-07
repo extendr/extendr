@@ -1313,8 +1313,8 @@
 }
 
 <span class="doccomment">/// Enum use to unpack R objects into their specialist wrappers.</span>
-<span class="doccomment">/// Todo: convert all Robj types to wrappers.</span>
-<span class="doccomment">/// Note: this only works if the wrappers are all just SEXPs.</span>
+<span class="comment">// Todo: convert all Robj types to wrappers.</span>
+<span class="comment">// Note: this only works if the wrappers are all just SEXPs.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Rany</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
     <span class="ident">Null</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),               <span class="comment">// NILSXP</span>
@@ -1346,66 +1346,66 @@
 
 <span class="doccomment">/// Convert extendr&#39;s RType to R&#39;s SEXPTYPE.</span>
 <span class="doccomment">/// Panics if the type is Unknown.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtype_to_sxp</span>(<span class="ident">rtype</span>: <span class="ident">RType</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">i32</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtype_to_sxp</span>(<span class="ident">rtype</span>: <span class="ident">RType</span>) -&gt; <span class="ident">i32</span> {
     <span class="kw">use</span> <span class="ident">RType</span>::<span class="kw-2">*</span>;
     (<span class="kw">match</span> <span class="ident">rtype</span> {
-        <span class="ident">Null</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">NILSXP</span>,
-        <span class="ident">Symbol</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SYMSXP</span>,
-        <span class="ident">Pairlist</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">LISTSXP</span>,
-        <span class="ident">Function</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">CLOSXP</span>,
-        <span class="ident">Environment</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">ENVSXP</span>,
-        <span class="ident">Promise</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">PROMSXP</span>,
-        <span class="ident">Language</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">LANGSXP</span>,
-        <span class="ident">Special</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">SPECIALSXP</span>,
-        <span class="ident">Builtin</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">BUILTINSXP</span>,
-        <span class="ident">Rstr</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">CHARSXP</span>,
-        <span class="ident">Logical</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">LGLSXP</span>,
-        <span class="ident">Integer</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">INTSXP</span>,
-        <span class="ident">Real</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">REALSXP</span>,
-        <span class="ident">Complex</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">CPLXSXP</span>,
-        <span class="ident">String</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">STRSXP</span>,
-        <span class="ident">Dot</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">DOTSXP</span>,
-        <span class="ident">Any</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">ANYSXP</span>,
-        <span class="ident">List</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">VECSXP</span>,
-        <span class="ident">Expression</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">EXPRSXP</span>,
-        <span class="ident">Bytecode</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">BCODESXP</span>,
-        <span class="ident">ExternalPtr</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">EXTPTRSXP</span>,
-        <span class="ident">WeakRef</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">WEAKREFSXP</span>,
-        <span class="ident">Raw</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RAWSXP</span>,
-        <span class="ident">S4</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">S4SXP</span>,
-        <span class="ident">Unknown</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">panic!</span>(<span class="string">&quot;attempt to use Unknown RType&quot;</span>),
+        <span class="ident">Null</span> =&gt; <span class="ident">NILSXP</span>,
+        <span class="ident">Symbol</span> =&gt; <span class="ident">SYMSXP</span>,
+        <span class="ident">Pairlist</span> =&gt; <span class="ident">LISTSXP</span>,
+        <span class="ident">Function</span> =&gt; <span class="ident">CLOSXP</span>,
+        <span class="ident">Environment</span> =&gt; <span class="ident">ENVSXP</span>,
+        <span class="ident">Promise</span> =&gt; <span class="ident">PROMSXP</span>,
+        <span class="ident">Language</span> =&gt; <span class="ident">LANGSXP</span>,
+        <span class="ident">Special</span> =&gt; <span class="ident">SPECIALSXP</span>,
+        <span class="ident">Builtin</span> =&gt; <span class="ident">BUILTINSXP</span>,
+        <span class="ident">Rstr</span> =&gt; <span class="ident">CHARSXP</span>,
+        <span class="ident">Logical</span> =&gt; <span class="ident">LGLSXP</span>,
+        <span class="ident">Integer</span> =&gt; <span class="ident">INTSXP</span>,
+        <span class="ident">Real</span> =&gt; <span class="ident">REALSXP</span>,
+        <span class="ident">Complex</span> =&gt; <span class="ident">CPLXSXP</span>,
+        <span class="ident">String</span> =&gt; <span class="ident">STRSXP</span>,
+        <span class="ident">Dot</span> =&gt; <span class="ident">DOTSXP</span>,
+        <span class="ident">Any</span> =&gt; <span class="ident">ANYSXP</span>,
+        <span class="ident">List</span> =&gt; <span class="ident">VECSXP</span>,
+        <span class="ident">Expression</span> =&gt; <span class="ident">EXPRSXP</span>,
+        <span class="ident">Bytecode</span> =&gt; <span class="ident">BCODESXP</span>,
+        <span class="ident">ExternalPtr</span> =&gt; <span class="ident">EXTPTRSXP</span>,
+        <span class="ident">WeakRef</span> =&gt; <span class="ident">WEAKREFSXP</span>,
+        <span class="ident">Raw</span> =&gt; <span class="ident">RAWSXP</span>,
+        <span class="ident">S4</span> =&gt; <span class="ident">S4SXP</span>,
+        <span class="ident">Unknown</span> =&gt; <span class="macro">panic!</span>(<span class="string">&quot;attempt to use Unknown RType&quot;</span>),
     }) <span class="kw">as</span> <span class="ident">i32</span>
 }
 
 <span class="doccomment">/// Convert R&#39;s SEXPTYPE to extendr&#39;s RType.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sxp_to_rtype</span>(<span class="ident">sxptype</span>: <span class="ident">i32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">RType</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sxp_to_rtype</span>(<span class="ident">sxptype</span>: <span class="ident">i32</span>) -&gt; <span class="ident">RType</span> {
     <span class="kw">use</span> <span class="ident">RType</span>::<span class="kw-2">*</span>;
     <span class="kw">match</span> <span class="ident">sxptype</span> <span class="kw">as</span> <span class="ident">u32</span> {
-        <span class="ident">NILSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Null</span>,
-        <span class="ident">SYMSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Symbol</span>,
-        <span class="ident">LISTSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Pairlist</span>,
-        <span class="ident">CLOSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Function</span>,
-        <span class="ident">ENVSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Environment</span>,
-        <span class="ident">PROMSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Promise</span>,
-        <span class="ident">LANGSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Language</span>,
-        <span class="ident">SPECIALSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Special</span>,
-        <span class="ident">BUILTINSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Builtin</span>,
-        <span class="ident">CHARSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Rstr</span>,
-        <span class="ident">LGLSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Logical</span>,
-        <span class="ident">INTSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Integer</span>,
-        <span class="ident">REALSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Real</span>,
-        <span class="ident">CPLXSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Complex</span>,
-        <span class="ident">STRSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">String</span>,
-        <span class="ident">DOTSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Dot</span>,
-        <span class="ident">ANYSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Any</span>,
-        <span class="ident">VECSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">List</span>,
-        <span class="ident">EXPRSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Expression</span>,
-        <span class="ident">BCODESXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Bytecode</span>,
-        <span class="ident">EXTPTRSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">ExternalPtr</span>,
-        <span class="ident">WEAKREFSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">WeakRef</span>,
-        <span class="ident">RAWSXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Raw</span>,
-        <span class="ident">S4SXP</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">S4</span>,
-        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Unknown</span>,
+        <span class="ident">NILSXP</span> =&gt; <span class="ident">Null</span>,
+        <span class="ident">SYMSXP</span> =&gt; <span class="ident">Symbol</span>,
+        <span class="ident">LISTSXP</span> =&gt; <span class="ident">Pairlist</span>,
+        <span class="ident">CLOSXP</span> =&gt; <span class="ident">Function</span>,
+        <span class="ident">ENVSXP</span> =&gt; <span class="ident">Environment</span>,
+        <span class="ident">PROMSXP</span> =&gt; <span class="ident">Promise</span>,
+        <span class="ident">LANGSXP</span> =&gt; <span class="ident">Language</span>,
+        <span class="ident">SPECIALSXP</span> =&gt; <span class="ident">Special</span>,
+        <span class="ident">BUILTINSXP</span> =&gt; <span class="ident">Builtin</span>,
+        <span class="ident">CHARSXP</span> =&gt; <span class="ident">Rstr</span>,
+        <span class="ident">LGLSXP</span> =&gt; <span class="ident">Logical</span>,
+        <span class="ident">INTSXP</span> =&gt; <span class="ident">Integer</span>,
+        <span class="ident">REALSXP</span> =&gt; <span class="ident">Real</span>,
+        <span class="ident">CPLXSXP</span> =&gt; <span class="ident">Complex</span>,
+        <span class="ident">STRSXP</span> =&gt; <span class="ident">String</span>,
+        <span class="ident">DOTSXP</span> =&gt; <span class="ident">Dot</span>,
+        <span class="ident">ANYSXP</span> =&gt; <span class="ident">Any</span>,
+        <span class="ident">VECSXP</span> =&gt; <span class="ident">List</span>,
+        <span class="ident">EXPRSXP</span> =&gt; <span class="ident">Expression</span>,
+        <span class="ident">BCODESXP</span> =&gt; <span class="ident">Bytecode</span>,
+        <span class="ident">EXTPTRSXP</span> =&gt; <span class="ident">ExternalPtr</span>,
+        <span class="ident">WEAKREFSXP</span> =&gt; <span class="ident">WeakRef</span>,
+        <span class="ident">RAWSXP</span> =&gt; <span class="ident">Raw</span>,
+        <span class="ident">S4SXP</span> =&gt; <span class="ident">S4</span>,
+        <span class="kw">_</span> =&gt; <span class="ident">Unknown</span>,
     }
 }
 
@@ -1470,77 +1470,77 @@
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">return_u8</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u8</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">return_u8</span>() -&gt; <span class="ident">u8</span> {
         <span class="number">123</span>
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">return_u16</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u16</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">return_u16</span>() -&gt; <span class="ident">u16</span> {
         <span class="number">123</span>
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">return_u32</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u32</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">return_u32</span>() -&gt; <span class="ident">u32</span> {
         <span class="number">123</span>
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">return_u64</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u64</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">return_u64</span>() -&gt; <span class="ident">u64</span> {
         <span class="number">123</span>
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">return_i8</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">i8</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">return_i8</span>() -&gt; <span class="ident">i8</span> {
         <span class="number">123</span>
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">return_i16</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">i16</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">return_i16</span>() -&gt; <span class="ident">i16</span> {
         <span class="number">123</span>
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">return_i32</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">i32</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">return_i32</span>() -&gt; <span class="ident">i32</span> {
         <span class="number">123</span>
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">return_i64</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">i64</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">return_i64</span>() -&gt; <span class="ident">i64</span> {
         <span class="number">123</span>
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">return_f32</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">f32</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">return_f32</span>() -&gt; <span class="ident">f32</span> {
         <span class="number">123.</span>
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">return_f64</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">f64</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">return_f64</span>() -&gt; <span class="ident">f64</span> {
         <span class="number">123.</span>
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">f64_slice</span>(<span class="ident">x</span>: <span class="kw-2">&amp;</span>[<span class="ident">f64</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">f64</span>] {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">f64_slice</span>(<span class="ident">x</span>: <span class="kw-2">&amp;</span>[<span class="ident">f64</span>]) -&gt; <span class="kw-2">&amp;</span>[<span class="ident">f64</span>] {
         <span class="ident">x</span>
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">i32_slice</span>(<span class="ident">x</span>: <span class="kw-2">&amp;</span>[<span class="ident">i32</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">i32</span>] {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">i32_slice</span>(<span class="ident">x</span>: <span class="kw-2">&amp;</span>[<span class="ident">i32</span>]) -&gt; <span class="kw-2">&amp;</span>[<span class="ident">i32</span>] {
         <span class="ident">x</span>
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bool_slice</span>(<span class="ident">x</span>: <span class="kw-2">&amp;</span>[<span class="ident">Bool</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">Bool</span>] {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bool_slice</span>(<span class="ident">x</span>: <span class="kw-2">&amp;</span>[<span class="ident">Bool</span>]) -&gt; <span class="kw-2">&amp;</span>[<span class="ident">Bool</span>] {
         <span class="ident">x</span>
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">f64_iter</span>(<span class="ident">x</span>: <span class="ident">Doubles</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Doubles</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">f64_iter</span>(<span class="ident">x</span>: <span class="ident">Doubles</span>) -&gt; <span class="ident">Doubles</span> {
         <span class="ident">x</span>
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">i32_iter</span>(<span class="ident">x</span>: <span class="ident">Integers</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Integers</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">i32_iter</span>(<span class="ident">x</span>: <span class="ident">Integers</span>) -&gt; <span class="ident">Integers</span> {
         <span class="ident">x</span>
     }
 
@@ -1550,12 +1550,12 @@
     <span class="comment">// }</span>
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">symbol</span>(<span class="ident">x</span>: <span class="ident">Symbol</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Symbol</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">symbol</span>(<span class="ident">x</span>: <span class="ident">Symbol</span>) -&gt; <span class="ident">Symbol</span> {
         <span class="ident">x</span>
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">matrix</span>(<span class="ident">x</span>: <span class="ident">RMatrix</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">RMatrix</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">matrix</span>(<span class="ident">x</span>: <span class="ident">RMatrix</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) -&gt; <span class="ident">RMatrix</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
         <span class="ident">x</span>
     }
 
@@ -1566,7 +1566,7 @@
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
     <span class="doccomment">/// impl comment.</span>
     <span class="kw">impl</span> <span class="ident">Person</span> {
-        <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> {
             <span class="self">Self</span> {
                 <span class="ident">name</span>: <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>(),
             }
@@ -1576,7 +1576,7 @@
             <span class="self">self</span>.<span class="ident">name</span> <span class="op">=</span> <span class="ident">name</span>.<span class="ident">to_string</span>();
         }
 
-        <span class="kw">fn</span> <span class="ident">name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">str</span> {
+        <span class="kw">fn</span> <span class="ident">name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">str</span> {
             <span class="self">self</span>.<span class="ident">name</span>.<span class="ident">as_str</span>()
         }
     }
@@ -1714,7 +1714,7 @@
                 <span class="comment">// #[extendr]</span>
                 <span class="comment">// pub fn matrix(x: Matrix&lt;&amp;[f64]&gt;) -&gt; Matrix&lt;&amp;[f64]&gt; { x }</span>
 
-                <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">RMatrix::new_matrix</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="op">|</span><span class="ident">r</span>, <span class="ident">c</span><span class="op">|</span> <span class="kw">if</span> <span class="ident">r</span> <span class="op">=</span><span class="op">=</span> <span class="ident">c</span> {<span class="number">1.0</span>} <span class="kw">else</span> {<span class="number">0.</span>});
+                <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">RMatrix::new_matrix</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="op">|</span><span class="ident">r</span>, <span class="ident">c</span><span class="op">|</span> <span class="kw">if</span> <span class="ident">r</span> <span class="op">==</span> <span class="ident">c</span> {<span class="number">1.0</span>} <span class="kw">else</span> {<span class="number">0.</span>});
                 <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r!</span>(<span class="ident">m</span>);
                 <span class="macro">assert_eq!</span>(<span class="ident">Robj::from_sexp</span>(<span class="ident">wrap__matrix</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
             }

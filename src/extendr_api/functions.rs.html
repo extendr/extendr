@@ -314,7 +314,7 @@
 <span class="doccomment">///    assert_eq!(iris.len(), 5);</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">global_var</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">global_var</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">key</span>: <span class="ident">K</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">into</span>();
     <span class="ident">global_env</span>().<span class="ident">find_var</span>(<span class="ident">key</span>)<span class="question-mark">?</span>.<span class="ident">eval_promise</span>()
 }
@@ -338,7 +338,7 @@
 <span class="doccomment">///    assert_eq!(local_var(sym!(my_var))?, r!(1));</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">local_var</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">local_var</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">key</span>: <span class="ident">K</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">into</span>();
     <span class="ident">current_env</span>().<span class="ident">find_var</span>(<span class="ident">key</span>)<span class="question-mark">?</span>.<span class="ident">eval_promise</span>()
 }
@@ -351,7 +351,7 @@
 <span class="doccomment">///     assert_eq!(ls.is_function(), true);</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">global_function</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">global_function</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">key</span>: <span class="ident">K</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">into</span>();
     <span class="ident">global_env</span>().<span class="ident">find_function</span>(<span class="ident">key</span>)
 }
@@ -366,7 +366,7 @@
 <span class="doccomment">///    assert_eq!(find_namespace(&quot;stats&quot;).is_ok(), true);</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_namespace</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">key</span>: <span class="ident">K</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Environment</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_namespace</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">key</span>: <span class="ident">K</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Environment</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">into</span>();
     <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">call!</span>(<span class="string">&quot;.getNamespace&quot;</span>, <span class="ident">key</span>.<span class="ident">clone</span>()));
     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">res</span>) <span class="op">=</span> <span class="ident">res</span> {
@@ -384,7 +384,7 @@
 <span class="doccomment">///    assert_eq!(current_env(), base_env());</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">current_env</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Environment</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">current_env</span>() -&gt; <span class="ident">Environment</span> {
     <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_GetCurrentEnv</span>()).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
 }
 
@@ -397,12 +397,12 @@
 <span class="doccomment">///     assert_eq!(global_env().local(sym!(x)), Ok(r!(&quot;hello&quot;)));</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">global_env</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Environment</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">global_env</span>() -&gt; <span class="ident">Environment</span> {
     <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_GlobalEnv</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
 }
 
 <span class="doccomment">/// An empty environment at the root of the environment tree</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">empty_env</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Environment</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">empty_env</span>() -&gt; <span class="ident">Environment</span> {
     <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_EmptyEnv</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
 }
 
@@ -417,7 +417,7 @@
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">use_r_newenv</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_env</span>(<span class="ident">parent</span>: <span class="ident">Environment</span>, <span class="ident">hash</span>: <span class="ident">bool</span>, <span class="ident">capacity</span>: <span class="ident">i32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Environment</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_env</span>(<span class="ident">parent</span>: <span class="ident">Environment</span>, <span class="ident">hash</span>: <span class="ident">bool</span>, <span class="ident">capacity</span>: <span class="ident">i32</span>) -&gt; <span class="ident">Environment</span> {
     <span class="kw">unsafe</span> {
         <span class="kw">let</span> <span class="ident">env</span> <span class="op">=</span> <span class="ident">R_NewEnv</span>(<span class="ident">parent</span>.<span class="ident">robj</span>.<span class="ident">get</span>(), <span class="ident">hash</span> <span class="kw">as</span> <span class="ident">i32</span>, <span class="ident">capacity</span>);
         <span class="ident">Robj::from_sexp</span>(<span class="ident">env</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>()
@@ -426,7 +426,7 @@
 
 <span class="comment">// R_NewEnv is available as of R 4.1.0. For the older version, we call an R function `new.env()`.</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">use_r_newenv</span>))]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_env</span>(<span class="ident">parent</span>: <span class="ident">Environment</span>, <span class="ident">hash</span>: <span class="ident">bool</span>, <span class="ident">capacity</span>: <span class="ident">i32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Environment</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_env</span>(<span class="ident">parent</span>: <span class="ident">Environment</span>, <span class="ident">hash</span>: <span class="ident">bool</span>, <span class="ident">capacity</span>: <span class="ident">i32</span>) -&gt; <span class="ident">Environment</span> {
     <span class="macro">call!</span>(<span class="string">&quot;new.env&quot;</span>, <span class="ident">hash</span>, <span class="ident">parent</span>, <span class="ident">capacity</span>)
         .<span class="ident">unwrap</span>()
         .<span class="ident">try_into</span>()
@@ -442,7 +442,7 @@
 <span class="doccomment">///     assert_eq!(base_env().local(sym!(+)), Ok(r!(Primitive::from_string(&quot;+&quot;))));</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">base_env</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Environment</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">base_env</span>() -&gt; <span class="ident">Environment</span> {
     <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_BaseEnv</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
 }
 
@@ -454,7 +454,7 @@
 <span class="doccomment">///    assert_eq!(base_namespace().parent().ok_or(&quot;no parent&quot;)?, global_env());</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">base_namespace</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Environment</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">base_namespace</span>() -&gt; <span class="ident">Environment</span> {
     <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_BaseNamespace</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
 }
 
@@ -466,17 +466,17 @@
 <span class="doccomment">///    assert_eq!(namespace_registry().is_environment(), true);</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">namespace_registry</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Environment</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">namespace_registry</span>() -&gt; <span class="ident">Environment</span> {
     <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_NamespaceRegistry</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
 }
 
 <span class="doccomment">/// Current srcref, for debuggers</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">srcref</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">srcref</span>() -&gt; <span class="ident">Robj</span> {
     <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_Srcref</span>) }
 }
 
 <span class="doccomment">/// The nil object</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">nil_value</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">nil_value</span>() -&gt; <span class="ident">Robj</span> {
     <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_NilValue</span>) }
 }
 
@@ -486,17 +486,17 @@ pub fn dot_Generic() -&gt; Robj { unsafe { Robj::from_sexp(R_dot_Generic) }}
 */</span>
 
 <span class="doccomment">/// NA_STRING as a CHARSXP</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">na_string</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">na_string</span>() -&gt; <span class="ident">Robj</span> {
     <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_NaString</span>) }
 }
 
 <span class="doccomment">/// &quot;&quot; as a CHARSXP</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">blank_string</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">blank_string</span>() -&gt; <span class="ident">Robj</span> {
     <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_BlankString</span>) }
 }
 
 <span class="doccomment">/// &quot;&quot; as a STRSXP</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">blank_scalar_string</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Robj</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">blank_scalar_string</span>() -&gt; <span class="ident">Robj</span> {
     <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_BlankScalarString</span>) }
 }
 
@@ -508,7 +508,7 @@ pub fn dot_Generic() -&gt; Robj { unsafe { Robj::from_sexp(R_dot_Generic) }}
 <span class="doccomment">///    assert!(expr.is_expression());</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">parse</span>(<span class="ident">code</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">parse</span>(<span class="ident">code</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
     <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
         <span class="kw">use</span> <span class="ident">libR_sys</span>::<span class="kw-2">*</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">status</span> <span class="op">=</span> <span class="number">0_u32</span>;
@@ -516,8 +516,8 @@ pub fn dot_Generic() -&gt; Robj { unsafe { Robj::from_sexp(R_dot_Generic) }}
         <span class="kw">let</span> <span class="ident">codeobj</span>: <span class="ident">Robj</span> <span class="op">=</span> <span class="ident">code</span>.<span class="ident">into</span>();
         <span class="kw">let</span> <span class="ident">parsed</span> <span class="op">=</span> <span class="ident">Robj::from_sexp</span>(<span class="ident">R_ParseVector</span>(<span class="ident">codeobj</span>.<span class="ident">get</span>(), <span class="op">-</span><span class="number">1</span>, <span class="ident">status_ptr</span>, <span class="ident">R_NilValue</span>));
         <span class="kw">match</span> <span class="ident">status</span> {
-            <span class="number">1</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">parsed</span>),
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">Error::ParseError</span>(<span class="ident">code</span>.<span class="ident">into</span>())),
+            <span class="number">1</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">parsed</span>),
+            <span class="kw">_</span> =&gt; <span class="prelude-val">Err</span>(<span class="ident">Error::ParseError</span>(<span class="ident">code</span>.<span class="ident">into</span>())),
         }
     })
 }
@@ -531,7 +531,7 @@ pub fn dot_Generic() -&gt; Robj { unsafe { Robj::from_sexp(R_dot_Generic) }}
 <span class="doccomment">///    assert_eq!(res, r!(3.));</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">eval_string</span>(<span class="ident">code</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">eval_string</span>(<span class="ident">code</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
     <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
         <span class="kw">let</span> <span class="ident">expr</span> <span class="op">=</span> <span class="ident">parse</span>(<span class="ident">code</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">Robj::from</span>(());
@@ -555,7 +555,7 @@ pub fn dot_Generic() -&gt; Robj { unsafe { Robj::from_sexp(R_dot_Generic) }}
 <span class="doccomment">///    assert_eq!(res, r!(3.));</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">eval_string_with_params</span>(<span class="ident">code</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">values</span>: <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">Robj</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">eval_string_with_params</span>(<span class="ident">code</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">values</span>: <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">Robj</span>]) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
     <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
         <span class="kw">let</span> <span class="ident">env</span> <span class="op">=</span> <span class="ident">Environment::new_with_parent</span>(<span class="ident">global_env</span>());
         <span class="kw">for</span> (<span class="ident">i</span>, <span class="kw-2">&amp;</span><span class="ident">v</span>) <span class="kw">in</span> <span class="ident">values</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
@@ -586,20 +586,20 @@ pub fn dot_Generic() -&gt; Robj { unsafe { Robj::from_sexp(R_dot_Generic) }}
 <span class="doccomment">///    assert!(!find_namespaced_function(&quot;basex::ls&quot;).is_ok());</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_namespaced_function</span>(<span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Language</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_namespaced_function</span>(<span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Language</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">name</span>.<span class="ident">split</span>(<span class="string">&quot;::&quot;</span>);
     <span class="kw">match</span> (<span class="ident">iter</span>.<span class="ident">next</span>(), <span class="ident">iter</span>.<span class="ident">next</span>(), <span class="ident">iter</span>.<span class="ident">next</span>()) {
-        (<span class="prelude-val">Some</span>(<span class="ident">key</span>), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        (<span class="prelude-val">Some</span>(<span class="ident">key</span>), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; {
             <span class="kw">let</span> <span class="ident">gf</span> <span class="op">=</span> <span class="ident">global_function</span>(<span class="ident">Symbol::from_string</span>(<span class="ident">key</span>))<span class="question-mark">?</span>;
             <span class="prelude-val">Ok</span>(<span class="ident">Language::from_values</span>(<span class="kw-2">&amp;</span>[<span class="ident">gf</span>]))
         }
-        (<span class="prelude-val">Some</span>(<span class="ident">ns</span>), <span class="prelude-val">Some</span>(<span class="ident">key</span>), <span class="prelude-val">None</span>) <span class="op">=</span><span class="op">&gt;</span> {
+        (<span class="prelude-val">Some</span>(<span class="ident">ns</span>), <span class="prelude-val">Some</span>(<span class="ident">key</span>), <span class="prelude-val">None</span>) =&gt; {
             <span class="kw">let</span> <span class="ident">namespace</span> <span class="op">=</span> <span class="ident">find_namespace</span>(<span class="ident">ns</span>)<span class="question-mark">?</span>;
             <span class="prelude-val">Ok</span>(<span class="ident">Language::from_values</span>(<span class="kw-2">&amp;</span>[
                 <span class="ident">namespace</span>.<span class="ident">local</span>(<span class="ident">Symbol::from_string</span>(<span class="ident">key</span>))<span class="question-mark">?</span>
             ]))
         }
-        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">Error::NotFound</span>(<span class="macro">r!</span>(<span class="ident">name</span>))),
+        <span class="kw">_</span> =&gt; <span class="prelude-val">Err</span>(<span class="ident">Error::NotFound</span>(<span class="macro">r!</span>(<span class="ident">name</span>))),
     }
 }
 </code></pre></div>
