@@ -92,3 +92,34 @@ mod tests {
         }
     }
 }
+
+// TODO: this should be a trait.
+impl Doubles {
+    pub fn set_elt(&mut self, index: usize, val: Rfloat) {
+        unsafe {
+            SET_REAL_ELT(self.get(), index as R_xlen_t, val.inner());
+        }
+    }
+}
+
+impl Deref for Doubles {
+    type Target = [Rfloat];
+
+    /// Treat Doubles as if it is a slice, like Vec<Rfloat>
+    fn deref(&self) -> &Self::Target {
+        unsafe {
+            let ptr = DATAPTR_RO(self.get()) as *const Rfloat;
+            std::slice::from_raw_parts(ptr, self.len())
+        }
+    }
+}
+
+impl DerefMut for Doubles {
+    /// Treat Doubles as if it is a mutable slice, like Vec<Rfloat>
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        unsafe {
+            let ptr = DATAPTR(self.get()) as *mut Rfloat;
+            std::slice::from_raw_parts_mut(ptr, self.len())
+        }
+    }
+}

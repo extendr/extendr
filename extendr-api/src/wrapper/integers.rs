@@ -94,3 +94,34 @@ mod tests {
         }
     }
 }
+
+// TODO: this should be a trait.
+impl Integers {
+    pub fn set_elt(&mut self, index: usize, val: Rint) {
+        unsafe {
+            SET_INTEGER_ELT(self.get(), index as R_xlen_t, val.inner());
+        }
+    }
+}
+
+impl Deref for Integers {
+    type Target = [Rint];
+
+    /// Treat Integers as if it is a slice, like Vec<Rint>
+    fn deref(&self) -> &Self::Target {
+        unsafe {
+            let ptr = DATAPTR_RO(self.get()) as *const Rint;
+            std::slice::from_raw_parts(ptr, self.len())
+        }
+    }
+}
+
+impl DerefMut for Integers {
+    /// Treat Integers as if it is a mutable slice, like Vec<Rint>
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        unsafe {
+            let ptr = DATAPTR(self.get()) as *mut Rint;
+            std::slice::from_raw_parts_mut(ptr, self.len())
+        }
+    }
+}

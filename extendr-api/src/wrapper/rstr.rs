@@ -12,7 +12,7 @@ use super::*;
 /// }
 /// ```
 ///
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, Clone)]
 pub struct Rstr {
     pub(crate) robj: Robj,
 }
@@ -58,5 +58,31 @@ impl From<&str> for Rstr {
     /// Convert a string slice to a Rstr.
     fn from(s: &str) -> Self {
         Rstr::from_string(s)
+    }
+}
+
+impl Deref for Rstr {
+    type Target = str;
+
+    /// Treat Rstr like &str.
+    fn deref(&self) -> &Self::Target {
+        self.as_str()
+    }
+}
+
+impl<T> PartialEq<T> for Rstr
+where
+    T: AsRef<str>,
+{
+    /// Compare a `Rstr` with a `Rstr`.
+    fn eq(&self, other: &T) -> bool {
+        self.as_str() == other.as_ref()
+    }
+}
+
+impl PartialEq<str> for Rstr {
+    /// Compare a `Rstr` with a string slice.
+    fn eq(&self, other: &str) -> bool {
+        self.as_str() == other
     }
 }

@@ -406,8 +406,8 @@ pub enum RType {
 }
 
 /// Enum use to unpack R objects into their specialist wrappers.
-/// Todo: convert all Robj types to wrappers.
-/// Note: this only works if the wrappers are all just SEXPs.
+// Todo: convert all Robj types to wrappers.
+// Note: this only works if the wrappers are all just SEXPs.
 #[derive(Debug, PartialEq)]
 pub enum Rany<'a> {
     Null(&'a Robj),               // NILSXP

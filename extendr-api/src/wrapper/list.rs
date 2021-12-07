@@ -395,3 +395,12 @@ impl<T: Into<Robj>> FromIterator<T> for List {
 }
 
 impl Attributes for List {}
+
+impl Deref for List {
+    type Target = [Robj];
+
+    /// Lists behave like slices of Robj.
+    fn deref(&self) -> &Self::Target {
+        self.as_slice()
+    }
+}
