@@ -221,10 +221,16 @@ fn translate_meta_arg(input: &FnArg, self_ty: Option<&syn::Type>) -> Expr {
             let ty = pattype.ty.as_ref();
             let name_string = quote! { #pat }.to_string();
             let type_string = type_name(ty);
+            let default = if let Some(default) = get_named_lit(&pattype.attrs, "default") {
+                quote!(#default)
+            } else {
+                quote!(None)
+            };
             return parse_quote! {
                 extendr_api::metadata::Arg {
                     name: #name_string,
-                    arg_type: #type_string
+                    arg_type: #type_string,
+                    default: #default
                 }
             };
         }
@@ -240,7 +246,8 @@ fn translate_meta_arg(input: &FnArg, self_ty: Option<&syn::Type>) -> Expr {
             return parse_quote! {
                 extendr_api::metadata::Arg {
                     name: "self",
-                    arg_type: #type_string
+                    arg_type: #type_string,
+                    default: None
                 }
             };
         }
@@ -287,4 +294,21 @@ fn translate_actual(opts: &ExtendrOptions, input: &FnArg) -> Option<Expr> {
             None
         }
     }
+}
+
+// Get a single named literal from a list of attributes.
+// eg. #[default="xyz"]
+fn get_named_lit(attrs: &[syn::Attribute], name: &str) -> Option<String> {
+    for a in attrs {
+        if let Ok(meta) = a.parse_meta() {
+            if let syn::Meta::NameValue(nv) = meta {
+                if nv.path.is_ident(name) {
+                    if let syn::Lit::Str(litstr) = nv.lit {
+                        return Some(litstr.value());
+                    }
+                }
+            }
+        }
+    }
+    None
 }

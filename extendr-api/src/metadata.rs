@@ -11,6 +11,7 @@ use std::io::Write;
 pub struct Arg {
     pub name: &'static str,
     pub arg_type: &'static str,
+    pub default: Option<&'static str>,
 }
 
 /// Metadata function.
@@ -114,6 +115,16 @@ fn sanitize_identifier(name: &str) -> String {
     }
 }
 
+// Generate an R function argument with optional default.
+fn gen_formal_arg(arg: &Arg) -> String {
+    let id = sanitize_identifier(arg.name);
+    if let Some(default) = arg.default {
+        format!("{} = {}", id, default)
+    } else {
+        id
+    }
+}
+
 /// Generate a wrapper for a non-method function.
 fn write_function_wrapper(
     w: &mut Vec<u8>,
@@ -130,7 +141,7 @@ fn write_function_wrapper(
     let args = func
         .args
         .iter()
-        .map(|arg| sanitize_identifier(arg.name))
+        .map(|arg| gen_formal_arg(arg))
         .collect::<Vec<_>>()
         .join(", ");
 
