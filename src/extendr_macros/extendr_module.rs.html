@@ -230,8 +230,8 @@
                 <span class="ident">doc</span>: <span class="string">&quot;Wrapper generator.&quot;</span>,
                 <span class="ident">name</span>: #<span class="ident">make_module_wrappers_name_string</span>,
                 <span class="ident">args</span>: <span class="macro">vec!</span>[
-                    <span class="ident">extendr_api::metadata::Arg</span> { <span class="ident">name</span>: <span class="string">&quot;use_symbols&quot;</span>, <span class="ident">arg_type</span>: <span class="string">&quot;bool&quot;</span> },
-                    <span class="ident">extendr_api::metadata::Arg</span> { <span class="ident">name</span>: <span class="string">&quot;package_name&quot;</span>, <span class="ident">arg_type</span>: <span class="string">&quot;&amp;str&quot;</span> },
+                    <span class="ident">extendr_api::metadata::Arg</span> { <span class="ident">name</span>: <span class="string">&quot;use_symbols&quot;</span>, <span class="ident">arg_type</span>: <span class="string">&quot;bool&quot;</span>, <span class="ident">default</span>: <span class="prelude-val">None</span> },
+                    <span class="ident">extendr_api::metadata::Arg</span> { <span class="ident">name</span>: <span class="string">&quot;package_name&quot;</span>, <span class="ident">arg_type</span>: <span class="string">&quot;&amp;str&quot;</span>, <span class="ident">default</span>: <span class="prelude-val">None</span> },
                     ],
                 <span class="ident">return_type</span>: <span class="string">&quot;String&quot;</span>,
                 <span class="ident">func_ptr</span>: #<span class="ident">wrap_make_module_wrappers</span> <span class="kw">as</span> <span class="op">*</span> <span class="kw">const</span> <span class="ident">u8</span>,

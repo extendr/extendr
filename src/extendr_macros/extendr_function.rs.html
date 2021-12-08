@@ -48,7 +48,7 @@
 <span class="kw">use</span> <span class="ident">syn::ItemFn</span>;
 
 <span class="doccomment">/// Generate bindings for a single function.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extendr_function</span>(<span class="ident">args</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">syn::NestedMeta</span><span class="op">&gt;</span>, <span class="ident">func</span>: <span class="ident">ItemFn</span>) -&gt; <span class="ident">TokenStream</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extendr_function</span>(<span class="ident">args</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">syn::NestedMeta</span><span class="op">&gt;</span>, <span class="kw-2">mut</span> <span class="ident">func</span>: <span class="ident">ItemFn</span>) -&gt; <span class="ident">TokenStream</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">opts</span> <span class="op">=</span> <span class="ident">wrappers::ExtendrOptions::default</span>();
 
     <span class="kw">for</span> <span class="ident">arg</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">args</span> {
@@ -56,7 +56,7 @@
     }
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">wrappers</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ItemFn</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-    <span class="ident">wrappers::make_function_wrappers</span>(<span class="kw-2">&amp;</span><span class="ident">opts</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">wrappers</span>, <span class="string">&quot;&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">func</span>.<span class="ident">attrs</span>, <span class="kw-2">&amp;</span><span class="ident">func</span>.<span class="ident">sig</span>, <span class="prelude-val">None</span>);
+    <span class="ident">wrappers::make_function_wrappers</span>(<span class="kw-2">&amp;</span><span class="ident">opts</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">wrappers</span>, <span class="string">&quot;&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">func</span>.<span class="ident">attrs</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">func</span>.<span class="ident">sig</span>, <span class="prelude-val">None</span>);
 
     <span class="ident">TokenStream::from</span>(<span class="macro">quote!</span> {
         #<span class="ident">func</span>
