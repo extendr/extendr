@@ -4,7 +4,7 @@ use quote::quote;
 use syn::ItemFn;
 
 /// Generate bindings for a single function.
-pub fn extendr_function(args: Vec<syn::NestedMeta>, func: ItemFn) -> TokenStream {
+pub fn extendr_function(args: Vec<syn::NestedMeta>, mut func: ItemFn) -> TokenStream {
     let mut opts = wrappers::ExtendrOptions::default();
 
     for arg in &args {
@@ -12,7 +12,7 @@ pub fn extendr_function(args: Vec<syn::NestedMeta>, func: ItemFn) -> TokenStream
     }
 
     let mut wrappers: Vec<ItemFn> = Vec::new();
-    wrappers::make_function_wrappers(&opts, &mut wrappers, "", &func.attrs, &func.sig, None);
+    wrappers::make_function_wrappers(&opts, &mut wrappers, "", &func.attrs, &mut func.sig, None);
 
     TokenStream::from(quote! {
         #func

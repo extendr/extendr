@@ -15,7 +15,7 @@ pub fn make_function_wrappers(
     wrappers: &mut Vec<ItemFn>,
     prefix: &str,
     attrs: &[syn::Attribute],
-    sig: &syn::Signature,
+    sig: &mut syn::Signature,
     self_ty: Option<&syn::Type>,
 ) {
     let func_name = &sig.ident;
@@ -29,7 +29,7 @@ pub fn make_function_wrappers(
 
     let panic_str = format!("{} panicked.\0", func_name);
 
-    let inputs = &sig.inputs;
+    let inputs = &mut sig.inputs;
     let has_self = matches!(inputs.iter().next(), Some(FnArg::Receiver(_)));
 
     let call_name = if has_self {
@@ -69,7 +69,7 @@ pub fn make_function_wrappers(
         .collect();
 
     let meta_args: Vec<Expr> = inputs
-        .iter()
+        .iter_mut()
         .map(|input| translate_meta_arg(input, self_ty))
         .collect();
 
@@ -213,16 +213,16 @@ pub fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> FnArg {
 }
 
 // Generate code to make a metadata::Arg.
-fn translate_meta_arg(input: &FnArg, self_ty: Option<&syn::Type>) -> Expr {
+fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> Expr {
     match input {
         // function argument.
-        FnArg::Typed(ref pattype) => {
+        FnArg::Typed(ref mut pattype) => {
             let pat = pattype.pat.as_ref();
             let ty = pattype.ty.as_ref();
             let name_string = quote! { #pat }.to_string();
             let type_string = type_name(ty);
-            let default = if let Some(default) = get_named_lit(&pattype.attrs, "default") {
-                quote!(#default)
+            let default = if let Some(default) = get_named_lit(&mut pattype.attrs, "default") {
+                quote!(Some(#default))
             } else {
                 quote!(None)
             };
@@ -301,17 +301,21 @@ fn translate_actual(opts: &ExtendrOptions, input: &FnArg) -> Option<Expr> {
 
 // Get a single named literal from a list of attributes.
 // eg. #[default="xyz"]
-fn get_named_lit(attrs: &[syn::Attribute], name: &str) -> Option<String> {
-    for a in attrs {
-        if let Ok(meta) = a.parse_meta() {
-            if let syn::Meta::NameValue(nv) = meta {
-                if nv.path.is_ident(name) {
-                    if let syn::Lit::Str(litstr) = nv.lit {
-                        return Some(litstr.value());
-                    }
+// Remove the attribute from the list.
+fn get_named_lit(attrs: &mut Vec<syn::Attribute>, name: &str) -> Option<String> {
+    let mut new_attrs = Vec::new();
+    let mut res = None;
+    'f: for a in attrs.drain(0..) {
+        if let Ok(syn::Meta::NameValue(nv)) = a.parse_meta() {
+            if nv.path.is_ident(name) {
+                if let syn::Lit::Str(litstr) = nv.lit {
+                    res = Some(litstr.value());
+                    continue 'f;
                 }
             }
         }
+        new_attrs.push(a);
     }
-    None
+    *attrs = new_attrs;
+    res
 }

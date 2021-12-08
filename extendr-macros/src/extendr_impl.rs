@@ -95,7 +95,7 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
                 &mut wrappers,
                 prefix.as_str(),
                 &method.attrs,
-                &method.sig,
+                &mut method.sig,
                 Some(self_ty),
             );
         }

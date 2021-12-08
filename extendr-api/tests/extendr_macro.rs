@@ -160,3 +160,38 @@ fn test_call_macro() {
         assert_eq!(three, r!(3));
     }
 }
+
+#[extendr(use_try_from = true)]
+fn test_metadata_1(#[default = "NULL"] val: Robj) -> i32 {
+    if val.is_null() {
+        1
+    } else {
+        0
+    }
+}
+
+#[test]
+fn test_metadata() {
+    use extendr_api::metadata::Arg;
+    use extendr_api::metadata::Func;
+    let mut funcs: Vec<Func> = Vec::new();
+    meta__test_metadata_1(&mut funcs);
+
+    let args = vec![Arg {
+        name: "val",
+        arg_type: "Robj",
+        default: Some("NULL"),
+    }];
+
+    assert_eq!(
+        funcs[0],
+        Func {
+            doc: "",
+            name: "test_metadata_1",
+            args: args,
+            return_type: "i32",
+            func_ptr: wrap__test_metadata_1 as *const u8,
+            hidden: false,
+        }
+    );
+}
