@@ -1,23 +1,23 @@
-use prelude::{Rfloat, Rint};
+use prelude::{Rbool, Rfloat, Rint};
 
 use super::*;
 
 macro_rules! make_from_iterator {
-    ($fn_name : ident, $make_class : ident, $impl : ident, $r_type : ident, $prim_type : ty) => {
+    ($fn_name : ident, $make_class : ident, $impl : ident, $scalar_type : ident, $prim_type : ty) => {
         pub fn $fn_name<Iter>(iter: Iter) -> Altrep
         where
             Iter: ExactSizeIterator + std::fmt::Debug + Clone + 'static + std::any::Any,
-            Iter::Item: Into<$prim_type>,
+            Iter::Item: Into<$scalar_type>,
         {
             impl<Iter: ExactSizeIterator + std::fmt::Debug + Clone> $impl for Iter
             where
-                Iter::Item: Into<$prim_type>,
+                Iter::Item: Into<$scalar_type>,
             {
-                fn elt(&self, index: usize) -> $r_type {
-                    $r_type(self.clone().nth(index).unwrap().into())
+                fn elt(&self, index: usize) -> $scalar_type {
+                    $scalar_type::from(self.clone().nth(index).unwrap().into())
                 }
 
-                fn get_region(&self, index: usize, data: &mut [$r_type]) -> usize {
+                fn get_region(&self, index: usize, data: &mut [$scalar_type]) -> usize {
                     let len = self.len();
                     if index > len {
                         0
@@ -26,7 +26,7 @@ macro_rules! make_from_iterator {
                         let num_elems = data.len().min(len - index);
                         let dest = &mut data[0..num_elems];
                         for d in dest.iter_mut() {
-                            *d = $r_type(iter.next().unwrap().into());
+                            *d = $scalar_type::from(iter.next().unwrap().into());
                         }
                         num_elems
                     }
@@ -190,9 +190,9 @@ pub trait AltIntegerImpl: AltrepImpl {
         for i in 0..len {
             let val = self.elt(i);
             if !val.is_na() {
-                tot += val.0 as i64;
-                min = min.min(val.0);
-                max = max.max(val.0);
+                tot += val.inner() as i64;
+                min = min.min(val.inner());
+                max = max.max(val.inner());
                 nas += 1;
             }
         }
@@ -217,9 +217,9 @@ pub trait AltIntegerImpl: AltrepImpl {
         }
     }
 
-    /// Return TRUE if this vector is sorted, FALSE if not and NA_LOGICAL if unknown.
-    fn is_sorted(&self) -> Bool {
-        NA_LOGICAL
+    /// Return TRUE if this vector is sorted, FALSE if not and Rbool::na() if unknown.
+    fn is_sorted(&self) -> Rbool {
+        Rbool::na()
     }
 
     /// Return true if this vector does not contain NAs.
@@ -271,9 +271,9 @@ pub trait AltRealImpl: AltrepImpl {
         for i in 0..len {
             let val = self.elt(i);
             if !val.is_na() {
-                tot += val.0;
-                min = min.min(val.0);
-                max = max.max(val.0);
+                tot += val.inner();
+                min = min.min(val.inner());
+                max = max.max(val.inner());
                 nas += 1;
             }
         }
@@ -298,9 +298,9 @@ pub trait AltRealImpl: AltrepImpl {
         }
     }
 
-    /// Return TRUE if this vector is sorted, FALSE if not and NA_LOGICAL if unknown.
-    fn is_sorted(&self) -> Bool {
-        NA_LOGICAL
+    /// Return TRUE if this vector is sorted, FALSE if not and Rbool::na() if unknown.
+    fn is_sorted(&self) -> Rbool {
+        Rbool::na()
     }
 
     /// Return true if this vector does not contain NAs.
@@ -350,7 +350,7 @@ pub trait AltLogicalImpl: AltrepImpl {
         for i in 0..len {
             let val = self.elt(i);
             if !val.is_na() {
-                tot += val.0 as i64;
+                tot += val.inner() as i64;
                 nas += 1;
             }
         }
@@ -358,10 +358,10 @@ pub trait AltLogicalImpl: AltrepImpl {
     }
 
     /// Get a single element from this vector.
-    fn elt(&self, _index: usize) -> Bool;
+    fn elt(&self, _index: usize) -> Rbool;
 
     /// Get a multiple elements from this vector.
-    fn get_region(&self, index: usize, data: &mut [Bool]) -> usize {
+    fn get_region(&self, index: usize, data: &mut [Rbool]) -> usize {
         let len = self.length();
         if index > len {
             0
@@ -375,9 +375,9 @@ pub trait AltLogicalImpl: AltrepImpl {
         }
     }
 
-    /// Return TRUE if this vector is sorted, FALSE if not and NA_LOGICAL if unknown.
-    fn is_sorted(&self) -> Bool {
-        NA_LOGICAL
+    /// Return TRUE if this vector is sorted, FALSE if not and Rbool::na() if unknown.
+    fn is_sorted(&self) -> Rbool {
+        Rbool::na()
     }
 
     /// Return true if this vector does not contain NAs.
@@ -390,7 +390,7 @@ pub trait AltLogicalImpl: AltrepImpl {
     fn sum(&self, remove_nas: bool) -> Robj {
         let (tot, _min, _max, nas, len) = self.tot_min_max_nas();
         if !remove_nas && nas != 0 || remove_nas && nas == len {
-            NA_LOGICAL.into()
+            Rbool::na().into()
         } else {
             tot.into()
         }
@@ -444,9 +444,9 @@ pub trait AltStringImpl {
     /// Set a single element in this vector.
     fn set_elt(&mut self, _index: usize, _value: Rstr) {}
 
-    /// Return TRUE if this vector is sorted, FALSE if not and NA_LOGICAL if unknown.
-    fn is_sorted(&self) -> Bool {
-        NA_LOGICAL
+    /// Return TRUE if this vector is sorted, FALSE if not and Rbool::na() if unknown.
+    fn is_sorted(&self) -> Rbool {
+        Rbool::na()
     }
 
     /// Return true if this vector does not contain NAs.
@@ -701,7 +701,7 @@ impl Altrep {
                 x: SEXP,
                 i: R_xlen_t,
             ) -> c_int {
-                Altrep::get_state::<StateType>(x).elt(i as usize).0 as c_int
+                Altrep::get_state::<StateType>(x).elt(i as usize).inner() as c_int
             }
 
             unsafe extern "C" fn altinteger_Get_region<StateType: AltIntegerImpl + 'static>(
@@ -717,7 +717,7 @@ impl Altrep {
             unsafe extern "C" fn altinteger_Is_sorted<StateType: AltIntegerImpl + 'static>(
                 x: SEXP,
             ) -> c_int {
-                Altrep::get_state::<StateType>(x).is_sorted().0 as c_int
+                Altrep::get_state::<StateType>(x).is_sorted().inner() as c_int
             }
 
             unsafe extern "C" fn altinteger_No_NA<StateType: AltIntegerImpl + 'static>(
@@ -779,7 +779,7 @@ impl Altrep {
                 x: SEXP,
                 i: R_xlen_t,
             ) -> f64 {
-                Altrep::get_state::<StateType>(x).elt(i as usize).0
+                Altrep::get_state::<StateType>(x).elt(i as usize).inner()
             }
 
             unsafe extern "C" fn altreal_Get_region<StateType: AltRealImpl + 'static>(
@@ -795,7 +795,7 @@ impl Altrep {
             unsafe extern "C" fn altreal_Is_sorted<StateType: AltRealImpl + 'static>(
                 x: SEXP,
             ) -> c_int {
-                Altrep::get_state::<StateType>(x).is_sorted().0 as c_int
+                Altrep::get_state::<StateType>(x).is_sorted().inner() as c_int
             }
 
             unsafe extern "C" fn altreal_No_NA<StateType: AltRealImpl + 'static>(x: SEXP) -> c_int {
@@ -854,7 +854,7 @@ impl Altrep {
                 x: SEXP,
                 i: R_xlen_t,
             ) -> c_int {
-                Altrep::get_state::<StateType>(x).elt(i as usize).0 as c_int
+                Altrep::get_state::<StateType>(x).elt(i as usize).inner() as c_int
             }
 
             unsafe extern "C" fn altlogical_Get_region<StateType: AltLogicalImpl + 'static>(
@@ -863,14 +863,14 @@ impl Altrep {
                 n: R_xlen_t,
                 buf: *mut c_int,
             ) -> R_xlen_t {
-                let slice = std::slice::from_raw_parts_mut(buf as *mut Bool, n as usize);
+                let slice = std::slice::from_raw_parts_mut(buf as *mut Rbool, n as usize);
                 Altrep::get_state::<StateType>(x).get_region(i as usize, slice) as R_xlen_t
             }
 
             unsafe extern "C" fn altlogical_Is_sorted<StateType: AltLogicalImpl + 'static>(
                 x: SEXP,
             ) -> c_int {
-                Altrep::get_state::<StateType>(x).is_sorted().0 as c_int
+                Altrep::get_state::<StateType>(x).is_sorted().inner() as c_int
             }
 
             unsafe extern "C" fn altlogical_No_NA<StateType: AltLogicalImpl + 'static>(
@@ -1001,7 +1001,7 @@ impl Altrep {
             unsafe extern "C" fn altstring_Is_sorted<StateType: AltStringImpl + 'static>(
                 x: SEXP,
             ) -> c_int {
-                Altrep::get_state::<StateType>(x).is_sorted().0 as c_int
+                Altrep::get_state::<StateType>(x).is_sorted().inner() as c_int
             }
 
             unsafe extern "C" fn altstring_No_NA<StateType: AltStringImpl + 'static>(
@@ -1028,6 +1028,13 @@ impl Altrep {
         make_altinteger_class,
         AltIntegerImpl,
         Rint,
+        i32
+    );
+    make_from_iterator!(
+        make_altlogical_from_iterator,
+        make_altlogical_class,
+        AltLogicalImpl,
+        Rbool,
         i32
     );
     make_from_iterator!(

@@ -87,7 +87,7 @@ fn test_doubles() {
         assert_eq!(s.len(), 10);
         assert_eq!(s.rtype(), RType::Real);
 
-        let mut s = Doubles::from_values([1, 2, 3]);
+        let mut s = Doubles::from_values([1.0, 2.0, 3.0]);
         assert_eq!(s.len(), 3);
         assert_eq!(s.rtype(), RType::Real);
         assert_eq!(s.elt(0), 1.0);

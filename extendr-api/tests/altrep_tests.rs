@@ -47,9 +47,9 @@ fn test_altinteger() {
         assert!(integers_w_missing.elt(5).is_na());
 
         // tests for get_region()
-        let mut dest = [0i32; 2];
+        let mut dest = [0.into(); 2];
         integers_w_missing.get_region(2, &mut dest);
-        assert_eq!(dest, [2i32, 3]);
+        assert_eq!(dest, [2, 3]);
     }
 }
 
@@ -105,9 +105,9 @@ fn test_altreal() {
         }
 
         // tests for get_region()
-        let mut dest = [0f64; 2];
+        let mut dest = [0.0.into(); 2];
         doubles_w_missing.get_region(2, &mut dest);
-        assert_eq!(dest, [2f64, 3f64]);
+        assert_eq!(dest, [2.0, 3.0]);
     }
 }
 
@@ -126,7 +126,7 @@ fn test_altlogical() {
         }
 
         impl AltLogicalImpl for IsEven {
-            fn elt(&self, index: usize) -> Bool {
+            fn elt(&self, index: usize) -> Rbool {
                 (index % 2 == 1).into()
             }
         }

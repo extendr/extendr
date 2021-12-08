@@ -420,7 +420,7 @@ pub enum Rany<'a> {
     Special(&'a Primitive),       // SPECIALSXP
     Builtin(&'a Primitive),       // BUILTINSXP
     Rstr(&'a Rstr),               // CHARSXP
-    Logical(&'a Robj),            // LGLSXP
+    Logical(&'a Logicals),        // LGLSXP
     Integer(&'a Integers),        // INTSXP
     Real(&'a Doubles),            // REALSXP
     Complex(&'a Robj),            // CPLXSXP
