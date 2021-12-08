@@ -11,6 +11,7 @@ use std::io::Write;
 pub struct Arg {
     pub name: &'static str,
     pub arg_type: &'static str,
+    pub default: Option<&'static str>,
 }
 
 /// Metadata function.
@@ -114,6 +115,16 @@ fn sanitize_identifier(name: &str) -> String {
     }
 }
 
+// Generate an R function argument with optional default.
+fn gen_formal_arg(arg: &Arg) -> String {
+    let id = sanitize_identifier(arg.name);
+    if let Some(default) = arg.default {
+        format!("{} = {}", id, default)
+    } else {
+        id
+    }
+}
+
 /// Generate a wrapper for a non-method function.
 fn write_function_wrapper(
     w: &mut Vec<u8>,
@@ -127,7 +138,14 @@ fn write_function_wrapper(
 
     write_doc(w, func.doc)?;
 
-    let args = func
+    let formal_args = func
+        .args
+        .iter()
+        .map(|arg| gen_formal_arg(arg))
+        .collect::<Vec<_>>()
+        .join(", ");
+
+    let actual_args = func
         .args
         .iter()
         .map(|arg| sanitize_identifier(arg.name))
@@ -139,14 +157,14 @@ fn write_function_wrapper(
             w,
             "{} <- function({}) invisible(.Call(",
             sanitize_identifier(func.name),
-            args
+            formal_args
         )?;
     } else {
         write!(
             w,
             "{} <- function({}) .Call(",
             sanitize_identifier(func.name),
-            args
+            formal_args
         )?;
     }
 
@@ -157,7 +175,7 @@ fn write_function_wrapper(
     }
 
     if !func.args.is_empty() {
-        write!(w, ", {}", args)?;
+        write!(w, ", {}", actual_args)?;
     }
 
     if !use_symbols {

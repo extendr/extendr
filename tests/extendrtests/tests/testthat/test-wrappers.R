@@ -56,4 +56,6 @@ test_that("Call to Rust via wrapper functions works", {
   
   expect_equal(do_nothing(), NULL)
   expect_invisible(do_nothing())
+  expect_equal(check_default(), TRUE)
+  expect_equal(check_default("xyz"), FALSE)
 })

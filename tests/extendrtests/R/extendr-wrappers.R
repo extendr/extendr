@@ -34,6 +34,8 @@ doubles_square <- function(input) .Call(wrap__doubles_square, input)
 
 integers_square <- function(input) .Call(wrap__integers_square, input)
 
+check_default <- function(x = NULL) .Call(wrap__check_default, x)
+
 try_rfloat_na <- function() .Call(wrap__try_rfloat_na)
 
 try_rint_na <- function() .Call(wrap__try_rint_na)
