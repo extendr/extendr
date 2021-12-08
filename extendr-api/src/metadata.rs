@@ -138,10 +138,17 @@ fn write_function_wrapper(
 
     write_doc(w, func.doc)?;
 
-    let args = func
+    let formal_args = func
         .args
         .iter()
         .map(|arg| gen_formal_arg(arg))
+        .collect::<Vec<_>>()
+        .join(", ");
+
+    let actual_args = func
+        .args
+        .iter()
+        .map(|arg| sanitize_identifier(arg.name))
         .collect::<Vec<_>>()
         .join(", ");
 
@@ -150,14 +157,14 @@ fn write_function_wrapper(
             w,
             "{} <- function({}) invisible(.Call(",
             sanitize_identifier(func.name),
-            args
+            formal_args
         )?;
     } else {
         write!(
             w,
             "{} <- function({}) .Call(",
             sanitize_identifier(func.name),
-            args
+            formal_args
         )?;
     }
 
@@ -168,7 +175,7 @@ fn write_function_wrapper(
     }
 
     if !func.args.is_empty() {
-        write!(w, ", {}", args)?;
+        write!(w, ", {}", actual_args)?;
     }
 
     if !use_symbols {

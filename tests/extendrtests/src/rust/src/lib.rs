@@ -129,6 +129,11 @@ fn integers_square(input: Integers) -> Integers {
     result
 }
 
+#[extendr(use_try_from = true)]
+fn check_default(#[default="NULL"] x: Robj) -> bool {
+    x.is_null()
+}
+
 // Parsing
 
 // Weird behavior of parameter descriptions:
@@ -244,6 +249,8 @@ extendr_module! {
 
     fn doubles_square;
     fn integers_square;
+
+    fn check_default;
 
     fn try_rfloat_na;
     fn try_rint_na;
