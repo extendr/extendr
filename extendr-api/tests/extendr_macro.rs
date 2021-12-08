@@ -47,6 +47,18 @@ fn test_integers(val: Integers) -> Integers {
     val
 }
 
+#[extendr(
+    use_try_from = true,
+    r_name = "test.rename.rlike",
+    mod_name = "test_rename_mymod"
+)]
+fn test_rename() {}
+
+extendr_module! {
+    mod mymod;
+    fn test_rename_mymod;
+}
+
 #[extendr(use_try_from = true)]
 fn test_integers2(val: Integers) -> Integers {
     val.iter().map(|i| i + 1).collect()
@@ -187,7 +199,9 @@ fn test_metadata() {
         funcs[0],
         Func {
             doc: "",
-            name: "test_metadata_1",
+            rust_name: "test_metadata_1",
+            mod_name: "test_metadata_1",
+            r_name: "test_metadata_1",
             args: args,
             return_type: "i32",
             func_ptr: wrap__test_metadata_1 as *const u8,

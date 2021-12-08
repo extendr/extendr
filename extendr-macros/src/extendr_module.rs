@@ -54,7 +54,9 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
             // Add this function to the list, but set hidden: true.
             functions.push(extendr_api::metadata::Func {
                 doc: "Metadata access function.",
-                name: #module_metadata_name_string,
+                rust_name: #module_metadata_name_string,
+                mod_name: #module_metadata_name_string,
+                r_name: #module_metadata_name_string,
                 args: Vec::new(),
                 return_type: "Metadata",
                 func_ptr: #wrap_module_metadata_name as * const u8,
@@ -64,7 +66,9 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
             // Add this function to the list, but set hidden: true.
             functions.push(extendr_api::metadata::Func {
                 doc: "Wrapper generator.",
-                name: #make_module_wrappers_name_string,
+                rust_name: #make_module_wrappers_name_string,
+                mod_name: #make_module_wrappers_name_string,
+                r_name: #make_module_wrappers_name_string,
                 args: vec![
                     extendr_api::metadata::Arg { name: "use_symbols", arg_type: "bool", default: None },
                     extendr_api::metadata::Arg { name: "package_name", arg_type: "&str", default: None },

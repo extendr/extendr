@@ -25,6 +25,10 @@ pub fn extendr_function(args: Vec<syn::NestedMeta>, mut func: ItemFn) -> TokenSt
 pub fn parse_options(opts: &mut wrappers::ExtendrOptions, arg: &syn::NestedMeta) {
     use syn::{Lit, LitBool, Meta, MetaNameValue, NestedMeta};
 
+    fn help_message() -> ! {
+        panic!("expected #[extendr(use_try_from=bool, r_name=\"name\")]");
+    }
+
     match arg {
         NestedMeta::Meta(Meta::NameValue(MetaNameValue {
             ref path,
@@ -34,11 +38,25 @@ pub fn parse_options(opts: &mut wrappers::ExtendrOptions, arg: &syn::NestedMeta)
             if path.is_ident("use_try_from") {
                 if let Lit::Bool(LitBool { value, .. }) = lit {
                     opts.use_try_from = *value;
+                } else {
+                    help_message();
+                }
+            } else if path.is_ident("r_name") {
+                if let Lit::Str(litstr) = lit {
+                    opts.r_name = Some(litstr.value());
+                } else {
+                    help_message();
+                }
+            } else if path.is_ident("mod_name") {
+                if let Lit::Str(litstr) = lit {
+                    opts.mod_name = Some(litstr.value());
+                } else {
+                    help_message();
                 }
             } else {
-                panic!("expected use_try_from");
+                help_message();
             }
         }
-        _ => panic!("expected #[extendr(opt = \"string\", ...)]"),
+        _ => help_message(),
     }
 }
