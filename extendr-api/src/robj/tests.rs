@@ -5,8 +5,8 @@ fn test_debug() {
     test! {
         // Special values
         assert_eq!(format!("{:?}", r!(NULL)), "r!(NULL)");
-        assert_eq!(format!("{:?}", r!(TRUE)), "r!(TRUE)");
-        assert_eq!(format!("{:?}", r!(FALSE)), "r!(FALSE)");
+        assert_eq!(format!("{:?}", r!(TRUE)), "r!(true)");
+        assert_eq!(format!("{:?}", r!(FALSE)), "r!(false)");
 
         // Scalars
         assert_eq!(format!("{:?}", r!(1)), "r!(1)");
@@ -31,7 +31,7 @@ fn test_debug() {
         // Logical
         assert_eq!(
             format!("{:?}", r!([TRUE, FALSE, NA_LOGICAL])),
-            "r!([TRUE, FALSE, NA_LOGICAL])"
+            "r!([true, false, na])"
         );
     }
 }
@@ -153,7 +153,7 @@ fn test_try_from_robj() {
 
         assert_eq!(<Vec::<i32>>::try_from(Robj::from(1)), Ok(vec![1]));
         assert_eq!(<Vec::<f64>>::try_from(Robj::from(1.)), Ok(vec![1.]));
-        assert_eq!(<Vec::<Bool>>::try_from(Robj::from(TRUE)), Ok(vec![TRUE]));
+        assert_eq!(<Vec::<Rbool>>::try_from(Robj::from(TRUE)), Ok(vec![TRUE]));
         assert_eq!(<Vec::<u8>>::try_from(Robj::from(0_u8)), Ok(vec![0_u8]));
 
         // TODO: once related todos resolved in try_from_robj.rs, add tests for
@@ -170,18 +170,18 @@ fn test_try_from_robj() {
         assert!(<Integers>::try_from(r!([true])).is_err());
 
         // TODO: reinstate.
-        // assert_eq!(<Logicals>::try_from(r!([true, false])).unwrap().collect::<Vec<Bool>>(), vec![TRUE, FALSE]);
+        // assert_eq!(<Logicals>::try_from(r!([true, false])).unwrap().collect::<Vec<Rbool>>(), vec![TRUE, FALSE]);
         // assert!(<Logicals>::try_from(r!([1])).is_err());
 
         assert_eq!(<&[i32]>::try_from(Robj::from(1)), Ok(&[1][..]));
         assert_eq!(<&[f64]>::try_from(Robj::from(1.)), Ok(&[1.][..]));
-        assert_eq!(<&[Bool]>::try_from(Robj::from(TRUE)), Ok(&[TRUE][..]));
+        assert_eq!(<&[Rbool]>::try_from(Robj::from(TRUE)), Ok(&[TRUE][..]));
         assert_eq!(<&[u8]>::try_from(Robj::from(0_u8)), Ok(&[0_u8][..]));
 
         // Note the Vec<> cases use the same logic as the slices.
         assert_eq!(<&[i32]>::try_from(Robj::from(1.0)), Err(Error::ExpectedInteger(r!(1.0))));
         assert_eq!(<&[f64]>::try_from(Robj::from(1)), Err(Error::ExpectedReal(r!(1))));
-        assert_eq!(<&[Bool]>::try_from(Robj::from(())), Err(Error::ExpectedLogical(r!(()))));
+        assert_eq!(<&[Rbool]>::try_from(Robj::from(())), Err(Error::ExpectedLogical(r!(()))));
         assert_eq!(<&[u8]>::try_from(Robj::from(())), Err(Error::ExpectedRaw(r!(()))));
 
         let hello = Robj::from("hello");
@@ -255,7 +255,7 @@ fn test_try_from_robj() {
 #[test]
 fn test_to_robj() {
     test! {
-        assert_eq!(Robj::from(true), Robj::from([Bool::from(true)]));
+        assert_eq!(Robj::from(true), Robj::from([Rbool::from(true)]));
         //assert_eq!(Robj::from(1_u8), Robj::from(1));
         assert_eq!(Robj::from(1_u16), Robj::from(1));
         assert_eq!(Robj::from(1_u32), Robj::from(1.));
@@ -388,7 +388,7 @@ fn input_iterator_test() {
         assert_eq!(iter.collect::<Vec<_>>(), src);
 
         /*
-        let src: &[Bool] = &[TRUE, FALSE, TRUE];
+        let src: &[Rbool] = &[TRUE, FALSE, TRUE];
         let robj = Robj::from(src);
         let iter = <Logical>::from_robj(&robj).unwrap();
         assert_eq!(iter.collect::<Vec<_>>(), src);

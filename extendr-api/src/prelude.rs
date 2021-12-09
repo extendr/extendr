@@ -36,7 +36,6 @@ pub use crate::{
     data_frame, factor, global, list, r, reprint, reprintln, rprint, rprintln, sym, test, var,
 };
 
-pub use super::logical::Bool;
 pub use super::Cplx;
 
 pub use super::wrapper::{

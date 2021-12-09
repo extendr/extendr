@@ -93,12 +93,12 @@ impl Strings {
     }
 
     /// Return `TRUE` if the vector is sorted, `FALSE` if not, or `NA_BOOL` if unknown.
-    pub fn is_sorted(&self) -> Bool {
+    pub fn is_sorted(&self) -> Rbool {
         unsafe { STRING_IS_SORTED(self.get()).into() }
     }
 
     /// Return `TRUE` if the vector has no `NA`s, `FALSE` if any, or `NA_BOOL` if unknown.
-    pub fn no_na(&self) -> Bool {
+    pub fn no_na(&self) -> Rbool {
         unsafe { STRING_NO_NA(self.get()).into() }
     }
 }

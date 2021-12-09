@@ -374,29 +374,29 @@ impl Robj {
     }
 
     /// Get a read-only reference to the content of a logical vector
-    /// using the tri-state [Bool]. Returns None if not a logical vector.
+    /// using the tri-state [Rbool]. Returns None if not a logical vector.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let robj = r!([TRUE, FALSE, NA_LOGICAL]);
-    ///     assert_eq!(robj.as_logical_slice().unwrap(), [TRUE, FALSE, NA_LOGICAL]);
+    ///     let robj = r!([TRUE, FALSE]);
+    ///     assert_eq!(robj.as_logical_slice().unwrap(), [TRUE, FALSE]);
     /// }
     /// ```
-    pub fn as_logical_slice(&self) -> Option<&[Bool]> {
+    pub fn as_logical_slice(&self) -> Option<&[Rbool]> {
         self.as_typed_slice()
     }
 
-    /// Get a Vec<Bool> copied from the object
-    /// using the tri-state [Bool].
+    /// Get a Vec<Rbool> copied from the object
+    /// using the tri-state [Rbool].
     /// Returns None if not a logical vector.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let robj = r!([TRUE, FALSE, NA_LOGICAL]);
-    ///     assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, NA_LOGICAL]);
+    ///     let robj = r!([TRUE, FALSE]);
+    ///     assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE]);
     /// }
     /// ```
-    pub fn as_logical_vector(&self) -> Option<Vec<Bool>> {
+    pub fn as_logical_vector(&self) -> Option<Vec<Rbool>> {
         self.as_logical_slice().map(|value| value.to_vec())
     }
 
@@ -405,25 +405,22 @@ impl Robj {
     /// use extendr_api::prelude::*;
     /// test! {
     ///     let robj = r!([TRUE, FALSE, NA_LOGICAL]);
-    ///     let (mut nt, mut nf, mut nna) = (0, 0, 0);
+    ///     let mut num_na = 0;
     ///     for val in robj.as_logical_iter().unwrap() {
-    ///       match *val {
-    ///         TRUE => nt += 1,
-    ///         FALSE => nf += 1,
-    ///         NA_LOGICAL => nna += 1,
-    ///         _ => ()
+    ///       if val.is_na() {
+    ///           num_na += 1;
     ///       }
     ///     }
-    ///     assert_eq!((nt, nf, nna), (1, 1, 1));
+    ///     assert_eq!(num_na, 1);
     /// }
     /// ```
-    pub fn as_logical_iter(&self) -> Option<impl Iterator<Item = &Bool>> {
+    pub fn as_logical_iter(&self) -> Option<impl Iterator<Item = &Rbool>> {
         self.as_logical_slice().map(|slice| slice.iter())
     }
 
     /// Get a read-only reference to the content of a double vector.
     /// Note: the slice may contain NaN or NA values.
-    /// We may introduce a "Real" type to handle this like the Bool type.
+    /// We may introduce a "Real" type to handle this like the Rbool type.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -637,12 +634,12 @@ impl Robj {
     /// ```
     pub fn as_bool(&self) -> Option<bool> {
         match self.as_logical_slice() {
-            Some(slice) if slice.len() == 1 && !slice[0].is_na() => Some(slice[0].into()),
+            Some(slice) if slice.len() == 1 && !slice[0].is_na() => Some(slice[0].is_true()),
             _ => None,
         }
     }
 
-    /// Get a scalar boolean as a tri-boolean [Bool] value.
+    /// Get a scalar boolean as a tri-boolean [Rbool] value.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -651,10 +648,10 @@ impl Robj {
     ///    let robj3 = Robj::from(NA_LOGICAL);
     ///    assert_eq!(robj1.as_logical(), Some(TRUE));
     ///    assert_eq!(robj2.as_logical(), None);
-    ///    assert_eq!(robj3.as_logical(), Some(NA_LOGICAL));
+    ///    assert_eq!(robj3.as_logical().unwrap().is_na(), true);
     /// }
     /// ```
-    pub fn as_logical(&self) -> Option<Bool> {
+    pub fn as_logical(&self) -> Option<Rbool> {
         match self.as_logical_slice() {
             Some(slice) if slice.len() == 1 => Some(slice[0]),
             _ => None,
@@ -771,7 +768,6 @@ macro_rules! make_typed_slice {
 }
 
 make_typed_slice!(Rbool, INTEGER, LGLSXP);
-make_typed_slice!(Bool, INTEGER, LGLSXP);
 make_typed_slice!(i32, INTEGER, INTSXP);
 make_typed_slice!(Rint, INTEGER, INTSXP);
 make_typed_slice!(f64, REAL, REALSXP);

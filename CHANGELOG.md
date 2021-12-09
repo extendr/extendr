@@ -2,6 +2,18 @@
 
 ## extendr devel
 
+- Removed Bool type.
+
+- Introduced scalars Rint, Rfloat and Rbool.
+
+- Introduced wrappers Integers, Doubles and Logicals.
+
+- Re-written impl Robj as a set of smaller traits.
+
+- Introduced Rany type and as_any.
+
+- Implemented Serialize for R objects.
+
 - Fixed Clippy warnings
 
 - Fixed "myvar" test failures - related to base_env() being the "local" enviroment in the tests.

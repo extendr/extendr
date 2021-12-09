@@ -1,4 +1,3 @@
-use crate::Bool;
 use libR_sys::{R_IsNA, R_NaReal};
 /// Return true if this primitive is NA.
 pub trait CanBeNA {
@@ -35,22 +34,6 @@ impl CanBeNA for i32 {
 
     fn na() -> i32 {
         i32::MIN
-    }
-}
-
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///     assert!(Bool::na().is_na());
-/// }
-/// ```
-impl CanBeNA for Bool {
-    fn is_na(&self) -> bool {
-        self.0 == Bool::na().0
-    }
-
-    fn na() -> Bool {
-        Bool::from(i32::MIN)
     }
 }
 

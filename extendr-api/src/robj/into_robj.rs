@@ -296,32 +296,6 @@ impl ToVectorValue for &bool {
     }
 }
 
-impl ToVectorValue for Bool {
-    fn sexptype() -> SEXPTYPE {
-        LGLSXP
-    }
-
-    fn to_logical(&self) -> i32
-    where
-        Self: Sized,
-    {
-        self.0
-    }
-}
-
-impl ToVectorValue for &Bool {
-    fn sexptype() -> SEXPTYPE {
-        LGLSXP
-    }
-
-    fn to_logical(&self) -> i32
-    where
-        Self: Sized,
-    {
-        self.0
-    }
-}
-
 impl ToVectorValue for Rbool {
     fn sexptype() -> SEXPTYPE {
         LGLSXP

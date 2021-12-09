@@ -38,29 +38,20 @@ impl Rbool {
     pub fn is_false(&self) -> bool {
         self.inner() == 0 && !self.is_na()
     }
+
+    /// Convert this Rbool to a bool. Note NA will be true.
+    pub fn to_bool(&self) -> bool {
+        self.inner() != 0
+    }
+
+    /// Convert this construct a Rbool from a rust boolean.
+    pub fn from_bool(val: bool) -> Self {
+        Rbool(val as i32)
+    }
 }
 
 gen_trait_impl!(Rbool, bool, |x: &Rbool| x.inner() == i32::MIN, i32::MIN);
 gen_from_primitive!(Rbool, i32);
-
-impl TryFrom<Robj> for Rbool {
-    type Error = Error;
-
-    fn try_from(robj: Robj) -> Result<Self> {
-        // Check if the value is a scalar
-        match robj.len() {
-            0 => return Err(Error::ExpectedNonZeroLength(robj)),
-            1 => {}
-            _ => return Err(Error::ExpectedScalar(robj)),
-        };
-
-        if let Some(s) = robj.as_typed_slice() {
-            Ok(s[0])
-        } else {
-            Err(Error::ExpectedLogical(robj))
-        }
-    }
-}
 
 impl From<bool> for Rbool {
     fn from(v: bool) -> Self {
