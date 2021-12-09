@@ -14,22 +14,27 @@ pub struct Rbool(i32);
 impl Rbool {
     gen_impl!(Rbool, i32);
 
+    /// Return a `true` `Rbool`.
     pub const fn true_value() -> Rbool {
         Rbool(1)
     }
 
+    /// Return a `false` `Rbool`.
     pub const fn false_value() -> Rbool {
         Rbool(0)
     }
 
+    /// Return a `NA` `Rbool`.
     pub const fn na_value() -> Rbool {
         Rbool(i32::MIN)
     }
 
+    /// Return `true` if this triboolean is `true` but not NA.
     pub fn is_true(&self) -> bool {
         self.inner() != 0 && !self.is_na()
     }
 
+    /// Return `true` if this triboolean is `false` but not NA.
     pub fn is_false(&self) -> bool {
         self.inner() == 0 && !self.is_na()
     }
@@ -90,9 +95,9 @@ impl std::ops::Not for Rbool {
         if self.is_na() {
             Rbool::na()
         } else if self.is_true() {
-            Rbool::f()
+            Rbool::false_value()
         } else {
-            Rbool::t()
+            Rbool::true_value()
         }
     }
 }
