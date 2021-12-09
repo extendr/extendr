@@ -14,15 +14,15 @@ pub struct Rbool(i32);
 impl Rbool {
     gen_impl!(Rbool, i32);
 
-    pub const fn t() -> Rbool {
+    pub const fn true_value() -> Rbool {
         Rbool(1)
     }
 
-    pub const fn f() -> Rbool {
+    pub const fn false_value() -> Rbool {
         Rbool(0)
     }
 
-    pub const fn na_const() -> Rbool {
+    pub const fn na_value() -> Rbool {
         Rbool(i32::MIN)
     }
 
