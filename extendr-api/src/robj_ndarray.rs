@@ -107,7 +107,7 @@ fn test_from_robj() {
         );
         assert_eq!(
             <ArrayView1<Rbool>>::from_robj(&Robj::from(true)),
-            Ok(ArrayView1::<Rbool>::from(&[Rbool(1)][..]))
+            Ok(ArrayView1::<Rbool>::from(&[TRUE][..]))
         );
 
         let robj = R!("matrix(c(1, 2, 3, 4, 5, 6, 7, 8), ncol=2, nrow=4)")?;
