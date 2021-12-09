@@ -14,11 +14,24 @@ pub struct Rbool(i32);
 impl Rbool {
     gen_impl!(Rbool, i32);
 
-    pub fn t() -> Rbool {
+    pub const fn t() -> Rbool {
         Rbool(1)
     }
-    pub fn f() -> Rbool {
+
+    pub const fn f() -> Rbool {
         Rbool(0)
+    }
+
+    pub const fn na_const() -> Rbool {
+        Rbool(i32::MIN)
+    }
+
+    pub fn is_true(&self) -> bool {
+        self.inner() != 0 && !self.is_na()
+    }
+
+    pub fn is_false(&self) -> bool {
+        self.inner() == 0 && !self.is_na()
     }
 }
 
@@ -65,7 +78,21 @@ impl From<Rbool> for Option<bool> {
         if v.inner().is_na() {
             None
         } else {
-            Some(v.inner() == 1)
+            Some(v.inner() != 0)
+        }
+    }
+}
+
+impl std::ops::Not for Rbool {
+    type Output = Self;
+
+    fn not(self) -> Self::Output {
+        if self.is_na() {
+            Rbool::na()
+        } else if self.is_true() {
+            Rbool::f()
+        } else {
+            Rbool::t()
         }
     }
 }

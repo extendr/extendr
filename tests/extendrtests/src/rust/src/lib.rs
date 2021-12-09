@@ -108,6 +108,11 @@ fn get_integers_element(x: Integers, i: i32) -> Rint {
 }
 
 #[extendr(use_try_from = true)]
+fn get_logicals_element(x: Logicals, i: i32) -> Rbool {
+    x.elt(i as usize)
+}
+
+#[extendr(use_try_from = true)]
 fn doubles_square(input: Doubles) -> Doubles {
     let mut result = Doubles::new(input.len());
 
@@ -130,11 +135,22 @@ fn integers_square(input: Integers) -> Integers {
 }
 
 #[extendr(use_try_from = true)]
-fn check_default(#[default="NULL"] x: Robj) -> bool {
-    x.is_null()
+fn logicals_not(input: Logicals) -> Logicals {
+    let mut result = Logicals::new(input.len());
+
+    for (x, y) in result.iter_mut().zip(input.iter()) {
+        *x = !y;
+    }
+
+    result
 }
 
 // Parsing
+
+#[extendr(use_try_from = true)]
+fn check_default(#[default="NULL"] x: Robj) -> bool {
+    x.is_null()
+}
 
 // Weird behavior of parameter descriptions:
 // first passes tests as is, second -- only in backqutoes.
@@ -246,9 +262,11 @@ extendr_module! {
 
     fn get_doubles_element;
     fn get_integers_element;
+    fn get_logicals_element;
 
     fn doubles_square;
     fn integers_square;
+    fn logicals_not;
 
     fn check_default;
 

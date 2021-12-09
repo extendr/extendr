@@ -30,9 +30,13 @@ get_doubles_element <- function(x, i) .Call(wrap__get_doubles_element, x, i)
 
 get_integers_element <- function(x, i) .Call(wrap__get_integers_element, x, i)
 
+get_logicals_element <- function(x, i) .Call(wrap__get_logicals_element, x, i)
+
 doubles_square <- function(input) .Call(wrap__doubles_square, input)
 
 integers_square <- function(input) .Call(wrap__integers_square, input)
+
+logicals_not <- function(input) .Call(wrap__logicals_not, input)
 
 check_default <- function(x = NULL) .Call(wrap__check_default, x)
 
