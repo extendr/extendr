@@ -99,10 +99,10 @@ impl_try_from_scalar_integer!(i64);
 impl_try_from_scalar_real!(f32);
 impl_try_from_scalar_real!(f64);
 
-impl TryFrom<Robj> for Bool {
+impl TryFrom<Robj> for Rbool {
     type Error = Error;
 
-    /// Convert an LGLSXP object into a Bool (tri-state boolean).
+    /// Convert an LGLSXP object into a Rbool (tri-state boolean).
     /// Use `value.is_na()` to detect NA values.
     fn try_from(robj: Robj) -> Result<Self> {
         if let Some(v) = robj.as_logical_slice() {
@@ -126,7 +126,7 @@ impl TryFrom<Robj> for bool {
         if robj.is_na() {
             Err(Error::MustNotBeNA(robj))
         } else {
-            Ok(<Bool>::try_from(robj)?.is_true())
+            Ok(<Rbool>::try_from(robj)?.is_true())
         }
     }
 }
@@ -195,10 +195,10 @@ impl TryFrom<Robj> for Vec<f64> {
     }
 }
 
-impl TryFrom<Robj> for Vec<Bool> {
+impl TryFrom<Robj> for Vec<Rbool> {
     type Error = Error;
 
-    /// Convert a LGLSXP object into a vector of Bool (tri-state booleans).
+    /// Convert a LGLSXP object into a vector of Rbool (tri-state booleans).
     /// Note: Unless you plan to store the result, use a slice instead.
     /// Use `value.is_na()` to detect NA values.
     fn try_from(robj: Robj) -> Result<Self> {
@@ -271,7 +271,7 @@ impl_option!(i32);
 impl_option!(i64);
 impl_option!(f32);
 impl_option!(f64);
-impl_option!(Bool);
+impl_option!(Rbool);
 impl_option!(bool);
 impl_option!(&str);
 impl_option!(String);
@@ -289,10 +289,10 @@ impl TryFrom<Robj> for &[i32] {
     }
 }
 
-impl TryFrom<Robj> for &[Bool] {
+impl TryFrom<Robj> for &[Rbool] {
     type Error = Error;
 
-    /// Convert a LGLSXP object into a slice of Bool (tri-state booleans).
+    /// Convert a LGLSXP object into a slice of Rbool (tri-state booleans).
     /// Use `value.is_na()` to detect NA values.
     fn try_from(robj: Robj) -> Result<Self> {
         robj.as_typed_slice().ok_or(Error::ExpectedLogical(robj))

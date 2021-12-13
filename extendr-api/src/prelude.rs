@@ -36,7 +36,6 @@ pub use crate::{
     data_frame, factor, global, list, r, reprint, reprintln, rprint, rprintln, sym, test, var,
 };
 
-pub use super::logical::Bool;
 pub use super::Cplx;
 
 pub use super::wrapper::{
@@ -59,7 +58,7 @@ pub use super::thread_safety::{
 
 pub use super::wrapper::{
     Doubles, EnvIter, Environment, Expression, ExternalPtr, FromList, Function, Integers, Language,
-    List, ListIter, Nullable, Pairlist, Primitive, Promise, Raw, Rstr, Strings, Symbol,
+    List, ListIter, Logicals, Nullable, Pairlist, Primitive, Promise, Raw, Rstr, Strings, Symbol,
 };
 
 #[cfg(feature = "ndarray")]

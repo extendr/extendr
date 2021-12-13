@@ -296,7 +296,7 @@ impl ToVectorValue for &bool {
     }
 }
 
-impl ToVectorValue for Bool {
+impl ToVectorValue for Rbool {
     fn sexptype() -> SEXPTYPE {
         LGLSXP
     }
@@ -305,11 +305,11 @@ impl ToVectorValue for Bool {
     where
         Self: Sized,
     {
-        self.0
+        self.inner()
     }
 }
 
-impl ToVectorValue for &Bool {
+impl ToVectorValue for &Rbool {
     fn sexptype() -> SEXPTYPE {
         LGLSXP
     }
@@ -318,7 +318,7 @@ impl ToVectorValue for &Bool {
     where
         Self: Sized,
     {
-        self.0
+        self.inner()
     }
 }
 

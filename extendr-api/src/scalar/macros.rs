@@ -740,10 +740,33 @@ macro_rules! gen_trait_impl {
             #[doc = "    assert!(<" $type ">::default().eq(&<" $type_prim ">::default()));"]
             #[doc = "}"]
             #[doc = "```"]
+            impl PartialEq<$type_prim> for &$type {
+                /// NA always fails.
+                fn eq(&self, other: &$type_prim) -> bool {
+                    <Option<$type_prim>>::try_from(**self) == Ok(Some(*other))
+                }
+            }
+        }
+
+        // The 'example usage' expands to...
+        //
+        // /// Documentation comments/test built by the #[doc] attributes
+        // impl PartialEq<i32> for Rint {
+        //     fn eq(&self, other: &i32) -> bool {
+        //         !self.is_na() && self.0 == *other
+        //     }
+        // }
+        paste::paste! {
+            #[doc = "```"]
+            #[doc = "use extendr_api::prelude::*;"]
+            #[doc = "test! {"]
+            #[doc = "    assert!(<" $type ">::default().eq(&<" $type_prim ">::default()));"]
+            #[doc = "}"]
+            #[doc = "```"]
             impl PartialEq<$type_prim> for $type {
                 /// NA always fails.
                 fn eq(&self, other: &$type_prim) -> bool {
-                    !self.is_na() && self.0 == *other
+                    <Option<$type_prim>>::try_from(self.clone()) == Ok(Some(*other))
                 }
             }
         }
@@ -760,12 +783,12 @@ macro_rules! gen_trait_impl {
             #[doc = "```"]
             #[doc = "use extendr_api::prelude::*;"]
             #[doc = "test! {"]
-            #[doc = "    assert_eq!(<" $type ">::default().0, <" $type_prim ">::default());"]
+            #[doc = "    assert_eq!(<" $type ">::default(), <" $type_prim ">::default());"]
             #[doc = "}"]
             #[doc = "```"]
             impl std::default::Default for $type {
                 fn default() -> Self {
-                    $type(<$type_prim>::default())
+                    $type::from(<$type_prim>::default())
                 }
             }
         }

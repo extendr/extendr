@@ -21,12 +21,13 @@ pub struct Integers {
 }
 
 crate::wrapper::macros::gen_vector_wrapper_impl!(
-    Integers, // Implements for
-    Rint,     // Element type
-    i32,      // Raw element type
-    INTEGER,  // `R` functions prefix
-    INTSXP,   // `SEXP`
-    integer   // Singular type name used in docs
+    vector_type: Integers, // Implements for
+    scalar_type: Rint,     // Element type
+    primitive_type: i32,   // Raw element type
+    r_prefix: INTEGER,     // `R` functions prefix
+    SEXP: INTSXP,          // `SEXP`
+    doc_name: integer,     // Singular type name used in docs
+    altrep_constructor: make_altinteger_from_iterator,
 );
 
 #[cfg(test)]
@@ -66,7 +67,7 @@ mod tests {
             assert_eq!(vec.is_altrep(), false);
             assert_eq!(r!(vec.clone()), r!([2, 1, 0]));
             assert_eq!(vec.elt(1), 1);
-            let mut dest = [0; 2];
+            let mut dest = [0.into(); 2];
             vec.get_region(1, &mut dest);
             assert_eq!(dest, [1, 0]);
         }
@@ -79,7 +80,7 @@ mod tests {
             let vec = Integers::from_values(0..1000000000);
             assert_eq!(vec.is_altrep(), true);
             assert_eq!(vec.elt(12345678), 12345678);
-            let mut dest = [0; 2];
+            let mut dest = [0.into(); 2];
             vec.get_region(12345678, &mut dest);
             assert_eq!(dest, [12345678, 12345679]);
         }

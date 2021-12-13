@@ -41,7 +41,7 @@ macro_rules! make_array_view_2 {
     };
 }
 
-make_array_view_2!(Bool, "Not a logical matrix.");
+make_array_view_2!(Rbool, "Not a logical matrix.");
 make_array_view_2!(i32, "Not an integer matrix.");
 make_array_view_2!(f64, "Not a floating point matrix.");
 //make_array_view_2!(u8, "Not a raw matrix.");
@@ -106,8 +106,8 @@ fn test_from_robj() {
             Ok(ArrayView1::<i32>::from(&[1][..]))
         );
         assert_eq!(
-            <ArrayView1<Bool>>::from_robj(&Robj::from(true)),
-            Ok(ArrayView1::<Bool>::from(&[Bool(1)][..]))
+            <ArrayView1<Rbool>>::from_robj(&Robj::from(true)),
+            Ok(ArrayView1::<Rbool>::from(&[TRUE][..]))
         );
 
         let robj = R!("matrix(c(1, 2, 3, 4, 5, 6, 7, 8), ncol=2, nrow=4)")?;
@@ -142,7 +142,7 @@ fn test_from_robj() {
 
         // check logical matrices
         let robj = R!("matrix(c(T, T, T, T, F, F, F, F), ncol=2, nrow=4)")?;
-        let mx = <ArrayView2<Bool>>::from_robj(&robj)?;
+        let mx = <ArrayView2<Rbool>>::from_robj(&robj)?;
         assert_eq!(mx[[0, 0]], TRUE);
         assert_eq!(mx[[1, 0]], TRUE);
         assert_eq!(mx[[2, 0]], TRUE);

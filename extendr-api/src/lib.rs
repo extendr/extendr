@@ -226,7 +226,6 @@ pub mod error;
 pub mod functions;
 pub mod iter;
 pub mod lang_macros;
-pub mod logical;
 pub mod metadata;
 pub mod ownership;
 pub mod prelude;
@@ -262,7 +261,6 @@ pub use robj::Robj;
 pub use error::*;
 pub use functions::*;
 pub use lang_macros::*;
-pub use logical::*;
 pub use na::*;
 pub use rmacros::*;
 pub use robj::*;
@@ -275,15 +273,18 @@ pub use wrapper::*;
 pub use robj_ndarray::*;
 
 pub use extendr_macros::*;
+
+use scalar::Rbool;
+
 //////////////////////////////////////////////////
 
 pub struct Cplx(pub f64, pub f64);
 
 /// TRUE value eg. `r!(TRUE)`
-pub const TRUE: Bool = Bool(1);
+pub const TRUE: Rbool = Rbool::true_value();
 
 /// FALSE value eg. `r!(FALSE)`
-pub const FALSE: Bool = Bool(0);
+pub const FALSE: Rbool = Rbool::false_value();
 
 /// NULL value eg. `r!(NULL)`
 pub const NULL: () = ();
@@ -298,7 +299,7 @@ pub const NA_REAL: Option<f64> = None;
 pub const NA_STRING: Option<&str> = None;
 
 /// NA value for logical. `r!(NA_LOGICAL)`
-pub const NA_LOGICAL: Bool = Bool(std::i32::MIN);
+pub const NA_LOGICAL: Rbool = Rbool::na_value();
 
 #[doc(hidden)]
 pub use std::collections::HashMap;
@@ -420,7 +421,7 @@ pub enum Rany<'a> {
     Special(&'a Primitive),       // SPECIALSXP
     Builtin(&'a Primitive),       // BUILTINSXP
     Rstr(&'a Rstr),               // CHARSXP
-    Logical(&'a Robj),            // LGLSXP
+    Logical(&'a Logicals),        // LGLSXP
     Integer(&'a Integers),        // INTSXP
     Real(&'a Doubles),            // REALSXP
     Complex(&'a Robj),            // CPLXSXP
@@ -623,7 +624,7 @@ mod tests {
     }
 
     #[extendr]
-    pub fn bool_slice(x: &[Bool]) -> &[Bool] {
+    pub fn bool_slice(x: &[Rbool]) -> &[Rbool] {
         x
     }
 
@@ -774,7 +775,7 @@ mod tests {
                 assert_eq!(Robj::from_sexp(wrap__i32_slice(robj.get())), robj);
 
                 // #[extendr]
-                // pub fn bool_slice(x: &[Bool]) -> &[Bool] { x }
+                // pub fn bool_slice(x: &[Rbool]) -> &[Rbool] { x }
 
                 let robj = r!([TRUE, FALSE, TRUE]);
                 assert_eq!(Robj::from_sexp(wrap__bool_slice(robj.get())), robj);

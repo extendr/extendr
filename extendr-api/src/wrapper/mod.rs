@@ -14,6 +14,7 @@ pub mod function;
 pub mod integers;
 pub mod lang;
 pub mod list;
+pub mod logicals;
 mod macros;
 pub mod matrix;
 pub mod nullable;
@@ -39,6 +40,7 @@ pub use function::Function;
 pub use integers::Integers;
 pub use lang::Language;
 pub use list::{FromList, List, ListIter};
+pub use logicals::Logicals;
 pub use matrix::{MatrixConversions, RArray, RColumn, RMatrix, RMatrix3D};
 pub use nullable::Nullable;
 pub use pairlist::{Pairlist, PairlistIter};
@@ -193,6 +195,7 @@ make_conversions!(Altrep, ExpectedAltrep, is_altrep, "Not an Altrep type");
 make_conversions!(S4, ExpectedS4, is_s4, "Not a S4 type");
 
 make_conversions!(Integers, ExpectedInteger, is_integer, "Not an integer type");
+make_conversions!(Logicals, ExpectedLogical, is_logical, "Not a logical type");
 make_conversions!(Doubles, ExpectedReal, is_real, "Not a floating point type");
 // make_conversions!(Function, ExpectedFunction, is_function, "Not a function");
 
