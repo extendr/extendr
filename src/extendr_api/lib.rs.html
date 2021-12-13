@@ -905,6 +905,7 @@
 <span id="905">905</span>
 <span id="906">906</span>
 <span id="907">907</span>
+<span id="908">908</span>
 </pre><pre class="rust"><code><span class="doccomment">//!</span>
 <span class="doccomment">//! A safe and user friendly R extension interface.</span>
 <span class="doccomment">//!</span>
@@ -1133,7 +1134,6 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">functions</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">iter</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">lang_macros</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">logical</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">metadata</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">ownership</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">prelude</span>;
@@ -1169,7 +1169,6 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">error</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">functions</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">lang_macros</span>::<span class="kw-2">*</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">logical</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">na</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">rmacros</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">robj</span>::<span class="kw-2">*</span>;
@@ -1182,15 +1181,18 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">robj_ndarray</span>::<span class="kw-2">*</span>;
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">extendr_macros</span>::<span class="kw-2">*</span>;
+
+<span class="kw">use</span> <span class="ident">scalar::Rbool</span>;
+
 <span class="comment">//////////////////////////////////////////////////</span>
 
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Cplx</span>(<span class="kw">pub</span> <span class="ident">f64</span>, <span class="kw">pub</span> <span class="ident">f64</span>);
 
 <span class="doccomment">/// TRUE value eg. `r!(TRUE)`</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">TRUE</span>: <span class="ident">Bool</span> <span class="op">=</span> <span class="ident">Bool</span>(<span class="number">1</span>);
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">TRUE</span>: <span class="ident">Rbool</span> <span class="op">=</span> <span class="ident">Rbool::true_value</span>();
 
 <span class="doccomment">/// FALSE value eg. `r!(FALSE)`</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">FALSE</span>: <span class="ident">Bool</span> <span class="op">=</span> <span class="ident">Bool</span>(<span class="number">0</span>);
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">FALSE</span>: <span class="ident">Rbool</span> <span class="op">=</span> <span class="ident">Rbool::false_value</span>();
 
 <span class="doccomment">/// NULL value eg. `r!(NULL)`</span>
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">NULL</span>: () <span class="op">=</span> ();
@@ -1205,7 +1207,7 @@
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">NA_STRING</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">None</span>;
 
 <span class="doccomment">/// NA value for logical. `r!(NA_LOGICAL)`</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">NA_LOGICAL</span>: <span class="ident">Bool</span> <span class="op">=</span> <span class="ident">Bool</span>(<span class="ident">std::i32::MIN</span>);
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">NA_LOGICAL</span>: <span class="ident">Rbool</span> <span class="op">=</span> <span class="ident">Rbool::na_value</span>();
 
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
@@ -1327,7 +1329,7 @@
     <span class="ident">Special</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Primitive</span>),       <span class="comment">// SPECIALSXP</span>
     <span class="ident">Builtin</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Primitive</span>),       <span class="comment">// BUILTINSXP</span>
     <span class="ident">Rstr</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Rstr</span>),               <span class="comment">// CHARSXP</span>
-    <span class="ident">Logical</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),            <span class="comment">// LGLSXP</span>
+    <span class="ident">Logical</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Logicals</span>),        <span class="comment">// LGLSXP</span>
     <span class="ident">Integer</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Integers</span>),        <span class="comment">// INTSXP</span>
     <span class="ident">Real</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Doubles</span>),            <span class="comment">// REALSXP</span>
     <span class="ident">Complex</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),            <span class="comment">// CPLXSXP</span>
@@ -1530,7 +1532,7 @@
     }
 
     <span class="attribute">#[<span class="ident">extendr</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bool_slice</span>(<span class="ident">x</span>: <span class="kw-2">&amp;</span>[<span class="ident">Bool</span>]) -&gt; <span class="kw-2">&amp;</span>[<span class="ident">Bool</span>] {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bool_slice</span>(<span class="ident">x</span>: <span class="kw-2">&amp;</span>[<span class="ident">Rbool</span>]) -&gt; <span class="kw-2">&amp;</span>[<span class="ident">Rbool</span>] {
         <span class="ident">x</span>
     }
 
@@ -1681,7 +1683,7 @@
                 <span class="macro">assert_eq!</span>(<span class="ident">Robj::from_sexp</span>(<span class="ident">wrap__i32_slice</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);
 
                 <span class="comment">// #[extendr]</span>
-                <span class="comment">// pub fn bool_slice(x: &amp;[Bool]) -&gt; &amp;[Bool] { x }</span>
+                <span class="comment">// pub fn bool_slice(x: &amp;[Rbool]) -&gt; &amp;[Rbool] { x }</span>
 
                 <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r!</span>([<span class="ident">TRUE</span>, <span class="ident">FALSE</span>, <span class="ident">TRUE</span>]);
                 <span class="macro">assert_eq!</span>(<span class="ident">Robj::from_sexp</span>(<span class="ident">wrap__bool_slice</span>(<span class="ident">robj</span>.<span class="ident">get</span>())), <span class="ident">robj</span>);

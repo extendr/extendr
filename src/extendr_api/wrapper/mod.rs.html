@@ -372,6 +372,9 @@
 <span id="372">372</span>
 <span id="373">373</span>
 <span id="374">374</span>
+<span id="375">375</span>
+<span id="376">376</span>
+<span id="377">377</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Wrappers are lightweight proxies for references to R datatypes.</span>
 <span class="doccomment">//! They do not contain an Robj (see array.rs for an example of this).</span>
 
@@ -388,6 +391,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">integers</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">lang</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">list</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">logicals</span>;
 <span class="kw">mod</span> <span class="ident">macros</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">matrix</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">nullable</span>;
@@ -413,6 +417,7 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">integers::Integers</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">lang::Language</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">list</span>::{<span class="ident">FromList</span>, <span class="ident">List</span>, <span class="ident">ListIter</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">logicals::Logicals</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">matrix</span>::{<span class="ident">MatrixConversions</span>, <span class="ident">RArray</span>, <span class="ident">RColumn</span>, <span class="ident">RMatrix</span>, <span class="ident">RMatrix3D</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">nullable::Nullable</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">pairlist</span>::{<span class="ident">Pairlist</span>, <span class="ident">PairlistIter</span>};
@@ -567,6 +572,7 @@
 <span class="macro">make_conversions!</span>(<span class="ident">S4</span>, <span class="ident">ExpectedS4</span>, <span class="ident">is_s4</span>, <span class="string">&quot;Not a S4 type&quot;</span>);
 
 <span class="macro">make_conversions!</span>(<span class="ident">Integers</span>, <span class="ident">ExpectedInteger</span>, <span class="ident">is_integer</span>, <span class="string">&quot;Not an integer type&quot;</span>);
+<span class="macro">make_conversions!</span>(<span class="ident">Logicals</span>, <span class="ident">ExpectedLogical</span>, <span class="ident">is_logical</span>, <span class="string">&quot;Not a logical type&quot;</span>);
 <span class="macro">make_conversions!</span>(<span class="ident">Doubles</span>, <span class="ident">ExpectedReal</span>, <span class="ident">is_real</span>, <span class="string">&quot;Not a floating point type&quot;</span>);
 <span class="comment">// make_conversions!(Function, ExpectedFunction, is_function, &quot;Not a function&quot;);</span>
 

@@ -123,6 +123,7 @@
 <span id="123">123</span>
 <span id="124">124</span>
 <span id="125">125</span>
+<span id="126">126</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">super</span>::scalar::Rfloat</span>;
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">std::iter::FromIterator</span>;
@@ -134,10 +135,10 @@
 <span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">/// test! {</span>
 <span class="doccomment">///     let mut vec = (0..5).map(|i| (i as f64).into()).collect::&lt;Doubles&gt;();</span>
-<span class="doccomment">///     vec.iter_mut().for_each(|v| *v = *v + 10f64);</span>
-<span class="doccomment">///     assert_eq!(vec.elt(0), 10f64);</span>
+<span class="doccomment">///     vec.iter_mut().for_each(|v| *v = *v + 10.0);</span>
+<span class="doccomment">///     assert_eq!(vec.elt(0), 10.0);</span>
 <span class="doccomment">///     let sum = vec.iter().sum::&lt;Rfloat&gt;();</span>
-<span class="doccomment">///     assert_eq!(sum, 60f64);</span>
+<span class="doccomment">///     assert_eq!(sum, 60.0);</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```  </span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Clone</span>)]</span>
@@ -146,12 +147,13 @@
 }
 
 <span class="macro">crate::wrapper::macros::gen_vector_wrapper_impl!</span>(
-    <span class="ident">Doubles</span>, <span class="comment">// Implements for</span>
-    <span class="ident">Rfloat</span>,  <span class="comment">// Element type</span>
-    <span class="ident">f64</span>,     <span class="comment">// Raw element type</span>
-    <span class="ident">REAL</span>,    <span class="comment">// `R` functions prefix</span>
-    <span class="ident">REALSXP</span>, <span class="comment">// `SEXP`</span>
-    <span class="ident">double</span>   <span class="comment">// Singular type name used in docs</span>
+    <span class="ident">vector_type</span>: <span class="ident">Doubles</span>,
+    <span class="ident">scalar_type</span>: <span class="ident">Rfloat</span>,
+    <span class="ident">primitive_type</span>: <span class="ident">f64</span>,
+    <span class="ident">r_prefix</span>: <span class="ident">REAL</span>,
+    <span class="ident">SEXP</span>: <span class="ident">REALSXP</span>,
+    <span class="ident">doc_name</span>: <span class="ident">double</span>,
+    <span class="ident">altrep_constructor</span>: <span class="ident">make_altreal_from_iterator</span>,
 );
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
@@ -162,23 +164,23 @@
     <span class="kw">fn</span> <span class="ident">from_iterator</span>() {
         <span class="macro">test!</span> {
             <span class="kw">let</span> <span class="ident">vec</span> : <span class="ident">Doubles</span> <span class="op">=</span> (<span class="number">0</span>..<span class="number">3</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> (<span class="ident">i</span> <span class="kw">as</span> <span class="ident">f64</span>).<span class="ident">into</span>()).<span class="ident">collect</span>();
-            <span class="macro">assert_eq!</span>(<span class="ident">vec</span>, <span class="ident">Doubles::from_values</span>([<span class="number">0f64</span>, <span class="number">1f64</span>, <span class="number">2f64</span>]));
+            <span class="macro">assert_eq!</span>(<span class="ident">vec</span>, <span class="ident">Doubles::from_values</span>([<span class="number">0.0</span>, <span class="number">1.0</span>, <span class="number">2.0</span>]));
         }
     }
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">iter_mut</span>() {
         <span class="macro">test!</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">Doubles::from_values</span>([<span class="number">0f64</span>, <span class="number">1f64</span>, <span class="number">2f64</span>, <span class="number">3f64</span>]);
-            <span class="ident">vec</span>.<span class="ident">iter_mut</span>().<span class="ident">for_each</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">v</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">v</span> <span class="op">+</span> <span class="number">1f64</span>);
-            <span class="macro">assert_eq!</span>(<span class="ident">vec</span>, <span class="ident">Doubles::from_values</span>([<span class="number">1f64</span>, <span class="number">2f64</span>, <span class="number">3f64</span>, <span class="number">4f64</span>]));
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">Doubles::from_values</span>([<span class="number">0.0</span>, <span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>]);
+            <span class="ident">vec</span>.<span class="ident">iter_mut</span>().<span class="ident">for_each</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">v</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">v</span> <span class="op">+</span> <span class="number">1.0</span>);
+            <span class="macro">assert_eq!</span>(<span class="ident">vec</span>, <span class="ident">Doubles::from_values</span>([<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>, <span class="number">4.0</span>]));
         }
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">iter</span>() {
         <span class="macro">test!</span> {
-            <span class="kw">let</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">Doubles::from_values</span>(<span class="number">0</span>..<span class="number">3</span>);
-            <span class="macro">assert_eq!</span>(<span class="ident">vec</span>.<span class="ident">iter</span>().<span class="ident">sum</span>::<span class="op">&lt;</span><span class="ident">Rfloat</span><span class="op">&gt;</span>(), <span class="number">3f64</span>);
+            <span class="kw">let</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">Doubles::from_values</span>([<span class="number">0.0</span>, <span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>]);
+            <span class="macro">assert_eq!</span>(<span class="ident">vec</span>.<span class="ident">iter</span>().<span class="ident">sum</span>::<span class="op">&lt;</span><span class="ident">Rfloat</span><span class="op">&gt;</span>(), <span class="number">6.0</span>);
         }
     }
 
@@ -186,13 +188,13 @@
     <span class="kw">fn</span> <span class="ident">from_values_short</span>() {
         <span class="macro">test!</span> {
             <span class="comment">// Short (&lt;64k) vectors are allocated.</span>
-            <span class="kw">let</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">Doubles::from_values</span>((<span class="number">0</span>..<span class="number">3</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="number">2f64</span> <span class="op">-</span> <span class="ident">i</span> <span class="kw">as</span> <span class="ident">f64</span>));
+            <span class="kw">let</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">Doubles::from_values</span>((<span class="number">0</span>..<span class="number">3</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="number">2.0</span> <span class="op">-</span> <span class="ident">i</span> <span class="kw">as</span> <span class="ident">f64</span>));
             <span class="macro">assert_eq!</span>(<span class="ident">vec</span>.<span class="ident">is_altrep</span>(), <span class="bool-val">false</span>);
-            <span class="macro">assert_eq!</span>(<span class="macro">r!</span>(<span class="ident">vec</span>.<span class="ident">clone</span>()), <span class="macro">r!</span>([<span class="number">2f64</span>, <span class="number">1f64</span>, <span class="number">0f64</span>]));
-            <span class="macro">assert_eq!</span>(<span class="ident">vec</span>.<span class="ident">elt</span>(<span class="number">1</span>), <span class="number">1f64</span>);
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dest</span> <span class="op">=</span> [<span class="number">0f64</span>; <span class="number">2</span>];
+            <span class="macro">assert_eq!</span>(<span class="macro">r!</span>(<span class="ident">vec</span>.<span class="ident">clone</span>()), <span class="macro">r!</span>([<span class="number">2.0</span>, <span class="number">1.0</span>, <span class="number">0.0</span>]));
+            <span class="macro">assert_eq!</span>(<span class="ident">vec</span>.<span class="ident">elt</span>(<span class="number">1</span>), <span class="number">1.0</span>);
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dest</span> <span class="op">=</span> [<span class="number">0.0</span>.<span class="ident">into</span>(); <span class="number">2</span>];
             <span class="ident">vec</span>.<span class="ident">get_region</span>(<span class="number">1</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">dest</span>);
-            <span class="macro">assert_eq!</span>(<span class="ident">dest</span>, [<span class="number">1f64</span>, <span class="number">0f64</span>]);
+            <span class="macro">assert_eq!</span>(<span class="ident">dest</span>, [<span class="number">1.0</span>, <span class="number">0.0</span>]);
         }
     }
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -201,10 +203,10 @@
             <span class="comment">// Long (&gt;=64k) vectors are lazy ALTREP objects.</span>
             <span class="kw">let</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">Doubles::from_values</span>((<span class="number">0</span>..<span class="number">1000000000</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span> <span class="kw">as</span> <span class="ident">f64</span>));
             <span class="macro">assert_eq!</span>(<span class="ident">vec</span>.<span class="ident">is_altrep</span>(), <span class="bool-val">true</span>);
-            <span class="macro">assert_eq!</span>(<span class="ident">vec</span>.<span class="ident">elt</span>(<span class="number">12345678</span>), <span class="number">12345678f64</span>);
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dest</span> <span class="op">=</span> [<span class="number">0f64</span>; <span class="number">2</span>];
+            <span class="macro">assert_eq!</span>(<span class="ident">vec</span>.<span class="ident">elt</span>(<span class="number">12345678</span>), <span class="number">12345678.0</span>);
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dest</span> <span class="op">=</span> [<span class="number">0.0</span>.<span class="ident">into</span>(); <span class="number">2</span>];
             <span class="ident">vec</span>.<span class="ident">get_region</span>(<span class="number">12345678</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">dest</span>);
-            <span class="macro">assert_eq!</span>(<span class="ident">dest</span>, [<span class="number">12345678f64</span>, <span class="number">12345679f64</span>]);
+            <span class="macro">assert_eq!</span>(<span class="ident">dest</span>, [<span class="number">12345678.0</span>, <span class="number">12345679.0</span>]);
         }
     }
 

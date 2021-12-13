@@ -76,7 +76,6 @@
 <span id="76">76</span>
 <span id="77">77</span>
 <span id="78">78</span>
-<span id="79">79</span>
 </pre><pre class="rust"><code><span class="doccomment">//! # Common exports for extendr-api.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This allows us to be more selective about exports and avoid users</span>
@@ -115,7 +114,6 @@
     <span class="ident">data_frame</span>, <span class="ident">factor</span>, <span class="ident">global</span>, <span class="ident">list</span>, <span class="ident">r</span>, <span class="ident">reprint</span>, <span class="ident">reprintln</span>, <span class="ident">rprint</span>, <span class="ident">rprintln</span>, <span class="ident">sym</span>, <span class="ident">test</span>, <span class="ident">var</span>,
 };
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::logical::Bool</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::Cplx</span>;
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::wrapper</span>::{
@@ -138,7 +136,7 @@
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::wrapper</span>::{
     <span class="ident">Doubles</span>, <span class="ident">EnvIter</span>, <span class="ident">Environment</span>, <span class="ident">Expression</span>, <span class="ident">ExternalPtr</span>, <span class="ident">FromList</span>, <span class="ident">Function</span>, <span class="ident">Integers</span>, <span class="ident">Language</span>,
-    <span class="ident">List</span>, <span class="ident">ListIter</span>, <span class="ident">Nullable</span>, <span class="ident">Pairlist</span>, <span class="ident">Primitive</span>, <span class="ident">Promise</span>, <span class="ident">Raw</span>, <span class="ident">Rstr</span>, <span class="ident">Strings</span>, <span class="ident">Symbol</span>,
+    <span class="ident">List</span>, <span class="ident">ListIter</span>, <span class="ident">Logicals</span>, <span class="ident">Nullable</span>, <span class="ident">Pairlist</span>, <span class="ident">Primitive</span>, <span class="ident">Promise</span>, <span class="ident">Raw</span>, <span class="ident">Rstr</span>, <span class="ident">Strings</span>, <span class="ident">Symbol</span>,
 };
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>

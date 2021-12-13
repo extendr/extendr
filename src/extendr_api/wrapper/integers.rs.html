@@ -125,6 +125,7 @@
 <span id="125">125</span>
 <span id="126">126</span>
 <span id="127">127</span>
+<span id="128">128</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">super</span>::scalar::Rint</span>;
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">std::iter::FromIterator</span>;
@@ -148,12 +149,13 @@
 }
 
 <span class="macro">crate::wrapper::macros::gen_vector_wrapper_impl!</span>(
-    <span class="ident">Integers</span>, <span class="comment">// Implements for</span>
-    <span class="ident">Rint</span>,     <span class="comment">// Element type</span>
-    <span class="ident">i32</span>,      <span class="comment">// Raw element type</span>
-    <span class="ident">INTEGER</span>,  <span class="comment">// `R` functions prefix</span>
-    <span class="ident">INTSXP</span>,   <span class="comment">// `SEXP`</span>
-    <span class="ident">integer</span>   <span class="comment">// Singular type name used in docs</span>
+    <span class="ident">vector_type</span>: <span class="ident">Integers</span>, <span class="comment">// Implements for</span>
+    <span class="ident">scalar_type</span>: <span class="ident">Rint</span>,     <span class="comment">// Element type</span>
+    <span class="ident">primitive_type</span>: <span class="ident">i32</span>,   <span class="comment">// Raw element type</span>
+    <span class="ident">r_prefix</span>: <span class="ident">INTEGER</span>,     <span class="comment">// `R` functions prefix</span>
+    <span class="ident">SEXP</span>: <span class="ident">INTSXP</span>,          <span class="comment">// `SEXP`</span>
+    <span class="ident">doc_name</span>: <span class="ident">integer</span>,     <span class="comment">// Singular type name used in docs</span>
+    <span class="ident">altrep_constructor</span>: <span class="ident">make_altinteger_from_iterator</span>,
 );
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
@@ -193,7 +195,7 @@
             <span class="macro">assert_eq!</span>(<span class="ident">vec</span>.<span class="ident">is_altrep</span>(), <span class="bool-val">false</span>);
             <span class="macro">assert_eq!</span>(<span class="macro">r!</span>(<span class="ident">vec</span>.<span class="ident">clone</span>()), <span class="macro">r!</span>([<span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>]));
             <span class="macro">assert_eq!</span>(<span class="ident">vec</span>.<span class="ident">elt</span>(<span class="number">1</span>), <span class="number">1</span>);
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dest</span> <span class="op">=</span> [<span class="number">0</span>; <span class="number">2</span>];
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dest</span> <span class="op">=</span> [<span class="number">0</span>.<span class="ident">into</span>(); <span class="number">2</span>];
             <span class="ident">vec</span>.<span class="ident">get_region</span>(<span class="number">1</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">dest</span>);
             <span class="macro">assert_eq!</span>(<span class="ident">dest</span>, [<span class="number">1</span>, <span class="number">0</span>]);
         }
@@ -206,7 +208,7 @@
             <span class="kw">let</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">Integers::from_values</span>(<span class="number">0</span>..<span class="number">1000000000</span>);
             <span class="macro">assert_eq!</span>(<span class="ident">vec</span>.<span class="ident">is_altrep</span>(), <span class="bool-val">true</span>);
             <span class="macro">assert_eq!</span>(<span class="ident">vec</span>.<span class="ident">elt</span>(<span class="number">12345678</span>), <span class="number">12345678</span>);
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dest</span> <span class="op">=</span> [<span class="number">0</span>; <span class="number">2</span>];
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dest</span> <span class="op">=</span> [<span class="number">0</span>.<span class="ident">into</span>(); <span class="number">2</span>];
             <span class="ident">vec</span>.<span class="ident">get_region</span>(<span class="number">12345678</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">dest</span>);
             <span class="macro">assert_eq!</span>(<span class="ident">dest</span>, [<span class="number">12345678</span>, <span class="number">12345679</span>]);
         }

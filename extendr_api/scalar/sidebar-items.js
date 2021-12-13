@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Rfloat","Rfloat is a wrapper for f64 in the context of an R’s integer vector."],["Rint","Rint is a wrapper for i32 in the context of an R’s integer vector."]]});
+initSidebarItems({"struct":[["Rbool","Rbool is a wrapper for i32 in the context of an R’s logical vector."],["Rfloat","Rfloat is a wrapper for f64 in the context of an R’s integer vector."],["Rint","Rint is a wrapper for i32 in the context of an R’s integer vector."]]});

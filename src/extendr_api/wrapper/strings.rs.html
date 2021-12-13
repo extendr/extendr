@@ -236,12 +236,12 @@
     }
 
     <span class="doccomment">/// Return `TRUE` if the vector is sorted, `FALSE` if not, or `NA_BOOL` if unknown.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_sorted</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Bool</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_sorted</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Rbool</span> {
         <span class="kw">unsafe</span> { <span class="ident">STRING_IS_SORTED</span>(<span class="self">self</span>.<span class="ident">get</span>()).<span class="ident">into</span>() }
     }
 
     <span class="doccomment">/// Return `TRUE` if the vector has no `NA`s, `FALSE` if any, or `NA_BOOL` if unknown.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">no_na</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Bool</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">no_na</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Rbool</span> {
         <span class="kw">unsafe</span> { <span class="ident">STRING_NO_NA</span>(<span class="self">self</span>.<span class="ident">get</span>()).<span class="ident">into</span>() }
     }
 }
