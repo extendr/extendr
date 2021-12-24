@@ -16,7 +16,7 @@ use std::iter::FromIterator;
 ///     assert_eq!(vec[1], false);
 /// }
 /// ```  
-#[derive(Debug, PartialEq, Clone)]
+#[derive(PartialEq, Clone)]
 pub struct Logicals {
     pub(crate) robj: Robj,
 }
@@ -134,6 +134,16 @@ impl DerefMut for Logicals {
         unsafe {
             let ptr = DATAPTR(self.get()) as *mut Rbool;
             std::slice::from_raw_parts_mut(ptr, self.len())
+        }
+    }
+}
+
+impl std::fmt::Debug for Logicals {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.len() == 1 {
+            write!(f, "{:?}", self.elt(0))
+        } else {
+            f.debug_list().entries(self.iter()).finish()
         }
     }
 }

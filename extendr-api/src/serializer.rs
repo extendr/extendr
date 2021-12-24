@@ -1,13 +1,16 @@
 //! See https://serde.rs/impl-serializer.html
 
 use crate::error::{Error, Result};
-use crate::robj::{AsStrIter, GetSexp, Length, Rinternals, Types};
+use crate::robj::{GetSexp, Length, Rinternals, Types};
 use crate::{
-    Doubles, Environment, Expression, Function, Integers, Language, Pairlist, Primitive, Promise,
-    Raw, Rstr, Symbol, S4,
+    Doubles, Environment, Expressions, Function, Integers, Language, Pairlist, Primitive, Promise,
+    Raw, Rstr, Symbol, S4, Logicals, Strings, Attributes,
 };
 use crate::{List, Rany, Robj};
+use crate::scalar::{Rbool, Rint, Rfloat};
 use serde::{ser, Serialize};
+use crate::na::CanBeNA;
+// use crate::list;
 
 impl ser::Error for Error {
     fn custom<T: std::fmt::Display>(msg: T) -> Self {
@@ -523,7 +526,7 @@ impl ser::Serialize for Primitive {
     }
 }
 
-impl ser::Serialize for Expression {
+impl ser::Serialize for Expressions {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
     where
         S: ser::Serializer,
@@ -563,8 +566,15 @@ impl ser::Serialize for Function {
     where
         S: ser::Serializer,
     {
-        let string = self.deparse().unwrap();
-        string.serialize(serializer)
+        serializer.serialize_unit()
+        // if let (Some(formals), Some(body), Some(environment)) = (
+        //     self.formals(), self.body(), self.environment()
+        // ) {
+        //     use crate as extendr_api;
+        //     list!(formals=formals, body=body, environment=environment).serialize(serializer)
+        // } else {
+        //     serializer.serialize_str("Function")
+        // }
     }
 }
 
@@ -619,7 +629,11 @@ impl ser::Serialize for List {
     where
         S: ser::Serializer,
     {
-        serializer.serialize_unit()
+        if self.has_names() {
+            serializer.collect_map(self.iter())
+        } else {
+            serializer.collect_seq(self.values())
+        }
     }
 }
 
@@ -629,15 +643,35 @@ impl ser::Serialize for Doubles {
         S: ser::Serializer,
     {
         if self.len() == 1 {
-            serializer.serialize_f64(self.elt(0).inner())
+            self.elt(0).serialize(serializer)
         } else {
-            use serde::ser::SerializeSeq;
-            let mut s = serializer.serialize_seq(Some(self.len()))?;
-            for v in self.as_robj().as_real_slice().unwrap() {
-                // TODO: use get_range when available.
-                s.serialize_element(v)?;
-            }
-            s.end()
+            serializer.collect_seq(self.iter())
+        }
+    }
+}
+
+impl ser::Serialize for Logicals {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: ser::Serializer,
+    {
+        if self.len() == 1 {
+            self.elt(0).serialize(serializer)
+        } else {
+            serializer.collect_seq(self.iter())
+        }
+    }
+}
+
+impl ser::Serialize for Strings {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: ser::Serializer,
+    {
+        if self.len() == 1 {
+            self.elt(0).serialize(serializer)
+        } else {
+            serializer.collect_seq(self.iter())
         }
     }
 }
@@ -647,7 +681,50 @@ impl ser::Serialize for Rstr {
     where
         S: ser::Serializer,
     {
-        serializer.serialize_str(self.as_str())
+        if self.is_na() {
+            serializer.serialize_unit()
+        } else {
+            serializer.serialize_str(self.as_str())
+        }
+    }
+}
+
+impl ser::Serialize for Rint {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: ser::Serializer,
+    {
+        if self.is_na() {
+            serializer.serialize_unit()
+        } else {
+            serializer.serialize_i32(self.inner())
+        }
+    }
+}
+
+impl ser::Serialize for Rfloat {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: ser::Serializer,
+    {
+        if self.is_na() {
+            serializer.serialize_unit()
+        } else {
+            serializer.serialize_f64(self.inner())
+        }
+    }
+}
+
+impl ser::Serialize for Rbool {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: ser::Serializer,
+    {
+        if self.is_na() {
+            serializer.serialize_unit()
+        } else {
+            serializer.serialize_bool(self.is_true())
+        }
     }
 }
 
@@ -676,30 +753,15 @@ impl ser::Serialize for Robj {
             Rany::Special(value) => value.serialize(serializer),
             Rany::Builtin(value) => value.serialize(serializer),
             Rany::Rstr(value) => value.serialize(serializer),
-            Rany::Logical(_value) => {
-                todo!("implement Logicals")
-            }
-            Rany::Integer(value) => value.serialize(serializer),
-            Rany::Real(value) => value.serialize(serializer),
-            Rany::Complex(_complex) => {
-                todo!("implement Complexes")
-            }
-            Rany::String(string) => {
-                if let Some(s) = string.as_str() {
-                    serializer.serialize_str(s)
-                } else {
-                    use serde::ser::SerializeSeq;
-                    let mut s = serializer.serialize_seq(Some(self.len()))?;
-                    for v in self.as_str_iter().unwrap() {
-                        s.serialize_element(v)?;
-                    }
-                    s.end()
-                }
-            }
+            Rany::Logicals(value) => value.serialize(serializer),
+            Rany::Integers(value) => value.serialize(serializer),
+            Rany::Doubles(value) => value.serialize(serializer),
+            Rany::Complexes(_complex) => serializer.serialize_unit(),
+            Rany::Strings(value) => value.serialize(serializer),
             Rany::Dot(_dot) => serializer.serialize_unit(),
             Rany::Any(_any) => serializer.serialize_unit(),
             Rany::List(value) => value.serialize(serializer),
-            Rany::Expression(value) => value.serialize(serializer),
+            Rany::Expressions(value) => value.serialize(serializer),
             Rany::Bytecode(_bytecode) => serializer.serialize_unit(),
             Rany::ExternalPtr(_externalptr) => serializer.serialize_unit(),
             Rany::WeakRef(_weakref) => serializer.serialize_unit(),

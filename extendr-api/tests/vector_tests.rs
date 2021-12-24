@@ -5,11 +5,11 @@ fn test_strings() {
     test! {
         let s = Strings::new(10);
         assert_eq!(s.len(), 10);
-        assert_eq!(s.rtype(), RType::String);
+        assert_eq!(s.rtype(), Rtype::Strings);
 
         let mut s = Strings::from_values(["x", "y", "z"]);
         assert_eq!(s.len(), 3);
-        assert_eq!(s.rtype(), RType::String);
+        assert_eq!(s.rtype(), Rtype::Strings);
         assert_eq!(s.elt(0), "x");
         assert_eq!(s.elt(1), "y");
         assert_eq!(s.elt(2), "z");
@@ -44,11 +44,11 @@ fn test_list() {
     test! {
         let s = List::new(10);
         assert_eq!(s.len(), 10);
-        assert_eq!(s.rtype(), RType::List);
+        assert_eq!(s.rtype(), Rtype::List);
 
         let mut s = List::from_values(["x", "y", "z"]);
         assert_eq!(s.len(), 3);
-        assert_eq!(s.rtype(), RType::List);
+        assert_eq!(s.rtype(), Rtype::List);
         assert_eq!(s.elt(0)?, r!("x"));
         assert_eq!(s.elt(1)?, r!("y"));
         assert_eq!(s.elt(2)?, r!("z"));
@@ -85,11 +85,11 @@ fn test_doubles() {
     test! {
         let s = Doubles::new(10);
         assert_eq!(s.len(), 10);
-        assert_eq!(s.rtype(), RType::Real);
+        assert_eq!(s.rtype(), Rtype::Doubles);
 
         let mut s = Doubles::from_values([1.0, 2.0, 3.0]);
         assert_eq!(s.len(), 3);
-        assert_eq!(s.rtype(), RType::Real);
+        assert_eq!(s.rtype(), Rtype::Doubles);
         assert_eq!(s.elt(0), 1.0);
         assert_eq!(s.elt(1), 2.0);
         assert_eq!(s.elt(2), 3.0);
@@ -184,11 +184,11 @@ fn test_integers() {
     test! {
         let s = Integers::new(10);
         assert_eq!(s.len(), 10);
-        assert_eq!(s.rtype(), RType::Integer);
+        assert_eq!(s.rtype(), Rtype::Integers);
 
         let mut s = Integers::from_values([1, 2, 3]);
         assert_eq!(s.len(), 3);
-        assert_eq!(s.rtype(), RType::Integer);
+        assert_eq!(s.rtype(), Rtype::Integers);
         assert_eq!(s.elt(0), 1);
         assert_eq!(s.elt(1), 2);
         assert_eq!(s.elt(2), 3);

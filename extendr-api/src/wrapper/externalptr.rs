@@ -1,5 +1,6 @@
 use super::*;
 use std::any::Any;
+use std::fmt::Debug;
 
 /// Wrapper for creating R objects containing any Rust object.
 ///
@@ -14,8 +15,8 @@ use std::any::Any;
 /// }
 /// ```
 ///
-#[derive(Debug, PartialEq, Clone)]
-pub struct ExternalPtr<T> {
+#[derive(PartialEq, Clone)]
+pub struct ExternalPtr<T : Debug + 'static> {
     /// This is the contained Robj.
     pub(crate) robj: Robj,
 
@@ -23,16 +24,23 @@ pub struct ExternalPtr<T> {
     marker: std::marker::PhantomData<T>,
 }
 
-impl<T> Deref for ExternalPtr<T> {
+impl<T : Debug + 'static> Deref for ExternalPtr<T> {
     type Target = T;
 
     /// This allows us to treat the Robj as if it is the type T.
     fn deref(&self) -> &Self::Target {
-        unsafe { &*self.robj.external_ptr_addr::<T>() }
+        self.addr()
     }
 }
 
-impl<T: Any> ExternalPtr<T> {
+impl<T : Debug + 'static> DerefMut for ExternalPtr<T> {
+    /// This allows us to treat the Robj as if it is the mutable type T.
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        self.addr_mut()
+    }
+}
+
+impl<T: Any + Debug> ExternalPtr<T> {
     /// Construct an external pointer object from any type T.
     /// In this case, the R object owns the data and will drop the Rust object
     /// when the last reference is removed via register_c_finalizer.
@@ -75,21 +83,39 @@ impl<T: Any> ExternalPtr<T> {
     // TODO: make a constructor for references?
 
     /// Get the "tag" of an external pointer. This is the type name in the common case.
-    pub fn external_ptr_tag(&self) -> Robj {
+    pub fn tag(&self) -> Robj {
         unsafe { new_owned(R_ExternalPtrTag(self.robj.get())) }
     }
 
     /// Get the "protected" field of an external pointer. This is NULL in the common case.
-    pub fn external_ptr_protected(&self) -> Robj {
+    pub fn protected(&self) -> Robj {
         unsafe { new_owned(R_ExternalPtrProtected(self.robj.get())) }
+    }
+
+    /// Get the "address" field of an external pointer.
+    /// Normally, we will use Deref to do this.
+    pub fn addr<'a>(&self) -> &'a T {
+        unsafe {
+            let ptr = R_ExternalPtrAddr(self.robj.get()) as *const T;
+            &*ptr as &'a T
+        }
+    }
+
+    /// Get the "address" field of an external pointer as a mutable reference.
+    /// Normally, we will use DerefMut to do this.
+    pub fn addr_mut(&mut self) -> &mut T {
+        unsafe {
+            let ptr = R_ExternalPtrAddr(self.robj.get()) as *mut T;
+            &mut *ptr as &mut T
+        }
     }
 }
 
-impl<T: Any> TryFrom<Robj> for ExternalPtr<T> {
+impl<T: Any + Debug> TryFrom<Robj> for ExternalPtr<T> {
     type Error = Error;
 
     fn try_from(robj: Robj) -> Result<Self> {
-        if robj.rtype() != RType::ExternalPtr {
+        if robj.rtype() != Rtype::ExternalPtr {
             return Err(Error::ExpectedExternalPtr(robj));
         }
 
@@ -100,7 +126,7 @@ impl<T: Any> TryFrom<Robj> for ExternalPtr<T> {
 
         // Check the type name.
         let type_name = std::any::type_name::<T>();
-        if res.external_ptr_tag().as_str() != Some(type_name) {
+        if res.tag().as_str() != Some(type_name) {
             return Err(Error::ExpectedExternalPtrType(res.robj, type_name.into()));
         }
 
@@ -108,8 +134,14 @@ impl<T: Any> TryFrom<Robj> for ExternalPtr<T> {
     }
 }
 
-impl<T: Any> From<ExternalPtr<T>> for Robj {
+impl<T: Any + Debug> From<ExternalPtr<T>> for Robj {
     fn from(val: ExternalPtr<T>) -> Self {
         val.robj
+    }
+}
+
+impl<T : Debug + 'static> std::fmt::Debug for ExternalPtr<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        (&*self as &T).fmt(f)
     }
 }

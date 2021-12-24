@@ -15,7 +15,7 @@ use std::iter::FromIterator;
 ///     assert_eq!(sum, 60);
 /// }
 /// ```  
-#[derive(Debug, PartialEq, Clone)]
+#[derive(PartialEq, Clone)]
 pub struct Integers {
     pub(crate) robj: Robj,
 }
@@ -143,6 +143,16 @@ impl DerefMut for Integers {
         unsafe {
             let ptr = DATAPTR(self.get()) as *mut Rint;
             std::slice::from_raw_parts_mut(ptr, self.len())
+        }
+    }
+}
+
+impl std::fmt::Debug for Integers {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.len() == 1 {
+            write!(f, "{:?}", self.elt(0))
+        } else {
+            f.debug_list().entries(self.iter()).finish()
         }
     }
 }

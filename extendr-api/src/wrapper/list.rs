@@ -3,7 +3,7 @@ use std::iter::FromIterator;
 
 use super::*;
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(PartialEq, Clone)]
 pub struct List {
     pub(crate) robj: Robj,
 }
@@ -139,7 +139,7 @@ impl List {
         // TODO: Make a proper NamedListIter.
         self.names()
             .map(|n| n.zip(self.values()))
-            .unwrap_or_else(|| StrIter::new().zip(self.values()))
+            .unwrap_or_else(|| StrIter::new(self.len()).zip(self.values()))
     }
 
     /// Get the list a slice of `Robj`s.
@@ -402,5 +402,29 @@ impl Deref for List {
     /// Lists behave like slices of Robj.
     fn deref(&self) -> &Self::Target {
         self.as_slice()
+    }
+}
+
+impl std::fmt::Debug for List {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        Ok(if self.names().is_none() {
+            write!(
+                f,
+                "list!({})",
+                self.values()
+                    .map(|v| format!("{:?}", v))
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            )?
+        } else {
+            write!(
+                f,
+                "list!({})",
+                self.iter()
+                    .map(|(k, v)| if k != "" { format!("{}={:?}", k, v) } else { format!("{:?}", v) })
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            )?
+        })
     }
 }

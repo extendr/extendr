@@ -11,7 +11,7 @@ use super::*;
 /// }
 /// ```
 ///
-#[derive(Debug, PartialEq, Clone)]
+#[derive(PartialEq, Clone)]
 pub struct Primitive {
     pub(crate) robj: Robj,
 }
@@ -23,8 +23,8 @@ impl Primitive {
     /// test! {
     ///     let builtin = r!(Primitive::from_string("+")?);
     ///     let special = r!(Primitive::from_string("if")?);
-    ///     assert_eq!(builtin.rtype(), RType::Builtin);
-    ///     assert_eq!(special.rtype(), RType::Special);
+    ///     assert_eq!(builtin.rtype(), Rtype::Builtin);
+    ///     assert_eq!(special.rtype(), Rtype::Special);
     /// }
     /// ```
     pub fn from_string(val: &str) -> Result<Self> {
@@ -41,4 +41,11 @@ impl Primitive {
     }
 
     // There is currently no way to convert a primitive to a string.
+}
+
+impl std::fmt::Debug for Primitive {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s : String = self.robj.deparse().unwrap();
+        write!(f, "{:?}", s)
+    }
 }

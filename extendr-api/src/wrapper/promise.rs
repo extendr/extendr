@@ -1,7 +1,7 @@
 use super::*;
 
 /// Wrapper for creating promises (PROMSXP).
-#[derive(Debug, PartialEq, Clone)]
+#[derive(PartialEq, Clone)]
 pub struct Promise {
     pub(crate) robj: Robj,
 }
@@ -76,5 +76,14 @@ impl Promise {
         } else {
             self.robj.eval()
         }
+    }
+}
+
+impl std::fmt::Debug for Promise {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Promise")
+        .field("code", &self.code())
+        .field("environment", &self.environment())
+        .finish()
     }
 }

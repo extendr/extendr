@@ -130,3 +130,11 @@ impl TryFrom<Robj> for Rfloat {
         Err(Error::ExpectedNumeric(robj))
     }
 }
+
+impl std::fmt::Debug for Rfloat {
+    /// Debug format.
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.is_na() { write!(f, "NA_REAL") } else { self.inner().fmt(f) }
+    }
+}
+
