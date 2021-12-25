@@ -427,7 +427,7 @@ pub enum Rany<'a> {
     Dot(&'a Robj),                // DOTSXP
     Any(&'a Robj),                // ANYSXP
     List(&'a List),               // VECSXP
-    Expressions(&'a Expressions),   // EXPRSXP
+    Expressions(&'a Expressions), // EXPRSXP
     Bytecode(&'a Robj),           // BCODESXP
     ExternalPtr(&'a Robj),        // EXTPTRSXP
     WeakRef(&'a Robj),            // WEAKREFSXP

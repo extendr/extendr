@@ -159,7 +159,6 @@ impl S4 {
 
 impl std::fmt::Debug for S4 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("S4")
-        .finish()
+        f.debug_struct("S4").finish()
     }
 }

@@ -23,11 +23,11 @@ use std::ops::{Range, RangeInclusive};
 // deprecated
 mod from_robj;
 
+mod debug;
 mod into_robj;
 mod operators;
 mod rinternals;
 mod try_from_robj;
-mod debug;
 
 #[cfg(test)]
 mod tests;

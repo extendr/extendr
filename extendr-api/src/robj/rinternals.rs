@@ -469,11 +469,15 @@ pub trait Rinternals: Types + Conversions {
     /// Generate a text representation of this object.
     fn deparse(&self) -> Result<String> {
         use crate as extendr_api;
-        let strings : Strings = call!("deparse", self.as_robj())?.try_into()?;
+        let strings: Strings = call!("deparse", self.as_robj())?.try_into()?;
         if strings.len() == 1 {
             Ok(String::from(strings.elt(0).as_str()))
         } else {
-            Ok(strings.iter().map(|s| s.as_str()).collect::<Vec<_>>().join(""))
+            Ok(strings
+                .iter()
+                .map(|s| s.as_str())
+                .collect::<Vec<_>>()
+                .join(""))
         }
     }
 }

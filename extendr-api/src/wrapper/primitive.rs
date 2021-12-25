@@ -45,7 +45,7 @@ impl Primitive {
 
 impl std::fmt::Debug for Primitive {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let s : String = self.robj.deparse().unwrap();
+        let s: String = self.robj.deparse().unwrap();
         write!(f, "{:?}", s)
     }
 }

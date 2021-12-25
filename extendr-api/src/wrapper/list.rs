@@ -407,7 +407,7 @@ impl Deref for List {
 
 impl std::fmt::Debug for List {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        Ok(if self.names().is_none() {
+        if self.names().is_none() {
             write!(
                 f,
                 "list!({})",
@@ -415,16 +415,20 @@ impl std::fmt::Debug for List {
                     .map(|v| format!("{:?}", v))
                     .collect::<Vec<_>>()
                     .join(", ")
-            )?
+            )
         } else {
             write!(
                 f,
                 "list!({})",
                 self.iter()
-                    .map(|(k, v)| if k != "" { format!("{}={:?}", k, v) } else { format!("{:?}", v) })
+                    .map(|(k, v)| if !k.is_empty() {
+                        format!("{}={:?}", k, v)
+                    } else {
+                        format!("{:?}", v)
+                    })
                     .collect::<Vec<_>>()
                     .join(", ")
-            )?
-        })
+            )
+        }
     }
 }

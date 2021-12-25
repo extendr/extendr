@@ -143,7 +143,10 @@ impl TryFrom<Robj> for Rint {
 impl std::fmt::Debug for Rint {
     /// Debug format.
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        if self.is_na() { write!(f, "NA_INTEGER") } else { self.inner().fmt(f) }
+        if self.is_na() {
+            write!(f, "NA_INTEGER")
+        } else {
+            self.inner().fmt(f)
+        }
     }
 }
-

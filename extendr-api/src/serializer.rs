@@ -1,15 +1,15 @@
 //! See https://serde.rs/impl-serializer.html
 
 use crate::error::{Error, Result};
+use crate::na::CanBeNA;
 use crate::robj::{GetSexp, Length, Rinternals, Types};
+use crate::scalar::{Rbool, Rfloat, Rint};
 use crate::{
-    Doubles, Environment, Expressions, Function, Integers, Language, Pairlist, Primitive, Promise,
-    Raw, Rstr, Symbol, S4, Logicals, Strings, Attributes,
+    Attributes, Doubles, Environment, Expressions, Function, Integers, Language, Logicals,
+    Pairlist, Primitive, Promise, Raw, Rstr, Strings, Symbol, S4,
 };
 use crate::{List, Rany, Robj};
-use crate::scalar::{Rbool, Rint, Rfloat};
 use serde::{ser, Serialize};
-use crate::na::CanBeNA;
 // use crate::list;
 
 impl ser::Error for Error {

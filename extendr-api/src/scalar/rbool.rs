@@ -96,7 +96,16 @@ impl std::ops::Not for Rbool {
 impl std::fmt::Debug for Rbool {
     /// Debug format.
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", if self.is_na() { "NA_LOGICAL" } else if self.is_true() { "TRUE" } else { "FALSE"} )
+        write!(
+            f,
+            "{}",
+            if self.is_na() {
+                "NA_LOGICAL"
+            } else if self.is_true() {
+                "TRUE"
+            } else {
+                "FALSE"
+            }
+        )
     }
 }
-

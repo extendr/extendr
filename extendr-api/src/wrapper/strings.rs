@@ -77,7 +77,7 @@ impl Strings {
                 STRING_ELT(self.get(), i as R_xlen_t)
             };
             Rstr {
-                robj: Robj::from_sexp(sexp)
+                robj: Robj::from_sexp(sexp),
             }
         }
     }

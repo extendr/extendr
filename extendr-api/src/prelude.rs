@@ -55,8 +55,9 @@ pub use super::thread_safety::{
 };
 
 pub use super::wrapper::{
-    Complexes, Doubles, EnvIter, Environment, Expressions, ExternalPtr, FromList, Function, Integers, Language,
-    List, ListIter, Logicals, Nullable, Pairlist, Primitive, Promise, Raw, Rstr, Strings, Symbol,
+    Complexes, Doubles, EnvIter, Environment, Expressions, ExternalPtr, FromList, Function, Integers,
+    Language, List, ListIter, Logicals, Nullable, Pairlist, Primitive, Promise, Raw, Rstr, Strings,
+    Symbol,
 };
 
 #[cfg(feature = "ndarray")]

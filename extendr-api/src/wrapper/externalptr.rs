@@ -16,7 +16,7 @@ use std::fmt::Debug;
 /// ```
 ///
 #[derive(PartialEq, Clone)]
-pub struct ExternalPtr<T : Debug + 'static> {
+pub struct ExternalPtr<T: Debug + 'static> {
     /// This is the contained Robj.
     pub(crate) robj: Robj,
 
@@ -24,7 +24,7 @@ pub struct ExternalPtr<T : Debug + 'static> {
     marker: std::marker::PhantomData<T>,
 }
 
-impl<T : Debug + 'static> Deref for ExternalPtr<T> {
+impl<T: Debug + 'static> Deref for ExternalPtr<T> {
     type Target = T;
 
     /// This allows us to treat the Robj as if it is the type T.
@@ -33,7 +33,7 @@ impl<T : Debug + 'static> Deref for ExternalPtr<T> {
     }
 }
 
-impl<T : Debug + 'static> DerefMut for ExternalPtr<T> {
+impl<T: Debug + 'static> DerefMut for ExternalPtr<T> {
     /// This allows us to treat the Robj as if it is the mutable type T.
     fn deref_mut(&mut self) -> &mut Self::Target {
         self.addr_mut()
@@ -140,7 +140,7 @@ impl<T: Any + Debug> From<ExternalPtr<T>> for Robj {
     }
 }
 
-impl<T : Debug + 'static> std::fmt::Debug for ExternalPtr<T> {
+impl<T: Debug + 'static> std::fmt::Debug for ExternalPtr<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         (&*self as &T).fmt(f)
     }

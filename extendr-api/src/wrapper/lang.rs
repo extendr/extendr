@@ -61,11 +61,14 @@ impl std::fmt::Debug for Language {
             f,
             "lang!({})",
             self.iter()
-                .map(|(k, v)| if k == "" { format!("{:?}", v) } else { format!("{}={:?}", k, v) })
+                .map(|(k, v)| if k.is_empty() {
+                    format!("{:?}", v)
+                } else {
+                    format!("{}={:?}", k, v)
+                })
                 .collect::<Vec<_>>()
                 .join(", ")
         )?;
         Ok(())
     }
 }
-

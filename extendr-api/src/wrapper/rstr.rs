@@ -107,6 +107,10 @@ impl CanBeNA for Rstr {
     }
 
     fn na() -> Self {
-        unsafe { Self { robj: Robj::from_sexp(R_NaString) } }
+        unsafe {
+            Self {
+                robj: Robj::from_sexp(R_NaString),
+            }
+        }
     }
 }

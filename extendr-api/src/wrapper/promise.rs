@@ -82,8 +82,8 @@ impl Promise {
 impl std::fmt::Debug for Promise {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("Promise")
-        .field("code", &self.code())
-        .field("environment", &self.environment())
-        .finish()
+            .field("code", &self.code())
+            .field("environment", &self.environment())
+            .finish()
     }
 }

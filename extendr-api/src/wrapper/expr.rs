@@ -37,10 +37,16 @@ impl Expressions {
     }
 }
 
+impl std::default::Default for Expressions {
+    fn default() -> Self {
+        Expressions::new()
+    }
+}
+
 impl std::fmt::Debug for Expressions {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("Expressions")
-        .field("values", &self.values())
-        .finish()
+            .field("values", &self.values())
+            .finish()
     }
 }
