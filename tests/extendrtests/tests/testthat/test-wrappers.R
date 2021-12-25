@@ -50,6 +50,11 @@ test_that("Rust `_arg` is correctly wrapped in R", {
   expect_equal(special_param_names(`_y` = y, `_x` = x), x - y)
 })
 
+test_that("Renamed functions work correctly", {
+  expect_equal(test.rename.rlike(), 1)
+  expect_equal(.Call(wrap__test_rename_mymod), 1)
+})
+
 test_that("Call to Rust via wrapper functions works", {
   expect_equal(hello_world(), "Hello world!")
   expect_visible(hello_world())
