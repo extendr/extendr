@@ -217,6 +217,7 @@
 //!     assert_eq!(slice.len(), 3);
 //! }
 //! ```
+//!
 
 #![doc(
     html_logo_url = "https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png"
