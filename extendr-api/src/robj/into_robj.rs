@@ -190,6 +190,7 @@ macro_rules! impl_complex_tvv {
 
 impl_complex_tvv!(C64);
 impl_complex_tvv!(Rcplx);
+impl_complex_tvv!((f64, f64));
 
 macro_rules! impl_integer_tvv {
     ($t: ty) => {

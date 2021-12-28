@@ -34,12 +34,11 @@ impl Complexes {
     /// Get a region of elements from the vector.
     pub fn get_region(&self, index: usize, dest: &mut [Rcplx]) -> usize {
         unsafe {
-            let ptr : *mut Rcomplex = dest.as_mut_ptr() as *mut Rcomplex;
+            let ptr: *mut Rcomplex = dest.as_mut_ptr() as *mut Rcomplex;
             COMPLEX_GET_REGION(self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr) as usize
         }
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -136,4 +135,3 @@ impl DerefMut for Complexes {
         }
     }
 }
-

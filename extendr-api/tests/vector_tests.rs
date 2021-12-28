@@ -130,6 +130,56 @@ fn test_doubles() {
 }
 
 #[test]
+fn test_complexes() {
+    test! {
+        let s = Complexes::new(10);
+        assert_eq!(s.len(), 10);
+        assert_eq!(s.rtype(), RType::Complex);
+
+        let s = Complexes::from_values([1.0, 2.0, 3.0]);
+        assert_eq!(s.len(), 3);
+        assert_eq!(s.rtype(), RType::Complex);
+        assert_eq!(s.elt(0), 1.0);
+        assert_eq!(s.elt(1), 2.0);
+        assert_eq!(s.elt(2), 3.0);
+        assert!(s.elt(3).is_na());
+
+        let v = s.iter().collect::<Vec<Rcplx>>();
+        assert_eq!(v, [1.0, 2.0, 3.0]);
+
+        // s.set_elt(1, 5.0.into());
+        // assert_eq!(s.elt(1), 5.0);
+
+        let s : Complexes = [1.0, 2.0, 3.0].iter().map(|i| Rcplx::from(*i)).collect();
+        let v = s.iter().collect::<Complexes>();
+        assert_eq!(v, Complexes::from_values([1.0, 2.0, 3.0]));
+
+        // Bug: from_values should be Into<Rcplx>
+        //let s = Complexes::from_values([Rint::from(1), Rint::na(), Rint::from(3)]);
+        //assert_eq!(s.elt(1).is_na(), true);
+
+        // let robj = r!([Rcplx::from(1.0), Rcplx::from(2.0), Rcplx::from(3.0)]);
+        let robj = r!([(1.0, 0.0), (2.0, 0.0), (3.0, 0.0)]);
+        let s = Complexes::try_from(robj)?;
+        assert_eq!(s.len(), 3);
+        assert_eq!(s.elt(0), 1.0);
+
+        // Test Deref and DerefMut.
+        let mut s = Complexes::from_values([1.0, 2.0, 3.0]);
+        assert_eq!(s[0], 1.0);
+        assert_eq!(s[1], 2.0);
+        assert_eq!(s[2], 3.0);
+
+        s[0] = 4.0.into();
+        s[1] = 5.0.into();
+        s[2] = 6.0.into();
+        assert_eq!(s[0], 4.0);
+        assert_eq!(s[1], 5.0);
+        assert_eq!(s[2], 6.0);
+    }
+}
+
+#[test]
 fn test_integers() {
     test! {
         let s = Integers::new(10);

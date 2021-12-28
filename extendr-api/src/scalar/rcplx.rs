@@ -1,9 +1,9 @@
 use crate::scalar::macros::*;
+use crate::scalar::Rfloat;
 use crate::*;
 use std::convert::TryFrom;
 use std::ops::{Add, Div, Mul, Neg, Sub};
 use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
-use crate::scalar::Rfloat;
 
 // #[cfg(feature="num-complex")]
 pub type C64 = num_complex::Complex<f64>;
@@ -14,7 +14,7 @@ impl CanBeNA for C64 {
     }
 
     fn na() -> C64 {
-        unsafe { C64::from(R_NaReal) }
+        unsafe { C64::new(R_NaReal, R_NaReal) }
     }
 }
 
@@ -170,7 +170,17 @@ impl TryFrom<Robj> for Rcplx {
             return Ok(Rcplx::from(v as f64));
         }
 
-        Err(Error::ExpectedNumeric(robj))
+        // Complex slices return their first element.
+        if let Some(s) = robj.as_typed_slice() {
+            return Ok(s[0]);
+        }
+
+        Err(Error::ExpectedComplex(robj))
     }
 }
 
+impl PartialEq<f64> for Rcplx {
+    fn eq(&self, other: &f64) -> bool {
+        self.re().inner() == *other && self.im() == 0.0
+    }
+}

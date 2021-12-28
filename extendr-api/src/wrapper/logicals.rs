@@ -35,7 +35,7 @@ impl Logicals {
     /// Get a region of elements from the vector.
     pub fn get_region(&self, index: usize, dest: &mut [Rbool]) -> usize {
         unsafe {
-            let ptr : *mut i32 = dest.as_mut_ptr() as *mut i32;
+            let ptr: *mut i32 = dest.as_mut_ptr() as *mut i32;
             LOGICAL_GET_REGION(self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr) as usize
         }
     }

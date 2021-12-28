@@ -6,8 +6,8 @@ use crate::*;
 use libR_sys::*;
 
 pub mod altrep;
-pub mod doubles;
 pub mod complexes;
+pub mod doubles;
 pub mod environment;
 pub mod expr;
 pub mod externalptr;
@@ -33,8 +33,8 @@ pub use altrep::{
     AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,
     AltrepImpl,
 };
-pub use doubles::Doubles;
 pub use complexes::Complexes;
+pub use doubles::Doubles;
 pub use environment::{EnvIter, Environment};
 pub use expr::Expression;
 pub use externalptr::ExternalPtr;

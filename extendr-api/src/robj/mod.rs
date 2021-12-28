@@ -337,6 +337,7 @@ impl Robj {
                     INTSXP => *(INTEGER(sexp)) == libR_sys::R_NaInt,
                     LGLSXP => *(LOGICAL(sexp)) == libR_sys::R_NaInt,
                     REALSXP => R_IsNA(*(REAL(sexp))) != 0,
+                    CPLXSXP => R_IsNA((*COMPLEX(sexp)).r) != 0,
                     _ => false,
                 }
             }

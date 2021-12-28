@@ -34,7 +34,7 @@ impl Doubles {
     /// Get a region of elements from the vector.
     pub fn get_region(&self, index: usize, dest: &mut [Rfloat]) -> usize {
         unsafe {
-            let ptr : *mut f64 = dest.as_mut_ptr() as *mut f64;
+            let ptr: *mut f64 = dest.as_mut_ptr() as *mut f64;
             REAL_GET_REGION(self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr) as usize
         }
     }
@@ -48,7 +48,6 @@ impl Doubles {
     pub fn no_na(&self) -> Rbool {
         unsafe { REAL_NO_NA(self.get()).into() }
     }
-
 }
 
 // TODO: this should be a trait.

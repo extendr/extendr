@@ -1,4 +1,4 @@
-use prelude::{Rbool, Rfloat, Rint, Rcplx};
+use prelude::{Rbool, Rcplx, Rfloat, Rint};
 
 use super::*;
 
