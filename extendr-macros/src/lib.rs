@@ -64,6 +64,7 @@ mod list;
 mod pairlist;
 mod pairs;
 mod wrappers;
+mod list_struct;
 
 use proc_macro::TokenStream;
 use quote::quote;
@@ -167,4 +168,40 @@ pub fn R(item: TokenStream) -> TokenStream {
 #[allow(non_snake_case)]
 pub fn Rraw(item: TokenStream) -> TokenStream {
     R::R(item.into(), false).into()
+}
+
+/// Derives an implementation of `From<_> for Robj` on this struct, which recursively converts
+/// the struct into a named list, where the names correspond to the field names of the Rust
+/// struct.
+///
+/// # Examples
+/// ```rust
+/// use extendr_api::prelude::*;
+/// use extendr_macros::IntoRList;
+/// #[derive(IntoRList)]
+/// struct Foo {
+///     a: usize,
+///     b: String
+/// }
+/// let robj: Robj = Foo {
+///     a: 5,
+///     b: "bar".into()
+/// }.into();
+/// ```
+/// Will roughly convert to:
+/// ```r
+/// list(
+///     a = 5,
+///     b = "bar"
+/// )
+/// ```
+/// # Details
+/// Note, this is different behaviour from what you get by applying the standard `#[extendr]` macro
+/// to an `impl` block. The `#[extendr]` behaviour returns a **pointer** to R, and generates wrapper functions for calling
+/// Rust functions on that pointer. Using `#[derive(IntoRList)]` actually converts the Rust structure
+/// into a native R list, which allows you to manipulate and access the internal fields, but it's a one-way conversion,
+/// you can't pass it back to Rust.
+#[proc_macro_derive(IntoRList)]
+pub fn r_struct(item: TokenStream) -> TokenStream {
+    list_struct::derive_r_struct(item)
 }
