@@ -252,7 +252,7 @@ pub use std::ops::DerefMut;
 pub use robj::Robj;
 
 //////////////////////////////////////////////////
-// Note these pub use statements are deprectaed
+// Note these pub use statements are deprecated
 //
 // `use extendr_api::prelude::*;`
 //
