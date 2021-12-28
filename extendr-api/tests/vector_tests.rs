@@ -191,3 +191,62 @@ fn test_rstr() {
         assert_eq!(x, "xyz");
     }
 }
+
+#[test]
+fn test_doubles_from_iterator() {
+    test! {
+        let vec : Doubles = (0..3).map(|i| (i as f64).into()).collect();
+        assert_eq!(vec, Doubles::from_values([0.0, 1.0, 2.0]));
+    }
+}
+#[test]
+fn test_doubles_iter_mut() {
+    test! {
+        let mut vec = Doubles::from_values([0.0, 1.0, 2.0, 3.0]);
+        vec.iter_mut().for_each(|v| *v = *v + 1.0);
+        assert_eq!(vec, Doubles::from_values([1.0, 2.0, 3.0, 4.0]));
+    }
+}
+
+#[test]
+fn test_doubles_iter() {
+    test! {
+        let vec = Doubles::from_values([0.0, 1.0, 2.0, 3.0]);
+        assert_eq!(vec.iter().sum::<Rfloat>(), 6.0);
+    }
+}
+
+#[test]
+fn test_doubles_from_values_short() {
+    test! {
+        // Short (<64k) vectors are allocated.
+        let vec = Doubles::from_values((0..3).map(|i| 2.0 - i as f64));
+        assert_eq!(vec.is_altrep(), false);
+        assert_eq!(r!(vec.clone()), r!([2.0, 1.0, 0.0]));
+        assert_eq!(vec.elt(1), 1.0);
+        let mut dest = [0.0.into(); 2];
+        vec.get_region(1, &mut dest);
+        assert_eq!(dest, [1.0, 0.0]);
+    }
+}
+#[test]
+fn test_doubles_from_values_long() {
+    test! {
+        // Long (>=64k) vectors are lazy ALTREP objects.
+        let vec = Doubles::from_values((0..1000000000).map(|x| x as f64));
+        assert_eq!(vec.is_altrep(), true);
+        assert_eq!(vec.elt(12345678), 12345678.0);
+        let mut dest = [0.0.into(); 2];
+        vec.get_region(12345678, &mut dest);
+        assert_eq!(dest, [12345678.0, 12345679.0]);
+    }
+}
+
+#[test]
+fn test_doubles_new() {
+    test! {
+        let vec = Doubles::new(10);
+        assert_eq!(vec.is_real(), true);
+        assert_eq!(vec.len(), 10);
+    }
+}

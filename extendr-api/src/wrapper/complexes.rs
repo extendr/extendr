@@ -9,8 +9,8 @@ use std::iter::FromIterator;
 /// use extendr_api::prelude::*;
 /// test! {
 ///     let mut vec = (0..5).map(|i| (i as f64).into()).collect::<Complexes>();
-///     vec.iter_mut().for_each(|v| *v = *v + 10.0);
-///     assert_eq!(vec.elt(0), 10.0);
+///     vec.iter_mut().for_each(|v| *v = *v + Rcplx::from(10.0));
+///     assert_eq!(vec.elt(0), Rcplx::from(10.0));
 ///     let sum = vec.iter().sum::<Rcplx>();
 ///     assert_eq!(sum, Rcplx::from(60.0));
 /// }
