@@ -51,6 +51,12 @@ impl From<f64> for Rcplx {
     }
 }
 
+impl From<(f64, f64)> for Rcplx {
+    fn from(val: (f64, f64)) -> Self {
+        Rcplx(C64::new(val.0, val.1))
+    }
+}
+
 impl From<Rfloat> for Rcplx {
     fn from(val: Rfloat) -> Self {
         Rcplx(C64::from(val.inner()))
