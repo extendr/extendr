@@ -6,7 +6,7 @@ use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 use crate::scalar::Rfloat;
 
 // #[cfg(feature="num-complex")]
-type C64 = num_complex::Complex<f64>;
+pub type C64 = num_complex::Complex<f64>;
 
 impl CanBeNA for C64 {
     fn is_na(&self) -> bool {
@@ -57,11 +57,23 @@ impl From<Rfloat> for Rcplx {
     }
 }
 
+impl From<Rcomplex> for Rcplx {
+    fn from(val: Rcomplex) -> Self {
+        Rcplx(C64::new(val.r, val.i))
+    }
+}
+
+impl From<Rcplx> for Option<C64> {
+    fn from(val: Rcplx) -> Self {
+        Some(C64::new(val.re().inner(), val.im().inner()))
+    }
+}
+
 // `NA_real_` is a `NaN` with specific bit representation.
 // Check that underlying `f64` is `NA_real_`.
 gen_trait_impl!(Rcplx, C64, |x: &Rcplx| x.inner().re.is_na(), C64::na());
 gen_from_primitive!(Rcplx, C64);
-gen_from_scalar!(Rcplx, C64);
+// gen_from_scalar!(Rcplx, C64);
 gen_sum_iter!(Rcplx, 0f64);
 
 // Generate binary ops for +, -, * and /
@@ -156,8 +168,3 @@ impl TryFrom<Robj> for Rcplx {
     }
 }
 
-impl From<C64> for Robj {
-    fn from(_val: C64) -> Self {
-        Robj::from(())       
-    }
-}

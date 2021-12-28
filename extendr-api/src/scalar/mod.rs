@@ -6,4 +6,4 @@ mod rcplx;
 pub use rbool::Rbool;
 pub use rfloat::Rfloat;
 pub use rint::Rint;
-pub use rcplx::Rcplx;
+pub use rcplx::{Rcplx, C64};

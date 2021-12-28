@@ -10,6 +10,7 @@
 //!
 
 use libR_sys::*;
+use prelude::{Rcplx, C64};
 use std::os::raw;
 
 use crate::*;
@@ -775,6 +776,8 @@ make_typed_slice!(Rfloat, REAL, REALSXP);
 make_typed_slice!(u8, RAW, RAWSXP);
 make_typed_slice!(Robj, VECTOR_PTR, VECSXP);
 make_typed_slice!(Rstr, STRING_PTR, STRSXP);
+make_typed_slice!(C64, COMPLEX, CPLXSXP);
+make_typed_slice!(Rcplx, COMPLEX, CPLXSXP);
 
 /// These are helper functions which give access to common properties of R objects.
 #[allow(non_snake_case)]

@@ -30,6 +30,27 @@ crate::wrapper::macros::gen_vector_wrapper_impl!(
     altrep_constructor: make_altreal_from_iterator,
 );
 
+impl Doubles {
+    /// Get a region of elements from the vector.
+    pub fn get_region(&self, index: usize, dest: &mut [Rfloat]) -> usize {
+        unsafe {
+            let ptr : *mut f64 = dest.as_mut_ptr() as *mut f64;
+            REAL_GET_REGION(self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr) as usize
+        }
+    }
+
+    /// Return `TRUE` if the vector is sorted, `FALSE` if not, or `NA_BOOL` if unknown.
+    pub fn is_sorted(&self) -> Rbool {
+        unsafe { REAL_IS_SORTED(self.get()).into() }
+    }
+
+    /// Return `TRUE` if the vector has no `NA`s, `FALSE` if any, or `NA_BOOL` if unknown.
+    pub fn no_na(&self) -> Rbool {
+        unsafe { REAL_NO_NA(self.get()).into() }
+    }
+
+}
+
 #[cfg(test)]
 mod tests {
     use crate::prelude::*;

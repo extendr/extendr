@@ -278,8 +278,6 @@ use scalar::Rbool;
 
 //////////////////////////////////////////////////
 
-pub struct Cplx(pub f64, pub f64);
-
 /// TRUE value eg. `r!(TRUE)`
 pub const TRUE: Rbool = Rbool::true_value();
 

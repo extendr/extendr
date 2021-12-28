@@ -1,4 +1,4 @@
-use prelude::{Rbool, Rfloat, Rint};
+use prelude::{Rbool, Rfloat, Rint, Rcplx};
 
 use super::*;
 
@@ -419,10 +419,10 @@ pub trait AltRawImpl: AltrepImpl {
 
 pub trait AltComplexImpl: AltrepImpl {
     /// Get a single element from this vector.
-    fn elt(&self, _index: usize) -> Cplx;
+    fn elt(&self, _index: usize) -> Rcplx;
 
     /// Get a multiple elements from this vector.
-    fn get_region(&self, index: usize, data: &mut [Cplx]) -> usize {
+    fn get_region(&self, index: usize, data: &mut [Rcplx]) -> usize {
         let len = self.length();
         if index > len {
             0
@@ -959,7 +959,7 @@ impl Altrep {
                 n: R_xlen_t,
                 buf: *mut Rcomplex,
             ) -> R_xlen_t {
-                let slice = std::slice::from_raw_parts_mut(buf as *mut Cplx, n as usize);
+                let slice = std::slice::from_raw_parts_mut(buf as *mut Rcplx, n as usize);
                 Altrep::get_state::<StateType>(x).get_region(i as usize, slice) as R_xlen_t
             }
 
@@ -1043,6 +1043,13 @@ impl Altrep {
         AltRealImpl,
         Rfloat,
         f64
+    );
+    make_from_iterator!(
+        make_altcomplex_from_iterator,
+        make_altcomplex_class,
+        AltComplexImpl,
+        Rcplx,
+        C64
     );
 }
 
