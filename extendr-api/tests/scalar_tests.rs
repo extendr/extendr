@@ -233,6 +233,76 @@ fn test_rfloat() {
 }
 
 #[test]
+fn test_rcplx() {
+    test! {
+        let a = Rcplx::from(20.);
+        let b = Rcplx::from(10.);
+        assert_eq!(a + b, Rcplx::from(30.));
+        assert_eq!(a - b, Rcplx::from(10.));
+        assert_eq!(a * b, Rcplx::from(200.));
+        assert_eq!(a / b, Rcplx::from(2.));
+        assert_eq!(-a, Rcplx::from(-20.));
+
+        assert_eq!(&a + b, Rcplx::from(30.));
+        assert_eq!(&a - b, Rcplx::from(10.));
+        assert_eq!(&a * b, Rcplx::from(200.));
+        assert_eq!(&a / b, Rcplx::from(2.));
+        assert_eq!(-&a, Rcplx::from(-20.));
+
+        // NA lhs
+        let a = Rcplx::na();
+        let b = Rcplx::from(10.);
+        assert!((a + b).is_na());
+        assert!((a - b).is_na());
+        assert!((a * b).is_na());
+        assert!((a / b).is_na());
+        assert!((-a).is_na());
+
+        // NA rhs
+        let a = Rcplx::from(10.);
+        let b = Rcplx::na();
+        assert!((a + b).is_na());
+        assert!((a - b).is_na());
+        assert!((a * b).is_na());
+        assert!((a / b).is_na());
+
+        // Inf is a single value, so can be tested for equality
+        let a = Rcplx::from(f64::INFINITY);
+        let b = Rcplx::from(42.);
+        assert_eq!(a + b, a);
+        assert_eq!(a - b, a);
+        assert_eq!(b - a, Rcplx::from(f64::NEG_INFINITY));
+        assert_eq!(a * b, a);
+        assert_eq!(a / b, a);
+        assert_eq!(-a, Rcplx::from(f64::NEG_INFINITY));
+
+        let a = Rcplx::from(f64::NEG_INFINITY);
+        assert_eq!(a + b, a);
+        assert_eq!(a - b, a);
+        assert_eq!(b - a, Rcplx::from(f64::INFINITY));
+        assert_eq!(a * b, a);
+        assert_eq!(a / b, a);
+        assert_eq!(-a, Rcplx::from(f64::INFINITY));
+
+        // Operations with NaN produce NaN
+        let a = Rcplx::from(f64::NAN);
+        assert!((a + b).is_nan());
+        assert!((a - b).is_nan());
+        assert!((a * b).is_nan());
+        assert!((a / b).is_nan());
+        assert!((-a).is_nan());
+
+        // Infinity
+        assert!(Rcplx::from(f64::INFINITY).is_infinite());
+        assert!(Rcplx::from(f64::NEG_INFINITY).is_infinite());
+        assert!(!Rcplx::from(0.).is_infinite());
+
+        // Some more, testing mixed binary operators
+        assert!((Rcplx::from(f64::INFINITY) + Rcplx::from(1.)).is_infinite());
+    }
+}
+
+#[test]
 fn test_rfloat_opassign() {
     test! {
         // LHS Rfloat, RHS Rfloat
