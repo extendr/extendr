@@ -61,10 +61,10 @@ mod extendr_function;
 mod extendr_impl;
 mod extendr_module;
 mod list;
+mod list_struct;
 mod pairlist;
 mod pairs;
 mod wrappers;
-mod list_struct;
 
 use proc_macro::TokenStream;
 use quote::quote;

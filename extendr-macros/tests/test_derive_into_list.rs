@@ -1,8 +1,8 @@
-use extendr_macros::IntoRList;
 use extendr_api::prelude::*;
+use extendr_macros::IntoRList;
 
 #[test]
-fn test_derive_list(){
+fn test_derive_list() {
     test! {
         #[derive(IntoRList)]
         struct Foo {
