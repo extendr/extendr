@@ -1049,7 +1049,7 @@ impl Altrep {
         make_altcomplex_class,
         AltComplexImpl,
         Rcplx,
-        C64
+        c64
     );
 }
 

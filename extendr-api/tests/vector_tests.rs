@@ -300,3 +300,67 @@ fn test_doubles_new() {
         assert_eq!(vec.len(), 10);
     }
 }
+
+#[cfg(feature = "num-complex")]
+mod num_complex {
+    use extendr_api::prelude::*;
+
+    #[test]
+    fn from_iterator() {
+        test! {
+            let vec : Complexes = (0..3).map(|i| (i as f64).into()).collect();
+            assert_eq!(vec, Complexes::from_values([0.0, 1.0, 2.0]));
+        }
+    }
+    #[test]
+    fn iter_mut() {
+        test! {
+            let mut vec = Complexes::from_values([0.0, 1.0, 2.0, 3.0]);
+            vec.iter_mut().for_each(|v| *v = *v + Rcplx::from(1.0));
+            assert_eq!(vec, Complexes::from_values([1.0, 2.0, 3.0, 4.0]));
+        }
+    }
+
+    #[test]
+    fn iter() {
+        test! {
+            let vec = Complexes::from_values([0.0, 1.0, 2.0, 3.0]);
+            assert_eq!(vec.iter().sum::<Rcplx>(), Rcplx::from(6.0));
+        }
+    }
+
+    #[test]
+    fn from_values_short() {
+        test! {
+            // Short (<64k) vectors are allocated.
+            let vec = Complexes::from_values((0..3).map(|i| 2.0 - i as f64));
+            assert_eq!(vec.is_altrep(), false);
+            assert_eq!(r!(vec.clone()), r!([Rcplx::from(2.0), Rcplx::from(1.0), Rcplx::from(0.0)]));
+            assert_eq!(vec.elt(1), Rcplx::from(1.0));
+            let mut dest = [0.0.into(); 2];
+            vec.get_region(1, &mut dest);
+            assert_eq!(dest, [Rcplx::from(1.0), Rcplx::from(0.0)]);
+        }
+    }
+    #[test]
+    fn from_values_long() {
+        test! {
+            // Long (>=64k) vectors are lazy ALTREP objects.
+            let vec = Complexes::from_values((0..1000000000).map(|x| x as f64));
+            assert_eq!(vec.is_altrep(), true);
+            assert_eq!(vec.elt(12345678), Rcplx::from(12345678.0));
+            let mut dest = [0.0.into(); 2];
+            vec.get_region(12345678, &mut dest);
+            assert_eq!(dest, [Rcplx::from(12345678.0), Rcplx::from(12345679.0)]);
+        }
+    }
+
+    #[test]
+    fn new() {
+        test! {
+            let vec = Complexes::new(10);
+            assert_eq!(vec.is_complex(), true);
+            assert_eq!(vec.len(), 10);
+        }
+    }
+}

@@ -192,7 +192,7 @@ fn test_altcomplex() {
 
         impl AltComplexImpl for MyCompactComplexRange {
             fn elt(&self, index: usize) -> Rcplx {
-                Rcplx::from(C64::new(self.start + self.step * index as f64, self.start + self.step * index as f64))
+                Rcplx::from(c64::new(self.start + self.step * index as f64, self.start + self.step * index as f64))
             }
         }
 

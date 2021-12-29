@@ -233,6 +233,7 @@ fn test_rfloat() {
 }
 
 #[test]
+#[cfg(feature = "num-complex")]
 fn test_rcplx() {
     test! {
         let a = Rcplx::from((20., 300.));
