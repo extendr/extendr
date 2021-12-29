@@ -24,7 +24,7 @@ pub fn derive_r_struct(item: TokenStream) -> TokenStream {
             let field_name = field.ident.as_ref().unwrap();
             let field_str = field_name.to_string();
             quote!(
-                (#field_str, value.#field_name.into())
+                (#field_str, (value.#field_name).into())
             )
         })
         .collect();
