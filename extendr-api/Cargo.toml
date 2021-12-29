@@ -25,8 +25,7 @@ serde = { version = "1.0", features = ["derive"], optional = true }
 num-complex = { version = "0.4", optional = true }
 
 [features]
-# change this to [] in master.
-# default = ["num-complex"]
+default = []
 
 # All features to test
 tests-all = ["ndarray", "libR-sys/use-bindgen", "serde", "num-complex"]
