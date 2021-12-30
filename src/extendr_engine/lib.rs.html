@@ -123,7 +123,7 @@
             <span class="comment">// In case you are curious.</span>
             <span class="comment">// Maybe 8MB is a bit small.</span>
             <span class="comment">// eprintln!(&quot;R_CStackLimit={:016x}&quot;, R_CStackLimit);</span>
-            <span class="ident">R_CStackLimit</span> <span class="op">=</span> <span class="ident">usize::max_value</span>();
+            <span class="ident">R_CStackLimit</span> <span class="op">=</span> <span class="ident">usize::MAX</span>;
 
             <span class="ident">setup_Rmainloop</span>();
         }
