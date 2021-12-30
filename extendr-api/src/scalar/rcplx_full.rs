@@ -57,6 +57,12 @@ impl From<(f64, f64)> for Rcplx {
     }
 }
 
+impl From<(Rfloat, Rfloat)> for Rcplx {
+    fn from(val: (Rfloat, Rfloat)) -> Self {
+        Rcplx(c64::new(val.0.inner(), val.1.inner()))
+    }
+}
+
 impl From<Rfloat> for Rcplx {
     fn from(val: Rfloat) -> Self {
         Rcplx(c64::from(val.inner()))
@@ -71,7 +77,11 @@ impl From<Rcomplex> for Rcplx {
 
 impl From<Rcplx> for Option<c64> {
     fn from(val: Rcplx) -> Self {
-        Some(c64::new(val.re().inner(), val.im().inner()))
+        if val.is_na() {
+            None
+        } else {
+            Some(c64::new(val.re().inner(), val.im().inner()))
+        }
     }
 }
 
