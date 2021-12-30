@@ -175,7 +175,7 @@ pub fn Rraw(item: TokenStream) -> TokenStream {
 /// struct.
 ///
 /// # Examples
-/// ```rust
+/// ```ignore
 /// use extendr_api::prelude::*;
 /// use extendr_macros::IntoRList;
 /// #[derive(IntoRList)]
