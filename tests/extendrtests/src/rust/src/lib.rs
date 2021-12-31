@@ -181,6 +181,15 @@ fn special_param_names(_x: i32, _y: i32) -> i32 {
 #[extendr]
 #[allow(non_snake_case)]
 fn __00__special_function_name() {}
+ 
+#[extendr(
+    use_try_from = true,
+    r_name = "test.rename.rlike",
+    mod_name = "test_rename_mymod"
+)]
+fn test_rename() -> i32 {
+  1
+}
 
 // Class for testing
 #[derive(Default, Debug)]
@@ -255,6 +264,7 @@ impl MyClassUnexported {
     }
 }
 
+
 // Macro to generate exports
 extendr_module! {
     mod extendrtests;
@@ -290,6 +300,9 @@ extendr_module! {
 
     fn special_param_names;
     fn __00__special_function_name;
+
+    // Note that this uses an alternative name.    
+    fn test_rename_mymod;
 
     impl MyClass;
     impl __MyClass;

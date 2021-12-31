@@ -344,13 +344,13 @@ pub unsafe fn register_call_methods(info: *mut libR_sys::DllInfo, metadata: Meta
     let mut rmethods = Vec::new();
     let mut cstrings = Vec::new();
     for func in metadata.functions {
-        let wrapped_name = format!("wrap__{}", func.name);
+        let wrapped_name = format!("wrap__{}", func.mod_name);
         make_method_def(&mut cstrings, &mut rmethods, &func, wrapped_name.as_str());
     }
 
     for imp in metadata.impls {
         for func in imp.methods {
-            let wrapped_name = format!("wrap__{}__{}", imp.name, func.name);
+            let wrapped_name = format!("wrap__{}__{}", imp.name, func.mod_name);
             make_method_def(&mut cstrings, &mut rmethods, &func, wrapped_name.as_str());
         }
     }
@@ -849,9 +849,11 @@ mod tests {
             // Rust interface.
             let metadata = get_my_module_metadata();
             assert_eq!(metadata.functions[0].doc, " comment #1\n comment #2\n\n        comment #3\n        comment #4\n    *\n aux_func doc comment.");
-            assert_eq!(metadata.functions[0].name, "aux_func");
+            assert_eq!(metadata.functions[0].rust_name, "aux_func");
+            assert_eq!(metadata.functions[0].mod_name, "aux_func");
+            assert_eq!(metadata.functions[0].r_name, "aux_func");
             assert_eq!(metadata.functions[0].args[0].name, "_person");
-            assert_eq!(metadata.functions[1].name, "get_my_module_metadata");
+            assert_eq!(metadata.functions[1].rust_name, "get_my_module_metadata");
             assert_eq!(metadata.impls[0].name, "Person");
             assert_eq!(metadata.impls[0].methods.len(), 3);
 
