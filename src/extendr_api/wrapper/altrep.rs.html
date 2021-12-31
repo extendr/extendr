@@ -1051,7 +1051,14 @@
 <span id="1051">1051</span>
 <span id="1052">1052</span>
 <span id="1053">1053</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">prelude</span>::{<span class="ident">Rbool</span>, <span class="ident">Rfloat</span>, <span class="ident">Rint</span>};
+<span id="1054">1054</span>
+<span id="1055">1055</span>
+<span id="1056">1056</span>
+<span id="1057">1057</span>
+<span id="1058">1058</span>
+<span id="1059">1059</span>
+<span id="1060">1060</span>
+</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">prelude</span>::{<span class="ident">Rbool</span>, <span class="ident">Rcplx</span>, <span class="ident">Rfloat</span>, <span class="ident">Rint</span>};
 
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
@@ -1472,10 +1479,10 @@
 
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">AltComplexImpl</span>: <span class="ident">AltrepImpl</span> {
     <span class="doccomment">/// Get a single element from this vector.</span>
-    <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_index</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Cplx</span>;
+    <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_index</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Rcplx</span>;
 
     <span class="doccomment">/// Get a multiple elements from this vector.</span>
-    <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">Cplx</span>]) -&gt; <span class="ident">usize</span> {
+    <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">Rcplx</span>]) -&gt; <span class="ident">usize</span> {
         <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">length</span>();
         <span class="kw">if</span> <span class="ident">index</span> <span class="op">&gt;</span> <span class="ident">len</span> {
             <span class="number">0</span>
@@ -2012,7 +2019,7 @@
                 <span class="ident">n</span>: <span class="ident">R_xlen_t</span>,
                 <span class="ident">buf</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">Rcomplex</span>,
             ) -&gt; <span class="ident">R_xlen_t</span> {
-                <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">std::slice::from_raw_parts_mut</span>(<span class="ident">buf</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">Cplx</span>, <span class="ident">n</span> <span class="kw">as</span> <span class="ident">usize</span>);
+                <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">std::slice::from_raw_parts_mut</span>(<span class="ident">buf</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">Rcplx</span>, <span class="ident">n</span> <span class="kw">as</span> <span class="ident">usize</span>);
                 <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">get_region</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>, <span class="ident">slice</span>) <span class="kw">as</span> <span class="ident">R_xlen_t</span>
             }
 
@@ -2096,6 +2103,13 @@
         <span class="ident">AltRealImpl</span>,
         <span class="ident">Rfloat</span>,
         <span class="ident">f64</span>
+    );
+    <span class="macro">make_from_iterator!</span>(
+        <span class="ident">make_altcomplex_from_iterator</span>,
+        <span class="ident">make_altcomplex_class</span>,
+        <span class="ident">AltComplexImpl</span>,
+        <span class="ident">Rcplx</span>,
+        <span class="ident">c64</span>
     );
 }
 

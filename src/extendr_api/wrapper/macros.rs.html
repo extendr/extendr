@@ -130,24 +130,6 @@
 <span id="130">130</span>
 <span id="131">131</span>
 <span id="132">132</span>
-<span id="133">133</span>
-<span id="134">134</span>
-<span id="135">135</span>
-<span id="136">136</span>
-<span id="137">137</span>
-<span id="138">138</span>
-<span id="139">139</span>
-<span id="140">140</span>
-<span id="141">141</span>
-<span id="142">142</span>
-<span id="143">143</span>
-<span id="144">144</span>
-<span id="145">145</span>
-<span id="146">146</span>
-<span id="147">147</span>
-<span id="148">148</span>
-<span id="149">149</span>
-<span id="150">150</span>
 </pre><pre class="rust"><code><span class="doccomment">/// Generates `impl` block and required traits for a vector type.</span>
 <span class="macro">macro_rules!</span> <span class="ident">gen_vector_wrapper_impl</span> {
     (
@@ -239,24 +221,6 @@
                         <span class="kw">unsafe</span> { [<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">r_prefix</span> <span class="ident">_ELT</span><span class="op">&gt;</span>](<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">index</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>).<span class="ident">into</span>() }
                     }
                 }
-            }
-
-            <span class="doccomment">/// Get a region of elements from the vector.</span>
-            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">dest</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar_type</span>]) -&gt; <span class="ident">usize</span> {
-                <span class="kw">unsafe</span> {
-                    <span class="kw">let</span> <span class="ident">ptr</span> : <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">primitive_type</span> <span class="op">=</span> <span class="ident">dest</span>.<span class="ident">as_mut_ptr</span>() <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">primitive_type</span>;
-                    <span class="macro">paste::paste!</span>{ [<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">r_prefix</span> <span class="ident">_GET_REGION</span><span class="op">&gt;</span>](<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">index</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">dest</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">ptr</span>) <span class="kw">as</span> <span class="ident">usize</span> }
-                }
-            }
-
-            <span class="doccomment">/// Return `TRUE` if the vector is sorted, `FALSE` if not, or `NA_BOOL` if unknown.</span>
-            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_sorted</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Rbool</span> {
-                <span class="kw">unsafe</span> { <span class="macro">paste::paste!</span>{ [<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">r_prefix</span> <span class="ident">_IS_SORTED</span><span class="op">&gt;</span>](<span class="self">self</span>.<span class="ident">get</span>()).<span class="ident">into</span>() } }
-            }
-
-            <span class="doccomment">/// Return `TRUE` if the vector has no `NA`s, `FALSE` if any, or `NA_BOOL` if unknown.</span>
-            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">no_na</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Rbool</span> {
-                <span class="kw">unsafe</span> { <span class="macro">paste::paste!</span>{ [<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">r_prefix</span> <span class="ident">_NO_NA</span><span class="op">&gt;</span>](<span class="self">self</span>.<span class="ident">get</span>()).<span class="ident">into</span>() } }
             }
 
             <span class="macro">paste::paste!</span>{

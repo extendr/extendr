@@ -375,6 +375,14 @@
 <span id="375">375</span>
 <span id="376">376</span>
 <span id="377">377</span>
+<span id="378">378</span>
+<span id="379">379</span>
+<span id="380">380</span>
+<span id="381">381</span>
+<span id="382">382</span>
+<span id="383">383</span>
+<span id="384">384</span>
+<span id="385">385</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Wrappers are lightweight proxies for references to R datatypes.</span>
 <span class="doccomment">//! They do not contain an Robj (see array.rs for an example of this).</span>
 
@@ -383,6 +391,7 @@
 <span class="kw">use</span> <span class="ident">libR_sys</span>::<span class="kw-2">*</span>;
 
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">altrep</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">complexes</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">doubles</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">environment</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">expr</span>;
@@ -409,6 +418,7 @@
     <span class="ident">AltComplexImpl</span>, <span class="ident">AltIntegerImpl</span>, <span class="ident">AltLogicalImpl</span>, <span class="ident">AltRawImpl</span>, <span class="ident">AltRealImpl</span>, <span class="ident">AltStringImpl</span>, <span class="ident">Altrep</span>,
     <span class="ident">AltrepImpl</span>,
 };
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">complexes::Complexes</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">doubles::Doubles</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">environment</span>::{<span class="ident">EnvIter</span>, <span class="ident">Environment</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">expr::Expression</span>;
@@ -574,6 +584,12 @@
 <span class="macro">make_conversions!</span>(<span class="ident">Integers</span>, <span class="ident">ExpectedInteger</span>, <span class="ident">is_integer</span>, <span class="string">&quot;Not an integer type&quot;</span>);
 <span class="macro">make_conversions!</span>(<span class="ident">Logicals</span>, <span class="ident">ExpectedLogical</span>, <span class="ident">is_logical</span>, <span class="string">&quot;Not a logical type&quot;</span>);
 <span class="macro">make_conversions!</span>(<span class="ident">Doubles</span>, <span class="ident">ExpectedReal</span>, <span class="ident">is_real</span>, <span class="string">&quot;Not a floating point type&quot;</span>);
+<span class="macro">make_conversions!</span>(
+    <span class="ident">Complexes</span>,
+    <span class="ident">ExpectedComplex</span>,
+    <span class="ident">is_complex</span>,
+    <span class="string">&quot;Not a complex number or vector&quot;</span>
+);
 <span class="comment">// make_conversions!(Function, ExpectedFunction, is_function, &quot;Not a function&quot;);</span>
 
 <span class="macro">make_conversions!</span>(<span class="ident">Strings</span>, <span class="ident">ExpectedString</span>, <span class="ident">is_string</span>, <span class="string">&quot;Not a string vector&quot;</span>);

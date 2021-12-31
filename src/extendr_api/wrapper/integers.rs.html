@@ -126,6 +126,26 @@
 <span id="126">126</span>
 <span id="127">127</span>
 <span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">super</span>::scalar::Rint</span>;
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">std::iter::FromIterator</span>;
@@ -157,6 +177,26 @@
     <span class="ident">doc_name</span>: <span class="ident">integer</span>,     <span class="comment">// Singular type name used in docs</span>
     <span class="ident">altrep_constructor</span>: <span class="ident">make_altinteger_from_iterator</span>,
 );
+
+<span class="kw">impl</span> <span class="ident">Integers</span> {
+    <span class="doccomment">/// Get a region of elements from the vector.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">dest</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">Rint</span>]) -&gt; <span class="ident">usize</span> {
+        <span class="kw">unsafe</span> {
+            <span class="kw">let</span> <span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">i32</span> <span class="op">=</span> <span class="ident">dest</span>.<span class="ident">as_mut_ptr</span>() <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">i32</span>;
+            <span class="ident">INTEGER_GET_REGION</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">index</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">dest</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">ptr</span>) <span class="kw">as</span> <span class="ident">usize</span>
+        }
+    }
+
+    <span class="doccomment">/// Return `TRUE` if the vector is sorted, `FALSE` if not, or `NA_BOOL` if unknown.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_sorted</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Rbool</span> {
+        <span class="kw">unsafe</span> { <span class="ident">INTEGER_IS_SORTED</span>(<span class="self">self</span>.<span class="ident">get</span>()).<span class="ident">into</span>() }
+    }
+
+    <span class="doccomment">/// Return `TRUE` if the vector has no `NA`s, `FALSE` if any, or `NA_BOOL` if unknown.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">no_na</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Rbool</span> {
+        <span class="kw">unsafe</span> { <span class="ident">INTEGER_NO_NA</span>(<span class="self">self</span>.<span class="ident">get</span>()).<span class="ident">into</span>() }
+    }
+}
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {

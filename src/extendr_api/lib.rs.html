@@ -904,8 +904,6 @@
 <span id="904">904</span>
 <span id="905">905</span>
 <span id="906">906</span>
-<span id="907">907</span>
-<span id="908">908</span>
 </pre><pre class="rust"><code><span class="doccomment">//!</span>
 <span class="doccomment">//! A safe and user friendly R extension interface.</span>
 <span class="doccomment">//!</span>
@@ -1186,8 +1184,6 @@
 
 <span class="comment">//////////////////////////////////////////////////</span>
 
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Cplx</span>(<span class="kw">pub</span> <span class="ident">f64</span>, <span class="kw">pub</span> <span class="ident">f64</span>);
-
 <span class="doccomment">/// TRUE value eg. `r!(TRUE)`</span>
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">TRUE</span>: <span class="ident">Rbool</span> <span class="op">=</span> <span class="ident">Rbool::true_value</span>();
 
@@ -1332,7 +1328,7 @@
     <span class="ident">Logical</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Logicals</span>),        <span class="comment">// LGLSXP</span>
     <span class="ident">Integer</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Integers</span>),        <span class="comment">// INTSXP</span>
     <span class="ident">Real</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Doubles</span>),            <span class="comment">// REALSXP</span>
-    <span class="ident">Complex</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),            <span class="comment">// CPLXSXP</span>
+    <span class="ident">Complex</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Complexes</span>),       <span class="comment">// CPLXSXP</span>
     <span class="ident">String</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),             <span class="comment">// STRSXP</span>
     <span class="ident">Dot</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),                <span class="comment">// DOTSXP</span>
     <span class="ident">Any</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),                <span class="comment">// ANYSXP</span>

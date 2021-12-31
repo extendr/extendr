@@ -1194,6 +1194,11 @@
 <span id="1194">1194</span>
 <span id="1195">1195</span>
 <span id="1196">1196</span>
+<span id="1197">1197</span>
+<span id="1198">1198</span>
+<span id="1199">1199</span>
+<span id="1200">1200</span>
+<span id="1201">1201</span>
 </pre><pre class="rust"><code><span class="doccomment">//! R object handling.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! See. &lt;https://cran.r-project.org/doc/manuals/R-exts.html&gt;</span>
@@ -1206,6 +1211,7 @@
 <span class="doccomment">//!</span>
 
 <span class="kw">use</span> <span class="ident">libR_sys</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">prelude</span>::{<span class="ident">c64</span>, <span class="ident">Rcplx</span>};
 <span class="kw">use</span> <span class="ident">std::os::raw</span>;
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
@@ -1532,6 +1538,7 @@
                     <span class="ident">INTSXP</span> =&gt; <span class="kw-2">*</span>(<span class="ident">INTEGER</span>(<span class="ident">sexp</span>)) <span class="op">==</span> <span class="ident">libR_sys::R_NaInt</span>,
                     <span class="ident">LGLSXP</span> =&gt; <span class="kw-2">*</span>(<span class="ident">LOGICAL</span>(<span class="ident">sexp</span>)) <span class="op">==</span> <span class="ident">libR_sys::R_NaInt</span>,
                     <span class="ident">REALSXP</span> =&gt; <span class="ident">R_IsNA</span>(<span class="kw-2">*</span>(<span class="ident">REAL</span>(<span class="ident">sexp</span>))) <span class="op">!</span><span class="op">=</span> <span class="number">0</span>,
+                    <span class="ident">CPLXSXP</span> =&gt; <span class="ident">R_IsNA</span>((<span class="kw-2">*</span><span class="ident">COMPLEX</span>(<span class="ident">sexp</span>)).<span class="ident">r</span>) <span class="op">!</span><span class="op">=</span> <span class="number">0</span>,
                     <span class="kw">_</span> =&gt; <span class="bool-val">false</span>,
                 }
             }
@@ -1971,6 +1978,9 @@
 <span class="macro">make_typed_slice!</span>(<span class="ident">u8</span>, <span class="ident">RAW</span>, <span class="ident">RAWSXP</span>);
 <span class="macro">make_typed_slice!</span>(<span class="ident">Robj</span>, <span class="ident">VECTOR_PTR</span>, <span class="ident">VECSXP</span>);
 <span class="macro">make_typed_slice!</span>(<span class="ident">Rstr</span>, <span class="ident">STRING_PTR</span>, <span class="ident">STRSXP</span>);
+<span class="macro">make_typed_slice!</span>(<span class="ident">c64</span>, <span class="ident">COMPLEX</span>, <span class="ident">CPLXSXP</span>);
+<span class="macro">make_typed_slice!</span>(<span class="ident">Rcplx</span>, <span class="ident">COMPLEX</span>, <span class="ident">CPLXSXP</span>);
+<span class="macro">make_typed_slice!</span>(<span class="ident">Rcomplex</span>, <span class="ident">COMPLEX</span>, <span class="ident">CPLXSXP</span>);
 
 <span class="doccomment">/// These are helper functions which give access to common properties of R objects.</span>
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
