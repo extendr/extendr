@@ -6,6 +6,7 @@ use crate::*;
 use libR_sys::*;
 
 pub mod altrep;
+pub mod complexes;
 pub mod doubles;
 pub mod environment;
 pub mod expr;
@@ -32,6 +33,7 @@ pub use altrep::{
     AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,
     AltrepImpl,
 };
+pub use complexes::Complexes;
 pub use doubles::Doubles;
 pub use environment::{EnvIter, Environment};
 pub use expr::Expression;
@@ -197,6 +199,12 @@ make_conversions!(S4, ExpectedS4, is_s4, "Not a S4 type");
 make_conversions!(Integers, ExpectedInteger, is_integer, "Not an integer type");
 make_conversions!(Logicals, ExpectedLogical, is_logical, "Not a logical type");
 make_conversions!(Doubles, ExpectedReal, is_real, "Not a floating point type");
+make_conversions!(
+    Complexes,
+    ExpectedComplex,
+    is_complex,
+    "Not a complex number or vector"
+);
 // make_conversions!(Function, ExpectedFunction, is_function, "Not a function");
 
 make_conversions!(Strings, ExpectedString, is_string, "Not a string vector");

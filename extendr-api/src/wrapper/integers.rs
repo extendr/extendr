@@ -30,6 +30,26 @@ crate::wrapper::macros::gen_vector_wrapper_impl!(
     altrep_constructor: make_altinteger_from_iterator,
 );
 
+impl Integers {
+    /// Get a region of elements from the vector.
+    pub fn get_region(&self, index: usize, dest: &mut [Rint]) -> usize {
+        unsafe {
+            let ptr: *mut i32 = dest.as_mut_ptr() as *mut i32;
+            INTEGER_GET_REGION(self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr) as usize
+        }
+    }
+
+    /// Return `TRUE` if the vector is sorted, `FALSE` if not, or `NA_BOOL` if unknown.
+    pub fn is_sorted(&self) -> Rbool {
+        unsafe { INTEGER_IS_SORTED(self.get()).into() }
+    }
+
+    /// Return `TRUE` if the vector has no `NA`s, `FALSE` if any, or `NA_BOOL` if unknown.
+    pub fn no_na(&self) -> Rbool {
+        unsafe { INTEGER_NO_NA(self.get()).into() }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::prelude::*;

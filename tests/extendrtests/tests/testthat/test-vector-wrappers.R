@@ -33,6 +33,11 @@ test_that("Construct double vector from squares of given values", {
     expect_equal(doubles_square(x), x * x)
 })
 
+test_that("Construct complex vector from squares of given values", {
+    x <- as.complex(c(1.0 * (1:100)))
+    expect_equal(complexes_square(x), x * x)
+})
+
 test_that("Construct integer vector from squares of given values", {
   x <- c(1:100)
   expect_equal(integers_square(x), x * x)

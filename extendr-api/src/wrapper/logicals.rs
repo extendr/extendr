@@ -31,6 +31,16 @@ crate::wrapper::macros::gen_vector_wrapper_impl!(
     altrep_constructor: make_altlogical_from_iterator,
 );
 
+impl Logicals {
+    /// Get a region of elements from the vector.
+    pub fn get_region(&self, index: usize, dest: &mut [Rbool]) -> usize {
+        unsafe {
+            let ptr: *mut i32 = dest.as_mut_ptr() as *mut i32;
+            LOGICAL_GET_REGION(self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr) as usize
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::prelude::*;

@@ -124,6 +124,17 @@ fn doubles_square(input: Doubles) -> Doubles {
 }
 
 #[extendr(use_try_from = true)]
+fn complexes_square(input: Complexes) -> Complexes {
+    let mut result = Complexes::new(input.len());
+
+    for (x, y) in result.iter_mut().zip(input.iter()) {
+        *x = Rcplx::from((y.re() * y.re(), 0.0.into()));
+    }
+
+    result
+}
+
+#[extendr(use_try_from = true)]
 fn integers_square(input: Integers) -> Integers {
     let mut result = Integers::new(input.len());
 
@@ -265,6 +276,7 @@ extendr_module! {
     fn get_logicals_element;
 
     fn doubles_square;
+    fn complexes_square;
     fn integers_square;
     fn logicals_not;
 

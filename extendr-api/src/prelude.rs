@@ -36,8 +36,6 @@ pub use crate::{
     data_frame, factor, global, list, r, reprint, reprintln, rprint, rprintln, sym, test, var,
 };
 
-pub use super::Cplx;
-
 pub use super::wrapper::{
     AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,
     AltrepImpl, RArray, RColumn, RMatrix, RMatrix3D,
@@ -57,8 +55,9 @@ pub use super::thread_safety::{
 };
 
 pub use super::wrapper::{
-    Doubles, EnvIter, Environment, Expression, ExternalPtr, FromList, Function, Integers, Language,
-    List, ListIter, Logicals, Nullable, Pairlist, Primitive, Promise, Raw, Rstr, Strings, Symbol,
+    Complexes, Doubles, EnvIter, Environment, Expression, ExternalPtr, FromList, Function,
+    Integers, Language, List, ListIter, Logicals, Nullable, Pairlist, Primitive, Promise, Raw,
+    Rstr, Strings, Symbol,
 };
 
 #[cfg(feature = "ndarray")]
