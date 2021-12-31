@@ -346,6 +346,18 @@
 <span id="346">346</span>
 <span id="347">347</span>
 <span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
+<span id="358">358</span>
+<span id="359">359</span>
+<span id="360">360</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Module metadata</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This data is returned by get_module_metadata()</span>
@@ -366,7 +378,9 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Func</span> {
     <span class="kw">pub</span> <span class="ident">doc</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-    <span class="kw">pub</span> <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
+    <span class="kw">pub</span> <span class="ident">rust_name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
+    <span class="kw">pub</span> <span class="ident">mod_name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
+    <span class="kw">pub</span> <span class="ident">r_name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
     <span class="kw">pub</span> <span class="ident">args</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Arg</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">return_type</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
     <span class="kw">pub</span> <span class="ident">func_ptr</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>,
@@ -402,13 +416,23 @@
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">val</span>: <span class="ident">Func</span>) -&gt; <span class="self">Self</span> {
         <span class="ident">List::from_values</span>(<span class="kw-2">&amp;</span>[
             <span class="macro">r!</span>(<span class="ident">val</span>.<span class="ident">doc</span>),
-            <span class="macro">r!</span>(<span class="ident">val</span>.<span class="ident">name</span>),
+            <span class="macro">r!</span>(<span class="ident">val</span>.<span class="ident">rust_name</span>),
+            <span class="macro">r!</span>(<span class="ident">val</span>.<span class="ident">mod_name</span>),
+            <span class="macro">r!</span>(<span class="ident">val</span>.<span class="ident">r_name</span>),
             <span class="macro">r!</span>(<span class="ident">List::from_values</span>(<span class="ident">val</span>.<span class="ident">args</span>)),
             <span class="macro">r!</span>(<span class="ident">val</span>.<span class="ident">return_type</span>),
             <span class="macro">r!</span>(<span class="ident">val</span>.<span class="ident">hidden</span>),
         ])
         .<span class="ident">into_robj</span>()
-        .<span class="ident">set_names</span>(<span class="kw-2">&amp;</span>[<span class="string">&quot;doc&quot;</span>, <span class="string">&quot;name&quot;</span>, <span class="string">&quot;args&quot;</span>, <span class="string">&quot;return.type&quot;</span>, <span class="string">&quot;hidden&quot;</span>])
+        .<span class="ident">set_names</span>(<span class="kw-2">&amp;</span>[
+            <span class="string">&quot;doc&quot;</span>,
+            <span class="string">&quot;rust_name&quot;</span>,
+            <span class="string">&quot;mod_name&quot;</span>,
+            <span class="string">&quot;r_name&quot;</span>,
+            <span class="string">&quot;args&quot;</span>,
+            <span class="string">&quot;return.type&quot;</span>,
+            <span class="string">&quot;hidden&quot;</span>,
+        ])
         .<span class="ident">expect</span>(<span class="string">&quot;From&lt;Func&gt; failed&quot;</span>)
     }
 }
@@ -504,22 +528,22 @@
         <span class="macro">write!</span>(
             <span class="ident">w</span>,
             <span class="string">&quot;{} &lt;- function({}) invisible(.Call(&quot;</span>,
-            <span class="ident">sanitize_identifier</span>(<span class="ident">func</span>.<span class="ident">name</span>),
+            <span class="ident">sanitize_identifier</span>(<span class="ident">func</span>.<span class="ident">r_name</span>),
             <span class="ident">formal_args</span>
         )<span class="question-mark">?</span>;
     } <span class="kw">else</span> {
         <span class="macro">write!</span>(
             <span class="ident">w</span>,
             <span class="string">&quot;{} &lt;- function({}) .Call(&quot;</span>,
-            <span class="ident">sanitize_identifier</span>(<span class="ident">func</span>.<span class="ident">name</span>),
+            <span class="ident">sanitize_identifier</span>(<span class="ident">func</span>.<span class="ident">r_name</span>),
             <span class="ident">formal_args</span>
         )<span class="question-mark">?</span>;
     }
 
     <span class="kw">if</span> <span class="ident">use_symbols</span> {
-        <span class="macro">write!</span>(<span class="ident">w</span>, <span class="string">&quot;wrap__{}&quot;</span>, <span class="ident">func</span>.<span class="ident">name</span>)<span class="question-mark">?</span>;
+        <span class="macro">write!</span>(<span class="ident">w</span>, <span class="string">&quot;wrap__{}&quot;</span>, <span class="ident">func</span>.<span class="ident">mod_name</span>)<span class="question-mark">?</span>;
     } <span class="kw">else</span> {
-        <span class="macro">write!</span>(<span class="ident">w</span>, <span class="string">&quot;\&quot;wrap__{}\&quot;&quot;</span>, <span class="ident">func</span>.<span class="ident">name</span>)<span class="question-mark">?</span>;
+        <span class="macro">write!</span>(<span class="ident">w</span>, <span class="string">&quot;\&quot;wrap__{}\&quot;&quot;</span>, <span class="ident">func</span>.<span class="ident">mod_name</span>)<span class="question-mark">?</span>;
     }
 
     <span class="kw">if</span> <span class="op">!</span><span class="ident">func</span>.<span class="ident">args</span>.<span class="ident">is_empty</span>() {
@@ -578,7 +602,7 @@
             <span class="ident">w</span>,
             <span class="string">&quot;{}${} &lt;- function({}) invisible(.Call(&quot;</span>,
             <span class="ident">sanitize_identifier</span>(<span class="ident">class_name</span>),
-            <span class="ident">sanitize_identifier</span>(<span class="ident">func</span>.<span class="ident">name</span>),
+            <span class="ident">sanitize_identifier</span>(<span class="ident">func</span>.<span class="ident">r_name</span>),
             <span class="ident">formal_args</span>
         )<span class="question-mark">?</span>;
     } <span class="kw">else</span> {
@@ -586,16 +610,16 @@
             <span class="ident">w</span>,
             <span class="string">&quot;{}${} &lt;- function({}) .Call(&quot;</span>,
             <span class="ident">sanitize_identifier</span>(<span class="ident">class_name</span>),
-            <span class="ident">sanitize_identifier</span>(<span class="ident">func</span>.<span class="ident">name</span>),
+            <span class="ident">sanitize_identifier</span>(<span class="ident">func</span>.<span class="ident">r_name</span>),
             <span class="ident">formal_args</span>
         )<span class="question-mark">?</span>;
     }
 
     <span class="comment">// Here no processing is needed because of `wrap__` prefix</span>
     <span class="kw">if</span> <span class="ident">use_symbols</span> {
-        <span class="macro">write!</span>(<span class="ident">w</span>, <span class="string">&quot;wrap__{}__{}&quot;</span>, <span class="ident">class_name</span>, <span class="ident">func</span>.<span class="ident">name</span>)<span class="question-mark">?</span>;
+        <span class="macro">write!</span>(<span class="ident">w</span>, <span class="string">&quot;wrap__{}__{}&quot;</span>, <span class="ident">class_name</span>, <span class="ident">func</span>.<span class="ident">mod_name</span>)<span class="question-mark">?</span>;
     } <span class="kw">else</span> {
-        <span class="macro">write!</span>(<span class="ident">w</span>, <span class="string">&quot;\&quot;wrap__{}__{}\&quot;&quot;</span>, <span class="ident">class_name</span>, <span class="ident">func</span>.<span class="ident">name</span>)<span class="question-mark">?</span>;
+        <span class="macro">write!</span>(<span class="ident">w</span>, <span class="string">&quot;\&quot;wrap__{}__{}\&quot;&quot;</span>, <span class="ident">class_name</span>, <span class="ident">func</span>.<span class="ident">mod_name</span>)<span class="question-mark">?</span>;
     }
 
     <span class="kw">if</span> <span class="op">!</span><span class="ident">actual_args</span>.<span class="ident">is_empty</span>() {

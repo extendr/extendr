@@ -162,6 +162,10 @@
 <span id="162">162</span>
 <span id="163">163</span>
 <span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::wrappers</span>;
 <span class="kw">use</span> <span class="ident">proc_macro::TokenStream</span>;
 <span class="kw">use</span> <span class="ident">quote</span>::{<span class="ident">format_ident</span>, <span class="ident">quote</span>};
@@ -218,7 +222,9 @@
             <span class="comment">// Add this function to the list, but set hidden: true.</span>
             <span class="ident">functions</span>.<span class="ident">push</span>(<span class="ident">extendr_api::metadata::Func</span> {
                 <span class="ident">doc</span>: <span class="string">&quot;Metadata access function.&quot;</span>,
-                <span class="ident">name</span>: #<span class="ident">module_metadata_name_string</span>,
+                <span class="ident">rust_name</span>: #<span class="ident">module_metadata_name_string</span>,
+                <span class="ident">mod_name</span>: #<span class="ident">module_metadata_name_string</span>,
+                <span class="ident">r_name</span>: #<span class="ident">module_metadata_name_string</span>,
                 <span class="ident">args</span>: <span class="ident">Vec::new</span>(),
                 <span class="ident">return_type</span>: <span class="string">&quot;Metadata&quot;</span>,
                 <span class="ident">func_ptr</span>: #<span class="ident">wrap_module_metadata_name</span> <span class="kw">as</span> <span class="op">*</span> <span class="kw">const</span> <span class="ident">u8</span>,
@@ -228,7 +234,9 @@
             <span class="comment">// Add this function to the list, but set hidden: true.</span>
             <span class="ident">functions</span>.<span class="ident">push</span>(<span class="ident">extendr_api::metadata::Func</span> {
                 <span class="ident">doc</span>: <span class="string">&quot;Wrapper generator.&quot;</span>,
-                <span class="ident">name</span>: #<span class="ident">make_module_wrappers_name_string</span>,
+                <span class="ident">rust_name</span>: #<span class="ident">make_module_wrappers_name_string</span>,
+                <span class="ident">mod_name</span>: #<span class="ident">make_module_wrappers_name_string</span>,
+                <span class="ident">r_name</span>: #<span class="ident">make_module_wrappers_name_string</span>,
                 <span class="ident">args</span>: <span class="macro">vec!</span>[
                     <span class="ident">extendr_api::metadata::Arg</span> { <span class="ident">name</span>: <span class="string">&quot;use_symbols&quot;</span>, <span class="ident">arg_type</span>: <span class="string">&quot;bool&quot;</span>, <span class="ident">default</span>: <span class="prelude-val">None</span> },
                     <span class="ident">extendr_api::metadata::Arg</span> { <span class="ident">name</span>: <span class="string">&quot;package_name&quot;</span>, <span class="ident">arg_type</span>: <span class="string">&quot;&amp;str&quot;</span>, <span class="ident">default</span>: <span class="prelude-val">None</span> },
