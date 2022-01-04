@@ -5,10 +5,19 @@ mod test {
     use serde::Deserialize;
 
     ////////////////////////////////////////////////////////////////////////////////
-
+    ///
+    /// Deserialize from a Robj.
+    /// 
+    /// Like JSON, we can use a Robj as a storage format.
+    /// 
+    /// For example if creating vectors from a RDS file or returning a structure.
+    /// 
     #[test]
     fn test_deserialize_robj() {
         test! {
+            // In these tests, the wrapper is transparent and just tests the contents.
+            // So Int(i32) is actually testing i32.
+
             #[derive(Deserialize, PartialEq, Debug)]
             struct Null;
             assert_eq!(from_robj::<Null>(r!(NULL)), Ok(Null));
@@ -23,6 +32,14 @@ mod test {
             #[derive(Deserialize, PartialEq, Debug)]
             struct VInt(Vec<i32>);
             assert_eq!(from_robj::<VInt>(r!(list!(1, 2))), Ok(VInt(vec![1, 2])));
+
+            #[derive(Deserialize, PartialEq, Debug)]
+            struct Str(String);
+            assert_eq!(from_robj::<Str>(r!("xyz")), Ok(Str("xyz".into())));
+
+            #[derive(Deserialize, PartialEq, Debug)]
+            struct StrSlice<'a>(&'a str);
+            assert_eq!(from_robj::<StrSlice>(r!("xyz")), Ok(StrSlice("xyz")));
         }
     }
 }
