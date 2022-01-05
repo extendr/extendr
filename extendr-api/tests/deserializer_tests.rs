@@ -10,7 +10,8 @@ mod test {
     ///
     /// Like JSON, we can use a Robj as a storage format.
     ///
-    /// For example if creating vectors from a RDS file or returning a structure.
+    /// For example if creating vectors from a RDS file or returning a structure
+    /// or just doing a conversion.
     ///
     #[test]
     fn test_deserialize_robj() {
@@ -109,6 +110,10 @@ mod test {
             let j = r!("Unit");
             let expected = Enum::Unit;
             assert_eq!(expected, from_robj(&j).unwrap());
+
+            // If the name is wrong:
+            let j = r!("UnitX");
+            assert_eq!(from_robj::<Enum>(&j).is_err(), true);
 
             let j = r!(list!(Newtype=1));
             let expected = Enum::Newtype(1);
