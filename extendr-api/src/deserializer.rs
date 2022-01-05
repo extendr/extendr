@@ -2,7 +2,7 @@
 //!
 use crate::error::{Error, Result};
 use crate::robj::{Attributes, Length, Robj, Types};
-use crate::scalar::Rint;
+use crate::scalar::{Rint, Rfloat, Rbool};
 use crate::wrapper::{Rstr, Strings};
 use crate::Rany;
 use serde::de::{
@@ -11,6 +11,7 @@ use serde::de::{
 };
 use serde::forward_to_deserialize_any;
 use std::convert::TryFrom;
+use crate::na::CanBeNA;
 
 /// Convert any R object to a Deserialize object.
 pub fn from_robj<'de, T>(robj: &'de Robj) -> Result<T>
@@ -95,25 +96,7 @@ struct SliceGetter<'a, E> {
 impl<'de> Deserializer<'de> for Rint {
     type Error = Error;
 
-    fn deserialize_any<V>(self, _visitor: V) -> Result<V::Value>
-    where
-        V: Visitor<'de>,
-    {
-        unimplemented!()
-    }
-
-    fn deserialize_i32<V>(self, visitor: V) -> Result<V::Value>
-    where
-        V: Visitor<'de>,
-    {
-        if let Some(val) = self.into() {
-            visitor.visit_i32(val)
-        } else {
-            Err(Error::MustNotBeNA(Robj::from(())))
-        }
-    }
-
-    fn deserialize_i16<V>(self, visitor: V) -> Result<V::Value>
+    fn deserialize_any<V>(self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
@@ -125,7 +108,51 @@ impl<'de> Deserializer<'de> for Rint {
     }
 
     forward_to_deserialize_any! {
-        bool i8 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string
+        bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string
+        bytes byte_buf option unit unit_struct newtype_struct seq tuple
+        tuple_struct map struct enum identifier ignored_any
+    }
+}
+
+// Allow us to use Doubles and Rfloat.
+impl<'de> Deserializer<'de> for Rfloat {
+    type Error = Error;
+
+    fn deserialize_any<V>(self, visitor: V) -> Result<V::Value>
+    where
+        V: Visitor<'de>,
+    {
+        if let Some(val) = self.into() {
+            visitor.visit_f64(val)
+        } else {
+            Err(Error::MustNotBeNA(Robj::from(())))
+        }
+    }
+
+    forward_to_deserialize_any! {
+        bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string
+        bytes byte_buf option unit unit_struct newtype_struct seq tuple
+        tuple_struct map struct enum identifier ignored_any
+    }
+}
+
+// Allow us to use Logicals and Rbool.
+impl<'de> Deserializer<'de> for Rbool {
+    type Error = Error;
+
+    fn deserialize_any<V>(self, visitor: V) -> Result<V::Value>
+    where
+        V: Visitor<'de>,
+    {
+        if let Some(val) = self.into() {
+            visitor.visit_bool(val)
+        } else {
+            Err(Error::MustNotBeNA(Robj::from(())))
+        }
+    }
+
+    forward_to_deserialize_any! {
+        bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string
         bytes byte_buf option unit unit_struct newtype_struct seq tuple
         tuple_struct map struct enum identifier ignored_any
     }
@@ -142,23 +169,16 @@ impl<'de> Deserializer<'de> for &'de Rstr {
         unimplemented!()
     }
 
-    fn deserialize_str<V>(self, visitor: V) -> Result<V::Value>
-    where
-        V: Visitor<'de>,
-    {
-        return visitor.visit_borrowed_str(self.as_str());
-    }
-
     fn deserialize_identifier<V>(self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
-        self.deserialize_str(visitor)
+        visitor.visit_borrowed_str(self.as_str())
     }
 
     forward_to_deserialize_any! {
         bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char string
-        bytes byte_buf option unit unit_struct newtype_struct seq tuple
+        str bytes byte_buf option unit unit_struct newtype_struct seq tuple
         tuple_struct map struct enum ignored_any
     }
 }
@@ -223,8 +243,12 @@ impl<'de> VariantAccess<'de> for &'de Robj {
     }
 }
 
-// Enable sequences from Integers, Doubles etc.
-impl<'de> SeqAccess<'de> for SliceGetter<'de, Rint> {
+// Enable sequences from Integers, Doubles and Logicals.
+impl<'de, E : Deserializer<'de>> SeqAccess<'de> for SliceGetter<'de, E>
+where
+    Error: From<<E as Deserializer<'de>>::Error>,
+    E: Copy,
+{
     type Error = Error;
 
     fn next_element_seed<T>(&mut self, seed: T) -> Result<Option<T::Value>>
@@ -234,9 +258,10 @@ impl<'de> SeqAccess<'de> for SliceGetter<'de, Rint> {
         if self.list.is_empty() {
             Ok(None)
         } else {
-            let res = seed.deserialize(self.list[0]).map(Some);
+            let res = seed
+                .deserialize(self.list[0])?;
             self.list = &self.list[1..];
-            res
+            Ok(Some(res))
         }
     }
 }
@@ -466,6 +491,14 @@ impl<'de> Deserializer<'de> for &'de Robj {
                 let lg = SliceGetter { list: &*val };
                 Ok(visitor.visit_seq(lg)?)
             }
+            Rany::Real(val) => {
+                let lg = SliceGetter { list: &*val };
+                Ok(visitor.visit_seq(lg)?)
+            }
+            Rany::Logical(val) => {
+                let lg = SliceGetter { list: &*val };
+                Ok(visitor.visit_seq(lg)?)
+            }
             _ => Err(Error::ExpectedList(self.clone())),
         }
     }
@@ -528,5 +561,104 @@ impl<'de> Deserializer<'de> for &'de Robj {
         V: Visitor<'de>,
     {
         visitor.visit_enum(self)
+    }
+}
+
+struct RintVisitor;
+
+impl<'de> Visitor<'de> for RintVisitor {
+    type Value = Rint;
+
+    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+        formatter.write_str("an integer between -2^31+1 and 2^31")
+    }
+
+    fn visit_i32<E>(self, value: i32) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(value.into())
+    }
+
+    fn visit_unit<E>(self) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(Rint::na())
+    }
+}
+
+impl<'de> Deserialize<'de> for Rint {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Rint, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_i32(RintVisitor)
+    }
+}
+
+struct RfloatVisitor;
+
+impl<'de> Visitor<'de> for RfloatVisitor {
+    type Value = Rfloat;
+
+    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+        formatter.write_str("a floating point value")
+    }
+
+    fn visit_f64<E>(self, value: f64) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(value.into())
+    }
+
+    fn visit_unit<E>(self) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(Rfloat::na())
+    }
+}
+
+impl<'de> Deserialize<'de> for Rfloat {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Rfloat, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_f64(RfloatVisitor)
+    }
+}
+
+struct RboolVisitor;
+
+impl<'de> Visitor<'de> for RboolVisitor {
+    type Value = Rbool;
+
+    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+        formatter.write_str("a boolean point value")
+    }
+
+    fn visit_bool<E>(self, value: bool) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(value.into())
+    }
+
+    fn visit_unit<E>(self) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(Rbool::na())
+    }
+}
+
+impl<'de> Deserialize<'de> for Rbool {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Rbool, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_bool(RboolVisitor)
     }
 }
