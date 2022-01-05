@@ -1,9 +1,10 @@
 //! Convert R objects to a wide variety of types.
 //!
 use crate::error::{Error, Result};
+use crate::na::CanBeNA;
 use crate::robj::{Attributes, Length, Robj, Types};
-use crate::scalar::{Rint, Rfloat, Rbool};
-use crate::wrapper::{Rstr, Strings};
+use crate::scalar::{Rbool, Rfloat, Rint};
+use crate::wrapper::{List, Rstr, Strings};
 use crate::Rany;
 use serde::de::{
     Deserialize, DeserializeSeed, Deserializer, EnumAccess, MapAccess, SeqAccess, VariantAccess,
@@ -11,7 +12,6 @@ use serde::de::{
 };
 use serde::forward_to_deserialize_any;
 use std::convert::TryFrom;
-use crate::na::CanBeNA;
 
 /// Convert any R object to a Deserialize object.
 pub fn from_robj<'de, T>(robj: &'de Robj) -> Result<T>
@@ -244,7 +244,7 @@ impl<'de> VariantAccess<'de> for &'de Robj {
 }
 
 // Enable sequences from Integers, Doubles and Logicals.
-impl<'de, E : Deserializer<'de>> SeqAccess<'de> for SliceGetter<'de, E>
+impl<'de, E: Deserializer<'de>> SeqAccess<'de> for SliceGetter<'de, E>
 where
     Error: From<<E as Deserializer<'de>>::Error>,
     E: Copy,
@@ -258,8 +258,7 @@ where
         if self.list.is_empty() {
             Ok(None)
         } else {
-            let res = seed
-                .deserialize(self.list[0])?;
+            let res = seed.deserialize(self.list[0])?;
             self.list = &self.list[1..];
             Ok(Some(res))
         }
@@ -270,11 +269,47 @@ where
 impl<'de> Deserializer<'de> for &'de Robj {
     type Error = Error;
 
-    fn deserialize_any<V>(self, _visitor: V) -> Result<V::Value>
+    fn deserialize_any<V>(self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
-        Err(Error::Other(format!("unexpected {:?}", self.rtype())))
+        let len = self.len();
+        match self.as_any() {
+            Rany::Null(_) => self.deserialize_unit(visitor),
+            Rany::Integer(_v) => {
+                if len == 1 {
+                    self.deserialize_i32(visitor)
+                } else {
+                    self.deserialize_seq(visitor)
+                }
+            }
+            Rany::Real(_v) => {
+                if len == 1 {
+                    self.deserialize_f64(visitor)
+                } else {
+                    self.deserialize_seq(visitor)
+                }
+            }
+            Rany::Logical(_v) => {
+                if len == 1 {
+                    self.deserialize_bool(visitor)
+                } else {
+                    self.deserialize_seq(visitor)
+                }
+            }
+            Rany::List(_v) => self.deserialize_seq(visitor),
+            Rany::String(_v) => {
+                if len == 1 {
+                    self.deserialize_str(visitor)
+                } else {
+                    self.deserialize_seq(visitor)
+                }
+            }
+            _ => Err(Error::Other(format!(
+                "deserialize_any: unexpected {:?}",
+                self.rtype()
+            ))),
+        }
     }
 
     fn deserialize_unit<V>(self, visitor: V) -> Result<V::Value>
@@ -660,5 +695,140 @@ impl<'de> Deserialize<'de> for Rbool {
         D: Deserializer<'de>,
     {
         deserializer.deserialize_bool(RboolVisitor)
+    }
+}
+
+struct RobjVisitor;
+
+impl<'de> Visitor<'de> for RobjVisitor {
+    type Value = Robj;
+
+    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+        formatter.write_str("a value convertable to a Robj")
+    }
+
+    fn visit_bool<E>(self, value: bool) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(value.into())
+    }
+
+    fn visit_i64<E>(self, v: i64) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        if v > i32::MIN as i64 && v <= i32::MAX as i64 {
+            Ok((v as i32).into())
+        } else {
+            Ok((v as f64).into())
+        }
+    }
+
+    fn visit_u64<E>(self, v: u64) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        if v <= i32::MAX as u64 {
+            Ok((v as i32).into())
+        } else {
+            Ok((v as f64).into())
+        }
+    }
+
+    fn visit_f64<E>(self, v: f64) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(v.into())
+    }
+
+    fn visit_str<E>(self, v: &str) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(v.into())
+    }
+
+    fn visit_bytes<E>(self, v: &[u8]) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(v.into())
+    }
+
+    fn visit_none<E>(self) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(Robj::from(()))
+    }
+
+    fn visit_some<D>(self, deserializer: D) -> std::result::Result<Self::Value, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_any(self)
+    }
+
+    fn visit_seq<A>(self, mut seq: A) -> std::result::Result<Self::Value, A::Error>
+    where
+        A: SeqAccess<'de>,
+    {
+        // All sequences get converted to lists at the moment.
+        // We could check the first element and then assume the rest are the sme.
+        let mut values: Vec<Robj> = Vec::with_capacity(seq.size_hint().unwrap_or(8));
+        while let Some(value) = seq.next_element()? {
+            values.push(value);
+        }
+        Ok(values.into())
+    }
+
+    fn visit_map<M>(self, mut access: M) -> std::result::Result<Self::Value, M::Error>
+    where
+        M: MapAccess<'de>,
+    {
+        let mut keys: Vec<&str> = Vec::with_capacity(access.size_hint().unwrap_or(8));
+        let mut values: Vec<Robj> = Vec::with_capacity(access.size_hint().unwrap_or(8));
+
+        while let Some((key, value)) = access.next_entry()? {
+            keys.push(key);
+            values.push(value);
+        }
+
+        Ok(List::from_values(values).set_names(keys).unwrap())
+    }
+
+    fn visit_unit<E>(self) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(Robj::from(()))
+    }
+
+    fn visit_newtype_struct<D>(self, deserializer: D) -> std::result::Result<Self::Value, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_any(self)
+    }
+
+    fn visit_enum<A>(self, _data: A) -> std::result::Result<Self::Value, A::Error>
+    where
+        A: EnumAccess<'de>,
+    {
+        // TODO: find an example of this.
+        unimplemented!();
+        // let (de, variant) = data.variant()?;
+        // de.deserialize_any(self)
+    }
+}
+
+impl<'de> Deserialize<'de> for Robj {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Robj, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_any(RobjVisitor)
     }
 }

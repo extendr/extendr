@@ -126,6 +126,19 @@ mod test {
             let j = r!(list!(Struct=list!(a=1)));
             let expected = Enum::Struct { a: 1 };
             assert_eq!(expected, from_robj(&j).unwrap());
+
+            // Many things will generate a Robj.
+            // But note that the original Robj will not be copied verbatim.
+            // The Deserialize trait for Robj can also be used to generate
+            // JSON and other formats for Robj.
+            #[derive(Deserialize, PartialEq, Debug)]
+            struct ROBJ(Robj);
+            assert_eq!(from_robj::<ROBJ>(&r!(TRUE)), Ok(ROBJ(r!(TRUE))));
+            assert_eq!(from_robj::<ROBJ>(&r!(1)), Ok(ROBJ(r!(1))));
+            assert_eq!(from_robj::<ROBJ>(&r!(1.0)), Ok(ROBJ(r!(1.0))));
+            assert_eq!(from_robj::<ROBJ>(&r!("xyz")), Ok(ROBJ(r!("xyz"))));
+
+            // assert_eq!(from_robj::<ROBJ>(&r!([TRUE, FALSE])), Ok(ROBJ(r!([TRUE, FALSE]))));
         }
     }
 }
