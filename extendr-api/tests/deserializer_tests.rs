@@ -138,7 +138,37 @@ mod test {
             assert_eq!(from_robj::<ROBJ>(&r!(1.0)), Ok(ROBJ(r!(1.0))));
             assert_eq!(from_robj::<ROBJ>(&r!("xyz")), Ok(ROBJ(r!("xyz"))));
 
-            // assert_eq!(from_robj::<ROBJ>(&r!([TRUE, FALSE])), Ok(ROBJ(r!([TRUE, FALSE]))));
+            // Sequences are always converted to lists.
+            assert_eq!(from_robj::<ROBJ>(&r!([TRUE, FALSE])), Ok(ROBJ(r!(list!(TRUE, FALSE)))));
+            assert_eq!(from_robj::<ROBJ>(&r!([1, 2])), Ok(ROBJ(r!(list!(1, 2)))));
+
+            // If you use a wrapper type, conversions are more specific.
+            #[derive(Deserialize, PartialEq, Debug)]
+            struct RIntegers(Integers);
+            assert_eq!(from_robj::<RIntegers>(&r!(1)), Ok(RIntegers(Integers::from_values([1]))));
+            assert_eq!(from_robj::<RIntegers>(&r!([1, 2])), Ok(RIntegers(Integers::from_values([1, 2]))));
+            assert_eq!(from_robj::<RIntegers>(&r!(1.0)).is_err(), true);
+            assert_eq!(from_robj::<RIntegers>(&r!("xyz")).is_err(), true);
+
+            #[derive(Deserialize, PartialEq, Debug)]
+            struct RDoubles(Doubles);
+            assert_eq!(from_robj::<RDoubles>(&r!(1)), Ok(RDoubles(Doubles::from_values([1.0]))));
+            // assert_eq!(from_robj::<RDoubles>(&r!([1, 2])), Ok(RDoubles(Doubles::from_values([1.0, 2.0]))));
+            assert_eq!(from_robj::<RDoubles>(&r!([1.0, 2.0])), Ok(RDoubles(Doubles::from_values([1.0, 2.0]))));
+            assert_eq!(from_robj::<RDoubles>(&r!("xyz")).is_err(), true);
+
+            #[derive(Deserialize, PartialEq, Debug)]
+            struct RLogicals(Logicals);
+            assert_eq!(from_robj::<RLogicals>(&r!(TRUE)), Ok(RLogicals(Logicals::from_values([TRUE]))));
+            assert_eq!(from_robj::<RLogicals>(&r!([TRUE, FALSE, NA_LOGICAL])), Ok(RLogicals(Logicals::from_values([TRUE, FALSE, NA_LOGICAL]))));
+            assert_eq!(from_robj::<RLogicals>(&r!("xyz")).is_err(), true);
+
+            // This requires a PR that is not yet merged.
+            // #[derive(Deserialize, PartialEq, Debug)]
+            // struct RStrings(Strings);
+            // assert_eq!(from_robj::<RStrings>(&r!("xyz")), Ok(RStrings(Strings::from_values(["xyz"]))));
+            // assert_eq!(from_robj::<RStrings>(&r!(["a", "b"])), Ok(RStrings(Strings::from_values(["a", "b"]))));
+            // assert_eq!(from_robj::<RStrings>(&r!(0)).is_err(), true);
         }
     }
 }

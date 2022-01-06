@@ -4,7 +4,7 @@ use crate::error::{Error, Result};
 use crate::na::CanBeNA;
 use crate::robj::{Attributes, Length, Robj, Types};
 use crate::scalar::{Rbool, Rfloat, Rint};
-use crate::wrapper::{List, Rstr, Strings};
+use crate::wrapper::{Doubles, Integers, List, Logicals, Rstr, Strings};
 use crate::Rany;
 use serde::de::{
     Deserialize, DeserializeSeed, Deserializer, EnumAccess, MapAccess, SeqAccess, VariantAccess,
@@ -18,7 +18,6 @@ pub fn from_robj<'de, T>(robj: &'de Robj) -> Result<T>
 where
     T: Deserialize<'de>,
 {
-    // let deserializer = RobjDeserializer(robj);
     let t = T::deserialize(robj)?;
     Ok(t)
 }
@@ -103,7 +102,7 @@ impl<'de> Deserializer<'de> for Rint {
         if let Some(val) = self.into() {
             visitor.visit_i32(val)
         } else {
-            Err(Error::MustNotBeNA(Robj::from(())))
+            visitor.visit_unit()
         }
     }
 
@@ -125,7 +124,7 @@ impl<'de> Deserializer<'de> for Rfloat {
         if let Some(val) = self.into() {
             visitor.visit_f64(val)
         } else {
-            Err(Error::MustNotBeNA(Robj::from(())))
+            visitor.visit_unit()
         }
     }
 
@@ -147,7 +146,7 @@ impl<'de> Deserializer<'de> for Rbool {
         if let Some(val) = self.into() {
             visitor.visit_bool(val)
         } else {
-            Err(Error::MustNotBeNA(Robj::from(())))
+            visitor.visit_unit()
         }
     }
 
@@ -534,6 +533,14 @@ impl<'de> Deserializer<'de> for &'de Robj {
                 let lg = SliceGetter { list: &*val };
                 Ok(visitor.visit_seq(lg)?)
             }
+            Rany::String(_val) => {
+                // Grubby hack that will go away once PRs are merged.
+                // use std::convert::TryInto;
+                // let val : Strings = val.clone().try_into().unwrap();
+                // let lg = StringGetter { list: &*val };
+                // Ok(visitor.visit_seq(lg)?)
+                unimplemented!("Deserialize shortcut for Strings");
+            }
             _ => Err(Error::ExpectedList(self.clone())),
         }
     }
@@ -830,5 +837,313 @@ impl<'de> Deserialize<'de> for Robj {
         D: Deserializer<'de>,
     {
         deserializer.deserialize_any(RobjVisitor)
+    }
+}
+
+struct IntegersVisitor;
+
+impl<'de> Visitor<'de> for IntegersVisitor {
+    type Value = Integers;
+
+    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+        formatter.write_str("a value convertable to Integers")
+    }
+
+    fn visit_i64<E>(self, v: i64) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        if v > i32::MIN as i64 && v <= i32::MAX as i64 {
+            Ok(Integers::from_values([v as i32]))
+        } else {
+            Err(serde::de::Error::custom("out of range for Integers"))
+        }
+    }
+
+    fn visit_u64<E>(self, v: u64) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        if v <= i32::MAX as u64 {
+            Ok(Integers::from_values([v as i32]))
+        } else {
+            Err(serde::de::Error::custom("out of range for Integers"))
+        }
+    }
+
+    fn visit_none<E>(self) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(Integers::from_values([Rint::na()]))
+    }
+
+    fn visit_some<D>(self, deserializer: D) -> std::result::Result<Self::Value, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_any(self)
+    }
+
+    fn visit_seq<A>(self, mut seq: A) -> std::result::Result<Self::Value, A::Error>
+    where
+        A: SeqAccess<'de>,
+    {
+        let mut values: Vec<Rint> = Vec::with_capacity(seq.size_hint().unwrap_or(8));
+        while let Some(value) = seq.next_element()? {
+            values.push(value);
+        }
+        Ok(Integers::from_values(values))
+    }
+
+    fn visit_unit<E>(self) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(Integers::from_values([Rint::na()]))
+    }
+}
+
+impl<'de> Deserialize<'de> for Integers {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Integers, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_any(IntegersVisitor)
+    }
+}
+
+struct DoublesVisitor;
+
+impl<'de> Visitor<'de> for DoublesVisitor {
+    type Value = Doubles;
+
+    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+        formatter.write_str("a value convertable to Doubles")
+    }
+
+    fn visit_i64<E>(self, v: i64) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(Doubles::from_values([v as f64]))
+    }
+
+    fn visit_u64<E>(self, v: u64) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(Doubles::from_values([v as f64]))
+    }
+
+    fn visit_f64<E>(self, v: f64) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(Doubles::from_values([v]))
+    }
+
+    fn visit_none<E>(self) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(Doubles::from_values([Rfloat::na()]))
+    }
+
+    fn visit_some<D>(self, deserializer: D) -> std::result::Result<Self::Value, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_any(self)
+    }
+
+    fn visit_seq<A>(self, mut seq: A) -> std::result::Result<Self::Value, A::Error>
+    where
+        A: SeqAccess<'de>,
+    {
+        let mut values: Vec<Rfloat> = Vec::with_capacity(seq.size_hint().unwrap_or(8));
+        while let Some(value) = seq.next_element()? {
+            values.push(value);
+        }
+        Ok(Doubles::from_values(values))
+    }
+
+    fn visit_unit<E>(self) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(Doubles::from_values([Rfloat::na()]))
+    }
+}
+
+impl<'de> Deserialize<'de> for Doubles {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Doubles, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_any(DoublesVisitor)
+    }
+}
+
+struct LogicalsVisitor;
+
+impl<'de> Visitor<'de> for LogicalsVisitor {
+    type Value = Logicals;
+
+    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+        formatter.write_str("a value convertable to Logicals")
+    }
+
+    fn visit_bool<E>(self, v: bool) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(Logicals::from_values([v]))
+    }
+
+    fn visit_none<E>(self) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(Logicals::from_values([Rbool::na()]))
+    }
+
+    fn visit_some<D>(self, deserializer: D) -> std::result::Result<Self::Value, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_any(self)
+    }
+
+    fn visit_seq<A>(self, mut seq: A) -> std::result::Result<Self::Value, A::Error>
+    where
+        A: SeqAccess<'de>,
+    {
+        let mut values: Vec<Rbool> = Vec::with_capacity(seq.size_hint().unwrap_or(8));
+        while let Some(value) = seq.next_element()? {
+            values.push(value);
+        }
+        Ok(Logicals::from_values(values))
+    }
+
+    fn visit_unit<E>(self) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(Logicals::from_values([Rbool::na()]))
+    }
+}
+
+impl<'de> Deserialize<'de> for Logicals {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Logicals, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_any(LogicalsVisitor)
+    }
+}
+
+struct StringsVisitor;
+
+impl<'de> Visitor<'de> for StringsVisitor {
+    type Value = Strings;
+
+    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+        formatter.write_str("a value convertable to Strings")
+    }
+
+    fn visit_str<E>(self, v: &str) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(v.into())
+    }
+
+    fn visit_none<E>(self) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(Strings::from_values([<&str>::na()]))
+    }
+
+    fn visit_some<D>(self, deserializer: D) -> std::result::Result<Self::Value, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_any(self)
+    }
+
+    fn visit_seq<A>(self, mut seq: A) -> std::result::Result<Self::Value, A::Error>
+    where
+        A: SeqAccess<'de>,
+    {
+        let mut values: Vec<Rstr> = Vec::with_capacity(seq.size_hint().unwrap_or(8));
+        while let Some(value) = seq.next_element()? {
+            values.push(value);
+        }
+        Ok(Strings::from_values(values))
+    }
+
+    fn visit_unit<E>(self) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(Strings::from_values([<&str>::na()]))
+    }
+}
+
+impl<'de> Deserialize<'de> for Strings {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Strings, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_any(StringsVisitor)
+    }
+}
+
+struct RstrVisitor;
+
+impl<'de> Visitor<'de> for RstrVisitor {
+    type Value = Rstr;
+
+    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+        formatter.write_str("a value convertable to Rstr")
+    }
+
+    fn visit_str<E>(self, v: &str) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(v.into())
+    }
+
+    fn visit_none<E>(self) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(Rstr::from_string(<&str>::na()))
+    }
+
+    fn visit_some<D>(self, deserializer: D) -> std::result::Result<Self::Value, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_any(self)
+    }
+
+    fn visit_unit<E>(self) -> std::result::Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        Ok(Rstr::from_string(<&str>::na()))
+    }
+}
+
+impl<'de> Deserialize<'de> for Rstr {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Rstr, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_any(RstrVisitor)
     }
 }
