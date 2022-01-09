@@ -10,7 +10,7 @@ use crate::{
 };
 use crate::{List, Rany, Robj};
 use serde::{ser, Serialize};
-// use crate::list;
+use crate::scalar::{Rint, Rfloat, Rbool};
 
 impl ser::Error for Error {
     fn custom<T: std::fmt::Display>(msg: T) -> Self {
@@ -18,45 +18,45 @@ impl ser::Error for Error {
     }
 }
 
-struct Serializer {
+struct RobjSerializer {
     robj: Option<Robj>,
 }
 
 struct SerializeSeq<'a> {
     values: Vec<Robj>,
-    parent: &'a mut Serializer,
+    parent: &'a mut RobjSerializer,
 }
 
 struct SerializeTuple<'a> {
     values: Vec<Robj>,
-    parent: &'a mut Serializer,
+    parent: &'a mut RobjSerializer,
 }
 
 struct SerializeTupleStruct<'a> {
     values: Vec<Robj>,
-    parent: &'a mut Serializer,
+    parent: &'a mut RobjSerializer,
 }
 
 struct SerializeTupleVariant<'a> {
     values: Vec<Robj>,
-    parent: &'a mut Serializer,
+    parent: &'a mut RobjSerializer,
     variant: String,
 }
 
 struct SerializeMap<'a> {
     values: Vec<(String, Robj)>,
     key: String,
-    parent: &'a mut Serializer,
+    parent: &'a mut RobjSerializer,
 }
 
 struct SerializeStruct<'a> {
     values: Vec<(String, Robj)>,
-    parent: &'a mut Serializer,
+    parent: &'a mut RobjSerializer,
 }
 
 struct SerializeStructVariant<'a> {
     values: Vec<(String, Robj)>,
-    parent: &'a mut Serializer,
+    parent: &'a mut RobjSerializer,
     variant: String,
 }
 
@@ -92,17 +92,17 @@ pub fn to_robj<T>(value: &T) -> Result<Robj>
 where
     T: Serialize,
 {
-    let mut serializer = Serializer { robj: None };
+    let mut serializer = RobjSerializer { robj: None };
 
     value.serialize(&mut serializer)?;
     Ok(serializer.robj.unwrap())
 }
 
-impl<'a> ser::Serializer for &'a mut Serializer {
-    // The output type produced by this `Serializer` during successful
+impl<'a> ser::Serializer for &'a mut RobjSerializer {
+    // The output type produced by this `RobjSerializer` during successful
     // serialization. Most serializers that produce text or binary output should
     // set `Ok = ()` and serialize into an `io::Write` or buffer contained
-    // within the `Serializer` instance, as happens here. Serializers that build
+    // within the `RobjSerializer` instance, as happens here. Serializers that build
     // in-memory data structures may be simplified by using `Ok` to propagate
     // the data structure around.
     type Ok = ();
@@ -113,7 +113,7 @@ impl<'a> ser::Serializer for &'a mut Serializer {
     // Associated types for keeping track of additional state while serializing
     // compound data structures like sequences and maps. In this case no
     // additional state is required beyond what is already stored in the
-    // Serializer struct.
+    // RobjSerializer struct.
     type SerializeSeq = self::SerializeSeq<'a>;
     type SerializeTuple = self::SerializeTuple<'a>;
     type SerializeTupleStruct = self::SerializeTupleStruct<'a>;
@@ -241,7 +241,7 @@ impl<'a> ser::Serializer for &'a mut Serializer {
         _variant_index: u32,
         variant: &'static str,
     ) -> Result<()> {
-        self.robj = Some(List::from_pairs([(variant, Robj::from(()))]).into());
+        self.robj = Some(Robj::from(variant));
         Ok(())
     }
 
@@ -734,6 +734,45 @@ impl ser::Serialize for Raw {
         S: ser::Serializer,
     {
         serializer.serialize_bytes(self.as_robj().as_raw_slice().unwrap())
+    }
+}
+
+impl ser::Serialize for Rint {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: ser::Serializer,
+    {
+        if let Some(v) = self.clone().into() {
+            serializer.serialize_i32(v)
+        } else {
+            serializer.serialize_unit()
+        }
+    }
+}
+
+impl ser::Serialize for Rfloat {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: ser::Serializer,
+    {
+        if let Some(v) = self.clone().into() {
+            serializer.serialize_f64(v)
+        } else {
+            serializer.serialize_unit()
+        }
+    }
+}
+
+impl ser::Serialize for Rbool {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: ser::Serializer,
+    {
+        if let Some(v) = self.clone().into() {
+            serializer.serialize_bool(v)
+        } else {
+            serializer.serialize_unit()
+        }
     }
 }
 
