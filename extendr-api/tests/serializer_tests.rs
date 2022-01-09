@@ -99,6 +99,8 @@ mod test {
             let expected = r!(list![1.0, 2.0]);
             assert_eq!(to_robj(&s).unwrap(), Robj::from(expected));
 
+            // BUG! Will probably be fixed by "better-debug"
+            //
             // #[derive(Serialize)]
             // struct List1(List);
             // let s = List1(list!(a=1, b=2));

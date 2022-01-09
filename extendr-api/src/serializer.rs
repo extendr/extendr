@@ -1,16 +1,14 @@
 //! See https://serde.rs/impl-serializer.html
 
 use crate::error::{Error, Result};
-use crate::na::CanBeNA;
-use crate::robj::{GetSexp, Length, Rinternals, Types};
+use crate::robj::{AsStrIter, GetSexp, Length, Rinternals, Types};
 use crate::scalar::{Rbool, Rfloat, Rint};
 use crate::{
-    Attributes, Doubles, Environment, Expressions, Function, Integers, Language, Logicals,
-    Pairlist, Primitive, Promise, Raw, Rstr, Strings, Symbol, S4,
+    Doubles, Environment, Expression, Function, Integers, Language, Logicals, Pairlist, Primitive,
+    Promise, Raw, Rstr, Symbol, S4,
 };
 use crate::{List, Rany, Robj};
 use serde::{ser, Serialize};
-use crate::scalar::{Rint, Rfloat, Rbool};
 
 impl ser::Error for Error {
     fn custom<T: std::fmt::Display>(msg: T) -> Self {
@@ -611,13 +609,30 @@ impl ser::Serialize for Integers {
         S: ser::Serializer,
     {
         if self.len() == 1 {
-            serializer.serialize_i32(self.elt(0).inner())
+            self.elt(0).serialize(serializer)
         } else {
             use serde::ser::SerializeSeq;
             let mut s = serializer.serialize_seq(Some(self.len()))?;
-            for v in self.as_robj().as_integer_slice().unwrap() {
-                // TODO: use get_range when available.
-                s.serialize_element(v)?;
+            for v in self.iter() {
+                s.serialize_element(&v)?;
+            }
+            s.end()
+        }
+    }
+}
+
+impl ser::Serialize for Logicals {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: ser::Serializer,
+    {
+        if self.len() == 1 {
+            self.elt(0).serialize(serializer)
+        } else {
+            use serde::ser::SerializeSeq;
+            let mut s = serializer.serialize_seq(Some(self.len()))?;
+            for v in self.iter() {
+                s.serialize_element(&v)?;
             }
             s.end()
         }
@@ -645,33 +660,12 @@ impl ser::Serialize for Doubles {
         if self.len() == 1 {
             self.elt(0).serialize(serializer)
         } else {
-            serializer.collect_seq(self.iter())
-        }
-    }
-}
-
-impl ser::Serialize for Logicals {
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: ser::Serializer,
-    {
-        if self.len() == 1 {
-            self.elt(0).serialize(serializer)
-        } else {
-            serializer.collect_seq(self.iter())
-        }
-    }
-}
-
-impl ser::Serialize for Strings {
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: ser::Serializer,
-    {
-        if self.len() == 1 {
-            self.elt(0).serialize(serializer)
-        } else {
-            serializer.collect_seq(self.iter())
+            use serde::ser::SerializeSeq;
+            let mut s = serializer.serialize_seq(Some(self.len()))?;
+            for v in self.iter() {
+                s.serialize_element(&v)?;
+            }
+            s.end()
         }
     }
 }
@@ -742,7 +736,7 @@ impl ser::Serialize for Rint {
     where
         S: ser::Serializer,
     {
-        if let Some(v) = self.clone().into() {
+        if let Some(v) = (*self).into() {
             serializer.serialize_i32(v)
         } else {
             serializer.serialize_unit()
@@ -755,7 +749,7 @@ impl ser::Serialize for Rfloat {
     where
         S: ser::Serializer,
     {
-        if let Some(v) = self.clone().into() {
+        if let Some(v) = (*self).into() {
             serializer.serialize_f64(v)
         } else {
             serializer.serialize_unit()
@@ -768,7 +762,7 @@ impl ser::Serialize for Rbool {
     where
         S: ser::Serializer,
     {
-        if let Some(v) = self.clone().into() {
+        if let Some(v) = (*self).into() {
             serializer.serialize_bool(v)
         } else {
             serializer.serialize_unit()
