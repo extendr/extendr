@@ -192,7 +192,7 @@ impl<'de> EnumAccess<'de> for &'de Robj {
         V: DeserializeSeed<'de>,
     {
         match self.as_any() {
-            Rany::String(s) if s.len() == 1 => {
+            Rany::Strings(s) if s.len() == 1 => {
                 let variant = seed.deserialize(self)?;
                 Ok((variant, self))
             }
@@ -275,21 +275,21 @@ impl<'de> Deserializer<'de> for &'de Robj {
         let len = self.len();
         match self.as_any() {
             Rany::Null(_) => self.deserialize_unit(visitor),
-            Rany::Integer(_v) => {
+            Rany::Integers(_v) => {
                 if len == 1 {
                     self.deserialize_i32(visitor)
                 } else {
                     self.deserialize_seq(visitor)
                 }
             }
-            Rany::Real(_v) => {
+            Rany::Doubles(_v) => {
                 if len == 1 {
                     self.deserialize_f64(visitor)
                 } else {
                     self.deserialize_seq(visitor)
                 }
             }
-            Rany::Logical(_v) => {
+            Rany::Logicals(_v) => {
                 if len == 1 {
                     self.deserialize_bool(visitor)
                 } else {
@@ -297,7 +297,7 @@ impl<'de> Deserializer<'de> for &'de Robj {
                 }
             }
             Rany::List(_v) => self.deserialize_seq(visitor),
-            Rany::String(_v) => {
+            Rany::Strings(_v) => {
                 if len == 1 {
                     self.deserialize_str(visitor)
                 } else {
@@ -521,19 +521,19 @@ impl<'de> Deserializer<'de> for &'de Robj {
                 };
                 Ok(visitor.visit_seq(lg)?)
             }
-            Rany::Integer(val) => {
+            Rany::Integers(val) => {
                 let lg = SliceGetter { list: &*val };
                 Ok(visitor.visit_seq(lg)?)
             }
-            Rany::Real(val) => {
+            Rany::Doubles(val) => {
                 let lg = SliceGetter { list: &*val };
                 Ok(visitor.visit_seq(lg)?)
             }
-            Rany::Logical(val) => {
+            Rany::Logicals(val) => {
                 let lg = SliceGetter { list: &*val };
                 Ok(visitor.visit_seq(lg)?)
             }
-            Rany::String(_val) => {
+            Rany::Strings(_val) => {
                 // Grubby hack that will go away once PRs are merged.
                 // use std::convert::TryInto;
                 // let val : Strings = val.clone().try_into().unwrap();

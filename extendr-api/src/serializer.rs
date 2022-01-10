@@ -1,10 +1,11 @@
 //! See https://serde.rs/impl-serializer.html
 
 use crate::error::{Error, Result};
-use crate::robj::{AsStrIter, GetSexp, Length, Rinternals, Types};
+use crate::na::CanBeNA;
+use crate::robj::{Attributes, GetSexp, Length, Rinternals, Types};
 use crate::scalar::{Rbool, Rfloat, Rint};
-use crate::{
-    Doubles, Environment, Expression, Function, Integers, Language, Logicals, Pairlist, Primitive,
+use crate::wrapper::{
+    Doubles, Environment, Expressions, Function, Integers, Language, Logicals, Pairlist, Primitive,
     Promise, Raw, Rstr, Symbol, S4,
 };
 use crate::{List, Rany, Robj};
@@ -679,45 +680,6 @@ impl ser::Serialize for Rstr {
             serializer.serialize_unit()
         } else {
             serializer.serialize_str(self.as_str())
-        }
-    }
-}
-
-impl ser::Serialize for Rint {
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: ser::Serializer,
-    {
-        if self.is_na() {
-            serializer.serialize_unit()
-        } else {
-            serializer.serialize_i32(self.inner())
-        }
-    }
-}
-
-impl ser::Serialize for Rfloat {
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: ser::Serializer,
-    {
-        if self.is_na() {
-            serializer.serialize_unit()
-        } else {
-            serializer.serialize_f64(self.inner())
-        }
-    }
-}
-
-impl ser::Serialize for Rbool {
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: ser::Serializer,
-    {
-        if self.is_na() {
-            serializer.serialize_unit()
-        } else {
-            serializer.serialize_bool(self.is_true())
         }
     }
 }
