@@ -134,11 +134,11 @@ fn test_complexes() {
     test! {
         let s = Complexes::new(10);
         assert_eq!(s.len(), 10);
-        assert_eq!(s.rtype(), RType::Complex);
+        assert_eq!(s.rtype(), Rtype::Complexes);
 
         let s = Complexes::from_values([1.0, 2.0, 3.0]);
         assert_eq!(s.len(), 3);
-        assert_eq!(s.rtype(), RType::Complex);
+        assert_eq!(s.rtype(), Rtype::Complexes);
         assert_eq!(s.elt(0), 1.0);
         assert_eq!(s.elt(1), 2.0);
         assert_eq!(s.elt(2), 3.0);
