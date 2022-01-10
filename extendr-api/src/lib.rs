@@ -217,6 +217,7 @@
 //!     assert_eq!(slice.len(), 3);
 //! }
 //! ```
+//!
 
 #![doc(
     html_logo_url = "https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png"
@@ -376,7 +377,7 @@ pub unsafe fn register_call_methods(info: *mut libR_sys::DllInfo, metadata: Meta
 
 /// Type of R objects used by [Robj::rtype].
 #[derive(Debug, PartialEq)]
-pub enum RType {
+pub enum Rtype {
     Null,        // NILSXP
     Symbol,      // SYMSXP
     Pairlist,    // LISTSXP
@@ -387,15 +388,15 @@ pub enum RType {
     Special,     // SPECIALSXP
     Builtin,     // BUILTINSXP
     Rstr,        // CHARSXP
-    Logical,     // LGLSXP
-    Integer,     // INTSXP
-    Real,        // REALSXP
-    Complex,     // CPLXSXP
-    String,      // STRSXP
+    Logicals,    // LGLSXP
+    Integers,    // INTSXP
+    Doubles,     // REALSXP
+    Complexes,   // CPLXSXP
+    Strings,     // STRSXP
     Dot,         // DOTSXP
     Any,         // ANYSXP
     List,        // VECSXP
-    Expression,  // EXPRSXP
+    Expressions, // EXPRSXP
     Bytecode,    // BCODESXP
     ExternalPtr, // EXTPTRSXP
     WeakRef,     // WEAKREFSXP
@@ -419,15 +420,15 @@ pub enum Rany<'a> {
     Special(&'a Primitive),       // SPECIALSXP
     Builtin(&'a Primitive),       // BUILTINSXP
     Rstr(&'a Rstr),               // CHARSXP
-    Logical(&'a Logicals),        // LGLSXP
-    Integer(&'a Integers),        // INTSXP
-    Real(&'a Doubles),            // REALSXP
-    Complex(&'a Complexes),       // CPLXSXP
-    String(&'a Robj),             // STRSXP
+    Logicals(&'a Logicals),       // LGLSXP
+    Integers(&'a Integers),       // INTSXP
+    Doubles(&'a Doubles),         // REALSXP
+    Complexes(&'a Robj),          // CPLXSXP
+    Strings(&'a Strings),         // STRSXP
     Dot(&'a Robj),                // DOTSXP
     Any(&'a Robj),                // ANYSXP
     List(&'a List),               // VECSXP
-    Expression(&'a Expression),   // EXPRSXP
+    Expressions(&'a Expressions), // EXPRSXP
     Bytecode(&'a Robj),           // BCODESXP
     ExternalPtr(&'a Robj),        // EXTPTRSXP
     WeakRef(&'a Robj),            // WEAKREFSXP
@@ -436,10 +437,10 @@ pub enum Rany<'a> {
     Unknown(&'a Robj),
 }
 
-/// Convert extendr's RType to R's SEXPTYPE.
+/// Convert extendr's Rtype to R's SEXPTYPE.
 /// Panics if the type is Unknown.
-pub fn rtype_to_sxp(rtype: RType) -> i32 {
-    use RType::*;
+pub fn rtype_to_sxp(rtype: Rtype) -> i32 {
+    use Rtype::*;
     (match rtype {
         Null => NILSXP,
         Symbol => SYMSXP,
@@ -451,27 +452,27 @@ pub fn rtype_to_sxp(rtype: RType) -> i32 {
         Special => SPECIALSXP,
         Builtin => BUILTINSXP,
         Rstr => CHARSXP,
-        Logical => LGLSXP,
-        Integer => INTSXP,
-        Real => REALSXP,
-        Complex => CPLXSXP,
-        String => STRSXP,
+        Logicals => LGLSXP,
+        Integers => INTSXP,
+        Doubles => REALSXP,
+        Complexes => CPLXSXP,
+        Strings => STRSXP,
         Dot => DOTSXP,
         Any => ANYSXP,
         List => VECSXP,
-        Expression => EXPRSXP,
+        Expressions => EXPRSXP,
         Bytecode => BCODESXP,
         ExternalPtr => EXTPTRSXP,
         WeakRef => WEAKREFSXP,
         Raw => RAWSXP,
         S4 => S4SXP,
-        Unknown => panic!("attempt to use Unknown RType"),
+        Unknown => panic!("attempt to use Unknown Rtype"),
     }) as i32
 }
 
-/// Convert R's SEXPTYPE to extendr's RType.
-pub fn sxp_to_rtype(sxptype: i32) -> RType {
-    use RType::*;
+/// Convert R's SEXPTYPE to extendr's Rtype.
+pub fn sxp_to_rtype(sxptype: i32) -> Rtype {
+    use Rtype::*;
     match sxptype as u32 {
         NILSXP => Null,
         SYMSXP => Symbol,
@@ -483,15 +484,15 @@ pub fn sxp_to_rtype(sxptype: i32) -> RType {
         SPECIALSXP => Special,
         BUILTINSXP => Builtin,
         CHARSXP => Rstr,
-        LGLSXP => Logical,
-        INTSXP => Integer,
-        REALSXP => Real,
-        CPLXSXP => Complex,
-        STRSXP => String,
+        LGLSXP => Logicals,
+        INTSXP => Integers,
+        REALSXP => Doubles,
+        CPLXSXP => Complexes,
+        STRSXP => Strings,
         DOTSXP => Dot,
         ANYSXP => Any,
         VECSXP => List,
-        EXPRSXP => Expression,
+        EXPRSXP => Expressions,
         BCODESXP => Bytecode,
         EXTPTRSXP => ExternalPtr,
         WEAKREFSXP => WeakRef,

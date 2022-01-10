@@ -23,6 +23,7 @@ impl CanBeNA for c64 {
 /// Rcplx has a special NA value, obtained from R headers via R_NaReal.
 ///
 /// Rcplx has the same footprint as R's complex value allowing us to use it in zero copy slices.
+#[derive(Debug)]
 pub struct Rcplx(c64);
 
 impl Rcplx {

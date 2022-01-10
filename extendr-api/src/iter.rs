@@ -30,18 +30,18 @@ pub struct StrIter {
 
 impl Default for StrIter {
     fn default() -> Self {
-        StrIter::new()
+        StrIter::new(0)
     }
 }
 
 impl StrIter {
     /// Make an empty str iterator.
-    pub fn new() -> Self {
+    pub fn new(len: usize) -> Self {
         unsafe {
             Self {
                 vector: ().into(),
                 i: 0,
-                len: 0,
+                len,
                 levels: R_NilValue,
             }
         }

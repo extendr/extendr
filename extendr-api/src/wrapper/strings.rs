@@ -3,7 +3,7 @@ use std::iter::FromIterator;
 
 use super::*;
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(PartialEq, Clone)]
 pub struct Strings {
     pub(crate) robj: Robj,
 }
@@ -69,12 +69,16 @@ impl Strings {
     }
 
     /// This is a relatively expensive operation, so use a variable if using this in a loop.
-    pub fn elt(&self, i: usize) -> &str {
-        if i >= self.len() {
-            <&str>::na()
-        } else {
-            use crate::wrapper::rstr::sexp_to_str;
-            unsafe { sexp_to_str(STRING_ELT(self.get(), i as R_xlen_t)) }
+    pub fn elt(&self, i: usize) -> Rstr {
+        unsafe {
+            let sexp = if i >= self.len() {
+                R_NaString
+            } else {
+                STRING_ELT(self.get(), i as R_xlen_t)
+            };
+            Rstr {
+                robj: Robj::from_sexp(sexp),
+            }
         }
     }
 
@@ -139,5 +143,15 @@ impl Deref for Strings {
 
     fn deref(&self) -> &Self::Target {
         self.as_slice()
+    }
+}
+
+impl std::fmt::Debug for Strings {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.len() == 1 {
+            write!(f, "{:?}", self.elt(0))
+        } else {
+            f.debug_list().entries(self.iter()).finish()
+        }
     }
 }

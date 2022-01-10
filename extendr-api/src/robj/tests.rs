@@ -1,42 +1,6 @@
 use crate::*;
 
 #[test]
-fn test_debug() {
-    test! {
-        // Special values
-        assert_eq!(format!("{:?}", r!(NULL)), "r!(NULL)");
-        assert_eq!(format!("{:?}", r!(TRUE)), "r!(true)");
-        assert_eq!(format!("{:?}", r!(FALSE)), "r!(false)");
-
-        // Scalars
-        assert_eq!(format!("{:?}", r!(1)), "r!(1)");
-        assert_eq!(format!("{:?}", r!(1.)), "r!(1.0)");
-        assert_eq!(format!("{:?}", r!("hello")), "r!([\"hello\"])");
-        let s = "hello".to_string();
-        assert_eq!(format!("{:?}", r!(s)), "r!([\"hello\"])");
-
-        // Vectors
-        assert_eq!(format!("{:?}", r!([1, 2, 3])), "r!([1, 2, 3])");
-        assert_eq!(format!("{:?}", r!([1., 2., 3.])), "r!([1.0, 2.0, 3.0])");
-        assert_eq!(format!("{:?}", r!(Raw::from_bytes(&[1, 2, 3]))), "r!(Raw::from_bytes([1, 2, 3]))");
-
-        // Wrappers
-        assert_eq!(format!("{:?}", r!(Symbol::from_string("x"))), "sym!(x)");
-        assert_eq!(format!("{:?}", r!(Rstr::from_string("x"))), "r!(Rstr::from_string(\"x\"))");
-        assert_eq!(
-            format!("{:?}", r!(Language::from_values(&[r!(Symbol::from_string("x"))]))),
-            "r!(Language::from_values([sym!(x)]))"
-        );
-
-        // Logical
-        assert_eq!(
-            format!("{:?}", r!([TRUE, FALSE, NA_LOGICAL])),
-            "r!([true, false, na])"
-        );
-    }
-}
-
-#[test]
 fn test_from_robj() {
     test! {
         assert_eq!(<bool>::from_robj(&Robj::from(true)), Ok(true));
@@ -280,8 +244,6 @@ fn test_to_robj() {
         let ab = Robj::from(vec!["a", "b"]);
         let ab2 = Robj::from(vec!["a".to_string(), "b".to_string()]);
         assert_eq!(ab, ab2);
-        assert_eq!(format!("{:?}", ab), "r!([\"a\", \"b\"])");
-        assert_eq!(format!("{:?}", ab2), "r!([\"a\", \"b\"])");
 
         assert_eq!(Robj::from(Some(1)), Robj::from(1));
         assert!(!Robj::from(Some(1)).is_na());
@@ -305,10 +267,10 @@ fn test_to_robj() {
 fn parse_test() {
     test! {
     let p = parse("print(1L);print(1L);")?;
-    let q = r!(Expression::from_values(&[
+    let q = Expressions::from_values(&[
         r!(Language::from_values(&[r!(Symbol::from_string("print")), r!(1)])),
         r!(Language::from_values(&[r!(Symbol::from_string("print")), r!(1)]))
-    ]));
+    ]);
     assert_eq!(p, q);
 
     let p = eval_string("1L + 1L")?;

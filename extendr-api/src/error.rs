@@ -107,11 +107,11 @@ impl std::fmt::Display for Error {
             Error::ExpectedRstr(robj) => {
                 write!(f, "Expected Rstr got {:?}", robj.rtype())
             }
-            Error::ExpectedLogical(robj) => write!(f, "Expected Logical got {:?}", robj.rtype()),
-            Error::ExpectedInteger(robj) => write!(f, "Expected Integer got {:?}", robj.rtype()),
-            Error::ExpectedReal(robj) => write!(f, "Expected Real got {:?}", robj.rtype()),
-            Error::ExpectedComplex(robj) => write!(f, "Expected Complex got {:?}", robj.rtype()),
-            Error::ExpectedString(robj) => write!(f, "Expected String got {:?}", robj.rtype()),
+            Error::ExpectedLogical(robj) => write!(f, "Expected Logicals got {:?}", robj.rtype()),
+            Error::ExpectedInteger(robj) => write!(f, "Expected Integers got {:?}", robj.rtype()),
+            Error::ExpectedReal(robj) => write!(f, "Expected Doubles got {:?}", robj.rtype()),
+            Error::ExpectedComplex(robj) => write!(f, "Expected Complexes got {:?}", robj.rtype()),
+            Error::ExpectedString(robj) => write!(f, "Expected Strings got {:?}", robj.rtype()),
             Error::ExpectedDot(robj) => write!(f, "Expected Dot got {:?}", robj.rtype()),
             Error::ExpectedAny(robj) => write!(f, "Expected Any got {:?}", robj.rtype()),
             Error::ExpectedList(robj) => write!(f, "Expected List got {:?}", robj.rtype()),

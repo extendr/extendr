@@ -15,7 +15,7 @@ use std::iter::FromIterator;
 ///     assert_eq!(sum, 60.0);
 /// }
 /// ```  
-#[derive(Debug, PartialEq, Clone)]
+#[derive(PartialEq, Clone)]
 pub struct Doubles {
     pub(crate) robj: Robj,
 }
@@ -77,6 +77,16 @@ impl DerefMut for Doubles {
         unsafe {
             let ptr = DATAPTR(self.get()) as *mut Rfloat;
             std::slice::from_raw_parts_mut(ptr, self.len())
+        }
+    }
+}
+
+impl std::fmt::Debug for Doubles {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.len() == 1 {
+            write!(f, "{:?}", self.elt(0))
+        } else {
+            f.debug_list().entries(self.iter()).finish()
         }
     }
 }

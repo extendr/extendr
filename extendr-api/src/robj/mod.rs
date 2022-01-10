@@ -23,6 +23,7 @@ use std::ops::{Range, RangeInclusive};
 // deprecated
 mod from_robj;
 
+mod debug;
 mod into_robj;
 mod operators;
 mod rinternals;
@@ -231,51 +232,51 @@ pub trait Types: GetSexp {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     assert_eq!(r!(NULL).rtype(), RType::Null);
-    ///     assert_eq!(sym!(xyz).rtype(), RType::Symbol);
-    ///     assert_eq!(r!(Pairlist::from_pairs(vec![("a", r!(1))])).rtype(), RType::Pairlist);
-    ///     assert_eq!(R!("function() {}")?.rtype(), RType::Function);
-    ///     assert_eq!(Environment::new_with_parent(global_env()).rtype(), RType::Environment);
-    ///     assert_eq!(lang!("+", 1, 2).rtype(), RType::Language);
-    ///     assert_eq!(r!(Primitive::from_string("if")).rtype(), RType::Special);
-    ///     assert_eq!(r!(Primitive::from_string("+")).rtype(), RType::Builtin);
-    ///     assert_eq!(r!(Rstr::from_string("hello")).rtype(), RType::Rstr);
-    ///     assert_eq!(r!(TRUE).rtype(), RType::Logical);
-    ///     assert_eq!(r!(1).rtype(), RType::Integer);
-    ///     assert_eq!(r!(1.0).rtype(), RType::Real);
-    ///     assert_eq!(r!("1").rtype(), RType::String);
-    ///     assert_eq!(r!(List::from_values(&[1, 2])).rtype(), RType::List);
-    ///     assert_eq!(parse("x + y")?.rtype(), RType::Expression);
-    ///     assert_eq!(r!(Raw::from_bytes(&[1_u8, 2, 3])).rtype(), RType::Raw);
+    ///     assert_eq!(r!(NULL).rtype(), Rtype::Null);
+    ///     assert_eq!(sym!(xyz).rtype(), Rtype::Symbol);
+    ///     assert_eq!(r!(Pairlist::from_pairs(vec![("a", r!(1))])).rtype(), Rtype::Pairlist);
+    ///     assert_eq!(R!("function() {}")?.rtype(), Rtype::Function);
+    ///     assert_eq!(Environment::new_with_parent(global_env()).rtype(), Rtype::Environment);
+    ///     assert_eq!(lang!("+", 1, 2).rtype(), Rtype::Language);
+    ///     assert_eq!(r!(Primitive::from_string("if")).rtype(), Rtype::Special);
+    ///     assert_eq!(r!(Primitive::from_string("+")).rtype(), Rtype::Builtin);
+    ///     assert_eq!(r!(Rstr::from_string("hello")).rtype(), Rtype::Rstr);
+    ///     assert_eq!(r!(TRUE).rtype(), Rtype::Logicals);
+    ///     assert_eq!(r!(1).rtype(), Rtype::Integers);
+    ///     assert_eq!(r!(1.0).rtype(), Rtype::Doubles);
+    ///     assert_eq!(r!("1").rtype(), Rtype::Strings);
+    ///     assert_eq!(r!(List::from_values(&[1, 2])).rtype(), Rtype::List);
+    ///     assert_eq!(parse("x + y")?.rtype(), Rtype::Expressions);
+    ///     assert_eq!(r!(Raw::from_bytes(&[1_u8, 2, 3])).rtype(), Rtype::Raw);
     /// }
     /// ```
-    fn rtype(&self) -> RType {
+    fn rtype(&self) -> Rtype {
         match self.sexptype() {
-            NILSXP => RType::Null,
-            SYMSXP => RType::Symbol,
-            LISTSXP => RType::Pairlist,
-            CLOSXP => RType::Function,
-            ENVSXP => RType::Environment,
-            PROMSXP => RType::Promise,
-            LANGSXP => RType::Language,
-            SPECIALSXP => RType::Special,
-            BUILTINSXP => RType::Builtin,
-            CHARSXP => RType::Rstr,
-            LGLSXP => RType::Logical,
-            INTSXP => RType::Integer,
-            REALSXP => RType::Real,
-            CPLXSXP => RType::Complex,
-            STRSXP => RType::String,
-            DOTSXP => RType::Dot,
-            ANYSXP => RType::Any,
-            VECSXP => RType::List,
-            EXPRSXP => RType::Expression,
-            BCODESXP => RType::Bytecode,
-            EXTPTRSXP => RType::ExternalPtr,
-            WEAKREFSXP => RType::WeakRef,
-            RAWSXP => RType::Raw,
-            S4SXP => RType::S4,
-            _ => RType::Unknown,
+            NILSXP => Rtype::Null,
+            SYMSXP => Rtype::Symbol,
+            LISTSXP => Rtype::Pairlist,
+            CLOSXP => Rtype::Function,
+            ENVSXP => Rtype::Environment,
+            PROMSXP => Rtype::Promise,
+            LANGSXP => Rtype::Language,
+            SPECIALSXP => Rtype::Special,
+            BUILTINSXP => Rtype::Builtin,
+            CHARSXP => Rtype::Rstr,
+            LGLSXP => Rtype::Logicals,
+            INTSXP => Rtype::Integers,
+            REALSXP => Rtype::Doubles,
+            CPLXSXP => Rtype::Complexes,
+            STRSXP => Rtype::Strings,
+            DOTSXP => Rtype::Dot,
+            ANYSXP => Rtype::Any,
+            VECSXP => Rtype::List,
+            EXPRSXP => Rtype::Expressions,
+            BCODESXP => Rtype::Bytecode,
+            EXTPTRSXP => Rtype::ExternalPtr,
+            WEAKREFSXP => Rtype::WeakRef,
+            RAWSXP => Rtype::Raw,
+            S4SXP => Rtype::S4,
+            _ => Rtype::Unknown,
         }
     }
 
@@ -292,15 +293,15 @@ pub trait Types: GetSexp {
                 SPECIALSXP => Rany::Special(std::mem::transmute(self.as_robj())),
                 BUILTINSXP => Rany::Builtin(std::mem::transmute(self.as_robj())),
                 CHARSXP => Rany::Rstr(std::mem::transmute(self.as_robj())),
-                LGLSXP => Rany::Logical(std::mem::transmute(self.as_robj())),
-                INTSXP => Rany::Integer(std::mem::transmute(self.as_robj())),
-                REALSXP => Rany::Real(std::mem::transmute(self.as_robj())),
-                CPLXSXP => Rany::Complex(std::mem::transmute(self.as_robj())),
-                STRSXP => Rany::String(std::mem::transmute(self.as_robj())),
+                LGLSXP => Rany::Logicals(std::mem::transmute(self.as_robj())),
+                INTSXP => Rany::Integers(std::mem::transmute(self.as_robj())),
+                REALSXP => Rany::Doubles(std::mem::transmute(self.as_robj())),
+                CPLXSXP => Rany::Complexes(std::mem::transmute(self.as_robj())),
+                STRSXP => Rany::Strings(std::mem::transmute(self.as_robj())),
                 DOTSXP => Rany::Dot(std::mem::transmute(self.as_robj())),
                 ANYSXP => Rany::Any(std::mem::transmute(self.as_robj())),
                 VECSXP => Rany::List(std::mem::transmute(self.as_robj())),
-                EXPRSXP => Rany::Expression(std::mem::transmute(self.as_robj())),
+                EXPRSXP => Rany::Expressions(std::mem::transmute(self.as_robj())),
                 BCODESXP => Rany::Bytecode(std::mem::transmute(self.as_robj())),
                 EXTPTRSXP => Rany::ExternalPtr(std::mem::transmute(self.as_robj())),
                 WEAKREFSXP => Rany::WeakRef(std::mem::transmute(self.as_robj())),
@@ -812,6 +813,20 @@ pub trait Attributes: Types + Length {
         }
     }
 
+    /// Return true if an attribute exists.
+    fn has_attrib<'a, N>(&self, name: N) -> bool
+    where
+        Self: 'a,
+        Robj: From<N> + 'a,
+    {
+        let name = Robj::from(name);
+        if self.sexptype() == CHARSXP {
+            false
+        } else {
+            unsafe { Rf_getAttrib(self.get(), name.get()) != R_NilValue }
+        }
+    }
+
     /// Set a specific attribute and return the object.
     ///
     /// Note that some combinations of attributes are illegal and this will
@@ -855,6 +870,11 @@ pub trait Attributes: Types + Length {
         } else {
             None
         }
+    }
+
+    /// Return true if this object has names.
+    fn has_names(&self) -> bool {
+        self.has_attrib(wrapper::symbol::names_symbol())
     }
 
     /// Set the names attribute from a string iterator.
@@ -1036,144 +1056,6 @@ impl PartialEq<Robj> for Robj {
             // see https://github.com/hadley/r-internals/blob/master/misc.md
             R_compute_identical(self.get(), rhs.get(), 16) != 0
         }
-    }
-}
-
-/// Implement {:?} formatting.
-impl std::fmt::Debug for Robj {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self.sexptype() {
-            NILSXP => write!(f, "r!(NULL)"),
-            SYMSXP => {
-                if self.is_missing_arg() {
-                    write!(f, "missing_arg()")
-                } else if self.is_unbound_value() {
-                    write!(f, "unbound_value()")
-                } else {
-                    write!(f, "sym!({})", self.as_symbol().unwrap().as_str())
-                }
-            }
-            LISTSXP => {
-                let pairlist = self.as_pairlist().unwrap().iter();
-                write!(f, "r!({:?})", pairlist)
-            }
-            CLOSXP => {
-                let func = self.as_function().unwrap();
-                let formals = func.formals();
-                let body = func.body();
-                let environment = func.environment();
-                write!(
-                    f,
-                    "r!(Function::from_parts({:?}, {:?}, {:?}))",
-                    formals, body, environment
-                )
-            }
-            ENVSXP => unsafe {
-                let sexp = self.get();
-                if sexp == R_GlobalEnv {
-                    write!(f, "global_env()")
-                } else if sexp == R_BaseEnv {
-                    write!(f, "base_env()")
-                } else if sexp == R_EmptyEnv {
-                    write!(f, "empty_env()")
-                } else {
-                    write!(f, "r!(Environment::from_pairs(...))")
-                }
-            },
-            PROMSXP => {
-                let p = self.as_promise().unwrap();
-                write!(
-                    f,
-                    "r!(Promise::from_parts({:?}, {:?}))",
-                    p.code(),
-                    p.environment()
-                )
-            }
-            LANGSXP => write!(
-                f,
-                "r!(Language::from_values({:?}))",
-                self.as_language().unwrap().values().collect::<Vec<_>>()
-            ),
-            SPECIALSXP => write!(f, "r!(Special())"),
-            BUILTINSXP => write!(f, "r!(Builtin())"),
-            CHARSXP => {
-                let c = Rstr::try_from(self.clone()).unwrap();
-                write!(f, "r!(Rstr::from_string({:?}))", c.as_str())
-            }
-            LGLSXP => {
-                let slice = self.as_logical_slice().unwrap();
-                if slice.len() == 1 {
-                    write!(f, "r!({:?})", slice[0])
-                } else {
-                    write!(f, "r!({:?})", slice)
-                }
-            }
-            INTSXP => {
-                let slice = self.as_integer_slice().unwrap();
-                if slice.len() == 1 {
-                    write!(f, "r!({:?})", slice[0])
-                } else {
-                    write!(f, "r!({:?})", self.as_integer_slice().unwrap())
-                }
-            }
-            REALSXP => {
-                let slice = self.as_real_slice().unwrap();
-                if slice.len() == 1 {
-                    write!(f, "r!({:?})", slice[0])
-                } else {
-                    write!(f, "r!({:?})", slice)
-                }
-            }
-            VECSXP => {
-                let list = self.as_list().unwrap();
-                if self.names().is_some() {
-                    write!(f, "r!(List::from_pairs({:?}))", list.iter())
-                } else {
-                    write!(f, "r!(List::from_values({:?}))", list.values())
-                }
-            }
-            EXPRSXP => write!(
-                f,
-                "r!(Expression::from_values({:?}))",
-                self.as_expression().unwrap().values()
-            ),
-            WEAKREFSXP => write!(f, "r!(Weakref())"),
-            // CPLXSXP => false,
-            STRSXP => {
-                write!(f, "r!([")?;
-                let mut sep = "";
-                for s in self.as_str_iter().unwrap() {
-                    // if s.is_na() {
-                    //     write!(f, "{}na_str()", sep)?;
-                    // } else {
-                    write!(f, "{}{:?}", sep, s)?;
-                    // }
-                    sep = ", ";
-                }
-                write!(f, "])")
-            }
-            DOTSXP => write!(f, "r!(Dot())"),
-            ANYSXP => write!(f, "r!(Any())"),
-            BCODESXP => write!(f, "r!(Bcode())"),
-            EXTPTRSXP => {
-                write!(f, "r!(ExternalPtr())")
-            }
-            RAWSXP => {
-                write!(
-                    f,
-                    "r!(Raw::from_bytes({:?}))",
-                    self.as_raw().unwrap().as_slice()
-                )
-            }
-            S4SXP => write!(f, "r!(S4())"),
-            NEWSXP => write!(f, "r!(New())"),
-            FREESXP => write!(f, "r!(Free())"),
-            _ => write!(f, "??"),
-        }?;
-        if let Some(c) = self.class() {
-            write!(f, ".set_class({:?}", c)?;
-        }
-        Ok(())
     }
 }
 

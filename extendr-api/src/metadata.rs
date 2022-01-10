@@ -153,7 +153,7 @@ fn write_function_wrapper(
     let formal_args = func
         .args
         .iter()
-        .map(|arg| gen_formal_arg(arg))
+        .map(gen_formal_arg)
         .collect::<Vec<_>>()
         .join(", ");
 

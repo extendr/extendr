@@ -21,6 +21,7 @@ fn test_externalptr_drop() {
         }
 
         // Dummy structure that will show if we drop correctly.
+        #[derive(Debug)]
         struct X {
         }
 
@@ -50,6 +51,7 @@ fn test_externalptr_drop() {
 #[test]
 fn test_externalptr_deref() {
     test! {
+        #[derive(Debug)]
         struct X {
             x: i32,
             y: i32,

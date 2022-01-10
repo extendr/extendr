@@ -40,7 +40,7 @@ macro_rules! make_from_iterator {
     };
 }
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(PartialEq, Clone)]
 pub struct Altrep {
     pub(crate) robj: Robj,
 }
@@ -94,7 +94,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
     }
 
     /// Coerce this object into some other type, if possible.
-    fn coerce(_x: SEXP, _ty: RType) -> Robj {
+    fn coerce(_x: SEXP, _ty: Rtype) -> Robj {
         ().into()
     }
 
@@ -535,7 +535,7 @@ impl Altrep {
         }
     }
 
-    fn altrep_class<StateType: AltrepImpl + 'static>(ty: RType, name: &str, base: &str) -> Robj {
+    fn altrep_class<StateType: AltrepImpl + 'static>(ty: Rtype, name: &str, base: &str) -> Robj {
         #![allow(non_snake_case)]
         #![allow(unused_variables)]
         use std::os::raw::c_int;
@@ -641,22 +641,22 @@ impl Altrep {
             let csbase = std::ffi::CString::new(base).unwrap();
 
             let class_ptr = match ty {
-                RType::Integer => {
+                Rtype::Integers => {
                     R_make_altinteger_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
                 }
-                RType::Real => {
+                Rtype::Doubles => {
                     R_make_altreal_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
                 }
-                RType::Logical => {
+                Rtype::Logicals => {
                     R_make_altlogical_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
                 }
-                RType::Raw => {
+                Rtype::Raw => {
                     R_make_altraw_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
                 }
-                RType::Complex => {
+                Rtype::Complexes => {
                     R_make_altcomplex_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
                 }
-                RType::String => {
+                Rtype::Strings => {
                     R_make_altstring_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
                 }
                 _ => panic!("expected Altvec compatible type"),
@@ -694,7 +694,7 @@ impl Altrep {
         use std::os::raw::c_int;
 
         single_threaded(|| unsafe {
-            let class = Altrep::altrep_class::<StateType>(RType::Integer, name, base);
+            let class = Altrep::altrep_class::<StateType>(Rtype::Integers, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
             unsafe extern "C" fn altinteger_Elt<StateType: AltIntegerImpl + 'static>(
@@ -772,7 +772,7 @@ impl Altrep {
         use std::os::raw::c_int;
 
         single_threaded(|| unsafe {
-            let class = Altrep::altrep_class::<StateType>(RType::Real, name, base);
+            let class = Altrep::altrep_class::<StateType>(Rtype::Doubles, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
             unsafe extern "C" fn altreal_Elt<StateType: AltRealImpl + 'static>(
@@ -847,7 +847,7 @@ impl Altrep {
         use std::os::raw::c_int;
 
         single_threaded(|| unsafe {
-            let class = Altrep::altrep_class::<StateType>(RType::Logical, name, base);
+            let class = Altrep::altrep_class::<StateType>(Rtype::Logicals, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
             unsafe extern "C" fn altlogical_Elt<StateType: AltLogicalImpl + 'static>(
@@ -908,7 +908,7 @@ impl Altrep {
         #![allow(non_snake_case)]
 
         single_threaded(|| unsafe {
-            let class = Altrep::altrep_class::<StateType>(RType::Raw, name, base);
+            let class = Altrep::altrep_class::<StateType>(Rtype::Raw, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
             unsafe extern "C" fn altraw_Elt<StateType: AltRawImpl + 'static>(
@@ -943,7 +943,7 @@ impl Altrep {
         #![allow(non_snake_case)]
 
         single_threaded(|| unsafe {
-            let class = Altrep::altrep_class::<StateType>(RType::Complex, name, base);
+            let class = Altrep::altrep_class::<StateType>(Rtype::Complexes, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
             unsafe extern "C" fn altcomplex_Elt<StateType: AltComplexImpl + 'static>(
@@ -979,7 +979,7 @@ impl Altrep {
         use std::os::raw::c_int;
 
         single_threaded(|| unsafe {
-            let class = Altrep::altrep_class::<StateType>(RType::String, name, base);
+            let class = Altrep::altrep_class::<StateType>(Rtype::Strings, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
             unsafe extern "C" fn altstring_Elt<StateType: AltStringImpl + 'static>(

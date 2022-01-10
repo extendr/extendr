@@ -4,7 +4,7 @@
 //! using deprecated features.
 
 pub use super::{
-    print_r_error, print_r_output, CanBeNA, FromRobj, RType, FALSE, NA_INTEGER, NA_LOGICAL,
+    print_r_error, print_r_output, CanBeNA, FromRobj, Rtype, FALSE, NA_INTEGER, NA_LOGICAL,
     NA_REAL, NA_STRING, NULL, TRUE,
 };
 
@@ -55,7 +55,7 @@ pub use super::thread_safety::{
 };
 
 pub use super::wrapper::{
-    Complexes, Doubles, EnvIter, Environment, Expression, ExternalPtr, FromList, Function,
+    Complexes, Doubles, EnvIter, Environment, Expressions, ExternalPtr, FromList, Function,
     Integers, Language, List, ListIter, Logicals, Nullable, Pairlist, Primitive, Promise, Raw,
     Rstr, Strings, Symbol,
 };

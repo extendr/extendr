@@ -36,7 +36,7 @@ pub use altrep::{
 pub use complexes::Complexes;
 pub use doubles::Doubles;
 pub use environment::{EnvIter, Environment};
-pub use expr::Expression;
+pub use expr::Expressions;
 pub use externalptr::ExternalPtr;
 pub use function::Function;
 pub use integers::Integers;
@@ -168,9 +168,9 @@ make_conversions!(
 make_conversions!(List, ExpectedList, is_list, "Not a List");
 
 make_conversions!(
-    Expression,
+    Expressions,
     ExpectedExpression,
-    is_expression,
+    is_expressions,
     "Not an Expression"
 );
 
@@ -262,7 +262,6 @@ pub trait Conversions: GetSexp {
     ///     let call_to_xyz = r!(Language::from_values(&[r!(Symbol::from_string("xyz")), r!(1), r!(2)]));
     ///     assert_eq!(call_to_xyz.is_language(), true);
     ///     assert_eq!(call_to_xyz.len(), 3);
-    ///     assert_eq!(format!("{:?}", call_to_xyz), r#"r!(Language::from_values([sym!(xyz), r!(1), r!(2)]))"#);
     /// }
     /// ```
     fn as_language(&self) -> Option<Language> {
@@ -289,7 +288,6 @@ pub trait Conversions: GetSexp {
     /// test! {
     ///     let list = r!(List::from_values(&[r!(0), r!(1), r!(2)]));
     ///     assert_eq!(list.is_list(), true);
-    ///     assert_eq!(format!("{:?}", list), r#"r!(List::from_values([r!(0), r!(1), r!(2)]))"#);
     /// }
     /// ```
     fn as_list(&self) -> Option<List> {
@@ -300,14 +298,13 @@ pub trait Conversions: GetSexp {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let expr = r!(Expression::from_values(&[r!(0), r!(1), r!(2)]));
-    ///     assert_eq!(expr.is_expression(), true);
-    ///     assert_eq!(expr.as_expression(), Some(Expression::from_values(vec![r!(0), r!(1), r!(2)])));
-    ///     assert_eq!(format!("{:?}", expr), r#"r!(Expression::from_values([r!(0), r!(1), r!(2)]))"#);
+    ///     let expr = r!(Expressions::from_values(&[r!(0), r!(1), r!(2)]));
+    ///     assert_eq!(expr.is_expressions(), true);
+    ///     assert_eq!(expr.as_expressions(), Some(Expressions::from_values(vec![r!(0), r!(1), r!(2)])));
     /// }
     /// ```
-    fn as_expression(&self) -> Option<Expression> {
-        Expression::try_from(self.as_robj().clone()).ok()
+    fn as_expressions(&self) -> Option<Expressions> {
+        Expressions::try_from(self.as_robj().clone()).ok()
     }
 
     /// Convert an environment object (ENVSXP) to a Env wrapper.

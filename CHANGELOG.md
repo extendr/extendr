@@ -2,6 +2,14 @@
 
 ## extendr devel
 
+- Extra Serialize support.
+
+- Direct Debug support for wrappers.
+
+- Strings::elt returns Rstr.
+
+- Renamed RType to Rtype.
+
 - Removed Bool type.
 
 - Introduced scalars Rint, Rfloat and Rbool.

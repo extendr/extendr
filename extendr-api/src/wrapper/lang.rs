@@ -11,7 +11,7 @@ use super::*;
 /// ```
 ///
 /// Note: You can use the [lang!] macro for this.
-#[derive(Debug, PartialEq, Clone)]
+#[derive(PartialEq, Clone)]
 pub struct Language {
     pub(crate) robj: Robj,
 }
@@ -52,5 +52,23 @@ impl Language {
 
     pub fn values(&self) -> impl Iterator<Item = Robj> {
         self.iter().map(|(_, robj)| robj)
+    }
+}
+
+impl std::fmt::Debug for Language {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "lang!({})",
+            self.iter()
+                .map(|(k, v)| if k.is_empty() {
+                    format!("{:?}", v)
+                } else {
+                    format!("{}={:?}", k, v)
+                })
+                .collect::<Vec<_>>()
+                .join(", ")
+        )?;
+        Ok(())
     }
 }

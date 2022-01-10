@@ -2,7 +2,7 @@
 
 use super::*;
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(PartialEq, Clone)]
 pub struct S4 {
     pub(crate) robj: Robj,
 }
@@ -156,3 +156,9 @@ impl S4 {
 //         valid: *mut *const ::std::os::raw::c_char,
 //     ) -> ::std::os::raw::c_int;
 // }
+
+impl std::fmt::Debug for S4 {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("S4").finish()
+    }
+}

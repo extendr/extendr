@@ -12,7 +12,7 @@ use super::*;
 /// }
 /// ```
 ///
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct Rstr {
     pub(crate) robj: Robj,
 }
@@ -84,5 +84,33 @@ impl PartialEq<str> for Rstr {
     /// Compare a `Rstr` with a string slice.
     fn eq(&self, other: &str) -> bool {
         self.as_str() == other
+    }
+}
+
+impl std::fmt::Debug for Rstr {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = self.as_str();
+        write!(f, "{:?}", s)
+    }
+}
+
+impl std::fmt::Display for Rstr {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = self.as_str();
+        write!(f, "{}", s)
+    }
+}
+
+impl CanBeNA for Rstr {
+    fn is_na(&self) -> bool {
+        unsafe { self.robj.get() == R_NaString }
+    }
+
+    fn na() -> Self {
+        unsafe {
+            Self {
+                robj: Robj::from_sexp(R_NaString),
+            }
+        }
     }
 }
