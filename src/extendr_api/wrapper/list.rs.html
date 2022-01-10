@@ -404,12 +404,40 @@
 <span id="404">404</span>
 <span id="405">405</span>
 <span id="406">406</span>
+<span id="407">407</span>
+<span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
+<span id="411">411</span>
+<span id="412">412</span>
+<span id="413">413</span>
+<span id="414">414</span>
+<span id="415">415</span>
+<span id="416">416</span>
+<span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
+<span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::robj::Attributes</span>;
 <span class="kw">use</span> <span class="ident">std::iter::FromIterator</span>;
 
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">List</span> {
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">robj</span>: <span class="ident">Robj</span>,
 }
@@ -545,7 +573,7 @@
         <span class="comment">// TODO: Make a proper NamedListIter.</span>
         <span class="self">self</span>.<span class="ident">names</span>()
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">n</span>.<span class="ident">zip</span>(<span class="self">self</span>.<span class="ident">values</span>()))
-            .<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">StrIter::new</span>().<span class="ident">zip</span>(<span class="self">self</span>.<span class="ident">values</span>()))
+            .<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">StrIter::new</span>(<span class="self">self</span>.<span class="ident">len</span>()).<span class="ident">zip</span>(<span class="self">self</span>.<span class="ident">values</span>()))
     }
 
     <span class="doccomment">/// Get the list a slice of `Robj`s.</span>
@@ -808,6 +836,34 @@
     <span class="doccomment">/// Lists behave like slices of Robj.</span>
     <span class="kw">fn</span> <span class="ident">deref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::Target</span> {
         <span class="self">self</span>.<span class="ident">as_slice</span>()
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">std::fmt::Debug</span> <span class="kw">for</span> <span class="ident">List</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::fmt::Result</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">names</span>().<span class="ident">is_none</span>() {
+            <span class="macro">write!</span>(
+                <span class="ident">f</span>,
+                <span class="string">&quot;list!({})&quot;</span>,
+                <span class="self">self</span>.<span class="ident">values</span>()
+                    .<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">v</span>))
+                    .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()
+                    .<span class="ident">join</span>(<span class="string">&quot;, &quot;</span>)
+            )
+        } <span class="kw">else</span> {
+            <span class="macro">write!</span>(
+                <span class="ident">f</span>,
+                <span class="string">&quot;list!({})&quot;</span>,
+                <span class="self">self</span>.<span class="ident">iter</span>()
+                    .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">k</span>, <span class="ident">v</span>)<span class="op">|</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">k</span>.<span class="ident">is_empty</span>() {
+                        <span class="macro">format!</span>(<span class="string">&quot;{}={:?}&quot;</span>, <span class="ident">k</span>, <span class="ident">v</span>)
+                    } <span class="kw">else</span> {
+                        <span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">v</span>)
+                    })
+                    .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()
+                    .<span class="ident">join</span>(<span class="string">&quot;, &quot;</span>)
+            )
+        }
     }
 }
 </code></pre></div>

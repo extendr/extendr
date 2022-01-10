@@ -906,6 +906,7 @@
 <span id="906">906</span>
 <span id="907">907</span>
 <span id="908">908</span>
+<span id="909">909</span>
 </pre><pre class="rust"><code><span class="doccomment">//!</span>
 <span class="doccomment">//! A safe and user friendly R extension interface.</span>
 <span class="doccomment">//!</span>
@@ -1125,6 +1126,7 @@
 <span class="doccomment">//!     assert_eq!(slice.len(), 3);</span>
 <span class="doccomment">//! }</span>
 <span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
 
 <span class="attribute">#![<span class="ident">doc</span>(
     <span class="ident">html_logo_url</span> <span class="op">=</span> <span class="string">&quot;https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png&quot;</span>
@@ -1284,7 +1286,7 @@
 
 <span class="doccomment">/// Type of R objects used by [Robj::rtype].</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">RType</span> {
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Rtype</span> {
     <span class="ident">Null</span>,        <span class="comment">// NILSXP</span>
     <span class="ident">Symbol</span>,      <span class="comment">// SYMSXP</span>
     <span class="ident">Pairlist</span>,    <span class="comment">// LISTSXP</span>
@@ -1295,15 +1297,15 @@
     <span class="ident">Special</span>,     <span class="comment">// SPECIALSXP</span>
     <span class="ident">Builtin</span>,     <span class="comment">// BUILTINSXP</span>
     <span class="ident">Rstr</span>,        <span class="comment">// CHARSXP</span>
-    <span class="ident">Logical</span>,     <span class="comment">// LGLSXP</span>
-    <span class="ident">Integer</span>,     <span class="comment">// INTSXP</span>
-    <span class="ident">Real</span>,        <span class="comment">// REALSXP</span>
-    <span class="ident">Complex</span>,     <span class="comment">// CPLXSXP</span>
-    <span class="ident">String</span>,      <span class="comment">// STRSXP</span>
+    <span class="ident">Logicals</span>,    <span class="comment">// LGLSXP</span>
+    <span class="ident">Integers</span>,    <span class="comment">// INTSXP</span>
+    <span class="ident">Doubles</span>,     <span class="comment">// REALSXP</span>
+    <span class="ident">Complexes</span>,   <span class="comment">// CPLXSXP</span>
+    <span class="ident">Strings</span>,     <span class="comment">// STRSXP</span>
     <span class="ident">Dot</span>,         <span class="comment">// DOTSXP</span>
     <span class="ident">Any</span>,         <span class="comment">// ANYSXP</span>
     <span class="ident">List</span>,        <span class="comment">// VECSXP</span>
-    <span class="ident">Expression</span>,  <span class="comment">// EXPRSXP</span>
+    <span class="ident">Expressions</span>, <span class="comment">// EXPRSXP</span>
     <span class="ident">Bytecode</span>,    <span class="comment">// BCODESXP</span>
     <span class="ident">ExternalPtr</span>, <span class="comment">// EXTPTRSXP</span>
     <span class="ident">WeakRef</span>,     <span class="comment">// WEAKREFSXP</span>
@@ -1327,15 +1329,15 @@
     <span class="ident">Special</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Primitive</span>),       <span class="comment">// SPECIALSXP</span>
     <span class="ident">Builtin</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Primitive</span>),       <span class="comment">// BUILTINSXP</span>
     <span class="ident">Rstr</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Rstr</span>),               <span class="comment">// CHARSXP</span>
-    <span class="ident">Logical</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Logicals</span>),        <span class="comment">// LGLSXP</span>
-    <span class="ident">Integer</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Integers</span>),        <span class="comment">// INTSXP</span>
-    <span class="ident">Real</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Doubles</span>),            <span class="comment">// REALSXP</span>
-    <span class="ident">Complex</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Complexes</span>),       <span class="comment">// CPLXSXP</span>
-    <span class="ident">String</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),             <span class="comment">// STRSXP</span>
+    <span class="ident">Logicals</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Logicals</span>),       <span class="comment">// LGLSXP</span>
+    <span class="ident">Integers</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Integers</span>),       <span class="comment">// INTSXP</span>
+    <span class="ident">Doubles</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Doubles</span>),         <span class="comment">// REALSXP</span>
+    <span class="ident">Complexes</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),          <span class="comment">// CPLXSXP</span>
+    <span class="ident">Strings</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Strings</span>),         <span class="comment">// STRSXP</span>
     <span class="ident">Dot</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),                <span class="comment">// DOTSXP</span>
     <span class="ident">Any</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),                <span class="comment">// ANYSXP</span>
     <span class="ident">List</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">List</span>),               <span class="comment">// VECSXP</span>
-    <span class="ident">Expression</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Expression</span>),   <span class="comment">// EXPRSXP</span>
+    <span class="ident">Expressions</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Expressions</span>), <span class="comment">// EXPRSXP</span>
     <span class="ident">Bytecode</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),           <span class="comment">// BCODESXP</span>
     <span class="ident">ExternalPtr</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),        <span class="comment">// EXTPTRSXP</span>
     <span class="ident">WeakRef</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),            <span class="comment">// WEAKREFSXP</span>
@@ -1344,10 +1346,10 @@
     <span class="ident">Unknown</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>),
 }
 
-<span class="doccomment">/// Convert extendr&#39;s RType to R&#39;s SEXPTYPE.</span>
+<span class="doccomment">/// Convert extendr&#39;s Rtype to R&#39;s SEXPTYPE.</span>
 <span class="doccomment">/// Panics if the type is Unknown.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtype_to_sxp</span>(<span class="ident">rtype</span>: <span class="ident">RType</span>) -&gt; <span class="ident">i32</span> {
-    <span class="kw">use</span> <span class="ident">RType</span>::<span class="kw-2">*</span>;
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rtype_to_sxp</span>(<span class="ident">rtype</span>: <span class="ident">Rtype</span>) -&gt; <span class="ident">i32</span> {
+    <span class="kw">use</span> <span class="ident">Rtype</span>::<span class="kw-2">*</span>;
     (<span class="kw">match</span> <span class="ident">rtype</span> {
         <span class="ident">Null</span> =&gt; <span class="ident">NILSXP</span>,
         <span class="ident">Symbol</span> =&gt; <span class="ident">SYMSXP</span>,
@@ -1359,27 +1361,27 @@
         <span class="ident">Special</span> =&gt; <span class="ident">SPECIALSXP</span>,
         <span class="ident">Builtin</span> =&gt; <span class="ident">BUILTINSXP</span>,
         <span class="ident">Rstr</span> =&gt; <span class="ident">CHARSXP</span>,
-        <span class="ident">Logical</span> =&gt; <span class="ident">LGLSXP</span>,
-        <span class="ident">Integer</span> =&gt; <span class="ident">INTSXP</span>,
-        <span class="ident">Real</span> =&gt; <span class="ident">REALSXP</span>,
-        <span class="ident">Complex</span> =&gt; <span class="ident">CPLXSXP</span>,
-        <span class="ident">String</span> =&gt; <span class="ident">STRSXP</span>,
+        <span class="ident">Logicals</span> =&gt; <span class="ident">LGLSXP</span>,
+        <span class="ident">Integers</span> =&gt; <span class="ident">INTSXP</span>,
+        <span class="ident">Doubles</span> =&gt; <span class="ident">REALSXP</span>,
+        <span class="ident">Complexes</span> =&gt; <span class="ident">CPLXSXP</span>,
+        <span class="ident">Strings</span> =&gt; <span class="ident">STRSXP</span>,
         <span class="ident">Dot</span> =&gt; <span class="ident">DOTSXP</span>,
         <span class="ident">Any</span> =&gt; <span class="ident">ANYSXP</span>,
         <span class="ident">List</span> =&gt; <span class="ident">VECSXP</span>,
-        <span class="ident">Expression</span> =&gt; <span class="ident">EXPRSXP</span>,
+        <span class="ident">Expressions</span> =&gt; <span class="ident">EXPRSXP</span>,
         <span class="ident">Bytecode</span> =&gt; <span class="ident">BCODESXP</span>,
         <span class="ident">ExternalPtr</span> =&gt; <span class="ident">EXTPTRSXP</span>,
         <span class="ident">WeakRef</span> =&gt; <span class="ident">WEAKREFSXP</span>,
         <span class="ident">Raw</span> =&gt; <span class="ident">RAWSXP</span>,
         <span class="ident">S4</span> =&gt; <span class="ident">S4SXP</span>,
-        <span class="ident">Unknown</span> =&gt; <span class="macro">panic!</span>(<span class="string">&quot;attempt to use Unknown RType&quot;</span>),
+        <span class="ident">Unknown</span> =&gt; <span class="macro">panic!</span>(<span class="string">&quot;attempt to use Unknown Rtype&quot;</span>),
     }) <span class="kw">as</span> <span class="ident">i32</span>
 }
 
-<span class="doccomment">/// Convert R&#39;s SEXPTYPE to extendr&#39;s RType.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sxp_to_rtype</span>(<span class="ident">sxptype</span>: <span class="ident">i32</span>) -&gt; <span class="ident">RType</span> {
-    <span class="kw">use</span> <span class="ident">RType</span>::<span class="kw-2">*</span>;
+<span class="doccomment">/// Convert R&#39;s SEXPTYPE to extendr&#39;s Rtype.</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sxp_to_rtype</span>(<span class="ident">sxptype</span>: <span class="ident">i32</span>) -&gt; <span class="ident">Rtype</span> {
+    <span class="kw">use</span> <span class="ident">Rtype</span>::<span class="kw-2">*</span>;
     <span class="kw">match</span> <span class="ident">sxptype</span> <span class="kw">as</span> <span class="ident">u32</span> {
         <span class="ident">NILSXP</span> =&gt; <span class="ident">Null</span>,
         <span class="ident">SYMSXP</span> =&gt; <span class="ident">Symbol</span>,
@@ -1391,15 +1393,15 @@
         <span class="ident">SPECIALSXP</span> =&gt; <span class="ident">Special</span>,
         <span class="ident">BUILTINSXP</span> =&gt; <span class="ident">Builtin</span>,
         <span class="ident">CHARSXP</span> =&gt; <span class="ident">Rstr</span>,
-        <span class="ident">LGLSXP</span> =&gt; <span class="ident">Logical</span>,
-        <span class="ident">INTSXP</span> =&gt; <span class="ident">Integer</span>,
-        <span class="ident">REALSXP</span> =&gt; <span class="ident">Real</span>,
-        <span class="ident">CPLXSXP</span> =&gt; <span class="ident">Complex</span>,
-        <span class="ident">STRSXP</span> =&gt; <span class="ident">String</span>,
+        <span class="ident">LGLSXP</span> =&gt; <span class="ident">Logicals</span>,
+        <span class="ident">INTSXP</span> =&gt; <span class="ident">Integers</span>,
+        <span class="ident">REALSXP</span> =&gt; <span class="ident">Doubles</span>,
+        <span class="ident">CPLXSXP</span> =&gt; <span class="ident">Complexes</span>,
+        <span class="ident">STRSXP</span> =&gt; <span class="ident">Strings</span>,
         <span class="ident">DOTSXP</span> =&gt; <span class="ident">Dot</span>,
         <span class="ident">ANYSXP</span> =&gt; <span class="ident">Any</span>,
         <span class="ident">VECSXP</span> =&gt; <span class="ident">List</span>,
-        <span class="ident">EXPRSXP</span> =&gt; <span class="ident">Expression</span>,
+        <span class="ident">EXPRSXP</span> =&gt; <span class="ident">Expressions</span>,
         <span class="ident">BCODESXP</span> =&gt; <span class="ident">Bytecode</span>,
         <span class="ident">EXTPTRSXP</span> =&gt; <span class="ident">ExternalPtr</span>,
         <span class="ident">WEAKREFSXP</span> =&gt; <span class="ident">WeakRef</span>,

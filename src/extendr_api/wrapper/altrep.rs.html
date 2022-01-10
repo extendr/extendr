@@ -1100,7 +1100,7 @@
     };
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Altrep</span> {
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">robj</span>: <span class="ident">Robj</span>,
 }
@@ -1154,7 +1154,7 @@
     }
 
     <span class="doccomment">/// Coerce this object into some other type, if possible.</span>
-    <span class="kw">fn</span> <span class="ident">coerce</span>(<span class="ident">_x</span>: <span class="ident">SEXP</span>, <span class="ident">_ty</span>: <span class="ident">RType</span>) -&gt; <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">coerce</span>(<span class="ident">_x</span>: <span class="ident">SEXP</span>, <span class="ident">_ty</span>: <span class="ident">Rtype</span>) -&gt; <span class="ident">Robj</span> {
         ().<span class="ident">into</span>()
     }
 
@@ -1595,7 +1595,7 @@
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">altrep_class</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltrepImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(<span class="ident">ty</span>: <span class="ident">RType</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">Robj</span> {
+    <span class="kw">fn</span> <span class="ident">altrep_class</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltrepImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(<span class="ident">ty</span>: <span class="ident">Rtype</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">Robj</span> {
         <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
         <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">unused_variables</span>)]</span>
         <span class="kw">use</span> <span class="ident">std::os::raw::c_int</span>;
@@ -1701,22 +1701,22 @@
             <span class="kw">let</span> <span class="ident">csbase</span> <span class="op">=</span> <span class="ident">std::ffi::CString::new</span>(<span class="ident">base</span>).<span class="ident">unwrap</span>();
 
             <span class="kw">let</span> <span class="ident">class_ptr</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">ty</span> {
-                <span class="ident">RType::Integer</span> =&gt; {
+                <span class="ident">Rtype::Integers</span> =&gt; {
                     <span class="ident">R_make_altinteger_class</span>(<span class="ident">csname</span>.<span class="ident">as_ptr</span>(), <span class="ident">csbase</span>.<span class="ident">as_ptr</span>(), <span class="ident">std::ptr::null_mut</span>())
                 }
-                <span class="ident">RType::Real</span> =&gt; {
+                <span class="ident">Rtype::Doubles</span> =&gt; {
                     <span class="ident">R_make_altreal_class</span>(<span class="ident">csname</span>.<span class="ident">as_ptr</span>(), <span class="ident">csbase</span>.<span class="ident">as_ptr</span>(), <span class="ident">std::ptr::null_mut</span>())
                 }
-                <span class="ident">RType::Logical</span> =&gt; {
+                <span class="ident">Rtype::Logicals</span> =&gt; {
                     <span class="ident">R_make_altlogical_class</span>(<span class="ident">csname</span>.<span class="ident">as_ptr</span>(), <span class="ident">csbase</span>.<span class="ident">as_ptr</span>(), <span class="ident">std::ptr::null_mut</span>())
                 }
-                <span class="ident">RType::Raw</span> =&gt; {
+                <span class="ident">Rtype::Raw</span> =&gt; {
                     <span class="ident">R_make_altraw_class</span>(<span class="ident">csname</span>.<span class="ident">as_ptr</span>(), <span class="ident">csbase</span>.<span class="ident">as_ptr</span>(), <span class="ident">std::ptr::null_mut</span>())
                 }
-                <span class="ident">RType::Complex</span> =&gt; {
+                <span class="ident">Rtype::Complexes</span> =&gt; {
                     <span class="ident">R_make_altcomplex_class</span>(<span class="ident">csname</span>.<span class="ident">as_ptr</span>(), <span class="ident">csbase</span>.<span class="ident">as_ptr</span>(), <span class="ident">std::ptr::null_mut</span>())
                 }
-                <span class="ident">RType::String</span> =&gt; {
+                <span class="ident">Rtype::Strings</span> =&gt; {
                     <span class="ident">R_make_altstring_class</span>(<span class="ident">csname</span>.<span class="ident">as_ptr</span>(), <span class="ident">csbase</span>.<span class="ident">as_ptr</span>(), <span class="ident">std::ptr::null_mut</span>())
                 }
                 <span class="kw">_</span> =&gt; <span class="macro">panic!</span>(<span class="string">&quot;expected Altvec compatible type&quot;</span>),
@@ -1754,7 +1754,7 @@
         <span class="kw">use</span> <span class="ident">std::os::raw::c_int</span>;
 
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">class</span> <span class="op">=</span> <span class="ident">Altrep::altrep_class</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">RType::Integer</span>, <span class="ident">name</span>, <span class="ident">base</span>);
+            <span class="kw">let</span> <span class="ident">class</span> <span class="op">=</span> <span class="ident">Altrep::altrep_class</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">Rtype::Integers</span>, <span class="ident">name</span>, <span class="ident">base</span>);
             <span class="kw">let</span> <span class="ident">class_ptr</span> <span class="op">=</span> <span class="ident">R_altrep_class_t</span> { <span class="ident">ptr</span>: <span class="ident">class</span>.<span class="ident">get</span>() };
 
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altinteger_Elt</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltIntegerImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
@@ -1832,7 +1832,7 @@
         <span class="kw">use</span> <span class="ident">std::os::raw::c_int</span>;
 
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">class</span> <span class="op">=</span> <span class="ident">Altrep::altrep_class</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">RType::Real</span>, <span class="ident">name</span>, <span class="ident">base</span>);
+            <span class="kw">let</span> <span class="ident">class</span> <span class="op">=</span> <span class="ident">Altrep::altrep_class</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">Rtype::Doubles</span>, <span class="ident">name</span>, <span class="ident">base</span>);
             <span class="kw">let</span> <span class="ident">class_ptr</span> <span class="op">=</span> <span class="ident">R_altrep_class_t</span> { <span class="ident">ptr</span>: <span class="ident">class</span>.<span class="ident">get</span>() };
 
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altreal_Elt</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltRealImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
@@ -1907,7 +1907,7 @@
         <span class="kw">use</span> <span class="ident">std::os::raw::c_int</span>;
 
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">class</span> <span class="op">=</span> <span class="ident">Altrep::altrep_class</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">RType::Logical</span>, <span class="ident">name</span>, <span class="ident">base</span>);
+            <span class="kw">let</span> <span class="ident">class</span> <span class="op">=</span> <span class="ident">Altrep::altrep_class</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">Rtype::Logicals</span>, <span class="ident">name</span>, <span class="ident">base</span>);
             <span class="kw">let</span> <span class="ident">class_ptr</span> <span class="op">=</span> <span class="ident">R_altrep_class_t</span> { <span class="ident">ptr</span>: <span class="ident">class</span>.<span class="ident">get</span>() };
 
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altlogical_Elt</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltLogicalImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
@@ -1968,7 +1968,7 @@
         <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
 
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">class</span> <span class="op">=</span> <span class="ident">Altrep::altrep_class</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">RType::Raw</span>, <span class="ident">name</span>, <span class="ident">base</span>);
+            <span class="kw">let</span> <span class="ident">class</span> <span class="op">=</span> <span class="ident">Altrep::altrep_class</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">Rtype::Raw</span>, <span class="ident">name</span>, <span class="ident">base</span>);
             <span class="kw">let</span> <span class="ident">class_ptr</span> <span class="op">=</span> <span class="ident">R_altrep_class_t</span> { <span class="ident">ptr</span>: <span class="ident">class</span>.<span class="ident">get</span>() };
 
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altraw_Elt</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltRawImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
@@ -2003,7 +2003,7 @@
         <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
 
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">class</span> <span class="op">=</span> <span class="ident">Altrep::altrep_class</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">RType::Complex</span>, <span class="ident">name</span>, <span class="ident">base</span>);
+            <span class="kw">let</span> <span class="ident">class</span> <span class="op">=</span> <span class="ident">Altrep::altrep_class</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">Rtype::Complexes</span>, <span class="ident">name</span>, <span class="ident">base</span>);
             <span class="kw">let</span> <span class="ident">class_ptr</span> <span class="op">=</span> <span class="ident">R_altrep_class_t</span> { <span class="ident">ptr</span>: <span class="ident">class</span>.<span class="ident">get</span>() };
 
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altcomplex_Elt</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltComplexImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
@@ -2039,7 +2039,7 @@
         <span class="kw">use</span> <span class="ident">std::os::raw::c_int</span>;
 
         <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">class</span> <span class="op">=</span> <span class="ident">Altrep::altrep_class</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">RType::String</span>, <span class="ident">name</span>, <span class="ident">base</span>);
+            <span class="kw">let</span> <span class="ident">class</span> <span class="op">=</span> <span class="ident">Altrep::altrep_class</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">Rtype::Strings</span>, <span class="ident">name</span>, <span class="ident">base</span>);
             <span class="kw">let</span> <span class="ident">class_ptr</span> <span class="op">=</span> <span class="ident">R_altrep_class_t</span> { <span class="ident">ptr</span>: <span class="ident">class</span>.<span class="ident">get</span>() };
 
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altstring_Elt</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltStringImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(

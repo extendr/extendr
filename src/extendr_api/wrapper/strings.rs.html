@@ -141,12 +141,26 @@
 <span id="141">141</span>
 <span id="142">142</span>
 <span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::convert::From</span>;
 <span class="kw">use</span> <span class="ident">std::iter::FromIterator</span>;
 
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Strings</span> {
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">robj</span>: <span class="ident">Robj</span>,
 }
@@ -212,12 +226,16 @@
     }
 
     <span class="doccomment">/// This is a relatively expensive operation, so use a variable if using this in a loop.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">str</span> {
-        <span class="kw">if</span> <span class="ident">i</span> <span class="op">&gt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span>() {
-            <span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span><span class="ident">::na</span>()
-        } <span class="kw">else</span> {
-            <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::wrapper::rstr::sexp_to_str</span>;
-            <span class="kw">unsafe</span> { <span class="ident">sexp_to_str</span>(<span class="ident">STRING_ELT</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">i</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>)) }
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Rstr</span> {
+        <span class="kw">unsafe</span> {
+            <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">i</span> <span class="op">&gt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span>() {
+                <span class="ident">R_NaString</span>
+            } <span class="kw">else</span> {
+                <span class="ident">STRING_ELT</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">i</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>)
+            };
+            <span class="ident">Rstr</span> {
+                <span class="ident">robj</span>: <span class="ident">Robj::from_sexp</span>(<span class="ident">sexp</span>),
+            }
         }
     }
 
@@ -282,6 +300,16 @@
 
     <span class="kw">fn</span> <span class="ident">deref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::Target</span> {
         <span class="self">self</span>.<span class="ident">as_slice</span>()
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">std::fmt::Debug</span> <span class="kw">for</span> <span class="ident">Strings</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::fmt::Result</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> {
+            <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="self">self</span>.<span class="ident">elt</span>(<span class="number">0</span>))
+        } <span class="kw">else</span> {
+            <span class="ident">f</span>.<span class="ident">debug_list</span>().<span class="ident">entries</span>(<span class="self">self</span>.<span class="ident">iter</span>()).<span class="ident">finish</span>()
+        }
     }
 }
 </code></pre></div>

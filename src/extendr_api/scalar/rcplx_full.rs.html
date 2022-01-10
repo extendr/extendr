@@ -194,6 +194,7 @@
 <span id="194">194</span>
 <span id="195">195</span>
 <span id="196">196</span>
+<span id="197">197</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::scalar::macros</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::scalar::Rfloat</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
@@ -219,6 +220,7 @@
 <span class="doccomment">/// Rcplx has a special NA value, obtained from R headers via R_NaReal.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Rcplx has the same footprint as R&#39;s complex value allowing us to use it in zero copy slices.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Rcplx</span>(<span class="ident">c64</span>);
 
 <span class="kw">impl</span> <span class="ident">Rcplx</span> {

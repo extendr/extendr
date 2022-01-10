@@ -139,6 +139,17 @@
 <span id="139">139</span>
 <span id="140">140</span>
 <span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::scalar::macros</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">std::convert::TryFrom</span>;
@@ -278,6 +289,17 @@
         }
 
         <span class="prelude-val">Err</span>(<span class="ident">Error::ExpectedNumeric</span>(<span class="ident">robj</span>))
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">std::fmt::Debug</span> <span class="kw">for</span> <span class="ident">Rint</span> {
+    <span class="doccomment">/// Debug format.</span>
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::fmt::Result</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_na</span>() {
+            <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;NA_INTEGER&quot;</span>)
+        } <span class="kw">else</span> {
+            <span class="self">self</span>.<span class="ident">inner</span>().<span class="ident">fmt</span>(<span class="ident">f</span>)
+        }
     }
 }
 </code></pre></div>

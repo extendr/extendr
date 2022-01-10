@@ -78,10 +78,19 @@
 <span id="78">78</span>
 <span id="79">79</span>
 <span id="80">80</span>
+<span id="81">81</span>
+<span id="82">82</span>
+<span id="83">83</span>
+<span id="84">84</span>
+<span id="85">85</span>
+<span id="86">86</span>
+<span id="87">87</span>
+<span id="88">88</span>
+<span id="89">89</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// Wrapper for creating promises (PROMSXP).</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Promise</span> {
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">robj</span>: <span class="ident">Robj</span>,
 }
@@ -156,6 +165,15 @@
         } <span class="kw">else</span> {
             <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">eval</span>()
         }
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">std::fmt::Debug</span> <span class="kw">for</span> <span class="ident">Promise</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::fmt::Result</span> {
+        <span class="ident">f</span>.<span class="ident">debug_struct</span>(<span class="string">&quot;Promise&quot;</span>)
+            .<span class="ident">field</span>(<span class="string">&quot;code&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">code</span>())
+            .<span class="ident">field</span>(<span class="string">&quot;environment&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">environment</span>())
+            .<span class="ident">finish</span>()
     }
 }
 </code></pre></div>

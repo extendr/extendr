@@ -229,18 +229,18 @@
 
 <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">StrIter</span> {
     <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident">StrIter::new</span>()
+        <span class="ident">StrIter::new</span>(<span class="number">0</span>)
     }
 }
 
 <span class="kw">impl</span> <span class="ident">StrIter</span> {
     <span class="doccomment">/// Make an empty str iterator.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">len</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">unsafe</span> {
             <span class="self">Self</span> {
                 <span class="ident">vector</span>: ().<span class="ident">into</span>(),
                 <span class="ident">i</span>: <span class="number">0</span>,
-                <span class="ident">len</span>: <span class="number">0</span>,
+                <span class="ident">len</span>,
                 <span class="ident">levels</span>: <span class="ident">R_NilValue</span>,
             }
         }

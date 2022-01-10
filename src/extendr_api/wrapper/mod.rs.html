@@ -380,9 +380,6 @@
 <span id="380">380</span>
 <span id="381">381</span>
 <span id="382">382</span>
-<span id="383">383</span>
-<span id="384">384</span>
-<span id="385">385</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Wrappers are lightweight proxies for references to R datatypes.</span>
 <span class="doccomment">//! They do not contain an Robj (see array.rs for an example of this).</span>
 
@@ -421,7 +418,7 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">complexes::Complexes</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">doubles::Doubles</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">environment</span>::{<span class="ident">EnvIter</span>, <span class="ident">Environment</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">expr::Expression</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">expr::Expressions</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">externalptr::ExternalPtr</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">function::Function</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">integers::Integers</span>;
@@ -553,9 +550,9 @@
 <span class="macro">make_conversions!</span>(<span class="ident">List</span>, <span class="ident">ExpectedList</span>, <span class="ident">is_list</span>, <span class="string">&quot;Not a List&quot;</span>);
 
 <span class="macro">make_conversions!</span>(
-    <span class="ident">Expression</span>,
+    <span class="ident">Expressions</span>,
     <span class="ident">ExpectedExpression</span>,
-    <span class="ident">is_expression</span>,
+    <span class="ident">is_expressions</span>,
     <span class="string">&quot;Not an Expression&quot;</span>
 );
 
@@ -647,7 +644,6 @@
     <span class="doccomment">///     let call_to_xyz = r!(Language::from_values(&amp;[r!(Symbol::from_string(&quot;xyz&quot;)), r!(1), r!(2)]));</span>
     <span class="doccomment">///     assert_eq!(call_to_xyz.is_language(), true);</span>
     <span class="doccomment">///     assert_eq!(call_to_xyz.len(), 3);</span>
-    <span class="doccomment">///     assert_eq!(format!(&quot;{:?}&quot;, call_to_xyz), r#&quot;r!(Language::from_values([sym!(xyz), r!(1), r!(2)]))&quot;#);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">fn</span> <span class="ident">as_language</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Language</span><span class="op">&gt;</span> {
@@ -674,7 +670,6 @@
     <span class="doccomment">/// test! {</span>
     <span class="doccomment">///     let list = r!(List::from_values(&amp;[r!(0), r!(1), r!(2)]));</span>
     <span class="doccomment">///     assert_eq!(list.is_list(), true);</span>
-    <span class="doccomment">///     assert_eq!(format!(&quot;{:?}&quot;, list), r#&quot;r!(List::from_values([r!(0), r!(1), r!(2)]))&quot;#);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">fn</span> <span class="ident">as_list</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">List</span><span class="op">&gt;</span> {
@@ -685,14 +680,13 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::prelude::*;</span>
     <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let expr = r!(Expression::from_values(&amp;[r!(0), r!(1), r!(2)]));</span>
-    <span class="doccomment">///     assert_eq!(expr.is_expression(), true);</span>
-    <span class="doccomment">///     assert_eq!(expr.as_expression(), Some(Expression::from_values(vec![r!(0), r!(1), r!(2)])));</span>
-    <span class="doccomment">///     assert_eq!(format!(&quot;{:?}&quot;, expr), r#&quot;r!(Expression::from_values([r!(0), r!(1), r!(2)]))&quot;#);</span>
+    <span class="doccomment">///     let expr = r!(Expressions::from_values(&amp;[r!(0), r!(1), r!(2)]));</span>
+    <span class="doccomment">///     assert_eq!(expr.is_expressions(), true);</span>
+    <span class="doccomment">///     assert_eq!(expr.as_expressions(), Some(Expressions::from_values(vec![r!(0), r!(1), r!(2)])));</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">as_expression</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Expression</span><span class="op">&gt;</span> {
-        <span class="ident">Expression::try_from</span>(<span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">clone</span>()).<span class="ident">ok</span>()
+    <span class="kw">fn</span> <span class="ident">as_expressions</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Expressions</span><span class="op">&gt;</span> {
+        <span class="ident">Expressions::try_from</span>(<span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">clone</span>()).<span class="ident">ok</span>()
     }
 
     <span class="doccomment">/// Convert an environment object (ENVSXP) to a Env wrapper.</span>

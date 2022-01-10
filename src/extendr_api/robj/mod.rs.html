@@ -1081,124 +1081,6 @@
 <span id="1081">1081</span>
 <span id="1082">1082</span>
 <span id="1083">1083</span>
-<span id="1084">1084</span>
-<span id="1085">1085</span>
-<span id="1086">1086</span>
-<span id="1087">1087</span>
-<span id="1088">1088</span>
-<span id="1089">1089</span>
-<span id="1090">1090</span>
-<span id="1091">1091</span>
-<span id="1092">1092</span>
-<span id="1093">1093</span>
-<span id="1094">1094</span>
-<span id="1095">1095</span>
-<span id="1096">1096</span>
-<span id="1097">1097</span>
-<span id="1098">1098</span>
-<span id="1099">1099</span>
-<span id="1100">1100</span>
-<span id="1101">1101</span>
-<span id="1102">1102</span>
-<span id="1103">1103</span>
-<span id="1104">1104</span>
-<span id="1105">1105</span>
-<span id="1106">1106</span>
-<span id="1107">1107</span>
-<span id="1108">1108</span>
-<span id="1109">1109</span>
-<span id="1110">1110</span>
-<span id="1111">1111</span>
-<span id="1112">1112</span>
-<span id="1113">1113</span>
-<span id="1114">1114</span>
-<span id="1115">1115</span>
-<span id="1116">1116</span>
-<span id="1117">1117</span>
-<span id="1118">1118</span>
-<span id="1119">1119</span>
-<span id="1120">1120</span>
-<span id="1121">1121</span>
-<span id="1122">1122</span>
-<span id="1123">1123</span>
-<span id="1124">1124</span>
-<span id="1125">1125</span>
-<span id="1126">1126</span>
-<span id="1127">1127</span>
-<span id="1128">1128</span>
-<span id="1129">1129</span>
-<span id="1130">1130</span>
-<span id="1131">1131</span>
-<span id="1132">1132</span>
-<span id="1133">1133</span>
-<span id="1134">1134</span>
-<span id="1135">1135</span>
-<span id="1136">1136</span>
-<span id="1137">1137</span>
-<span id="1138">1138</span>
-<span id="1139">1139</span>
-<span id="1140">1140</span>
-<span id="1141">1141</span>
-<span id="1142">1142</span>
-<span id="1143">1143</span>
-<span id="1144">1144</span>
-<span id="1145">1145</span>
-<span id="1146">1146</span>
-<span id="1147">1147</span>
-<span id="1148">1148</span>
-<span id="1149">1149</span>
-<span id="1150">1150</span>
-<span id="1151">1151</span>
-<span id="1152">1152</span>
-<span id="1153">1153</span>
-<span id="1154">1154</span>
-<span id="1155">1155</span>
-<span id="1156">1156</span>
-<span id="1157">1157</span>
-<span id="1158">1158</span>
-<span id="1159">1159</span>
-<span id="1160">1160</span>
-<span id="1161">1161</span>
-<span id="1162">1162</span>
-<span id="1163">1163</span>
-<span id="1164">1164</span>
-<span id="1165">1165</span>
-<span id="1166">1166</span>
-<span id="1167">1167</span>
-<span id="1168">1168</span>
-<span id="1169">1169</span>
-<span id="1170">1170</span>
-<span id="1171">1171</span>
-<span id="1172">1172</span>
-<span id="1173">1173</span>
-<span id="1174">1174</span>
-<span id="1175">1175</span>
-<span id="1176">1176</span>
-<span id="1177">1177</span>
-<span id="1178">1178</span>
-<span id="1179">1179</span>
-<span id="1180">1180</span>
-<span id="1181">1181</span>
-<span id="1182">1182</span>
-<span id="1183">1183</span>
-<span id="1184">1184</span>
-<span id="1185">1185</span>
-<span id="1186">1186</span>
-<span id="1187">1187</span>
-<span id="1188">1188</span>
-<span id="1189">1189</span>
-<span id="1190">1190</span>
-<span id="1191">1191</span>
-<span id="1192">1192</span>
-<span id="1193">1193</span>
-<span id="1194">1194</span>
-<span id="1195">1195</span>
-<span id="1196">1196</span>
-<span id="1197">1197</span>
-<span id="1198">1198</span>
-<span id="1199">1199</span>
-<span id="1200">1200</span>
-<span id="1201">1201</span>
 </pre><pre class="rust"><code><span class="doccomment">//! R object handling.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! See. &lt;https://cran.r-project.org/doc/manuals/R-exts.html&gt;</span>
@@ -1224,6 +1106,7 @@
 <span class="comment">// deprecated</span>
 <span class="kw">mod</span> <span class="ident">from_robj</span>;
 
+<span class="kw">mod</span> <span class="ident">debug</span>;
 <span class="kw">mod</span> <span class="ident">into_robj</span>;
 <span class="kw">mod</span> <span class="ident">operators</span>;
 <span class="kw">mod</span> <span class="ident">rinternals</span>;
@@ -1432,51 +1315,51 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use extendr_api::prelude::*;</span>
     <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     assert_eq!(r!(NULL).rtype(), RType::Null);</span>
-    <span class="doccomment">///     assert_eq!(sym!(xyz).rtype(), RType::Symbol);</span>
-    <span class="doccomment">///     assert_eq!(r!(Pairlist::from_pairs(vec![(&quot;a&quot;, r!(1))])).rtype(), RType::Pairlist);</span>
-    <span class="doccomment">///     assert_eq!(R!(&quot;function() {}&quot;)?.rtype(), RType::Function);</span>
-    <span class="doccomment">///     assert_eq!(Environment::new_with_parent(global_env()).rtype(), RType::Environment);</span>
-    <span class="doccomment">///     assert_eq!(lang!(&quot;+&quot;, 1, 2).rtype(), RType::Language);</span>
-    <span class="doccomment">///     assert_eq!(r!(Primitive::from_string(&quot;if&quot;)).rtype(), RType::Special);</span>
-    <span class="doccomment">///     assert_eq!(r!(Primitive::from_string(&quot;+&quot;)).rtype(), RType::Builtin);</span>
-    <span class="doccomment">///     assert_eq!(r!(Rstr::from_string(&quot;hello&quot;)).rtype(), RType::Rstr);</span>
-    <span class="doccomment">///     assert_eq!(r!(TRUE).rtype(), RType::Logical);</span>
-    <span class="doccomment">///     assert_eq!(r!(1).rtype(), RType::Integer);</span>
-    <span class="doccomment">///     assert_eq!(r!(1.0).rtype(), RType::Real);</span>
-    <span class="doccomment">///     assert_eq!(r!(&quot;1&quot;).rtype(), RType::String);</span>
-    <span class="doccomment">///     assert_eq!(r!(List::from_values(&amp;[1, 2])).rtype(), RType::List);</span>
-    <span class="doccomment">///     assert_eq!(parse(&quot;x + y&quot;)?.rtype(), RType::Expression);</span>
-    <span class="doccomment">///     assert_eq!(r!(Raw::from_bytes(&amp;[1_u8, 2, 3])).rtype(), RType::Raw);</span>
+    <span class="doccomment">///     assert_eq!(r!(NULL).rtype(), Rtype::Null);</span>
+    <span class="doccomment">///     assert_eq!(sym!(xyz).rtype(), Rtype::Symbol);</span>
+    <span class="doccomment">///     assert_eq!(r!(Pairlist::from_pairs(vec![(&quot;a&quot;, r!(1))])).rtype(), Rtype::Pairlist);</span>
+    <span class="doccomment">///     assert_eq!(R!(&quot;function() {}&quot;)?.rtype(), Rtype::Function);</span>
+    <span class="doccomment">///     assert_eq!(Environment::new_with_parent(global_env()).rtype(), Rtype::Environment);</span>
+    <span class="doccomment">///     assert_eq!(lang!(&quot;+&quot;, 1, 2).rtype(), Rtype::Language);</span>
+    <span class="doccomment">///     assert_eq!(r!(Primitive::from_string(&quot;if&quot;)).rtype(), Rtype::Special);</span>
+    <span class="doccomment">///     assert_eq!(r!(Primitive::from_string(&quot;+&quot;)).rtype(), Rtype::Builtin);</span>
+    <span class="doccomment">///     assert_eq!(r!(Rstr::from_string(&quot;hello&quot;)).rtype(), Rtype::Rstr);</span>
+    <span class="doccomment">///     assert_eq!(r!(TRUE).rtype(), Rtype::Logicals);</span>
+    <span class="doccomment">///     assert_eq!(r!(1).rtype(), Rtype::Integers);</span>
+    <span class="doccomment">///     assert_eq!(r!(1.0).rtype(), Rtype::Doubles);</span>
+    <span class="doccomment">///     assert_eq!(r!(&quot;1&quot;).rtype(), Rtype::Strings);</span>
+    <span class="doccomment">///     assert_eq!(r!(List::from_values(&amp;[1, 2])).rtype(), Rtype::List);</span>
+    <span class="doccomment">///     assert_eq!(parse(&quot;x + y&quot;)?.rtype(), Rtype::Expressions);</span>
+    <span class="doccomment">///     assert_eq!(r!(Raw::from_bytes(&amp;[1_u8, 2, 3])).rtype(), Rtype::Raw);</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">rtype</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">RType</span> {
+    <span class="kw">fn</span> <span class="ident">rtype</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Rtype</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
-            <span class="ident">NILSXP</span> =&gt; <span class="ident">RType::Null</span>,
-            <span class="ident">SYMSXP</span> =&gt; <span class="ident">RType::Symbol</span>,
-            <span class="ident">LISTSXP</span> =&gt; <span class="ident">RType::Pairlist</span>,
-            <span class="ident">CLOSXP</span> =&gt; <span class="ident">RType::Function</span>,
-            <span class="ident">ENVSXP</span> =&gt; <span class="ident">RType::Environment</span>,
-            <span class="ident">PROMSXP</span> =&gt; <span class="ident">RType::Promise</span>,
-            <span class="ident">LANGSXP</span> =&gt; <span class="ident">RType::Language</span>,
-            <span class="ident">SPECIALSXP</span> =&gt; <span class="ident">RType::Special</span>,
-            <span class="ident">BUILTINSXP</span> =&gt; <span class="ident">RType::Builtin</span>,
-            <span class="ident">CHARSXP</span> =&gt; <span class="ident">RType::Rstr</span>,
-            <span class="ident">LGLSXP</span> =&gt; <span class="ident">RType::Logical</span>,
-            <span class="ident">INTSXP</span> =&gt; <span class="ident">RType::Integer</span>,
-            <span class="ident">REALSXP</span> =&gt; <span class="ident">RType::Real</span>,
-            <span class="ident">CPLXSXP</span> =&gt; <span class="ident">RType::Complex</span>,
-            <span class="ident">STRSXP</span> =&gt; <span class="ident">RType::String</span>,
-            <span class="ident">DOTSXP</span> =&gt; <span class="ident">RType::Dot</span>,
-            <span class="ident">ANYSXP</span> =&gt; <span class="ident">RType::Any</span>,
-            <span class="ident">VECSXP</span> =&gt; <span class="ident">RType::List</span>,
-            <span class="ident">EXPRSXP</span> =&gt; <span class="ident">RType::Expression</span>,
-            <span class="ident">BCODESXP</span> =&gt; <span class="ident">RType::Bytecode</span>,
-            <span class="ident">EXTPTRSXP</span> =&gt; <span class="ident">RType::ExternalPtr</span>,
-            <span class="ident">WEAKREFSXP</span> =&gt; <span class="ident">RType::WeakRef</span>,
-            <span class="ident">RAWSXP</span> =&gt; <span class="ident">RType::Raw</span>,
-            <span class="ident">S4SXP</span> =&gt; <span class="ident">RType::S4</span>,
-            <span class="kw">_</span> =&gt; <span class="ident">RType::Unknown</span>,
+            <span class="ident">NILSXP</span> =&gt; <span class="ident">Rtype::Null</span>,
+            <span class="ident">SYMSXP</span> =&gt; <span class="ident">Rtype::Symbol</span>,
+            <span class="ident">LISTSXP</span> =&gt; <span class="ident">Rtype::Pairlist</span>,
+            <span class="ident">CLOSXP</span> =&gt; <span class="ident">Rtype::Function</span>,
+            <span class="ident">ENVSXP</span> =&gt; <span class="ident">Rtype::Environment</span>,
+            <span class="ident">PROMSXP</span> =&gt; <span class="ident">Rtype::Promise</span>,
+            <span class="ident">LANGSXP</span> =&gt; <span class="ident">Rtype::Language</span>,
+            <span class="ident">SPECIALSXP</span> =&gt; <span class="ident">Rtype::Special</span>,
+            <span class="ident">BUILTINSXP</span> =&gt; <span class="ident">Rtype::Builtin</span>,
+            <span class="ident">CHARSXP</span> =&gt; <span class="ident">Rtype::Rstr</span>,
+            <span class="ident">LGLSXP</span> =&gt; <span class="ident">Rtype::Logicals</span>,
+            <span class="ident">INTSXP</span> =&gt; <span class="ident">Rtype::Integers</span>,
+            <span class="ident">REALSXP</span> =&gt; <span class="ident">Rtype::Doubles</span>,
+            <span class="ident">CPLXSXP</span> =&gt; <span class="ident">Rtype::Complexes</span>,
+            <span class="ident">STRSXP</span> =&gt; <span class="ident">Rtype::Strings</span>,
+            <span class="ident">DOTSXP</span> =&gt; <span class="ident">Rtype::Dot</span>,
+            <span class="ident">ANYSXP</span> =&gt; <span class="ident">Rtype::Any</span>,
+            <span class="ident">VECSXP</span> =&gt; <span class="ident">Rtype::List</span>,
+            <span class="ident">EXPRSXP</span> =&gt; <span class="ident">Rtype::Expressions</span>,
+            <span class="ident">BCODESXP</span> =&gt; <span class="ident">Rtype::Bytecode</span>,
+            <span class="ident">EXTPTRSXP</span> =&gt; <span class="ident">Rtype::ExternalPtr</span>,
+            <span class="ident">WEAKREFSXP</span> =&gt; <span class="ident">Rtype::WeakRef</span>,
+            <span class="ident">RAWSXP</span> =&gt; <span class="ident">Rtype::Raw</span>,
+            <span class="ident">S4SXP</span> =&gt; <span class="ident">Rtype::S4</span>,
+            <span class="kw">_</span> =&gt; <span class="ident">Rtype::Unknown</span>,
         }
     }
 
@@ -1493,15 +1376,15 @@
                 <span class="ident">SPECIALSXP</span> =&gt; <span class="ident">Rany::Special</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
                 <span class="ident">BUILTINSXP</span> =&gt; <span class="ident">Rany::Builtin</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
                 <span class="ident">CHARSXP</span> =&gt; <span class="ident">Rany::Rstr</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">LGLSXP</span> =&gt; <span class="ident">Rany::Logical</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">INTSXP</span> =&gt; <span class="ident">Rany::Integer</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">REALSXP</span> =&gt; <span class="ident">Rany::Real</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">CPLXSXP</span> =&gt; <span class="ident">Rany::Complex</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">STRSXP</span> =&gt; <span class="ident">Rany::String</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">LGLSXP</span> =&gt; <span class="ident">Rany::Logicals</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">INTSXP</span> =&gt; <span class="ident">Rany::Integers</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">REALSXP</span> =&gt; <span class="ident">Rany::Doubles</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">CPLXSXP</span> =&gt; <span class="ident">Rany::Complexes</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">STRSXP</span> =&gt; <span class="ident">Rany::Strings</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
                 <span class="ident">DOTSXP</span> =&gt; <span class="ident">Rany::Dot</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
                 <span class="ident">ANYSXP</span> =&gt; <span class="ident">Rany::Any</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
                 <span class="ident">VECSXP</span> =&gt; <span class="ident">Rany::List</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">EXPRSXP</span> =&gt; <span class="ident">Rany::Expression</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+                <span class="ident">EXPRSXP</span> =&gt; <span class="ident">Rany::Expressions</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
                 <span class="ident">BCODESXP</span> =&gt; <span class="ident">Rany::Bytecode</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
                 <span class="ident">EXTPTRSXP</span> =&gt; <span class="ident">Rany::ExternalPtr</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
                 <span class="ident">WEAKREFSXP</span> =&gt; <span class="ident">Rany::WeakRef</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
@@ -2013,6 +1896,20 @@
         }
     }
 
+    <span class="doccomment">/// Return true if an attribute exists.</span>
+    <span class="kw">fn</span> <span class="ident">has_attrib</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">N</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="ident">N</span>) -&gt; <span class="ident">bool</span>
+    <span class="kw">where</span>
+        <span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
+        <span class="ident">Robj</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">N</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>,
+    {
+        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">Robj::from</span>(<span class="ident">name</span>);
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">sexptype</span>() <span class="op">==</span> <span class="ident">CHARSXP</span> {
+            <span class="bool-val">false</span>
+        } <span class="kw">else</span> {
+            <span class="kw">unsafe</span> { <span class="ident">Rf_getAttrib</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">name</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="ident">R_NilValue</span> }
+        }
+    }
+
     <span class="doccomment">/// Set a specific attribute and return the object.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Note that some combinations of attributes are illegal and this will</span>
@@ -2056,6 +1953,11 @@
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
         }
+    }
+
+    <span class="doccomment">/// Return true if this object has names.</span>
+    <span class="kw">fn</span> <span class="ident">has_names</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">has_attrib</span>(<span class="ident">wrapper::symbol::names_symbol</span>())
     }
 
     <span class="doccomment">/// Set the names attribute from a string iterator.</span>
@@ -2237,144 +2139,6 @@
             <span class="comment">// see https://github.com/hadley/r-internals/blob/master/misc.md</span>
             <span class="ident">R_compute_identical</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">rhs</span>.<span class="ident">get</span>(), <span class="number">16</span>) <span class="op">!</span><span class="op">=</span> <span class="number">0</span>
         }
-    }
-}
-
-<span class="doccomment">/// Implement {:?} formatting.</span>
-<span class="kw">impl</span> <span class="ident">std::fmt::Debug</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::fmt::Result</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
-            <span class="ident">NILSXP</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(NULL)&quot;</span>),
-            <span class="ident">SYMSXP</span> =&gt; {
-                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_missing_arg</span>() {
-                    <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;missing_arg()&quot;</span>)
-                } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_unbound_value</span>() {
-                    <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;unbound_value()&quot;</span>)
-                } <span class="kw">else</span> {
-                    <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;sym!({})&quot;</span>, <span class="self">self</span>.<span class="ident">as_symbol</span>().<span class="ident">unwrap</span>().<span class="ident">as_str</span>())
-                }
-            }
-            <span class="ident">LISTSXP</span> =&gt; {
-                <span class="kw">let</span> <span class="ident">pairlist</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_pairlist</span>().<span class="ident">unwrap</span>().<span class="ident">iter</span>();
-                <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="ident">pairlist</span>)
-            }
-            <span class="ident">CLOSXP</span> =&gt; {
-                <span class="kw">let</span> <span class="ident">func</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_function</span>().<span class="ident">unwrap</span>();
-                <span class="kw">let</span> <span class="ident">formals</span> <span class="op">=</span> <span class="ident">func</span>.<span class="ident">formals</span>();
-                <span class="kw">let</span> <span class="ident">body</span> <span class="op">=</span> <span class="ident">func</span>.<span class="ident">body</span>();
-                <span class="kw">let</span> <span class="ident">environment</span> <span class="op">=</span> <span class="ident">func</span>.<span class="ident">environment</span>();
-                <span class="macro">write!</span>(
-                    <span class="ident">f</span>,
-                    <span class="string">&quot;r!(Function::from_parts({:?}, {:?}, {:?}))&quot;</span>,
-                    <span class="ident">formals</span>, <span class="ident">body</span>, <span class="ident">environment</span>
-                )
-            }
-            <span class="ident">ENVSXP</span> =&gt; <span class="kw">unsafe</span> {
-                <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get</span>();
-                <span class="kw">if</span> <span class="ident">sexp</span> <span class="op">==</span> <span class="ident">R_GlobalEnv</span> {
-                    <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;global_env()&quot;</span>)
-                } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">sexp</span> <span class="op">==</span> <span class="ident">R_BaseEnv</span> {
-                    <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;base_env()&quot;</span>)
-                } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">sexp</span> <span class="op">==</span> <span class="ident">R_EmptyEnv</span> {
-                    <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;empty_env()&quot;</span>)
-                } <span class="kw">else</span> {
-                    <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Environment::from_pairs(...))&quot;</span>)
-                }
-            },
-            <span class="ident">PROMSXP</span> =&gt; {
-                <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_promise</span>().<span class="ident">unwrap</span>();
-                <span class="macro">write!</span>(
-                    <span class="ident">f</span>,
-                    <span class="string">&quot;r!(Promise::from_parts({:?}, {:?}))&quot;</span>,
-                    <span class="ident">p</span>.<span class="ident">code</span>(),
-                    <span class="ident">p</span>.<span class="ident">environment</span>()
-                )
-            }
-            <span class="ident">LANGSXP</span> =&gt; <span class="macro">write!</span>(
-                <span class="ident">f</span>,
-                <span class="string">&quot;r!(Language::from_values({:?}))&quot;</span>,
-                <span class="self">self</span>.<span class="ident">as_language</span>().<span class="ident">unwrap</span>().<span class="ident">values</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()
-            ),
-            <span class="ident">SPECIALSXP</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Special())&quot;</span>),
-            <span class="ident">BUILTINSXP</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Builtin())&quot;</span>),
-            <span class="ident">CHARSXP</span> =&gt; {
-                <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">Rstr::try_from</span>(<span class="self">self</span>.<span class="ident">clone</span>()).<span class="ident">unwrap</span>();
-                <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Rstr::from_string({:?}))&quot;</span>, <span class="ident">c</span>.<span class="ident">as_str</span>())
-            }
-            <span class="ident">LGLSXP</span> =&gt; {
-                <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_logical_slice</span>().<span class="ident">unwrap</span>();
-                <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> {
-                    <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="ident">slice</span>[<span class="number">0</span>])
-                } <span class="kw">else</span> {
-                    <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="ident">slice</span>)
-                }
-            }
-            <span class="ident">INTSXP</span> =&gt; {
-                <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_integer_slice</span>().<span class="ident">unwrap</span>();
-                <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> {
-                    <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="ident">slice</span>[<span class="number">0</span>])
-                } <span class="kw">else</span> {
-                    <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="self">self</span>.<span class="ident">as_integer_slice</span>().<span class="ident">unwrap</span>())
-                }
-            }
-            <span class="ident">REALSXP</span> =&gt; {
-                <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_real_slice</span>().<span class="ident">unwrap</span>();
-                <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> {
-                    <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="ident">slice</span>[<span class="number">0</span>])
-                } <span class="kw">else</span> {
-                    <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!({:?})&quot;</span>, <span class="ident">slice</span>)
-                }
-            }
-            <span class="ident">VECSXP</span> =&gt; {
-                <span class="kw">let</span> <span class="ident">list</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_list</span>().<span class="ident">unwrap</span>();
-                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">names</span>().<span class="ident">is_some</span>() {
-                    <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(List::from_pairs({:?}))&quot;</span>, <span class="ident">list</span>.<span class="ident">iter</span>())
-                } <span class="kw">else</span> {
-                    <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(List::from_values({:?}))&quot;</span>, <span class="ident">list</span>.<span class="ident">values</span>())
-                }
-            }
-            <span class="ident">EXPRSXP</span> =&gt; <span class="macro">write!</span>(
-                <span class="ident">f</span>,
-                <span class="string">&quot;r!(Expression::from_values({:?}))&quot;</span>,
-                <span class="self">self</span>.<span class="ident">as_expression</span>().<span class="ident">unwrap</span>().<span class="ident">values</span>()
-            ),
-            <span class="ident">WEAKREFSXP</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Weakref())&quot;</span>),
-            <span class="comment">// CPLXSXP =&gt; false,</span>
-            <span class="ident">STRSXP</span> =&gt; {
-                <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!([&quot;</span>)<span class="question-mark">?</span>;
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sep</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>;
-                <span class="kw">for</span> <span class="ident">s</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">as_str_iter</span>().<span class="ident">unwrap</span>() {
-                    <span class="comment">// if s.is_na() {</span>
-                    <span class="comment">//     write!(f, &quot;{}na_str()&quot;, sep)?;</span>
-                    <span class="comment">// } else {</span>
-                    <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}{:?}&quot;</span>, <span class="ident">sep</span>, <span class="ident">s</span>)<span class="question-mark">?</span>;
-                    <span class="comment">// }</span>
-                    <span class="ident">sep</span> <span class="op">=</span> <span class="string">&quot;, &quot;</span>;
-                }
-                <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;])&quot;</span>)
-            }
-            <span class="ident">DOTSXP</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Dot())&quot;</span>),
-            <span class="ident">ANYSXP</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Any())&quot;</span>),
-            <span class="ident">BCODESXP</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Bcode())&quot;</span>),
-            <span class="ident">EXTPTRSXP</span> =&gt; {
-                <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(ExternalPtr())&quot;</span>)
-            }
-            <span class="ident">RAWSXP</span> =&gt; {
-                <span class="macro">write!</span>(
-                    <span class="ident">f</span>,
-                    <span class="string">&quot;r!(Raw::from_bytes({:?}))&quot;</span>,
-                    <span class="self">self</span>.<span class="ident">as_raw</span>().<span class="ident">unwrap</span>().<span class="ident">as_slice</span>()
-                )
-            }
-            <span class="ident">S4SXP</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(S4())&quot;</span>),
-            <span class="ident">NEWSXP</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(New())&quot;</span>),
-            <span class="ident">FREESXP</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;r!(Free())&quot;</span>),
-            <span class="kw">_</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;??&quot;</span>),
-        }<span class="question-mark">?</span>;
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">c</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">class</span>() {
-            <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;.set_class({:?}&quot;</span>, <span class="ident">c</span>)<span class="question-mark">?</span>;
-        }
-        <span class="prelude-val">Ok</span>(())
     }
 }
 
