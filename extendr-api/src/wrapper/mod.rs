@@ -26,6 +26,8 @@ pub mod rstr;
 pub mod s4;
 pub mod strings;
 pub mod symbol;
+#[cfg(feature = "polars-wrapper")]
+pub mod polars;
 
 pub use self::rstr::Rstr;
 pub use altrep::{

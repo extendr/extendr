@@ -21,4 +21,5 @@ proc_macro = true
 syn = { version = "1.0.22", features = ["full", "extra-traits"] }
 quote = "1.0.6"
 proc-macro2 = { version = "1.0" }
+polars = { version = "0.18.0", optional = true }
 
