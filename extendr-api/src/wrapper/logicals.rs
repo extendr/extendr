@@ -16,7 +16,7 @@ use std::iter::FromIterator;
 ///     assert_eq!(vec[1], false);
 /// }
 /// ```  
-#[derive(Debug, PartialEq, Clone)]
+#[derive(PartialEq, Clone)]
 pub struct Logicals {
     pub(crate) robj: Robj,
 }
@@ -30,6 +30,16 @@ crate::wrapper::macros::gen_vector_wrapper_impl!(
     doc_name: logical,     // Singular type name used in docs
     altrep_constructor: make_altlogical_from_iterator,
 );
+
+impl Logicals {
+    /// Get a region of elements from the vector.
+    pub fn get_region(&self, index: usize, dest: &mut [Rbool]) -> usize {
+        unsafe {
+            let ptr: *mut i32 = dest.as_mut_ptr() as *mut i32;
+            LOGICAL_GET_REGION(self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr) as usize
+        }
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -124,6 +134,16 @@ impl DerefMut for Logicals {
         unsafe {
             let ptr = DATAPTR(self.get()) as *mut Rbool;
             std::slice::from_raw_parts_mut(ptr, self.len())
+        }
+    }
+}
+
+impl std::fmt::Debug for Logicals {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.len() == 1 {
+            write!(f, "{:?}", self.elt(0))
+        } else {
+            f.debug_list().entries(self.iter()).finish()
         }
     }
 }

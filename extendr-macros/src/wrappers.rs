@@ -7,6 +7,8 @@ pub const WRAP_PREFIX: &str = "wrap__";
 #[derive(Debug, Default)]
 pub struct ExtendrOptions {
     pub use_try_from: bool,
+    pub r_name: Option<String>,
+    pub mod_name: Option<String>,
 }
 
 // Generate wrappers for a specific function.
@@ -18,16 +20,29 @@ pub fn make_function_wrappers(
     sig: &mut syn::Signature,
     self_ty: Option<&syn::Type>,
 ) {
-    let func_name = &sig.ident;
+    let rust_name = sig.ident.clone();
 
-    let wrap_name = format_ident!("{}{}{}", WRAP_PREFIX, prefix, func_name);
-    let meta_name = format_ident!("{}{}{}", META_PREFIX, prefix, func_name);
+    let r_name_str = if let Some(r_name) = opts.r_name.as_ref() {
+        r_name.clone()
+    } else {
+        sig.ident.to_string()
+    };
 
-    let name_str = format!("{}", func_name);
+    let mod_name = if let Some(mod_name) = opts.mod_name.as_ref() {
+        format_ident!("{}", mod_name)
+    } else {
+        sig.ident.clone()
+    };
+
+    let wrap_name = format_ident!("{}{}{}", WRAP_PREFIX, prefix, mod_name);
+    let meta_name = format_ident!("{}{}{}", META_PREFIX, prefix, mod_name);
+
+    let rust_name_str = format!("{}", rust_name);
+    let c_name_str = format!("{}", mod_name);
     let doc_string = get_doc_string(attrs);
     let return_type_string = get_return_type(sig);
 
-    let panic_str = format!("{} panicked.\0", func_name);
+    let panic_str = format!("{} panicked.\0", r_name_str);
 
     let inputs = &mut sig.inputs;
     let has_self = matches!(inputs.iter().next(), Some(FnArg::Receiver(_)));
@@ -41,19 +56,19 @@ pub fn make_function_wrappers(
             // eg. Person::name(&mut self)
             quote! { extendr_api::unwrap_or_throw(
                 <&mut #self_ty>::from_robj(&_self_robj)
-            ).#func_name }
+            ).#rust_name }
         } else {
             // eg. Person::name(&self)
             quote! { extendr_api::unwrap_or_throw(
                 <&#self_ty>::from_robj(&_self_robj)
-            ).#func_name }
+            ).#rust_name }
         }
     } else if let Some(ref self_ty) = &self_ty {
         // eg. Person::new()
-        quote! { <#self_ty>::#func_name }
+        quote! { <#self_ty>::#rust_name }
     } else {
         // eg. aux_func()
-        quote! { #func_name }
+        quote! { #rust_name }
     };
 
     let formal_args: Punctuated<FnArg, Token![,]> = inputs
@@ -108,7 +123,9 @@ pub fn make_function_wrappers(
             ];
             metadata.push(extendr_api::metadata::Func {
                 doc: #doc_string,
-                name: #name_str,
+                rust_name: #rust_name_str,
+                r_name: #r_name_str,
+                mod_name: #c_name_str,
                 args: args,
                 return_type: #return_type_string,
                 func_ptr: #wrap_name as * const u8,

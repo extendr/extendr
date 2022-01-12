@@ -203,10 +203,10 @@ pub fn blank_scalar_string() -> Robj {
 /// use extendr_api::prelude::*;
 /// test! {
 ///    let expr = parse("1 + 2").unwrap();
-///    assert!(expr.is_expression());
+///    assert!(expr.is_expressions());
 /// }
 /// ```
-pub fn parse(code: &str) -> Result<Robj> {
+pub fn parse(code: &str) -> Result<Expressions> {
     single_threaded(|| unsafe {
         use libR_sys::*;
         let mut status = 0_u32;
@@ -214,7 +214,7 @@ pub fn parse(code: &str) -> Result<Robj> {
         let codeobj: Robj = code.into();
         let parsed = Robj::from_sexp(R_ParseVector(codeobj.get(), -1, status_ptr, R_NilValue));
         match status {
-            1 => Ok(parsed),
+            1 => parsed.try_into(),
             _ => Err(Error::ParseError(code.into())),
         }
     })
@@ -233,7 +233,7 @@ pub fn eval_string(code: &str) -> Result<Robj> {
     single_threaded(|| {
         let expr = parse(code)?;
         let mut res = Robj::from(());
-        if let Some(expr) = expr.as_expression() {
+        if let Some(expr) = expr.as_expressions() {
             for lang in expr.values() {
                 res = lang.eval()?
             }
@@ -263,7 +263,7 @@ pub fn eval_string_with_params(code: &str, values: &[&Robj]) -> Result<Robj> {
 
         let expr = parse(code)?;
         let mut res = Robj::from(());
-        if let Some(expr) = expr.as_expression() {
+        if let Some(expr) = expr.as_expressions() {
             for lang in expr.values() {
                 res = lang.eval_with_env(&env)?
             }

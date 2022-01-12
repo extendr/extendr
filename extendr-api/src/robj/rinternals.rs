@@ -31,7 +31,7 @@ pub trait Rinternals: Types + Conversions {
     }
 
     /// Return true if this is an expression.
-    fn is_expression(&self) -> bool {
+    fn is_expressions(&self) -> bool {
         unsafe { Rf_isExpression(self.get()) != 0 }
     }
 
@@ -62,7 +62,7 @@ pub trait Rinternals: Types + Conversions {
 
     /// Return true if this is an expression.
     fn is_external_pointer(&self) -> bool {
-        self.rtype() == RType::ExternalPtr
+        self.rtype() == Rtype::ExternalPtr
     }
 
     /// Get the source ref.
@@ -391,12 +391,12 @@ pub trait Rinternals: Types + Conversions {
 
     /// Return true if this is RAWSXP.
     fn is_raw(&self) -> bool {
-        self.rtype() == RType::Raw
+        self.rtype() == Rtype::Raw
     }
 
     /// Return true if this is CHARSXP.
     fn is_char(&self) -> bool {
-        self.rtype() == RType::Rstr
+        self.rtype() == Rtype::Rstr
     }
 
     /// Check an external pointer tag.
@@ -467,9 +467,18 @@ pub trait Rinternals: Types + Conversions {
     }
 
     /// Generate a text representation of this object.
-    fn deparse(&self) -> Result<Robj> {
+    fn deparse(&self) -> Result<String> {
         use crate as extendr_api;
-        call!("deparse", self.as_robj())
+        let strings: Strings = call!("deparse", self.as_robj())?.try_into()?;
+        if strings.len() == 1 {
+            Ok(String::from(strings.elt(0).as_str()))
+        } else {
+            Ok(strings
+                .iter()
+                .map(|s| s.as_str())
+                .collect::<Vec<_>>()
+                .join(""))
+        }
     }
 }
 

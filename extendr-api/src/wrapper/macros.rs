@@ -91,24 +91,6 @@ macro_rules! gen_vector_wrapper_impl {
                 }
             }
 
-            /// Get a region of elements from the vector.
-            pub fn get_region(&self, index: usize, dest: &mut [$scalar_type]) -> usize {
-                unsafe {
-                    let ptr : *mut $primitive_type = dest.as_mut_ptr() as *mut $primitive_type;
-                    paste::paste!{ [<$r_prefix _GET_REGION>](self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr) as usize }
-                }
-            }
-
-            /// Return `TRUE` if the vector is sorted, `FALSE` if not, or `NA_BOOL` if unknown.
-            pub fn is_sorted(&self) -> Rbool {
-                unsafe { paste::paste!{ [<$r_prefix _IS_SORTED>](self.get()).into() } }
-            }
-
-            /// Return `TRUE` if the vector has no `NA`s, `FALSE` if any, or `NA_BOOL` if unknown.
-            pub fn no_na(&self) -> Rbool {
-                unsafe { paste::paste!{ [<$r_prefix _NO_NA>](self.get()).into() } }
-            }
-
             paste::paste!{
                 #[doc = "Return an iterator for a " $doc_name " object."]
                 #[doc = "Forces ALTREP objects to manifest."]

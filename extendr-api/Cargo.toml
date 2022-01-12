@@ -16,21 +16,22 @@ repository = "https://github.com/extendr/extendr"
 
 [dependencies]
 libR-sys = "0.2.2"
-extendr-macros = { path = "../extendr-macros", version="0.2.0" }
-extendr-engine = { path = "../extendr-engine", version="0.2.0" }
+extendr-macros = { path = "../extendr-macros", version = "0.2.0" }
+extendr-engine = { path = "../extendr-engine", version = "0.2.0" }
 ndarray = { version = "0.15.3", optional = true }
 lazy_static = "1.4"
 paste = "1.0.5"
 serde = { version = "1.0", features = ["derive"], optional = true }
-polars = { git = "https://github.com/pola-rs/polars", rev = "41f63cb55cf519ea9d417b4a766c8568a1452b9b", optional = true}
+num-complex = { version = "0.4", optional = true }
+polars = { git = "https://github.com/pola-rs/polars", rev = "41f63cb55cf519ea9d417b4a766c8568a1452b9b", optional = true }
 arrow2 = { git = "https://github.com/jorgecarleitao/arrow2", rev = "a4383b18955b35bef1237be05e0a747d9dca1171", optional = true }
 
 [features]
-default = ["serde"]
+default = []
 polars-wrapper = ["polars", "arrow2"]
 
 # All features to test
-tests-all = ["ndarray", "libR-sys/use-bindgen", "serde"]
+tests-all = ["ndarray", "libR-sys/use-bindgen", "serde", "num-complex"]
 
 # The minimal set of features without all optional ones
 tests-minimal = ["libR-sys/use-bindgen"]

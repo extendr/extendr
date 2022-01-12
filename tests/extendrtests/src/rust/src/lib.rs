@@ -124,6 +124,17 @@ fn doubles_square(input: Doubles) -> Doubles {
 }
 
 #[extendr(use_try_from = true)]
+fn complexes_square(input: Complexes) -> Complexes {
+    let mut result = Complexes::new(input.len());
+
+    for (x, y) in result.iter_mut().zip(input.iter()) {
+        *x = Rcplx::from((y.re() * y.re(), 0.0.into()));
+    }
+
+    result
+}
+
+#[extendr(use_try_from = true)]
 fn integers_square(input: Integers) -> Integers {
     let mut result = Integers::new(input.len());
 
@@ -170,6 +181,15 @@ fn special_param_names(_x: i32, _y: i32) -> i32 {
 #[extendr]
 #[allow(non_snake_case)]
 fn __00__special_function_name() {}
+ 
+#[extendr(
+    use_try_from = true,
+    r_name = "test.rename.rlike",
+    mod_name = "test_rename_mymod"
+)]
+fn test_rename() -> i32 {
+  1
+}
 
 // Class for testing
 #[derive(Default, Debug)]
@@ -244,6 +264,7 @@ impl MyClassUnexported {
     }
 }
 
+
 // Macro to generate exports
 extendr_module! {
     mod extendrtests;
@@ -265,6 +286,7 @@ extendr_module! {
     fn get_logicals_element;
 
     fn doubles_square;
+    fn complexes_square;
     fn integers_square;
     fn logicals_not;
 
@@ -278,6 +300,9 @@ extendr_module! {
 
     fn special_param_names;
     fn __00__special_function_name;
+
+    // Note that this uses an alternative name.    
+    fn test_rename_mymod;
 
     impl MyClass;
     impl __MyClass;

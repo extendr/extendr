@@ -217,6 +217,7 @@
 //!     assert_eq!(slice.len(), 3);
 //! }
 //! ```
+//!
 
 #![doc(
     html_logo_url = "https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png"
@@ -277,8 +278,6 @@ pub use extendr_macros::*;
 use scalar::Rbool;
 
 //////////////////////////////////////////////////
-
-pub struct Cplx(pub f64, pub f64);
 
 /// TRUE value eg. `r!(TRUE)`
 pub const TRUE: Rbool = Rbool::true_value();
@@ -346,13 +345,13 @@ pub unsafe fn register_call_methods(info: *mut libR_sys::DllInfo, metadata: Meta
     let mut rmethods = Vec::new();
     let mut cstrings = Vec::new();
     for func in metadata.functions {
-        let wrapped_name = format!("wrap__{}", func.name);
+        let wrapped_name = format!("wrap__{}", func.mod_name);
         make_method_def(&mut cstrings, &mut rmethods, &func, wrapped_name.as_str());
     }
 
     for imp in metadata.impls {
         for func in imp.methods {
-            let wrapped_name = format!("wrap__{}__{}", imp.name, func.name);
+            let wrapped_name = format!("wrap__{}__{}", imp.name, func.mod_name);
             make_method_def(&mut cstrings, &mut rmethods, &func, wrapped_name.as_str());
         }
     }
@@ -378,7 +377,7 @@ pub unsafe fn register_call_methods(info: *mut libR_sys::DllInfo, metadata: Meta
 
 /// Type of R objects used by [Robj::rtype].
 #[derive(Debug, PartialEq)]
-pub enum RType {
+pub enum Rtype {
     Null,        // NILSXP
     Symbol,      // SYMSXP
     Pairlist,    // LISTSXP
@@ -389,15 +388,15 @@ pub enum RType {
     Special,     // SPECIALSXP
     Builtin,     // BUILTINSXP
     Rstr,        // CHARSXP
-    Logical,     // LGLSXP
-    Integer,     // INTSXP
-    Real,        // REALSXP
-    Complex,     // CPLXSXP
-    String,      // STRSXP
+    Logicals,    // LGLSXP
+    Integers,    // INTSXP
+    Doubles,     // REALSXP
+    Complexes,   // CPLXSXP
+    Strings,     // STRSXP
     Dot,         // DOTSXP
     Any,         // ANYSXP
     List,        // VECSXP
-    Expression,  // EXPRSXP
+    Expressions, // EXPRSXP
     Bytecode,    // BCODESXP
     ExternalPtr, // EXTPTRSXP
     WeakRef,     // WEAKREFSXP
@@ -421,15 +420,15 @@ pub enum Rany<'a> {
     Special(&'a Primitive),       // SPECIALSXP
     Builtin(&'a Primitive),       // BUILTINSXP
     Rstr(&'a Rstr),               // CHARSXP
-    Logical(&'a Logicals),        // LGLSXP
-    Integer(&'a Integers),        // INTSXP
-    Real(&'a Doubles),            // REALSXP
-    Complex(&'a Robj),            // CPLXSXP
-    String(&'a Robj),             // STRSXP
+    Logicals(&'a Logicals),       // LGLSXP
+    Integers(&'a Integers),       // INTSXP
+    Doubles(&'a Doubles),         // REALSXP
+    Complexes(&'a Robj),          // CPLXSXP
+    Strings(&'a Strings),         // STRSXP
     Dot(&'a Robj),                // DOTSXP
     Any(&'a Robj),                // ANYSXP
     List(&'a List),               // VECSXP
-    Expression(&'a Expression),   // EXPRSXP
+    Expressions(&'a Expressions), // EXPRSXP
     Bytecode(&'a Robj),           // BCODESXP
     ExternalPtr(&'a Robj),        // EXTPTRSXP
     WeakRef(&'a Robj),            // WEAKREFSXP
@@ -438,10 +437,10 @@ pub enum Rany<'a> {
     Unknown(&'a Robj),
 }
 
-/// Convert extendr's RType to R's SEXPTYPE.
+/// Convert extendr's Rtype to R's SEXPTYPE.
 /// Panics if the type is Unknown.
-pub fn rtype_to_sxp(rtype: RType) -> i32 {
-    use RType::*;
+pub fn rtype_to_sxp(rtype: Rtype) -> i32 {
+    use Rtype::*;
     (match rtype {
         Null => NILSXP,
         Symbol => SYMSXP,
@@ -453,27 +452,27 @@ pub fn rtype_to_sxp(rtype: RType) -> i32 {
         Special => SPECIALSXP,
         Builtin => BUILTINSXP,
         Rstr => CHARSXP,
-        Logical => LGLSXP,
-        Integer => INTSXP,
-        Real => REALSXP,
-        Complex => CPLXSXP,
-        String => STRSXP,
+        Logicals => LGLSXP,
+        Integers => INTSXP,
+        Doubles => REALSXP,
+        Complexes => CPLXSXP,
+        Strings => STRSXP,
         Dot => DOTSXP,
         Any => ANYSXP,
         List => VECSXP,
-        Expression => EXPRSXP,
+        Expressions => EXPRSXP,
         Bytecode => BCODESXP,
         ExternalPtr => EXTPTRSXP,
         WeakRef => WEAKREFSXP,
         Raw => RAWSXP,
         S4 => S4SXP,
-        Unknown => panic!("attempt to use Unknown RType"),
+        Unknown => panic!("attempt to use Unknown Rtype"),
     }) as i32
 }
 
-/// Convert R's SEXPTYPE to extendr's RType.
-pub fn sxp_to_rtype(sxptype: i32) -> RType {
-    use RType::*;
+/// Convert R's SEXPTYPE to extendr's Rtype.
+pub fn sxp_to_rtype(sxptype: i32) -> Rtype {
+    use Rtype::*;
     match sxptype as u32 {
         NILSXP => Null,
         SYMSXP => Symbol,
@@ -485,15 +484,15 @@ pub fn sxp_to_rtype(sxptype: i32) -> RType {
         SPECIALSXP => Special,
         BUILTINSXP => Builtin,
         CHARSXP => Rstr,
-        LGLSXP => Logical,
-        INTSXP => Integer,
-        REALSXP => Real,
-        CPLXSXP => Complex,
-        STRSXP => String,
+        LGLSXP => Logicals,
+        INTSXP => Integers,
+        REALSXP => Doubles,
+        CPLXSXP => Complexes,
+        STRSXP => Strings,
         DOTSXP => Dot,
         ANYSXP => Any,
         VECSXP => List,
-        EXPRSXP => Expression,
+        EXPRSXP => Expressions,
         BCODESXP => Bytecode,
         EXTPTRSXP => ExternalPtr,
         WEAKREFSXP => WeakRef,
@@ -851,9 +850,11 @@ mod tests {
             // Rust interface.
             let metadata = get_my_module_metadata();
             assert_eq!(metadata.functions[0].doc, " comment #1\n comment #2\n\n        comment #3\n        comment #4\n    *\n aux_func doc comment.");
-            assert_eq!(metadata.functions[0].name, "aux_func");
+            assert_eq!(metadata.functions[0].rust_name, "aux_func");
+            assert_eq!(metadata.functions[0].mod_name, "aux_func");
+            assert_eq!(metadata.functions[0].r_name, "aux_func");
             assert_eq!(metadata.functions[0].args[0].name, "_person");
-            assert_eq!(metadata.functions[1].name, "get_my_module_metadata");
+            assert_eq!(metadata.functions[1].rust_name, "get_my_module_metadata");
             assert_eq!(metadata.impls[0].name, "Person");
             assert_eq!(metadata.impls[0].methods.len(), 3);
 

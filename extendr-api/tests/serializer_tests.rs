@@ -57,63 +57,50 @@ mod test {
     #[test]
     fn test_serialize_robj() {
         test! {
-            #[derive(Serialize)]
-            struct Test {
-                null: Robj,
-                symbol: Symbol,
-                pairlist: Pairlist,
-                function: Function,
-                // environment: Environment,
-                // promise: Promise,
-                // language: Language,
-                // special: Primitive,
-                // builtin: Primitive,
-                rstr: Rstr,
-                // logical: Robj,
-                integer: Integers,
-                real: Doubles,
-                // complex: Robj,
-                // string: Robj,
-                // dot: Dot,
-                // any: Any,
-                list: List,
-                // expression: Expression,
-                // bytecode: Bytecode,
-                // externalptr: ExternalPtr,
-                // weakref: WeakRef,
-                raw: Raw,
-                // s4: S4,
-            }
-
-            let _test = Test {
-                null: r!(()),
-                symbol: sym!("xyz").try_into()?,
-                pairlist: pairlist!(x=1),
-                function: R!("function() 1")?.try_into()?,
-                // environment: Environment::new_with_parent(global_env()),
-                // promise: Promise::from_parts(r!(1), global_env())?,
-                // language: lang!("x").try_into()?,
-                // special: r!(()),
-                // builtin: r!(()),
-                rstr: Rstr::from_string("xyz"),
-                // logical: r!(TRUE),
-                integer: Integers::new(10),
-                real: Doubles::new(10),
-                // complex: R!("complex(10)")?,
-                // string: r!("xyz"),
-                // dot: Dot,
-                // any: Any,
-                list: list!(a=1, b=2).try_into()?,
-                // expression: Expression,
-                // bytecode: Bytecode,
-                // externalptr: ExternalPtr,
-                // weakref: WeakRef,
-                raw: Raw::new(10),
-                // s4: S4,
-            };
-
-            let _expected = list!(int=1, seq=list!(null = (), symbol = (), pairlist = (), function = (), rstr = (), integer = (), real = (), list = (), raw = ()));
-            // assert_eq!(to_robj(&test).unwrap(), Robj::from(expected));
+            let s = r!(());
+            assert_eq!(to_robj(&s).unwrap(), r!(()));
+            let s = r!(sym!(xyz));
+            assert_eq!(to_robj(&s).unwrap(), r!("xyz"));
+            let s = r!(pairlist!(x=1, y=2));
+            assert_eq!(to_robj(&s).unwrap(), r!(list!(x=1, y=2)));
+            let s = R!("function (x) 1").unwrap();
+            assert_eq!(to_robj(&s).unwrap(), r!(()));
+            let s = r!(Environment::new_with_parent(global_env()));
+            assert_eq!(to_robj(&s).unwrap(), r!(()));
+            let s = r!(Promise::from_parts(r!(()), global_env()));
+            assert_eq!(to_robj(&s).unwrap(), r!(()));
+            let s = r!(Language::from_values([r!(())]));
+            assert_eq!(to_robj(&s).unwrap(), r!(()));
+            let s = r!(Primitive::from_string("+"));
+            assert_eq!(to_robj(&s).unwrap(), r!(".Primitive(\"+\")"));
+            let s = r!(Primitive::from_string("if"));
+            assert_eq!(to_robj(&s).unwrap(), r!(".Primitive(\"if\")"));
+            let s = r!(Rstr::from_string("xyz"));
+            assert_eq!(to_robj(&s).unwrap(), r!("xyz"));
+            let s = r!([TRUE, FALSE, NA_LOGICAL]);
+            assert_eq!(to_robj(&s).unwrap(), r!(list!(TRUE, FALSE, ())));
+            let s = r!([1, 2, 3]);
+            assert_eq!(to_robj(&s).unwrap(), r!(list![1, 2, 3]));
+            let s = r!([1., 2., 3.]);
+            assert_eq!(to_robj(&s).unwrap(), r!(list![1., 2., 3.]));
+            // Rany::Complexes(_complex) => serializer.serialize_unit(),
+            let s = r!(["1", "2", "3"]);
+            assert_eq!(to_robj(&s).unwrap(), r!(list!["1", "2", "3"]));
+            // Rany::Dot(_dot) => serializer.serialize_unit(),
+            // Rany::Any(_any) => serializer.serialize_unit(),
+            let s = r!(list![1, 2., "3"]);
+            assert_eq!(to_robj(&s).unwrap(), r!(list![1, 2., "3"]));
+            let s = r!(list![a=1, b=2., c="3"]);
+            assert_eq!(to_robj(&s).unwrap(), r!(list![a=1, b=2., c="3"]));
+            let s = r!(parse("1 + 2"));
+            assert_eq!(to_robj(&s).unwrap(), r!("expression(1 + 2)"));
+            // Rany::Bytecode(_bytecode) => serializer.serialize_unit(),
+            // Rany::ExternalPtr(_externalptr) => serializer.serialize_unit(),
+            // Rany::WeakRef(_weakref) => serializer.serialize_unit(),
+            let s = r!(Raw::from_bytes(&[1, 2, 3]));
+            assert_eq!(to_robj(&s).unwrap(), r!(Raw::from_bytes(&[1, 2, 3])));
+            // Rany::S4(value) => value.serialize(serializer),
+            // Rany::Unknown(_unknown) => serializer.serialize_unit(),
         }
     }
 }

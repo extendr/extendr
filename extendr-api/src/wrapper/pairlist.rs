@@ -2,7 +2,7 @@
 
 use super::*;
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(PartialEq, Clone)]
 pub struct Pairlist {
     pub(crate) robj: Robj,
 }
@@ -198,5 +198,19 @@ impl From<()> for Pairlist {
         Pairlist {
             robj: Robj::from(()),
         }
+    }
+}
+
+impl std::fmt::Debug for Pairlist {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "pairlist!({})",
+            self.iter()
+                .map(|(k, v)| format!("{}={:?}", k, v))
+                .collect::<Vec<_>>()
+                .join(", ")
+        )?;
+        Ok(())
     }
 }

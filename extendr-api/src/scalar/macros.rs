@@ -679,30 +679,6 @@ macro_rules! gen_trait_impl {
 
         // The 'example usage' expands to...
         //
-        // impl std::fmt::Debug for Rint {
-        //     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        //         let z: Option<$i32> = (*self).into();
-        //         if let Some(val) = z {
-        //             write!(f, "{}", val)
-        //         } else {
-        //             write!(f, "na")
-        //         }
-        //     }
-        // }
-        impl std::fmt::Debug for $type {
-            /// Debug format.
-            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                let z: Option<$type_prim> = (*self).into();
-                if let Some(val) = z {
-                    write!(f, "{}", val)
-                } else {
-                    write!(f, "na")
-                }
-            }
-        }
-
-        // The 'example usage' expands to...
-        //
         //
         // /// Documentation comments/test built by the #[doc] attributes
         // impl PartialEq<Rint> for Rint {

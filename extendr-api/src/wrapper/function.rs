@@ -23,7 +23,7 @@ use super::*;
 ///     assert_eq!(func.environment(), None);
 /// }
 /// ```
-#[derive(Debug, PartialEq, Clone)]
+#[derive(PartialEq, Clone)]
 pub struct Function {
     pub(crate) robj: Robj,
 }
@@ -69,7 +69,7 @@ impl Function {
     /// Get the formal arguments of the function or None if it is a primitive.
     pub fn formals(&self) -> Option<Pairlist> {
         unsafe {
-            if self.rtype() == RType::Function {
+            if self.rtype() == Rtype::Function {
                 let sexp = self.robj.get();
                 Some(Robj::from_sexp(FORMALS(sexp)).try_into().unwrap())
             } else {
@@ -81,7 +81,7 @@ impl Function {
     /// Get the body of the function or None if it is a primitive.
     pub fn body(&self) -> Option<Robj> {
         unsafe {
-            if self.rtype() == RType::Function {
+            if self.rtype() == Rtype::Function {
                 let sexp = self.robj.get();
                 Some(Robj::from_sexp(BODY(sexp)))
             } else {
@@ -93,7 +93,7 @@ impl Function {
     /// Get the environment of the function or None if it is a primitive.
     pub fn environment(&self) -> Option<Environment> {
         unsafe {
-            if self.rtype() == RType::Function {
+            if self.rtype() == Rtype::Function {
                 let sexp = self.robj.get();
                 Some(
                     Robj::from_sexp(CLOENV(sexp))
@@ -104,5 +104,11 @@ impl Function {
                 None
             }
         }
+    }
+}
+
+impl std::fmt::Debug for Function {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.deparse().unwrap())
     }
 }
