@@ -19,6 +19,8 @@ mod macros;
 pub mod matrix;
 pub mod nullable;
 pub mod pairlist;
+#[cfg(feature = "polars-wrapper")]
+pub mod polars;
 pub mod primitive;
 pub mod promise;
 pub mod raw;
@@ -26,8 +28,6 @@ pub mod rstr;
 pub mod s4;
 pub mod strings;
 pub mod symbol;
-#[cfg(feature = "polars-wrapper")]
-pub mod polars;
 
 pub use self::rstr::Rstr;
 pub use altrep::{
