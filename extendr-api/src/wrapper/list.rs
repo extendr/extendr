@@ -404,3 +404,10 @@ impl Deref for List {
         self.as_slice()
     }
 }
+
+// A borrowed list can be converted to an owned Robj by cloning the Robj
+impl Into<Robj> for &List {
+    fn into(self) -> Robj {
+        self.robj.to_owned()
+    }
+}

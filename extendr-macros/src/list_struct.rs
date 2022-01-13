@@ -17,23 +17,37 @@ pub fn derive_r_struct(item: TokenStream) -> TokenStream {
 
     // Here we iterate each struct field and make a TokenStream that creates a KeyValue pair for
     // each field
-    let tokens: Vec<TokenStream2> = inside
-        .fields
-        .iter()
-        .map(|field| {
-            let field_name = field.ident.as_ref().unwrap();
-            let field_str = field_name.to_string();
-            quote!(
-                (#field_str, (value.#field_name).into())
-            )
-        })
-        .collect();
+    let num_fields = inside.fields.len();
+    let mut into_robj_tokens = Vec::<TokenStream2>::with_capacity(num_fields);
+    let mut from_robj_tokens = Vec::<TokenStream2>::with_capacity(num_fields);
+
+    for field in inside.fields {
+        let field_name = field.ident.as_ref().unwrap();
+        let field_str = field_name.to_string();
+        into_robj_tokens.push(quote!(
+            (#field_str, (&value.#field_name).into())
+        ));
+        // e.g. `foo: value.dollar("foo")?.into()`, which is like `value$foo` in R
+        from_robj_tokens.push(quote!(
+            #field_name: value.dollar(#field_str)?.try_into()?
+        ));
+    }
 
     // The only thing we emit from this macro is the conversion trait impl
     TokenStream::from(quote!(
-        impl std::convert::From<#struct_name> for Robj {
-            fn from(value: Foo) -> Self {
-                extendr_api::List::from_pairs([#(#tokens),*]).into()
+        impl std::convert::From<&#struct_name> for Robj {
+            fn from(value: &#struct_name) -> Self {
+                extendr_api::List::from_pairs([#(#into_robj_tokens),*]).into()
+            }
+        }
+
+        impl std::convert::TryFrom<&Robj> for #struct_name {
+            type Error = extendr_api::Error;
+
+            fn try_from(value: &Robj) -> extendr_api::Result<Self> {
+                Ok(#struct_name {
+                    #(#from_robj_tokens),*
+                })
             }
         }
     ))
