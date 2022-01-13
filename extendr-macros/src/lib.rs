@@ -176,7 +176,8 @@ pub fn Rraw(item: TokenStream) -> TokenStream {
 /// # Examples
 /// ```ignore
 /// use extendr_api::prelude::*;
-/// use extendr_macros::IntoRList;
+/// use extendr_macros::ConvertRList;
+///
 /// #[derive(ConvertRList)]
 /// struct Foo {
 ///     a: usize,
@@ -195,7 +196,7 @@ pub fn Rraw(item: TokenStream) -> TokenStream {
 /// )
 /// ```
 /// You can also create an instance of your struct from R:
-/// ```
+/// ```ignore
 /// let foo: Foo = R!("list(a = 5, b = 'bar')").unwrap().try_into().unwrap();
 /// ```
 /// # Details
