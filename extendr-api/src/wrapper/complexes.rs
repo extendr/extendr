@@ -1,0 +1,70 @@
+use super::scalar::{c64, Rcplx};
+use super::*;
+use std::iter::FromIterator;
+
+/// An obscure `NA`-aware wrapper for R's complex vectors.
+/// Can be used to iterate over vectors obtained from R
+/// or to create new vectors that can be returned back to R.
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     let mut vec = (0..5).map(|i| (i as f64).into()).collect::<Complexes>();
+///     assert_eq!(vec.len(), 5);
+/// }
+/// ```  
+#[derive(Debug, PartialEq, Clone)]
+pub struct Complexes {
+    pub(crate) robj: Robj,
+}
+
+crate::wrapper::macros::gen_vector_wrapper_impl!(
+    vector_type: Complexes,
+    scalar_type: Rcplx,
+    primitive_type: c64,
+    r_prefix: COMPLEX,
+    SEXP: CPLXSXP,
+    doc_name: complex,
+    altrep_constructor: make_altcomplex_from_iterator,
+);
+
+impl Complexes {
+    /// Get a region of elements from the vector.
+    pub fn get_region(&self, index: usize, dest: &mut [Rcplx]) -> usize {
+        unsafe {
+            let ptr: *mut Rcomplex = dest.as_mut_ptr() as *mut Rcomplex;
+            COMPLEX_GET_REGION(self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr) as usize
+        }
+    }
+}
+
+// There is no SET_COMPLEX_ELT
+//
+// impl Complexes {
+//     pub fn set_elt(&mut self, index: usize, val: Rcplx) {
+//         unsafe {
+//             SET_COMPLEX_ELT(self.get(), index as R_xlen_t, val.inner());
+//         }
+//     }
+// }
+
+impl Deref for Complexes {
+    type Target = [Rcplx];
+
+    /// Treat Complexes as if it is a slice, like Vec<Rcplx>
+    fn deref(&self) -> &Self::Target {
+        unsafe {
+            let ptr = DATAPTR_RO(self.get()) as *const Rcplx;
+            std::slice::from_raw_parts(ptr, self.len())
+        }
+    }
+}
+
+impl DerefMut for Complexes {
+    /// Treat Complexes as if it is a mutable slice, like Vec<Rcplx>
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        unsafe {
+            let ptr = DATAPTR(self.get()) as *mut Rcplx;
+            std::slice::from_raw_parts_mut(ptr, self.len())
+        }
+    }
+}

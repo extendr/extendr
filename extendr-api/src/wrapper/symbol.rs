@@ -10,7 +10,7 @@ use super::*;
 /// }
 /// ```
 ///
-#[derive(Debug, PartialEq, Clone)]
+#[derive(PartialEq, Clone)]
 pub struct Symbol {
     pub(crate) robj: Robj,
 }

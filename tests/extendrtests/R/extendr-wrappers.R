@@ -34,6 +34,8 @@ get_logicals_element <- function(x, i) .Call(wrap__get_logicals_element, x, i)
 
 doubles_square <- function(input) .Call(wrap__doubles_square, input)
 
+complexes_square <- function(input) .Call(wrap__complexes_square, input)
+
 integers_square <- function(input) .Call(wrap__integers_square, input)
 
 logicals_not <- function(input) .Call(wrap__logicals_not, input)
@@ -59,6 +61,8 @@ special_param_names <- function(`_x`, `_y`) .Call(wrap__special_param_names, `_x
 #' @name f__00__special_function_name
 #' @export
 `__00__special_function_name` <- function() invisible(.Call(wrap____00__special_function_name))
+
+test.rename.rlike <- function() .Call(wrap__test_rename_mymod)
 
 #' Return string `"Hello world!"` to R.
 #' @export

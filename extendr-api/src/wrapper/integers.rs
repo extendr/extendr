@@ -15,7 +15,7 @@ use std::iter::FromIterator;
 ///     assert_eq!(sum, 60);
 /// }
 /// ```  
-#[derive(Debug, PartialEq, Clone)]
+#[derive(PartialEq, Clone)]
 pub struct Integers {
     pub(crate) robj: Robj,
 }
@@ -29,6 +29,26 @@ crate::wrapper::macros::gen_vector_wrapper_impl!(
     doc_name: integer,     // Singular type name used in docs
     altrep_constructor: make_altinteger_from_iterator,
 );
+
+impl Integers {
+    /// Get a region of elements from the vector.
+    pub fn get_region(&self, index: usize, dest: &mut [Rint]) -> usize {
+        unsafe {
+            let ptr: *mut i32 = dest.as_mut_ptr() as *mut i32;
+            INTEGER_GET_REGION(self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr) as usize
+        }
+    }
+
+    /// Return `TRUE` if the vector is sorted, `FALSE` if not, or `NA_BOOL` if unknown.
+    pub fn is_sorted(&self) -> Rbool {
+        unsafe { INTEGER_IS_SORTED(self.get()).into() }
+    }
+
+    /// Return `TRUE` if the vector has no `NA`s, `FALSE` if any, or `NA_BOOL` if unknown.
+    pub fn no_na(&self) -> Rbool {
+        unsafe { INTEGER_NO_NA(self.get()).into() }
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -123,6 +143,16 @@ impl DerefMut for Integers {
         unsafe {
             let ptr = DATAPTR(self.get()) as *mut Rint;
             std::slice::from_raw_parts_mut(ptr, self.len())
+        }
+    }
+}
+
+impl std::fmt::Debug for Integers {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.len() == 1 {
+            write!(f, "{:?}", self.elt(0))
+        } else {
+            f.debug_list().entries(self.iter()).finish()
         }
     }
 }

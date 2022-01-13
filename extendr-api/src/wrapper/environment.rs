@@ -1,6 +1,6 @@
 use super::*;
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(PartialEq, Clone)]
 pub struct Environment {
     pub(crate) robj: Robj,
 }
@@ -238,6 +238,23 @@ impl Iterator for EnvIter {
                     // The hash table is empty, end of iteration.
                     return None;
                 }
+            }
+        }
+    }
+}
+
+impl std::fmt::Debug for Environment {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        unsafe {
+            let sexp = self.get();
+            if sexp == R_GlobalEnv {
+                write!(f, "global_env()")
+            } else if sexp == R_BaseEnv {
+                write!(f, "base_env()")
+            } else if sexp == R_EmptyEnv {
+                write!(f, "empty_env()")
+            } else {
+                write!(f, "{}", self.deparse().unwrap())
             }
         }
     }

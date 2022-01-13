@@ -80,6 +80,13 @@ pub trait ToVectorValue {
         0.
     }
 
+    fn to_complex(&self) -> Rcomplex
+    where
+        Self: Sized,
+    {
+        Rcomplex { r: 0., i: 0. }
+    }
+
     fn to_integer(&self) -> i32
     where
         Self: Sized,
@@ -156,6 +163,34 @@ impl_real_tvv!(i64);
 impl_real_tvv!(u32);
 impl_real_tvv!(u64);
 impl_real_tvv!(usize);
+
+macro_rules! impl_complex_tvv {
+    ($t: ty) => {
+        impl ToVectorValue for $t {
+            fn sexptype() -> SEXPTYPE {
+                CPLXSXP
+            }
+
+            fn to_complex(&self) -> Rcomplex {
+                unsafe { std::mem::transmute(*self) }
+            }
+        }
+
+        impl ToVectorValue for &$t {
+            fn sexptype() -> SEXPTYPE {
+                CPLXSXP
+            }
+
+            fn to_complex(&self) -> Rcomplex {
+                unsafe { std::mem::transmute(**self) }
+            }
+        }
+    };
+}
+
+impl_complex_tvv!(c64);
+impl_complex_tvv!(Rcplx);
+impl_complex_tvv!((f64, f64));
 
 macro_rules! impl_integer_tvv {
     ($t: ty) => {
@@ -354,6 +389,12 @@ where
                     let ptr = REAL(sexp);
                     for (i, v) in iter.enumerate() {
                         *ptr.add(i) = v.to_real();
+                    }
+                }
+                CPLXSXP => {
+                    let ptr = COMPLEX(sexp);
+                    for (i, v) in iter.enumerate() {
+                        *ptr.add(i) = v.to_complex();
                     }
                 }
                 INTSXP => {
