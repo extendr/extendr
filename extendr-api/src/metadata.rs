@@ -318,7 +318,7 @@ fn write_impl_wrapper(
     writeln!(w, "`$.{}` <- function (self, name) {{ func <- {}[[name]]; environment(func) <- environment(); func }}\n", imp.name, imp_name_fixed)?;
 
     writeln!(w, "#' @export")?;
-    writeln!(w, "`[[.{}` <- `$.{}` \n", imp.name, imp_name_fixed)?;
+    writeln!(w, "`[[.{}` <- `$.{}` \n", imp.name, imp.name)?;
 
     Ok(())
 }
