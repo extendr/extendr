@@ -1,10 +1,10 @@
 use extendr_api::prelude::*;
-use extendr_macros::IntoRList;
+use extendr_macros::ConvertRList;
 
 #[test]
 fn test_derive_list() {
     test! {
-        #[derive(IntoRList, PartialEq, Debug)]
+        #[derive(ConvertRList, PartialEq, Debug)]
         struct Foo {
             a: u16,
             b: String,

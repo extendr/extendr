@@ -170,22 +170,21 @@ pub fn Rraw(item: TokenStream) -> TokenStream {
     R::R(item.into(), false).into()
 }
 
-/// Derives an implementation of `From<_> for Robj` on this struct, which recursively converts
-/// the struct into a named list, where the names correspond to the field names of the Rust
-/// struct.
+/// Derives an implementation of `From<Struct> for Robj` and `TryFrom<Robj> for Struct` on this struct.
+/// A named list is used as the R version of the struct, where the where the list names correspond to the field names of the Rust struct.
 ///
 /// # Examples
 /// ```ignore
 /// use extendr_api::prelude::*;
 /// use extendr_macros::IntoRList;
-/// #[derive(IntoRList)]
+/// #[derive(ConvertRList)]
 /// struct Foo {
 ///     a: usize,
 ///     b: String
 /// }
 /// let robj: Robj = Foo {
 ///     a: 5,
-///     b: "bar".into()
+///     b: String::from("bar")
 /// }.into();
 /// ```
 /// Will roughly convert to:
@@ -195,13 +194,17 @@ pub fn Rraw(item: TokenStream) -> TokenStream {
 ///     b = "bar"
 /// )
 /// ```
+/// You can also create an instance of your struct from R:
+/// ```
+/// let foo: Foo = R!("list(a = 5, b = 'bar')").unwrap().try_into().unwrap();
+/// ```
 /// # Details
-/// Note, this is different behaviour from what you get by applying the standard `#[extendr]` macro
-/// to an `impl` block. The `#[extendr]` behaviour returns a **pointer** to R, and generates wrapper functions for calling
-/// Rust functions on that pointer. Using `#[derive(IntoRList)]` actually converts the Rust structure
+/// Note, the `From<Struct> for Robj` behaviour is different from what you get by applying the standard `#[extendr]` macro
+/// to an `impl` block. The `#[extendr]` behaviour returns to R a **pointer** to Rust memory, and generates wrapper functions for calling
+/// Rust functions on that pointer. The implementation from `#[derive(ConvertRList)]` actually converts the Rust structure
 /// into a native R list, which allows you to manipulate and access the internal fields, but it's a one-way conversion,
-/// you can't pass it back to Rust.
-#[proc_macro_derive(IntoRList)]
+/// and converting it back to Rust will produce a copy of the original struct.
+#[proc_macro_derive(ConvertRList)]
 pub fn r_struct(item: TokenStream) -> TokenStream {
     list_struct::derive_r_struct(item)
 }
