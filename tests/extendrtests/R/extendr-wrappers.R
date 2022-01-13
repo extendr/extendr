@@ -90,6 +90,9 @@ MyClass$me <- function() .Call(wrap__MyClass__me, self)
 #' @export
 `$.MyClass` <- function (self, name) { func <- MyClass[[name]]; environment(func) <- environment(); func }
 
+#' @export
+`[[.MyClass` <- `$.MyClass`
+
 `__MyClass` <- new.env(parent = emptyenv())
 
 `__MyClass`$new <- function() .Call(wrap____MyClass__new)
@@ -98,6 +101,9 @@ MyClass$me <- function() .Call(wrap__MyClass__me, self)
 
 #' @export
 `$.__MyClass` <- function (self, name) { func <- `__MyClass`[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.__MyClass` <- `$.__MyClass`
 
 #' Class for testing (unexported)
 MyClassUnexported <- new.env(parent = emptyenv())
@@ -108,6 +114,9 @@ MyClassUnexported$a <- function() .Call(wrap__MyClassUnexported__a, self)
 
 #' @export
 `$.MyClassUnexported` <- function (self, name) { func <- MyClassUnexported[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.MyClassUnexported` <- `$.MyClassUnexported`
 
 #' Class for testing (exported)
 #' @examples
@@ -130,4 +139,7 @@ MySubmoduleClass$me <- function() .Call(wrap__MySubmoduleClass__me, self)
 #' @usage NULL
 #' @export
 `$.MySubmoduleClass` <- function (self, name) { func <- MySubmoduleClass[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.MySubmoduleClass` <- `$.MySubmoduleClass`
 
