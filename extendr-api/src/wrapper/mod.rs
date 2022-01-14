@@ -124,7 +124,9 @@ macro_rules! make_conversions {
             /// Make a wrapper from a robj if it matches.
             fn try_from(robj: &Robj) -> Result<Self> {
                 if robj.$isfunc() {
-                    Ok($typename { robj: robj.to_owned() })
+                    Ok($typename {
+                        robj: robj.to_owned(),
+                    })
                 } else {
                     Err(Error::$errname(robj.to_owned()))
                 }
