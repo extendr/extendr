@@ -170,15 +170,43 @@ pub fn Rraw(item: TokenStream) -> TokenStream {
     R::R(item.into(), false).into()
 }
 
-/// Derives an implementation of `From<Struct> for Robj` and `TryFrom<Robj> for Struct` on this struct.
-/// A named list is used as the R version of the struct, where the where the list names correspond to the field names of the Rust struct.
+/// Derives an implementation of `TryFrom<Robj> for Struct` and `TryFrom<&Robj> for Struct` on this struct.
+///
+/// This allows you to convert any R object supporting the `$` operator (generally a list or an
+/// environment) into your struct, as long as the corresponding fields on the R object are
+/// of a compatible type to those on the Rust struct.
 ///
 /// # Examples
 /// ```ignore
 /// use extendr_api::prelude::*;
-/// use extendr_macros::ConvertRList;
+/// use extendr_macros::TryFromRobj;
 ///
-/// #[derive(ConvertRList)]
+/// #[derive(TryFromRobj)]
+/// struct Foo {
+///     a: usize,
+///     b: String
+/// }
+/// ```
+/// Then, you can create an instance of your struct from an R expression:
+/// ```ignore
+/// let foo: Foo = R!("list(a = 5, b = 'bar')").unwrap().try_into().unwrap();
+/// ```
+#[proc_macro_derive(TryFromRobj)]
+pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
+    list_struct::derive_try_from_robj(item)
+}
+
+/// Derives an implementation of `From<Struct> for Robj` and `From<&Struct> for Robj` on this struct.
+///
+/// This allows the struct to be converted to a named list in R,
+/// where the list names correspond to the field names of the Rust struct.
+///
+/// # Examples
+/// ```ignore
+/// use extendr_api::prelude::*;
+/// use extendr_macros::IntoRobj;
+///
+/// #[derive(IntoRobj)]
 /// struct Foo {
 ///     a: usize,
 ///     b: String
@@ -195,21 +223,12 @@ pub fn Rraw(item: TokenStream) -> TokenStream {
 ///     b = "bar"
 /// )
 /// ```
-/// You can also create an instance of your struct from R:
-/// ```ignore
-/// let foo: Foo = R!("list(a = 5, b = 'bar')").unwrap().try_into().unwrap();
-/// ```
 /// # Details
 /// Note, the `From<Struct> for Robj` behaviour is different from what you get by applying the standard `#[extendr]` macro
 /// to an `impl` block. The `#[extendr]` behaviour returns to R a **pointer** to Rust memory, and generates wrapper functions for calling
-/// Rust functions on that pointer. The implementation from `#[derive(ConvertRList)]` actually converts the Rust structure
+/// Rust functions on that pointer. The implementation from `#[derive(IntoRobj)]` actually converts the Rust structure
 /// into a native R list, which allows you to manipulate and access the internal fields, but it's a one-way conversion,
 /// and converting it back to Rust will produce a copy of the original struct.
-#[proc_macro_derive(TryFromRobj)]
-pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
-    list_struct::derive_try_from_robj(item)
-}
-
 #[proc_macro_derive(IntoRobj)]
 pub fn derive_into_robj(item: TokenStream) -> TokenStream {
     list_struct::derive_into_robj(item)

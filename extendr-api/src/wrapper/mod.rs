@@ -96,6 +96,14 @@ macro_rules! make_conversions {
             }
         }
 
+        // We can convert a reference to any wrapper to a Robj by cloning the robj pointer
+        impl From<&$typename> for Robj {
+            /// Make an robj from a wrapper.
+            fn from(val: &$typename) -> Self {
+                val.robj.to_owned()
+            }
+        }
+
         impl TryFrom<Robj> for $typename {
             type Error = crate::Error;
 
@@ -105,6 +113,20 @@ macro_rules! make_conversions {
                     Ok($typename { robj })
                 } else {
                     Err(Error::$errname(robj))
+                }
+            }
+        }
+
+        // We can convert a borrowed Robj to any wrapper by cloning the pointer
+        impl TryFrom<&Robj> for $typename {
+            type Error = crate::Error;
+
+            /// Make a wrapper from a robj if it matches.
+            fn try_from(robj: &Robj) -> Result<Self> {
+                if robj.$isfunc() {
+                    Ok($typename { robj: robj.to_owned() })
+                } else {
+                    Err(Error::$errname(robj.to_owned()))
                 }
             }
         }

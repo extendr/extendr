@@ -405,13 +405,6 @@ impl Deref for List {
     }
 }
 
-// A borrowed list can be converted to an owned Robj by cloning the Robj
-impl Into<Robj> for &List {
-    fn into(self) -> Robj {
-        self.robj.to_owned()
-    }
-}
-
 impl std::fmt::Debug for List {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if self.names().is_none() {
