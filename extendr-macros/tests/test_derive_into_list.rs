@@ -1,10 +1,10 @@
 use extendr_api::prelude::*;
-use extendr_macros::ConvertRList;
+use extendr_macros::{IntoRobj, TryFromRobj};
 
 #[test]
 fn test_derive_list() {
     test! {
-        #[derive(ConvertRList, PartialEq, Debug)]
+        #[derive(TryFromRobj, IntoRobj, PartialEq, Debug)]
         struct Foo {
             a: u16,
             b: String,
@@ -13,27 +13,36 @@ fn test_derive_list() {
             d: List
         }
 
-        let native_rust = &Foo {
+        // We define the objects "natively", ie the struct in Rust, and the list in R
+        let native_rust = Foo {
             a: 5,
             b: String::from("bar"),
             c: vec![1., 2., 3.],
             d: list!(a = 1., b = true)
         };
+        let native_r = R!("list(a = 5L, b = 'bar', c = as.double(1:3), d = list(a = 1, b = TRUE))").unwrap();
 
-        // Check the R → Rust conversion
-        let native_r = &R!("list(a = 5L, b = 'bar', c = as.double(1:3), d = list(a = 1, b = TRUE))").unwrap();
-        let converted_rust: &Foo = &native_r.try_into().unwrap();
-        assert_eq!(&converted_rust, &native_rust);
+        // Check the R → Rust conversion used a Robj reference
+        let converted_rust_borrow: Foo = (&native_r).try_into().unwrap();
+        assert_eq!(&converted_rust_borrow, &native_rust);
 
-        // Check the Rust → R conversion
-        let converted_r: &Robj = &native_rust.into();
-        assert!(converted_r.is_list());
-        assert_eq!(converted_r, native_r);
+        // Check the Rust → R conversion using a struct reference
+        let converted_r_borrow: Robj = (&native_rust).into();
+        assert!(converted_r_borrow.is_list());
+        assert_eq!(&converted_r_borrow, &native_r);
 
-        // Check the Rust → R → Rust round trip
-        assert_eq!(native_rust, &Foo::try_from(converted_r).unwrap());
+        // Check the Rust → R → Rust round trip using references
+        assert_eq!(&native_rust, &Foo::try_from(&converted_r_borrow).unwrap());
 
-        // Check the R → Rust → R round trip
-        assert_eq!(native_r, &Robj::from(converted_rust));
+        // Check the R → Rust → R round trip using references
+        assert_eq!(&native_r, &Robj::from(&converted_rust_borrow));
+
+        // Check the R → Rust conversion with an owned Robj
+        let converted_rust_owned: Foo = native_r.try_into().unwrap();
+        assert_eq!(&converted_rust_owned, &converted_rust_borrow);
+
+        // Check the Rust → R conversion with an owned struct
+        let converted_r_owned: Robj = native_rust.into();
+        assert_eq!(&converted_r_borrow, &converted_r_owned);
     }
 }

@@ -205,7 +205,12 @@ pub fn Rraw(item: TokenStream) -> TokenStream {
 /// Rust functions on that pointer. The implementation from `#[derive(ConvertRList)]` actually converts the Rust structure
 /// into a native R list, which allows you to manipulate and access the internal fields, but it's a one-way conversion,
 /// and converting it back to Rust will produce a copy of the original struct.
-#[proc_macro_derive(ConvertRList)]
-pub fn r_struct(item: TokenStream) -> TokenStream {
-    list_struct::derive_r_struct(item)
+#[proc_macro_derive(TryFromRobj)]
+pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
+    list_struct::derive_try_from_robj(item)
+}
+
+#[proc_macro_derive(IntoRobj)]
+pub fn derive_into_robj(item: TokenStream) -> TokenStream {
+    list_struct::derive_into_robj(item)
 }
