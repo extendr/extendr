@@ -1,7 +1,31 @@
+// ## Resources for Developers
+//
+// Graphic device is documented in the R-internals. The header file also
+// contains the useful information. The code of the graphics package is also useful to
+// see what values are used by default (i.e. `GInit`).
+//
+// - https://cran.r-project.org/doc/manuals/r-devel/R-ints.html
+// - https://github.com/wch/r-source/blob/trunk/src/include/R_ext/GraphicsDevice.h
+// - https://github.com/wch/r-source/blob/trunk/src/library/graphics/src/graphics.c
+//
+// While the documents are good, we need to refer to the real implementaions to
+// find hints.
+//
+// - postscript device: https://github.com/wch/r-source/blob/trunk/src/library/grDevices/src/devPS.c
+// - svglite package: https://github.com/r-lib/svglite/blob/main/src/devSVG.cpp
+// - devout package: https://github.com/coolbutuseless/devout/blob/master/src/rdevice.cpp
+//
+// For newer features, the blog posts by Paul Murrell might be helpful:
+//
+// - https://developer.r-project.org/Blog/public/2020/07/15/new-features-in-the-r-graphics-engine/index.html
+// - https://developer.r-project.org/Blog/public/2021/12/06/groups-and-paths-and-masks-in-r-graphics/index.html
+// - https://developer.r-project.org/Blog/public/2021/12/14/updating-graphics-devices-for-r-4.2.0/index.html
+
 use crate::*;
 use libR_sys::*;
 
 pub mod color;
+pub mod device_descriptor;
 
 use color::Color;
 
@@ -131,7 +155,7 @@ impl Context {
                 fontface: 1,
                 fontfamily: [0; 201],
 
-                #[cfg(use_r_patternfill)]
+                #[cfg(use_r_ge_version_14)]
                 patternFill: R_NilValue,
             };
 
@@ -371,6 +395,13 @@ impl Device {
                 GEMode(0, self.inner());
                 Ok(())
             }
+        }
+    }
+
+    /// Create a [Device].
+    pub unsafe fn create() -> Self {
+        Self {
+            inner: GEgetDevice(1),
         }
     }
 
