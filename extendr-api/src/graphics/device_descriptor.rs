@@ -88,6 +88,7 @@ pub enum GraphicDeviceCapabilityLocator {
 ///   for events. Reading the description on ["6.1.6 Graphics events" of R
 ///   Internals](https://cran.r-project.org/doc/manuals/r-devel/R-ints.html#Graphics-events),
 ///   it seems this flag is not what is controlled by a graphic device.
+#[allow(non_snake_case)]
 pub struct DeviceDescriptor {
     left: f64,
     right: f64,
@@ -362,6 +363,7 @@ pub struct DeviceDescriptor {
     capabilities: ::std::option::Option<unsafe extern "C" fn(cap: SEXP) -> SEXP>,
 }
 
+#[allow(non_snake_case)]
 impl DeviceDescriptor {
     pub fn new() -> Self {
         Self {
@@ -488,6 +490,79 @@ impl DeviceDescriptor {
             #[cfg(use_r_ge_version_15)]
             capabilities: None,
         }
+    }
+
+    pub fn device_size(mut self, left: f64, right: f64, bottom: f64, top: f64) -> Self {
+        self.left = left;
+        self.right = right;
+        self.bottom = bottom;
+        self.top = top;
+        self
+    }
+
+    pub fn xCharOffset(mut self, xCharOffset: f64) -> Self {
+        self.xCharOffset = xCharOffset;
+        self
+    }
+
+    pub fn yCharOffset(mut self, yCharOffset: f64) -> Self {
+        self.yCharOffset = yCharOffset;
+        self
+    }
+
+    pub fn yLineBias(mut self, yLineBias: f64) -> Self {
+        self.yLineBias = yLineBias;
+        self
+    }
+
+    pub fn ipr(mut self, ipr: [f64; 2]) -> Self {
+        self.ipr = ipr;
+        self
+    }
+
+    pub fn cra(mut self, cra: [f64; 2]) -> Self {
+        self.cra = cra;
+        self
+    }
+
+    pub fn canClip(mut self, canClip: bool) -> Self {
+        self.canClip = canClip;
+        self
+    }
+
+    pub fn canHAdj(mut self, canHAdj: CanHAdjOption) -> Self {
+        self.canHAdj = canHAdj;
+        self
+    }
+
+    pub fn startps(mut self, startps: f64) -> Self {
+        self.startps = startps;
+        self
+    }
+
+    pub fn startcol(mut self, startcol: Color) -> Self {
+        self.startcol = startcol;
+        self
+    }
+
+    pub fn startfill(mut self, startfill: Color) -> Self {
+        self.startfill = startfill;
+        self
+    }
+
+    pub fn startlty(mut self, startlty: LineType) -> Self {
+        self.startlty = startlty;
+        self
+    }
+
+    pub fn startfont(mut self, startfont: i32) -> Self {
+        self.startfont = startfont;
+        self
+    }
+
+    pub fn displayListOn(mut self, displayListOn: bool) -> Self {
+        self.displayListOn = displayListOn;
+        self
     }
 
     fn into_dev_desc(self) -> DevDesc {
