@@ -565,7 +565,7 @@ impl DeviceDescriptor {
         self
     }
 
-    fn into_dev_desc(self) -> DevDesc {
+    pub fn into_dev_desc(self) -> DevDesc {
         DevDesc {
             left: self.left,
             right: self.right,

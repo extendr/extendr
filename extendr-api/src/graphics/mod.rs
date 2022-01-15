@@ -29,6 +29,8 @@ pub mod device_descriptor;
 
 use color::Color;
 
+use self::device_descriptor::DeviceDescriptor;
+
 pub struct Context {
     context: R_GE_gcontext,
     xscale: (f64, f64),
@@ -405,8 +407,24 @@ impl Device {
 
     /// Create a [Device].
     pub unsafe fn create() -> Self {
+        single_threaded(|| {
+            // Check the API version
+            R_GE_checkVersionOrDie(R_GE_version as _);
+
+            // Check if there are too many devices
+            R_CheckDeviceAvailable();
+        });
+
+        // Allocate on heap
+        let dev_desc = Box::new(DeviceDescriptor::new().into_dev_desc());
+
+        // GEcreateDevDesc() requires pDevDesc, which is a raw pointer to
+        // DevDesc. TODO: need to drop this by converting back with
+        // `Box::from_raw()` when the device is closed.
+        let p_dev_desc = Box::into_raw(dev_desc);
+
         Self {
-            inner: GEgetDevice(1),
+            inner: GEcreateDevDesc(p_dev_desc),
         }
     }
 
