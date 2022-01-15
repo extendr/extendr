@@ -489,173 +489,158 @@ impl DeviceDescriptor {
             capabilities: None,
         }
     }
+
+    fn into_dev_desc(self) -> DevDesc {
+        DevDesc {
+            left: self.left,
+            right: self.right,
+            bottom: self.bottom,
+            top: self.top,
+
+            // This should be the same as the size of the device
+            clipLeft: self.left,
+            clipRight: self.right,
+            clipBottom: self.bottom,
+            clipTop: self.top,
+
+            xCharOffset: self.xCharOffset,
+            yCharOffset: self.yCharOffset,
+            yLineBias: self.yLineBias,
+
+            ipr: self.ipr,
+            cra: self.cra,
+
+            // Gamma-related parameters are all ignored. R-internals indicates so:
+            //
+            // canChangeGamma – Rboolean: can the display gamma be adjusted? This is now
+            // ignored, as gamma support has been removed.
+            //
+            // and actually it seems this parameter is never used.
+            gamma: 1.0,
+
+            canClip: if self.canClip { 1 } else { 0 },
+
+            // As described above, gamma is not supported.
+            canChangeGamma: 0,
+
+            canHAdj: self.canHAdj as _,
+
+            startps: self.startps,
+            startcol: self.startcol.to_i32(),
+            startfill: self.startfill.to_i32(),
+            startlty: self.startlty.to_i32(),
+            startfont: self.startfont,
+
+            startgamma: 1.0,
+
+            // A raw pointer to the data specific to the device.
+            deviceSpecific: std::ptr::null::<std::ffi::c_void>() as *mut std::ffi::c_void,
+
+            displayListOn: if self.displayListOn { 1 } else { 0 },
+
+            // These are currently not used, so just set FALSE.
+            canGenMouseDown: 0,
+            canGenMouseMove: 0,
+            canGenMouseUp: 0,
+            canGenKeybd: 0,
+            canGenIdle: 0,
+
+            // The header file says:
+            //
+            // This is set while getGraphicsEvent is actively looking for events.
+            //
+            // It seems no implementation sets this, so this is probably what is
+            // modified on the engine's side.
+            gettingEvent: 0,
+
+            // These are the functions that handles actual operations.
+            activate: self.activate,
+            circle: self.circle,
+            clip: self.clip,
+            close: self.close,
+            deactivate: self.deactivate,
+            locator: self.locator,
+            line: self.line,
+            metricInfo: self.metricInfo,
+            mode: self.mode,
+            newPage: self.newPage,
+            polygon: self.polygon,
+            polyline: self.polyline,
+            rect: self.rect,
+            path: self.path,
+            raster: self.raster,
+            cap: self.cap,
+            size: self.size,
+            strWidth: self.strWidth,
+            text: self.text,
+            onExit: self.onExit,
+            getEvent: self.getEvent,
+            newFrameConfirm: self.newFrameConfirm,
+
+            // UTF-8 support
+            hasTextUTF8: if self.hasTextUTF8 { 1 } else { 0 },
+            textUTF8: self.textUTF8,
+            strWidthUTF8: self.strWidthUTF8,
+            wantSymbolUTF8: if self.wantSymbolUTF8 { 1 } else { 0 },
+
+            useRotatedTextInContour: if self.useRotatedTextInContour { 1 } else { 0 },
+
+            eventEnv: unsafe { self.eventEnv.get() },
+            eventHelper: self.eventHelper,
+
+            holdflush: self.holdflush,
+
+            haveTransparency: self.haveTransparency as _,
+            haveTransparentBg: self.haveTransparentBg as _,
+            haveRaster: self.haveRaster as _,
+            haveCapture: self.haveCapture as _,
+            haveLocator: self.haveLocator as _,
+
+            #[cfg(use_r_ge_version_14)]
+            setPattern: self.setPattern,
+            #[cfg(use_r_ge_version_14)]
+            releasePattern: self.releasePattern,
+
+            #[cfg(use_r_ge_version_14)]
+            setClipPath: self.setClipPath,
+            #[cfg(use_r_ge_version_14)]
+            releaseClipPath: self.releaseClipPath,
+
+            #[cfg(use_r_ge_version_14)]
+            setMask: self.setMask,
+            #[cfg(use_r_ge_version_14)]
+            releaseMask: self.releaseMask,
+
+            #[cfg(use_r_ge_version_14)]
+            deviceVersion: self.deviceVersion as _,
+
+            #[cfg(use_r_ge_version_14)]
+            deviceClip: if self.deviceClip { 1 } else { 0 },
+
+            #[cfg(use_r_ge_version_15)]
+            defineGroup: self.defineGroup,
+            #[cfg(use_r_ge_version_15)]
+            useGroup: self.useGroup,
+            #[cfg(use_r_ge_version_15)]
+            releaseGroup: self.releaseGroup,
+
+            #[cfg(use_r_ge_version_15)]
+            stroke: self.stroke,
+            #[cfg(use_r_ge_version_15)]
+            fill: self.fill,
+            #[cfg(use_r_ge_version_15)]
+            fillStroke: self.fillStroke,
+
+            #[cfg(use_r_ge_version_15)]
+            capabilities: self.capabilities,
+
+            reserved: [0i8; 64],
+        }
+    }
 }
 
-// TODO: create a builder for DevDesc
-pub fn default_device_descriptor() -> DevDesc {
-    DevDesc {
-        left: 0.0,
-        right: WIDTH_INCH * PT_PER_INCH,
-        bottom: HEIGH_INCH * PT_PER_INCH,
-        top: 0.0,
-
-        // This should be the same as the size of the device unless otherwise specified.
-        clipLeft: 0.0,
-        clipRight: WIDTH_INCH * PT_PER_INCH,
-        clipBottom: HEIGH_INCH * PT_PER_INCH,
-        clipTop: 0.0,
-
-        // Not sure where these numbers came from, but it seems this is a common
-        // practice, considering the postscript device and svglite device do so.
-        xCharOffset: 0.4900,
-        yCharOffset: 0.3333,
-        yLineBias: 0.2,
-
-        // Inches per raster unit, i.e. point.
-        ipr: [PT, PT],
-
-        // Font size. Not sure why these 0.9 and 1.2 are chosen, but R internals
-        // says "It is suggested that a good choice is"
-        cra: [0.9 * FONTSIZE, 1.2 * FONTSIZE],
-
-        // Gamma-related parameters are all ignored. R-internals indicates so:
-        //
-        // canChangeGamma – Rboolean: can the display gamma be adjusted? This is now
-        // ignored, as gamma support has been removed.
-        //
-        // and actually it seems this parameter is never used.
-        gamma: 1.0,
-
-        // Whether the device can clip text. We set FALSE by default, but should be
-        // turned on.
-        canClip: 0,
-
-        // As described above, gamma is not supported.
-        canChangeGamma: 0,
-
-        // Whether the device can handle horizontal alignment of text. We set 0 by
-        // default, but should be turned on. Note that this takes int, not Rboolean.
-        // R internals says:
-        //
-        // can the device do horizontal adjustment of text via the text callback,
-        // and if so, how precisely? 0 = no adjustment, 1 = {0, 0.5, 1} (left,
-        // centre, right justification) or 2 = continuously variable (in [0,1])
-        // between left and right justification.
-        canHAdj: 0,
-
-        // The initial values for pointsize (ps), colour (col), fill (fill), line
-        // type (lty), font face (font), gamma (gamma).
-        startps: POINTSIZE,
-        startcol: 0x000000,
-        startfill: 0x000000,
-        startlty: LTY_SOLID as _,
-        startfont: 1,
-        startgamma: 1.0,
-
-        // A raw pointer to the data specific to the device.
-        deviceSpecific: std::ptr::null::<std::ffi::c_void>() as *mut std::ffi::c_void,
-
-        // The header file says "toggle for initial display list status." When we want
-        // to maintain a plot history, this should be turned on so that
-        // `GEinitDisplayList` is invoked.
-        displayListOn: 0,
-
-        // These are currently not used, so just set FALSE.
-        canGenMouseDown: 0,
-        canGenMouseMove: 0,
-        canGenMouseUp: 0,
-        canGenKeybd: 0,
-        canGenIdle: 0,
-
-        // The header file says:
-        //
-        // This is set while getGraphicsEvent is actively looking for events.
-        //
-        // It seems no implementation sets this, so this is probably what is
-        // modified on the engine's side.
-        gettingEvent: 0,
-
-        // These are the functions that handles actual operations.
-        activate: None,
-        circle: None,
-        clip: None,
-        close: None,
-        deactivate: None,
-        locator: None,
-        line: None,
-        metricInfo: None,
-        mode: None,
-        newPage: None,
-        polygon: None,
-        polyline: None,
-        rect: None,
-        path: None,
-        raster: None,
-        cap: None,
-        size: None,
-        strWidth: None,
-        text: None,
-        onExit: None,
-        getEvent: None,
-        newFrameConfirm: None,
-
-        // UTF-8 support
-        hasTextUTF8: 1,
-        textUTF8: None,
-        strWidthUTF8: None,
-        wantSymbolUTF8: 1,
-
-        useRotatedTextInContour: 0,
-
-        eventEnv: unsafe { R_EmptyEnv },
-        eventHelper: None,
-
-        holdflush: None,
-
-        haveTransparency: 0,
-        haveTransparentBg: 0,
-        haveRaster: 0,
-        haveCapture: 0,
-        haveLocator: 0,
-
-        #[cfg(use_r_ge_version_14)]
-        setPattern: None,
-        #[cfg(use_r_ge_version_14)]
-        releasePattern: None,
-
-        #[cfg(use_r_ge_version_14)]
-        setClipPath: None,
-        #[cfg(use_r_ge_version_14)]
-        releaseClipPath: None,
-
-        #[cfg(use_r_ge_version_14)]
-        setMask: None,
-        #[cfg(use_r_ge_version_14)]
-        releaseMask: None,
-
-        #[cfg(use_r_ge_version_14)]
-        deviceVersion: R_GE_definitions as _,
-
-        #[cfg(use_r_ge_version_14)]
-        deviceClip: 0,
-
-        #[cfg(use_r_ge_version_15)]
-        defineGroup: None,
-        #[cfg(use_r_ge_version_15)]
-        useGroup: None,
-        #[cfg(use_r_ge_version_15)]
-        releaseGroup: None,
-
-        #[cfg(use_r_ge_version_15)]
-        stroke: None,
-        #[cfg(use_r_ge_version_15)]
-        fill: None,
-        #[cfg(use_r_ge_version_15)]
-        fillStroke: None,
-
-        #[cfg(use_r_ge_version_15)]
-        capabilities: None,
-
-        reserved: [0i8; 64],
+impl Default for DeviceDescriptor {
+    fn default() -> Self {
+        Self::new()
     }
 }

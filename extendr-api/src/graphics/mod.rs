@@ -99,6 +99,20 @@ pub enum LineType {
     TwoDash,
 }
 
+impl LineType {
+    fn to_i32(&self) -> i32 {
+        match self {
+            Self::Blank => LTY_BLANK as _,
+            Self::Solid => LTY_SOLID as _,
+            Self::Dashed => LTY_DASHED as _,
+            Self::Dotted => LTY_DOTTED as _,
+            Self::DotDash => LTY_DOTDASH as _,
+            Self::LongDash => LTY_LONGDASH as _,
+            Self::TwoDash => LTY_TWODASH as _,
+        }
+    }
+}
+
 #[derive(PartialEq, Debug, Clone)]
 pub enum Unit {
     Device,
@@ -210,16 +224,7 @@ impl Context {
     /// TwoDash  => . . - -
     /// ```
     pub fn line_type(&mut self, lty: LineType) -> &mut Self {
-        use LineType::*;
-        self.context.lty = match lty {
-            Blank => -1,
-            Solid => 0,
-            Dashed => 4 + (4 << 4),
-            Dotted => 1 + (3 << 4),
-            DotDash => 1 + (3 << 4) + (4 << 8) + (3 << 12),
-            LongDash => 7 + (3 << 4),
-            TwoDash => 2 + (2 << 4) + (6 << 8) + (2 << 12),
-        };
+        self.context.lty = lty.to_i32();
         self
     }
 
