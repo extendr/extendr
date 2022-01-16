@@ -26,6 +26,8 @@ pub(crate) struct DeviceCallbacks {
             dd: DevDesc,
         ),
     >,
+    pub(crate) mode: Option<fn(mode: i32, dd: DevDesc)>,
+    pub(crate) newPage: Option<fn(gc: R_GE_gcontext, dd: DevDesc)>,
 }
 
 impl DeviceCallbacks {
@@ -179,5 +181,39 @@ impl DeviceCallbacks {
         }
 
         Some(metricInfo_wrapper)
+    }
+
+    pub fn mode_wrapper(
+        &self,
+    ) -> Option<unsafe extern "C" fn(mode: std::os::raw::c_int, dd: pDevDesc)> {
+        // Return None if no callback function is registered.
+        self.mode?;
+
+        unsafe extern "C" fn mode_wrapper(mode: std::os::raw::c_int, dd: pDevDesc) {
+            let dev_desc = *dd;
+            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
+            let mode_inner = (*data).callbacks.mode.unwrap();
+
+            mode_inner(mode as _, dev_desc);
+        }
+
+        Some(mode_wrapper)
+    }
+
+    pub fn newPage_wrapper(&self) -> Option<unsafe extern "C" fn(gc: pGEcontext, dd: pDevDesc)> {
+        // Return None if no callback function is registered.
+        self.newPage?;
+
+        unsafe extern "C" fn newPage_wrapper(gc: pGEcontext, dd: pDevDesc) {
+            let dev_desc = *dd;
+            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
+            let newPage_inner = (*data).callbacks.newPage.unwrap();
+
+            let gcontext = *gc;
+
+            newPage_inner(gcontext, dev_desc);
+        }
+
+        Some(newPage_wrapper)
     }
 }

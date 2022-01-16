@@ -113,8 +113,6 @@ pub struct DeviceDescriptor {
 
     displayListOn: bool,
 
-    mode: Option<unsafe extern "C" fn(mode: std::os::raw::c_int, dd: pDevDesc)>,
-    newPage: Option<unsafe extern "C" fn(gc: pGEcontext, dd: pDevDesc)>,
     polygon: Option<
         unsafe extern "C" fn(
             n: std::os::raw::c_int,
@@ -367,8 +365,6 @@ impl DeviceDescriptor {
             // so that `GEinitDisplayList` is invoked.
             displayListOn: false,
 
-            mode: None,
-            newPage: None,
             polygon: None,
             polyline: None,
             rect: None,
@@ -604,6 +600,35 @@ impl DeviceDescriptor {
         self
     }
 
+    /// Sets a callback function that return the metric info of a glyph.
+    pub fn metricInfo_callback(
+        mut self,
+        metricInfo: fn(
+            c: i32,
+            gc: R_GE_gcontext,
+            ascent: *mut f64,
+            descent: *mut f64,
+            width: *mut f64,
+            dd: DevDesc,
+        ),
+    ) -> Self {
+        self.callbacks.metricInfo = Some(metricInfo);
+        self
+    }
+
+    /// Sets a callback function called whenever the graphics engine starts
+    /// drawing (mode=1) or stops drawing (mode=0).
+    pub fn mode_callback(mut self, mode: fn(mode: i32, dd: DevDesc)) -> Self {
+        self.callbacks.mode = Some(mode);
+        self
+    }
+
+    /// Sets a callback function called whenever a new plot requires a new page.
+    pub fn newPage_callback(mut self, newPage: fn(gc: R_GE_gcontext, dd: DevDesc)) -> Self {
+        self.callbacks.newPage = Some(newPage);
+        self
+    }
+
     // /// Sets a callback function that returns the location of the next mouse click.
     // ///
     // /// If the device doesn't accept mouse clicks, this should be left `None`.
@@ -633,6 +658,8 @@ impl DeviceDescriptor {
         let deactivate = self.callbacks.deactivate_wrapper();
         let line = self.callbacks.line_wrapper();
         let metricInfo = self.callbacks.metricInfo_wrapper();
+        let mode = self.callbacks.mode_wrapper();
+        let newPage = self.callbacks.newPage_wrapper();
 
         let deviceSpecific = DeviceSpecificData {
             callbacks: self.callbacks,
@@ -715,8 +742,8 @@ impl DeviceDescriptor {
             locator: None, // TODO
             line,
             metricInfo,
-            mode: self.mode,
-            newPage: self.newPage,
+            mode,
+            newPage,
             polygon: self.polygon,
             polyline: self.polyline,
             rect: self.rect,
