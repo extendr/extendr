@@ -101,20 +101,6 @@ pub enum LineType {
     TwoDash,
 }
 
-impl LineType {
-    fn to_i32(&self) -> i32 {
-        match self {
-            Self::Blank => LTY_BLANK as _,
-            Self::Solid => LTY_SOLID as _,
-            Self::Dashed => LTY_DASHED as _,
-            Self::Dotted => LTY_DOTTED as _,
-            Self::DotDash => LTY_DOTDASH as _,
-            Self::LongDash => LTY_LONGDASH as _,
-            Self::TwoDash => LTY_TWODASH as _,
-        }
-    }
-}
-
 #[derive(PartialEq, Debug, Clone)]
 pub enum Unit {
     Device,
@@ -130,6 +116,52 @@ pub enum FontFace {
     ItalicFont,
     BoldItalicFont,
     SymbolFont,
+}
+
+impl LineEnd {
+    fn to_u32(&self) -> u32 {
+        match self {
+            Self::RoundCap => 1,
+            Self::ButtCap => 2,
+            Self::SquareCap => 3,
+        }
+    }
+}
+
+impl LineJoin {
+    fn to_u32(&self) -> u32 {
+        match self {
+            Self::RoundJoin => 1,
+            Self::MitreJoin => 2,
+            Self::BevelJoin => 3,
+        }
+    }
+}
+
+impl LineType {
+    fn to_i32(&self) -> i32 {
+        match self {
+            Self::Blank => LTY_BLANK as _,
+            Self::Solid => LTY_SOLID as _,
+            Self::Dashed => LTY_DASHED as _,
+            Self::Dotted => LTY_DOTTED as _,
+            Self::DotDash => LTY_DOTDASH as _,
+            Self::LongDash => LTY_LONGDASH as _,
+            Self::TwoDash => LTY_TWODASH as _,
+        }
+    }
+}
+
+impl FontFace {
+    fn to_i32(&self) -> i32 {
+        match self {
+            Self::PlainFont => 1,
+            Self::BoldFont => 2,
+            Self::ItalicFont => 3,
+            Self::BoldItalicFont => 4,
+            Self::SymbolFont => 5,
+        }
+    }
 }
 
 fn unit_to_ge(unit: Unit) -> GEUnit {
@@ -237,11 +269,7 @@ impl Context {
     ///   LineEnd::SquareCap
     /// ```
     pub fn line_end(&mut self, lend: LineEnd) -> &mut Self {
-        self.context.lend = match lend {
-            LineEnd::RoundCap => 1,
-            LineEnd::ButtCap => 2,
-            LineEnd::SquareCap => 3,
-        };
+        self.context.lend = lend.to_u32();
         self
     }
 
@@ -252,11 +280,7 @@ impl Context {
     ///   LineJoin::BevelJoin
     /// ```
     pub fn line_join(&mut self, ljoin: LineJoin) -> &mut Self {
-        self.context.ljoin = match ljoin {
-            LineJoin::RoundJoin => 1,
-            LineJoin::MitreJoin => 2,
-            LineJoin::BevelJoin => 3,
-        };
+        self.context.ljoin = ljoin.to_u32();
         self
     }
 
@@ -291,14 +315,7 @@ impl Context {
     ///   FontFace::SymbolFont
     /// ```
     pub fn font_face(&mut self, fontface: FontFace) -> &mut Self {
-        use FontFace::*;
-        self.context.fontface = match fontface {
-            PlainFont => 1,
-            BoldFont => 2,
-            ItalicFont => 3,
-            BoldItalicFont => 4,
-            SymbolFont => 5,
-        };
+        self.context.fontface = fontface.to_i32();
         self
     }
 
