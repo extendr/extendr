@@ -24,7 +24,9 @@
 use crate::*;
 use libR_sys::*;
 
-pub use libR_sys::DevDesc;
+// These are used in the callback functions.
+pub use libR_sys::{DevDesc, R_GE_gcontext};
+
 pub mod color;
 pub mod device_descriptor;
 

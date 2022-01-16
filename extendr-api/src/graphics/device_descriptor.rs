@@ -113,8 +113,6 @@ pub struct DeviceDescriptor {
 
     displayListOn: bool,
 
-    activate: Option<unsafe extern "C" fn(arg1: pDevDesc)>,
-    circle: Option<unsafe extern "C" fn(x: f64, y: f64, r: f64, gc: pGEcontext, dd: pDevDesc)>,
     clip: Option<unsafe extern "C" fn(x0: f64, x1: f64, y0: f64, y1: f64, dd: pDevDesc)>,
     close: Option<unsafe extern "C" fn(dd: pDevDesc)>,
     deactivate: Option<unsafe extern "C" fn(arg1: pDevDesc)>,
@@ -386,8 +384,6 @@ impl DeviceDescriptor {
             // so that `GEinitDisplayList` is invoked.
             displayListOn: false,
 
-            activate: None,
-            circle: None,
             clip: None,
             close: None,
             deactivate: None,
@@ -602,9 +598,9 @@ impl DeviceDescriptor {
     /// Sets a callback function to draw a circle.
     pub fn circle_callback(
         mut self,
-        circle: unsafe extern "C" fn(x: f64, y: f64, r: f64, gc: pGEcontext, dd: pDevDesc),
+        circle: fn(x: f64, y: f64, r: f64, gc: R_GE_gcontext, dd: DevDesc),
     ) -> Self {
-        self.circle = Some(circle);
+        self.callbacks.circle = Some(circle);
         self
     }
 
@@ -660,6 +656,7 @@ impl DeviceDescriptor {
     pub fn into_dev_desc(self) -> DevDesc {
         // These need to be assigned before moving callbacks to deviceSpecific.
         let activate = self.callbacks.activate_wrapper();
+        let circle = self.callbacks.circle_wrapper();
 
         let deviceSpecific = DeviceSpecificData {
             callbacks: self.callbacks,
@@ -735,7 +732,7 @@ impl DeviceDescriptor {
 
             // These are the functions that handles actual operations.
             activate,
-            circle: self.circle,
+            circle,
             clip: self.clip,
             close: self.close,
             deactivate: self.deactivate,
