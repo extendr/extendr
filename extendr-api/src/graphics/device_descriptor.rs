@@ -113,27 +113,6 @@ pub struct DeviceDescriptor {
 
     displayListOn: bool,
 
-    polygon: Option<
-        unsafe extern "C" fn(
-            n: std::os::raw::c_int,
-            x: *mut f64,
-            y: *mut f64,
-            gc: pGEcontext,
-            dd: pDevDesc,
-        ),
-    >,
-    polyline: Option<
-        unsafe extern "C" fn(
-            n: std::os::raw::c_int,
-            x: *mut f64,
-            y: *mut f64,
-            gc: pGEcontext,
-            dd: pDevDesc,
-        ),
-    >,
-    rect: Option<
-        unsafe extern "C" fn(x0: f64, y0: f64, x1: f64, y1: f64, gc: pGEcontext, dd: pDevDesc),
-    >,
     path: Option<
         unsafe extern "C" fn(
             x: *mut f64,
@@ -365,9 +344,6 @@ impl DeviceDescriptor {
             // so that `GEinitDisplayList` is invoked.
             displayListOn: false,
 
-            polygon: None,
-            polyline: None,
-            rect: None,
             path: None,
             raster: None,
             cap: None,
@@ -594,6 +570,26 @@ impl DeviceDescriptor {
         self
     }
 
+    // /// Sets a callback function that returns the location of the next mouse click.
+    // ///
+    // /// If the device doesn't accept mouse clicks, this should be left `None`.
+    // pub fn locator_callback(
+    //     mut self,
+    //     locator: unsafe extern "C" fn(x: *mut f64, y: *mut f64, dd: pDevDesc) -> Rboolean,
+    // ) -> Self {
+    //     self.locator = Some(locator);
+    //     self
+    // }
+
+    /// Sets a callback function to draw a line.
+    pub fn line_callback(
+        mut self,
+        line: fn(x1: f64, y1: f64, x2: f64, y2: f64, gc: R_GE_gcontext, dd: DevDesc),
+    ) -> Self {
+        self.callbacks.line = Some(line);
+        self
+    }
+
     /// Sets a callback function to clean up when the device is deactivated.
     pub fn deactivate_callback(mut self, deactivate: fn(arg1: DevDesc)) -> Self {
         self.callbacks.deactivate = Some(deactivate);
@@ -629,23 +625,30 @@ impl DeviceDescriptor {
         self
     }
 
-    // /// Sets a callback function that returns the location of the next mouse click.
-    // ///
-    // /// If the device doesn't accept mouse clicks, this should be left `None`.
-    // pub fn locator_callback(
-    //     mut self,
-    //     locator: unsafe extern "C" fn(x: *mut f64, y: *mut f64, dd: pDevDesc) -> Rboolean,
-    // ) -> Self {
-    //     self.locator = Some(locator);
-    //     self
-    // }
-
-    /// Sets a callback function to draw a line.
-    pub fn line_callback(
+    /// Sets a callback function to draw a polygon.
+    pub fn polygon_callback(
         mut self,
-        line: fn(x1: f64, y1: f64, x2: f64, y2: f64, gc: R_GE_gcontext, dd: DevDesc),
+        polygon: fn(x: &[f64], y: &[f64], gc: R_GE_gcontext, dd: DevDesc),
     ) -> Self {
-        self.callbacks.line = Some(line);
+        self.callbacks.polygon = Some(polygon);
+        self
+    }
+
+    /// Sets a callback function to draw a polyline.
+    pub fn polyline_callback(
+        mut self,
+        polyline: fn(x: &[f64], y: &[f64], gc: R_GE_gcontext, dd: DevDesc),
+    ) -> Self {
+        self.callbacks.polyline = Some(polyline);
+        self
+    }
+
+    /// Sets a callback function to draw a rect.
+    pub fn rect_callback(
+        mut self,
+        rect: fn(x0: f64, x1: f64, y0: f64, y1: f64, gc: R_GE_gcontext, dd: DevDesc),
+    ) -> Self {
+        self.callbacks.rect = Some(rect);
         self
     }
 
@@ -660,6 +663,9 @@ impl DeviceDescriptor {
         let metricInfo = self.callbacks.metricInfo_wrapper();
         let mode = self.callbacks.mode_wrapper();
         let newPage = self.callbacks.newPage_wrapper();
+        let polygon = self.callbacks.polygon_wrapper();
+        let polyline = self.callbacks.polyline_wrapper();
+        let rect = self.callbacks.rect_wrapper();
 
         let deviceSpecific = DeviceSpecificData {
             callbacks: self.callbacks,
@@ -744,9 +750,9 @@ impl DeviceDescriptor {
             metricInfo,
             mode,
             newPage,
-            polygon: self.polygon,
-            polyline: self.polyline,
-            rect: self.rect,
+            polygon,
+            polyline,
+            rect,
             path: self.path,
             raster: self.raster,
             cap: self.cap,

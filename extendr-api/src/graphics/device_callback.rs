@@ -1,3 +1,5 @@
+use core::slice;
+
 use crate::*;
 use libR_sys::*;
 
@@ -28,6 +30,9 @@ pub(crate) struct DeviceCallbacks {
     >,
     pub(crate) mode: Option<fn(mode: i32, dd: DevDesc)>,
     pub(crate) newPage: Option<fn(gc: R_GE_gcontext, dd: DevDesc)>,
+    pub(crate) polygon: Option<fn(x: &[f64], y: &[f64], gc: R_GE_gcontext, dd: DevDesc)>,
+    pub(crate) polyline: Option<fn(x: &[f64], y: &[f64], gc: R_GE_gcontext, dd: DevDesc)>,
+    pub(crate) rect: Option<fn(x0: f64, y0: f64, x1: f64, y1: f64, gc: R_GE_gcontext, dd: DevDesc)>,
 }
 
 impl DeviceCallbacks {
@@ -215,5 +220,105 @@ impl DeviceCallbacks {
         }
 
         Some(newPage_wrapper)
+    }
+
+    pub fn polygon_wrapper(
+        &self,
+    ) -> Option<
+        unsafe extern "C" fn(
+            n: std::os::raw::c_int,
+            x: *mut f64,
+            y: *mut f64,
+            gc: pGEcontext,
+            dd: pDevDesc,
+        ),
+    > {
+        // Return None if no callback function is registered.
+        self.polygon?;
+
+        unsafe extern "C" fn polygon_wrapper(
+            n: std::os::raw::c_int,
+            x: *mut f64,
+            y: *mut f64,
+            gc: pGEcontext,
+            dd: pDevDesc,
+        ) {
+            let dev_desc = *dd;
+            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
+            let polygon_inner = (*data).callbacks.polygon.unwrap();
+
+            let gcontext = *gc;
+
+            let x = slice::from_raw_parts(x, n as _);
+            let y = slice::from_raw_parts(y, n as _);
+
+            polygon_inner(x, y, gcontext, dev_desc);
+        }
+
+        Some(polygon_wrapper)
+    }
+
+    pub fn polyline_wrapper(
+        &self,
+    ) -> Option<
+        unsafe extern "C" fn(
+            n: std::os::raw::c_int,
+            x: *mut f64,
+            y: *mut f64,
+            gc: pGEcontext,
+            dd: pDevDesc,
+        ),
+    > {
+        // Return None if no callback function is registered.
+        self.polyline?;
+
+        unsafe extern "C" fn polyline_wrapper(
+            n: std::os::raw::c_int,
+            x: *mut f64,
+            y: *mut f64,
+            gc: pGEcontext,
+            dd: pDevDesc,
+        ) {
+            let dev_desc = *dd;
+            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
+            let polyline_inner = (*data).callbacks.polyline.unwrap();
+
+            let gcontext = *gc;
+
+            let x = slice::from_raw_parts(x, n as _);
+            let y = slice::from_raw_parts(y, n as _);
+
+            polyline_inner(x, y, gcontext, dev_desc);
+        }
+
+        Some(polyline_wrapper)
+    }
+
+    pub fn rect_wrapper(
+        &self,
+    ) -> Option<
+        unsafe extern "C" fn(x0: f64, x1: f64, y0: f64, y1: f64, gc: pGEcontext, dd: pDevDesc),
+    > {
+        // Return None if no callback function is registered.
+        self.rect?;
+
+        unsafe extern "C" fn rect_wrapper(
+            x0: f64,
+            x1: f64,
+            y0: f64,
+            y1: f64,
+            gc: pGEcontext,
+            dd: pDevDesc,
+        ) {
+            let dev_desc = *dd;
+            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
+            let rect_inner = (*data).callbacks.rect.unwrap();
+
+            let gcontext = *gc;
+
+            rect_inner(x0, x1, y0, y1, gcontext, dev_desc);
+        }
+
+        Some(rect_wrapper)
     }
 }
