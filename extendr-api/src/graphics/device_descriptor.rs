@@ -1,10 +1,7 @@
 use crate::*;
 use libR_sys::*;
 
-use super::{
-    color::{self, Color},
-    FontFace, LineType,
-};
+use super::{color::Color, FontFace, LineType};
 
 // R internals says:
 //
@@ -73,7 +70,7 @@ pub enum GraphicDeviceCapabilityLocator {
 /// A builder of [libR_sys::_DevDesc].
 ///
 /// Compared to the original [libR_sys::_DevDesc], `DeviceDescriptor` omits
-/// these fields that seems not very useful:
+/// these fields that seem not very useful:
 ///
 /// - `clipLeft`, `clipRight`, `clipBottom`, and `clipTop`: In most of the
 ///   cases, this should match the device size at first.
@@ -343,10 +340,29 @@ pub struct DeviceDescriptor {
     capabilities: ::std::option::Option<unsafe extern "C" fn(cap: SEXP) -> SEXP>,
 }
 
+// This contains the content of the callback functions, which will be called
+// from a template callback function. This is needed since
+#[repr(C)]
+struct DeviceCallbacks {
+    activate: Option<unsafe extern "C" fn(arg1: pDevDesc)>,
+}
+
+// While [DeviceCallbacks] might be enough for some cases, the device might need
+// some extra data (e.g. a pointer to the actual device). This struct is to
+// bundle everything the device needs; currently only these two, but we might
+// want to add more in future.
+#[repr(C)]
+struct DeviceSpecificData {
+    callbacks: DeviceCallbacks,
+    data: *mut std::os::raw::c_void,
+}
+
 #[allow(non_snake_case)]
 impl DeviceDescriptor {
     pub fn new() -> Self {
         Self {
+            // The R Internal says " The default size of a device should be 7
+            // inches square."
             left: 0.0,
             right: WIDTH_INCH * PT_PER_INCH,
             bottom: HEIGH_INCH * PT_PER_INCH,
@@ -355,7 +371,7 @@ impl DeviceDescriptor {
             ipr: [PT, PT],
 
             // Font size. Not sure why these 0.9 and 1.2 are chosen, but R
-            // internals says "It is suggested that a good choice is"
+            // internals says this is "a good choice."
             cra: [0.9 * FONTSIZE, 1.2 * FONTSIZE],
 
             canClip: false,
@@ -568,44 +584,79 @@ impl DeviceDescriptor {
         self
     }
 
+    /// Sets the flag of whether the device maintain a plot history.
+    ///
+    /// If not specified, `false` will be used.
     pub fn displayListOn(mut self, displayListOn: bool) -> Self {
         self.displayListOn = displayListOn;
         self
     }
 
-    pub fn activate(mut self, activate: unsafe extern "C" fn(pDevDesc)) -> Self {
+    /// Sets a callback function to setup the device when it's activated.
+    ///
+    /// According to the comment on `src/include/R_ext/GraphicsDevice.h`, this
+    /// function is called when a device becomes the active device. This can be
+    /// left `None`.
+    pub fn activate_callback(mut self, activate: unsafe extern "C" fn(arg1: pDevDesc)) -> Self {
         self.activate = Some(activate);
         self
     }
 
-    pub fn circle(
+    /// Sets a callback function to draw a circle.
+    pub fn circle_callback(
         mut self,
-        circle: unsafe extern "C" fn(f64, f64, f64, pGEcontext, pDevDesc),
+        circle: unsafe extern "C" fn(x: f64, y: f64, r: f64, gc: pGEcontext, dd: pDevDesc),
     ) -> Self {
         self.circle = Some(circle);
         self
     }
 
-    pub fn clip(mut self, clip: unsafe extern "C" fn(f64, f64, f64, f64, pDevDesc)) -> Self {
+    /// Sets a callback function to clip.
+    pub fn clip_callback(
+        mut self,
+        clip: unsafe extern "C" fn(x0: f64, x1: f64, y0: f64, y1: f64, dd: pDevDesc),
+    ) -> Self {
         self.clip = Some(clip);
         self
     }
 
-    pub fn close(mut self, close: unsafe extern "C" fn(pDevDesc)) -> Self {
+    /// Sets a callback function to free device-specific resources when the
+    /// device is killed.
+    pub fn close_callback(mut self, close: unsafe extern "C" fn(dd: pDevDesc)) -> Self {
         self.close = Some(close);
         self
     }
 
-    pub fn deactivate(mut self, deactivate: unsafe extern "C" fn(pDevDesc)) -> Self {
+    /// Sets a callback function to clean up when the device is deactivated.
+    pub fn deactivate_callback(mut self, deactivate: unsafe extern "C" fn(arg1: pDevDesc)) -> Self {
         self.deactivate = Some(deactivate);
         self
     }
 
-    pub fn locator(
+    /// Sets a callback function that returns the location of the next mouse click.
+    ///
+    /// If the device doesn't accept mouse clicks, this should be left `None`.
+    pub fn locator_callback(
         mut self,
-        locator: unsafe extern "C" fn(*mut f64, *mut f64, pDevDesc) -> Rboolean,
+        locator: unsafe extern "C" fn(x: *mut f64, y: *mut f64, dd: pDevDesc) -> Rboolean,
     ) -> Self {
         self.locator = Some(locator);
+        self
+    }
+
+    /// Sets a callback function to draw a line.
+    pub fn line_callback(
+        mut self,
+        line: unsafe extern "C" fn(
+            x1: f64,
+            y1: f64,
+            x2: f64,
+            y2: f64,
+            gc: pGEcontext,
+            dd: pDevDesc,
+        ),
+    ) -> Self {
+        self.line = Some(line);
         self
     }
 
