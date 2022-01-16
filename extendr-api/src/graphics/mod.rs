@@ -28,6 +28,8 @@ pub use libR_sys::DevDesc;
 pub mod color;
 pub mod device_descriptor;
 
+mod device_callback;
+
 use color::Color;
 
 use self::device_descriptor::DeviceDescriptor;

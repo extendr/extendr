@@ -1,7 +1,7 @@
 use crate::*;
 use libR_sys::*;
 
-use super::{color::Color, FontFace, LineType};
+use super::{color::Color, device_callback::DeviceCallbacks, FontFace, LineType};
 
 // R internals says:
 //
@@ -342,30 +342,14 @@ pub struct DeviceDescriptor {
     capabilities: ::std::option::Option<unsafe extern "C" fn(cap: SEXP) -> SEXP>,
 }
 
-// This contains the content of the callback functions, which will be called
-// from a template callback function. This is needed since
-#[repr(C)]
-#[derive(Default)]
-struct DeviceCallbacks {
-    activate: Option<fn(arg1: DevDesc)>,
-}
-
-impl DeviceCallbacks {
-    fn new() -> Self {
-        Self {
-            ..Default::default()
-        }
-    }
-}
-
 // While [DeviceCallbacks] might be enough for some cases, the device might need
 // some extra data (e.g. a pointer to the actual device). This struct is to
 // bundle everything the device needs; currently only these two, but we might
 // want to add more in future.
 #[repr(C)]
-struct DeviceSpecificData {
-    callbacks: DeviceCallbacks,
-    data: *mut std::os::raw::c_void,
+pub(crate) struct DeviceSpecificData {
+    pub(crate) callbacks: DeviceCallbacks,
+    pub(crate) data: *mut std::os::raw::c_void,
 }
 
 #[allow(non_snake_case)]
@@ -612,15 +596,6 @@ impl DeviceDescriptor {
     /// left `None`.
     pub fn activate_callback(mut self, activate: fn(DevDesc)) -> Self {
         self.callbacks.activate = Some(activate);
-
-        unsafe extern "C" fn activate_callback(arg1: pDevDesc) {
-            let dev_desc = *arg1;
-            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
-            let activate_fun = (*data).callbacks.activate.unwrap();
-            activate_fun(dev_desc);
-        }
-
-        self.activate = Some(activate_callback);
         self
     }
 
@@ -683,6 +658,9 @@ impl DeviceDescriptor {
     }
 
     pub fn into_dev_desc(self) -> DevDesc {
+        // These need to be assigned before moving callbacks to deviceSpecific.
+        let activate = self.callbacks.activate_wrapper();
+
         let deviceSpecific = DeviceSpecificData {
             callbacks: self.callbacks,
             data: std::ptr::null::<std::ffi::c_void>() as *mut std::ffi::c_void,
@@ -756,7 +734,7 @@ impl DeviceDescriptor {
             gettingEvent: 0,
 
             // These are the functions that handles actual operations.
-            activate: self.activate,
+            activate,
             circle: self.circle,
             clip: self.clip,
             close: self.close,
