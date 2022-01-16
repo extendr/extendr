@@ -33,6 +33,9 @@ pub(crate) struct DeviceCallbacks {
     pub(crate) polygon: Option<fn(x: &[f64], y: &[f64], gc: R_GE_gcontext, dd: DevDesc)>,
     pub(crate) polyline: Option<fn(x: &[f64], y: &[f64], gc: R_GE_gcontext, dd: DevDesc)>,
     pub(crate) rect: Option<fn(x0: f64, y0: f64, x1: f64, y1: f64, gc: R_GE_gcontext, dd: DevDesc)>,
+    pub(crate) path: Option<
+        fn(x: &[f64], y: &[f64], nper: &[i32], winding: Rboolean, gc: R_GE_gcontext, dd: DevDesc),
+    >,
 }
 
 impl DeviceCallbacks {
@@ -320,5 +323,48 @@ impl DeviceCallbacks {
         }
 
         Some(rect_wrapper)
+    }
+
+    pub fn path_wrapper(
+        &self,
+    ) -> Option<
+        unsafe extern "C" fn(
+            x: *mut f64,
+            y: *mut f64,
+            npoly: std::os::raw::c_int,
+            nper: *mut std::os::raw::c_int,
+            winding: Rboolean,
+            gc: pGEcontext,
+            dd: pDevDesc,
+        ),
+    > {
+        // Return None if no callback function is registered.
+        self.path?;
+
+        unsafe extern "C" fn path_wrapper(
+            x: *mut f64,
+            y: *mut f64,
+            npoly: std::os::raw::c_int,
+            nper: *mut std::os::raw::c_int,
+            winding: Rboolean,
+            gc: pGEcontext,
+            dd: pDevDesc,
+        ) {
+            let dev_desc = *dd;
+            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
+            let path_inner = (*data).callbacks.path.unwrap();
+
+            let gcontext = *gc;
+
+            let nper = slice::from_raw_parts(nper, npoly as _);
+            // TODO: This isn't very efficient as we need to iterate over nper at least twice.
+            let n = nper.iter().sum::<i32>() as usize;
+            let x = slice::from_raw_parts(x, n);
+            let y = slice::from_raw_parts(y, n);
+
+            path_inner(x, y, nper, winding, gcontext, dev_desc);
+        }
+
+        Some(path_wrapper)
     }
 }

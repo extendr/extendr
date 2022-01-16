@@ -113,17 +113,6 @@ pub struct DeviceDescriptor {
 
     displayListOn: bool,
 
-    path: Option<
-        unsafe extern "C" fn(
-            x: *mut f64,
-            y: *mut f64,
-            npoly: std::os::raw::c_int,
-            nper: *mut std::os::raw::c_int,
-            winding: Rboolean,
-            gc: pGEcontext,
-            dd: pDevDesc,
-        ),
-    >,
     raster: Option<
         unsafe extern "C" fn(
             raster: *mut std::os::raw::c_uint,
@@ -344,7 +333,6 @@ impl DeviceDescriptor {
             // so that `GEinitDisplayList` is invoked.
             displayListOn: false,
 
-            path: None,
             raster: None,
             cap: None,
             size: None,
@@ -652,6 +640,25 @@ impl DeviceDescriptor {
         self
     }
 
+    /// Sets a callback function to draw paths.
+    ///
+    /// `nper` contains number of points in each polygon. `winding` represents
+    /// the filling rule; `TRUE` means "nonzero", `FALSE` means "evenodd".
+    pub fn path_callback(
+        mut self,
+        path: fn(
+            x: &[f64],
+            y: &[f64],
+            nper: &[i32],
+            winding: Rboolean,
+            gc: R_GE_gcontext,
+            dd: DevDesc,
+        ),
+    ) -> Self {
+        self.callbacks.path = Some(path);
+        self
+    }
+
     pub fn into_dev_desc(self) -> DevDesc {
         // These need to be assigned before moving callbacks to deviceSpecific.
         let activate = self.callbacks.activate_wrapper();
@@ -666,6 +673,7 @@ impl DeviceDescriptor {
         let polygon = self.callbacks.polygon_wrapper();
         let polyline = self.callbacks.polyline_wrapper();
         let rect = self.callbacks.rect_wrapper();
+        let path = self.callbacks.path_wrapper();
 
         let deviceSpecific = DeviceSpecificData {
             callbacks: self.callbacks,
@@ -753,7 +761,7 @@ impl DeviceDescriptor {
             polygon,
             polyline,
             rect,
-            path: self.path,
+            path,
             raster: self.raster,
             cap: self.cap,
             size: self.size,
