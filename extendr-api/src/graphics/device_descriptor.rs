@@ -75,13 +75,16 @@ pub enum GraphicDeviceCapabilityLocator {
 /// Compared to the original [libR_sys::_DevDesc], `DeviceDescriptor` omits
 /// these fields that seems not very useful:
 ///
-/// - `clipLeft`, `clipRight`, `clipBottom`, `clipTop`: In most of the cases,
-///   this should match the device size at first.
-/// - `gamma`, `canChangeGamma`: These fields are now ignored because gamma
+/// - `clipLeft`, `clipRight`, `clipBottom`, and `clipTop`: In most of the
+///   cases, this should match the device size at first.
+/// - `xCharOffset`, `yCharOffset`, and `yLineBias`: Because I get [the
+///   hatred](https://github.com/wch/r-source/blob/9f284035b7e503aebe4a804579e9e80a541311bb/src/include/R_ext/GraphicsDevice.h#L101-L103).
+///   They are rarely used.
+/// - `gamma`, and `canChangeGamma`: These fields are now ignored because gamma
 ///   support has been removed.
 /// - `deviceSpecific`: This can be provided later when we actually create a
 ///   [Device].
-/// - `canGenMouseDown`, `canGenMouseMove`, `canGenMouseUp`, `canGenKeybd`,
+/// - `canGenMouseDown`, `canGenMouseMove`, `canGenMouseUp`, `canGenKeybd`, and
 ///   `canGenIdle`: These fields are currently not used by R and preserved only
 ///   for backward-compatibility.
 /// - `gettingEvent`: This is set true when getGraphicsEvent is actively looking
@@ -94,10 +97,6 @@ pub struct DeviceDescriptor {
     right: f64,
     bottom: f64,
     top: f64,
-
-    xCharOffset: f64,
-    yCharOffset: f64,
-    yLineBias: f64,
 
     /// Inches per raster unit, i.e. point. A point is usually 1/72, but another
     /// value can be chosen here to scale the device. The first element is
@@ -372,13 +371,6 @@ impl DeviceDescriptor {
             bottom: HEIGH_INCH * PT_PER_INCH,
             top: 0.0,
 
-            // Not sure where these numbers came from, but it seems this is a
-            // common practice, considering the postscript device and svglite
-            // device do so.
-            xCharOffset: 0.4900,
-            yCharOffset: 0.3333,
-            yLineBias: 0.2,
-
             ipr: [PT, PT],
 
             // Font size. Not sure why these 0.9 and 1.2 are chosen, but R
@@ -492,26 +484,22 @@ impl DeviceDescriptor {
         }
     }
 
+    /// Sets the device sizes.
+    ///
+    /// The sizes are in points. If not specified, the following numbers (7
+    /// inches square, following [the R Internals' convetion]) will be used.
+    ///
+    /// * `left`: 0
+    /// * `right`: 7 inches * points per inch = `7 * 72`
+    /// * `bottom`: 7 inches * points per inch = `7 * 72`
+    /// * `top`: 0
+    ///
+    /// [the R Internals' convetion]: https://cran.r-project.org/doc/manuals/r-devel/R-ints.html#Conventions
     pub fn device_size(mut self, left: f64, right: f64, bottom: f64, top: f64) -> Self {
         self.left = left;
         self.right = right;
         self.bottom = bottom;
         self.top = top;
-        self
-    }
-
-    pub fn xCharOffset(mut self, xCharOffset: f64) -> Self {
-        self.xCharOffset = xCharOffset;
-        self
-    }
-
-    pub fn yCharOffset(mut self, yCharOffset: f64) -> Self {
-        self.yCharOffset = yCharOffset;
-        self
-    }
-
-    pub fn yLineBias(mut self, yLineBias: f64) -> Self {
-        self.yLineBias = yLineBias;
         self
     }
 
@@ -565,6 +553,42 @@ impl DeviceDescriptor {
         self
     }
 
+    pub fn activate(mut self, activate: unsafe extern "C" fn(pDevDesc)) -> Self {
+        self.activate = Some(activate);
+        self
+    }
+
+    pub fn circle(
+        mut self,
+        circle: unsafe extern "C" fn(f64, f64, f64, pGEcontext, pDevDesc),
+    ) -> Self {
+        self.circle = Some(circle);
+        self
+    }
+
+    pub fn clip(mut self, clip: unsafe extern "C" fn(f64, f64, f64, f64, pDevDesc)) -> Self {
+        self.clip = Some(clip);
+        self
+    }
+
+    pub fn close(mut self, close: unsafe extern "C" fn(pDevDesc)) -> Self {
+        self.close = Some(close);
+        self
+    }
+
+    pub fn deactivate(mut self, deactivate: unsafe extern "C" fn(pDevDesc)) -> Self {
+        self.deactivate = Some(deactivate);
+        self
+    }
+
+    pub fn locator(
+        mut self,
+        locator: unsafe extern "C" fn(*mut f64, *mut f64, pDevDesc) -> Rboolean,
+    ) -> Self {
+        self.locator = Some(locator);
+        self
+    }
+
     pub fn into_dev_desc(self) -> DevDesc {
         DevDesc {
             left: self.left,
@@ -578,9 +602,12 @@ impl DeviceDescriptor {
             clipBottom: self.bottom,
             clipTop: self.top,
 
-            xCharOffset: self.xCharOffset,
-            yCharOffset: self.yCharOffset,
-            yLineBias: self.yLineBias,
+            // Not sure where these numbers came from, but it seems this is a
+            // common practice, considering the postscript device and svglite
+            // device do so.
+            xCharOffset: 0.4900,
+            yCharOffset: 0.3333,
+            yLineBias: 0.2,
 
             ipr: self.ipr,
             cra: self.cra,
