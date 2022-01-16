@@ -90,6 +90,8 @@ pub enum GraphicDeviceCapabilityLocator {
 ///   it seems this flag is not what is controlled by a graphic device.
 #[allow(non_snake_case)]
 pub struct DeviceDescriptor {
+    callbacks: DeviceCallbacks,
+
     left: f64,
     right: f64,
     bottom: f64,
@@ -343,8 +345,17 @@ pub struct DeviceDescriptor {
 // This contains the content of the callback functions, which will be called
 // from a template callback function. This is needed since
 #[repr(C)]
+#[derive(Default)]
 struct DeviceCallbacks {
-    activate: Option<unsafe extern "C" fn(arg1: pDevDesc)>,
+    activate: Option<fn(arg1: DevDesc)>,
+}
+
+impl DeviceCallbacks {
+    fn new() -> Self {
+        Self {
+            ..Default::default()
+        }
+    }
 }
 
 // While [DeviceCallbacks] might be enough for some cases, the device might need
@@ -361,6 +372,8 @@ struct DeviceSpecificData {
 impl DeviceDescriptor {
     pub fn new() -> Self {
         Self {
+            callbacks: DeviceCallbacks::new(),
+
             // The R Internal says " The default size of a device should be 7
             // inches square."
             left: 0.0,
@@ -597,8 +610,17 @@ impl DeviceDescriptor {
     /// According to the comment on `src/include/R_ext/GraphicsDevice.h`, this
     /// function is called when a device becomes the active device. This can be
     /// left `None`.
-    pub fn activate_callback(mut self, activate: unsafe extern "C" fn(arg1: pDevDesc)) -> Self {
-        self.activate = Some(activate);
+    pub fn activate_callback(mut self, activate: fn(DevDesc)) -> Self {
+        self.callbacks.activate = Some(activate);
+
+        unsafe extern "C" fn activate_callback(arg1: pDevDesc) {
+            let dev_desc = *arg1;
+            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
+            let activate_fun = (*data).callbacks.activate.unwrap();
+            activate_fun(dev_desc);
+        }
+
+        self.activate = Some(activate_callback);
         self
     }
 
@@ -661,6 +683,13 @@ impl DeviceDescriptor {
     }
 
     pub fn into_dev_desc(self) -> DevDesc {
+        let deviceSpecific = DeviceSpecificData {
+            callbacks: self.callbacks,
+            data: std::ptr::null::<std::ffi::c_void>() as *mut std::ffi::c_void,
+        };
+
+        let deviceSpecific = Box::into_raw(Box::new(deviceSpecific)) as *mut std::os::raw::c_void;
+
         DevDesc {
             left: self.left,
             right: self.right,
@@ -707,7 +736,7 @@ impl DeviceDescriptor {
             startgamma: 1.0,
 
             // A raw pointer to the data specific to the device.
-            deviceSpecific: std::ptr::null::<std::ffi::c_void>() as *mut std::ffi::c_void,
+            deviceSpecific,
 
             displayListOn: if self.displayListOn { 1 } else { 0 },
 
