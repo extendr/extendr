@@ -113,8 +113,6 @@ pub struct DeviceDescriptor {
 
     displayListOn: bool,
 
-    clip: Option<unsafe extern "C" fn(x0: f64, x1: f64, y0: f64, y1: f64, dd: pDevDesc)>,
-    close: Option<unsafe extern "C" fn(dd: pDevDesc)>,
     deactivate: Option<unsafe extern "C" fn(arg1: pDevDesc)>,
     locator: Option<unsafe extern "C" fn(x: *mut f64, y: *mut f64, dd: pDevDesc) -> Rboolean>,
     line: Option<
@@ -384,8 +382,6 @@ impl DeviceDescriptor {
             // so that `GEinitDisplayList` is invoked.
             displayListOn: false,
 
-            clip: None,
-            close: None,
             deactivate: None,
             locator: None,
             line: None,
@@ -515,19 +511,19 @@ impl DeviceDescriptor {
         self
     }
 
-    /// Sets the flag of whether the device can clip text.
-    ///
-    /// If not specified, `false` will be used. In that case, the graphic engine
-    /// will clip instead by omitting any "any text that does not appear to be
-    /// wholly inside the clipping region," according to [the R Internals],
-    /// which is not very ideal.
-    ///
-    /// [the R Internals]:
-    ///     https://cran.r-project.org/doc/manuals/r-devel/R-ints.html#Handling-text
-    pub fn canClip(mut self, canClip: bool) -> Self {
-        self.canClip = canClip;
-        self
-    }
+    // /// Sets the flag of whether the device can clip text.
+    // ///
+    // /// If not specified, `false` will be used. In that case, the graphic engine
+    // /// will clip instead by omitting any "any text that does not appear to be
+    // /// wholly inside the clipping region," according to [the R Internals],
+    // /// which is not very ideal.
+    // ///
+    // /// [the R Internals]:
+    // ///     https://cran.r-project.org/doc/manuals/r-devel/R-ints.html#Handling-text
+    // pub fn canClip(mut self, canClip: bool) -> Self {
+    //     self.canClip = canClip;
+    //     self
+    // }
 
     /// Sets the flag of whether the device can handle holizontal adjustment.
     ///
@@ -607,16 +603,17 @@ impl DeviceDescriptor {
     /// Sets a callback function to clip.
     pub fn clip_callback(
         mut self,
-        clip: unsafe extern "C" fn(x0: f64, x1: f64, y0: f64, y1: f64, dd: pDevDesc),
+        clip: fn(x0: f64, x1: f64, y0: f64, y1: f64, dd: DevDesc),
     ) -> Self {
-        self.clip = Some(clip);
+        self.callbacks.clip = Some(clip);
+        self.canClip = true;
         self
     }
 
     /// Sets a callback function to free device-specific resources when the
     /// device is killed.
-    pub fn close_callback(mut self, close: unsafe extern "C" fn(dd: pDevDesc)) -> Self {
-        self.close = Some(close);
+    pub fn close_callback(mut self, close: fn(dd: DevDesc)) -> Self {
+        self.callbacks.close = Some(close);
         self
     }
 
@@ -657,6 +654,8 @@ impl DeviceDescriptor {
         // These need to be assigned before moving callbacks to deviceSpecific.
         let activate = self.callbacks.activate_wrapper();
         let circle = self.callbacks.circle_wrapper();
+        let clip = self.callbacks.clip_wrapper();
+        let close = self.callbacks.close_wrapper();
 
         let deviceSpecific = DeviceSpecificData {
             callbacks: self.callbacks,
@@ -733,8 +732,8 @@ impl DeviceDescriptor {
             // These are the functions that handles actual operations.
             activate,
             circle,
-            clip: self.clip,
-            close: self.close,
+            clip,
+            close,
             deactivate: self.deactivate,
             locator: self.locator,
             line: self.line,
