@@ -113,21 +113,6 @@ pub struct DeviceDescriptor {
 
     displayListOn: bool,
 
-    deactivate: Option<unsafe extern "C" fn(arg1: pDevDesc)>,
-    locator: Option<unsafe extern "C" fn(x: *mut f64, y: *mut f64, dd: pDevDesc) -> Rboolean>,
-    line: Option<
-        unsafe extern "C" fn(x1: f64, y1: f64, x2: f64, y2: f64, gc: pGEcontext, dd: pDevDesc),
-    >,
-    metricInfo: Option<
-        unsafe extern "C" fn(
-            c: std::os::raw::c_int,
-            gc: pGEcontext,
-            ascent: *mut f64,
-            descent: *mut f64,
-            width: *mut f64,
-            dd: pDevDesc,
-        ),
-    >,
     mode: Option<unsafe extern "C" fn(mode: std::os::raw::c_int, dd: pDevDesc)>,
     newPage: Option<unsafe extern "C" fn(gc: pGEcontext, dd: pDevDesc)>,
     polygon: Option<
@@ -382,10 +367,6 @@ impl DeviceDescriptor {
             // so that `GEinitDisplayList` is invoked.
             displayListOn: false,
 
-            deactivate: None,
-            locator: None,
-            line: None,
-            metricInfo: None,
             mode: None,
             newPage: None,
             polygon: None,
@@ -618,35 +599,28 @@ impl DeviceDescriptor {
     }
 
     /// Sets a callback function to clean up when the device is deactivated.
-    pub fn deactivate_callback(mut self, deactivate: unsafe extern "C" fn(arg1: pDevDesc)) -> Self {
-        self.deactivate = Some(deactivate);
+    pub fn deactivate_callback(mut self, deactivate: fn(arg1: DevDesc)) -> Self {
+        self.callbacks.deactivate = Some(deactivate);
         self
     }
 
-    /// Sets a callback function that returns the location of the next mouse click.
-    ///
-    /// If the device doesn't accept mouse clicks, this should be left `None`.
-    pub fn locator_callback(
-        mut self,
-        locator: unsafe extern "C" fn(x: *mut f64, y: *mut f64, dd: pDevDesc) -> Rboolean,
-    ) -> Self {
-        self.locator = Some(locator);
-        self
-    }
+    // /// Sets a callback function that returns the location of the next mouse click.
+    // ///
+    // /// If the device doesn't accept mouse clicks, this should be left `None`.
+    // pub fn locator_callback(
+    //     mut self,
+    //     locator: unsafe extern "C" fn(x: *mut f64, y: *mut f64, dd: pDevDesc) -> Rboolean,
+    // ) -> Self {
+    //     self.locator = Some(locator);
+    //     self
+    // }
 
     /// Sets a callback function to draw a line.
     pub fn line_callback(
         mut self,
-        line: unsafe extern "C" fn(
-            x1: f64,
-            y1: f64,
-            x2: f64,
-            y2: f64,
-            gc: pGEcontext,
-            dd: pDevDesc,
-        ),
+        line: fn(x1: f64, y1: f64, x2: f64, y2: f64, gc: R_GE_gcontext, dd: DevDesc),
     ) -> Self {
-        self.line = Some(line);
+        self.callbacks.line = Some(line);
         self
     }
 
@@ -656,6 +630,9 @@ impl DeviceDescriptor {
         let circle = self.callbacks.circle_wrapper();
         let clip = self.callbacks.clip_wrapper();
         let close = self.callbacks.close_wrapper();
+        let deactivate = self.callbacks.deactivate_wrapper();
+        let line = self.callbacks.line_wrapper();
+        let metricInfo = self.callbacks.metricInfo_wrapper();
 
         let deviceSpecific = DeviceSpecificData {
             callbacks: self.callbacks,
@@ -734,10 +711,10 @@ impl DeviceDescriptor {
             circle,
             clip,
             close,
-            deactivate: self.deactivate,
-            locator: self.locator,
-            line: self.line,
-            metricInfo: self.metricInfo,
+            deactivate,
+            locator: None, // TODO
+            line,
+            metricInfo,
             mode: self.mode,
             newPage: self.newPage,
             polygon: self.polygon,

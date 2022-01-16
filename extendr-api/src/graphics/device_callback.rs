@@ -13,6 +13,19 @@ pub(crate) struct DeviceCallbacks {
     pub(crate) circle: Option<fn(x: f64, y: f64, r: f64, gc: R_GE_gcontext, dd: DevDesc)>,
     pub(crate) clip: Option<fn(x0: f64, x1: f64, y0: f64, y1: f64, dd: DevDesc)>,
     pub(crate) close: Option<fn(dd: DevDesc)>,
+    pub(crate) deactivate: Option<fn(arg1: DevDesc)>,
+    pub(crate) line: Option<fn(x1: f64, y1: f64, x2: f64, y2: f64, gc: R_GE_gcontext, dd: DevDesc)>,
+
+    pub(crate) metricInfo: Option<
+        fn(
+            c: i32,
+            gc: R_GE_gcontext,
+            ascent: *mut f64,
+            descent: *mut f64,
+            width: *mut f64,
+            dd: DevDesc,
+        ),
+    >,
 }
 
 impl DeviceCallbacks {
@@ -88,5 +101,83 @@ impl DeviceCallbacks {
         }
 
         Some(close_wrapper)
+    }
+
+    pub fn deactivate_wrapper(&self) -> Option<unsafe extern "C" fn(arg1: pDevDesc)> {
+        // Return None if no callback function is registered.
+        self.deactivate?;
+
+        unsafe extern "C" fn deactivate_wrapper(arg1: pDevDesc) {
+            let dev_desc = *arg1;
+            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
+            let deactivate_inner = (*data).callbacks.deactivate.unwrap();
+
+            deactivate_inner(dev_desc);
+        }
+
+        Some(deactivate_wrapper)
+    }
+
+    pub fn line_wrapper(
+        &self,
+    ) -> Option<
+        unsafe extern "C" fn(x1: f64, y1: f64, x2: f64, y2: f64, gc: pGEcontext, dd: pDevDesc),
+    > {
+        // Return None if no callback function is registered.
+        self.line?;
+
+        unsafe extern "C" fn line_wrapper(
+            x1: f64,
+            y1: f64,
+            x2: f64,
+            y2: f64,
+            gc: pGEcontext,
+            dd: pDevDesc,
+        ) {
+            let dev_desc = *dd;
+            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
+            let line_inner = (*data).callbacks.line.unwrap();
+
+            let gcontext = *gc;
+
+            line_inner(x1, y1, x2, y2, gcontext, dev_desc);
+        }
+
+        Some(line_wrapper)
+    }
+
+    pub fn metricInfo_wrapper(
+        &self,
+    ) -> Option<
+        unsafe extern "C" fn(
+            c: std::os::raw::c_int,
+            gc: pGEcontext,
+            ascent: *mut f64,
+            descent: *mut f64,
+            width: *mut f64,
+            dd: pDevDesc,
+        ),
+    > {
+        // Return None if no callback function is registered.
+        self.metricInfo?;
+
+        unsafe extern "C" fn metricInfo_wrapper(
+            c: std::os::raw::c_int,
+            gc: pGEcontext,
+            ascent: *mut f64,
+            descent: *mut f64,
+            width: *mut f64,
+            dd: pDevDesc,
+        ) {
+            let dev_desc = *dd;
+            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
+            let metricInfo_inner = (*data).callbacks.metricInfo.unwrap();
+
+            let gcontext = *gc;
+
+            metricInfo_inner(c as _, gcontext, ascent, descent, width, dev_desc);
+        }
+
+        Some(metricInfo_wrapper)
     }
 }
