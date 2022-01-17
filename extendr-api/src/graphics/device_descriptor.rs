@@ -114,8 +114,6 @@ pub struct DeviceDescriptor {
 
     displayListOn: bool,
 
-    newFrameConfirm: Option<unsafe extern "C" fn(dd: pDevDesc) -> Rboolean>,
-
     // UTF-8 support
     hasTextUTF8: bool,
     textUTF8: Option<
@@ -292,8 +290,6 @@ impl DeviceDescriptor {
             // When we want to maintain a plot history, this should be turned on
             // so that `GEinitDisplayList` is invoked.
             displayListOn: false,
-
-            newFrameConfirm: None,
 
             // UTF-8 support
             hasTextUTF8: false,
@@ -690,6 +686,12 @@ impl DeviceDescriptor {
         self
     }
 
+    /// Sets a callback function to confirm a new frame.
+    pub fn newFrameConfirm_callback(mut self, newFrameConfirm: fn(dd: DevDesc) -> bool) -> Self {
+        self.callbacks.newFrameConfirm = Some(newFrameConfirm);
+        self
+    }
+
     pub fn into_dev_desc(self) -> DevDesc {
         // These need to be assigned before moving callbacks to deviceSpecific.
         let activate = self.callbacks.activate_wrapper();
@@ -711,6 +713,7 @@ impl DeviceDescriptor {
         let strWidth = self.callbacks.strWidth_wrapper();
         let text = self.callbacks.text_wrapper();
         let onExit = self.callbacks.onExit_wrapper();
+        let newFrameConfirm = self.callbacks.newFrameConfirm_wrapper();
 
         let deviceSpecific = DeviceSpecificData {
             callbacks: self.callbacks,
@@ -805,8 +808,8 @@ impl DeviceDescriptor {
             strWidth,
             text,
             onExit,
-            getEvent: None,
-            newFrameConfirm: self.newFrameConfirm,
+            getEvent: None, // This is no longer used and exists only for backward-compatibility of the structure.
+            newFrameConfirm,
 
             // UTF-8 support
             hasTextUTF8: if self.hasTextUTF8 { 1 } else { 0 },

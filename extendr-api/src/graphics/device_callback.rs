@@ -55,8 +55,8 @@ pub(crate) struct DeviceCallbacks {
     pub(crate) strWidth: Option<fn(str: &str, gc: R_GE_gcontext, dd: DevDesc) -> f64>,
     pub(crate) text:
         Option<fn(x: f64, y: f64, str: &str, rot: f64, hadj: f64, gc: R_GE_gcontext, dd: DevDesc)>,
-
     pub(crate) onExit: Option<fn(dd: DevDesc)>,
+    pub(crate) newFrameConfirm: Option<fn(dd: DevDesc) -> bool>,
 }
 
 #[allow(clippy::type_complexity, non_snake_case)]
@@ -580,5 +580,22 @@ impl DeviceCallbacks {
             onExit_inner(dev_desc);
         }
         Some(onExit_wrapper)
+    }
+
+    pub fn newFrameConfirm_wrapper(
+        &self,
+    ) -> Option<unsafe extern "C" fn(dd: pDevDesc) -> Rboolean> {
+        // Return None if no callback function is registered.
+        self.newFrameConfirm?;
+
+        unsafe extern "C" fn newFrameConfirm_wrapper(dd: pDevDesc) -> Rboolean {
+            let dev_desc = *dd;
+            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
+            let newFrameConfirm_inner = (*data).callbacks.newFrameConfirm.unwrap();
+
+            newFrameConfirm_inner(dev_desc).try_into().unwrap()
+        }
+
+        Some(newFrameConfirm_wrapper)
     }
 }
