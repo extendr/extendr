@@ -84,8 +84,9 @@ pub enum GraphicDeviceCapabilityLocator {
 /// - `canGenMouseDown`, `canGenMouseMove`, `canGenMouseUp`, `canGenKeybd`, and
 ///   `canGenIdle`: These fields are currently not used by R and preserved only
 ///   for backward-compatibility.
-/// - `gettingEvent`: This is set true when getGraphicsEvent is actively looking
-///   for events. Reading the description on ["6.1.6 Graphics events" of R
+/// - `gettingEvent`, `getEvent`: This is set true when getGraphicsEvent is
+///   actively looking for events. Reading the description on ["6.1.6 Graphics
+///   events" of R
 ///   Internals](https://cran.r-project.org/doc/manuals/r-devel/R-ints.html#Graphics-events),
 ///   it seems this flag is not what is controlled by a graphic device.
 #[allow(non_snake_case)]
@@ -113,19 +114,6 @@ pub struct DeviceDescriptor {
 
     displayListOn: bool,
 
-    text: Option<
-        unsafe extern "C" fn(
-            x: f64,
-            y: f64,
-            str: *const std::os::raw::c_char,
-            rot: f64,
-            hadj: f64,
-            gc: pGEcontext,
-            dd: pDevDesc,
-        ),
-    >,
-    onExit: Option<unsafe extern "C" fn(dd: pDevDesc)>,
-    getEvent: Option<unsafe extern "C" fn(arg1: SEXP, arg2: *const std::os::raw::c_char) -> SEXP>,
     newFrameConfirm: Option<unsafe extern "C" fn(dd: pDevDesc) -> Rboolean>,
 
     // UTF-8 support
@@ -305,9 +293,6 @@ impl DeviceDescriptor {
             // so that `GEinitDisplayList` is invoked.
             displayListOn: false,
 
-            text: None,
-            onExit: None,
-            getEvent: None,
             newFrameConfirm: None,
 
             // UTF-8 support
@@ -677,13 +662,31 @@ impl DeviceDescriptor {
         self
     }
 
-    /// sets a callback function that returns the width of the given string in
+    /// Sets a callback function that returns the width of the given string in
     /// DEVICE units.
     pub fn strWidth_callback(
         mut self,
         strWidth: fn(str: &str, gc: R_GE_gcontext, dd: DevDesc) -> f64,
     ) -> Self {
         self.callbacks.strWidth = Some(strWidth);
+        self
+    }
+
+    /// Sets a callback function to draw a text.
+    ///
+    /// `rot` is the rotation in degrees, with positive rotation anticlockwise
+    /// from the positive x-axis.
+    pub fn text_callback(
+        mut self,
+        text: fn(x: f64, y: f64, str: &str, rot: f64, hadj: f64, gc: R_GE_gcontext, dd: DevDesc),
+    ) -> Self {
+        self.callbacks.text = Some(text);
+        self
+    }
+
+    /// Sets a callback function called when the user aborts some operation.
+    pub fn onExit_callback(mut self, onExit: fn(dd: DevDesc)) -> Self {
+        self.callbacks.onExit = Some(onExit);
         self
     }
 
@@ -706,6 +709,8 @@ impl DeviceDescriptor {
         let cap = self.callbacks.cap_wrapper();
         let size = self.callbacks.size_wrapper();
         let strWidth = self.callbacks.strWidth_wrapper();
+        let text = self.callbacks.text_wrapper();
+        let onExit = self.callbacks.onExit_wrapper();
 
         let deviceSpecific = DeviceSpecificData {
             callbacks: self.callbacks,
@@ -798,9 +803,9 @@ impl DeviceDescriptor {
             cap,
             size,
             strWidth,
-            text: self.text,
-            onExit: self.onExit,
-            getEvent: self.getEvent,
+            text,
+            onExit,
+            getEvent: None,
             newFrameConfirm: self.newFrameConfirm,
 
             // UTF-8 support

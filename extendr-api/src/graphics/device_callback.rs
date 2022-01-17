@@ -53,6 +53,10 @@ pub(crate) struct DeviceCallbacks {
     pub(crate) cap: Option<fn(dd: DevDesc) -> SEXP>,
     pub(crate) size: Option<fn(dd: DevDesc) -> (f64, f64, f64, f64)>,
     pub(crate) strWidth: Option<fn(str: &str, gc: R_GE_gcontext, dd: DevDesc) -> f64>,
+    pub(crate) text:
+        Option<fn(x: f64, y: f64, str: &str, rot: f64, hadj: f64, gc: R_GE_gcontext, dd: DevDesc)>,
+
+    pub(crate) onExit: Option<fn(dd: DevDesc)>,
 }
 
 #[allow(clippy::type_complexity, non_snake_case)]
@@ -522,5 +526,59 @@ impl DeviceCallbacks {
         }
 
         Some(strWidth_wrapper)
+    }
+
+    pub fn text_wrapper(
+        &self,
+    ) -> Option<
+        unsafe extern "C" fn(
+            x: f64,
+            y: f64,
+            str: *const std::os::raw::c_char,
+            rot: f64,
+            hadj: f64,
+            gc: pGEcontext,
+            dd: pDevDesc,
+        ),
+    > {
+        // Return None if no callback function is registered.
+        self.text?;
+
+        unsafe extern "C" fn text_wrapper(
+            x: f64,
+            y: f64,
+            str: *const std::os::raw::c_char,
+            rot: f64,
+            hadj: f64,
+            gc: pGEcontext,
+            dd: pDevDesc,
+        ) {
+            let dev_desc = *dd;
+            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
+            let text_inner = (*data).callbacks.text.unwrap();
+
+            let cstr = std::ffi::CStr::from_ptr(str);
+
+            let gcontext = *gc;
+
+            // TODO: Should we do something when the str is not available?
+            text_inner(x, y, cstr.to_str().unwrap(), rot, hadj, gcontext, dev_desc);
+        }
+
+        Some(text_wrapper)
+    }
+
+    pub fn onExit_wrapper(&self) -> Option<unsafe extern "C" fn(dd: pDevDesc)> {
+        // Return None if no callback function is registered.
+        self.onExit?;
+
+        unsafe extern "C" fn onExit_wrapper(dd: pDevDesc) {
+            let dev_desc = *dd;
+            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
+            let onExit_inner = (*data).callbacks.onExit.unwrap();
+
+            onExit_inner(dev_desc);
+        }
+        Some(onExit_wrapper)
     }
 }
