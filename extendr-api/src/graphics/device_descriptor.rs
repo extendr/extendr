@@ -113,34 +113,6 @@ pub struct DeviceDescriptor {
 
     displayListOn: bool,
 
-    raster: Option<
-        unsafe extern "C" fn(
-            raster: *mut std::os::raw::c_uint,
-            w: std::os::raw::c_int,
-            h: std::os::raw::c_int,
-            x: f64,
-            y: f64,
-            width: f64,
-            height: f64,
-            rot: f64,
-            interpolate: Rboolean,
-            gc: pGEcontext,
-            dd: pDevDesc,
-        ),
-    >,
-    cap: Option<unsafe extern "C" fn(dd: pDevDesc) -> SEXP>,
-    size: Option<
-        unsafe extern "C" fn(
-            left: *mut f64,
-            right: *mut f64,
-            bottom: *mut f64,
-            top: *mut f64,
-            dd: pDevDesc,
-        ),
-    >,
-    strWidth: Option<
-        unsafe extern "C" fn(str: *const std::os::raw::c_char, gc: pGEcontext, dd: pDevDesc) -> f64,
-    >,
     text: Option<
         unsafe extern "C" fn(
             x: f64,
@@ -333,10 +305,6 @@ impl DeviceDescriptor {
             // so that `GEinitDisplayList` is invoked.
             displayListOn: false,
 
-            raster: None,
-            cap: None,
-            size: None,
-            strWidth: None,
             text: None,
             onExit: None,
             getEvent: None,
@@ -566,6 +534,7 @@ impl DeviceDescriptor {
     //     locator: unsafe extern "C" fn(x: *mut f64, y: *mut f64, dd: pDevDesc) -> Rboolean,
     // ) -> Self {
     //     self.locator = Some(locator);
+    //     self.haveLocator = GraphicDeviceCapabilityLocator::Yes;
     //     self
     // }
 
@@ -644,6 +613,7 @@ impl DeviceDescriptor {
     ///
     /// `nper` contains number of points in each polygon. `winding` represents
     /// the filling rule; `TRUE` means "nonzero", `FALSE` means "evenodd".
+    #[allow(clippy::type_complexity)]
     pub fn path_callback(
         mut self,
         path: fn(
@@ -656,6 +626,64 @@ impl DeviceDescriptor {
         ),
     ) -> Self {
         self.callbacks.path = Some(path);
+        self
+    }
+
+    /// Sets a callback function to draw a raster.
+    ///
+    /// `raster` is a ROW-wise array of color (ABGR). `w` and `h` represents the
+    /// number of elements in the row and the column of the raster. `x` and `y`
+    /// is the size of the raster in points. `rot` is the rotation in degrees,
+    /// with positive rotation anticlockwise from the positive x-axis.
+    /// `interpolate` is whether to apply the linear interpolation on the raster
+    /// image.
+    #[allow(clippy::type_complexity)]
+    pub fn raster_callback(
+        mut self,
+        raster: fn(
+            raster: &[u32],
+            w: usize,
+            h: usize,
+            x: f64,
+            y: f64,
+            width: f64,
+            height: f64,
+            rot: f64,
+            interpolate: Rboolean,
+            gc: R_GE_gcontext,
+            dd: DevDesc,
+        ),
+        capability: GraphicDeviceCapabilityRaster,
+    ) -> Self {
+        self.callbacks.raster = Some(raster);
+        self.haveRaster = capability;
+        self
+    }
+
+    /// Sets a callback function that captures and returns the current canvas.
+    ///
+    /// This is only meaningful for raster devices.
+    pub fn cap_callback(mut self, cap: fn(dd: DevDesc) -> SEXP) -> Self {
+        self.callbacks.cap = Some(cap);
+        self.haveCapture = GraphicDeviceCapabilityCapture::Yes;
+        self
+    }
+
+    /// Sets a callback function that is called when the device gets resized.
+    ///
+    /// The callback should return `(left, right, bottom, top)`.
+    pub fn size_callback(mut self, size: fn(dd: DevDesc) -> (f64, f64, f64, f64)) -> Self {
+        self.callbacks.size = Some(size);
+        self
+    }
+
+    /// sets a callback function that returns the width of the given string in
+    /// DEVICE units.
+    pub fn strWidth_callback(
+        mut self,
+        strWidth: fn(str: &str, gc: R_GE_gcontext, dd: DevDesc) -> f64,
+    ) -> Self {
+        self.callbacks.strWidth = Some(strWidth);
         self
     }
 
@@ -674,6 +702,10 @@ impl DeviceDescriptor {
         let polyline = self.callbacks.polyline_wrapper();
         let rect = self.callbacks.rect_wrapper();
         let path = self.callbacks.path_wrapper();
+        let raster = self.callbacks.raster_wrapper();
+        let cap = self.callbacks.cap_wrapper();
+        let size = self.callbacks.size_wrapper();
+        let strWidth = self.callbacks.strWidth_wrapper();
 
         let deviceSpecific = DeviceSpecificData {
             callbacks: self.callbacks,
@@ -762,10 +794,10 @@ impl DeviceDescriptor {
             polyline,
             rect,
             path,
-            raster: self.raster,
-            cap: self.cap,
-            size: self.size,
-            strWidth: self.strWidth,
+            raster,
+            cap,
+            size,
+            strWidth,
             text: self.text,
             onExit: self.onExit,
             getEvent: self.getEvent,

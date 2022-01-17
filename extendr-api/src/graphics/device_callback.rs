@@ -9,7 +9,7 @@ use super::device_descriptor::*;
 // from a template callback function. This is needed since
 #[repr(C)]
 #[derive(Default)]
-#[allow(clippy::type_complexity)]
+#[allow(clippy::type_complexity, non_snake_case)]
 pub(crate) struct DeviceCallbacks {
     pub(crate) activate: Option<fn(arg1: DevDesc)>,
     pub(crate) circle: Option<fn(x: f64, y: f64, r: f64, gc: R_GE_gcontext, dd: DevDesc)>,
@@ -17,7 +17,6 @@ pub(crate) struct DeviceCallbacks {
     pub(crate) close: Option<fn(dd: DevDesc)>,
     pub(crate) deactivate: Option<fn(arg1: DevDesc)>,
     pub(crate) line: Option<fn(x1: f64, y1: f64, x2: f64, y2: f64, gc: R_GE_gcontext, dd: DevDesc)>,
-
     pub(crate) metricInfo: Option<
         fn(
             c: i32,
@@ -36,8 +35,27 @@ pub(crate) struct DeviceCallbacks {
     pub(crate) path: Option<
         fn(x: &[f64], y: &[f64], nper: &[i32], winding: Rboolean, gc: R_GE_gcontext, dd: DevDesc),
     >,
+    pub(crate) raster: Option<
+        fn(
+            raster: &[u32],
+            w: usize,
+            h: usize,
+            x: f64,
+            y: f64,
+            width: f64,
+            height: f64,
+            rot: f64,
+            interpolate: Rboolean,
+            gc: R_GE_gcontext,
+            dd: DevDesc,
+        ),
+    >,
+    pub(crate) cap: Option<fn(dd: DevDesc) -> SEXP>,
+    pub(crate) size: Option<fn(dd: DevDesc) -> (f64, f64, f64, f64)>,
+    pub(crate) strWidth: Option<fn(str: &str, gc: R_GE_gcontext, dd: DevDesc) -> f64>,
 }
 
+#[allow(clippy::type_complexity, non_snake_case)]
 impl DeviceCallbacks {
     pub fn new() -> Self {
         Self {
@@ -366,5 +384,143 @@ impl DeviceCallbacks {
         }
 
         Some(path_wrapper)
+    }
+
+    pub fn raster_wrapper(
+        &self,
+    ) -> Option<
+        unsafe extern "C" fn(
+            raster: *mut std::os::raw::c_uint,
+            w: std::os::raw::c_int,
+            h: std::os::raw::c_int,
+            x: f64,
+            y: f64,
+            width: f64,
+            height: f64,
+            rot: f64,
+            interpolate: Rboolean,
+            gc: pGEcontext,
+            dd: pDevDesc,
+        ),
+    > {
+        // Return None if no callback function is registered.
+        self.raster?;
+
+        unsafe extern "C" fn raster_wrapper(
+            raster: *mut std::os::raw::c_uint,
+            w: std::os::raw::c_int,
+            h: std::os::raw::c_int,
+            x: f64,
+            y: f64,
+            width: f64,
+            height: f64,
+            rot: f64,
+            interpolate: Rboolean,
+            gc: pGEcontext,
+            dd: pDevDesc,
+        ) {
+            let dev_desc = *dd;
+            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
+            let raster_inner = (*data).callbacks.raster.unwrap();
+
+            let gcontext = *gc;
+
+            let raster = slice::from_raw_parts(raster, (w * h) as _);
+
+            raster_inner(
+                raster,
+                w as _,
+                h as _,
+                x,
+                y,
+                width,
+                height,
+                rot,
+                interpolate,
+                gcontext,
+                dev_desc,
+            );
+        }
+
+        Some(raster_wrapper)
+    }
+
+    pub fn cap_wrapper(&self) -> Option<unsafe extern "C" fn(dd: pDevDesc) -> SEXP> {
+        // Return None if no callback function is registered.
+        self.cap?;
+
+        unsafe extern "C" fn cap_wrapper(dd: pDevDesc) -> SEXP {
+            let dev_desc = *dd;
+            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
+            let cap_inner = (*data).callbacks.cap.unwrap();
+
+            // TODO: convert the output more nicely
+            cap_inner(dev_desc)
+        }
+
+        Some(cap_wrapper)
+    }
+
+    pub fn size_wrapper(
+        &self,
+    ) -> Option<
+        unsafe extern "C" fn(
+            left: *mut f64,
+            right: *mut f64,
+            bottom: *mut f64,
+            top: *mut f64,
+            dd: pDevDesc,
+        ),
+    > {
+        // Return None if no callback function is registered.
+        self.size?;
+
+        unsafe extern "C" fn size_wrapper(
+            left: *mut f64,
+            right: *mut f64,
+            bottom: *mut f64,
+            top: *mut f64,
+            dd: pDevDesc,
+        ) {
+            let dev_desc = *dd;
+            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
+            let size_inner = (*data).callbacks.size.unwrap();
+
+            let sizes = size_inner(dev_desc);
+            *left = sizes.0;
+            *right = sizes.1;
+            *bottom = sizes.2;
+            *top = sizes.3;
+        }
+
+        Some(size_wrapper)
+    }
+
+    pub fn strWidth_wrapper(
+        &self,
+    ) -> Option<
+        unsafe extern "C" fn(str: *const std::os::raw::c_char, gc: pGEcontext, dd: pDevDesc) -> f64,
+    > {
+        // Return None if no callback function is registered.
+        self.strWidth?;
+
+        unsafe extern "C" fn strWidth_wrapper(
+            str: *const std::os::raw::c_char,
+            gc: pGEcontext,
+            dd: pDevDesc,
+        ) -> f64 {
+            let dev_desc = *dd;
+            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
+            let strWidth_inner = (*data).callbacks.strWidth.unwrap();
+
+            let cstr = std::ffi::CStr::from_ptr(str);
+
+            let gcontext = *gc;
+
+            // TODO: Should we do something when the str is not available?
+            strWidth_inner(cstr.to_str().unwrap(), gcontext, dev_desc)
+        }
+
+        Some(strWidth_wrapper)
     }
 }
