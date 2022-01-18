@@ -1,7 +1,7 @@
 use crate::*;
 use libR_sys::*;
 
-use super::{color::Color, device_driver::DeviceDriver, FontFace, LineType};
+use super::{color::Color, FontFace, LineType};
 
 // R internals says:
 //

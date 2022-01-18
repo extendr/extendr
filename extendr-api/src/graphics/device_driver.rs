@@ -20,7 +20,7 @@ pub trait DeviceDriver: std::marker::Sized {
 
     /// Usually, the default implementation of `clip`, which does nothing, is
     /// used. When you want to skip clipping at all, this should be set `false`.
-    const use_clip: bool = true;
+    const USE_CLIP: bool = true;
 
     /// A callback function to free device-specific resources when the
     /// device is killed.
@@ -91,7 +91,7 @@ pub trait DeviceDriver: std::marker::Sized {
 
     /// Usually, the default implementation of `raster`, which does nothing, is
     /// used. When you want to skip clipping at all, this should be set `false`.
-    const use_raster: bool = true;
+    const USE_RASTER: bool = true;
 
     /// A callback function that captures and returns the current canvas.
     ///
@@ -102,7 +102,7 @@ pub trait DeviceDriver: std::marker::Sized {
 
     /// Usually, the default implementation of `capture`, which does nothing, is
     /// used. When you want to skip clipping at all, this should be set `false`.
-    const use_capture: bool = true;
+    const USE_CAPTURE: bool = true;
 
     /// A callback function that is called when the device gets resized.
     ///
@@ -447,7 +447,11 @@ pub trait DeviceDriver: std::marker::Sized {
             // These are the functions that handles actual operations.
             activate: Some(device_driver_activate::<T>),
             circle: Some(device_driver_circle::<T>),
-            clip: Some(device_driver_clip::<T>),
+            clip: if <T>::USE_CLIP {
+                Some(device_driver_clip::<T>)
+            } else {
+                None
+            },
             close: Some(device_driver_close::<T>),
             deactivate: Some(device_driver_deactivate::<T>),
             locator: None, // TODO
@@ -459,8 +463,16 @@ pub trait DeviceDriver: std::marker::Sized {
             polyline: Some(device_driver_polyline::<T>),
             rect: Some(device_driver_rect::<T>),
             path: Some(device_driver_path::<T>),
-            raster: Some(device_driver_raster::<T>),
-            cap: Some(device_driver_cap::<T>),
+            raster: if <T>::USE_RASTER {
+                Some(device_driver_raster::<T>)
+            } else {
+                None
+            },
+            cap: if <T>::USE_CAPTURE {
+                Some(device_driver_cap::<T>)
+            } else {
+                None
+            },
             size: Some(device_driver_size::<T>),
             strWidth: Some(device_driver_strWidth::<T>),
             text: Some(device_driver_text::<T>),
