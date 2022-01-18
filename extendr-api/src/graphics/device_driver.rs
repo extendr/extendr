@@ -10,13 +10,13 @@ use super::{device_descriptor::*, Device};
 #[allow(non_snake_case, unused_variables, clippy::too_many_arguments)]
 pub trait DeviceDriver: std::marker::Sized {
     /// A callback function to setup the device when the device is activated.
-    fn activate(dd: DevDesc) {}
+    fn activate(self, dd: DevDesc) {}
 
     /// A callback function to draw a circle.
-    fn circle(x: f64, y: f64, r: f64, gc: R_GE_gcontext, dd: DevDesc) {}
+    fn circle(self, x: f64, y: f64, r: f64, gc: R_GE_gcontext, dd: DevDesc) {}
 
     /// A callback function to clip.
-    fn clip(x0: f64, x1: f64, y0: f64, y1: f64, dd: DevDesc) {}
+    fn clip(self, x0: f64, x1: f64, y0: f64, y1: f64, dd: DevDesc) {}
 
     /// Usually, the default implementation of `clip`, which does nothing, is
     /// used. When you want to skip clipping at all, this should be set `false`.
@@ -24,10 +24,10 @@ pub trait DeviceDriver: std::marker::Sized {
 
     /// A callback function to free device-specific resources when the
     /// device is killed.
-    fn close(dd: DevDesc) {}
+    fn close(self, dd: DevDesc) {}
 
     /// A callback function to clean up when the device is deactivated.
-    fn deactivate(dd: DevDesc) {}
+    fn deactivate(self, dd: DevDesc) {}
 
     /// TODO'
     // /// A callback function that returns the location of the next mouse click.
@@ -36,34 +36,42 @@ pub trait DeviceDriver: std::marker::Sized {
     // fn locator(dd: DevDesc) -> (f64, f64) {}
 
     /// A callback function to draw a line.
-    fn line(x1: f64, y1: f64, x2: f64, y2: f64, gc: R_GE_gcontext, dd: DevDesc) {}
+    fn line(self, x1: f64, y1: f64, x2: f64, y2: f64, gc: R_GE_gcontext, dd: DevDesc) {}
 
     /// A callback function that return the metric info of a glyph.
-    fn metricInfo(c: char, gc: R_GE_gcontext, dd: DevDesc) -> (f64, f64, f64) {
+    fn metricInfo(self, c: char, gc: R_GE_gcontext, dd: DevDesc) -> (f64, f64, f64) {
         (0.0, 0.0, 0.0)
     }
 
     /// A callback function called whenever the graphics engine starts
     /// drawing (mode=1) or stops drawing (mode=0).
-    fn mode(mode: i32, dd: DevDesc) {}
+    fn mode(self, mode: i32, dd: DevDesc) {}
 
     /// A callback function called whenever a new plot requires a new page.
-    fn newPage(gc: R_GE_gcontext, dd: DevDesc) {}
+    fn newPage(self, gc: R_GE_gcontext, dd: DevDesc) {}
 
     /// A callback function to draw a polygon.
-    fn polygon(x: &[f64], y: &[f64], gc: R_GE_gcontext, dd: DevDesc) {}
+    fn polygon(self, x: &[f64], y: &[f64], gc: R_GE_gcontext, dd: DevDesc) {}
 
     /// A callback function to draw a polyline.
-    fn polyline(x: &[f64], y: &[f64], gc: R_GE_gcontext, dd: DevDesc) {}
+    fn polyline(self, x: &[f64], y: &[f64], gc: R_GE_gcontext, dd: DevDesc) {}
 
     /// A callback function to draw a rect.
-    fn rect(x0: f64, y0: f64, x1: f64, y1: f64, gc: R_GE_gcontext, dd: DevDesc) {}
+    fn rect(self, x0: f64, y0: f64, x1: f64, y1: f64, gc: R_GE_gcontext, dd: DevDesc) {}
 
     /// A callback function to draw paths.
     ///
     /// `nper` contains number of points in each polygon. `winding` represents
     /// the filling rule; `TRUE` means "nonzero", `FALSE` means "evenodd".
-    fn path(x: &[f64], y: &[f64], nper: &[i32], winding: Rboolean, gc: R_GE_gcontext, dd: DevDesc) {
+    fn path(
+        self,
+        x: &[f64],
+        y: &[f64],
+        nper: &[i32],
+        winding: Rboolean,
+        gc: R_GE_gcontext,
+        dd: DevDesc,
+    ) {
     }
 
     /// A callback function to draw a raster.
@@ -75,6 +83,7 @@ pub trait DeviceDriver: std::marker::Sized {
     /// `interpolate` is whether to apply the linear interpolation on the raster
     /// image.
     fn raster(
+        self,
         raster: &[u32],
         w: usize,
         h: usize,
@@ -96,7 +105,7 @@ pub trait DeviceDriver: std::marker::Sized {
     /// A callback function that captures and returns the current canvas.
     ///
     /// This is only meaningful for raster devices.
-    fn cap(dd: DevDesc) -> Robj {
+    fn cap(self, dd: DevDesc) -> Robj {
         ().into()
     }
 
@@ -107,13 +116,13 @@ pub trait DeviceDriver: std::marker::Sized {
     /// A callback function that is called when the device gets resized.
     ///
     /// The callback should return `(left, right, bottom, top)`.
-    fn size(dd: DevDesc) -> (f64, f64, f64, f64) {
+    fn size(self, dd: DevDesc) -> (f64, f64, f64, f64) {
         (0.0, 0.0, 0.0, 0.0)
     }
 
     /// A callback function that returns the width of the given string in
     /// the device units.
-    fn strWidth(str: &str, gc: R_GE_gcontext, dd: DevDesc) -> f64 {
+    fn strWidth(self, str: &str, gc: R_GE_gcontext, dd: DevDesc) -> f64 {
         0.0
     }
 
@@ -121,13 +130,13 @@ pub trait DeviceDriver: std::marker::Sized {
     ///
     /// `rot` is the rotation in degrees, with positive rotation anticlockwise
     /// from the positive x-axis.
-    fn text(x: f64, y: f64, str: &str, rot: f64, hadj: f64, gc: R_GE_gcontext, dd: DevDesc) {}
+    fn text(self, x: f64, y: f64, str: &str, rot: f64, hadj: f64, gc: R_GE_gcontext, dd: DevDesc) {}
 
     /// A callback function called when the user aborts some operation.
-    fn onExit(dd: DevDesc) {}
+    fn onExit(self, dd: DevDesc) {}
 
     /// Sets a callback function to confirm a new frame.
-    fn newFrameConfirm(dd: DevDesc) -> bool {
+    fn newFrameConfirm(self, dd: DevDesc) -> bool {
         true
     }
 
@@ -153,7 +162,8 @@ pub trait DeviceDriver: std::marker::Sized {
         }
 
         unsafe extern "C" fn device_driver_activate<T: DeviceDriver>(arg1: pDevDesc) {
-            <T>::activate(*arg1);
+            let data = (*arg1).deviceSpecific as *mut T;
+            <T>::activate(data.read(), *arg1);
         }
 
         unsafe extern "C" fn device_driver_circle<T: DeviceDriver>(
@@ -163,7 +173,8 @@ pub trait DeviceDriver: std::marker::Sized {
             gc: pGEcontext,
             dd: pDevDesc,
         ) {
-            <T>::circle(x, y, r, *gc, *dd);
+            let data = (*dd).deviceSpecific as *mut T;
+            <T>::circle(data.read(), x, y, r, *gc, *dd);
         }
 
         unsafe extern "C" fn device_driver_clip<T: DeviceDriver>(
@@ -173,7 +184,8 @@ pub trait DeviceDriver: std::marker::Sized {
             y1: f64,
             dd: pDevDesc,
         ) {
-            <T>::clip(x0, x1, y0, y1, *dd);
+            let data = (*dd).deviceSpecific as *mut T;
+            <T>::clip(data.read(), x0, x1, y0, y1, *dd);
         }
 
         // Note: close is special. This function is responsible for tearing down the
@@ -181,15 +193,17 @@ pub trait DeviceDriver: std::marker::Sized {
         // callback is supplied.
         unsafe extern "C" fn device_driver_close<T: DeviceDriver>(dd: pDevDesc) {
             let dev_desc = *dd;
+            let data = dev_desc.deviceSpecific as *mut T;
 
-            <T>::close(dev_desc);
+            <T>::close(data.read(), dev_desc);
 
             // Convert back to a Rust struct to drop the resources on Rust's side.
-            Box::from_raw(dev_desc.deviceSpecific as *mut T);
+            Box::from_raw(data);
         }
 
         unsafe extern "C" fn device_driver_deactivate<T: DeviceDriver>(arg1: pDevDesc) {
-            <T>::deactivate(*arg1);
+            let data = (*arg1).deviceSpecific as *mut T;
+            <T>::deactivate(data.read(), *arg1);
         }
 
         unsafe extern "C" fn device_driver_line<T: DeviceDriver>(
@@ -200,7 +214,8 @@ pub trait DeviceDriver: std::marker::Sized {
             gc: pGEcontext,
             dd: pDevDesc,
         ) {
-            <T>::line(x1, y1, x2, y2, *gc, *dd);
+            let data = (*dd).deviceSpecific as *mut T;
+            <T>::line(data.read(), x1, y1, x2, y2, *gc, *dd);
         }
 
         unsafe extern "C" fn device_driver_metricInfo<T: DeviceDriver>(
@@ -212,7 +227,8 @@ pub trait DeviceDriver: std::marker::Sized {
             dd: pDevDesc,
         ) {
             if let Some(c) = std::char::from_u32(c as _) {
-                let metric_info = <T>::metricInfo(c, *gc, *dd);
+                let data = (*dd).deviceSpecific as *mut T;
+                let metric_info = <T>::metricInfo(data.read(), c, *gc, *dd);
                 *ascent = metric_info.0;
                 *descent = metric_info.1;
                 *width = metric_info.2;
@@ -220,11 +236,13 @@ pub trait DeviceDriver: std::marker::Sized {
         }
 
         unsafe extern "C" fn device_driver_mode<T: DeviceDriver>(mode: c_int, dd: pDevDesc) {
-            <T>::mode(mode as _, *dd);
+            let data = (*dd).deviceSpecific as *mut T;
+            <T>::mode(data.read(), mode as _, *dd);
         }
 
         unsafe extern "C" fn device_driver_newPage<T: DeviceDriver>(gc: pGEcontext, dd: pDevDesc) {
-            <T>::newPage(*gc, *dd);
+            let data = (*dd).deviceSpecific as *mut T;
+            <T>::newPage(data.read(), *gc, *dd);
         }
 
         unsafe extern "C" fn device_driver_polygon<T: DeviceDriver>(
@@ -237,7 +255,8 @@ pub trait DeviceDriver: std::marker::Sized {
             let x = slice::from_raw_parts(x, n as _);
             let y = slice::from_raw_parts(y, n as _);
 
-            <T>::polygon(x, y, *gc, *dd);
+            let data = (*dd).deviceSpecific as *mut T;
+            <T>::polygon(data.read(), x, y, *gc, *dd);
         }
 
         unsafe extern "C" fn device_driver_polyline<T: DeviceDriver>(
@@ -250,7 +269,8 @@ pub trait DeviceDriver: std::marker::Sized {
             let x = slice::from_raw_parts(x, n as _);
             let y = slice::from_raw_parts(y, n as _);
 
-            <T>::polyline(x, y, *gc, *dd);
+            let data = (*dd).deviceSpecific as *mut T;
+            <T>::polyline(data.read(), x, y, *gc, *dd);
         }
 
         unsafe extern "C" fn device_driver_rect<T: DeviceDriver>(
@@ -261,7 +281,8 @@ pub trait DeviceDriver: std::marker::Sized {
             gc: pGEcontext,
             dd: pDevDesc,
         ) {
-            <T>::rect(x0, x1, y0, y1, *gc, *dd);
+            let data = (*dd).deviceSpecific as *mut T;
+            <T>::rect(data.read(), x0, x1, y0, y1, *gc, *dd);
         }
 
         unsafe extern "C" fn device_driver_path<T: DeviceDriver>(
@@ -279,7 +300,8 @@ pub trait DeviceDriver: std::marker::Sized {
             let x = slice::from_raw_parts(x, n);
             let y = slice::from_raw_parts(y, n);
 
-            <T>::path(x, y, nper, winding, *gc, *dd);
+            let data = (*dd).deviceSpecific as *mut T;
+            <T>::path(data.read(), x, y, nper, winding, *gc, *dd);
         }
 
         unsafe extern "C" fn device_driver_raster<T: DeviceDriver>(
@@ -295,9 +317,11 @@ pub trait DeviceDriver: std::marker::Sized {
             gc: pGEcontext,
             dd: pDevDesc,
         ) {
+            let data = (*dd).deviceSpecific as *mut T;
             let raster = slice::from_raw_parts(raster, (w * h) as _);
 
             <T>::raster(
+                data.read(),
                 raster,
                 w as _,
                 h as _,
@@ -313,8 +337,9 @@ pub trait DeviceDriver: std::marker::Sized {
         }
 
         unsafe extern "C" fn device_driver_cap<T: DeviceDriver>(dd: pDevDesc) -> SEXP {
+            let data = (*dd).deviceSpecific as *mut T;
             // TODO: convert the output more nicely
-            <T>::cap(*dd).get()
+            <T>::cap(data.read(), *dd).get()
         }
 
         unsafe extern "C" fn device_driver_size<T: DeviceDriver>(
@@ -324,7 +349,8 @@ pub trait DeviceDriver: std::marker::Sized {
             top: *mut f64,
             dd: pDevDesc,
         ) {
-            let sizes = <T>::size(*dd);
+            let data = (*dd).deviceSpecific as *mut T;
+            let sizes = <T>::size(data.read(), *dd);
             *left = sizes.0;
             *right = sizes.1;
             *bottom = sizes.2;
@@ -336,11 +362,12 @@ pub trait DeviceDriver: std::marker::Sized {
             gc: pGEcontext,
             dd: pDevDesc,
         ) -> f64 {
+            let data = (*dd).deviceSpecific as *mut T;
             let cstr = std::ffi::CStr::from_ptr(str);
 
             // TODO: Should we do something when the str is not available?
             if let Ok(cstr) = cstr.to_str() {
-                <T>::strWidth(cstr, *gc, *dd)
+                <T>::strWidth(data.read(), cstr, *gc, *dd)
             } else {
                 0.0
             }
@@ -355,22 +382,25 @@ pub trait DeviceDriver: std::marker::Sized {
             gc: pGEcontext,
             dd: pDevDesc,
         ) {
+            let data = (*dd).deviceSpecific as *mut T;
             let cstr = std::ffi::CStr::from_ptr(str);
 
             // TODO: Should we do something when the str is not available?
             if let Ok(cstr) = cstr.to_str() {
-                <T>::text(x, y, cstr, rot, hadj, *gc, *dd);
+                <T>::text(data.read(), x, y, cstr, rot, hadj, *gc, *dd);
             }
         }
 
         unsafe extern "C" fn device_driver_onExit<T: DeviceDriver>(dd: pDevDesc) {
-            <T>::onExit(*dd);
+            let data = (*dd).deviceSpecific as *mut T;
+            <T>::onExit(data.read(), *dd);
         }
 
         unsafe extern "C" fn device_driver_newFrameConfirm<T: DeviceDriver>(
             dd: pDevDesc,
         ) -> Rboolean {
-            if let Ok(confirm) = <T>::newFrameConfirm(*dd).try_into() {
+            let data = (*dd).deviceSpecific as *mut T;
+            if let Ok(confirm) = <T>::newFrameConfirm(data.read(), *dd).try_into() {
                 confirm
             } else {
                 false.into()
