@@ -29,8 +29,7 @@ pub use libR_sys::{DevDesc, R_GE_gcontext};
 
 pub mod color;
 pub mod device_descriptor;
-
-mod device_driver;
+pub mod device_driver;
 
 use color::Color;
 
