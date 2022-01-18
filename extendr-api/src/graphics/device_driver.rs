@@ -133,7 +133,11 @@ pub trait DeviceDriver: std::marker::Sized {
 
     /// Create a [Device].
     #[allow(dead_code)]
-    fn create_device<T: DeviceDriver>(self, device_descriptor: DeviceDescriptor) -> Device {
+    fn create_device<T: DeviceDriver>(
+        self,
+        device_descriptor: DeviceDescriptor,
+        device_name: &'static str,
+    ) -> Device {
         #![allow(non_snake_case)]
         #![allow(unused_variables)]
         use std::os::raw::{c_char, c_int, c_uint};
@@ -548,12 +552,14 @@ pub trait DeviceDriver: std::marker::Sized {
             reserved: [0i8; 64],
         });
 
+        let device_name = CString::new(device_name).unwrap();
+
         single_threaded(|| unsafe {
             let p_dev_desc = Box::into_raw(dev_desc);
             let device = GEcreateDevDesc(p_dev_desc);
 
             // NOTE: If we use GEaddDevice2f(), GEinitDisplayList() is not needed.
-            GEaddDevice2(device, CString::new("todo!").unwrap().as_ptr() as *mut i8);
+            GEaddDevice2(device, device_name.as_ptr() as *mut i8);
             GEinitDisplayList(device);
 
             Device { inner: device }

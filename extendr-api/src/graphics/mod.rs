@@ -34,8 +34,6 @@ mod device_driver;
 
 use color::Color;
 
-use self::device_descriptor::DeviceDescriptor;
-
 pub struct Context {
     context: R_GE_gcontext,
     xscale: (f64, f64),
