@@ -427,33 +427,6 @@ impl Device {
         }
     }
 
-    /// Create a [Device].
-    pub unsafe fn create(device_descriptor: DeviceDescriptor) -> Self {
-        single_threaded(|| {
-            // Check the API version
-            R_GE_checkVersionOrDie(R_GE_version as _);
-
-            // Check if there are too many devices
-            R_CheckDeviceAvailable();
-        });
-
-        // Allocate on heap
-        let dev_desc = Box::new(device_descriptor.into_dev_desc());
-
-        // GEcreateDevDesc() requires pDevDesc, which is a raw pointer to
-        // DevDesc. TODO: need to drop this by converting back with
-        // `Box::from_raw()` when the device is closed.
-        let p_dev_desc = Box::into_raw(dev_desc);
-
-        let device = GEcreateDevDesc(p_dev_desc);
-
-        // NOTE: If we use GEaddDevice2f(), GEinitDisplayList() is not needed.
-        GEaddDevice2(device, CString::new("todo!").unwrap().as_ptr() as *mut i8);
-        GEinitDisplayList(device);
-
-        Self { inner: device }
-    }
-
     /// Get the device number for this device.
     pub fn device_number(&self) -> i32 {
         unsafe { GEdeviceNumber(self.inner()) }

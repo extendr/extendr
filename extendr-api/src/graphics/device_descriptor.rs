@@ -1,7 +1,7 @@
 use crate::*;
 use libR_sys::*;
 
-use super::{color::Color, device_driver::DeviceCallbacks, FontFace, LineType};
+use super::{color::Color, device_driver::DeviceDriver, FontFace, LineType};
 
 // R internals says:
 //
@@ -91,32 +91,30 @@ pub enum GraphicDeviceCapabilityLocator {
 ///   it seems this flag is not what is controlled by a graphic device.
 #[allow(non_snake_case)]
 pub struct DeviceDescriptor {
-    callbacks: DeviceCallbacks,
+    pub left: f64,
+    pub right: f64,
+    pub bottom: f64,
+    pub top: f64,
 
-    left: f64,
-    right: f64,
-    bottom: f64,
-    top: f64,
+    pub ipr: [f64; 2],
 
-    ipr: [f64; 2],
+    pub cra: [f64; 2],
 
-    cra: [f64; 2],
+    pub canClip: bool,
 
-    canClip: bool,
+    pub canHAdj: CanHAdjOption,
 
-    canHAdj: CanHAdjOption,
+    pub startps: f64,
+    pub startcol: Color,
+    pub startfill: Color,
+    pub startlty: LineType,
+    pub startfont: FontFace,
 
-    startps: f64,
-    startcol: Color,
-    startfill: Color,
-    startlty: LineType,
-    startfont: FontFace,
-
-    displayListOn: bool,
+    pub displayListOn: bool,
 
     // UTF-8 support
-    hasTextUTF8: bool,
-    textUTF8: Option<
+    pub hasTextUTF8: bool,
+    pub textUTF8: Option<
         unsafe extern "C" fn(
             x: f64,
             y: f64,
@@ -127,10 +125,10 @@ pub struct DeviceDescriptor {
             dd: pDevDesc,
         ),
     >,
-    strWidthUTF8: Option<
+    pub strWidthUTF8: Option<
         unsafe extern "C" fn(str: *const std::os::raw::c_char, gc: pGEcontext, dd: pDevDesc) -> f64,
     >,
-    wantSymbolUTF8: bool,
+    pub wantSymbolUTF8: bool,
 
     // R internals says:
     //
@@ -140,69 +138,69 @@ pub struct DeviceDescriptor {
     //
     // It seems this is used only by plot3d, so FALSE should be appropriate in
     // most of the cases.
-    useRotatedTextInContour: bool,
+    pub useRotatedTextInContour: bool,
 
     /// If the graphic device is to handle user interaction, set these. For more
     /// details can be found on R Internals:
     ///  
     /// https://cran.r-project.org/doc/manuals/r-devel/R-ints.html#Graphics-events
-    eventEnv: Environment,
-    eventHelper: Option<unsafe extern "C" fn(dd: pDevDesc, code: std::os::raw::c_int)>,
+    pub eventEnv: Environment,
+    pub eventHelper: Option<unsafe extern "C" fn(dd: pDevDesc, code: std::os::raw::c_int)>,
 
     /// The header file says:
     ///
     /// Allows graphics devices to have multiple levels of suspension: when this
     /// reaches zero output is flushed.
-    holdflush: Option<
+    pub holdflush: Option<
         unsafe extern "C" fn(dd: pDevDesc, level: std::os::raw::c_int) -> std::os::raw::c_int,
     >,
 
     /// Device capabilities. In all cases, 0 means NA (unset), and 1 means no.
     /// It seems 2 or larger numbers typically represents "yes."
-    haveTransparency: GraphicDeviceCapabilityTransparency,
-    haveTransparentBg: GraphicDeviceCapabilityTransparentBg,
-    haveRaster: GraphicDeviceCapabilityRaster,
-    haveCapture: GraphicDeviceCapabilityCapture,
-    haveLocator: GraphicDeviceCapabilityLocator,
+    pub haveTransparency: GraphicDeviceCapabilityTransparency,
+    pub haveTransparentBg: GraphicDeviceCapabilityTransparentBg,
+    pub haveRaster: GraphicDeviceCapabilityRaster,
+    pub haveCapture: GraphicDeviceCapabilityCapture,
+    pub haveLocator: GraphicDeviceCapabilityLocator,
 
     /// Patterns and gradients (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/definitions/definitions.html#internals)
     #[cfg(use_r_ge_version_14)]
-    setPattern: Option<unsafe extern "C" fn(pattern: SEXP, dd: pDevDesc) -> SEXP>,
+    pub setPattern: Option<unsafe extern "C" fn(pattern: SEXP, dd: pDevDesc) -> SEXP>,
 
     /// Patterns and gradients (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/definitions/definitions.html#internals)
     #[cfg(use_r_ge_version_14)]
-    releasePattern: Option<unsafe extern "C" fn(ref_: SEXP, dd: pDevDesc)>,
+    pub releasePattern: Option<unsafe extern "C" fn(ref_: SEXP, dd: pDevDesc)>,
 
     /// Clipping paths (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/definitions/definitions.html#internals)
     #[cfg(use_r_ge_version_14)]
-    setClipPath: Option<unsafe extern "C" fn(path: SEXP, ref_: SEXP, dd: pDevDesc) -> SEXP>,
+    pub setClipPath: Option<unsafe extern "C" fn(path: SEXP, ref_: SEXP, dd: pDevDesc) -> SEXP>,
 
     /// Clipping paths (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/definitions/definitions.html#internals)
     #[cfg(use_r_ge_version_14)]
-    releaseClipPath: Option<unsafe extern "C" fn(ref_: SEXP, dd: pDevDesc)>,
+    pub releaseClipPath: Option<unsafe extern "C" fn(ref_: SEXP, dd: pDevDesc)>,
 
     /// Masks (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/definitions/definitions.html#internals)
     #[cfg(use_r_ge_version_14)]
-    setMask: Option<unsafe extern "C" fn(path: SEXP, ref_: SEXP, dd: pDevDesc) -> SEXP>,
+    pub setMask: Option<unsafe extern "C" fn(path: SEXP, ref_: SEXP, dd: pDevDesc) -> SEXP>,
 
     /// Masks (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/definitions/definitions.html#internals)
     #[cfg(use_r_ge_version_14)]
-    releaseMask: Option<unsafe extern "C" fn(ref_: SEXP, dd: pDevDesc)>,
+    pub releaseMask: Option<unsafe extern "C" fn(ref_: SEXP, dd: pDevDesc)>,
 
     /// The version of the graphic device API. Surprisingly, we can set the
     /// device version other than the actual graphic device version (probably to
     /// avoid the "Graphics API version mismatch" error).
     #[cfg(use_r_ge_version_14)]
-    deviceVersion: u32,
+    pub deviceVersion: u32,
 
     /// If TRUE, the graphic engine does no clipping and the device is supposed
     /// to handle all of them.
     #[cfg(use_r_ge_version_14)]
-    deviceClip: bool,
+    pub deviceClip: bool,
 
     /// Group compositing operations and affine transformation (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/groups/groups.html)
     #[cfg(use_r_ge_version_15)]
-    defineGroup: Option<
+    pub defineGroup: Option<
         unsafe extern "C" fn(
             source: SEXP,
             op: ::std::os::raw::c_int,
@@ -213,25 +211,25 @@ pub struct DeviceDescriptor {
 
     /// Group compositing operations and affine transformation (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/groups/groups.html)
     #[cfg(use_r_ge_version_15)]
-    useGroup: Option<unsafe extern "C" fn(ref_: SEXP, trans: SEXP, dd: pDevDesc)>,
+    pub useGroup: Option<unsafe extern "C" fn(ref_: SEXP, trans: SEXP, dd: pDevDesc)>,
 
     /// Group compositing operations and affine transformation (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/groups/groups.html)
     #[cfg(use_r_ge_version_15)]
-    releaseGroup: Option<unsafe extern "C" fn(ref_: SEXP, dd: pDevDesc)>,
+    pub releaseGroup: Option<unsafe extern "C" fn(ref_: SEXP, dd: pDevDesc)>,
 
     /// Stroking and filling paths (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/paths/paths.html)
     #[cfg(use_r_ge_version_15)]
-    stroke: Option<unsafe extern "C" fn(path: SEXP, gc: pGEcontext, dd: pDevDesc)>,
+    pub stroke: Option<unsafe extern "C" fn(path: SEXP, gc: pGEcontext, dd: pDevDesc)>,
 
     /// Stroking and filling paths (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/paths/paths.html)
     #[cfg(use_r_ge_version_15)]
-    fill: Option<
+    pub fill: Option<
         unsafe extern "C" fn(path: SEXP, rule: ::std::os::raw::c_int, gc: pGEcontext, dd: pDevDesc),
     >,
 
     /// Stroking and filling paths (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/paths/paths.html)
     #[cfg(use_r_ge_version_15)]
-    fillStroke: Option<
+    pub fillStroke: Option<
         unsafe extern "C" fn(path: SEXP, rule: ::std::os::raw::c_int, gc: pGEcontext, dd: pDevDesc),
     >,
 
@@ -244,25 +242,13 @@ pub struct DeviceDescriptor {
     /// the graphics engine can make, based on the flags in the DevDesc
     /// structure and the ‘deviceVersion’.
     #[cfg(use_r_ge_version_15)]
-    capabilities: ::std::option::Option<unsafe extern "C" fn(cap: SEXP) -> SEXP>,
-}
-
-// While [DeviceCallbacks] might be enough for some cases, the device might need
-// some extra data (e.g. a pointer to the actual device). This struct is to
-// bundle everything the device needs; currently only these two, but we might
-// want to add more in future.
-#[repr(C)]
-pub(crate) struct DeviceSpecificData {
-    pub(crate) callbacks: DeviceCallbacks,
-    pub(crate) data: *mut std::os::raw::c_void,
+    pub capabilities: ::std::option::Option<unsafe extern "C" fn(cap: SEXP) -> SEXP>,
 }
 
 #[allow(non_snake_case)]
 impl DeviceDescriptor {
     pub fn new() -> Self {
         Self {
-            callbacks: DeviceCallbacks::new(),
-
             // The R Internal says " The default size of a device should be 7
             // inches square."
             left: 0.0,
@@ -469,407 +455,6 @@ impl DeviceDescriptor {
     pub fn displayListOn(mut self, displayListOn: bool) -> Self {
         self.displayListOn = displayListOn;
         self
-    }
-
-    /// Sets a callback function to setup the device when it's activated.
-    ///
-    /// According to the comment on `src/include/R_ext/GraphicsDevice.h`, this
-    /// function is called when a device becomes the active device. This can be
-    /// left `None`.
-    pub fn activate_callback(mut self, activate: fn(DevDesc)) -> Self {
-        self.callbacks.activate = Some(activate);
-        self
-    }
-
-    /// Sets a callback function to draw a circle.
-    pub fn circle_callback(
-        mut self,
-        circle: fn(x: f64, y: f64, r: f64, gc: R_GE_gcontext, dd: DevDesc),
-    ) -> Self {
-        self.callbacks.circle = Some(circle);
-        self
-    }
-
-    /// Sets a callback function to clip.
-    pub fn clip_callback(
-        mut self,
-        clip: fn(x0: f64, x1: f64, y0: f64, y1: f64, dd: DevDesc),
-    ) -> Self {
-        self.callbacks.clip = Some(clip);
-        self.canClip = true;
-        self
-    }
-
-    /// Sets a callback function to free device-specific resources when the
-    /// device is killed.
-    pub fn close_callback(mut self, close: fn(dd: DevDesc)) -> Self {
-        self.callbacks.close = Some(close);
-        self
-    }
-
-    // /// Sets a callback function that returns the location of the next mouse click.
-    // ///
-    // /// If the device doesn't accept mouse clicks, this should be left `None`.
-    // pub fn locator_callback(
-    //     mut self,
-    //     locator: unsafe extern "C" fn(x: *mut f64, y: *mut f64, dd: pDevDesc) -> Rboolean,
-    // ) -> Self {
-    //     self.locator = Some(locator);
-    //     self.haveLocator = GraphicDeviceCapabilityLocator::Yes;
-    //     self
-    // }
-
-    /// Sets a callback function to draw a line.
-    pub fn line_callback(
-        mut self,
-        line: fn(x1: f64, y1: f64, x2: f64, y2: f64, gc: R_GE_gcontext, dd: DevDesc),
-    ) -> Self {
-        self.callbacks.line = Some(line);
-        self
-    }
-
-    /// Sets a callback function to clean up when the device is deactivated.
-    pub fn deactivate_callback(mut self, deactivate: fn(arg1: DevDesc)) -> Self {
-        self.callbacks.deactivate = Some(deactivate);
-        self
-    }
-
-    /// Sets a callback function that return the metric info of a glyph.
-    pub fn metricInfo_callback(
-        mut self,
-        metricInfo: fn(
-            c: i32,
-            gc: R_GE_gcontext,
-            ascent: *mut f64,
-            descent: *mut f64,
-            width: *mut f64,
-            dd: DevDesc,
-        ),
-    ) -> Self {
-        self.callbacks.metricInfo = Some(metricInfo);
-        self
-    }
-
-    /// Sets a callback function called whenever the graphics engine starts
-    /// drawing (mode=1) or stops drawing (mode=0).
-    pub fn mode_callback(mut self, mode: fn(mode: i32, dd: DevDesc)) -> Self {
-        self.callbacks.mode = Some(mode);
-        self
-    }
-
-    /// Sets a callback function called whenever a new plot requires a new page.
-    pub fn newPage_callback(mut self, newPage: fn(gc: R_GE_gcontext, dd: DevDesc)) -> Self {
-        self.callbacks.newPage = Some(newPage);
-        self
-    }
-
-    /// Sets a callback function to draw a polygon.
-    pub fn polygon_callback(
-        mut self,
-        polygon: fn(x: &[f64], y: &[f64], gc: R_GE_gcontext, dd: DevDesc),
-    ) -> Self {
-        self.callbacks.polygon = Some(polygon);
-        self
-    }
-
-    /// Sets a callback function to draw a polyline.
-    pub fn polyline_callback(
-        mut self,
-        polyline: fn(x: &[f64], y: &[f64], gc: R_GE_gcontext, dd: DevDesc),
-    ) -> Self {
-        self.callbacks.polyline = Some(polyline);
-        self
-    }
-
-    /// Sets a callback function to draw a rect.
-    pub fn rect_callback(
-        mut self,
-        rect: fn(x0: f64, x1: f64, y0: f64, y1: f64, gc: R_GE_gcontext, dd: DevDesc),
-    ) -> Self {
-        self.callbacks.rect = Some(rect);
-        self
-    }
-
-    /// Sets a callback function to draw paths.
-    ///
-    /// `nper` contains number of points in each polygon. `winding` represents
-    /// the filling rule; `TRUE` means "nonzero", `FALSE` means "evenodd".
-    #[allow(clippy::type_complexity)]
-    pub fn path_callback(
-        mut self,
-        path: fn(
-            x: &[f64],
-            y: &[f64],
-            nper: &[i32],
-            winding: Rboolean,
-            gc: R_GE_gcontext,
-            dd: DevDesc,
-        ),
-    ) -> Self {
-        self.callbacks.path = Some(path);
-        self
-    }
-
-    /// Sets a callback function to draw a raster.
-    ///
-    /// `raster` is a ROW-wise array of color (ABGR). `w` and `h` represents the
-    /// number of elements in the row and the column of the raster. `x` and `y`
-    /// is the size of the raster in points. `rot` is the rotation in degrees,
-    /// with positive rotation anticlockwise from the positive x-axis.
-    /// `interpolate` is whether to apply the linear interpolation on the raster
-    /// image.
-    #[allow(clippy::type_complexity)]
-    pub fn raster_callback(
-        mut self,
-        raster: fn(
-            raster: &[u32],
-            w: usize,
-            h: usize,
-            x: f64,
-            y: f64,
-            width: f64,
-            height: f64,
-            rot: f64,
-            interpolate: Rboolean,
-            gc: R_GE_gcontext,
-            dd: DevDesc,
-        ),
-        capability: GraphicDeviceCapabilityRaster,
-    ) -> Self {
-        self.callbacks.raster = Some(raster);
-        self.haveRaster = capability;
-        self
-    }
-
-    /// Sets a callback function that captures and returns the current canvas.
-    ///
-    /// This is only meaningful for raster devices.
-    pub fn cap_callback(mut self, cap: fn(dd: DevDesc) -> SEXP) -> Self {
-        self.callbacks.cap = Some(cap);
-        self.haveCapture = GraphicDeviceCapabilityCapture::Yes;
-        self
-    }
-
-    /// Sets a callback function that is called when the device gets resized.
-    ///
-    /// The callback should return `(left, right, bottom, top)`.
-    pub fn size_callback(mut self, size: fn(dd: DevDesc) -> (f64, f64, f64, f64)) -> Self {
-        self.callbacks.size = Some(size);
-        self
-    }
-
-    /// Sets a callback function that returns the width of the given string in
-    /// DEVICE units.
-    pub fn strWidth_callback(
-        mut self,
-        strWidth: fn(str: &str, gc: R_GE_gcontext, dd: DevDesc) -> f64,
-    ) -> Self {
-        self.callbacks.strWidth = Some(strWidth);
-        self
-    }
-
-    /// Sets a callback function to draw a text.
-    ///
-    /// `rot` is the rotation in degrees, with positive rotation anticlockwise
-    /// from the positive x-axis.
-    pub fn text_callback(
-        mut self,
-        text: fn(x: f64, y: f64, str: &str, rot: f64, hadj: f64, gc: R_GE_gcontext, dd: DevDesc),
-    ) -> Self {
-        self.callbacks.text = Some(text);
-        self
-    }
-
-    /// Sets a callback function called when the user aborts some operation.
-    pub fn onExit_callback(mut self, onExit: fn(dd: DevDesc)) -> Self {
-        self.callbacks.onExit = Some(onExit);
-        self
-    }
-
-    /// Sets a callback function to confirm a new frame.
-    pub fn newFrameConfirm_callback(mut self, newFrameConfirm: fn(dd: DevDesc) -> bool) -> Self {
-        self.callbacks.newFrameConfirm = Some(newFrameConfirm);
-        self
-    }
-
-    pub fn into_dev_desc(self) -> DevDesc {
-        // These need to be assigned before moving callbacks to deviceSpecific.
-        let activate = self.callbacks.activate_wrapper();
-        let circle = self.callbacks.circle_wrapper();
-        let clip = self.callbacks.clip_wrapper();
-        let close = self.callbacks.close_wrapper();
-        let deactivate = self.callbacks.deactivate_wrapper();
-        let line = self.callbacks.line_wrapper();
-        let metricInfo = self.callbacks.metricInfo_wrapper();
-        let mode = self.callbacks.mode_wrapper();
-        let newPage = self.callbacks.newPage_wrapper();
-        let polygon = self.callbacks.polygon_wrapper();
-        let polyline = self.callbacks.polyline_wrapper();
-        let rect = self.callbacks.rect_wrapper();
-        let path = self.callbacks.path_wrapper();
-        let raster = self.callbacks.raster_wrapper();
-        let cap = self.callbacks.cap_wrapper();
-        let size = self.callbacks.size_wrapper();
-        let strWidth = self.callbacks.strWidth_wrapper();
-        let text = self.callbacks.text_wrapper();
-        let onExit = self.callbacks.onExit_wrapper();
-        let newFrameConfirm = self.callbacks.newFrameConfirm_wrapper();
-
-        let deviceSpecific = DeviceSpecificData {
-            callbacks: self.callbacks,
-            data: std::ptr::null::<std::ffi::c_void>() as *mut std::ffi::c_void,
-        };
-
-        let deviceSpecific = Box::into_raw(Box::new(deviceSpecific)) as *mut std::os::raw::c_void;
-
-        DevDesc {
-            left: self.left,
-            right: self.right,
-            bottom: self.bottom,
-            top: self.top,
-
-            // This should be the same as the size of the device
-            clipLeft: self.left,
-            clipRight: self.right,
-            clipBottom: self.bottom,
-            clipTop: self.top,
-
-            // Not sure where these numbers came from, but it seems this is a
-            // common practice, considering the postscript device and svglite
-            // device do so.
-            xCharOffset: 0.4900,
-            yCharOffset: 0.3333,
-            yLineBias: 0.2,
-
-            ipr: self.ipr,
-            cra: self.cra,
-
-            // Gamma-related parameters are all ignored. R-internals indicates so:
-            //
-            // canChangeGamma – Rboolean: can the display gamma be adjusted? This is now
-            // ignored, as gamma support has been removed.
-            //
-            // and actually it seems this parameter is never used.
-            gamma: 1.0,
-
-            canClip: if self.canClip { 1 } else { 0 },
-
-            // As described above, gamma is not supported.
-            canChangeGamma: 0,
-
-            canHAdj: self.canHAdj as _,
-
-            startps: self.startps,
-            startcol: self.startcol.to_i32(),
-            startfill: self.startfill.to_i32(),
-            startlty: self.startlty.to_i32(),
-            startfont: self.startfont.to_i32(),
-
-            startgamma: 1.0,
-
-            // A raw pointer to the data specific to the device.
-            deviceSpecific,
-
-            displayListOn: if self.displayListOn { 1 } else { 0 },
-
-            // These are currently not used, so just set FALSE.
-            canGenMouseDown: 0,
-            canGenMouseMove: 0,
-            canGenMouseUp: 0,
-            canGenKeybd: 0,
-            canGenIdle: 0,
-
-            // The header file says:
-            //
-            // This is set while getGraphicsEvent is actively looking for events.
-            //
-            // It seems no implementation sets this, so this is probably what is
-            // modified on the engine's side.
-            gettingEvent: 0,
-
-            // These are the functions that handles actual operations.
-            activate,
-            circle,
-            clip,
-            close,
-            deactivate,
-            locator: None, // TODO
-            line,
-            metricInfo,
-            mode,
-            newPage,
-            polygon,
-            polyline,
-            rect,
-            path,
-            raster,
-            cap,
-            size,
-            strWidth,
-            text,
-            onExit,
-            getEvent: None, // This is no longer used and exists only for backward-compatibility of the structure.
-            newFrameConfirm,
-
-            // UTF-8 support
-            hasTextUTF8: if self.hasTextUTF8 { 1 } else { 0 },
-            textUTF8: self.textUTF8,
-            strWidthUTF8: self.strWidthUTF8,
-            wantSymbolUTF8: if self.wantSymbolUTF8 { 1 } else { 0 },
-
-            useRotatedTextInContour: if self.useRotatedTextInContour { 1 } else { 0 },
-
-            eventEnv: unsafe { self.eventEnv.get() },
-            eventHelper: self.eventHelper,
-
-            holdflush: self.holdflush,
-
-            haveTransparency: self.haveTransparency as _,
-            haveTransparentBg: self.haveTransparentBg as _,
-            haveRaster: self.haveRaster as _,
-            haveCapture: self.haveCapture as _,
-            haveLocator: self.haveLocator as _,
-
-            #[cfg(use_r_ge_version_14)]
-            setPattern: self.setPattern,
-            #[cfg(use_r_ge_version_14)]
-            releasePattern: self.releasePattern,
-
-            #[cfg(use_r_ge_version_14)]
-            setClipPath: self.setClipPath,
-            #[cfg(use_r_ge_version_14)]
-            releaseClipPath: self.releaseClipPath,
-
-            #[cfg(use_r_ge_version_14)]
-            setMask: self.setMask,
-            #[cfg(use_r_ge_version_14)]
-            releaseMask: self.releaseMask,
-
-            #[cfg(use_r_ge_version_14)]
-            deviceVersion: self.deviceVersion as _,
-
-            #[cfg(use_r_ge_version_14)]
-            deviceClip: if self.deviceClip { 1 } else { 0 },
-
-            #[cfg(use_r_ge_version_15)]
-            defineGroup: self.defineGroup,
-            #[cfg(use_r_ge_version_15)]
-            useGroup: self.useGroup,
-            #[cfg(use_r_ge_version_15)]
-            releaseGroup: self.releaseGroup,
-
-            #[cfg(use_r_ge_version_15)]
-            stroke: self.stroke,
-            #[cfg(use_r_ge_version_15)]
-            fill: self.fill,
-            #[cfg(use_r_ge_version_15)]
-            fillStroke: self.fillStroke,
-
-            #[cfg(use_r_ge_version_15)]
-            capabilities: self.capabilities,
-
-            reserved: [0i8; 64],
-        }
     }
 }
 

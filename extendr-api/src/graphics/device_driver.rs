@@ -3,162 +3,192 @@ use core::slice;
 use crate::*;
 use libR_sys::*;
 
-use super::device_descriptor::*;
+use super::{device_descriptor::*, Device};
 
 // This contains the content of the callback functions, which will be called
 // from a template callback function. This is needed since
-#[repr(C)]
-#[derive(Default)]
-#[allow(clippy::type_complexity, non_snake_case)]
-pub(crate) struct DeviceCallbacks {
-    pub(crate) activate: Option<fn(arg1: DevDesc)>,
-    pub(crate) circle: Option<fn(x: f64, y: f64, r: f64, gc: R_GE_gcontext, dd: DevDesc)>,
-    pub(crate) clip: Option<fn(x0: f64, x1: f64, y0: f64, y1: f64, dd: DevDesc)>,
-    pub(crate) close: Option<fn(dd: DevDesc)>,
-    pub(crate) deactivate: Option<fn(arg1: DevDesc)>,
-    pub(crate) line: Option<fn(x1: f64, y1: f64, x2: f64, y2: f64, gc: R_GE_gcontext, dd: DevDesc)>,
-    pub(crate) metricInfo: Option<
-        fn(
-            c: i32,
-            gc: R_GE_gcontext,
-            ascent: *mut f64,
-            descent: *mut f64,
-            width: *mut f64,
-            dd: DevDesc,
-        ),
-    >,
-    pub(crate) mode: Option<fn(mode: i32, dd: DevDesc)>,
-    pub(crate) newPage: Option<fn(gc: R_GE_gcontext, dd: DevDesc)>,
-    pub(crate) polygon: Option<fn(x: &[f64], y: &[f64], gc: R_GE_gcontext, dd: DevDesc)>,
-    pub(crate) polyline: Option<fn(x: &[f64], y: &[f64], gc: R_GE_gcontext, dd: DevDesc)>,
-    pub(crate) rect: Option<fn(x0: f64, y0: f64, x1: f64, y1: f64, gc: R_GE_gcontext, dd: DevDesc)>,
-    pub(crate) path: Option<
-        fn(x: &[f64], y: &[f64], nper: &[i32], winding: Rboolean, gc: R_GE_gcontext, dd: DevDesc),
-    >,
-    pub(crate) raster: Option<
-        fn(
-            raster: &[u32],
-            w: usize,
-            h: usize,
+#[allow(non_snake_case, unused_variables, clippy::too_many_arguments)]
+pub trait DeviceDriver: std::marker::Sized {
+    /// A callback function to setup the device when the device is activated.
+    fn activate(dd: DevDesc) {}
+
+    /// A callback function to draw a circle.
+    fn circle(x: f64, y: f64, r: f64, gc: R_GE_gcontext, dd: DevDesc) {}
+
+    /// A callback function to clip.
+    fn clip(x0: f64, x1: f64, y0: f64, y1: f64, dd: DevDesc) {}
+
+    /// Usually, the default implementation of `clip`, which does nothing, is
+    /// used. When you want to skip clipping at all, this should be set `false`.
+    const use_clip: bool = true;
+
+    /// A callback function to free device-specific resources when the
+    /// device is killed.
+    fn close(dd: DevDesc) {}
+
+    /// A callback function to clean up when the device is deactivated.
+    fn deactivate(dd: DevDesc) {}
+
+    /// TODO'
+    // /// A callback function that returns the location of the next mouse click.
+    // ///
+    // /// If the device doesn't accept mouse clicks, this should be left `None`.
+    // fn locator(dd: DevDesc) -> (f64, f64) {}
+
+    /// A callback function to draw a line.
+    fn line(x1: f64, y1: f64, x2: f64, y2: f64, gc: R_GE_gcontext, dd: DevDesc) {}
+
+    /// A callback function that return the metric info of a glyph.
+    fn metricInfo(c: char, gc: R_GE_gcontext, dd: DevDesc) -> (f64, f64, f64) {
+        (0.0, 0.0, 0.0)
+    }
+
+    /// A callback function called whenever the graphics engine starts
+    /// drawing (mode=1) or stops drawing (mode=0).
+    fn mode(mode: i32, dd: DevDesc) {}
+
+    /// A callback function called whenever a new plot requires a new page.
+    fn newPage(gc: R_GE_gcontext, dd: DevDesc) {}
+
+    /// A callback function to draw a polygon.
+    fn polygon(x: &[f64], y: &[f64], gc: R_GE_gcontext, dd: DevDesc) {}
+
+    /// A callback function to draw a polyline.
+    fn polyline(x: &[f64], y: &[f64], gc: R_GE_gcontext, dd: DevDesc) {}
+
+    /// A callback function to draw a rect.
+    fn rect(x0: f64, y0: f64, x1: f64, y1: f64, gc: R_GE_gcontext, dd: DevDesc) {}
+
+    /// A callback function to draw paths.
+    ///
+    /// `nper` contains number of points in each polygon. `winding` represents
+    /// the filling rule; `TRUE` means "nonzero", `FALSE` means "evenodd".
+    fn path(x: &[f64], y: &[f64], nper: &[i32], winding: Rboolean, gc: R_GE_gcontext, dd: DevDesc) {
+    }
+
+    /// A callback function to draw a raster.
+    ///
+    /// `raster` is a ROW-wise array of color (ABGR). `w` and `h` represents the
+    /// number of elements in the row and the column of the raster. `x` and `y`
+    /// is the size of the raster in points. `rot` is the rotation in degrees,
+    /// with positive rotation anticlockwise from the positive x-axis.
+    /// `interpolate` is whether to apply the linear interpolation on the raster
+    /// image.
+    fn raster(
+        raster: &[u32],
+        w: usize,
+        h: usize,
+        x: f64,
+        y: f64,
+        width: f64,
+        height: f64,
+        rot: f64,
+        interpolate: Rboolean,
+        gc: R_GE_gcontext,
+        dd: DevDesc,
+    ) {
+    }
+
+    /// Usually, the default implementation of `raster`, which does nothing, is
+    /// used. When you want to skip clipping at all, this should be set `false`.
+    const use_raster: bool = true;
+
+    /// A callback function that captures and returns the current canvas.
+    ///
+    /// This is only meaningful for raster devices.
+    fn cap(dd: DevDesc) -> Robj {
+        ().into()
+    }
+
+    /// Usually, the default implementation of `capture`, which does nothing, is
+    /// used. When you want to skip clipping at all, this should be set `false`.
+    const use_capture: bool = true;
+
+    /// A callback function that is called when the device gets resized.
+    ///
+    /// The callback should return `(left, right, bottom, top)`.
+    fn size(dd: DevDesc) -> (f64, f64, f64, f64) {
+        (0.0, 0.0, 0.0, 0.0)
+    }
+
+    /// A callback function that returns the width of the given string in
+    /// the device units.
+    fn strWidth(str: &str, gc: R_GE_gcontext, dd: DevDesc) -> f64 {
+        0.0
+    }
+
+    /// A callback function to draw a text.
+    ///
+    /// `rot` is the rotation in degrees, with positive rotation anticlockwise
+    /// from the positive x-axis.
+    fn text(x: f64, y: f64, str: &str, rot: f64, hadj: f64, gc: R_GE_gcontext, dd: DevDesc) {}
+
+    /// A callback function called when the user aborts some operation.
+    fn onExit(dd: DevDesc) {}
+
+    /// Sets a callback function to confirm a new frame.
+    fn newFrameConfirm(dd: DevDesc) -> bool {
+        true
+    }
+
+    /// Create a [Device].
+    #[allow(dead_code)]
+    fn create_device<T: DeviceDriver>(self, device_descriptor: DeviceDescriptor) -> Device {
+        #![allow(non_snake_case)]
+        #![allow(unused_variables)]
+        use std::os::raw::{c_char, c_int, c_uint};
+
+        unsafe {
+            single_threaded(|| {
+                // Check the API version
+                R_GE_checkVersionOrDie(R_GE_version as _);
+
+                // Check if there are too many devices
+                R_CheckDeviceAvailable();
+            });
+        }
+
+        unsafe extern "C" fn device_driver_activate<T: DeviceDriver>(arg1: pDevDesc) {
+            <T>::activate(*arg1);
+        }
+
+        unsafe extern "C" fn device_driver_circle<T: DeviceDriver>(
             x: f64,
             y: f64,
-            width: f64,
-            height: f64,
-            rot: f64,
-            interpolate: Rboolean,
-            gc: R_GE_gcontext,
-            dd: DevDesc,
-        ),
-    >,
-    pub(crate) cap: Option<fn(dd: DevDesc) -> SEXP>,
-    pub(crate) size: Option<fn(dd: DevDesc) -> (f64, f64, f64, f64)>,
-    pub(crate) strWidth: Option<fn(str: &str, gc: R_GE_gcontext, dd: DevDesc) -> f64>,
-    pub(crate) text:
-        Option<fn(x: f64, y: f64, str: &str, rot: f64, hadj: f64, gc: R_GE_gcontext, dd: DevDesc)>,
-    pub(crate) onExit: Option<fn(dd: DevDesc)>,
-    pub(crate) newFrameConfirm: Option<fn(dd: DevDesc) -> bool>,
-}
-
-#[allow(clippy::type_complexity, non_snake_case)]
-impl DeviceCallbacks {
-    pub fn new() -> Self {
-        Self {
-            ..Default::default()
+            r: f64,
+            gc: pGEcontext,
+            dd: pDevDesc,
+        ) {
+            <T>::circle(x, y, r, *gc, *dd);
         }
-    }
 
-    pub fn activate_wrapper(&self) -> Option<unsafe extern "C" fn(arg1: pDevDesc)> {
-        // Return None if no callback function is registered.
-        self.activate?;
-
-        unsafe extern "C" fn activate_wrapper(arg1: pDevDesc) {
-            let dev_desc = *arg1;
-            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
-            let activate_inner = (*data).callbacks.activate.unwrap();
-
-            activate_inner(dev_desc);
+        unsafe extern "C" fn device_driver_clip<T: DeviceDriver>(
+            x0: f64,
+            x1: f64,
+            y0: f64,
+            y1: f64,
+            dd: pDevDesc,
+        ) {
+            <T>::clip(x0, x1, y0, y1, *dd);
         }
-        Some(activate_wrapper)
-    }
 
-    pub fn circle_wrapper(
-        &self,
-    ) -> Option<unsafe extern "C" fn(x: f64, y: f64, r: f64, gc: pGEcontext, dd: pDevDesc)> {
-        // Return None if no callback function is registered.
-        self.circle?;
-
-        unsafe extern "C" fn circle_wrapper(x: f64, y: f64, r: f64, gc: pGEcontext, dd: pDevDesc) {
+        // Note: close is special. This function is responsible for tearing down the
+        // DeviceSpecificData itself, which is always needed even when no close
+        // callback is supplied.
+        unsafe extern "C" fn device_driver_close<T: DeviceDriver>(dd: pDevDesc) {
             let dev_desc = *dd;
-            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
-            let circle_inner = (*data).callbacks.circle.unwrap();
 
-            let gcontext = *gc;
-
-            circle_inner(x, y, r, gcontext, dev_desc);
-        }
-
-        Some(circle_wrapper)
-    }
-
-    pub fn clip_wrapper(
-        &self,
-    ) -> Option<unsafe extern "C" fn(x0: f64, x1: f64, y0: f64, y1: f64, dd: pDevDesc)> {
-        // Return None if no callback function is registered.
-        self.clip?;
-
-        unsafe extern "C" fn clip_wrapper(x0: f64, x1: f64, y0: f64, y1: f64, dd: pDevDesc) {
-            let dev_desc = *dd;
-            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
-            let clip_inner = (*data).callbacks.clip.unwrap();
-
-            clip_inner(x0, x1, y0, y1, dev_desc);
-        }
-
-        Some(clip_wrapper)
-    }
-
-    // Note: close is special. This function is responsible for tearing down the
-    // DeviceSpecificData itself, which is always needed even when no close
-    // callback is supplied.
-    pub fn close_wrapper(&self) -> Option<unsafe extern "C" fn(dd: pDevDesc)> {
-        unsafe extern "C" fn close_wrapper(dd: pDevDesc) {
-            let dev_desc = *dd;
-            let data = dev_desc.deviceSpecific as *mut DeviceSpecificData;
-            if let Some(close_inner) = (*data).callbacks.close {
-                close_inner(dev_desc);
-            }
+            <T>::close(dev_desc);
 
             // Convert back to a Rust struct to drop the resources on Rust's side.
-            Box::from_raw(dev_desc.deviceSpecific);
+            Box::from_raw(dev_desc.deviceSpecific as *mut T);
         }
 
-        Some(close_wrapper)
-    }
-
-    pub fn deactivate_wrapper(&self) -> Option<unsafe extern "C" fn(arg1: pDevDesc)> {
-        // Return None if no callback function is registered.
-        self.deactivate?;
-
-        unsafe extern "C" fn deactivate_wrapper(arg1: pDevDesc) {
-            let dev_desc = *arg1;
-            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
-            let deactivate_inner = (*data).callbacks.deactivate.unwrap();
-
-            deactivate_inner(dev_desc);
+        unsafe extern "C" fn device_driver_deactivate<T: DeviceDriver>(arg1: pDevDesc) {
+            <T>::deactivate(*arg1);
         }
 
-        Some(deactivate_wrapper)
-    }
-
-    pub fn line_wrapper(
-        &self,
-    ) -> Option<
-        unsafe extern "C" fn(x1: f64, y1: f64, x2: f64, y2: f64, gc: pGEcontext, dd: pDevDesc),
-    > {
-        // Return None if no callback function is registered.
-        self.line?;
-
-        unsafe extern "C" fn line_wrapper(
+        unsafe extern "C" fn device_driver_line<T: DeviceDriver>(
             x1: f64,
             y1: f64,
             x2: f64,
@@ -166,168 +196,60 @@ impl DeviceCallbacks {
             gc: pGEcontext,
             dd: pDevDesc,
         ) {
-            let dev_desc = *dd;
-            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
-            let line_inner = (*data).callbacks.line.unwrap();
-
-            let gcontext = *gc;
-
-            line_inner(x1, y1, x2, y2, gcontext, dev_desc);
+            <T>::line(x1, y1, x2, y2, *gc, *dd);
         }
 
-        Some(line_wrapper)
-    }
-
-    pub fn metricInfo_wrapper(
-        &self,
-    ) -> Option<
-        unsafe extern "C" fn(
-            c: std::os::raw::c_int,
-            gc: pGEcontext,
-            ascent: *mut f64,
-            descent: *mut f64,
-            width: *mut f64,
-            dd: pDevDesc,
-        ),
-    > {
-        // Return None if no callback function is registered.
-        self.metricInfo?;
-
-        unsafe extern "C" fn metricInfo_wrapper(
-            c: std::os::raw::c_int,
+        unsafe extern "C" fn device_driver_metricInfo<T: DeviceDriver>(
+            c: c_int,
             gc: pGEcontext,
             ascent: *mut f64,
             descent: *mut f64,
             width: *mut f64,
             dd: pDevDesc,
         ) {
-            let dev_desc = *dd;
-            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
-            let metricInfo_inner = (*data).callbacks.metricInfo.unwrap();
-
-            let gcontext = *gc;
-
-            metricInfo_inner(c as _, gcontext, ascent, descent, width, dev_desc);
+            if let Some(c) = std::char::from_u32(c as _) {
+                let metric_info = <T>::metricInfo(c, *gc, *dd);
+                *ascent = metric_info.0;
+                *descent = metric_info.1;
+                *width = metric_info.2;
+            }
         }
 
-        Some(metricInfo_wrapper)
-    }
-
-    pub fn mode_wrapper(
-        &self,
-    ) -> Option<unsafe extern "C" fn(mode: std::os::raw::c_int, dd: pDevDesc)> {
-        // Return None if no callback function is registered.
-        self.mode?;
-
-        unsafe extern "C" fn mode_wrapper(mode: std::os::raw::c_int, dd: pDevDesc) {
-            let dev_desc = *dd;
-            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
-            let mode_inner = (*data).callbacks.mode.unwrap();
-
-            mode_inner(mode as _, dev_desc);
+        unsafe extern "C" fn device_driver_mode<T: DeviceDriver>(mode: c_int, dd: pDevDesc) {
+            <T>::mode(mode as _, *dd);
         }
 
-        Some(mode_wrapper)
-    }
-
-    pub fn newPage_wrapper(&self) -> Option<unsafe extern "C" fn(gc: pGEcontext, dd: pDevDesc)> {
-        // Return None if no callback function is registered.
-        self.newPage?;
-
-        unsafe extern "C" fn newPage_wrapper(gc: pGEcontext, dd: pDevDesc) {
-            let dev_desc = *dd;
-            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
-            let newPage_inner = (*data).callbacks.newPage.unwrap();
-
-            let gcontext = *gc;
-
-            newPage_inner(gcontext, dev_desc);
+        unsafe extern "C" fn device_driver_newPage<T: DeviceDriver>(gc: pGEcontext, dd: pDevDesc) {
+            <T>::newPage(*gc, *dd);
         }
 
-        Some(newPage_wrapper)
-    }
-
-    pub fn polygon_wrapper(
-        &self,
-    ) -> Option<
-        unsafe extern "C" fn(
-            n: std::os::raw::c_int,
-            x: *mut f64,
-            y: *mut f64,
-            gc: pGEcontext,
-            dd: pDevDesc,
-        ),
-    > {
-        // Return None if no callback function is registered.
-        self.polygon?;
-
-        unsafe extern "C" fn polygon_wrapper(
-            n: std::os::raw::c_int,
+        unsafe extern "C" fn device_driver_polygon<T: DeviceDriver>(
+            n: c_int,
             x: *mut f64,
             y: *mut f64,
             gc: pGEcontext,
             dd: pDevDesc,
         ) {
-            let dev_desc = *dd;
-            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
-            let polygon_inner = (*data).callbacks.polygon.unwrap();
-
-            let gcontext = *gc;
-
             let x = slice::from_raw_parts(x, n as _);
             let y = slice::from_raw_parts(y, n as _);
 
-            polygon_inner(x, y, gcontext, dev_desc);
+            <T>::polygon(x, y, *gc, *dd);
         }
 
-        Some(polygon_wrapper)
-    }
-
-    pub fn polyline_wrapper(
-        &self,
-    ) -> Option<
-        unsafe extern "C" fn(
-            n: std::os::raw::c_int,
-            x: *mut f64,
-            y: *mut f64,
-            gc: pGEcontext,
-            dd: pDevDesc,
-        ),
-    > {
-        // Return None if no callback function is registered.
-        self.polyline?;
-
-        unsafe extern "C" fn polyline_wrapper(
-            n: std::os::raw::c_int,
+        unsafe extern "C" fn device_driver_polyline<T: DeviceDriver>(
+            n: c_int,
             x: *mut f64,
             y: *mut f64,
             gc: pGEcontext,
             dd: pDevDesc,
         ) {
-            let dev_desc = *dd;
-            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
-            let polyline_inner = (*data).callbacks.polyline.unwrap();
-
-            let gcontext = *gc;
-
             let x = slice::from_raw_parts(x, n as _);
             let y = slice::from_raw_parts(y, n as _);
 
-            polyline_inner(x, y, gcontext, dev_desc);
+            <T>::polyline(x, y, *gc, *dd);
         }
 
-        Some(polyline_wrapper)
-    }
-
-    pub fn rect_wrapper(
-        &self,
-    ) -> Option<
-        unsafe extern "C" fn(x0: f64, x1: f64, y0: f64, y1: f64, gc: pGEcontext, dd: pDevDesc),
-    > {
-        // Return None if no callback function is registered.
-        self.rect?;
-
-        unsafe extern "C" fn rect_wrapper(
+        unsafe extern "C" fn device_driver_rect<T: DeviceDriver>(
             x0: f64,
             x1: f64,
             y0: f64,
@@ -335,85 +257,31 @@ impl DeviceCallbacks {
             gc: pGEcontext,
             dd: pDevDesc,
         ) {
-            let dev_desc = *dd;
-            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
-            let rect_inner = (*data).callbacks.rect.unwrap();
-
-            let gcontext = *gc;
-
-            rect_inner(x0, x1, y0, y1, gcontext, dev_desc);
+            <T>::rect(x0, x1, y0, y1, *gc, *dd);
         }
 
-        Some(rect_wrapper)
-    }
-
-    pub fn path_wrapper(
-        &self,
-    ) -> Option<
-        unsafe extern "C" fn(
+        unsafe extern "C" fn device_driver_path<T: DeviceDriver>(
             x: *mut f64,
             y: *mut f64,
-            npoly: std::os::raw::c_int,
-            nper: *mut std::os::raw::c_int,
-            winding: Rboolean,
-            gc: pGEcontext,
-            dd: pDevDesc,
-        ),
-    > {
-        // Return None if no callback function is registered.
-        self.path?;
-
-        unsafe extern "C" fn path_wrapper(
-            x: *mut f64,
-            y: *mut f64,
-            npoly: std::os::raw::c_int,
-            nper: *mut std::os::raw::c_int,
+            npoly: c_int,
+            nper: *mut c_int,
             winding: Rboolean,
             gc: pGEcontext,
             dd: pDevDesc,
         ) {
-            let dev_desc = *dd;
-            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
-            let path_inner = (*data).callbacks.path.unwrap();
-
-            let gcontext = *gc;
-
             let nper = slice::from_raw_parts(nper, npoly as _);
             // TODO: This isn't very efficient as we need to iterate over nper at least twice.
             let n = nper.iter().sum::<i32>() as usize;
             let x = slice::from_raw_parts(x, n);
             let y = slice::from_raw_parts(y, n);
 
-            path_inner(x, y, nper, winding, gcontext, dev_desc);
+            <T>::path(x, y, nper, winding, *gc, *dd);
         }
 
-        Some(path_wrapper)
-    }
-
-    pub fn raster_wrapper(
-        &self,
-    ) -> Option<
-        unsafe extern "C" fn(
-            raster: *mut std::os::raw::c_uint,
-            w: std::os::raw::c_int,
-            h: std::os::raw::c_int,
-            x: f64,
-            y: f64,
-            width: f64,
-            height: f64,
-            rot: f64,
-            interpolate: Rboolean,
-            gc: pGEcontext,
-            dd: pDevDesc,
-        ),
-    > {
-        // Return None if no callback function is registered.
-        self.raster?;
-
-        unsafe extern "C" fn raster_wrapper(
-            raster: *mut std::os::raw::c_uint,
-            w: std::os::raw::c_int,
-            h: std::os::raw::c_int,
+        unsafe extern "C" fn device_driver_raster<T: DeviceDriver>(
+            raster: *mut c_uint,
+            w: c_int,
+            h: c_int,
             x: f64,
             y: f64,
             width: f64,
@@ -423,15 +291,9 @@ impl DeviceCallbacks {
             gc: pGEcontext,
             dd: pDevDesc,
         ) {
-            let dev_desc = *dd;
-            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
-            let raster_inner = (*data).callbacks.raster.unwrap();
-
-            let gcontext = *gc;
-
             let raster = slice::from_raw_parts(raster, (w * h) as _);
 
-            raster_inner(
+            <T>::raster(
                 raster,
                 w as _,
                 h as _,
@@ -441,161 +303,248 @@ impl DeviceCallbacks {
                 height,
                 rot,
                 interpolate,
-                gcontext,
-                dev_desc,
+                *gc,
+                *dd,
             );
         }
 
-        Some(raster_wrapper)
-    }
-
-    pub fn cap_wrapper(&self) -> Option<unsafe extern "C" fn(dd: pDevDesc) -> SEXP> {
-        // Return None if no callback function is registered.
-        self.cap?;
-
-        unsafe extern "C" fn cap_wrapper(dd: pDevDesc) -> SEXP {
-            let dev_desc = *dd;
-            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
-            let cap_inner = (*data).callbacks.cap.unwrap();
-
+        unsafe extern "C" fn device_driver_cap<T: DeviceDriver>(dd: pDevDesc) -> SEXP {
             // TODO: convert the output more nicely
-            cap_inner(dev_desc)
+            <T>::cap(*dd).get()
         }
 
-        Some(cap_wrapper)
-    }
-
-    pub fn size_wrapper(
-        &self,
-    ) -> Option<
-        unsafe extern "C" fn(
-            left: *mut f64,
-            right: *mut f64,
-            bottom: *mut f64,
-            top: *mut f64,
-            dd: pDevDesc,
-        ),
-    > {
-        // Return None if no callback function is registered.
-        self.size?;
-
-        unsafe extern "C" fn size_wrapper(
+        unsafe extern "C" fn device_driver_size<T: DeviceDriver>(
             left: *mut f64,
             right: *mut f64,
             bottom: *mut f64,
             top: *mut f64,
             dd: pDevDesc,
         ) {
-            let dev_desc = *dd;
-            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
-            let size_inner = (*data).callbacks.size.unwrap();
-
-            let sizes = size_inner(dev_desc);
+            let sizes = <T>::size(*dd);
             *left = sizes.0;
             *right = sizes.1;
             *bottom = sizes.2;
             *top = sizes.3;
         }
 
-        Some(size_wrapper)
-    }
-
-    pub fn strWidth_wrapper(
-        &self,
-    ) -> Option<
-        unsafe extern "C" fn(str: *const std::os::raw::c_char, gc: pGEcontext, dd: pDevDesc) -> f64,
-    > {
-        // Return None if no callback function is registered.
-        self.strWidth?;
-
-        unsafe extern "C" fn strWidth_wrapper(
-            str: *const std::os::raw::c_char,
+        unsafe extern "C" fn device_driver_strWidth<T: DeviceDriver>(
+            str: *const c_char,
             gc: pGEcontext,
             dd: pDevDesc,
         ) -> f64 {
-            let dev_desc = *dd;
-            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
-            let strWidth_inner = (*data).callbacks.strWidth.unwrap();
-
             let cstr = std::ffi::CStr::from_ptr(str);
 
-            let gcontext = *gc;
-
             // TODO: Should we do something when the str is not available?
-            strWidth_inner(cstr.to_str().unwrap(), gcontext, dev_desc)
+            if let Ok(cstr) = cstr.to_str() {
+                <T>::strWidth(cstr, *gc, *dd)
+            } else {
+                0.0
+            }
         }
 
-        Some(strWidth_wrapper)
-    }
-
-    pub fn text_wrapper(
-        &self,
-    ) -> Option<
-        unsafe extern "C" fn(
+        unsafe extern "C" fn device_driver_text<T: DeviceDriver>(
             x: f64,
             y: f64,
-            str: *const std::os::raw::c_char,
-            rot: f64,
-            hadj: f64,
-            gc: pGEcontext,
-            dd: pDevDesc,
-        ),
-    > {
-        // Return None if no callback function is registered.
-        self.text?;
-
-        unsafe extern "C" fn text_wrapper(
-            x: f64,
-            y: f64,
-            str: *const std::os::raw::c_char,
+            str: *const c_char,
             rot: f64,
             hadj: f64,
             gc: pGEcontext,
             dd: pDevDesc,
         ) {
-            let dev_desc = *dd;
-            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
-            let text_inner = (*data).callbacks.text.unwrap();
-
             let cstr = std::ffi::CStr::from_ptr(str);
 
-            let gcontext = *gc;
-
             // TODO: Should we do something when the str is not available?
-            text_inner(x, y, cstr.to_str().unwrap(), rot, hadj, gcontext, dev_desc);
+            if let Ok(cstr) = cstr.to_str() {
+                <T>::text(x, y, cstr, rot, hadj, *gc, *dd);
+            }
         }
 
-        Some(text_wrapper)
-    }
-
-    pub fn onExit_wrapper(&self) -> Option<unsafe extern "C" fn(dd: pDevDesc)> {
-        // Return None if no callback function is registered.
-        self.onExit?;
-
-        unsafe extern "C" fn onExit_wrapper(dd: pDevDesc) {
-            let dev_desc = *dd;
-            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
-            let onExit_inner = (*data).callbacks.onExit.unwrap();
-
-            onExit_inner(dev_desc);
-        }
-        Some(onExit_wrapper)
-    }
-
-    pub fn newFrameConfirm_wrapper(
-        &self,
-    ) -> Option<unsafe extern "C" fn(dd: pDevDesc) -> Rboolean> {
-        // Return None if no callback function is registered.
-        self.newFrameConfirm?;
-
-        unsafe extern "C" fn newFrameConfirm_wrapper(dd: pDevDesc) -> Rboolean {
-            let dev_desc = *dd;
-            let data = dev_desc.deviceSpecific as *const DeviceSpecificData;
-            let newFrameConfirm_inner = (*data).callbacks.newFrameConfirm.unwrap();
-
-            newFrameConfirm_inner(dev_desc).try_into().unwrap()
+        unsafe extern "C" fn device_driver_onExit<T: DeviceDriver>(dd: pDevDesc) {
+            <T>::onExit(*dd);
         }
 
-        Some(newFrameConfirm_wrapper)
+        unsafe extern "C" fn device_driver_newFrameConfirm<T: DeviceDriver>(
+            dd: pDevDesc,
+        ) -> Rboolean {
+            if let Ok(confirm) = <T>::newFrameConfirm(*dd).try_into() {
+                confirm
+            } else {
+                false.into()
+            }
+        }
+
+        let deviceSpecific = Box::into_raw(Box::new(self)) as *mut std::os::raw::c_void;
+
+        let dev_desc = Box::new(DevDesc {
+            left: device_descriptor.left,
+            right: device_descriptor.right,
+            bottom: device_descriptor.bottom,
+            top: device_descriptor.top,
+
+            // This should be the same as the size of the device
+            clipLeft: device_descriptor.left,
+            clipRight: device_descriptor.right,
+            clipBottom: device_descriptor.bottom,
+            clipTop: device_descriptor.top,
+
+            // Not sure where these numbers came from, but it seems this is a
+            // common practice, considering the postscript device and svglite
+            // device do so.
+            xCharOffset: 0.4900,
+            yCharOffset: 0.3333,
+            yLineBias: 0.2,
+
+            ipr: device_descriptor.ipr,
+            cra: device_descriptor.cra,
+
+            // Gamma-related parameters are all ignored. R-internals indicates so:
+            //
+            // canChangeGamma – Rboolean: can the display gamma be adjusted? This is now
+            // ignored, as gamma support has been removed.
+            //
+            // and actually it seems this parameter is never used.
+            gamma: 1.0,
+
+            canClip: if device_descriptor.canClip { 1 } else { 0 },
+
+            // As described above, gamma is not supported.
+            canChangeGamma: 0,
+
+            canHAdj: device_descriptor.canHAdj as _,
+
+            startps: device_descriptor.startps,
+            startcol: device_descriptor.startcol.to_i32(),
+            startfill: device_descriptor.startfill.to_i32(),
+            startlty: device_descriptor.startlty.to_i32(),
+            startfont: device_descriptor.startfont.to_i32(),
+
+            startgamma: 1.0,
+
+            // A raw pointer to the data specific to the device.
+            deviceSpecific,
+
+            displayListOn: if device_descriptor.displayListOn {
+                1
+            } else {
+                0
+            },
+
+            // These are currently not used, so just set FALSE.
+            canGenMouseDown: 0,
+            canGenMouseMove: 0,
+            canGenMouseUp: 0,
+            canGenKeybd: 0,
+            canGenIdle: 0,
+
+            // The header file says:
+            //
+            // This is set while getGraphicsEvent is actively looking for events.
+            //
+            // It seems no implementation sets this, so this is probably what is
+            // modified on the engine's side.
+            gettingEvent: 0,
+
+            // These are the functions that handles actual operations.
+            activate: Some(device_driver_activate::<T>),
+            circle: Some(device_driver_circle::<T>),
+            clip: Some(device_driver_clip::<T>),
+            close: Some(device_driver_close::<T>),
+            deactivate: Some(device_driver_deactivate::<T>),
+            locator: None, // TODO
+            line: Some(device_driver_line::<T>),
+            metricInfo: Some(device_driver_metricInfo::<T>),
+            mode: Some(device_driver_mode::<T>),
+            newPage: Some(device_driver_newPage::<T>),
+            polygon: Some(device_driver_polygon::<T>),
+            polyline: Some(device_driver_polyline::<T>),
+            rect: Some(device_driver_rect::<T>),
+            path: Some(device_driver_path::<T>),
+            raster: Some(device_driver_raster::<T>),
+            cap: Some(device_driver_cap::<T>),
+            size: Some(device_driver_size::<T>),
+            strWidth: Some(device_driver_strWidth::<T>),
+            text: Some(device_driver_text::<T>),
+            onExit: Some(device_driver_onExit::<T>),
+            getEvent: None, // This is no longer used and exists only for backward-compatibility of the structure.
+            newFrameConfirm: Some(device_driver_newFrameConfirm::<T>),
+
+            // UTF-8 support
+            hasTextUTF8: if device_descriptor.hasTextUTF8 { 1 } else { 0 },
+            textUTF8: device_descriptor.textUTF8,
+            strWidthUTF8: device_descriptor.strWidthUTF8,
+            wantSymbolUTF8: if device_descriptor.wantSymbolUTF8 {
+                1
+            } else {
+                0
+            },
+
+            useRotatedTextInContour: if device_descriptor.useRotatedTextInContour {
+                1
+            } else {
+                0
+            },
+
+            eventEnv: unsafe { device_descriptor.eventEnv.get() },
+            eventHelper: device_descriptor.eventHelper,
+
+            holdflush: device_descriptor.holdflush,
+
+            haveTransparency: device_descriptor.haveTransparency as _,
+            haveTransparentBg: device_descriptor.haveTransparentBg as _,
+            haveRaster: device_descriptor.haveRaster as _,
+            haveCapture: device_descriptor.haveCapture as _,
+            haveLocator: device_descriptor.haveLocator as _,
+
+            #[cfg(use_r_ge_version_14)]
+            setPattern: device_descriptor.setPattern,
+            #[cfg(use_r_ge_version_14)]
+            releasePattern: device_descriptor.releasePattern,
+
+            #[cfg(use_r_ge_version_14)]
+            setClipPath: device_descriptor.setClipPath,
+            #[cfg(use_r_ge_version_14)]
+            releaseClipPath: device_descriptor.releaseClipPath,
+
+            #[cfg(use_r_ge_version_14)]
+            setMask: device_descriptor.setMask,
+            #[cfg(use_r_ge_version_14)]
+            releaseMask: device_descriptor.releaseMask,
+
+            #[cfg(use_r_ge_version_14)]
+            deviceVersion: device_descriptor.deviceVersion as _,
+
+            #[cfg(use_r_ge_version_14)]
+            deviceClip: if device_descriptor.deviceClip { 1 } else { 0 },
+
+            #[cfg(use_r_ge_version_15)]
+            defineGroup: device_descriptor.defineGroup,
+            #[cfg(use_r_ge_version_15)]
+            useGroup: device_descriptor.useGroup,
+            #[cfg(use_r_ge_version_15)]
+            releaseGroup: device_descriptor.releaseGroup,
+
+            #[cfg(use_r_ge_version_15)]
+            stroke: device_descriptor.stroke,
+            #[cfg(use_r_ge_version_15)]
+            fill: device_descriptor.fill,
+            #[cfg(use_r_ge_version_15)]
+            fillStroke: device_descriptor.fillStroke,
+
+            #[cfg(use_r_ge_version_15)]
+            capabilities: device_descriptor.capabilities,
+
+            reserved: [0i8; 64],
+        });
+
+        single_threaded(|| unsafe {
+            let p_dev_desc = Box::into_raw(dev_desc);
+            let device = GEcreateDevDesc(p_dev_desc);
+
+            // NOTE: If we use GEaddDevice2f(), GEinitDisplayList() is not needed.
+            GEaddDevice2(device, CString::new("todo!").unwrap().as_ptr() as *mut i8);
+            GEinitDisplayList(device);
+
+            Device { inner: device }
+        })
     }
 }
