@@ -219,6 +219,12 @@ impl Robj {
             Robj { inner: sexp }
         })
     }
+
+    /// A ref of an robj can be constructed from a ref to a SEXP
+    /// as they have the same layout.
+    pub fn from_sexp_ref(sexp: &SEXP) -> &Self {
+        unsafe { std::mem::transmute(sexp) }
+    }
 }
 
 pub trait Types: GetSexp {

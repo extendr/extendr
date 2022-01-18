@@ -24,6 +24,34 @@ pub struct ExternalPtr<T: Debug + 'static> {
     marker: std::marker::PhantomData<T>,
 }
 
+impl<T: Debug + 'static> robj::GetSexp for ExternalPtr<T> {
+    unsafe fn get(&self) -> SEXP { self.robj.get() }
+
+    /// Get a reference to a Robj for this type.
+    fn as_robj(&self) -> &Robj { &self.robj }
+
+    /// Get a mutable reference to a Robj for this type.
+    fn as_robj_mut(&mut self) -> &mut Robj { &mut self.robj }
+}
+
+/// len() and is_empty()
+impl<T: Debug + 'static> Length for ExternalPtr<T> {}
+
+/// rtype() and rany()
+impl<T: Debug + 'static> Types for ExternalPtr<T> {}
+
+/// as_*()
+impl<T: Debug + 'static> Conversions for ExternalPtr<T> {}
+
+/// find_var() etc.
+impl<T: Debug + 'static> Rinternals for ExternalPtr<T> {}
+
+/// as_typed_slice_raw() etc.
+impl<T: Debug + 'static> Slices for ExternalPtr<T> {}
+
+/// dollar() etc.
+impl<T: Debug + 'static> Operators for ExternalPtr<T> {}
+
 impl<T: Debug + 'static> Deref for ExternalPtr<T> {
     type Target = T;
 
