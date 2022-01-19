@@ -142,6 +142,10 @@ pub trait DeviceDriver: std::marker::Sized {
     ) {
     }
 
+    /// Set this to `false` if the implemented `strWidth()` and `text()` only
+    /// accept ASCII text.
+    const ACCEPT_UTF8_TEXT: bool = true;
+
     /// A callback function called when the user aborts some operation.
     fn onExit(&mut self, dd: DevDesc) {}
 
@@ -560,14 +564,18 @@ pub trait DeviceDriver: std::marker::Sized {
             newFrameConfirm: Some(device_driver_newFrameConfirm::<T>),
 
             // UTF-8 support
-            hasTextUTF8: if device_descriptor.hasTextUTF8 { 1 } else { 0 },
-            textUTF8: device_descriptor.textUTF8,
-            strWidthUTF8: device_descriptor.strWidthUTF8,
-            wantSymbolUTF8: if device_descriptor.wantSymbolUTF8 {
-                1
+            hasTextUTF8: if <T>::ACCEPT_UTF8_TEXT { 1 } else { 0 },
+            textUTF8: if <T>::ACCEPT_UTF8_TEXT {
+                Some(device_driver_text::<T>)
             } else {
-                0
+                None
             },
+            strWidthUTF8: if <T>::ACCEPT_UTF8_TEXT {
+                Some(device_driver_strWidth::<T>)
+            } else {
+                None
+            },
+            wantSymbolUTF8: if <T>::ACCEPT_UTF8_TEXT { 1 } else { 0 },
 
             useRotatedTextInContour: if device_descriptor.useRotatedTextInContour {
                 1
