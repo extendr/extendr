@@ -151,6 +151,25 @@ pub trait DeviceDriver: std::marker::Sized {
     }
 
     /// Create a [Device].
+    ///
+    /// ```
+    /// struct MyGraphicDevice {
+    ///     foo: f64
+    /// }
+    ///
+    /// impl DeviceDriver for MyGraphicDevice {
+    ///     fn mode(&mut self, _mode: i32, _dd: DevDesc) {
+    ///         let msg = format!("foo is {}", self.foo);
+    ///         rprintln!("{msg}");
+    ///     }
+    /// }
+    ///
+    /// let device_driver = MyGraphicDevice { foo: 0.0 };
+    /// let device_descriptor = DeviceDescriptor::new();
+    /// let device = device_driver.create_device::<MyGraphicDevice>(device_descriptor, "my graphic device");
+    ///
+    /// device.mode_on()?;
+    /// ```
     #[allow(dead_code)]
     fn create_device<T: DeviceDriver>(
         self,
@@ -161,6 +180,11 @@ pub trait DeviceDriver: std::marker::Sized {
         #![allow(unused_variables)]
         use std::os::raw::{c_char, c_int, c_uint};
 
+        // The code here is a Rust interpretation of the C-version of example
+        // code on the R Internals:
+        //
+        // https://cran.r-project.org/doc/manuals/r-devel/R-ints.html#Device-structures
+
         unsafe {
             single_threaded(|| {
                 // Check the API version
@@ -170,6 +194,10 @@ pub trait DeviceDriver: std::marker::Sized {
                 R_CheckDeviceAvailable();
             });
         }
+
+        // Define wrapper functions. This is a bit boring, and frustrationg to
+        // see `create_device()` bloats to such a massive function because of
+        // this, but probably there's no other way to do this nicely...
 
         unsafe extern "C" fn device_driver_activate<T: DeviceDriver>(arg1: pDevDesc) {
             // Derefernce to the original struct without moving it. While this
