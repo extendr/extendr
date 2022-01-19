@@ -23,15 +23,15 @@ lazy_static = "1.4"
 paste = "1.0.5"
 serde = { version = "1.0", features = ["derive"], optional = true }
 num-complex = { version = "0.4", optional = true }
-polars = { git = "https://github.com/pola-rs/polars", rev = "41f63cb55cf519ea9d417b4a766c8568a1452b9b", optional = true }
-arrow2 = { git = "https://github.com/jorgecarleitao/arrow2", rev = "a4383b18955b35bef1237be05e0a747d9dca1171", optional = true }
+polars = { version = "0.19.0", optional = true }
+arrow2 = { version = "0.9.0", optional = true }
 
 [features]
 default = []
 polars-wrapper = ["polars", "arrow2"]
 
 # All features to test
-tests-all = ["ndarray", "libR-sys/use-bindgen", "serde", "num-complex"]
+tests-all = ["ndarray", "libR-sys/use-bindgen", "serde", "num-complex", "polars-wrapper"]
 
 # The minimal set of features without all optional ones
 tests-minimal = ["libR-sys/use-bindgen"]
