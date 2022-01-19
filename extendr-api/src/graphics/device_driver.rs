@@ -536,7 +536,6 @@ pub trait DeviceDriver: std::marker::Sized {
             // modified on the engine's side.
             gettingEvent: 0,
 
-            // These are the functions that handles actual operations.
             activate: Some(device_driver_activate::<T>),
             circle: Some(device_driver_circle::<T>),
             clip: if <T>::USE_CLIP {
@@ -569,7 +568,11 @@ pub trait DeviceDriver: std::marker::Sized {
             strWidth: Some(device_driver_strWidth::<T>),
             text: Some(device_driver_text::<T>),
             onExit: Some(device_driver_onExit::<T>),
-            getEvent: None, // This is no longer used and exists only for backward-compatibility of the structure.
+
+            // This is no longer used and exists only for backward-compatibility
+            // of the structure.
+            getEvent: None,
+
             newFrameConfirm: Some(device_driver_newFrameConfirm::<T>),
 
             // UTF-8 support
@@ -599,8 +602,22 @@ pub trait DeviceDriver: std::marker::Sized {
 
             haveTransparency: device_descriptor.haveTransparency as _,
             haveTransparentBg: device_descriptor.haveTransparentBg as _,
-            haveRaster: device_descriptor.haveRaster as _,
-            haveCapture: device_descriptor.haveCapture as _,
+
+            // There might be some cases where we want to use `Unset` or
+            // `ExceptForMissingValues`, but, for the sake of simplicity, we
+            // only use yes or no. Let's revisit here when necessary.
+            haveRaster: if <T>::USE_RASTER {
+                GraphicDeviceCapabilityRaster::Yes as _
+            } else {
+                GraphicDeviceCapabilityRaster::No as _
+            },
+
+            haveCapture: if <T>::USE_CAPTURE {
+                GraphicDeviceCapabilityCapture::Yes as _
+            } else {
+                GraphicDeviceCapabilityCapture::No as _
+            },
+
             haveLocator: device_descriptor.haveLocator as _,
 
             #[cfg(use_r_ge_version_14)]
