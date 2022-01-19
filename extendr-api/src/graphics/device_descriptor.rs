@@ -112,24 +112,6 @@ pub struct DeviceDescriptor {
 
     pub displayListOn: bool,
 
-    // UTF-8 support
-    pub hasTextUTF8: bool,
-    pub textUTF8: Option<
-        unsafe extern "C" fn(
-            x: f64,
-            y: f64,
-            str: *const std::os::raw::c_char,
-            rot: f64,
-            hadj: f64,
-            gc: pGEcontext,
-            dd: pDevDesc,
-        ),
-    >,
-    pub strWidthUTF8: Option<
-        unsafe extern "C" fn(str: *const std::os::raw::c_char, gc: pGEcontext, dd: pDevDesc) -> f64,
-    >,
-    pub wantSymbolUTF8: bool,
-
     // R internals says:
     //
     //     Some devices can produce high-quality rotated text, but those based on
@@ -276,12 +258,6 @@ impl DeviceDescriptor {
             // When we want to maintain a plot history, this should be turned on
             // so that `GEinitDisplayList` is invoked.
             displayListOn: false,
-
-            // UTF-8 support
-            hasTextUTF8: false,
-            textUTF8: None,
-            strWidthUTF8: None,
-            wantSymbolUTF8: false,
 
             // R internals says:
             //
