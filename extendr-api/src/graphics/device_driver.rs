@@ -157,22 +157,31 @@ pub trait DeviceDriver: std::marker::Sized {
     /// Create a [Device].
     ///
     /// ```
-    /// struct MyGraphicDevice {
-    ///     foo: f64
-    /// }
+    /// use extendr_api::prelude::*;
+    /// use extendr_api::graphics::device_driver::DeviceDriver;
+    /// use extendr_api::graphics::device_descriptor::DeviceDescriptor;
+    /// use extendr_api::graphics::DevDesc;
     ///
-    /// impl DeviceDriver for MyGraphicDevice {
-    ///     fn mode(&mut self, _mode: i32, _dd: DevDesc) {
-    ///         let msg = format!("foo is {}", self.foo);
-    ///         rprintln!("{msg}");
+    /// test!{
+    ///     struct MyGraphicDevice {
+    ///         last_mode: i32
     ///     }
+    ///
+    ///     impl DeviceDriver for MyGraphicDevice {
+    ///         fn mode(&mut self, mode: i32, _dd: DevDesc) {
+    ///             self.last_mode = mode;
+    ///         }
+    ///     }
+    ///
+    ///     let device_driver = MyGraphicDevice { last_mode: 0 };
+    ///     let device_descriptor = DeviceDescriptor::new();
+    ///     let device = device_driver.create_device::<MyGraphicDevice>(device_descriptor, "my graphic device");
+    ///
+    ///     device.mode_on().unwrap();
+    ///
+    ///     // TODO: how can I peek at the value of last_mode?
+    ///     // assert_eq!(device_driver.last_mode, 1_i32);
     /// }
-    ///
-    /// let device_driver = MyGraphicDevice { foo: 0.0 };
-    /// let device_descriptor = DeviceDescriptor::new();
-    /// let device = device_driver.create_device::<MyGraphicDevice>(device_descriptor, "my graphic device");
-    ///
-    /// device.mode_on()?;
     /// ```
     #[allow(dead_code)]
     fn create_device<T: DeviceDriver>(
