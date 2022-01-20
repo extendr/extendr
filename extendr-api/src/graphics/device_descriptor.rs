@@ -49,20 +49,23 @@ pub enum GraphicDeviceCapabilityTransparentBg {
     Semi = 3,
 }
 
-pub enum GraphicDeviceCapabilityRaster {
+#[allow(dead_code)]
+pub(crate) enum GraphicDeviceCapabilityRaster {
     Unset = 0,
     No = 1,
     Yes = 2,
     ExceptForMissingValues = 3,
 }
 
-pub enum GraphicDeviceCapabilityCapture {
+#[allow(dead_code)]
+pub(crate) enum GraphicDeviceCapabilityCapture {
     Unset = 0,
     No = 1,
     Yes = 2,
 }
 
-pub enum GraphicDeviceCapabilityLocator {
+#[allow(dead_code)]
+pub(crate) enum GraphicDeviceCapabilityLocator {
     Unset = 0,
     No = 1,
     Yes = 2,
