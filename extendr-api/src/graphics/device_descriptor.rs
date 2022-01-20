@@ -100,8 +100,6 @@ pub struct DeviceDescriptor {
 
     pub cra: [f64; 2],
 
-    pub canClip: bool,
-
     pub canHAdj: CanHAdjOption,
 
     pub startps: f64,
@@ -244,8 +242,6 @@ impl DeviceDescriptor {
             // internals says this is "a good choice."
             cra: [0.9 * FONTSIZE, 1.2 * FONTSIZE],
 
-            canClip: false,
-
             canHAdj: CanHAdjOption::NotSupported,
 
             startps: POINTSIZE,
@@ -362,20 +358,6 @@ impl DeviceDescriptor {
         self.cra = cra;
         self
     }
-
-    // /// Sets the flag of whether the device can clip text.
-    // ///
-    // /// If not specified, `false` will be used. In that case, the graphic engine
-    // /// will clip instead by omitting any "any text that does not appear to be
-    // /// wholly inside the clipping region," according to [the R Internals],
-    // /// which is not very ideal.
-    // ///
-    // /// [the R Internals]:
-    // ///     https://cran.r-project.org/doc/manuals/r-devel/R-ints.html#Handling-text
-    // pub fn canClip(mut self, canClip: bool) -> Self {
-    //     self.canClip = canClip;
-    //     self
-    // }
 
     /// Sets the flag of whether the device can handle holizontal adjustment.
     ///

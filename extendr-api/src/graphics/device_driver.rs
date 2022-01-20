@@ -5,10 +5,59 @@ use libR_sys::*;
 
 use super::{device_descriptor::*, Device};
 
-// This contains the content of the callback functions, which will be called
-// from a template callback function. This is needed since
+/// The underlying C structure `DevDesc` has two fields related to clipping:
+///
+/// - `canClip`
+/// - `deviceClip` (available on R >= 4.1)
+///
+/// `canClip` indicates whether the device has clipping functionality at all. If
+/// not, the graphic engine kindly clips before sending the drawing operations
+/// to the device. But, this isn't very ideal in some points. Especially, it's
+/// bad that the engine will omit "any text that does not appear to be wholly
+/// inside the clipping region," according to [the R Internals]. So, the device
+/// should implement `clip()` and set `canClip` to `true` if possible.
+///
+/// Even when `canClip` is `true`, the engine does clip to protect the device
+/// from large values by default. But, for efficiency, the device can take all
+/// the responsibility of clipping. That is `deviceClip`, which was introduced in R 4.1. If this is set to
+/// `true`, the engine will perform no clipping at all. For more details, please
+/// refer to [the offical announcement blog post].
+///
+/// So, in short, a graphic device can choose either of the following:
+///
+/// - clipping without the help of the graphic engine (`Device`)
+/// - clipping with the help of the graphic engine (`DeviceAndEngine`)
+/// - no clipping at all (`Engine`)
+///
+/// [the R Internals]:
+///     https://cran.r-project.org/doc/manuals/r-devel/R-ints.html#Handling-text
+/// [the announcement blog post]:
+///     https://developer.r-project.org/Blog/public/2020/06/08/improvements-to-clipping-in-the-r-graphics-engine/
+pub enum ClippingStrategy {
+    Device,
+    DeviceAndEngine,
+    Engine,
+}
+
+/// An implementation of the [Device] functionalities.
 #[allow(non_snake_case, unused_variables, clippy::too_many_arguments)]
 pub trait DeviceDriver: std::marker::Sized {
+    /// Usually, the default implementation of `raster`, which does nothing, is
+    /// used. When you want to skip clipping at all, this should be set `false`.
+    const USE_RASTER: bool = true;
+
+    /// Usually, the default implementation of `capture`, which does nothing, is
+    /// used. When you want to skip clipping at all, this should be set `false`.
+    const USE_CAPTURE: bool = true;
+
+    /// To what extent the device takes the responsibility of clipping. See
+    /// [ClippingStrategy] for the details.
+    const CLIPPING_STRATEGY: ClippingStrategy = ClippingStrategy::DeviceAndEngine;
+
+    /// Set this to `false` if the implemented `strWidth()` and `text()` only
+    /// accept ASCII text.
+    const ACCEPT_UTF8_TEXT: bool = true;
+
     /// A callback function to setup the device when the device is activated.
     fn activate(&mut self, dd: DevDesc) {}
 
@@ -17,10 +66,6 @@ pub trait DeviceDriver: std::marker::Sized {
 
     /// A callback function to clip.
     fn clip(&mut self, x0: f64, x1: f64, y0: f64, y1: f64, dd: DevDesc) {}
-
-    /// Usually, the default implementation of `clip`, which does nothing, is
-    /// used. When you want to skip clipping at all, this should be set `false`.
-    const USE_CLIP: bool = true;
 
     /// A callback function to free device-specific resources when the
     /// device is killed.
@@ -98,20 +143,12 @@ pub trait DeviceDriver: std::marker::Sized {
     ) {
     }
 
-    /// Usually, the default implementation of `raster`, which does nothing, is
-    /// used. When you want to skip clipping at all, this should be set `false`.
-    const USE_RASTER: bool = true;
-
     /// A callback function that captures and returns the current canvas.
     ///
     /// This is only meaningful for raster devices.
     fn cap(&mut self, dd: DevDesc) -> Robj {
         ().into()
     }
-
-    /// Usually, the default implementation of `capture`, which does nothing, is
-    /// used. When you want to skip clipping at all, this should be set `false`.
-    const USE_CAPTURE: bool = true;
 
     /// A callback function that is called when the device gets resized.
     ///
@@ -141,10 +178,6 @@ pub trait DeviceDriver: std::marker::Sized {
         dd: DevDesc,
     ) {
     }
-
-    /// Set this to `false` if the implemented `strWidth()` and `text()` only
-    /// accept ASCII text.
-    const ACCEPT_UTF8_TEXT: bool = true;
 
     /// A callback function called when the user aborts some operation.
     fn onExit(&mut self, dd: DevDesc) {}
@@ -497,7 +530,10 @@ pub trait DeviceDriver: std::marker::Sized {
             // and actually it seems this parameter is never used.
             gamma: 1.0,
 
-            canClip: if device_descriptor.canClip { 1 } else { 0 },
+            canClip: match <T>::CLIPPING_STRATEGY {
+                ClippingStrategy::Engine => 0,
+                _ => 1,
+            },
 
             // As described above, gamma is not supported.
             canChangeGamma: 0,
@@ -538,10 +574,9 @@ pub trait DeviceDriver: std::marker::Sized {
 
             activate: Some(device_driver_activate::<T>),
             circle: Some(device_driver_circle::<T>),
-            clip: if <T>::USE_CLIP {
-                Some(device_driver_clip::<T>)
-            } else {
-                None
+            clip: match <T>::CLIPPING_STRATEGY {
+                ClippingStrategy::Engine => None,
+                _ => Some(device_driver_clip::<T>),
             },
             close: Some(device_driver_close::<T>),
             deactivate: Some(device_driver_deactivate::<T>),
