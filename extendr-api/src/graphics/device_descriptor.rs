@@ -1,6 +1,3 @@
-use crate::*;
-use libR_sys::*;
-
 use super::{color::Color, FontFace, LineType};
 
 // R internals says:
