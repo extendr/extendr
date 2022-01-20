@@ -674,22 +674,22 @@ pub trait DeviceDriver: std::marker::Sized {
             haveLocator: GraphicDeviceCapabilityLocator::Unset as _,
 
             #[cfg(use_r_ge_version_14)]
-            setPattern: device_descriptor.setPattern,
+            setPattern: None,
             #[cfg(use_r_ge_version_14)]
-            releasePattern: device_descriptor.releasePattern,
+            releasePattern: None,
 
             #[cfg(use_r_ge_version_14)]
-            setClipPath: device_descriptor.setClipPath,
+            setClipPath: None,
             #[cfg(use_r_ge_version_14)]
-            releaseClipPath: device_descriptor.releaseClipPath,
+            releaseClipPath: None,
 
             #[cfg(use_r_ge_version_14)]
-            setMask: device_descriptor.setMask,
+            setMask: None,
             #[cfg(use_r_ge_version_14)]
-            releaseMask: device_descriptor.releaseMask,
+            releaseMask: None,
 
             #[cfg(use_r_ge_version_14)]
-            deviceVersion: device_descriptor.deviceVersion as _,
+            deviceVersion: R_GE_definitions as _,
 
             #[cfg(use_r_ge_version_14)]
             deviceClip: match <T>::CLIPPING_STRATEGY {
@@ -698,21 +698,21 @@ pub trait DeviceDriver: std::marker::Sized {
             },
 
             #[cfg(use_r_ge_version_15)]
-            defineGroup: device_descriptor.defineGroup,
+            defineGroup: None,
             #[cfg(use_r_ge_version_15)]
-            useGroup: device_descriptor.useGroup,
+            useGroup: None,
             #[cfg(use_r_ge_version_15)]
-            releaseGroup: device_descriptor.releaseGroup,
+            releaseGroup: None,
 
             #[cfg(use_r_ge_version_15)]
-            stroke: device_descriptor.stroke,
+            stroke: None,
             #[cfg(use_r_ge_version_15)]
-            fill: device_descriptor.fill,
+            fill: None,
             #[cfg(use_r_ge_version_15)]
-            fillStroke: device_descriptor.fillStroke,
+            fillStroke: None,
 
             #[cfg(use_r_ge_version_15)]
-            capabilities: device_descriptor.capabilities,
+            capabilities: None,
 
             reserved: [0i8; 64],
         });

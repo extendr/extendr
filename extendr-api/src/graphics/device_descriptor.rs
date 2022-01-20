@@ -125,82 +125,6 @@ pub struct DeviceDescriptor {
     /// It seems 2 or larger numbers typically represents "yes."
     pub haveTransparency: GraphicDeviceCapabilityTransparency,
     pub haveTransparentBg: GraphicDeviceCapabilityTransparentBg,
-
-    /// Patterns and gradients (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/definitions/definitions.html#internals)
-    #[cfg(use_r_ge_version_14)]
-    pub setPattern: Option<unsafe extern "C" fn(pattern: SEXP, dd: pDevDesc) -> SEXP>,
-
-    /// Patterns and gradients (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/definitions/definitions.html#internals)
-    #[cfg(use_r_ge_version_14)]
-    pub releasePattern: Option<unsafe extern "C" fn(ref_: SEXP, dd: pDevDesc)>,
-
-    /// Clipping paths (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/definitions/definitions.html#internals)
-    #[cfg(use_r_ge_version_14)]
-    pub setClipPath: Option<unsafe extern "C" fn(path: SEXP, ref_: SEXP, dd: pDevDesc) -> SEXP>,
-
-    /// Clipping paths (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/definitions/definitions.html#internals)
-    #[cfg(use_r_ge_version_14)]
-    pub releaseClipPath: Option<unsafe extern "C" fn(ref_: SEXP, dd: pDevDesc)>,
-
-    /// Masks (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/definitions/definitions.html#internals)
-    #[cfg(use_r_ge_version_14)]
-    pub setMask: Option<unsafe extern "C" fn(path: SEXP, ref_: SEXP, dd: pDevDesc) -> SEXP>,
-
-    /// Masks (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/definitions/definitions.html#internals)
-    #[cfg(use_r_ge_version_14)]
-    pub releaseMask: Option<unsafe extern "C" fn(ref_: SEXP, dd: pDevDesc)>,
-
-    /// The version of the graphic device API. Surprisingly, we can set the
-    /// device version other than the actual graphic device version (probably to
-    /// avoid the "Graphics API version mismatch" error).
-    #[cfg(use_r_ge_version_14)]
-    pub deviceVersion: u32,
-
-    /// Group compositing operations and affine transformation (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/groups/groups.html)
-    #[cfg(use_r_ge_version_15)]
-    pub defineGroup: Option<
-        unsafe extern "C" fn(
-            source: SEXP,
-            op: ::std::os::raw::c_int,
-            destination: SEXP,
-            dd: pDevDesc,
-        ) -> SEXP,
-    >,
-
-    /// Group compositing operations and affine transformation (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/groups/groups.html)
-    #[cfg(use_r_ge_version_15)]
-    pub useGroup: Option<unsafe extern "C" fn(ref_: SEXP, trans: SEXP, dd: pDevDesc)>,
-
-    /// Group compositing operations and affine transformation (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/groups/groups.html)
-    #[cfg(use_r_ge_version_15)]
-    pub releaseGroup: Option<unsafe extern "C" fn(ref_: SEXP, dd: pDevDesc)>,
-
-    /// Stroking and filling paths (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/paths/paths.html)
-    #[cfg(use_r_ge_version_15)]
-    pub stroke: Option<unsafe extern "C" fn(path: SEXP, gc: pGEcontext, dd: pDevDesc)>,
-
-    /// Stroking and filling paths (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/paths/paths.html)
-    #[cfg(use_r_ge_version_15)]
-    pub fill: Option<
-        unsafe extern "C" fn(path: SEXP, rule: ::std::os::raw::c_int, gc: pGEcontext, dd: pDevDesc),
-    >,
-
-    /// Stroking and filling paths (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/paths/paths.html)
-    #[cfg(use_r_ge_version_15)]
-    pub fillStroke: Option<
-        unsafe extern "C" fn(path: SEXP, rule: ::std::os::raw::c_int, gc: pGEcontext, dd: pDevDesc),
-    >,
-
-    /// R Internals says:
-    ///
-    /// In addition, the capabilities callback allows the device driver to
-    /// provide more detailed information, especially related to callbacks in
-    /// the engine/device API version 13 or higher. The capabilities callback is
-    /// called with a list of integer vectors that represent the best guess that
-    /// the graphics engine can make, based on the flags in the DevDesc
-    /// structure and the ‘deviceVersion’.
-    #[cfg(use_r_ge_version_15)]
-    pub capabilities: ::std::option::Option<unsafe extern "C" fn(cap: SEXP) -> SEXP>,
 }
 
 #[allow(non_snake_case)]
@@ -228,41 +152,6 @@ impl DeviceDescriptor {
 
             haveTransparency: GraphicDeviceCapabilityTransparency::No,
             haveTransparentBg: GraphicDeviceCapabilityTransparentBg::No,
-
-            #[cfg(use_r_ge_version_14)]
-            setPattern: None,
-            #[cfg(use_r_ge_version_14)]
-            releasePattern: None,
-
-            #[cfg(use_r_ge_version_14)]
-            setClipPath: None,
-            #[cfg(use_r_ge_version_14)]
-            releaseClipPath: None,
-
-            #[cfg(use_r_ge_version_14)]
-            setMask: None,
-            #[cfg(use_r_ge_version_14)]
-            releaseMask: None,
-
-            #[cfg(use_r_ge_version_14)]
-            deviceVersion: R_GE_definitions as _,
-
-            #[cfg(use_r_ge_version_15)]
-            defineGroup: None,
-            #[cfg(use_r_ge_version_15)]
-            useGroup: None,
-            #[cfg(use_r_ge_version_15)]
-            releaseGroup: None,
-
-            #[cfg(use_r_ge_version_15)]
-            stroke: None,
-            #[cfg(use_r_ge_version_15)]
-            fill: None,
-            #[cfg(use_r_ge_version_15)]
-            fillStroke: None,
-
-            #[cfg(use_r_ge_version_15)]
-            capabilities: None,
         }
     }
 
