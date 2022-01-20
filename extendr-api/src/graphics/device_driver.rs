@@ -624,11 +624,15 @@ pub trait DeviceDriver: std::marker::Sized {
             },
             wantSymbolUTF8: if <T>::ACCEPT_UTF8_TEXT { 1 } else { 0 },
 
-            useRotatedTextInContour: if device_descriptor.useRotatedTextInContour {
-                1
-            } else {
-                0
-            },
+            // R internals says:
+            //
+            //     Some devices can produce high-quality rotated text, but those based on
+            //     bitmaps often cannot. Those which can should set useRotatedTextInContour
+            //     to be true from graphics API version 4.
+            //
+            // It seems this is used only by plot3d, so FALSE should be appropriate in
+            // most of the cases.
+            useRotatedTextInContour: 0,
 
             eventEnv: unsafe { device_descriptor.eventEnv.get() },
             eventHelper: device_descriptor.eventHelper,

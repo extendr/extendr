@@ -117,16 +117,6 @@ pub struct DeviceDescriptor {
     pub startlty: LineType,
     pub startfont: FontFace,
 
-    // R internals says:
-    //
-    //     Some devices can produce high-quality rotated text, but those based on
-    //     bitmaps often cannot. Those which can should set useRotatedTextInContour
-    //     to be true from graphics API version 4.
-    //
-    // It seems this is used only by plot3d, so FALSE should be appropriate in
-    // most of the cases.
-    pub useRotatedTextInContour: bool,
-
     /// If the graphic device is to handle user interaction, set these. For more
     /// details can be found on R Internals:
     ///  
@@ -246,16 +236,6 @@ impl DeviceDescriptor {
             startfill: Color::hex(0xffffff),
             startlty: LineType::Solid,
             startfont: FontFace::PlainFont,
-
-            // R internals says:
-            //
-            // Some devices can produce high-quality rotated text, but those
-            // based on bitmaps often cannot. Those which can should set
-            // useRotatedTextInContour to be true from graphics API version 4.
-            //
-            // It seems this is used only by plot3d, so FALSE should be
-            // appropriate in most of the cases.
-            useRotatedTextInContour: false,
 
             eventEnv: empty_env(),
             eventHelper: None,
