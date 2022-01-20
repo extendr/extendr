@@ -117,8 +117,6 @@ pub struct DeviceDescriptor {
     pub startlty: LineType,
     pub startfont: FontFace,
 
-    pub displayListOn: bool,
-
     // R internals says:
     //
     //     Some devices can produce high-quality rotated text, but those based on
@@ -248,11 +246,6 @@ impl DeviceDescriptor {
             startfill: Color::hex(0xffffff),
             startlty: LineType::Solid,
             startfont: FontFace::PlainFont,
-
-            // The header file says "toggle for initial display list status."
-            // When we want to maintain a plot history, this should be turned on
-            // so that `GEinitDisplayList` is invoked.
-            displayListOn: false,
 
             // R internals says:
             //
@@ -389,14 +382,6 @@ impl DeviceDescriptor {
     /// If not specified, [FontFace::PlainFont] will be used.
     pub fn startfont(mut self, startfont: FontFace) -> Self {
         self.startfont = startfont;
-        self
-    }
-
-    /// Sets the flag of whether the device maintain a plot history.
-    ///
-    /// If not specified, `false` will be used.
-    pub fn displayListOn(mut self, displayListOn: bool) -> Self {
-        self.displayListOn = displayListOn;
         self
     }
 }

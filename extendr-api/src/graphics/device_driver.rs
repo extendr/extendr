@@ -50,6 +50,10 @@ pub trait DeviceDriver: std::marker::Sized {
     /// used. When you want to skip clipping at all, this should be set `false`.
     const USE_CAPTURE: bool = true;
 
+    /// Whether the device maintain a plot history. This corresponds to
+    /// `displayListOn` in the underlying [DevDesc].
+    const USE_PLOT_HISTORY: bool = false;
+
     /// To what extent the device takes the responsibility of clipping. See
     /// [ClippingStrategy] for the details.
     const CLIPPING_STRATEGY: ClippingStrategy = ClippingStrategy::DeviceAndEngine;
@@ -551,11 +555,7 @@ pub trait DeviceDriver: std::marker::Sized {
             // A raw pointer to the data specific to the device.
             deviceSpecific,
 
-            displayListOn: if device_descriptor.displayListOn {
-                1
-            } else {
-                0
-            },
+            displayListOn: if <T>::USE_PLOT_HISTORY { 1 } else { 0 },
 
             // These are currently not used, so just set FALSE.
             canGenMouseDown: 0,
