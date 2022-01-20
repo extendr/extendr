@@ -117,13 +117,10 @@ pub struct DeviceDescriptor {
     pub startlty: LineType,
     pub startfont: FontFace,
 
-    /// If the graphic device is to handle user interaction, set these. For more
-    /// details can be found on R Internals:
-    ///  
-    /// https://cran.r-project.org/doc/manuals/r-devel/R-ints.html#Graphics-events
-    pub eventEnv: Environment,
-    pub eventHelper: Option<unsafe extern "C" fn(dd: pDevDesc, code: std::os::raw::c_int)>,
-
+    // // TODO: implement these when we find the intracitve usages
+    // pub eventEnv: Environment,
+    // pub eventHelper: Option<unsafe extern "C" fn(dd: pDevDesc, code: std::os::raw::c_int)>,
+    //
     /// The header file says:
     ///
     /// Allows graphics devices to have multiple levels of suspension: when this
@@ -236,9 +233,6 @@ impl DeviceDescriptor {
             startfill: Color::hex(0xffffff),
             startlty: LineType::Solid,
             startfont: FontFace::PlainFont,
-
-            eventEnv: empty_env(),
-            eventHelper: None,
 
             holdflush: None,
 

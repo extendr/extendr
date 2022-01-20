@@ -634,8 +634,8 @@ pub trait DeviceDriver: std::marker::Sized {
             // most of the cases.
             useRotatedTextInContour: 0,
 
-            eventEnv: unsafe { device_descriptor.eventEnv.get() },
-            eventHelper: device_descriptor.eventHelper,
+            eventEnv: unsafe { empty_env().get() },
+            eventHelper: None,
 
             holdflush: device_descriptor.holdflush,
 
