@@ -29,7 +29,8 @@ const FONTSIZE: f64 = POINTSIZE;
 const WIDTH_INCH: f64 = 7.0;
 const HEIGH_INCH: f64 = 7.0;
 
-pub enum CanHAdjOption {
+#[allow(dead_code)]
+pub(crate) enum CanHAdjOption {
     NotSupported = 0,
     FixedAdjustment = 1,
     VariableAdjustment = 2,
@@ -69,26 +70,33 @@ pub enum GraphicDeviceCapabilityLocator {
 
 /// A builder of [libR_sys::_DevDesc].
 ///
-/// Compared to the original [libR_sys::_DevDesc], `DeviceDescriptor` omits
-/// these fields that seem not very useful:
-///
-/// - `clipLeft`, `clipRight`, `clipBottom`, and `clipTop`: In most of the
-///   cases, this should match the device size at first.
-/// - `xCharOffset`, `yCharOffset`, and `yLineBias`: Because I get [the
-///   hatred](https://github.com/wch/r-source/blob/9f284035b7e503aebe4a804579e9e80a541311bb/src/include/R_ext/GraphicsDevice.h#L101-L103).
-///   They are rarely used.
-/// - `gamma`, and `canChangeGamma`: These fields are now ignored because gamma
-///   support has been removed.
-/// - `deviceSpecific`: This can be provided later when we actually create a
-///   [Device].
-/// - `canGenMouseDown`, `canGenMouseMove`, `canGenMouseUp`, `canGenKeybd`, and
-///   `canGenIdle`: These fields are currently not used by R and preserved only
-///   for backward-compatibility.
-/// - `gettingEvent`, `getEvent`: This is set true when getGraphicsEvent is
-///   actively looking for events. Reading the description on ["6.1.6 Graphics
-///   events" of R
-///   Internals](https://cran.r-project.org/doc/manuals/r-devel/R-ints.html#Graphics-events),
-///   it seems this flag is not what is controlled by a graphic device.
+// # Design notes (which feels a bit too internal to be exposed as an official document)
+//
+// Compared to the original [libR_sys::_DevDesc], `DeviceDescriptor` omits
+// several fields that seem not very useful. For example,
+//
+// - `clipLeft`, `clipRight`, `clipBottom`, and `clipTop`: In most of the cases,
+//   this should match the device size at first.
+// - `xCharOffset`, `yCharOffset`, and `yLineBias`: Because I get [the
+//   hatred](https://github.com/wch/r-source/blob/9f284035b7e503aebe4a804579e9e80a541311bb/src/include/R_ext/GraphicsDevice.h#L101-L103).
+//   They are rarely used.
+// - `gamma`, and `canChangeGamma`: These fields are now ignored because gamma
+//   support has been removed.
+// - `deviceSpecific`: This can be provided later when we actually create a
+//   [Device].
+// - `canGenMouseDown`, `canGenMouseMove`, `canGenMouseUp`, `canGenKeybd`, and
+//   `canGenIdle`: These fields are currently not used by R and preserved only
+//   for backward-compatibility.
+// - `gettingEvent`, `getEvent`: This is set true when getGraphicsEvent is
+//   actively looking for events. Reading the description on ["6.1.6 Graphics
+//   events" of R
+//   Internals](https://cran.r-project.org/doc/manuals/r-devel/R-ints.html#Graphics-events),
+//   it seems this flag is not what is controlled by a graphic device.
+// - `canHAdj`: it seems this parameter is used only for tweaking the `hadj`
+//   before passing it to the `text()` function. This tweak probably can be done
+//   inside `text()` easily, so let's pretend to be able to handle any
+//   adjustments... c.f.
+//   <https://github.com/wch/r-source/blob/9f284035b7e503aebe4a804579e9e80a541311bb/src/main/engine.c#L1995-L2000>
 #[allow(non_snake_case)]
 pub struct DeviceDescriptor {
     pub left: f64,
@@ -99,8 +107,6 @@ pub struct DeviceDescriptor {
     pub ipr: [f64; 2],
 
     pub cra: [f64; 2],
-
-    pub canHAdj: CanHAdjOption,
 
     pub startps: f64,
     pub startcol: Color,
@@ -234,8 +240,6 @@ impl DeviceDescriptor {
             // internals says this is "a good choice."
             cra: [0.9 * FONTSIZE, 1.2 * FONTSIZE],
 
-            canHAdj: CanHAdjOption::NotSupported,
-
             startps: POINTSIZE,
             startcol: Color::hex(0x000000),
             startfill: Color::hex(0xffffff),
@@ -342,14 +346,6 @@ impl DeviceDescriptor {
     ///     https://cran.r-project.org/doc/manuals/r-devel/R-ints.html#Handling-text
     pub fn cra(mut self, cra: [f64; 2]) -> Self {
         self.cra = cra;
-        self
-    }
-
-    /// Sets the flag of whether the device can handle holizontal adjustment.
-    ///
-    /// If not specified [CanHAdjOption::NotSupported] will be used.
-    pub fn canHAdj(mut self, canHAdj: CanHAdjOption) -> Self {
-        self.canHAdj = canHAdj;
         self
     }
 

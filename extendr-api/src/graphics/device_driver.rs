@@ -538,7 +538,7 @@ pub trait DeviceDriver: std::marker::Sized {
             // As described above, gamma is not supported.
             canChangeGamma: 0,
 
-            canHAdj: device_descriptor.canHAdj as _,
+            canHAdj: CanHAdjOption::VariableAdjustment as _,
 
             startps: device_descriptor.startps,
             startcol: device_descriptor.startcol.to_i32(),
