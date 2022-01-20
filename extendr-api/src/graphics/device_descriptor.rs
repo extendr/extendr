@@ -117,10 +117,6 @@ pub struct DeviceDescriptor {
     pub startlty: LineType,
     pub startfont: FontFace,
 
-    // // TODO: implement these when we find the intracitve usages
-    // pub eventEnv: Environment,
-    // pub eventHelper: Option<unsafe extern "C" fn(dd: pDevDesc, code: std::os::raw::c_int)>,
-    //
     /// Device capabilities. In all cases, 0 means NA (unset), and 1 means no.
     /// It seems 2 or larger numbers typically represents "yes."
     pub haveTransparency: GraphicDeviceCapabilityTransparency,
