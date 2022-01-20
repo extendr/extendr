@@ -191,6 +191,12 @@ pub trait DeviceDriver: std::marker::Sized {
         true
     }
 
+    /// Allows graphics devices to have multiple levels of suspension: when this
+    /// reaches zero output is flushed.
+    fn holdflush(&mut self, dd: DevDesc, level: i32) -> i32 {
+        0
+    }
+
     /// Create a [Device].
     ///
     /// ```
@@ -502,6 +508,14 @@ pub trait DeviceDriver: std::marker::Sized {
             }
         }
 
+        unsafe extern "C" fn device_driver_holdflush<T: DeviceDriver>(
+            dd: pDevDesc,
+            level: c_int,
+        ) -> c_int {
+            let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
+            data.holdflush(*dd, level as _)
+        }
+
         let deviceSpecific = Box::into_raw(Box::new(self)) as *mut std::os::raw::c_void;
 
         let dev_desc = Box::new(DevDesc {
@@ -637,7 +651,7 @@ pub trait DeviceDriver: std::marker::Sized {
             eventEnv: unsafe { empty_env().get() },
             eventHelper: None,
 
-            holdflush: device_descriptor.holdflush,
+            holdflush: Some(device_driver_holdflush::<T>),
 
             haveTransparency: device_descriptor.haveTransparency as _,
             haveTransparentBg: device_descriptor.haveTransparentBg as _,

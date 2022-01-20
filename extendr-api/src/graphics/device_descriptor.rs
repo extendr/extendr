@@ -121,14 +121,6 @@ pub struct DeviceDescriptor {
     // pub eventEnv: Environment,
     // pub eventHelper: Option<unsafe extern "C" fn(dd: pDevDesc, code: std::os::raw::c_int)>,
     //
-    /// The header file says:
-    ///
-    /// Allows graphics devices to have multiple levels of suspension: when this
-    /// reaches zero output is flushed.
-    pub holdflush: Option<
-        unsafe extern "C" fn(dd: pDevDesc, level: std::os::raw::c_int) -> std::os::raw::c_int,
-    >,
-
     /// Device capabilities. In all cases, 0 means NA (unset), and 1 means no.
     /// It seems 2 or larger numbers typically represents "yes."
     pub haveTransparency: GraphicDeviceCapabilityTransparency,
@@ -233,8 +225,6 @@ impl DeviceDescriptor {
             startfill: Color::hex(0xffffff),
             startlty: LineType::Solid,
             startfont: FontFace::PlainFont,
-
-            holdflush: None,
 
             haveTransparency: GraphicDeviceCapabilityTransparency::No,
             haveTransparentBg: GraphicDeviceCapabilityTransparentBg::No,
