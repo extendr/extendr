@@ -653,7 +653,7 @@ pub trait DeviceDriver: std::marker::Sized {
                 GraphicDeviceCapabilityCapture::No as _
             },
 
-            haveLocator: device_descriptor.haveLocator as _,
+            haveLocator: GraphicDeviceCapabilityLocator::Unset as _,
 
             #[cfg(use_r_ge_version_14)]
             setPattern: device_descriptor.setPattern,
@@ -674,7 +674,10 @@ pub trait DeviceDriver: std::marker::Sized {
             deviceVersion: device_descriptor.deviceVersion as _,
 
             #[cfg(use_r_ge_version_14)]
-            deviceClip: if device_descriptor.deviceClip { 1 } else { 0 },
+            deviceClip: match <T>::CLIPPING_STRATEGY {
+                ClippingStrategy::Device => 1,
+                _ => 0,
+            },
 
             #[cfg(use_r_ge_version_15)]
             defineGroup: device_descriptor.defineGroup,

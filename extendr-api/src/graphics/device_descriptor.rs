@@ -139,9 +139,6 @@ pub struct DeviceDescriptor {
     /// It seems 2 or larger numbers typically represents "yes."
     pub haveTransparency: GraphicDeviceCapabilityTransparency,
     pub haveTransparentBg: GraphicDeviceCapabilityTransparentBg,
-    pub haveRaster: GraphicDeviceCapabilityRaster,
-    pub haveCapture: GraphicDeviceCapabilityCapture,
-    pub haveLocator: GraphicDeviceCapabilityLocator,
 
     /// Patterns and gradients (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/definitions/definitions.html#internals)
     #[cfg(use_r_ge_version_14)]
@@ -172,11 +169,6 @@ pub struct DeviceDescriptor {
     /// avoid the "Graphics API version mismatch" error).
     #[cfg(use_r_ge_version_14)]
     pub deviceVersion: u32,
-
-    /// If TRUE, the graphic engine does no clipping and the device is supposed
-    /// to handle all of them.
-    #[cfg(use_r_ge_version_14)]
-    pub deviceClip: bool,
 
     /// Group compositing operations and affine transformation (ref: https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/groups/groups.html)
     #[cfg(use_r_ge_version_15)]
@@ -272,9 +264,6 @@ impl DeviceDescriptor {
 
             haveTransparency: GraphicDeviceCapabilityTransparency::No,
             haveTransparentBg: GraphicDeviceCapabilityTransparentBg::No,
-            haveRaster: GraphicDeviceCapabilityRaster::No,
-            haveCapture: GraphicDeviceCapabilityCapture::No,
-            haveLocator: GraphicDeviceCapabilityLocator::No,
 
             #[cfg(use_r_ge_version_14)]
             setPattern: None,
@@ -293,9 +282,6 @@ impl DeviceDescriptor {
 
             #[cfg(use_r_ge_version_14)]
             deviceVersion: R_GE_definitions as _,
-
-            #[cfg(use_r_ge_version_14)]
-            deviceClip: false,
 
             #[cfg(use_r_ge_version_15)]
             defineGroup: None,
