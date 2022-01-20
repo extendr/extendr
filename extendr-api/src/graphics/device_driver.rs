@@ -78,12 +78,6 @@ pub trait DeviceDriver: std::marker::Sized {
     /// A callback function to clean up when the device is deactivated.
     fn deactivate(&mut self, dd: DevDesc) {}
 
-    /// TODO'
-    // /// A callback function that returns the location of the next mouse click.
-    // ///
-    // /// If the device doesn't accept mouse clicks, this should be left `None`.
-    // fn locator(dd: DevDesc) -> (f64, f64) {}
-
     /// A callback function to draw a line.
     fn line(&mut self, x1: f64, y1: f64, x2: f64, y2: f64, gc: R_GE_gcontext, dd: DevDesc) {}
 

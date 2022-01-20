@@ -99,25 +99,30 @@ pub(crate) enum GraphicDeviceCapabilityLocator {
 //   <https://github.com/wch/r-source/blob/9f284035b7e503aebe4a804579e9e80a541311bb/src/main/engine.c#L1995-L2000>
 #[allow(non_snake_case)]
 pub struct DeviceDescriptor {
-    pub left: f64,
-    pub right: f64,
-    pub bottom: f64,
-    pub top: f64,
+    pub(crate) left: f64,
+    pub(crate) right: f64,
+    pub(crate) bottom: f64,
+    pub(crate) top: f64,
 
-    pub ipr: [f64; 2],
+    // Note: the header file actually questions about `ipr` and `cra` [1].
+    // Actually, svglite and ragg have `pointsize` and `scaling` parameters
+    // instead. But, I couldn't be sure if it's enough as an framework (I mean,
+    // as a package, abstracting these parameters to `pointsize` and `scaling`
+    // is a good idea), so I chose to left these parameters as they are.
+    //
+    // [1]:
+    //     https://github.com/wch/r-source/blob/9f284035b7e503aebe4a804579e9e80a541311bb/src/include/R_ext/GraphicsDevice.h#L75-L81
+    pub(crate) ipr: [f64; 2],
+    pub(crate) cra: [f64; 2],
 
-    pub cra: [f64; 2],
+    pub(crate) startps: f64,
+    pub(crate) startcol: Color,
+    pub(crate) startfill: Color,
+    pub(crate) startlty: LineType,
+    pub(crate) startfont: FontFace,
 
-    pub startps: f64,
-    pub startcol: Color,
-    pub startfill: Color,
-    pub startlty: LineType,
-    pub startfont: FontFace,
-
-    /// Device capabilities. In all cases, 0 means NA (unset), and 1 means no.
-    /// It seems 2 or larger numbers typically represents "yes."
-    pub haveTransparency: GraphicDeviceCapabilityTransparency,
-    pub haveTransparentBg: GraphicDeviceCapabilityTransparentBg,
+    pub(crate) haveTransparency: GraphicDeviceCapabilityTransparency,
+    pub(crate) haveTransparentBg: GraphicDeviceCapabilityTransparentBg,
 }
 
 #[allow(non_snake_case)]
