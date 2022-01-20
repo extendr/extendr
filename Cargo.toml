@@ -7,4 +7,6 @@ members = [
 ]
 
 [patch.crates-io]
+# When uncomment this, do not forget to uncomment the same line in
+# ./tests/extendrtests/src/rust/Cargo.toml as well!
 libR-sys = { git = "https://github.com/extendr/libR-sys" }
