@@ -21,6 +21,61 @@
 // - https://developer.r-project.org/Blog/public/2021/12/06/groups-and-paths-and-masks-in-r-graphics/index.html
 // - https://developer.r-project.org/Blog/public/2021/12/14/updating-graphics-devices-for-r-4.2.0/index.html
 
+//! Graphic Device Operations
+//!
+//! ## Control an existing graphic device
+//!
+//! TODO
+//!
+//! ## Implement a new graphic device
+//!
+//! The following two things are needed to implement a graphic device.
+//!
+//! - [DeviceDriver] trait: the actual implementation of graphic device methods.
+//! - [DeviceDescriptor] struct: the parameters that might differ per device
+//!   instance (e.g. sizes, and colors).
+//!
+//! For example, the following code implements a simple graphic device that shows a message when it's
+//! activated (and ignores everything else).
+//!
+//! ```
+//! use extendr_api::{
+//!     graphics::{device_descriptor::DeviceDescriptor, device_driver::DeviceDriver, DevDesc},
+//!     prelude::*,
+//! };
+//!
+//! struct MyDevice<'a> {
+//!     welcome_message: &'a str,
+//! }
+//!
+//! impl<'a> DeviceDriver for MyDevice<'a> {
+//!     fn activate(&mut self, _dd: DevDesc) {
+//!         let welcome_message = self.welcome_message;
+//!         rprintln!("message from device: {welcome_message}");
+//!     }
+//! }
+//!
+//! /// Create a new device.
+//! ///
+//! /// @export
+//! #[extendr]
+//! fn my_device(welcome_message: String) {
+//!     let device_driver = MyDevice {
+//!         welcome_message: welcome_message.as_str(),
+//!     };
+//!     
+//!     let device_descriptor = DeviceDescriptor::new();
+//!     let device = device_driver.create_device::<MyDevice>(device_descriptor, "my device");
+//! }
+//! ```
+//!
+//! This can be called from R.
+//!
+//! ```r
+//! my_device("I'm so active!!!")
+//! #> message from device: I'm so active!!!
+//! ```
+
 use crate::*;
 use libR_sys::*;
 
