@@ -29,4 +29,4 @@ extendr-api = { path = "../../../../../extendr/extendr-api"}
 #extendr-api = { git = "https://github.com/extendr/extendr"}
 
 # Build against current libR-sys version on github
-libR-sys = { git = "https://github.com/extendr/libR-sys" }
+libR-sys = { git = "https://github.com/yutannihilation/libR-sys", branch = "tmp-let-it-down-when-no-r-version" }
