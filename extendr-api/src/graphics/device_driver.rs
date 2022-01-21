@@ -192,35 +192,6 @@ pub trait DeviceDriver: std::marker::Sized {
     }
 
     /// Create a [Device].
-    ///
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// use extendr_api::graphics::device_driver::DeviceDriver;
-    /// use extendr_api::graphics::device_descriptor::DeviceDescriptor;
-    /// use extendr_api::graphics::DevDesc;
-    ///
-    /// test!{
-    ///     struct MyGraphicDevice {
-    ///         last_mode: i32
-    ///     }
-    ///
-    ///     impl DeviceDriver for MyGraphicDevice {
-    ///         fn mode(&mut self, mode: i32, _dd: DevDesc) {
-    ///             self.last_mode = mode;
-    ///         }
-    ///     }
-    ///
-    ///     let device_driver = MyGraphicDevice { last_mode: 0 };
-    ///     let device_descriptor = DeviceDescriptor::new();
-    ///     let device = device_driver.create_device::<MyGraphicDevice>(device_descriptor, "my graphic device");
-    ///
-    ///     device.mode_on().unwrap();
-    ///
-    ///     // TODO: how can I peek at the value of last_mode?
-    ///     // assert_eq!(device_driver.last_mode, 1_i32);
-    /// }
-    /// ```
-    #[allow(dead_code)]
     fn create_device<T: DeviceDriver>(
         self,
         device_descriptor: DeviceDescriptor,

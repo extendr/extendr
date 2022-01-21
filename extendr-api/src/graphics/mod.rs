@@ -823,3 +823,58 @@ impl Device {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::graphics::{
+        device_descriptor::DeviceDescriptor, device_driver::DeviceDriver, DevDesc,
+    };
+    use super::prelude::*;
+
+    struct TestDevice<'a> {
+        last_mode: &'a mut i32,
+        value: &'a mut f64,
+    }
+
+    impl<'a> DeviceDriver for TestDevice<'a> {
+        fn activate(&mut self, _: DevDesc) {
+            *self.value = 100.0;
+        }
+
+        fn mode(&mut self, mode: i32, _: DevDesc) {
+            *self.last_mode = mode;
+            *self.value += 1.0;
+        }
+    }
+
+    #[test]
+    fn graphic_device_test() {
+        test! {
+            let mut value = 0.0;
+            let mut last_mode = 0;
+
+            let device_driver = TestDevice {
+                value: &mut value,
+                last_mode: &mut last_mode,
+            };
+
+            let device_descriptor = DeviceDescriptor::new();
+            let device = device_driver.create_device::<TestDevice>(device_descriptor, "test device");
+
+            // if activate() is invoked, value should be 100.0
+            assert_eq!(value, 100.0);
+
+            device.mode_on().unwrap();
+
+            // if mode() is invoked, value and last_mode should be updated
+            assert_eq!(last_mode, 1);
+            assert_eq!(value, 101.0);
+
+            device.mode_off().unwrap();
+
+            // if mode() is invoked, value and last_mode should be updated
+            assert_eq!(last_mode, 0);
+            assert_eq!(value, 102.0);
+        }
+    }
+}
