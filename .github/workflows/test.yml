@@ -29,6 +29,8 @@ jobs:
           # Windows jobs with unspecific Rust architecture build for both i686 and x86_64 
           # R integration tests are also executed for both architectures
           - {os: windows-latest, r: 'release', rust-version: 'stable-msvc'}
+          # TODO: remove this before merging
+          - {os: windows-latest, r: 'devel',   rust-version: 'stable-msvc'}
           # - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc'}
           # - {os: windows-latest, r: 'devel', rust-version: 'stable-msvc'}
           # - {os: windows-latest, r: 'oldrel', rust-version: 'stable-msvc'}
