@@ -269,6 +269,7 @@ impl MyClassUnexported {
 
 /// Create a new device.
 ///
+/// @param welcome_message A warm message to welcome you.
 /// @export
 #[extendr]
 fn my_device(welcome_message: String) {

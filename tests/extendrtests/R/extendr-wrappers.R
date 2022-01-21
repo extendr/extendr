@@ -64,6 +64,12 @@ special_param_names <- function(`_x`, `_y`) .Call(wrap__special_param_names, `_x
 
 test.rename.rlike <- function() .Call(wrap__test_rename_mymod)
 
+#' Create a new device.
+#'
+#' @param welcome_message A warm message to welcome you.
+#' @export
+my_device <- function(welcome_message) invisible(.Call(wrap__my_device, welcome_message))
+
 #' Return string `"Hello world!"` to R.
 #' @export
 hello_submodule <- function() .Call(wrap__hello_submodule)

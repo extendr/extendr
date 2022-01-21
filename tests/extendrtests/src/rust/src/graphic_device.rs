@@ -1,7 +1,7 @@
 use extendr_api::{graphics::*, prelude::*};
 
-struct MyDevice<'a> {
-    welcome_message: &'a str,
+pub(crate) struct MyDevice<'a> {
+    pub(crate) welcome_message: &'a str,
 }
 
 impl<'a> DeviceDriver for MyDevice<'a> {
