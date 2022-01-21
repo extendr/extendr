@@ -1,4 +1,4 @@
-use extendr_api::prelude::*;
+use extendr_api::{graphics::*, prelude::*};
 
 mod submodule;
 use submodule::*;
