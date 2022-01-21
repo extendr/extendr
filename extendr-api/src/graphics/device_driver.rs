@@ -19,9 +19,9 @@ use super::{device_descriptor::*, Device};
 ///
 /// Even when `canClip` is `true`, the engine does clip to protect the device
 /// from large values by default. But, for efficiency, the device can take all
-/// the responsibility of clipping. That is `deviceClip`, which was introduced in R 4.1. If this is set to
-/// `true`, the engine will perform no clipping at all. For more details, please
-/// refer to [the offical announcement blog post].
+/// the responsibility of clipping. That is `deviceClip`, which was introduced
+/// in R 4.1. If this is set to `true`, the engine will perform no clipping at
+/// all. For more details, please refer to [the offical announcement blog post].
 ///
 /// So, in short, a graphic device can choose either of the following:
 ///
@@ -42,15 +42,19 @@ pub enum ClippingStrategy {
 /// An implementation of the [Device] functionalities.
 #[allow(non_snake_case, unused_variables, clippy::too_many_arguments)]
 pub trait DeviceDriver: std::marker::Sized {
-    /// Usually, the default implementation of `raster`, which does nothing, is
-    /// used. When you want to skip clipping at all, this should be set `false`.
+    /// Whether the device accepts the drawing operation of a raster. By
+    /// default, the default implementation, which just ignores the raster,
+    /// is used so this can be left `true`. If there's a necessity to
+    /// explicitly refuse the operation, this can be set `false`.
     const USE_RASTER: bool = true;
 
-    /// Usually, the default implementation of `capture`, which does nothing, is
-    /// used. When you want to skip clipping at all, this should be set `false`.
+    /// Whether the device accepts a capturing operation. By default, the
+    /// default implementation, which just returns an empty capture, is used so
+    /// this can be left `true`. If there's a necessity to explicitly refuse the
+    /// operation, this can be set `false`.
     const USE_CAPTURE: bool = true;
 
-    /// Whether the device maintain a plot history. This corresponds to
+    /// Whether the device maintains a plot history. This corresponds to
     /// `displayListOn` in the underlying [DevDesc].
     const USE_PLOT_HISTORY: bool = false;
 
@@ -71,8 +75,9 @@ pub trait DeviceDriver: std::marker::Sized {
     /// A callback function to clip.
     fn clip(&mut self, x0: f64, x1: f64, y0: f64, y1: f64, dd: DevDesc) {}
 
-    /// A callback function to free device-specific resources when the
-    /// device is killed.
+    /// A callback function to free device-specific resources when the device is
+    /// killed. Note that, `self` MUST NOT be dropped within this function
+    /// because the wrapper that extendr internally generates will do it.
     fn close(&mut self, dd: DevDesc) {}
 
     /// A callback function to clean up when the device is deactivated.

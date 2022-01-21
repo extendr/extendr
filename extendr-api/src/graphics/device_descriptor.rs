@@ -68,12 +68,12 @@ pub(crate) enum GraphicDeviceCapabilityLocator {
     Yes = 2,
 }
 
-/// A builder of [libR_sys::_DevDesc].
+/// A builder of [DevDesc].
 ///
 // # Design notes (which feels a bit too internal to be exposed as an official document)
 //
-// Compared to the original [libR_sys::_DevDesc], `DeviceDescriptor` omits
-// several fields that seem not very useful. For example,
+// Compared to the original [DevDesc], `DeviceDescriptor` omits several fields
+// that seem not very useful. For example,
 //
 // - `clipLeft`, `clipRight`, `clipBottom`, and `clipTop`: In most of the cases,
 //   this should match the device size at first.
@@ -173,21 +173,24 @@ impl DeviceDescriptor {
         self
     }
 
-    /// Sets inches per raster unit (i.e. point).
+    /// Sets inches per raster unit (i.e. point). **Note that most of the cases,
+    /// this can be left unchaged.**
     ///
     /// A point is usually 1/72 (the default value), but another value can be
-    /// specified here to scale the device. The first element is width, the second
-    /// is height.
+    /// specified here to scale the device. The first element is width, the
+    /// second is height.
     pub fn ipr(mut self, ipr: [f64; 2]) -> Self {
         self.ipr = ipr;
         self
     }
 
-    /// Sets the font size (unit: point).
+    /// Sets the font size (unit: point). **Note that most of the cases, this
+    /// can be left unchaged.**
     ///
     /// The first element is width, the second is height. If not specified,
     /// `[0.9 * 12.0, 1.2 * 12.0]`, which is [suggested by the R Internals as "a
-    /// good choice"] will be used (12 point is the usual default for graphics devices).
+    /// good choice"] will be used (12 point is the usual default for graphics
+    /// devices).
     ///
     /// [suggested by the R Internals as "a good choice"]:
     ///     https://cran.r-project.org/doc/manuals/r-devel/R-ints.html#Handling-text
