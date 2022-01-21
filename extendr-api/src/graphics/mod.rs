@@ -40,7 +40,7 @@
 //!
 //! ```
 //! use extendr_api::{
-//!     graphics::{device_descriptor::DeviceDescriptor, device_driver::DeviceDriver, DevDesc},
+//!     graphics::{DeviceDescriptor, DeviceDriver, DevDesc},
 //!     prelude::*,
 //! };
 //!
@@ -87,6 +87,8 @@ pub mod device_descriptor;
 pub mod device_driver;
 
 use color::Color;
+pub use device_descriptor::*;
+pub use device_driver::*;
 
 pub struct Context {
     context: R_GE_gcontext,
