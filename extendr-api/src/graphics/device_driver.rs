@@ -623,8 +623,9 @@ pub trait DeviceDriver: std::marker::Sized {
 
             holdflush: Some(device_driver_holdflush::<T>),
 
-            haveTransparency: device_descriptor.haveTransparency as _,
-            haveTransparentBg: device_descriptor.haveTransparentBg as _,
+            // TODO: implement capability properly.
+            haveTransparency: GraphicDeviceCapabilityTransparency::Yes as _,
+            haveTransparentBg: GraphicDeviceCapabilityTransparentBg::Fully as _,
 
             // There might be some cases where we want to use `Unset` or
             // `ExceptForMissingValues`, but, for the sake of simplicity, we

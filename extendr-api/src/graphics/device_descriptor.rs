@@ -120,9 +120,6 @@ pub struct DeviceDescriptor {
     pub(crate) startfill: Color,
     pub(crate) startlty: LineType,
     pub(crate) startfont: FontFace,
-
-    pub(crate) haveTransparency: GraphicDeviceCapabilityTransparency,
-    pub(crate) haveTransparentBg: GraphicDeviceCapabilityTransparentBg,
 }
 
 #[allow(non_snake_case)]
@@ -147,9 +144,6 @@ impl DeviceDescriptor {
             startfill: Color::hex(0xffffff),
             startlty: LineType::Solid,
             startfont: FontFace::PlainFont,
-
-            haveTransparency: GraphicDeviceCapabilityTransparency::No,
-            haveTransparentBg: GraphicDeviceCapabilityTransparentBg::No,
         }
     }
 
