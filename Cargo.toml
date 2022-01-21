@@ -8,5 +8,6 @@ members = [
 
 [patch.crates-io]
 # When uncomment this, do not forget to uncomment the same line in
-# ./tests/extendrtests/src/rust/Cargo.toml as well!
+# ./tests/extendrtests/src/rust/Cargo.toml, and "Run R integration tests using
+# {rextendr}" on .github/workflows/test.yml !
 libR-sys = { git = "https://github.com/extendr/libR-sys" }
