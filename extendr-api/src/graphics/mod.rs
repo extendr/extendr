@@ -932,6 +932,9 @@ mod tests {
             // if mode() is invoked, value and last_mode should be updated
             assert_eq!(last_mode, 0);
             assert_eq!(value, 102.0);
+
+            // check if the R doesn't crash on closing the device.
+            R!("dev.off()")?;
         }
     }
 }
