@@ -39,7 +39,14 @@ pub enum ClippingStrategy {
     Engine,
 }
 
-/// An implementation of the [Device] functionalities.
+/// A graphic device implementation.
+///
+/// # Safety
+///
+/// To implement these callback functions, extreme care is needed to avoid any
+/// `panic!()` because it immediately crashes the R session. Usually, extendr
+/// handles a panic gracefully, but there's no such protect on the callback
+/// functions.
 #[allow(non_snake_case, unused_variables, clippy::too_many_arguments)]
 pub trait DeviceDriver: std::marker::Sized {
     /// Whether the device accepts the drawing operation of a raster. By

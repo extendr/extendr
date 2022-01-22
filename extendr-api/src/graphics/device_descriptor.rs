@@ -104,11 +104,11 @@ pub struct DeviceDescriptor {
     pub(crate) bottom: f64,
     pub(crate) top: f64,
 
-    // Note: the header file actually questions about `ipr` and `cra` [1].
-    // Actually, svglite and ragg have `pointsize` and `scaling` parameters
-    // instead. But, I couldn't be sure if it's enough as an framework (I mean,
-    // as a package, abstracting these parameters to `pointsize` and `scaling`
-    // is a good idea), so I chose to left these parameters as they are.
+    // Note: the header file questions about `ipr` and `cra` [1]. Actually,
+    // svglite and ragg have `pointsize` and `scaling` parameters instead. But,
+    // I couldn't be sure if it's enough as an framework (I mean, as a package,
+    // abstracting these parameters to `pointsize` and `scaling` is definitely a
+    // good idea), so I chose to expose these parameters as they are.
     //
     // [1]:
     //     https://github.com/wch/r-source/blob/9f284035b7e503aebe4a804579e9e80a541311bb/src/include/R_ext/GraphicsDevice.h#L75-L81
@@ -168,7 +168,7 @@ impl DeviceDescriptor {
     }
 
     /// Sets inches per raster unit (i.e. point). **Note that most of the cases,
-    /// this can be left unchaged.**
+    /// there's no need to change this value.**
     ///
     /// A point is usually 1/72 (the default value), but another value can be
     /// specified here to scale the device. The first element is width, the
@@ -178,8 +178,8 @@ impl DeviceDescriptor {
         self
     }
 
-    /// Sets the font size (unit: point). **Note that most of the cases, this
-    /// can be left unchaged.**
+    /// Sets the font size (unit: point). **Note that most of the cases, there's
+    /// no need to change this value.**
     ///
     /// The first element is width, the second is height. If not specified,
     /// `[0.9 * 12.0, 1.2 * 12.0]`, which is [suggested by the R Internals as "a
