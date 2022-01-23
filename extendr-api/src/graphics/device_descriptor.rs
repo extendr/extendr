@@ -130,8 +130,8 @@ impl DeviceDescriptor {
             // inches square."
             left: 0.0,
             right: WIDTH_INCH * PT_PER_INCH,
-            bottom: HEIGH_INCH * PT_PER_INCH,
-            top: 0.0,
+            bottom: 0.0,
+            top: HEIGH_INCH * PT_PER_INCH,
 
             ipr: [PT, PT],
 
@@ -154,8 +154,8 @@ impl DeviceDescriptor {
     ///
     /// * `left`: 0
     /// * `right`: 7 inches * points per inch = `7 * 72`
-    /// * `bottom`: 7 inches * points per inch = `7 * 72`
-    /// * `top`: 0
+    /// * `bottom`: 0
+    /// * `top`: 7 inches * points per inch = `7 * 72`
     ///
     /// [the R Internals' convetion]:
     ///     https://cran.r-project.org/doc/manuals/r-devel/R-ints.html#Conventions
