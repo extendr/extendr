@@ -512,6 +512,15 @@ pub trait DeviceDriver: std::marker::Sized {
             data.holdflush(*dd, level as _)
         }
 
+        //
+        // ************* defining the wrapper functions ends here ****************
+        //
+
+        // `Box::new()` allocates memory on the heap and place `self` into it.
+        // Then, an unsafe function `Box::into_raw()` converts it to a raw
+        // pointer. By doing this, Rust won't drop the object so that it will
+        // live after passing it to the R's side. In other words, extendr should
+        // take care of dropping in the `close()` wrapper.
         let deviceSpecific = Box::into_raw(Box::new(self)) as *mut std::os::raw::c_void;
 
         let dev_desc = Box::new(DevDesc {
@@ -717,7 +726,11 @@ pub trait DeviceDriver: std::marker::Sized {
         let device_name = CString::new(device_name).unwrap();
 
         single_threaded(|| unsafe {
+            // Box::into_raw() converts the `DevDesc`, which was allocated on
+            // Rust's side to a raw pointer. The memory will be freed on R's
+            // side in `GEdestroyDevDesc()`.
             let p_dev_desc = Box::into_raw(dev_desc);
+
             let device = GEcreateDevDesc(p_dev_desc);
 
             // NOTE: If we use GEaddDevice2f(), GEinitDisplayList() is not needed.
