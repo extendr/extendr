@@ -160,11 +160,30 @@ pub trait DeviceDriver: std::marker::Sized {
         ().into()
     }
 
-    /// A callback function that is called when the device gets resized.
+    /// A callback function that returns the current device size in the format
+    /// of `(left, right, bottom, top)` in points.
     ///
-    /// The callback should return `(left, right, bottom, top)`.
+    /// - If the size of the graphic device won't change after creation, the
+    ///   function can simply return the `left`, `right`, `bottom`, and `top` of
+    ///   the `DevDesc` (the default implementation).
+    /// - If the size can change, probably the actual size should be tracked in
+    ///   the device-specific struct, i.e. `self`, and the function should refer
+    ///   to the field (e.g., [`cbm_Size()` in the cairo device]).
+    ///
+    /// Note that, while this function is what is supposed to be called
+    /// "whenever the device is resized," it's not automatically done by the
+    /// graphic engine. [The header file] says:
+    ///
+    /// > This is not usually called directly by the graphics engine because the
+    /// > detection of device resizes (e.g., a window resize) are usually
+    /// > detected by device-specific code.
+    ///
+    /// [The header file]:
+    ///     https://github.com/wch/r-source/blob/8ebcb33a9f70e729109b1adf60edd5a3b22d3c6f/src/include/R_ext/GraphicsDevice.h#L508-L527
+    /// [`cbm_Size()` in the cairo device]:
+    ///     https://github.com/wch/r-source/blob/8ebcb33a9f70e729109b1adf60edd5a3b22d3c6f/src/library/grDevices/src/cairo/cairoBM.c#L73-L83
     fn size(&mut self, dd: DevDesc) -> (f64, f64, f64, f64) {
-        (0.0, 0.0, 0.0, 0.0)
+        (dd.left, dd.right, dd.bottom, dd.top)
     }
 
     /// A callback function that returns the width of the given string in
