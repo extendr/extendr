@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api&#x2F;src&#x2F;wrapper&#x2F;altrep.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>altrep.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../extendr_api/index.html'><div class='logo-container rust-logo'><img src='https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;extendr&#x2F;extendr&#x2F;master&#x2F;extendr-logo-256.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">   1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api&#x2F;src&#x2F;wrapper&#x2F;altrep.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>altrep.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
+    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../extendr_api/index.html'><div class='logo-container rust-logo'><img src='https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;extendr&#x2F;extendr&#x2F;master&#x2F;extendr-logo-256.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">   1</span>
 <span id="2">   2</span>
 <span id="3">   3</span>
 <span id="4">   4</span>
@@ -1077,14 +1078,14 @@
                     <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar_type::from</span>(<span class="self">self</span>.<span class="ident">clone</span>().<span class="ident">nth</span>(<span class="ident">index</span>).<span class="ident">unwrap</span>().<span class="ident">into</span>())
                 }
 
-                <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar_type</span>]) -&gt; <span class="ident">usize</span> {
+                <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;mut</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar_type</span>]) -&gt; <span class="ident">usize</span> {
                     <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span>();
                     <span class="kw">if</span> <span class="ident">index</span> <span class="op">&gt;</span> <span class="ident">len</span> {
                         <span class="number">0</span>
                     } <span class="kw">else</span> {
                         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">iter</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">clone</span>().<span class="ident">skip</span>(<span class="ident">index</span>);
                         <span class="kw">let</span> <span class="ident">num_elems</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">len</span>().<span class="ident">min</span>(<span class="ident">len</span> <span class="op">-</span> <span class="ident">index</span>);
-                        <span class="kw">let</span> <span class="ident">dest</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data</span>[<span class="number">0</span>..<span class="ident">num_elems</span>];
+                        <span class="kw">let</span> <span class="ident">dest</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="ident">data</span>[<span class="number">0</span>..<span class="ident">num_elems</span>];
                         <span class="kw">for</span> <span class="ident">d</span> <span class="kw">in</span> <span class="ident">dest</span>.<span class="ident">iter_mut</span>() {
                             <span class="kw-2">*</span><span class="ident">d</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar_type::from</span>(<span class="ident">iter</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">into</span>());
                         }
@@ -1175,28 +1176,28 @@
 
     <span class="doccomment">/// Get the data pointer for this vector, possibly expanding the</span>
     <span class="doccomment">/// compact representation into a full R vector.</span>
-    <span class="kw">fn</span> <span class="ident">dataptr</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>, <span class="ident">_writeable</span>: <span class="ident">bool</span>) -&gt; <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span> {
+    <span class="kw">fn</span> <span class="ident">dataptr</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>, <span class="ident">_writeable</span>: <span class="ident">bool</span>) -&gt; <span class="kw-2">*mut</span> <span class="ident">u8</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">data2</span> <span class="op">=</span> <span class="ident">R_altrep_data2</span>(<span class="ident">x</span>);
             <span class="kw">if</span> <span class="ident">data2</span> <span class="op">==</span> <span class="ident">R_NilValue</span> <span class="op">|</span><span class="op">|</span> <span class="ident">TYPEOF</span>(<span class="ident">data2</span>) <span class="op">!</span><span class="op">=</span> <span class="ident">TYPEOF</span>(<span class="ident">x</span>) {
                 <span class="kw">let</span> <span class="ident">data2</span> <span class="op">=</span> <span class="ident">manifest</span>(<span class="ident">x</span>);
                 <span class="ident">R_set_altrep_data2</span>(<span class="ident">x</span>, <span class="ident">data2</span>);
-                <span class="ident">DATAPTR</span>(<span class="ident">data2</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>
+                <span class="ident">DATAPTR</span>(<span class="ident">data2</span>) <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">u8</span>
             } <span class="kw">else</span> {
-                <span class="ident">DATAPTR</span>(<span class="ident">data2</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>
+                <span class="ident">DATAPTR</span>(<span class="ident">data2</span>) <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">u8</span>
             }
         }
     }
 
     <span class="doccomment">/// Get the data pointer for this vector, returning NULL</span>
     <span class="doccomment">/// if the object is unmaterialized.</span>
-    <span class="kw">fn</span> <span class="ident">dataptr_or_null</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>) -&gt; <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span> {
+    <span class="kw">fn</span> <span class="ident">dataptr_or_null</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>) -&gt; <span class="kw-2">*const</span> <span class="ident">u8</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">data2</span> <span class="op">=</span> <span class="ident">R_altrep_data2</span>(<span class="ident">x</span>);
             <span class="kw">if</span> <span class="ident">data2</span> <span class="op">==</span> <span class="ident">R_NilValue</span> <span class="op">|</span><span class="op">|</span> <span class="ident">TYPEOF</span>(<span class="ident">data2</span>) <span class="op">!</span><span class="op">=</span> <span class="ident">TYPEOF</span>(<span class="ident">x</span>) {
                 <span class="ident">std::ptr::null</span>()
             } <span class="kw">else</span> {
-                <span class="ident">DATAPTR</span>(<span class="ident">data2</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>
+                <span class="ident">DATAPTR</span>(<span class="ident">data2</span>) <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">u8</span>
             }
         }
     }
@@ -1263,13 +1264,13 @@
     <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_index</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Rint</span>;
 
     <span class="doccomment">/// Get a multiple elements from this vector.</span>
-    <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">Rint</span>]) -&gt; <span class="ident">usize</span> {
+    <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">Rint</span>]) -&gt; <span class="ident">usize</span> {
         <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">length</span>();
         <span class="kw">if</span> <span class="ident">index</span> <span class="op">&gt;</span> <span class="ident">len</span> {
             <span class="number">0</span>
         } <span class="kw">else</span> {
             <span class="kw">let</span> <span class="ident">num_elems</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">len</span>().<span class="ident">min</span>(<span class="ident">len</span> <span class="op">-</span> <span class="ident">index</span>);
-            <span class="kw">let</span> <span class="ident">dest</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data</span>[<span class="number">0</span>..<span class="ident">num_elems</span>];
+            <span class="kw">let</span> <span class="ident">dest</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="ident">data</span>[<span class="number">0</span>..<span class="ident">num_elems</span>];
             <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">d</span>) <span class="kw">in</span> <span class="ident">dest</span>.<span class="ident">iter_mut</span>().<span class="ident">enumerate</span>() {
                 <span class="kw-2">*</span><span class="ident">d</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">elt</span>(<span class="ident">i</span> <span class="op">+</span> <span class="ident">index</span>);
             }
@@ -1344,13 +1345,13 @@
     <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_index</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Rfloat</span>;
 
     <span class="doccomment">/// Get a multiple elements from this vector.</span>
-    <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">Rfloat</span>]) -&gt; <span class="ident">usize</span> {
+    <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">Rfloat</span>]) -&gt; <span class="ident">usize</span> {
         <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">length</span>();
         <span class="kw">if</span> <span class="ident">index</span> <span class="op">&gt;</span> <span class="ident">len</span> {
             <span class="number">0</span>
         } <span class="kw">else</span> {
             <span class="kw">let</span> <span class="ident">num_elems</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">len</span>().<span class="ident">min</span>(<span class="ident">len</span> <span class="op">-</span> <span class="ident">index</span>);
-            <span class="kw">let</span> <span class="ident">dest</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data</span>[<span class="number">0</span>..<span class="ident">num_elems</span>];
+            <span class="kw">let</span> <span class="ident">dest</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="ident">data</span>[<span class="number">0</span>..<span class="ident">num_elems</span>];
             <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">d</span>) <span class="kw">in</span> <span class="ident">dest</span>.<span class="ident">iter_mut</span>().<span class="ident">enumerate</span>() {
                 <span class="kw-2">*</span><span class="ident">d</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">elt</span>(<span class="ident">i</span> <span class="op">+</span> <span class="ident">index</span>);
             }
@@ -1421,13 +1422,13 @@
     <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_index</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Rbool</span>;
 
     <span class="doccomment">/// Get a multiple elements from this vector.</span>
-    <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">Rbool</span>]) -&gt; <span class="ident">usize</span> {
+    <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">Rbool</span>]) -&gt; <span class="ident">usize</span> {
         <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">length</span>();
         <span class="kw">if</span> <span class="ident">index</span> <span class="op">&gt;</span> <span class="ident">len</span> {
             <span class="number">0</span>
         } <span class="kw">else</span> {
             <span class="kw">let</span> <span class="ident">num_elems</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">len</span>().<span class="ident">min</span>(<span class="ident">len</span> <span class="op">-</span> <span class="ident">index</span>);
-            <span class="kw">let</span> <span class="ident">dest</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data</span>[<span class="number">0</span>..<span class="ident">num_elems</span>];
+            <span class="kw">let</span> <span class="ident">dest</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="ident">data</span>[<span class="number">0</span>..<span class="ident">num_elems</span>];
             <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">d</span>) <span class="kw">in</span> <span class="ident">dest</span>.<span class="ident">iter_mut</span>().<span class="ident">enumerate</span>() {
                 <span class="kw-2">*</span><span class="ident">d</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">elt</span>(<span class="ident">i</span> <span class="op">+</span> <span class="ident">index</span>);
             }
@@ -1462,13 +1463,13 @@
     <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_index</span>: <span class="ident">usize</span>) -&gt; <span class="ident">u8</span>;
 
     <span class="doccomment">/// Get a multiple elements from this vector.</span>
-    <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>]) -&gt; <span class="ident">usize</span> {
+    <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">u8</span>]) -&gt; <span class="ident">usize</span> {
         <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">length</span>();
         <span class="kw">if</span> <span class="ident">index</span> <span class="op">&gt;</span> <span class="ident">len</span> {
             <span class="number">0</span>
         } <span class="kw">else</span> {
             <span class="kw">let</span> <span class="ident">num_elems</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">len</span>().<span class="ident">min</span>(<span class="ident">len</span> <span class="op">-</span> <span class="ident">index</span>);
-            <span class="kw">let</span> <span class="ident">dest</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data</span>[<span class="number">0</span>..<span class="ident">num_elems</span>];
+            <span class="kw">let</span> <span class="ident">dest</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="ident">data</span>[<span class="number">0</span>..<span class="ident">num_elems</span>];
             <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">d</span>) <span class="kw">in</span> <span class="ident">dest</span>.<span class="ident">iter_mut</span>().<span class="ident">enumerate</span>() {
                 <span class="kw-2">*</span><span class="ident">d</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">elt</span>(<span class="ident">i</span> <span class="op">+</span> <span class="ident">index</span>);
             }
@@ -1482,13 +1483,13 @@
     <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_index</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Rcplx</span>;
 
     <span class="doccomment">/// Get a multiple elements from this vector.</span>
-    <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">Rcplx</span>]) -&gt; <span class="ident">usize</span> {
+    <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">data</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">Rcplx</span>]) -&gt; <span class="ident">usize</span> {
         <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">length</span>();
         <span class="kw">if</span> <span class="ident">index</span> <span class="op">&gt;</span> <span class="ident">len</span> {
             <span class="number">0</span>
         } <span class="kw">else</span> {
             <span class="kw">let</span> <span class="ident">num_elems</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">len</span>().<span class="ident">min</span>(<span class="ident">len</span> <span class="op">-</span> <span class="ident">index</span>);
-            <span class="kw">let</span> <span class="ident">dest</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data</span>[<span class="number">0</span>..<span class="ident">num_elems</span>];
+            <span class="kw">let</span> <span class="ident">dest</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="ident">data</span>[<span class="number">0</span>..<span class="ident">num_elems</span>];
             <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">d</span>) <span class="kw">in</span> <span class="ident">dest</span>.<span class="ident">iter_mut</span>().<span class="ident">enumerate</span>() {
                 <span class="kw-2">*</span><span class="ident">d</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">elt</span>(<span class="ident">i</span> <span class="op">+</span> <span class="ident">index</span>);
             }
@@ -1502,7 +1503,7 @@
     <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_index</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Rstr</span>;
 
     <span class="doccomment">/// Set a single element in this vector.</span>
-    <span class="kw">fn</span> <span class="ident">set_elt</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">_index</span>: <span class="ident">usize</span>, <span class="ident">_value</span>: <span class="ident">Rstr</span>) {}
+    <span class="kw">fn</span> <span class="ident">set_elt</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">_index</span>: <span class="ident">usize</span>, <span class="ident">_value</span>: <span class="ident">Rstr</span>) {}
 
     <span class="doccomment">/// Return TRUE if this vector is sorted, FALSE if not and Rbool::na() if unknown.</span>
     <span class="kw">fn</span> <span class="ident">is_sorted</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Rbool</span> {
@@ -1529,7 +1530,7 @@
 
     <span class="doccomment">/// Safely (relatively!) implement R_set_altrep_data1, R_set_altrep_data2.</span>
     <span class="doccomment">/// When implementing Altrep classes, this sets the metadata.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_data</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">values</span>: (<span class="ident">Robj</span>, <span class="ident">Robj</span>)) {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_data</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">values</span>: (<span class="ident">Robj</span>, <span class="ident">Robj</span>)) {
         <span class="kw">unsafe</span> {
             <span class="ident">R_set_altrep_data1</span>(<span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>(), <span class="ident">values</span>.<span class="number">0</span>.<span class="ident">get</span>());
             <span class="ident">R_set_altrep_data2</span>(<span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>(), <span class="ident">values</span>.<span class="number">1</span>.<span class="ident">get</span>());
@@ -1551,14 +1552,14 @@
 
             <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">finalizer</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>) {
                 <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="ident">Altrep::get_state_mut</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>);
-                <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">state</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">StateType</span>;
+                <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">state</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">StateType</span>;
                 <span class="ident">Box::from_raw</span>(<span class="ident">ptr</span>);
             }
 
-            <span class="kw">let</span> <span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">StateType</span> <span class="op">=</span> <span class="ident">Box::into_raw</span>(<span class="ident">Box::new</span>(<span class="ident">state</span>));
+            <span class="kw">let</span> <span class="ident">ptr</span>: <span class="kw-2">*mut</span> <span class="ident">StateType</span> <span class="op">=</span> <span class="ident">Box::into_raw</span>(<span class="ident">Box::new</span>(<span class="ident">state</span>));
             <span class="kw">let</span> <span class="ident">tag</span> <span class="op">=</span> <span class="macro">r!</span>(());
             <span class="kw">let</span> <span class="ident">prot</span> <span class="op">=</span> <span class="macro">r!</span>(());
-            <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="ident">R_MakeExternalPtr</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_void</span>, <span class="ident">tag</span>.<span class="ident">get</span>(), <span class="ident">prot</span>.<span class="ident">get</span>());
+            <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="ident">R_MakeExternalPtr</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">c_void</span>, <span class="ident">tag</span>.<span class="ident">get</span>(), <span class="ident">prot</span>.<span class="ident">get</span>());
             <span class="ident">R_RegisterCFinalizer</span>(<span class="ident">state</span>, <span class="prelude-val">Some</span>(<span class="ident">finalizer</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>));
 
             <span class="kw">let</span> <span class="ident">class_ptr</span> <span class="op">=</span> <span class="ident">R_altrep_class_t</span> { <span class="ident">ptr</span>: <span class="ident">class</span>.<span class="ident">get</span>() };
@@ -1583,7 +1584,7 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_state</span><span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">StateType</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">state_ptr</span> <span class="op">=</span> <span class="ident">R_ExternalPtrAddr</span>(<span class="ident">R_altrep_data1</span>(<span class="ident">x</span>));
-            <span class="kw-2">&amp;</span><span class="kw-2">*</span>(<span class="ident">state_ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">StateType</span>)
+            <span class="kw-2">&amp;</span><span class="kw-2">*</span>(<span class="ident">state_ptr</span> <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">StateType</span>)
         }
     }
 
@@ -1591,7 +1592,7 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_state_mut</span><span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">SEXP</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="kw-2">mut</span> <span class="ident">StateType</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">state_ptr</span> <span class="op">=</span> <span class="ident">R_ExternalPtrAddr</span>(<span class="ident">R_altrep_data1</span>(<span class="ident">x</span>));
-            <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="kw-2">*</span>(<span class="ident">state_ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">StateType</span>)
+            <span class="kw-2">&amp;mut</span> <span class="kw-2">*</span>(<span class="ident">state_ptr</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">StateType</span>)
         }
     }
 
@@ -1673,14 +1674,14 @@
         <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altvec_Dataptr</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltrepImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
             <span class="ident">x</span>: <span class="ident">SEXP</span>,
             <span class="ident">writeable</span>: <span class="ident">Rboolean</span>,
-        ) -&gt; <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_void</span> {
-            <span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span><span class="ident">::dataptr</span>(<span class="ident">x</span>, <span class="ident">writeable</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_void</span>
+        ) -&gt; <span class="kw-2">*mut</span> <span class="ident">c_void</span> {
+            <span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span><span class="ident">::dataptr</span>(<span class="ident">x</span>, <span class="ident">writeable</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>) <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">c_void</span>
         }
 
         <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altvec_Dataptr_or_null</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltrepImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
             <span class="ident">x</span>: <span class="ident">SEXP</span>,
-        ) -&gt; <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">c_void</span> {
-            <span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span><span class="ident">::dataptr_or_null</span>(<span class="ident">x</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_void</span>
+        ) -&gt; <span class="kw-2">*const</span> <span class="ident">c_void</span> {
+            <span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span><span class="ident">::dataptr_or_null</span>(<span class="ident">x</span>) <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">c_void</span>
         }
 
         <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">altvec_Extract_subset</span><span class="op">&lt;</span><span class="ident">StateType</span>: <span class="ident">AltrepImpl</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
@@ -1768,9 +1769,9 @@
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
                 <span class="ident">i</span>: <span class="ident">R_xlen_t</span>,
                 <span class="ident">n</span>: <span class="ident">R_xlen_t</span>,
-                <span class="ident">buf</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_int</span>,
+                <span class="ident">buf</span>: <span class="kw-2">*mut</span> <span class="ident">c_int</span>,
             ) -&gt; <span class="ident">R_xlen_t</span> {
-                <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">std::slice::from_raw_parts_mut</span>(<span class="ident">buf</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">Rint</span>, <span class="ident">n</span> <span class="kw">as</span> <span class="ident">usize</span>);
+                <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">std::slice::from_raw_parts_mut</span>(<span class="ident">buf</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">Rint</span>, <span class="ident">n</span> <span class="kw">as</span> <span class="ident">usize</span>);
                 <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">get_region</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>, <span class="ident">slice</span>) <span class="kw">as</span> <span class="ident">R_xlen_t</span>
             }
 
@@ -1846,9 +1847,9 @@
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
                 <span class="ident">i</span>: <span class="ident">R_xlen_t</span>,
                 <span class="ident">n</span>: <span class="ident">R_xlen_t</span>,
-                <span class="ident">buf</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">f64</span>,
+                <span class="ident">buf</span>: <span class="kw-2">*mut</span> <span class="ident">f64</span>,
             ) -&gt; <span class="ident">R_xlen_t</span> {
-                <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">std::slice::from_raw_parts_mut</span>(<span class="ident">buf</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">Rfloat</span>, <span class="ident">n</span> <span class="kw">as</span> <span class="ident">usize</span>);
+                <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">std::slice::from_raw_parts_mut</span>(<span class="ident">buf</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">Rfloat</span>, <span class="ident">n</span> <span class="kw">as</span> <span class="ident">usize</span>);
                 <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">get_region</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>, <span class="ident">slice</span>) <span class="kw">as</span> <span class="ident">R_xlen_t</span>
             }
 
@@ -1921,9 +1922,9 @@
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
                 <span class="ident">i</span>: <span class="ident">R_xlen_t</span>,
                 <span class="ident">n</span>: <span class="ident">R_xlen_t</span>,
-                <span class="ident">buf</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_int</span>,
+                <span class="ident">buf</span>: <span class="kw-2">*mut</span> <span class="ident">c_int</span>,
             ) -&gt; <span class="ident">R_xlen_t</span> {
-                <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">std::slice::from_raw_parts_mut</span>(<span class="ident">buf</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">Rbool</span>, <span class="ident">n</span> <span class="kw">as</span> <span class="ident">usize</span>);
+                <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">std::slice::from_raw_parts_mut</span>(<span class="ident">buf</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">Rbool</span>, <span class="ident">n</span> <span class="kw">as</span> <span class="ident">usize</span>);
                 <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">get_region</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>, <span class="ident">slice</span>) <span class="kw">as</span> <span class="ident">R_xlen_t</span>
             }
 
@@ -1982,7 +1983,7 @@
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
                 <span class="ident">i</span>: <span class="ident">R_xlen_t</span>,
                 <span class="ident">n</span>: <span class="ident">R_xlen_t</span>,
-                <span class="ident">buf</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>,
+                <span class="ident">buf</span>: <span class="kw-2">*mut</span> <span class="ident">u8</span>,
             ) -&gt; <span class="ident">R_xlen_t</span> {
                 <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">std::slice::from_raw_parts_mut</span>(<span class="ident">buf</span>, <span class="ident">n</span> <span class="kw">as</span> <span class="ident">usize</span>);
                 <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">get_region</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>, <span class="ident">slice</span>) <span class="kw">as</span> <span class="ident">R_xlen_t</span>
@@ -2017,9 +2018,9 @@
                 <span class="ident">x</span>: <span class="ident">SEXP</span>,
                 <span class="ident">i</span>: <span class="ident">R_xlen_t</span>,
                 <span class="ident">n</span>: <span class="ident">R_xlen_t</span>,
-                <span class="ident">buf</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">Rcomplex</span>,
+                <span class="ident">buf</span>: <span class="kw-2">*mut</span> <span class="ident">Rcomplex</span>,
             ) -&gt; <span class="ident">R_xlen_t</span> {
-                <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">std::slice::from_raw_parts_mut</span>(<span class="ident">buf</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">Rcplx</span>, <span class="ident">n</span> <span class="kw">as</span> <span class="ident">usize</span>);
+                <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">std::slice::from_raw_parts_mut</span>(<span class="ident">buf</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">Rcplx</span>, <span class="ident">n</span> <span class="kw">as</span> <span class="ident">usize</span>);
                 <span class="ident">Altrep::get_state</span>::<span class="op">&lt;</span><span class="ident">StateType</span><span class="op">&gt;</span>(<span class="ident">x</span>).<span class="ident">get_region</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>, <span class="ident">slice</span>) <span class="kw">as</span> <span class="ident">R_xlen_t</span>
             }
 
@@ -2120,5 +2121,4 @@
 }
 </code></pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>
-    <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script>
 </body></html>
