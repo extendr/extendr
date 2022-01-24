@@ -22,7 +22,7 @@ fn test_derive_list() {
         };
         let native_r = R!("list(a = 5L, b = 'bar', c = as.double(1:3), d = list(a = 1, b = TRUE))").unwrap();
 
-        // Check the R → Rust conversion used a Robj reference
+        // Check the R → Rust conversion using a Robj reference
         let converted_rust_borrow: Foo = (&native_r).try_into().unwrap();
         assert_eq!(&converted_rust_borrow, &native_rust);
 
