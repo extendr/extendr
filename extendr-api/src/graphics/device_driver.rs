@@ -588,28 +588,30 @@ pub trait DeviceDriver: std::marker::Sized {
         // NOTE: Since a DevDesc will be freed on the R's side when `dev.off()`,
         // this Rust struct, which is allocated by the Rust's allocator, cannot
         // be directly passed to the R's side. We'll allocate some memory by
-        // using `libc::malloc()` and copy this to there later.
-        let dev_desc = DevDesc {
-            left: device_descriptor.left,
-            right: device_descriptor.right,
-            bottom: device_descriptor.bottom,
-            top: device_descriptor.top,
+        // using `libc::malloc()` and treat it as `DevDesc`.
+        let p_dev_desc = unsafe { libc::calloc(1, std::mem::size_of::<DevDesc>()) as *mut DevDesc };
+
+        unsafe {
+            (*p_dev_desc).left = device_descriptor.left;
+            (*p_dev_desc).right = device_descriptor.right;
+            (*p_dev_desc).bottom = device_descriptor.bottom;
+            (*p_dev_desc).top = device_descriptor.top;
 
             // This should be the same as the size of the device
-            clipLeft: device_descriptor.left,
-            clipRight: device_descriptor.right,
-            clipBottom: device_descriptor.bottom,
-            clipTop: device_descriptor.top,
+            (*p_dev_desc).clipLeft = device_descriptor.left;
+            (*p_dev_desc).clipRight = device_descriptor.right;
+            (*p_dev_desc).clipBottom = device_descriptor.bottom;
+            (*p_dev_desc).clipTop = device_descriptor.top;
 
             // Not sure where these numbers came from, but it seems this is a
             // common practice, considering the postscript device and svglite
             // device do so.
-            xCharOffset: 0.4900,
-            yCharOffset: 0.3333,
-            yLineBias: 0.2,
+            (*p_dev_desc).xCharOffset = 0.4900;
+            (*p_dev_desc).yCharOffset = 0.3333;
+            (*p_dev_desc).yLineBias = 0.2;
 
-            ipr: device_descriptor.ipr,
-            cra: device_descriptor.cra,
+            (*p_dev_desc).ipr = device_descriptor.ipr;
+            (*p_dev_desc).cra = device_descriptor.cra;
 
             // Gamma-related parameters are all ignored. R-internals indicates so:
             //
@@ -617,37 +619,37 @@ pub trait DeviceDriver: std::marker::Sized {
             // ignored, as gamma support has been removed.
             //
             // and actually it seems this parameter is never used.
-            gamma: 1.0,
+            (*p_dev_desc).gamma = 1.0;
 
-            canClip: match <T>::CLIPPING_STRATEGY {
+            (*p_dev_desc).canClip = match <T>::CLIPPING_STRATEGY {
                 ClippingStrategy::Engine => 0,
                 _ => 1,
-            },
+            };
 
             // As described above, gamma is not supported.
-            canChangeGamma: 0,
+            (*p_dev_desc).canChangeGamma = 0;
 
-            canHAdj: CanHAdjOption::VariableAdjustment as _,
+            (*p_dev_desc).canHAdj = CanHAdjOption::VariableAdjustment as _;
 
-            startps: device_descriptor.startps,
-            startcol: device_descriptor.startcol.to_i32(),
-            startfill: device_descriptor.startfill.to_i32(),
-            startlty: device_descriptor.startlty.to_i32(),
-            startfont: device_descriptor.startfont.to_i32(),
+            (*p_dev_desc).startps = device_descriptor.startps;
+            (*p_dev_desc).startcol = device_descriptor.startcol.to_i32();
+            (*p_dev_desc).startfill = device_descriptor.startfill.to_i32();
+            (*p_dev_desc).startlty = device_descriptor.startlty.to_i32();
+            (*p_dev_desc).startfont = device_descriptor.startfont.to_i32();
 
-            startgamma: 1.0,
+            (*p_dev_desc).startgamma = 1.0;
 
             // A raw pointer to the data specific to the device.
-            deviceSpecific,
+            (*p_dev_desc).deviceSpecific = deviceSpecific;
 
-            displayListOn: if <T>::USE_PLOT_HISTORY { 1 } else { 0 },
+            (*p_dev_desc).displayListOn = if <T>::USE_PLOT_HISTORY { 1 } else { 0 };
 
             // These are currently not used, so just set FALSE.
-            canGenMouseDown: 0,
-            canGenMouseMove: 0,
-            canGenMouseUp: 0,
-            canGenKeybd: 0,
-            canGenIdle: 0,
+            (*p_dev_desc).canGenMouseDown = 0;
+            (*p_dev_desc).canGenMouseMove = 0;
+            (*p_dev_desc).canGenMouseUp = 0;
+            (*p_dev_desc).canGenKeybd = 0;
+            (*p_dev_desc).canGenIdle = 0;
 
             // The header file says:
             //
@@ -655,59 +657,59 @@ pub trait DeviceDriver: std::marker::Sized {
             //
             // It seems no implementation sets this, so this is probably what is
             // modified on the engine's side.
-            gettingEvent: 0,
+            (*p_dev_desc).gettingEvent = 0;
 
-            activate: Some(device_driver_activate::<T>),
-            circle: Some(device_driver_circle::<T>),
-            clip: match <T>::CLIPPING_STRATEGY {
+            (*p_dev_desc).activate = Some(device_driver_activate::<T>);
+            (*p_dev_desc).circle = Some(device_driver_circle::<T>);
+            (*p_dev_desc).clip = match <T>::CLIPPING_STRATEGY {
                 ClippingStrategy::Engine => None,
                 _ => Some(device_driver_clip::<T>),
-            },
-            close: Some(device_driver_close::<T>),
-            deactivate: Some(device_driver_deactivate::<T>),
-            locator: None, // TODO
-            line: Some(device_driver_line::<T>),
-            metricInfo: Some(device_driver_metricInfo::<T>),
-            mode: Some(device_driver_mode::<T>),
-            newPage: Some(device_driver_newPage::<T>),
-            polygon: Some(device_driver_polygon::<T>),
-            polyline: Some(device_driver_polyline::<T>),
-            rect: Some(device_driver_rect::<T>),
-            path: Some(device_driver_path::<T>),
-            raster: if <T>::USE_RASTER {
+            };
+            (*p_dev_desc).close = Some(device_driver_close::<T>);
+            (*p_dev_desc).deactivate = Some(device_driver_deactivate::<T>);
+            (*p_dev_desc).locator = None; // TOD;
+            (*p_dev_desc).line = Some(device_driver_line::<T>);
+            (*p_dev_desc).metricInfo = Some(device_driver_metricInfo::<T>);
+            (*p_dev_desc).mode = Some(device_driver_mode::<T>);
+            (*p_dev_desc).newPage = Some(device_driver_newPage::<T>);
+            (*p_dev_desc).polygon = Some(device_driver_polygon::<T>);
+            (*p_dev_desc).polyline = Some(device_driver_polyline::<T>);
+            (*p_dev_desc).rect = Some(device_driver_rect::<T>);
+            (*p_dev_desc).path = Some(device_driver_path::<T>);
+            (*p_dev_desc).raster = if <T>::USE_RASTER {
                 Some(device_driver_raster::<T>)
             } else {
                 None
-            },
-            cap: if <T>::USE_CAPTURE {
+            };
+            (*p_dev_desc).cap = if <T>::USE_CAPTURE {
                 Some(device_driver_cap::<T>)
             } else {
                 None
-            },
-            size: Some(device_driver_size::<T>),
-            strWidth: Some(device_driver_strWidth::<T>),
-            text: Some(device_driver_text::<T>),
-            onExit: Some(device_driver_onExit::<T>),
+            };
+            (*p_dev_desc).size = Some(device_driver_size::<T>);
+            (*p_dev_desc).strWidth = Some(device_driver_strWidth::<T>);
+            (*p_dev_desc).text = Some(device_driver_text::<T>);
+            (*p_dev_desc).onExit = Some(device_driver_onExit::<T>);
 
             // This is no longer used and exists only for backward-compatibility
             // of the structure.
-            getEvent: None,
+            (*p_dev_desc).getEvent = None;
 
-            newFrameConfirm: Some(device_driver_newFrameConfirm::<T>),
+            (*p_dev_desc).newFrameConfirm = Some(device_driver_newFrameConfirm::<T>);
 
             // UTF-8 support
-            hasTextUTF8: if <T>::ACCEPT_UTF8_TEXT { 1 } else { 0 },
-            textUTF8: if <T>::ACCEPT_UTF8_TEXT {
+            (*p_dev_desc).hasTextUTF8 = if <T>::ACCEPT_UTF8_TEXT { 1 } else { 0 };
+            (*p_dev_desc).textUTF8 = if <T>::ACCEPT_UTF8_TEXT {
                 Some(device_driver_text::<T>)
             } else {
                 None
-            },
-            strWidthUTF8: if <T>::ACCEPT_UTF8_TEXT {
+            };
+            (*p_dev_desc).strWidthUTF8 = if <T>::ACCEPT_UTF8_TEXT {
                 Some(device_driver_strWidth::<T>)
             } else {
                 None
-            },
-            wantSymbolUTF8: if <T>::ACCEPT_UTF8_TEXT { 1 } else { 0 },
+            };
+            (*p_dev_desc).wantSymbolUTF8 = if <T>::ACCEPT_UTF8_TEXT { 1 } else { 0 };
 
             // R internals says:
             //
@@ -717,94 +719,74 @@ pub trait DeviceDriver: std::marker::Sized {
             //
             // It seems this is used only by plot3d, so FALSE should be appropriate in
             // most of the cases.
-            useRotatedTextInContour: 0,
+            (*p_dev_desc).useRotatedTextInContour = 0;
 
-            eventEnv: unsafe { empty_env().get() },
-            eventHelper: None,
+            (*p_dev_desc).eventEnv = unsafe { empty_env().get() };
+            (*p_dev_desc).eventHelper = None;
 
-            holdflush: Some(device_driver_holdflush::<T>),
+            (*p_dev_desc).holdflush = Some(device_driver_holdflush::<T>);
 
             // TODO: implement capability properly.
-            haveTransparency: GraphicDeviceCapabilityTransparency::Yes as _,
-            haveTransparentBg: GraphicDeviceCapabilityTransparentBg::Fully as _,
+            (*p_dev_desc).haveTransparency = GraphicDeviceCapabilityTransparency::Yes as _;
+            (*p_dev_desc).haveTransparentBg = GraphicDeviceCapabilityTransparentBg::Fully as _;
 
             // There might be some cases where we want to use `Unset` or
             // `ExceptForMissingValues`, but, for the sake of simplicity, we
             // only use yes or no. Let's revisit here when necessary.
-            haveRaster: if <T>::USE_RASTER {
+            (*p_dev_desc).haveRaster = if <T>::USE_RASTER {
                 GraphicDeviceCapabilityRaster::Yes as _
             } else {
                 GraphicDeviceCapabilityRaster::No as _
-            },
+            };
 
-            haveCapture: if <T>::USE_CAPTURE {
+            (*p_dev_desc).haveCapture = if <T>::USE_CAPTURE {
                 GraphicDeviceCapabilityCapture::Yes as _
             } else {
                 GraphicDeviceCapabilityCapture::No as _
-            },
+            };
 
-            haveLocator: GraphicDeviceCapabilityLocator::Unset as _,
+            (*p_dev_desc).haveLocator = GraphicDeviceCapabilityLocator::Unset as _;
 
             // NOTE: Unlike the features that will be added in  Graphics API
             // version 15 (i.e. R 4.2), the features in API v13 & v14 (i.e. R
             // 4.1) are not optional. We need to provice the placeholder
             // functions for it.
             #[cfg(use_r_ge_version_14)]
-            setPattern: Some(device_driver_setPattern::<T>),
-            #[cfg(use_r_ge_version_14)]
-            releasePattern: Some(device_driver_releasePattern::<T>),
+            {
+                (*p_dev_desc).setPattern = Some(device_driver_setPattern::<T>);
+                (*p_dev_desc).releasePattern = Some(device_driver_releasePattern::<T>);
 
-            #[cfg(use_r_ge_version_14)]
-            setClipPath: Some(device_driver_setClipPath::<T>),
-            #[cfg(use_r_ge_version_14)]
-            releaseClipPath: Some(device_driver_releaseClipPath::<T>),
+                (*p_dev_desc).setClipPath = Some(device_driver_setClipPath::<T>);
+                (*p_dev_desc).releaseClipPath = Some(device_driver_releaseClipPath::<T>);
 
-            #[cfg(use_r_ge_version_14)]
-            setMask: Some(device_driver_setMask::<T>),
-            #[cfg(use_r_ge_version_14)]
-            releaseMask: Some(device_driver_releaseMask::<T>),
+                (*p_dev_desc).setMask = Some(device_driver_setMask::<T>);
+                (*p_dev_desc).releaseMask = Some(device_driver_releaseMask::<T>);
 
-            #[cfg(use_r_ge_version_14)]
-            deviceVersion: R_GE_definitions as _,
+                (*p_dev_desc).deviceVersion = R_GE_definitions as _;
 
-            #[cfg(use_r_ge_version_14)]
-            deviceClip: match <T>::CLIPPING_STRATEGY {
-                ClippingStrategy::Device => 1,
-                _ => 0,
-            },
+                (*p_dev_desc).deviceClip = match <T>::CLIPPING_STRATEGY {
+                    ClippingStrategy::Device => 1,
+                    _ => 0,
+                };
+            }
 
             #[cfg(use_r_ge_version_15)]
-            defineGroup: None,
-            #[cfg(use_r_ge_version_15)]
-            useGroup: None,
-            #[cfg(use_r_ge_version_15)]
-            releaseGroup: None,
+            {
+                (*p_dev_desc).defineGroup = None;
+                (*p_dev_desc).useGroup = None;
+                (*p_dev_desc).releaseGroup = None;
 
-            #[cfg(use_r_ge_version_15)]
-            stroke: None,
-            #[cfg(use_r_ge_version_15)]
-            fill: None,
-            #[cfg(use_r_ge_version_15)]
-            fillStroke: None,
+                (*p_dev_desc).stroke = None;
+                (*p_dev_desc).fill = None;
+                (*p_dev_desc).fillStroke = None;
 
-            #[cfg(use_r_ge_version_15)]
-            capabilities: None,
-
-            reserved: [0i8; 64],
-        };
+                (*p_dev_desc).capabilities = None;
+            }
+        } // unsafe ends here
 
         let device_name = CString::new(device_name).unwrap();
 
         single_threaded(|| unsafe {
-            // As noted above, if a memory will be freed on R's side, it needs
-            // to be allocated by the same allocator as R. That is,
-            // `libc::malloc()`. Then, copy the struct to the memory by
-            // `std::ptr::copy_nonoverlapping()`, which is equivalent to C’s
-            // memcpy.
-            let dev_desc_size = std::mem::size_of::<DevDesc>();
-            let p_dev_desc = libc::malloc(dev_desc_size) as *mut DevDesc;
-            std::ptr::copy_nonoverlapping(&dev_desc as _, p_dev_desc, dev_desc_size);
-
             let device = GEcreateDevDesc(p_dev_desc);
 
             // NOTE: Some graphic device use `GEaddDevice2f()`, a version of
