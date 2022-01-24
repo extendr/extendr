@@ -512,6 +512,68 @@ pub trait DeviceDriver: std::marker::Sized {
             data.holdflush(*dd, level as _)
         }
 
+        #[cfg(use_r_ge_version_14)]
+        unsafe extern "C" fn device_driver_setPattern<T: DeviceDriver>(
+            pattern: SEXP,
+            dd: pDevDesc,
+        ) -> SEXP {
+            let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
+            // TODO
+            // data.setPattern(pattern, *dd)
+            R_NilValue
+        }
+
+        #[cfg(use_r_ge_version_14)]
+        unsafe extern "C" fn device_driver_releasePattern<T: DeviceDriver>(
+            ref_: SEXP,
+            dd: pDevDesc,
+        ) {
+            let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
+            // TODO
+            // data.reelasePattern(ref_, *dd);
+        }
+
+        #[cfg(use_r_ge_version_14)]
+        unsafe extern "C" fn device_driver_setClipPath<T: DeviceDriver>(
+            path: SEXP,
+            ref_: SEXP,
+            dd: pDevDesc,
+        ) -> SEXP {
+            let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
+            // TODO
+            // data.setClipPath(path, ref_, *dd)
+            R_NilValue
+        }
+
+        #[cfg(use_r_ge_version_14)]
+        unsafe extern "C" fn device_driver_releaseClipPath<T: DeviceDriver>(
+            ref_: SEXP,
+            dd: pDevDesc,
+        ) {
+            let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
+            // TODO
+            // data.releaseClipPath(ref_, *dd);
+        }
+
+        #[cfg(use_r_ge_version_14)]
+        unsafe extern "C" fn device_driver_setMask<T: DeviceDriver>(
+            path: SEXP,
+            ref_: SEXP,
+            dd: pDevDesc,
+        ) -> SEXP {
+            let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
+            // TODO
+            // data.setMask(path, ref_, *dd)
+            R_NilValue
+        }
+
+        #[cfg(use_r_ge_version_14)]
+        unsafe extern "C" fn device_driver_releaseMask<T: DeviceDriver>(ref_: SEXP, dd: pDevDesc) {
+            let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
+            // TODO
+            // data.releaseMask(ref_, *dd);
+        }
+
         //
         // ************* defining the wrapper functions ends here ****************
         //
@@ -679,20 +741,24 @@ pub trait DeviceDriver: std::marker::Sized {
 
             haveLocator: GraphicDeviceCapabilityLocator::Unset as _,
 
+            // NOTE: Unlike the features that will be added in  Graphics API
+            // version 15 (i.e. R 4.2), the features in API v13 & v14 (i.e. R
+            // 4.1) are not optional. We need to provice the placeholder
+            // functions for it.
             #[cfg(use_r_ge_version_14)]
-            setPattern: None,
+            setPattern: Some(device_driver_setPattern::<T>),
             #[cfg(use_r_ge_version_14)]
-            releasePattern: None,
+            releasePattern: Some(device_driver_releasePattern::<T>),
 
             #[cfg(use_r_ge_version_14)]
-            setClipPath: None,
+            setClipPath: Some(device_driver_setClipPath::<T>),
             #[cfg(use_r_ge_version_14)]
-            releaseClipPath: None,
+            releaseClipPath: Some(device_driver_releaseClipPath::<T>),
 
             #[cfg(use_r_ge_version_14)]
-            setMask: None,
+            setMask: Some(device_driver_setMask::<T>),
             #[cfg(use_r_ge_version_14)]
-            releaseMask: None,
+            releaseMask: Some(device_driver_releaseMask::<T>),
 
             #[cfg(use_r_ge_version_14)]
             deviceVersion: R_GE_definitions as _,
