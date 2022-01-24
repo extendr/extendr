@@ -185,14 +185,14 @@ pub fn Rraw(item: TokenStream) -> TokenStream {
 /// # use extendr_api::test;
 /// # test!{
 ///
-/// #[derive(TryFromRobj, PartialEq)]
+/// #[derive(TryFromRobj, PartialEq, Debug)]
 /// struct Foo {
 ///     a: u64,
 ///     b: String
 /// }
 /// let native_foo = Foo { a: 5, b: "bar".into() };
 /// let foo_from_list: Foo = R!("list(a = 5, b = 'bar')")?.try_into()?;
-/// assert!(native_foo == foo_from_list);
+/// assert_eq!(native_foo, foo_from_list);
 /// # }
 /// # Ok::<(), extendr_api::Error>(())
 /// ```
@@ -224,7 +224,7 @@ pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
 ///     a: 5,
 ///     b: String::from("bar")
 /// }.into();
-/// assert!(R!(r#"identical({{converted}}, list(a=5, b="bar"))"#)?.as_bool().unwrap());
+/// assert_eq!(converted, R!(r"list(a=5, b='bar')")?);
 /// # }
 /// # Ok::<(), extendr_api::Error>(())
 /// ```
