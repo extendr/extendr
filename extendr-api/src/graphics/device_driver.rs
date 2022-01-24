@@ -585,7 +585,11 @@ pub trait DeviceDriver: std::marker::Sized {
         // take care of dropping in the `close()` wrapper.
         let deviceSpecific = Box::into_raw(Box::new(self)) as *mut std::os::raw::c_void;
 
-        let dev_desc = Box::new(DevDesc {
+        // NOTE: Since a DevDesc will be freed on the R's side when `dev.off()`,
+        // this Rust struct, which is allocated by the Rust's allocator, cannot
+        // be directly passed to the R's side. We'll allocate some memory by
+        // using `libc::malloc()` and copy this to there later.
+        let dev_desc = DevDesc {
             left: device_descriptor.left,
             right: device_descriptor.right,
             bottom: device_descriptor.bottom,
@@ -787,19 +791,25 @@ pub trait DeviceDriver: std::marker::Sized {
             capabilities: None,
 
             reserved: [0i8; 64],
-        });
+        };
 
         let device_name = CString::new(device_name).unwrap();
 
         single_threaded(|| unsafe {
-            // Box::into_raw() converts the `DevDesc`, which was allocated on
-            // Rust's side to a raw pointer. The memory will be freed on R's
-            // side in `GEdestroyDevDesc()`.
-            let p_dev_desc = Box::into_raw(dev_desc);
+            // As noted above, if a memory will be freed on R's side, it needs
+            // to be allocated by the same allocator as R. That is,
+            // `libc::malloc()`. Then, copy the struct to the memory by
+            // `std::ptr::copy_nonoverlapping()`, which is equivalent to C’s
+            // memcpy.
+            let dev_desc_size = std::mem::size_of::<DevDesc>();
+            let p_dev_desc = libc::malloc(dev_desc_size) as *mut DevDesc;
+            std::ptr::copy_nonoverlapping(&dev_desc as _, p_dev_desc, dev_desc_size);
 
             let device = GEcreateDevDesc(p_dev_desc);
 
-            // NOTE: If we use GEaddDevice2f(), GEinitDisplayList() is not needed.
+            // NOTE: Some graphic device use `GEaddDevice2f()`, a version of
+            // `GEaddDevice2()` with a filename, instead, but `GEaddDevice2()`
+            // should be appropriate for general purposes.
             GEaddDevice2(device, device_name.as_ptr() as *mut i8);
             GEinitDisplayList(device);
 
