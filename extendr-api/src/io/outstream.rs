@@ -48,7 +48,7 @@ impl<W: Write> OutStream<W> {
         }
 
         {
-            let (hook_fn, hook_data) = if let Some(Hook{func, data}) = hook {
+            let (hook_fn, hook_data) = if let Some(Hook { func, data }) = hook {
                 (Some(func), data)
             } else {
                 unsafe { (None, R_NilValue) }
@@ -71,14 +71,29 @@ impl<W: Write> OutStream<W> {
 }
 
 pub trait Serialize {
-    fn save_to_file<P: AsRef<std::path::Path>>(
+    /// Save an object in the R data format.
+    /// `version` should probably be 3.
+    fn save<P: AsRef<std::path::Path>>(
         &self,
         path: &P,
         format: PstreamFormat,
         version: i32,
         hook: Option<Hook>,
     ) -> Result<()>;
-    fn save_to_bytes(&self, format: PstreamFormat, version: i32, hook: Option<Hook>) -> Result<Vec<u8>>;
+
+    /// Save an object in the R data format to a byte vector.
+    /// `version` should probably be 3.
+    fn to_bytes(&self, format: PstreamFormat, version: i32, hook: Option<Hook>) -> Result<Vec<u8>>;
+
+    /// Save an object in the R data format to a `Write` trait.
+    /// `version` should probably be 3.
+    fn to_writer<W: Write>(
+        &self,
+        writer: &mut W,
+        format: PstreamFormat,
+        version: i32,
+        hook: Option<Hook>,
+    ) -> Result<()>;
 }
 
 fn save(stream: R_outpstream_t, sexp: SEXP, version: i32) -> Result<()> {
@@ -97,7 +112,7 @@ fn save(stream: R_outpstream_t, sexp: SEXP, version: i32) -> Result<()> {
 }
 
 impl<R: GetSexp> Serialize for R {
-    fn save_to_file<P: AsRef<std::path::Path>>(
+    fn save<P: AsRef<std::path::Path>>(
         &self,
         path: &P,
         format: PstreamFormat,
@@ -115,7 +130,7 @@ impl<R: GetSexp> Serialize for R {
         Ok(())
     }
 
-    fn save_to_bytes(&self, format: PstreamFormat, version: i32, hook: Option<Hook>) -> Result<Vec<u8>> {
+    fn to_bytes(&self, format: PstreamFormat, version: i32, hook: Option<Hook>) -> Result<Vec<u8>> {
         let writer = Vec::new();
         let mut os = OutStream::from_writer(writer, format, version, hook);
 
@@ -125,6 +140,20 @@ impl<R: GetSexp> Serialize for R {
 
         Ok(os.writer)
     }
+
+    fn to_writer<W: Write>(
+        &self,
+        writer: &mut W,
+        format: PstreamFormat,
+        version: i32,
+        hook: Option<Hook>,
+    ) -> Result<()> {
+        let mut os = OutStream::from_writer(writer, format, version, hook);
+
+        let stream = &mut os.r_state as R_outpstream_t;
+        let sexp = unsafe { self.get() };
+        save(stream, sexp, version)
+    }
 }
 
 #[test]
@@ -132,14 +161,16 @@ fn test() {
     use crate as extendr_api;
     use extendr_api::{Result, Robj};
     test! {
-        let v = Robj::from(1).save_to_bytes(PstreamFormat::AsciiFormat, 3, None)?;
+        let v = Robj::from(1).to_bytes(PstreamFormat::AsciiFormat, 3, None)?;
         let s = std::str::from_utf8(&v).unwrap();
-        // println!("{}", s);
-        assert!(s.starts_with("A\n"));
-        assert!(s.contains("\nUTF-8\n"));
+        assert!(s.starts_with("A"));
 
-        let v = Robj::from(1).save_to_bytes(PstreamFormat::BinaryFormat, 3, None)?;
+        let v = Robj::from(1).to_bytes(PstreamFormat::BinaryFormat, 3, None)?;
         assert!(v[0] == b'B');
+
+        let mut w = Vec::new();
+        Robj::from(1).to_writer(&mut w, PstreamFormat::BinaryFormat, 3, None)?;
+        assert!(w[0] == b'B');
 
         // let path : std::path::PathBuf = "/tmp/1".into();
         // Robj::from(1).save_to_file(&path, PstreamFormat::AsciiFormat, 3, None)?;
