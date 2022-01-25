@@ -25,13 +25,19 @@ pub struct ExternalPtr<T: Debug + 'static> {
 }
 
 impl<T: Debug + 'static> robj::GetSexp for ExternalPtr<T> {
-    unsafe fn get(&self) -> SEXP { self.robj.get() }
+    unsafe fn get(&self) -> SEXP {
+        self.robj.get()
+    }
 
     /// Get a reference to a Robj for this type.
-    fn as_robj(&self) -> &Robj { &self.robj }
+    fn as_robj(&self) -> &Robj {
+        &self.robj
+    }
 
     /// Get a mutable reference to a Robj for this type.
-    fn as_robj_mut(&mut self) -> &mut Robj { &mut self.robj }
+    fn as_robj_mut(&mut self) -> &mut Robj {
+        &mut self.robj
+    }
 }
 
 /// len() and is_empty()
