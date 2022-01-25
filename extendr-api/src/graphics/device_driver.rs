@@ -587,9 +587,20 @@ pub trait DeviceDriver: std::marker::Sized {
 
         // NOTE: Since a DevDesc will be freed on the R's side when `dev.off()`,
         // this Rust struct, which is allocated by the Rust's allocator, cannot
-        // be directly passed to the R's side. We'll allocate some memory by
-        // using `libc::malloc()` and treat it as `DevDesc`.
-        let p_dev_desc = unsafe { libc::calloc(1, std::mem::size_of::<DevDesc>()) as *mut DevDesc };
+        // be directly passed to the R's side. So, we'll allocate some memory by
+        // using `calloc()` and treat it as `DevDesc`, taking the risk of
+        // uninitialized fields. `libc::calloc()` can be used as long as the
+        // same allocator that R uses is correctly linked, but it seems it's
+        // error-prone (c.f.
+        // https://github.com/extendr/extendr/pull/360#issuecomment-1020212207).
+        //
+        // So, `R_calloc_gc()` is chosen here because this is the simplest API
+        // of R that allocates memory. This simply does `calloc()`, and the only
+        // diffrence from bare `calloc()` is that, in case of an allocation
+        // failure, this retries `calloc()` after GC. We don't actually want the
+        // retry, but there's no simpler one than this.
+        let p_dev_desc =
+            unsafe { R_calloc_gc(1, std::mem::size_of::<DevDesc>() as _) as *mut DevDesc };
 
         unsafe {
             (*p_dev_desc).left = device_descriptor.left;
@@ -721,7 +732,7 @@ pub trait DeviceDriver: std::marker::Sized {
             // most of the cases.
             (*p_dev_desc).useRotatedTextInContour = 0;
 
-            (*p_dev_desc).eventEnv = unsafe { empty_env().get() };
+            (*p_dev_desc).eventEnv = empty_env().get();
             (*p_dev_desc).eventHelper = None;
 
             (*p_dev_desc).holdflush = Some(device_driver_holdflush::<T>);
