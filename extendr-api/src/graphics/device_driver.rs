@@ -117,13 +117,14 @@ pub trait DeviceDriver: std::marker::Sized {
     /// A callback function to draw paths.
     ///
     /// `nper` contains number of points in each polygon. `winding` represents
-    /// the filling rule; `TRUE` means "nonzero", `FALSE` means "evenodd".
+    /// the filling rule; `true` means "nonzero", `false` means "evenodd" (c.f.
+    /// <https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule>).
     fn path(
         &mut self,
         x: &[f64],
         y: &[f64],
         nper: &[i32],
-        winding: Rboolean,
+        winding: bool,
         gc: R_GE_gcontext,
         dd: DevDesc,
     ) {
@@ -147,7 +148,7 @@ pub trait DeviceDriver: std::marker::Sized {
         width: f64,
         height: f64,
         rot: f64,
-        interpolate: Rboolean,
+        interpolate: bool,
         gc: R_GE_gcontext,
         dd: DevDesc,
     ) {
@@ -399,7 +400,7 @@ pub trait DeviceDriver: std::marker::Sized {
             let y = slice::from_raw_parts(y, n);
 
             let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
-            data.path(x, y, nper, winding, *gc, *dd);
+            data.path(x, y, nper, winding == 1, *gc, *dd);
         }
 
         unsafe extern "C" fn device_driver_raster<T: DeviceDriver>(
@@ -427,7 +428,7 @@ pub trait DeviceDriver: std::marker::Sized {
                 width,
                 height,
                 rot,
-                interpolate,
+                interpolate == 1,
                 *gc,
                 *dd,
             );
