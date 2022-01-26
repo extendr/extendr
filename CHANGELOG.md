@@ -2,6 +2,8 @@
 
 ## extendr devel
 
+- Register S3 method `[[.rust_class` just as `$.rust_class`.
+
 - Extra Serialize support.
 
 - Direct Debug support for wrappers.
