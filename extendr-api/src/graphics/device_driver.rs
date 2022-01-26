@@ -591,17 +591,13 @@ pub trait DeviceDriver: std::marker::Sized {
         // be directly passed to the R's side. So, we'll allocate some memory by
         // using `calloc()` and treat it as `DevDesc`, taking the risk of
         // uninitialized fields. `libc::calloc()` can be used as long as the
-        // same allocator that R uses is correctly linked, but it seems it's
+        // same allocator that R uses is correctly linked. It seems it's
         // error-prone (c.f.
-        // https://github.com/extendr/extendr/pull/360#issuecomment-1020212207).
+        // https://github.com/extendr/extendr/pull/360#issuecomment-1020212207),
+        // and ideally we should use some proper API that does allocate on R's
+        // side, but there's no such one provided.
         //
-        // So, `R_calloc_gc()` is chosen here because this is the simplest API
-        // of R that allocates memory. This simply does `calloc()`, and the only
-        // diffrence from bare `calloc()` is that, in case of an allocation
-        // failure, this retries `calloc()` after GC. We don't actually want the
-        // retry, but there's no simpler one than this.
-        let p_dev_desc =
-            unsafe { R_calloc_gc(1, std::mem::size_of::<DevDesc>() as _) as *mut DevDesc };
+        let p_dev_desc = unsafe { libc::calloc(1, std::mem::size_of::<DevDesc>()) as *mut DevDesc };
 
         unsafe {
             (*p_dev_desc).left = device_descriptor.left;
