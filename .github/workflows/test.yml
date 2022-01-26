@@ -89,16 +89,15 @@ jobs:
       # Otherwise, only one condition is met
       # $targets variable is used to build targets list used later for cargo build/test
       # The order of if blocks favors x86_64 over i686 paths, which is optimal for multi-targeting
-      - name: Configure Windows
-        if: startsWith(runner.os, 'Windows')
+      - name: Configure Windows (R-release)
+        if: startsWith(runner.os, 'Windows') && matrix.config.r != "devel"
         # 1. Add rust target
         # 2. Add target name to the $targets variable
         # 3. Add mingw32/mingw64 bin folders to PATH
         # 4. Add R x64/i386 folders to PATH
         run: |
           $targets=@()
-          # R-devel (R 4.2.0) doesn't have the 32-bit version
-          if ($env:RUST_TOOLCHAIN -notlike "*x86_64*" -and "${{ matrix.config.r }}" -ne "devel") {
+          if ($env:RUST_TOOLCHAIN -notlike "*x86_64*") {
             rustup target add i686-pc-windows-gnu ;
             $targets+="i686-pc-windows-gnu"
             echo "C:\msys64\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
@@ -113,6 +112,21 @@ jobs:
           echo "BUILD_TARGETS=$($targets -join ',')" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append ;
         env: 
           RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
+
+      - name: Configure Windows (R-devel)
+        if: startsWith(runner.os, 'Windows') && matrix.config.r == "devel"
+        # 1. Add rust target
+        # 2. Add target name to the $targets variable
+        # 3. Add mingw32/mingw64 bin folders to PATH
+        # 4. Add R x64/i386 folders to PATH
+        run: |
+          # Use rtools's UCRT toolchain rather than MSYS2
+          echo "${env:RTOOLS40_HOME}\ucrt64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          echo "BUILD_TARGETS=x86_64-pc-windows-gnu" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append ;
+        env: 
+          RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
+
 
       # This is required for ubuntu r-devel
       # 'Del alias:R' removes 'R' alias which prevents running R 
