@@ -90,7 +90,7 @@ jobs:
       # $targets variable is used to build targets list used later for cargo build/test
       # The order of if blocks favors x86_64 over i686 paths, which is optimal for multi-targeting
       - name: Configure Windows (R-release)
-        if: startsWith(runner.os, 'Windows') && matrix.config.r != "devel"
+        if: startsWith(runner.os, 'Windows') && matrix.config.r != 'devel'
         # 1. Add rust target
         # 2. Add target name to the $targets variable
         # 3. Add mingw32/mingw64 bin folders to PATH
@@ -114,7 +114,7 @@ jobs:
           RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
 
       - name: Configure Windows (R-devel)
-        if: startsWith(runner.os, 'Windows') && matrix.config.r == "devel"
+        if: startsWith(runner.os, 'Windows') && matrix.config.r == 'devel'
         # 1. Add rust target
         # 2. Add target name to the $targets variable
         # 3. Add mingw32/mingw64 bin folders to PATH
