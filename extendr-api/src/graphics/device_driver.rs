@@ -400,7 +400,12 @@ pub trait DeviceDriver: std::marker::Sized {
             let y = slice::from_raw_parts(y, n);
 
             let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
-            data.path(x, y, nper, winding == 1, *gc, *dd);
+
+            // It seems `NA` is just treated as `true`. Probably it doesn't matter much here.
+            // c.f. https://github.com/wch/r-source/blob/6b22b60126646714e0f25143ac679240be251dbe/src/library/grDevices/src/devPS.c#L4235
+            let winding = winding != 0;
+
+            data.path(x, y, nper, winding, *gc, *dd);
         }
 
         unsafe extern "C" fn device_driver_raster<T: DeviceDriver>(
@@ -428,7 +433,9 @@ pub trait DeviceDriver: std::marker::Sized {
                 width,
                 height,
                 rot,
-                interpolate == 1,
+                // It seems `NA` is just treated as `true`. Probably it doesn't matter much here.
+                // c.f. https://github.com/wch/r-source/blob/6b22b60126646714e0f25143ac679240be251dbe/src/library/grDevices/src/devPS.c#L4062
+                interpolate != 0,
                 *gc,
                 *dd,
             );
@@ -586,17 +593,28 @@ pub trait DeviceDriver: std::marker::Sized {
         // take care of dropping in the `close()` wrapper.
         let deviceSpecific = Box::into_raw(Box::new(self)) as *mut std::os::raw::c_void;
 
-        // NOTE: Since a DevDesc will be freed on the R's side when `dev.off()`,
-        // this Rust struct, which is allocated by the Rust's allocator, cannot
-        // be directly passed to the R's side. So, we'll allocate some memory by
-        // using `calloc()` and treat it as `DevDesc`, taking the risk of
-        // uninitialized fields. `libc::calloc()` can be used as long as the
-        // same allocator that R uses is correctly linked. It seems it's
-        // error-prone (c.f.
-        // https://github.com/extendr/extendr/pull/360#issuecomment-1020212207),
-        // and ideally we should use some proper API that does allocate on R's
-        // side, but there's no such one provided.
+        // When we go across the boundary of FFI, the general rule is that the
+        // allocated memory needs to be deallocated by the same allocator; if we
+        // allocate memory on Rust's side, it needs to be dropped on Rust's
+        // side. If we allocate memory on R's side, it needs to be freed on R's
+        // side. Here, `DevDesc` is the latter case.
         //
+        // The problem is that, while `DevDesc` is supposed to be `free()`ed on
+        // R's side when device is closed by `dev.off()` (more specifically, in
+        // `GEdestroyDevDesc()`), there's no API that creates a `DevDesc`
+        // instance; typically, it's created by `calloc()` and a manual cast to
+        // `DevDesc*`. Please see [the example code on R Internals].
+        //
+        // Because of the absence of such an API, the only choice here is to use
+        // `libc::calloc()` and treat it as `*DevDesc`, taking the risk of
+        // uninitialized fields. This solves the problem if the same "libc" (or
+        // C runtime) as R is used. In other words, there's still a risk of
+        // allocator mismatch. We need to be careful to configure PATHs
+        // correctly to make sure the same toolchain used for compiling R itself
+        // is chosen when the program is compiled.
+        //
+        // [Example code on R Internals]:
+        //     https://cran.r-project.org/doc/manuals/r-devel/R-ints.html#Device-structures
         let p_dev_desc = unsafe { libc::calloc(1, std::mem::size_of::<DevDesc>()) as *mut DevDesc };
 
         unsafe {

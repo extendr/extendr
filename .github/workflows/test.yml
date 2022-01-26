@@ -29,7 +29,8 @@ jobs:
           # Windows jobs with unspecific Rust architecture build for both i686 and x86_64 
           # R integration tests are also executed for both architectures
           - {os: windows-latest, r: 'release', rust-version: 'stable-msvc'}
-          # TODO: remove this before merging
+          # TODO: remove this when we drop suppoort for R 4.1. Since R 4.2 uses
+          # a different toolchain than R 4.1, we need to test both.
           - {os: windows-latest, r: 'devel',   rust-version: 'stable-msvc'}
           # - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc'}
           # - {os: windows-latest, r: 'devel', rust-version: 'stable-msvc'}
@@ -117,7 +118,7 @@ jobs:
         if: startsWith(runner.os, 'Windows') && matrix.config.r == 'devel'
         run: |
           rustup target add x86_64-pc-windows-gnu ;
-          # Use Rtools's UCRT toolchain rather than MSYS2
+          # Use Rtools's UCRT toolchain rather than MSYS2. Note that the setting needs to be modified when Rtools42 becomes official.
           echo "${env:RTOOLS40_HOME}\ucrt64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
           echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
           echo "BUILD_TARGETS=x86_64-pc-windows-gnu" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append ;
