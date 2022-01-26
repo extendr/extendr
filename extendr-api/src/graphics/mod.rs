@@ -883,14 +883,16 @@ impl Device {
 
 #[cfg(test)]
 mod tests {
-    use super::graphics::{
-        device_descriptor::DeviceDescriptor, device_driver::DeviceDriver, DevDesc,
-    };
+    use std::fmt::Write;
+
+    use super::graphics::{DevDesc, DeviceDescriptor, DeviceDriver, R_GE_gcontext};
     use super::prelude::*;
 
     struct TestDevice<'a> {
         last_mode: &'a mut i32,
         value: &'a mut f64,
+        canvas: &'a mut String,
+        closed: &'a mut bool,
     }
 
     impl<'a> DeviceDriver for TestDevice<'a> {
@@ -902,6 +904,14 @@ mod tests {
             *self.last_mode = mode;
             *self.value += 1.0;
         }
+
+        fn close(&mut self, _: DevDesc) {
+            *self.closed = true;
+        }
+
+        fn circle(&mut self, _x: f64, _y: f64, _r: f64, _: R_GE_gcontext, _: DevDesc) {
+            write!(*self.canvas, "circle").unwrap();
+        }
     }
 
     #[test]
@@ -909,10 +919,14 @@ mod tests {
         test! {
             let mut value = 0.0;
             let mut last_mode = 0;
+            let mut closed = false;
+            let mut canvas = String::new();
 
             let device_driver = TestDevice {
-                value: &mut value,
                 last_mode: &mut last_mode,
+                value: &mut value,
+                canvas: &mut canvas,
+                closed: &mut closed,
             };
 
             let device_descriptor = DeviceDescriptor::new();
@@ -920,6 +934,7 @@ mod tests {
 
             // if activate() is invoked, value should be 100.0
             assert_eq!(value, 100.0);
+            assert!(!closed);
 
             device.mode_on().unwrap();
 
@@ -933,8 +948,13 @@ mod tests {
             assert_eq!(last_mode, 0);
             assert_eq!(value, 102.0);
 
+            R!("grid::grid.circle()")?;
+            assert_eq!(canvas, "circle");
+
             // check if the R doesn't crash on closing the device.
             R!("dev.off()")?;
+
+            assert!(closed);
         }
     }
 }
