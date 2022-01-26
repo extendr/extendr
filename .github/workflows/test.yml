@@ -115,12 +115,9 @@ jobs:
 
       - name: Configure Windows (R-devel)
         if: startsWith(runner.os, 'Windows') && matrix.config.r == 'devel'
-        # 1. Add rust target
-        # 2. Add target name to the $targets variable
-        # 3. Add mingw32/mingw64 bin folders to PATH
-        # 4. Add R x64/i386 folders to PATH
         run: |
-          # Use rtools's UCRT toolchain rather than MSYS2
+          rustup target add x86_64-pc-windows-gnu ;
+          # Use Rtools's UCRT toolchain rather than MSYS2
           echo "${env:RTOOLS40_HOME}\ucrt64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
           echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
           echo "BUILD_TARGETS=x86_64-pc-windows-gnu" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append ;
