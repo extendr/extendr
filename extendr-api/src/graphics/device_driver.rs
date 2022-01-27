@@ -77,10 +77,10 @@ pub trait DeviceDriver: std::marker::Sized {
     fn activate(&mut self, dd: DevDesc) {}
 
     /// A callback function to draw a circle.
-    fn circle(&mut self, x: f64, y: f64, r: f64, gc: R_GE_gcontext, dd: DevDesc) {}
+    fn circle(&mut self, center: (f64, f64), r: f64, gc: R_GE_gcontext, dd: DevDesc) {}
 
     /// A callback function to clip.
-    fn clip(&mut self, x0: f64, x1: f64, y0: f64, y1: f64, dd: DevDesc) {}
+    fn clip(&mut self, from: (f64, f64), to: (f64, f64), dd: DevDesc) {}
 
     /// A callback function to free device-specific resources when the device is
     /// killed. Note that, `self` MUST NOT be dropped within this function
@@ -91,7 +91,7 @@ pub trait DeviceDriver: std::marker::Sized {
     fn deactivate(&mut self, dd: DevDesc) {}
 
     /// A callback function to draw a line.
-    fn line(&mut self, x1: f64, y1: f64, x2: f64, y2: f64, gc: R_GE_gcontext, dd: DevDesc) {}
+    fn line(&mut self, from: (f64, f64), to: (f64, f64), gc: R_GE_gcontext, dd: DevDesc) {}
 
     /// A callback function that return the metric info of a glyph.
     fn metricInfo(&mut self, c: char, gc: R_GE_gcontext, dd: DevDesc) -> (f64, f64, f64) {
@@ -112,7 +112,7 @@ pub trait DeviceDriver: std::marker::Sized {
     fn polyline(&mut self, x: &[f64], y: &[f64], gc: R_GE_gcontext, dd: DevDesc) {}
 
     /// A callback function to draw a rect.
-    fn rect(&mut self, x0: f64, y0: f64, x1: f64, y1: f64, gc: R_GE_gcontext, dd: DevDesc) {}
+    fn rect(&mut self, from: (f64, f64), to: (f64, f64), gc: R_GE_gcontext, dd: DevDesc) {}
 
     /// A callback function to draw paths.
     ///
@@ -274,7 +274,7 @@ pub trait DeviceDriver: std::marker::Sized {
             dd: pDevDesc,
         ) {
             let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
-            data.circle(x, y, r, *gc, *dd);
+            data.circle((x, y), r, *gc, *dd);
         }
 
         unsafe extern "C" fn device_driver_clip<T: DeviceDriver>(
@@ -285,7 +285,7 @@ pub trait DeviceDriver: std::marker::Sized {
             dd: pDevDesc,
         ) {
             let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
-            data.clip(x0, x1, y0, y1, *dd);
+            data.clip((x0, y0), (x1, y1), *dd);
         }
 
         // Note: the close() wrapper is special. This function is responsible
@@ -314,7 +314,7 @@ pub trait DeviceDriver: std::marker::Sized {
             dd: pDevDesc,
         ) {
             let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
-            data.line(x1, y1, x2, y2, *gc, *dd);
+            data.line((x1, y1), (x2, y2), *gc, *dd);
         }
 
         unsafe extern "C" fn device_driver_metricInfo<T: DeviceDriver>(
@@ -381,7 +381,7 @@ pub trait DeviceDriver: std::marker::Sized {
             dd: pDevDesc,
         ) {
             let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
-            data.rect(x0, x1, y0, y1, *gc, *dd);
+            data.rect((x0, y0), (x1, y1), *gc, *dd);
         }
 
         unsafe extern "C" fn device_driver_path<T: DeviceDriver>(

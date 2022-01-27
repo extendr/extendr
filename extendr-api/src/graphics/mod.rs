@@ -654,7 +654,7 @@ impl Device {
     pub fn rectangle(&self, from: (f64, f64), to: (f64, f64), gc: &Context) {
         let from = gc.t(from);
         let to = gc.t(to);
-        unsafe { GERect(from.0, from.1, to.0, to.1, gc.context(), self.inner()) }
+        unsafe { GERect(from.0, to.0, from.1, to.1, gc.context(), self.inner()) }
     }
 
     /// Draw a path with multiple segments.
@@ -913,30 +913,41 @@ mod tests {
             *self.closed = true;
         }
 
-        fn clip(&mut self, x0: f64, x1: f64, y0: f64, y1: f64, _: DevDesc) {
+        fn newPage(&mut self, _: R_GE_gcontext, _: DevDesc) {
+            self.canvas.clear();
+        }
+
+        fn clip(&mut self, from: (f64, f64), to: (f64, f64), _dd: DevDesc) {
+            let (f_x, f_y) = from;
+            let (t_x, t_y) = to;
             writeln!(
                 *self.canvas,
-                "clip x0={x0:.1}, x1={x1:.1}, y0={y0:.1}, y1={y1:.1}"
+                "clip from=({f_x:.1}, {f_y:.1}), to=({t_x:.1}, {t_y:.1})"
             )
             .unwrap();
         }
 
-        fn circle(&mut self, x: f64, y: f64, r: f64, _: R_GE_gcontext, _: DevDesc) {
-            writeln!(*self.canvas, "circle x={x:.1}, y={y:.1}, r={r:.1}").unwrap();
+        fn circle(&mut self, center: (f64, f64), r: f64, _: R_GE_gcontext, _: DevDesc) {
+            let (x, y) = center;
+            writeln!(*self.canvas, "circle center=({x:.1}, {y:.1}), r={r:.1}").unwrap();
         }
 
-        fn line(&mut self, x1: f64, y1: f64, x2: f64, y2: f64, _: R_GE_gcontext, _: DevDesc) {
+        fn line(&mut self, from: (f64, f64), to: (f64, f64), _: R_GE_gcontext, _: DevDesc) {
+            let (f_x, f_y) = from;
+            let (t_x, t_y) = to;
             writeln!(
                 *self.canvas,
-                "line x1={x1:.1}, x2={x2:.1}, y1={y1:.1}, y2={y2:.1}"
+                "line from=({f_x:.1}, {f_y:.1}), to=({t_x:.1}, {t_y:.1})"
             )
             .unwrap();
         }
 
-        fn rect(&mut self, x0: f64, y0: f64, x1: f64, y1: f64, _: R_GE_gcontext, _: DevDesc) {
+        fn rect(&mut self, from: (f64, f64), to: (f64, f64), _: R_GE_gcontext, _: DevDesc) {
+            let (f_x, f_y) = from;
+            let (t_x, t_y) = to;
             writeln!(
                 *self.canvas,
-                "rect x0={x0:.1}, x1={x1:.1}, y0={y0:.1}, y1={y1:.1}"
+                "rect from=({f_x:.1}, {f_y:.1}), to=({t_x:.1}, {t_y:.1})"
             )
             .unwrap();
         }
@@ -983,11 +994,15 @@ mod tests {
             device.line((1.1, 2.2), (3.3, 4.4), &gc);
             device.rectangle((1.1, 2.2), (3.3, 4.4), &gc);
 
-            assert_eq!(canvas, "clip x0=1.1, x1=3.3, y0=2.2, y1=4.4\n\
-                                circle x=1.1, y=2.2, r=3.3\n\
-                                line x1=1.1, x2=3.3, y1=2.2, y2=4.4\n\
-                                rect x0=1.1, x1=3.3, y0=2.2, y1=4.4\n\
+            assert_eq!(canvas, "clip from=(1.1, 2.2), to=(3.3, 4.4)\n\
+                                circle center=(1.1, 2.2), r=3.3\n\
+                                line from=(1.1, 2.2), to=(3.3, 4.4)\n\
+                                rect from=(1.1, 2.2), to=(3.3, 4.4)\n\
                                 ");
+
+            // Clearing canvas.
+            device.new_page(&gc);
+            assert_eq!(canvas, "");
 
             // check if the R doesn't crash on closing the device.
             R!("dev.off()")?;
