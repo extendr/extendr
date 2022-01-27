@@ -756,25 +756,25 @@ pub trait DeviceDriver: std::marker::Sized {
             (*p_dev_desc).holdflush = Some(device_driver_holdflush::<T>);
 
             // TODO: implement capability properly.
-            (*p_dev_desc).haveTransparency = GraphicDeviceCapabilityTransparency::Yes as _;
-            (*p_dev_desc).haveTransparentBg = GraphicDeviceCapabilityTransparentBg::Fully as _;
+            (*p_dev_desc).haveTransparency = DevCapTransparency::Yes as _;
+            (*p_dev_desc).haveTransparentBg = DevCapTransparentBg::Fully as _;
 
             // There might be some cases where we want to use `Unset` or
             // `ExceptForMissingValues`, but, for the sake of simplicity, we
             // only use yes or no. Let's revisit here when necessary.
             (*p_dev_desc).haveRaster = if <T>::USE_RASTER {
-                GraphicDeviceCapabilityRaster::Yes as _
+                DevCapRaster::Yes as _
             } else {
-                GraphicDeviceCapabilityRaster::No as _
+                DevCapRaster::No as _
             };
 
             (*p_dev_desc).haveCapture = if <T>::USE_CAPTURE {
-                GraphicDeviceCapabilityCapture::Yes as _
+                DevCapCapture::Yes as _
             } else {
-                GraphicDeviceCapabilityCapture::No as _
+                DevCapCapture::No as _
             };
 
-            (*p_dev_desc).haveLocator = GraphicDeviceCapabilityLocator::Unset as _;
+            (*p_dev_desc).haveLocator = DevCapLocator::Unset as _;
 
             // NOTE: Unlike the features that will be added in  Graphics API
             // version 15 (i.e. R 4.2), the features in API v13 & v14 (i.e. R

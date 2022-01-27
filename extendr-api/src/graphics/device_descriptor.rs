@@ -39,13 +39,13 @@ pub(crate) enum CanHAdjOption {
     VariableAdjustment = 2,
 }
 
-pub enum GraphicDeviceCapabilityTransparency {
+pub enum DevCapTransparency {
     Unset = 0,
     No = 1,
     Yes = 2,
 }
 
-pub enum GraphicDeviceCapabilityTransparentBg {
+pub enum DevCapTransparentBg {
     Unset = 0,
     No = 1,
     Fully = 2,
@@ -53,7 +53,7 @@ pub enum GraphicDeviceCapabilityTransparentBg {
 }
 
 #[allow(dead_code)]
-pub(crate) enum GraphicDeviceCapabilityRaster {
+pub(crate) enum DevCapRaster {
     Unset = 0,
     No = 1,
     Yes = 2,
@@ -61,14 +61,14 @@ pub(crate) enum GraphicDeviceCapabilityRaster {
 }
 
 #[allow(dead_code)]
-pub(crate) enum GraphicDeviceCapabilityCapture {
+pub(crate) enum DevCapCapture {
     Unset = 0,
     No = 1,
     Yes = 2,
 }
 
 #[allow(dead_code)]
-pub(crate) enum GraphicDeviceCapabilityLocator {
+pub(crate) enum DevCapLocator {
     Unset = 0,
     No = 1,
     Yes = 2,
