@@ -651,7 +651,7 @@ impl Device {
     /// Draw a stroked/filled axis-aligned rectangle.
     /// gc.color() is the stroke color.
     /// gc.fill() is the fill color.
-    pub fn rectangle(&self, from: (f64, f64), to: (f64, f64), gc: &Context) {
+    pub fn rect(&self, from: (f64, f64), to: (f64, f64), gc: &Context) {
         let from = gc.t(from);
         let to = gc.t(to);
         unsafe { GERect(from.0, to.0, from.1, to.1, gc.context(), self.inner()) }
@@ -992,7 +992,7 @@ mod tests {
             device.clip((1.1, 2.2), (3.3, 4.4), &gc);
             device.circle((1.1, 2.2), 3.3, &gc);
             device.line((1.1, 2.2), (3.3, 4.4), &gc);
-            device.rectangle((1.1, 2.2), (3.3, 4.4), &gc);
+            device.rect((1.1, 2.2), (3.3, 4.4), &gc);
 
             assert_eq!(canvas, "clip from=(1.1, 2.2), to=(3.3, 4.4)\n\
                                 circle center=(1.1, 2.2), r=3.3\n\
