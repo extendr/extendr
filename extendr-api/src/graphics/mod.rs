@@ -913,7 +913,7 @@ mod tests {
             *self.closed = true;
         }
 
-        fn newPage(&mut self, _: R_GE_gcontext, _: DevDesc) {
+        fn new_page(&mut self, _: R_GE_gcontext, _: DevDesc) {
             self.canvas.clear();
         }
 

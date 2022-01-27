@@ -94,7 +94,7 @@ pub trait DeviceDriver: std::marker::Sized {
     fn line(&mut self, from: (f64, f64), to: (f64, f64), gc: R_GE_gcontext, dd: DevDesc) {}
 
     /// A callback function that return the metric info of a glyph.
-    fn metricInfo(&mut self, c: char, gc: R_GE_gcontext, dd: DevDesc) -> (f64, f64, f64) {
+    fn char_metric(&mut self, c: char, gc: R_GE_gcontext, dd: DevDesc) -> (f64, f64, f64) {
         (0.0, 0.0, 0.0)
     }
 
@@ -103,7 +103,7 @@ pub trait DeviceDriver: std::marker::Sized {
     fn mode(&mut self, mode: i32, dd: DevDesc) {}
 
     /// A callback function called whenever a new plot requires a new page.
-    fn newPage(&mut self, gc: R_GE_gcontext, dd: DevDesc) {}
+    fn new_page(&mut self, gc: R_GE_gcontext, dd: DevDesc) {}
 
     /// A callback function to draw a polygon.
     fn polygon(&mut self, x: &[f64], y: &[f64], gc: R_GE_gcontext, dd: DevDesc) {}
@@ -157,7 +157,7 @@ pub trait DeviceDriver: std::marker::Sized {
     /// A callback function that captures and returns the current canvas.
     ///
     /// This is only meaningful for raster devices.
-    fn cap(&mut self, dd: DevDesc) -> Robj {
+    fn capture(&mut self, dd: DevDesc) -> Robj {
         ().into()
     }
 
@@ -189,7 +189,7 @@ pub trait DeviceDriver: std::marker::Sized {
 
     /// A callback function that returns the width of the given string in
     /// the device units.
-    fn strWidth(&mut self, str: &str, gc: R_GE_gcontext, dd: DevDesc) -> f64 {
+    fn text_width(&mut self, str: &str, gc: R_GE_gcontext, dd: DevDesc) -> f64 {
         0.0
     }
 
@@ -210,10 +210,10 @@ pub trait DeviceDriver: std::marker::Sized {
     }
 
     /// A callback function called when the user aborts some operation.
-    fn onExit(&mut self, dd: DevDesc) {}
+    fn on_exit(&mut self, dd: DevDesc) {}
 
     /// Sets a callback function to confirm a new frame.
-    fn newFrameConfirm(&mut self, dd: DevDesc) -> bool {
+    fn new_frame_confirm(&mut self, dd: DevDesc) -> bool {
         true
     }
 
@@ -317,7 +317,7 @@ pub trait DeviceDriver: std::marker::Sized {
             data.line((x1, y1), (x2, y2), *gc, *dd);
         }
 
-        unsafe extern "C" fn device_driver_metricInfo<T: DeviceDriver>(
+        unsafe extern "C" fn device_driver_char_metric<T: DeviceDriver>(
             c: c_int,
             gc: pGEcontext,
             ascent: *mut f64,
@@ -327,7 +327,7 @@ pub trait DeviceDriver: std::marker::Sized {
         ) {
             if let Some(c) = std::char::from_u32(c as _) {
                 let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
-                let metric_info = data.metricInfo(c, *gc, *dd);
+                let metric_info = data.char_metric(c, *gc, *dd);
                 *ascent = metric_info.0;
                 *descent = metric_info.1;
                 *width = metric_info.2;
@@ -339,9 +339,9 @@ pub trait DeviceDriver: std::marker::Sized {
             data.mode(mode as _, *dd);
         }
 
-        unsafe extern "C" fn device_driver_newPage<T: DeviceDriver>(gc: pGEcontext, dd: pDevDesc) {
+        unsafe extern "C" fn device_driver_new_page<T: DeviceDriver>(gc: pGEcontext, dd: pDevDesc) {
             let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
-            data.newPage(*gc, *dd);
+            data.new_page(*gc, *dd);
         }
 
         unsafe extern "C" fn device_driver_polygon<T: DeviceDriver>(
@@ -441,10 +441,10 @@ pub trait DeviceDriver: std::marker::Sized {
             );
         }
 
-        unsafe extern "C" fn device_driver_cap<T: DeviceDriver>(dd: pDevDesc) -> SEXP {
+        unsafe extern "C" fn device_driver_capture<T: DeviceDriver>(dd: pDevDesc) -> SEXP {
             let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
             // TODO: convert the output more nicely
-            data.cap(*dd).get()
+            data.capture(*dd).get()
         }
 
         unsafe extern "C" fn device_driver_size<T: DeviceDriver>(
@@ -462,7 +462,7 @@ pub trait DeviceDriver: std::marker::Sized {
             *top = sizes.3;
         }
 
-        unsafe extern "C" fn device_driver_strWidth<T: DeviceDriver>(
+        unsafe extern "C" fn device_driver_text_width<T: DeviceDriver>(
             str: *const c_char,
             gc: pGEcontext,
             dd: pDevDesc,
@@ -472,7 +472,7 @@ pub trait DeviceDriver: std::marker::Sized {
 
             // TODO: Should we do something when the str is not available?
             if let Ok(cstr) = cstr.to_str() {
-                data.strWidth(cstr, *gc, *dd)
+                data.text_width(cstr, *gc, *dd)
             } else {
                 0.0
             }
@@ -496,16 +496,16 @@ pub trait DeviceDriver: std::marker::Sized {
             }
         }
 
-        unsafe extern "C" fn device_driver_onExit<T: DeviceDriver>(dd: pDevDesc) {
+        unsafe extern "C" fn device_driver_on_exit<T: DeviceDriver>(dd: pDevDesc) {
             let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
-            data.onExit(*dd);
+            data.on_exit(*dd);
         }
 
-        unsafe extern "C" fn device_driver_newFrameConfirm<T: DeviceDriver>(
+        unsafe extern "C" fn device_driver_new_frame_confirm<T: DeviceDriver>(
             dd: pDevDesc,
         ) -> Rboolean {
             let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
-            if let Ok(confirm) = data.newFrameConfirm(*dd).try_into() {
+            if let Ok(confirm) = data.new_frame_confirm(*dd).try_into() {
                 confirm
             } else {
                 false.into()
@@ -698,9 +698,9 @@ pub trait DeviceDriver: std::marker::Sized {
             (*p_dev_desc).deactivate = Some(device_driver_deactivate::<T>);
             (*p_dev_desc).locator = None; // TOD;
             (*p_dev_desc).line = Some(device_driver_line::<T>);
-            (*p_dev_desc).metricInfo = Some(device_driver_metricInfo::<T>);
+            (*p_dev_desc).metricInfo = Some(device_driver_char_metric::<T>);
             (*p_dev_desc).mode = Some(device_driver_mode::<T>);
-            (*p_dev_desc).newPage = Some(device_driver_newPage::<T>);
+            (*p_dev_desc).newPage = Some(device_driver_new_page::<T>);
             (*p_dev_desc).polygon = Some(device_driver_polygon::<T>);
             (*p_dev_desc).polyline = Some(device_driver_polyline::<T>);
             (*p_dev_desc).rect = Some(device_driver_rect::<T>);
@@ -711,20 +711,20 @@ pub trait DeviceDriver: std::marker::Sized {
                 None
             };
             (*p_dev_desc).cap = if <T>::USE_CAPTURE {
-                Some(device_driver_cap::<T>)
+                Some(device_driver_capture::<T>)
             } else {
                 None
             };
             (*p_dev_desc).size = Some(device_driver_size::<T>);
-            (*p_dev_desc).strWidth = Some(device_driver_strWidth::<T>);
+            (*p_dev_desc).strWidth = Some(device_driver_text_width::<T>);
             (*p_dev_desc).text = Some(device_driver_text::<T>);
-            (*p_dev_desc).onExit = Some(device_driver_onExit::<T>);
+            (*p_dev_desc).onExit = Some(device_driver_on_exit::<T>);
 
             // This is no longer used and exists only for backward-compatibility
             // of the structure.
             (*p_dev_desc).getEvent = None;
 
-            (*p_dev_desc).newFrameConfirm = Some(device_driver_newFrameConfirm::<T>);
+            (*p_dev_desc).newFrameConfirm = Some(device_driver_new_frame_confirm::<T>);
 
             // UTF-8 support
             (*p_dev_desc).hasTextUTF8 = if <T>::ACCEPT_UTF8_TEXT { 1 } else { 0 };
@@ -734,7 +734,7 @@ pub trait DeviceDriver: std::marker::Sized {
                 None
             };
             (*p_dev_desc).strWidthUTF8 = if <T>::ACCEPT_UTF8_TEXT {
-                Some(device_driver_strWidth::<T>)
+                Some(device_driver_text_width::<T>)
             } else {
                 None
             };
