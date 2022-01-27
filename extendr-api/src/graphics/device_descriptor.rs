@@ -149,7 +149,7 @@ impl DeviceDescriptor {
             startcol: Color::hex(0x000000),
             startfill: Color::hex(0xffffff),
             startlty: LineType::Solid,
-            startfont: FontFace::PlainFont,
+            startfont: FontFace::Plain,
         }
     }
 

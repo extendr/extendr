@@ -46,7 +46,7 @@ fn graphics_test() {
 
         gc.color(black());
         gc.point_size(36.0);
-        gc.font_face(FontFace::PlainFont);
+        gc.font_face(FontFace::Plain);
         gc.font_family("Helvetica");
 
         // Draw Hello -- World with the two dashes almost touching.

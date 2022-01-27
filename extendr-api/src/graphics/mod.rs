@@ -137,16 +137,16 @@ impl Device {
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum LineEnd {
-    RoundCap,
-    ButtCap,
-    SquareCap,
+    Round,
+    Butt,
+    Square,
 }
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum LineJoin {
-    RoundJoin,
-    MitreJoin,
-    BevelJoin,
+    Round,
+    Mitre,
+    Bevel,
 }
 
 #[derive(PartialEq, Debug, Clone)]
@@ -170,19 +170,19 @@ pub enum Unit {
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum FontFace {
-    PlainFont,
-    BoldFont,
-    ItalicFont,
-    BoldItalicFont,
-    SymbolFont,
+    Plain,
+    Bold,
+    Italic,
+    BoldItalic,
+    Symbol,
 }
 
 impl LineEnd {
     fn to_u32(&self) -> u32 {
         match self {
-            Self::RoundCap => 1,
-            Self::ButtCap => 2,
-            Self::SquareCap => 3,
+            Self::Round => 1,
+            Self::Butt => 2,
+            Self::Square => 3,
         }
     }
 }
@@ -190,9 +190,9 @@ impl LineEnd {
 impl LineJoin {
     fn to_u32(&self) -> u32 {
         match self {
-            Self::RoundJoin => 1,
-            Self::MitreJoin => 2,
-            Self::BevelJoin => 3,
+            Self::Round => 1,
+            Self::Mitre => 2,
+            Self::Bevel => 3,
         }
     }
 }
@@ -214,11 +214,11 @@ impl LineType {
 impl FontFace {
     fn to_i32(&self) -> i32 {
         match self {
-            Self::PlainFont => 1,
-            Self::BoldFont => 2,
-            Self::ItalicFont => 3,
-            Self::BoldItalicFont => 4,
-            Self::SymbolFont => 5,
+            Self::Plain => 1,
+            Self::Bold => 2,
+            Self::Italic => 3,
+            Self::BoldItalic => 4,
+            Self::Symbol => 5,
         }
     }
 }
