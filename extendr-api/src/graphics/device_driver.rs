@@ -30,7 +30,7 @@ use super::{device_descriptor::*, Device};
 /// - no clipping at all (`Engine`)
 ///
 /// [the R Internals]:
-///     https://cran.r-project.org/doc/manuals/r-devel/R-ints.html#Handling-text
+///     https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Handling-text
 /// [the announcement blog post]:
 ///     https://developer.r-project.org/Blog/public/2020/06/08/improvements-to-clipping-in-the-r-graphics-engine/
 pub enum ClippingStrategy {
@@ -236,7 +236,7 @@ pub trait DeviceDriver: std::marker::Sized {
         // The code here is a Rust interpretation of the C-version of example
         // code on the R Internals:
         //
-        // https://cran.r-project.org/doc/manuals/r-devel/R-ints.html#Device-structures
+        // https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Device-structures
 
         unsafe {
             single_threaded(|| {
@@ -288,9 +288,9 @@ pub trait DeviceDriver: std::marker::Sized {
             data.clip(x0, x1, y0, y1, *dd);
         }
 
-        // Note: close is special. This function is responsible for tearing down
-        // the DeviceDriver itself, which is always needed even when no close
-        // callback is implemented.
+        // Note: the close() wrapper is special. This function is responsible
+        // for tearing down the DeviceDriver itself, which is always needed even
+        // when no close callback is implemented.
         unsafe extern "C" fn device_driver_close<T: DeviceDriver>(dd: pDevDesc) {
             let dev_desc = *dd;
             let data_ptr = dev_desc.deviceSpecific as *mut T;
@@ -586,11 +586,14 @@ pub trait DeviceDriver: std::marker::Sized {
         // ************* defining the wrapper functions ends here ****************
         //
 
-        // `Box::new()` allocates memory on the heap and place `self` into it.
+        // `Box::new()` allocates memory on the heap and places `self` into it.
         // Then, an unsafe function `Box::into_raw()` converts it to a raw
-        // pointer. By doing this, Rust won't drop the object so that it will
-        // live after passing it to the R's side. In other words, extendr should
-        // take care of dropping in the `close()` wrapper.
+        // pointer. By doing so, Rust won't drop the object so that it will
+        // survive after after being passed to the R's side. Accordingly, it's
+        // extendr's responsibility to drop it. This deallocation will be done
+        // in the `close()` wrapper; the struct will be gotten back to the
+        // Rust's side by `Box::from_raw()` so that Rust will drop it when
+        // returning from the function.
         let deviceSpecific = Box::into_raw(Box::new(self)) as *mut std::os::raw::c_void;
 
         // When we go across the boundary of FFI, the general rule is that the
@@ -614,7 +617,7 @@ pub trait DeviceDriver: std::marker::Sized {
         // is chosen when the program is compiled.
         //
         // [Example code on R Internals]:
-        //     https://cran.r-project.org/doc/manuals/r-devel/R-ints.html#Device-structures
+        //     https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Device-structures
         let p_dev_desc = unsafe { libc::calloc(1, std::mem::size_of::<DevDesc>()) as *mut DevDesc };
 
         unsafe {
@@ -775,7 +778,7 @@ pub trait DeviceDriver: std::marker::Sized {
 
             // NOTE: Unlike the features that will be added in  Graphics API
             // version 15 (i.e. R 4.2), the features in API v13 & v14 (i.e. R
-            // 4.1) are not optional. We need to provice the placeholder
+            // 4.1) are not optional. We need to provide the placeholder
             // functions for it.
             #[cfg(use_r_ge_version_14)]
             {

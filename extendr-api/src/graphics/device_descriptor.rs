@@ -1,28 +1,34 @@
 use super::{color::Color, FontFace, LineType};
 
-// R internals says:
+// From R internals[^1]:
 //
 // There should be a ‘pointsize’ argument which defaults to 12, and it should
 // give the pointsize in big points (1/72 inch). How exactly this is interpreted
 // is font-specific, but it should use a font which works with lines packed 1/6
 // inch apart, and looks good with lines 1/5 inch apart (that is with 2pt
 // leading).
+//
+// [^1]: https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Conventions
 const POINTSIZE: f64 = 12.0;
 
 const PT: f64 = 1.0 / 72.0;
 const PT_PER_INCH: f64 = 72.0;
 
-// R internals says:
+// From R internals[^1]:
 //
 // where ‘fnsize’ is the ‘size’ of the standard font (cex=1) on the device, in
 // device units.
 //
 // and it seems the Postscript device chooses `pointsize` as this.
+//
+// [^1]: https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Handling-text
 const FONTSIZE: f64 = POINTSIZE;
 
-// R internal says:
+// From R internals[^1]:
 //
 // The default size of a device should be 7 inches square.
+//
+// [^1]: https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Conventions
 const WIDTH_INCH: f64 = 7.0;
 const HEIGH_INCH: f64 = 7.0;
 
@@ -90,7 +96,7 @@ pub(crate) enum GraphicDeviceCapabilityLocator {
 // - `gettingEvent`, `getEvent`: This is set true when getGraphicsEvent is
 //   actively looking for events. Reading the description on ["6.1.6 Graphics
 //   events" of R
-//   Internals](https://cran.r-project.org/doc/manuals/r-devel/R-ints.html#Graphics-events),
+//   Internals](https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Graphics-events),
 //   it seems this flag is not what is controlled by a graphic device.
 // - `canHAdj`: it seems this parameter is used only for tweaking the `hadj`
 //   before passing it to the `text()` function. This tweak probably can be done
@@ -126,7 +132,7 @@ pub struct DeviceDescriptor {
 impl DeviceDescriptor {
     pub fn new() -> Self {
         Self {
-            // The R Internal says " The default size of a device should be 7
+            // The From R internals [1] " The default size of a device should be 7
             // inches square."
             left: 0.0,
             right: WIDTH_INCH * PT_PER_INCH,
@@ -158,7 +164,7 @@ impl DeviceDescriptor {
     /// * `top`: 7 inches * points per inch = `7 * 72`
     ///
     /// [the R Internals' convetion]:
-    ///     https://cran.r-project.org/doc/manuals/r-devel/R-ints.html#Conventions
+    ///     https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Conventions
     pub fn device_size(mut self, left: f64, right: f64, bottom: f64, top: f64) -> Self {
         self.left = left;
         self.right = right;
@@ -187,7 +193,7 @@ impl DeviceDescriptor {
     /// devices).
     ///
     /// [suggested by the R Internals as "a good choice"]:
-    ///     https://cran.r-project.org/doc/manuals/r-devel/R-ints.html#Handling-text
+    ///     https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Handling-text
     pub fn cra(mut self, cra: [f64; 2]) -> Self {
         self.cra = cra;
         self
