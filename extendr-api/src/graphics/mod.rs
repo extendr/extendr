@@ -654,7 +654,7 @@ impl Device {
     pub fn rectangle(&self, from: (f64, f64), to: (f64, f64), gc: &Context) {
         let from = gc.t(from);
         let to = gc.t(to);
-        unsafe { GELine(from.0, from.1, to.0, to.1, gc.context(), self.inner()) }
+        unsafe { GERect(from.0, from.1, to.0, to.1, gc.context(), self.inner()) }
     }
 
     /// Draw a path with multiple segments.
@@ -885,9 +885,13 @@ impl Device {
 mod tests {
     use std::fmt::Write;
 
+    use crate::graphics::{Context, Unit};
+
     use super::graphics::{DevDesc, DeviceDescriptor, DeviceDriver, R_GE_gcontext};
     use super::prelude::*;
 
+    // Taking the mutable references so that we can peek at the values from
+    // outside, which is (only?) useful for testing.
     struct TestDevice<'a> {
         last_mode: &'a mut i32,
         value: &'a mut f64,
@@ -909,8 +913,32 @@ mod tests {
             *self.closed = true;
         }
 
-        fn circle(&mut self, _x: f64, _y: f64, _r: f64, _: R_GE_gcontext, _: DevDesc) {
-            write!(*self.canvas, "circle").unwrap();
+        fn clip(&mut self, x0: f64, x1: f64, y0: f64, y1: f64, _: DevDesc) {
+            writeln!(
+                *self.canvas,
+                "clip x0={x0:.1}, x1={x1:.1}, y0={y0:.1}, y1={y1:.1}"
+            )
+            .unwrap();
+        }
+
+        fn circle(&mut self, x: f64, y: f64, r: f64, _: R_GE_gcontext, _: DevDesc) {
+            writeln!(*self.canvas, "circle x={x:.1}, y={y:.1}, r={r:.1}").unwrap();
+        }
+
+        fn line(&mut self, x1: f64, y1: f64, x2: f64, y2: f64, _: R_GE_gcontext, _: DevDesc) {
+            writeln!(
+                *self.canvas,
+                "line x1={x1:.1}, x2={x2:.1}, y1={y1:.1}, y2={y2:.1}"
+            )
+            .unwrap();
+        }
+
+        fn rect(&mut self, x0: f64, y0: f64, x1: f64, y1: f64, _: R_GE_gcontext, _: DevDesc) {
+            writeln!(
+                *self.canvas,
+                "rect x0={x0:.1}, x1={x1:.1}, y0={y0:.1}, y1={y1:.1}"
+            )
+            .unwrap();
         }
     }
 
@@ -932,6 +960,8 @@ mod tests {
             let device_descriptor = DeviceDescriptor::new();
             let device = device_driver.create_device::<TestDevice>(device_descriptor, "test device");
 
+            let gc = Context::from_device(&device, Unit::Device);
+
             // if activate() is invoked, value should be 100.0
             assert_eq!(value, 100.0);
             assert!(!closed);
@@ -948,8 +978,16 @@ mod tests {
             assert_eq!(last_mode, 0);
             assert_eq!(value, 102.0);
 
-            R!("grid::grid.circle()")?;
-            assert_eq!(canvas, "circle");
+            device.clip((1.1, 2.2), (3.3, 4.4), &gc);
+            device.circle((1.1, 2.2), 3.3, &gc);
+            device.line((1.1, 2.2), (3.3, 4.4), &gc);
+            device.rectangle((1.1, 2.2), (3.3, 4.4), &gc);
+
+            assert_eq!(canvas, "clip x0=1.1, x1=3.3, y0=2.2, y1=4.4\n\
+                                circle x=1.1, y=2.2, r=3.3\n\
+                                line x1=1.1, x2=3.3, y1=2.2, y2=4.4\n\
+                                rect x0=1.1, x1=3.3, y0=2.2, y1=4.4\n\
+                                ");
 
             // check if the R doesn't crash on closing the device.
             R!("dev.off()")?;
