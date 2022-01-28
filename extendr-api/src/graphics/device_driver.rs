@@ -3,7 +3,7 @@ use core::slice;
 use crate::*;
 use libR_sys::*;
 
-use super::{device_descriptor::*, Device};
+use super::{device_descriptor::*, Device, Raster};
 
 /// The underlying C structure `DevDesc` has two fields related to clipping:
 ///
@@ -130,24 +130,18 @@ pub trait DeviceDriver: std::marker::Sized {
     ) {
     }
 
-    /// A callback function to draw a raster.
+    /// A callback function to draw a [Raster].
     ///
-    /// `raster` is a ROW-wise array of color (ABGR). `w` and `h` represents the
-    /// number of elements in the row and the column of the raster. `x` and `y`
-    /// is the size of the raster in points. `rot` is the rotation in degrees,
+    /// `pos` gives the bottom-left corner. `angle` is the rotation in degrees,
     /// with positive rotation anticlockwise from the positive x-axis.
     /// `interpolate` is whether to apply the linear interpolation on the raster
     /// image.
-    fn raster(
+    fn raster<T: AsRef<[u32]>>(
         &mut self,
-        raster: &[u32],
-        w: usize,
-        h: usize,
-        x: f64,
-        y: f64,
-        width: f64,
-        height: f64,
-        rot: f64,
+        raster: Raster<T>,
+        pos: (f64, f64),
+        size: (f64, f64),
+        angle: f64,
         interpolate: bool,
         gc: R_GE_gcontext,
         dd: DevDesc,
@@ -173,7 +167,7 @@ pub trait DeviceDriver: std::marker::Sized {
     ///
     /// Note that, while this function is what is supposed to be called
     /// "whenever the device is resized," it's not automatically done by the
-    /// graphic engine. [The header file] says:
+    /// graphic engine. [The header file] states:
     ///
     /// > This is not usually called directly by the graphics engine because the
     /// > detection of device resizes (e.g., a window resize) are usually
@@ -195,14 +189,13 @@ pub trait DeviceDriver: std::marker::Sized {
 
     /// A callback function to draw a text.
     ///
-    /// `rot` is the rotation in degrees, with positive rotation anticlockwise
+    /// `angle` is the rotation in degrees, with positive rotation anticlockwise
     /// from the positive x-axis.
     fn text(
         &mut self,
-        x: f64,
-        y: f64,
-        str: &str,
-        rot: f64,
+        pos: (f64, f64),
+        text: &str,
+        angle: f64,
         hadj: f64,
         gc: R_GE_gcontext,
         dd: DevDesc,
@@ -424,14 +417,13 @@ pub trait DeviceDriver: std::marker::Sized {
             let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
             let raster = slice::from_raw_parts(raster, (w * h) as _);
 
-            data.raster(
-                raster,
-                w as _,
-                h as _,
-                x,
-                y,
-                width,
-                height,
+            data.raster::<&[u32]>(
+                Raster {
+                    pixels: raster,
+                    width: w as _,
+                },
+                (x, y),
+                (width, height),
                 rot,
                 // It seems `NA` is just treated as `true`. Probably it doesn't matter much here.
                 // c.f. https://github.com/wch/r-source/blob/6b22b60126646714e0f25143ac679240be251dbe/src/library/grDevices/src/devPS.c#L4062
@@ -492,7 +484,7 @@ pub trait DeviceDriver: std::marker::Sized {
 
             // TODO: Should we do something when the str is not available?
             if let Ok(cstr) = cstr.to_str() {
-                data.text(x, y, cstr, rot, hadj, *gc, *dd);
+                data.text((x, y), cstr, rot, hadj, *gc, *dd);
             }
         }
 

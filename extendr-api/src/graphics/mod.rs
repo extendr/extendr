@@ -115,6 +115,8 @@ pub struct TextMetric {
     width: f64,
 }
 
+/// A row-major array of pixels. One pixel is 32-bit, whose each byte represents
+/// alpha, blue, green, and red in the order.
 #[derive(Clone, Debug, PartialEq)]
 pub struct Raster<P: AsRef<[u32]>> {
     pixels: P,
@@ -888,7 +890,7 @@ mod tests {
     use crate::graphics::{Context, Unit};
 
     use super::graphics::{DevDesc, DeviceDescriptor, DeviceDriver, R_GE_gcontext};
-    use super::prelude::*;
+    use super::{prelude::*, Raster};
 
     // Taking the mutable references so that we can peek at the values from
     // outside, which is (only?) useful for testing.
@@ -951,6 +953,50 @@ mod tests {
             )
             .unwrap();
         }
+
+        fn text(
+            &mut self,
+            pos: (f64, f64),
+            str: &str,
+            rot: f64,
+            hadj: f64,
+            _: R_GE_gcontext,
+            _: DevDesc,
+        ) {
+            let (x, y) = pos;
+            writeln!(
+                *self.canvas,
+                "text pos=({x:.1}, {y:.1}) str='{str}' rot={rot:.1} hadj={hadj:.1}"
+            )
+            .unwrap();
+        }
+
+        fn raster<T: AsRef<[u32]>>(
+            &mut self,
+            raster: super::Raster<T>,
+            pos: (f64, f64),
+            size: (f64, f64),
+            rot: f64,
+            interpolate: bool,
+            _: R_GE_gcontext,
+            _: DevDesc,
+        ) {
+            let (x, y) = pos;
+            let (width, height) = size;
+            let Raster { pixels, width: w } = raster;
+            let pixels_str = pixels
+                .as_ref()
+                .iter()
+                .map(|&p| format!("{p}"))
+                .collect::<Vec<String>>()
+                .join("|");
+
+            writeln!(
+                *self.canvas,
+                "raster {pixels_str} w={w} pos=({x:.1}, {y:.1}) size=({width:.1}, {height:.1}) rot={rot:.1} interpolate={interpolate}"
+            )
+            .unwrap();
+        }
     }
 
     #[test]
@@ -993,12 +1039,22 @@ mod tests {
             device.circle((1.1, 2.2), 3.3, &gc);
             device.line((1.1, 2.2), (3.3, 4.4), &gc);
             device.rect((1.1, 2.2), (3.3, 4.4), &gc);
+            // x element of `center` is `hadj`, a horizontal adjustment
+            device.text((1.1, 2.2), "foo", (0.5, 0.0), 5.5, &gc);
+
+            let r = Raster {
+                pixels: &[1, 2, 3, 4, 5, 6],
+                width: 3,
+            };
+            device.raster(r, (1.1, 2.2), (3.3, 4.4), 5.5, false, &gc);
 
             assert_eq!(canvas, "clip from=(1.1, 2.2), to=(3.3, 4.4)\n\
-                                circle center=(1.1, 2.2), r=3.3\n\
-                                line from=(1.1, 2.2), to=(3.3, 4.4)\n\
-                                rect from=(1.1, 2.2), to=(3.3, 4.4)\n\
-                                ");
+                                    circle center=(1.1, 2.2), r=3.3\n\
+                                    line from=(1.1, 2.2), to=(3.3, 4.4)\n\
+                                    rect from=(1.1, 2.2), to=(3.3, 4.4)\n\
+                                    text pos=(1.1, 2.2) str='foo' rot=5.5 hadj=0.5\n\
+                                    raster 1|2|3|4|5|6 w=3 pos=(1.1, 2.2) size=(3.3, 4.4) rot=5.5 interpolate=false\n\
+                                    ");
 
             // Clearing canvas.
             device.new_page(&gc);
