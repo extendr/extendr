@@ -2,11 +2,11 @@ use super::{color::Color, FontFace, LineType};
 
 // From R internals[^1]:
 //
-// There should be a ‘pointsize’ argument which defaults to 12, and it should
-// give the pointsize in big points (1/72 inch). How exactly this is interpreted
-// is font-specific, but it should use a font which works with lines packed 1/6
-// inch apart, and looks good with lines 1/5 inch apart (that is with 2pt
-// leading).
+// > There should be a ‘pointsize’ argument which defaults to 12, and it should
+// > give the pointsize in big points (1/72 inch). How exactly this is
+// > interpreted is font-specific, but it should use a font which works with
+// > lines packed 1/6 inch apart, and looks good with lines 1/5 inch apart (that
+// > is with 2pt leading).
 //
 // [^1]: https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Conventions
 const POINTSIZE: f64 = 12.0;
@@ -16,8 +16,8 @@ const PT_PER_INCH: f64 = 72.0;
 
 // From R internals[^1]:
 //
-// where ‘fnsize’ is the ‘size’ of the standard font (cex=1) on the device, in
-// device units.
+// > where ‘fnsize’ is the ‘size’ of the standard font (cex=1) on the device, in
+// > device units.
 //
 // and it seems the Postscript device chooses `pointsize` as this.
 //
@@ -26,7 +26,7 @@ const FONTSIZE: f64 = POINTSIZE;
 
 // From R internals[^1]:
 //
-// The default size of a device should be 7 inches square.
+// > The default size of a device should be 7 inches square.
 //
 // [^1]: https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Conventions
 const WIDTH_INCH: f64 = 7.0;
