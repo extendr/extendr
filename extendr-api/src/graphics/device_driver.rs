@@ -77,6 +77,15 @@ pub trait DeviceDriver: std::marker::Sized {
     fn activate(&mut self, dd: DevDesc) {}
 
     /// A callback function to draw a circle.
+    ///
+    /// The header file[^1] states:
+    ///
+    /// * The border of the circle should be drawn in the given `col` (i.e. `gc.col`).
+    /// * The circle should be filled with the given `fill` (i.e. `gc.fill`) colour.
+    /// * If `col` is `NA_INTEGER` then no border should be drawn.
+    /// * If `fill` is `NA_INTEGER` then the circle should not be filled.
+    ///
+    /// [^1]: https://github.com/wch/r-source/blob/9f284035b7e503aebe4a804579e9e80a541311bb/src/include/R_ext/GraphicsDevice.h#L205-L210
     fn circle(&mut self, center: (f64, f64), r: f64, gc: R_GE_gcontext, dd: DevDesc) {}
 
     /// A callback function to clip.

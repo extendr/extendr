@@ -119,8 +119,8 @@ pub struct TextMetric {
 /// alpha, blue, green, and red in the order.
 #[derive(Clone, Debug, PartialEq)]
 pub struct Raster<P: AsRef<[u32]>> {
-    pixels: P,
-    width: usize,
+    pub pixels: P,
+    pub width: usize,
 }
 
 impl Device {
