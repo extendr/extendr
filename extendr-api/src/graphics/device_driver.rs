@@ -247,16 +247,20 @@ pub trait DeviceDriver: std::marker::Sized {
     ) {
     }
 
-    /// A callback function called when the user aborts some operation.
+    /// A callback function called when the user aborts some operation. It seems
+    /// this is rarely implemented.
     fn on_exit(&mut self, dd: DevDesc) {}
 
-    /// Sets a callback function to confirm a new frame.
+    /// A callback function to confirm a new frame. It seems this is rarely
+    /// implementad.
     fn new_frame_confirm(&mut self, dd: DevDesc) -> bool {
         true
     }
 
-    /// Allows graphics devices to have multiple levels of suspension: when this
-    /// reaches zero output is flushed.
+    /// A callback function to manage the "suspension level" of the device. R
+    /// function `dev.hold()` is used to increase the level,  and `dev.flush()`
+    /// to decrease it. When the level reaches zero, output is supposed to be
+    /// flushed to the device. This is only meaningful for screen devices.
     fn holdflush(&mut self, dd: DevDesc, level: i32) -> i32 {
         0
     }

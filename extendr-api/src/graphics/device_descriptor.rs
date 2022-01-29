@@ -163,6 +163,10 @@ impl DeviceDescriptor {
     /// * `bottom`: 0
     /// * `top`: 7 inches * points per inch = `7 * 72`
     ///
+    ///  Please note that, depending on the the coordinate system of the device,
+    ///  `left` might be larger than `right`, or `bottom` larger than `top` (for
+    ///  example, in SVG, the origin is at the top left corner).
+    ///
     /// [the R Internals' convetion]:
     ///     https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Conventions
     pub fn device_size(mut self, left: f64, right: f64, bottom: f64, top: f64) -> Self {
