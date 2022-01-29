@@ -129,14 +129,14 @@ impl<'a> DeviceDriver for TestDevice<'a> {
         let (t_x, t_y) = to;
         writeln!(
             *self.canvas,
-            "clip from=({f_x:.1}, {f_y:.1}), to=({t_x:.1}, {t_y:.1})"
+            "clip from=({f_x:.1}, {f_y:.1}) to=({t_x:.1}, {t_y:.1})"
         )
         .unwrap();
     }
 
     fn circle(&mut self, center: (f64, f64), r: f64, _: R_GE_gcontext, _: DevDesc) {
         let (x, y) = center;
-        writeln!(*self.canvas, "circle center=({x:.1}, {y:.1}), r={r:.1}").unwrap();
+        writeln!(*self.canvas, "circle center=({x:.1}, {y:.1}) r={r:.1}").unwrap();
     }
 
     fn line(&mut self, from: (f64, f64), to: (f64, f64), _: R_GE_gcontext, _: DevDesc) {
@@ -144,7 +144,7 @@ impl<'a> DeviceDriver for TestDevice<'a> {
         let (t_x, t_y) = to;
         writeln!(
             *self.canvas,
-            "line from=({f_x:.1}, {f_y:.1}), to=({t_x:.1}, {t_y:.1})"
+            "line from=({f_x:.1}, {f_y:.1}) to=({t_x:.1}, {t_y:.1})"
         )
         .unwrap();
     }
@@ -154,9 +154,60 @@ impl<'a> DeviceDriver for TestDevice<'a> {
         let (t_x, t_y) = to;
         writeln!(
             *self.canvas,
-            "rect from=({f_x:.1}, {f_y:.1}), to=({t_x:.1}, {t_y:.1})"
+            "rect from=({f_x:.1}, {f_y:.1}) to=({t_x:.1}, {t_y:.1})"
         )
         .unwrap();
+    }
+
+    fn polyline<T: IntoIterator<Item = (f64, f64)>>(
+        &mut self,
+        coords: T,
+        _: R_GE_gcontext,
+        _: DevDesc,
+    ) {
+        let coords = coords
+            .into_iter()
+            .map(|(x, y)| format!("({x:.1}, {y:.1})"))
+            .collect::<Vec<String>>()
+            .join(" ");
+        writeln!(*self.canvas, "polyline coords=[{coords}]").unwrap();
+    }
+
+    fn polygon<T: IntoIterator<Item = (f64, f64)>>(
+        &mut self,
+        coords: T,
+        _: R_GE_gcontext,
+        _: DevDesc,
+    ) {
+        let coords = coords
+            .into_iter()
+            .map(|(x, y)| format!("({x:.1}, {y:.1})"))
+            .collect::<Vec<String>>()
+            .join(" ");
+        writeln!(*self.canvas, "polygon coords=[{coords}]").unwrap();
+    }
+
+    fn path<T: IntoIterator<Item = impl IntoIterator<Item = (f64, f64)>>>(
+        &mut self,
+        coords: T,
+        winding: bool,
+        _: R_GE_gcontext,
+        _: DevDesc,
+    ) {
+        let coords = coords
+            .into_iter()
+            .map(|i| {
+                let xy = i
+                    .into_iter()
+                    .map(|(x, y)| format!("({x:.1}, {y:.1})"))
+                    .collect::<Vec<String>>()
+                    .join(" ");
+                format!("({xy})")
+            })
+            .collect::<Vec<String>>()
+            .join(", ");
+
+        writeln!(*self.canvas, "path coords=[{coords}] winding={winding}").unwrap();
     }
 
     fn text(
@@ -205,7 +256,7 @@ impl<'a> DeviceDriver for TestDevice<'a> {
 }
 
 #[test]
-fn graphic_device_test() {
+fn graphics_device_test() {
     test! {
         let mut value = 0.0;
         let mut last_mode = 0;
@@ -244,7 +295,14 @@ fn graphic_device_test() {
         device.circle((1.1, 2.2), 3.3, &gc);
         device.line((1.1, 2.2), (3.3, 4.4), &gc);
         device.rect((1.1, 2.2), (3.3, 4.4), &gc);
+
+        // // TODO: uncomment the following lines when https://github.com/extendr/extendr/issues/370 is solved.
+        // device.polyline([(0.0, 0.0), (0.0, 2.0)], &gc);
+        // device.polygon([(0.0, 0.0), (1.0, 2.0), (2.0, 0.0)], &gc);
+        // device.path([[(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.3, 0.0), (0.3, 0.3), (0.7, 0.3), (0.3, 0.7)]], true, &gc);
+
         // x element of `center` is `hadj`, a horizontal adjustment
+        // I'm yet to figure out how the `y` element is used. Let's leave it as 0 for now.
         device.text((1.1, 2.2), "foo", (0.5, 0.0), 5.5, &gc);
 
         let r = Raster {
@@ -253,10 +311,10 @@ fn graphic_device_test() {
         };
         device.raster(r, (1.1, 2.2), (3.3, 4.4), 5.5, false, &gc);
 
-        assert_eq!(canvas, "clip from=(1.1, 2.2), to=(3.3, 4.4)\n\
-                                circle center=(1.1, 2.2), r=3.3\n\
-                                line from=(1.1, 2.2), to=(3.3, 4.4)\n\
-                                rect from=(1.1, 2.2), to=(3.3, 4.4)\n\
+        assert_eq!(canvas, "clip from=(1.1, 2.2) to=(3.3, 4.4)\n\
+                                circle center=(1.1, 2.2) r=3.3\n\
+                                line from=(1.1, 2.2) to=(3.3, 4.4)\n\
+                                rect from=(1.1, 2.2) to=(3.3, 4.4)\n\
                                 text pos=(1.1, 2.2) str='foo' rot=5.5 hadj=0.5\n\
                                 raster 1|2|3|4|5|6 w=3 pos=(1.1, 2.2) size=(3.3, 4.4) rot=5.5 interpolate=false\n\
                                 ");

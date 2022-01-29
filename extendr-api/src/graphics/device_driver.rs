@@ -102,7 +102,17 @@ pub trait DeviceDriver: std::marker::Sized {
     /// A callback function to draw a line.
     fn line(&mut self, from: (f64, f64), to: (f64, f64), gc: R_GE_gcontext, dd: DevDesc) {}
 
-    /// A callback function that return the metric info of a glyph.
+    /// A callback function that returns the ascent, descent, and width of the
+    /// given character in device unit.
+    ///
+    /// The default implementation returns `(0, 0, 0)`, following the convention
+    /// described in [the header file]:
+    ///
+    /// > If the device cannot provide metric information then it MUST return
+    /// > 0.0 for ascent, descent, and width.
+    ///
+    /// [The header file]:
+    ///     https://github.com/wch/r-source/blob/9bb47ca929c41a133786fa8fff7c70162bb75e50/src/include/R_ext/GraphicsDevice.h#L321-L322
     fn char_metric(&mut self, c: char, gc: R_GE_gcontext, dd: DevDesc) -> (f64, f64, f64) {
         (0.0, 0.0, 0.0)
     }
