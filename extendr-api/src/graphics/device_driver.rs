@@ -3,7 +3,7 @@ use core::slice;
 use crate::*;
 use libR_sys::*;
 
-use super::{device_descriptor::*, Device, Raster};
+use super::{device_descriptor::*, Device, Raster, TextMetric};
 
 /// The underlying C structure `DevDesc` has two fields related to clipping:
 ///
@@ -102,7 +102,7 @@ pub trait DeviceDriver: std::marker::Sized {
     /// A callback function to draw a line.
     fn line(&mut self, from: (f64, f64), to: (f64, f64), gc: R_GE_gcontext, dd: DevDesc) {}
 
-    /// A callback function that returns the ascent, descent, and width of the
+    /// A callback function that returns the [TextMetric] (ascent, descent, and width) of the
     /// given character in device unit.
     ///
     /// The default implementation returns `(0, 0, 0)`, following the convention
@@ -113,8 +113,12 @@ pub trait DeviceDriver: std::marker::Sized {
     ///
     /// [The header file]:
     ///     https://github.com/wch/r-source/blob/9bb47ca929c41a133786fa8fff7c70162bb75e50/src/include/R_ext/GraphicsDevice.h#L321-L322
-    fn char_metric(&mut self, c: char, gc: R_GE_gcontext, dd: DevDesc) -> (f64, f64, f64) {
-        (0.0, 0.0, 0.0)
+    fn char_metric(&mut self, c: char, gc: R_GE_gcontext, dd: DevDesc) -> TextMetric {
+        TextMetric {
+            ascent: 0.0,
+            descent: 0.0,
+            width: 0.0,
+        }
     }
 
     /// A callback function called whenever the graphics engine starts
@@ -350,9 +354,9 @@ pub trait DeviceDriver: std::marker::Sized {
             if let Some(c) = std::char::from_u32(c as _) {
                 let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
                 let metric_info = data.char_metric(c, *gc, *dd);
-                *ascent = metric_info.0;
-                *descent = metric_info.1;
-                *width = metric_info.2;
+                *ascent = metric_info.ascent;
+                *descent = metric_info.descent;
+                *width = metric_info.width;
             }
         }
 

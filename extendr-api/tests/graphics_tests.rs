@@ -256,7 +256,7 @@ impl<'a> DeviceDriver for TestDevice<'a> {
 }
 
 #[test]
-fn graphics_device_test() {
+fn device_driver_test() {
     test! {
         let mut value = 0.0;
         let mut last_mode = 0;

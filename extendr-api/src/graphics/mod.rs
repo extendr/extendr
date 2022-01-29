@@ -110,9 +110,9 @@ pub struct Pattern {
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct TextMetric {
-    ascent: f64,
-    descent: f64,
-    width: f64,
+    pub ascent: f64,
+    pub descent: f64,
+    pub width: f64,
 }
 
 /// A row-major array of pixels. One pixel is 32-bit, whose each byte represents
