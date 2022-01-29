@@ -273,77 +273,79 @@ fn device_driver_test() {
         let mut closed = false;
         let mut canvas = String::new();
 
-        let device_driver = TestDevice {
-            last_mode: &mut last_mode,
-            value: &mut value,
-            canvas: &mut canvas,
-            closed: &mut closed,
-        };
+        single_threaded(|| {
+            let device_driver = TestDevice {
+                last_mode: &mut last_mode,
+                value: &mut value,
+                canvas: &mut canvas,
+                closed: &mut closed,
+            };
 
-        let device_descriptor = DeviceDescriptor::new();
-        let device = device_driver.create_device::<TestDevice>(device_descriptor, "test device");
+            let device_descriptor = DeviceDescriptor::new();
+            let device = device_driver.create_device::<TestDevice>(device_descriptor, "test device");
 
-        let gc = Context::from_device(&device, Unit::Device);
+            let gc = Context::from_device(&device, Unit::Device);
 
-        // if activate() is invoked, value should be 100.0
-        assert_eq!(value, 100.0);
-        assert!(!closed);
+            // if activate() is invoked, value should be 100.0
+            assert_eq!(value, 100.0);
+            assert!(!closed);
 
-        device.mode_on().unwrap();
+            device.mode_on().unwrap();
 
-        // if mode() is invoked, value and last_mode should be updated
-        assert_eq!(last_mode, 1);
-        assert_eq!(value, 101.0);
+            // if mode() is invoked, value and last_mode should be updated
+            assert_eq!(last_mode, 1);
+            assert_eq!(value, 101.0);
 
-        device.mode_off().unwrap();
+            device.mode_off().unwrap();
 
-        // if mode() is invoked, value and last_mode should be updated
-        assert_eq!(last_mode, 0);
-        assert_eq!(value, 102.0);
+            // if mode() is invoked, value and last_mode should be updated
+            assert_eq!(last_mode, 0);
+            assert_eq!(value, 102.0);
 
-        // ASCII char
-        let c1 = 'c';
-        assert_eq!(device.char_metric(c1, &gc).width, c1 as i32 as f64);
-        // non-ASCII char
-        let c2 = 'ú';
-        let c3 = '鬼';
-        assert_eq!(device.char_metric(c2, &gc).width, c2 as i32 as f64);
-        assert_eq!(device.char_metric(c3, &gc).width, c3 as i32 as f64);
-        // text
-        let t1 = "ab";
-        assert_eq!(device.text_width(t1, &gc), ('a' as i32 + 'b' as i32) as f64);
+            // ASCII char
+            let c1 = 'c';
+            assert_eq!(device.char_metric(c1, &gc).width, c1 as i32 as f64);
+            // non-ASCII char
+            let c2 = 'ú';
+            let c3 = '鬼';
+            assert_eq!(device.char_metric(c2, &gc).width, c2 as i32 as f64);
+            assert_eq!(device.char_metric(c3, &gc).width, c3 as i32 as f64);
+            // text
+            let t1 = "ab";
+            assert_eq!(device.text_width(t1, &gc), ('a' as i32 + 'b' as i32) as f64);
 
-        device.clip((1.1, 2.2), (3.3, 4.4), &gc);
-        device.circle((1.1, 2.2), 3.3, &gc);
-        device.line((1.1, 2.2), (3.3, 4.4), &gc);
-        device.rect((1.1, 2.2), (3.3, 4.4), &gc);
+            device.clip((1.1, 2.2), (3.3, 4.4), &gc);
+            device.circle((1.1, 2.2), 3.3, &gc);
+            device.line((1.1, 2.2), (3.3, 4.4), &gc);
+            device.rect((1.1, 2.2), (3.3, 4.4), &gc);
 
-        // // TODO: uncomment the following lines when https://github.com/extendr/extendr/issues/370 is solved.
-        // device.polyline([(0.0, 0.0), (0.0, 2.0)], &gc);
-        // device.polygon([(0.0, 0.0), (1.0, 2.0), (2.0, 0.0)], &gc);
-        // device.path([[(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.3, 0.0), (0.3, 0.3), (0.7, 0.3), (0.3, 0.7)]], true, &gc);
+            // // TODO: uncomment the following lines when https://github.com/extendr/extendr/issues/370 is solved.
+            // device.polyline([(0.0, 0.0), (0.0, 2.0)], &gc);
+            // device.polygon([(0.0, 0.0), (1.0, 2.0), (2.0, 0.0)], &gc);
+            // device.path([[(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.3, 0.0), (0.3, 0.3), (0.7, 0.3), (0.3, 0.7)]], true, &gc);
 
-        // x element of `center` is `hadj`, a horizontal adjustment
-        // I'm yet to figure out how the `y` element is used. Let's leave it as 0 for now.
-        device.text((1.1, 2.2), "foo", (0.5, 0.0), 5.5, &gc);
+            // x element of `center` is `hadj`, a horizontal adjustment
+            // I'm yet to figure out how the `y` element is used. Let's leave it as 0 for now.
+            device.text((1.1, 2.2), "foo", (0.5, 0.0), 5.5, &gc);
 
-        let r = Raster {
-            pixels: &[1, 2, 3, 4, 5, 6],
-            width: 3,
-        };
-        device.raster(r, (1.1, 2.2), (3.3, 4.4), 5.5, false, &gc);
+            let r = Raster {
+                pixels: &[1, 2, 3, 4, 5, 6],
+                width: 3,
+            };
+            device.raster(r, (1.1, 2.2), (3.3, 4.4), 5.5, false, &gc);
 
-        assert_eq!(canvas, "clip from=(1.1, 2.2) to=(3.3, 4.4)\n\
-                                circle center=(1.1, 2.2) r=3.3\n\
-                                line from=(1.1, 2.2) to=(3.3, 4.4)\n\
-                                rect from=(1.1, 2.2) to=(3.3, 4.4)\n\
-                                text pos=(1.1, 2.2) str='foo' rot=5.5 hadj=0.5\n\
-                                raster 1|2|3|4|5|6 w=3 pos=(1.1, 2.2) size=(3.3, 4.4) rot=5.5 interpolate=false\n\
-                                ");
+            assert_eq!(canvas, "clip from=(1.1, 2.2) to=(3.3, 4.4)\n\
+            circle center=(1.1, 2.2) r=3.3\n\
+            line from=(1.1, 2.2) to=(3.3, 4.4)\n\
+            rect from=(1.1, 2.2) to=(3.3, 4.4)\n\
+            text pos=(1.1, 2.2) str='foo' rot=5.5 hadj=0.5\n\
+            raster 1|2|3|4|5|6 w=3 pos=(1.1, 2.2) size=(3.3, 4.4) rot=5.5 interpolate=false\n\
+            ");
 
-        // Clearing canvas.
-        device.new_page(&gc);
-        assert_eq!(canvas, "");
+            // Clearing canvas.
+            device.new_page(&gc);
+            assert_eq!(canvas, "");
+        });
 
         // check if the R doesn't crash on closing the device.
         R!("dev.off()")?;
