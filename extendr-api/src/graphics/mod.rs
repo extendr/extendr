@@ -656,7 +656,7 @@ impl Device {
     pub fn rect(&self, from: (f64, f64), to: (f64, f64), gc: &Context) {
         let from = gc.t(from);
         let to = gc.t(to);
-        unsafe { GERect(from.0, to.0, from.1, to.1, gc.context(), self.inner()) }
+        unsafe { GERect(from.0, from.1, to.0, to.1, gc.context(), self.inner()) }
     }
 
     /// Draw a path with multiple segments.
