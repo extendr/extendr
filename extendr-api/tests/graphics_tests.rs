@@ -228,18 +228,13 @@ impl<'a> DeviceDriver for TestDevice<'a> {
         .unwrap();
     }
 
-    // returns the char code in ascent
+    // returns the char code in width so that we can check it
     fn char_metric(&mut self, c: char, _: R_GE_gcontext, _: DevDesc) -> TextMetric {
         TextMetric {
-            ascent: c as i32 as _,
+            ascent: 0.0,
             descent: 0.0,
-            width: 0.0,
+            width: c as i32 as _,
         }
-    }
-
-    // returns the char code
-    fn text_width(&mut self, str: &str, _: R_GE_gcontext, _: DevDesc) -> f64 {
-        str.chars().next().unwrap() as i32 as _
     }
 
     fn raster<T: AsRef<[u32]>>(
@@ -308,12 +303,15 @@ fn device_driver_test() {
 
         // ASCII char
         let c1 = 'c';
-        assert_eq!(device.char_metric(c1, &gc).ascent, c1 as i32 as f64);
+        assert_eq!(device.char_metric(c1, &gc).width, c1 as i32 as f64);
         // non-ASCII char
         let c2 = 'ú';
         let c3 = '鬼';
-        assert_eq!(device.char_metric(c2, &gc).ascent, c2 as i32 as f64);
-        assert_eq!(device.char_metric(c3, &gc).ascent, c3 as i32 as f64);
+        assert_eq!(device.char_metric(c2, &gc).width, c2 as i32 as f64);
+        assert_eq!(device.char_metric(c3, &gc).width, c3 as i32 as f64);
+        // text
+        let t1 = "ab";
+        assert_eq!(device.text_width(t1, &gc), ('a' as i32 + 'b' as i32) as f64);
 
         device.clip((1.1, 2.2), (3.3, 4.4), &gc);
         device.circle((1.1, 2.2), 3.3, &gc);

@@ -214,10 +214,22 @@ pub trait DeviceDriver: std::marker::Sized {
         (dd.left, dd.right, dd.bottom, dd.top)
     }
 
-    /// A callback function that returns the width of the given string in
-    /// the device units.
-    fn text_width(&mut self, str: &str, gc: R_GE_gcontext, dd: DevDesc) -> f64 {
-        0.0
+    /// A callback function that returns the width of the given string in the
+    /// device units.
+    ///
+    /// The default implementation use `char_metric()` on each character in the
+    /// text and sums the widths. This should be sufficient for most of the
+    /// cases, but the developer can choose to implement this. The header
+    /// file[^1] suggests the possible reasons:
+    ///
+    /// - for performance
+    /// - to decide what to do when font metric information is not available
+    ///
+    /// [^1]: https://github.com/wch/r-source/blob/9bb47ca929c41a133786fa8fff7c70162bb75e50/src/include/R_ext/GraphicsDevice.h#L67-L74
+    fn text_width(&mut self, text: &str, gc: R_GE_gcontext, dd: DevDesc) -> f64 {
+        text.chars()
+            .map(|c| self.char_metric(c, gc, dd).width)
+            .sum()
     }
 
     /// A callback function to draw a text.
@@ -351,7 +363,19 @@ pub trait DeviceDriver: std::marker::Sized {
             width: *mut f64,
             dd: pDevDesc,
         ) {
-            if let Some(c) = std::char::from_u32(c as _) {
+            // Be aware that `c` can be a negative value if `hasTextUTF8` is
+            // true, and we do set it true. The header file[^1] states:
+            //
+            // > the metricInfo entry point should accept negative values for
+            // > 'c' and treat them as indicating Unicode points (as well as
+            // > positive values in a MBCS locale).
+            //
+            // The negativity might be useful if the implementation treats ASCII
+            // and non-ASCII characters differently, but I think it's rare. So,
+            // we just use `c.abs()`.
+            //
+            // [^1]: https://github.com/wch/r-source/blob/9bb47ca929c41a133786fa8fff7c70162bb75e50/src/include/R_ext/GraphicsDevice.h#L615-L617
+            if let Some(c) = std::char::from_u32(c.abs() as _) {
                 let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
                 let metric_info = data.char_metric(c, *gc, *dd);
                 *ascent = metric_info.ascent;
