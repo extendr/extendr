@@ -3,7 +3,8 @@ use std::fmt::Write;
 use extendr_api::graphics::color::predefined::{antiquewhite, black, darkkhaki, deepskyblue};
 use extendr_api::graphics::color::Color;
 use extendr_api::graphics::{
-    Context, DevDesc, Device, DeviceDescriptor, DeviceDriver, FontFace, R_GE_gcontext, Raster, Unit,
+    Context, DevDesc, Device, DeviceDescriptor, DeviceDriver, FontFace, R_GE_gcontext, Raster,
+    TextMetric, Unit,
 };
 use extendr_api::prelude::*;
 
@@ -227,6 +228,20 @@ impl<'a> DeviceDriver for TestDevice<'a> {
         .unwrap();
     }
 
+    // returns the char code in ascent
+    fn char_metric(&mut self, c: char, _: R_GE_gcontext, _: DevDesc) -> TextMetric {
+        TextMetric {
+            ascent: c as i32 as _,
+            descent: 0.0,
+            width: 0.0,
+        }
+    }
+
+    // returns the char code
+    fn text_width(&mut self, str: &str, _: R_GE_gcontext, _: DevDesc) -> f64 {
+        str.chars().next().unwrap() as i32 as _
+    }
+
     fn raster<T: AsRef<[u32]>>(
         &mut self,
         raster: Raster<T>,
@@ -290,6 +305,15 @@ fn device_driver_test() {
         // if mode() is invoked, value and last_mode should be updated
         assert_eq!(last_mode, 0);
         assert_eq!(value, 102.0);
+
+        // ASCII char
+        let c1 = 'c';
+        assert_eq!(device.char_metric(c1, &gc).ascent, c1 as i32 as f64);
+        // non-ASCII char
+        let c2 = 'ú';
+        let c3 = '鬼';
+        assert_eq!(device.char_metric(c2, &gc).ascent, c2 as i32 as f64);
+        assert_eq!(device.char_metric(c3, &gc).ascent, c3 as i32 as f64);
 
         device.clip((1.1, 2.2), (3.3, 4.4), &gc);
         device.circle((1.1, 2.2), 3.3, &gc);
