@@ -225,6 +225,7 @@
 
 pub mod error;
 pub mod functions;
+pub mod io;
 pub mod iter;
 pub mod lang_macros;
 pub mod metadata;
