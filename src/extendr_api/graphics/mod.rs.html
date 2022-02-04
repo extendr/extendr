@@ -774,12 +774,206 @@
 <span id="773">773</span>
 <span id="774">774</span>
 <span id="775">775</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
+<span id="776">776</span>
+<span id="777">777</span>
+<span id="778">778</span>
+<span id="779">779</span>
+<span id="780">780</span>
+<span id="781">781</span>
+<span id="782">782</span>
+<span id="783">783</span>
+<span id="784">784</span>
+<span id="785">785</span>
+<span id="786">786</span>
+<span id="787">787</span>
+<span id="788">788</span>
+<span id="789">789</span>
+<span id="790">790</span>
+<span id="791">791</span>
+<span id="792">792</span>
+<span id="793">793</span>
+<span id="794">794</span>
+<span id="795">795</span>
+<span id="796">796</span>
+<span id="797">797</span>
+<span id="798">798</span>
+<span id="799">799</span>
+<span id="800">800</span>
+<span id="801">801</span>
+<span id="802">802</span>
+<span id="803">803</span>
+<span id="804">804</span>
+<span id="805">805</span>
+<span id="806">806</span>
+<span id="807">807</span>
+<span id="808">808</span>
+<span id="809">809</span>
+<span id="810">810</span>
+<span id="811">811</span>
+<span id="812">812</span>
+<span id="813">813</span>
+<span id="814">814</span>
+<span id="815">815</span>
+<span id="816">816</span>
+<span id="817">817</span>
+<span id="818">818</span>
+<span id="819">819</span>
+<span id="820">820</span>
+<span id="821">821</span>
+<span id="822">822</span>
+<span id="823">823</span>
+<span id="824">824</span>
+<span id="825">825</span>
+<span id="826">826</span>
+<span id="827">827</span>
+<span id="828">828</span>
+<span id="829">829</span>
+<span id="830">830</span>
+<span id="831">831</span>
+<span id="832">832</span>
+<span id="833">833</span>
+<span id="834">834</span>
+<span id="835">835</span>
+<span id="836">836</span>
+<span id="837">837</span>
+<span id="838">838</span>
+<span id="839">839</span>
+<span id="840">840</span>
+<span id="841">841</span>
+<span id="842">842</span>
+<span id="843">843</span>
+<span id="844">844</span>
+<span id="845">845</span>
+<span id="846">846</span>
+<span id="847">847</span>
+<span id="848">848</span>
+<span id="849">849</span>
+<span id="850">850</span>
+<span id="851">851</span>
+<span id="852">852</span>
+<span id="853">853</span>
+<span id="854">854</span>
+<span id="855">855</span>
+<span id="856">856</span>
+<span id="857">857</span>
+<span id="858">858</span>
+<span id="859">859</span>
+<span id="860">860</span>
+<span id="861">861</span>
+<span id="862">862</span>
+<span id="863">863</span>
+<span id="864">864</span>
+<span id="865">865</span>
+<span id="866">866</span>
+<span id="867">867</span>
+<span id="868">868</span>
+<span id="869">869</span>
+<span id="870">870</span>
+<span id="871">871</span>
+<span id="872">872</span>
+<span id="873">873</span>
+<span id="874">874</span>
+<span id="875">875</span>
+<span id="876">876</span>
+<span id="877">877</span>
+<span id="878">878</span>
+<span id="879">879</span>
+<span id="880">880</span>
+<span id="881">881</span>
+<span id="882">882</span>
+<span id="883">883</span>
+<span id="884">884</span>
+</pre><pre class="rust"><code><span class="comment">// ## Resources for Developers</span>
+<span class="comment">//</span>
+<span class="comment">// Graphic device is documented in the R-internals. The header file also</span>
+<span class="comment">// contains the useful information. The code of the graphics package is also useful to</span>
+<span class="comment">// see what values are used by default (i.e. `GInit`).</span>
+<span class="comment">//</span>
+<span class="comment">// - https://cran.r-project.org/doc/manuals/r-devel/R-ints.html</span>
+<span class="comment">// - https://github.com/wch/r-source/blob/trunk/src/include/R_ext/GraphicsDevice.h</span>
+<span class="comment">// - https://github.com/wch/r-source/blob/trunk/src/library/graphics/src/graphics.c</span>
+<span class="comment">//</span>
+<span class="comment">// While the documents are good, we need to refer to the real implementaions to</span>
+<span class="comment">// find hints.</span>
+<span class="comment">//</span>
+<span class="comment">// - postscript device: https://github.com/wch/r-source/blob/trunk/src/library/grDevices/src/devPS.c</span>
+<span class="comment">// - svglite package: https://github.com/r-lib/svglite/blob/main/src/devSVG.cpp</span>
+<span class="comment">// - devout package: https://github.com/coolbutuseless/devout/blob/master/src/rdevice.cpp</span>
+<span class="comment">//</span>
+<span class="comment">// For newer features, the blog posts by Paul Murrell might be helpful:</span>
+<span class="comment">//</span>
+<span class="comment">// - https://developer.r-project.org/Blog/public/2020/07/15/new-features-in-the-r-graphics-engine/index.html</span>
+<span class="comment">// - https://developer.r-project.org/Blog/public/2021/12/06/groups-and-paths-and-masks-in-r-graphics/index.html</span>
+<span class="comment">// - https://developer.r-project.org/Blog/public/2021/12/14/updating-graphics-devices-for-r-4.2.0/index.html</span>
+
+<span class="doccomment">//! Graphic Device Operations</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ## Control an existing graphic device</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! TODO</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ## Implement a new graphic device</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! The following two things are needed to implement a graphic device.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! - [DeviceDriver] trait: the actual implementation of graphic device methods.</span>
+<span class="doccomment">//! - [DeviceDescriptor] struct: the parameters that might differ per device</span>
+<span class="doccomment">//!   instance (e.g. sizes, and colors).</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! For example, the following code implements a simple graphic device that shows a message when it&#39;s</span>
+<span class="doccomment">//! activated (and ignores everything else).</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//! use extendr_api::{</span>
+<span class="doccomment">//!     graphics::{DeviceDescriptor, DeviceDriver, DevDesc},</span>
+<span class="doccomment">//!     prelude::*,</span>
+<span class="doccomment">//! };</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! struct MyDevice&lt;&#39;a&gt; {</span>
+<span class="doccomment">//!     welcome_message: &amp;&#39;a str,</span>
+<span class="doccomment">//! }</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! impl&lt;&#39;a&gt; DeviceDriver for MyDevice&lt;&#39;a&gt; {</span>
+<span class="doccomment">//!     fn activate(&amp;mut self, _dd: DevDesc) {</span>
+<span class="doccomment">//!         let welcome_message = self.welcome_message;</span>
+<span class="doccomment">//!         rprintln!(&quot;message from device: {welcome_message}&quot;);</span>
+<span class="doccomment">//!     }</span>
+<span class="doccomment">//! }</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! /// Create a new device.</span>
+<span class="doccomment">//! ///</span>
+<span class="doccomment">//! /// @export</span>
+<span class="doccomment">//! #[extendr]</span>
+<span class="doccomment">//! fn my_device(welcome_message: String) {</span>
+<span class="doccomment">//!     let device_driver = MyDevice {</span>
+<span class="doccomment">//!         welcome_message: welcome_message.as_str(),</span>
+<span class="doccomment">//!     };</span>
+<span class="doccomment">//!     </span>
+<span class="doccomment">//!     let device_descriptor = DeviceDescriptor::new();</span>
+<span class="doccomment">//!     let device = device_driver.create_device::&lt;MyDevice&gt;(device_descriptor, &quot;my device&quot;);</span>
+<span class="doccomment">//! }</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! This can be called from R.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ```r</span>
+<span class="doccomment">//! my_device(&quot;I&#39;m so active!!!&quot;)</span>
+<span class="doccomment">//! #&gt; message from device: I&#39;m so active!!!</span>
+<span class="doccomment">//! ```</span>
+
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">libR_sys</span>::<span class="kw-2">*</span>;
 
+<span class="comment">// These are used in the callback functions.</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">libR_sys</span>::{<span class="ident">DevDesc</span>, <span class="ident">R_GE_gcontext</span>};
+
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">color</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">device_descriptor</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">device_driver</span>;
 
 <span class="kw">use</span> <span class="ident">color::Color</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">device_descriptor</span>::<span class="kw-2">*</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">device_driver</span>::<span class="kw-2">*</span>;
 
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Context</span> {
     <span class="ident">context</span>: <span class="ident">R_GE_gcontext</span>,
@@ -801,15 +995,17 @@
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TextMetric</span> {
-    <span class="ident">ascent</span>: <span class="ident">f64</span>,
-    <span class="ident">descent</span>: <span class="ident">f64</span>,
-    <span class="ident">width</span>: <span class="ident">f64</span>,
+    <span class="kw">pub</span> <span class="ident">ascent</span>: <span class="ident">f64</span>,
+    <span class="kw">pub</span> <span class="ident">descent</span>: <span class="ident">f64</span>,
+    <span class="kw">pub</span> <span class="ident">width</span>: <span class="ident">f64</span>,
 }
 
+<span class="doccomment">/// A row-major array of pixels. One pixel is 32-bit, whose each byte represents</span>
+<span class="doccomment">/// alpha, blue, green, and red in the order.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Raster</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">AsRef</span><span class="op">&lt;</span>[<span class="ident">u32</span>]<span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="ident">pixels</span>: <span class="ident">P</span>,
-    <span class="ident">width</span>: <span class="ident">usize</span>,
+    <span class="kw">pub</span> <span class="ident">pixels</span>: <span class="ident">P</span>,
+    <span class="kw">pub</span> <span class="ident">width</span>: <span class="ident">usize</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">Device</span> {
@@ -828,16 +1024,16 @@
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">LineEnd</span> {
-    <span class="ident">RoundCap</span>,
-    <span class="ident">ButtCap</span>,
-    <span class="ident">SquareCap</span>,
+    <span class="ident">Round</span>,
+    <span class="ident">Butt</span>,
+    <span class="ident">Square</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">LineJoin</span> {
-    <span class="ident">RoundJoin</span>,
-    <span class="ident">MitreJoin</span>,
-    <span class="ident">BevelJoin</span>,
+    <span class="ident">Round</span>,
+    <span class="ident">Mitre</span>,
+    <span class="ident">Bevel</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
@@ -861,11 +1057,57 @@
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">FontFace</span> {
-    <span class="ident">PlainFont</span>,
-    <span class="ident">BoldFont</span>,
-    <span class="ident">ItalicFont</span>,
-    <span class="ident">BoldItalicFont</span>,
-    <span class="ident">SymbolFont</span>,
+    <span class="ident">Plain</span>,
+    <span class="ident">Bold</span>,
+    <span class="ident">Italic</span>,
+    <span class="ident">BoldItalic</span>,
+    <span class="ident">Symbol</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">LineEnd</span> {
+    <span class="kw">fn</span> <span class="ident">to_u32</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u32</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident"><span class="self">Self</span>::Round</span> =&gt; <span class="number">1</span>,
+            <span class="ident"><span class="self">Self</span>::Butt</span> =&gt; <span class="number">2</span>,
+            <span class="ident"><span class="self">Self</span>::Square</span> =&gt; <span class="number">3</span>,
+        }
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">LineJoin</span> {
+    <span class="kw">fn</span> <span class="ident">to_u32</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u32</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident"><span class="self">Self</span>::Round</span> =&gt; <span class="number">1</span>,
+            <span class="ident"><span class="self">Self</span>::Mitre</span> =&gt; <span class="number">2</span>,
+            <span class="ident"><span class="self">Self</span>::Bevel</span> =&gt; <span class="number">3</span>,
+        }
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">LineType</span> {
+    <span class="kw">fn</span> <span class="ident">to_i32</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">i32</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident"><span class="self">Self</span>::Blank</span> =&gt; <span class="ident">LTY_BLANK</span> <span class="kw">as</span> <span class="kw">_</span>,
+            <span class="ident"><span class="self">Self</span>::Solid</span> =&gt; <span class="ident">LTY_SOLID</span> <span class="kw">as</span> <span class="kw">_</span>,
+            <span class="ident"><span class="self">Self</span>::Dashed</span> =&gt; <span class="ident">LTY_DASHED</span> <span class="kw">as</span> <span class="kw">_</span>,
+            <span class="ident"><span class="self">Self</span>::Dotted</span> =&gt; <span class="ident">LTY_DOTTED</span> <span class="kw">as</span> <span class="kw">_</span>,
+            <span class="ident"><span class="self">Self</span>::DotDash</span> =&gt; <span class="ident">LTY_DOTDASH</span> <span class="kw">as</span> <span class="kw">_</span>,
+            <span class="ident"><span class="self">Self</span>::LongDash</span> =&gt; <span class="ident">LTY_LONGDASH</span> <span class="kw">as</span> <span class="kw">_</span>,
+            <span class="ident"><span class="self">Self</span>::TwoDash</span> =&gt; <span class="ident">LTY_TWODASH</span> <span class="kw">as</span> <span class="kw">_</span>,
+        }
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">FontFace</span> {
+    <span class="kw">fn</span> <span class="ident">to_i32</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">i32</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident"><span class="self">Self</span>::Plain</span> =&gt; <span class="number">1</span>,
+            <span class="ident"><span class="self">Self</span>::Bold</span> =&gt; <span class="number">2</span>,
+            <span class="ident"><span class="self">Self</span>::Italic</span> =&gt; <span class="number">3</span>,
+            <span class="ident"><span class="self">Self</span>::BoldItalic</span> =&gt; <span class="number">4</span>,
+            <span class="ident"><span class="self">Self</span>::Symbol</span> =&gt; <span class="number">5</span>,
+        }
+    }
 }
 
 <span class="kw">fn</span> <span class="ident">unit_to_ge</span>(<span class="ident">unit</span>: <span class="ident">Unit</span>) -&gt; <span class="ident">GEUnit</span> {
@@ -907,7 +1149,7 @@
                 <span class="ident">fontface</span>: <span class="number">1</span>,
                 <span class="ident">fontfamily</span>: [<span class="number">0</span>; <span class="number">201</span>],
 
-                <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">use_r_patternfill</span>)]</span>
+                <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">use_r_ge_version_14</span>)]</span>
                 <span class="ident">patternFill</span>: <span class="ident">R_NilValue</span>,
             };
 
@@ -962,16 +1204,7 @@
     <span class="doccomment">/// TwoDash  =&gt; . . - -</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">line_type</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">lty</span>: <span class="ident">LineType</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="kw">use</span> <span class="ident">LineType</span>::<span class="kw-2">*</span>;
-        <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">lty</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">lty</span> {
-            <span class="ident">Blank</span> =&gt; <span class="op">-</span><span class="number">1</span>,
-            <span class="ident">Solid</span> =&gt; <span class="number">0</span>,
-            <span class="ident">Dashed</span> =&gt; <span class="number">4</span> <span class="op">+</span> (<span class="number">4</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">4</span>),
-            <span class="ident">Dotted</span> =&gt; <span class="number">1</span> <span class="op">+</span> (<span class="number">3</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">4</span>),
-            <span class="ident">DotDash</span> =&gt; <span class="number">1</span> <span class="op">+</span> (<span class="number">3</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">4</span>) <span class="op">+</span> (<span class="number">4</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">8</span>) <span class="op">+</span> (<span class="number">3</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">12</span>),
-            <span class="ident">LongDash</span> =&gt; <span class="number">7</span> <span class="op">+</span> (<span class="number">3</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">4</span>),
-            <span class="ident">TwoDash</span> =&gt; <span class="number">2</span> <span class="op">+</span> (<span class="number">2</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">4</span>) <span class="op">+</span> (<span class="number">6</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">8</span>) <span class="op">+</span> (<span class="number">2</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">12</span>),
-        };
+        <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">lty</span> <span class="op">=</span> <span class="ident">lty</span>.<span class="ident">to_i32</span>();
         <span class="self">self</span>
     }
 
@@ -982,11 +1215,7 @@
     <span class="doccomment">///   LineEnd::SquareCap</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">line_end</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">lend</span>: <span class="ident">LineEnd</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">lend</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">lend</span> {
-            <span class="ident">LineEnd::RoundCap</span> =&gt; <span class="number">1</span>,
-            <span class="ident">LineEnd::ButtCap</span> =&gt; <span class="number">2</span>,
-            <span class="ident">LineEnd::SquareCap</span> =&gt; <span class="number">3</span>,
-        };
+        <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">lend</span> <span class="op">=</span> <span class="ident">lend</span>.<span class="ident">to_u32</span>();
         <span class="self">self</span>
     }
 
@@ -997,11 +1226,7 @@
     <span class="doccomment">///   LineJoin::BevelJoin</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">line_join</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">ljoin</span>: <span class="ident">LineJoin</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">ljoin</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">ljoin</span> {
-            <span class="ident">LineJoin::RoundJoin</span> =&gt; <span class="number">1</span>,
-            <span class="ident">LineJoin::MitreJoin</span> =&gt; <span class="number">2</span>,
-            <span class="ident">LineJoin::BevelJoin</span> =&gt; <span class="number">3</span>,
-        };
+        <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">ljoin</span> <span class="op">=</span> <span class="ident">ljoin</span>.<span class="ident">to_u32</span>();
         <span class="self">self</span>
     }
 
@@ -1036,14 +1261,7 @@
     <span class="doccomment">///   FontFace::SymbolFont</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">font_face</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">fontface</span>: <span class="ident">FontFace</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="kw">use</span> <span class="ident">FontFace</span>::<span class="kw-2">*</span>;
-        <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">fontface</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">fontface</span> {
-            <span class="ident">PlainFont</span> =&gt; <span class="number">1</span>,
-            <span class="ident">BoldFont</span> =&gt; <span class="number">2</span>,
-            <span class="ident">ItalicFont</span> =&gt; <span class="number">3</span>,
-            <span class="ident">BoldItalicFont</span> =&gt; <span class="number">4</span>,
-            <span class="ident">SymbolFont</span> =&gt; <span class="number">5</span>,
-        };
+        <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">fontface</span> <span class="op">=</span> <span class="ident">fontface</span>.<span class="ident">to_i32</span>();
         <span class="self">self</span>
     }
 
@@ -1320,10 +1538,10 @@
     <span class="doccomment">/// Draw a stroked/filled axis-aligned rectangle.</span>
     <span class="doccomment">/// gc.color() is the stroke color.</span>
     <span class="doccomment">/// gc.fill() is the fill color.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rectangle</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">from</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>), <span class="ident">to</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>), <span class="ident">gc</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>) {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rect</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">from</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>), <span class="ident">to</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>), <span class="ident">gc</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>) {
         <span class="kw">let</span> <span class="ident">from</span> <span class="op">=</span> <span class="ident">gc</span>.<span class="ident">t</span>(<span class="ident">from</span>);
         <span class="kw">let</span> <span class="ident">to</span> <span class="op">=</span> <span class="ident">gc</span>.<span class="ident">t</span>(<span class="ident">to</span>);
-        <span class="kw">unsafe</span> { <span class="ident">GELine</span>(<span class="ident">from</span>.<span class="number">0</span>, <span class="ident">from</span>.<span class="number">1</span>, <span class="ident">to</span>.<span class="number">0</span>, <span class="ident">to</span>.<span class="number">1</span>, <span class="ident">gc</span>.<span class="ident">context</span>(), <span class="self">self</span>.<span class="ident">inner</span>()) }
+        <span class="kw">unsafe</span> { <span class="ident">GERect</span>(<span class="ident">from</span>.<span class="number">0</span>, <span class="ident">from</span>.<span class="number">1</span>, <span class="ident">to</span>.<span class="number">0</span>, <span class="ident">to</span>.<span class="number">1</span>, <span class="ident">gc</span>.<span class="ident">context</span>(), <span class="self">self</span>.<span class="ident">inner</span>()) }
     }
 
     <span class="doccomment">/// Draw a path with multiple segments.</span>

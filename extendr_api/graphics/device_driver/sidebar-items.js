@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["ClippingStrategy","The underlying C structure `DevDesc` has two fields related to clipping:"]],"trait":[["DeviceDriver","A graphic device implementation."]]});

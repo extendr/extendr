@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["DevCapTransparency",""],["DevCapTransparentBg",""]],"struct":[["DeviceDescriptor","A builder of [DevDesc]."]]});
