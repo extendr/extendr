@@ -10,7 +10,7 @@ authors = [
     "Ilia A. Kosenkov <ilia.kosenkov@outlook.com>"
 ]
 edition = "2018"
-description = "Safe and user friendly bindings to the R programming language."
+description = "An interface to R's graphics-related features."
 license = "MIT"
 repository = "https://github.com/extendr/extendr"
 
