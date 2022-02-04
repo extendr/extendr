@@ -1,6 +1,10 @@
 # extendr-graphics
 
-An interface to R's graphics-related features.
+An interface to R's graphics-related features. The main functionalities that
+extendr-graphics provides are:
+
+- controling the graphics device from Rust
+- implementing a new graphics deice in Rust
 
 ## Example
 
@@ -40,13 +44,14 @@ my_device("I'm so active!!!")
 #> message from device: I'm so active!!!
 ```
 
-## Resources for developers
+## Resources for graphics device developers
 
-Graphic device is documented in the R-internals. The header file also contains
-the useful information. The code of the graphics package is also useful to see
-what values are used by default (i.e. `GInit`).
+The primary documentation of graphics API is of course R Internals. The header
+file `GraphicsDevice.h` also contains a lot of useful information. The code of
+the graphics package is also useful to see what values are used by default
+(i.e., `GInit`).
 
-- https://cran.r-project.org/doc/manuals/r-devel/R-ints.html
+- https://cran.r-project.org/doc/manuals/r-devel/R-ints.html#Graphics
 - https://github.com/wch/r-source/blob/trunk/src/include/R_ext/GraphicsDevice.h
 - https://github.com/wch/r-source/blob/trunk/src/library/graphics/src/graphics.c
 
