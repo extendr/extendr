@@ -15,15 +15,14 @@ crate-type = ["staticlib"]
 [dependencies]
 extendr-api = "*"
 # Remove "path" when we publish "extendr-graphics" to crates.io
-extendr-graphics = { path = "../../../../../extendr/extendr-graphics" }
+extendr-graphics = { path = "../../../../../../../extendr/extendr-graphics" }
 
 [patch.crates-io]
 ## This is configured to work with RStudio features.
 ## Replace by absolute path to simplify testing.
 ## CI overrides this path.
-extendr-api = { path = "../../../../../extendr/extendr-api" }
-# Uncomment this when we publish "extendr-graphics" to crates.io
-# extendr-graphics = { path = "../../../../../extendr/extendr-graphics" }
+extendr-api = { path = "../../../../../../../extendr/extendr-api" }
+extendr-graphics = { path = "../../../../../../../extendr/extendr-graphics" }
 
 ## This allows to run `rcmdcheck` from `./tests/extendrtests/`
 # extendr-api = { path = "../../../../../../../../../extendr/extendr-api"}
