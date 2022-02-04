@@ -29,6 +29,9 @@ jobs:
           # Windows jobs with unspecific Rust architecture build for both i686 and x86_64 
           # R integration tests are also executed for both architectures
           - {os: windows-latest, r: 'release', rust-version: 'stable-msvc'}
+          # TODO: remove this when we drop suppoort for R 4.1. Since R 4.2 uses
+          # a different toolchain than R 4.1, we need to test both.
+          - {os: windows-latest, r: 'devel',   rust-version: 'stable-msvc'}
           # - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc'}
           # - {os: windows-latest, r: 'devel', rust-version: 'stable-msvc'}
           # - {os: windows-latest, r: 'oldrel', rust-version: 'stable-msvc'}
@@ -87,8 +90,8 @@ jobs:
       # Otherwise, only one condition is met
       # $targets variable is used to build targets list used later for cargo build/test
       # The order of if blocks favors x86_64 over i686 paths, which is optimal for multi-targeting
-      - name: Configure Windows
-        if: startsWith(runner.os, 'Windows')
+      - name: Configure Windows (R-release)
+        if: startsWith(runner.os, 'Windows') && matrix.config.r != 'devel'
         # 1. Add rust target
         # 2. Add target name to the $targets variable
         # 3. Add mingw32/mingw64 bin folders to PATH
@@ -110,6 +113,18 @@ jobs:
           echo "BUILD_TARGETS=$($targets -join ',')" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append ;
         env: 
           RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
+
+      - name: Configure Windows (R-devel)
+        if: startsWith(runner.os, 'Windows') && matrix.config.r == 'devel'
+        run: |
+          rustup target add x86_64-pc-windows-gnu ;
+          # Use Rtools's UCRT toolchain rather than MSYS2. Note that the setting needs to be modified when Rtools42 becomes official.
+          echo "${env:RTOOLS40_HOME}\ucrt64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          echo "BUILD_TARGETS=x86_64-pc-windows-gnu" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append ;
+        env: 
+          RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
+
 
       # This is required for ubuntu r-devel
       # 'Del alias:R' removes 'R' alias which prevents running R 
@@ -165,8 +180,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
+          key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-2-${{ hashFiles('.github/depends.Rds') }}
+          restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-2-
 
       - name: Install system dependencies for rextendr
         if: startsWith(runner.os, 'linux')
@@ -236,10 +251,15 @@ jobs:
                   "extendr-api = { path = \"",
                   normalizePath(file.path(getwd(), "extendr-api"), winslash = "/"),
                   "\" }"),
+                
                 paste0(
                   "extendr-macros = { path = \"",
                   normalizePath(file.path(getwd(), "extendr-macros"), winslash = "/"),
                   "\" }"),
+                
+                # uncomment this line when we need to depend on the dev version of libR-sys
+                'libR-sys = { git = "https://github.com/extendr/libR-sys" }',
+                
                 sep = ";")
 
             Sys.setenv(REXTENDR_PATCH_CRATES_IO = patch.crates_io)
@@ -419,10 +439,12 @@ jobs:
             }
 
             ci-cargo +$toolchain test --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-engine \w tests-all for $target target"
-            
-            ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-api \w tests-all for $target target"
 
-            ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests-minimal $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-api \w tests-minimal for $target target"
+            # TODO: remove --test-threads=1 when extendr-graphics            
+            ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture --test-threads=1 -ActionName "Test extendr-api \w tests-all for $target target"
+
+            # TODO: remove --test-threads=1 when extendr-graphics            
+            ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests-minimal $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture --test-threads=1 -ActionName "Test extendr-api \w tests-minimal for $target target"
                       
             ci-cargo +$toolchain test --manifest-path extendr-macros/Cargo.toml  $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-macros for $target target"
             

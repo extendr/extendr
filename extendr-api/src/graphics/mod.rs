@@ -1,9 +1,94 @@
+// ## Resources for Developers
+//
+// Graphic device is documented in the R-internals. The header file also
+// contains the useful information. The code of the graphics package is also useful to
+// see what values are used by default (i.e. `GInit`).
+//
+// - https://cran.r-project.org/doc/manuals/r-devel/R-ints.html
+// - https://github.com/wch/r-source/blob/trunk/src/include/R_ext/GraphicsDevice.h
+// - https://github.com/wch/r-source/blob/trunk/src/library/graphics/src/graphics.c
+//
+// While the documents are good, we need to refer to the real implementaions to
+// find hints.
+//
+// - postscript device: https://github.com/wch/r-source/blob/trunk/src/library/grDevices/src/devPS.c
+// - svglite package: https://github.com/r-lib/svglite/blob/main/src/devSVG.cpp
+// - devout package: https://github.com/coolbutuseless/devout/blob/master/src/rdevice.cpp
+//
+// For newer features, the blog posts by Paul Murrell might be helpful:
+//
+// - https://developer.r-project.org/Blog/public/2020/07/15/new-features-in-the-r-graphics-engine/index.html
+// - https://developer.r-project.org/Blog/public/2021/12/06/groups-and-paths-and-masks-in-r-graphics/index.html
+// - https://developer.r-project.org/Blog/public/2021/12/14/updating-graphics-devices-for-r-4.2.0/index.html
+
+//! Graphic Device Operations
+//!
+//! ## Control an existing graphic device
+//!
+//! TODO
+//!
+//! ## Implement a new graphic device
+//!
+//! The following two things are needed to implement a graphic device.
+//!
+//! - [DeviceDriver] trait: the actual implementation of graphic device methods.
+//! - [DeviceDescriptor] struct: the parameters that might differ per device
+//!   instance (e.g. sizes, and colors).
+//!
+//! For example, the following code implements a simple graphic device that shows a message when it's
+//! activated (and ignores everything else).
+//!
+//! ```
+//! use extendr_api::{
+//!     graphics::{DeviceDescriptor, DeviceDriver, DevDesc},
+//!     prelude::*,
+//! };
+//!
+//! struct MyDevice<'a> {
+//!     welcome_message: &'a str,
+//! }
+//!
+//! impl<'a> DeviceDriver for MyDevice<'a> {
+//!     fn activate(&mut self, _dd: DevDesc) {
+//!         let welcome_message = self.welcome_message;
+//!         rprintln!("message from device: {welcome_message}");
+//!     }
+//! }
+//!
+//! /// Create a new device.
+//! ///
+//! /// @export
+//! #[extendr]
+//! fn my_device(welcome_message: String) {
+//!     let device_driver = MyDevice {
+//!         welcome_message: welcome_message.as_str(),
+//!     };
+//!     
+//!     let device_descriptor = DeviceDescriptor::new();
+//!     let device = device_driver.create_device::<MyDevice>(device_descriptor, "my device");
+//! }
+//! ```
+//!
+//! This can be called from R.
+//!
+//! ```r
+//! my_device("I'm so active!!!")
+//! #> message from device: I'm so active!!!
+//! ```
+
 use crate::*;
 use libR_sys::*;
 
+// These are used in the callback functions.
+pub use libR_sys::{DevDesc, R_GE_gcontext};
+
 pub mod color;
+pub mod device_descriptor;
+pub mod device_driver;
 
 use color::Color;
+pub use device_descriptor::*;
+pub use device_driver::*;
 
 pub struct Context {
     context: R_GE_gcontext,
@@ -25,15 +110,17 @@ pub struct Pattern {
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct TextMetric {
-    ascent: f64,
-    descent: f64,
-    width: f64,
+    pub ascent: f64,
+    pub descent: f64,
+    pub width: f64,
 }
 
+/// A row-major array of pixels. One pixel is 32-bit, whose each byte represents
+/// alpha, blue, green, and red in the order.
 #[derive(Clone, Debug, PartialEq)]
 pub struct Raster<P: AsRef<[u32]>> {
-    pixels: P,
-    width: usize,
+    pub pixels: P,
+    pub width: usize,
 }
 
 impl Device {
@@ -52,16 +139,16 @@ impl Device {
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum LineEnd {
-    RoundCap,
-    ButtCap,
-    SquareCap,
+    Round,
+    Butt,
+    Square,
 }
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum LineJoin {
-    RoundJoin,
-    MitreJoin,
-    BevelJoin,
+    Round,
+    Mitre,
+    Bevel,
 }
 
 #[derive(PartialEq, Debug, Clone)]
@@ -85,11 +172,57 @@ pub enum Unit {
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum FontFace {
-    PlainFont,
-    BoldFont,
-    ItalicFont,
-    BoldItalicFont,
-    SymbolFont,
+    Plain,
+    Bold,
+    Italic,
+    BoldItalic,
+    Symbol,
+}
+
+impl LineEnd {
+    fn to_u32(&self) -> u32 {
+        match self {
+            Self::Round => 1,
+            Self::Butt => 2,
+            Self::Square => 3,
+        }
+    }
+}
+
+impl LineJoin {
+    fn to_u32(&self) -> u32 {
+        match self {
+            Self::Round => 1,
+            Self::Mitre => 2,
+            Self::Bevel => 3,
+        }
+    }
+}
+
+impl LineType {
+    fn to_i32(&self) -> i32 {
+        match self {
+            Self::Blank => LTY_BLANK as _,
+            Self::Solid => LTY_SOLID as _,
+            Self::Dashed => LTY_DASHED as _,
+            Self::Dotted => LTY_DOTTED as _,
+            Self::DotDash => LTY_DOTDASH as _,
+            Self::LongDash => LTY_LONGDASH as _,
+            Self::TwoDash => LTY_TWODASH as _,
+        }
+    }
+}
+
+impl FontFace {
+    fn to_i32(&self) -> i32 {
+        match self {
+            Self::Plain => 1,
+            Self::Bold => 2,
+            Self::Italic => 3,
+            Self::BoldItalic => 4,
+            Self::Symbol => 5,
+        }
+    }
 }
 
 fn unit_to_ge(unit: Unit) -> GEUnit {
@@ -131,7 +264,7 @@ impl Context {
                 fontface: 1,
                 fontfamily: [0; 201],
 
-                #[cfg(use_r_patternfill)]
+                #[cfg(use_r_ge_version_14)]
                 patternFill: R_NilValue,
             };
 
@@ -186,16 +319,7 @@ impl Context {
     /// TwoDash  => . . - -
     /// ```
     pub fn line_type(&mut self, lty: LineType) -> &mut Self {
-        use LineType::*;
-        self.context.lty = match lty {
-            Blank => -1,
-            Solid => 0,
-            Dashed => 4 + (4 << 4),
-            Dotted => 1 + (3 << 4),
-            DotDash => 1 + (3 << 4) + (4 << 8) + (3 << 12),
-            LongDash => 7 + (3 << 4),
-            TwoDash => 2 + (2 << 4) + (6 << 8) + (2 << 12),
-        };
+        self.context.lty = lty.to_i32();
         self
     }
 
@@ -206,11 +330,7 @@ impl Context {
     ///   LineEnd::SquareCap
     /// ```
     pub fn line_end(&mut self, lend: LineEnd) -> &mut Self {
-        self.context.lend = match lend {
-            LineEnd::RoundCap => 1,
-            LineEnd::ButtCap => 2,
-            LineEnd::SquareCap => 3,
-        };
+        self.context.lend = lend.to_u32();
         self
     }
 
@@ -221,11 +341,7 @@ impl Context {
     ///   LineJoin::BevelJoin
     /// ```
     pub fn line_join(&mut self, ljoin: LineJoin) -> &mut Self {
-        self.context.ljoin = match ljoin {
-            LineJoin::RoundJoin => 1,
-            LineJoin::MitreJoin => 2,
-            LineJoin::BevelJoin => 3,
-        };
+        self.context.ljoin = ljoin.to_u32();
         self
     }
 
@@ -260,14 +376,7 @@ impl Context {
     ///   FontFace::SymbolFont
     /// ```
     pub fn font_face(&mut self, fontface: FontFace) -> &mut Self {
-        use FontFace::*;
-        self.context.fontface = match fontface {
-            PlainFont => 1,
-            BoldFont => 2,
-            ItalicFont => 3,
-            BoldItalicFont => 4,
-            SymbolFont => 5,
-        };
+        self.context.fontface = fontface.to_i32();
         self
     }
 
@@ -544,10 +653,10 @@ impl Device {
     /// Draw a stroked/filled axis-aligned rectangle.
     /// gc.color() is the stroke color.
     /// gc.fill() is the fill color.
-    pub fn rectangle(&self, from: (f64, f64), to: (f64, f64), gc: &Context) {
+    pub fn rect(&self, from: (f64, f64), to: (f64, f64), gc: &Context) {
         let from = gc.t(from);
         let to = gc.t(to);
-        unsafe { GELine(from.0, from.1, to.0, to.1, gc.context(), self.inner()) }
+        unsafe { GERect(from.0, from.1, to.0, to.1, gc.context(), self.inner()) }
     }
 
     /// Draw a path with multiple segments.

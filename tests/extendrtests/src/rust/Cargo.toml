@@ -19,7 +19,7 @@ extendr-api = "*"
 ## This is configured to work with RStudio features.
 ## Replace by absolute path to simplify testing.
 ## CI overrides this path.
-extendr-api = { path = "../../../../../extendr/extendr-api"}
+extendr-api = { path = "../../../../../extendr/extendr-api" }
 ## This allows to run `rcmdcheck` from `./tests/extendrtests/`
 # extendr-api = { path = "../../../../../../../../../extendr/extendr-api"}
 
@@ -27,3 +27,6 @@ extendr-api = { path = "../../../../../extendr/extendr-api"}
 ## Build against current extendr version on github. Not recommended
 ## for development work.
 #extendr-api = { git = "https://github.com/extendr/extendr"}
+
+# Build against current libR-sys version on github
+libR-sys = { git = "https://github.com/extendr/libR-sys" }

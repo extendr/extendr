@@ -1,6 +1,9 @@
-use extendr_api::prelude::*;
+use extendr_api::{graphics::*, prelude::*};
+
 mod submodule;
 use submodule::*;
+
+mod graphic_device;
 
 // Return string `"Hello world!"` to R.
 #[extendr]
@@ -70,12 +73,12 @@ fn try_rint_na() -> Rint {
 }
 
 #[extendr(use_try_from = true)]
-fn check_rfloat_na(x : Rfloat) -> bool {
+fn check_rfloat_na(x: Rfloat) -> bool {
     x.is_na()
 }
 
 #[extendr(use_try_from = true)]
-fn check_rint_na(x : Rint) -> bool {
+fn check_rint_na(x: Rint) -> bool {
     x.is_na()
 }
 
@@ -159,7 +162,7 @@ fn logicals_not(input: Logicals) -> Logicals {
 // Parsing
 
 #[extendr(use_try_from = true)]
-fn check_default(#[default="NULL"] x: Robj) -> bool {
+fn check_default(#[default = "NULL"] x: Robj) -> bool {
     x.is_null()
 }
 
@@ -181,14 +184,14 @@ fn special_param_names(_x: i32, _y: i32) -> i32 {
 #[extendr]
 #[allow(non_snake_case)]
 fn __00__special_function_name() {}
- 
+
 #[extendr(
     use_try_from = true,
     r_name = "test.rename.rlike",
     mod_name = "test_rename_mymod"
 )]
 fn test_rename() -> i32 {
-  1
+    1
 }
 
 // Class for testing
@@ -264,6 +267,19 @@ impl MyClassUnexported {
     }
 }
 
+/// Create a new device.
+///
+/// @param welcome_message A warm message to welcome you.
+/// @export
+#[extendr]
+fn my_device(welcome_message: String) {
+    let device_driver = graphic_device::MyDevice {
+        welcome_message: welcome_message.as_str(),
+    };
+
+    let device_descriptor = DeviceDescriptor::new();
+    device_driver.create_device::<graphic_device::MyDevice>(device_descriptor, "my device");
+}
 
 // Macro to generate exports
 extendr_module! {
@@ -301,12 +317,14 @@ extendr_module! {
     fn special_param_names;
     fn __00__special_function_name;
 
-    // Note that this uses an alternative name.    
+    // Note that this uses an alternative name.
     fn test_rename_mymod;
 
     impl MyClass;
     impl __MyClass;
     impl MyClassUnexported;
+
+    fn my_device;
 
     use submodule;
 }
