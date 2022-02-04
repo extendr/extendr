@@ -1,4 +1,5 @@
-use extendr_api::{graphics::*, prelude::*};
+use extendr_api::prelude::*;
+use extendr_graphics::*;
 
 pub(crate) struct MyDevice<'a> {
     pub(crate) welcome_message: &'a str,

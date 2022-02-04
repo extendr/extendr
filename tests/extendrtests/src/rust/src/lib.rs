@@ -1,4 +1,5 @@
-use extendr_api::{graphics::*, prelude::*};
+use extendr_api::prelude::*;
+use extendr_graphics::DeviceDescriptor;
 
 mod submodule;
 use submodule::*;
