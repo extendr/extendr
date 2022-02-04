@@ -39,10 +39,8 @@
 //! activated (and ignores everything else).
 //!
 //! ```
-//! use extendr_api::{
-//!     graphics::{DeviceDescriptor, DeviceDriver, DevDesc},
-//!     prelude::*,
-//! };
+//! use extendr_api::prelude::*;
+//! use extendr_graphics::{DeviceDescriptor, DeviceDriver, DevDesc};
 //!
 //! struct MyDevice<'a> {
 //!     welcome_message: &'a str,
@@ -76,7 +74,7 @@
 //! #> message from device: I'm so active!!!
 //! ```
 
-use crate::*;
+use extendr_api::{new_owned, prelude::*};
 use libR_sys::*;
 
 // These are used in the callback functions.

@@ -4,6 +4,7 @@ members = [
 	"extendr-api",
 	"extendr-engine",
 	"extendr-macros",
+	"extendr-graphics",
 ]
 
 [patch.crates-io]

@@ -1,7 +1,7 @@
 use core::slice;
+use std::ffi::CString;
 
 use crate::*;
-use libR_sys::*;
 
 use super::{device_descriptor::*, Device, Raster, TextMetric};
 

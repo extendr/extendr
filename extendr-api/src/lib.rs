@@ -239,7 +239,6 @@ pub mod serializer;
 #[cfg(feature = "serde")]
 pub mod deserializer;
 
-pub mod graphics;
 pub mod robj;
 pub mod scalar;
 pub mod thread_safety;

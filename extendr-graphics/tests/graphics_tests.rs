@@ -1,12 +1,12 @@
 use std::fmt::Write;
 
-use extendr_api::graphics::color::predefined::{antiquewhite, black, darkkhaki, deepskyblue};
-use extendr_api::graphics::color::Color;
-use extendr_api::graphics::{
+use extendr_api::prelude::*;
+use extendr_graphics::color::predefined::{antiquewhite, black, darkkhaki, deepskyblue};
+use extendr_graphics::color::Color;
+use extendr_graphics::{
     Context, DevDesc, Device, DeviceDescriptor, DeviceDriver, FontFace, R_GE_gcontext, Raster,
     TextMetric, Unit,
 };
-use extendr_api::prelude::*;
 
 #[test]
 fn graphics_test() {

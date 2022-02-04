@@ -11,8 +11,14 @@ fn main() {
     let minor = env::var("DEP_R_R_VERSION_MINOR").unwrap();
     // let patch = env::var("DEP_R_R_VERSION_PATCH").unwrap();
 
-    // R_NewEnv is available as of R 4.1.0
+    // pattern fill was introduced in R 4.1
     if &*major >= "4" && &*minor >= "1" {
-        println!("cargo:rustc-cfg=use_r_newenv");
+        println!("cargo:rustc-cfg=use_r_ge_version_14");
+    }
+
+    // a few new features will be introduced in R 4.2
+    // c.f. https://developer.r-project.org/Blog/public/2021/12/14/updating-graphics-devices-for-r-4.2.0/index.html
+    if &*major >= "4" && &*minor >= "2" {
+        println!("cargo:rustc-cfg=use_r_ge_version_15");
     }
 }
