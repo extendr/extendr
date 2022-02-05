@@ -41,17 +41,16 @@ jobs:
           # - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
           # - {os: macOS-latest,   r: 'oldrel', rust-version: 'stable'}
 
-          - {os: ubuntu-20.04,   r: 'release', rust-version: 'stable',  rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest", check_fmt: true}
-          - {os: ubuntu-20.04,   r: 'release', rust-version: 'nightly', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: ubuntu-20.04,   r: 'release', rust-version: 'stable', check_fmt: true}
+          - {os: ubuntu-20.04,   r: 'release', rust-version: 'nightly'}
           # R-devel requires LD_LIBRARY_PATH
-          - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}   
-          - {os: ubuntu-20.04,   r: 'oldrel',  rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}   
+          - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable'}
+          - {os: ubuntu-20.04,   r: 'oldrel',  rust-version: 'stable'}
 
 
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      RSPM: ${{ matrix.config.rspm }}
 
       # This environment variable enables support for pseudo multi-target cargo builds.
       # Current stable Rust does not support multi-targeting,
@@ -157,49 +156,27 @@ jobs:
             ci-cargo test $(if($target -ne 'default') {"--target=$target"} ) '--' --nocapture -ActionName "Testing for $target target"
           }
 
+      # c.f. https://github.com/actions/checkout#checkout-multiple-repos-side-by-side
       - name: Obtain 'rextendr'
-        run : |
-          git clone https://github.com/extendr/rextendr ./tests/rextendr
-
-      # Dependencies from both test packages are combined
-      - name: Query dependencies for integration testing
-        run: |
-          install.packages('remotes')
-          saveRDS(
-            unique(
-              rbind(
-                remotes::dev_package_deps(pkgdir = "tests/extendrtests", dependencies = TRUE), 
-                remotes::dev_package_deps(pkgdir = "tests/rextendr", dependencies = TRUE))),
-            ".github/depends.Rds", 
-            version = 2
-          )
-          writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
-        shell: Rscript {0}
-
-      - name: Cache installed R packages
-        uses: actions/cache@v2
+        uses: actions/checkout@v2
         with:
-          path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-2-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-2-
+          repository: extendr/rextendr
+          path: ./tests/rextendr
 
-      - name: Install system dependencies for rextendr
-        if: startsWith(runner.os, 'linux')
-        run: |
-          foreach($apt_cmd in $(Rscript -e "writeLines(remotes::system_requirements('ubuntu', '20.04', path = 'tests/rextendr'))")) {
-            Invoke-Expression "sudo $apt_cmd"
-          }
+      - name: Install dependencies for extendrtests and rcmdcheck
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          working-directory: tests/extendrtests
+          extra-packages: any::rcmdcheck
 
-      # Currently rextendr requires R > 4, so if R version is older (e.g. 3.6.3), rextendr tests are omitted
+      - name: Install dependencies for rextendr
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          working-directory: tests/rextendr
+
       # Regex is used to inject absolute path into Cargo.toml
-      - name: Install dependencies & configure R for integration testing
+      - name: Configure R for integration testing
         run: |
-          remotes::install_deps(pkgdir = "tests/extendrtests", dependencies = TRUE)
-          if (as.integer(R.version$major) >= 4) { 
-            remotes::install_deps(pkgdir = "tests/rextendr", dependencies = TRUE)
-          }
-          remotes::install_cran("rcmdcheck")
-
           api_path <- normalizePath(file.path(getwd(), "extendr-api"), winslash = "/")
           toml_path <- file.path(getwd(), "tests", "extendrtests", "src", "rust", "Cargo.toml")
           lines <- readLines(toml_path)
@@ -230,7 +207,6 @@ jobs:
           cat("::endgroup::\n")
         shell: Rscript {0}
         
-      # If R is older than 4.0, rextendr is not tested and a warning is emitted. 
       # With https://github.com/extendr/rextendr/pull/31
       # rextendr can be configured using environment variables.
       # 'patch.crates_io' is used to point libraries to local copies of
@@ -240,49 +216,46 @@ jobs:
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
         run: |
-          if (as.integer(R.version$major) < 4) {
-            cat("::warning:: R version is not compatible with 'rextendr'\n")
-          } else {
-            cat("::group::Checking 'rextendr'\n")
-            
-            patch.crates_io <-
-              paste(
-                paste0(
-                  "extendr-api = { path = \"",
-                  normalizePath(file.path(getwd(), "extendr-api"), winslash = "/"),
-                  "\" }"),
-                
-                paste0(
-                  "extendr-macros = { path = \"",
-                  normalizePath(file.path(getwd(), "extendr-macros"), winslash = "/"),
-                  "\" }"),
-                
-                # uncomment this line when we need to depend on the dev version of libR-sys
-                'libR-sys = { git = "https://github.com/extendr/libR-sys" }',
-                
-                sep = ";")
+          cat("::group::Checking 'rextendr'\n")
 
-            Sys.setenv(REXTENDR_PATCH_CRATES_IO = patch.crates_io)
-            rcmdcheck::rcmdcheck(
-              path = "tests/rextendr", 
-              args = c("--no-manual", "--as-cran", "--force-multiarch"), 
-              error_on = "warning", 
-              check_dir = "rextendr_check")
-            cat("::endgroup::\n")
-          }
+          patch.crates_io <-
+            paste(
+              paste0(
+                "extendr-api = { path = \"",
+                normalizePath(file.path(getwd(), "extendr-api"), winslash = "/"),
+                "\" }"),
+              
+              paste0(
+                "extendr-macros = { path = \"",
+                normalizePath(file.path(getwd(), "extendr-macros"), winslash = "/"),
+                "\" }"),
+              
+              # uncomment this line when we need to depend on the dev version of libR-sys
+              'libR-sys = { git = "https://github.com/extendr/libR-sys" }',
+              
+              sep = ";")
+          
+          Sys.setenv(REXTENDR_PATCH_CRATES_IO = patch.crates_io)
+          rcmdcheck::rcmdcheck(
+            path = "tests/rextendr", 
+            args = c("--no-manual", "--as-cran", "--force-multiarch"), 
+            error_on = "warning", 
+            check_dir = "rextendr_check")
+          
+          cat("::endgroup::\n")
         shell: Rscript {0}
 
 
       - name: Upload extendrtests check results from R integration tests
         if: failure()
-        uses: actions/upload-artifact@main
+        uses: actions/upload-artifact@v2
         with:
           name: extendrtests-${{ matrix.config.os }}-R-${{ matrix.config.r }}-rust-${{ matrix.config.rust-version }}
           path: extendrtests_check
 
       - name: Upload rextendr check results from R integration tests
         if: failure()
-        uses: actions/upload-artifact@main
+        uses: actions/upload-artifact@v2
         with:
           name: rextendr-${{ matrix.config.os }}-R-${{ matrix.config.r }}-rust-${{ matrix.config.rust-version }}
           path: rextendr_check
@@ -303,7 +276,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: ubuntu-20.04,   r: 'devel', rust-version: 'stable', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: ubuntu-20.04,   r: 'devel', rust-version: 'stable'}
           - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
           # This will be changed back to `R-devel` as soon as R drops 32-bit support and we no longer need cross-compilation
           - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: ['x86_64-pc-windows-gnu', 'i686-pc-windows-gnu'], extra-args: ['-Zdoctest-xcompile']}
@@ -311,7 +284,6 @@ jobs:
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      RSPM: ${{ matrix.config.rspm }}
 
     # PowerShell core is available on all platforms and can be used to unify scripts
     defaults:
