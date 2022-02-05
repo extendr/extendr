@@ -440,11 +440,10 @@ jobs:
 
             ci-cargo +$toolchain test --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-engine \w tests-all for $target target"
 
-            # TODO: remove --test-threads=1 when extendr-graphics            
+            # TODO: --test-threads=1 is needed because graphics-related tests need to run in serial
             ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture --test-threads=1 -ActionName "Test extendr-api \w tests-all for $target target"
 
-            # TODO: remove --test-threads=1 when extendr-graphics            
-            ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests-minimal $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture --test-threads=1 -ActionName "Test extendr-api \w tests-minimal for $target target"
+            ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests-minimal $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-api \w tests-minimal for $target target"
                       
             ci-cargo +$toolchain test --manifest-path extendr-macros/Cargo.toml  $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-macros for $target target"
             
