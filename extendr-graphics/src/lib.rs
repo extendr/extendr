@@ -1,4 +1,4 @@
-//! Graphic Device Operations
+//! Graphics Device Operations
 //!
 //! ## Control an existing graphic device
 //!
@@ -12,8 +12,8 @@
 //! - [DeviceDescriptor] struct: the parameters that might differ per device
 //!   instance (e.g. sizes, and colors).
 //!
-//! For example, the following code implements a simple graphic device that shows a message when it's
-//! activated (and ignores everything else).
+//! For example, the following code implements a simple graphics device that
+//! shows a message when it's activated (and ignores all operations).
 //!
 //! ```
 //! use extendr_api::prelude::*;
