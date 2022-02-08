@@ -36,3 +36,6 @@ tests-all = ["ndarray", "libR-sys/use-bindgen", "serde", "num-complex", "graphic
 
 # The minimal set of features without all optional ones
 tests-minimal = ["libR-sys/use-bindgen"]
+
+[package.metadata.docs.rs]
+features = ["graphics"]
