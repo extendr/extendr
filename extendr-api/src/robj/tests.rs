@@ -185,31 +185,31 @@ fn test_try_from_robj() {
 
         let na_integer = eval_string("NA_integer_").unwrap();
         assert!(<i32>::try_from(na_integer.clone()).is_err());
-        assert_eq!(<Option<i32>>::try_from(na_integer.clone()), Ok(None));
+        assert_eq!(<Option<i32>>::try_from(na_integer), Ok(None));
         assert_eq!(<Option<i32>>::try_from(Robj::from(1)), Ok(Some(1)));
         assert!(<Option<i32>>::try_from(Robj::from([1, 2])).is_err());
 
         let na_bool = eval_string("TRUE == NA").unwrap();
         assert!(<bool>::try_from(na_bool.clone()).is_err());
-        assert_eq!(<Option<bool>>::try_from(na_bool.clone()), Ok(None));
+        assert_eq!(<Option<bool>>::try_from(na_bool), Ok(None));
         assert_eq!(<Option<bool>>::try_from(Robj::from(true)), Ok(Some(true)));
         assert!(<Option<bool>>::try_from(Robj::from([true, false])).is_err());
 
         let na_real = eval_string("NA_real_").unwrap();
         assert!(<f64>::try_from(na_real.clone()).is_err());
-        assert_eq!(<Option<f64>>::try_from(na_real.clone()), Ok(None));
+        assert_eq!(<Option<f64>>::try_from(na_real), Ok(None));
         assert_eq!(<Option<f64>>::try_from(Robj::from(1.)), Ok(Some(1.)));
         assert!(<Option<f64>>::try_from(Robj::from([1., 2.])).is_err());
 
         let na_string = eval_string("NA_character_").unwrap();
         assert!(<&str>::try_from(na_string.clone()).is_err());
-        assert_eq!(<Option<&str>>::try_from(na_string.clone()), Ok(None));
+        assert_eq!(<Option<&str>>::try_from(na_string), Ok(None));
         assert_eq!(<Option<&str>>::try_from(Robj::from("1")), Ok(Some("1")));
         assert!(<Option<&str>>::try_from(Robj::from(["1", "2"])).is_err());
 
         let na_string = eval_string("NA_character_").unwrap();
         assert!(<String>::try_from(na_string.clone()).is_err());
-        assert_eq!(<Option<String>>::try_from(na_string.clone()), Ok(None));
+        assert_eq!(<Option<String>>::try_from(na_string), Ok(None));
         assert_eq!(
             <Option<String>>::try_from(Robj::from("1")),
             Ok(Some("1".to_string()))
