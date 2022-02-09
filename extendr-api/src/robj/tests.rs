@@ -1,5 +1,5 @@
-use crate::*;
 use crate::scalar::*;
+use crate::*;
 
 #[test]
 fn test_from_robj() {

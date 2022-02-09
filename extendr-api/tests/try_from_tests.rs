@@ -1,10 +1,10 @@
 //! See https://github.com/extendr/extendr/issues/369
-//! 
+//!
 
 #[test]
 fn test_try_from() {
-    use extendr_api::{r, TryFrom, Robj, test, Result };
-    use extendr_api::scalar::{Rint, Rfloat, Rcplx, Rbool};
+    use extendr_api::scalar::{Rbool, Rcplx, Rfloat, Rint};
+    use extendr_api::{r, test, Result, Robj, TryFrom};
     // use extendr_api::wrapper::{Integers, Doubles, Strings};
 
     macro_rules! test_matrix {
@@ -70,9 +70,9 @@ fn test_try_from() {
             // assert_eq!(<Option<bool>::try_from($value).is_ok(), $bool_ok);
             // assert_eq!(<Option<&str>>::try_from($value).is_ok(), $str_ok);
             // assert_eq!(<Option<String>::try_from($value).is_ok(), $str_ok);
-        }
+        };
     }
-   
+
     test! {
         let integer = r!(1);
         test_matrix!(
@@ -85,7 +85,7 @@ fn test_try_from() {
             int_slice_ok: true,
             float_slice_ok: false,
         );
-    
+
         let double = r!(1.0);
         test_matrix!(
             double.clone(),
@@ -121,7 +121,7 @@ fn test_try_from() {
             int_slice_ok: false,
             float_slice_ok: false,
         );
-    
+
         // let integers = Integers::from_values([1]);
         // test_matrix!(
         //     integer.clone(),
@@ -134,7 +134,7 @@ fn test_try_from() {
         //     float_slice_ok: false,
         // );
         // test_matrix!(integers.clone(), int_ok : true, float_ok : true, bool_ok : false, str_ok: false);
-    
+
         // let doubles = Doubles::from_values([1.0]);
         // test_matrix!(doubles.clone(), int_ok : true, float_ok : true, bool_ok : false, str_ok: false);
 
@@ -142,4 +142,3 @@ fn test_try_from() {
         // test_matrix!(strings.clone(), int_ok : true, float_ok : true, bool_ok : false, str_ok: false);
     }
 }
-

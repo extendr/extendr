@@ -127,4 +127,3 @@ impl TryFrom<&Robj> for Rbool {
         }
     }
 }
-
