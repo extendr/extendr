@@ -1,4 +1,5 @@
 use crate::*;
+use crate::scalar::*;
 
 #[test]
 fn test_from_robj() {
@@ -115,8 +116,8 @@ fn test_try_from_robj() {
         let robj = Robj::from(-1);
         assert_eq!(<u32>::try_from(robj.clone()), Err(Error::OutOfLimits(robj)));
 
-        assert_eq!(<Vec::<i32>>::try_from(Robj::from(1)), Ok(vec![1]));
-        assert_eq!(<Vec::<f64>>::try_from(Robj::from(1.)), Ok(vec![1.]));
+        assert_eq!(<Vec::<Rint>>::try_from(Robj::from(1)), Ok(vec![Rint::from(1)]));
+        assert_eq!(<Vec::<Rfloat>>::try_from(Robj::from(1.)), Ok(vec![Rfloat::from(1.0)]));
         assert_eq!(<Vec::<Rbool>>::try_from(Robj::from(TRUE)), Ok(vec![TRUE]));
         assert_eq!(<Vec::<u8>>::try_from(Robj::from(0_u8)), Ok(vec![0_u8]));
 
@@ -137,14 +138,14 @@ fn test_try_from_robj() {
         // assert_eq!(<Logicals>::try_from(r!([true, false])).unwrap().collect::<Vec<Rbool>>(), vec![TRUE, FALSE]);
         // assert!(<Logicals>::try_from(r!([1])).is_err());
 
-        assert_eq!(<&[i32]>::try_from(Robj::from(1)), Ok(&[1][..]));
-        assert_eq!(<&[f64]>::try_from(Robj::from(1.)), Ok(&[1.][..]));
+        assert_eq!(<&[Rint]>::try_from(Robj::from(1)), Ok(&[Rint::from(1)][..]));
+        assert_eq!(<&[Rfloat]>::try_from(Robj::from(1.)), Ok(&[Rfloat::from(1.)][..]));
         assert_eq!(<&[Rbool]>::try_from(Robj::from(TRUE)), Ok(&[TRUE][..]));
         assert_eq!(<&[u8]>::try_from(Robj::from(0_u8)), Ok(&[0_u8][..]));
 
         // Note the Vec<> cases use the same logic as the slices.
-        assert_eq!(<&[i32]>::try_from(Robj::from(1.0)), Err(Error::ExpectedInteger(r!(1.0))));
-        assert_eq!(<&[f64]>::try_from(Robj::from(1)), Err(Error::ExpectedReal(r!(1))));
+        assert_eq!(<&[Rint]>::try_from(Robj::from(1.0)), Err(Error::ExpectedInteger(r!(1.0))));
+        assert_eq!(<&[Rfloat]>::try_from(Robj::from(1)), Err(Error::ExpectedReal(r!(1))));
         assert_eq!(<&[Rbool]>::try_from(Robj::from(())), Err(Error::ExpectedLogical(r!(()))));
         assert_eq!(<&[u8]>::try_from(Robj::from(())), Err(Error::ExpectedRaw(r!(()))));
 

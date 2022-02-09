@@ -154,15 +154,15 @@ gen_binopassign!(
 // Generate unary ops for -, !
 gen_unop!(Rcplx, Neg, |lhs: c64| Some(-lhs), "Negate a Rcplx value.");
 
-impl TryFrom<Robj> for Rcplx {
+impl TryFrom<&Robj> for Rcplx {
     type Error = Error;
 
-    fn try_from(robj: Robj) -> Result<Self> {
+    fn try_from(robj: &Robj) -> Result<Self> {
         // Check if the value is a scalar
         match robj.len() {
-            0 => return Err(Error::ExpectedNonZeroLength(robj)),
+            0 => return Err(Error::ExpectedNonZeroLength(robj.clone())),
             1 => {}
-            _ => return Err(Error::ExpectedScalar(robj)),
+            _ => return Err(Error::ExpectedScalar(robj.clone())),
         };
 
         // Check if the value is not a missing value.
@@ -186,7 +186,7 @@ impl TryFrom<Robj> for Rcplx {
             return Ok(s[0]);
         }
 
-        Err(Error::ExpectedComplex(robj))
+        Err(Error::ExpectedComplex(robj.clone()))
     }
 }
 
