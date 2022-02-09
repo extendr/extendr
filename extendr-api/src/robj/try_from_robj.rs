@@ -279,7 +279,7 @@ impl TryFrom<&Robj> for &[i32] {
     /// Use `value.is_na()` to detect NA values.
     fn try_from(robj: &Robj) -> Result<Self> {
         robj.as_typed_slice()
-            .ok_or(Error::ExpectedInteger(robj.clone()))
+            .ok_or_else(|| Error::ExpectedInteger(robj.clone()))
     }
 }
 
@@ -290,7 +290,7 @@ impl TryFrom<&Robj> for &[Rint] {
     /// Use `value.is_na()` to detect NA values.
     fn try_from(robj: &Robj) -> Result<Self> {
         robj.as_typed_slice()
-            .ok_or(Error::ExpectedInteger(robj.clone()))
+            .ok_or_else(|| Error::ExpectedInteger(robj.clone()))
     }
 }
 
@@ -301,7 +301,7 @@ impl TryFrom<&Robj> for &[Rfloat] {
     /// Use `value.is_na()` to detect NA values.
     fn try_from(robj: &Robj) -> Result<Self> {
         robj.as_typed_slice()
-            .ok_or(Error::ExpectedReal(robj.clone()))
+            .ok_or_else(|| Error::ExpectedReal(robj.clone()))
     }
 }
 
@@ -312,7 +312,7 @@ impl TryFrom<&Robj> for &[Rbool] {
     /// Use `value.is_na()` to detect NA values.
     fn try_from(robj: &Robj) -> Result<Self> {
         robj.as_typed_slice()
-            .ok_or(Error::ExpectedLogical(robj.clone()))
+            .ok_or_else(|| Error::ExpectedLogical(robj.clone()))
     }
 }
 
@@ -323,7 +323,7 @@ impl TryFrom<&Robj> for &[Rcplx] {
     /// Use `value.is_na()` to detect NA values.
     fn try_from(robj: &Robj) -> Result<Self> {
         robj.as_typed_slice()
-            .ok_or(Error::ExpectedComplex(robj.clone()))
+            .ok_or_else(|| Error::ExpectedComplex(robj.clone()))
     }
 }
 
@@ -333,7 +333,7 @@ impl TryFrom<&Robj> for &[u8] {
     /// Convert a RAWSXP object into a slice of bytes.
     fn try_from(robj: &Robj) -> Result<Self> {
         robj.as_typed_slice()
-            .ok_or(Error::ExpectedRaw(robj.clone()))
+            .ok_or_else(|| Error::ExpectedRaw(robj.clone()))
     }
 }
 
@@ -344,7 +344,7 @@ impl TryFrom<&Robj> for &[f64] {
     /// Use `value.is_na()` to detect NA values.
     fn try_from(robj: &Robj) -> Result<Self> {
         robj.as_typed_slice()
-            .ok_or(Error::ExpectedReal(robj.clone()))
+            .ok_or_else(|| Error::ExpectedReal(robj.clone()))
     }
 }
 
