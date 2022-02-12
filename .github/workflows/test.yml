@@ -153,7 +153,7 @@ jobs:
         run: |
           . ./ci-cargo.ps1
           foreach($target in ($env:BUILD_TARGETS).Split(',')) {
-            ci-cargo test $(if($target -ne 'default') {"--target=$target"} ) '--' --nocapture -ActionName "Testing for $target target"
+            ci-cargo test $(if($target -ne 'default') {"--target=$target"} ) '--' --nocapture --test-threads=1 -ActionName "Testing for $target target"
           }
 
       # c.f. https://github.com/actions/checkout#checkout-multiple-repos-side-by-side
