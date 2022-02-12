@@ -119,7 +119,8 @@ jobs:
         if: startsWith(runner.os, 'Windows') && matrix.config.r == 'devel'
         run: |
           # c.f. https://github.com/wch/r-source/blob/f1501504df8df1668a57d3a1b6f80167f24441d3/src/library/profile/Rprofile.windows#L70-L71
-          echo "${env:RTOOLS42_HOME}\x86_64-w64-mingw32.static.posix\bin;${env:RTOOLS42_HOME}\usr\bin;" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          echo "${env:RTOOLS42_HOME}\x86_64-w64-mingw32.static.posix\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          echo "${env:RTOOLS42_HOME}\usr\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
           echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
         env: 
           RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
