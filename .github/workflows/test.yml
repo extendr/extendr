@@ -124,6 +124,7 @@ jobs:
           echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
 
           # The default linker of rustc is "x86_64-w64-mingw32-gcc", however, there's no such name of executable in Rtools42
+          New-Item -Path .cargo -ItemType Directory -Force
           "[target.x86_64-pc-windows-gnu]
           linker = `"x86_64-w64-mingw32.static.posix-gcc.exe`"" | Out-File -FilePath .cargo/config.toml -Encoding utf8 -Append ;
 
