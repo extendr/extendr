@@ -74,7 +74,7 @@ pub(crate) enum DevCapLocator {
     Yes = 2,
 }
 
-/// A builder of [DevDesc].
+/// A builder of `DevDesc`.
 ///
 // # Design notes (which feels a bit too internal to be exposed as an official document)
 //
@@ -237,7 +237,7 @@ impl DeviceDescriptor {
 
     /// Sets the initial value of font face.
     ///
-    /// If not specified, [FontFace::PlainFont] will be used.
+    /// If not specified, [FontFace::Plain] will be used.
     pub fn startfont(mut self, startfont: FontFace) -> Self {
         self.startfont = startfont;
         self
