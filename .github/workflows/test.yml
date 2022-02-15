@@ -137,6 +137,9 @@ jobs:
           cp `
             "${rtools42_home}\x86_64-w64-mingw32.static.posix\lib\gcc\x86_64-w64-mingw32.static.posix\10.3.0\libgcc.a" `
             "${rtools42_home}\x86_64-w64-mingw32.static.posix\lib\gcc\x86_64-w64-mingw32.static.posix\10.3.0\libgcc_eh.a"
+          cp `
+            "${rtools42_home}\x86_64-w64-mingw32.static.posix\lib\gcc\x86_64-w64-mingw32.static.posix\10.3.0\libgcc.a" `
+            "${rtools42_home}\x86_64-w64-mingw32.static.posix\lib\gcc\x86_64-w64-mingw32.static.posix\10.3.0\libgcc_s.a"
         env: 
           RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
 
