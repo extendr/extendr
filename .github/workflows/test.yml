@@ -118,19 +118,24 @@ jobs:
       - name: Configure Windows (R-devel)
         if: startsWith(runner.os, 'Windows') && matrix.config.r == 'devel'
         run: |
+          $rtools42_home = "$(Rscript.exe -e "cat(Sys.getenv('RTOOLS42_HOME'))")"
+          echo ${rtools42_home}
+
           # c.f. https://github.com/wch/r-source/blob/f1501504df8df1668a57d3a1b6f80167f24441d3/src/library/profile/Rprofile.windows#L70-L71
-          echo "D:\rtools42\x86_64-w64-mingw32.static.posix\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
-          echo "D:\rtools42\usr\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          echo "${rtools42_home}\x86_64-w64-mingw32.static.posix\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          echo "${rtools42_home}\usr\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
           echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
 
           # The default linker of rustc is "x86_64-w64-mingw32-gcc", however, there's no such name of executable in Rtools42
           New-Item -Path .cargo -ItemType Directory -Force
-          "[target.x86_64-pc-windows-gnu]
-          linker = `"x86_64-w64-mingw32.static.posix-gcc.exe`"" | Out-File -FilePath .cargo/config.toml -Encoding utf8 -Append ;
+          @'
+          [target.x86_64-pc-windows-gnu]
+          linker = "x86_64-w64-mingw32.static.posix-gcc.exe"
+          '@ | Out-File -FilePath .cargo/config.toml -Encoding utf8 -Append ;
 
           # rustc adds -lgcc_eh flag to the compiler, but there's no libgcc_eh in Rtools42 (this might be a bug in MSYS2 itself?, but Rtools40
           # has a workaround for this).
-          cd "D:\rtools42\x86_64-w64-mingw32.static.posix\lib\gcc\x86_64-w64-mingw32.static.posix\10.3.0\"
+          cd "${rtools42_home}\x86_64-w64-mingw32.static.posix\lib\gcc\x86_64-w64-mingw32.static.posix\10.3.0\"
           cp libgcc.a libgcc_eh.a
         env: 
           RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
