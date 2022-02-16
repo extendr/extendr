@@ -415,7 +415,7 @@ jobs:
 
             ci-cargo +$toolchain test --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-engine \w tests-all for $target target"
 
-            ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-api \w tests-all for $target target"
+            ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-api \w `tests` for $target target"
             # graphics test requires --test-threads=1
             ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features graphics $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture --test-threads=1 -ActionName "Test extendr-api \w tests-all for $target target"
 
