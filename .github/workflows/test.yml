@@ -154,6 +154,7 @@ jobs:
         run: |
           . ./ci-cargo.ps1
           foreach($target in ($env:BUILD_TARGETS).Split(',')) {
+            # Note: no feature is specified, which means such features like graphics, serde, ndarray, and num-complex are not tested here. 
             ci-cargo test $(if($target -ne 'default') {"--target=$target"} ) '--' --nocapture -ActionName "Testing for $target target"
           }
 
@@ -414,8 +415,9 @@ jobs:
 
             ci-cargo +$toolchain test --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-engine \w tests-all for $target target"
 
-            # TODO: --test-threads=1 is needed because graphics-related tests need to run in serial
-            ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture --test-threads=1 -ActionName "Test extendr-api \w tests-all for $target target"
+            ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-api \w `tests` for $target target"
+            # graphics test requires --test-threads=1
+            ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features graphics $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture --test-threads=1 -ActionName "Test extendr-api \w `graphics` for $target target"
 
             ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests-minimal $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-api \w tests-minimal for $target target"
                       
