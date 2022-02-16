@@ -983,7 +983,7 @@
     <span class="doccomment">/// * If `col` is `NA_INTEGER` then no border should be drawn.</span>
     <span class="doccomment">/// * If `fill` is `NA_INTEGER` then the circle should not be filled.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// [^1]: https://github.com/wch/r-source/blob/9f284035b7e503aebe4a804579e9e80a541311bb/src/include/R_ext/GraphicsDevice.h#L205-L210</span>
+    <span class="doccomment">/// [^1]: &lt;https://github.com/wch/r-source/blob/9f284035b7e503aebe4a804579e9e80a541311bb/src/include/R_ext/GraphicsDevice.h#L205-L210&gt;</span>
     <span class="kw">fn</span> <span class="ident">circle</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">center</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>), <span class="ident">r</span>: <span class="ident">f64</span>, <span class="ident">gc</span>: <span class="ident">R_GE_gcontext</span>, <span class="ident">dd</span>: <span class="ident">DevDesc</span>) {}
 
     <span class="doccomment">/// A callback function to clip.</span>
@@ -1105,9 +1105,9 @@
     <span class="doccomment">/// &gt; detected by device-specific code.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// [The header file]:</span>
-    <span class="doccomment">///     https://github.com/wch/r-source/blob/8ebcb33a9f70e729109b1adf60edd5a3b22d3c6f/src/include/R_ext/GraphicsDevice.h#L508-L527</span>
+    <span class="doccomment">///     &lt;https://github.com/wch/r-source/blob/8ebcb33a9f70e729109b1adf60edd5a3b22d3c6f/src/include/R_ext/GraphicsDevice.h#L508-L527&gt;</span>
     <span class="doccomment">/// [`cbm_Size()` in the cairo device]:</span>
-    <span class="doccomment">///     https://github.com/wch/r-source/blob/8ebcb33a9f70e729109b1adf60edd5a3b22d3c6f/src/library/grDevices/src/cairo/cairoBM.c#L73-L83</span>
+    <span class="doccomment">///     &lt;https://github.com/wch/r-source/blob/8ebcb33a9f70e729109b1adf60edd5a3b22d3c6f/src/library/grDevices/src/cairo/cairoBM.c#L73-L83&gt;</span>
     <span class="kw">fn</span> <span class="ident">size</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">dd</span>: <span class="ident">DevDesc</span>) -&gt; (<span class="ident">f64</span>, <span class="ident">f64</span>, <span class="ident">f64</span>, <span class="ident">f64</span>) {
         (<span class="ident">dd</span>.<span class="ident">left</span>, <span class="ident">dd</span>.<span class="ident">right</span>, <span class="ident">dd</span>.<span class="ident">bottom</span>, <span class="ident">dd</span>.<span class="ident">top</span>)
     }
@@ -1123,7 +1123,7 @@
     <span class="doccomment">/// - for performance</span>
     <span class="doccomment">/// - to decide what to do when font metric information is not available</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// [^1]: https://github.com/wch/r-source/blob/9bb47ca929c41a133786fa8fff7c70162bb75e50/src/include/R_ext/GraphicsDevice.h#L67-L74</span>
+    <span class="doccomment">/// [^1]: &lt;https://github.com/wch/r-source/blob/9bb47ca929c41a133786fa8fff7c70162bb75e50/src/include/R_ext/GraphicsDevice.h#L67-L74&gt;</span>
     <span class="kw">fn</span> <span class="ident">text_width</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">text</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">gc</span>: <span class="ident">R_GE_gcontext</span>, <span class="ident">dd</span>: <span class="ident">DevDesc</span>) -&gt; <span class="ident">f64</span> {
         <span class="ident">text</span>.<span class="ident">chars</span>()
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">char_metric</span>(<span class="ident">c</span>, <span class="ident">gc</span>, <span class="ident">dd</span>).<span class="ident">width</span>)
