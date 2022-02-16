@@ -320,10 +320,9 @@ mod tests {
             device.line((1.1, 2.2), (3.3, 4.4), &gc);
             device.rect((1.1, 2.2), (3.3, 4.4), &gc);
 
-            // // TODO: uncomment the following lines when https://github.com/extendr/extendr/issues/370 is solved.
-            // device.polyline([(0.0, 0.0), (0.0, 2.0)], &gc);
-            // device.polygon([(0.0, 0.0), (1.0, 2.0), (2.0, 0.0)], &gc);
-            // device.path([[(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.3, 0.0), (0.3, 0.3), (0.7, 0.3), (0.3, 0.7)]], true, &gc);
+            device.polyline([(0.0, 0.0), (0.0, 2.0)], &gc);
+            device.polygon([(0.0, 0.0), (1.0, 2.0), (2.0, 0.0)], &gc);
+            device.path([[(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.3, 0.0), (0.3, 0.3), (0.7, 0.3), (0.3, 0.7)]], true, &gc);
 
             // x element of `center` is `hadj`, a horizontal adjustment
             // I'm yet to figure out how the `y` element is used. Let's leave it as 0 for now.
@@ -339,6 +338,9 @@ mod tests {
                                     circle center=(1.1, 2.2) r=3.3\n\
                                     line from=(1.1, 2.2) to=(3.3, 4.4)\n\
                                     rect from=(1.1, 2.2) to=(3.3, 4.4)\n\
+                                    polyline coords=[(0.0, 0.0) (0.0, 2.0)]\n\
+                                    polygon coords=[(0.0, 0.0) (1.0, 2.0) (2.0, 0.0)]\n\
+                                    path coords=[((0.0, 0.0) (1.0, 0.0) (1.0, 1.0) (0.0, 1.0)), ((0.3, 0.0) (0.3, 0.3) (0.7, 0.3) (0.3, 0.7))] winding=true\n\
                                     text pos=(1.1, 2.2) str='foo' rot=5.5 hadj=0.5\n\
                                     raster 1|2|3|4|5|6 w=3 pos=(1.1, 2.2) size=(3.3, 4.4) rot=5.5 interpolate=false\n\
                                     ");
