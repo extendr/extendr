@@ -771,7 +771,7 @@ impl Device {
     }
 
     /// Draw a special symbol centered on pos.
-    /// See https://stat.ethz.ch/R-manual/R-devel/library/graphics/html/points.html
+    /// See <https://stat.ethz.ch/R-manual/R-devel/library/graphics/html/points.html>
     pub fn symbol(&self, pos: (f64, f64), symbol: i32, size: f64, gc: &Context) {
         unsafe {
             let (x, y) = gc.t(pos);

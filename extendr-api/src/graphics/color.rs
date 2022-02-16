@@ -38,7 +38,7 @@ impl Color {
 pub mod predefined {
     use super::Color;
 
-    /// https://www.w3.org/TR/2018/REC-css-color-3-20180619/
+    /// <https://www.w3.org/TR/2018/REC-css-color-3-20180619/>
     pub fn aliceblue() -> Color {
         Color::hex(0xF0F8FF)
     }
