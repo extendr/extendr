@@ -218,6 +218,14 @@
 //! }
 //! ```
 //!
+//! ## Feature gates
+//!
+//! extendr-api has some optional features behind these feature gates:
+//!
+//! - `ndarray`: provides the conversion between R's matrices and [ndarray](https://docs.rs/ndarray/latest/ndarray/).
+//! - `num-complex`: provides the conversion between R's complex numbers and [num-complex](https://docs.rs/num-complex/latest/num_complex/).
+//! - `serde`: provides the [Serde](https://serde.rs/) support.
+//! - `graphics`: provides the functionality to control or implement graphics devices.
 
 #![doc(
     html_logo_url = "https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png"
@@ -239,7 +247,9 @@ pub mod serializer;
 #[cfg(feature = "serde")]
 pub mod deserializer;
 
+#[cfg(feature = "graphics")]
 pub mod graphics;
+
 pub mod robj;
 pub mod scalar;
 pub mod thread_safety;

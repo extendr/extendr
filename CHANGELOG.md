@@ -52,6 +52,8 @@
 
 - Removed `TryFrom` conversions between `Robj` and `HashMap` for consistency. `List::into_hashmap()` and `List::from_hashmap()` should be used instead.
 
+- Added support for the graphics-related API (`graphics` feature flag, disabled by default).
+
 ## extendr 0.2.0
 
 - Added contributing guidelines and code of conduct.
