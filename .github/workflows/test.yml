@@ -281,7 +281,9 @@ jobs:
           - {os: ubuntu-20.04,   r: 'devel', rust-version: 'stable'}
           - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
           # This will be changed back to `R-devel` as soon as R drops 32-bit support and we no longer need cross-compilation
-          - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: ['x86_64-pc-windows-gnu', 'i686-pc-windows-gnu'], extra-args: ['-Zdoctest-xcompile']}
+          - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: ['x86_64-pc-windows-gnu'], extra-args: ['-Zdoctest-xcompile']}
+          - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: ['i686-pc-windows-gnu'], extra-args: ['-Zdoctest-xcompile']}
+
 
 
     env:
@@ -349,19 +351,23 @@ jobs:
         if: startsWith(runner.os, 'Windows')
         run: |
 
+          # mingw64 is required for both 32 and 64 bit targets
           echo "::group::Setting up x86_64"
           C:\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm  --needed mingw-w64-x86_64-clang mingw-w64-x86_64-toolchain"
           echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           echo "::endgroup::"
-          
 
-          echo "::group::Setting up i686"
-          C:\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm --needed mingw32/mingw-w64-i686-clang mingw-w64-i686-toolchain"  
-          echo "C:\msys64\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\i386"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          echo "::endgroup::"
-
+          # mingw32 is required only for 32 bit target
+          if ($env:RUST_TARGETS -like "*i686*") {
+            echo "::group::Setting up i686"
+            C:\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm --needed mingw32/mingw-w64-i686-clang mingw-w64-i686-toolchain"  
+            echo "C:\msys64\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+            echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\i386"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+            echo "::endgroup::"
+          }
+        env:
+          RUST_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
 
       - name: Configure Linux
         if: startsWith(runner.os, 'linux')
