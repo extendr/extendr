@@ -306,7 +306,7 @@ jobs:
       # 1. Update rustup
       # 2. For each target add respective toolchain &
       #    update target for that toolchain
-      - name: Set up Rusttargets
+      - name: Set up Rust targets
         run: |
           $targets = $env:RUST_TARGETS.Split(',')
           foreach ($target in $targets) {
@@ -357,7 +357,6 @@ jobs:
 
           # mingw64 is required for both 32 and 64 bit targets
           echo "::group::Setting up x86_64"
-          #C:\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm  --needed mingw-w64-x86_64-clang mingw-w64-x86_64-toolchain"
           echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           echo "::endgroup::"
@@ -365,7 +364,6 @@ jobs:
           # mingw32 is required only for 32 bit target
           if ($env:RUST_TARGETS -like "*i686*") {
             echo "::group::Setting up i686"
-            #C:\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm --needed mingw32/mingw-w64-i686-clang mingw-w64-i686-toolchain"  
             echo "C:\msys64\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
             echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\i386"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
             echo "::endgroup::"
