@@ -269,10 +269,10 @@ jobs:
   # if toolchain does not match target (Windows x86_64/i686 case), see
   #  > https://github.com/rust-lang/rust/issues/64245
   #  > https://github.com/rust-lang/cargo/issues/7040
-  bindgen_no_cross_compile:
+  bindgen:
     runs-on: ${{ matrix.config.os }}
 
-    name: ${{ matrix.config.os }} w/ bindgen (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
+    name: ${{ matrix.config.os }} w/ bindgen (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }} ${{join(matrix.config.rust-targets)}})
             
     strategy:
       fail-fast: false
