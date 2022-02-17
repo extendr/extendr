@@ -296,33 +296,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.config.rust-version }}
+          default: true
+
       # 1. Update rustup
       # 2. For each target add respective toolchain &
       #    update target for that toolchain
-      - name: Set up Rust
+      - name: Set up Rusttargets
         run: |
-          echo "::group::Updating system's 'rustup'"
-          rustup update
-          echo "::endgroup::"
           $targets = $env:RUST_TARGETS.Split(',')
           foreach ($target in $targets) {
             echo "::group::Setting up $env:RUST_TOOLCHAIN $target"
-            if ($target -eq '') {
-              rustup toolchain add $env:RUST_TOOLCHAIN
-              if(!$?) {
-                throw "Last exit code $LASTEXITCODE"
-              }
-              rustup default $env:RUST_TOOLCHAIN
-              if(!$?) {
-                throw "Last exit code $LASTEXITCODE"
-              }
-            }
-            else {
-              rustup toolchain add "$env:RUST_TOOLCHAIN"
-              if(!$?) {
-                throw "Last exit code $LASTEXITCODE"
-              }
+            if ($target -ne '') {
               rustup target add $target --toolchain "$env:RUST_TOOLCHAIN"
               if(!$?) {
                 throw "Last exit code $LASTEXITCODE"
@@ -330,8 +319,7 @@ jobs:
             }
             echo "::endgroup::"
           }
-
-        env: 
+        env:
           RUST_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
           RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
 
@@ -341,7 +329,7 @@ jobs:
           r-version: ${{ matrix.config.r }}
           use-public-rspm: true
           windows-path-include-mingw: false
-      
+
       - name: MINGW64
         if: startsWith(runner.os, 'Windows')
         uses: msys2/setup-msys2@v2
