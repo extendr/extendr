@@ -348,7 +348,6 @@ jobs:
         with:
           msystem: mingw64
           install: mingw-w64-x86_64-clang mingw-w64-x86_64-toolchain
-          location: C:\
           release: false
 
       - name: MINGW32
@@ -357,7 +356,6 @@ jobs:
         with:
           msystem: mingw32
           install: mingw32/mingw-w64-i686-clang mingw-w64-i686-toolchain
-          location: C:\
           release: false
 
       # 1. Inspect targets. If empty, assume 'x86_64' arch
@@ -412,9 +410,9 @@ jobs:
               $target = $targets[$i]
             }
 
-            ci-cargo +$toolchain build --manifest-path extendr-api/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) -ActionName "Build extendr-api for $toolchain"
+            ci-cargo +$toolchain build --manifest-path extendr-api/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) -ActionName "Build extendr-api for $toolchain/$target"
          
-            ci-cargo +$toolchain build --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) -ActionName "Build extendr-engine for $toolchain"
+            ci-cargo +$toolchain build --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) -ActionName "Build extendr-engine for $toolchain/$target"
             
           }
         env: 
