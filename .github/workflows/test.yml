@@ -272,7 +272,7 @@ jobs:
   bindgen:
     runs-on: ${{ matrix.config.os }}
 
-    name: ${{ matrix.config.os }} w/ bindgen (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }} ${{join(matrix.config.rust-targets)}})
+    name: ${{ matrix.config.os }} w/ bindgen (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }} ${{join(matrix.config.rust-targets, ',')}})
             
     strategy:
       fail-fast: false
@@ -342,6 +342,22 @@ jobs:
           use-public-rspm: true
           windows-path-include-mingw: false
       
+      - name: MINGW64
+        if: startsWith(runner.os, 'Windows')
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: mingw64
+          install: mingw-w64-x86_64-clang mingw-w64-x86_64-toolchain
+          location: C:\
+
+      - name: MINGW32
+        if: startsWith(runner.os, 'Windows') && contains(join(matrix.config.rust-targets, ','), 'i686')
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: mingw32
+          install: mingw32/mingw-w64-i686-clang mingw-w64-i686-toolchain
+          location: C:\
+
       # 1. Inspect targets. If empty, assume 'x86_64' arch
       # 2. Install msys2 packages (--needed skips already installed)
       # 3. Add msys2/mingw{bits}/bin to path
@@ -353,7 +369,7 @@ jobs:
 
           # mingw64 is required for both 32 and 64 bit targets
           echo "::group::Setting up x86_64"
-          C:\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm  --needed mingw-w64-x86_64-clang mingw-w64-x86_64-toolchain"
+          #C:\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm  --needed mingw-w64-x86_64-clang mingw-w64-x86_64-toolchain"
           echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           echo "::endgroup::"
@@ -361,7 +377,7 @@ jobs:
           # mingw32 is required only for 32 bit target
           if ($env:RUST_TARGETS -like "*i686*") {
             echo "::group::Setting up i686"
-            C:\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm --needed mingw32/mingw-w64-i686-clang mingw-w64-i686-toolchain"  
+            #C:\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm --needed mingw32/mingw-w64-i686-clang mingw-w64-i686-toolchain"  
             echo "C:\msys64\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
             echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\i386"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
             echo "::endgroup::"
