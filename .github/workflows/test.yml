@@ -101,13 +101,13 @@ jobs:
           if ($env:RUST_TOOLCHAIN -notlike "*x86_64*") {
             rustup target add i686-pc-windows-gnu ;
             $targets+="i686-pc-windows-gnu"
-            echo "C:\msys64\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+            echo "${env:RTOOLS40_HOME}\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
             echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\i386"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
           }
           if ($env:RUST_TOOLCHAIN -notlike "*i686*") {
             rustup target add x86_64-pc-windows-gnu ;
             $targets+="x86_64-pc-windows-gnu"
-            echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+            echo "${env:RTOOLS40_HOME}\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
             echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
           }
           echo "BUILD_TARGETS=$($targets -join ',')" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append ;
@@ -269,10 +269,10 @@ jobs:
   # if toolchain does not match target (Windows x86_64/i686 case), see
   #  > https://github.com/rust-lang/rust/issues/64245
   #  > https://github.com/rust-lang/cargo/issues/7040
-  bindgen_no_cross_compile:
+  bindgen:
     runs-on: ${{ matrix.config.os }}
 
-    name: ${{ matrix.config.os }} w/ bindgen (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
+    name: ${{ matrix.config.os }} w/ bindgen (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }} ${{join(matrix.config.rust-targets, ',')}})
             
     strategy:
       fail-fast: false
@@ -281,7 +281,9 @@ jobs:
           - {os: ubuntu-20.04,   r: 'devel', rust-version: 'stable'}
           - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
           # This will be changed back to `R-devel` as soon as R drops 32-bit support and we no longer need cross-compilation
-          - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: ['x86_64-pc-windows-gnu', 'i686-pc-windows-gnu'], extra-args: ['-Zdoctest-xcompile']}
+          - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: ['x86_64-pc-windows-gnu'], extra-args: ['-Zdoctest-xcompile']}
+          - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: ['i686-pc-windows-gnu'], extra-args: ['-Zdoctest-xcompile']}
+
 
 
     env:
@@ -294,33 +296,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.config.rust-version }}
+          default: true
+
       # 1. Update rustup
       # 2. For each target add respective toolchain &
       #    update target for that toolchain
-      - name: Set up Rust
+      - name: Set up Rust targets
         run: |
-          echo "::group::Updating system's 'rustup'"
-          rustup update
-          echo "::endgroup::"
           $targets = $env:RUST_TARGETS.Split(',')
           foreach ($target in $targets) {
             echo "::group::Setting up $env:RUST_TOOLCHAIN $target"
-            if ($target -eq '') {
-              rustup toolchain add $env:RUST_TOOLCHAIN
-              if(!$?) {
-                throw "Last exit code $LASTEXITCODE"
-              }
-              rustup default $env:RUST_TOOLCHAIN
-              if(!$?) {
-                throw "Last exit code $LASTEXITCODE"
-              }
-            }
-            else {
-              rustup toolchain add "$env:RUST_TOOLCHAIN"
-              if(!$?) {
-                throw "Last exit code $LASTEXITCODE"
-              }
+            if ($target -ne '') {
               rustup target add $target --toolchain "$env:RUST_TOOLCHAIN"
               if(!$?) {
                 throw "Last exit code $LASTEXITCODE"
@@ -328,8 +319,7 @@ jobs:
             }
             echo "::endgroup::"
           }
-
-        env: 
+        env:
           RUST_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
           RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
 
@@ -339,7 +329,23 @@ jobs:
           r-version: ${{ matrix.config.r }}
           use-public-rspm: true
           windows-path-include-mingw: false
-      
+
+      - name: MINGW64
+        if: startsWith(runner.os, 'Windows')
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: mingw64
+          install: mingw-w64-x86_64-clang mingw-w64-x86_64-toolchain
+          release: false
+
+      - name: MINGW32
+        if: startsWith(runner.os, 'Windows') && contains(join(matrix.config.rust-targets, ','), 'i686')
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: mingw32
+          install: mingw32/mingw-w64-i686-clang mingw-w64-i686-toolchain
+          release: false
+
       # 1. Inspect targets. If empty, assume 'x86_64' arch
       # 2. Install msys2 packages (--needed skips already installed)
       # 3. Add msys2/mingw{bits}/bin to path
@@ -349,19 +355,21 @@ jobs:
         if: startsWith(runner.os, 'Windows')
         run: |
 
+          # mingw64 is required for both 32 and 64 bit targets
           echo "::group::Setting up x86_64"
-          C:\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm  --needed mingw-w64-x86_64-clang mingw-w64-x86_64-toolchain"
           echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           echo "::endgroup::"
-          
 
-          echo "::group::Setting up i686"
-          C:\msys64\usr\bin\bash.exe -l -c "pacman -S --noconfirm --needed mingw32/mingw-w64-i686-clang mingw-w64-i686-toolchain"  
-          echo "C:\msys64\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\i386"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          echo "::endgroup::"
-
+          # mingw32 is required only for 32 bit target
+          if ($env:RUST_TARGETS -like "*i686*") {
+            echo "::group::Setting up i686"
+            echo "C:\msys64\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+            echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\i386"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+            echo "::endgroup::"
+          }
+        env:
+          RUST_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
 
       - name: Configure Linux
         if: startsWith(runner.os, 'linux')
@@ -388,9 +396,9 @@ jobs:
               $target = $targets[$i]
             }
 
-            ci-cargo +$toolchain build --manifest-path extendr-api/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) -ActionName "Build extendr-api for $toolchain"
+            ci-cargo +$toolchain build --manifest-path extendr-api/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) -ActionName "Build extendr-api for $toolchain/$target"
          
-            ci-cargo +$toolchain build --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) -ActionName "Build extendr-engine for $toolchain"
+            ci-cargo +$toolchain build --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) -ActionName "Build extendr-engine for $toolchain/$target"
             
           }
         env: 
@@ -415,9 +423,10 @@ jobs:
 
             ci-cargo +$toolchain test --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-engine \w tests-all for $target target"
 
-            ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-api \w `tests` for $target target"
-            # graphics test requires --test-threads=1
-            ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features graphics $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture --test-threads=1 -ActionName "Test extendr-api \w `graphics` for $target target"
+            ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-api \w tests for $target target"
+
+            # graphics tests requires --test-threads=1
+            ci-cargo +$toolchain test graphics_tests:: --manifest-path extendr-api/Cargo.toml --features graphics $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture --test-threads=1 -ActionName "Test extendr-api \w graphics for $target target"
 
             ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests-minimal $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-api \w tests-minimal for $target target"
                       

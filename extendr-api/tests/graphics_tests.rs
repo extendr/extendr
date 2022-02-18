@@ -1,5 +1,5 @@
 #[cfg(feature = "graphics")]
-mod tests {
+mod graphics_tests {
     use std::fmt::Write;
 
     use extendr_api::graphics::color::predefined::{antiquewhite, black, darkkhaki, deepskyblue};
