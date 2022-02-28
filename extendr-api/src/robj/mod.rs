@@ -1018,6 +1018,11 @@ pub trait Attributes: Types + Length {
             None
         }
     }
+
+    /// Get all the attributes as a Pairlist.
+    fn attrs(&self) -> Pairlist {
+        Robj::from_sexp(unsafe { ATTRIB(self.get()) }).try_into().unwrap()
+    }
 }
 
 impl Attributes for Robj {}

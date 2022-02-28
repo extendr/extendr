@@ -92,7 +92,7 @@ impl Strings {
     }
 
     /// Get an iterator for this string vector.
-    pub fn iter(&self) -> impl Iterator<Item = &Rstr> {
+    pub fn iter(&self) -> impl ExactSizeIterator<Item = &Rstr> {
         self.as_slice().iter()
     }
 
@@ -148,10 +148,15 @@ impl Deref for Strings {
 
 impl std::fmt::Debug for Strings {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        if self.len() == 1 {
-            write!(f, "{:?}", self.elt(0))
+        let attrs = self.as_robj().attrs();
+        if self.len() == 1 && attrs.is_null() {
+            write!(f, "{:?}", self.elt(0))?;
         } else {
-            f.debug_list().entries(self.iter()).finish()
+            f.debug_list().entries(self.iter()).finish()?;
         }
+        for (k, v) in self.as_robj().attrs() {
+            write!(f, ".set_attr({:?}, {:?})", k, v)?;
+        }
+        Ok(())
     }
 }

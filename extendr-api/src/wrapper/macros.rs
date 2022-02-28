@@ -58,7 +58,7 @@ macro_rules! gen_vector_wrapper_impl {
                 pub fn from_values<V>(values: V) -> Self
                 where
                     V: IntoIterator,
-                    V::IntoIter: ExactSizeIterator + std::any::Any,
+                    V::IntoIter: ExactSizeIterator,
                     V::Item: Into<$scalar_type>,
                 {
                     single_threaded(|| {
