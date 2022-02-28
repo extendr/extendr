@@ -499,7 +499,22 @@ macro_rules! gen_from_primitive {
         // }
         impl From<$type_prim> for $type {
             fn from(v: $type_prim) -> Self {
-                Self(v)
+                if let Ok(v) = v.try_into() {
+                    Self(v)
+                } else {
+                    $type::na()
+                }
+            }
+        }
+
+        // eg. &i32, &u64 etc.
+        impl From<&$type_prim> for $type {
+            fn from(v: &$type_prim) -> Self {
+                if let Ok(v) = (*v).try_into() {
+                    Self(v)
+                } else {
+                    $type::na()
+                }
             }
         }
 
