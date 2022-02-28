@@ -88,7 +88,7 @@ where
 
 static mut R_ERROR_BUF: Option<std::ffi::CString> = None;
 
-pub fn throw_r_error<S: AsRef<str>>(s: S) {
+pub fn throw_r_error<S: AsRef<str>>(s: S) -> ! {
     let s = s.as_ref();
     unsafe {
         R_ERROR_BUF = Some(std::ffi::CString::new(s).unwrap());

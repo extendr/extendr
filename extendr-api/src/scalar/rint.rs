@@ -18,7 +18,14 @@ impl Rint {
 }
 
 gen_trait_impl!(Rint, i32, |x: &Rint| x.0 == i32::MIN, i32::MIN);
+gen_from_primitive!(Rint, i8);
+gen_from_primitive!(Rint, i16);
 gen_from_primitive!(Rint, i32);
+gen_from_primitive!(Rint, i64);
+gen_from_primitive!(Rint, u8);
+gen_from_primitive!(Rint, u16);
+gen_from_primitive!(Rint, u32);
+gen_from_primitive!(Rint, u64);
 gen_from_scalar!(Rint, i32);
 gen_sum_iter!(Rint, 0i32);
 
