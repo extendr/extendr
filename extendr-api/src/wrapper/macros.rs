@@ -9,11 +9,6 @@ macro_rules! gen_vector_wrapper_impl {
         doc_name: $doc_name : ident,
         altrep_constructor: $altrep_constructor : ident,
     ) => {
-
-        // Under this size, vectors are manifest.
-        // Above this size, vectors are lazy ALTREP objects.
-        const SHORT_VECTOR_LENGTH: usize = 64 * 1024;
-
         impl Default for $type {
             fn default() -> Self {
                 $type::new(0)
@@ -41,7 +36,7 @@ macro_rules! gen_vector_wrapper_impl {
                 #[doc = "Wrapper for creating ALTREP " $doc_name " (" $sexp ") vectors from iterators."]
                 #[doc = "The iterator must be exact, cloneable and implement Debug."]
                 #[doc = "If you want a more generalised constructor, use `iter.collect::<" $type ">()`."]
-                pub fn from_values<V>(values: V) -> Self
+                pub fn from_altrep_values<V>(values: V) -> Self
                 where
                     V: IntoIterator,
                     V::IntoIter: ExactSizeIterator + std::fmt::Debug + Clone + 'static + std::any::Any,
@@ -50,19 +45,32 @@ macro_rules! gen_vector_wrapper_impl {
                     single_threaded(|| {
                         let values: V::IntoIter = values.into_iter();
 
-                        let robj = if values.len() >= SHORT_VECTOR_LENGTH {
-                            Altrep::$altrep_constructor(values)
-                                .try_into()
-                                .unwrap()
-                        } else {
-                            let mut robj = Robj::alloc_vector($sexp, values.len());
-                            let dest: &mut [$scalar_type] = robj.as_typed_slice_mut().unwrap();
+                        let robj = Altrep::$altrep_constructor(values)
+                            .try_into()
+                            .unwrap();
+                        Self { robj }
+                    })
+                }
+            }
+            paste::paste!{
+                #[doc = "Wrapper for creating non ALTREP " $doc_name " (" $sexp ") vectors from iterators."]
+                #[doc = "If you want a more generalised constructor, use `iter.collect::<" $type ">()`."]
+                pub fn from_values<V>(values: V) -> Self
+                where
+                    V: IntoIterator,
+                    V::IntoIter: ExactSizeIterator + std::any::Any,
+                    V::Item: Into<$scalar_type>,
+                {
+                    single_threaded(|| {
+                        let values: V::IntoIter = values.into_iter();
 
-                            for (d, v) in dest.iter_mut().zip(values) {
-                                *d = v.into();
-                            }
-                            robj
-                        };
+                        let mut robj = Robj::alloc_vector($sexp, values.len());
+                        let dest: &mut [$scalar_type] = robj.as_typed_slice_mut().unwrap();
+
+                        for (d, v) in dest.iter_mut().zip(values) {
+                            *d = v.into();
+                        }
+
                         Self { robj }
                     })
                 }

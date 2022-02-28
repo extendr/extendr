@@ -85,10 +85,10 @@ mod tests {
     }
 
     #[test]
-    fn from_values_long() {
+    fn from_altrep_values() {
         test! {
             // Long (>=64k) vectors a lazy ALTREP objects.
-            let vec = Logicals::from_values((0..1000000000).map(|_| Rbool::from(true)));
+            let vec = Logicals::from_altrep_values((0..1000000000).map(|_| Rbool::from(true)));
             assert_eq!(vec.is_altrep(), true);
             assert_eq!(vec.elt(12345678), true);
             let mut dest = [false.into(); 2];

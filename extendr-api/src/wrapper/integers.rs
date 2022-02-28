@@ -80,7 +80,7 @@ mod tests {
     }
 
     #[test]
-    fn from_values_short() {
+    fn from_values() {
         test! {
             // Short (<64k) vectors are allocated.
             let vec = Integers::from_values((0..3).map(|i| 2-i));
@@ -94,10 +94,10 @@ mod tests {
     }
 
     #[test]
-    fn from_values_long() {
+    fn from_values_altrep() {
         test! {
             // Long (>=64k) vectors a lazy ALTREP objects.
-            let vec = Integers::from_values(0..1000000000);
+            let vec = Integers::from_altrep_values(0..1000000000);
             assert_eq!(vec.is_altrep(), true);
             assert_eq!(vec.elt(12345678), 12345678);
             let mut dest = [0.into(); 2];
