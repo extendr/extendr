@@ -265,6 +265,11 @@ pub trait DeviceDriver: std::marker::Sized {
         0
     }
 
+    /// A callback function that returns the coords of the event
+    fn locator(&mut self, x: f64, y: f64, dd: DevDesc) -> (f64, f64) {
+        (dd.x, dd.y)
+    }
+
     /// Create a [Device].
     fn create_device<T: DeviceDriver>(
         self,
@@ -587,6 +592,18 @@ pub trait DeviceDriver: std::marker::Sized {
             data.holdflush(*dd, level as _)
         }
 
+        unsafe extern "C" fn device_driver_locator<T: DeviceDriver>(
+            x: *mut f64,
+            y: *mut f64,
+            dd: pDevDesc,
+        ) {
+            let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
+            let coordsEvents = data.locator(*dd); 
+            data.activate(*arg1);
+            *x = coordsEvents.0;
+            *y = coordsEvents.1;
+        }
+
         #[cfg(use_r_ge_version_14)]
         unsafe extern "C" fn device_driver_setPattern<T: DeviceDriver>(
             pattern: SEXP,
@@ -763,7 +780,7 @@ pub trait DeviceDriver: std::marker::Sized {
             };
             (*p_dev_desc).close = Some(device_driver_close::<T>);
             (*p_dev_desc).deactivate = Some(device_driver_deactivate::<T>);
-            (*p_dev_desc).locator = None; // TOD;
+            (*p_dev_desc).locator = Some(device_driver_locator::<T>); // TOD;
             (*p_dev_desc).line = Some(device_driver_line::<T>);
             (*p_dev_desc).metricInfo = Some(device_driver_char_metric::<T>);
             (*p_dev_desc).mode = Some(device_driver_mode::<T>);
