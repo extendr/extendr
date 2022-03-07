@@ -599,7 +599,6 @@ pub trait DeviceDriver: std::marker::Sized {
         ) {
             let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
             let coordsEvents = data.locator(*dd); 
-            data.activate(*arg1);
             *x = coordsEvents.0;
             *y = coordsEvents.1;
         }
