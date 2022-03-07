@@ -270,6 +270,9 @@ pub trait DeviceDriver: std::marker::Sized {
         (dd.x, dd.y)
     }
 
+    /// A callback function for X11_eventHelper
+    fn eventHelper(&mut self, dd: DevDesc, code: c_int) {}
+
     /// Create a [Device].
     fn create_device<T: DeviceDriver>(
         self,
@@ -603,6 +606,14 @@ pub trait DeviceDriver: std::marker::Sized {
             *y = coordsEvents.1;
         }
 
+        unsafe extern "C" fn device_driver_eventHelper<T: DeviceDriver>(
+            dd: pDevDesc,
+            code: c_int
+        ) {
+            let mut data = ((*dd).deviceSpecific as *mut T).read();
+            data.eventHelper(*dd, code);
+        }
+
         #[cfg(use_r_ge_version_14)]
         unsafe extern "C" fn device_driver_setPattern<T: DeviceDriver>(
             pattern: SEXP,
@@ -834,7 +845,7 @@ pub trait DeviceDriver: std::marker::Sized {
             (*p_dev_desc).useRotatedTextInContour = 0;
 
             (*p_dev_desc).eventEnv = empty_env().get();
-            (*p_dev_desc).eventHelper = None;
+            (*p_dev_desc).eventHelper = Some(device_driver_eventHelper::<T>);
 
             (*p_dev_desc).holdflush = Some(device_driver_holdflush::<T>);
 
