@@ -565,6 +565,7 @@ impl_from_iter! {[T; 17]}
 impl_from_iter! {[T; 18]}
 impl_from_iter! {[T; 19]}
 impl_from_iter! {Vec<T>}
+impl_from_iter! {&Vec<T>}
 
 impl_from_into_iter! {&'a [T]}
 
