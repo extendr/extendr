@@ -216,6 +216,7 @@
 <span id="214">214</span>
 <span id="215">215</span>
 <span id="216">216</span>
+<span id="217">217</span>
 </pre><pre class="rust"><code><span class="doccomment">//!</span>
 <span class="doccomment">//! rmacros - a set of macros to call actual R functions in a rusty way.</span>
 <span class="doccomment">//!</span>
@@ -405,7 +406,8 @@ TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
 
 <span class="doccomment">/// Macro for running tests.</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// This allows us to use `?` in example code instead of `unwrap()`.</span>
+<span class="doccomment">/// This starts up the underlying [`extendr_engine`] so that interactions with R will work.</span>
+<span class="doccomment">/// Additionally, this allows us to use `?` in example code instead of `unwrap()`.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// **Note:** This macro is meant to be used in test code (annotated with</span>
 <span class="doccomment">/// `#[cfg(test)]`) or in doc strings. If it is used in library code that</span>

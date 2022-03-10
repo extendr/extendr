@@ -77,6 +77,9 @@
 <span id="75">75</span>
 <span id="76">76</span>
 <span id="77">77</span>
+<span id="78">78</span>
+<span id="79">79</span>
+<span id="80">80</span>
 </pre><pre class="rust"><code><span class="doccomment">//! # Common exports for extendr-api.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This allows us to be more selective about exports and avoid users</span>
@@ -109,6 +112,9 @@
 
 <span class="comment">// Exported macros have crate scope.</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">append</span>, <span class="ident">append_lang</span>, <span class="ident">append_with_name</span>, <span class="ident">args</span>, <span class="ident">lang</span>, <span class="ident">make_lang</span>};
+
+<span class="comment">// Export inner functionality needed in the test! macro</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">extendr_engine</span>;
 
 <span class="comment">// Exported macros have crate scope.</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::{
