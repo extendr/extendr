@@ -104,32 +104,25 @@ macro_rules! make_conversions {
             }
         }
 
-        impl TryFrom<Robj> for $typename {
-            type Error = crate::Error;
-
-            /// Make a wrapper from a robj if it matches.
-            fn try_from(robj: Robj) -> Result<Self> {
-                if robj.$isfunc() {
-                    Ok($typename { robj })
-                } else {
-                    Err(Error::$errname(robj))
-                }
-            }
-        }
-
-        // We can convert a borrowed Robj to any wrapper by cloning the pointer
         impl TryFrom<&Robj> for $typename {
             type Error = crate::Error;
 
             /// Make a wrapper from a robj if it matches.
             fn try_from(robj: &Robj) -> Result<Self> {
                 if robj.$isfunc() {
-                    Ok($typename {
-                        robj: robj.to_owned(),
-                    })
+                    Ok($typename { robj: robj.clone() })
                 } else {
-                    Err(Error::$errname(robj.to_owned()))
+                    Err(Error::$errname(robj.clone()))
                 }
+            }
+        }
+
+        impl TryFrom<Robj> for $typename {
+            type Error = crate::Error;
+
+            /// Make a wrapper from a robj if it matches.
+            fn try_from(robj: Robj) -> Result<Self> {
+                <$typename>::try_from(&robj)
             }
         }
 

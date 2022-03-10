@@ -175,11 +175,11 @@ impl IntoIterator for Pairlist {
     }
 }
 
-impl TryFrom<Robj> for PairlistIter {
+impl TryFrom<&Robj> for PairlistIter {
     type Error = Error;
 
     /// You can pass a PairlistIter to a function.
-    fn try_from(robj: Robj) -> Result<Self> {
+    fn try_from(robj: &Robj) -> Result<Self> {
         let pairlist: Pairlist = robj.try_into()?;
         Ok(pairlist.into_iter())
     }

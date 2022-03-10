@@ -295,23 +295,14 @@ impl ExactSizeIterator for ListIter {
 /// ```
 pub struct FromList<T>(pub T);
 
-impl<T> TryFrom<Robj> for FromList<Vec<T>>
+impl<T> TryFrom<&Robj> for FromList<Vec<T>>
 where
     T: TryFrom<Robj>,
     <T as TryFrom<Robj>>::Error: Into<Error>,
 {
     type Error = Error;
 
-    /// You can use the FromList wrapper to coerce a Robj into a list.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///     let list = Robj::from(list!(1, 2));
-    ///     let vec : FromList<Vec<i32>> = list.try_into()?;
-    ///     assert_eq!(vec.0, vec![1, 2]);
-    /// }
-    /// ```
-    fn try_from(robj: Robj) -> Result<Self> {
+    fn try_from(robj: &Robj) -> Result<Self> {
         let listiter: ListIter = robj.try_into()?;
         let res: Result<Vec<_>> = listiter
             .map(|robj| T::try_from(robj).map_err(|e| e.into()))
@@ -320,21 +311,34 @@ where
     }
 }
 
+impl<T> TryFrom<Robj> for FromList<Vec<T>>
+where
+    T: TryFrom<Robj>,
+    <T as TryFrom<Robj>>::Error: Into<Error>,
+{
+    type Error = Error;
+
+    fn try_from(robj: Robj) -> Result<Self> {
+        <FromList<Vec<T>>>::try_from(&robj)
+    }
+}
+
+impl TryFrom<&Robj> for ListIter {
+    type Error = Error;
+
+    /// Convert a general R object into a List iterator if possible.
+    fn try_from(robj: &Robj) -> Result<Self> {
+        let list: List = robj.try_into()?;
+        Ok(list.values())
+    }
+}
+
 impl TryFrom<Robj> for ListIter {
     type Error = Error;
 
-    /// You can pass a ListIter to a function.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///     let list = Robj::from(list!(1, 2));
-    ///     let vec : ListIter = list.try_into()?;
-    ///     assert_eq!(vec.collect::<Vec<_>>(), vec![r!(1), r!(2)]);
-    /// }
-    /// ```
+    /// Convert a general R object into a List iterator if possible.
     fn try_from(robj: Robj) -> Result<Self> {
-        let list: List = robj.try_into()?;
-        Ok(list.values())
+        <ListIter>::try_from(&robj)
     }
 }
 

@@ -94,15 +94,15 @@ gen_unop!(
     "Logical not a Rint value, overflows to NA."
 );
 
-impl TryFrom<Robj> for Rint {
+impl TryFrom<&Robj> for Rint {
     type Error = Error;
 
-    fn try_from(robj: Robj) -> Result<Self> {
+    fn try_from(robj: &Robj) -> Result<Self> {
         // Check if the value is a scalar
         match robj.len() {
-            0 => return Err(Error::ExpectedNonZeroLength(robj)),
+            0 => return Err(Error::ExpectedNonZeroLength(robj.clone())),
             1 => {}
-            _ => return Err(Error::ExpectedScalar(robj)),
+            _ => return Err(Error::ExpectedScalar(robj.clone())),
         };
 
         // Check if the value is not a missing value
@@ -118,7 +118,7 @@ impl TryFrom<Robj> for Rint {
             if let Ok(v) = Self::try_from(v) {
                 return Ok(v);
             } else {
-                return Err(Error::OutOfLimits(robj));
+                return Err(Error::OutOfLimits(robj.clone()));
             }
         }
 
@@ -132,11 +132,11 @@ impl TryFrom<Robj> for Rint {
             if (result as f64 - v).abs() < f64::EPSILON {
                 return Ok(Rint::from(result));
             } else {
-                return Err(Error::ExpectedWholeNumber(robj));
+                return Err(Error::ExpectedWholeNumber(robj.clone()));
             }
         }
 
-        Err(Error::ExpectedNumeric(robj))
+        Err(Error::ExpectedNumeric(robj.clone()))
     }
 }
 
