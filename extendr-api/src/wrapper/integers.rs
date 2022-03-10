@@ -66,7 +66,7 @@ mod tests {
     fn iter_mut() {
         test! {
             let mut vec = Integers::from_values(0..3);
-            vec.iter_mut().for_each(|v| *v = *v + 1);
+            vec.iter_mut().for_each(|v| *v += 1);
             assert_eq!(vec, Integers::from_values(1..4));
         }
     }

@@ -154,42 +154,6 @@ gen_binopassign!(
 // Generate unary ops for -, !
 gen_unop!(Rcplx, Neg, |lhs: c64| Some(-lhs), "Negate a Rcplx value.");
 
-impl TryFrom<Robj> for Rcplx {
-    type Error = Error;
-
-    fn try_from(robj: Robj) -> Result<Self> {
-        // Check if the value is a scalar
-        match robj.len() {
-            0 => return Err(Error::ExpectedNonZeroLength(robj)),
-            1 => {}
-            _ => return Err(Error::ExpectedScalar(robj)),
-        };
-
-        // Check if the value is not a missing value.
-        if robj.is_na() {
-            return Ok(Rcplx::na());
-        }
-
-        // This should always work, NA is handled above.
-        if let Some(v) = robj.as_real() {
-            return Ok(Rcplx::from(v));
-        }
-
-        // Any integer (32 bit) can be represented as f64,
-        // this always works.
-        if let Some(v) = robj.as_integer() {
-            return Ok(Rcplx::from(v as f64));
-        }
-
-        // Complex slices return their first element.
-        if let Some(s) = robj.as_typed_slice() {
-            return Ok(s[0]);
-        }
-
-        Err(Error::ExpectedComplex(robj))
-    }
-}
-
 impl PartialEq<f64> for Rcplx {
     fn eq(&self, other: &f64) -> bool {
         self.re().inner() == *other && self.im() == 0.0

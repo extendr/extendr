@@ -100,15 +100,15 @@ gen_binopassign!(
 // Generate unary ops for -, !
 gen_unop!(Rfloat, Neg, |lhs: f64| Some(-lhs), "Negate a Rfloat value.");
 
-impl TryFrom<Robj> for Rfloat {
+impl TryFrom<&Robj> for Rfloat {
     type Error = Error;
 
-    fn try_from(robj: Robj) -> Result<Self> {
+    fn try_from(robj: &Robj) -> Result<Self> {
         // Check if the value is a scalar
         match robj.len() {
-            0 => return Err(Error::ExpectedNonZeroLength(robj)),
+            0 => return Err(Error::ExpectedNonZeroLength(robj.clone())),
             1 => {}
-            _ => return Err(Error::ExpectedScalar(robj)),
+            _ => return Err(Error::ExpectedScalar(robj.clone())),
         };
 
         // Check if the value is not a missing value.
@@ -127,7 +127,7 @@ impl TryFrom<Robj> for Rfloat {
             return Ok(Rfloat::from(v as f64));
         }
 
-        Err(Error::ExpectedNumeric(robj))
+        Err(Error::ExpectedNumeric(robj.clone()))
     }
 }
 

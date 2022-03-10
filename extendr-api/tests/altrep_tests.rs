@@ -41,7 +41,7 @@ fn test_altinteger() {
         let mystate_w_missing = MyCompactIntRange { start: 0, len: 10, step: 1, missing_index: 5 };
 
         let obj_w_missing = Altrep::from_state_and_class(mystate_w_missing, class, false);
-        let robj_w_missing = Robj::from(obj_w_missing.clone());
+        let robj_w_missing = Robj::from(obj_w_missing);
         let integers_w_missing: Integers = robj_w_missing.try_into()?;
         assert_eq!(integers_w_missing.elt(9), Rint::from(9));
         assert!(integers_w_missing.elt(5).is_na());
@@ -95,7 +95,7 @@ fn test_altreal() {
         let mystate_w_missing = MyCompactRealRange { start: 0.0, len: 10, step: 1.0, missing_index: 5 };
 
         let obj_w_missing = Altrep::from_state_and_class(mystate_w_missing, class, false);
-        let robj_w_missing = Robj::from(obj_w_missing.clone());
+        let robj_w_missing = Robj::from(obj_w_missing);
         let doubles_w_missing: Doubles = robj_w_missing.try_into()?;
         assert_eq!(doubles_w_missing.elt(9), Rfloat::from(9.0));
 
