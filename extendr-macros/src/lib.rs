@@ -242,5 +242,5 @@ pub fn derive_into_robj(item: TokenStream) -> TokenStream {
 
 #[proc_macro_derive(IntoDataframe)]
 pub fn derive_into_dataframe(item: TokenStream) -> TokenStream {
-    list_struct::derive_into_dataframe(item)
+    dataframe::derive_into_dataframe(item)
 }
