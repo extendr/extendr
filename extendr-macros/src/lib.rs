@@ -65,6 +65,7 @@ mod list_struct;
 mod pairlist;
 mod pairs;
 mod wrappers;
+mod dataframe;
 
 use proc_macro::TokenStream;
 use quote::quote;
@@ -237,4 +238,9 @@ pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
 #[proc_macro_derive(IntoRobj)]
 pub fn derive_into_robj(item: TokenStream) -> TokenStream {
     list_struct::derive_into_robj(item)
+}
+
+#[proc_macro_derive(IntoDataframe)]
+pub fn derive_into_dataframe(item: TokenStream) -> TokenStream {
+    list_struct::derive_into_dataframe(item)
 }
