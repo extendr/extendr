@@ -61,6 +61,11 @@ pub trait DeviceDriver: std::marker::Sized {
     /// operation, this can be set `false`.
     const USE_CAPTURE: bool = true;
 
+    /// Whether the device has a locator capability, i.e.,
+    /// reading the position of the graphics cursor when the mouse button is pressed.
+    /// It works with X11, windows and quartz devices. 
+    const USE_LOCATOR: bool = true;
+
     /// Whether the device maintains a plot history. This corresponds to
     /// `displayListOn` in the underlying [DevDesc].
     const USE_PLOT_HISTORY: bool = false;
@@ -868,7 +873,11 @@ pub trait DeviceDriver: std::marker::Sized {
                 DevCapCapture::No as _
             };
 
-            (*p_dev_desc).haveLocator = DevCapLocator::Unset as _;
+            (*p_dev_desc).haveLocator =  if <T>::USE_LOCATOR {
+                DevCapLocator::Yes as _
+            } else {
+                DevCapLocator::No as _
+            };
 
             // NOTE: Unlike the features that will be added in  Graphics API
             // version 15 (i.e. R 4.2), the features in API v13 & v14 (i.e. R
