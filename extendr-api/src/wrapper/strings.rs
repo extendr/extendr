@@ -68,25 +68,23 @@ impl Strings {
         }
     }
 
-    /// This is a relatively expensive operation, so use a variable if using this in a loop.
-    pub fn elt(&self, i: usize) -> Rstr {
+    /// Get a reference to an element in a string vector.
+    pub fn elt(&self, i: usize) -> &Rstr {
         unsafe {
             let sexp = if i >= self.len() {
                 R_NaString
             } else {
                 STRING_ELT(self.get(), i as R_xlen_t)
             };
-            Rstr {
-                robj: Robj::from_sexp(sexp),
-            }
+            std::mem::transmute(sexp)
         }
     }
 
     /// Set a single element of this string vector.
-    pub fn set_elt<T: AsRef<str>>(&mut self, i: usize, e: T) {
+    pub fn set_elt(&mut self, i: usize, e: Rstr) {
         single_threaded(|| unsafe {
             if i < self.len() {
-                SET_STRING_ELT(self.robj.get(), i as isize, str_to_character(e.as_ref()));
+                SET_STRING_ELT(self.robj.get(), i as isize, e.get());
             }
         });
     }

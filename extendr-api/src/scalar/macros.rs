@@ -503,6 +503,13 @@ macro_rules! gen_from_primitive {
             }
         }
 
+        // Same but for references
+        impl From<&$type_prim> for $type {
+            fn from(v: &$type_prim) -> Self {
+                Self(*v)
+            }
+        }
+
         // The 'example usage' expands to...
         //
         // impl From<Option<i32>> for Rint {
@@ -516,6 +523,17 @@ macro_rules! gen_from_primitive {
         // }
         impl From<Option<$type_prim>> for $type {
             fn from(v: Option<$type_prim>) -> Self {
+                if let Some(v) = v {
+                    v.into()
+                } else {
+                    $type::na()
+                }
+            }
+        }
+
+        // Same but for references
+        impl From<Option<&$type_prim>> for $type {
+            fn from(v: Option<&$type_prim>) -> Self {
                 if let Some(v) = v {
                     v.into()
                 } else {
