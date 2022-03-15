@@ -275,8 +275,11 @@ pub trait DeviceDriver: std::marker::Sized {
         (dd.x, dd.y)
     }
 
-    /// A callback function for X11_eventHelper
-    fn eventHelper(&mut self, dd: DevDesc, code: c_int) {}
+    /// A callback function for X11_eventHelper.
+    /// Argument `code` should, ideally, be of type c_int,
+    /// but compiler throws erors. It should be ok to use
+    /// i32 here.
+    fn eventHelper(&mut self, dd: DevDesc, code: i32) {}
 
     /// Create a [Device].
     fn create_device<T: DeviceDriver>(
