@@ -271,9 +271,7 @@ pub trait DeviceDriver: std::marker::Sized {
     }
 
     /// A callback function that returns the coords of the event
-    fn locator(&mut self, x: f64, y: f64, dd: DevDesc) -> (f64, f64) {
-        (dd.x, dd.y)
-    }
+    fn locator(&mut self, x: &mut f64, &mut y: f64, dd: DevDesc) {}
 
     /// A callback function for X11_eventHelper.
     /// Argument `code` should, ideally, be of type c_int,
@@ -609,9 +607,7 @@ pub trait DeviceDriver: std::marker::Sized {
             dd: pDevDesc,
         ) {
             let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
-            let coordsEvents = data.locator(*dd); 
-            *x = coordsEvents.0;
-            *y = coordsEvents.1;
+            data.locator(x, y, *dd); 
         }
 
         unsafe extern "C" fn device_driver_eventHelper<T: DeviceDriver>(
