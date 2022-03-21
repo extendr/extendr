@@ -180,21 +180,24 @@ pub fn Rraw(item: TokenStream) -> TokenStream {
 /// In the below example, `foo_from_list` is an instance of the `Foo` struct, that has been converted
 /// from an R list:
 /// ```
-/// use extendr_api::prelude::*;
-/// use extendr_macros::TryFromRobj;
-/// # use extendr_api::test;
-/// # test!{
+/// #[cfg(not(target_os = "windows"))]
+/// {
+///     use extendr_api::prelude::*;
+///     use extendr_macros::TryFromRobj;
+///     # use extendr_api::test;
+///     # test!{
 ///
-/// #[derive(TryFromRobj, PartialEq, Debug)]
-/// struct Foo {
-///     a: u64,
-///     b: String
+///     #[derive(TryFromRobj, PartialEq, Debug)]
+///     struct Foo {
+///         a: u64,
+///         b: String
+///     }
+///     let native_foo = Foo { a: 5, b: "bar".into() };
+///     let foo_from_list: Foo = R!("list(a = 5, b = 'bar')")?.try_into()?;
+///     assert_eq!(native_foo, foo_from_list);
+///     # }
+///     # Ok::<(), extendr_api::Error>(())
 /// }
-/// let native_foo = Foo { a: 5, b: "bar".into() };
-/// let foo_from_list: Foo = R!("list(a = 5, b = 'bar')")?.try_into()?;
-/// assert_eq!(native_foo, foo_from_list);
-/// # }
-/// # Ok::<(), extendr_api::Error>(())
 /// ```
 #[proc_macro_derive(TryFromRobj)]
 pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
@@ -210,23 +213,26 @@ pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
 /// In the below example, `converted` contains an R list object with the same fields as the
 /// `Foo` struct.
 /// ```
-/// use extendr_api::prelude::*;
-/// use extendr_macros::IntoRobj;
+/// #[cfg(not(target_os = "windows"))]
+/// {
+///     use extendr_api::prelude::*;
+///     use extendr_macros::IntoRobj;
 ///
-/// # use extendr_api::test;
-/// # test!{
-/// #[derive(IntoRobj)]
-/// struct Foo {
-///     a: u32,
-///     b: String
+///     # use extendr_api::test;
+///     # test!{
+///     #[derive(IntoRobj)]
+///     struct Foo {
+///         a: u32,
+///         b: String
+///     }
+///     let converted: Robj = Foo {
+///         a: 5,
+///         b: String::from("bar")
+///     }.into();
+///     assert_eq!(converted, R!(r"list(a=5, b='bar')")?);
+///     # }
+///     # Ok::<(), extendr_api::Error>(())
 /// }
-/// let converted: Robj = Foo {
-///     a: 5,
-///     b: String::from("bar")
-/// }.into();
-/// assert_eq!(converted, R!(r"list(a=5, b='bar')")?);
-/// # }
-/// # Ok::<(), extendr_api::Error>(())
 /// ```
 /// # Details
 /// Note, the `From<Struct> for Robj` behaviour is different from what is obtained by applying the standard `#[extendr]` macro
