@@ -179,7 +179,7 @@ pub fn Rraw(item: TokenStream) -> TokenStream {
 /// # Examples
 /// In the below example, `foo_from_list` is an instance of the `Foo` struct, that has been converted
 /// from an R list:
-/// ```
+/// ```ignore
 /// use extendr_api::prelude::*;
 /// use extendr_macros::TryFromRobj;
 /// # use extendr_api::test;
@@ -209,7 +209,7 @@ pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
 /// # Examples
 /// In the below example, `converted` contains an R list object with the same fields as the
 /// `Foo` struct.
-/// ```
+/// ```ignore
 /// use extendr_api::prelude::*;
 /// use extendr_macros::IntoRobj;
 ///
