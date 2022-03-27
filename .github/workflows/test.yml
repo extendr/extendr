@@ -283,9 +283,10 @@ jobs:
           - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
           # This will be changed back to `R-devel` as soon as R drops 32-bit support and we no longer need cross-compilation
           - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: ['x86_64-pc-windows-gnu'], extra-args: ['-Zdoctest-xcompile']}
-          - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: ['i686-pc-windows-gnu'], extra-args: ['-Zdoctest-xcompile']}
-
-
+          - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: ['i686-pc-windows-gnu'],   extra-args: ['-Zdoctest-xcompile']}
+          - {os: windows-latest, r: 'devel',   rust-version: 'nightly-msvc', rust-targets: ['x86_64-pc-windows-gnu'], extra-args: ['-Zdoctest-xcompile'], rtools-version: '42'}
+          # If we use stable-gnu, we don't need doctest-xcompile feature
+          - {os: windows-latest, r: 'devel',   rust-version: 'stable-gnu',   rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '42'}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -328,6 +329,7 @@ jobs:
         uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
+          rtools-version: ${{ matrix.config.rtools-version }}
           use-public-rspm: true
           windows-path-include-mingw: false
 
@@ -353,7 +355,7 @@ jobs:
       # 4. Add R/{arch}/bin to path
       # 5. Create array of correct (arch-dependent) paths to 'libclang.dll', export as env variable
       - name: Configure Windows
-        if: startsWith(runner.os, 'Windows')
+        if: startsWith(runner.os, 'Windows') && matrix.config.r != 'devel'
         run: |
 
           # mingw64 is required for both 32 and 64 bit targets
@@ -369,6 +371,16 @@ jobs:
             echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\i386"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
             echo "::endgroup::"
           }
+        env:
+          RUST_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
+
+      - name: Configure Windows (R-devel)
+        if: startsWith(runner.os, 'Windows') && matrix.config.r == 'devel'
+        run: |
+          echo "::group::Setting up x86_64"
+          echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          echo "::endgroup::"
         env:
           RUST_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
 
