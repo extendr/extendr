@@ -198,6 +198,13 @@ jobs:
         with:
           working-directory: tests/rextendr
 
+      - name: Tweak Makevars.win
+        if: startsWith(runner.os, 'Windows') && matrix.config.r == 'devel' && matrix.config.rust-version == 'stable-gnu'
+        run: |
+          sed -i 's/stable-msvc/stable-gnu/g' tests/extendrtests/src/Makevars.win
+          sed -i 's/stable-msvc/stable-gnu/g' tests/rextendr/src/Makevars.win
+        shell: bash
+
       # Regex is used to inject absolute path into Cargo.toml
       - name: Configure R for integration testing
         run: |
