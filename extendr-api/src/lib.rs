@@ -10,6 +10,8 @@
 //! See [Robj] for much of the content of this crate.
 //! [Robj] provides a safe wrapper for the R object type.
 //!
+//! ## Examples
+//!
 //! Use attributes and macros to export to R.
 //! ```ignore
 //! use extendr_api::prelude::*;
@@ -218,6 +220,46 @@
 //! }
 //! ```
 //!
+//! ## Writing tests
+//!
+//! To test the functions exposed to R, wrap your code in the [`test!`] macro.
+//! This macro starts up the necessary R machinery for tests to work.
+//!
+//! ```no_run
+//! use extendr_api::prelude::*;
+//!
+//! #[extendr]
+//! fn things() ->  Strings {
+//!     Strings::from_values(vec!["Test", "this"])
+//! }
+//!
+//! // define exports using extendr_module
+//! extendr_module! {
+//!    mod mymodule;
+//!    fn things;    
+//! }
+//!
+//!
+//! #[cfg(test)]
+//! mod test {
+//!     use super::*;
+//!     use extendr_api::prelude::*;
+//!
+//!     #[test]
+//!     fn test_simple_function() {
+//!         assert_eq!(things().elt(0), "Test")
+//!     }
+//! }
+//! ```
+//!
+//! ## Feature gates
+//!
+//! extendr-api has some optional features behind these feature gates:
+//!
+//! - `ndarray`: provides the conversion between R's matrices and [ndarray](https://docs.rs/ndarray/latest/ndarray/).
+//! - `num-complex`: provides the conversion between R's complex numbers and [num-complex](https://docs.rs/num-complex/latest/num_complex/).
+//! - `serde`: provides the [Serde](https://serde.rs/) support.
+//! - `graphics`: provides the functionality to control or implement graphics devices.
 
 #![doc(
     html_logo_url = "https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png"
@@ -239,7 +281,9 @@ pub mod serializer;
 #[cfg(feature = "serde")]
 pub mod deserializer;
 
+#[cfg(feature = "graphics")]
 pub mod graphics;
+
 pub mod robj;
 pub mod scalar;
 pub mod thread_safety;
@@ -257,7 +301,7 @@ pub use std::ops::DerefMut;
 pub use robj::Robj;
 
 //////////////////////////////////////////////////
-// Note these pub use statements are deprectaed
+// Note these pub use statements are deprecated
 //
 // `use extendr_api::prelude::*;`
 //

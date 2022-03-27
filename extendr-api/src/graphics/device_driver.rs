@@ -85,7 +85,7 @@ pub trait DeviceDriver: std::marker::Sized {
     /// * If `col` is `NA_INTEGER` then no border should be drawn.
     /// * If `fill` is `NA_INTEGER` then the circle should not be filled.
     ///
-    /// [^1]: https://github.com/wch/r-source/blob/9f284035b7e503aebe4a804579e9e80a541311bb/src/include/R_ext/GraphicsDevice.h#L205-L210
+    /// [^1]: <https://github.com/wch/r-source/blob/9f284035b7e503aebe4a804579e9e80a541311bb/src/include/R_ext/GraphicsDevice.h#L205-L210>
     fn circle(&mut self, center: (f64, f64), r: f64, gc: R_GE_gcontext, dd: DevDesc) {}
 
     /// A callback function to clip.
@@ -207,9 +207,9 @@ pub trait DeviceDriver: std::marker::Sized {
     /// > detected by device-specific code.
     ///
     /// [The header file]:
-    ///     https://github.com/wch/r-source/blob/8ebcb33a9f70e729109b1adf60edd5a3b22d3c6f/src/include/R_ext/GraphicsDevice.h#L508-L527
+    ///     <https://github.com/wch/r-source/blob/8ebcb33a9f70e729109b1adf60edd5a3b22d3c6f/src/include/R_ext/GraphicsDevice.h#L508-L527>
     /// [`cbm_Size()` in the cairo device]:
-    ///     https://github.com/wch/r-source/blob/8ebcb33a9f70e729109b1adf60edd5a3b22d3c6f/src/library/grDevices/src/cairo/cairoBM.c#L73-L83
+    ///     <https://github.com/wch/r-source/blob/8ebcb33a9f70e729109b1adf60edd5a3b22d3c6f/src/library/grDevices/src/cairo/cairoBM.c#L73-L83>
     fn size(&mut self, dd: DevDesc) -> (f64, f64, f64, f64) {
         (dd.left, dd.right, dd.bottom, dd.top)
     }
@@ -225,7 +225,7 @@ pub trait DeviceDriver: std::marker::Sized {
     /// - for performance
     /// - to decide what to do when font metric information is not available
     ///
-    /// [^1]: https://github.com/wch/r-source/blob/9bb47ca929c41a133786fa8fff7c70162bb75e50/src/include/R_ext/GraphicsDevice.h#L67-L74
+    /// [^1]: <https://github.com/wch/r-source/blob/9bb47ca929c41a133786fa8fff7c70162bb75e50/src/include/R_ext/GraphicsDevice.h#L67-L74>
     fn text_width(&mut self, text: &str, gc: R_GE_gcontext, dd: DevDesc) -> f64 {
         text.chars()
             .map(|c| self.char_metric(c, gc, dd).width)

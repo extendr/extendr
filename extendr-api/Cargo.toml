@@ -23,16 +23,23 @@ lazy_static = "1.4"
 paste = "1.0.5"
 serde = { version = "1.0", features = ["derive"], optional = true }
 num-complex = { version = "0.4", optional = true }
-
-# TODO: libc is only needed to allocate the memory for DevDesc. Remove this when we
-# separate the code into extendr-graphics crate.
-libc = "0.2"
+libc = { version = "0.2", optional = true }
 
 [features]
 default = []
 
-# All features to test
-tests-all = ["ndarray", "libR-sys/use-bindgen", "serde", "num-complex"]
+# libc is needed to allocate a DevDesc (c.f., https://bugs.r-project.org/show_bug.cgi?id=18292)
+graphics = ["libc"]
 
 # The minimal set of features without all optional ones
 tests-minimal = ["libR-sys/use-bindgen"]
+
+# All features to test except for graphics; graphics tests are currently unstable
+# and require --test-threads=1, so we decided to exclude it from here (c.f. #378).
+tests = ["tests-minimal", "ndarray", "serde", "num-complex"]
+
+# Literally all features to test
+tests-all = ["tests", "graphics"]
+
+[package.metadata.docs.rs]
+features = ["graphics"]

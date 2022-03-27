@@ -31,6 +31,9 @@ pub use super::wrapper::symbol::{
 // Exported macros have crate scope.
 pub use crate::{append, append_lang, append_with_name, args, lang, make_lang};
 
+// Export inner functionality needed in the test! macro
+pub use extendr_engine;
+
 // Exported macros have crate scope.
 pub use crate::{
     data_frame, factor, global, list, r, reprint, reprintln, rprint, rprintln, sym, test, var,
