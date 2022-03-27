@@ -133,8 +133,8 @@ jobs:
           linker = "x86_64-w64-mingw32.static.posix-gcc.exe"
           '@ | Out-File -FilePath .cargo/config.toml -Encoding utf8 -Append ;
 
-          # rustc adds -lgcc_eh flag to the compiler, but there's no libgcc_eh in Rtools42 (this might be a bug in MSYS2 itself?, but Rtools40
-          # has a workaround for this).
+          # rustc adds -lgcc_eh and -lgcc_s flag to the compiler, but there's no libgcc_eh or libgcc_a in Rtools42.
+          # For more details, please refer to https://github.com/r-windows/rtools-packages/blob/2407b23f1e0925bbb20a4162c963600105236318/mingw-w64-gcc/PKGBUILD#L313-L316
           cp `
             "${rtools42_home}\x86_64-w64-mingw32.static.posix\lib\gcc\x86_64-w64-mingw32.static.posix\10.3.0\libgcc.a" `
             "${rtools42_home}\x86_64-w64-mingw32.static.posix\lib\gcc\x86_64-w64-mingw32.static.posix\10.3.0\libgcc_eh.a"
