@@ -119,7 +119,7 @@ jobs:
       - name: Configure Windows (R-devel)
         if: startsWith(runner.os, 'Windows') && matrix.config.r == 'devel'
         run: |
-          $rtools42_home = "C:/rtools42"
+          $rtools42_home = "C:\rtools42"
 
           # c.f. https://github.com/wch/r-source/blob/f1501504df8df1668a57d3a1b6f80167f24441d3/src/library/profile/Rprofile.windows#L70-L71
           echo "${rtools42_home}\x86_64-w64-mingw32.static.posix\bin"      | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
@@ -144,6 +144,8 @@ jobs:
               "${rtools42_home}\x86_64-w64-mingw32.static.posix\lib\gcc\x86_64-w64-mingw32.static.posix\10.3.0\libgcc.a" `
               "${rtools42_home}\x86_64-w64-mingw32.static.posix\lib\gcc\x86_64-w64-mingw32.static.posix\10.3.0\libgcc_s.a"
           }
+
+          echo "BUILD_TARGETS=x86_64-pc-windows-gnu" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append ;
         env: 
           RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
 
@@ -405,7 +407,7 @@ jobs:
       - name: Configure Windows (R-devel)
         if: startsWith(runner.os, 'Windows') && matrix.config.r == 'devel'
         run: |
-          $rtools42_home = "C:/rtools42"
+          $rtools42_home = "C:\rtools42"
 
           echo "::group::Setting up x86_64"
           echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
