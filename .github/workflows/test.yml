@@ -207,6 +207,7 @@ jobs:
         run: |
           sed -i 's/stable-msvc/stable-gnu/g' tests/extendrtests/src/Makevars.win
           sed -i 's/stable-msvc/stable-gnu/g' tests/rextendr/inst/templates/Makevars.win
+          sed -i 's/stable-msvc/stable-gnu/g' tests/rextendr/tests/testthat/_snaps/use_extendr.md
         shell: bash
 
       # Regex is used to inject absolute path into Cargo.toml
