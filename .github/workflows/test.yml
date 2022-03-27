@@ -188,8 +188,10 @@ jobs:
       - name: Obtain 'rextendr'
         uses: actions/checkout@v2
         with:
-          repository: extendr/rextendr
+          # TODO: revert this when https://github.com/extendr/rextendr/pull/187 gets merged
+          repository: yutannihilation/rextendr
           path: ./tests/rextendr
+          ref: use-rtools42
 
       - name: Install dependencies for extendrtests and rcmdcheck
         uses: r-lib/actions/setup-r-dependencies@v2
@@ -202,12 +204,13 @@ jobs:
         with:
           working-directory: tests/rextendr
 
-      - name: Tweak Makevars.win
+      # TODO: remove this when we decide which to use stable-gnu or stable-msvc for R >= 4.2
+      - name: Tweak Makevars.ucrt
         if: startsWith(runner.os, 'Windows') && matrix.config.r == 'devel' && matrix.config.rust-version == 'stable-gnu'
         run: |
-          sed -i 's/stable-msvc/stable-gnu/g' tests/extendrtests/src/Makevars.win
-          sed -i 's/stable-msvc/stable-gnu/g' tests/rextendr/inst/templates/Makevars.win
-          sed -i 's/stable-msvc/stable-gnu/g' tests/rextendr/tests/testthat/_snaps/use_extendr.md
+          sed -i 's/stable-gnu/stable-msvc/g' tests/extendrtests/src/Makevars.ucrt
+          sed -i 's/stable-gnu/stable-msvc/g' tests/rextendr/inst/templates/Makevars.ucrt
+          sed -i 's/stable-gnu/stable-msvc/g' tests/rextendr/tests/testthat/_snaps/use_extendr.md
         shell: bash
 
       # Regex is used to inject absolute path into Cargo.toml
