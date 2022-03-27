@@ -202,7 +202,7 @@ jobs:
         if: startsWith(runner.os, 'Windows') && matrix.config.r == 'devel' && matrix.config.rust-version == 'stable-gnu'
         run: |
           sed -i 's/stable-msvc/stable-gnu/g' tests/extendrtests/src/Makevars.win
-          sed -i 's/stable-msvc/stable-gnu/g' tests/rextendr/src/Makevars.win
+          sed -i 's/stable-msvc/stable-gnu/g' tests/rextendr/inst/templates/Makevars.win
         shell: bash
 
       # Regex is used to inject absolute path into Cargo.toml
