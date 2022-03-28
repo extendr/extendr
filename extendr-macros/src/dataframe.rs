@@ -15,8 +15,26 @@ fn parse_struct(input: &DeriveInput, datastruct: &DataStruct) -> TokenStream {
         impl IntoDataframe<#structname> for Vec<#structname>
         {
             fn into_dataframe(self) -> Result<Dataframe<#structname>> {
-                #(let mut #a = Vec::new();)*
+                #(let mut #a = Vec::with_capacity(self.len());)*
                 for val in self {
+                    #(#a.push(val.#a);)*
+                }
+                let caller = eval_string("data.frame")?;
+                let res = caller.call(Pairlist::from_pairs(&[
+                    #((stringify!(#a), extendr_api::robj::Robj::from(#a))),*
+                ]))?;
+                res.try_into()
+            }
+        }
+
+        impl<I> IntoDataframe<#structname> for (I,)
+        where
+            I : ExactSizeIterator<Item=#structname>,
+        {
+            /// Thanks to RFC 2451, we need to wrap a generic iterator in a tuple!
+            fn into_dataframe(self) -> Result<Dataframe<#structname>> {
+                #(let mut #a = Vec::with_capacity(self.0.len());)*
+                for val in self.0 {
                     #(#a.push(val.#a);)*
                 }
                 let caller = eval_string("data.frame")?;

@@ -1,6 +1,6 @@
 use super::*;
 
-pub trait IntoDataframe<T>: IntoIterator<Item = T> {
+pub trait IntoDataframe<T> {
     fn into_dataframe(self) -> Result<Dataframe<T>>;
 }
 
@@ -113,3 +113,33 @@ impl<T> Dataframe<T> {
 }
 
 impl<T> Attributes for Dataframe<T> {}
+
+impl<T> Deref for Dataframe<T> {
+    type Target = List;
+
+    /// Lists behave like slices of Robj.
+    fn deref(&self) -> &Self::Target {
+        // Safety: Should have the same footprint as List.
+        unsafe { std::mem::transmute(self) }
+    }
+}
+
+impl<T> std::fmt::Debug for Dataframe<T>
+where
+    T : std::fmt::Debug
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "dataframe!({})",
+            self.iter()
+                .map(|(k, v)| if !k.is_empty() {
+                    format!("{}={:?}", k, v)
+                } else {
+                    format!("{:?}", v)
+                })
+                .collect::<Vec<_>>()
+                .join(", ")
+        )
+    }
+}
