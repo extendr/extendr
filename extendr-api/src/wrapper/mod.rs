@@ -7,6 +7,7 @@ use libR_sys::*;
 
 pub mod altrep;
 pub mod complexes;
+pub mod dataframe;
 pub mod doubles;
 pub mod environment;
 pub mod expr;
@@ -34,6 +35,7 @@ pub use altrep::{
     AltrepImpl,
 };
 pub use complexes::Complexes;
+pub use dataframe::{Dataframe, IntoDataframe};
 pub use doubles::Doubles;
 pub use environment::{EnvIter, Environment};
 pub use expr::Expressions;
