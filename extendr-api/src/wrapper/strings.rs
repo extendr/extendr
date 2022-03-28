@@ -73,7 +73,9 @@ impl Strings {
         if i >= self.len() {
             Rstr::na()
         } else {
-            Robj::from_sexp(unsafe { STRING_ELT(self.get(), i as R_xlen_t) }).try_into().unwrap()
+            Robj::from_sexp(unsafe { STRING_ELT(self.get(), i as R_xlen_t) })
+                .try_into()
+                .unwrap()
         }
     }
 
