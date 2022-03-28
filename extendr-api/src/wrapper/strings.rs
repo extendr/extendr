@@ -69,14 +69,11 @@ impl Strings {
     }
 
     /// Get a reference to an element in a string vector.
-    pub fn elt(&self, i: usize) -> &Rstr {
-        unsafe {
-            let sexp = if i >= self.len() {
-                R_NaString
-            } else {
-                STRING_ELT(self.get(), i as R_xlen_t)
-            };
-            std::mem::transmute(sexp)
+    pub fn elt(&self, i: usize) -> Rstr {
+        if i >= self.len() {
+            Rstr::na()
+        } else {
+            Robj::from_sexp(unsafe { STRING_ELT(self.get(), i as R_xlen_t) }).try_into().unwrap()
         }
     }
 
