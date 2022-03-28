@@ -10,3 +10,26 @@ fn dataframe_tests() {
         assert_eq!(df.as_robj(), &df2);
     }
 }
+
+// use core::slice::SlicePattern;
+
+use extendr_api::prelude::*;
+// use extendr_macros::IntoDataframe;
+
+#[test]
+fn test_derive_into_dataframe() {
+    test! {
+        use extendr_api::prelude::*;
+
+        #[derive(Debug, IntoDataframe)]
+        struct MyStruct {
+            x: i32,
+            y: String,
+        }
+
+        let v = vec![MyStruct { x: 0, y: "xyz".into() }, MyStruct { x: 1, y: "xyz".into() }];
+        let df = v.into_dataframe()?;
+
+        assert!(df.inherits("data.frame"));
+    }
+}

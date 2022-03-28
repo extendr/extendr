@@ -2,20 +2,28 @@ use quote::quote;
 use syn::{parse_macro_input, DataStruct, DeriveInput, Data};
 use proc_macro::TokenStream;
 
-fn parse_struct(input: &DeriveInput, _datastruct: &DataStruct) -> TokenStream {
+fn parse_struct(input: &DeriveInput, datastruct: &DataStruct) -> TokenStream {
+    #![allow(non_snake_case)]
     let structname = &input.ident;
+    let mut A = Vec::new();
+    let mut a = Vec::new();
+    for f in &datastruct.fields {
+        A.push(f.ty.clone());
+        a.push(f.ident.clone());
+    }
     quote! {
-        impl<I : ExactSizeIterator<Item=#structname> + Clone> I {
-            fn into_dataframe(&self) -> extendr_api::wrapper::List
-            where
-                I : ExactSizeIterator<Item=#structname> + Clone,
-            {
-                let iter = input.into_iter();
-                let len = iter.len();
-                data_frame!(
-                    x = Integers::from_values(iter.clone().map(|r| r.x)),
-                    y = Strings::from_values(iter.map(|r| r.y))
-                )
+        impl IntoDataframe<#structname> for Vec<#structname>
+        {
+            fn into_dataframe(self) -> Result<Dataframe<#structname>> {
+                #(let mut #a = Vec::new();)*
+                for val in self {
+                    #(#a.push(val.#a);)*
+                }
+                let caller = eval_string("data.frame")?;
+                let res = caller.call(Pairlist::from_pairs(&[
+                    #((stringify!(#a), extendr_api::robj::Robj::from(#a))),*
+                ]))?;
+                res.try_into()
             }
         }
     }.into()

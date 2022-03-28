@@ -14,7 +14,7 @@ impl<T> std::convert::TryFrom<&Robj> for Dataframe<T> {
     type Error = Error;
     fn try_from(robj: &Robj) -> Result<Self> {
         // TODO: check type using derived trait.
-        if robj.inherits("data.frame") {
+        if robj.is_list() && robj.inherits("data.frame") {
             Ok(Dataframe {
                 robj: robj.clone(),
                 marker: std::marker::PhantomData,
@@ -112,36 +112,4 @@ impl<T> Dataframe<T> {
     }
 }
 
-impl<T> GetSexp for Dataframe<T> {
-    unsafe fn get(&self) -> SEXP {
-        self.robj.get()
-    }
-
-    fn as_robj(&self) -> &Robj {
-        &self.robj
-    }
-
-    fn as_robj_mut(&mut self) -> &mut Robj {
-        &mut self.robj
-    }
-}
-
-// These traits all derive from GetSexp
-
-/// len() and is_empty()
-impl<T> Length for Dataframe<T> {}
-
-/// rtype() and rany()
-impl<T> Types for Dataframe<T> {}
-
-/// as_*()
-impl<T> Conversions for Dataframe<T> {}
-
-/// find_var() etc.
-impl<T> Rinternals for Dataframe<T> {}
-
-/// as_typed_slice_raw() etc.
-impl<T> Slices for Dataframe<T> {}
-
-/// dollar() etc.
-impl<T> Operators for Dataframe<T> {}
+impl<T> Attributes for Dataframe<T> {}
