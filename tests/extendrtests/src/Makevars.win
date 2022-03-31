@@ -15,7 +15,7 @@ $(SHLIB): $(STATLIB)
 $(STATLIB):
 	# CARGO_LINKER is provided in Makevars.ucrt for R >= 4.2
 	export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="$(CARGO_LINKER)" && \
-	  cargo +$(TOOLCHAIN) build --target=$(TARGET) --lib --release --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR)
+	  cargo +$(TOOLCHAIN) build --target=$(TARGET) --lib --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR)
 
 C_clean:
 	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS)
