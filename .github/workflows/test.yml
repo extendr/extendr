@@ -206,7 +206,7 @@ jobs:
 
       # TODO: remove this when we decide which to use stable-gnu or stable-msvc for R >= 4.2
       - name: Tweak Makevars.ucrt
-        if: startsWith(runner.os, 'Windows') && matrix.config.r == 'devel' && matrix.config.rust-version == 'stable-gnu'
+        if: startsWith(runner.os, 'Windows') && matrix.config.r == 'devel' && matrix.config.rust-version == 'stable-msvc'
         run: |
           sed -i 's/stable-gnu/stable-msvc/g' tests/extendrtests/src/Makevars.ucrt
           sed -i 's/stable-gnu/stable-msvc/g' tests/rextendr/inst/templates/Makevars.ucrt
