@@ -1,6 +1,6 @@
-use quote::quote;
-use syn::{parse_macro_input, DataStruct, DeriveInput, Data};
 use proc_macro::TokenStream;
+use quote::quote;
+use syn::{parse_macro_input, Data, DataStruct, DeriveInput};
 
 fn parse_struct(input: &DeriveInput, datastruct: &DataStruct) -> TokenStream {
     #![allow(non_snake_case)]
@@ -44,7 +44,8 @@ fn parse_struct(input: &DeriveInput, datastruct: &DataStruct) -> TokenStream {
                 res.try_into()
             }
         }
-    }.into()
+    }
+    .into()
 }
 
 pub fn derive_into_dataframe(item: TokenStream) -> TokenStream {

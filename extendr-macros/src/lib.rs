@@ -57,6 +57,7 @@
 #[allow(non_snake_case)]
 mod R;
 mod call;
+mod dataframe;
 mod extendr_function;
 mod extendr_impl;
 mod extendr_module;
@@ -65,7 +66,6 @@ mod list_struct;
 mod pairlist;
 mod pairs;
 mod wrappers;
-mod dataframe;
 
 use proc_macro::TokenStream;
 use quote::quote;
