@@ -123,24 +123,24 @@ jobs:
           echo "${rtools42_home}\usr\bin"                                  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
           echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
 
-          # The default linker of rustc is "x86_64-w64-mingw32-gcc", however, there's no such name of executable in Rtools42
+          # rustc adds -lgcc_eh and -lgcc_s flag to the compiler, but there's no libgcc_eh or libgcc_a in Rtools42.
+          # So, we need to create an empty lib to please the compiler.
+          # For more details, please refer to https://github.com/r-windows/rtools-packages/blob/2407b23f1e0925bbb20a4162c963600105236318/mingw-w64-gcc/PKGBUILD#L313-L316
+          New-Item -Path libgcc_mock -Type Directory
+          New-Item -Path libgcc_mock\gcc.c -Type File
+          x86_64-w64-mingw32.static.posix-gcc.exe -c libgcc_mock\gcc.c -o libgcc_mock\gcc.o
+          x86_64-w64-mingw32.static.posix-ar.exe -r libgcc_mock\libgcc_eh.a libgcc_mock\gcc.o
+          x86_64-w64-mingw32.static.posix-ar.exe -r libgcc_mock\libgcc_s.a libgcc_mock\gcc.o
+
           New-Item -Path .cargo -ItemType Directory -Force
-          @'
+          @"
+          # The default linker of rustc is "x86_64-w64-mingw32-gcc", however, there's no such name of executable in Rtools42
           [target.x86_64-pc-windows-gnu]
           linker = "x86_64-w64-mingw32.static.posix-gcc.exe"
-          '@ | Out-File -FilePath .cargo/config.toml -Encoding utf8 -Append ;
 
-          # rustc adds -lgcc_eh and -lgcc_s flag to the compiler, but there's no libgcc_eh or libgcc_a in Rtools42.
-          # For more details, please refer to https://github.com/r-windows/rtools-packages/blob/2407b23f1e0925bbb20a4162c963600105236318/mingw-w64-gcc/PKGBUILD#L313-L316
-          cp `
-            "${rtools42_home}\x86_64-w64-mingw32.static.posix\lib\gcc\x86_64-w64-mingw32.static.posix\10.3.0\libgcc.a" `
-            "${rtools42_home}\x86_64-w64-mingw32.static.posix\lib\gcc\x86_64-w64-mingw32.static.posix\10.3.0\libgcc_eh.a"
-          
-          if ('${{ matrix.config.rust-version }}' -eq 'stable-gnu') {
-            cp `
-              "${rtools42_home}\x86_64-w64-mingw32.static.posix\lib\gcc\x86_64-w64-mingw32.static.posix\10.3.0\libgcc.a" `
-              "${rtools42_home}\x86_64-w64-mingw32.static.posix\lib\gcc\x86_64-w64-mingw32.static.posix\10.3.0\libgcc_s.a"
-          }
+          [env]
+          LIBRARY_PATH = "${PWD}\libgcc_mock"
+          "@ | Out-File -FilePath .cargo/config.toml -Encoding utf8 -Append ;
           
           # Add target
           rustup target add x86_64-pc-windows-gnu
@@ -419,24 +419,24 @@ jobs:
           echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           echo "::endgroup::"
           
-          # The default linker of rustc is "x86_64-w64-mingw32-gcc", however, there's no such name of executable in Rtools42
+          # rustc adds -lgcc_eh and -lgcc_s flag to the compiler, but there's no libgcc_eh or libgcc_a in Rtools42.
+          # So, we need to create an empty lib to please the compiler.
+          # For more details, please refer to https://github.com/r-windows/rtools-packages/blob/2407b23f1e0925bbb20a4162c963600105236318/mingw-w64-gcc/PKGBUILD#L313-L316
+          New-Item -Path libgcc_mock -Type Directory
+          New-Item -Path libgcc_mock\gcc.c -Type File
+          x86_64-w64-mingw32.static.posix-gcc.exe -c libgcc_mock\gcc.c -o libgcc_mock\gcc.o
+          x86_64-w64-mingw32.static.posix-ar.exe -r libgcc_mock\libgcc_eh.a libgcc_mock\gcc.o
+          x86_64-w64-mingw32.static.posix-ar.exe -r libgcc_mock\libgcc_s.a libgcc_mock\gcc.o
+
           New-Item -Path .cargo -ItemType Directory -Force
-          @'
+          @"
+          # The default linker of rustc is "x86_64-w64-mingw32-gcc", however, there's no such name of executable in Rtools42
           [target.x86_64-pc-windows-gnu]
           linker = "x86_64-w64-mingw32.static.posix-gcc.exe"
-          '@ | Out-File -FilePath .cargo/config.toml -Encoding utf8 -Append ;
 
-          # rustc adds -lgcc_eh flag to the compiler, but there's no libgcc_eh in Rtools42 (this might be a bug in MSYS2 itself?, but Rtools40
-          # has a workaround for this).
-          cp `
-            "${rtools42_home}\x86_64-w64-mingw32.static.posix\lib\gcc\x86_64-w64-mingw32.static.posix\10.3.0\libgcc.a" `
-            "${rtools42_home}\x86_64-w64-mingw32.static.posix\lib\gcc\x86_64-w64-mingw32.static.posix\10.3.0\libgcc_eh.a"
-          
-          if ('${{ matrix.config.rust-version }}' -eq 'stable-gnu') {
-            cp `
-              "${rtools42_home}\x86_64-w64-mingw32.static.posix\lib\gcc\x86_64-w64-mingw32.static.posix\10.3.0\libgcc.a" `
-              "${rtools42_home}\x86_64-w64-mingw32.static.posix\lib\gcc\x86_64-w64-mingw32.static.posix\10.3.0\libgcc_s.a"
-          }
+          [env]
+          LIBRARY_PATH = "${PWD}\libgcc_mock"
+          "@ | Out-File -FilePath .cargo/config.toml -Encoding utf8 -Append ;
         env:
           RUST_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
 
