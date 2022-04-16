@@ -29,10 +29,7 @@ jobs:
           # Windows jobs with unspecific Rust architecture build for both i686 and x86_64 
           # R integration tests are also executed for both architectures
           - {os: windows-latest, r: 'release', rust-version: 'stable-msvc'}
-          # TODO: remove this when we drop suppoort for R 4.1. Since R 4.2 uses
-          # a different toolchain than R 4.1, we need to test both.
           - {os: windows-latest, r: 'devel',   rust-version: 'stable-gnu',  rtools-version: '42'}
-          - {os: windows-latest, r: 'devel',   rust-version: 'stable-msvc', rtools-version: '42'}
           # - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc'}
           # - {os: windows-latest, r: 'devel', rust-version: 'stable-msvc'}
           # - {os: windows-latest, r: 'oldrel', rust-version: 'stable-msvc'}
@@ -320,7 +317,6 @@ jobs:
           # This will be changed back to `R-devel` as soon as R drops 32-bit support and we no longer need cross-compilation
           - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: ['x86_64-pc-windows-gnu'], extra-args: ['-Zdoctest-xcompile']}
           - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: ['i686-pc-windows-gnu'],   extra-args: ['-Zdoctest-xcompile']}
-          - {os: windows-latest, r: 'devel',   rust-version: 'nightly-msvc', rust-targets: ['x86_64-pc-windows-gnu'], extra-args: ['-Zdoctest-xcompile'], rtools-version: '42'}
           # If we use stable-gnu, we don't need doctest-xcompile feature
           - {os: windows-latest, r: 'devel',   rust-version: 'stable-gnu',   rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '42'}
 
