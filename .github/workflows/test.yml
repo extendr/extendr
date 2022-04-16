@@ -133,13 +133,14 @@ jobs:
           x86_64-w64-mingw32.static.posix-ar.exe -r libgcc_mock\libgcc_s.a libgcc_mock\gcc.o
 
           New-Item -Path .cargo -ItemType Directory -Force
+          $pwd_slash = echo "${PWD}" | % {$_ -replace '\\','/'}
           @"
           # The default linker of rustc is "x86_64-w64-mingw32-gcc", however, there's no such name of executable in Rtools42
           [target.x86_64-pc-windows-gnu]
           linker = "x86_64-w64-mingw32.static.posix-gcc.exe"
 
           [env]
-          LIBRARY_PATH = "${PWD}\libgcc_mock"
+          LIBRARY_PATH = "${pwd_slash}/libgcc_mock"
           "@ | Out-File -FilePath .cargo/config.toml -Encoding utf8 -Append ;
           
           # Add target
@@ -429,13 +430,14 @@ jobs:
           x86_64-w64-mingw32.static.posix-ar.exe -r libgcc_mock\libgcc_s.a libgcc_mock\gcc.o
 
           New-Item -Path .cargo -ItemType Directory -Force
+          $pwd_slash = echo "${PWD}" | % {$_ -replace '\\','/'}
           @"
           # The default linker of rustc is "x86_64-w64-mingw32-gcc", however, there's no such name of executable in Rtools42
           [target.x86_64-pc-windows-gnu]
           linker = "x86_64-w64-mingw32.static.posix-gcc.exe"
 
           [env]
-          LIBRARY_PATH = "${PWD}\libgcc_mock"
+          LIBRARY_PATH = "${pwd_slash}/libgcc_mock"
           "@ | Out-File -FilePath .cargo/config.toml -Encoding utf8 -Append ;
         env:
           RUST_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
