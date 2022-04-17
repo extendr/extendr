@@ -29,9 +29,7 @@ jobs:
           # Windows jobs with unspecific Rust architecture build for both i686 and x86_64 
           # R integration tests are also executed for both architectures
           - {os: windows-latest, r: 'release', rust-version: 'stable-msvc'}
-          # TODO: remove this when we drop suppoort for R 4.1. Since R 4.2 uses
-          # a different toolchain than R 4.1, we need to test both.
-          - {os: windows-latest, r: 'devel',   rust-version: 'stable-msvc'}
+          - {os: windows-latest, r: 'devel',   rust-version: 'stable-gnu',  rtools-version: '42'}
           # - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc'}
           # - {os: windows-latest, r: 'devel', rust-version: 'stable-msvc'}
           # - {os: windows-latest, r: 'oldrel', rust-version: 'stable-msvc'}
@@ -80,6 +78,7 @@ jobs:
         uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
+          rtools-version: ${{ matrix.config.rtools-version }}
           use-public-rspm: true
       
       - name: Set up Pandoc
@@ -117,11 +116,50 @@ jobs:
       - name: Configure Windows (R-devel)
         if: startsWith(runner.os, 'Windows') && matrix.config.r == 'devel'
         run: |
-          rustup target add x86_64-pc-windows-gnu ;
-          # Use Rtools's UCRT toolchain rather than MSYS2. Note that the setting needs to be modified when Rtools42 becomes official.
-          echo "${env:RTOOLS40_HOME}\ucrt64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          $rtools42_home = "C:\rtools42"
+
+          # c.f. https://github.com/wch/r-source/blob/f1501504df8df1668a57d3a1b6f80167f24441d3/src/library/profile/Rprofile.windows#L70-L71
+          echo "${rtools42_home}\x86_64-w64-mingw32.static.posix\bin"      | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          echo "${rtools42_home}\usr\bin"                                  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
           echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+
+          # Add target
+          rustup target add x86_64-pc-windows-gnu
           echo "BUILD_TARGETS=x86_64-pc-windows-gnu" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append ;
+
+          # The following lines add two tweaks:
+          #
+          #  1. Change the linker name to "x86_64-w64-mingw32.static.posix-gcc.exe".
+          #  2. Add empty libgcc_s.a and libgcc_eh.a, and add them to the compiler's
+          #     library search paths via `LIBRARY_PATH` envvar.
+          # 
+          # The first tweak is needed because Rtools42 doesn't contain 
+          # "x86_64-w64-mingw32-gcc," which `rustc` uses as the default linker 
+          # for the `x86_64-pc-windows-gnu` target.
+          #  
+          # If we use the Rtools' toolchain, the second tweak is also required.
+          # `rustc` adds `-lgcc_eh` and `-lgcc_s` flags to the compiler, but
+          # Rtools' GCC doesn't have `libgcc_eh` or `libgcc_a` due to the 
+          # compilation settings. So, in order to please the compiler, we need
+          # to add empty `libgcc_eh` or `libgcc_a` to the library search paths.
+          # 
+          # For more details, please refer to https://github.com/r-windows/rtools-packages/blob/2407b23f1e0925bbb20a4162c963600105236318/mingw-w64-gcc/PKGBUILD#L313-L316
+
+          New-Item -Path libgcc_mock -Type Directory
+          New-Item -Path libgcc_mock\gcc.c -Type File
+          x86_64-w64-mingw32.static.posix-gcc.exe -c libgcc_mock\gcc.c -o libgcc_mock\gcc.o
+          x86_64-w64-mingw32.static.posix-ar.exe -r libgcc_mock\libgcc_eh.a libgcc_mock\gcc.o
+          x86_64-w64-mingw32.static.posix-ar.exe -r libgcc_mock\libgcc_s.a libgcc_mock\gcc.o
+
+          New-Item -Path .cargo -ItemType Directory -Force
+          $pwd_slash = echo "${PWD}" | % {$_ -replace '\\','/'}
+          @"
+          [target.x86_64-pc-windows-gnu]
+          linker = "x86_64-w64-mingw32.static.posix-gcc.exe"
+
+          [env]
+          LIBRARY_PATH = "${pwd_slash}/libgcc_mock"
+          "@ | Out-File -FilePath .cargo/config.toml -Encoding utf8 -Append ;
         env: 
           RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
 
@@ -162,8 +200,10 @@ jobs:
       - name: Obtain 'rextendr'
         uses: actions/checkout@v2
         with:
-          repository: extendr/rextendr
+          # TODO: revert this when https://github.com/extendr/rextendr/pull/187 gets merged
+          repository: yutannihilation/rextendr
           path: ./tests/rextendr
+          ref: use-rtools42
 
       - name: Install dependencies for extendrtests and rcmdcheck
         uses: r-lib/actions/setup-r-dependencies@v2
@@ -175,6 +215,15 @@ jobs:
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
           working-directory: tests/rextendr
+
+      # TODO: remove this when we decide which to use stable-gnu or stable-msvc for R >= 4.2
+      - name: Tweak Makevars.ucrt
+        if: startsWith(runner.os, 'Windows') && matrix.config.r == 'devel' && matrix.config.rust-version == 'stable-msvc'
+        run: |
+          sed -i 's/stable-gnu/stable-msvc/g' tests/extendrtests/src/Makevars.ucrt
+          sed -i 's/stable-gnu/stable-msvc/g' tests/rextendr/inst/templates/Makevars.ucrt
+          sed -i 's/stable-gnu/stable-msvc/g' tests/rextendr/tests/testthat/_snaps/use_extendr.md
+        shell: bash
 
       # Regex is used to inject absolute path into Cargo.toml
       - name: Configure R for integration testing
@@ -282,9 +331,9 @@ jobs:
           - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
           # This will be changed back to `R-devel` as soon as R drops 32-bit support and we no longer need cross-compilation
           - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: ['x86_64-pc-windows-gnu'], extra-args: ['-Zdoctest-xcompile']}
-          - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: ['i686-pc-windows-gnu'], extra-args: ['-Zdoctest-xcompile']}
-
-
+          - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: ['i686-pc-windows-gnu'],   extra-args: ['-Zdoctest-xcompile']}
+          # If we use stable-gnu, we don't need doctest-xcompile feature
+          - {os: windows-latest, r: 'devel',   rust-version: 'stable-gnu',   rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '42'}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -327,6 +376,7 @@ jobs:
         uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
+          rtools-version: ${{ matrix.config.rtools-version }}
           use-public-rspm: true
           windows-path-include-mingw: false
 
@@ -352,7 +402,7 @@ jobs:
       # 4. Add R/{arch}/bin to path
       # 5. Create array of correct (arch-dependent) paths to 'libclang.dll', export as env variable
       - name: Configure Windows
-        if: startsWith(runner.os, 'Windows')
+        if: startsWith(runner.os, 'Windows') && matrix.config.r != 'devel'
         run: |
 
           # mingw64 is required for both 32 and 64 bit targets
@@ -368,6 +418,55 @@ jobs:
             echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\i386"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
             echo "::endgroup::"
           }
+        env:
+          RUST_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
+
+      - name: Configure Windows (R-devel)
+        if: startsWith(runner.os, 'Windows') && matrix.config.r == 'devel'
+        run: |
+          $rtools42_home = "C:\rtools42"
+
+          echo "::group::Setting up x86_64"
+          echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          # c.f. https://github.com/wch/r-source/blob/f1501504df8df1668a57d3a1b6f80167f24441d3/src/library/profile/Rprofile.windows#L70-L71
+          echo "${rtools42_home}\x86_64-w64-mingw32.static.posix\bin"      | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          echo "${rtools42_home}\usr\bin"                                  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          echo "::endgroup::"
+          
+          # The following lines add two tweaks:
+          #
+          #  1. Change the linker name to "x86_64-w64-mingw32.static.posix-gcc.exe".
+          #  2. Add empty libgcc_s.a and libgcc_eh.a, and add them to the compiler's
+          #     library search paths via `LIBRARY_PATH` envvar.
+          # 
+          # The first tweak is needed because Rtools42 doesn't contain 
+          # "x86_64-w64-mingw32-gcc," which `rustc` uses as the default linker 
+          # for the `x86_64-pc-windows-gnu` target.
+          #  
+          # If we use the Rtools' toolchain, the second tweak is also required.
+          # `rustc` adds `-lgcc_eh` and `-lgcc_s` flags to the compiler, but
+          # Rtools' GCC doesn't have `libgcc_eh` or `libgcc_a` due to the 
+          # compilation settings. So, in order to please the compiler, we need
+          # to add empty `libgcc_eh` or `libgcc_a` to the library search paths.
+          # 
+          # For more details, please refer to https://github.com/r-windows/rtools-packages/blob/2407b23f1e0925bbb20a4162c963600105236318/mingw-w64-gcc/PKGBUILD#L313-L316
+
+          New-Item -Path libgcc_mock -Type Directory
+          New-Item -Path libgcc_mock\gcc.c -Type File
+          x86_64-w64-mingw32.static.posix-gcc.exe -c libgcc_mock\gcc.c -o libgcc_mock\gcc.o
+          x86_64-w64-mingw32.static.posix-ar.exe -r libgcc_mock\libgcc_eh.a libgcc_mock\gcc.o
+          x86_64-w64-mingw32.static.posix-ar.exe -r libgcc_mock\libgcc_s.a libgcc_mock\gcc.o
+
+          New-Item -Path .cargo -ItemType Directory -Force
+          $pwd_slash = echo "${PWD}" | % {$_ -replace '\\','/'}
+          @"
+          [target.x86_64-pc-windows-gnu]
+          linker = "x86_64-w64-mingw32.static.posix-gcc.exe"
+
+          [env]
+          LIBRARY_PATH = "${pwd_slash}/libgcc_mock"
+          "@ | Out-File -FilePath .cargo/config.toml -Encoding utf8 -Append ;
         env:
           RUST_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
 
@@ -426,7 +525,7 @@ jobs:
             ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-api \w tests for $target target"
 
             # graphics tests requires --test-threads=1
-            ci-cargo +$toolchain test graphics_tests:: --manifest-path extendr-api/Cargo.toml --features graphics $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture --test-threads=1 -ActionName "Test extendr-api \w graphics for $target target"
+            ci-cargo +$toolchain test graphics_tests:: --manifest-path extendr-api/Cargo.toml --features tests-graphics $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture --test-threads=1 -ActionName "Test extendr-api \w graphics for $target target"
 
             ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests-minimal $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-api \w tests-minimal for $target target"
                       
