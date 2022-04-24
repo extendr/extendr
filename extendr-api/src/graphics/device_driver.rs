@@ -63,7 +63,7 @@ pub trait DeviceDriver: std::marker::Sized {
 
     /// Whether the device has a locator capability, i.e.,
     /// reading the position of the graphics cursor when the mouse button is pressed.
-    /// It works with X11, windows and quartz devices. 
+    /// It works with X11, windows and quartz devices.
     const USE_LOCATOR: bool = true;
 
     /// Whether the device maintains a plot history. This corresponds to
@@ -271,7 +271,9 @@ pub trait DeviceDriver: std::marker::Sized {
     }
 
     /// A callback function that returns the coords of the event
-    fn locator(&mut self, x: &mut f64, &mut y: f64, dd: DevDesc) {}
+    fn locator(&mut self, x: *mut f64, y: *mut f64, dd: DevDesc) -> bool {
+        true
+    }
 
     /// A callback function for X11_eventHelper.
     /// Argument `code` should, ideally, be of type c_int,
@@ -605,15 +607,16 @@ pub trait DeviceDriver: std::marker::Sized {
             x: *mut f64,
             y: *mut f64,
             dd: pDevDesc,
-        ) {
+        ) -> Rboolean {
             let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
-            data.locator(x, y, *dd); 
+            if let Ok(success) = data.locator(x, y, *dd).try_into() {
+                success
+            } else {
+                false.into()
+            }
         }
 
-        unsafe extern "C" fn device_driver_eventHelper<T: DeviceDriver>(
-            dd: pDevDesc,
-            code: c_int
-        ) {
+        unsafe extern "C" fn device_driver_eventHelper<T: DeviceDriver>(dd: pDevDesc, code: c_int) {
             let mut data = ((*dd).deviceSpecific as *mut T).read();
             data.eventHelper(*dd, code);
         }
@@ -872,7 +875,7 @@ pub trait DeviceDriver: std::marker::Sized {
                 DevCapCapture::No as _
             };
 
-            (*p_dev_desc).haveLocator =  if <T>::USE_LOCATOR {
+            (*p_dev_desc).haveLocator = if <T>::USE_LOCATOR {
                 DevCapLocator::Yes as _
             } else {
                 DevCapLocator::No as _
