@@ -54,7 +54,7 @@ fn test_list() {
         assert_eq!(s.elt(2)?, r!("z"));
         assert_eq!(s.elt(3).is_err(), true);
 
-        let v = s.as_slice().iter().map(|c| c).collect::<Vec<_>>();
+        let v = s.as_slice().iter().collect::<Vec<_>>();
         assert_eq!(v, vec![&r!("x"), &r!("y"), &r!("z")]);
 
         s.set_elt(1, r!("q"))?;
@@ -71,7 +71,7 @@ fn test_list() {
         assert_eq!(s.as_slice().iter().any(|s| s.is_na()), true);
 
         // Deref allows all the immutable methods from slice.
-        let v = s.as_slice().iter().map(|c| c).collect::<Vec<_>>();
+        let v = s.as_slice().iter().collect::<Vec<_>>();
         assert_eq!(v, vec![&r!("x"), &r!(<&str>::na()), &r!("z")]);
         assert_eq!(v[0], "x");
         assert_eq!(v[1].is_na(), true);
@@ -253,7 +253,7 @@ fn test_doubles_from_iterator() {
 fn test_doubles_iter_mut() {
     test! {
         let mut vec = Doubles::from_values([0.0, 1.0, 2.0, 3.0]);
-        vec.iter_mut().for_each(|v| *v = *v + 1.0);
+        vec.iter_mut().for_each(|v| *v += 1.0);
         assert_eq!(vec, Doubles::from_values([1.0, 2.0, 3.0, 4.0]));
     }
 }

@@ -187,7 +187,8 @@ macro_rules! reprintln {
 
 /// Macro for running tests.
 ///
-/// This allows us to use `?` in example code instead of `unwrap()`.
+/// This starts up the underlying [`extendr_engine`] so that interactions with R will work.
+/// Additionally, this allows us to use `?` in example code instead of `unwrap()`.
 ///
 /// **Note:** This macro is meant to be used in test code (annotated with
 /// `#[cfg(test)]`) or in doc strings. If it is used in library code that

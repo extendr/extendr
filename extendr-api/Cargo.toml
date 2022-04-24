@@ -38,6 +38,8 @@ tests-minimal = ["libR-sys/use-bindgen"]
 # and require --test-threads=1, so we decided to exclude it from here (c.f. #378).
 tests = ["tests-minimal", "ndarray", "serde", "num-complex"]
 
+tests-graphics = ["tests-minimal", "graphics"]
+
 # Literally all features to test
 tests-all = ["tests", "graphics"]
 

@@ -145,16 +145,16 @@ impl<T: Any + Debug> ExternalPtr<T> {
     }
 }
 
-impl<T: Any + Debug> TryFrom<Robj> for ExternalPtr<T> {
+impl<T: Any + Debug> TryFrom<&Robj> for ExternalPtr<T> {
     type Error = Error;
 
-    fn try_from(robj: Robj) -> Result<Self> {
+    fn try_from(robj: &Robj) -> Result<Self> {
         if robj.rtype() != Rtype::ExternalPtr {
-            return Err(Error::ExpectedExternalPtr(robj));
+            return Err(Error::ExpectedExternalPtr(robj.clone()));
         }
 
         let res = ExternalPtr::<T> {
-            robj,
+            robj: robj.clone(),
             marker: std::marker::PhantomData,
         };
 
@@ -165,6 +165,14 @@ impl<T: Any + Debug> TryFrom<Robj> for ExternalPtr<T> {
         }
 
         Ok(res)
+    }
+}
+
+impl<T: Any + Debug> TryFrom<Robj> for ExternalPtr<T> {
+    type Error = Error;
+
+    fn try_from(robj: Robj) -> Result<Self> {
+        <ExternalPtr<T>>::try_from(&robj)
     }
 }
 
