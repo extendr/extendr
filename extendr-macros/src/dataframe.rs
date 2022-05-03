@@ -12,7 +12,7 @@ fn parse_struct(input: &DeriveInput, datastruct: &DataStruct) -> TokenStream {
         a.push(f.ident.clone());
     }
     quote! {
-        impl IntoDataframe<#structname> for Vec<#structname>
+        impl IntoDataFrame<#structname> for Vec<#structname>
         {
             fn into_dataframe(self) -> Result<Dataframe<#structname>> {
                 #(let mut #a = Vec::with_capacity(self.len());)*
@@ -27,7 +27,7 @@ fn parse_struct(input: &DeriveInput, datastruct: &DataStruct) -> TokenStream {
             }
         }
 
-        impl<I> IntoDataframe<#structname> for (I,)
+        impl<I> IntoDataFrame<#structname> for (I,)
         where
             I : ExactSizeIterator<Item=#structname>,
         {
@@ -53,6 +53,6 @@ pub fn derive_into_dataframe(item: TokenStream) -> TokenStream {
 
     match &input.data {
         Data::Struct(datastruct) => parse_struct(&input, datastruct),
-        _ => quote!(compile_error("IntoDataframe expected a struct.")).into(),
+        _ => quote!(compile_error("IntoDataFrame expected a struct.")).into(),
     }
 }

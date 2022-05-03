@@ -59,7 +59,7 @@ pub use super::thread_safety::{
 
 pub use super::wrapper::{
     Complexes, Dataframe, Doubles, EnvIter, Environment, Expressions, ExternalPtr, FromList,
-    Function, Integers, IntoDataframe, Language, List, ListIter, Logicals, Nullable, Pairlist,
+    Function, Integers, IntoDataFrame, Language, List, ListIter, Logicals, Nullable, Pairlist,
     Primitive, Promise, Raw, Rstr, Strings, Symbol,
 };
 
@@ -69,7 +69,7 @@ pub use super::robj_ndarray::*;
 #[cfg(feature = "ndarray")]
 pub use ndarray::*;
 
-pub use extendr_macros::{call, extendr, extendr_module, pairlist, IntoDataframe, Rraw, R};
+pub use extendr_macros::{call, extendr, extendr_module, pairlist, IntoDataFrame, Rraw, R};
 
 pub use super::iter::StrIter;
 

@@ -35,7 +35,7 @@ pub use altrep::{
     AltrepImpl,
 };
 pub use complexes::Complexes;
-pub use dataframe::{Dataframe, IntoDataframe};
+pub use dataframe::{Dataframe, IntoDataFrame};
 pub use doubles::Doubles;
 pub use environment::{EnvIter, Environment};
 pub use expr::Expressions;

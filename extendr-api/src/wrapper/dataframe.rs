@@ -1,6 +1,6 @@
 use super::*;
 
-pub trait IntoDataframe<T> {
+pub trait IntoDataFrame<T> {
     fn into_dataframe(self) -> Result<Dataframe<T>>;
 }
 
@@ -32,82 +32,9 @@ impl<T> std::convert::TryFrom<Robj> for Dataframe<T> {
     }
 }
 
-macro_rules! impl_tuple {
-    ( $($A : ident),* : $($a : ident),* : $($z : ident),* ) => {
-        impl<$($A),*, I> IntoDataframe<($($A),*)> for I
-        where
-            $(robj::Robj: From<Vec<$A>>),*,
-            I: IntoIterator<Item=($($A),*)>
-        {
-            fn into_dataframe(self) -> Result<Dataframe<($($A),*)>> {
-                $(let mut $a = Vec::new();)*
-                for ($($z),*) in self {
-                    $($a.push($z);)*
-                }
-                let caller = eval_string("data.frame")?;
-                let res = caller.call(Pairlist::from_pairs(&[
-                    $((stringify!($a), Robj::from($a))),*
-                ]))?;
-                res.try_into()
-            }
-        }
-    }
-}
-
-impl_tuple!(A, B: a, b: a1, b1);
-impl_tuple!(A, B, C: a, b, c: a1, b1, c1);
-impl_tuple!(A, B, C, D: a, b, c, d: a1, b1, c1, d1);
-impl_tuple!(A, B, C, D, E: a, b, c, d, e: a1, b1, c1, d1, e1);
-impl_tuple!(A, B, C, D, E, F: a, b, c, d, e, f: a1, b1, c1, d1, e1, f1);
-impl_tuple!(
-    A,
-    B,
-    C,
-    D,
-    E,
-    F,
-    G: a,
-    b,
-    c,
-    d,
-    e,
-    f,
-    g: a1,
-    b1,
-    c1,
-    d1,
-    e1,
-    f1,
-    g1
-);
-impl_tuple!(
-    A,
-    B,
-    C,
-    D,
-    E,
-    F,
-    G,
-    H: a,
-    b,
-    c,
-    d,
-    e,
-    f,
-    g,
-    h: a1,
-    b1,
-    c1,
-    d1,
-    e1,
-    f1,
-    g1,
-    h1
-);
-
 impl<T> Dataframe<T> {
-    /// Use `#[derive(IntoDataframe)]` to use this.
-    pub fn try_from_values<I: IntoDataframe<T>>(iter: I) -> Result<Self> {
+    /// Use `#[derive(IntoDataFrame)]` to use this.
+    pub fn try_from_values<I: IntoDataFrame<T>>(iter: I) -> Result<Self> {
         iter.into_dataframe()
     }
 }
