@@ -339,6 +339,10 @@
 <span id="332">332</span>
 <span id="333">333</span>
 <span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Maintain ownership of R objects.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This provides the functions protect() and unprotect()</span>
@@ -354,8 +358,8 @@
 <span class="kw">use</span> <span class="ident">std::sync::Mutex</span>;
 
 <span class="kw">use</span> <span class="ident">libR_sys</span>::{
-    <span class="ident">R_NilValue</span>, <span class="ident">R_PreserveObject</span>, <span class="ident">R_ReleaseObject</span>, <span class="ident">R_xlen_t</span>, <span class="ident">Rf_allocVector</span>, <span class="ident">LENGTH</span>,
-    <span class="ident">SET_VECTOR_ELT</span>, <span class="ident">SEXP</span>, <span class="ident">VECSXP</span>, <span class="ident">VECTOR_ELT</span>,
+    <span class="ident">R_NilValue</span>, <span class="ident">R_PreserveObject</span>, <span class="ident">R_ReleaseObject</span>, <span class="ident">R_xlen_t</span>, <span class="ident">Rf_allocVector</span>, <span class="ident">Rf_protect</span>,
+    <span class="ident">Rf_unprotect</span>, <span class="ident">LENGTH</span>, <span class="ident">SET_VECTOR_ELT</span>, <span class="ident">SEXP</span>, <span class="ident">VECSXP</span>, <span class="ident">VECTOR_ELT</span>,
 };
 
 <span class="macro">lazy_static!</span> {
@@ -372,8 +376,8 @@
     <span class="ident">own</span>.<span class="ident">unprotect</span>(<span class="ident">sexp</span>);
 }
 
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">INITIAL_PRESERVATION_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">25000</span>;
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">EXTRA_PRESERVATION_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">25000</span>;
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">INITIAL_PRESERVATION_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">100000</span>;
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">EXTRA_PRESERVATION_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">100000</span>;
 
 <span class="kw">struct</span> <span class="ident">Object</span> {
     <span class="ident">refcount</span>: <span class="ident">usize</span>,
@@ -410,6 +414,8 @@
     }
 
     <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">protect</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">sexp</span>: <span class="ident">SEXP</span>) {
+        <span class="ident">Rf_protect</span>(<span class="ident">sexp</span>);
+
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">cur_index</span> <span class="op">==</span> <span class="self">self</span>.<span class="ident">max_index</span> {
             <span class="self">self</span>.<span class="ident">garbage_collect</span>();
         }
@@ -441,6 +447,8 @@
                 <span class="ident">vacant</span>.<span class="ident">insert</span>(<span class="ident">Object</span> { <span class="ident">refcount</span>, <span class="ident">index</span> });
             }
         }
+
+        <span class="ident">Rf_unprotect</span>(<span class="number">1</span>);
     }
 
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">unprotect</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">sexp</span>: <span class="ident">SEXP</span>) {
@@ -495,7 +503,7 @@
     <span class="comment">// Garbage collect the tracking structures.</span>
     <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">garbage_collect</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
         <span class="comment">// println!(&quot;garbage_collect {} {}&quot;, self.cur_index, self.max_index);</span>
-        <span class="kw">let</span> <span class="ident">new_size</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">cur_index</span> <span class="op">+</span> <span class="ident">EXTRA_PRESERVATION_SIZE</span>;
+        <span class="kw">let</span> <span class="ident">new_size</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">cur_index</span> <span class="op">*</span> <span class="number">2</span> <span class="op">+</span> <span class="ident">EXTRA_PRESERVATION_SIZE</span>;
         <span class="kw">let</span> <span class="ident">new_sexp</span> <span class="op">=</span> <span class="ident">Rf_allocVector</span>(<span class="ident">VECSXP</span>, <span class="ident">new_size</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>);
         <span class="ident">R_PreserveObject</span>(<span class="ident">new_sexp</span>);
         <span class="kw">let</span> <span class="ident">old_sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">preservation</span> <span class="kw">as</span> <span class="ident">SEXP</span>;
