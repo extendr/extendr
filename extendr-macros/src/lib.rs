@@ -241,21 +241,21 @@ pub fn derive_into_robj(item: TokenStream) -> TokenStream {
 }
 
 /// Enable the construction of dataframes from arrays of structures.
-/// 
+///
 /// # Example
-/// 
+///
 /// ```ignore
 /// use extendr_api::prelude::*;
-/// 
+///
 /// #[derive(Debug, IntoDataFrame)]
 /// struct MyStruct {
 ///     x: i32,
 ///     y: String,
 /// }
-/// 
+///
 /// let v = vec![MyStruct { x: 0, y: "abc".into() }, MyStruct { x: 1, y: "xyz".into() }];
 /// let df = v.into_dataframe()?;
-/// 
+///
 /// assert!(df.inherits("data.frame"));
 /// assert_eq!(df[0], r!([0, 1]));
 /// assert_eq!(df[1], r!(["abc", "xyz"]));
