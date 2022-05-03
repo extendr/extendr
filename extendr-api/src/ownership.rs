@@ -13,8 +13,8 @@ use std::collections::hash_map::{Entry, HashMap};
 use std::sync::Mutex;
 
 use libR_sys::{
-    R_NilValue, R_PreserveObject, R_ReleaseObject, R_xlen_t, Rf_allocVector, LENGTH,
-    SET_VECTOR_ELT, SEXP, VECSXP, VECTOR_ELT,
+    R_NilValue, R_PreserveObject, R_ReleaseObject, R_xlen_t, Rf_allocVector, Rf_protect,
+    Rf_unprotect, LENGTH, SET_VECTOR_ELT, SEXP, VECSXP, VECTOR_ELT,
 };
 
 lazy_static! {
@@ -31,8 +31,8 @@ pub(crate) unsafe fn unprotect(sexp: SEXP) {
     own.unprotect(sexp);
 }
 
-pub const INITIAL_PRESERVATION_SIZE: usize = 25000;
-pub const EXTRA_PRESERVATION_SIZE: usize = 25000;
+pub const INITIAL_PRESERVATION_SIZE: usize = 100000;
+pub const EXTRA_PRESERVATION_SIZE: usize = 100000;
 
 struct Object {
     refcount: usize,
@@ -69,6 +69,8 @@ impl Ownership {
     }
 
     unsafe fn protect(&mut self, sexp: SEXP) {
+        Rf_protect(sexp);
+
         if self.cur_index == self.max_index {
             self.garbage_collect();
         }
@@ -100,6 +102,8 @@ impl Ownership {
                 vacant.insert(Object { refcount, index });
             }
         }
+
+        Rf_unprotect(1);
     }
 
     pub unsafe fn unprotect(&mut self, sexp: SEXP) {
@@ -154,7 +158,7 @@ impl Ownership {
     // Garbage collect the tracking structures.
     unsafe fn garbage_collect(&mut self) {
         // println!("garbage_collect {} {}", self.cur_index, self.max_index);
-        let new_size = self.cur_index + EXTRA_PRESERVATION_SIZE;
+        let new_size = self.cur_index * 2 + EXTRA_PRESERVATION_SIZE;
         let new_sexp = Rf_allocVector(VECSXP, new_size as R_xlen_t);
         R_PreserveObject(new_sexp);
         let old_sexp = self.preservation as SEXP;
