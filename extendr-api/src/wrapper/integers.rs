@@ -94,10 +94,9 @@ mod tests {
     }
 
     #[test]
-    fn from_values_long() {
+    fn from_values_altrep() {
         test! {
-            // Long (>=64k) vectors a lazy ALTREP objects.
-            let vec = Integers::from_values(0..1000000000);
+            let vec = Integers::from_values_altrep(0..1000000000);
             assert_eq!(vec.is_altrep(), true);
             assert_eq!(vec.elt(12345678), 12345678);
             let mut dest = [0.into(); 2];
