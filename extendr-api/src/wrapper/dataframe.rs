@@ -41,16 +41,6 @@ impl<T> Dataframe<T> {
 
 impl<T> Attributes for Dataframe<T> {}
 
-impl<T> Deref for Dataframe<T> {
-    type Target = List;
-
-    /// Lists behave like slices of Robj.
-    fn deref(&self) -> &Self::Target {
-        // Safety: Should have the same footprint as List.
-        unsafe { std::mem::transmute(self) }
-    }
-}
-
 impl<T> std::fmt::Debug for Dataframe<T>
 where
     T: std::fmt::Debug,
@@ -59,7 +49,7 @@ where
         write!(
             f,
             "dataframe!({})",
-            self.iter()
+            self.as_list().unwrap().iter()
                 .map(|(k, v)| if !k.is_empty() {
                     format!("{}={:?}", k, v)
                 } else {
