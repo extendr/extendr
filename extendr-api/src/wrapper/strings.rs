@@ -68,7 +68,7 @@ impl Strings {
         }
     }
 
-    /// Get a reference to an element in a string vector.
+    /// Get an element in a string vector.
     pub fn elt(&self, i: usize) -> Rstr {
         if i >= self.len() {
             Rstr::na()
