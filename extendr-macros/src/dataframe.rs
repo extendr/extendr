@@ -3,12 +3,9 @@ use quote::quote;
 use syn::{parse_macro_input, Data, DataStruct, DeriveInput};
 
 fn parse_struct(input: &DeriveInput, datastruct: &DataStruct) -> TokenStream {
-    #![allow(non_snake_case)]
     let structname = &input.ident;
-    let mut A = Vec::new();
     let mut a = Vec::new();
     for f in &datastruct.fields {
-        A.push(f.ty.clone());
         a.push(f.ident.clone());
     }
     quote! {
