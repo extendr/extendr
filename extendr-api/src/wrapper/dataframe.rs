@@ -49,7 +49,9 @@ where
         write!(
             f,
             "dataframe!({})",
-            self.as_list().unwrap().iter()
+            self.as_list()
+                .unwrap()
+                .iter()
                 .map(|(k, v)| if !k.is_empty() {
                     format!("{}={:?}", k, v)
                 } else {
