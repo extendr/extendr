@@ -199,10 +199,8 @@ jobs:
       - name: Obtain 'rextendr'
         uses: actions/checkout@v2
         with:
-          # TODO: revert this when https://github.com/extendr/rextendr/pull/187 gets merged
           repository: extendr/rextendr
           path: ./tests/rextendr
-          ref: main
 
       - name: Install dependencies for extendrtests and rcmdcheck
         uses: r-lib/actions/setup-r-dependencies@v2
