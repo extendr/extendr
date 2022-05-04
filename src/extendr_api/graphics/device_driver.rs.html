@@ -902,6 +902,44 @@
 <span id="895">895</span>
 <span id="896">896</span>
 <span id="897">897</span>
+<span id="898">898</span>
+<span id="899">899</span>
+<span id="900">900</span>
+<span id="901">901</span>
+<span id="902">902</span>
+<span id="903">903</span>
+<span id="904">904</span>
+<span id="905">905</span>
+<span id="906">906</span>
+<span id="907">907</span>
+<span id="908">908</span>
+<span id="909">909</span>
+<span id="910">910</span>
+<span id="911">911</span>
+<span id="912">912</span>
+<span id="913">913</span>
+<span id="914">914</span>
+<span id="915">915</span>
+<span id="916">916</span>
+<span id="917">917</span>
+<span id="918">918</span>
+<span id="919">919</span>
+<span id="920">920</span>
+<span id="921">921</span>
+<span id="922">922</span>
+<span id="923">923</span>
+<span id="924">924</span>
+<span id="925">925</span>
+<span id="926">926</span>
+<span id="927">927</span>
+<span id="928">928</span>
+<span id="929">929</span>
+<span id="930">930</span>
+<span id="931">931</span>
+<span id="932">932</span>
+<span id="933">933</span>
+<span id="934">934</span>
+<span id="935">935</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">core::slice</span>;
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
@@ -964,6 +1002,11 @@
     <span class="doccomment">/// this can be left `true`. If there&#39;s a necessity to explicitly refuse the</span>
     <span class="doccomment">/// operation, this can be set `false`.</span>
     <span class="kw">const</span> <span class="ident">USE_CAPTURE</span>: <span class="ident">bool</span> <span class="op">=</span> <span class="bool-val">true</span>;
+
+    <span class="doccomment">/// Whether the device has a locator capability, i.e.,</span>
+    <span class="doccomment">/// reading the position of the graphics cursor when the mouse button is pressed.</span>
+    <span class="doccomment">/// It works with X11, windows and quartz devices.</span>
+    <span class="kw">const</span> <span class="ident">USE_LOCATOR</span>: <span class="ident">bool</span> <span class="op">=</span> <span class="bool-val">true</span>;
 
     <span class="doccomment">/// Whether the device maintains a plot history. This corresponds to</span>
     <span class="doccomment">/// `displayListOn` in the underlying [DevDesc].</span>
@@ -1168,6 +1211,17 @@
     <span class="kw">fn</span> <span class="ident">holdflush</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">dd</span>: <span class="ident">DevDesc</span>, <span class="ident">level</span>: <span class="ident">i32</span>) -&gt; <span class="ident">i32</span> {
         <span class="number">0</span>
     }
+
+    <span class="doccomment">/// A callback function that returns the coords of the event</span>
+    <span class="kw">fn</span> <span class="ident">locator</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">x</span>: <span class="kw-2">*mut</span> <span class="ident">f64</span>, <span class="ident">y</span>: <span class="kw-2">*mut</span> <span class="ident">f64</span>, <span class="ident">dd</span>: <span class="ident">DevDesc</span>) -&gt; <span class="ident">bool</span> {
+        <span class="bool-val">true</span>
+    }
+
+    <span class="doccomment">/// A callback function for X11_eventHelper.</span>
+    <span class="doccomment">/// Argument `code` should, ideally, be of type c_int,</span>
+    <span class="doccomment">/// but compiler throws erors. It should be ok to use</span>
+    <span class="doccomment">/// i32 here.</span>
+    <span class="kw">fn</span> <span class="ident">eventHelper</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">dd</span>: <span class="ident">DevDesc</span>, <span class="ident">code</span>: <span class="ident">i32</span>) {}
 
     <span class="doccomment">/// Create a [Device].</span>
     <span class="kw">fn</span> <span class="ident">create_device</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(
@@ -1491,6 +1545,24 @@
             <span class="ident">data</span>.<span class="ident">holdflush</span>(<span class="kw-2">*</span><span class="ident">dd</span>, <span class="ident">level</span> <span class="kw">as</span> <span class="kw">_</span>)
         }
 
+        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_locator</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(
+            <span class="ident">x</span>: <span class="kw-2">*mut</span> <span class="ident">f64</span>,
+            <span class="ident">y</span>: <span class="kw-2">*mut</span> <span class="ident">f64</span>,
+            <span class="ident">dd</span>: <span class="ident">pDevDesc</span>,
+        ) -&gt; <span class="ident">Rboolean</span> {
+            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">success</span>) <span class="op">=</span> <span class="ident">data</span>.<span class="ident">locator</span>(<span class="ident">x</span>, <span class="ident">y</span>, <span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">try_into</span>() {
+                <span class="ident">success</span>
+            } <span class="kw">else</span> {
+                <span class="bool-val">false</span>.<span class="ident">into</span>()
+            }
+        }
+
+        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_eventHelper</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(<span class="ident">dd</span>: <span class="ident">pDevDesc</span>, <span class="ident">code</span>: <span class="ident">c_int</span>) {
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">read</span>();
+            <span class="ident">data</span>.<span class="ident">eventHelper</span>(<span class="kw-2">*</span><span class="ident">dd</span>, <span class="ident">code</span>);
+        }
+
         <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">use_r_ge_version_14</span>)]</span>
         <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_setPattern</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(
             <span class="ident">pattern</span>: <span class="ident">SEXP</span>,
@@ -1667,7 +1739,7 @@
             };
             (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">close</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_close</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
             (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">deactivate</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_deactivate</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">locator</span> <span class="op">=</span> <span class="prelude-val">None</span>; <span class="comment">// TOD;</span>
+            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">locator</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_locator</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>); <span class="comment">// TOD;</span>
             (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">line</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_line</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
             (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">metricInfo</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_char_metric</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
             (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">mode</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_mode</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
@@ -1722,7 +1794,7 @@
             (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">useRotatedTextInContour</span> <span class="op">=</span> <span class="number">0</span>;
 
             (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">eventEnv</span> <span class="op">=</span> <span class="ident">empty_env</span>().<span class="ident">get</span>();
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">eventHelper</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">eventHelper</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_eventHelper</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
 
             (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">holdflush</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_holdflush</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
 
@@ -1745,7 +1817,11 @@
                 <span class="ident">DevCapCapture::No</span> <span class="kw">as</span> <span class="kw">_</span>
             };
 
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">haveLocator</span> <span class="op">=</span> <span class="ident">DevCapLocator::Unset</span> <span class="kw">as</span> <span class="kw">_</span>;
+            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">haveLocator</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::USE_LOCATOR</span> {
+                <span class="ident">DevCapLocator::Yes</span> <span class="kw">as</span> <span class="kw">_</span>
+            } <span class="kw">else</span> {
+                <span class="ident">DevCapLocator::No</span> <span class="kw">as</span> <span class="kw">_</span>
+            };
 
             <span class="comment">// NOTE: Unlike the features that will be added in  Graphics API</span>
             <span class="comment">// version 15 (i.e. R 4.2), the features in API v13 &amp; v14 (i.e. R</span>
