@@ -61,6 +61,11 @@ pub trait DeviceDriver: std::marker::Sized {
     /// operation, this can be set `false`.
     const USE_CAPTURE: bool = true;
 
+    /// Whether the device has a locator capability, i.e.,
+    /// reading the position of the graphics cursor when the mouse button is pressed.
+    /// It works with X11, windows and quartz devices.
+    const USE_LOCATOR: bool = true;
+
     /// Whether the device maintains a plot history. This corresponds to
     /// `displayListOn` in the underlying [DevDesc].
     const USE_PLOT_HISTORY: bool = false;
@@ -264,6 +269,17 @@ pub trait DeviceDriver: std::marker::Sized {
     fn holdflush(&mut self, dd: DevDesc, level: i32) -> i32 {
         0
     }
+
+    /// A callback function that returns the coords of the event
+    fn locator(&mut self, x: *mut f64, y: *mut f64, dd: DevDesc) -> bool {
+        true
+    }
+
+    /// A callback function for X11_eventHelper.
+    /// Argument `code` should, ideally, be of type c_int,
+    /// but compiler throws erors. It should be ok to use
+    /// i32 here.
+    fn eventHelper(&mut self, dd: DevDesc, code: i32) {}
 
     /// Create a [Device].
     fn create_device<T: DeviceDriver>(
@@ -587,6 +603,24 @@ pub trait DeviceDriver: std::marker::Sized {
             data.holdflush(*dd, level as _)
         }
 
+        unsafe extern "C" fn device_driver_locator<T: DeviceDriver>(
+            x: *mut f64,
+            y: *mut f64,
+            dd: pDevDesc,
+        ) -> Rboolean {
+            let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
+            if let Ok(success) = data.locator(x, y, *dd).try_into() {
+                success
+            } else {
+                false.into()
+            }
+        }
+
+        unsafe extern "C" fn device_driver_eventHelper<T: DeviceDriver>(dd: pDevDesc, code: c_int) {
+            let mut data = ((*dd).deviceSpecific as *mut T).read();
+            data.eventHelper(*dd, code);
+        }
+
         #[cfg(use_r_ge_version_14)]
         unsafe extern "C" fn device_driver_setPattern<T: DeviceDriver>(
             pattern: SEXP,
@@ -763,7 +797,7 @@ pub trait DeviceDriver: std::marker::Sized {
             };
             (*p_dev_desc).close = Some(device_driver_close::<T>);
             (*p_dev_desc).deactivate = Some(device_driver_deactivate::<T>);
-            (*p_dev_desc).locator = None; // TOD;
+            (*p_dev_desc).locator = Some(device_driver_locator::<T>); // TOD;
             (*p_dev_desc).line = Some(device_driver_line::<T>);
             (*p_dev_desc).metricInfo = Some(device_driver_char_metric::<T>);
             (*p_dev_desc).mode = Some(device_driver_mode::<T>);
@@ -818,7 +852,7 @@ pub trait DeviceDriver: std::marker::Sized {
             (*p_dev_desc).useRotatedTextInContour = 0;
 
             (*p_dev_desc).eventEnv = empty_env().get();
-            (*p_dev_desc).eventHelper = None;
+            (*p_dev_desc).eventHelper = Some(device_driver_eventHelper::<T>);
 
             (*p_dev_desc).holdflush = Some(device_driver_holdflush::<T>);
 
@@ -841,7 +875,11 @@ pub trait DeviceDriver: std::marker::Sized {
                 DevCapCapture::No as _
             };
 
-            (*p_dev_desc).haveLocator = DevCapLocator::Unset as _;
+            (*p_dev_desc).haveLocator = if <T>::USE_LOCATOR {
+                DevCapLocator::Yes as _
+            } else {
+                DevCapLocator::No as _
+            };
 
             // NOTE: Unlike the features that will be added in  Graphics API
             // version 15 (i.e. R 4.2), the features in API v13 & v14 (i.e. R
