@@ -1,6 +1,6 @@
 use super::*;
 
-pub trait IntoDataFrame<T> {
+pub trait IntoDataFrameRow<T> {
     fn into_dataframe(self) -> Result<Dataframe<T>>;
 }
 
@@ -33,8 +33,8 @@ impl<T> std::convert::TryFrom<Robj> for Dataframe<T> {
 }
 
 impl<T> Dataframe<T> {
-    /// Use `#[derive(IntoDataFrame)]` to use this.
-    pub fn try_from_values<I: IntoDataFrame<T>>(iter: I) -> Result<Self> {
+    /// Use `#[derive(IntoDataFrameRow)]` to use this.
+    pub fn try_from_values<I: IntoDataFrameRow<T>>(iter: I) -> Result<Self> {
         iter.into_dataframe()
     }
 }

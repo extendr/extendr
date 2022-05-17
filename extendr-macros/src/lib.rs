@@ -247,7 +247,7 @@ pub fn derive_into_robj(item: TokenStream) -> TokenStream {
 /// ```ignore
 /// use extendr_api::prelude::*;
 ///
-/// #[derive(Debug, IntoDataFrame)]
+/// #[derive(Debug, IntoDataFrameRow)]
 /// struct MyStruct {
 ///     x: i32,
 ///     y: String,
@@ -261,7 +261,7 @@ pub fn derive_into_robj(item: TokenStream) -> TokenStream {
 /// assert_eq!(df[1], r!(["abc", "xyz"]));
 /// ```
 
-#[proc_macro_derive(IntoDataFrame)]
+#[proc_macro_derive(IntoDataFrameRow)]
 pub fn derive_into_dataframe(item: TokenStream) -> TokenStream {
     dataframe::derive_into_dataframe(item)
 }
