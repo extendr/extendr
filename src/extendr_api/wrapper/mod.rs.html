@@ -404,6 +404,16 @@
 <span id="397">397</span>
 <span id="398">398</span>
 <span id="399">399</span>
+<span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
+<span id="404">404</span>
+<span id="405">405</span>
+<span id="406">406</span>
+<span id="407">407</span>
+<span id="408">408</span>
+<span id="409">409</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Wrappers are lightweight proxies for references to R datatypes.</span>
 <span class="doccomment">//! They do not contain an Robj (see array.rs for an example of this).</span>
 
@@ -413,6 +423,7 @@
 
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">altrep</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">complexes</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">dataframe</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">doubles</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">environment</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">expr</span>;
@@ -440,6 +451,7 @@
     <span class="ident">AltrepImpl</span>,
 };
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">complexes::Complexes</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">dataframe</span>::{<span class="ident">Dataframe</span>, <span class="ident">IntoDataFrame</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">doubles::Doubles</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">environment</span>::{<span class="ident">EnvIter</span>, <span class="ident">Environment</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">expr::Expressions</span>;
@@ -532,7 +544,13 @@
             }
         }
 
-        <span class="kw">impl</span> <span class="ident">GetSexp</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {
+        <span class="macro">make_getsexp!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span>, <span class="kw">impl</span>);
+    };
+}
+
+<span class="macro">macro_rules!</span> <span class="ident">make_getsexp</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span>: <span class="ident">ty</span>, $(<span class="macro-nonterminal">$</span><span class="kw">impl</span> : <span class="macro-nonterminal">tt</span>)<span class="kw-2">*</span>) =&gt; {
+        $(<span class="macro-nonterminal">$</span><span class="kw">impl</span>)<span class="op">*</span> <span class="macro-nonterminal">GetSexp</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {
             <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">SEXP</span> {
                 <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>()
             }
@@ -549,22 +567,22 @@
         <span class="comment">// These traits all derive from GetSexp</span>
 
         <span class="doccomment">/// len() and is_empty()</span>
-        <span class="kw">impl</span> <span class="ident">Length</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {}
+        $(<span class="macro-nonterminal">$</span><span class="kw">impl</span>)<span class="op">*</span> <span class="macro-nonterminal">Length</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {}
 
         <span class="doccomment">/// rtype() and rany()</span>
-        <span class="kw">impl</span> <span class="ident">Types</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {}
+        $(<span class="macro-nonterminal">$</span><span class="kw">impl</span>)<span class="op">*</span> <span class="macro-nonterminal">Types</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {}
 
         <span class="doccomment">/// as_*()</span>
-        <span class="kw">impl</span> <span class="ident">Conversions</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {}
+        $(<span class="macro-nonterminal">$</span><span class="kw">impl</span>)<span class="op">*</span> <span class="macro-nonterminal">Conversions</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {}
 
         <span class="doccomment">/// find_var() etc.</span>
-        <span class="kw">impl</span> <span class="ident">Rinternals</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {}
+        $(<span class="macro-nonterminal">$</span><span class="kw">impl</span>)<span class="op">*</span> <span class="macro-nonterminal">Rinternals</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {}
 
         <span class="doccomment">/// as_typed_slice_raw() etc.</span>
-        <span class="kw">impl</span> <span class="ident">Slices</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {}
+        $(<span class="macro-nonterminal">$</span><span class="kw">impl</span>)<span class="op">*</span> <span class="macro-nonterminal">Slices</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {}
 
         <span class="doccomment">/// dollar() etc.</span>
-        <span class="kw">impl</span> <span class="ident">Operators</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {}
+        $(<span class="macro-nonterminal">$</span><span class="kw">impl</span>)<span class="op">*</span> <span class="macro-nonterminal">Operators</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {}
     };
 }
 
@@ -631,6 +649,8 @@
 <span class="comment">// make_conversions!(Function, ExpectedFunction, is_function, &quot;Not a function&quot;);</span>
 
 <span class="macro">make_conversions!</span>(<span class="ident">Strings</span>, <span class="ident">ExpectedString</span>, <span class="ident">is_string</span>, <span class="string">&quot;Not a string vector&quot;</span>);
+
+<span class="macro">make_getsexp!</span>(<span class="ident">Dataframe</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
 
 <span class="comment">// impl Deref for Integers {</span>
 <span class="comment">//     type Target = [Rint];</span>

@@ -145,9 +145,9 @@
 };
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::wrapper</span>::{
-    <span class="ident">Complexes</span>, <span class="ident">Doubles</span>, <span class="ident">EnvIter</span>, <span class="ident">Environment</span>, <span class="ident">Expressions</span>, <span class="ident">ExternalPtr</span>, <span class="ident">FromList</span>, <span class="ident">Function</span>,
-    <span class="ident">Integers</span>, <span class="ident">Language</span>, <span class="ident">List</span>, <span class="ident">ListIter</span>, <span class="ident">Logicals</span>, <span class="ident">Nullable</span>, <span class="ident">Pairlist</span>, <span class="ident">Primitive</span>, <span class="ident">Promise</span>, <span class="ident">Raw</span>,
-    <span class="ident">Rstr</span>, <span class="ident">Strings</span>, <span class="ident">Symbol</span>,
+    <span class="ident">Complexes</span>, <span class="ident">Dataframe</span>, <span class="ident">Doubles</span>, <span class="ident">EnvIter</span>, <span class="ident">Environment</span>, <span class="ident">Expressions</span>, <span class="ident">ExternalPtr</span>, <span class="ident">FromList</span>,
+    <span class="ident">Function</span>, <span class="ident">Integers</span>, <span class="ident">IntoDataFrame</span>, <span class="ident">Language</span>, <span class="ident">List</span>, <span class="ident">ListIter</span>, <span class="ident">Logicals</span>, <span class="ident">Nullable</span>, <span class="ident">Pairlist</span>,
+    <span class="ident">Primitive</span>, <span class="ident">Promise</span>, <span class="ident">Raw</span>, <span class="ident">Rstr</span>, <span class="ident">Strings</span>, <span class="ident">Symbol</span>,
 };
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
@@ -156,7 +156,7 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">ndarray</span>::<span class="kw-2">*</span>;
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">extendr_macros</span>::{<span class="ident">call</span>, <span class="ident">extendr</span>, <span class="ident">extendr_module</span>, <span class="ident">pairlist</span>, <span class="ident">Rraw</span>, <span class="ident">R</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">extendr_macros</span>::{<span class="ident">call</span>, <span class="ident">extendr</span>, <span class="ident">extendr_module</span>, <span class="ident">pairlist</span>, <span class="ident">IntoDataFrame</span>, <span class="ident">Rraw</span>, <span class="ident">R</span>};
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::iter::StrIter</span>;
 

@@ -585,6 +585,27 @@
 <span id="578">578</span>
 <span id="579">579</span>
 <span id="580">580</span>
+<span id="581">581</span>
+<span id="582">582</span>
+<span id="583">583</span>
+<span id="584">584</span>
+<span id="585">585</span>
+<span id="586">586</span>
+<span id="587">587</span>
+<span id="588">588</span>
+<span id="589">589</span>
+<span id="590">590</span>
+<span id="591">591</span>
+<span id="592">592</span>
+<span id="593">593</span>
+<span id="594">594</span>
+<span id="595">595</span>
+<span id="596">596</span>
+<span id="597">597</span>
+<span id="598">598</span>
+<span id="599">599</span>
+<span id="600">600</span>
+<span id="601">601</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::single_threaded</span>;
 
@@ -1163,6 +1184,27 @@
     <span class="doccomment">/// Convert a vector of Robj into a list.</span>
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">val</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
         <span class="ident">List::from_values</span>(<span class="ident">val</span>.<span class="ident">iter</span>()).<span class="ident">into</span>()
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rstr</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
+    <span class="doccomment">/// Convert a vector of Rstr into strings.</span>
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">val</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rstr</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
+        <span class="ident">Strings::from_values</span>(<span class="ident">val</span>.<span class="ident">into_iter</span>()).<span class="ident">into</span>()
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rint</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
+    <span class="doccomment">/// Convert a vector of Rint into integers.</span>
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">val</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rint</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
+        <span class="ident">Integers::from_values</span>(<span class="ident">val</span>.<span class="ident">into_iter</span>()).<span class="ident">into</span>()
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rfloat</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
+    <span class="doccomment">/// Convert a vector of Rfloat into doubles.</span>
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">val</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rfloat</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
+        <span class="ident">Doubles::from_values</span>(<span class="ident">val</span>.<span class="ident">into_iter</span>()).<span class="ident">into</span>()
     }
 }
 </code></pre></div>

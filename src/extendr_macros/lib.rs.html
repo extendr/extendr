@@ -243,6 +243,33 @@
 <span id="238">238</span>
 <span id="239">239</span>
 <span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
 </pre><pre class="rust"><code><span class="doccomment">//!</span>
 <span class="doccomment">//! Macros for generating wrappers for rust functions.</span>
 
@@ -302,6 +329,7 @@
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
 <span class="kw">mod</span> <span class="ident">R</span>;
 <span class="kw">mod</span> <span class="ident">call</span>;
+<span class="kw">mod</span> <span class="ident">dataframe</span>;
 <span class="kw">mod</span> <span class="ident">extendr_function</span>;
 <span class="kw">mod</span> <span class="ident">extendr_impl</span>;
 <span class="kw">mod</span> <span class="ident">extendr_module</span>;
@@ -482,6 +510,32 @@
 <span class="attribute">#[<span class="ident">proc_macro_derive</span>(<span class="ident">IntoRobj</span>)]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">derive_into_robj</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
     <span class="ident">list_struct::derive_into_robj</span>(<span class="ident">item</span>)
+}
+
+<span class="doccomment">/// Enable the construction of dataframes from arrays of structures.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Example</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ```ignore</span>
+<span class="doccomment">/// use extendr_api::prelude::*;</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// #[derive(Debug, IntoDataFrame)]</span>
+<span class="doccomment">/// struct MyStruct {</span>
+<span class="doccomment">///     x: i32,</span>
+<span class="doccomment">///     y: String,</span>
+<span class="doccomment">/// }</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// let v = vec![MyStruct { x: 0, y: &quot;abc&quot;.into() }, MyStruct { x: 1, y: &quot;xyz&quot;.into() }];</span>
+<span class="doccomment">/// let df = v.into_dataframe()?;</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// assert!(df.inherits(&quot;data.frame&quot;));</span>
+<span class="doccomment">/// assert_eq!(df[0], r!([0, 1]));</span>
+<span class="doccomment">/// assert_eq!(df[1], r!([&quot;abc&quot;, &quot;xyz&quot;]));</span>
+<span class="doccomment">/// ```</span>
+
+<span class="attribute">#[<span class="ident">proc_macro_derive</span>(<span class="ident">IntoDataFrame</span>)]</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">derive_into_dataframe</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
+    <span class="ident">dataframe::derive_into_dataframe</span>(<span class="ident">item</span>)
 }
 </code></pre></div>
 </section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_macros" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.60.0 (7737e0b5c 2022-04-04)" ></div>
