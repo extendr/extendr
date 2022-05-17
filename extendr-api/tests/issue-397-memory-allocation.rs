@@ -6,7 +6,7 @@ fn test_allocation() {
         const COUNT: u64 = 2_000_000u64;
         let mut data: Vec<Robj> = vec![];
         for i in 1u64..COUNT {
-            if i % 1000 == 0 { println!("{}", i); }
+            // if i % 1000 == 0 { println!("{}", i); }
             data.push(i.into());
         }
 

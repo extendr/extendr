@@ -5,7 +5,7 @@ fn test_derive_into_dataframe() {
     test! {
         use extendr_api::prelude::*;
 
-        #[derive(Debug, IntoDataFrame)]
+        #[derive(Debug, IntoDataFrameRow)]
         struct MyStruct {
             x: Rint,
             y: Rstr,

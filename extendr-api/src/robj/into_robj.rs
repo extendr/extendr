@@ -6,7 +6,7 @@ pub(crate) fn str_to_character(s: &str) -> SEXP {
         if s.is_na() {
             R_NaString
         } else {
-            Rf_mkCharLen(s.as_ptr() as *const raw::c_char, s.len() as i32)
+            single_threaded(|| Rf_mkCharLen(s.as_ptr() as *const raw::c_char, s.len() as i32))
         }
     }
 }

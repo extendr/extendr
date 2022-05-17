@@ -1,6 +1,3 @@
-use extendr_api::prelude::*;
-use extendr_macros::{IntoRobj, TryFromRobj};
-
 // TODO: On a crate with `proc_macro = true`, Rust doesn't allow
 // cross-compilation, so this test cannot be executed on Windows as long as it
 // requires corss-compilation.
@@ -9,6 +6,9 @@ use extendr_macros::{IntoRobj, TryFromRobj};
 #[cfg(not(target_os = "windows"))]
 #[test]
 fn test_derive_list() {
+    use extendr_api::prelude::*;
+    use extendr_macros::{IntoRobj, TryFromRobj};
+
     test! {
         #[derive(TryFromRobj, IntoRobj, PartialEq, Debug)]
         struct Foo {
