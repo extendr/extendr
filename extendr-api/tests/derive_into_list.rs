@@ -1,4 +1,3 @@
-
 // TODO: On a crate with `proc_macro = true`, Rust doesn't allow
 // cross-compilation, so this test cannot be executed on Windows as long as it
 // requires corss-compilation.
