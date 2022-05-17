@@ -7,6 +7,7 @@ use libR_sys::*;
 
 pub mod altrep;
 pub mod complexes;
+pub mod dataframe;
 pub mod doubles;
 pub mod environment;
 pub mod expr;
@@ -34,6 +35,7 @@ pub use altrep::{
     AltrepImpl,
 };
 pub use complexes::Complexes;
+pub use dataframe::{Dataframe, IntoDataFrame};
 pub use doubles::Doubles;
 pub use environment::{EnvIter, Environment};
 pub use expr::Expressions;
@@ -126,7 +128,13 @@ macro_rules! make_conversions {
             }
         }
 
-        impl GetSexp for $typename {
+        make_getsexp!($typename, impl);
+    };
+}
+
+macro_rules! make_getsexp {
+    ($typename: ty, $($impl : tt)*) => {
+        $($impl)* GetSexp for $typename {
             unsafe fn get(&self) -> SEXP {
                 self.robj.get()
             }
@@ -143,22 +151,22 @@ macro_rules! make_conversions {
         // These traits all derive from GetSexp
 
         /// len() and is_empty()
-        impl Length for $typename {}
+        $($impl)* Length for $typename {}
 
         /// rtype() and rany()
-        impl Types for $typename {}
+        $($impl)* Types for $typename {}
 
         /// as_*()
-        impl Conversions for $typename {}
+        $($impl)* Conversions for $typename {}
 
         /// find_var() etc.
-        impl Rinternals for $typename {}
+        $($impl)* Rinternals for $typename {}
 
         /// as_typed_slice_raw() etc.
-        impl Slices for $typename {}
+        $($impl)* Slices for $typename {}
 
         /// dollar() etc.
-        impl Operators for $typename {}
+        $($impl)* Operators for $typename {}
     };
 }
 
@@ -225,6 +233,8 @@ make_conversions!(
 // make_conversions!(Function, ExpectedFunction, is_function, "Not a function");
 
 make_conversions!(Strings, ExpectedString, is_string, "Not a string vector");
+
+make_getsexp!(Dataframe<T>, impl<T>);
 
 // impl Deref for Integers {
 //     type Target = [Rint];

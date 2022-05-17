@@ -18,7 +18,7 @@ fn test_strings() {
         let v = s.as_slice().iter().map(|c| c.as_str()).collect::<String>();
         assert_eq!(v, "xyz");
 
-        s.set_elt(1, "q");
+        s.set_elt(1, Rstr::from("q"));
         assert_eq!(s.elt(1), "q");
 
         let s : Strings = ["x", "y", "z"].iter().collect();

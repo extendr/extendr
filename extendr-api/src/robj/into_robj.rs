@@ -578,3 +578,24 @@ impl<'a> From<Vec<Robj>> for Robj {
         List::from_values(val.iter()).into()
     }
 }
+
+impl<'a> From<Vec<Rstr>> for Robj {
+    /// Convert a vector of Rstr into strings.
+    fn from(val: Vec<Rstr>) -> Self {
+        Strings::from_values(val.into_iter()).into()
+    }
+}
+
+impl<'a> From<Vec<Rint>> for Robj {
+    /// Convert a vector of Rint into integers.
+    fn from(val: Vec<Rint>) -> Self {
+        Integers::from_values(val.into_iter()).into()
+    }
+}
+
+impl<'a> From<Vec<Rfloat>> for Robj {
+    /// Convert a vector of Rfloat into doubles.
+    fn from(val: Vec<Rfloat>) -> Self {
+        Doubles::from_values(val.into_iter()).into()
+    }
+}
