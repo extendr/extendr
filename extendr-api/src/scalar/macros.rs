@@ -12,7 +12,7 @@
 ///
 /// Example Usage:
 ///
-/// ```rust
+/// ```ignore
 /// gen_unop!(Rint, Neg, |lhs: i32| Some(-lhs), "Doc Comment");
 /// ```
 ///
@@ -104,7 +104,7 @@ macro_rules! gen_unop {
 ///
 /// Example Usage:
 ///
-/// ```rust
+/// ```ignore
 /// gen_binop!(Rint, i32, Add, |lhs: i32, rhs| lhs.checked_add(rhs), "Doc Comment");
 /// ```
 ///
@@ -275,7 +275,7 @@ macro_rules! gen_binop {
 ///
 /// Example Usage:
 ///
-/// ```rust
+/// ```ignore
 /// gen_binopassign!(Rint, i32, AddAssign, |lhs: i32, rhs| lhs.checked_add(rhs), "Doc Comment");
 /// ```
 ///
@@ -480,7 +480,7 @@ macro_rules! gen_binopassign {
 ///
 /// Example Usage:
 ///
-/// ```rust
+/// ```ignore
 /// gen_from_primitive!(Rint, i32);
 /// ```
 ///
@@ -553,7 +553,7 @@ macro_rules! gen_from_primitive {
 ///
 /// Example Usage:
 ///
-/// ```rust
+/// ```ignore
 /// gen_from_scalar!(Rint, i32);
 /// ```
 ///
@@ -608,7 +608,7 @@ macro_rules! gen_from_scalar {
 ///
 /// Example Usage:
 ///
-/// ```rust
+/// ```ignore
 /// gen_impl!(Rint, i32);
 /// ```
 macro_rules! gen_impl {
@@ -631,7 +631,7 @@ macro_rules! gen_impl {
 ///
 /// Example Usage:
 ///
-/// ```rust
+/// ```ignore
 /// gen_trait_impl!(Rint, i32, |x: &Rint| x.0 == i32::MIN, i32::MIN);
 /// ```
 ///
@@ -798,7 +798,7 @@ macro_rules! gen_trait_impl {
 ///
 /// Example Usage:
 ///
-/// ```rust
+/// ```ignore
 /// gen_sum_iter!(Rint, 0i32);
 /// ```
 macro_rules! gen_sum_iter {
