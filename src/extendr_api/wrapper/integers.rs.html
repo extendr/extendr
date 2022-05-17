@@ -162,7 +162,6 @@
 <span id="155">155</span>
 <span id="156">156</span>
 <span id="157">157</span>
-<span id="158">158</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">super</span>::scalar::Rint</span>;
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">std::iter::FromIterator</span>;
@@ -259,10 +258,9 @@
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">from_values_long</span>() {
+    <span class="kw">fn</span> <span class="ident">from_values_altrep</span>() {
         <span class="macro">test!</span> {
-            <span class="comment">// Long (&gt;=64k) vectors a lazy ALTREP objects.</span>
-            <span class="kw">let</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">Integers::from_values</span>(<span class="number">0</span>..<span class="number">1000000000</span>);
+            <span class="kw">let</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">Integers::from_values_altrep</span>(<span class="number">0</span>..<span class="number">1000000000</span>);
             <span class="macro">assert_eq!</span>(<span class="ident">vec</span>.<span class="ident">is_altrep</span>(), <span class="bool-val">true</span>);
             <span class="macro">assert_eq!</span>(<span class="ident">vec</span>.<span class="ident">elt</span>(<span class="number">12345678</span>), <span class="number">12345678</span>);
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dest</span> <span class="op">=</span> [<span class="number">0</span>.<span class="ident">into</span>(); <span class="number">2</span>];

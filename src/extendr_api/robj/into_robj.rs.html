@@ -614,7 +614,7 @@
         <span class="kw">if</span> <span class="ident">s</span>.<span class="ident">is_na</span>() {
             <span class="ident">R_NaString</span>
         } <span class="kw">else</span> {
-            <span class="ident">Rf_mkCharLen</span>(<span class="ident">s</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">raw::c_char</span>, <span class="ident">s</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">i32</span>)
+            <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Rf_mkCharLen</span>(<span class="ident">s</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">raw::c_char</span>, <span class="ident">s</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">i32</span>))
         }
     }
 }

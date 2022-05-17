@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Dataframe",""]],"trait":[["IntoDataFrame",""]]});
+initSidebarItems({"struct":[["Dataframe",""]],"trait":[["IntoDataFrameRow",""]]});

@@ -137,6 +137,16 @@
 <span id="130">130</span>
 <span id="131">131</span>
 <span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
 </pre><pre class="rust"><code><span class="doccomment">/// Generates `impl` block and required traits for a vector type.</span>
 <span class="macro">macro_rules!</span> <span class="ident">gen_vector_wrapper_impl</span> {
     (
@@ -148,11 +158,6 @@
         <span class="ident">doc_name</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">doc_name</span> : <span class="ident">ident</span>,
         <span class="ident">altrep_constructor</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">altrep_constructor</span> : <span class="ident">ident</span>,
     ) =&gt; {
-
-        <span class="comment">// Under this size, vectors are manifest.</span>
-        <span class="comment">// Above this size, vectors are lazy ALTREP objects.</span>
-        <span class="kw">const</span> <span class="ident">SHORT_VECTOR_LENGTH</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">64</span> <span class="op">*</span> <span class="number">1024</span>;
-
         <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
             <span class="kw">fn</span> <span class="macro-nonterminal">default</span>() -&gt; <span class="self">Self</span> {
                 <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::new</span>(<span class="number">0</span>)
@@ -177,10 +182,34 @@
                 }
             }
             <span class="macro">paste::paste!</span>{
+                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;Wrapper for creating non-ALTREP &quot;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">doc_name</span> <span class="string">&quot; (&quot;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">sexp</span> <span class="string">&quot;) vectors from iterators.&quot;</span>]</span>
+                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;The iterator must be exact.&quot;</span>]</span>
+                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;If you want a more generalised constructor, use `iter.collect::&lt;&quot;</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="string">&quot;&gt;()`.&quot;</span>]</span>
+                <span class="kw">pub</span> <span class="kw">fn</span> <span class="macro-nonterminal">from_values</span><span class="op">&lt;</span><span class="ident">V</span><span class="op">&gt;</span>(<span class="ident">values</span>: <span class="ident">V</span>) -&gt; <span class="self">Self</span>
+                <span class="kw">where</span>
+                    <span class="ident">V</span>: <span class="ident">IntoIterator</span>,
+                    <span class="ident">V::IntoIter</span>: <span class="ident">ExactSizeIterator</span>,
+                    <span class="ident">V::Item</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar_type</span><span class="op">&gt;</span>,
+                {
+                    <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
+                        <span class="kw">let</span> <span class="ident">values</span>: <span class="ident">V::IntoIter</span> <span class="op">=</span> <span class="ident">values</span>.<span class="ident">into_iter</span>();
+
+                        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">Robj::alloc_vector</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">sexp</span>, <span class="ident">values</span>.<span class="ident">len</span>());
+                        <span class="kw">let</span> <span class="ident">dest</span>: <span class="kw-2">&amp;mut</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar_type</span>] <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_typed_slice_mut</span>().<span class="ident">unwrap</span>();
+
+                        <span class="kw">for</span> (<span class="ident">d</span>, <span class="ident">v</span>) <span class="kw">in</span> <span class="ident">dest</span>.<span class="ident">iter_mut</span>().<span class="ident">zip</span>(<span class="ident">values</span>) {
+                            <span class="kw-2">*</span><span class="ident">d</span> <span class="op">=</span> <span class="ident">v</span>.<span class="ident">into</span>();
+                        }
+                        <span class="self">Self</span> { <span class="ident">robj</span> }
+                    })
+                }
+            }
+
+            <span class="macro">paste::paste!</span>{
                 <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;Wrapper for creating ALTREP &quot;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">doc_name</span> <span class="string">&quot; (&quot;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">sexp</span> <span class="string">&quot;) vectors from iterators.&quot;</span>]</span>
                 <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;The iterator must be exact, cloneable and implement Debug.&quot;</span>]</span>
                 <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;If you want a more generalised constructor, use `iter.collect::&lt;&quot;</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="string">&quot;&gt;()`.&quot;</span>]</span>
-                <span class="kw">pub</span> <span class="kw">fn</span> <span class="macro-nonterminal">from_values</span><span class="op">&lt;</span><span class="ident">V</span><span class="op">&gt;</span>(<span class="ident">values</span>: <span class="ident">V</span>) -&gt; <span class="self">Self</span>
+                <span class="kw">pub</span> <span class="kw">fn</span> <span class="macro-nonterminal">from_values_altrep</span><span class="op">&lt;</span><span class="ident">V</span><span class="op">&gt;</span>(<span class="ident">values</span>: <span class="ident">V</span>) -&gt; <span class="self">Self</span>
                 <span class="kw">where</span>
                     <span class="ident">V</span>: <span class="ident">IntoIterator</span>,
                     <span class="ident">V::IntoIter</span>: <span class="ident">ExactSizeIterator</span> <span class="op">+</span> <span class="ident">std::fmt::Debug</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="lifetime">&#39;static</span> <span class="op">+</span> <span class="ident">std::any::Any</span>,
@@ -189,19 +218,10 @@
                     <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
                         <span class="kw">let</span> <span class="ident">values</span>: <span class="ident">V::IntoIter</span> <span class="op">=</span> <span class="ident">values</span>.<span class="ident">into_iter</span>();
 
-                        <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">values</span>.<span class="ident">len</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="ident">SHORT_VECTOR_LENGTH</span> {
-                            <span class="ident">Altrep</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">altrep_constructor</span>(<span class="ident">values</span>)
+                        <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span>
+                                  <span class="ident">Altrep</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">altrep_constructor</span>(<span class="ident">values</span>)
                                 .<span class="ident">try_into</span>()
-                                .<span class="ident">unwrap</span>()
-                        } <span class="kw">else</span> {
-                            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">Robj::alloc_vector</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">sexp</span>, <span class="ident">values</span>.<span class="ident">len</span>());
-                            <span class="kw">let</span> <span class="ident">dest</span>: <span class="kw-2">&amp;mut</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar_type</span>] <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_typed_slice_mut</span>().<span class="ident">unwrap</span>();
-
-                            <span class="kw">for</span> (<span class="ident">d</span>, <span class="ident">v</span>) <span class="kw">in</span> <span class="ident">dest</span>.<span class="ident">iter_mut</span>().<span class="ident">zip</span>(<span class="ident">values</span>) {
-                                <span class="kw-2">*</span><span class="ident">d</span> <span class="op">=</span> <span class="ident">v</span>.<span class="ident">into</span>();
-                            }
-                            <span class="ident">robj</span>
-                        };
+                                .<span class="ident">unwrap</span>();
                         <span class="self">Self</span> { <span class="ident">robj</span> }
                     })
                 }

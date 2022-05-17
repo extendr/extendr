@@ -519,7 +519,7 @@
 <span class="doccomment">/// ```ignore</span>
 <span class="doccomment">/// use extendr_api::prelude::*;</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// #[derive(Debug, IntoDataFrame)]</span>
+<span class="doccomment">/// #[derive(Debug, IntoDataFrameRow)]</span>
 <span class="doccomment">/// struct MyStruct {</span>
 <span class="doccomment">///     x: i32,</span>
 <span class="doccomment">///     y: String,</span>
@@ -533,7 +533,7 @@
 <span class="doccomment">/// assert_eq!(df[1], r!([&quot;abc&quot;, &quot;xyz&quot;]));</span>
 <span class="doccomment">/// ```</span>
 
-<span class="attribute">#[<span class="ident">proc_macro_derive</span>(<span class="ident">IntoDataFrame</span>)]</span>
+<span class="attribute">#[<span class="ident">proc_macro_derive</span>(<span class="ident">IntoDataFrameRow</span>)]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">derive_into_dataframe</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
     <span class="ident">dataframe::derive_into_dataframe</span>(<span class="ident">item</span>)
 }
