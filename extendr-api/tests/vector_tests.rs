@@ -281,15 +281,12 @@ fn test_doubles_from_values_short() {
 #[test]
 fn test_doubles_from_values_altrep() {
     test! {
-        println!("test_doubles_from_values_altrep");
-        let vec = Doubles::from_values_altrep((0..100000000).map(|x| x as f64));
-        println!("alloc done");
+        let vec = Doubles::from_values_altrep((0..1000000000).map(|x| x as f64));
         assert_eq!(vec.is_altrep(), true);
         assert_eq!(vec.elt(12345678), 12345678.0);
         let mut dest = [0.0.into(); 2];
         vec.get_region(12345678, &mut dest);
         assert_eq!(dest, [12345678.0, 12345679.0]);
-        println!("test done");
     }
 }
 
@@ -347,7 +344,7 @@ mod num_complex {
     fn from_values_long() {
         test! {
             // Long (>=64k) vectors are lazy ALTREP objects.
-            let vec = Complexes::from_values((0..1000000000).map(|x| x as f64));
+            let vec = Complexes::from_values_altrep((0..1000000000).map(|x| x as f64));
             assert_eq!(vec.is_altrep(), true);
             assert_eq!(vec.elt(12345678), Rcplx::from(12345678.0));
             let mut dest = [0.0.into(); 2];
