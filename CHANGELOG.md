@@ -29,7 +29,7 @@
     fn test_rename() { }
     ```
     [[#335]](https://github.com/extendr/extendr/pull/335)
-- Implemented `serde::Serialize` for R types [[#305]](https://github.com/extendr/extendr/pull/305), [[#355]](https://github.com/extendr/extendr/pull/355)
+- `serde::Serialize` implementation for R types [[#305]](https://github.com/extendr/extendr/pull/305), [[#355]](https://github.com/extendr/extendr/pull/355)
 - `Rany` type and the `as_any` conversion method. [[#320]](https://github.com/extendr/extendr/pull/320)
 - Implemented `std::fmt::Debug` for wrapper types [[#345]](https://github.com/extendr/extendr/pull/345)
 - The `[[` operator that works with Rust classes. Its behavior is identical to that of the `$` operator. [[#359]](https://github.com/extendr/extendr/pull/359)
