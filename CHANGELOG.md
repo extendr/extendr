@@ -48,7 +48,7 @@
 - `SymPair::sym_pair()` now returns `(Option<Robj>, Robj)` [[#225]](https://github.com/extendr/extendr/pull/225)
 - More detailed error messages when converting Rust integer types to R [[#243]](https://github.com/extendr/extendr/pull/243)
 - `Character` is now called `Rstr` [[#273]](https://github.com/extendr/extendr/pull/273)
-- Bump `ndarray` to 0.15.3. Under [RFC 1977](https://github.com/rust-lang/rfcs/pull/1977) this is a "public dependency" change, and therefore can be considered a breaking change, as consumers of `extendr` that use an older version of `ndarray` will no longer be compatible until they also bump `ndarray` to a compatible version. [[#275]](https://github.com/extendr/extendr/pull/275)
+- [**ndarray**] Bumped `ndarray` to 0.15.3. Under [RFC 1977](https://github.com/rust-lang/rfcs/pull/1977) this is a "public dependency" change, and therefore can be considered a breaking change, as consumers of `extendr` that use an older version of `ndarray` will no longer be compatible until they also bump `ndarray` to a compatible version. [[#275]](https://github.com/extendr/extendr/pull/275)
 - `IsNA` trait has been renamed to `CanBeNA` [[#288]](https://github.com/extendr/extendr/pull/288)
 - `list!` has been rewritten, and how returns a `List` struct [[#303]](https://github.com/extendr/extendr/pull/303)
 
