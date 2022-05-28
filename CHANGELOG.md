@@ -46,7 +46,7 @@
 - The `R!` macro now accepts strings that contain R code. This is now the recommended way of using the macro. [[#203]](https://github.com/extendr/extendr/pull/203)
 - Improved error handling for `<&str>::try_from(Robj)` [[#226]](https://github.com/extendr/extendr/pull/226)
 - `SymPair::sym_pair()` now returns `(Option<Robj>, Robj)` [[#225]](https://github.com/extendr/extendr/pull/225)
-- Better error messages when converting Rust integer types to R [[#243]](https://github.com/extendr/extendr/pull/243)
+- More detailed error messages when converting Rust integer types to R [[#243]](https://github.com/extendr/extendr/pull/243)
 - `Character` is now called `Rstr` [[#273]](https://github.com/extendr/extendr/pull/273)
 - Bump `ndarray` to 0.15.3. Under [RFC 1977](https://github.com/rust-lang/rfcs/pull/1977) this is a "public dependency" change, and therefore can be considered a breaking change, as consumers of `extendr` that use an older version of `ndarray` will no longer be compatible until they also bump `ndarray` to a compatible version. [[#275]](https://github.com/extendr/extendr/pull/275)
 - `IsNA` trait has been renamed to `CanBeNA` [[#288]](https://github.com/extendr/extendr/pull/288)
