@@ -9,7 +9,7 @@
 - `use_try_from` option for the `extendr` macro, which allows the use of any type that implements `TryInto<Robj>`/`TryFrom<Robj>`, e.g. `#[extendr(use_try_from = true)]` [[#222]](https://github.com/extendr/extendr/pull/222)
 - Large Rust integer types (`u32`, `u64` and `i64`) can now be converted to R's `numeric` type, which can handle large integer values [[#242]](https://github.com/extendr/extendr/pull/242)
 - `call!` macro, which can be used to call an R function whose name is provided as a string [[#238]](https://github.com/extendr/extendr/pull/238)
-- Implemented `TryFrom<Robj>` for a large number of Rust types [[#249]](https://github.com/extendr/extendr/pull/249), [[#258]](https://github.com/extendr/extendr/pull/258)
+- `TryFrom<Robj>` for a large number of Rust types [[#249]](https://github.com/extendr/extendr/pull/249), [[#258]](https://github.com/extendr/extendr/pull/258)
 - Support for `ALTREP` [[#250]](https://github.com/extendr/extendr/pull/250)
 - An `S4` struct, which wraps an S4 class in R [[#268]](https://github.com/extendr/extendr/pull/268)
 - Implemented `TryFrom<&ArrayBase> for Robj`, allowing `extendr`-annotated functions to return Arrays from the `ndarray` crate and have them automatically converted to R arrays. Note: even if 1D arrays are returned they will not be returned as vectors. [[#275]](https://github.com/extendr/extendr/pull/275)
