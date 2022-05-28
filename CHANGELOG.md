@@ -17,7 +17,7 @@
 - `Integers`, `Doubles`, `Strings`, `Logicals` and `Complexes`: `ALTREP` wrappers for vectors that allows for much larger vectors than native R [[#274]](https://github.com/extendr/extendr/pull/274), [[#284]](https://github.com/extendr/extendr/pull/284), [[#301]](https://github.com/extendr/extendr/pull/301), [[#338]](https://github.com/extendr/extendr/pull/338), [[#350]](https://github.com/extendr/extendr/pull/350)
 - `ExternalPtr`, a wrapper class for creating R objects containing any Rust object. [[#260]](https://github.com/extendr/extendr/pull/260)
 - [**graphics**] Support for R graphics and graphics devices. The `graphics` feature flag is disabled by default. [[#279]](https://github.com/extendr/extendr/pull/279), [[#360]](https://github.com/extendr/extendr/pull/360), [[#373]](https://github.com/extendr/extendr/pull/373), [[#379]](https://github.com/extendr/extendr/pull/379), [[#380]](https://github.com/extendr/extendr/pull/380), [[#389]](https://github.com/extendr/extendr/pull/389)
-- Implemented `Deref` for vector types (Rint/Rfloat/Rbool/Rstr/Robj) to appropriately typed Rust slices [[#327]](https://github.com/extendr/extendr/pull/327)
+- `Deref` implementation for vector types (Rint/Rfloat/Rbool/Rstr/Robj) to appropriately typed Rust slices [[#327]](https://github.com/extendr/extendr/pull/327)
 - A `default` option for `extendr`-annotated functions, allowing them to have default values, e.g. `fn fred(#[default="NULL"] x: Option<i32>) { }` [[#334]](https://github.com/extendr/extendr/pull/334)
 - The `r_name` option for `extendr`-annotated functions, allowing the generated R function to have a different name. e.g.
     ```rust
