@@ -33,7 +33,7 @@
 - `Rany` type and the `as_any` conversion method. [[#320]](https://github.com/extendr/extendr/pull/320)
 - Implemented `std::fmt::Debug` for wrapper types [[#345]](https://github.com/extendr/extendr/pull/345)
 - The `[[` operator that works with Rust classes. Its behavior is identical to that of the `$` operator. [[#359]](https://github.com/extendr/extendr/pull/359)
-- `Load` and `Save`, traits that implement the ability to load and save R data to the RDS format. These traits are implemented for all `Robj` [[#363]](https://github.com/extendr/extendr/pull/363)
+- `Load` and `Save`, traits that, once implemented, provide the ability to load and save R data in the RDS format. These traits are implemented for all `Robj` [[#363]](https://github.com/extendr/extendr/pull/363)
 - Support for R version 4.2 [[#399]](https://github.com/extendr/extendr/pull/399)
 - The `Dataframe` wrapper struct [[#393]](https://github.com/extendr/extendr/pull/393)
 - The `IntoDataFrame` trait, which can be derived to allow arbitrary Rust structs to be converted to rows of a data frame [[#393]](https://github.com/extendr/extendr/pull/393)
