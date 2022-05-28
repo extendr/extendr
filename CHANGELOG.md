@@ -44,7 +44,7 @@
 - Renamed `RType` to `Rtype`  [[#345]](https://github.com/extendr/extendr/pull/345)
 - Wrapper types now contain `Robj` fields [[#190]](https://github.com/extendr/extendr/pull/190)
 - The `R!` macro now accepts strings that contain R code. This is now the recommended way of using the macro. [[#203]](https://github.com/extendr/extendr/pull/203)
-- Better error handling for `<&str>::try_from(Robj)` [[#226]](https://github.com/extendr/extendr/pull/226)
+- Improved error handling for `<&str>::try_from(Robj)` [[#226]](https://github.com/extendr/extendr/pull/226)
 - `SymPair::sym_pair()` now returns `(Option<Robj>, Robj)` [[#225]](https://github.com/extendr/extendr/pull/225)
 - Better error messages when converting Rust integer types to R [[#243]](https://github.com/extendr/extendr/pull/243)
 - `Character` is now called `Rstr` [[#273]](https://github.com/extendr/extendr/pull/273)
