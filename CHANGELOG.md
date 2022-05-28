@@ -56,7 +56,7 @@
 - Calling the `R!` macro with non-string types (e.g. `R!(1)`) is now deprecated. [[#203]](https://github.com/extendr/extendr/pull/203)
 
 ### Removed
-- `Real`, `Int`, `Bool` and the redundant trait `SliceIter`, which should be replaced with `Doubles`, `Integers`, and `Logicals` respectively [[#304]](https://github.com/extendr/extendr/pull/304), [[#338]](https://github.com/extendr/extendr/pull/338)
+- `Real`, `Int`, `Bool` and the redundant trait `SliceIter`, which should be replaced with `Rdouble`, `Rint`, and `Rbool` respectively [[#304]](https://github.com/extendr/extendr/pull/304), [[#338]](https://github.com/extendr/extendr/pull/338)
 - `TryFrom` conversions between `Robj` and `HashMap` for consistency. `List::into_hashmap()` and `List::from_hashmap()` should be used instead.
 
 ## extendr 0.2.0
