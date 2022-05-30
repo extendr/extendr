@@ -13,7 +13,7 @@
 - `TryFrom<Robj>` for a large number of Rust types. [[#249]](https://github.com/extendr/extendr/pull/249), [[#258]](https://github.com/extendr/extendr/pull/258)
 - Support for `ALTREP`. [[#250]](https://github.com/extendr/extendr/pull/250), [[#274]](https://github.com/extendr/extendr/pull/274)
 - `S4` struct, which wraps an S4 class in R. [[#268]](https://github.com/extendr/extendr/pull/268)
-- Implemented `TryFrom<&ArrayBase> for Robj`, allowing `extendr`-annotated functions to return Arrays from the `ndarray` crate and have them automatically converted to R arrays. Note: even if 1D arrays are returned they will not be returned as vectors.. [[#275]](https://github.com/extendr/extendr/pull/275)
+- [**ndarray**] Implemented `TryFrom<&ArrayBase> for Robj`, allowing `extendr`-annotated functions to return Arrays from the `ndarray` crate and have them automatically converted to R arrays. [[#275]](https://github.com/extendr/extendr/pull/275)
 - `Rint`, `Rdouble`, `Rbool` and `Rcplx`: `NA`-aware wrappers for scalar elements of R vectors [[#274]](https://github.com/extendr/extendr/pull/274), [[#284]](https://github.com/extendr/extendr/pull/284), [[#301]](https://github.com/extendr/extendr/pull/301), [[#338]](https://github.com/extendr/extendr/pull/338), [[#350]](https://github.com/extendr/extendr/pull/350)
 - `Integers`, `Doubles`, `Strings`, `Logicals` and `Complexes`: wrappers for R vectors that deref to slices of the above types (`RInt` etc). [[#274]](https://github.com/extendr/extendr/pull/274), [[#284]](https://github.com/extendr/extendr/pull/284), [[#301]](https://github.com/extendr/extendr/pull/301), [[#338]](https://github.com/extendr/extendr/pull/338), [[#350]](https://github.com/extendr/extendr/pull/350)
 - `ExternalPtr`, a wrapper class for creating R objects containing any Rust object. [[#260]](https://github.com/extendr/extendr/pull/260)
@@ -57,7 +57,7 @@
 - `Character` is now called `Rstr`. [[#273]](https://github.com/extendr/extendr/pull/273)
 - [**ndarray**] Bumped `ndarray` to 0.15.3. Under [RFC 1977](https://github.com/rust-lang/rfcs/pull/1977) this is a "public dependency" change, and therefore can be considered a breaking change, as consumers of `extendr` that use an older version of `ndarray` will no longer be compatible until they also bump `ndarray` to a compatible version. [[#275]](https://github.com/extendr/extendr/pull/275)
 - `IsNA` trait has been renamed to `CanBeNA`. [[#288]](https://github.com/extendr/extendr/pull/288)
-- `list!` has been rewritten, and how returns a `List` struct. [[#303]](https://github.com/extendr/extendr/pull/303)
+- `list!` has been rewritten, and now returns a `List` struct. [[#303]](https://github.com/extendr/extendr/pull/303)
 
 ### Deprecated
 - Calling the `R!` macro with non-string types (e.g. `R!(1)`) is now deprecated. [[#203]](https://github.com/extendr/extendr/pull/203)
