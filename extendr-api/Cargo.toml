@@ -1,6 +1,6 @@
 [package]
 name = "extendr-api"
-version = "0.2.0"
+version = "0.3.0"
 authors = [
     "andy-thomason <andy@andythomason.com>",
     "Thomas Down",
@@ -16,8 +16,8 @@ repository = "https://github.com/extendr/extendr"
 
 [dependencies]
 libR-sys = "0.2.2"
-extendr-macros = { path = "../extendr-macros", version="0.2.0" }
-extendr-engine = { path = "../extendr-engine", version="0.2.0" }
+extendr-macros = { path = "../extendr-macros", version="0.3.0" }
+extendr-engine = { path = "../extendr-engine", version="0.3.0" }
 ndarray = { version = "0.15.3", optional = true }
 lazy_static = "1.4"
 paste = "1.0.5"
