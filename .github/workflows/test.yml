@@ -242,21 +242,13 @@ jobs:
       # Rust pseudo multi-targeting: R CMD CHECK receives an extra argument '--no-multiarch' if BUILD_TARGETS is not 'default' and does not contain any commas
       # To enable RStudio support, extendrtests should be installable from 'extendr/tests/extendrtests',
       # for this work directory should be modified and then reverted back
-      - name: Run R integration tests using {extendrtests}
-        id: extendrtests_check
-        env:
-          _R_CHECK_CRAN_INCOMING_REMOTE_: false
-        run: |
-          cat("::group::Checking 'extendrtests'\n")
-          rcmdcheck::rcmdcheck(
-            path = "tests/extendrtests", 
-            args = c("--no-manual", "--as-cran", "--force-multiarch"),
-            error_on = "warning", 
-            check_dir = "extendrtests_check"
-          )
-          cat("::endgroup::\n")
-        shell: Rscript {0}
-        
+      - name: Run R intergration tests using {extendrtests}
+        uses: r-lib/actions/check-r-package@v2
+        with:
+          args: 'c("--no-manual", "--as-cran", "--force-multiarch")'
+          working-directory: '"tests/extendrtests"'
+          check-dir: '"extendrtests_check"'
+
       # With https://github.com/extendr/rextendr/pull/31
       # rextendr can be configured using environment variables.
       # 'patch.crates_io' is used to point libraries to local copies of
@@ -294,14 +286,6 @@ jobs:
           
           cat("::endgroup::\n")
         shell: Rscript {0}
-
-
-      - name: Upload extendrtests check results from R integration tests
-        if: failure()
-        uses: actions/upload-artifact@v2
-        with:
-          name: extendrtests-${{ matrix.config.os }}-R-${{ matrix.config.r }}-rust-${{ matrix.config.rust-version }}
-          path: extendrtests_check
 
       - name: Upload rextendr check results from R integration tests
         if: failure()
