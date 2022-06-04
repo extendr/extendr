@@ -22,12 +22,12 @@ jobs:
     runs-on: ${{ matrix.config.os }}
 
     name: ${{ matrix.config.os }} (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
-            
+
     strategy:
       fail-fast: false
       matrix:
         config:
-          # Windows jobs with unspecific Rust architecture build for both i686 and x86_64 
+          # Windows jobs with unspecific Rust architecture build for both i686 and x86_64
           # R integration tests are also executed for both architectures
           - {os: windows-latest, r: 'release', rust-version: 'stable-gnu',  rtools-version: '42'}
           - {os: windows-latest, r: 'devel',   rust-version: 'stable-gnu',  rtools-version: '42'}
@@ -283,7 +283,7 @@ jobs:
           cat("::endgroup::\n")
         shell: Rscript {0}
 
-     - name: Run R integration tests using {rextendr}
+      - name: Run R integration tests using {rextendr}
         uses: r-lib/actions/check-r-package@v2
         with:
           args: 'c("--no-manual", "--as-cran", "--force-multiarch")'
