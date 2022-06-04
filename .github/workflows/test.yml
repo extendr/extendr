@@ -238,7 +238,7 @@ jobs:
           )
           writeLines(lines, toml_path)
         shell: Rscript {0}
-        
+
       # Windows: modified PATH will launch 32-bit Rscript if the build targets only i686/i386, so no conflict will arise
       # Rust pseudo multi-targeting: R CMD CHECK receives an extra argument '--no-multiarch' if BUILD_TARGETS is not 'default' and does not contain any commas
       # To enable RStudio support, extendrtests should be installable from 'extendr/tests/extendrtests',
@@ -254,12 +254,12 @@ jobs:
       # rextendr can be configured using environment variables.
       # 'patch.crates_io' is used to point libraries to local copies of
       # extendr-api and extendr-macros, so rextendr tests current version of extendr-*
-      - name: Run R integration tests using {rextendr}
+      - name: Prepare for R integration tests using {rextendr}
         id: rextendr_check
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
         run: |
-          cat("::group::Checking 'rextendr'\n")
+          cat("::group::Preparing 'rextendr'\n")
 
           patch.crates_io <-
             paste(
@@ -267,34 +267,28 @@ jobs:
                 "extendr-api = { path = \"",
                 normalizePath(file.path(getwd(), "extendr-api"), winslash = "/"),
                 "\" }"),
-              
+
               paste0(
                 "extendr-macros = { path = \"",
                 normalizePath(file.path(getwd(), "extendr-macros"), winslash = "/"),
                 "\" }"),
-              
+
               # uncomment this line when we need to depend on the dev version of libR-sys
               'libR-sys = { git = "https://github.com/extendr/libR-sys" }',
-              
+
               sep = ";")
-          
+
           Sys.setenv(REXTENDR_PATCH_CRATES_IO = patch.crates_io)
-          rcmdcheck::rcmdcheck(
-            path = "tests/rextendr", 
-            args = c("--no-manual", "--as-cran", "--force-multiarch"), 
-            error_on = "warning", 
-            check_dir = "rextendr_check")
-          
+
           cat("::endgroup::\n")
         shell: Rscript {0}
 
-      - name: Upload rextendr check results from R integration tests
-        if: failure()
-        uses: actions/upload-artifact@v2
+     - name: Run R integration tests using {rextendr}
+        uses: r-lib/actions/check-r-package@v2
         with:
-          name: rextendr-${{ matrix.config.os }}-R-${{ matrix.config.r }}-rust-${{ matrix.config.rust-version }}
-          path: rextendr_check
-
+          args: 'c("--no-manual", "--as-cran", "--force-multiarch")'
+          working-directory: 'tests/rextendr'
+          check-dir: '"rextendr_check"'
 
   # All tests under this job are run with R devel and freshly generated bindings.
   # Run bindgen tests without cross-compilation.
