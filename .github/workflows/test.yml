@@ -206,14 +206,14 @@ jobs:
       - name: Install dependencies for extendrtests and rcmdcheck
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          cache-version: 2
+          cache-version: 3
           working-directory: tests/extendrtests
           extra-packages: any::rcmdcheck
 
       - name: Install dependencies for rextendr
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          cache-version: 2
+          cache-version: 3
           working-directory: tests/rextendr
 
       # TODO: remove this when we decide which to use stable-gnu or stable-msvc for R >= 4.2
