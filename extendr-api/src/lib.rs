@@ -290,6 +290,7 @@ pub mod thread_safety;
 pub mod wrapper;
 
 pub mod na;
+pub mod contract;
 
 #[cfg(feature = "ndarray")]
 pub mod robj_ndarray;

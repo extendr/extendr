@@ -785,6 +785,8 @@ macro_rules! gen_trait_impl {
                     $type::from(<$type_prim>::default())
                 }
             }
+
+            impl crate::contract::scalar::GenericScalar for $type {}
         }
     };
 }
