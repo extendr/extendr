@@ -1,4 +1,3 @@
-
 /// Generates an implementation of a number of Traits for the specified Type
 ///
 /// This macro requires the following arguments:

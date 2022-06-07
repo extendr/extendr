@@ -1,4 +1,3 @@
-
 /// Generates an implementation of type conversion Traits from a scalar type
 ///
 /// This macro requires the following arguments:

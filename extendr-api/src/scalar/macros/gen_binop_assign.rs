@@ -1,4 +1,3 @@
-
 /// Generates an implementation of a binary operate-assign Trait for a scalar type
 ///
 /// This macro requires the following arguments:
