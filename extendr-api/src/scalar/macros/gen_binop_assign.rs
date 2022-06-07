@@ -12,7 +12,7 @@
 /// Example Usage:
 ///
 /// ```ignore
-/// gen_binopassign!(Rint, i32, AddAssign, |lhs: i32, rhs| lhs.checked_add(rhs), "Doc Comment");
+/// gen_binop_assign!(Rint, i32, AddAssign, |lhs: i32, rhs| lhs.checked_add(rhs), "Doc Comment");
 /// ```
 ///
 /// The 'example usage' implements the following trait definitions:
@@ -22,7 +22,7 @@
 /// - `impl AddAssign<i32> for Rint`
 /// - `impl AddAssign<i32> for &mut Rint`
 /// - `impl AddAssign<Rint> for Option<i32>`
-macro_rules! gen_binopassign {
+macro_rules! gen_binop_assign {
     ($type : tt, $type_prim : tt, $opname : ident, $expr: expr, $docstring: expr) => {
         // The 'example usage' expands to...
         //
@@ -207,4 +207,4 @@ macro_rules! gen_binopassign {
     };
 }
 
-pub(in crate::scalar) use gen_binopassign;
+pub(in crate::scalar) use gen_binop_assign;

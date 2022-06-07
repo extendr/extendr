@@ -122,28 +122,28 @@ gen_binop!(
     |lhs: c64, rhs: c64| Some(lhs / rhs),
     "Divide two Rcplx values or an option of c64."
 );
-gen_binopassign!(
+gen_binop_assign!(
     Rcplx,
     c64,
     AddAssign,
     |lhs: c64, rhs: c64| Some(lhs + rhs),
     "Add two Rcplx values or an option of c64, modifying the left-hand side in place. Overflows to NA."
 );
-gen_binopassign!(
+gen_binop_assign!(
     Rcplx,
     c64,
     SubAssign,
     |lhs: c64, rhs: c64| Some(lhs - rhs),
     "Subtract two Rcplx values or an option of c64, modifying the left-hand side in place. Overflows to NA."
 );
-gen_binopassign!(
+gen_binop_assign!(
     Rcplx,
     c64,
     MulAssign,
     |lhs: c64, rhs: c64| Some(lhs * rhs),
     "Multiply two Rcplx values or an option of c64, modifying the left-hand side in place. Overflows to NA."
 );
-gen_binopassign!(
+gen_binop_assign!(
     Rcplx,
     c64,
     DivAssign,

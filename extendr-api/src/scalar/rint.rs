@@ -51,28 +51,28 @@ gen_binop!(
     |lhs: i32, rhs| lhs.checked_div(rhs),
     "Divide two Rint values or an option of i32, overflows to NA."
 );
-gen_binopassign!(
+gen_binop_assign!(
     Rint,
     i32,
     AddAssign,
     |lhs: i32, rhs| lhs.checked_add(rhs),
     "Add two Rint values or an option of i32, modifying the left-hand side in place. Overflows to NA."
 );
-gen_binopassign!(
+gen_binop_assign!(
     Rint,
     i32,
     SubAssign,
     |lhs: i32, rhs| lhs.checked_sub(rhs),
     "Subtract two Rint values or an option of i32, modifying the left-hand side in place. Overflows to NA."
 );
-gen_binopassign!(
+gen_binop_assign!(
     Rint,
     i32,
     MulAssign,
     |lhs: i32, rhs| lhs.checked_mul(rhs),
     "Multiply two Rint values or an option of i32, modifying the left-hand side in place. Overflows to NA."
 );
-gen_binopassign!(
+gen_binop_assign!(
     Rint,
     i32,
     DivAssign,

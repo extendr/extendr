@@ -68,28 +68,28 @@ gen_binop!(
     |lhs: f64, rhs: f64| Some(lhs / rhs),
     "Divide two Rfloat values or an option of f64."
 );
-gen_binopassign!(
+gen_binop_assign!(
     Rfloat,
     f64,
     AddAssign,
     |lhs: f64, rhs: f64| Some(lhs + rhs),
     "Add two Rfloat values or an option of f64, modifying the left-hand side in place. Overflows to NA."
 );
-gen_binopassign!(
+gen_binop_assign!(
     Rfloat,
     f64,
     SubAssign,
     |lhs: f64, rhs: f64| Some(lhs - rhs),
     "Subtract two Rfloat values or an option of f64, modifying the left-hand side in place. Overflows to NA."
 );
-gen_binopassign!(
+gen_binop_assign!(
     Rfloat,
     f64,
     MulAssign,
     |lhs: f64, rhs: f64| Some(lhs * rhs),
     "Multiply two Rfloat values or an option of f64, modifying the left-hand side in place. Overflows to NA."
 );
-gen_binopassign!(
+gen_binop_assign!(
     Rfloat,
     f64,
     DivAssign,
