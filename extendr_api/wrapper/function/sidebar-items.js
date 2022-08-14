@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Function","Wrapper for creating functions (CLOSSXP)."]]});
+window.SIDEBAR_ITEMS = {"struct":[["Function","Wrapper for creating functions (CLOSSXP)."]]};

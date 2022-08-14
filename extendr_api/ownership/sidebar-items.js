@@ -1,1 +1,1 @@
-initSidebarItems({"constant":[["EXTRA_PRESERVATION_SIZE",""],["INITIAL_PRESERVATION_SIZE",""]]});
+window.SIDEBAR_ITEMS = {"constant":[["EXTRA_PRESERVATION_SIZE",""],["INITIAL_PRESERVATION_SIZE",""]]};

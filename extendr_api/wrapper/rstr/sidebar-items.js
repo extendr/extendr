@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Rstr","Wrapper for creating CHARSXP objects. These are used only as the contents of a character vector."]]});
+window.SIDEBAR_ITEMS = {"struct":[["Rstr","Wrapper for creating CHARSXP objects. These are used only as the contents of a character vector."]]};

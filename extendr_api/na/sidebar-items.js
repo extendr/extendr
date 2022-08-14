@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["CanBeNA","Return true if this primitive is NA."]]});
+window.SIDEBAR_ITEMS = {"trait":[["CanBeNA","Return true if this primitive is NA."]]};

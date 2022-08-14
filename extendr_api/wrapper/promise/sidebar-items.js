@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Promise","Wrapper for creating promises (PROMSXP)."]]});
+window.SIDEBAR_ITEMS = {"struct":[["Promise","Wrapper for creating promises (PROMSXP)."]]};

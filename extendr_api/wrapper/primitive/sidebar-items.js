@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Primitive","Wrapper for creating primitive objects."]]});
+window.SIDEBAR_ITEMS = {"struct":[["Primitive","Wrapper for creating primitive objects."]]};

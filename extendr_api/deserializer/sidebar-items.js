@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["from_robj","Convert any R object to a Deserialize object."]]});
+window.SIDEBAR_ITEMS = {"fn":[["from_robj","Convert any R object to a Deserialize object."]]};

@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["DevCapTransparency",""],["DevCapTransparentBg",""]],"struct":[["DeviceDescriptor","A builder of [libR_sys::DevDesc]."]]});
+window.SIDEBAR_ITEMS = {"enum":[["DevCapTransparency",""],["DevCapTransparentBg",""]],"struct":[["DeviceDescriptor","A builder of [libR_sys::DevDesc]."]]};
