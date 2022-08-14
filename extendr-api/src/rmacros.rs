@@ -201,6 +201,8 @@ macro_rules! test {
     };
     ($($rest: tt)*) => {
         {
+            use extendr_engine;
+
             // this helper function must reside in the macro so it doesn't get compiled
             // unless the macro actually gets used (e.g., in testing code)
             fn test<F: FnOnce() -> Result<()>>(f: F) {
