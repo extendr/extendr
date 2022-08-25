@@ -5,6 +5,9 @@ use ndarray::{Data, ShapeBuilder};
 use crate::prelude::dim_symbol;
 use crate::*;
 
+#[cfg(feature = "num-complex")]
+use num_complex::Complex;
+
 impl<'a, T> FromRobj<'a> for ArrayView1<'a, T>
 where
     Robj: AsTypedSlice<'a, T>,
@@ -44,6 +47,9 @@ macro_rules! make_array_view_2 {
 make_array_view_2!(Rbool, "Not a logical matrix.");
 make_array_view_2!(i32, "Not an integer matrix.");
 make_array_view_2!(f64, "Not a floating point matrix.");
+
+#[cfg(feature = "num-complex")]
+make_array_view_2!(Complex<f64>, "Not a complex matrix.");
 //make_array_view_2!(u8, "Not a raw matrix.");
 
 // impl<'a, T> From<ArrayView2<'a, T>> for Robj
@@ -110,6 +116,14 @@ fn test_from_robj() {
             Ok(ArrayView1::<Rbool>::from(&[TRUE][..]))
         );
 
+        #[cfg(feature = "num-complex")]
+        {
+        assert_eq!(
+            <ArrayView1<Complex<f64>>>::from_robj(&Robj::from(Complex::<f64>::new(1., 1.))),
+            Ok(ArrayView1::<Complex<f64>>::from(&[Complex::<f64>::new(1., 1.)][..]))
+        );
+        }
+
         let robj = R!("matrix(c(1, 2, 3, 4, 5, 6, 7, 8), ncol=2, nrow=4)")?;
         let mx = <ArrayView2<f64>>::from_robj(&robj)?;
         assert_eq!(mx[[0, 0]], 1.0);
@@ -151,6 +165,21 @@ fn test_from_robj() {
         assert_eq!(mx[[1, 1]], FALSE);
         assert_eq!(mx[[2, 1]], FALSE);
         assert_eq!(mx[[3, 1]], FALSE);
+       
+        // check complex matrices
+        #[cfg(feature = "num-complex")]
+        {
+        let robj = R!("matrix(c(1+1i, 2+2i, 3+3i, 4+4i, 5+5i, 6+6i, 7+7i, 8+8i), ncol=2, nrow=4)")?;
+        let mx = <ArrayView2<Complex<f64>>>::from_robj(&robj)?;
+        assert_eq!(mx[[0, 0]], Complex::<f64>::new(1., 1.));
+        assert_eq!(mx[[1, 0]], Complex::<f64>::new(2., 2.));
+        assert_eq!(mx[[2, 0]], Complex::<f64>::new(3., 3.));
+        assert_eq!(mx[[3, 0]], Complex::<f64>::new(4., 4.));
+        assert_eq!(mx[[0, 1]], Complex::<f64>::new(5., 5.));
+        assert_eq!(mx[[1, 1]], Complex::<f64>::new(6., 6.));
+        assert_eq!(mx[[2, 1]], Complex::<f64>::new(7., 7.));
+        assert_eq!(mx[[3, 1]], Complex::<f64>::new(8., 8.));
+        }
 
         // check raw matrices
         // let robj = r!(Matrix::new(vec![1_u8, 2, 3, 4, 5, 6, 7, 8], 4, 2));
@@ -201,7 +230,6 @@ fn test_to_robj() {
             &R!("array(1:6, c(1, 2, 3))")?
         );
 
-
         // We give R a 1d vector and tell it to read it as a 3d vector
         // Then we give Rust the equivalent vector manually split out.
         assert_eq!(
@@ -229,3 +257,4 @@ fn test_round_trip() {
         }
     }
 }
+
