@@ -6,7 +6,7 @@ use crate::prelude::dim_symbol;
 use crate::*;
 
 #[cfg(feature = "num-complex")]
-use crate::c64;
+use num_complex::Complex;
 
 impl<'a, T> FromRobj<'a> for ArrayView1<'a, T>
 where
