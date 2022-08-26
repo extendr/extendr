@@ -6,7 +6,7 @@ use crate::prelude::dim_symbol;
 use crate::*;
 
 #[cfg(feature = "num-complex")]
-use num_complex::Complex;
+use crate::c64;
 
 impl<'a, T> FromRobj<'a> for ArrayView1<'a, T>
 where
@@ -165,7 +165,7 @@ fn test_from_robj() {
         assert_eq!(mx[[1, 1]], FALSE);
         assert_eq!(mx[[2, 1]], FALSE);
         assert_eq!(mx[[3, 1]], FALSE);
-       
+
         // check complex matrices
         #[cfg(feature = "num-complex")]
         {
@@ -257,4 +257,3 @@ fn test_round_trip() {
         }
     }
 }
-
