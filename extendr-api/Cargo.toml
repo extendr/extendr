@@ -44,4 +44,4 @@ tests-graphics = ["tests-minimal", "graphics"]
 tests-all = ["tests", "graphics"]
 
 [package.metadata.docs.rs]
-features = ["graphics"]
+features = ["graphics", "libR-sys/use-bindgen"]
