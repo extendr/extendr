@@ -18,3 +18,12 @@ test_that("Unexported class works", {
   expect_equal(x$a(), 22L)
   expect_equal(x[["a"]](), 22L)
 })
+
+
+test_that("Issue 431: Restore struct as ExternalPtr", {
+  x <- MyClass$new()
+  x$set_a(42L)
+
+  y <- MyClass$restore_from_robj(x)
+  expect_equal(x$a(), y$a())
+})

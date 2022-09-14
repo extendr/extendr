@@ -91,6 +91,8 @@ MyClass$a <- function() .Call(wrap__MyClass__a, self)
 
 MyClass$me <- function() .Call(wrap__MyClass__me, self)
 
+MyClass$restore_from_robj <- function(robj) .Call(wrap__MyClass__restore_from_robj, robj)
+
 #' @rdname MyClass
 #' @usage NULL
 #' @export

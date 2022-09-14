@@ -229,6 +229,12 @@ impl MyClass {
     fn me(&self) -> &Self {
         self
     }
+
+    // https://github.com/extendr/extendr/issues/431
+    fn restore_from_robj(robj: Robj) -> Self {
+        let res: ExternalPtr<MyClass> = robj.try_into().unwrap();
+        Self { a: res.a }
+    }
 }
 
 // Class for testing special names
