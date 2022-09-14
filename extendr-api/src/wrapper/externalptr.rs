@@ -83,15 +83,12 @@ impl<T: Any + Debug> ExternalPtr<T> {
     /// tracked by a R object.
     pub fn new(val: T) -> Self {
         unsafe {
-            // This gets the type name of T as a string. eg. "i32".
-            let type_name = std::any::type_name::<T>();
-
             // This allocates some memory for our object and moves the object into it.
             let boxed = Box::new(val);
 
             // This constructs an external pointer to our boxed data.
             // into_raw() converts the box to a malloced pointer.
-            let robj = Robj::make_external_ptr(Box::into_raw(boxed), r!(type_name), r!(()));
+            let robj = Robj::make_external_ptr(Box::into_raw(boxed), r!(()));
 
             extern "C" fn finalizer<T>(x: SEXP) {
                 unsafe {
@@ -149,22 +146,21 @@ impl<T: Any + Debug> TryFrom<&Robj> for ExternalPtr<T> {
     type Error = Error;
 
     fn try_from(robj: &Robj) -> Result<Self> {
-        if robj.rtype() != Rtype::ExternalPtr {
-            return Err(Error::ExpectedExternalPtr(robj.clone()));
+        let clone = robj.clone();
+        if clone.rtype() != Rtype::ExternalPtr {
+            Err(Error::ExpectedExternalPtr(clone))
+        } else if clone.check_external_ptr_type::<T>() {
+            let res = ExternalPtr::<T> {
+                robj: clone,
+                marker: std::marker::PhantomData,
+            };
+            Ok(res)
+        } else {
+            Err(Error::ExpectedExternalPtrType(
+                clone,
+                std::any::type_name::<T>().into(),
+            ))
         }
-
-        let res = ExternalPtr::<T> {
-            robj: robj.clone(),
-            marker: std::marker::PhantomData,
-        };
-
-        // Check the type name.
-        let type_name = std::any::type_name::<T>();
-        if res.tag().as_str() != Some(type_name) {
-            return Err(Error::ExpectedExternalPtrType(res.robj, type_name.into()));
-        }
-
-        Ok(res)
     }
 }
 

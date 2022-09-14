@@ -799,7 +799,7 @@ mod tests {
             let mut person = Person::new();
             person.set_name("fred");
             let robj = r!(person);
-            assert_eq!(robj.check_external_ptr("Person"), true);
+            assert_eq!(robj.check_external_ptr_type::<Person>(), true);
             let person2 = <&Person>::from_robj(&robj).unwrap();
             assert_eq!(person2.name(), "fred");
         }
