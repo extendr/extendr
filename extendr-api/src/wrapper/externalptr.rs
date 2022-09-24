@@ -99,7 +99,7 @@ impl<T: Any + Debug> ExternalPtr<T> {
 
                     // Convert the pointer to a box and drop it implictly.
                     // This frees up the memory we have used and calls the "T::drop" method if there is one.
-                    Box::from_raw(ptr);
+                    drop(Box::from_raw(ptr));
                 }
             }
 

@@ -167,7 +167,7 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
                 if robj.check_external_ptr(#self_ty_name) {
                     //eprintln!("finalize {}", #self_ty_name);
                     let ptr = robj.external_ptr_addr::<#self_ty>();
-                    Box::from_raw(ptr);
+                    drop(Box::from_raw(ptr));
                 }
             }
         }
