@@ -64,6 +64,8 @@ special_param_names <- function(`_x`, `_y`) .Call(wrap__special_param_names, `_x
 
 test.rename.rlike <- function() .Call(wrap__test_rename_mymod)
 
+get_default_value <- function(x = 42) .Call(wrap__get_default_value, x)
+
 #' Create a new device.
 #'
 #' @param welcome_message A warm message to welcome you.
@@ -90,6 +92,8 @@ MyClass$set_a <- function(x) invisible(.Call(wrap__MyClass__set_a, self, x))
 MyClass$a <- function() .Call(wrap__MyClass__a, self)
 
 MyClass$me <- function() .Call(wrap__MyClass__me, self)
+
+MyClass$get_default_value <- function(x) .Call(wrap__MyClass__get_default_value, x)
 
 #' @rdname MyClass
 #' @usage NULL

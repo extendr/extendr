@@ -194,6 +194,9 @@ fn test_rename() -> i32 {
     1
 }
 
+#[extendr]
+fn get_default_value(#[default = "42"] x : i32) -> i32 {x}
+
 // Class for testing
 #[derive(Default, Debug)]
 struct MyClass {
@@ -229,6 +232,8 @@ impl MyClass {
     fn me(&self) -> &Self {
         self
     }
+
+    fn get_default_value(#[default = "42"] x : i32) -> i32 {x}
 }
 
 // Class for testing special names
@@ -319,6 +324,8 @@ extendr_module! {
 
     // Note that this uses an alternative name.
     fn test_rename_mymod;
+
+    fn get_default_value;
 
     impl MyClass;
     impl __MyClass;
