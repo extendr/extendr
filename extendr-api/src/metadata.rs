@@ -43,6 +43,37 @@ pub struct Metadata {
     pub impls: Vec<Impl>,
 }
 
+struct RArg {
+    name: String,
+    default: Option<&'static str>,
+}
+
+impl RArg {
+    fn is_self(&self) -> bool {
+        self.name == "self"
+    }
+
+    fn to_actual_arg(&self) -> String {
+        self.name.clone()
+    }
+
+    fn to_formal_arg(&self) -> String {
+        match self.default {
+            Some(default_val) => format!("{} = {}", self.name, default_val),
+            None => self.name.clone(),
+        }
+    }
+}
+
+impl From<&Arg> for RArg {
+    fn from(arg: &Arg) -> Self {
+        Self {
+            name: sanitize_identifier(arg.name),
+            default: arg.default,
+        }
+    }
+}
+
 impl From<Arg> for Robj {
     fn from(val: Arg) -> Self {
         List::from_values(&[r!(val.name), r!(val.arg_type)])
@@ -118,7 +149,7 @@ fn write_doc(w: &mut Vec<u8>, doc: &str) -> std::io::Result<()> {
     Ok(())
 }
 
-/// Wraps invalid R identifers, like `_function_name`, into backticks.
+/// Wraps invalid R identifiers, like `_function_name`, into backticks.
 fn sanitize_identifier(name: &str) -> String {
     if name.starts_with('_') {
         format!("`{}`", name)
@@ -127,14 +158,8 @@ fn sanitize_identifier(name: &str) -> String {
     }
 }
 
-// Generate an R function argument with optional default.
-fn gen_formal_arg(arg: &Arg) -> String {
-    let id = sanitize_identifier(arg.name);
-    if let Some(default) = arg.default {
-        format!("{} = {}", id, default)
-    } else {
-        id
-    }
+fn join_str(input: impl Iterator<Item = String>, sep: &str) -> String {
+    input.collect::<Vec<String>>().join(sep)
 }
 
 /// Generate a wrapper for a non-method function.
@@ -150,33 +175,23 @@ fn write_function_wrapper(
 
     write_doc(w, func.doc)?;
 
-    let formal_args = func
-        .args
-        .iter()
-        .map(gen_formal_arg)
-        .collect::<Vec<_>>()
-        .join(", ");
-
-    let actual_args = func
-        .args
-        .iter()
-        .map(|arg| sanitize_identifier(arg.name))
-        .collect::<Vec<_>>()
-        .join(", ");
+    let r_args: Vec<RArg> = func.args.iter().map(Into::into).collect();
+    let actual_args = r_args.iter().map(|a| a.to_actual_arg());
+    let formal_args = r_args.iter().map(|a| a.to_formal_arg());
 
     if func.return_type == "()" {
         write!(
             w,
             "{} <- function({}) invisible(.Call(",
             sanitize_identifier(func.r_name),
-            formal_args
+            join_str(formal_args, ", ")
         )?;
     } else {
         write!(
             w,
             "{} <- function({}) .Call(",
             sanitize_identifier(func.r_name),
-            formal_args
+            join_str(formal_args, ", ")
         )?;
     }
 
@@ -187,7 +202,7 @@ fn write_function_wrapper(
     }
 
     if !func.args.is_empty() {
-        write!(w, ", {}", actual_args)?;
+        write!(w, ", {}", join_str(actual_args, ", "))?;
     }
 
     if !use_symbols {
@@ -215,25 +230,16 @@ fn write_method_wrapper(
         return Ok(());
     }
 
-    let actual_args = func
-        .args
-        .iter()
-        .map(|arg| sanitize_identifier(arg.name))
-        .collect::<Vec<_>>();
-    let formal_args = if !actual_args.is_empty() && actual_args[0] == "self" {
-        // Skip a leading "self" argument.
-        // This is supplied by the environment.
-        actual_args
-            .iter()
-            .skip(1)
-            .map(|x| x.to_string())
-            .collect::<Vec<_>>()
-    } else {
-        actual_args.clone()
-    };
+    let r_args: Vec<RArg> = func.args.iter().map(Into::into).collect();
+    let actual_args = r_args.iter().map(|a| a.to_actual_arg());
 
-    let formal_args = formal_args.join(", ");
-    let actual_args = actual_args.join(", ");
+    // Skip a leading "self" argument.
+    // This is supplied by the environment.
+    let n_skip = r_args
+        .first()
+        .map_or(0, |a| if a.is_self() { 1 } else { 0 });
+
+    let formal_args = r_args.iter().skip(n_skip).map(|a| a.to_formal_arg());
 
     // Both `class_name` and `func.name` should be processed
     // because they are exposed to R
@@ -243,7 +249,7 @@ fn write_method_wrapper(
             "{}${} <- function({}) invisible(.Call(",
             sanitize_identifier(class_name),
             sanitize_identifier(func.r_name),
-            formal_args
+            join_str(formal_args, ", ")
         )?;
     } else {
         write!(
@@ -251,7 +257,7 @@ fn write_method_wrapper(
             "{}${} <- function({}) .Call(",
             sanitize_identifier(class_name),
             sanitize_identifier(func.r_name),
-            formal_args
+            join_str(formal_args, ", ")
         )?;
     }
 
@@ -262,8 +268,8 @@ fn write_method_wrapper(
         write!(w, "\"wrap__{}__{}\"", class_name, func.mod_name)?;
     }
 
-    if !actual_args.is_empty() {
-        write!(w, ", {}", actual_args)?;
+    if actual_args.len() != 0 {
+        write!(w, ", {}", join_str(actual_args, ", "))?;
     }
 
     if !use_symbols {
