@@ -1,3 +1,3 @@
 (function() {var implementors = {};
-implementors["extendr_api"] = [{"text":"impl&lt;'de&gt; <a class=\"trait\" href=\"https://docs.rs/serde/1.0.145/serde/de/trait.EnumAccess.html\" title=\"trait serde::de::EnumAccess\">EnumAccess</a>&lt;'de&gt; for &amp;'de <a class=\"struct\" href=\"extendr_api/robj/struct.Robj.html\" title=\"struct extendr_api::robj::Robj\">Robj</a>","synthetic":false,"types":["extendr_api::robj::Robj"]}];
+implementors["extendr_api"] = [{"text":"impl&lt;'de&gt; <a class=\"trait\" href=\"https://docs.rs/serde/1.0.147/serde/de/trait.EnumAccess.html\" title=\"trait serde::de::EnumAccess\">EnumAccess</a>&lt;'de&gt; for &amp;'de <a class=\"struct\" href=\"extendr_api/robj/struct.Robj.html\" title=\"struct extendr_api::robj::Robj\">Robj</a>","synthetic":false,"types":["extendr_api::robj::Robj"]}];
 if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
