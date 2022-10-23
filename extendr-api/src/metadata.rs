@@ -235,11 +235,10 @@ fn write_method_wrapper(
 
     // Skip a leading "self" argument.
     // This is supplied by the environment.
-    let n_skip = r_args
-        .first()
-        .map_or(0, |a| if a.is_self() { 1 } else { 0 });
-
-    let formal_args = r_args.iter().skip(n_skip).map(|a| a.to_formal_arg());
+    let formal_args = r_args
+        .iter()
+        .skip_while(|a| a.is_self())
+        .map(|a| a.to_formal_arg());
 
     // Both `class_name` and `func.name` should be processed
     // because they are exposed to R
