@@ -492,7 +492,7 @@ impl Altrep {
             unsafe extern "C" fn finalizer<StateType: 'static>(x: SEXP) {
                 let state = Altrep::get_state_mut::<StateType>(x);
                 let ptr = state as *mut StateType;
-                Box::from_raw(ptr);
+                drop(Box::from_raw(ptr));
             }
 
             let ptr: *mut StateType = Box::into_raw(Box::new(state));

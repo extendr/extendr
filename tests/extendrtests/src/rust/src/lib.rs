@@ -194,6 +194,11 @@ fn test_rename() -> i32 {
     1
 }
 
+#[extendr]
+fn get_default_value(#[default = "42"] x: i32) -> i32 {
+    x
+}
+
 // Class for testing
 #[derive(Default, Debug)]
 struct MyClass {
@@ -234,6 +239,11 @@ impl MyClass {
     fn restore_from_robj(robj: Robj) -> Self {
         let res: ExternalPtr<MyClass> = robj.try_into().unwrap();
         Self { a: res.a }
+    }
+
+    // https://github.com/extendr/extendr/issues/435
+    fn get_default_value(#[default = "42"] x: i32) -> i32 {
+        x
     }
 }
 
@@ -325,6 +335,8 @@ extendr_module! {
 
     // Note that this uses an alternative name.
     fn test_rename_mymod;
+
+    fn get_default_value;
 
     impl MyClass;
     impl __MyClass;
