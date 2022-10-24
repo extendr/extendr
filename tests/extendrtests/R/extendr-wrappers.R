@@ -93,6 +93,8 @@ MyClass$a <- function() .Call(wrap__MyClass__a, self)
 
 MyClass$me <- function() .Call(wrap__MyClass__me, self)
 
+MyClass$restore_from_robj <- function(robj) .Call(wrap__MyClass__restore_from_robj, robj)
+
 MyClass$get_default_value <- function(x = 42) .Call(wrap__MyClass__get_default_value, x)
 
 #' @rdname MyClass

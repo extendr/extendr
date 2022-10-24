@@ -241,9 +241,14 @@ pub trait Rinternals: Types + Conversions {
 
     /// Internal function used to implement `#[extendr]` impl
     #[doc(hidden)]
-    unsafe fn make_external_ptr<T>(p: *mut T, tag: Robj, prot: Robj) -> Robj {
+    unsafe fn make_external_ptr<T>(p: *mut T, prot: Robj) -> Robj {
+        let type_name: Robj = std::any::type_name::<T>().into();
         Robj::from_sexp(single_threaded(|| {
-            R_MakeExternalPtr(p as *mut ::std::os::raw::c_void, tag.get(), prot.get())
+            R_MakeExternalPtr(
+                p as *mut ::std::os::raw::c_void,
+                type_name.get(),
+                prot.get(),
+            )
         }))
     }
 
@@ -402,10 +407,10 @@ pub trait Rinternals: Types + Conversions {
     /// Check an external pointer tag.
     /// This is used to wrap R objects.
     #[doc(hidden)]
-    fn check_external_ptr(&self, expected_tag: &str) -> bool {
+    fn check_external_ptr_type<T>(&self) -> bool {
         if self.sexptype() == libR_sys::EXTPTRSXP {
             let tag = unsafe { self.external_ptr_tag() };
-            if tag.as_str() == Some(expected_tag) {
+            if tag.as_str() == Some(std::any::type_name::<T>()) {
                 return true;
             }
         }

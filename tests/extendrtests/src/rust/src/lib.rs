@@ -195,7 +195,9 @@ fn test_rename() -> i32 {
 }
 
 #[extendr]
-fn get_default_value(#[default = "42"] x : i32) -> i32 {x}
+fn get_default_value(#[default = "42"] x: i32) -> i32 {
+    x
+}
 
 // Class for testing
 #[derive(Default, Debug)]
@@ -233,7 +235,16 @@ impl MyClass {
         self
     }
 
-    fn get_default_value(#[default = "42"] x : i32) -> i32 {x}
+    // https://github.com/extendr/extendr/issues/431
+    fn restore_from_robj(robj: Robj) -> Self {
+        let res: ExternalPtr<MyClass> = robj.try_into().unwrap();
+        Self { a: res.a }
+    }
+
+    // https://github.com/extendr/extendr/issues/435
+    fn get_default_value(#[default = "42"] x: i32) -> i32 {
+        x
+    }
 }
 
 // Class for testing special names
