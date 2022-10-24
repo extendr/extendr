@@ -93,18 +93,14 @@ MyClass$a <- function() .Call(wrap__MyClass__a, self)
 
 MyClass$me <- function() .Call(wrap__MyClass__me, self)
 
-MyClass$get_default_value <- function(x = 42) .Call(wrap__MyClass__get_default_value, x)
-
 MyClass$restore_from_robj <- function(robj) .Call(wrap__MyClass__restore_from_robj, robj)
+
+MyClass$get_default_value <- function(x = 42) .Call(wrap__MyClass__get_default_value, x)
 
 #' @rdname MyClass
 #' @usage NULL
 #' @export
-`$.MyClass` <- function(self, name) {
-    func <- MyClass[[name]]
-    environment(func) <- environment()
-    func
-}
+`$.MyClass` <- function (self, name) { func <- MyClass[[name]]; environment(func) <- environment(); func }
 
 #' @export
 `[[.MyClass` <- `$.MyClass`
@@ -116,11 +112,7 @@ MyClass$restore_from_robj <- function(robj) .Call(wrap__MyClass__restore_from_ro
 `__MyClass`$`__name_test` <- function() invisible(.Call(wrap____MyClass____name_test, self))
 
 #' @export
-`$.__MyClass` <- function(self, name) {
-    func <- `__MyClass`[[name]]
-    environment(func) <- environment()
-    func
-}
+`$.__MyClass` <- function (self, name) { func <- `__MyClass`[[name]]; environment(func) <- environment(); func }
 
 #' @export
 `[[.__MyClass` <- `$.__MyClass`
@@ -133,11 +125,7 @@ MyClassUnexported$new <- function() .Call(wrap__MyClassUnexported__new)
 MyClassUnexported$a <- function() .Call(wrap__MyClassUnexported__a, self)
 
 #' @export
-`$.MyClassUnexported` <- function(self, name) {
-    func <- MyClassUnexported[[name]]
-    environment(func) <- environment()
-    func
-}
+`$.MyClassUnexported` <- function (self, name) { func <- MyClassUnexported[[name]]; environment(func) <- environment(); func }
 
 #' @export
 `[[.MyClassUnexported` <- `$.MyClassUnexported`
@@ -162,11 +150,8 @@ MySubmoduleClass$me <- function() .Call(wrap__MySubmoduleClass__me, self)
 #' @rdname MySubmoduleClass
 #' @usage NULL
 #' @export
-`$.MySubmoduleClass` <- function(self, name) {
-    func <- MySubmoduleClass[[name]]
-    environment(func) <- environment()
-    func
-}
+`$.MySubmoduleClass` <- function (self, name) { func <- MySubmoduleClass[[name]]; environment(func) <- environment(); func }
 
 #' @export
 `[[.MySubmoduleClass` <- `$.MySubmoduleClass`
+
