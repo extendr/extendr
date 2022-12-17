@@ -115,15 +115,16 @@ jobs:
           # for the `x86_64-pc-windows-gnu` target.
           #  
           # If we use the Rtools' toolchain, the second tweak is also required.
-          # `rustc` adds `-lgcc_eh` flag to the compiler, but Rtools' GCC doesn't
-          # have `libgcc_eh` due to the compilation settings. So, in order to 
-          # please the compiler, we need to add empty `libgcc_eh` to the library
-          # search paths.
+          # `rustc` adds `-lgcc_eh` and `-lgcc_s` flags to the compiler, but
+          # Rtools' GCC doesn't have `libgcc_eh` or `libgcc_s` due to the 
+          # compilation settings. So, in order to please the compiler, we need
+          # to add empty `libgcc_eh` or `libgcc_s` to the library search paths.
           # 
           # For more details, please refer to https://github.com/r-windows/rtools-packages/blob/2407b23f1e0925bbb20a4162c963600105236318/mingw-w64-gcc/PKGBUILD#L313-L316
 
           New-Item -Path libgcc_mock -Type Directory
           New-Item -Path libgcc_mock\libgcc_eh.a -Type File
+          New-Item -Path libgcc_mock\libgcc_s.a -Type File
 
           New-Item -Path .cargo -ItemType Directory -Force
           $pwd_slash = echo "${PWD}" | % {$_ -replace '\\','/'}
@@ -392,15 +393,16 @@ jobs:
           # for the `x86_64-pc-windows-gnu` target.
           #  
           # If we use the Rtools' toolchain, the second tweak is also required.
-          # `rustc` adds `-lgcc_eh` flag to the compiler, but Rtools' GCC doesn't
-          # have `libgcc_eh` due to the compilation settings. So, in order to 
-          # please the compiler, we need to add empty `libgcc_eh` to the library
-          # search paths.
+          # `rustc` adds `-lgcc_eh` and `-lgcc_s` flags to the compiler, but
+          # Rtools' GCC doesn't have `libgcc_eh` or `libgcc_s` due to the 
+          # compilation settings. So, in order to please the compiler, we need
+          # to add empty `libgcc_eh` or `libgcc_s` to the library search paths.
           # 
           # For more details, please refer to https://github.com/r-windows/rtools-packages/blob/2407b23f1e0925bbb20a4162c963600105236318/mingw-w64-gcc/PKGBUILD#L313-L316
 
           New-Item -Path libgcc_mock -Type Directory
           New-Item -Path libgcc_mock\libgcc_eh.a -Type File
+          New-Item -Path libgcc_mock\libgcc_s.a -Type File
 
           New-Item -Path .cargo -ItemType Directory -Force
           $pwd_slash = echo "${PWD}" | % {$_ -replace '\\','/'}
