@@ -29,7 +29,9 @@ jobs:
           # Windows jobs with unspecific Rust architecture build for both i686 and x86_64
           # R integration tests are also executed for both architectures
           - {os: windows-latest, r: 'release', rust-version: 'stable-gnu',  rtools-version: '42'}
+          - {os: windows-latest, r: 'release', rust-version: 'stable-msvc', rtools-version: '42'}
           - {os: windows-latest, r: 'devel',   rust-version: 'stable-gnu',  rtools-version: '42'}
+          - {os: windows-latest, r: 'devel',   rust-version: 'stable-msvc', rtools-version: '42'}
           # For R < 4.2, the MSVC toolchain is used to support cross-compilation for the 32-bit.
           # TODO: Remove this runner when we drop the support for R < 4.2
           - {os: windows-latest, r: '4.1',     rust-version: 'stable-msvc'}
@@ -113,18 +115,15 @@ jobs:
           # for the `x86_64-pc-windows-gnu` target.
           #  
           # If we use the Rtools' toolchain, the second tweak is also required.
-          # `rustc` adds `-lgcc_eh` and `-lgcc_s` flags to the compiler, but
-          # Rtools' GCC doesn't have `libgcc_eh` or `libgcc_a` due to the 
-          # compilation settings. So, in order to please the compiler, we need
-          # to add empty `libgcc_eh` or `libgcc_a` to the library search paths.
+          # `rustc` adds `-lgcc_eh` flag to the compiler, but Rtools' GCC doesn't
+          # have `libgcc_eh` due to the compilation settings. So, in order to 
+          # please the compiler, we need to add empty `libgcc_eh` to the library
+          # search paths.
           # 
           # For more details, please refer to https://github.com/r-windows/rtools-packages/blob/2407b23f1e0925bbb20a4162c963600105236318/mingw-w64-gcc/PKGBUILD#L313-L316
 
           New-Item -Path libgcc_mock -Type Directory
-          New-Item -Path libgcc_mock\gcc.c -Type File
-          x86_64-w64-mingw32.static.posix-gcc.exe -c libgcc_mock\gcc.c -o libgcc_mock\gcc.o
-          x86_64-w64-mingw32.static.posix-ar.exe -r libgcc_mock\libgcc_eh.a libgcc_mock\gcc.o
-          x86_64-w64-mingw32.static.posix-ar.exe -r libgcc_mock\libgcc_s.a libgcc_mock\gcc.o
+          New-Item -Path libgcc_mock\libgcc_eh.a -Type File
 
           New-Item -Path .cargo -ItemType Directory -Force
           $pwd_slash = echo "${PWD}" | % {$_ -replace '\\','/'}
@@ -215,15 +214,6 @@ jobs:
           cache-version: 2
           working-directory: tests/rextendr
 
-      # TODO: remove this when we decide which to use stable-gnu or stable-msvc for R >= 4.2
-      - name: Tweak Makevars.ucrt
-        if: startsWith(runner.os, 'Windows') && matrix.config.r == 'devel' && matrix.config.rust-version == 'stable-msvc'
-        run: |
-          sed -i 's/stable-gnu/stable-msvc/g' tests/extendrtests/src/Makevars.ucrt
-          sed -i 's/stable-gnu/stable-msvc/g' tests/rextendr/inst/templates/Makevars.ucrt
-          sed -i 's/stable-gnu/stable-msvc/g' tests/rextendr/tests/testthat/_snaps/use_extendr.md
-        shell: bash
-
       # Regex is used to inject absolute path into Cargo.toml
       - name: Configure R for integration testing
         run: |
@@ -307,7 +297,9 @@ jobs:
           - {os: ubuntu-20.04,   r: 'devel', rust-version: 'stable'}
           - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
           - {os: windows-latest, r: 'release', rust-version: 'stable-gnu',   rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '42'}
+          - {os: windows-latest, r: 'release', rust-version: 'stable-msvc',  rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '42'}
           - {os: windows-latest, r: 'devel',   rust-version: 'stable-gnu',   rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '42'}
+          - {os: windows-latest, r: 'devel',   rust-version: 'stable-msvc',  rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '42'}
           # For R < 4.2, the MSVC toolchain is used to support cross-compilation for the 32-bit.
           # Since it does cross-compilation from MSVC to GNU, we need `-Zdoctest-xcompile` to
           # let the doctests run, which accordingly require the nightly toolchain.
@@ -400,18 +392,15 @@ jobs:
           # for the `x86_64-pc-windows-gnu` target.
           #  
           # If we use the Rtools' toolchain, the second tweak is also required.
-          # `rustc` adds `-lgcc_eh` and `-lgcc_s` flags to the compiler, but
-          # Rtools' GCC doesn't have `libgcc_eh` or `libgcc_a` due to the 
-          # compilation settings. So, in order to please the compiler, we need
-          # to add empty `libgcc_eh` or `libgcc_a` to the library search paths.
+          # `rustc` adds `-lgcc_eh` flag to the compiler, but Rtools' GCC doesn't
+          # have `libgcc_eh` due to the compilation settings. So, in order to 
+          # please the compiler, we need to add empty `libgcc_eh` to the library
+          # search paths.
           # 
           # For more details, please refer to https://github.com/r-windows/rtools-packages/blob/2407b23f1e0925bbb20a4162c963600105236318/mingw-w64-gcc/PKGBUILD#L313-L316
 
           New-Item -Path libgcc_mock -Type Directory
-          New-Item -Path libgcc_mock\gcc.c -Type File
-          x86_64-w64-mingw32.static.posix-gcc.exe -c libgcc_mock\gcc.c -o libgcc_mock\gcc.o
-          x86_64-w64-mingw32.static.posix-ar.exe -r libgcc_mock\libgcc_eh.a libgcc_mock\gcc.o
-          x86_64-w64-mingw32.static.posix-ar.exe -r libgcc_mock\libgcc_s.a libgcc_mock\gcc.o
+          New-Item -Path libgcc_mock\libgcc_eh.a -Type File
 
           New-Item -Path .cargo -ItemType Directory -Force
           $pwd_slash = echo "${PWD}" | % {$_ -replace '\\','/'}
