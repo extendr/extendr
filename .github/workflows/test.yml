@@ -26,18 +26,18 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          # Windows jobs with unspecific Rust architecture build for both i686 and x86_64
-          # R integration tests are also executed for both architectures
-          - {os: windows-latest, r: 'release', rust-version: 'stable-gnu',  rtools-version: '42'}
+          # On Windows,
+          #
+          # * for R >= 4.2, both the MSVC toolchain and the GNU toolchain should
+          #   work. Since our main support is on MSVC, we mainly test MSVC here.
+          #   Also, at least one GNU case should be included so that we can
+          #   detect when something gets broken. 
+          # * for R < 4.2, the MSVC toolchain must be used to support
+          #   cross-compilation for the 32-bit. 
           - {os: windows-latest, r: 'release', rust-version: 'stable-msvc', rtools-version: '42'}
-          - {os: windows-latest, r: 'devel',   rust-version: 'stable-gnu',  rtools-version: '42'}
           - {os: windows-latest, r: 'devel',   rust-version: 'stable-msvc', rtools-version: '42'}
-          # For R < 4.2, the MSVC toolchain is used to support cross-compilation for the 32-bit.
-          # TODO: Remove this runner when we drop the support for R < 4.2
-          - {os: windows-latest, r: '4.1',     rust-version: 'stable-msvc'}
-          # - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc'}
-          # - {os: windows-latest, r: 'devel', rust-version: 'stable-msvc'}
-          # - {os: windows-latest, r: 'oldrel', rust-version: 'stable-msvc'}
+          - {os: windows-latest, r: 'release', rust-version: 'stable-gnu',  rtools-version: '42'}
+          - {os: windows-latest, r: '4.1',     rust-version: 'stable-msvc'}  # TODO: Remove this runner when we drop the support for R < 4.2
 
           - {os: macOS-latest,   r: 'release', rust-version: 'stable'}
           # - {os: macOS-latest,   r: 'release', rust-version: 'nightly'}
@@ -301,7 +301,6 @@ jobs:
           - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
           - {os: windows-latest, r: 'release', rust-version: 'stable-gnu',   rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '42'}
           - {os: windows-latest, r: 'release', rust-version: 'stable-msvc',  rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '42'}
-          - {os: windows-latest, r: 'devel',   rust-version: 'stable-gnu',   rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '42'}
           - {os: windows-latest, r: 'devel',   rust-version: 'stable-msvc',  rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '42'}
           # When the MSVC target is used, since it's cross-compilation from MSVC
           # to GNU, the doc tests are usually skipped. Adding `-Zdoctest-xcompile`
