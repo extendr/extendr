@@ -1,8 +1,5 @@
 TARGET = $(subst 64,x86_64,$(subst 32,i686,$(WIN)))-pc-windows-gnu
 
-# This is provided in Makevars.ucrt for R >= 4.2
-TOOLCHAIN ?= stable-msvc
-
 TARGET_DIR = ./rust/target
 LIBDIR = $(TARGET_DIR)/$(TARGET)/debug
 STATLIB = $(LIBDIR)/lextendrtest.a
@@ -16,16 +13,18 @@ $(STATLIB):
 	# Note: on the GitHub Actions CI, the tests pass without this tweak because
 	#       the same setup is already done in the CI.
 	mkdir -p $(TARGET_DIR)/libgcc_mock
-	cd $(TARGET_DIR)/libgcc_mock && \
-		touch gcc_mock.c && \
-		gcc -c gcc_mock.c -o gcc_mock.o && \
-		ar -r libgcc_eh.a gcc_mock.o && \
-		cp libgcc_eh.a libgcc_s.a
+	# `rustc` adds `-lgcc_eh` flags to the compiler, but Rtools' GCC doesn't have
+	# `libgcc_eh` due to the compilation settings. So, in order to please the
+	# compiler, we need to add empty `libgcc_eh` to the library search paths.
+	#
+	# For more details, please refer to
+	# https://github.com/r-windows/rtools-packages/blob/2407b23f1e0925bbb20a4162c963600105236318/mingw-w64-gcc/PKGBUILD#L313-L316
+	touch $(TARGET_DIR)/libgcc_mock/libgcc_eh.a
 
 	# CARGO_LINKER is provided in Makevars.ucrt for R >= 4.2
 	export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="$(CARGO_LINKER)" && \
 		export LIBRARY_PATH="$${LIBRARY_PATH};$(CURDIR)/$(TARGET_DIR)/libgcc_mock" && \
-		cargo +$(TOOLCHAIN) build --target=$(TARGET) --lib --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR)
+		cargo build --target=$(TARGET) --lib --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR)
 
 C_clean:
 	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS)
