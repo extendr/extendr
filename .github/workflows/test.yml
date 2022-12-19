@@ -199,9 +199,7 @@ jobs:
       - name: Obtain 'rextendr'
         uses: actions/checkout@v2
         with:
-          # TODO
-          repository: yutannihilation/rextendr
-          ref: poc/support-msvc-toolchain-again
+          repository: extendr/rextendr
           path: ./tests/rextendr
 
       - name: Install dependencies for extendrtests and rcmdcheck
