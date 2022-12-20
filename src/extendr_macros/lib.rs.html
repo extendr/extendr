@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-macros/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../extendr_macros/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../extendr_macros/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../extendr_macros/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-macros/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../extendr_macros/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -265,272 +265,272 @@
 <span id="265">265</span>
 <span id="266">266</span>
 <span id="267">267</span>
-</pre><pre class="rust"><code><span class="doccomment">//!</span>
-<span class="doccomment">//! Macros for generating wrappers for rust functions.</span>
+</pre><pre class="rust"><code><span class="doccomment">//!
+//! Macros for generating wrappers for rust functions.
 
-<span class="comment">//</span>
-<span class="comment">// We can invoke the #[extendr] macro on functions or struct impls.</span>
-<span class="comment">//</span>
-<span class="comment">// eg.</span>
-<span class="comment">//</span>
-<span class="comment">// ```ignore</span>
-<span class="comment">// #[extendr]</span>
-<span class="comment">// fn hello() -&gt; &amp;&#39;static str {</span>
-<span class="comment">//     &quot;hello&quot;</span>
-<span class="comment">// }</span>
-<span class="comment">// ```</span>
-<span class="comment">//</span>
-<span class="comment">// These macros add additional functions which you can see using the</span>
-<span class="comment">// `cargo expand` extension.</span>
-<span class="comment">//</span>
-<span class="comment">// Invoking the #[extendr_module] macro generates an entrypoint for the</span>
-<span class="comment">// library that will be called by R. Note that we add a postfix</span>
-<span class="comment">// `_extendr` to the init function because we need to forward routine</span>
-<span class="comment">// registration from C to Rust, and the C function will be called</span>
-<span class="comment">// `R_init_hello()`.</span>
-<span class="comment">//</span>
-<span class="comment">// ```ignore</span>
-<span class="comment">// #[no_mangle]</span>
-<span class="comment">// #[allow(non_snake_case)]</span>
-<span class="comment">// pub extern &quot;C&quot; fn R_init_hello_extendr(info: *mut extendr_api::DllInfo) {</span>
-<span class="comment">//     let mut call_methods = Vec::new();</span>
-<span class="comment">//     init__hello(info, &amp;mut call_methods);</span>
-<span class="comment">//     unsafe { extendr_api::register_call_methods(info, call_methods.as_ref()) };</span>
-<span class="comment">// }</span>
-<span class="comment">// ```</span>
-<span class="comment">//</span>
-<span class="comment">// The module also generates the `init__` functions that provide metadata</span>
-<span class="comment">// to R to register the wrappers.</span>
-<span class="comment">//</span>
-<span class="comment">// ```ignore</span>
-<span class="comment">// #[allow(non_snake_case)]</span>
-<span class="comment">// fn init__hello(info: *mut extendr_api::DllInfo, call_methods: &amp;mut Vec&lt;extendr_api::CallMethod&gt;) {</span>
-<span class="comment">//     call_methods.push(extendr_api::CallMethod {</span>
-<span class="comment">//         call_symbol: std::ffi::CString::new(&quot;wrap__hello&quot;).unwrap(),</span>
-<span class="comment">//         func_ptr: wrap__hello as *const u8,</span>
-<span class="comment">//         num_args: 0i32,</span>
-<span class="comment">//     })</span>
-<span class="comment">// }</span>
-<span class="comment">// ```</span>
-<span class="comment">//</span>
-<span class="comment">// In the case of struct impls we also generate the following:</span>
-<span class="comment">//</span>
-<span class="comment">// * Wrappers and init functions for all methods.</span>
-<span class="comment">// * A single init function that calls the other init functions for the methods.</span>
-<span class="comment">// * An input conversion from an external pointer to a reference and a move of that type.</span>
-<span class="comment">// * An output converstion from that type to an owned external pointer object.</span>
-<span class="comment">// * A finalizer for that type to free memory allocated.</span>
+</span><span class="comment">//
+// We can invoke the #[extendr] macro on functions or struct impls.
+//
+// eg.
+//
+// ```ignore
+// #[extendr]
+// fn hello() -&gt; &amp;&#39;static str {
+//     &quot;hello&quot;
+// }
+// ```
+//
+// These macros add additional functions which you can see using the
+// `cargo expand` extension.
+//
+// Invoking the #[extendr_module] macro generates an entrypoint for the
+// library that will be called by R. Note that we add a postfix
+// `_extendr` to the init function because we need to forward routine
+// registration from C to Rust, and the C function will be called
+// `R_init_hello()`.
+//
+// ```ignore
+// #[no_mangle]
+// #[allow(non_snake_case)]
+// pub extern &quot;C&quot; fn R_init_hello_extendr(info: *mut extendr_api::DllInfo) {
+//     let mut call_methods = Vec::new();
+//     init__hello(info, &amp;mut call_methods);
+//     unsafe { extendr_api::register_call_methods(info, call_methods.as_ref()) };
+// }
+// ```
+//
+// The module also generates the `init__` functions that provide metadata
+// to R to register the wrappers.
+//
+// ```ignore
+// #[allow(non_snake_case)]
+// fn init__hello(info: *mut extendr_api::DllInfo, call_methods: &amp;mut Vec&lt;extendr_api::CallMethod&gt;) {
+//     call_methods.push(extendr_api::CallMethod {
+//         call_symbol: std::ffi::CString::new(&quot;wrap__hello&quot;).unwrap(),
+//         func_ptr: wrap__hello as *const u8,
+//         num_args: 0i32,
+//     })
+// }
+// ```
+//
+// In the case of struct impls we also generate the following:
+//
+// * Wrappers and init functions for all methods.
+// * A single init function that calls the other init functions for the methods.
+// * An input conversion from an external pointer to a reference and a move of that type.
+// * An output converstion from that type to an owned external pointer object.
+// * A finalizer for that type to free memory allocated.
 
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
-<span class="kw">mod</span> <span class="ident">R</span>;
-<span class="kw">mod</span> <span class="ident">call</span>;
-<span class="kw">mod</span> <span class="ident">dataframe</span>;
-<span class="kw">mod</span> <span class="ident">extendr_function</span>;
-<span class="kw">mod</span> <span class="ident">extendr_impl</span>;
-<span class="kw">mod</span> <span class="ident">extendr_module</span>;
-<span class="kw">mod</span> <span class="ident">list</span>;
-<span class="kw">mod</span> <span class="ident">list_struct</span>;
-<span class="kw">mod</span> <span class="ident">pairlist</span>;
-<span class="kw">mod</span> <span class="ident">pairs</span>;
-<span class="kw">mod</span> <span class="ident">wrappers</span>;
+</span><span class="attribute">#[allow(non_snake_case)]
+</span><span class="kw">mod </span>R;
+<span class="kw">mod </span>call;
+<span class="kw">mod </span>dataframe;
+<span class="kw">mod </span>extendr_function;
+<span class="kw">mod </span>extendr_impl;
+<span class="kw">mod </span>extendr_module;
+<span class="kw">mod </span>list;
+<span class="kw">mod </span>list_struct;
+<span class="kw">mod </span>pairlist;
+<span class="kw">mod </span>pairs;
+<span class="kw">mod </span>wrappers;
 
-<span class="kw">use</span> <span class="ident">proc_macro::TokenStream</span>;
-<span class="kw">use</span> <span class="ident">quote::quote</span>;
-<span class="kw">use</span> <span class="ident">syn</span>::{<span class="ident">parse_macro_input</span>, <span class="ident">Item</span>};
+<span class="kw">use </span>proc_macro::TokenStream;
+<span class="kw">use </span>quote::quote;
+<span class="kw">use </span>syn::{parse_macro_input, Item};
 
-<span class="attribute">#[<span class="ident">proc_macro_attribute</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extendr</span>(<span class="ident">attr</span>: <span class="ident">TokenStream</span>, <span class="ident">item</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
-    <span class="kw">let</span> <span class="ident">args</span> <span class="op">=</span> <span class="macro">parse_macro_input!</span>(<span class="ident">attr</span> <span class="kw">as</span> <span class="ident">syn::AttributeArgs</span>);
-    <span class="kw">match</span> <span class="macro">parse_macro_input!</span>(<span class="ident">item</span> <span class="kw">as</span> <span class="ident">Item</span>) {
-        <span class="ident">Item::Fn</span>(<span class="ident">func</span>) =&gt; <span class="ident">extendr_function::extendr_function</span>(<span class="ident">args</span>, <span class="ident">func</span>),
-        <span class="ident">Item::Impl</span>(<span class="ident">item_impl</span>) =&gt; <span class="ident">extendr_impl::extendr_impl</span>(<span class="ident">item_impl</span>),
-        <span class="ident">other_item</span> =&gt; <span class="ident">TokenStream::from</span>(<span class="macro">quote!</span> {#<span class="ident">other_item</span>}),
+<span class="attribute">#[proc_macro_attribute]
+</span><span class="kw">pub fn </span>extendr(attr: TokenStream, item: TokenStream) -&gt; TokenStream {
+    <span class="kw">let </span>args = <span class="macro">parse_macro_input!</span>(attr <span class="kw">as </span>syn::AttributeArgs);
+    <span class="kw">match </span><span class="macro">parse_macro_input!</span>(item <span class="kw">as </span>Item) {
+        Item::Fn(func) =&gt; extendr_function::extendr_function(args, func),
+        Item::Impl(item_impl) =&gt; extendr_impl::extendr_impl(item_impl),
+        other_item =&gt; TokenStream::from(<span class="macro">quote! </span>{#other_item}),
     }
 }
 
-<span class="doccomment">/// Define a module and export symbols to R</span>
-<span class="doccomment">/// Example:</span>
-<span class="doccomment">///```ignore</span>
-<span class="doccomment">/// extendr_module! {</span>
-<span class="doccomment">///     mod name;</span>
-<span class="doccomment">///     fn my_func1;</span>
-<span class="doccomment">///     fn my_func2;</span>
-<span class="doccomment">///     impl MyTrait;</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// Outputs:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// #[no_mangle]</span>
-<span class="doccomment">/// #[allow(non_snake_case)]</span>
-<span class="doccomment">/// pub extern &quot;C&quot; fn R_init_hello_extendr(info: *mut extendr_api::DllInfo) {</span>
-<span class="doccomment">///     let mut call_methods = Vec::new();</span>
-<span class="doccomment">///     init__hello(info, &amp;mut call_methods);</span>
-<span class="doccomment">///     unsafe { extendr_api::register_call_methods(info, call_methods.as_ref()) };</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">proc_macro</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extendr_module</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
-    <span class="ident">extendr_module::extendr_module</span>(<span class="ident">item</span>)
+<span class="doccomment">/// Define a module and export symbols to R
+/// Example:
+///```ignore
+/// extendr_module! {
+///     mod name;
+///     fn my_func1;
+///     fn my_func2;
+///     impl MyTrait;
+/// }
+/// ```
+/// Outputs:
+///
+/// ```ignore
+/// #[no_mangle]
+/// #[allow(non_snake_case)]
+/// pub extern &quot;C&quot; fn R_init_hello_extendr(info: *mut extendr_api::DllInfo) {
+///     let mut call_methods = Vec::new();
+///     init__hello(info, &amp;mut call_methods);
+///     unsafe { extendr_api::register_call_methods(info, call_methods.as_ref()) };
+/// }
+/// ```
+</span><span class="attribute">#[proc_macro]
+</span><span class="kw">pub fn </span>extendr_module(item: TokenStream) -&gt; TokenStream {
+    extendr_module::extendr_module(item)
 }
 
-<span class="doccomment">/// Create a Pairlist R object from a list of name-value pairs.</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">///     assert_eq!(pairlist!(a=1, 2, 3), Pairlist::from_pairs(&amp;[(&quot;a&quot;, 1), (&quot;&quot;, 2), (&quot;&quot;, 3)]));</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">proc_macro</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pairlist</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
-    <span class="ident">pairlist::pairlist</span>(<span class="ident">item</span>)
+<span class="doccomment">/// Create a Pairlist R object from a list of name-value pairs.
+/// ```ignore
+///     assert_eq!(pairlist!(a=1, 2, 3), Pairlist::from_pairs(&amp;[(&quot;a&quot;, 1), (&quot;&quot;, 2), (&quot;&quot;, 3)]));
+/// ```
+</span><span class="attribute">#[proc_macro]
+</span><span class="kw">pub fn </span>pairlist(item: TokenStream) -&gt; TokenStream {
+    pairlist::pairlist(item)
 }
 
-<span class="doccomment">/// Create a List R object from a list of name-value pairs.</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">///     assert_eq!(list!(a=1, 2, 3), List::from_pairs(&amp;[(&quot;a&quot;, 1), (&quot;&quot;, 2), (&quot;&quot;, 3)]));</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">proc_macro</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">list</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
-    <span class="ident">list::list</span>(<span class="ident">item</span>)
+<span class="doccomment">/// Create a List R object from a list of name-value pairs.
+/// ```ignore
+///     assert_eq!(list!(a=1, 2, 3), List::from_pairs(&amp;[(&quot;a&quot;, 1), (&quot;&quot;, 2), (&quot;&quot;, 3)]));
+/// ```
+</span><span class="attribute">#[proc_macro]
+</span><span class="kw">pub fn </span>list(item: TokenStream) -&gt; TokenStream {
+    list::list(item)
 }
 
-<span class="doccomment">/// Call a function or primitive defined by a text expression with arbitrary parameters.</span>
-<span class="doccomment">/// This currently works by parsing and evaluating the string in R, but will probably acquire</span>
-<span class="doccomment">/// some shortcuts for simple expessions, for example by caching symbols and constant values.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">///     assert_eq!(call!(&quot;`+`&quot;, 1, 2), r!(3));</span>
-<span class="doccomment">///     assert_eq!(call!(&quot;list&quot;, 1, 2), r!([r!(1), r!(2)]));</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">proc_macro</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">call</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
-    <span class="ident">call::call</span>(<span class="ident">item</span>)
+<span class="doccomment">/// Call a function or primitive defined by a text expression with arbitrary parameters.
+/// This currently works by parsing and evaluating the string in R, but will probably acquire
+/// some shortcuts for simple expessions, for example by caching symbols and constant values.
+///
+/// ```ignore
+///     assert_eq!(call!(&quot;`+`&quot;, 1, 2), r!(3));
+///     assert_eq!(call!(&quot;list&quot;, 1, 2), r!([r!(1), r!(2)]));
+/// ```
+</span><span class="attribute">#[proc_macro]
+</span><span class="kw">pub fn </span>call(item: TokenStream) -&gt; TokenStream {
+    call::call(item)
 }
 
-<span class="doccomment">/// Execute R code by parsing and evaluating tokens.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">///     R!(&quot;c(1, 2, 3)&quot;);</span>
-<span class="doccomment">///     R!(&quot;{{(0..3).collect_robj()}} + 1&quot;);</span>
-<span class="doccomment">///     R!(r#&quot;</span>
-<span class="doccomment">///       print(&quot;hello&quot;)</span>
-<span class="doccomment">///     &quot;#);</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">proc_macro</span>]</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">R</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
-    <span class="ident">R::R</span>(<span class="ident">item</span>.<span class="ident">into</span>(), <span class="bool-val">true</span>).<span class="ident">into</span>()
+<span class="doccomment">/// Execute R code by parsing and evaluating tokens.
+///
+/// ```ignore
+///     R!(&quot;c(1, 2, 3)&quot;);
+///     R!(&quot;{{(0..3).collect_robj()}} + 1&quot;);
+///     R!(r#&quot;
+///       print(&quot;hello&quot;)
+///     &quot;#);
+/// ```
+</span><span class="attribute">#[proc_macro]
+#[allow(non_snake_case)]
+</span><span class="kw">pub fn </span>R(item: TokenStream) -&gt; TokenStream {
+    R::R(item.into(), <span class="bool-val">true</span>).into()
 }
 
-<span class="doccomment">/// Execute R code by parsing and evaluating tokens</span>
-<span class="doccomment">/// but without expanding parameters.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// // c.f. https://dplyr.tidyverse.org/articles/programming.html</span>
-<span class="doccomment">/// Rraw!(r#&quot;</span>
-<span class="doccomment">/// var_summary &lt;- function(data, var) {</span>
-<span class="doccomment">///   data %&gt;%</span>
-<span class="doccomment">///     summarise(n = n(), min = min({{ var }}), max = max({{ var }}))</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// &quot;#)</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">proc_macro</span>]</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">Rraw</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
-    <span class="ident">R::R</span>(<span class="ident">item</span>.<span class="ident">into</span>(), <span class="bool-val">false</span>).<span class="ident">into</span>()
+<span class="doccomment">/// Execute R code by parsing and evaluating tokens
+/// but without expanding parameters.
+///
+/// ```ignore
+/// // c.f. https://dplyr.tidyverse.org/articles/programming.html
+/// Rraw!(r#&quot;
+/// var_summary &lt;- function(data, var) {
+///   data %&gt;%
+///     summarise(n = n(), min = min({{ var }}), max = max({{ var }}))
+/// }
+/// &quot;#)
+/// ```
+</span><span class="attribute">#[proc_macro]
+#[allow(non_snake_case)]
+</span><span class="kw">pub fn </span>Rraw(item: TokenStream) -&gt; TokenStream {
+    R::R(item.into(), <span class="bool-val">false</span>).into()
 }
 
-<span class="doccomment">/// Derives an implementation of `TryFrom&lt;Robj&gt; for Struct` and `TryFrom&lt;&amp;Robj&gt; for Struct` on this struct.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This allows any R object supporting the `$` operator (generally a list or an</span>
-<span class="doccomment">/// environment) to be converted into that struct, as long as the corresponding fields on the R object are</span>
-<span class="doccomment">/// of a compatible type to those on the Rust struct.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// In the below example, `foo_from_list` is an instance of the `Foo` struct, that has been converted</span>
-<span class="doccomment">/// from an R list:</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// use extendr_macros::TryFromRobj;</span>
-<span class="doccomment">/// # use extendr_api::test;</span>
-<span class="doccomment">/// # test!{</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// #[derive(TryFromRobj, PartialEq, Debug)]</span>
-<span class="doccomment">/// struct Foo {</span>
-<span class="doccomment">///     a: u64,</span>
-<span class="doccomment">///     b: String</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// let native_foo = Foo { a: 5, b: &quot;bar&quot;.into() };</span>
-<span class="doccomment">/// let foo_from_list: Foo = R!(&quot;list(a = 5, b = &#39;bar&#39;)&quot;)?.try_into()?;</span>
-<span class="doccomment">/// assert_eq!(native_foo, foo_from_list);</span>
-<span class="doccomment">/// # }</span>
-<span class="doccomment">/// # Ok::&lt;(), extendr_api::Error&gt;(())</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">proc_macro_derive</span>(<span class="ident">TryFromRobj</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">derive_try_from_robj</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
-    <span class="ident">list_struct::derive_try_from_robj</span>(<span class="ident">item</span>)
+<span class="doccomment">/// Derives an implementation of `TryFrom&lt;Robj&gt; for Struct` and `TryFrom&lt;&amp;Robj&gt; for Struct` on this struct.
+///
+/// This allows any R object supporting the `$` operator (generally a list or an
+/// environment) to be converted into that struct, as long as the corresponding fields on the R object are
+/// of a compatible type to those on the Rust struct.
+///
+/// # Examples
+/// In the below example, `foo_from_list` is an instance of the `Foo` struct, that has been converted
+/// from an R list:
+/// ```ignore
+/// use extendr_api::prelude::*;
+/// use extendr_macros::TryFromRobj;
+/// # use extendr_api::test;
+/// # test!{
+///
+/// #[derive(TryFromRobj, PartialEq, Debug)]
+/// struct Foo {
+///     a: u64,
+///     b: String
+/// }
+/// let native_foo = Foo { a: 5, b: &quot;bar&quot;.into() };
+/// let foo_from_list: Foo = R!(&quot;list(a = 5, b = &#39;bar&#39;)&quot;)?.try_into()?;
+/// assert_eq!(native_foo, foo_from_list);
+/// # }
+/// # Ok::&lt;(), extendr_api::Error&gt;(())
+/// ```
+</span><span class="attribute">#[proc_macro_derive(TryFromRobj)]
+</span><span class="kw">pub fn </span>derive_try_from_robj(item: TokenStream) -&gt; TokenStream {
+    list_struct::derive_try_from_robj(item)
 }
 
-<span class="doccomment">/// Derives an implementation of `From&lt;Struct&gt; for Robj` and `From&lt;&amp;Struct&gt; for Robj` on this struct.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This allows the struct to be converted to a named list in R,</span>
-<span class="doccomment">/// where the list names correspond to the field names of the Rust struct.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Examples</span>
-<span class="doccomment">/// In the below example, `converted` contains an R list object with the same fields as the</span>
-<span class="doccomment">/// `Foo` struct.</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// use extendr_macros::IntoRobj;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # use extendr_api::test;</span>
-<span class="doccomment">/// # test!{</span>
-<span class="doccomment">/// #[derive(IntoRobj)]</span>
-<span class="doccomment">/// struct Foo {</span>
-<span class="doccomment">///     a: u32,</span>
-<span class="doccomment">///     b: String</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// let converted: Robj = Foo {</span>
-<span class="doccomment">///     a: 5,</span>
-<span class="doccomment">///     b: String::from(&quot;bar&quot;)</span>
-<span class="doccomment">/// }.into();</span>
-<span class="doccomment">/// assert_eq!(converted, R!(r&quot;list(a=5, b=&#39;bar&#39;)&quot;)?);</span>
-<span class="doccomment">/// # }</span>
-<span class="doccomment">/// # Ok::&lt;(), extendr_api::Error&gt;(())</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// # Details</span>
-<span class="doccomment">/// Note, the `From&lt;Struct&gt; for Robj` behaviour is different from what is obtained by applying the standard `#[extendr]` macro</span>
-<span class="doccomment">/// to an `impl` block. The `#[extendr]` behaviour returns to R a **pointer** to Rust memory, and generates wrapper functions for calling</span>
-<span class="doccomment">/// Rust functions on that pointer. The implementation from `#[derive(IntoRobj)]` actually converts the Rust structure</span>
-<span class="doccomment">/// into a native R list, which allows manipulation and access to internal fields, but it&#39;s a one-way conversion,</span>
-<span class="doccomment">/// and converting it back to Rust will produce a copy of the original struct.</span>
-<span class="attribute">#[<span class="ident">proc_macro_derive</span>(<span class="ident">IntoRobj</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">derive_into_robj</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
-    <span class="ident">list_struct::derive_into_robj</span>(<span class="ident">item</span>)
+<span class="doccomment">/// Derives an implementation of `From&lt;Struct&gt; for Robj` and `From&lt;&amp;Struct&gt; for Robj` on this struct.
+///
+/// This allows the struct to be converted to a named list in R,
+/// where the list names correspond to the field names of the Rust struct.
+///
+/// # Examples
+/// In the below example, `converted` contains an R list object with the same fields as the
+/// `Foo` struct.
+/// ```ignore
+/// use extendr_api::prelude::*;
+/// use extendr_macros::IntoRobj;
+///
+/// # use extendr_api::test;
+/// # test!{
+/// #[derive(IntoRobj)]
+/// struct Foo {
+///     a: u32,
+///     b: String
+/// }
+/// let converted: Robj = Foo {
+///     a: 5,
+///     b: String::from(&quot;bar&quot;)
+/// }.into();
+/// assert_eq!(converted, R!(r&quot;list(a=5, b=&#39;bar&#39;)&quot;)?);
+/// # }
+/// # Ok::&lt;(), extendr_api::Error&gt;(())
+/// ```
+/// # Details
+/// Note, the `From&lt;Struct&gt; for Robj` behaviour is different from what is obtained by applying the standard `#[extendr]` macro
+/// to an `impl` block. The `#[extendr]` behaviour returns to R a **pointer** to Rust memory, and generates wrapper functions for calling
+/// Rust functions on that pointer. The implementation from `#[derive(IntoRobj)]` actually converts the Rust structure
+/// into a native R list, which allows manipulation and access to internal fields, but it&#39;s a one-way conversion,
+/// and converting it back to Rust will produce a copy of the original struct.
+</span><span class="attribute">#[proc_macro_derive(IntoRobj)]
+</span><span class="kw">pub fn </span>derive_into_robj(item: TokenStream) -&gt; TokenStream {
+    list_struct::derive_into_robj(item)
 }
 
-<span class="doccomment">/// Enable the construction of dataframes from arrays of structures.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Example</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// #[derive(Debug, IntoDataFrameRow)]</span>
-<span class="doccomment">/// struct MyStruct {</span>
-<span class="doccomment">///     x: i32,</span>
-<span class="doccomment">///     y: String,</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let v = vec![MyStruct { x: 0, y: &quot;abc&quot;.into() }, MyStruct { x: 1, y: &quot;xyz&quot;.into() }];</span>
-<span class="doccomment">/// let df = v.into_dataframe()?;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// assert!(df.inherits(&quot;data.frame&quot;));</span>
-<span class="doccomment">/// assert_eq!(df[0], r!([0, 1]));</span>
-<span class="doccomment">/// assert_eq!(df[1], r!([&quot;abc&quot;, &quot;xyz&quot;]));</span>
-<span class="doccomment">/// ```</span>
+<span class="doccomment">/// Enable the construction of dataframes from arrays of structures.
+///
+/// # Example
+///
+/// ```ignore
+/// use extendr_api::prelude::*;
+///
+/// #[derive(Debug, IntoDataFrameRow)]
+/// struct MyStruct {
+///     x: i32,
+///     y: String,
+/// }
+///
+/// let v = vec![MyStruct { x: 0, y: &quot;abc&quot;.into() }, MyStruct { x: 1, y: &quot;xyz&quot;.into() }];
+/// let df = v.into_dataframe()?;
+///
+/// assert!(df.inherits(&quot;data.frame&quot;));
+/// assert_eq!(df[0], r!([0, 1]));
+/// assert_eq!(df[1], r!([&quot;abc&quot;, &quot;xyz&quot;]));
+/// ```
 
-<span class="attribute">#[<span class="ident">proc_macro_derive</span>(<span class="ident">IntoDataFrameRow</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">derive_into_dataframe</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
-    <span class="ident">dataframe::derive_into_dataframe</span>(<span class="ident">item</span>)
+</span><span class="attribute">#[proc_macro_derive(IntoDataFrameRow)]
+</span><span class="kw">pub fn </span>derive_into_dataframe(item: TokenStream) -&gt; TokenStream {
+    dataframe::derive_into_dataframe(item)
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_macros" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_macros" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

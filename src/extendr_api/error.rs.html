@@ -1,6 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/error.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>error.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../extendr_api/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../extendr_api/index.html"><div class="logo-container">
-                    <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../extendr_api/index.html">
-                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/error.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>error.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../extendr_api/index.html">
+                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -209,214 +208,214 @@
 <span id="207">207</span>
 <span id="208">208</span>
 <span id="209">209</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Error handling in Rust called from R.</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Error handling in Rust called from R.
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::robj::Types</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">throw_r_error</span>, <span class="ident">Robj</span>};
+</span><span class="kw">use </span><span class="kw">crate</span>::robj::Types;
+<span class="kw">use crate</span>::{throw_r_error, Robj};
 
-<span class="kw">use</span> <span class="ident">std::convert::Infallible</span>;
+<span class="kw">use </span>std::convert::Infallible;
 
-<span class="doccomment">/// Throw an R error if a result is an error.</span>
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unwrap_or_throw</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">r</span>: <span class="ident">std::result::Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span>) -&gt; <span class="ident">T</span> {
-    <span class="kw">match</span> <span class="ident">r</span> {
-        <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; {
-            <span class="ident">throw_r_error</span>(<span class="ident">e</span>.<span class="ident">to_string</span>());
+<span class="doccomment">/// Throw an R error if a result is an error.
+</span><span class="attribute">#[doc(hidden)]
+</span><span class="kw">pub fn </span>unwrap_or_throw&lt;T&gt;(r: std::result::Result&lt;T, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt;) -&gt; T {
+    <span class="kw">match </span>r {
+        <span class="prelude-val">Err</span>(e) =&gt; {
+            throw_r_error(e.to_string());
             <span class="macro">unreachable!</span>(<span class="string">&quot;&quot;</span>);
         }
-        <span class="prelude-val">Ok</span>(<span class="ident">v</span>) =&gt; <span class="ident">v</span>,
+        <span class="prelude-val">Ok</span>(v) =&gt; v,
     }
 }
 
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unwrap_or_throw_error</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">r</span>: <span class="ident">std::result::Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">Error</span><span class="op">&gt;</span>) -&gt; <span class="ident">T</span> {
-    <span class="kw">match</span> <span class="ident">r</span> {
-        <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; {
-            <span class="ident">throw_r_error</span>(<span class="ident">e</span>.<span class="ident">to_string</span>());
+<span class="attribute">#[doc(hidden)]
+</span><span class="kw">pub fn </span>unwrap_or_throw_error&lt;T&gt;(r: std::result::Result&lt;T, Error&gt;) -&gt; T {
+    <span class="kw">match </span>r {
+        <span class="prelude-val">Err</span>(e) =&gt; {
+            throw_r_error(e.to_string());
             <span class="macro">unreachable!</span>(<span class="string">&quot;&quot;</span>);
         }
-        <span class="prelude-val">Ok</span>(<span class="ident">v</span>) =&gt; <span class="ident">v</span>,
+        <span class="prelude-val">Ok</span>(v) =&gt; v,
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Error</span> {
-    <span class="ident">Panic</span>(<span class="ident">Robj</span>),
-    <span class="ident">NotFound</span>(<span class="ident">Robj</span>),
-    <span class="ident">EvalError</span>(<span class="ident">Robj</span>),
-    <span class="ident">ParseError</span>(<span class="ident">Robj</span>),
-    <span class="ident">NamesLengthMismatch</span>(<span class="ident">Robj</span>),
+<span class="attribute">#[derive(Debug, PartialEq)]
+</span><span class="kw">pub enum </span>Error {
+    Panic(Robj),
+    NotFound(Robj),
+    EvalError(Robj),
+    ParseError(Robj),
+    NamesLengthMismatch(Robj),
 
-    <span class="ident">ExpectedNull</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedSymbol</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedPairlist</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedFunction</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedEnvironment</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedPromise</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedLanguage</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedSpecial</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedBuiltin</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedRstr</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedLogical</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedInteger</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedReal</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedComplex</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedString</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedDot</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedAny</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedList</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedExpression</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedBytecode</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedExternalPtr</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedWeakRef</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedRaw</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedS4</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedPrimitive</span>(<span class="ident">Robj</span>),
+    ExpectedNull(Robj),
+    ExpectedSymbol(Robj),
+    ExpectedPairlist(Robj),
+    ExpectedFunction(Robj),
+    ExpectedEnvironment(Robj),
+    ExpectedPromise(Robj),
+    ExpectedLanguage(Robj),
+    ExpectedSpecial(Robj),
+    ExpectedBuiltin(Robj),
+    ExpectedRstr(Robj),
+    ExpectedLogical(Robj),
+    ExpectedInteger(Robj),
+    ExpectedReal(Robj),
+    ExpectedComplex(Robj),
+    ExpectedString(Robj),
+    ExpectedDot(Robj),
+    ExpectedAny(Robj),
+    ExpectedList(Robj),
+    ExpectedExpression(Robj),
+    ExpectedBytecode(Robj),
+    ExpectedExternalPtr(Robj),
+    ExpectedWeakRef(Robj),
+    ExpectedRaw(Robj),
+    ExpectedS4(Robj),
+    ExpectedPrimitive(Robj),
 
-    <span class="ident">ExpectedScalar</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedVector</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedMatrix</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedMatrix3D</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedNumeric</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedAltrep</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedDataframe</span>(<span class="ident">Robj</span>),
+    ExpectedScalar(Robj),
+    ExpectedVector(Robj),
+    ExpectedMatrix(Robj),
+    ExpectedMatrix3D(Robj),
+    ExpectedNumeric(Robj),
+    ExpectedAltrep(Robj),
+    ExpectedDataframe(Robj),
 
-    <span class="ident">OutOfRange</span>(<span class="ident">Robj</span>),
-    <span class="ident">MustNotBeNA</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedNonZeroLength</span>(<span class="ident">Robj</span>),
-    <span class="ident">ExpectedWholeNumber</span>(<span class="ident">Robj</span>),
-    <span class="ident">OutOfLimits</span>(<span class="ident">Robj</span>),
-    <span class="ident">TypeMismatch</span>(<span class="ident">Robj</span>),
-    <span class="ident">NamespaceNotFound</span>(<span class="ident">Robj</span>),
-    <span class="ident">NoGraphicsDevices</span>(<span class="ident">Robj</span>),
+    OutOfRange(Robj),
+    MustNotBeNA(Robj),
+    ExpectedNonZeroLength(Robj),
+    ExpectedWholeNumber(Robj),
+    OutOfLimits(Robj),
+    TypeMismatch(Robj),
+    NamespaceNotFound(Robj),
+    NoGraphicsDevices(Robj),
 
-    <span class="ident">ExpectedExternalPtrType</span>(<span class="ident">Robj</span>, <span class="ident">String</span>),
-    <span class="ident">Other</span>(<span class="ident">String</span>),
+    ExpectedExternalPtrType(Robj, String),
+    Other(String),
 }
 
-<span class="kw">impl</span> <span class="ident">std::fmt::Display</span> <span class="kw">for</span> <span class="ident">Error</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::fmt::Result</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Error::Panic</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Panic detected {:?}.&quot;</span>, <span class="ident">robj</span>),
-            <span class="ident">Error::NotFound</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Not found. {:?}&quot;</span>, <span class="ident">robj</span>),
-            <span class="ident">Error::EvalError</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Evaluation error in {:?}.&quot;</span>, <span class="ident">robj</span>),
-            <span class="ident">Error::ParseError</span>(<span class="ident">code</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Parse error in {:?}.&quot;</span>, <span class="ident">code</span>),
-            <span class="ident">Error::NamesLengthMismatch</span>(<span class="ident">robj</span>) =&gt; {
-                <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Length of names does not match vector. {:?}&quot;</span>, <span class="ident">robj</span>)
+<span class="kw">impl </span>std::fmt::Display <span class="kw">for </span>Error {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">match </span><span class="self">self </span>{
+            Error::Panic(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Panic detected {:?}.&quot;</span>, robj),
+            Error::NotFound(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Not found. {:?}&quot;</span>, robj),
+            Error::EvalError(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Evaluation error in {:?}.&quot;</span>, robj),
+            Error::ParseError(code) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Parse error in {:?}.&quot;</span>, code),
+            Error::NamesLengthMismatch(robj) =&gt; {
+                <span class="macro">write!</span>(f, <span class="string">&quot;Length of names does not match vector. {:?}&quot;</span>, robj)
             }
 
-            <span class="ident">Error::ExpectedNull</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Null got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedSymbol</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Symbol got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedPairlist</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Pairlist got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedFunction</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Function got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedEnvironment</span>(<span class="ident">robj</span>) =&gt; {
-                <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Environment got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>())
+            Error::ExpectedNull(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected Null got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedSymbol(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected Symbol got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedPairlist(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected Pairlist got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedFunction(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected Function got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedEnvironment(robj) =&gt; {
+                <span class="macro">write!</span>(f, <span class="string">&quot;Expected Environment got {:?}&quot;</span>, robj.rtype())
             }
-            <span class="ident">Error::ExpectedPromise</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Promise got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedLanguage</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Language got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedSpecial</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Special got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedBuiltin</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Builtin got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedRstr</span>(<span class="ident">robj</span>) =&gt; {
-                <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Rstr got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>())
+            Error::ExpectedPromise(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected Promise got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedLanguage(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected Language got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedSpecial(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected Special got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedBuiltin(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected Builtin got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedRstr(robj) =&gt; {
+                <span class="macro">write!</span>(f, <span class="string">&quot;Expected Rstr got {:?}&quot;</span>, robj.rtype())
             }
-            <span class="ident">Error::ExpectedLogical</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Logicals got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedInteger</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Integers got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedReal</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Doubles got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedComplex</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Complexes got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedString</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Strings got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedDot</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Dot got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedAny</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Any got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedList</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected List got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedExpression</span>(<span class="ident">robj</span>) =&gt; {
-                <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Expression got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>())
+            Error::ExpectedLogical(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected Logicals got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedInteger(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected Integers got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedReal(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected Doubles got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedComplex(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected Complexes got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedString(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected Strings got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedDot(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected Dot got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedAny(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected Any got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedList(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected List got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedExpression(robj) =&gt; {
+                <span class="macro">write!</span>(f, <span class="string">&quot;Expected Expression got {:?}&quot;</span>, robj.rtype())
             }
-            <span class="ident">Error::ExpectedBytecode</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Bytecode got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedExternalPtr</span>(<span class="ident">robj</span>) =&gt; {
-                <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected ExternalPtr got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>())
+            Error::ExpectedBytecode(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected Bytecode got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedExternalPtr(robj) =&gt; {
+                <span class="macro">write!</span>(f, <span class="string">&quot;Expected ExternalPtr got {:?}&quot;</span>, robj.rtype())
             }
-            <span class="ident">Error::ExpectedWeakRef</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected WeakRef got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedRaw</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Raw got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedS4</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected S4 got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedPrimitive</span>(<span class="ident">robj</span>) =&gt; {
-                <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Primitive got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>())
-            }
-
-            <span class="ident">Error::ExpectedScalar</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Scalar, got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedVector</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Vector, got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedMatrix</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Matrix, got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedMatrix3D</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Matrix3D, got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedNumeric</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Numeric, got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedAltrep</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Altrep, got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>()),
-            <span class="ident">Error::ExpectedDataframe</span>(<span class="ident">robj</span>) =&gt; {
-                <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected Dataframe, got {:?}&quot;</span>, <span class="ident">robj</span>.<span class="ident">rtype</span>())
+            Error::ExpectedWeakRef(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected WeakRef got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedRaw(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected Raw got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedS4(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected S4 got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedPrimitive(robj) =&gt; {
+                <span class="macro">write!</span>(f, <span class="string">&quot;Expected Primitive got {:?}&quot;</span>, robj.rtype())
             }
 
-            <span class="ident">Error::OutOfRange</span>(<span class="ident">_robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Out of range.&quot;</span>),
-            <span class="ident">Error::MustNotBeNA</span>(<span class="ident">_robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Must not be NA.&quot;</span>),
-            <span class="ident">Error::ExpectedNonZeroLength</span>(<span class="ident">_robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Expected non zero length&quot;</span>),
-            <span class="ident">Error::ExpectedWholeNumber</span>(<span class="ident">robj</span>) =&gt; {
+            Error::ExpectedScalar(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected Scalar, got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedVector(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected Vector, got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedMatrix(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected Matrix, got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedMatrix3D(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected Matrix3D, got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedNumeric(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected Numeric, got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedAltrep(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected Altrep, got {:?}&quot;</span>, robj.rtype()),
+            Error::ExpectedDataframe(robj) =&gt; {
+                <span class="macro">write!</span>(f, <span class="string">&quot;Expected Dataframe, got {:?}&quot;</span>, robj.rtype())
+            }
+
+            Error::OutOfRange(_robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Out of range.&quot;</span>),
+            Error::MustNotBeNA(_robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Must not be NA.&quot;</span>),
+            Error::ExpectedNonZeroLength(_robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Expected non zero length&quot;</span>),
+            Error::ExpectedWholeNumber(robj) =&gt; {
                 <span class="macro">write!</span>(
-                    <span class="ident">f</span>,
+                    f,
                     <span class="string">&quot;Expected an integer or a float representing a whole number, got {:?}&quot;</span>,
-                    <span class="ident">robj</span>
+                    robj
                 )
             }
-            <span class="ident">Error::OutOfLimits</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;The value is too big: {:?}&quot;</span>, <span class="ident">robj</span>),
-            <span class="ident">Error::TypeMismatch</span>(<span class="ident">_robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Type mismatch&quot;</span>),
+            Error::OutOfLimits(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;The value is too big: {:?}&quot;</span>, robj),
+            Error::TypeMismatch(_robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Type mismatch&quot;</span>),
 
-            <span class="ident">Error::NamespaceNotFound</span>(<span class="ident">robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Namespace {:?} not found&quot;</span>, <span class="ident">robj</span>),
-            <span class="ident">Error::ExpectedExternalPtrType</span>(<span class="ident">_robj</span>, <span class="ident">type_name</span>) =&gt; {
-                <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Incorrect external pointer type {}&quot;</span>, <span class="ident">type_name</span>)
+            Error::NamespaceNotFound(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Namespace {:?} not found&quot;</span>, robj),
+            Error::ExpectedExternalPtrType(_robj, type_name) =&gt; {
+                <span class="macro">write!</span>(f, <span class="string">&quot;Incorrect external pointer type {}&quot;</span>, type_name)
             }
-            <span class="ident">Error::NoGraphicsDevices</span>(<span class="ident">_robj</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;No graphics devices active.&quot;</span>),
-            <span class="ident">Error::Other</span>(<span class="ident">str</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">str</span>),
+            Error::NoGraphicsDevices(_robj) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;No graphics devices active.&quot;</span>),
+            Error::Other(str) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, str),
         }
     }
 }
-<span class="kw">pub</span> <span class="kw">type</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">std::result::Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">Error</span><span class="op">&gt;</span>;
+<span class="kw">pub type </span><span class="prelude-ty">Result</span>&lt;T&gt; = std::result::Result&lt;T, Error&gt;;
 
-<span class="comment">// impl std::fmt::Display for Error {</span>
-<span class="comment">//     fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;&#39;_&gt;) -&gt; std::fmt::Result {</span>
-<span class="comment">//         write!(f, &quot;{:?}&quot;, self)</span>
-<span class="comment">//     }</span>
-<span class="comment">// }</span>
+<span class="comment">// impl std::fmt::Display for Error {
+//     fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;&#39;_&gt;) -&gt; std::fmt::Result {
+//         write!(f, &quot;{:?}&quot;, self)
+//     }
+// }
 
-<span class="kw">impl</span> <span class="ident">std::error::Error</span> <span class="kw">for</span> <span class="ident">Error</span> {
-    <span class="kw">fn</span> <span class="ident">source</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>(<span class="kw">dyn</span> <span class="ident">std::error::Error</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>)<span class="op">&gt;</span> {
-        <span class="prelude-val">None</span>
+</span><span class="kw">impl </span>std::error::Error <span class="kw">for </span>Error {
+    <span class="kw">fn </span>source(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>(<span class="kw">dyn </span>std::error::Error + <span class="lifetime">&#39;static</span>)&gt; {
+        <span class="prelude-val">None
+    </span>}
+}
+
+<span class="kw">impl </span>From&lt;Box&lt;<span class="kw">dyn </span>std::error::Error&gt;&gt; <span class="kw">for </span>Error {
+    <span class="kw">fn </span>from(err: Box&lt;<span class="kw">dyn </span>std::error::Error&gt;) -&gt; Error {
+        Error::Other(<span class="macro">format!</span>(<span class="string">&quot;{}&quot;</span>, err))
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">std::error::Error</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Error</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">err</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">std::error::Error</span><span class="op">&gt;</span>) -&gt; <span class="ident">Error</span> {
-        <span class="ident">Error::Other</span>(<span class="macro">format!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">err</span>))
+<span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span>str&gt; <span class="kw">for </span>Error {
+    <span class="kw">fn </span>from(err: <span class="kw-2">&amp;</span>str) -&gt; Error {
+        Error::Other(err.to_string())
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Error</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">err</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">Error</span> {
-        <span class="ident">Error::Other</span>(<span class="ident">err</span>.<span class="ident">to_string</span>())
+<span class="kw">impl </span>From&lt;String&gt; <span class="kw">for </span>Error {
+    <span class="kw">fn </span>from(err: String) -&gt; Error {
+        Error::Other(err)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Error</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">err</span>: <span class="ident">String</span>) -&gt; <span class="ident">Error</span> {
-        <span class="ident">Error::Other</span>(<span class="ident">err</span>)
-    }
-}
+<span class="comment">// NoneError is unstable.
+//
+// impl From&lt;std::option::NoneError&gt; for Error {
+//     fn from(err: std::option::NoneError) -&gt; Error {
+//         Error::None
+//     }
+// }
 
-<span class="comment">// NoneError is unstable.</span>
-<span class="comment">//</span>
-<span class="comment">// impl From&lt;std::option::NoneError&gt; for Error {</span>
-<span class="comment">//     fn from(err: std::option::NoneError) -&gt; Error {</span>
-<span class="comment">//         Error::None</span>
-<span class="comment">//     }</span>
-<span class="comment">// }</span>
-
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Infallible</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Error</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="kw">_</span>: <span class="ident">Infallible</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">Error::Other</span>(<span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>())
+</span><span class="kw">impl </span>From&lt;Infallible&gt; <span class="kw">for </span>Error {
+    <span class="kw">fn </span>from(<span class="kw">_</span>: Infallible) -&gt; <span class="self">Self </span>{
+        Error::Other(<span class="string">&quot;&quot;</span>.to_string())
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

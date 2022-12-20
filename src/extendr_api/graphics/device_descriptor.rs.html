@@ -1,6 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/graphics/device_descriptor.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>device_descriptor.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container">
-                    <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../extendr_api/index.html">
-                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/graphics/device_descriptor.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>device_descriptor.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../extendr_api/index.html">
+                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -251,256 +250,256 @@
 <span id="249">249</span>
 <span id="250">250</span>
 <span id="251">251</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">color::Color</span>, <span class="ident">FontFace</span>, <span class="ident">LineType</span>};
+</pre><pre class="rust"><code><span class="kw">use super</span>::{color::Color, FontFace, LineType};
 
-<span class="comment">// From R internals[^1]:</span>
-<span class="comment">//</span>
-<span class="comment">// &gt; There should be a ‘pointsize’ argument which defaults to 12, and it should</span>
-<span class="comment">// &gt; give the pointsize in big points (1/72 inch). How exactly this is</span>
-<span class="comment">// &gt; interpreted is font-specific, but it should use a font which works with</span>
-<span class="comment">// &gt; lines packed 1/6 inch apart, and looks good with lines 1/5 inch apart (that</span>
-<span class="comment">// &gt; is with 2pt leading).</span>
-<span class="comment">//</span>
-<span class="comment">// [^1]: https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Conventions</span>
-<span class="kw">const</span> <span class="ident">POINTSIZE</span>: <span class="ident">f64</span> <span class="op">=</span> <span class="number">12.0</span>;
+<span class="comment">// From R internals[^1]:
+//
+// &gt; There should be a ‘pointsize’ argument which defaults to 12, and it should
+// &gt; give the pointsize in big points (1/72 inch). How exactly this is
+// &gt; interpreted is font-specific, but it should use a font which works with
+// &gt; lines packed 1/6 inch apart, and looks good with lines 1/5 inch apart (that
+// &gt; is with 2pt leading).
+//
+// [^1]: https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Conventions
+</span><span class="kw">const </span>POINTSIZE: f64 = <span class="number">12.0</span>;
 
-<span class="kw">const</span> <span class="ident">PT</span>: <span class="ident">f64</span> <span class="op">=</span> <span class="number">1.0</span> <span class="op">/</span> <span class="number">72.0</span>;
-<span class="kw">const</span> <span class="ident">PT_PER_INCH</span>: <span class="ident">f64</span> <span class="op">=</span> <span class="number">72.0</span>;
+<span class="kw">const </span>PT: f64 = <span class="number">1.0 </span>/ <span class="number">72.0</span>;
+<span class="kw">const </span>PT_PER_INCH: f64 = <span class="number">72.0</span>;
 
-<span class="comment">// From R internals[^1]:</span>
-<span class="comment">//</span>
-<span class="comment">// &gt; where ‘fnsize’ is the ‘size’ of the standard font (cex=1) on the device, in</span>
-<span class="comment">// &gt; device units.</span>
-<span class="comment">//</span>
-<span class="comment">// and it seems the Postscript device chooses `pointsize` as this.</span>
-<span class="comment">//</span>
-<span class="comment">// [^1]: https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Handling-text</span>
-<span class="kw">const</span> <span class="ident">FONTSIZE</span>: <span class="ident">f64</span> <span class="op">=</span> <span class="ident">POINTSIZE</span>;
+<span class="comment">// From R internals[^1]:
+//
+// &gt; where ‘fnsize’ is the ‘size’ of the standard font (cex=1) on the device, in
+// &gt; device units.
+//
+// and it seems the Postscript device chooses `pointsize` as this.
+//
+// [^1]: https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Handling-text
+</span><span class="kw">const </span>FONTSIZE: f64 = POINTSIZE;
 
-<span class="comment">// From R internals[^1]:</span>
-<span class="comment">//</span>
-<span class="comment">// &gt; The default size of a device should be 7 inches square.</span>
-<span class="comment">//</span>
-<span class="comment">// [^1]: https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Conventions</span>
-<span class="kw">const</span> <span class="ident">WIDTH_INCH</span>: <span class="ident">f64</span> <span class="op">=</span> <span class="number">7.0</span>;
-<span class="kw">const</span> <span class="ident">HEIGH_INCH</span>: <span class="ident">f64</span> <span class="op">=</span> <span class="number">7.0</span>;
+<span class="comment">// From R internals[^1]:
+//
+// &gt; The default size of a device should be 7 inches square.
+//
+// [^1]: https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Conventions
+</span><span class="kw">const </span>WIDTH_INCH: f64 = <span class="number">7.0</span>;
+<span class="kw">const </span>HEIGH_INCH: f64 = <span class="number">7.0</span>;
 
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum</span> <span class="ident">CanHAdjOption</span> {
-    <span class="ident">NotSupported</span> <span class="op">=</span> <span class="number">0</span>,
-    <span class="ident">FixedAdjustment</span> <span class="op">=</span> <span class="number">1</span>,
-    <span class="ident">VariableAdjustment</span> <span class="op">=</span> <span class="number">2</span>,
+<span class="attribute">#[allow(dead_code)]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>CanHAdjOption {
+    NotSupported = <span class="number">0</span>,
+    FixedAdjustment = <span class="number">1</span>,
+    VariableAdjustment = <span class="number">2</span>,
 }
 
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">DevCapTransparency</span> {
-    <span class="ident">Unset</span> <span class="op">=</span> <span class="number">0</span>,
-    <span class="ident">No</span> <span class="op">=</span> <span class="number">1</span>,
-    <span class="ident">Yes</span> <span class="op">=</span> <span class="number">2</span>,
+<span class="kw">pub enum </span>DevCapTransparency {
+    Unset = <span class="number">0</span>,
+    No = <span class="number">1</span>,
+    Yes = <span class="number">2</span>,
 }
 
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">DevCapTransparentBg</span> {
-    <span class="ident">Unset</span> <span class="op">=</span> <span class="number">0</span>,
-    <span class="ident">No</span> <span class="op">=</span> <span class="number">1</span>,
-    <span class="ident">Fully</span> <span class="op">=</span> <span class="number">2</span>,
-    <span class="ident">Semi</span> <span class="op">=</span> <span class="number">3</span>,
+<span class="kw">pub enum </span>DevCapTransparentBg {
+    Unset = <span class="number">0</span>,
+    No = <span class="number">1</span>,
+    Fully = <span class="number">2</span>,
+    Semi = <span class="number">3</span>,
 }
 
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum</span> <span class="ident">DevCapRaster</span> {
-    <span class="ident">Unset</span> <span class="op">=</span> <span class="number">0</span>,
-    <span class="ident">No</span> <span class="op">=</span> <span class="number">1</span>,
-    <span class="ident">Yes</span> <span class="op">=</span> <span class="number">2</span>,
-    <span class="ident">ExceptForMissingValues</span> <span class="op">=</span> <span class="number">3</span>,
+<span class="attribute">#[allow(dead_code)]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>DevCapRaster {
+    Unset = <span class="number">0</span>,
+    No = <span class="number">1</span>,
+    Yes = <span class="number">2</span>,
+    ExceptForMissingValues = <span class="number">3</span>,
 }
 
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum</span> <span class="ident">DevCapCapture</span> {
-    <span class="ident">Unset</span> <span class="op">=</span> <span class="number">0</span>,
-    <span class="ident">No</span> <span class="op">=</span> <span class="number">1</span>,
-    <span class="ident">Yes</span> <span class="op">=</span> <span class="number">2</span>,
+<span class="attribute">#[allow(dead_code)]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>DevCapCapture {
+    Unset = <span class="number">0</span>,
+    No = <span class="number">1</span>,
+    Yes = <span class="number">2</span>,
 }
 
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum</span> <span class="ident">DevCapLocator</span> {
-    <span class="ident">Unset</span> <span class="op">=</span> <span class="number">0</span>,
-    <span class="ident">No</span> <span class="op">=</span> <span class="number">1</span>,
-    <span class="ident">Yes</span> <span class="op">=</span> <span class="number">2</span>,
+<span class="attribute">#[allow(dead_code)]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>DevCapLocator {
+    Unset = <span class="number">0</span>,
+    No = <span class="number">1</span>,
+    Yes = <span class="number">2</span>,
 }
 
-<span class="doccomment">/// A builder of [libR_sys::DevDesc].</span>
-<span class="doccomment">///</span>
-<span class="comment">// # Design notes (which feels a bit too internal to be exposed as an official document)</span>
-<span class="comment">//</span>
-<span class="comment">// Compared to the original [DevDesc], `DeviceDescriptor` omits several fields</span>
-<span class="comment">// that seem not very useful. For example,</span>
-<span class="comment">//</span>
-<span class="comment">// - `clipLeft`, `clipRight`, `clipBottom`, and `clipTop`: In most of the cases,</span>
-<span class="comment">//   this should match the device size at first.</span>
-<span class="comment">// - `xCharOffset`, `yCharOffset`, and `yLineBias`: Because I get [the</span>
-<span class="comment">//   hatred](https://github.com/wch/r-source/blob/9f284035b7e503aebe4a804579e9e80a541311bb/src/include/R_ext/GraphicsDevice.h#L101-L103).</span>
-<span class="comment">//   They are rarely used.</span>
-<span class="comment">// - `gamma`, and `canChangeGamma`: These fields are now ignored because gamma</span>
-<span class="comment">//   support has been removed.</span>
-<span class="comment">// - `deviceSpecific`: This can be provided later when we actually create a</span>
-<span class="comment">//   [Device].</span>
-<span class="comment">// - `canGenMouseDown`, `canGenMouseMove`, `canGenMouseUp`, `canGenKeybd`, and</span>
-<span class="comment">//   `canGenIdle`: These fields are currently not used by R and preserved only</span>
-<span class="comment">//   for backward-compatibility.</span>
-<span class="comment">// - `gettingEvent`, `getEvent`: This is set true when getGraphicsEvent is</span>
-<span class="comment">//   actively looking for events. Reading the description on [&quot;6.1.6 Graphics</span>
-<span class="comment">//   events&quot; of R</span>
-<span class="comment">//   Internals](https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Graphics-events),</span>
-<span class="comment">//   it seems this flag is not what is controlled by a graphic device.</span>
-<span class="comment">// - `canHAdj`: it seems this parameter is used only for tweaking the `hadj`</span>
-<span class="comment">//   before passing it to the `text()` function. This tweak probably can be done</span>
-<span class="comment">//   inside `text()` easily, so let&#39;s pretend to be able to handle any</span>
-<span class="comment">//   adjustments... c.f.</span>
-<span class="comment">//   &lt;https://github.com/wch/r-source/blob/9f284035b7e503aebe4a804579e9e80a541311bb/src/main/engine.c#L1995-L2000&gt;</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeviceDescriptor</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">left</span>: <span class="ident">f64</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">right</span>: <span class="ident">f64</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">bottom</span>: <span class="ident">f64</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">top</span>: <span class="ident">f64</span>,
+<span class="doccomment">/// A builder of [libR_sys::DevDesc].
+///
+</span><span class="comment">// # Design notes (which feels a bit too internal to be exposed as an official document)
+//
+// Compared to the original [DevDesc], `DeviceDescriptor` omits several fields
+// that seem not very useful. For example,
+//
+// - `clipLeft`, `clipRight`, `clipBottom`, and `clipTop`: In most of the cases,
+//   this should match the device size at first.
+// - `xCharOffset`, `yCharOffset`, and `yLineBias`: Because I get [the
+//   hatred](https://github.com/wch/r-source/blob/9f284035b7e503aebe4a804579e9e80a541311bb/src/include/R_ext/GraphicsDevice.h#L101-L103).
+//   They are rarely used.
+// - `gamma`, and `canChangeGamma`: These fields are now ignored because gamma
+//   support has been removed.
+// - `deviceSpecific`: This can be provided later when we actually create a
+//   [Device].
+// - `canGenMouseDown`, `canGenMouseMove`, `canGenMouseUp`, `canGenKeybd`, and
+//   `canGenIdle`: These fields are currently not used by R and preserved only
+//   for backward-compatibility.
+// - `gettingEvent`, `getEvent`: This is set true when getGraphicsEvent is
+//   actively looking for events. Reading the description on [&quot;6.1.6 Graphics
+//   events&quot; of R
+//   Internals](https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Graphics-events),
+//   it seems this flag is not what is controlled by a graphic device.
+// - `canHAdj`: it seems this parameter is used only for tweaking the `hadj`
+//   before passing it to the `text()` function. This tweak probably can be done
+//   inside `text()` easily, so let&#39;s pretend to be able to handle any
+//   adjustments... c.f.
+//   &lt;https://github.com/wch/r-source/blob/9f284035b7e503aebe4a804579e9e80a541311bb/src/main/engine.c#L1995-L2000&gt;
+</span><span class="attribute">#[allow(non_snake_case)]
+</span><span class="kw">pub struct </span>DeviceDescriptor {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) left: f64,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) right: f64,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) bottom: f64,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) top: f64,
 
-    <span class="comment">// Note: the header file questions about `ipr` and `cra` [1]. Actually,</span>
-    <span class="comment">// svglite and ragg have `pointsize` and `scaling` parameters instead. But,</span>
-    <span class="comment">// I couldn&#39;t be sure if it&#39;s enough as an framework (I mean, as a package,</span>
-    <span class="comment">// abstracting these parameters to `pointsize` and `scaling` is definitely a</span>
-    <span class="comment">// good idea), so I chose to expose these parameters as they are.</span>
-    <span class="comment">//</span>
-    <span class="comment">// [1]:</span>
-    <span class="comment">//     https://github.com/wch/r-source/blob/9f284035b7e503aebe4a804579e9e80a541311bb/src/include/R_ext/GraphicsDevice.h#L75-L81</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">ipr</span>: [<span class="ident">f64</span>; <span class="number">2</span>],
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">cra</span>: [<span class="ident">f64</span>; <span class="number">2</span>],
+    <span class="comment">// Note: the header file questions about `ipr` and `cra` [1]. Actually,
+    // svglite and ragg have `pointsize` and `scaling` parameters instead. But,
+    // I couldn&#39;t be sure if it&#39;s enough as an framework (I mean, as a package,
+    // abstracting these parameters to `pointsize` and `scaling` is definitely a
+    // good idea), so I chose to expose these parameters as they are.
+    //
+    // [1]:
+    //     https://github.com/wch/r-source/blob/9f284035b7e503aebe4a804579e9e80a541311bb/src/include/R_ext/GraphicsDevice.h#L75-L81
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) ipr: [f64; <span class="number">2</span>],
+    <span class="kw">pub</span>(<span class="kw">crate</span>) cra: [f64; <span class="number">2</span>],
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">startps</span>: <span class="ident">f64</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">startcol</span>: <span class="ident">Color</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">startfill</span>: <span class="ident">Color</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">startlty</span>: <span class="ident">LineType</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">startfont</span>: <span class="ident">FontFace</span>,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) startps: f64,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) startcol: Color,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) startfill: Color,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) startlty: LineType,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) startfont: FontFace,
 }
 
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
-<span class="kw">impl</span> <span class="ident">DeviceDescriptor</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="comment">// The From R internals [1] &quot; The default size of a device should be 7</span>
-            <span class="comment">// inches square.&quot;</span>
-            <span class="ident">left</span>: <span class="number">0.0</span>,
-            <span class="ident">right</span>: <span class="ident">WIDTH_INCH</span> <span class="op">*</span> <span class="ident">PT_PER_INCH</span>,
-            <span class="ident">bottom</span>: <span class="number">0.0</span>,
-            <span class="ident">top</span>: <span class="ident">HEIGH_INCH</span> <span class="op">*</span> <span class="ident">PT_PER_INCH</span>,
+<span class="attribute">#[allow(non_snake_case)]
+</span><span class="kw">impl </span>DeviceDescriptor {
+    <span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            <span class="comment">// The From R internals [1] &quot; The default size of a device should be 7
+            // inches square.&quot;
+            </span>left: <span class="number">0.0</span>,
+            right: WIDTH_INCH * PT_PER_INCH,
+            bottom: <span class="number">0.0</span>,
+            top: HEIGH_INCH * PT_PER_INCH,
 
-            <span class="ident">ipr</span>: [<span class="ident">PT</span>, <span class="ident">PT</span>],
+            ipr: [PT, PT],
 
-            <span class="comment">// Font size. Not sure why these 0.9 and 1.2 are chosen, but R</span>
-            <span class="comment">// internals says this is &quot;a good choice.&quot;</span>
-            <span class="ident">cra</span>: [<span class="number">0.9</span> <span class="op">*</span> <span class="ident">FONTSIZE</span>, <span class="number">1.2</span> <span class="op">*</span> <span class="ident">FONTSIZE</span>],
+            <span class="comment">// Font size. Not sure why these 0.9 and 1.2 are chosen, but R
+            // internals says this is &quot;a good choice.&quot;
+            </span>cra: [<span class="number">0.9 </span>* FONTSIZE, <span class="number">1.2 </span>* FONTSIZE],
 
-            <span class="ident">startps</span>: <span class="ident">POINTSIZE</span>,
-            <span class="ident">startcol</span>: <span class="ident">Color::hex</span>(<span class="number">0x000000</span>),
-            <span class="ident">startfill</span>: <span class="ident">Color::hex</span>(<span class="number">0xffffff</span>),
-            <span class="ident">startlty</span>: <span class="ident">LineType::Solid</span>,
-            <span class="ident">startfont</span>: <span class="ident">FontFace::Plain</span>,
+            startps: POINTSIZE,
+            startcol: Color::hex(<span class="number">0x000000</span>),
+            startfill: Color::hex(<span class="number">0xffffff</span>),
+            startlty: LineType::Solid,
+            startfont: FontFace::Plain,
         }
     }
 
-    <span class="doccomment">/// Sets the device sizes (unit: point).</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If not specified, the following numbers (7 inches square, following [the</span>
-    <span class="doccomment">/// R Internals&#39; convetion]) will be used.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// * `left`: 0</span>
-    <span class="doccomment">/// * `right`: 7 inches * points per inch = `7 * 72`</span>
-    <span class="doccomment">/// * `bottom`: 0</span>
-    <span class="doccomment">/// * `top`: 7 inches * points per inch = `7 * 72`</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">///  Please note that, depending on the the coordinate system of the device,</span>
-    <span class="doccomment">///  `left` might be larger than `right`, or `bottom` larger than `top` (for</span>
-    <span class="doccomment">///  example, in SVG, the origin is at the top left corner).</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [the R Internals&#39; convetion]:</span>
-    <span class="doccomment">///     https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Conventions</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">device_size</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">left</span>: <span class="ident">f64</span>, <span class="ident">right</span>: <span class="ident">f64</span>, <span class="ident">bottom</span>: <span class="ident">f64</span>, <span class="ident">top</span>: <span class="ident">f64</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">left</span> <span class="op">=</span> <span class="ident">left</span>;
-        <span class="self">self</span>.<span class="ident">right</span> <span class="op">=</span> <span class="ident">right</span>;
-        <span class="self">self</span>.<span class="ident">bottom</span> <span class="op">=</span> <span class="ident">bottom</span>;
-        <span class="self">self</span>.<span class="ident">top</span> <span class="op">=</span> <span class="ident">top</span>;
-        <span class="self">self</span>
-    }
+    <span class="doccomment">/// Sets the device sizes (unit: point).
+    ///
+    /// If not specified, the following numbers (7 inches square, following [the
+    /// R Internals&#39; convetion]) will be used.
+    ///
+    /// * `left`: 0
+    /// * `right`: 7 inches * points per inch = `7 * 72`
+    /// * `bottom`: 0
+    /// * `top`: 7 inches * points per inch = `7 * 72`
+    ///
+    ///  Please note that, depending on the the coordinate system of the device,
+    ///  `left` might be larger than `right`, or `bottom` larger than `top` (for
+    ///  example, in SVG, the origin is at the top left corner).
+    ///
+    /// [the R Internals&#39; convetion]:
+    ///     https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Conventions
+    </span><span class="kw">pub fn </span>device_size(<span class="kw-2">mut </span><span class="self">self</span>, left: f64, right: f64, bottom: f64, top: f64) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.left = left;
+        <span class="self">self</span>.right = right;
+        <span class="self">self</span>.bottom = bottom;
+        <span class="self">self</span>.top = top;
+        <span class="self">self
+    </span>}
 
-    <span class="doccomment">/// Sets inches per raster unit (i.e. point). **Note that most of the cases,</span>
-    <span class="doccomment">/// there&#39;s no need to change this value.**</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// A point is usually 1/72 (the default value), but another value can be</span>
-    <span class="doccomment">/// specified here to scale the device. The first element is width, the</span>
-    <span class="doccomment">/// second is height.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ipr</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">ipr</span>: [<span class="ident">f64</span>; <span class="number">2</span>]) -&gt; <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">ipr</span> <span class="op">=</span> <span class="ident">ipr</span>;
-        <span class="self">self</span>
-    }
+    <span class="doccomment">/// Sets inches per raster unit (i.e. point). **Note that most of the cases,
+    /// there&#39;s no need to change this value.**
+    ///
+    /// A point is usually 1/72 (the default value), but another value can be
+    /// specified here to scale the device. The first element is width, the
+    /// second is height.
+    </span><span class="kw">pub fn </span>ipr(<span class="kw-2">mut </span><span class="self">self</span>, ipr: [f64; <span class="number">2</span>]) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.ipr = ipr;
+        <span class="self">self
+    </span>}
 
-    <span class="doccomment">/// Sets the font size (unit: point). **Note that most of the cases, there&#39;s</span>
-    <span class="doccomment">/// no need to change this value.**</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The first element is width, the second is height. If not specified,</span>
-    <span class="doccomment">/// `[0.9 * 12.0, 1.2 * 12.0]`, which is [suggested by the R Internals as &quot;a</span>
-    <span class="doccomment">/// good choice&quot;] will be used (12 point is the usual default for graphics</span>
-    <span class="doccomment">/// devices).</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [suggested by the R Internals as &quot;a good choice&quot;]:</span>
-    <span class="doccomment">///     https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Handling-text</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">cra</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">cra</span>: [<span class="ident">f64</span>; <span class="number">2</span>]) -&gt; <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">cra</span> <span class="op">=</span> <span class="ident">cra</span>;
-        <span class="self">self</span>
-    }
+    <span class="doccomment">/// Sets the font size (unit: point). **Note that most of the cases, there&#39;s
+    /// no need to change this value.**
+    ///
+    /// The first element is width, the second is height. If not specified,
+    /// `[0.9 * 12.0, 1.2 * 12.0]`, which is [suggested by the R Internals as &quot;a
+    /// good choice&quot;] will be used (12 point is the usual default for graphics
+    /// devices).
+    ///
+    /// [suggested by the R Internals as &quot;a good choice&quot;]:
+    ///     https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Handling-text
+    </span><span class="kw">pub fn </span>cra(<span class="kw-2">mut </span><span class="self">self</span>, cra: [f64; <span class="number">2</span>]) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.cra = cra;
+        <span class="self">self
+    </span>}
 
-    <span class="doccomment">/// Sets the initial value of pointsize.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If not specified, 12, which is the usual default for graphics devices,</span>
-    <span class="doccomment">/// will be used.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">startps</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">startps</span>: <span class="ident">f64</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">startps</span> <span class="op">=</span> <span class="ident">startps</span>;
-        <span class="self">self</span>
-    }
+    <span class="doccomment">/// Sets the initial value of pointsize.
+    ///
+    /// If not specified, 12, which is the usual default for graphics devices,
+    /// will be used.
+    </span><span class="kw">pub fn </span>startps(<span class="kw-2">mut </span><span class="self">self</span>, startps: f64) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.startps = startps;
+        <span class="self">self
+    </span>}
 
-    <span class="doccomment">/// Sets the initial value of colour.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If not specified, black (`0x000000`) will be used.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">startcol</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">startcol</span>: <span class="ident">Color</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">startcol</span> <span class="op">=</span> <span class="ident">startcol</span>;
-        <span class="self">self</span>
-    }
-    <span class="doccomment">/// Sets the initial value of fill.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If not specified, white (`0xffffff`) will be used.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">startfill</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">startfill</span>: <span class="ident">Color</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">startfill</span> <span class="op">=</span> <span class="ident">startfill</span>;
-        <span class="self">self</span>
-    }
+    <span class="doccomment">/// Sets the initial value of colour.
+    ///
+    /// If not specified, black (`0x000000`) will be used.
+    </span><span class="kw">pub fn </span>startcol(<span class="kw-2">mut </span><span class="self">self</span>, startcol: Color) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.startcol = startcol;
+        <span class="self">self
+    </span>}
+    <span class="doccomment">/// Sets the initial value of fill.
+    ///
+    /// If not specified, white (`0xffffff`) will be used.
+    </span><span class="kw">pub fn </span>startfill(<span class="kw-2">mut </span><span class="self">self</span>, startfill: Color) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.startfill = startfill;
+        <span class="self">self
+    </span>}
 
-    <span class="doccomment">/// Sets the initial value of line type.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If not specified, [LineType::Solid] will be used.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">startlty</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">startlty</span>: <span class="ident">LineType</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">startlty</span> <span class="op">=</span> <span class="ident">startlty</span>;
-        <span class="self">self</span>
-    }
+    <span class="doccomment">/// Sets the initial value of line type.
+    ///
+    /// If not specified, [LineType::Solid] will be used.
+    </span><span class="kw">pub fn </span>startlty(<span class="kw-2">mut </span><span class="self">self</span>, startlty: LineType) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.startlty = startlty;
+        <span class="self">self
+    </span>}
 
-    <span class="doccomment">/// Sets the initial value of font face.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If not specified, [FontFace::Plain] will be used.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">startfont</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">startfont</span>: <span class="ident">FontFace</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">startfont</span> <span class="op">=</span> <span class="ident">startfont</span>;
-        <span class="self">self</span>
-    }
+    <span class="doccomment">/// Sets the initial value of font face.
+    ///
+    /// If not specified, [FontFace::Plain] will be used.
+    </span><span class="kw">pub fn </span>startfont(<span class="kw-2">mut </span><span class="self">self</span>, startfont: FontFace) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.startfont = startfont;
+        <span class="self">self
+    </span>}
 }
 
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">DeviceDescriptor</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="self">Self</span>::new</span>()
+<span class="kw">impl </span>Default <span class="kw">for </span>DeviceDescriptor {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::new()
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

@@ -1,6 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/scalar/rint.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>rint.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container">
-                    <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../extendr_api/index.html">
-                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/scalar/rint.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>rint.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../extendr_api/index.html">
+                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -152,157 +151,157 @@
 <span id="150">150</span>
 <span id="151">151</span>
 <span id="152">152</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::scalar::macros</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">std::convert::TryFrom</span>;
-<span class="kw">use</span> <span class="ident">std::ops</span>::{<span class="ident">Add</span>, <span class="ident">Div</span>, <span class="ident">Mul</span>, <span class="ident">Neg</span>, <span class="ident">Not</span>, <span class="ident">Sub</span>};
-<span class="kw">use</span> <span class="ident">std::ops</span>::{<span class="ident">AddAssign</span>, <span class="ident">DivAssign</span>, <span class="ident">MulAssign</span>, <span class="ident">SubAssign</span>};
+</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::scalar::macros::<span class="kw-2">*</span>;
+<span class="kw">use crate</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>std::convert::TryFrom;
+<span class="kw">use </span>std::ops::{Add, Div, Mul, Neg, Not, Sub};
+<span class="kw">use </span>std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 
-<span class="doccomment">/// Rint is a wrapper for i32 in the context of an R&#39;s integer vector.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Rint can have a value between i32::MIN+1 and i32::MAX</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The value i32::MIN is used as &quot;NA&quot;.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Rint has the same footprint as an i32 value allowing us to use it in zero copy slices.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Rint</span>(<span class="kw">pub</span> <span class="ident">i32</span>);
+<span class="doccomment">/// Rint is a wrapper for i32 in the context of an R&#39;s integer vector.
+///
+/// Rint can have a value between i32::MIN+1 and i32::MAX
+///
+/// The value i32::MIN is used as &quot;NA&quot;.
+///
+/// Rint has the same footprint as an i32 value allowing us to use it in zero copy slices.
+</span><span class="kw">pub struct </span>Rint(<span class="kw">pub </span>i32);
 
-<span class="kw">impl</span> <span class="ident">Rint</span> {
-    <span class="macro">gen_impl!</span>(<span class="ident">Rint</span>, <span class="ident">i32</span>);
+<span class="kw">impl </span>Rint {
+    <span class="macro">gen_impl!</span>(Rint, i32);
 }
 
-<span class="macro">gen_trait_impl!</span>(<span class="ident">Rint</span>, <span class="ident">i32</span>, <span class="op">|</span><span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">Rint</span><span class="op">|</span> <span class="ident">x</span>.<span class="number">0</span> <span class="op">==</span> <span class="ident">i32::MIN</span>, <span class="ident">i32::MIN</span>);
-<span class="macro">gen_from_primitive!</span>(<span class="ident">Rint</span>, <span class="ident">i32</span>);
-<span class="macro">gen_from_scalar!</span>(<span class="ident">Rint</span>, <span class="ident">i32</span>);
-<span class="macro">gen_sum_iter!</span>(<span class="ident">Rint</span>, <span class="number">0i32</span>);
+<span class="macro">gen_trait_impl!</span>(Rint, i32, |x: <span class="kw-2">&amp;</span>Rint| x.<span class="number">0 </span>== i32::MIN, i32::MIN);
+<span class="macro">gen_from_primitive!</span>(Rint, i32);
+<span class="macro">gen_from_scalar!</span>(Rint, i32);
+<span class="macro">gen_sum_iter!</span>(Rint, <span class="number">0i32</span>);
 
-<span class="comment">// Generate binary ops for +, -, * and /</span>
+<span class="comment">// Generate binary ops for +, -, * and /
+</span><span class="macro">gen_binop!</span>(
+    Rint,
+    i32,
+    Add,
+    |lhs: i32, rhs| lhs.checked_add(rhs),
+    <span class="string">&quot;Add two Rint values or an option of i32, overflows to NA.&quot;
+</span>);
 <span class="macro">gen_binop!</span>(
-    <span class="ident">Rint</span>,
-    <span class="ident">i32</span>,
-    <span class="ident">Add</span>,
-    <span class="op">|</span><span class="ident">lhs</span>: <span class="ident">i32</span>, <span class="ident">rhs</span><span class="op">|</span> <span class="ident">lhs</span>.<span class="ident">checked_add</span>(<span class="ident">rhs</span>),
-    <span class="string">&quot;Add two Rint values or an option of i32, overflows to NA.&quot;</span>
-);
+    Rint,
+    i32,
+    Sub,
+    |lhs: i32, rhs| lhs.checked_sub(rhs),
+    <span class="string">&quot;Subtract two Rint values or an option of i32, overflows to NA.&quot;
+</span>);
 <span class="macro">gen_binop!</span>(
-    <span class="ident">Rint</span>,
-    <span class="ident">i32</span>,
-    <span class="ident">Sub</span>,
-    <span class="op">|</span><span class="ident">lhs</span>: <span class="ident">i32</span>, <span class="ident">rhs</span><span class="op">|</span> <span class="ident">lhs</span>.<span class="ident">checked_sub</span>(<span class="ident">rhs</span>),
-    <span class="string">&quot;Subtract two Rint values or an option of i32, overflows to NA.&quot;</span>
-);
+    Rint,
+    i32,
+    Mul,
+    |lhs: i32, rhs| lhs.checked_mul(rhs),
+    <span class="string">&quot;Multiply two Rint values or an option of i32, overflows to NA.&quot;
+</span>);
 <span class="macro">gen_binop!</span>(
-    <span class="ident">Rint</span>,
-    <span class="ident">i32</span>,
-    <span class="ident">Mul</span>,
-    <span class="op">|</span><span class="ident">lhs</span>: <span class="ident">i32</span>, <span class="ident">rhs</span><span class="op">|</span> <span class="ident">lhs</span>.<span class="ident">checked_mul</span>(<span class="ident">rhs</span>),
-    <span class="string">&quot;Multiply two Rint values or an option of i32, overflows to NA.&quot;</span>
-);
-<span class="macro">gen_binop!</span>(
-    <span class="ident">Rint</span>,
-    <span class="ident">i32</span>,
-    <span class="ident">Div</span>,
-    <span class="op">|</span><span class="ident">lhs</span>: <span class="ident">i32</span>, <span class="ident">rhs</span><span class="op">|</span> <span class="ident">lhs</span>.<span class="ident">checked_div</span>(<span class="ident">rhs</span>),
-    <span class="string">&quot;Divide two Rint values or an option of i32, overflows to NA.&quot;</span>
-);
+    Rint,
+    i32,
+    Div,
+    |lhs: i32, rhs| lhs.checked_div(rhs),
+    <span class="string">&quot;Divide two Rint values or an option of i32, overflows to NA.&quot;
+</span>);
 <span class="macro">gen_binopassign!</span>(
-    <span class="ident">Rint</span>,
-    <span class="ident">i32</span>,
-    <span class="ident">AddAssign</span>,
-    <span class="op">|</span><span class="ident">lhs</span>: <span class="ident">i32</span>, <span class="ident">rhs</span><span class="op">|</span> <span class="ident">lhs</span>.<span class="ident">checked_add</span>(<span class="ident">rhs</span>),
-    <span class="string">&quot;Add two Rint values or an option of i32, modifying the left-hand side in place. Overflows to NA.&quot;</span>
-);
+    Rint,
+    i32,
+    AddAssign,
+    |lhs: i32, rhs| lhs.checked_add(rhs),
+    <span class="string">&quot;Add two Rint values or an option of i32, modifying the left-hand side in place. Overflows to NA.&quot;
+</span>);
 <span class="macro">gen_binopassign!</span>(
-    <span class="ident">Rint</span>,
-    <span class="ident">i32</span>,
-    <span class="ident">SubAssign</span>,
-    <span class="op">|</span><span class="ident">lhs</span>: <span class="ident">i32</span>, <span class="ident">rhs</span><span class="op">|</span> <span class="ident">lhs</span>.<span class="ident">checked_sub</span>(<span class="ident">rhs</span>),
-    <span class="string">&quot;Subtract two Rint values or an option of i32, modifying the left-hand side in place. Overflows to NA.&quot;</span>
-);
+    Rint,
+    i32,
+    SubAssign,
+    |lhs: i32, rhs| lhs.checked_sub(rhs),
+    <span class="string">&quot;Subtract two Rint values or an option of i32, modifying the left-hand side in place. Overflows to NA.&quot;
+</span>);
 <span class="macro">gen_binopassign!</span>(
-    <span class="ident">Rint</span>,
-    <span class="ident">i32</span>,
-    <span class="ident">MulAssign</span>,
-    <span class="op">|</span><span class="ident">lhs</span>: <span class="ident">i32</span>, <span class="ident">rhs</span><span class="op">|</span> <span class="ident">lhs</span>.<span class="ident">checked_mul</span>(<span class="ident">rhs</span>),
-    <span class="string">&quot;Multiply two Rint values or an option of i32, modifying the left-hand side in place. Overflows to NA.&quot;</span>
-);
+    Rint,
+    i32,
+    MulAssign,
+    |lhs: i32, rhs| lhs.checked_mul(rhs),
+    <span class="string">&quot;Multiply two Rint values or an option of i32, modifying the left-hand side in place. Overflows to NA.&quot;
+</span>);
 <span class="macro">gen_binopassign!</span>(
-    <span class="ident">Rint</span>,
-    <span class="ident">i32</span>,
-    <span class="ident">DivAssign</span>,
-    <span class="op">|</span><span class="ident">lhs</span>: <span class="ident">i32</span>, <span class="ident">rhs</span><span class="op">|</span> <span class="ident">lhs</span>.<span class="ident">checked_div</span>(<span class="ident">rhs</span>),
-    <span class="string">&quot;Divide two Rint values or an option of i32, modifying the left-hand side in place. Overflows to NA.&quot;</span>
-);
+    Rint,
+    i32,
+    DivAssign,
+    |lhs: i32, rhs| lhs.checked_div(rhs),
+    <span class="string">&quot;Divide two Rint values or an option of i32, modifying the left-hand side in place. Overflows to NA.&quot;
+</span>);
 
-<span class="comment">// Generate unary ops for -, !</span>
+<span class="comment">// Generate unary ops for -, !
+</span><span class="macro">gen_unop!</span>(
+    Rint,
+    Neg,
+    |lhs: i32| <span class="prelude-val">Some</span>(-lhs),
+    <span class="string">&quot;Negate a Rint value, overflows to NA.&quot;
+</span>);
 <span class="macro">gen_unop!</span>(
-    <span class="ident">Rint</span>,
-    <span class="ident">Neg</span>,
-    <span class="op">|</span><span class="ident">lhs</span>: <span class="ident">i32</span><span class="op">|</span> <span class="prelude-val">Some</span>(<span class="op">-</span><span class="ident">lhs</span>),
-    <span class="string">&quot;Negate a Rint value, overflows to NA.&quot;</span>
-);
-<span class="macro">gen_unop!</span>(
-    <span class="ident">Rint</span>,
-    <span class="ident">Not</span>,
-    <span class="op">|</span><span class="ident">lhs</span>: <span class="ident">i32</span><span class="op">|</span> <span class="prelude-val">Some</span>(<span class="op">!</span><span class="ident">lhs</span>),
-    <span class="string">&quot;Logical not a Rint value, overflows to NA.&quot;</span>
-);
+    Rint,
+    Not,
+    |lhs: i32| <span class="prelude-val">Some</span>(!lhs),
+    <span class="string">&quot;Logical not a Rint value, overflows to NA.&quot;
+</span>);
 
-<span class="kw">impl</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Robj</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Rint</span> {
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>;
+<span class="kw">impl </span>TryFrom&lt;<span class="kw-2">&amp;</span>Robj&gt; <span class="kw">for </span>Rint {
+    <span class="kw">type </span>Error = Error;
 
-    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">robj</span>: <span class="kw-2">&amp;</span><span class="ident">Robj</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="comment">// Check if the value is a scalar</span>
-        <span class="kw">match</span> <span class="ident">robj</span>.<span class="ident">len</span>() {
-            <span class="number">0</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::ExpectedNonZeroLength</span>(<span class="ident">robj</span>.<span class="ident">clone</span>())),
-            <span class="number">1</span> =&gt; {}
-            <span class="kw">_</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::ExpectedScalar</span>(<span class="ident">robj</span>.<span class="ident">clone</span>())),
+    <span class="kw">fn </span>try_from(robj: <span class="kw-2">&amp;</span>Robj) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+        <span class="comment">// Check if the value is a scalar
+        </span><span class="kw">match </span>robj.len() {
+            <span class="number">0 </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::ExpectedNonZeroLength(robj.clone())),
+            <span class="number">1 </span>=&gt; {}
+            <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::ExpectedScalar(robj.clone())),
         };
 
-        <span class="comment">// Check if the value is not a missing value</span>
-        <span class="kw">if</span> <span class="ident">robj</span>.<span class="ident">is_na</span>() {
-            <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Rint::na</span>());
+        <span class="comment">// Check if the value is not a missing value
+        </span><span class="kw">if </span>robj.is_na() {
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(Rint::na());
         }
 
-        <span class="comment">// If the conversion is int-to-int, check the limits. This</span>
-        <span class="comment">// needs to be done by `TryFrom` because the conversion by `as`</span>
-        <span class="comment">// is problematic when converting a negative value to unsigned</span>
-        <span class="comment">// integer types (e.g. `-1i32 as u8` becomes 255).</span>
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_integer</span>() {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">v</span>) <span class="op">=</span> <span class="ident"><span class="self">Self</span>::try_from</span>(<span class="ident">v</span>) {
-                <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">v</span>);
-            } <span class="kw">else</span> {
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::OutOfLimits</span>(<span class="ident">robj</span>.<span class="ident">clone</span>()));
+        <span class="comment">// If the conversion is int-to-int, check the limits. This
+        // needs to be done by `TryFrom` because the conversion by `as`
+        // is problematic when converting a negative value to unsigned
+        // integer types (e.g. `-1i32 as u8` becomes 255).
+        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(v) = robj.as_integer() {
+            <span class="kw">if let </span><span class="prelude-val">Ok</span>(v) = <span class="self">Self</span>::try_from(v) {
+                <span class="kw">return </span><span class="prelude-val">Ok</span>(v);
+            } <span class="kw">else </span>{
+                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::OutOfLimits(robj.clone()));
             }
         }
 
-        <span class="comment">// If the conversion is float-to-int, check if the value is</span>
-        <span class="comment">// integer-like (i.e., an integer, or a float representing a</span>
-        <span class="comment">// whole number). This needs to be down with `as`, as no</span>
-        <span class="comment">// `TryFrom` is implemented for float types. `FloatToInt` trait</span>
-        <span class="comment">// might eventually become available in future, though.</span>
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_real</span>() {
-            <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">v</span> <span class="kw">as</span> <span class="ident">i32</span>;
-            <span class="kw">if</span> (<span class="ident">result</span> <span class="kw">as</span> <span class="ident">f64</span> <span class="op">-</span> <span class="ident">v</span>).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">f64::EPSILON</span> {
-                <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Rint::from</span>(<span class="ident">result</span>));
-            } <span class="kw">else</span> {
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::ExpectedWholeNumber</span>(<span class="ident">robj</span>.<span class="ident">clone</span>()));
+        <span class="comment">// If the conversion is float-to-int, check if the value is
+        // integer-like (i.e., an integer, or a float representing a
+        // whole number). This needs to be down with `as`, as no
+        // `TryFrom` is implemented for float types. `FloatToInt` trait
+        // might eventually become available in future, though.
+        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(v) = robj.as_real() {
+            <span class="kw">let </span>result = v <span class="kw">as </span>i32;
+            <span class="kw">if </span>(result <span class="kw">as </span>f64 - v).abs() &lt; f64::EPSILON {
+                <span class="kw">return </span><span class="prelude-val">Ok</span>(Rint::from(result));
+            } <span class="kw">else </span>{
+                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::ExpectedWholeNumber(robj.clone()));
             }
         }
 
-        <span class="prelude-val">Err</span>(<span class="ident">Error::ExpectedNumeric</span>(<span class="ident">robj</span>.<span class="ident">clone</span>()))
+        <span class="prelude-val">Err</span>(Error::ExpectedNumeric(robj.clone()))
     }
 }
 
-<span class="kw">impl</span> <span class="ident">std::fmt::Debug</span> <span class="kw">for</span> <span class="ident">Rint</span> {
-    <span class="doccomment">/// Debug format.</span>
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::fmt::Result</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_na</span>() {
-            <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;NA_INTEGER&quot;</span>)
-        } <span class="kw">else</span> {
-            <span class="self">self</span>.<span class="ident">inner</span>().<span class="ident">fmt</span>(<span class="ident">f</span>)
+<span class="kw">impl </span>std::fmt::Debug <span class="kw">for </span>Rint {
+    <span class="doccomment">/// Debug format.
+    </span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">if </span><span class="self">self</span>.is_na() {
+            <span class="macro">write!</span>(f, <span class="string">&quot;NA_INTEGER&quot;</span>)
+        } <span class="kw">else </span>{
+            <span class="self">self</span>.inner().fmt(f)
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

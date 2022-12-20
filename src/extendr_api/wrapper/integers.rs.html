@@ -1,6 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/integers.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>integers.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container">
-                    <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../extendr_api/index.html">
-                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/integers.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>integers.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../extendr_api/index.html">
+                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -157,162 +156,162 @@
 <span id="155">155</span>
 <span id="156">156</span>
 <span id="157">157</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">super</span>::scalar::Rint</span>;
-<span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">std::iter::FromIterator</span>;
+</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::scalar::Rint;
+<span class="kw">use super</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>std::iter::FromIterator;
 
-<span class="doccomment">/// An obscure `NA`-aware wrapper for R&#39;s integer vectors.</span>
-<span class="doccomment">/// Can be used to iterate over vectors obtained from R</span>
-<span class="doccomment">/// or to create new vectors that can be returned back to R.</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///     let mut vec = (0..5).map(|i| i.into()).collect::&lt;Integers&gt;();</span>
-<span class="doccomment">///     vec.iter_mut().for_each(|v| *v = *v + 10);</span>
-<span class="doccomment">///     assert_eq!(vec.elt(0), 10);</span>
-<span class="doccomment">///     let sum = vec.iter().sum::&lt;Rint&gt;();</span>
-<span class="doccomment">///     assert_eq!(sum, 60);</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```  </span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Integers</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">robj</span>: <span class="ident">Robj</span>,
+<span class="doccomment">/// An obscure `NA`-aware wrapper for R&#39;s integer vectors.
+/// Can be used to iterate over vectors obtained from R
+/// or to create new vectors that can be returned back to R.
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     let mut vec = (0..5).map(|i| i.into()).collect::&lt;Integers&gt;();
+///     vec.iter_mut().for_each(|v| *v = *v + 10);
+///     assert_eq!(vec.elt(0), 10);
+///     let sum = vec.iter().sum::&lt;Rint&gt;();
+///     assert_eq!(sum, 60);
+/// }
+/// ```  
+</span><span class="attribute">#[derive(PartialEq, Clone)]
+</span><span class="kw">pub struct </span>Integers {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) robj: Robj,
 }
 
 <span class="macro">crate::wrapper::macros::gen_vector_wrapper_impl!</span>(
-    <span class="ident">vector_type</span>: <span class="ident">Integers</span>, <span class="comment">// Implements for</span>
-    <span class="ident">scalar_type</span>: <span class="ident">Rint</span>,     <span class="comment">// Element type</span>
-    <span class="ident">primitive_type</span>: <span class="ident">i32</span>,   <span class="comment">// Raw element type</span>
-    <span class="ident">r_prefix</span>: <span class="ident">INTEGER</span>,     <span class="comment">// `R` functions prefix</span>
-    <span class="ident">SEXP</span>: <span class="ident">INTSXP</span>,          <span class="comment">// `SEXP`</span>
-    <span class="ident">doc_name</span>: <span class="ident">integer</span>,     <span class="comment">// Singular type name used in docs</span>
-    <span class="ident">altrep_constructor</span>: <span class="ident">make_altinteger_from_iterator</span>,
+    vector_type: Integers, <span class="comment">// Implements for
+    </span>scalar_type: Rint,     <span class="comment">// Element type
+    </span>primitive_type: i32,   <span class="comment">// Raw element type
+    </span>r_prefix: INTEGER,     <span class="comment">// `R` functions prefix
+    </span>SEXP: INTSXP,          <span class="comment">// `SEXP`
+    </span>doc_name: integer,     <span class="comment">// Singular type name used in docs
+    </span>altrep_constructor: make_altinteger_from_iterator,
 );
 
-<span class="kw">impl</span> <span class="ident">Integers</span> {
-    <span class="doccomment">/// Get a region of elements from the vector.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">dest</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">Rint</span>]) -&gt; <span class="ident">usize</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">ptr</span>: <span class="kw-2">*mut</span> <span class="ident">i32</span> <span class="op">=</span> <span class="ident">dest</span>.<span class="ident">as_mut_ptr</span>() <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">i32</span>;
-            <span class="ident">INTEGER_GET_REGION</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">index</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">dest</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">ptr</span>) <span class="kw">as</span> <span class="ident">usize</span>
+<span class="kw">impl </span>Integers {
+    <span class="doccomment">/// Get a region of elements from the vector.
+    </span><span class="kw">pub fn </span>get_region(<span class="kw-2">&amp;</span><span class="self">self</span>, index: usize, dest: <span class="kw-2">&amp;mut </span>[Rint]) -&gt; usize {
+        <span class="kw">unsafe </span>{
+            <span class="kw">let </span>ptr: <span class="kw-2">*mut </span>i32 = dest.as_mut_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>i32;
+            INTEGER_GET_REGION(<span class="self">self</span>.get(), index <span class="kw">as </span>R_xlen_t, dest.len() <span class="kw">as </span>R_xlen_t, ptr) <span class="kw">as </span>usize
         }
     }
 
-    <span class="doccomment">/// Return `TRUE` if the vector is sorted, `FALSE` if not, or `NA_BOOL` if unknown.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_sorted</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Rbool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">INTEGER_IS_SORTED</span>(<span class="self">self</span>.<span class="ident">get</span>()).<span class="ident">into</span>() }
+    <span class="doccomment">/// Return `TRUE` if the vector is sorted, `FALSE` if not, or `NA_BOOL` if unknown.
+    </span><span class="kw">pub fn </span>is_sorted(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Rbool {
+        <span class="kw">unsafe </span>{ INTEGER_IS_SORTED(<span class="self">self</span>.get()).into() }
     }
 
-    <span class="doccomment">/// Return `TRUE` if the vector has no `NA`s, `FALSE` if any, or `NA_BOOL` if unknown.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">no_na</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Rbool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">INTEGER_NO_NA</span>(<span class="self">self</span>.<span class="ident">get</span>()).<span class="ident">into</span>() }
+    <span class="doccomment">/// Return `TRUE` if the vector has no `NA`s, `FALSE` if any, or `NA_BOOL` if unknown.
+    </span><span class="kw">pub fn </span>no_na(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Rbool {
+        <span class="kw">unsafe </span>{ INTEGER_NO_NA(<span class="self">self</span>.get()).into() }
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::prelude</span>::<span class="kw-2">*</span>;
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
+    <span class="kw">use </span><span class="kw">crate</span>::prelude::<span class="kw-2">*</span>;
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">from_iterator</span>() {
-        <span class="macro">test!</span> {
-            <span class="kw">let</span> <span class="ident">vec</span> : <span class="ident">Integers</span> <span class="op">=</span> (<span class="number">0</span>..<span class="number">3</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">into</span>()).<span class="ident">collect</span>();
-            <span class="macro">assert_eq!</span>(<span class="ident">vec</span>, <span class="ident">Integers::from_values</span>([<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>]));
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>from_iterator() {
+        <span class="macro">test! </span>{
+            <span class="kw">let </span>vec : Integers = (<span class="number">0</span>..<span class="number">3</span>).map(|i| i.into()).collect();
+            <span class="macro">assert_eq!</span>(vec, Integers::from_values([<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>]));
         }
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">iter_mut</span>() {
-        <span class="macro">test!</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">Integers::from_values</span>(<span class="number">0</span>..<span class="number">3</span>);
-            <span class="ident">vec</span>.<span class="ident">iter_mut</span>().<span class="ident">for_each</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">v</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>);
-            <span class="macro">assert_eq!</span>(<span class="ident">vec</span>, <span class="ident">Integers::from_values</span>(<span class="number">1</span>..<span class="number">4</span>));
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>iter_mut() {
+        <span class="macro">test! </span>{
+            <span class="kw">let </span><span class="kw-2">mut </span>vec = Integers::from_values(<span class="number">0</span>..<span class="number">3</span>);
+            vec.iter_mut().for_each(|v| <span class="kw-2">*</span>v += <span class="number">1</span>);
+            <span class="macro">assert_eq!</span>(vec, Integers::from_values(<span class="number">1</span>..<span class="number">4</span>));
         }
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">iter</span>() {
-        <span class="macro">test!</span> {
-            <span class="kw">let</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">Integers::from_values</span>(<span class="number">0</span>..<span class="number">3</span>);
-            <span class="macro">assert_eq!</span>(<span class="ident">vec</span>.<span class="ident">iter</span>().<span class="ident">sum</span>::<span class="op">&lt;</span><span class="ident">Rint</span><span class="op">&gt;</span>(), <span class="number">3</span>);
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>iter() {
+        <span class="macro">test! </span>{
+            <span class="kw">let </span>vec = Integers::from_values(<span class="number">0</span>..<span class="number">3</span>);
+            <span class="macro">assert_eq!</span>(vec.iter().sum::&lt;Rint&gt;(), <span class="number">3</span>);
         }
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">from_values_short</span>() {
-        <span class="macro">test!</span> {
-            <span class="comment">// Short (&lt;64k) vectors are allocated.</span>
-            <span class="kw">let</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">Integers::from_values</span>((<span class="number">0</span>..<span class="number">3</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="number">2</span><span class="op">-</span><span class="ident">i</span>));
-            <span class="macro">assert_eq!</span>(<span class="ident">vec</span>.<span class="ident">is_altrep</span>(), <span class="bool-val">false</span>);
-            <span class="macro">assert_eq!</span>(<span class="macro">r!</span>(<span class="ident">vec</span>.<span class="ident">clone</span>()), <span class="macro">r!</span>([<span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>]));
-            <span class="macro">assert_eq!</span>(<span class="ident">vec</span>.<span class="ident">elt</span>(<span class="number">1</span>), <span class="number">1</span>);
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dest</span> <span class="op">=</span> [<span class="number">0</span>.<span class="ident">into</span>(); <span class="number">2</span>];
-            <span class="ident">vec</span>.<span class="ident">get_region</span>(<span class="number">1</span>, <span class="kw-2">&amp;mut</span> <span class="ident">dest</span>);
-            <span class="macro">assert_eq!</span>(<span class="ident">dest</span>, [<span class="number">1</span>, <span class="number">0</span>]);
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>from_values_short() {
+        <span class="macro">test! </span>{
+            <span class="comment">// Short (&lt;64k) vectors are allocated.
+            </span><span class="kw">let </span>vec = Integers::from_values((<span class="number">0</span>..<span class="number">3</span>).map(|i| <span class="number">2</span>-i));
+            <span class="macro">assert_eq!</span>(vec.is_altrep(), <span class="bool-val">false</span>);
+            <span class="macro">assert_eq!</span>(<span class="macro">r!</span>(vec.clone()), <span class="macro">r!</span>([<span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>]));
+            <span class="macro">assert_eq!</span>(vec.elt(<span class="number">1</span>), <span class="number">1</span>);
+            <span class="kw">let </span><span class="kw-2">mut </span>dest = [<span class="number">0</span>.into(); <span class="number">2</span>];
+            vec.get_region(<span class="number">1</span>, <span class="kw-2">&amp;mut </span>dest);
+            <span class="macro">assert_eq!</span>(dest, [<span class="number">1</span>, <span class="number">0</span>]);
         }
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">from_values_altrep</span>() {
-        <span class="macro">test!</span> {
-            <span class="kw">let</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">Integers::from_values_altrep</span>(<span class="number">0</span>..<span class="number">1000000000</span>);
-            <span class="macro">assert_eq!</span>(<span class="ident">vec</span>.<span class="ident">is_altrep</span>(), <span class="bool-val">true</span>);
-            <span class="macro">assert_eq!</span>(<span class="ident">vec</span>.<span class="ident">elt</span>(<span class="number">12345678</span>), <span class="number">12345678</span>);
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dest</span> <span class="op">=</span> [<span class="number">0</span>.<span class="ident">into</span>(); <span class="number">2</span>];
-            <span class="ident">vec</span>.<span class="ident">get_region</span>(<span class="number">12345678</span>, <span class="kw-2">&amp;mut</span> <span class="ident">dest</span>);
-            <span class="macro">assert_eq!</span>(<span class="ident">dest</span>, [<span class="number">12345678</span>, <span class="number">12345679</span>]);
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>from_values_altrep() {
+        <span class="macro">test! </span>{
+            <span class="kw">let </span>vec = Integers::from_values_altrep(<span class="number">0</span>..<span class="number">1000000000</span>);
+            <span class="macro">assert_eq!</span>(vec.is_altrep(), <span class="bool-val">true</span>);
+            <span class="macro">assert_eq!</span>(vec.elt(<span class="number">12345678</span>), <span class="number">12345678</span>);
+            <span class="kw">let </span><span class="kw-2">mut </span>dest = [<span class="number">0</span>.into(); <span class="number">2</span>];
+            vec.get_region(<span class="number">12345678</span>, <span class="kw-2">&amp;mut </span>dest);
+            <span class="macro">assert_eq!</span>(dest, [<span class="number">12345678</span>, <span class="number">12345679</span>]);
         }
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">new</span>() {
-        <span class="macro">test!</span> {
-            <span class="kw">let</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">Integers::new</span>(<span class="number">10</span>);
-            <span class="macro">assert_eq!</span>(<span class="ident">vec</span>.<span class="ident">is_integer</span>(), <span class="bool-val">true</span>);
-            <span class="macro">assert_eq!</span>(<span class="ident">vec</span>.<span class="ident">len</span>(), <span class="number">10</span>);
-        }
-    }
-}
-
-<span class="comment">// TODO: this should be a trait.</span>
-<span class="kw">impl</span> <span class="ident">Integers</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_elt</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">val</span>: <span class="ident">Rint</span>) {
-        <span class="kw">unsafe</span> {
-            <span class="ident">SET_INTEGER_ELT</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">index</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">val</span>.<span class="ident">inner</span>());
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>new() {
+        <span class="macro">test! </span>{
+            <span class="kw">let </span>vec = Integers::new(<span class="number">10</span>);
+            <span class="macro">assert_eq!</span>(vec.is_integer(), <span class="bool-val">true</span>);
+            <span class="macro">assert_eq!</span>(vec.len(), <span class="number">10</span>);
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Deref</span> <span class="kw">for</span> <span class="ident">Integers</span> {
-    <span class="kw">type</span> <span class="ident">Target</span> <span class="op">=</span> [<span class="ident">Rint</span>];
-
-    <span class="doccomment">/// Treat Integers as if it is a slice, like Vec&lt;Rint&gt;</span>
-    <span class="kw">fn</span> <span class="ident">deref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::Target</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">DATAPTR_RO</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">Rint</span>;
-            <span class="ident">std::slice::from_raw_parts</span>(<span class="ident">ptr</span>, <span class="self">self</span>.<span class="ident">len</span>())
+<span class="comment">// TODO: this should be a trait.
+</span><span class="kw">impl </span>Integers {
+    <span class="kw">pub fn </span>set_elt(<span class="kw-2">&amp;mut </span><span class="self">self</span>, index: usize, val: Rint) {
+        <span class="kw">unsafe </span>{
+            SET_INTEGER_ELT(<span class="self">self</span>.get(), index <span class="kw">as </span>R_xlen_t, val.inner());
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">DerefMut</span> <span class="kw">for</span> <span class="ident">Integers</span> {
-    <span class="doccomment">/// Treat Integers as if it is a mutable slice, like Vec&lt;Rint&gt;</span>
-    <span class="kw">fn</span> <span class="ident">deref_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="ident"><span class="self">Self</span>::Target</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">DATAPTR</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">Rint</span>;
-            <span class="ident">std::slice::from_raw_parts_mut</span>(<span class="ident">ptr</span>, <span class="self">self</span>.<span class="ident">len</span>())
+<span class="kw">impl </span>Deref <span class="kw">for </span>Integers {
+    <span class="kw">type </span>Target = [Rint];
+
+    <span class="doccomment">/// Treat Integers as if it is a slice, like Vec&lt;Rint&gt;
+    </span><span class="kw">fn </span>deref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Target {
+        <span class="kw">unsafe </span>{
+            <span class="kw">let </span>ptr = DATAPTR_RO(<span class="self">self</span>.get()) <span class="kw">as </span><span class="kw-2">*const </span>Rint;
+            std::slice::from_raw_parts(ptr, <span class="self">self</span>.len())
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">std::fmt::Debug</span> <span class="kw">for</span> <span class="ident">Integers</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::fmt::Result</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> {
-            <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="self">self</span>.<span class="ident">elt</span>(<span class="number">0</span>))
-        } <span class="kw">else</span> {
-            <span class="ident">f</span>.<span class="ident">debug_list</span>().<span class="ident">entries</span>(<span class="self">self</span>.<span class="ident">iter</span>()).<span class="ident">finish</span>()
+<span class="kw">impl </span>DerefMut <span class="kw">for </span>Integers {
+    <span class="doccomment">/// Treat Integers as if it is a mutable slice, like Vec&lt;Rint&gt;
+    </span><span class="kw">fn </span>deref_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Target {
+        <span class="kw">unsafe </span>{
+            <span class="kw">let </span>ptr = DATAPTR(<span class="self">self</span>.get()) <span class="kw">as </span><span class="kw-2">*mut </span>Rint;
+            std::slice::from_raw_parts_mut(ptr, <span class="self">self</span>.len())
+        }
+    }
+}
+
+<span class="kw">impl </span>std::fmt::Debug <span class="kw">for </span>Integers {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">if </span><span class="self">self</span>.len() == <span class="number">1 </span>{
+            <span class="macro">write!</span>(f, <span class="string">&quot;{:?}&quot;</span>, <span class="self">self</span>.elt(<span class="number">0</span>))
+        } <span class="kw">else </span>{
+            f.debug_list().entries(<span class="self">self</span>.iter()).finish()
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

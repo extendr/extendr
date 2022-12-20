@@ -1,6 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/scalar/macros.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>macros.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container">
-                    <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../extendr_api/index.html">
-                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/scalar/macros.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>macros.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../extendr_api/index.html">
+                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -840,57 +839,57 @@
 <span id="838">838</span>
 <span id="839">839</span>
 <span id="840">840</span>
-</pre><pre class="rust"><code><span class="doccomment">/// Generates an implementation of a unary operator Trait for a scalar type</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Generates the implementation of the specified unary operator for both `Type` and</span>
-<span class="doccomment">/// `&amp;Type`, using the logic of the provided closure to provide functionality.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This macro requires the following arguments:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// * `$type`      - The Type the unary operator Trait is implemented for</span>
-<span class="doccomment">/// * `$opname`    - The Trait for which the implementation is generated</span>
-<span class="doccomment">/// * `$expr`      - A closure providing the logic for the implementation</span>
-<span class="doccomment">/// * `$docstring` - String to include as the Doc comment for the Trait implementation</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Example Usage:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// gen_unop!(Rint, Neg, |lhs: i32| Some(-lhs), &quot;Doc Comment&quot;);</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The &#39;example usage&#39; implements the following trait definitions:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// - `impl Neg for Rint`</span>
-<span class="doccomment">/// - `impl Neg for &amp;Rint`</span>
-<span class="macro">macro_rules!</span> <span class="ident">gen_unop</span> {
-    (<span class="macro-nonterminal">$</span><span class="kw">type</span> : <span class="macro-nonterminal">tt</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span> : <span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">expr</span>: <span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">docstring</span>: <span class="ident">expr</span>) =&gt; {
-        <span class="comment">// The &#39;example usage&#39; expands to...</span>
-        <span class="comment">//</span>
-        <span class="comment">// impl Neg for Rint {</span>
-        <span class="comment">//      type Output = Rint;</span>
-        <span class="comment">//</span>
-        <span class="comment">//      /// Doc Comment</span>
-        <span class="comment">//      fn neg(self) -&gt; Self::Output {</span>
-        <span class="comment">//          if let Some(lhs) = self.into() {</span>
-        <span class="comment">//              let f = |lhs: i32| Some(-lhs);</span>
-        <span class="comment">//              if let Some(res) = f(lhs) {</span>
-        <span class="comment">//                  return Rint::from(res);</span>
-        <span class="comment">//              }</span>
-        <span class="comment">//          }</span>
-        <span class="comment">//          Rint::na()</span>
-        <span class="comment">//      }</span>
-        <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-            <span class="kw">type</span> <span class="macro-nonterminal">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>;
+</pre><pre class="rust"><code><span class="doccomment">/// Generates an implementation of a unary operator Trait for a scalar type
+///
+/// Generates the implementation of the specified unary operator for both `Type` and
+/// `&amp;Type`, using the logic of the provided closure to provide functionality.
+///
+/// This macro requires the following arguments:
+///
+/// * `$type`      - The Type the unary operator Trait is implemented for
+/// * `$opname`    - The Trait for which the implementation is generated
+/// * `$expr`      - A closure providing the logic for the implementation
+/// * `$docstring` - String to include as the Doc comment for the Trait implementation
+///
+/// Example Usage:
+///
+/// ```ignore
+/// gen_unop!(Rint, Neg, |lhs: i32| Some(-lhs), &quot;Doc Comment&quot;);
+/// ```
+///
+/// The &#39;example usage&#39; implements the following trait definitions:
+///
+/// - `impl Neg for Rint`
+/// - `impl Neg for &amp;Rint`
+</span><span class="macro">macro_rules! </span>gen_unop {
+    (<span class="macro-nonterminal">$</span><span class="kw">type </span>: <span class="macro-nonterminal">tt</span>, <span class="macro-nonterminal">$opname </span>: ident, <span class="macro-nonterminal">$expr</span>: expr, <span class="macro-nonterminal">$docstring</span>: expr) =&gt; {
+        <span class="comment">// The &#39;example usage&#39; expands to...
+        //
+        // impl Neg for Rint {
+        //      type Output = Rint;
+        //
+        //      /// Doc Comment
+        //      fn neg(self) -&gt; Self::Output {
+        //          if let Some(lhs) = self.into() {
+        //              let f = |lhs: i32| Some(-lhs);
+        //              if let Some(res) = f(lhs) {
+        //                  return Rint::from(res);
+        //              }
+        //          }
+        //          Rint::na()
+        //      }
+        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname </span><span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+            <span class="kw">type </span><span class="macro-nonterminal">Output </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span>;
 
-            <span class="macro">paste::paste!</span> {
-                <span class="attribute">#[<span class="macro-nonterminal">doc</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">docstring</span>]</span>
-                <span class="comment">// Note: $opname:lower lowercases the Trait name, i.e. Neg -&gt; neg</span>
-                <span class="kw">fn</span> [<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span>:<span class="ident">lower</span><span class="op">&gt;</span>](<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">lhs</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">into</span>() {
-                        <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">expr</span>;
-                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">res</span>) <span class="op">=</span> <span class="ident">f</span>(<span class="ident">lhs</span>) {
-                            <span class="comment">// Note that if res is NA, this will also be NA.</span>
-                            <span class="kw">return</span> <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(<span class="ident">res</span>);
+            <span class="macro">paste::paste! </span>{
+                <span class="attribute">#[<span class="macro-nonterminal">doc </span>= <span class="macro-nonterminal">$docstring</span>]
+                </span><span class="comment">// Note: $opname:lower lowercases the Trait name, i.e. Neg -&gt; neg
+                </span><span class="kw">fn </span>[&lt;<span class="macro-nonterminal">$opname</span>:lower&gt;](<span class="self">self</span>) -&gt; <span class="self">Self</span>::Output {
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>(lhs) = <span class="self">self</span>.into() {
+                        <span class="kw">let </span>f = <span class="macro-nonterminal">$expr</span>;
+                        <span class="kw">if let </span><span class="prelude-val">Some</span>(res) = f(lhs) {
+                            <span class="comment">// Note that if res is NA, this will also be NA.
+                            </span><span class="kw">return </span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(res);
                         }
                     }
                     <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>()
@@ -898,204 +897,33 @@
             }
         }
 
-        <span class="comment">// The &#39;example usage&#39; expands to...</span>
-        <span class="comment">//</span>
-        <span class="comment">// impl Neg for &amp;Rint {</span>
-        <span class="comment">//      type Output = Rint;</span>
-        <span class="comment">//</span>
-        <span class="comment">//      /// Doc Comment</span>
-        <span class="comment">//      fn neg(self) -&gt; Self::Output {</span>
-        <span class="comment">//          if let Some(lhs) = (*self).into() {</span>
-        <span class="comment">//              let f = |lhs: i32| Some(-lhs);</span>
-        <span class="comment">//              if let Some(res) = f(lhs) {</span>
-        <span class="comment">//                  return Rint::from(res);</span>
-        <span class="comment">//              }</span>
-        <span class="comment">//          }</span>
-        <span class="comment">//          Rint::na()</span>
-        <span class="comment">//      }</span>
-        <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="kw">type</span> {
-            <span class="kw">type</span> <span class="macro-nonterminal">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>;
+        <span class="comment">// The &#39;example usage&#39; expands to...
+        //
+        // impl Neg for &amp;Rint {
+        //      type Output = Rint;
+        //
+        //      /// Doc Comment
+        //      fn neg(self) -&gt; Self::Output {
+        //          if let Some(lhs) = (*self).into() {
+        //              let f = |lhs: i32| Some(-lhs);
+        //              if let Some(res) = f(lhs) {
+        //                  return Rint::from(res);
+        //              }
+        //          }
+        //          Rint::na()
+        //      }
+        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname </span><span class="kw">for </span><span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+            <span class="kw">type </span><span class="macro-nonterminal">Output </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span>;
 
-            <span class="macro">paste::paste!</span> {
-                <span class="attribute">#[<span class="macro-nonterminal">doc</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">docstring</span>]</span>
-                <span class="comment">// Note: $opname:lower lowercases the Trait name, i.e. Neg -&gt; neg</span>
-                <span class="kw">fn</span> [<span class="op">&lt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span>:<span class="ident">lower</span> <span class="op">&gt;</span>](<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">lhs</span>) <span class="op">=</span> (<span class="kw-2">*</span><span class="self">self</span>).<span class="ident">into</span>() {
-                        <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">expr</span>;
-                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">res</span>) <span class="op">=</span> <span class="ident">f</span>(<span class="ident">lhs</span>) {
-                            <span class="comment">// Note that if res is NA, this will also be NA.</span>
-                            <span class="kw">return</span> <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(<span class="ident">res</span>);
-                        }
-                    }
-                    <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>()
-                }
-            }
-        }
-    };
-}
-
-<span class="doccomment">/// Generates an implementation of a binary operator Trait for a scalar type</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This macro requires the following arguments:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// * `$type`      - The Type the binary operator Trait is implemented for</span>
-<span class="doccomment">/// * `$type_prim` - The primitive Rust scalar type that corresponds to `$type`</span>
-<span class="doccomment">/// * `$opname`    - The Trait for which the implementation is generated</span>
-<span class="doccomment">/// * `$expr`      - A closure providing the logic for the implementation</span>
-<span class="doccomment">/// * `$docstring` - String to include as the Doc comment for the Trait implementation</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Example Usage:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// gen_binop!(Rint, i32, Add, |lhs: i32, rhs| lhs.checked_add(rhs), &quot;Doc Comment&quot;);</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The &#39;example usage&#39; implements the following trait definitions:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// - `impl Add&lt;Rint&gt; for Rint`</span>
-<span class="doccomment">/// - `impl Add&lt;Rint&gt; for &amp;Rint`</span>
-<span class="doccomment">/// - `impl Add&lt;i32&gt; for Rint`</span>
-<span class="doccomment">/// - `impl Add&lt;Rint&gt; for i32`</span>
-<span class="comment">// TODO: binary operators for pairs `(Rtype, Type)` and `(Type, Rtype)` using references?</span>
-<span class="macro">macro_rules!</span> <span class="ident">gen_binop</span> {
-    (<span class="macro-nonterminal">$</span><span class="kw">type</span> : <span class="macro-nonterminal">tt</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span> : <span class="ident">tt</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span> : <span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">expr</span>: <span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">docstring</span>: <span class="ident">expr</span>) =&gt; {
-        <span class="comment">// The &#39;example usage&#39; expands to...</span>
-        <span class="comment">//</span>
-        <span class="comment">// impl Add&lt;Rint&gt; for Rint {</span>
-        <span class="comment">// type Output = Rint;</span>
-        <span class="comment">//     /// Doc Comment</span>
-        <span class="comment">//     fn add(self, rhs: Rint) -&gt; Self::Output {</span>
-        <span class="comment">//         if let Some(lhs) = self.clone().into() {</span>
-        <span class="comment">//             if let Some(rhs) = rhs.into() {</span>
-        <span class="comment">//                 let f = |lhs: i32, rhs| lhs.checked_add(rhs);</span>
-        <span class="comment">//                 if let Some(res) = f(lhs, rhs) {</span>
-        <span class="comment">//                     return Rint::from(res);</span>
-        <span class="comment">//                 }</span>
-        <span class="comment">//             }</span>
-        <span class="comment">//         }</span>
-        <span class="comment">//         Rint::na()</span>
-        <span class="comment">//     }</span>
-        <span class="comment">// }</span>
-        <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-            <span class="kw">type</span> <span class="macro-nonterminal">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>;
-
-            <span class="macro">paste::paste!</span> {
-                <span class="attribute">#[<span class="macro-nonterminal">doc</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">docstring</span>]</span>
-                <span class="comment">// Note: $opname:lower lowercases the Trait name, i.e. Add -&gt; add</span>
-                <span class="kw">fn</span> [<span class="op">&lt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span>:<span class="ident">lower</span> <span class="op">&gt;</span>](<span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="kw">type</span>) -&gt; <span class="macro-nonterminal">Self::Output</span> {
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">lhs</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">clone</span>().<span class="ident">into</span>() {
-                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">rhs</span>) <span class="op">=</span> <span class="ident">rhs</span>.<span class="ident">into</span>() {
-                            <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">expr</span>;
-                            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">res</span>) <span class="op">=</span> <span class="ident">f</span>(<span class="ident">lhs</span>, <span class="ident">rhs</span>) {
-                                <span class="comment">// Note that if res is NA, this will also be NA.</span>
-                                <span class="kw">return</span> <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(<span class="ident">res</span>);
-                            }
-                        }
-                    }
-                    <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>()
-                }
-            }
-        }
-
-        <span class="comment">// The &#39;example usage&#39; expands to...</span>
-        <span class="comment">//</span>
-        <span class="comment">// impl Add&lt;Rint&gt; for &amp;Rint {</span>
-        <span class="comment">//      type Output = Rint;</span>
-        <span class="comment">//      /// Doc Comment</span>
-        <span class="comment">//      fn add(self, rhs: Rint) -&gt; Self::Output {</span>
-        <span class="comment">//          if let Some(lhs) = self.clone().into() {</span>
-        <span class="comment">//              if let Some(rhs) = rhs.into() {</span>
-        <span class="comment">//                  let f = |lhs:i32, rhs| lhs.checked_add(rhs);</span>
-        <span class="comment">//                  if let Some(res) = f(lhs, rhs) {</span>
-        <span class="comment">//                      return Rint::from(res);</span>
-        <span class="comment">//                  }</span>
-        <span class="comment">//              }</span>
-        <span class="comment">//          }</span>
-        <span class="comment">//          Rint::na()</span>
-        <span class="comment">//      }</span>
-        <span class="comment">// }</span>
-        <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="kw">type</span> {
-            <span class="kw">type</span> <span class="macro-nonterminal">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>;
-
-            <span class="macro">paste::paste!</span> {
-                <span class="attribute">#[<span class="macro-nonterminal">doc</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">docstring</span>]</span>
-                <span class="comment">// Note: $opname:lower lowercases the Trait name, i.e. Add -&gt; add</span>
-                <span class="kw">fn</span> [<span class="op">&lt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span>:<span class="ident">lower</span> <span class="op">&gt;</span>](<span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="kw">type</span>) -&gt; <span class="macro-nonterminal">Self::Output</span> {
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">lhs</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">clone</span>().<span class="ident">into</span>() {
-                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">rhs</span>) <span class="op">=</span> <span class="ident">rhs</span>.<span class="ident">into</span>() {
-                            <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">expr</span>;
-                            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">res</span>) <span class="op">=</span> <span class="ident">f</span>(<span class="ident">lhs</span>, <span class="ident">rhs</span>) {
-                                <span class="comment">// Note that if res is NA, this will also be NA.</span>
-                                <span class="kw">return</span> <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(<span class="ident">res</span>);
-                            }
-                        }
-                    }
-                    <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>()
-                }
-            }
-        }
-
-        <span class="comment">// The &#39;example usage&#39; expands to...</span>
-        <span class="comment">//</span>
-        <span class="comment">// impl Add&lt;i32&gt; for Rint {</span>
-        <span class="comment">//      type Output = Rint;</span>
-        <span class="comment">//      /// Doc Comment</span>
-        <span class="comment">//      fn add(self, rhs: i32) -&gt; Self::Output {</span>
-        <span class="comment">//          if let Some(lhs) = self.clone().into() {</span>
-        <span class="comment">//              let f = |lhs:i32, rhs| lhs.checked_add(rhs);</span>
-        <span class="comment">//              if let Some(res) = f(lhs, rhs) {</span>
-        <span class="comment">//                  return Rint::from(res);</span>
-        <span class="comment">//              }</span>
-        <span class="comment">//          }</span>
-        <span class="comment">//          Rint::na()</span>
-        <span class="comment">//      }</span>
-        <span class="comment">// }</span>
-        <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-            <span class="kw">type</span> <span class="macro-nonterminal">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>;
-
-            <span class="macro">paste::paste!</span> {
-                <span class="attribute">#[<span class="macro-nonterminal">doc</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">docstring</span>]</span>
-                <span class="comment">// Note: $opname:lower lowercases the Trait name, i.e. Add -&gt; add</span>
-                <span class="kw">fn</span> [<span class="op">&lt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span>:<span class="ident">lower</span> <span class="op">&gt;</span>](<span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">lhs</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">clone</span>().<span class="ident">into</span>() {
-                        <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">expr</span>;
-                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">res</span>) <span class="op">=</span> <span class="ident">f</span>(<span class="ident">lhs</span>, <span class="ident">rhs</span>) {
-                            <span class="comment">// Note that if res is NA, this will also be NA.</span>
-                            <span class="kw">return</span> <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(<span class="ident">res</span>);
-                        }
-                    }
-                    <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>()
-                }
-            }
-        }
-
-        <span class="comment">// The &#39;example usage&#39; expands to...</span>
-        <span class="comment">//</span>
-        <span class="comment">// impl Add&lt;Rint&gt; for i32 {</span>
-        <span class="comment">//      type Output = Rint;</span>
-        <span class="comment">//      /// Doc Comment</span>
-        <span class="comment">//      fn add(self, rhs: Rint) -&gt; Self::Output {</span>
-        <span class="comment">//          if let Some(rhs) = self.clone().into() {</span>
-        <span class="comment">//              let f = |lhs:i32, rhs| lhs.checked_add(rhs);</span>
-        <span class="comment">//              if let Some(res) = f(lhs, rhs) {</span>
-        <span class="comment">//                  return Rint::from(res);</span>
-        <span class="comment">//              }</span>
-        <span class="comment">//          }</span>
-        <span class="comment">//          Rint::na()</span>
-        <span class="comment">//      }</span>
-        <span class="comment">// }</span>
-        <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span> {
-            <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>;
-
-            <span class="macro">paste::paste!</span> {
-                <span class="attribute">#[<span class="macro-nonterminal">doc</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">docstring</span>]</span>
-                <span class="comment">// Note: $opname:lower lowercases the Trait name, i.e. Add -&gt; add</span>
-                <span class="kw">fn</span> [<span class="op">&lt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span>:<span class="ident">lower</span> <span class="op">&gt;</span>](<span class="self">self</span>, <span class="ident">rhs</span>: <span class="macro-nonterminal">$</span><span class="kw">type</span>) -&gt; <span class="macro-nonterminal">Self::Output</span> {
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">rhs</span>) <span class="op">=</span> <span class="ident">rhs</span>.<span class="ident">clone</span>().<span class="ident">into</span>() {
-                        <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">expr</span>;
-                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">res</span>) <span class="op">=</span> <span class="ident">f</span>(<span class="self">self</span>, <span class="ident">rhs</span>) {
-                            <span class="comment">// Note that if res is NA, this will also be NA.</span>
-                            <span class="kw">return</span> <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(<span class="ident">res</span>);
+            <span class="macro">paste::paste! </span>{
+                <span class="attribute">#[<span class="macro-nonterminal">doc </span>= <span class="macro-nonterminal">$docstring</span>]
+                </span><span class="comment">// Note: $opname:lower lowercases the Trait name, i.e. Neg -&gt; neg
+                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:lower &gt;](<span class="self">self</span>) -&gt; <span class="self">Self</span>::Output {
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>(lhs) = (<span class="kw-2">*</span><span class="self">self</span>).into() {
+                        <span class="kw">let </span>f = <span class="macro-nonterminal">$expr</span>;
+                        <span class="kw">if let </span><span class="prelude-val">Some</span>(res) = f(lhs) {
+                            <span class="comment">// Note that if res is NA, this will also be NA.
+                            </span><span class="kw">return </span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(res);
                         }
                     }
                     <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>()
@@ -1105,207 +933,378 @@
     };
 }
 
-<span class="doccomment">/// Generates an implementation of a binary operate-assign Trait for a scalar type</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This macro requires the following arguments:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// * `$type`      - The Type the binary operate-assign Trait is implemented for</span>
-<span class="doccomment">/// * `$type_prim` - The primitive Rust scalar type that corresponds to `$type`</span>
-<span class="doccomment">/// * `$opname`    - The Trait for which the implementation is generated</span>
-<span class="doccomment">/// * `$expr`      - A closure providing the logic for the implementation</span>
-<span class="doccomment">/// * `$docstring` - String to include as the Doc comment for the Trait implementation</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Example Usage:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// gen_binopassign!(Rint, i32, AddAssign, |lhs: i32, rhs| lhs.checked_add(rhs), &quot;Doc Comment&quot;);</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The &#39;example usage&#39; implements the following trait definitions:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// - `impl AddAssign&lt;Rint&gt; for Rint`</span>
-<span class="doccomment">/// - `impl AddAssign&lt;Rint&gt; for &amp;mut Rint`</span>
-<span class="doccomment">/// - `impl AddAssign&lt;i32&gt; for Rint`</span>
-<span class="doccomment">/// - `impl AddAssign&lt;i32&gt; for &amp;mut Rint`</span>
-<span class="doccomment">/// - `impl AddAssign&lt;Rint&gt; for Option&lt;i32&gt;`</span>
-<span class="macro">macro_rules!</span> <span class="ident">gen_binopassign</span> {
-    (<span class="macro-nonterminal">$</span><span class="kw">type</span> : <span class="macro-nonterminal">tt</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span> : <span class="ident">tt</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span> : <span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">expr</span>: <span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">docstring</span>: <span class="ident">expr</span>) =&gt; {
-        <span class="comment">// The &#39;example usage&#39; expands to...</span>
-        <span class="comment">//</span>
-        <span class="comment">// impl AddAssign&lt;Rint&gt; for Rint {</span>
-        <span class="comment">//      /// Doc Comment</span>
-        <span class="comment">//      fn add_assign(&amp;mut self, other: Rint) {</span>
-        <span class="comment">//          match (self.clone().into(), other.into()) {</span>
-        <span class="comment">//              (Some(lhs), Some(rhs)) =&gt; {</span>
-        <span class="comment">//                  let f = |lhs: i32, rhs| lhs.checked_add(rhs);</span>
-        <span class="comment">//                  match f(lhs, rhs) {</span>
-        <span class="comment">//                      Some(res) =&gt; *self = Rint::from(res),</span>
-        <span class="comment">//                      None =&gt; *self = Rint:na(),</span>
-        <span class="comment">//                  }</span>
-        <span class="comment">//              }</span>
-        <span class="comment">//              _ =&gt; *self = Rint::na(),</span>
-        <span class="comment">//          }</span>
-        <span class="comment">//      }</span>
-        <span class="comment">// }</span>
-        <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-            <span class="macro">paste::paste!</span> {
-                <span class="attribute">#[<span class="macro-nonterminal">doc</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">docstring</span>]</span>
-                <span class="comment">// Note: $opname:snake snake cases the Trait name, i.e. AddAssign -&gt; add_assign</span>
-                <span class="kw">fn</span> [<span class="op">&lt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span>:<span class="ident">snake</span> <span class="op">&gt;</span>](<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">other</span>: <span class="macro-nonterminal">$</span><span class="kw">type</span>) {
-                    <span class="comment">// `.clone()` is needed to convert &amp;mut Rint -&gt; Rint -&gt; Option&lt;$type_prim&gt;</span>
-                    <span class="kw">match</span> (<span class="macro-nonterminal">self</span>.<span class="ident">clone</span>().<span class="ident">into</span>(), <span class="ident">other</span>.<span class="ident">into</span>()) {
-                        (<span class="prelude-val">Some</span>(<span class="ident">lhs</span>), <span class="prelude-val">Some</span>(<span class="ident">rhs</span>)) =&gt; {
-                            <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">expr</span>;
-                            <span class="kw">match</span> <span class="ident">f</span>(<span class="ident">lhs</span>, <span class="ident">rhs</span>) {
-                                <span class="prelude-val">Some</span>(<span class="ident">res</span>) =&gt; <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(<span class="ident">res</span>),
-                                <span class="prelude-val">None</span> =&gt; <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>(),
+<span class="doccomment">/// Generates an implementation of a binary operator Trait for a scalar type
+///
+/// This macro requires the following arguments:
+///
+/// * `$type`      - The Type the binary operator Trait is implemented for
+/// * `$type_prim` - The primitive Rust scalar type that corresponds to `$type`
+/// * `$opname`    - The Trait for which the implementation is generated
+/// * `$expr`      - A closure providing the logic for the implementation
+/// * `$docstring` - String to include as the Doc comment for the Trait implementation
+///
+/// Example Usage:
+///
+/// ```ignore
+/// gen_binop!(Rint, i32, Add, |lhs: i32, rhs| lhs.checked_add(rhs), &quot;Doc Comment&quot;);
+/// ```
+///
+/// The &#39;example usage&#39; implements the following trait definitions:
+///
+/// - `impl Add&lt;Rint&gt; for Rint`
+/// - `impl Add&lt;Rint&gt; for &amp;Rint`
+/// - `impl Add&lt;i32&gt; for Rint`
+/// - `impl Add&lt;Rint&gt; for i32`
+</span><span class="comment">// TODO: binary operators for pairs `(Rtype, Type)` and `(Type, Rtype)` using references?
+</span><span class="macro">macro_rules! </span>gen_binop {
+    (<span class="macro-nonterminal">$</span><span class="kw">type </span>: <span class="macro-nonterminal">tt</span>, <span class="macro-nonterminal">$type_prim </span>: tt, <span class="macro-nonterminal">$opname </span>: ident, <span class="macro-nonterminal">$expr</span>: expr, <span class="macro-nonterminal">$docstring</span>: expr) =&gt; {
+        <span class="comment">// The &#39;example usage&#39; expands to...
+        //
+        // impl Add&lt;Rint&gt; for Rint {
+        // type Output = Rint;
+        //     /// Doc Comment
+        //     fn add(self, rhs: Rint) -&gt; Self::Output {
+        //         if let Some(lhs) = self.clone().into() {
+        //             if let Some(rhs) = rhs.into() {
+        //                 let f = |lhs: i32, rhs| lhs.checked_add(rhs);
+        //                 if let Some(res) = f(lhs, rhs) {
+        //                     return Rint::from(res);
+        //                 }
+        //             }
+        //         }
+        //         Rint::na()
+        //     }
+        // }
+        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+            <span class="kw">type </span><span class="macro-nonterminal">Output </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span>;
+
+            <span class="macro">paste::paste! </span>{
+                <span class="attribute">#[<span class="macro-nonterminal">doc </span>= <span class="macro-nonterminal">$docstring</span>]
+                </span><span class="comment">// Note: $opname:lower lowercases the Trait name, i.e. Add -&gt; add
+                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:lower &gt;](<span class="self">self</span>, rhs: <span class="macro-nonterminal">$</span><span class="kw">type</span>) -&gt; <span class="macro-nonterminal">Self::Output </span>{
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>(lhs) = <span class="self">self</span>.clone().into() {
+                        <span class="kw">if let </span><span class="prelude-val">Some</span>(rhs) = rhs.into() {
+                            <span class="kw">let </span>f = <span class="macro-nonterminal">$expr</span>;
+                            <span class="kw">if let </span><span class="prelude-val">Some</span>(res) = f(lhs, rhs) {
+                                <span class="comment">// Note that if res is NA, this will also be NA.
+                                </span><span class="kw">return </span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(res);
                             }
-                        },
-                        <span class="kw">_</span> =&gt; <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>(),
+                        }
                     }
+                    <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>()
                 }
             }
         }
 
-        <span class="comment">// The &#39;example usage&#39; expands to...</span>
-        <span class="comment">//</span>
-        <span class="comment">// impl AddAssign&lt;Rint&gt; for &amp;mut Rint {</span>
-        <span class="comment">//      /// Doc Comment</span>
-        <span class="comment">//      fn add_assign(&amp;mut self, other: Rint) {</span>
-        <span class="comment">//          match (self.clone().into(), other.into()) {</span>
-        <span class="comment">//              (Some(lhs), Some(rhs)) =&gt; {</span>
-        <span class="comment">//                  let f = |lhs: i32, rhs| lhs.checked_add(rhs);</span>
-        <span class="comment">//                  match f(lhs, rhs) {</span>
-        <span class="comment">//                      Some(res) =&gt; **self = Rint::from(res),</span>
-        <span class="comment">//                      None =&gt; **self = Rint:na(),</span>
-        <span class="comment">//                  }</span>
-        <span class="comment">//              }</span>
-        <span class="comment">//              _ =&gt; **self = Rint::na(),</span>
-        <span class="comment">//          }</span>
-        <span class="comment">//      }</span>
-        <span class="comment">// }</span>
-        <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw-2">&amp;mut</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-            <span class="macro">paste::paste!</span> {
-                <span class="attribute">#[<span class="macro-nonterminal">doc</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">docstring</span>]</span>
-                <span class="comment">// Note: $opname:snake snake cases the Trait name, i.e. AddAssign -&gt; add_assign</span>
-                <span class="kw">fn</span> [<span class="op">&lt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span>:<span class="ident">snake</span> <span class="op">&gt;</span>](<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">other</span>: <span class="macro-nonterminal">$</span><span class="kw">type</span>) {
-                    <span class="comment">// `.clone()` is needed to convert &amp;mut &amp;mut Rint -&gt; Rint -&gt; Option&lt;$type_prim&gt;</span>
-                    <span class="kw">match</span> (<span class="macro-nonterminal">self</span>.<span class="ident">clone</span>().<span class="ident">into</span>(), <span class="ident">other</span>.<span class="ident">into</span>()) {
-                        (<span class="prelude-val">Some</span>(<span class="ident">lhs</span>), <span class="prelude-val">Some</span>(<span class="ident">rhs</span>)) =&gt; {
-                            <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">expr</span>;
-                            <span class="kw">match</span> <span class="ident">f</span>(<span class="ident">lhs</span>, <span class="ident">rhs</span>) {
-                                <span class="prelude-val">Some</span>(<span class="ident">res</span>) =&gt; <span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(<span class="ident">res</span>),
-                                <span class="prelude-val">None</span> =&gt; <span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>(),
+        <span class="comment">// The &#39;example usage&#39; expands to...
+        //
+        // impl Add&lt;Rint&gt; for &amp;Rint {
+        //      type Output = Rint;
+        //      /// Doc Comment
+        //      fn add(self, rhs: Rint) -&gt; Self::Output {
+        //          if let Some(lhs) = self.clone().into() {
+        //              if let Some(rhs) = rhs.into() {
+        //                  let f = |lhs:i32, rhs| lhs.checked_add(rhs);
+        //                  if let Some(res) = f(lhs, rhs) {
+        //                      return Rint::from(res);
+        //                  }
+        //              }
+        //          }
+        //          Rint::na()
+        //      }
+        // }
+        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+            <span class="kw">type </span><span class="macro-nonterminal">Output </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span>;
+
+            <span class="macro">paste::paste! </span>{
+                <span class="attribute">#[<span class="macro-nonterminal">doc </span>= <span class="macro-nonterminal">$docstring</span>]
+                </span><span class="comment">// Note: $opname:lower lowercases the Trait name, i.e. Add -&gt; add
+                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:lower &gt;](<span class="self">self</span>, rhs: <span class="macro-nonterminal">$</span><span class="kw">type</span>) -&gt; <span class="macro-nonterminal">Self::Output </span>{
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>(lhs) = <span class="self">self</span>.clone().into() {
+                        <span class="kw">if let </span><span class="prelude-val">Some</span>(rhs) = rhs.into() {
+                            <span class="kw">let </span>f = <span class="macro-nonterminal">$expr</span>;
+                            <span class="kw">if let </span><span class="prelude-val">Some</span>(res) = f(lhs, rhs) {
+                                <span class="comment">// Note that if res is NA, this will also be NA.
+                                </span><span class="kw">return </span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(res);
+                            }
+                        }
+                    }
+                    <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>()
+                }
+            }
+        }
+
+        <span class="comment">// The &#39;example usage&#39; expands to...
+        //
+        // impl Add&lt;i32&gt; for Rint {
+        //      type Output = Rint;
+        //      /// Doc Comment
+        //      fn add(self, rhs: i32) -&gt; Self::Output {
+        //          if let Some(lhs) = self.clone().into() {
+        //              let f = |lhs:i32, rhs| lhs.checked_add(rhs);
+        //              if let Some(res) = f(lhs, rhs) {
+        //                  return Rint::from(res);
+        //              }
+        //          }
+        //          Rint::na()
+        //      }
+        // }
+        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$type_prim</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+            <span class="kw">type </span><span class="macro-nonterminal">Output </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span>;
+
+            <span class="macro">paste::paste! </span>{
+                <span class="attribute">#[<span class="macro-nonterminal">doc </span>= <span class="macro-nonterminal">$docstring</span>]
+                </span><span class="comment">// Note: $opname:lower lowercases the Trait name, i.e. Add -&gt; add
+                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:lower &gt;](<span class="self">self</span>, rhs: <span class="macro-nonterminal">$type_prim</span>) -&gt; <span class="self">Self</span>::Output {
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>(lhs) = <span class="self">self</span>.clone().into() {
+                        <span class="kw">let </span>f = <span class="macro-nonterminal">$expr</span>;
+                        <span class="kw">if let </span><span class="prelude-val">Some</span>(res) = f(lhs, rhs) {
+                            <span class="comment">// Note that if res is NA, this will also be NA.
+                            </span><span class="kw">return </span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(res);
+                        }
+                    }
+                    <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>()
+                }
+            }
+        }
+
+        <span class="comment">// The &#39;example usage&#39; expands to...
+        //
+        // impl Add&lt;Rint&gt; for i32 {
+        //      type Output = Rint;
+        //      /// Doc Comment
+        //      fn add(self, rhs: Rint) -&gt; Self::Output {
+        //          if let Some(rhs) = self.clone().into() {
+        //              let f = |lhs:i32, rhs| lhs.checked_add(rhs);
+        //              if let Some(res) = f(lhs, rhs) {
+        //                  return Rint::from(res);
+        //              }
+        //          }
+        //          Rint::na()
+        //      }
+        // }
+        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$type_prim </span>{
+            <span class="kw">type </span>Output = <span class="macro-nonterminal">$</span><span class="kw">type</span>;
+
+            <span class="macro">paste::paste! </span>{
+                <span class="attribute">#[<span class="macro-nonterminal">doc </span>= <span class="macro-nonterminal">$docstring</span>]
+                </span><span class="comment">// Note: $opname:lower lowercases the Trait name, i.e. Add -&gt; add
+                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:lower &gt;](<span class="self">self</span>, rhs: <span class="macro-nonterminal">$</span><span class="kw">type</span>) -&gt; <span class="macro-nonterminal">Self::Output </span>{
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>(rhs) = rhs.clone().into() {
+                        <span class="kw">let </span>f = <span class="macro-nonterminal">$expr</span>;
+                        <span class="kw">if let </span><span class="prelude-val">Some</span>(res) = f(<span class="self">self</span>, rhs) {
+                            <span class="comment">// Note that if res is NA, this will also be NA.
+                            </span><span class="kw">return </span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(res);
+                        }
+                    }
+                    <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>()
+                }
+            }
+        }
+    };
+}
+
+<span class="doccomment">/// Generates an implementation of a binary operate-assign Trait for a scalar type
+///
+/// This macro requires the following arguments:
+///
+/// * `$type`      - The Type the binary operate-assign Trait is implemented for
+/// * `$type_prim` - The primitive Rust scalar type that corresponds to `$type`
+/// * `$opname`    - The Trait for which the implementation is generated
+/// * `$expr`      - A closure providing the logic for the implementation
+/// * `$docstring` - String to include as the Doc comment for the Trait implementation
+///
+/// Example Usage:
+///
+/// ```ignore
+/// gen_binopassign!(Rint, i32, AddAssign, |lhs: i32, rhs| lhs.checked_add(rhs), &quot;Doc Comment&quot;);
+/// ```
+///
+/// The &#39;example usage&#39; implements the following trait definitions:
+///
+/// - `impl AddAssign&lt;Rint&gt; for Rint`
+/// - `impl AddAssign&lt;Rint&gt; for &amp;mut Rint`
+/// - `impl AddAssign&lt;i32&gt; for Rint`
+/// - `impl AddAssign&lt;i32&gt; for &amp;mut Rint`
+/// - `impl AddAssign&lt;Rint&gt; for Option&lt;i32&gt;`
+</span><span class="macro">macro_rules! </span>gen_binopassign {
+    (<span class="macro-nonterminal">$</span><span class="kw">type </span>: <span class="macro-nonterminal">tt</span>, <span class="macro-nonterminal">$type_prim </span>: tt, <span class="macro-nonterminal">$opname </span>: ident, <span class="macro-nonterminal">$expr</span>: expr, <span class="macro-nonterminal">$docstring</span>: expr) =&gt; {
+        <span class="comment">// The &#39;example usage&#39; expands to...
+        //
+        // impl AddAssign&lt;Rint&gt; for Rint {
+        //      /// Doc Comment
+        //      fn add_assign(&amp;mut self, other: Rint) {
+        //          match (self.clone().into(), other.into()) {
+        //              (Some(lhs), Some(rhs)) =&gt; {
+        //                  let f = |lhs: i32, rhs| lhs.checked_add(rhs);
+        //                  match f(lhs, rhs) {
+        //                      Some(res) =&gt; *self = Rint::from(res),
+        //                      None =&gt; *self = Rint:na(),
+        //                  }
+        //              }
+        //              _ =&gt; *self = Rint::na(),
+        //          }
+        //      }
+        // }
+        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+            <span class="macro">paste::paste! </span>{
+                <span class="attribute">#[<span class="macro-nonterminal">doc </span>= <span class="macro-nonterminal">$docstring</span>]
+                </span><span class="comment">// Note: $opname:snake snake cases the Trait name, i.e. AddAssign -&gt; add_assign
+                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:snake &gt;](<span class="kw-2">&amp;mut </span><span class="self">self</span>, other: <span class="macro-nonterminal">$</span><span class="kw">type</span>) {
+                    <span class="comment">// `.clone()` is needed to convert &amp;mut Rint -&gt; Rint -&gt; Option&lt;$type_prim&gt;
+                    </span><span class="kw">match </span>(<span class="macro-nonterminal">self</span>.clone().into(), other.into()) {
+                        (<span class="prelude-val">Some</span>(lhs), <span class="prelude-val">Some</span>(rhs)) =&gt; {
+                            <span class="kw">let </span>f = <span class="macro-nonterminal">$expr</span>;
+                            <span class="kw">match </span>f(lhs, rhs) {
+                                <span class="prelude-val">Some</span>(res) =&gt; <span class="kw-2">*</span><span class="self">self </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(res),
+                                <span class="prelude-val">None </span>=&gt; <span class="kw-2">*</span><span class="self">self </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>(),
                             }
                         },
-                        <span class="kw">_</span> =&gt; <span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>(),
+                        <span class="kw">_ </span>=&gt; <span class="kw-2">*</span><span class="self">self </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>(),
                     }
                 }
             }
         }
 
-        <span class="comment">// The &#39;example usage&#39; expands to...</span>
-        <span class="comment">//</span>
-        <span class="comment">// impl AddAssign&lt;i32&gt; for Rint {</span>
-        <span class="comment">//      /// Doc Comment</span>
-        <span class="comment">//      fn add_assign(&amp;mut self, other: i32) {</span>
-        <span class="comment">//          match self.clone().int() {</span>
-        <span class="comment">//              Some(lhs) =&gt; {</span>
-        <span class="comment">//                  let f = |lhs: i32, rhs| lhs.checked_add(rhs);</span>
-        <span class="comment">//                  match f(lhs, rhs) {</span>
-        <span class="comment">//                      Some(res) =&gt; *self = Rint::from(res),</span>
-        <span class="comment">//                      None =&gt; *self = Rint:na(),</span>
-        <span class="comment">//                  }</span>
-        <span class="comment">//              }</span>
-        <span class="comment">//              _ =&gt; *self = Rint::na(),</span>
-        <span class="comment">//              }</span>
-        <span class="comment">//          }</span>
-        <span class="comment">//      }</span>
-        <span class="comment">// }</span>
-        <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-            <span class="macro">paste::paste!</span> {
-                <span class="attribute">#[<span class="macro-nonterminal">doc</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">docstring</span>]</span>
-                <span class="comment">// Note: $opname:snake snake cases the Trait name, i.e. AddAssign -&gt; add_assign</span>
-                <span class="kw">fn</span> [<span class="op">&lt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span>:<span class="ident">snake</span> <span class="op">&gt;</span>](<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">other</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span>) {
-                    <span class="comment">// `.clone()` is needed to convert &amp;mut Rint -&gt; Rint -&gt; Option&lt;$type_prim&gt;</span>
-                    <span class="kw">match</span> <span class="self">self</span>.<span class="ident">clone</span>().<span class="ident">into</span>() {
-                        <span class="prelude-val">Some</span>(<span class="ident">lhs</span>) =&gt; {
-                            <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">expr</span>;
-                            <span class="kw">match</span> <span class="ident">f</span>(<span class="ident">lhs</span>, <span class="ident">other</span>) {
-                                <span class="prelude-val">Some</span>(<span class="ident">res</span>) =&gt; <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(<span class="ident">res</span>),
-                                <span class="prelude-val">None</span> =&gt; <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>(),
+        <span class="comment">// The &#39;example usage&#39; expands to...
+        //
+        // impl AddAssign&lt;Rint&gt; for &amp;mut Rint {
+        //      /// Doc Comment
+        //      fn add_assign(&amp;mut self, other: Rint) {
+        //          match (self.clone().into(), other.into()) {
+        //              (Some(lhs), Some(rhs)) =&gt; {
+        //                  let f = |lhs: i32, rhs| lhs.checked_add(rhs);
+        //                  match f(lhs, rhs) {
+        //                      Some(res) =&gt; **self = Rint::from(res),
+        //                      None =&gt; **self = Rint:na(),
+        //                  }
+        //              }
+        //              _ =&gt; **self = Rint::na(),
+        //          }
+        //      }
+        // }
+        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+            <span class="macro">paste::paste! </span>{
+                <span class="attribute">#[<span class="macro-nonterminal">doc </span>= <span class="macro-nonterminal">$docstring</span>]
+                </span><span class="comment">// Note: $opname:snake snake cases the Trait name, i.e. AddAssign -&gt; add_assign
+                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:snake &gt;](<span class="kw-2">&amp;mut </span><span class="self">self</span>, other: <span class="macro-nonterminal">$</span><span class="kw">type</span>) {
+                    <span class="comment">// `.clone()` is needed to convert &amp;mut &amp;mut Rint -&gt; Rint -&gt; Option&lt;$type_prim&gt;
+                    </span><span class="kw">match </span>(<span class="macro-nonterminal">self</span>.clone().into(), other.into()) {
+                        (<span class="prelude-val">Some</span>(lhs), <span class="prelude-val">Some</span>(rhs)) =&gt; {
+                            <span class="kw">let </span>f = <span class="macro-nonterminal">$expr</span>;
+                            <span class="kw">match </span>f(lhs, rhs) {
+                                <span class="prelude-val">Some</span>(res) =&gt; <span class="kw-2">**</span><span class="self">self </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(res),
+                                <span class="prelude-val">None </span>=&gt; <span class="kw-2">**</span><span class="self">self </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>(),
                             }
-                        }
-                        <span class="prelude-val">None</span> =&gt; <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>(),
-                    }
-                }
-            }
-        }
-
-        <span class="comment">// The &#39;example usage&#39; expands to...</span>
-        <span class="comment">//</span>
-        <span class="comment">// impl AddAssign&lt;i32&gt; for &amp;mut Rint {</span>
-        <span class="comment">//      /// Doc Comment</span>
-        <span class="comment">//      fn add_assign(&amp;mut self, other: i32) {</span>
-        <span class="comment">//          match self.clone().int() {</span>
-        <span class="comment">//              Some(lhs) =&gt; {</span>
-        <span class="comment">//                  let f = |lhs: i32, rhs| lhs.checked_add(rhs);</span>
-        <span class="comment">//                  match f(lhs, rhs) {</span>
-        <span class="comment">//                      Some(res) =&gt; **self = Rint::from(res),</span>
-        <span class="comment">//                      None =&gt; **self = Rint:na(),</span>
-        <span class="comment">//                  }</span>
-        <span class="comment">//              }</span>
-        <span class="comment">//              _ =&gt; **self = Rint::na(),</span>
-        <span class="comment">//              }</span>
-        <span class="comment">//          }</span>
-        <span class="comment">//      }</span>
-        <span class="comment">// }</span>
-        <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw-2">&amp;mut</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-            <span class="macro">paste::paste!</span> {
-                <span class="attribute">#[<span class="macro-nonterminal">doc</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">docstring</span>]</span>
-                <span class="comment">// Note: $opname:snake snake cases the Trait name, i.e. AddAssign -&gt; add_assign</span>
-                <span class="kw">fn</span> [<span class="op">&lt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span>:<span class="ident">snake</span> <span class="op">&gt;</span>](<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">other</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span>) {
-                    <span class="comment">// `.clone()` is needed to convert &amp;mut &amp;mut Rint -&gt; Rint -&gt; Option&lt;$type_prim&gt;</span>
-                    <span class="kw">match</span> <span class="self">self</span>.<span class="ident">clone</span>().<span class="ident">into</span>() {
-                        <span class="prelude-val">Some</span>(<span class="ident">lhs</span>) =&gt; {
-                            <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">expr</span>;
-                            <span class="kw">match</span> <span class="ident">f</span>(<span class="ident">lhs</span>, <span class="ident">other</span>) {
-                                <span class="prelude-val">Some</span>(<span class="ident">res</span>) =&gt; <span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(<span class="ident">res</span>),
-                                <span class="prelude-val">None</span> =&gt; <span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>(),
-                            }
-                        }
-                        <span class="prelude-val">None</span> =&gt; <span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>(),
-                    }
-                }
-            }
-        }
-
-        <span class="comment">// The &#39;example usage&#39; expands to...</span>
-        <span class="comment">//</span>
-        <span class="comment">//  impl AddAssign&lt;Rint&gt; for Option&lt;i32&gt; {</span>
-        <span class="comment">//      /// Doc Comment</span>
-        <span class="comment">//      fn add_assign(&amp;mut self, other: Rint) {</span>
-        <span class="comment">//          match (*self, other.into()) {</span>
-        <span class="comment">//              (Some(lhs), Some(rhs)) =&gt; {</span>
-        <span class="comment">//                  let f = |lhs: i32, rhs| lhs.checked_add(rhs);</span>
-        <span class="comment">//                  *self = f(lhs, rhs);</span>
-        <span class="comment">//              },</span>
-        <span class="comment">//              _ =&gt; *self = None,</span>
-        <span class="comment">//          }</span>
-        <span class="comment">//      }</span>
-        <span class="comment">//  }</span>
-        <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span><span class="op">&gt;</span> {
-            <span class="macro">paste::paste!</span> {
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">docstring</span>]</span>
-                <span class="comment">// Note: $opname:snake snake cases the Trait name, i.e. AddAssign -&gt; add_assign</span>
-                <span class="kw">fn</span> [<span class="op">&lt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opname</span>:<span class="ident">snake</span> <span class="op">&gt;</span>](<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">other</span>: <span class="macro-nonterminal">$</span><span class="kw">type</span>) {
-                    <span class="kw">match</span> (<span class="kw-2">*</span><span class="macro-nonterminal">self</span>, <span class="ident">other</span>.<span class="ident">into</span>()) {
-                        (<span class="prelude-val">Some</span>(<span class="ident">lhs</span>), <span class="prelude-val">Some</span>(<span class="ident">rhs</span>)) =&gt; {
-                            <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">expr</span>;
-                            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> (); <span class="comment">// confuse clippy.</span>
-                            <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="ident">f</span>(<span class="ident">lhs</span>, <span class="ident">rhs</span>);
                         },
-                        <span class="kw">_</span> =&gt; <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="prelude-val">None</span>,
+                        <span class="kw">_ </span>=&gt; <span class="kw-2">**</span><span class="self">self </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>(),
+                    }
+                }
+            }
+        }
+
+        <span class="comment">// The &#39;example usage&#39; expands to...
+        //
+        // impl AddAssign&lt;i32&gt; for Rint {
+        //      /// Doc Comment
+        //      fn add_assign(&amp;mut self, other: i32) {
+        //          match self.clone().int() {
+        //              Some(lhs) =&gt; {
+        //                  let f = |lhs: i32, rhs| lhs.checked_add(rhs);
+        //                  match f(lhs, rhs) {
+        //                      Some(res) =&gt; *self = Rint::from(res),
+        //                      None =&gt; *self = Rint:na(),
+        //                  }
+        //              }
+        //              _ =&gt; *self = Rint::na(),
+        //              }
+        //          }
+        //      }
+        // }
+        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$type_prim</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+            <span class="macro">paste::paste! </span>{
+                <span class="attribute">#[<span class="macro-nonterminal">doc </span>= <span class="macro-nonterminal">$docstring</span>]
+                </span><span class="comment">// Note: $opname:snake snake cases the Trait name, i.e. AddAssign -&gt; add_assign
+                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:snake &gt;](<span class="kw-2">&amp;mut </span><span class="self">self</span>, other: <span class="macro-nonterminal">$type_prim</span>) {
+                    <span class="comment">// `.clone()` is needed to convert &amp;mut Rint -&gt; Rint -&gt; Option&lt;$type_prim&gt;
+                    </span><span class="kw">match </span><span class="self">self</span>.clone().into() {
+                        <span class="prelude-val">Some</span>(lhs) =&gt; {
+                            <span class="kw">let </span>f = <span class="macro-nonterminal">$expr</span>;
+                            <span class="kw">match </span>f(lhs, other) {
+                                <span class="prelude-val">Some</span>(res) =&gt; <span class="kw-2">*</span><span class="self">self </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(res),
+                                <span class="prelude-val">None </span>=&gt; <span class="kw-2">*</span><span class="self">self </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>(),
+                            }
+                        }
+                        <span class="prelude-val">None </span>=&gt; <span class="kw-2">*</span><span class="self">self </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>(),
+                    }
+                }
+            }
+        }
+
+        <span class="comment">// The &#39;example usage&#39; expands to...
+        //
+        // impl AddAssign&lt;i32&gt; for &amp;mut Rint {
+        //      /// Doc Comment
+        //      fn add_assign(&amp;mut self, other: i32) {
+        //          match self.clone().int() {
+        //              Some(lhs) =&gt; {
+        //                  let f = |lhs: i32, rhs| lhs.checked_add(rhs);
+        //                  match f(lhs, rhs) {
+        //                      Some(res) =&gt; **self = Rint::from(res),
+        //                      None =&gt; **self = Rint:na(),
+        //                  }
+        //              }
+        //              _ =&gt; **self = Rint::na(),
+        //              }
+        //          }
+        //      }
+        // }
+        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$type_prim</span>&gt; <span class="kw">for </span><span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+            <span class="macro">paste::paste! </span>{
+                <span class="attribute">#[<span class="macro-nonterminal">doc </span>= <span class="macro-nonterminal">$docstring</span>]
+                </span><span class="comment">// Note: $opname:snake snake cases the Trait name, i.e. AddAssign -&gt; add_assign
+                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:snake &gt;](<span class="kw-2">&amp;mut </span><span class="self">self</span>, other: <span class="macro-nonterminal">$type_prim</span>) {
+                    <span class="comment">// `.clone()` is needed to convert &amp;mut &amp;mut Rint -&gt; Rint -&gt; Option&lt;$type_prim&gt;
+                    </span><span class="kw">match </span><span class="self">self</span>.clone().into() {
+                        <span class="prelude-val">Some</span>(lhs) =&gt; {
+                            <span class="kw">let </span>f = <span class="macro-nonterminal">$expr</span>;
+                            <span class="kw">match </span>f(lhs, other) {
+                                <span class="prelude-val">Some</span>(res) =&gt; <span class="kw-2">**</span><span class="self">self </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(res),
+                                <span class="prelude-val">None </span>=&gt; <span class="kw-2">**</span><span class="self">self </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>(),
+                            }
+                        }
+                        <span class="prelude-val">None </span>=&gt; <span class="kw-2">**</span><span class="self">self </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>(),
+                    }
+                }
+            }
+        }
+
+        <span class="comment">// The &#39;example usage&#39; expands to...
+        //
+        //  impl AddAssign&lt;Rint&gt; for Option&lt;i32&gt; {
+        //      /// Doc Comment
+        //      fn add_assign(&amp;mut self, other: Rint) {
+        //          match (*self, other.into()) {
+        //              (Some(lhs), Some(rhs)) =&gt; {
+        //                  let f = |lhs: i32, rhs| lhs.checked_add(rhs);
+        //                  *self = f(lhs, rhs);
+        //              },
+        //              _ =&gt; *self = None,
+        //          }
+        //      }
+        //  }
+        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="prelude-ty">Option</span>&lt;<span class="macro-nonterminal">$type_prim</span>&gt; {
+            <span class="macro">paste::paste! </span>{
+                <span class="attribute">#[doc = <span class="macro-nonterminal">$docstring</span>]
+                </span><span class="comment">// Note: $opname:snake snake cases the Trait name, i.e. AddAssign -&gt; add_assign
+                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:snake &gt;](<span class="kw-2">&amp;mut </span><span class="self">self</span>, other: <span class="macro-nonterminal">$</span><span class="kw">type</span>) {
+                    <span class="kw">match </span>(<span class="kw-2">*</span><span class="macro-nonterminal">self</span>, other.into()) {
+                        (<span class="prelude-val">Some</span>(lhs), <span class="prelude-val">Some</span>(rhs)) =&gt; {
+                            <span class="kw">let </span>f = <span class="macro-nonterminal">$expr</span>;
+                            <span class="kw">let _ </span>= (); <span class="comment">// confuse clippy.
+                            </span><span class="kw-2">*</span><span class="self">self </span>= f(lhs, rhs);
+                        },
+                        <span class="kw">_ </span>=&gt; <span class="kw-2">*</span><span class="self">self </span>= <span class="prelude-val">None</span>,
                     }
                 }
             }
@@ -1313,72 +1312,72 @@
     };
 }
 
-<span class="doccomment">/// Generates an implementation of type conversion Traits from a primitive type</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This macro requires the following arguments:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// * `$type`      - The Type the unary operator Trait is implemented for</span>
-<span class="doccomment">/// * `$type_prim` - The primitive Rust scalar type that corresponds to `$type`</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Example Usage:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// gen_from_primitive!(Rint, i32);</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The &#39;example usage&#39; implements the following trait definitions:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// - `From&lt;i32&gt; for Rint`</span>
-<span class="doccomment">/// - `From&lt;Option&lt;i32&gt;&gt; for Rint`</span>
-<span class="macro">macro_rules!</span> <span class="ident">gen_from_primitive</span> {
-    (<span class="macro-nonterminal">$</span><span class="kw">type</span> : <span class="macro-nonterminal">tt</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span> : <span class="ident">tt</span>) =&gt; {
-        <span class="comment">// The &#39;example usage&#39; expands to...</span>
-        <span class="comment">//</span>
-        <span class="comment">// impl From&lt;i32&gt; for Rint {</span>
-        <span class="comment">//     fn from(v: i32) -&gt; Self {</span>
-        <span class="comment">//         Self(v)</span>
-        <span class="comment">//     }</span>
-        <span class="comment">// }</span>
-        <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-            <span class="kw">fn</span> <span class="macro-nonterminal">from</span>(<span class="ident">v</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span>) -&gt; <span class="self">Self</span> {
-                <span class="self">Self</span>(<span class="ident">v</span>)
+<span class="doccomment">/// Generates an implementation of type conversion Traits from a primitive type
+///
+/// This macro requires the following arguments:
+///
+/// * `$type`      - The Type the unary operator Trait is implemented for
+/// * `$type_prim` - The primitive Rust scalar type that corresponds to `$type`
+///
+/// Example Usage:
+///
+/// ```ignore
+/// gen_from_primitive!(Rint, i32);
+/// ```
+///
+/// The &#39;example usage&#39; implements the following trait definitions:
+///
+/// - `From&lt;i32&gt; for Rint`
+/// - `From&lt;Option&lt;i32&gt;&gt; for Rint`
+</span><span class="macro">macro_rules! </span>gen_from_primitive {
+    (<span class="macro-nonterminal">$</span><span class="kw">type </span>: <span class="macro-nonterminal">tt</span>, <span class="macro-nonterminal">$type_prim </span>: tt) =&gt; {
+        <span class="comment">// The &#39;example usage&#39; expands to...
+        //
+        // impl From&lt;i32&gt; for Rint {
+        //     fn from(v: i32) -&gt; Self {
+        //         Self(v)
+        //     }
+        // }
+        </span><span class="kw">impl </span>From&lt;<span class="macro-nonterminal">$type_prim</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+            <span class="kw">fn </span><span class="macro-nonterminal">from</span>(v: <span class="macro-nonterminal">$type_prim</span>) -&gt; <span class="self">Self </span>{
+                <span class="self">Self</span>(v)
             }
         }
 
-        <span class="comment">// Same but for references</span>
-        <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-            <span class="kw">fn</span> <span class="macro-nonterminal">from</span>(<span class="ident">v</span>: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span>) -&gt; <span class="self">Self</span> {
-                <span class="self">Self</span>(<span class="kw-2">*</span><span class="ident">v</span>)
+        <span class="comment">// Same but for references
+        </span><span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span><span class="macro-nonterminal">$type_prim</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+            <span class="kw">fn </span><span class="macro-nonterminal">from</span>(v: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$type_prim</span>) -&gt; <span class="self">Self </span>{
+                <span class="self">Self</span>(<span class="kw-2">*</span>v)
             }
         }
 
-        <span class="comment">// The &#39;example usage&#39; expands to...</span>
-        <span class="comment">//</span>
-        <span class="comment">// impl From&lt;Option&lt;i32&gt;&gt; for Rint {</span>
-        <span class="comment">//     fn from(v: Option&lt;i32&gt;) -&gt; Self {</span>
-        <span class="comment">//         if let Some(v) = v {</span>
-        <span class="comment">//             v.into()</span>
-        <span class="comment">//         } else {</span>
-        <span class="comment">//             Rint::na()</span>
-        <span class="comment">//         }</span>
-        <span class="comment">//     }</span>
-        <span class="comment">// }</span>
-        <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-            <span class="kw">fn</span> <span class="macro-nonterminal">from</span>(<span class="ident">v</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=</span> <span class="ident">v</span> {
-                    <span class="ident">v</span>.<span class="ident">into</span>()
-                } <span class="kw">else</span> {
+        <span class="comment">// The &#39;example usage&#39; expands to...
+        //
+        // impl From&lt;Option&lt;i32&gt;&gt; for Rint {
+        //     fn from(v: Option&lt;i32&gt;) -&gt; Self {
+        //         if let Some(v) = v {
+        //             v.into()
+        //         } else {
+        //             Rint::na()
+        //         }
+        //     }
+        // }
+        </span><span class="kw">impl </span>From&lt;<span class="prelude-ty">Option</span>&lt;<span class="macro-nonterminal">$type_prim</span>&gt;&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+            <span class="kw">fn </span><span class="macro-nonterminal">from</span>(v: <span class="prelude-ty">Option</span>&lt;<span class="macro-nonterminal">$type_prim</span>&gt;) -&gt; <span class="self">Self </span>{
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = v {
+                    v.into()
+                } <span class="kw">else </span>{
                     <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>()
                 }
             }
         }
 
-        <span class="comment">// Same but for references</span>
-        <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-            <span class="kw">fn</span> <span class="macro-nonterminal">from</span>(<span class="ident">v</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=</span> <span class="ident">v</span> {
-                    <span class="ident">v</span>.<span class="ident">into</span>()
-                } <span class="kw">else</span> {
+        <span class="comment">// Same but for references
+        </span><span class="kw">impl </span>From&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="macro-nonterminal">$type_prim</span>&gt;&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+            <span class="kw">fn </span><span class="macro-nonterminal">from</span>(v: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="macro-nonterminal">$type_prim</span>&gt;) -&gt; <span class="self">Self </span>{
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = v {
+                    v.into()
+                } <span class="kw">else </span>{
                     <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>()
                 }
             }
@@ -1386,299 +1385,299 @@
     };
 }
 
-<span class="doccomment">/// Generates an implementation of type conversion Traits from a scalar type</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This macro requires the following arguments:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// * `$type`      - The Type the unary operator Trait is implemented for</span>
-<span class="doccomment">/// * `$type_prim` - The primitive Rust scalar type that corresponds to `$type`</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Example Usage:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// gen_from_scalar!(Rint, i32);</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The &#39;example usage&#39; implements the following trait definitions:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// - `From&lt;Rint&gt; for Option&lt;i32&gt;`</span>
-<span class="doccomment">/// - `From&lt;Rint&gt; for Robj`</span>
-<span class="macro">macro_rules!</span> <span class="ident">gen_from_scalar</span> {
-    (<span class="macro-nonterminal">$</span><span class="kw">type</span> : <span class="macro-nonterminal">tt</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span> : <span class="ident">tt</span>) =&gt; {
-        <span class="comment">// The &#39;example usage&#39; expands to...</span>
-        <span class="comment">//</span>
-        <span class="comment">// impl From&lt;Rint&gt; for Option&lt;i32&gt; {</span>
-        <span class="comment">//     fn from(v: Rint) -&gt; Self {</span>
-        <span class="comment">//         if v.is_na() {</span>
-        <span class="comment">//             None</span>
-        <span class="comment">//         } else {</span>
-        <span class="comment">//             Some(v.0)</span>
-        <span class="comment">//         }</span>
-        <span class="comment">//     }</span>
-        <span class="comment">// }</span>
-        <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span><span class="op">&gt;</span> {
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">v</span>: <span class="macro-nonterminal">$</span><span class="kw">type</span>) -&gt; <span class="macro-nonterminal">Self</span> {
-                <span class="kw">if</span> <span class="ident">v</span>.<span class="ident">is_na</span>() {
-                    <span class="prelude-val">None</span>
-                } <span class="kw">else</span> {
-                    <span class="prelude-val">Some</span>(<span class="ident">v</span>.<span class="number">0</span>)
+<span class="doccomment">/// Generates an implementation of type conversion Traits from a scalar type
+///
+/// This macro requires the following arguments:
+///
+/// * `$type`      - The Type the unary operator Trait is implemented for
+/// * `$type_prim` - The primitive Rust scalar type that corresponds to `$type`
+///
+/// Example Usage:
+///
+/// ```ignore
+/// gen_from_scalar!(Rint, i32);
+/// ```
+///
+/// The &#39;example usage&#39; implements the following trait definitions:
+///
+/// - `From&lt;Rint&gt; for Option&lt;i32&gt;`
+/// - `From&lt;Rint&gt; for Robj`
+</span><span class="macro">macro_rules! </span>gen_from_scalar {
+    (<span class="macro-nonterminal">$</span><span class="kw">type </span>: <span class="macro-nonterminal">tt</span>, <span class="macro-nonterminal">$type_prim </span>: tt) =&gt; {
+        <span class="comment">// The &#39;example usage&#39; expands to...
+        //
+        // impl From&lt;Rint&gt; for Option&lt;i32&gt; {
+        //     fn from(v: Rint) -&gt; Self {
+        //         if v.is_na() {
+        //             None
+        //         } else {
+        //             Some(v.0)
+        //         }
+        //     }
+        // }
+        </span><span class="kw">impl </span>From&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="prelude-ty">Option</span>&lt;<span class="macro-nonterminal">$type_prim</span>&gt; {
+            <span class="kw">fn </span>from(v: <span class="macro-nonterminal">$</span><span class="kw">type</span>) -&gt; <span class="macro-nonterminal">Self </span>{
+                <span class="kw">if </span>v.is_na() {
+                    <span class="prelude-val">None
+                </span>} <span class="kw">else </span>{
+                    <span class="prelude-val">Some</span>(v.<span class="number">0</span>)
                 }
             }
         }
 
-        <span class="comment">// The &#39;example usage&#39; expands to...</span>
-        <span class="comment">//</span>
-        <span class="comment">// impl From&lt;Rint&gt; for Robj {</span>
-        <span class="comment">//     fn from(value: Rint) -&gt; Self {</span>
-        <span class="comment">//         Robj::from(value.0)</span>
-        <span class="comment">//     }</span>
-        <span class="comment">// }</span>
-        <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">Robj</span> {
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">value</span>: <span class="macro-nonterminal">$</span><span class="kw">type</span>) -&gt; <span class="macro-nonterminal">Self</span> {
-                <span class="ident">Robj::from</span>(<span class="ident">value</span>.<span class="number">0</span>)
+        <span class="comment">// The &#39;example usage&#39; expands to...
+        //
+        // impl From&lt;Rint&gt; for Robj {
+        //     fn from(value: Rint) -&gt; Self {
+        //         Robj::from(value.0)
+        //     }
+        // }
+        </span><span class="kw">impl </span>From&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">Robj </span>{
+            <span class="kw">fn </span>from(value: <span class="macro-nonterminal">$</span><span class="kw">type</span>) -&gt; <span class="macro-nonterminal">Self </span>{
+                Robj::from(value.<span class="number">0</span>)
             }
         }
     };
 }
 
-<span class="doccomment">/// Generates an implementation of the instance `inner()` method for a type</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This macro requires the following arguments:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// * `$type`      - The Type the `inner()` method is implemented for</span>
-<span class="doccomment">/// * `$type_prim` - The primitive Rust scalar type that corresponds to `$type`</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Example Usage:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// gen_impl!(Rint, i32);</span>
-<span class="doccomment">/// ```</span>
-<span class="macro">macro_rules!</span> <span class="ident">gen_impl</span> {
-    (<span class="macro-nonterminal">$</span><span class="kw">type</span> : <span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span> : <span class="ident">ty</span>) =&gt; {
-        <span class="doccomment">/// Get underlying value.</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">inner</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span> {
-            <span class="self">self</span>.<span class="number">0</span>
-        }
+<span class="doccomment">/// Generates an implementation of the instance `inner()` method for a type
+///
+/// This macro requires the following arguments:
+///
+/// * `$type`      - The Type the `inner()` method is implemented for
+/// * `$type_prim` - The primitive Rust scalar type that corresponds to `$type`
+///
+/// Example Usage:
+///
+/// ```ignore
+/// gen_impl!(Rint, i32);
+/// ```
+</span><span class="macro">macro_rules! </span>gen_impl {
+    (<span class="macro-nonterminal">$</span><span class="kw">type </span>: <span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$type_prim </span>: ty) =&gt; {
+        <span class="doccomment">/// Get underlying value.
+        </span><span class="kw">pub fn </span>inner(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="macro-nonterminal">$type_prim </span>{
+            <span class="self">self</span>.<span class="number">0
+        </span>}
     };
 }
 
-<span class="doccomment">/// Generates an implementation of a number of Traits for the specified Type</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This macro requires the following arguments:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// * `$type`      - The Type the Traits are implemented for</span>
-<span class="doccomment">/// * `$type_prim` - The primitive Rust scalar type that corresponds to `$type`</span>
-<span class="doccomment">/// * `$na_check`  - Closure that provides `NA`-checking logic</span>
-<span class="doccomment">/// * `$na_val`    - The Rust-native value that translates to `NA`</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Example Usage:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// gen_trait_impl!(Rint, i32, |x: &amp;Rint| x.0 == i32::MIN, i32::MIN);</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The &#39;example usage&#39; implements the following trait definitions:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// - `impl Clone for Rint`</span>
-<span class="doccomment">/// - `impl Copy for Rint`</span>
-<span class="doccomment">/// - `impl CanBeNA for Rint`             // Includes doc test</span>
-<span class="doccomment">/// - `impl Debug for Rint`</span>
-<span class="doccomment">/// - `impl PartialEq&lt;Rint&gt; for Rint`     // Includes doc test</span>
-<span class="doccomment">/// - `impl PartialEq&lt;i32&gt; for Rint`      // Includes doc test</span>
-<span class="doccomment">/// - `impl Default for Rint`             // Includes doc test</span>
-<span class="macro">macro_rules!</span> <span class="ident">gen_trait_impl</span> {
-    (<span class="macro-nonterminal">$</span><span class="kw">type</span> : <span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span> : <span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">na_check</span> : <span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">na_val</span> : <span class="ident">expr</span>) =&gt; {
-        <span class="comment">// The &#39;example usage&#39; expands to...</span>
-        <span class="comment">//</span>
-        <span class="comment">// impl Clone for Rint {</span>
-        <span class="comment">//     fn clone(&amp;self) -&gt; Self {</span>
-        <span class="comment">//         Self(self.0)</span>
-        <span class="comment">//     }</span>
-        <span class="comment">// }</span>
-        <span class="kw">impl</span> <span class="ident">Clone</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-            <span class="kw">fn</span> <span class="macro-nonterminal">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self</span> {
+<span class="doccomment">/// Generates an implementation of a number of Traits for the specified Type
+///
+/// This macro requires the following arguments:
+///
+/// * `$type`      - The Type the Traits are implemented for
+/// * `$type_prim` - The primitive Rust scalar type that corresponds to `$type`
+/// * `$na_check`  - Closure that provides `NA`-checking logic
+/// * `$na_val`    - The Rust-native value that translates to `NA`
+///
+/// Example Usage:
+///
+/// ```ignore
+/// gen_trait_impl!(Rint, i32, |x: &amp;Rint| x.0 == i32::MIN, i32::MIN);
+/// ```
+///
+/// The &#39;example usage&#39; implements the following trait definitions:
+///
+/// - `impl Clone for Rint`
+/// - `impl Copy for Rint`
+/// - `impl CanBeNA for Rint`             // Includes doc test
+/// - `impl Debug for Rint`
+/// - `impl PartialEq&lt;Rint&gt; for Rint`     // Includes doc test
+/// - `impl PartialEq&lt;i32&gt; for Rint`      // Includes doc test
+/// - `impl Default for Rint`             // Includes doc test
+</span><span class="macro">macro_rules! </span>gen_trait_impl {
+    (<span class="macro-nonterminal">$</span><span class="kw">type </span>: <span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$type_prim </span>: ty, <span class="macro-nonterminal">$na_check </span>: expr, <span class="macro-nonterminal">$na_val </span>: expr) =&gt; {
+        <span class="comment">// The &#39;example usage&#39; expands to...
+        //
+        // impl Clone for Rint {
+        //     fn clone(&amp;self) -&gt; Self {
+        //         Self(self.0)
+        //     }
+        // }
+        </span><span class="kw">impl </span>Clone <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+            <span class="kw">fn </span><span class="macro-nonterminal">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
                 <span class="self">Self</span>(<span class="self">self</span>.<span class="number">0</span>)
             }
         }
 
-        <span class="comment">// The &#39;example usage&#39; expands to...</span>
-        <span class="comment">//</span>
-        <span class="comment">// impl Copy for Rint {}</span>
-        <span class="kw">impl</span> <span class="ident">Copy</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {}
+        <span class="comment">// The &#39;example usage&#39; expands to...
+        //
+        // impl Copy for Rint {}
+        </span><span class="kw">impl </span>Copy <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{}
 
-        <span class="comment">// The &#39;example usage&#39; expands to...</span>
-        <span class="comment">//</span>
-        <span class="comment">// /// Documentation comments/test built by the #[doc] attributes</span>
-        <span class="comment">// impl CanBeNA for Rint {</span>
-        <span class="comment">//     fn is_na(&amp;self) -&gt; bool {</span>
-        <span class="comment">//         (|x: &amp;Rint| x.0 == i32::MIN)(self)</span>
-        <span class="comment">//     }</span>
-        <span class="comment">//</span>
-        <span class="comment">//     fn na() -&gt; Self {</span>
-        <span class="comment">//         Rint(i32::MIN)</span>
-        <span class="comment">//     }</span>
-        <span class="comment">// }</span>
-        <span class="macro">paste::paste!</span> {
-            <span class="attribute">#[<span class="macro-nonterminal">doc</span> <span class="op">=</span> <span class="string">&quot;```&quot;</span>]</span>
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;use extendr_api::prelude::*;&quot;</span>]</span>
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;test! {&quot;</span>]</span>
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;    assert!((&lt;&quot;</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="string">&quot;&gt;::na()).is_na());&quot;</span>]</span>
-            <span class="attribute">#[<span class="macro-nonterminal">doc</span> <span class="op">=</span> <span class="string">&quot;}&quot;</span>]</span>
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;```&quot;</span>]</span>
-            <span class="kw">impl</span> <span class="ident">CanBeNA</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-                <span class="doccomment">/// Return true is the is a NA value.</span>
-                <span class="kw">fn</span> <span class="macro-nonterminal">is_na</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-                    <span class="macro-nonterminal">$</span><span class="macro-nonterminal">na_check</span>(<span class="self">self</span>)
+        <span class="comment">// The &#39;example usage&#39; expands to...
+        //
+        // /// Documentation comments/test built by the #[doc] attributes
+        // impl CanBeNA for Rint {
+        //     fn is_na(&amp;self) -&gt; bool {
+        //         (|x: &amp;Rint| x.0 == i32::MIN)(self)
+        //     }
+        //
+        //     fn na() -&gt; Self {
+        //         Rint(i32::MIN)
+        //     }
+        // }
+        </span><span class="macro">paste::paste! </span>{
+            <span class="attribute">#[<span class="macro-nonterminal">doc </span>= <span class="string">&quot;```&quot;</span>]
+            #[doc = <span class="string">&quot;use extendr_api::prelude::*;&quot;</span>]
+            #[doc = <span class="string">&quot;test! {&quot;</span>]
+            #[doc = <span class="string">&quot;    assert!((&lt;&quot; </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">&quot;&gt;::na()).is_na());&quot;</span>]
+            #[<span class="macro-nonterminal">doc </span>= <span class="string">&quot;}&quot;</span>]
+            #[doc = <span class="string">&quot;```&quot;</span>]
+            </span><span class="kw">impl </span>CanBeNA <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+                <span class="doccomment">/// Return true is the is a NA value.
+                </span><span class="kw">fn </span><span class="macro-nonterminal">is_na</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+                    <span class="macro-nonterminal">$na_check</span>(<span class="self">self</span>)
                 }
-                <span class="doccomment">/// Construct a NA.</span>
-                <span class="kw">fn</span> <span class="ident">na</span>() -&gt; <span class="self">Self</span> {
-                    <span class="macro-nonterminal">$</span><span class="kw">type</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">na_val</span>)
-                }
-            }
-        }
-
-        <span class="comment">// The &#39;example usage&#39; expands to...</span>
-        <span class="comment">//</span>
-        <span class="comment">//</span>
-        <span class="comment">// /// Documentation comments/test built by the #[doc] attributes</span>
-        <span class="comment">// impl PartialEq&lt;Rint&gt; for Rint {</span>
-        <span class="comment">//     fn eq(&amp;self, other: &amp;Rint) -&gt; bool {</span>
-        <span class="comment">//         !(self.is_na() || other.is_na()) &amp;&amp; self.0 == other.0</span>
-        <span class="comment">//     }</span>
-        <span class="comment">// }</span>
-        <span class="macro">paste::paste!</span> {
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;```&quot;</span>]</span>
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;use extendr_api::prelude::*;&quot;</span>]</span>
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;test! {&quot;</span>]</span>
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;    assert!(&lt;&quot;</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="string">&quot;&gt;::default().eq(&amp;&lt;&quot;</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="string">&quot;&gt;::default()));&quot;</span>]</span>
-            <span class="attribute">#[<span class="macro-nonterminal">doc</span> <span class="op">=</span> <span class="string">&quot;    assert!(!&lt;&quot;</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="string">&quot;&gt;::na().eq(&amp;&lt;&quot;</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="string">&quot;&gt;::na()));&quot;</span>]</span>
-            <span class="attribute">#[<span class="macro-nonterminal">doc</span> <span class="op">=</span> <span class="string">&quot;}&quot;</span>]</span>
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;```&quot;</span>]</span>
-            <span class="kw">impl</span> <span class="ident">PartialEq</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-                <span class="kw">fn</span> <span class="macro-nonterminal">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="kw">type</span>) -&gt; <span class="macro-nonterminal">bool</span> {
-                    <span class="op">!</span>(<span class="self">self</span>.<span class="ident">is_na</span>() <span class="op">|</span><span class="op">|</span> <span class="ident">other</span>.<span class="ident">is_na</span>()) <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="number">0</span> <span class="op">==</span> <span class="ident">other</span>.<span class="number">0</span>
+                <span class="doccomment">/// Construct a NA.
+                </span><span class="kw">fn </span>na() -&gt; <span class="self">Self </span>{
+                    <span class="macro-nonterminal">$</span><span class="kw">type</span>(<span class="macro-nonterminal">$na_val</span>)
                 }
             }
         }
 
-        <span class="comment">// The &#39;example usage&#39; expands to...</span>
-        <span class="comment">//</span>
-        <span class="comment">// /// Documentation comments/test built by the #[doc] attributes</span>
-        <span class="comment">// impl PartialEq&lt;i32&gt; for Rint {</span>
-        <span class="comment">//     fn eq(&amp;self, other: &amp;i32) -&gt; bool {</span>
-        <span class="comment">//         !self.is_na() &amp;&amp; self.0 == *other</span>
-        <span class="comment">//     }</span>
-        <span class="comment">// }</span>
-        <span class="macro">paste::paste!</span> {
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;```&quot;</span>]</span>
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;use extendr_api::prelude::*;&quot;</span>]</span>
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;test! {&quot;</span>]</span>
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;    assert!(&lt;&quot;</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="string">&quot;&gt;::default().eq(&amp;&lt;&quot;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span> <span class="string">&quot;&gt;::default()));&quot;</span>]</span>
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;}&quot;</span>]</span>
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;```&quot;</span>]</span>
-            <span class="kw">impl</span> <span class="ident">PartialEq</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="kw">type</span> {
-                <span class="doccomment">/// NA always fails.</span>
-                <span class="kw">fn</span> <span class="macro-nonterminal">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span>) -&gt; <span class="ident">bool</span> {
-                    <span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::try_from</span>(<span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>) <span class="op">==</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="kw-2">*</span><span class="ident">other</span>))
+        <span class="comment">// The &#39;example usage&#39; expands to...
+        //
+        //
+        // /// Documentation comments/test built by the #[doc] attributes
+        // impl PartialEq&lt;Rint&gt; for Rint {
+        //     fn eq(&amp;self, other: &amp;Rint) -&gt; bool {
+        //         !(self.is_na() || other.is_na()) &amp;&amp; self.0 == other.0
+        //     }
+        // }
+        </span><span class="macro">paste::paste! </span>{
+            <span class="attribute">#[doc = <span class="string">&quot;```&quot;</span>]
+            #[doc = <span class="string">&quot;use extendr_api::prelude::*;&quot;</span>]
+            #[doc = <span class="string">&quot;test! {&quot;</span>]
+            #[doc = <span class="string">&quot;    assert!(&lt;&quot; </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">&quot;&gt;::default().eq(&amp;&lt;&quot; </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">&quot;&gt;::default()));&quot;</span>]
+            #[<span class="macro-nonterminal">doc </span>= <span class="string">&quot;    assert!(!&lt;&quot; </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">&quot;&gt;::na().eq(&amp;&lt;&quot; </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">&quot;&gt;::na()));&quot;</span>]
+            #[<span class="macro-nonterminal">doc </span>= <span class="string">&quot;}&quot;</span>]
+            #[doc = <span class="string">&quot;```&quot;</span>]
+            </span><span class="kw">impl </span>PartialEq&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+                <span class="kw">fn </span><span class="macro-nonterminal">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="kw">type</span>) -&gt; <span class="macro-nonterminal">bool </span>{
+                    !(<span class="self">self</span>.is_na() || other.is_na()) &amp;&amp; <span class="self">self</span>.<span class="number">0 </span>== other.<span class="number">0
+                </span>}
+            }
+        }
+
+        <span class="comment">// The &#39;example usage&#39; expands to...
+        //
+        // /// Documentation comments/test built by the #[doc] attributes
+        // impl PartialEq&lt;i32&gt; for Rint {
+        //     fn eq(&amp;self, other: &amp;i32) -&gt; bool {
+        //         !self.is_na() &amp;&amp; self.0 == *other
+        //     }
+        // }
+        </span><span class="macro">paste::paste! </span>{
+            <span class="attribute">#[doc = <span class="string">&quot;```&quot;</span>]
+            #[doc = <span class="string">&quot;use extendr_api::prelude::*;&quot;</span>]
+            #[doc = <span class="string">&quot;test! {&quot;</span>]
+            #[doc = <span class="string">&quot;    assert!(&lt;&quot; </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">&quot;&gt;::default().eq(&amp;&lt;&quot; </span><span class="macro-nonterminal">$type_prim </span><span class="string">&quot;&gt;::default()));&quot;</span>]
+            #[doc = <span class="string">&quot;}&quot;</span>]
+            #[doc = <span class="string">&quot;```&quot;</span>]
+            </span><span class="kw">impl </span>PartialEq&lt;<span class="macro-nonterminal">$type_prim</span>&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+                <span class="doccomment">/// NA always fails.
+                </span><span class="kw">fn </span><span class="macro-nonterminal">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$type_prim</span>) -&gt; bool {
+                    &lt;<span class="prelude-ty">Option</span>&lt;<span class="macro-nonterminal">$type_prim</span>&gt;&gt;::try_from(<span class="kw-2">**</span><span class="self">self</span>) == <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="kw-2">*</span>other))
                 }
             }
         }
 
-        <span class="comment">// The &#39;example usage&#39; expands to...</span>
-        <span class="comment">//</span>
-        <span class="comment">// /// Documentation comments/test built by the #[doc] attributes</span>
-        <span class="comment">// impl PartialEq&lt;i32&gt; for Rint {</span>
-        <span class="comment">//     fn eq(&amp;self, other: &amp;i32) -&gt; bool {</span>
-        <span class="comment">//         !self.is_na() &amp;&amp; self.0 == *other</span>
-        <span class="comment">//     }</span>
-        <span class="comment">// }</span>
-        <span class="macro">paste::paste!</span> {
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;```&quot;</span>]</span>
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;use extendr_api::prelude::*;&quot;</span>]</span>
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;test! {&quot;</span>]</span>
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;    assert!(&lt;&quot;</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="string">&quot;&gt;::default().eq(&amp;&lt;&quot;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span> <span class="string">&quot;&gt;::default()));&quot;</span>]</span>
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;}&quot;</span>]</span>
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;```&quot;</span>]</span>
-            <span class="kw">impl</span> <span class="ident">PartialEq</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-                <span class="doccomment">/// NA always fails.</span>
-                <span class="kw">fn</span> <span class="macro-nonterminal">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span>) -&gt; <span class="ident">bool</span> {
-                    <span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::try_from</span>(<span class="self">self</span>.<span class="ident">clone</span>()) <span class="op">==</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="kw-2">*</span><span class="ident">other</span>))
+        <span class="comment">// The &#39;example usage&#39; expands to...
+        //
+        // /// Documentation comments/test built by the #[doc] attributes
+        // impl PartialEq&lt;i32&gt; for Rint {
+        //     fn eq(&amp;self, other: &amp;i32) -&gt; bool {
+        //         !self.is_na() &amp;&amp; self.0 == *other
+        //     }
+        // }
+        </span><span class="macro">paste::paste! </span>{
+            <span class="attribute">#[doc = <span class="string">&quot;```&quot;</span>]
+            #[doc = <span class="string">&quot;use extendr_api::prelude::*;&quot;</span>]
+            #[doc = <span class="string">&quot;test! {&quot;</span>]
+            #[doc = <span class="string">&quot;    assert!(&lt;&quot; </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">&quot;&gt;::default().eq(&amp;&lt;&quot; </span><span class="macro-nonterminal">$type_prim </span><span class="string">&quot;&gt;::default()));&quot;</span>]
+            #[doc = <span class="string">&quot;}&quot;</span>]
+            #[doc = <span class="string">&quot;```&quot;</span>]
+            </span><span class="kw">impl </span>PartialEq&lt;<span class="macro-nonterminal">$type_prim</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+                <span class="doccomment">/// NA always fails.
+                </span><span class="kw">fn </span><span class="macro-nonterminal">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$type_prim</span>) -&gt; bool {
+                    &lt;<span class="prelude-ty">Option</span>&lt;<span class="macro-nonterminal">$type_prim</span>&gt;&gt;::try_from(<span class="self">self</span>.clone()) == <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="kw-2">*</span>other))
                 }
             }
         }
 
-        <span class="comment">// The &#39;example usage&#39; expands to...</span>
-        <span class="comment">//</span>
-        <span class="comment">// /// Documentation comments/test built by the #[doc] attributes</span>
-        <span class="comment">// impl std::default::Default for Rint {</span>
-        <span class="comment">//     fn default() -&gt; Self {</span>
-        <span class="comment">//         Rint(&lt;i32&gt;::default())</span>
-        <span class="comment">//     }</span>
-        <span class="comment">// }</span>
-        <span class="macro">paste::paste!</span> {
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;```&quot;</span>]</span>
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;use extendr_api::prelude::*;&quot;</span>]</span>
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;test! {&quot;</span>]</span>
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;    assert_eq!(&lt;&quot;</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="string">&quot;&gt;::default(), &lt;&quot;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span> <span class="string">&quot;&gt;::default());&quot;</span>]</span>
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;}&quot;</span>]</span>
-            <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;```&quot;</span>]</span>
-            <span class="kw">impl</span> <span class="ident">std::default::Default</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-                <span class="kw">fn</span> <span class="macro-nonterminal">default</span>() -&gt; <span class="self">Self</span> {
-                    <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">type_prim</span><span class="op">&gt;</span><span class="ident">::default</span>())
-                }
-            }
-        }
-    };
-}
-
-<span class="doccomment">/// Generates an implementation of `std::iter::Sum` for a scalar type</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This macro requires the following arguments:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// * `$type`   - The Type to implement `std::iter::Sum` for</span>
-<span class="doccomment">/// * `$zero`   - The zero value for the primitive counterpart to Type</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Example Usage:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// gen_sum_iter!(Rint, 0i32);</span>
-<span class="doccomment">/// ```</span>
-<span class="macro">macro_rules!</span> <span class="ident">gen_sum_iter</span> {
-    (<span class="macro-nonterminal">$</span><span class="kw">type</span> : <span class="macro-nonterminal">tt</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">zero</span> : <span class="ident">expr</span>) =&gt; {
-        <span class="comment">// The &#39;example usage&#39; expands to...</span>
-        <span class="comment">//</span>
-        <span class="comment">// impl std::iter::Sum for $type {</span>
-        <span class="comment">//     /// Documentation comments/test built by the #[doc] attributes</span>
-        <span class="comment">//     fn sum&lt;I: Iterator&lt;Item = Rint&gt;&gt;(iter: I) -&gt; Rint {</span>
-        <span class="comment">//         iter.fold(Rint::from(0i32), |a, b| a + b)</span>
-        <span class="comment">//     }</span>
-        <span class="comment">// }</span>
-        <span class="kw">impl</span> <span class="ident">std::iter::Sum</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-            <span class="macro">paste::paste!</span> {
-                <span class="attribute">#[<span class="macro-nonterminal">doc</span> <span class="op">=</span> <span class="string">&quot;Yields NA on overflow if NAs present.&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;```&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;use extendr_api::prelude::*;&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;use std::iter::Sum;&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;test! {&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;    let x = (0..100).map(|x| &quot;</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="string">&quot;::default());&quot;</span>]</span>
-                <span class="attribute">#[<span class="macro-nonterminal">doc</span> <span class="op">=</span> <span class="string">&quot;    assert_eq!(&lt;&quot;</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="string">&quot; as Sum&gt;::sum(x), &lt;&quot;</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="string">&quot;&gt;::default());&quot;</span>]</span>
-                <span class="attribute">#[<span class="macro-nonterminal">doc</span> <span class="op">=</span> <span class="string">&quot;}&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;```&quot;</span>]</span>
-                <span class="kw">fn</span> <span class="ident">sum</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="macro-nonterminal">iter</span>: <span class="ident">I</span>) -&gt; <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-                    <span class="macro-nonterminal">iter</span>.<span class="ident">fold</span>(<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">zero</span>), <span class="op">|</span><span class="ident">a</span>, <span class="ident">b</span><span class="op">|</span> <span class="ident">a</span> <span class="op">+</span> <span class="ident">b</span>)
+        <span class="comment">// The &#39;example usage&#39; expands to...
+        //
+        // /// Documentation comments/test built by the #[doc] attributes
+        // impl std::default::Default for Rint {
+        //     fn default() -&gt; Self {
+        //         Rint(&lt;i32&gt;::default())
+        //     }
+        // }
+        </span><span class="macro">paste::paste! </span>{
+            <span class="attribute">#[doc = <span class="string">&quot;```&quot;</span>]
+            #[doc = <span class="string">&quot;use extendr_api::prelude::*;&quot;</span>]
+            #[doc = <span class="string">&quot;test! {&quot;</span>]
+            #[doc = <span class="string">&quot;    assert_eq!(&lt;&quot; </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">&quot;&gt;::default(), &lt;&quot; </span><span class="macro-nonterminal">$type_prim </span><span class="string">&quot;&gt;::default());&quot;</span>]
+            #[doc = <span class="string">&quot;}&quot;</span>]
+            #[doc = <span class="string">&quot;```&quot;</span>]
+            </span><span class="kw">impl </span>std::default::Default <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+                <span class="kw">fn </span><span class="macro-nonterminal">default</span>() -&gt; <span class="self">Self </span>{
+                    <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(&lt;<span class="macro-nonterminal">$type_prim</span>&gt;::default())
                 }
             }
         }
     };
 }
 
-<span class="kw">pub</span>(<span class="kw">in</span> <span class="ident"><span class="kw">crate</span>::scalar</span>) <span class="kw">use</span> <span class="ident">gen_binop</span>;
-<span class="kw">pub</span>(<span class="kw">in</span> <span class="ident"><span class="kw">crate</span>::scalar</span>) <span class="kw">use</span> <span class="ident">gen_binopassign</span>;
-<span class="kw">pub</span>(<span class="kw">in</span> <span class="ident"><span class="kw">crate</span>::scalar</span>) <span class="kw">use</span> <span class="ident">gen_from_primitive</span>;
-<span class="kw">pub</span>(<span class="kw">in</span> <span class="ident"><span class="kw">crate</span>::scalar</span>) <span class="kw">use</span> <span class="ident">gen_from_scalar</span>;
-<span class="kw">pub</span>(<span class="kw">in</span> <span class="ident"><span class="kw">crate</span>::scalar</span>) <span class="kw">use</span> <span class="ident">gen_impl</span>;
-<span class="kw">pub</span>(<span class="kw">in</span> <span class="ident"><span class="kw">crate</span>::scalar</span>) <span class="kw">use</span> <span class="ident">gen_sum_iter</span>;
-<span class="kw">pub</span>(<span class="kw">in</span> <span class="ident"><span class="kw">crate</span>::scalar</span>) <span class="kw">use</span> <span class="ident">gen_trait_impl</span>;
-<span class="kw">pub</span>(<span class="kw">in</span> <span class="ident"><span class="kw">crate</span>::scalar</span>) <span class="kw">use</span> <span class="ident">gen_unop</span>;
+<span class="doccomment">/// Generates an implementation of `std::iter::Sum` for a scalar type
+///
+/// This macro requires the following arguments:
+///
+/// * `$type`   - The Type to implement `std::iter::Sum` for
+/// * `$zero`   - The zero value for the primitive counterpart to Type
+///
+/// Example Usage:
+///
+/// ```ignore
+/// gen_sum_iter!(Rint, 0i32);
+/// ```
+</span><span class="macro">macro_rules! </span>gen_sum_iter {
+    (<span class="macro-nonterminal">$</span><span class="kw">type </span>: <span class="macro-nonterminal">tt</span>, <span class="macro-nonterminal">$zero </span>: expr) =&gt; {
+        <span class="comment">// The &#39;example usage&#39; expands to...
+        //
+        // impl std::iter::Sum for $type {
+        //     /// Documentation comments/test built by the #[doc] attributes
+        //     fn sum&lt;I: Iterator&lt;Item = Rint&gt;&gt;(iter: I) -&gt; Rint {
+        //         iter.fold(Rint::from(0i32), |a, b| a + b)
+        //     }
+        // }
+        </span><span class="kw">impl </span>std::iter::Sum <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+            <span class="macro">paste::paste! </span>{
+                <span class="attribute">#[<span class="macro-nonterminal">doc </span>= <span class="string">&quot;Yields NA on overflow if NAs present.&quot;</span>]
+                #[doc = <span class="string">&quot;```&quot;</span>]
+                #[doc = <span class="string">&quot;use extendr_api::prelude::*;&quot;</span>]
+                #[doc = <span class="string">&quot;use std::iter::Sum;&quot;</span>]
+                #[doc = <span class="string">&quot;test! {&quot;</span>]
+                #[doc = <span class="string">&quot;    let x = (0..100).map(|x| &quot; </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">&quot;::default());&quot;</span>]
+                #[<span class="macro-nonterminal">doc </span>= <span class="string">&quot;    assert_eq!(&lt;&quot; </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">&quot; as Sum&gt;::sum(x), &lt;&quot; </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">&quot;&gt;::default());&quot;</span>]
+                #[<span class="macro-nonterminal">doc </span>= <span class="string">&quot;}&quot;</span>]
+                #[doc = <span class="string">&quot;```&quot;</span>]
+                </span><span class="kw">fn </span>sum&lt;I: Iterator&lt;Item = <span class="macro-nonterminal">$</span><span class="kw">type</span>&gt;&gt;(<span class="macro-nonterminal">iter</span>: I) -&gt; <span class="macro-nonterminal">$</span><span class="kw">type </span>{
+                    <span class="macro-nonterminal">iter</span>.fold(<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(<span class="macro-nonterminal">$zero</span>), |a, b| a + b)
+                }
+            }
+        }
+    };
+}
+
+<span class="kw">pub</span>(<span class="kw">in </span><span class="kw">crate</span>::scalar) <span class="kw">use </span>gen_binop;
+<span class="kw">pub</span>(<span class="kw">in </span><span class="kw">crate</span>::scalar) <span class="kw">use </span>gen_binopassign;
+<span class="kw">pub</span>(<span class="kw">in </span><span class="kw">crate</span>::scalar) <span class="kw">use </span>gen_from_primitive;
+<span class="kw">pub</span>(<span class="kw">in </span><span class="kw">crate</span>::scalar) <span class="kw">use </span>gen_from_scalar;
+<span class="kw">pub</span>(<span class="kw">in </span><span class="kw">crate</span>::scalar) <span class="kw">use </span>gen_impl;
+<span class="kw">pub</span>(<span class="kw">in </span><span class="kw">crate</span>::scalar) <span class="kw">use </span>gen_sum_iter;
+<span class="kw">pub</span>(<span class="kw">in </span><span class="kw">crate</span>::scalar) <span class="kw">use </span>gen_trait_impl;
+<span class="kw">pub</span>(<span class="kw">in </span><span class="kw">crate</span>::scalar) <span class="kw">use </span>gen_unop;
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

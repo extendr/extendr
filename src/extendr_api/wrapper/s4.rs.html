@@ -1,6 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/s4.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>s4.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container">
-                    <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../extendr_api/index.html">
-                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/s4.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>s4.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../extendr_api/index.html">
+                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -164,169 +163,169 @@
 <span id="162">162</span>
 <span id="163">163</span>
 <span id="164">164</span>
-</pre><pre class="rust"><code><span class="doccomment">//! S4 class support.</span>
+</pre><pre class="rust"><code><span class="doccomment">//! S4 class support.
 
-<span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+</span><span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">S4</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">robj</span>: <span class="ident">Robj</span>,
+<span class="attribute">#[derive(PartialEq, Clone)]
+</span><span class="kw">pub struct </span>S4 {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) robj: Robj,
 }
 
-<span class="kw">impl</span> <span class="ident">S4</span> {
-    <span class="doccomment">/// Create a S4 class.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Example:</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let class = S4::set_class(&quot;fred&quot;, pairlist!(x=&quot;numeric&quot;), r!(()))?;</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_class</span>(<span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">representation</span>: <span class="ident">Pairlist</span>, <span class="ident">contains</span>: <span class="ident">Robj</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">S4</span><span class="op">&gt;</span> {
-        <span class="kw">use</span> <span class="kw">crate</span> <span class="kw">as</span> <span class="ident">extendr_api</span>;
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">R!</span>(<span class="string">r#&quot;setClass({{name}}, {{representation}}, {{contains}})&quot;#</span>)<span class="question-mark">?</span>;
-        <span class="ident">res</span>.<span class="ident">try_into</span>()
+<span class="kw">impl </span>S4 {
+    <span class="doccomment">/// Create a S4 class.
+    ///
+    /// Example:
+    /// ```
+    /// use extendr_api::prelude::*;
+    ///
+    /// test! {
+    ///     let class = S4::set_class(&quot;fred&quot;, pairlist!(x=&quot;numeric&quot;), r!(()))?;
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>set_class(name: <span class="kw-2">&amp;</span>str, representation: Pairlist, contains: Robj) -&gt; <span class="prelude-ty">Result</span>&lt;S4&gt; {
+        <span class="kw">use crate as </span>extendr_api;
+        <span class="kw">let </span>res = <span class="macro">R!</span>(<span class="string">r#&quot;setClass({{name}}, {{representation}}, {{contains}})&quot;#</span>)<span class="question-mark">?</span>;
+        res.try_into()
     }
 
-    <span class="doccomment">/// Create a S4 object.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Example:</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     S4::set_class(&quot;fred&quot;, pairlist!(x=&quot;numeric&quot;), r!(()))?;</span>
-    <span class="doccomment">///     let mut robj : S4 = R!(r#&quot;new(&quot;fred&quot;)&quot;#)?.try_into()?;</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">S4</span><span class="op">&gt;</span> {
-        <span class="kw">use</span> <span class="kw">crate</span> <span class="kw">as</span> <span class="ident">extendr_api</span>;
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">R!</span>(<span class="string">r#&quot;new({{name}})&quot;#</span>)<span class="question-mark">?</span>;
-        <span class="ident">res</span>.<span class="ident">try_into</span>()
+    <span class="doccomment">/// Create a S4 object.
+    ///
+    /// Example:
+    /// ```
+    /// use extendr_api::prelude::*;
+    ///
+    /// test! {
+    ///     S4::set_class(&quot;fred&quot;, pairlist!(x=&quot;numeric&quot;), r!(()))?;
+    ///     let mut robj : S4 = R!(r#&quot;new(&quot;fred&quot;)&quot;#)?.try_into()?;
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>new(name: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;S4&gt; {
+        <span class="kw">use crate as </span>extendr_api;
+        <span class="kw">let </span>res = <span class="macro">R!</span>(<span class="string">r#&quot;new({{name}})&quot;#</span>)<span class="question-mark">?</span>;
+        res.try_into()
     }
 
-    <span class="doccomment">/// Get a named slot from a S4 object.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Example:</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     S4::set_class(&quot;fred&quot;, pairlist!(xyz=&quot;numeric&quot;), r!(()))?;</span>
-    <span class="doccomment">///     let robj : S4 = R!(r#&quot;new(&quot;fred&quot;)&quot;#)?.try_into()?;</span>
-    <span class="doccomment">///     assert_eq!(robj.get_slot(&quot;xyz&quot;).unwrap().len(), 0);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_slot</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">N</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="ident">N</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
-        <span class="ident">Robj</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">N</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>,
+    <span class="doccomment">/// Get a named slot from a S4 object.
+    ///
+    /// Example:
+    /// ```
+    /// use extendr_api::prelude::*;
+    ///
+    /// test! {
+    ///     S4::set_class(&quot;fred&quot;, pairlist!(xyz=&quot;numeric&quot;), r!(()))?;
+    ///     let robj : S4 = R!(r#&quot;new(&quot;fred&quot;)&quot;#)?.try_into()?;
+    ///     assert_eq!(robj.get_slot(&quot;xyz&quot;).unwrap().len(), 0);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>get_slot&lt;<span class="lifetime">&#39;a</span>, N&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, name: N) -&gt; <span class="prelude-ty">Option</span>&lt;Robj&gt;
+    <span class="kw">where
+        </span><span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
+        Robj: From&lt;N&gt; + <span class="lifetime">&#39;a</span>,
     {
-        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">Robj::from</span>(<span class="ident">name</span>);
-        <span class="kw">unsafe</span> {
-            <span class="kw">if</span> <span class="ident">R_has_slot</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">name</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">Robj::from_sexp</span>(<span class="ident">R_do_slot</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">name</span>.<span class="ident">get</span>())))
-            } <span class="kw">else</span> {
-                <span class="prelude-val">None</span>
-            }
+        <span class="kw">let </span>name = Robj::from(name);
+        <span class="kw">unsafe </span>{
+            <span class="kw">if </span>R_has_slot(<span class="self">self</span>.get(), name.get()) != <span class="number">0 </span>{
+                <span class="prelude-val">Some</span>(Robj::from_sexp(R_do_slot(<span class="self">self</span>.get(), name.get())))
+            } <span class="kw">else </span>{
+                <span class="prelude-val">None
+            </span>}
         }
     }
 
-    <span class="doccomment">/// Set a named slot in a S4 object.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Example:</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     S4::set_class(&quot;fred&quot;, pairlist!(xyz=&quot;numeric&quot;), r!(()))?;</span>
-    <span class="doccomment">///     let mut robj : S4 = R!(r#&quot;new(&quot;fred&quot;)&quot;#)?.try_into()?;</span>
-    <span class="doccomment">///     let xyz = sym!(xyz);</span>
-    <span class="doccomment">///     assert_eq!(robj.get_slot(xyz.clone()).unwrap().len(), 0);</span>
-    <span class="doccomment">///     robj.set_slot(xyz.clone(), r!([0.0, 1.0]));</span>
-    <span class="doccomment">///     assert_eq!(robj.get_slot(xyz), Some(r!([0.0, 1.0])));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_slot</span><span class="op">&lt;</span><span class="ident">N</span>, <span class="ident">V</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">name</span>: <span class="ident">N</span>, <span class="ident">value</span>: <span class="ident">V</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">S4</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">N</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
-        <span class="ident">V</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Set a named slot in a S4 object.
+    ///
+    /// Example:
+    /// ```
+    /// use extendr_api::prelude::*;
+    ///
+    /// test! {
+    ///     S4::set_class(&quot;fred&quot;, pairlist!(xyz=&quot;numeric&quot;), r!(()))?;
+    ///     let mut robj : S4 = R!(r#&quot;new(&quot;fred&quot;)&quot;#)?.try_into()?;
+    ///     let xyz = sym!(xyz);
+    ///     assert_eq!(robj.get_slot(xyz.clone()).unwrap().len(), 0);
+    ///     robj.set_slot(xyz.clone(), r!([0.0, 1.0]));
+    ///     assert_eq!(robj.get_slot(xyz), Some(r!([0.0, 1.0])));
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>set_slot&lt;N, V&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, name: N, value: V) -&gt; <span class="prelude-ty">Result</span>&lt;S4&gt;
+    <span class="kw">where
+        </span>N: Into&lt;Robj&gt;,
+        V: Into&lt;Robj&gt;,
     {
-        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">name</span>.<span class="ident">into</span>();
-        <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">into</span>();
-        <span class="kw">unsafe</span> {
-            <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
-                <span class="ident">catch_r_error</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">R_do_slot_assign</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">name</span>.<span class="ident">get</span>(), <span class="ident">value</span>.<span class="ident">get</span>()))
-                    .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">clone</span>())
+        <span class="kw">let </span>name = name.into();
+        <span class="kw">let </span>value = value.into();
+        <span class="kw">unsafe </span>{
+            single_threaded(|| {
+                catch_r_error(|| R_do_slot_assign(<span class="self">self</span>.get(), name.get(), value.get()))
+                    .map(|<span class="kw">_</span>| <span class="self">self</span>.clone())
             })
         }
     }
 
-    <span class="doccomment">/// Check if a named slot exists.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Example:</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     S4::set_class(&quot;fred&quot;, pairlist!(xyz=&quot;numeric&quot;), r!(()))?;</span>
-    <span class="doccomment">///     let robj : S4 = R!(r#&quot;new(&quot;fred&quot;)&quot;#)?.try_into()?;</span>
-    <span class="doccomment">///     assert_eq!(robj.has_slot(&quot;xyz&quot;), true);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">has_slot</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">N</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="ident">N</span>) -&gt; <span class="ident">bool</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
-        <span class="ident">Robj</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">N</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>,
+    <span class="doccomment">/// Check if a named slot exists.
+    ///
+    /// Example:
+    /// ```
+    /// use extendr_api::prelude::*;
+    ///
+    /// test! {
+    ///     S4::set_class(&quot;fred&quot;, pairlist!(xyz=&quot;numeric&quot;), r!(()))?;
+    ///     let robj : S4 = R!(r#&quot;new(&quot;fred&quot;)&quot;#)?.try_into()?;
+    ///     assert_eq!(robj.has_slot(&quot;xyz&quot;), true);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>has_slot&lt;<span class="lifetime">&#39;a</span>, N&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, name: N) -&gt; bool
+    <span class="kw">where
+        </span><span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
+        Robj: From&lt;N&gt; + <span class="lifetime">&#39;a</span>,
     {
-        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">Robj::from</span>(<span class="ident">name</span>);
-        <span class="kw">unsafe</span> { <span class="ident">R_has_slot</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">name</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+        <span class="kw">let </span>name = Robj::from(name);
+        <span class="kw">unsafe </span>{ R_has_slot(<span class="self">self</span>.get(), name.get()) != <span class="number">0 </span>}
     }
 }
 
-<span class="comment">// TODO: Think about these functions in the future.</span>
-<span class="comment">//</span>
-<span class="comment">// Currently, S4 support is not a top priority, but we hope that what we have</span>
-<span class="comment">// covered the basics for now.</span>
-<span class="comment">//</span>
-<span class="comment">// extern &quot;C&quot; {</span>
-<span class="comment">//     pub fn R_S4_extends(klass: SEXP, useTable: SEXP) -&gt; SEXP;</span>
-<span class="comment">// }</span>
-<span class="comment">// extern &quot;C&quot; {</span>
-<span class="comment">//     pub fn R_getClassDef(what: *const ::std::os::raw::c_char) -&gt; SEXP;</span>
-<span class="comment">// }</span>
-<span class="comment">// extern &quot;C&quot; {</span>
-<span class="comment">//     pub fn R_getClassDef_R(what: SEXP) -&gt; SEXP;</span>
-<span class="comment">// }</span>
-<span class="comment">// extern &quot;C&quot; {</span>
-<span class="comment">//     pub fn R_has_methods_attached() -&gt; Rboolean;</span>
-<span class="comment">// }</span>
-<span class="comment">// extern &quot;C&quot; {</span>
-<span class="comment">//     pub fn R_isVirtualClass(class_def: SEXP, env: SEXP) -&gt; Rboolean;</span>
-<span class="comment">// }</span>
-<span class="comment">// extern &quot;C&quot; {</span>
-<span class="comment">//     pub fn R_extends(class1: SEXP, class2: SEXP, env: SEXP) -&gt; Rboolean;</span>
-<span class="comment">// }</span>
-<span class="comment">// extern &quot;C&quot; {</span>
-<span class="comment">//     pub fn R_check_class_and_super(</span>
-<span class="comment">//         x: SEXP,</span>
-<span class="comment">//         valid: *mut *const ::std::os::raw::c_char,</span>
-<span class="comment">//         rho: SEXP,</span>
-<span class="comment">//     ) -&gt; ::std::os::raw::c_int;</span>
-<span class="comment">// }</span>
-<span class="comment">// extern &quot;C&quot; {</span>
-<span class="comment">//     pub fn R_check_class_etc(</span>
-<span class="comment">//         x: SEXP,</span>
-<span class="comment">//         valid: *mut *const ::std::os::raw::c_char,</span>
-<span class="comment">//     ) -&gt; ::std::os::raw::c_int;</span>
-<span class="comment">// }</span>
+<span class="comment">// TODO: Think about these functions in the future.
+//
+// Currently, S4 support is not a top priority, but we hope that what we have
+// covered the basics for now.
+//
+// extern &quot;C&quot; {
+//     pub fn R_S4_extends(klass: SEXP, useTable: SEXP) -&gt; SEXP;
+// }
+// extern &quot;C&quot; {
+//     pub fn R_getClassDef(what: *const ::std::os::raw::c_char) -&gt; SEXP;
+// }
+// extern &quot;C&quot; {
+//     pub fn R_getClassDef_R(what: SEXP) -&gt; SEXP;
+// }
+// extern &quot;C&quot; {
+//     pub fn R_has_methods_attached() -&gt; Rboolean;
+// }
+// extern &quot;C&quot; {
+//     pub fn R_isVirtualClass(class_def: SEXP, env: SEXP) -&gt; Rboolean;
+// }
+// extern &quot;C&quot; {
+//     pub fn R_extends(class1: SEXP, class2: SEXP, env: SEXP) -&gt; Rboolean;
+// }
+// extern &quot;C&quot; {
+//     pub fn R_check_class_and_super(
+//         x: SEXP,
+//         valid: *mut *const ::std::os::raw::c_char,
+//         rho: SEXP,
+//     ) -&gt; ::std::os::raw::c_int;
+// }
+// extern &quot;C&quot; {
+//     pub fn R_check_class_etc(
+//         x: SEXP,
+//         valid: *mut *const ::std::os::raw::c_char,
+//     ) -&gt; ::std::os::raw::c_int;
+// }
 
-<span class="kw">impl</span> <span class="ident">std::fmt::Debug</span> <span class="kw">for</span> <span class="ident">S4</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::fmt::Result</span> {
-        <span class="ident">f</span>.<span class="ident">debug_struct</span>(<span class="string">&quot;S4&quot;</span>).<span class="ident">finish</span>()
+</span><span class="kw">impl </span>std::fmt::Debug <span class="kw">for </span>S4 {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+        f.debug_struct(<span class="string">&quot;S4&quot;</span>).finish()
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

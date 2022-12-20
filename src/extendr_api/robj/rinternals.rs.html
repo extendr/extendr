@@ -1,6 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/robj/rinternals.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>rinternals.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container">
-                    <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../extendr_api/index.html">
-                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/robj/rinternals.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>rinternals.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../extendr_api/index.html">
+                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -490,495 +489,495 @@
 <span id="488">488</span>
 <span id="489">489</span>
 <span id="490">490</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">std::os::raw</span>;
+</pre><pre class="rust"><code><span class="kw">use crate</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>std::os::raw;
 
-<span class="comment">///////////////////////////////////////////////////////////////</span>
-<span class="doccomment">/// The following impls wrap specific Rinternals.h functions.</span>
-<span class="doccomment">///</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Rinternals</span>: <span class="ident">Types</span> <span class="op">+</span> <span class="ident">Conversions</span> {
-    <span class="doccomment">/// Return true if this is the null object.</span>
-    <span class="kw">fn</span> <span class="ident">is_null</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isNull</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+<span class="comment">///////////////////////////////////////////////////////////////
+</span><span class="doccomment">/// The following impls wrap specific Rinternals.h functions.
+///
+</span><span class="kw">pub trait </span>Rinternals: Types + Conversions {
+    <span class="doccomment">/// Return true if this is the null object.
+    </span><span class="kw">fn </span>is_null(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isNull(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is a symbol.</span>
-    <span class="kw">fn</span> <span class="ident">is_symbol</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isSymbol</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is a symbol.
+    </span><span class="kw">fn </span>is_symbol(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isSymbol(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is a boolean (logical) vector</span>
-    <span class="kw">fn</span> <span class="ident">is_logical</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isLogical</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is a boolean (logical) vector
+    </span><span class="kw">fn </span>is_logical(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isLogical(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is a real (f64) vector.</span>
-    <span class="kw">fn</span> <span class="ident">is_real</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isReal</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is a real (f64) vector.
+    </span><span class="kw">fn </span>is_real(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isReal(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is a complex vector.</span>
-    <span class="kw">fn</span> <span class="ident">is_complex</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isComplex</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is a complex vector.
+    </span><span class="kw">fn </span>is_complex(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isComplex(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is an expression.</span>
-    <span class="kw">fn</span> <span class="ident">is_expressions</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isExpression</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is an expression.
+    </span><span class="kw">fn </span>is_expressions(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isExpression(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is an environment.</span>
-    <span class="kw">fn</span> <span class="ident">is_environment</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isEnvironment</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is an environment.
+    </span><span class="kw">fn </span>is_environment(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isEnvironment(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is an environment.</span>
-    <span class="kw">fn</span> <span class="ident">is_promise</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">sexptype</span>() <span class="op">==</span> <span class="ident">PROMSXP</span>
+    <span class="doccomment">/// Return true if this is an environment.
+    </span><span class="kw">fn </span>is_promise(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="self">self</span>.sexptype() == PROMSXP
     }
 
-    <span class="doccomment">/// Return true if this is a string.</span>
-    <span class="kw">fn</span> <span class="ident">is_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isString</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is a string.
+    </span><span class="kw">fn </span>is_string(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isString(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is an object (ie. has a class attribute).</span>
-    <span class="kw">fn</span> <span class="ident">is_object</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isObject</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is an object (ie. has a class attribute).
+    </span><span class="kw">fn </span>is_object(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isObject(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is a S4 object.</span>
-    <span class="kw">fn</span> <span class="ident">is_s4</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isS4</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is a S4 object.
+    </span><span class="kw">fn </span>is_s4(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isS4(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is an expression.</span>
-    <span class="kw">fn</span> <span class="ident">is_external_pointer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">rtype</span>() <span class="op">==</span> <span class="ident">Rtype::ExternalPtr</span>
+    <span class="doccomment">/// Return true if this is an expression.
+    </span><span class="kw">fn </span>is_external_pointer(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="self">self</span>.rtype() == Rtype::ExternalPtr
     }
 
-    <span class="doccomment">/// Get the source ref.</span>
-    <span class="kw">fn</span> <span class="ident">get_current_srcref</span>(<span class="ident">val</span>: <span class="ident">i32</span>) -&gt; <span class="ident">Robj</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_GetCurrentSrcref</span>(<span class="ident">val</span> <span class="kw">as</span> <span class="ident">raw::c_int</span>)) }
+    <span class="doccomment">/// Get the source ref.
+    </span><span class="kw">fn </span>get_current_srcref(val: i32) -&gt; Robj {
+        <span class="kw">unsafe </span>{ Robj::from_sexp(R_GetCurrentSrcref(val <span class="kw">as </span>raw::c_int)) }
     }
 
-    <span class="doccomment">/// Get the source filename.</span>
-    <span class="kw">fn</span> <span class="ident">get_src_filename</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Robj</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_GetSrcFilename</span>(<span class="self">self</span>.<span class="ident">get</span>())) }
+    <span class="doccomment">/// Get the source filename.
+    </span><span class="kw">fn </span>get_src_filename(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Robj {
+        <span class="kw">unsafe </span>{ Robj::from_sexp(R_GetSrcFilename(<span class="self">self</span>.get())) }
     }
 
-    <span class="doccomment">/// Convert to a string vector.</span>
-    <span class="kw">fn</span> <span class="ident">as_character_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Robj</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">Rf_asChar</span>(<span class="self">self</span>.<span class="ident">get</span>())) }
+    <span class="doccomment">/// Convert to a string vector.
+    </span><span class="kw">fn </span>as_character_vector(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Robj {
+        <span class="kw">unsafe </span>{ Robj::from_sexp(Rf_asChar(<span class="self">self</span>.get())) }
     }
 
-    <span class="doccomment">/// Convert to vectors of many kinds.</span>
-    <span class="kw">fn</span> <span class="ident">coerce_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">sexptype</span>: <span class="ident">u32</span>) -&gt; <span class="ident">Robj</span> {
-        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
-            <span class="ident">Robj::from_sexp</span>(<span class="ident">Rf_coerceVector</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">sexptype</span> <span class="kw">as</span> <span class="ident">SEXPTYPE</span>))
+    <span class="doccomment">/// Convert to vectors of many kinds.
+    </span><span class="kw">fn </span>coerce_vector(<span class="kw-2">&amp;</span><span class="self">self</span>, sexptype: u32) -&gt; Robj {
+        single_threaded(|| <span class="kw">unsafe </span>{
+            Robj::from_sexp(Rf_coerceVector(<span class="self">self</span>.get(), sexptype <span class="kw">as </span>SEXPTYPE))
         })
     }
 
-    <span class="doccomment">/// Convert a pairlist (LISTSXP) to a vector list (VECSXP).</span>
-    <span class="kw">fn</span> <span class="ident">pair_to_vector_list</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Robj</span> {
-        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">Rf_PairToVectorList</span>(<span class="self">self</span>.<span class="ident">get</span>())) })
+    <span class="doccomment">/// Convert a pairlist (LISTSXP) to a vector list (VECSXP).
+    </span><span class="kw">fn </span>pair_to_vector_list(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Robj {
+        single_threaded(|| <span class="kw">unsafe </span>{ Robj::from_sexp(Rf_PairToVectorList(<span class="self">self</span>.get())) })
     }
 
-    <span class="doccomment">/// Convert a vector list (VECSXP) to a pair list (LISTSXP)</span>
-    <span class="kw">fn</span> <span class="ident">vector_to_pair_list</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Robj</span> {
-        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">Rf_VectorToPairList</span>(<span class="self">self</span>.<span class="ident">get</span>())) })
+    <span class="doccomment">/// Convert a vector list (VECSXP) to a pair list (LISTSXP)
+    </span><span class="kw">fn </span>vector_to_pair_list(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Robj {
+        single_threaded(|| <span class="kw">unsafe </span>{ Robj::from_sexp(Rf_VectorToPairList(<span class="self">self</span>.get())) })
     }
 
-    <span class="doccomment">/// Convert a factor to a string vector.</span>
-    <span class="kw">fn</span> <span class="ident">as_character_factor</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Robj</span> {
-        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">Rf_asCharacterFactor</span>(<span class="self">self</span>.<span class="ident">get</span>())) })
+    <span class="doccomment">/// Convert a factor to a string vector.
+    </span><span class="kw">fn </span>as_character_factor(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Robj {
+        single_threaded(|| <span class="kw">unsafe </span>{ Robj::from_sexp(Rf_asCharacterFactor(<span class="self">self</span>.get())) })
     }
 
-    <span class="doccomment">/// Allocate a matrix object.</span>
-    <span class="kw">fn</span> <span class="ident">alloc_matrix</span>(<span class="ident">sexptype</span>: <span class="ident">SEXPTYPE</span>, <span class="ident">rows</span>: <span class="ident">i32</span>, <span class="ident">cols</span>: <span class="ident">i32</span>) -&gt; <span class="ident">Robj</span> {
-        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">Rf_allocMatrix</span>(<span class="ident">sexptype</span>, <span class="ident">rows</span>, <span class="ident">cols</span>)) })
+    <span class="doccomment">/// Allocate a matrix object.
+    </span><span class="kw">fn </span>alloc_matrix(sexptype: SEXPTYPE, rows: i32, cols: i32) -&gt; Robj {
+        single_threaded(|| <span class="kw">unsafe </span>{ Robj::from_sexp(Rf_allocMatrix(sexptype, rows, cols)) })
     }
 
-    <span class="doccomment">/// Do a deep copy of this object.</span>
-    <span class="doccomment">/// Note that clone() only adds a reference.</span>
-    <span class="kw">fn</span> <span class="ident">duplicate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Robj</span> {
-        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">Rf_duplicate</span>(<span class="self">self</span>.<span class="ident">get</span>())) })
+    <span class="doccomment">/// Do a deep copy of this object.
+    /// Note that clone() only adds a reference.
+    </span><span class="kw">fn </span>duplicate(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Robj {
+        single_threaded(|| <span class="kw">unsafe </span>{ Robj::from_sexp(Rf_duplicate(<span class="self">self</span>.get())) })
     }
 
-    <span class="doccomment">/// Find a function in an environment ignoring other variables.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This evaulates promises if they are found.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// See also [global_function()].</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///    let my_fun = base_env().find_function(sym!(ls)).unwrap();</span>
-    <span class="doccomment">///    assert_eq!(my_fun.is_function(), true);</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">///    // Note: this may crash on some versions of windows which don&#39;t support unwinding.</span>
-    <span class="doccomment">///    // assert!(base_env().find_function(sym!(qwertyuiop)).is_none());</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">find_function</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">TryInto</span><span class="op">&lt;</span><span class="ident">Symbol</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">key</span>: <span class="ident">K</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">key</span>: <span class="ident">Symbol</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">try_into</span>()<span class="question-mark">?</span>;
-        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_environment</span>() {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::NotFound</span>(<span class="ident">key</span>.<span class="ident">into</span>()));
+    <span class="doccomment">/// Find a function in an environment ignoring other variables.
+    ///
+    /// This evaulates promises if they are found.
+    ///
+    /// See also [global_function()].
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///    let my_fun = base_env().find_function(sym!(ls)).unwrap();
+    ///    assert_eq!(my_fun.is_function(), true);
+    ///
+    ///    // Note: this may crash on some versions of windows which don&#39;t support unwinding.
+    ///    // assert!(base_env().find_function(sym!(qwertyuiop)).is_none());
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>find_function&lt;K: TryInto&lt;Symbol, Error = Error&gt;&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, key: K) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt; {
+        <span class="kw">let </span>key: Symbol = key.try_into()<span class="question-mark">?</span>;
+        <span class="kw">if </span>!<span class="self">self</span>.is_environment() {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::NotFound(key.into()));
         }
-        <span class="comment">// This may be better:</span>
-        <span class="comment">// let mut env: Robj = self.into();</span>
-        <span class="comment">// loop {</span>
-        <span class="comment">//     if let Some(var) = env.local(&amp;key) {</span>
-        <span class="comment">//         if let Some(var) = var.eval_promise() {</span>
-        <span class="comment">//             if var.is_function() {</span>
-        <span class="comment">//                 break Some(var);</span>
-        <span class="comment">//             }</span>
-        <span class="comment">//         }</span>
-        <span class="comment">//     }</span>
-        <span class="comment">//     if let Some(parent) = env.parent() {</span>
-        <span class="comment">//         env = parent;</span>
-        <span class="comment">//     } else {</span>
-        <span class="comment">//         break None;</span>
-        <span class="comment">//     }</span>
-        <span class="comment">// }</span>
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get</span>();
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">var</span>) <span class="op">=</span> <span class="ident">catch_r_error</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Rf_findFun</span>(<span class="ident">key</span>.<span class="ident">get</span>(), <span class="ident">sexp</span>)) {
-                <span class="prelude-val">Ok</span>(<span class="ident">Robj::from_sexp</span>(<span class="ident">var</span>))
-            } <span class="kw">else</span> {
-                <span class="prelude-val">Err</span>(<span class="ident">Error::NotFound</span>(<span class="ident">key</span>.<span class="ident">into</span>()))
+        <span class="comment">// This may be better:
+        // let mut env: Robj = self.into();
+        // loop {
+        //     if let Some(var) = env.local(&amp;key) {
+        //         if let Some(var) = var.eval_promise() {
+        //             if var.is_function() {
+        //                 break Some(var);
+        //             }
+        //         }
+        //     }
+        //     if let Some(parent) = env.parent() {
+        //         env = parent;
+        //     } else {
+        //         break None;
+        //     }
+        // }
+        </span><span class="kw">unsafe </span>{
+            <span class="kw">let </span>sexp = <span class="self">self</span>.get();
+            <span class="kw">if let </span><span class="prelude-val">Ok</span>(var) = catch_r_error(|| Rf_findFun(key.get(), sexp)) {
+                <span class="prelude-val">Ok</span>(Robj::from_sexp(var))
+            } <span class="kw">else </span>{
+                <span class="prelude-val">Err</span>(Error::NotFound(key.into()))
             }
         }
     }
 
-    <span class="doccomment">/// Find a variable in an environment.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// See also [global_var()].</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Note that many common variables and functions are contained in promises</span>
-    <span class="doccomment">/// which must be evaluated and this function may throw an R error.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///    let iris_dataframe = global_env()</span>
-    <span class="doccomment">///        .find_var(sym!(iris)).unwrap().eval_promise().unwrap();</span>
-    <span class="doccomment">///    assert_eq!(iris_dataframe.is_frame(), true);</span>
-    <span class="doccomment">///    assert_eq!(iris_dataframe.len(), 5);</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">///    // Note: this may crash on some versions of windows which don&#39;t support unwinding.</span>
-    <span class="doccomment">///    //assert_eq!(global_env().find_var(sym!(imnotasymbol)), None);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">find_var</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">TryInto</span><span class="op">&lt;</span><span class="ident">Symbol</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">key</span>: <span class="ident">K</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">key</span>: <span class="ident">Symbol</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">try_into</span>()<span class="question-mark">?</span>;
-        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_environment</span>() {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::NotFound</span>(<span class="ident">key</span>.<span class="ident">into</span>()));
+    <span class="doccomment">/// Find a variable in an environment.
+    ///
+    /// See also [global_var()].
+    ///
+    /// Note that many common variables and functions are contained in promises
+    /// which must be evaluated and this function may throw an R error.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///    let iris_dataframe = global_env()
+    ///        .find_var(sym!(iris)).unwrap().eval_promise().unwrap();
+    ///    assert_eq!(iris_dataframe.is_frame(), true);
+    ///    assert_eq!(iris_dataframe.len(), 5);
+    ///
+    ///    // Note: this may crash on some versions of windows which don&#39;t support unwinding.
+    ///    //assert_eq!(global_env().find_var(sym!(imnotasymbol)), None);
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>find_var&lt;K: TryInto&lt;Symbol, Error = Error&gt;&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, key: K) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt; {
+        <span class="kw">let </span>key: Symbol = key.try_into()<span class="question-mark">?</span>;
+        <span class="kw">if </span>!<span class="self">self</span>.is_environment() {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::NotFound(key.into()));
         }
-        <span class="comment">// Alterative:</span>
-        <span class="comment">// let mut env: Robj = self.into();</span>
-        <span class="comment">// loop {</span>
-        <span class="comment">//     if let Some(var) = env.local(&amp;key) {</span>
-        <span class="comment">//         println!(&quot;v1={:?}&quot;, var);</span>
-        <span class="comment">//         if let Some(var) = var.eval_promise() {</span>
-        <span class="comment">//             println!(&quot;v2={:?}&quot;, var);</span>
-        <span class="comment">//             break Some(var);</span>
-        <span class="comment">//         }</span>
-        <span class="comment">//     }</span>
-        <span class="comment">//     if let Some(parent) = env.parent() {</span>
-        <span class="comment">//         env = parent;</span>
-        <span class="comment">//     } else {</span>
-        <span class="comment">//         break None;</span>
-        <span class="comment">//     }</span>
-        <span class="comment">// }</span>
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get</span>();
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">var</span>) <span class="op">=</span> <span class="ident">catch_r_error</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Rf_findVar</span>(<span class="ident">key</span>.<span class="ident">get</span>(), <span class="ident">sexp</span>)) {
-                <span class="kw">if</span> <span class="ident">var</span> <span class="op">!</span><span class="op">=</span> <span class="ident">R_UnboundValue</span> {
-                    <span class="prelude-val">Ok</span>(<span class="ident">Robj::from_sexp</span>(<span class="ident">var</span>))
-                } <span class="kw">else</span> {
-                    <span class="prelude-val">Err</span>(<span class="ident">Error::NotFound</span>(<span class="ident">key</span>.<span class="ident">into</span>()))
+        <span class="comment">// Alterative:
+        // let mut env: Robj = self.into();
+        // loop {
+        //     if let Some(var) = env.local(&amp;key) {
+        //         println!(&quot;v1={:?}&quot;, var);
+        //         if let Some(var) = var.eval_promise() {
+        //             println!(&quot;v2={:?}&quot;, var);
+        //             break Some(var);
+        //         }
+        //     }
+        //     if let Some(parent) = env.parent() {
+        //         env = parent;
+        //     } else {
+        //         break None;
+        //     }
+        // }
+        </span><span class="kw">unsafe </span>{
+            <span class="kw">let </span>sexp = <span class="self">self</span>.get();
+            <span class="kw">if let </span><span class="prelude-val">Ok</span>(var) = catch_r_error(|| Rf_findVar(key.get(), sexp)) {
+                <span class="kw">if </span>var != R_UnboundValue {
+                    <span class="prelude-val">Ok</span>(Robj::from_sexp(var))
+                } <span class="kw">else </span>{
+                    <span class="prelude-val">Err</span>(Error::NotFound(key.into()))
                 }
-            } <span class="kw">else</span> {
-                <span class="prelude-val">Err</span>(<span class="ident">Error::NotFound</span>(<span class="ident">key</span>.<span class="ident">into</span>()))
+            } <span class="kw">else </span>{
+                <span class="prelude-val">Err</span>(Error::NotFound(key.into()))
             }
         }
     }
 
-    <span class="doccomment">/// If this object is a promise, evaluate it, otherwise return the object.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///    let iris_promise = global_env().find_var(sym!(iris)).unwrap();</span>
-    <span class="doccomment">///    let iris_dataframe = iris_promise.eval_promise().unwrap();</span>
-    <span class="doccomment">///    assert_eq!(iris_dataframe.is_frame(), true);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">eval_promise</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_promise</span>() {
-            <span class="self">self</span>.<span class="ident">as_promise</span>().<span class="ident">unwrap</span>().<span class="ident">eval</span>()
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">clone</span>())
+    <span class="doccomment">/// If this object is a promise, evaluate it, otherwise return the object.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///    let iris_promise = global_env().find_var(sym!(iris)).unwrap();
+    ///    let iris_dataframe = iris_promise.eval_promise().unwrap();
+    ///    assert_eq!(iris_dataframe.is_frame(), true);
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>eval_promise(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt; {
+        <span class="kw">if </span><span class="self">self</span>.is_promise() {
+            <span class="self">self</span>.as_promise().unwrap().eval()
+        } <span class="kw">else </span>{
+            <span class="prelude-val">Ok</span>(<span class="self">self</span>.as_robj().clone())
         }
     }
 
-    <span class="doccomment">/// Number of columns of a matrix</span>
-    <span class="kw">fn</span> <span class="ident">ncols</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_ncols</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="ident">usize</span> }
+    <span class="doccomment">/// Number of columns of a matrix
+    </span><span class="kw">fn </span>ncols(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+        <span class="kw">unsafe </span>{ Rf_ncols(<span class="self">self</span>.get()) <span class="kw">as </span>usize }
     }
 
-    <span class="doccomment">/// Number of rows of a matrix</span>
-    <span class="kw">fn</span> <span class="ident">nrows</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_nrows</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="ident">usize</span> }
+    <span class="doccomment">/// Number of rows of a matrix
+    </span><span class="kw">fn </span>nrows(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+        <span class="kw">unsafe </span>{ Rf_nrows(<span class="self">self</span>.get()) <span class="kw">as </span>usize }
     }
 
-    <span class="doccomment">/// Internal function used to implement `#[extendr]` impl</span>
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">make_external_ptr</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">p</span>: <span class="kw-2">*mut</span> <span class="ident">T</span>, <span class="ident">prot</span>: <span class="ident">Robj</span>) -&gt; <span class="ident">Robj</span> {
-        <span class="kw">let</span> <span class="ident">type_name</span>: <span class="ident">Robj</span> <span class="op">=</span> <span class="ident">std::any::type_name</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>().<span class="ident">into</span>();
-        <span class="ident">Robj::from_sexp</span>(<span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
-            <span class="ident">R_MakeExternalPtr</span>(
-                <span class="ident">p</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">::std::os::raw::c_void</span>,
-                <span class="ident">type_name</span>.<span class="ident">get</span>(),
-                <span class="ident">prot</span>.<span class="ident">get</span>(),
+    <span class="doccomment">/// Internal function used to implement `#[extendr]` impl
+    </span><span class="attribute">#[doc(hidden)]
+    </span><span class="kw">unsafe fn </span>make_external_ptr&lt;T&gt;(p: <span class="kw-2">*mut </span>T, prot: Robj) -&gt; Robj {
+        <span class="kw">let </span>type_name: Robj = std::any::type_name::&lt;T&gt;().into();
+        Robj::from_sexp(single_threaded(|| {
+            R_MakeExternalPtr(
+                p <span class="kw">as </span><span class="kw-2">*mut </span>::std::os::raw::c_void,
+                type_name.get(),
+                prot.get(),
             )
         }))
     }
 
-    <span class="doccomment">/// Internal function used to implement `#[extendr]` impl</span>
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">external_ptr_addr</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*mut</span> <span class="ident">T</span> {
-        <span class="ident">R_ExternalPtrAddr</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>
+    <span class="doccomment">/// Internal function used to implement `#[extendr]` impl
+    </span><span class="attribute">#[doc(hidden)]
+    </span><span class="kw">unsafe fn </span>external_ptr_addr&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*mut </span>T {
+        R_ExternalPtrAddr(<span class="self">self</span>.get()) <span class="kw">as </span><span class="kw-2">*mut </span>T
     }
 
-    <span class="doccomment">/// Internal function used to implement `#[extendr]` impl</span>
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">external_ptr_tag</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Robj</span> {
-        <span class="ident">Robj::from_sexp</span>(<span class="ident">R_ExternalPtrTag</span>(<span class="self">self</span>.<span class="ident">get</span>()))
+    <span class="doccomment">/// Internal function used to implement `#[extendr]` impl
+    </span><span class="attribute">#[doc(hidden)]
+    </span><span class="kw">unsafe fn </span>external_ptr_tag(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Robj {
+        Robj::from_sexp(R_ExternalPtrTag(<span class="self">self</span>.get()))
     }
 
-    <span class="doccomment">/// Internal function used to implement `#[extendr]` impl</span>
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">external_ptr_protected</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Robj</span> {
-        <span class="ident">Robj::from_sexp</span>(<span class="ident">R_ExternalPtrProtected</span>(<span class="self">self</span>.<span class="ident">get</span>()))
+    <span class="doccomment">/// Internal function used to implement `#[extendr]` impl
+    </span><span class="attribute">#[doc(hidden)]
+    </span><span class="kw">unsafe fn </span>external_ptr_protected(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Robj {
+        Robj::from_sexp(R_ExternalPtrProtected(<span class="self">self</span>.get()))
     }
 
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">register_c_finalizer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">func</span>: <span class="ident">R_CFinalizer_t</span>) {
-        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">R_RegisterCFinalizer</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">func</span>));
+    <span class="attribute">#[doc(hidden)]
+    </span><span class="kw">unsafe fn </span>register_c_finalizer(<span class="kw-2">&amp;</span><span class="self">self</span>, func: R_CFinalizer_t) {
+        single_threaded(|| R_RegisterCFinalizer(<span class="self">self</span>.get(), func));
     }
 
-    <span class="doccomment">/// Copy a vector and resize it.</span>
-    <span class="doccomment">/// See. &lt;https://github.com/hadley/r-internals/blob/master/vectors.md&gt;</span>
-    <span class="kw">fn</span> <span class="ident">xlengthgets</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">new_len</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_vector</span>() {
-                <span class="prelude-val">Ok</span>(<span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
-                    <span class="ident">Robj::from_sexp</span>(<span class="ident">Rf_xlengthgets</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">new_len</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>))
+    <span class="doccomment">/// Copy a vector and resize it.
+    /// See. &lt;https://github.com/hadley/r-internals/blob/master/vectors.md&gt;
+    </span><span class="kw">fn </span>xlengthgets(<span class="kw-2">&amp;</span><span class="self">self</span>, new_len: usize) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt; {
+        <span class="kw">unsafe </span>{
+            <span class="kw">if </span><span class="self">self</span>.is_vector() {
+                <span class="prelude-val">Ok</span>(single_threaded(|| {
+                    Robj::from_sexp(Rf_xlengthgets(<span class="self">self</span>.get(), new_len <span class="kw">as </span>R_xlen_t))
                 }))
-            } <span class="kw">else</span> {
-                <span class="prelude-val">Err</span>(<span class="ident">Error::ExpectedVector</span>(<span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">clone</span>()))
+            } <span class="kw">else </span>{
+                <span class="prelude-val">Err</span>(Error::ExpectedVector(<span class="self">self</span>.as_robj().clone()))
             }
         }
     }
 
-    <span class="doccomment">/// Allocated an owned object of a certain type.</span>
-    <span class="kw">fn</span> <span class="ident">alloc_vector</span>(<span class="ident">sexptype</span>: <span class="ident">u32</span>, <span class="ident">len</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Robj</span> {
-        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">Rf_allocVector</span>(<span class="ident">sexptype</span>, <span class="ident">len</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>)) })
+    <span class="doccomment">/// Allocated an owned object of a certain type.
+    </span><span class="kw">fn </span>alloc_vector(sexptype: u32, len: usize) -&gt; Robj {
+        single_threaded(|| <span class="kw">unsafe </span>{ Robj::from_sexp(Rf_allocVector(sexptype, len <span class="kw">as </span>R_xlen_t)) })
     }
 
-    <span class="doccomment">/// Return true if two arrays have identical dims.</span>
-    <span class="kw">fn</span> <span class="ident">conformable</span>(<span class="ident">a</span>: <span class="kw-2">&amp;</span><span class="ident">Robj</span>, <span class="ident">b</span>: <span class="kw-2">&amp;</span><span class="ident">Robj</span>) -&gt; <span class="ident">bool</span> {
-        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> { <span class="ident">Rf_conformable</span>(<span class="ident">a</span>.<span class="ident">get</span>(), <span class="ident">b</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> })
+    <span class="doccomment">/// Return true if two arrays have identical dims.
+    </span><span class="kw">fn </span>conformable(a: <span class="kw-2">&amp;</span>Robj, b: <span class="kw-2">&amp;</span>Robj) -&gt; bool {
+        single_threaded(|| <span class="kw">unsafe </span>{ Rf_conformable(a.get(), b.get()) != <span class="number">0 </span>})
     }
 
-    <span class="doccomment">/// Return true if this is an array.</span>
-    <span class="kw">fn</span> <span class="ident">is_array</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isArray</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is an array.
+    </span><span class="kw">fn </span>is_array(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isArray(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is factor.</span>
-    <span class="kw">fn</span> <span class="ident">is_factor</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isFactor</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is factor.
+    </span><span class="kw">fn </span>is_factor(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isFactor(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is a data frame.</span>
-    <span class="kw">fn</span> <span class="ident">is_frame</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isFrame</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is a data frame.
+    </span><span class="kw">fn </span>is_frame(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isFrame(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is a function or a primitive (CLOSXP, BUILTINSXP or SPECIALSXP)</span>
-    <span class="kw">fn</span> <span class="ident">is_function</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isFunction</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is a function or a primitive (CLOSXP, BUILTINSXP or SPECIALSXP)
+    </span><span class="kw">fn </span>is_function(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isFunction(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is an integer vector (INTSXP) but not a factor.</span>
-    <span class="kw">fn</span> <span class="ident">is_integer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isInteger</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is an integer vector (INTSXP) but not a factor.
+    </span><span class="kw">fn </span>is_integer(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isInteger(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is a language object (LANGSXP).</span>
-    <span class="kw">fn</span> <span class="ident">is_language</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isLanguage</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is a language object (LANGSXP).
+    </span><span class="kw">fn </span>is_language(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isLanguage(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is NILSXP or LISTSXP.</span>
-    <span class="kw">fn</span> <span class="ident">is_pairlist</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isList</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is NILSXP or LISTSXP.
+    </span><span class="kw">fn </span>is_pairlist(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isList(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is a matrix.</span>
-    <span class="kw">fn</span> <span class="ident">is_matrix</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isMatrix</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is a matrix.
+    </span><span class="kw">fn </span>is_matrix(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isMatrix(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is NILSXP or VECSXP.</span>
-    <span class="kw">fn</span> <span class="ident">is_list</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isNewList</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is NILSXP or VECSXP.
+    </span><span class="kw">fn </span>is_list(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isNewList(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is INTSXP, LGLSXP or REALSXP but not a factor.</span>
-    <span class="kw">fn</span> <span class="ident">is_number</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isNumber</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is INTSXP, LGLSXP or REALSXP but not a factor.
+    </span><span class="kw">fn </span>is_number(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isNumber(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is a primitive function BUILTINSXP, SPECIALSXP.</span>
-    <span class="kw">fn</span> <span class="ident">is_primitive</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isPrimitive</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is a primitive function BUILTINSXP, SPECIALSXP.
+    </span><span class="kw">fn </span>is_primitive(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isPrimitive(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is a time series vector (see tsp).</span>
-    <span class="kw">fn</span> <span class="ident">is_ts</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isTs</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is a time series vector (see tsp).
+    </span><span class="kw">fn </span>is_ts(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isTs(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is a user defined binop.</span>
-    <span class="kw">fn</span> <span class="ident">is_user_binop</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isUserBinop</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is a user defined binop.
+    </span><span class="kw">fn </span>is_user_binop(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isUserBinop(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is a valid string.</span>
-    <span class="kw">fn</span> <span class="ident">is_valid_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isValidString</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is a valid string.
+    </span><span class="kw">fn </span>is_valid_string(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isValidString(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is a valid string.</span>
-    <span class="kw">fn</span> <span class="ident">is_valid_string_f</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isValidStringF</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is a valid string.
+    </span><span class="kw">fn </span>is_valid_string_f(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isValidStringF(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is a vector.</span>
-    <span class="kw">fn</span> <span class="ident">is_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isVector</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is a vector.
+    </span><span class="kw">fn </span>is_vector(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isVector(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is an atomic vector.</span>
-    <span class="kw">fn</span> <span class="ident">is_vector_atomic</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isVectorAtomic</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is an atomic vector.
+    </span><span class="kw">fn </span>is_vector_atomic(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isVectorAtomic(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is a vector list.</span>
-    <span class="kw">fn</span> <span class="ident">is_vector_list</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isVectorList</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is a vector list.
+    </span><span class="kw">fn </span>is_vector_list(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isVectorList(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is can be made into a vector.</span>
-    <span class="kw">fn</span> <span class="ident">is_vectorizable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_isVectorizable</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Return true if this is can be made into a vector.
+    </span><span class="kw">fn </span>is_vectorizable(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ Rf_isVectorizable(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Return true if this is RAWSXP.</span>
-    <span class="kw">fn</span> <span class="ident">is_raw</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">rtype</span>() <span class="op">==</span> <span class="ident">Rtype::Raw</span>
+    <span class="doccomment">/// Return true if this is RAWSXP.
+    </span><span class="kw">fn </span>is_raw(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="self">self</span>.rtype() == Rtype::Raw
     }
 
-    <span class="doccomment">/// Return true if this is CHARSXP.</span>
-    <span class="kw">fn</span> <span class="ident">is_char</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">rtype</span>() <span class="op">==</span> <span class="ident">Rtype::Rstr</span>
+    <span class="doccomment">/// Return true if this is CHARSXP.
+    </span><span class="kw">fn </span>is_char(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="self">self</span>.rtype() == Rtype::Rstr
     }
 
-    <span class="doccomment">/// Check an external pointer tag.</span>
-    <span class="doccomment">/// This is used to wrap R objects.</span>
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">check_external_ptr_type</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">sexptype</span>() <span class="op">==</span> <span class="ident">libR_sys::EXTPTRSXP</span> {
-            <span class="kw">let</span> <span class="ident">tag</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">external_ptr_tag</span>() };
-            <span class="kw">if</span> <span class="ident">tag</span>.<span class="ident">as_str</span>() <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">std::any::type_name</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>()) {
-                <span class="kw">return</span> <span class="bool-val">true</span>;
+    <span class="doccomment">/// Check an external pointer tag.
+    /// This is used to wrap R objects.
+    </span><span class="attribute">#[doc(hidden)]
+    </span><span class="kw">fn </span>check_external_ptr_type&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">if </span><span class="self">self</span>.sexptype() == libR_sys::EXTPTRSXP {
+            <span class="kw">let </span>tag = <span class="kw">unsafe </span>{ <span class="self">self</span>.external_ptr_tag() };
+            <span class="kw">if </span>tag.as_str() == <span class="prelude-val">Some</span>(std::any::type_name::&lt;T&gt;()) {
+                <span class="kw">return </span><span class="bool-val">true</span>;
             }
         }
-        <span class="bool-val">false</span>
+        <span class="bool-val">false
+    </span>}
+
+    <span class="kw">fn </span>is_missing_arg(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ <span class="self">self</span>.get() == R_MissingArg }
     }
 
-    <span class="kw">fn</span> <span class="ident">is_missing_arg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">get</span>() <span class="op">==</span> <span class="ident">R_MissingArg</span> }
+    <span class="kw">fn </span>is_unbound_value(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ <span class="self">self</span>.get() == R_UnboundValue }
     }
 
-    <span class="kw">fn</span> <span class="ident">is_unbound_value</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">get</span>() <span class="op">==</span> <span class="ident">R_UnboundValue</span> }
+    <span class="kw">fn </span>is_package_env(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ R_IsPackageEnv(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="kw">fn</span> <span class="ident">is_package_env</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">R_IsPackageEnv</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="kw">fn </span>package_env_name(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Robj {
+        <span class="kw">unsafe </span>{ Robj::from_sexp(R_PackageEnvName(<span class="self">self</span>.get())) }
     }
 
-    <span class="kw">fn</span> <span class="ident">package_env_name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Robj</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_PackageEnvName</span>(<span class="self">self</span>.<span class="ident">get</span>())) }
+    <span class="kw">fn </span>is_namespace_env(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ R_IsNamespaceEnv(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="kw">fn</span> <span class="ident">is_namespace_env</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">R_IsNamespaceEnv</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="kw">fn </span>namespace_env_spec(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Robj {
+        <span class="kw">unsafe </span>{ Robj::from_sexp(R_NamespaceEnvSpec(<span class="self">self</span>.get())) }
     }
 
-    <span class="kw">fn</span> <span class="ident">namespace_env_spec</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Robj</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_NamespaceEnvSpec</span>(<span class="self">self</span>.<span class="ident">get</span>())) }
+    <span class="doccomment">/// Returns `true` if this is an ALTREP object.
+    </span><span class="kw">fn </span>is_altrep(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ ALTREP(<span class="self">self</span>.get()) != <span class="number">0 </span>}
     }
 
-    <span class="doccomment">/// Returns `true` if this is an ALTREP object.</span>
-    <span class="kw">fn</span> <span class="ident">is_altrep</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">ALTREP</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> }
+    <span class="doccomment">/// Returns `true` if this is an integer ALTREP object.
+    </span><span class="kw">fn </span>is_altinteger(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ ALTREP(<span class="self">self</span>.get()) != <span class="number">0 </span>&amp;&amp; TYPEOF(<span class="self">self</span>.get()) == INTSXP <span class="kw">as </span>i32 }
     }
 
-    <span class="doccomment">/// Returns `true` if this is an integer ALTREP object.</span>
-    <span class="kw">fn</span> <span class="ident">is_altinteger</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">ALTREP</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">TYPEOF</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">==</span> <span class="ident">INTSXP</span> <span class="kw">as</span> <span class="ident">i32</span> }
+    <span class="doccomment">/// Returns `true` if this is an real ALTREP object.
+    </span><span class="kw">fn </span>is_altreal(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ ALTREP(<span class="self">self</span>.get()) != <span class="number">0 </span>&amp;&amp; TYPEOF(<span class="self">self</span>.get()) == REALSXP <span class="kw">as </span>i32 }
     }
 
-    <span class="doccomment">/// Returns `true` if this is an real ALTREP object.</span>
-    <span class="kw">fn</span> <span class="ident">is_altreal</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">ALTREP</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">TYPEOF</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">==</span> <span class="ident">REALSXP</span> <span class="kw">as</span> <span class="ident">i32</span> }
+    <span class="doccomment">/// Returns `true` if this is an logical ALTREP object.
+    </span><span class="kw">fn </span>is_altlogical(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ ALTREP(<span class="self">self</span>.get()) != <span class="number">0 </span>&amp;&amp; TYPEOF(<span class="self">self</span>.get()) == LGLSXP <span class="kw">as </span>i32 }
     }
 
-    <span class="doccomment">/// Returns `true` if this is an logical ALTREP object.</span>
-    <span class="kw">fn</span> <span class="ident">is_altlogical</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">ALTREP</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">TYPEOF</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">==</span> <span class="ident">LGLSXP</span> <span class="kw">as</span> <span class="ident">i32</span> }
+    <span class="doccomment">/// Returns `true` if this is a raw ALTREP object.
+    </span><span class="kw">fn </span>is_altraw(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ ALTREP(<span class="self">self</span>.get()) != <span class="number">0 </span>&amp;&amp; TYPEOF(<span class="self">self</span>.get()) == RAWSXP <span class="kw">as </span>i32 }
     }
 
-    <span class="doccomment">/// Returns `true` if this is a raw ALTREP object.</span>
-    <span class="kw">fn</span> <span class="ident">is_altraw</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">ALTREP</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">TYPEOF</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">==</span> <span class="ident">RAWSXP</span> <span class="kw">as</span> <span class="ident">i32</span> }
+    <span class="doccomment">/// Returns `true` if this is an integer ALTREP object.
+    </span><span class="kw">fn </span>is_altstring(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">unsafe </span>{ ALTREP(<span class="self">self</span>.get()) != <span class="number">0 </span>&amp;&amp; TYPEOF(<span class="self">self</span>.get()) == STRSXP <span class="kw">as </span>i32 }
     }
 
-    <span class="doccomment">/// Returns `true` if this is an integer ALTREP object.</span>
-    <span class="kw">fn</span> <span class="ident">is_altstring</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> { <span class="ident">ALTREP</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">TYPEOF</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="op">==</span> <span class="ident">STRSXP</span> <span class="kw">as</span> <span class="ident">i32</span> }
-    }
-
-    <span class="doccomment">/// Generate a text representation of this object.</span>
-    <span class="kw">fn</span> <span class="ident">deparse</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="kw">use</span> <span class="kw">crate</span> <span class="kw">as</span> <span class="ident">extendr_api</span>;
-        <span class="kw">let</span> <span class="ident">strings</span>: <span class="ident">Strings</span> <span class="op">=</span> <span class="macro">call!</span>(<span class="string">&quot;deparse&quot;</span>, <span class="self">self</span>.<span class="ident">as_robj</span>())<span class="question-mark">?</span>.<span class="ident">try_into</span>()<span class="question-mark">?</span>;
-        <span class="kw">if</span> <span class="ident">strings</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> {
-            <span class="prelude-val">Ok</span>(<span class="ident">String::from</span>(<span class="ident">strings</span>.<span class="ident">elt</span>(<span class="number">0</span>).<span class="ident">as_str</span>()))
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Ok</span>(<span class="ident">strings</span>
-                .<span class="ident">iter</span>()
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">s</span>.<span class="ident">as_str</span>())
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()
-                .<span class="ident">join</span>(<span class="string">&quot;&quot;</span>))
+    <span class="doccomment">/// Generate a text representation of this object.
+    </span><span class="kw">fn </span>deparse(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
+        <span class="kw">use crate as </span>extendr_api;
+        <span class="kw">let </span>strings: Strings = <span class="macro">call!</span>(<span class="string">&quot;deparse&quot;</span>, <span class="self">self</span>.as_robj())<span class="question-mark">?</span>.try_into()<span class="question-mark">?</span>;
+        <span class="kw">if </span>strings.len() == <span class="number">1 </span>{
+            <span class="prelude-val">Ok</span>(String::from(strings.elt(<span class="number">0</span>).as_str()))
+        } <span class="kw">else </span>{
+            <span class="prelude-val">Ok</span>(strings
+                .iter()
+                .map(|s| s.as_str())
+                .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()
+                .join(<span class="string">&quot;&quot;</span>))
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Rinternals</span> <span class="kw">for</span> <span class="ident">Robj</span> {}
+<span class="kw">impl </span>Rinternals <span class="kw">for </span>Robj {}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

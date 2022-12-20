@@ -1,6 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/macros.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>macros.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container">
-                    <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../extendr_api/index.html">
-                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/macros.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>macros.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../extendr_api/index.html">
+                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -142,147 +141,147 @@
 <span id="140">140</span>
 <span id="141">141</span>
 <span id="142">142</span>
-</pre><pre class="rust"><code><span class="doccomment">/// Generates `impl` block and required traits for a vector type.</span>
-<span class="macro">macro_rules!</span> <span class="ident">gen_vector_wrapper_impl</span> {
+</pre><pre class="rust"><code><span class="doccomment">/// Generates `impl` block and required traits for a vector type.
+</span><span class="macro">macro_rules! </span>gen_vector_wrapper_impl {
     (
-        <span class="ident">vector_type</span>: <span class="macro-nonterminal">$</span><span class="kw">type</span> : <span class="macro-nonterminal">ident</span>,
-        <span class="ident">scalar_type</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar_type</span> : <span class="ident">ty</span>,
-        <span class="ident">primitive_type</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">primitive_type</span> : <span class="ident">ty</span>,
-        <span class="ident">r_prefix</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">r_prefix</span> : <span class="ident">ident</span>,
-        <span class="ident">SEXP</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">sexp</span> : <span class="ident">ident</span>,
-        <span class="ident">doc_name</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">doc_name</span> : <span class="ident">ident</span>,
-        <span class="ident">altrep_constructor</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">altrep_constructor</span> : <span class="ident">ident</span>,
+        vector_type: <span class="macro-nonterminal">$</span><span class="kw">type </span>: <span class="macro-nonterminal">ident</span>,
+        scalar_type: <span class="macro-nonterminal">$scalar_type </span>: ty,
+        primitive_type: <span class="macro-nonterminal">$primitive_type </span>: ty,
+        r_prefix: <span class="macro-nonterminal">$r_prefix </span>: ident,
+        SEXP: <span class="macro-nonterminal">$sexp </span>: ident,
+        doc_name: <span class="macro-nonterminal">$doc_name </span>: ident,
+        altrep_constructor: <span class="macro-nonterminal">$altrep_constructor </span>: ident,
     ) =&gt; {
-        <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-            <span class="kw">fn</span> <span class="macro-nonterminal">default</span>() -&gt; <span class="self">Self</span> {
+        <span class="kw">impl </span>Default <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+            <span class="kw">fn </span><span class="macro-nonterminal">default</span>() -&gt; <span class="self">Self </span>{
                 <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::new</span>(<span class="number">0</span>)
             }
         }
 
-        <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
+        <span class="kw">impl </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
             <span class="macro">paste::paste!</span>{
-                <span class="attribute">#[<span class="macro-nonterminal">doc</span> <span class="op">=</span> <span class="string">&quot;Create a new vector of &quot;</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">lower</span> <span class="string">&quot;.&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;```&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;use extendr_api::prelude::*;&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;test! {&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;   let vec = &quot;</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="string">&quot;::new(10);&quot;</span>]</span>
-                <span class="attribute">#[<span class="macro-nonterminal">doc</span> <span class="op">=</span> <span class="string">&quot;   assert_eq!(vec.is_&quot;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">r_prefix</span>:<span class="ident">lower</span> <span class="string">&quot;(), true);&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;   assert_eq!(vec.len(), 10);&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;}&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;```&quot;</span>]</span>
-                <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">len</span>: <span class="ident">usize</span>) -&gt; <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-                    <span class="comment">// TODO: Check if impacts performance.</span>
-                    <span class="kw">let</span> <span class="macro-nonterminal">iter</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">len</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">primitive_type</span><span class="op">&gt;</span><span class="ident">::default</span>());
-                    <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span><span class="macro-nonterminal">::from_values</span>(<span class="ident">iter</span>)
+                <span class="attribute">#[<span class="macro-nonterminal">doc </span>= <span class="string">&quot;Create a new vector of &quot; </span><span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">lower </span><span class="string">&quot;.&quot;</span>]
+                #[doc = <span class="string">&quot;```&quot;</span>]
+                #[doc = <span class="string">&quot;use extendr_api::prelude::*;&quot;</span>]
+                #[doc = <span class="string">&quot;test! {&quot;</span>]
+                #[doc = <span class="string">&quot;   let vec = &quot; </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">&quot;::new(10);&quot;</span>]
+                #[<span class="macro-nonterminal">doc </span>= <span class="string">&quot;   assert_eq!(vec.is_&quot; </span><span class="macro-nonterminal">$r_prefix</span>:lower <span class="string">&quot;(), true);&quot;</span>]
+                #[doc = <span class="string">&quot;   assert_eq!(vec.len(), 10);&quot;</span>]
+                #[doc = <span class="string">&quot;}&quot;</span>]
+                #[doc = <span class="string">&quot;```&quot;</span>]
+                </span><span class="kw">pub fn </span>new(len: usize) -&gt; <span class="macro-nonterminal">$</span><span class="kw">type </span>{
+                    <span class="comment">// TODO: Check if impacts performance.
+                    </span><span class="kw">let </span><span class="macro-nonterminal">iter </span>= (<span class="number">0</span>..len).map(|<span class="kw">_</span>| &lt;<span class="macro-nonterminal">$primitive_type</span>&gt;::default());
+                    &lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt;<span class="macro-nonterminal">::from_values</span>(iter)
                 }
             }
             <span class="macro">paste::paste!</span>{
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;Wrapper for creating non-ALTREP &quot;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">doc_name</span> <span class="string">&quot; (&quot;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">sexp</span> <span class="string">&quot;) vectors from iterators.&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;The iterator must be exact.&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;If you want a more generalised constructor, use `iter.collect::&lt;&quot;</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="string">&quot;&gt;()`.&quot;</span>]</span>
-                <span class="kw">pub</span> <span class="kw">fn</span> <span class="macro-nonterminal">from_values</span><span class="op">&lt;</span><span class="ident">V</span><span class="op">&gt;</span>(<span class="ident">values</span>: <span class="ident">V</span>) -&gt; <span class="self">Self</span>
-                <span class="kw">where</span>
-                    <span class="ident">V</span>: <span class="ident">IntoIterator</span>,
-                    <span class="ident">V::IntoIter</span>: <span class="ident">ExactSizeIterator</span>,
-                    <span class="ident">V::Item</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar_type</span><span class="op">&gt;</span>,
+                <span class="attribute">#[doc = <span class="string">&quot;Wrapper for creating non-ALTREP &quot; </span><span class="macro-nonterminal">$doc_name </span><span class="string">&quot; (&quot; </span><span class="macro-nonterminal">$sexp </span><span class="string">&quot;) vectors from iterators.&quot;</span>]
+                #[doc = <span class="string">&quot;The iterator must be exact.&quot;</span>]
+                #[doc = <span class="string">&quot;If you want a more generalised constructor, use `iter.collect::&lt;&quot; </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">&quot;&gt;()`.&quot;</span>]
+                </span><span class="kw">pub fn </span><span class="macro-nonterminal">from_values</span>&lt;V&gt;(values: V) -&gt; <span class="self">Self
+                </span><span class="kw">where
+                    </span>V: IntoIterator,
+                    V::IntoIter: ExactSizeIterator,
+                    V::Item: Into&lt;<span class="macro-nonterminal">$scalar_type</span>&gt;,
                 {
-                    <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
-                        <span class="kw">let</span> <span class="ident">values</span>: <span class="ident">V::IntoIter</span> <span class="op">=</span> <span class="ident">values</span>.<span class="ident">into_iter</span>();
+                    single_threaded(|| {
+                        <span class="kw">let </span>values: V::IntoIter = values.into_iter();
 
-                        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">Robj::alloc_vector</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">sexp</span>, <span class="ident">values</span>.<span class="ident">len</span>());
-                        <span class="kw">let</span> <span class="ident">dest</span>: <span class="kw-2">&amp;mut</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar_type</span>] <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_typed_slice_mut</span>().<span class="ident">unwrap</span>();
+                        <span class="kw">let </span><span class="kw-2">mut </span>robj = Robj::alloc_vector(<span class="macro-nonterminal">$sexp</span>, values.len());
+                        <span class="kw">let </span>dest: <span class="kw-2">&amp;mut </span>[<span class="macro-nonterminal">$scalar_type</span>] = robj.as_typed_slice_mut().unwrap();
 
-                        <span class="kw">for</span> (<span class="ident">d</span>, <span class="ident">v</span>) <span class="kw">in</span> <span class="ident">dest</span>.<span class="ident">iter_mut</span>().<span class="ident">zip</span>(<span class="ident">values</span>) {
-                            <span class="kw-2">*</span><span class="ident">d</span> <span class="op">=</span> <span class="ident">v</span>.<span class="ident">into</span>();
+                        <span class="kw">for </span>(d, v) <span class="kw">in </span>dest.iter_mut().zip(values) {
+                            <span class="kw-2">*</span>d = v.into();
                         }
-                        <span class="self">Self</span> { <span class="ident">robj</span> }
+                        <span class="self">Self </span>{ robj }
                     })
                 }
             }
 
             <span class="macro">paste::paste!</span>{
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;Wrapper for creating ALTREP &quot;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">doc_name</span> <span class="string">&quot; (&quot;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">sexp</span> <span class="string">&quot;) vectors from iterators.&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;The iterator must be exact, cloneable and implement Debug.&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;If you want a more generalised constructor, use `iter.collect::&lt;&quot;</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="string">&quot;&gt;()`.&quot;</span>]</span>
-                <span class="kw">pub</span> <span class="kw">fn</span> <span class="macro-nonterminal">from_values_altrep</span><span class="op">&lt;</span><span class="ident">V</span><span class="op">&gt;</span>(<span class="ident">values</span>: <span class="ident">V</span>) -&gt; <span class="self">Self</span>
-                <span class="kw">where</span>
-                    <span class="ident">V</span>: <span class="ident">IntoIterator</span>,
-                    <span class="ident">V::IntoIter</span>: <span class="ident">ExactSizeIterator</span> <span class="op">+</span> <span class="ident">std::fmt::Debug</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="lifetime">&#39;static</span> <span class="op">+</span> <span class="ident">std::any::Any</span>,
-                    <span class="ident">V::Item</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar_type</span><span class="op">&gt;</span>,
+                <span class="attribute">#[doc = <span class="string">&quot;Wrapper for creating ALTREP &quot; </span><span class="macro-nonterminal">$doc_name </span><span class="string">&quot; (&quot; </span><span class="macro-nonterminal">$sexp </span><span class="string">&quot;) vectors from iterators.&quot;</span>]
+                #[doc = <span class="string">&quot;The iterator must be exact, cloneable and implement Debug.&quot;</span>]
+                #[doc = <span class="string">&quot;If you want a more generalised constructor, use `iter.collect::&lt;&quot; </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">&quot;&gt;()`.&quot;</span>]
+                </span><span class="kw">pub fn </span><span class="macro-nonterminal">from_values_altrep</span>&lt;V&gt;(values: V) -&gt; <span class="self">Self
+                </span><span class="kw">where
+                    </span>V: IntoIterator,
+                    V::IntoIter: ExactSizeIterator + std::fmt::Debug + Clone + <span class="lifetime">&#39;static </span>+ std::any::Any,
+                    V::Item: Into&lt;<span class="macro-nonterminal">$scalar_type</span>&gt;,
                 {
-                    <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
-                        <span class="kw">let</span> <span class="ident">values</span>: <span class="ident">V::IntoIter</span> <span class="op">=</span> <span class="ident">values</span>.<span class="ident">into_iter</span>();
+                    single_threaded(|| {
+                        <span class="kw">let </span>values: V::IntoIter = values.into_iter();
 
-                        <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span>
-                                  <span class="ident">Altrep</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">altrep_constructor</span>(<span class="ident">values</span>)
-                                .<span class="ident">try_into</span>()
-                                .<span class="ident">unwrap</span>();
-                        <span class="self">Self</span> { <span class="ident">robj</span> }
+                        <span class="kw">let </span>robj =
+                                  Altrep::<span class="macro-nonterminal">$altrep_constructor</span>(values)
+                                .try_into()
+                                .unwrap();
+                        <span class="self">Self </span>{ robj }
                     })
                 }
             }
 
-            <span class="macro">paste::paste!</span> {
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;Get a single element from the vector.&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;Note that this is very inefficient in a tight loop.&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;```&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;use extendr_api::prelude::*;&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;test! {&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;   let vec = &quot;</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> <span class="string">&quot;::new(10);&quot;</span>]</span>
-                <span class="attribute">#[<span class="macro-nonterminal">doc</span> <span class="op">=</span> <span class="string">&quot;   assert_eq!(vec.elt(0), &lt;&quot;</span>$<span class="ident">scalar_type</span><span class="string">&quot;&gt;::default());&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;   assert_eq!(vec.elt(9), &lt;&quot;</span>$<span class="ident">scalar_type</span><span class="string">&quot;&gt;::default());&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;   assert!(vec.elt(10).is_na());&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;}&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;```&quot;</span>]</span>
-                <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>) -&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar_type</span> {
-                    <span class="comment">// Defensive check for oob</span>
-                    <span class="comment">// This check will not be needed in later releases of R</span>
-                    <span class="kw">if</span>(<span class="ident">index</span> <span class="op">&gt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span>()) {
-                        <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar_type</span><span class="op">&gt;</span><span class="ident">::na</span>()
-                    } <span class="kw">else</span> {
-                        <span class="kw">unsafe</span> { [<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">r_prefix</span> <span class="ident">_ELT</span><span class="op">&gt;</span>](<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">index</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>).<span class="ident">into</span>() }
+            <span class="macro">paste::paste! </span>{
+                <span class="attribute">#[doc = <span class="string">&quot;Get a single element from the vector.&quot;</span>]
+                #[doc = <span class="string">&quot;Note that this is very inefficient in a tight loop.&quot;</span>]
+                #[doc = <span class="string">&quot;```&quot;</span>]
+                #[doc = <span class="string">&quot;use extendr_api::prelude::*;&quot;</span>]
+                #[doc = <span class="string">&quot;test! {&quot;</span>]
+                #[doc = <span class="string">&quot;   let vec = &quot; </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">&quot;::new(10);&quot;</span>]
+                #[<span class="macro-nonterminal">doc </span>= <span class="string">&quot;   assert_eq!(vec.elt(0), &lt;&quot;</span>$scalar_type<span class="string">&quot;&gt;::default());&quot;</span>]
+                #[doc = <span class="string">&quot;   assert_eq!(vec.elt(9), &lt;&quot;</span>$scalar_type<span class="string">&quot;&gt;::default());&quot;</span>]
+                #[doc = <span class="string">&quot;   assert!(vec.elt(10).is_na());&quot;</span>]
+                #[doc = <span class="string">&quot;}&quot;</span>]
+                #[doc = <span class="string">&quot;```&quot;</span>]
+                </span><span class="kw">pub fn </span>elt(<span class="kw-2">&amp;</span><span class="self">self</span>, index: usize) -&gt; <span class="macro-nonterminal">$scalar_type </span>{
+                    <span class="comment">// Defensive check for oob
+                    // This check will not be needed in later releases of R
+                    </span><span class="kw">if</span>(index &gt;= <span class="self">self</span>.len()) {
+                        &lt;<span class="macro-nonterminal">$scalar_type</span>&gt;::na()
+                    } <span class="kw">else </span>{
+                        <span class="kw">unsafe </span>{ [&lt;<span class="macro-nonterminal">$r_prefix </span>_ELT&gt;](<span class="self">self</span>.get(), index <span class="kw">as </span>R_xlen_t).into() }
                     }
                 }
             }
 
             <span class="macro">paste::paste!</span>{
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;Return an iterator for a &quot;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">doc_name</span> <span class="string">&quot; object.&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;Forces ALTREP objects to manifest.&quot;</span>]</span>
-                <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar_type</span><span class="op">&gt;</span> {
-                    <span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">as_typed_slice</span>().<span class="ident">unwrap</span>().<span class="ident">iter</span>().<span class="ident">cloned</span>()
+                <span class="attribute">#[doc = <span class="string">&quot;Return an iterator for a &quot; </span><span class="macro-nonterminal">$doc_name </span><span class="string">&quot; object.&quot;</span>]
+                #[doc = <span class="string">&quot;Forces ALTREP objects to manifest.&quot;</span>]
+                </span><span class="kw">pub fn </span>iter(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Iterator&lt;Item = <span class="macro-nonterminal">$scalar_type</span>&gt; {
+                    <span class="self">self</span>.as_robj().as_typed_slice().unwrap().iter().cloned()
                 }
             }
 
             <span class="macro">paste::paste!</span>{
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;Return a writable iterator for a &quot;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">doc_name</span> <span class="string">&quot; object.&quot;</span>]</span>
-                <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;Forces ALTREP objects to manifest.&quot;</span>]</span>
-                <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar_type</span><span class="op">&gt;</span> {
-                    <span class="self">self</span>.<span class="ident">as_robj_mut</span>().<span class="ident">as_typed_slice_mut</span>().<span class="ident">unwrap</span>().<span class="ident">iter_mut</span>()
+                <span class="attribute">#[doc = <span class="string">&quot;Return a writable iterator for a &quot; </span><span class="macro-nonterminal">$doc_name </span><span class="string">&quot; object.&quot;</span>]
+                #[doc = <span class="string">&quot;Forces ALTREP objects to manifest.&quot;</span>]
+                </span><span class="kw">pub fn </span>iter_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Iterator&lt;Item = <span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$scalar_type</span>&gt; {
+                    <span class="self">self</span>.as_robj_mut().as_typed_slice_mut().unwrap().iter_mut()
                 }
             }
         }
 
-        <span class="kw">impl</span> <span class="ident">FromIterator</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar_type</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-            <span class="doccomment">/// A more generalised iterator collector for small vectors.</span>
-            <span class="doccomment">/// Generates a non-ALTREP vector.</span>
-            <span class="kw">fn</span> <span class="macro-nonterminal">from_iter</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar_type</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">iter</span>: <span class="ident">T</span>) -&gt; <span class="self">Self</span> {
-                <span class="comment">// Collect into a vector first.</span>
-                <span class="comment">// TODO: specialise for ExactSizeIterator.</span>
-                <span class="kw">let</span> <span class="ident">values</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar_type</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">iter</span>.<span class="ident">into_iter</span>().<span class="ident">collect</span>();
+        <span class="kw">impl </span>FromIterator&lt;<span class="macro-nonterminal">$scalar_type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+            <span class="doccomment">/// A more generalised iterator collector for small vectors.
+            /// Generates a non-ALTREP vector.
+            </span><span class="kw">fn </span><span class="macro-nonterminal">from_iter</span>&lt;T: IntoIterator&lt;Item = <span class="macro-nonterminal">$scalar_type</span>&gt;&gt;(iter: T) -&gt; <span class="self">Self </span>{
+                <span class="comment">// Collect into a vector first.
+                // TODO: specialise for ExactSizeIterator.
+                </span><span class="kw">let </span>values: Vec&lt;<span class="macro-nonterminal">$scalar_type</span>&gt; = iter.into_iter().collect();
 
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">Robj::alloc_vector</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">sexp</span>, <span class="ident">values</span>.<span class="ident">len</span>());
-                <span class="kw">let</span> <span class="ident">dest</span>: <span class="kw-2">&amp;mut</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">scalar_type</span>] <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_typed_slice_mut</span>().<span class="ident">unwrap</span>();
+                <span class="kw">let </span><span class="kw-2">mut </span>robj = Robj::alloc_vector(<span class="macro-nonterminal">$sexp</span>, values.len());
+                <span class="kw">let </span>dest: <span class="kw-2">&amp;mut </span>[<span class="macro-nonterminal">$scalar_type</span>] = robj.as_typed_slice_mut().unwrap();
 
-                <span class="kw">for</span> (<span class="ident">d</span>, <span class="ident">v</span>) <span class="kw">in</span> <span class="ident">dest</span>.<span class="ident">iter_mut</span>().<span class="ident">zip</span>(<span class="ident">values</span>) {
-                    <span class="kw-2">*</span><span class="ident">d</span> <span class="op">=</span> <span class="ident">v</span>;
+                <span class="kw">for </span>(d, v) <span class="kw">in </span>dest.iter_mut().zip(values) {
+                    <span class="kw-2">*</span>d = v;
                 }
 
-                <span class="macro-nonterminal">$</span><span class="kw">type</span> { <span class="macro-nonterminal">robj</span> }
+                <span class="macro-nonterminal">$</span><span class="kw">type </span>{ <span class="macro-nonterminal">robj </span>}
             }
         }
     }
 }
 
-<span class="kw">pub</span>(<span class="kw">in</span> <span class="ident"><span class="kw">crate</span>::wrapper</span>) <span class="kw">use</span> <span class="ident">gen_vector_wrapper_impl</span>;
+<span class="kw">pub</span>(<span class="kw">in </span><span class="kw">crate</span>::wrapper) <span class="kw">use </span>gen_vector_wrapper_impl;
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

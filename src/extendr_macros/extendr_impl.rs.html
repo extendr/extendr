@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-macros/src/extendr_impl.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>extendr_impl.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../extendr_macros/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../extendr_macros/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../extendr_macros/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-macros/src/extendr_impl.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>extendr_impl.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../extendr_macros/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -189,196 +189,196 @@
 <span id="189">189</span>
 <span id="190">190</span>
 <span id="191">191</span>
-</pre><pre class="rust"><code><span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">proc_macro</span>;
-<span class="kw">use</span> <span class="ident">proc_macro::TokenStream</span>;
-<span class="kw">use</span> <span class="ident">quote</span>::{<span class="ident">format_ident</span>, <span class="ident">quote</span>};
-<span class="kw">use</span> <span class="ident">syn</span>::{<span class="ident">ItemFn</span>, <span class="ident">ItemImpl</span>};
+</pre><pre class="rust"><code><span class="kw">extern crate </span>proc_macro;
+<span class="kw">use </span>proc_macro::TokenStream;
+<span class="kw">use </span>quote::{format_ident, quote};
+<span class="kw">use </span>syn::{ItemFn, ItemImpl};
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::wrappers</span>;
+<span class="kw">use </span><span class="kw">crate</span>::wrappers;
 
-<span class="doccomment">/// Handle trait implementations.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Example:</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// #[derive(Debug)]</span>
-<span class="doccomment">/// struct Person {</span>
-<span class="doccomment">///     pub name: String,</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// #[extendr]</span>
-<span class="doccomment">/// impl Person {</span>
-<span class="doccomment">///     fn new() -&gt; Self {</span>
-<span class="doccomment">///         Self { name: &quot;&quot;.to_string() }</span>
-<span class="doccomment">///     }</span>
-<span class="doccomment">///     fn set_name(&amp;mut self, name: &amp;str) {</span>
-<span class="doccomment">///         self.name = name.to_string();</span>
-<span class="doccomment">///     }</span>
-<span class="doccomment">///     fn name(&amp;self) -&gt; &amp;str {</span>
-<span class="doccomment">///         self.name.as_str()</span>
-<span class="doccomment">///     }</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// #[extendr]</span>
-<span class="doccomment">/// fn aux_func() {</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// // Macro to generate exports</span>
-<span class="doccomment">/// extendr_module! {</span>
-<span class="doccomment">///     mod classes;</span>
-<span class="doccomment">///     impl Person;</span>
-<span class="doccomment">///     fn aux_func;</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extendr_impl</span>(<span class="kw-2">mut</span> <span class="ident">item_impl</span>: <span class="ident">ItemImpl</span>) -&gt; <span class="ident">TokenStream</span> {
-    <span class="comment">// Only `impl name { }` allowed</span>
-    <span class="kw">if</span> <span class="ident">item_impl</span>.<span class="ident">defaultness</span>.<span class="ident">is_some</span>() {
-        <span class="kw">return</span> <span class="macro">quote!</span> { <span class="macro">compile_error!</span>(<span class="string">&quot;default not allowed in #[extendr] impl&quot;</span>); }.<span class="ident">into</span>();
+<span class="doccomment">/// Handle trait implementations.
+///
+/// Example:
+/// ```ignore
+/// use extendr_api::prelude::*;
+/// #[derive(Debug)]
+/// struct Person {
+///     pub name: String,
+/// }
+/// #[extendr]
+/// impl Person {
+///     fn new() -&gt; Self {
+///         Self { name: &quot;&quot;.to_string() }
+///     }
+///     fn set_name(&amp;mut self, name: &amp;str) {
+///         self.name = name.to_string();
+///     }
+///     fn name(&amp;self) -&gt; &amp;str {
+///         self.name.as_str()
+///     }
+/// }
+/// #[extendr]
+/// fn aux_func() {
+/// }
+/// // Macro to generate exports
+/// extendr_module! {
+///     mod classes;
+///     impl Person;
+///     fn aux_func;
+/// }
+/// ```
+</span><span class="kw">pub fn </span>extendr_impl(<span class="kw-2">mut </span>item_impl: ItemImpl) -&gt; TokenStream {
+    <span class="comment">// Only `impl name { }` allowed
+    </span><span class="kw">if </span>item_impl.defaultness.is_some() {
+        <span class="kw">return </span><span class="macro">quote! </span>{ <span class="macro">compile_error!</span>(<span class="string">&quot;default not allowed in #[extendr] impl&quot;</span>); }.into();
     }
 
-    <span class="kw">if</span> <span class="ident">item_impl</span>.<span class="ident">unsafety</span>.<span class="ident">is_some</span>() {
-        <span class="kw">return</span> <span class="macro">quote!</span> { <span class="macro">compile_error!</span>(<span class="string">&quot;unsafe not allowed in #[extendr] impl&quot;</span>); }.<span class="ident">into</span>();
+    <span class="kw">if </span>item_impl.unsafety.is_some() {
+        <span class="kw">return </span><span class="macro">quote! </span>{ <span class="macro">compile_error!</span>(<span class="string">&quot;unsafe not allowed in #[extendr] impl&quot;</span>); }.into();
     }
 
-    <span class="kw">if</span> <span class="ident">item_impl</span>.<span class="ident">generics</span>.<span class="ident">const_params</span>().<span class="ident">count</span>() <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-        <span class="kw">return</span> <span class="macro">quote!</span> { <span class="macro">compile_error!</span>(<span class="string">&quot;const params not allowed in #[extendr] impl&quot;</span>); }.<span class="ident">into</span>();
+    <span class="kw">if </span>item_impl.generics.const_params().count() != <span class="number">0 </span>{
+        <span class="kw">return </span><span class="macro">quote! </span>{ <span class="macro">compile_error!</span>(<span class="string">&quot;const params not allowed in #[extendr] impl&quot;</span>); }.into();
     }
 
-    <span class="kw">if</span> <span class="ident">item_impl</span>.<span class="ident">generics</span>.<span class="ident">type_params</span>().<span class="ident">count</span>() <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-        <span class="kw">return</span> <span class="macro">quote!</span> { <span class="macro">compile_error!</span>(<span class="string">&quot;type params not allowed in #[extendr] impl&quot;</span>); }.<span class="ident">into</span>();
+    <span class="kw">if </span>item_impl.generics.type_params().count() != <span class="number">0 </span>{
+        <span class="kw">return </span><span class="macro">quote! </span>{ <span class="macro">compile_error!</span>(<span class="string">&quot;type params not allowed in #[extendr] impl&quot;</span>); }.into();
     }
 
-    <span class="comment">// if item_impl.generics.lifetimes().count() != 0 {</span>
-    <span class="comment">//     return quote! { compile_error!(&quot;lifetime params not allowed in #[extendr] impl&quot;); }.into();</span>
-    <span class="comment">// }</span>
+    <span class="comment">// if item_impl.generics.lifetimes().count() != 0 {
+    //     return quote! { compile_error!(&quot;lifetime params not allowed in #[extendr] impl&quot;); }.into();
+    // }
 
-    <span class="kw">if</span> <span class="ident">item_impl</span>.<span class="ident">generics</span>.<span class="ident">where_clause</span>.<span class="ident">is_some</span>() {
-        <span class="kw">return</span> <span class="macro">quote!</span> { <span class="macro">compile_error!</span>(<span class="string">&quot;where clause not allowed in #[extendr] impl&quot;</span>); }.<span class="ident">into</span>();
+    </span><span class="kw">if </span>item_impl.generics.where_clause.is_some() {
+        <span class="kw">return </span><span class="macro">quote! </span>{ <span class="macro">compile_error!</span>(<span class="string">&quot;where clause not allowed in #[extendr] impl&quot;</span>); }.into();
     }
 
-    <span class="kw">let</span> <span class="ident">opts</span> <span class="op">=</span> <span class="ident">wrappers::ExtendrOptions::default</span>();
-    <span class="kw">let</span> <span class="ident">self_ty</span> <span class="op">=</span> <span class="ident">item_impl</span>.<span class="ident">self_ty</span>.<span class="ident">as_ref</span>();
-    <span class="kw">let</span> <span class="ident">self_ty_name</span> <span class="op">=</span> <span class="ident">wrappers::type_name</span>(<span class="ident">self_ty</span>);
-    <span class="kw">let</span> <span class="ident">prefix</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{}__&quot;</span>, <span class="ident">self_ty_name</span>);
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">method_meta_names</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-    <span class="kw">let</span> <span class="ident">doc_string</span> <span class="op">=</span> <span class="ident">wrappers::get_doc_string</span>(<span class="kw-2">&amp;</span><span class="ident">item_impl</span>.<span class="ident">attrs</span>);
+    <span class="kw">let </span>opts = wrappers::ExtendrOptions::default();
+    <span class="kw">let </span>self_ty = item_impl.self_ty.as_ref();
+    <span class="kw">let </span>self_ty_name = wrappers::type_name(self_ty);
+    <span class="kw">let </span>prefix = <span class="macro">format!</span>(<span class="string">&quot;{}__&quot;</span>, self_ty_name);
+    <span class="kw">let </span><span class="kw-2">mut </span>method_meta_names = Vec::new();
+    <span class="kw">let </span>doc_string = wrappers::get_doc_string(<span class="kw-2">&amp;</span>item_impl.attrs);
 
-    <span class="comment">// Generate wrappers for methods.</span>
-    <span class="comment">// eg.</span>
-    <span class="comment">// ```</span>
-    <span class="comment">// #[no_mangle]</span>
-    <span class="comment">// #[allow(non_snake_case)]</span>
-    <span class="comment">// pub extern &quot;C&quot; fn wrap__Person__new() -&gt; extendr_api::SEXP {</span>
-    <span class="comment">//     unsafe {</span>
-    <span class="comment">//         use extendr_api::FromRobj;</span>
-    <span class="comment">//         extendr_api::Robj::from(&lt;Person&gt;::new()).get()</span>
-    <span class="comment">//     }</span>
-    <span class="comment">// }</span>
-    <span class="comment">// ```</span>
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">wrappers</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ItemFn</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-    <span class="kw">for</span> <span class="ident">impl_item</span> <span class="kw">in</span> <span class="kw-2">&amp;mut</span> <span class="ident">item_impl</span>.<span class="ident">items</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">syn::ImplItem::Method</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">method</span>) <span class="op">=</span> <span class="ident">impl_item</span> {
-            <span class="ident">method_meta_names</span>.<span class="ident">push</span>(<span class="macro">format_ident!</span>(
+    <span class="comment">// Generate wrappers for methods.
+    // eg.
+    // ```
+    // #[no_mangle]
+    // #[allow(non_snake_case)]
+    // pub extern &quot;C&quot; fn wrap__Person__new() -&gt; extendr_api::SEXP {
+    //     unsafe {
+    //         use extendr_api::FromRobj;
+    //         extendr_api::Robj::from(&lt;Person&gt;::new()).get()
+    //     }
+    // }
+    // ```
+    </span><span class="kw">let </span><span class="kw-2">mut </span>wrappers: Vec&lt;ItemFn&gt; = Vec::new();
+    <span class="kw">for </span>impl_item <span class="kw">in </span><span class="kw-2">&amp;mut </span>item_impl.items {
+        <span class="kw">if let </span>syn::ImplItem::Method(<span class="kw-2">ref mut </span>method) = impl_item {
+            method_meta_names.push(<span class="macro">format_ident!</span>(
                 <span class="string">&quot;{}{}__{}&quot;</span>,
-                <span class="ident">wrappers::META_PREFIX</span>,
-                <span class="ident">self_ty_name</span>,
-                <span class="ident">method</span>.<span class="ident">sig</span>.<span class="ident">ident</span>
+                wrappers::META_PREFIX,
+                self_ty_name,
+                method.sig.ident
             ));
-            <span class="ident">wrappers::make_function_wrappers</span>(
-                <span class="kw-2">&amp;</span><span class="ident">opts</span>,
-                <span class="kw-2">&amp;mut</span> <span class="ident">wrappers</span>,
-                <span class="ident">prefix</span>.<span class="ident">as_str</span>(),
-                <span class="kw-2">&amp;</span><span class="ident">method</span>.<span class="ident">attrs</span>,
-                <span class="kw-2">&amp;mut</span> <span class="ident">method</span>.<span class="ident">sig</span>,
-                <span class="prelude-val">Some</span>(<span class="ident">self_ty</span>),
+            wrappers::make_function_wrappers(
+                <span class="kw-2">&amp;</span>opts,
+                <span class="kw-2">&amp;mut </span>wrappers,
+                prefix.as_str(),
+                <span class="kw-2">&amp;</span>method.attrs,
+                <span class="kw-2">&amp;mut </span>method.sig,
+                <span class="prelude-val">Some</span>(self_ty),
             );
         }
     }
 
-    <span class="kw">let</span> <span class="ident">meta_name</span> <span class="op">=</span> <span class="macro">format_ident!</span>(<span class="string">&quot;{}{}&quot;</span>, <span class="ident">wrappers::META_PREFIX</span>, <span class="ident">self_ty_name</span>);
+    <span class="kw">let </span>meta_name = <span class="macro">format_ident!</span>(<span class="string">&quot;{}{}&quot;</span>, wrappers::META_PREFIX, self_ty_name);
 
-    <span class="kw">let</span> <span class="ident">finalizer_name</span> <span class="op">=</span> <span class="macro">format_ident!</span>(<span class="string">&quot;__finalize__{}&quot;</span>, <span class="ident">self_ty_name</span>);
+    <span class="kw">let </span>finalizer_name = <span class="macro">format_ident!</span>(<span class="string">&quot;__finalize__{}&quot;</span>, self_ty_name);
 
-    <span class="kw">let</span> <span class="ident">expanded</span> <span class="op">=</span> <span class="ident">TokenStream::from</span>(<span class="macro">quote!</span> {
-        <span class="comment">// The impl itself copied from the source.</span>
-        #<span class="ident">item_impl</span>
+    <span class="kw">let </span>expanded = TokenStream::from(<span class="macro">quote! </span>{
+        <span class="comment">// The impl itself copied from the source.
+        </span>#item_impl
 
-        <span class="comment">// Function wrappers</span>
-        #( #<span class="ident">wrappers</span> )<span class="op">*</span>
+        <span class="comment">// Function wrappers
+        </span>#( #wrappers )*
 
-        <span class="comment">// Input conversion function for this type.</span>
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">extendr_api::FromRobj</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw-2">&amp;</span>#<span class="ident">self_ty</span> {
-            <span class="kw">fn</span> <span class="ident">from_robj</span>(<span class="ident">robj</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>) -&gt; <span class="ident">std::result::Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
-                <span class="kw">if</span> <span class="ident">robj</span>.<span class="ident">check_external_ptr_type</span>::<span class="op">&lt;</span>#<span class="ident">self_ty</span><span class="op">&gt;</span>() {
-                    <span class="prelude-val">Ok</span>(<span class="kw">unsafe</span> { <span class="ident">std::mem::transmute</span>(<span class="ident">robj</span>.<span class="ident">external_ptr_addr</span>::<span class="op">&lt;</span>#<span class="ident">self_ty</span><span class="op">&gt;</span>()) })
-                } <span class="kw">else</span> {
-                    <span class="prelude-val">Err</span>(<span class="macro">concat!</span>(<span class="string">&quot;expected &quot;</span>, #<span class="ident">self_ty_name</span>))
+        <span class="comment">// Input conversion function for this type.
+        </span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; extendr_api::FromRobj&lt;<span class="lifetime">&#39;a</span>&gt; <span class="kw">for </span><span class="kw-2">&amp;</span>#self_ty {
+            <span class="kw">fn </span>from_robj(robj: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Robj) -&gt; std::result::Result&lt;<span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt; {
+                <span class="kw">if </span>robj.check_external_ptr_type::&lt;#self_ty&gt;() {
+                    <span class="prelude-val">Ok</span>(<span class="kw">unsafe </span>{ std::mem::transmute(robj.external_ptr_addr::&lt;#self_ty&gt;()) })
+                } <span class="kw">else </span>{
+                    <span class="prelude-val">Err</span>(<span class="macro">concat!</span>(<span class="string">&quot;expected &quot;</span>, #self_ty_name))
                 }
             }
         }
 
-        <span class="comment">// Input conversion function for a reference to this type.</span>
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">extendr_api::FromRobj</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw-2">&amp;mut</span> #<span class="ident">self_ty</span> {
-            <span class="kw">fn</span> <span class="ident">from_robj</span>(<span class="ident">robj</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>) -&gt; <span class="ident">std::result::Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
-                <span class="kw">if</span> <span class="ident">robj</span>.<span class="ident">check_external_ptr_type</span>::<span class="op">&lt;</span>#<span class="ident">self_ty</span><span class="op">&gt;</span>() {
-                    <span class="prelude-val">Ok</span>(<span class="kw">unsafe</span> { <span class="ident">std::mem::transmute</span>(<span class="ident">robj</span>.<span class="ident">external_ptr_addr</span>::<span class="op">&lt;</span>#<span class="ident">self_ty</span><span class="op">&gt;</span>()) })
-                } <span class="kw">else</span> {
-                    <span class="prelude-val">Err</span>(<span class="macro">concat!</span>(<span class="string">&quot;expected &quot;</span>, #<span class="ident">self_ty_name</span>))
+        <span class="comment">// Input conversion function for a reference to this type.
+        </span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; extendr_api::FromRobj&lt;<span class="lifetime">&#39;a</span>&gt; <span class="kw">for </span><span class="kw-2">&amp;mut </span>#self_ty {
+            <span class="kw">fn </span>from_robj(robj: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Robj) -&gt; std::result::Result&lt;<span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt; {
+                <span class="kw">if </span>robj.check_external_ptr_type::&lt;#self_ty&gt;() {
+                    <span class="prelude-val">Ok</span>(<span class="kw">unsafe </span>{ std::mem::transmute(robj.external_ptr_addr::&lt;#self_ty&gt;()) })
+                } <span class="kw">else </span>{
+                    <span class="prelude-val">Err</span>(<span class="macro">concat!</span>(<span class="string">&quot;expected &quot;</span>, #self_ty_name))
                 }
             }
         }
 
-        <span class="comment">// Output conversion function for this type.</span>
-        <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span>#<span class="ident">self_ty</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">value</span>: #<span class="ident">self_ty</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">unsafe</span> {
-                    <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">Box::into_raw</span>(<span class="ident">Box::new</span>(<span class="ident">value</span>));
-                    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">Robj::make_external_ptr</span>(<span class="ident">ptr</span>, <span class="ident">Robj::from</span>(()));
-                    <span class="ident">res</span>.<span class="ident">set_attrib</span>(<span class="ident">class_symbol</span>(), #<span class="ident">self_ty_name</span>).<span class="ident">unwrap</span>();
-                    <span class="ident">res</span>.<span class="ident">register_c_finalizer</span>(<span class="prelude-val">Some</span>(#<span class="ident">finalizer_name</span>));
-                    <span class="ident">res</span>
+        <span class="comment">// Output conversion function for this type.
+        </span><span class="kw">impl </span>From&lt;#self_ty&gt; <span class="kw">for </span>Robj {
+            <span class="kw">fn </span>from(value: #self_ty) -&gt; <span class="self">Self </span>{
+                <span class="kw">unsafe </span>{
+                    <span class="kw">let </span>ptr = Box::into_raw(Box::new(value));
+                    <span class="kw">let </span>res = Robj::make_external_ptr(ptr, Robj::from(()));
+                    res.set_attrib(class_symbol(), #self_ty_name).unwrap();
+                    res.register_c_finalizer(<span class="prelude-val">Some</span>(#finalizer_name));
+                    res
                 }
             }
         }
 
-        <span class="comment">// Output conversion function for this type.</span>
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> #<span class="ident">self_ty</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> #<span class="ident">self_ty</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">unsafe</span> {
-                    <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">Box::into_raw</span>(<span class="ident">Box::new</span>(<span class="ident">value</span>));
-                    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">Robj::make_external_ptr</span>(<span class="ident">ptr</span>, <span class="ident">Robj::from</span>(()));
-                    <span class="ident">res</span>.<span class="ident">set_attrib</span>(<span class="ident">class_symbol</span>(), #<span class="ident">self_ty_name</span>).<span class="ident">unwrap</span>();
-                    <span class="ident">res</span>.<span class="ident">register_c_finalizer</span>(<span class="prelude-val">Some</span>(#<span class="ident">finalizer_name</span>));
-                    <span class="ident">res</span>
+        <span class="comment">// Output conversion function for this type.
+        </span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; From&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>#self_ty&gt; <span class="kw">for </span>Robj {
+            <span class="kw">fn </span>from(value: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>#self_ty) -&gt; <span class="self">Self </span>{
+                <span class="kw">unsafe </span>{
+                    <span class="kw">let </span>ptr = Box::into_raw(Box::new(value));
+                    <span class="kw">let </span>res = Robj::make_external_ptr(ptr, Robj::from(()));
+                    res.set_attrib(class_symbol(), #self_ty_name).unwrap();
+                    res.register_c_finalizer(<span class="prelude-val">Some</span>(#finalizer_name));
+                    res
                 }
             }
         }
 
-        <span class="comment">// Function to free memory for this type.</span>
-        <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> #<span class="ident">finalizer_name</span> (<span class="ident">sexp</span>: <span class="ident">extendr_api::SEXP</span>) {
-            <span class="kw">unsafe</span> {
-                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">extendr_api::new_owned</span>(<span class="ident">sexp</span>);
-                <span class="kw">if</span> <span class="ident">robj</span>.<span class="ident">check_external_ptr_type</span>::<span class="op">&lt;</span>#<span class="ident">self_ty</span><span class="op">&gt;</span>() {
-                    <span class="comment">//eprintln!(&quot;finalize {}&quot;, #self_ty_name);</span>
-                    <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">external_ptr_addr</span>::<span class="op">&lt;</span>#<span class="ident">self_ty</span><span class="op">&gt;</span>();
-                    <span class="ident">drop</span>(<span class="ident">Box::from_raw</span>(<span class="ident">ptr</span>));
+        <span class="comment">// Function to free memory for this type.
+        </span><span class="kw">extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>#finalizer_name (sexp: extendr_api::SEXP) {
+            <span class="kw">unsafe </span>{
+                <span class="kw">let </span>robj = extendr_api::new_owned(sexp);
+                <span class="kw">if </span>robj.check_external_ptr_type::&lt;#self_ty&gt;() {
+                    <span class="comment">//eprintln!(&quot;finalize {}&quot;, #self_ty_name);
+                    </span><span class="kw">let </span>ptr = robj.external_ptr_addr::&lt;#self_ty&gt;();
+                    drop(Box::from_raw(ptr));
                 }
             }
         }
 
-        <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
-        <span class="kw">fn</span> #<span class="ident">meta_name</span>(<span class="ident">impls</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">extendr_api::metadata::Impl</span><span class="op">&gt;</span>) {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">methods</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-            #( #<span class="ident">method_meta_names</span>(<span class="kw-2">&amp;mut</span> <span class="ident">methods</span>); )<span class="op">*</span>
-            <span class="ident">impls</span>.<span class="ident">push</span>(<span class="ident">extendr_api::metadata::Impl</span> {
-                <span class="ident">doc</span>: #<span class="ident">doc_string</span>,
-                <span class="ident">name</span>: #<span class="ident">self_ty_name</span>,
-                <span class="ident">methods</span>,
+        <span class="attribute">#[allow(non_snake_case)]
+        </span><span class="kw">fn </span>#meta_name(impls: <span class="kw-2">&amp;mut </span>Vec&lt;extendr_api::metadata::Impl&gt;) {
+            <span class="kw">let </span><span class="kw-2">mut </span>methods = Vec::new();
+            #( #method_meta_names(<span class="kw-2">&amp;mut </span>methods); )*
+            impls.push(extendr_api::metadata::Impl {
+                doc: #doc_string,
+                name: #self_ty_name,
+                methods,
             });
         }
     });
 
-    <span class="comment">//eprintln!(&quot;{}&quot;, expanded);</span>
-    <span class="ident">expanded</span>
+    <span class="comment">//eprintln!(&quot;{}&quot;, expanded);
+    </span>expanded
 }
 
-<span class="comment">// This structure contains parameters parsed from the #[extendr_module] definition.</span>
-</code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_macros" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+<span class="comment">// This structure contains parameters parsed from the #[extendr_module] definition.
+</span></code></pre></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_macros" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

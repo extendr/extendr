@@ -1,6 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/thread_safety.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>thread_safety.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../extendr_api/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../extendr_api/index.html"><div class="logo-container">
-                    <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../extendr_api/index.html">
-                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/thread_safety.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>thread_safety.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../extendr_api/index.html">
+                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -154,159 +153,159 @@
 <span id="152">152</span>
 <span id="153">153</span>
 <span id="154">154</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Provide limited protection for multithreaded access to the R API.</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Provide limited protection for multithreaded access to the R API.
 
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">std::sync::atomic</span>::{<span class="ident">AtomicU32</span>, <span class="ident">Ordering</span>};
+</span><span class="kw">use crate</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>std::sync::atomic::{AtomicU32, Ordering};
 
-<span class="kw">static</span> <span class="ident">OWNER_THREAD</span>: <span class="ident">AtomicU32</span> <span class="op">=</span> <span class="ident">AtomicU32::new</span>(<span class="number">0</span>);
-<span class="kw">static</span> <span class="ident">NEXT_THREAD_ID</span>: <span class="ident">AtomicU32</span> <span class="op">=</span> <span class="ident">AtomicU32::new</span>(<span class="number">1</span>);
+<span class="kw">static </span>OWNER_THREAD: AtomicU32 = AtomicU32::new(<span class="number">0</span>);
+<span class="kw">static </span>NEXT_THREAD_ID: AtomicU32 = AtomicU32::new(<span class="number">1</span>);
 
-<span class="macro">thread_local!</span> {
-    <span class="kw">static</span> <span class="ident">THREAD_ID</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="ident">NEXT_THREAD_ID</span>.<span class="ident">fetch_add</span>(<span class="number">1</span>, <span class="ident">Ordering::SeqCst</span>);
+<span class="macro">thread_local! </span>{
+    <span class="kw">static </span>THREAD_ID: u32 = NEXT_THREAD_ID.fetch_add(<span class="number">1</span>, Ordering::SeqCst);
 }
 
-<span class="comment">// Get an integer 1.. for each thread that calls this.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">this_thread_id</span>() -&gt; <span class="ident">u32</span> {
-    <span class="ident">THREAD_ID</span>.<span class="ident">with</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">v</span><span class="op">|</span> <span class="ident">v</span>)
+<span class="comment">// Get an integer 1.. for each thread that calls this.
+</span><span class="kw">pub fn </span>this_thread_id() -&gt; u32 {
+    THREAD_ID.with(|<span class="kw-2">&amp;</span>v| v)
 }
 
-<span class="doccomment">/// Run a function single threaded.</span>
-<span class="doccomment">/// Note: This will fail badly if the called function panics or calls RF_error.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// use std::sync::atomic::{AtomicU32, Ordering};</span>
-<span class="doccomment">/// static GLOBAL_THREAD_COUNT: AtomicU32 = AtomicU32::new(0);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let threads : Vec&lt;_&gt; = (0..100).map(|_| {</span>
-<span class="doccomment">///    std::thread::spawn(move|| {</span>
-<span class="doccomment">///       single_threaded(|| {</span>
-<span class="doccomment">///         // check that we are single threaded.</span>
-<span class="doccomment">///         let old_thread_count = GLOBAL_THREAD_COUNT.fetch_add(1, Ordering::AcqRel);</span>
-<span class="doccomment">///         assert_eq!(old_thread_count, 0);</span>
-<span class="doccomment">///         std::thread::sleep(std::time::Duration::from_millis(1));</span>
-<span class="doccomment">///         GLOBAL_THREAD_COUNT.fetch_sub(1, Ordering::AcqRel);</span>
-<span class="doccomment">///         // recursive calls are ok.</span>
-<span class="doccomment">///         assert_eq!(single_threaded(|| {</span>
-<span class="doccomment">///           1</span>
-<span class="doccomment">///         }), 1);    </span>
-<span class="doccomment">///       })</span>
-<span class="doccomment">///    })</span>
-<span class="doccomment">/// }).collect();</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">single_threaded</span><span class="op">&lt;</span><span class="ident">F</span>, <span class="ident">R</span><span class="op">&gt;</span>(<span class="ident">f</span>: <span class="ident">F</span>) -&gt; <span class="ident">R</span>
-<span class="kw">where</span>
-    <span class="ident">F</span>: <span class="ident">FnOnce</span>() -&gt; <span class="ident">R</span>,
+<span class="doccomment">/// Run a function single threaded.
+/// Note: This will fail badly if the called function panics or calls RF_error.
+///
+/// ```
+/// use extendr_api::prelude::*;
+/// use std::sync::atomic::{AtomicU32, Ordering};
+/// static GLOBAL_THREAD_COUNT: AtomicU32 = AtomicU32::new(0);
+///
+/// let threads : Vec&lt;_&gt; = (0..100).map(|_| {
+///    std::thread::spawn(move|| {
+///       single_threaded(|| {
+///         // check that we are single threaded.
+///         let old_thread_count = GLOBAL_THREAD_COUNT.fetch_add(1, Ordering::AcqRel);
+///         assert_eq!(old_thread_count, 0);
+///         std::thread::sleep(std::time::Duration::from_millis(1));
+///         GLOBAL_THREAD_COUNT.fetch_sub(1, Ordering::AcqRel);
+///         // recursive calls are ok.
+///         assert_eq!(single_threaded(|| {
+///           1
+///         }), 1);    
+///       })
+///    })
+/// }).collect();
+/// ```
+</span><span class="kw">pub fn </span>single_threaded&lt;F, R&gt;(f: F) -&gt; R
+<span class="kw">where
+    </span>F: FnOnce() -&gt; R,
 {
-    <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">this_thread_id</span>();
-    <span class="kw">let</span> <span class="ident">old_id</span> <span class="op">=</span> <span class="ident">OWNER_THREAD</span>.<span class="ident">load</span>(<span class="ident">Ordering::Acquire</span>);
+    <span class="kw">let </span>id = this_thread_id();
+    <span class="kw">let </span>old_id = OWNER_THREAD.load(Ordering::Acquire);
 
-    <span class="kw">if</span> <span class="ident">old_id</span> <span class="op">!</span><span class="op">=</span> <span class="ident">id</span> {
-        <span class="comment">// wait for OWNER_THREAD to become 0 and put us as the owner.</span>
-        <span class="kw">while</span> <span class="ident">OWNER_THREAD</span>
-            .<span class="ident">compare_exchange</span>(<span class="number">0</span>, <span class="ident">id</span>, <span class="ident">Ordering::Acquire</span>, <span class="ident">Ordering::Relaxed</span>)
-            .<span class="ident">is_err</span>()
+    <span class="kw">if </span>old_id != id {
+        <span class="comment">// wait for OWNER_THREAD to become 0 and put us as the owner.
+        </span><span class="kw">while </span>OWNER_THREAD
+            .compare_exchange(<span class="number">0</span>, id, Ordering::Acquire, Ordering::Relaxed)
+            .is_err()
         {
-            <span class="ident">std::thread::sleep</span>(<span class="ident">std::time::Duration::from_millis</span>(<span class="number">1</span>));
+            std::thread::sleep(std::time::Duration::from_millis(<span class="number">1</span>));
         }
     }
 
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">f</span>();
+    <span class="kw">let </span>res = f();
 
-    <span class="kw">if</span> <span class="ident">old_id</span> <span class="op">!</span><span class="op">=</span> <span class="ident">id</span> {
-        <span class="comment">// release the lock and signal waiting threads.</span>
-        <span class="ident">OWNER_THREAD</span>.<span class="ident">store</span>(<span class="number">0</span>, <span class="ident">Ordering::Release</span>);
+    <span class="kw">if </span>old_id != id {
+        <span class="comment">// release the lock and signal waiting threads.
+        </span>OWNER_THREAD.store(<span class="number">0</span>, Ordering::Release);
     }
 
-    <span class="ident">res</span>
+    res
 }
 
-<span class="doccomment">/// This function is used by the wrapper logic to catch</span>
-<span class="doccomment">/// panics on return.</span>
-<span class="doccomment">///</span>
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">handle_panic</span><span class="op">&lt;</span><span class="ident">F</span>, <span class="ident">R</span><span class="op">&gt;</span>(<span class="ident">err_str</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">f</span>: <span class="ident">F</span>) -&gt; <span class="ident">R</span>
-<span class="kw">where</span>
-    <span class="ident">F</span>: <span class="ident">FnOnce</span>() -&gt; <span class="ident">R</span>,
-    <span class="ident">F</span>: <span class="ident">std::panic::UnwindSafe</span>,
+<span class="doccomment">/// This function is used by the wrapper logic to catch
+/// panics on return.
+///
+</span><span class="attribute">#[doc(hidden)]
+</span><span class="kw">pub fn </span>handle_panic&lt;F, R&gt;(err_str: <span class="kw-2">&amp;</span>str, f: F) -&gt; R
+<span class="kw">where
+    </span>F: FnOnce() -&gt; R,
+    F: std::panic::UnwindSafe,
 {
-    <span class="kw">match</span> <span class="ident">std::panic::catch_unwind</span>(<span class="ident">f</span>) {
-        <span class="prelude-val">Ok</span>(<span class="ident">res</span>) =&gt; <span class="ident">res</span>,
+    <span class="kw">match </span>std::panic::catch_unwind(f) {
+        <span class="prelude-val">Ok</span>(res) =&gt; res,
         <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {
-            <span class="kw">unsafe</span> {
-                <span class="ident">libR_sys::Rf_error</span>(<span class="ident">err_str</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">std::os::raw::c_char</span>);
+            <span class="kw">unsafe </span>{
+                libR_sys::Rf_error(err_str.as_ptr() <span class="kw">as </span><span class="kw-2">*const </span>std::os::raw::c_char);
             }
             <span class="macro">unreachable!</span>(<span class="string">&quot;handle_panic unreachable&quot;</span>)
         }
     }
 }
 
-<span class="kw">static</span> <span class="kw-2">mut</span> <span class="ident">R_ERROR_BUF</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">std::ffi::CString</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+<span class="kw">static </span><span class="kw-2">mut </span>R_ERROR_BUF: <span class="prelude-ty">Option</span>&lt;std::ffi::CString&gt; = <span class="prelude-val">None</span>;
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">throw_r_error</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">s</span>: <span class="ident">S</span>) {
-    <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">as_ref</span>();
-    <span class="kw">unsafe</span> {
-        <span class="ident">R_ERROR_BUF</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">std::ffi::CString::new</span>(<span class="ident">s</span>).<span class="ident">unwrap</span>());
-        <span class="ident">libR_sys::Rf_error</span>(<span class="ident">R_ERROR_BUF</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>().<span class="ident">as_ptr</span>());
+<span class="kw">pub fn </span>throw_r_error&lt;S: AsRef&lt;str&gt;&gt;(s: S) {
+    <span class="kw">let </span>s = s.as_ref();
+    <span class="kw">unsafe </span>{
+        R_ERROR_BUF = <span class="prelude-val">Some</span>(std::ffi::CString::new(s).unwrap());
+        libR_sys::Rf_error(R_ERROR_BUF.as_ref().unwrap().as_ptr());
         <span class="macro">unreachable!</span>(<span class="string">&quot;Rf_error does not return&quot;</span>);
     };
 }
 
-<span class="doccomment">/// Wrap an R function such as Rf_findFunction and convert errors and panics into results.</span>
-<span class="doccomment">/// ```ignore</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///    let res = catch_r_error(|| unsafe {</span>
-<span class="doccomment">///        throw_r_error(&quot;bad things!&quot;);</span>
-<span class="doccomment">///        std::ptr::null_mut()</span>
-<span class="doccomment">///    });</span>
-<span class="doccomment">///    assert_eq!(res.is_ok(), false);</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">catch_r_error</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="ident">f</span>: <span class="ident">F</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">SEXP</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">F</span>: <span class="ident">FnOnce</span>() -&gt; <span class="ident">SEXP</span> <span class="op">+</span> <span class="ident">Copy</span>,
-    <span class="ident">F</span>: <span class="ident">std::panic::UnwindSafe</span>,
+<span class="doccomment">/// Wrap an R function such as Rf_findFunction and convert errors and panics into results.
+/// ```ignore
+/// use extendr_api::prelude::*;
+/// test! {
+///    let res = catch_r_error(|| unsafe {
+///        throw_r_error(&quot;bad things!&quot;);
+///        std::ptr::null_mut()
+///    });
+///    assert_eq!(res.is_ok(), false);
+/// }
+/// ```
+</span><span class="kw">pub fn </span>catch_r_error&lt;F&gt;(f: F) -&gt; <span class="prelude-ty">Result</span>&lt;SEXP&gt;
+<span class="kw">where
+    </span>F: FnOnce() -&gt; SEXP + Copy,
+    F: std::panic::UnwindSafe,
 {
-    <span class="kw">use</span> <span class="ident">std::os::raw</span>;
+    <span class="kw">use </span>std::os::raw;
 
-    <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">do_call</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="ident">data</span>: <span class="kw-2">*mut</span> <span class="ident">raw::c_void</span>) -&gt; <span class="ident">SEXP</span>
-    <span class="kw">where</span>
-        <span class="ident">F</span>: <span class="ident">FnOnce</span>() -&gt; <span class="ident">SEXP</span> <span class="op">+</span> <span class="ident">Copy</span>,
+    <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>do_call&lt;F&gt;(data: <span class="kw-2">*mut </span>raw::c_void) -&gt; SEXP
+    <span class="kw">where
+        </span>F: FnOnce() -&gt; SEXP + Copy,
     {
-        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">data</span> <span class="kw">as</span> <span class="kw-2">*const</span> ();
-        <span class="kw">let</span> <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="ident">F</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span>(<span class="ident">data</span> <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">F</span>);
-        <span class="ident">f</span>()
+        <span class="kw">let </span>data = data <span class="kw">as </span><span class="kw-2">*const </span>();
+        <span class="kw">let </span>f: <span class="kw-2">&amp;</span>F = <span class="kw-2">&amp;*</span>(data <span class="kw">as </span><span class="kw-2">*const </span>F);
+        f()
     }
 
-    <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">do_cleanup</span>(<span class="kw">_</span>: <span class="kw-2">*mut</span> <span class="ident">raw::c_void</span>, <span class="ident">jump</span>: <span class="ident">Rboolean</span>) {
-        <span class="kw">if</span> <span class="ident">jump</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
+    <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>do_cleanup(<span class="kw">_</span>: <span class="kw-2">*mut </span>raw::c_void, jump: Rboolean) {
+        <span class="kw">if </span>jump != <span class="number">0 </span>{
             <span class="macro">panic!</span>(<span class="string">&quot;R has thrown an error.&quot;</span>);
         }
     }
 
-    <span class="kw">unsafe</span> {
-        <span class="kw">let</span> <span class="ident">fun_ptr</span> <span class="op">=</span> <span class="ident">do_call</span>::<span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="kw-2">*const</span> ();
-        <span class="kw">let</span> <span class="ident">clean_ptr</span> <span class="op">=</span> <span class="ident">do_cleanup</span> <span class="kw">as</span> <span class="kw-2">*const</span> ();
-        <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="bool-val">false</span>;
-        <span class="kw">let</span> <span class="ident">fun</span> <span class="op">=</span> <span class="ident">std::mem::transmute</span>(<span class="ident">fun_ptr</span>);
-        <span class="kw">let</span> <span class="ident">cleanfun</span> <span class="op">=</span> <span class="ident">std::mem::transmute</span>(<span class="ident">clean_ptr</span>);
-        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">std::mem::transmute</span>(<span class="kw-2">&amp;</span><span class="ident">f</span>);
-        <span class="kw">let</span> <span class="ident">cleandata</span> <span class="op">=</span> <span class="ident">std::mem::transmute</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>);
-        <span class="kw">let</span> <span class="ident">cont</span> <span class="op">=</span> <span class="ident">R_MakeUnwindCont</span>();
-        <span class="ident">Rf_protect</span>(<span class="ident">cont</span>);
+    <span class="kw">unsafe </span>{
+        <span class="kw">let </span>fun_ptr = do_call::&lt;F&gt; <span class="kw">as </span><span class="kw-2">*const </span>();
+        <span class="kw">let </span>clean_ptr = do_cleanup <span class="kw">as </span><span class="kw-2">*const </span>();
+        <span class="kw">let </span>x = <span class="bool-val">false</span>;
+        <span class="kw">let </span>fun = std::mem::transmute(fun_ptr);
+        <span class="kw">let </span>cleanfun = std::mem::transmute(clean_ptr);
+        <span class="kw">let </span>data = std::mem::transmute(<span class="kw-2">&amp;</span>f);
+        <span class="kw">let </span>cleandata = std::mem::transmute(<span class="kw-2">&amp;</span>x);
+        <span class="kw">let </span>cont = R_MakeUnwindCont();
+        Rf_protect(cont);
 
-        <span class="comment">// Note that catch_unwind does not work for 32 bit windows targets.</span>
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">std::panic::catch_unwind</span>(<span class="op">|</span><span class="op">|</span> {
-            <span class="ident">R_UnwindProtect</span>(<span class="ident">fun</span>, <span class="ident">data</span>, <span class="ident">cleanfun</span>, <span class="ident">cleandata</span>, <span class="ident">cont</span>)
+        <span class="comment">// Note that catch_unwind does not work for 32 bit windows targets.
+        </span><span class="kw">let </span>res = <span class="kw">match </span>std::panic::catch_unwind(|| {
+            R_UnwindProtect(fun, data, cleanfun, cleandata, cont)
         }) {
-            <span class="prelude-val">Ok</span>(<span class="ident">res</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">res</span>),
-            <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(<span class="string">&quot;Error in protected R code&quot;</span>.<span class="ident">into</span>()),
+            <span class="prelude-val">Ok</span>(res) =&gt; <span class="prelude-val">Ok</span>(res),
+            <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(<span class="string">&quot;Error in protected R code&quot;</span>.into()),
         };
-        <span class="ident">Rf_unprotect</span>(<span class="number">1</span>);
-        <span class="ident">res</span>
+        Rf_unprotect(<span class="number">1</span>);
+        res
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

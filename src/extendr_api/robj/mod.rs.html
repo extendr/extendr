@@ -1,6 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/robj/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container">
-                    <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../extendr_api/index.html">
-                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/robj/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../extendr_api/index.html">
+                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -1089,1094 +1088,1094 @@
 <span id="1087">1087</span>
 <span id="1088">1088</span>
 <span id="1089">1089</span>
-</pre><pre class="rust"><code><span class="doccomment">//! R object handling.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! See. &lt;https://cran.r-project.org/doc/manuals/R-exts.html&gt;</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Fundamental principals:</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! * Any function that can break the protection mechanism is unsafe.</span>
-<span class="doccomment">//! * Users should be able to do almost everything without using libR_sys.</span>
-<span class="doccomment">//! * The interface should be friendly to R users without Rust experience.</span>
-<span class="doccomment">//!</span>
+</pre><pre class="rust"><code><span class="doccomment">//! R object handling.
+//!
+//! See. &lt;https://cran.r-project.org/doc/manuals/R-exts.html&gt;
+//!
+//! Fundamental principals:
+//!
+//! * Any function that can break the protection mechanism is unsafe.
+//! * Users should be able to do almost everything without using libR_sys.
+//! * The interface should be friendly to R users without Rust experience.
+//!
 
-<span class="kw">use</span> <span class="ident">libR_sys</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">prelude</span>::{<span class="ident">c64</span>, <span class="ident">Rcplx</span>};
-<span class="kw">use</span> <span class="ident">std::os::raw</span>;
+</span><span class="kw">use </span>libR_sys::<span class="kw-2">*</span>;
+<span class="kw">use </span>prelude::{c64, Rcplx};
+<span class="kw">use </span>std::os::raw;
 
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
+<span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::scalar</span>::{<span class="ident">Rbool</span>, <span class="ident">Rfloat</span>, <span class="ident">Rint</span>};
-<span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
-<span class="kw">use</span> <span class="ident">std::iter::IntoIterator</span>;
-<span class="kw">use</span> <span class="ident">std::ops</span>::{<span class="ident">Range</span>, <span class="ident">RangeInclusive</span>};
+<span class="kw">use </span><span class="kw">crate</span>::scalar::{Rbool, Rfloat, Rint};
+<span class="kw">use </span>std::collections::HashMap;
+<span class="kw">use </span>std::iter::IntoIterator;
+<span class="kw">use </span>std::ops::{Range, RangeInclusive};
 
-<span class="comment">// deprecated</span>
-<span class="kw">mod</span> <span class="ident">from_robj</span>;
+<span class="comment">// deprecated
+</span><span class="kw">mod </span>from_robj;
 
-<span class="kw">mod</span> <span class="ident">debug</span>;
-<span class="kw">mod</span> <span class="ident">into_robj</span>;
-<span class="kw">mod</span> <span class="ident">operators</span>;
-<span class="kw">mod</span> <span class="ident">rinternals</span>;
-<span class="kw">mod</span> <span class="ident">try_from_robj</span>;
+<span class="kw">mod </span>debug;
+<span class="kw">mod </span>into_robj;
+<span class="kw">mod </span>operators;
+<span class="kw">mod </span>rinternals;
+<span class="kw">mod </span>try_from_robj;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">tests</span>;
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>tests;
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">from_robj</span>::<span class="kw-2">*</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">into_robj</span>::<span class="kw-2">*</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">iter</span>::<span class="kw-2">*</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">operators::Operators</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">operators</span>::<span class="kw-2">*</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">rinternals::Rinternals</span>;
+<span class="kw">pub use </span>from_robj::<span class="kw-2">*</span>;
+<span class="kw">pub use </span>into_robj::<span class="kw-2">*</span>;
+<span class="kw">pub use </span>iter::<span class="kw-2">*</span>;
+<span class="kw">pub use </span>operators::Operators;
+<span class="kw">pub use </span>operators::<span class="kw-2">*</span>;
+<span class="kw">pub use </span>rinternals::Rinternals;
 
-<span class="doccomment">/// Wrapper for an R S-expression pointer (SEXP).</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Create R objects from rust types and iterators:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///     // Different ways of making integer scalar 1.</span>
-<span class="doccomment">///     let non_na : Option&lt;i32&gt; = Some(1);</span>
-<span class="doccomment">///     let a : Robj = vec![1].into();</span>
-<span class="doccomment">///     let b = r!(1);</span>
-<span class="doccomment">///     let c = r!(vec![1]);</span>
-<span class="doccomment">///     let d = r!(non_na);</span>
-<span class="doccomment">///     let e = r!([1]);</span>
-<span class="doccomment">///     assert_eq!(a, b);</span>
-<span class="doccomment">///     assert_eq!(a, c);</span>
-<span class="doccomment">///     assert_eq!(a, d);</span>
-<span class="doccomment">///     assert_eq!(a, e);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">///     // Different ways of making boolean scalar TRUE.</span>
-<span class="doccomment">///     let a : Robj = true.into();</span>
-<span class="doccomment">///     let b = r!(TRUE);</span>
-<span class="doccomment">///     assert_eq!(a, b);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">///     // Create a named list</span>
-<span class="doccomment">///     let a = list!(a = 1, b = &quot;x&quot;);</span>
-<span class="doccomment">///     assert_eq!(a.len(), 2);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">///     // Use an iterator (like 1:10)</span>
-<span class="doccomment">///     let a = r!(1 ..= 10);</span>
-<span class="doccomment">///     assert_eq!(a, r!([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));</span>
-<span class="doccomment">///</span>
-<span class="doccomment">///     // Use an iterator (like (1:10)[(1:10) %% 3 == 0])</span>
-<span class="doccomment">///     let a = (1 ..= 10).filter(|v| v % 3 == 0).collect_robj();</span>
-<span class="doccomment">///     assert_eq!(a, r!([3, 6, 9]));</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Convert to/from Rust vectors.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///     let a : Robj = r!(vec![1., 2., 3., 4.]);</span>
-<span class="doccomment">///     let b : Vec&lt;f64&gt; = a.as_real_vector().unwrap();</span>
-<span class="doccomment">///     assert_eq!(a.len(), 4);</span>
-<span class="doccomment">///     assert_eq!(b, vec![1., 2., 3., 4.]);</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Iterate over names and values.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///     let abc = list!(a = 1, b = &quot;x&quot;, c = vec![1, 2]);</span>
-<span class="doccomment">///     let names : Vec&lt;_&gt; = abc.names().unwrap().collect();</span>
-<span class="doccomment">///     let names_and_values : Vec&lt;_&gt; = abc.as_list().unwrap().iter().collect();</span>
-<span class="doccomment">///     assert_eq!(names, vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</span>
-<span class="doccomment">///     assert_eq!(names_and_values, vec![(&quot;a&quot;, r!(1)), (&quot;b&quot;, r!(&quot;x&quot;)), (&quot;c&quot;, r!(vec![1, 2]))]);</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// NOTE: as much as possible we wish to make this object safe (ie. no segfaults).</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// If you avoid using unsafe functions it is more likely that you will avoid</span>
-<span class="doccomment">/// panics and segfaults. We will take great trouble to ensure that this</span>
-<span class="doccomment">/// is true.</span>
-<span class="doccomment">///</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Robj</span> {
-    <span class="ident">inner</span>: <span class="ident">SEXP</span>,
+<span class="doccomment">/// Wrapper for an R S-expression pointer (SEXP).
+///
+/// Create R objects from rust types and iterators:
+///
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     // Different ways of making integer scalar 1.
+///     let non_na : Option&lt;i32&gt; = Some(1);
+///     let a : Robj = vec![1].into();
+///     let b = r!(1);
+///     let c = r!(vec![1]);
+///     let d = r!(non_na);
+///     let e = r!([1]);
+///     assert_eq!(a, b);
+///     assert_eq!(a, c);
+///     assert_eq!(a, d);
+///     assert_eq!(a, e);
+///
+///     // Different ways of making boolean scalar TRUE.
+///     let a : Robj = true.into();
+///     let b = r!(TRUE);
+///     assert_eq!(a, b);
+///
+///     // Create a named list
+///     let a = list!(a = 1, b = &quot;x&quot;);
+///     assert_eq!(a.len(), 2);
+///
+///     // Use an iterator (like 1:10)
+///     let a = r!(1 ..= 10);
+///     assert_eq!(a, r!([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));
+///
+///     // Use an iterator (like (1:10)[(1:10) %% 3 == 0])
+///     let a = (1 ..= 10).filter(|v| v % 3 == 0).collect_robj();
+///     assert_eq!(a, r!([3, 6, 9]));
+/// }
+/// ```
+///
+/// Convert to/from Rust vectors.
+///
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     let a : Robj = r!(vec![1., 2., 3., 4.]);
+///     let b : Vec&lt;f64&gt; = a.as_real_vector().unwrap();
+///     assert_eq!(a.len(), 4);
+///     assert_eq!(b, vec![1., 2., 3., 4.]);
+/// }
+/// ```
+///
+/// Iterate over names and values.
+///
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     let abc = list!(a = 1, b = &quot;x&quot;, c = vec![1, 2]);
+///     let names : Vec&lt;_&gt; = abc.names().unwrap().collect();
+///     let names_and_values : Vec&lt;_&gt; = abc.as_list().unwrap().iter().collect();
+///     assert_eq!(names, vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);
+///     assert_eq!(names_and_values, vec![(&quot;a&quot;, r!(1)), (&quot;b&quot;, r!(&quot;x&quot;)), (&quot;c&quot;, r!(vec![1, 2]))]);
+/// }
+/// ```
+///
+/// NOTE: as much as possible we wish to make this object safe (ie. no segfaults).
+///
+/// If you avoid using unsafe functions it is more likely that you will avoid
+/// panics and segfaults. We will take great trouble to ensure that this
+/// is true.
+///
+</span><span class="kw">pub struct </span>Robj {
+    inner: SEXP,
 }
 
-<span class="kw">impl</span> <span class="ident">Clone</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">fn</span> <span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="self">self</span>.<span class="ident">get</span>()) }
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident">Robj::from</span>(())
+<span class="kw">impl </span>Clone <span class="kw">for </span>Robj {
+    <span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+        <span class="kw">unsafe </span>{ Robj::from_sexp(<span class="self">self</span>.get()) }
     }
 }
 
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">GetSexp</span> {
-    <span class="doccomment">/// Get a copy of the underlying SEXP.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Safety</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Access to a raw SEXP pointer can cause undefined behaviour and is not thread safe.</span>
-    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">SEXP</span>;
-
-    <span class="doccomment">/// Get a reference to a Robj for this type.</span>
-    <span class="kw">fn</span> <span class="ident">as_robj</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">Robj</span>;
-
-    <span class="doccomment">/// Get a mutable reference to a Robj for this type.</span>
-    <span class="kw">fn</span> <span class="ident">as_robj_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="ident">Robj</span>;
-}
-
-<span class="kw">impl</span> <span class="ident">GetSexp</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">SEXP</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>
-    }
-
-    <span class="kw">fn</span> <span class="ident">as_robj</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">Robj</span> {
-        <span class="kw">unsafe</span> { <span class="ident">std::mem::transmute</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">inner</span>) }
-    }
-
-    <span class="kw">fn</span> <span class="ident">as_robj_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="ident">Robj</span> {
-        <span class="kw">unsafe</span> { <span class="ident">std::mem::transmute</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">inner</span>) }
+<span class="kw">impl </span>Default <span class="kw">for </span>Robj {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        Robj::from(())
     }
 }
 
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Slices</span>: <span class="ident">GetSexp</span> {
-    <span class="doccomment">/// Get an immutable slice to this object&#39;s data.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Safety</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Unless the type is correct, this will cause undefined behaviour.</span>
-    <span class="doccomment">/// Creating this slice will also instatiate and Altrep objects.</span>
-    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">as_typed_slice_raw</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[<span class="ident">T</span>] {
-        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">XLENGTH</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">DATAPTR_RO</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">T</span>;
-        <span class="ident">std::slice::from_raw_parts</span>(<span class="ident">data</span>, <span class="ident">len</span>)
+<span class="kw">pub trait </span>GetSexp {
+    <span class="doccomment">/// Get a copy of the underlying SEXP.
+    ///
+    /// # Safety
+    ///
+    /// Access to a raw SEXP pointer can cause undefined behaviour and is not thread safe.
+    </span><span class="kw">unsafe fn </span>get(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SEXP;
+
+    <span class="doccomment">/// Get a reference to a Robj for this type.
+    </span><span class="kw">fn </span>as_robj(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Robj;
+
+    <span class="doccomment">/// Get a mutable reference to a Robj for this type.
+    </span><span class="kw">fn </span>as_robj_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>Robj;
+}
+
+<span class="kw">impl </span>GetSexp <span class="kw">for </span>Robj {
+    <span class="kw">unsafe fn </span>get(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SEXP {
+        <span class="self">self</span>.inner
     }
 
-    <span class="doccomment">/// Get a mutable slice to this object&#39;s data.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Safety</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Unless the type is correct, this will cause undefined behaviour.</span>
-    <span class="doccomment">/// Creating this slice will also instatiate and Altrep objects.</span>
-    <span class="doccomment">/// Not all obejects (especially not list and strings) support this.</span>
-    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">as_typed_slice_raw_mut</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> [<span class="ident">T</span>] {
-        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">XLENGTH</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">DATAPTR</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>;
-        <span class="ident">std::slice::from_raw_parts_mut</span>(<span class="ident">data</span>, <span class="ident">len</span>)
+    <span class="kw">fn </span>as_robj(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Robj {
+        <span class="kw">unsafe </span>{ std::mem::transmute(<span class="kw-2">&amp;</span><span class="self">self</span>.inner) }
+    }
+
+    <span class="kw">fn </span>as_robj_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>Robj {
+        <span class="kw">unsafe </span>{ std::mem::transmute(<span class="kw-2">&amp;mut </span><span class="self">self</span>.inner) }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Slices</span> <span class="kw">for</span> <span class="ident">Robj</span> {}
-
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Length</span>: <span class="ident">GetSexp</span> {
-    <span class="doccomment">/// Get the extended length of the object.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let a : Robj = r!(vec![1., 2., 3., 4.]);</span>
-    <span class="doccomment">/// assert_eq!(a.len(), 4);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Rf_xlength</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="ident">usize</span> }
+<span class="kw">pub trait </span>Slices: GetSexp {
+    <span class="doccomment">/// Get an immutable slice to this object&#39;s data.
+    ///
+    /// # Safety
+    ///
+    /// Unless the type is correct, this will cause undefined behaviour.
+    /// Creating this slice will also instatiate and Altrep objects.
+    </span><span class="kw">unsafe fn </span>as_typed_slice_raw&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[T] {
+        <span class="kw">let </span>len = XLENGTH(<span class="self">self</span>.get()) <span class="kw">as </span>usize;
+        <span class="kw">let </span>data = DATAPTR_RO(<span class="self">self</span>.get()) <span class="kw">as </span><span class="kw-2">*const </span>T;
+        std::slice::from_raw_parts(data, len)
     }
 
-    <span class="doccomment">/// Returns `true` if the `Robj` contains no elements.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let a : Robj = r!(vec![0.; 0]); // length zero of numeric vector</span>
-    <span class="doccomment">/// assert_eq!(a.is_empty(), true);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">0</span>
+    <span class="doccomment">/// Get a mutable slice to this object&#39;s data.
+    ///
+    /// # Safety
+    ///
+    /// Unless the type is correct, this will cause undefined behaviour.
+    /// Creating this slice will also instatiate and Altrep objects.
+    /// Not all obejects (especially not list and strings) support this.
+    </span><span class="kw">unsafe fn </span>as_typed_slice_raw_mut&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>[T] {
+        <span class="kw">let </span>len = XLENGTH(<span class="self">self</span>.get()) <span class="kw">as </span>usize;
+        <span class="kw">let </span>data = DATAPTR(<span class="self">self</span>.get()) <span class="kw">as </span><span class="kw-2">*mut </span>T;
+        std::slice::from_raw_parts_mut(data, len)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Length</span> <span class="kw">for</span> <span class="ident">Robj</span> {}
+<span class="kw">impl </span>Slices <span class="kw">for </span>Robj {}
 
-<span class="kw">impl</span> <span class="ident">Robj</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_sexp</span>(<span class="ident">sexp</span>: <span class="ident">SEXP</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
-            <span class="kw">unsafe</span> { <span class="ident">ownership::protect</span>(<span class="ident">sexp</span>) };
-            <span class="ident">Robj</span> { <span class="ident">inner</span>: <span class="ident">sexp</span> }
+<span class="kw">pub trait </span>Length: GetSexp {
+    <span class="doccomment">/// Get the extended length of the object.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///
+    /// let a : Robj = r!(vec![1., 2., 3., 4.]);
+    /// assert_eq!(a.len(), 4);
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+        <span class="kw">unsafe </span>{ Rf_xlength(<span class="self">self</span>.get()) <span class="kw">as </span>usize }
+    }
+
+    <span class="doccomment">/// Returns `true` if the `Robj` contains no elements.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///
+    /// let a : Robj = r!(vec![0.; 0]); // length zero of numeric vector
+    /// assert_eq!(a.is_empty(), true);
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="self">self</span>.len() == <span class="number">0
+    </span>}
+}
+
+<span class="kw">impl </span>Length <span class="kw">for </span>Robj {}
+
+<span class="kw">impl </span>Robj {
+    <span class="kw">pub fn </span>from_sexp(sexp: SEXP) -&gt; <span class="self">Self </span>{
+        single_threaded(|| {
+            <span class="kw">unsafe </span>{ ownership::protect(sexp) };
+            Robj { inner: sexp }
         })
     }
 
-    <span class="doccomment">/// A ref of an robj can be constructed from a ref to a SEXP</span>
-    <span class="doccomment">/// as they have the same layout.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_sexp_ref</span>(<span class="ident">sexp</span>: <span class="kw-2">&amp;</span><span class="ident">SEXP</span>) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span> {
-        <span class="kw">unsafe</span> { <span class="ident">std::mem::transmute</span>(<span class="ident">sexp</span>) }
+    <span class="doccomment">/// A ref of an robj can be constructed from a ref to a SEXP
+    /// as they have the same layout.
+    </span><span class="kw">pub fn </span>from_sexp_ref(sexp: <span class="kw-2">&amp;</span>SEXP) -&gt; <span class="kw-2">&amp;</span><span class="self">Self </span>{
+        <span class="kw">unsafe </span>{ std::mem::transmute(sexp) }
     }
 }
 
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Types</span>: <span class="ident">GetSexp</span> {
-    <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-    <span class="doccomment">/// Get the XXXSXP type of the object.</span>
-    <span class="kw">fn</span> <span class="ident">sexptype</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u32</span> {
-        <span class="kw">unsafe</span> { <span class="ident">TYPEOF</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="ident">u32</span> }
+<span class="kw">pub trait </span>Types: GetSexp {
+    <span class="attribute">#[doc(hidden)]
+    </span><span class="doccomment">/// Get the XXXSXP type of the object.
+    </span><span class="kw">fn </span>sexptype(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
+        <span class="kw">unsafe </span>{ TYPEOF(<span class="self">self</span>.get()) <span class="kw">as </span>u32 }
     }
 
-    <span class="doccomment">/// Get the type of an R object.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     assert_eq!(r!(NULL).rtype(), Rtype::Null);</span>
-    <span class="doccomment">///     assert_eq!(sym!(xyz).rtype(), Rtype::Symbol);</span>
-    <span class="doccomment">///     assert_eq!(r!(Pairlist::from_pairs(vec![(&quot;a&quot;, r!(1))])).rtype(), Rtype::Pairlist);</span>
-    <span class="doccomment">///     assert_eq!(R!(&quot;function() {}&quot;)?.rtype(), Rtype::Function);</span>
-    <span class="doccomment">///     assert_eq!(Environment::new_with_parent(global_env()).rtype(), Rtype::Environment);</span>
-    <span class="doccomment">///     assert_eq!(lang!(&quot;+&quot;, 1, 2).rtype(), Rtype::Language);</span>
-    <span class="doccomment">///     assert_eq!(r!(Primitive::from_string(&quot;if&quot;)).rtype(), Rtype::Special);</span>
-    <span class="doccomment">///     assert_eq!(r!(Primitive::from_string(&quot;+&quot;)).rtype(), Rtype::Builtin);</span>
-    <span class="doccomment">///     assert_eq!(r!(Rstr::from_string(&quot;hello&quot;)).rtype(), Rtype::Rstr);</span>
-    <span class="doccomment">///     assert_eq!(r!(TRUE).rtype(), Rtype::Logicals);</span>
-    <span class="doccomment">///     assert_eq!(r!(1).rtype(), Rtype::Integers);</span>
-    <span class="doccomment">///     assert_eq!(r!(1.0).rtype(), Rtype::Doubles);</span>
-    <span class="doccomment">///     assert_eq!(r!(&quot;1&quot;).rtype(), Rtype::Strings);</span>
-    <span class="doccomment">///     assert_eq!(r!(List::from_values(&amp;[1, 2])).rtype(), Rtype::List);</span>
-    <span class="doccomment">///     assert_eq!(parse(&quot;x + y&quot;)?.rtype(), Rtype::Expressions);</span>
-    <span class="doccomment">///     assert_eq!(r!(Raw::from_bytes(&amp;[1_u8, 2, 3])).rtype(), Rtype::Raw);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">rtype</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Rtype</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
-            <span class="ident">NILSXP</span> =&gt; <span class="ident">Rtype::Null</span>,
-            <span class="ident">SYMSXP</span> =&gt; <span class="ident">Rtype::Symbol</span>,
-            <span class="ident">LISTSXP</span> =&gt; <span class="ident">Rtype::Pairlist</span>,
-            <span class="ident">CLOSXP</span> =&gt; <span class="ident">Rtype::Function</span>,
-            <span class="ident">ENVSXP</span> =&gt; <span class="ident">Rtype::Environment</span>,
-            <span class="ident">PROMSXP</span> =&gt; <span class="ident">Rtype::Promise</span>,
-            <span class="ident">LANGSXP</span> =&gt; <span class="ident">Rtype::Language</span>,
-            <span class="ident">SPECIALSXP</span> =&gt; <span class="ident">Rtype::Special</span>,
-            <span class="ident">BUILTINSXP</span> =&gt; <span class="ident">Rtype::Builtin</span>,
-            <span class="ident">CHARSXP</span> =&gt; <span class="ident">Rtype::Rstr</span>,
-            <span class="ident">LGLSXP</span> =&gt; <span class="ident">Rtype::Logicals</span>,
-            <span class="ident">INTSXP</span> =&gt; <span class="ident">Rtype::Integers</span>,
-            <span class="ident">REALSXP</span> =&gt; <span class="ident">Rtype::Doubles</span>,
-            <span class="ident">CPLXSXP</span> =&gt; <span class="ident">Rtype::Complexes</span>,
-            <span class="ident">STRSXP</span> =&gt; <span class="ident">Rtype::Strings</span>,
-            <span class="ident">DOTSXP</span> =&gt; <span class="ident">Rtype::Dot</span>,
-            <span class="ident">ANYSXP</span> =&gt; <span class="ident">Rtype::Any</span>,
-            <span class="ident">VECSXP</span> =&gt; <span class="ident">Rtype::List</span>,
-            <span class="ident">EXPRSXP</span> =&gt; <span class="ident">Rtype::Expressions</span>,
-            <span class="ident">BCODESXP</span> =&gt; <span class="ident">Rtype::Bytecode</span>,
-            <span class="ident">EXTPTRSXP</span> =&gt; <span class="ident">Rtype::ExternalPtr</span>,
-            <span class="ident">WEAKREFSXP</span> =&gt; <span class="ident">Rtype::WeakRef</span>,
-            <span class="ident">RAWSXP</span> =&gt; <span class="ident">Rtype::Raw</span>,
-            <span class="ident">S4SXP</span> =&gt; <span class="ident">Rtype::S4</span>,
-            <span class="kw">_</span> =&gt; <span class="ident">Rtype::Unknown</span>,
+    <span class="doccomment">/// Get the type of an R object.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     assert_eq!(r!(NULL).rtype(), Rtype::Null);
+    ///     assert_eq!(sym!(xyz).rtype(), Rtype::Symbol);
+    ///     assert_eq!(r!(Pairlist::from_pairs(vec![(&quot;a&quot;, r!(1))])).rtype(), Rtype::Pairlist);
+    ///     assert_eq!(R!(&quot;function() {}&quot;)?.rtype(), Rtype::Function);
+    ///     assert_eq!(Environment::new_with_parent(global_env()).rtype(), Rtype::Environment);
+    ///     assert_eq!(lang!(&quot;+&quot;, 1, 2).rtype(), Rtype::Language);
+    ///     assert_eq!(r!(Primitive::from_string(&quot;if&quot;)).rtype(), Rtype::Special);
+    ///     assert_eq!(r!(Primitive::from_string(&quot;+&quot;)).rtype(), Rtype::Builtin);
+    ///     assert_eq!(r!(Rstr::from_string(&quot;hello&quot;)).rtype(), Rtype::Rstr);
+    ///     assert_eq!(r!(TRUE).rtype(), Rtype::Logicals);
+    ///     assert_eq!(r!(1).rtype(), Rtype::Integers);
+    ///     assert_eq!(r!(1.0).rtype(), Rtype::Doubles);
+    ///     assert_eq!(r!(&quot;1&quot;).rtype(), Rtype::Strings);
+    ///     assert_eq!(r!(List::from_values(&amp;[1, 2])).rtype(), Rtype::List);
+    ///     assert_eq!(parse(&quot;x + y&quot;)?.rtype(), Rtype::Expressions);
+    ///     assert_eq!(r!(Raw::from_bytes(&amp;[1_u8, 2, 3])).rtype(), Rtype::Raw);
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>rtype(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Rtype {
+        <span class="kw">match </span><span class="self">self</span>.sexptype() {
+            NILSXP =&gt; Rtype::Null,
+            SYMSXP =&gt; Rtype::Symbol,
+            LISTSXP =&gt; Rtype::Pairlist,
+            CLOSXP =&gt; Rtype::Function,
+            ENVSXP =&gt; Rtype::Environment,
+            PROMSXP =&gt; Rtype::Promise,
+            LANGSXP =&gt; Rtype::Language,
+            SPECIALSXP =&gt; Rtype::Special,
+            BUILTINSXP =&gt; Rtype::Builtin,
+            CHARSXP =&gt; Rtype::Rstr,
+            LGLSXP =&gt; Rtype::Logicals,
+            INTSXP =&gt; Rtype::Integers,
+            REALSXP =&gt; Rtype::Doubles,
+            CPLXSXP =&gt; Rtype::Complexes,
+            STRSXP =&gt; Rtype::Strings,
+            DOTSXP =&gt; Rtype::Dot,
+            ANYSXP =&gt; Rtype::Any,
+            VECSXP =&gt; Rtype::List,
+            EXPRSXP =&gt; Rtype::Expressions,
+            BCODESXP =&gt; Rtype::Bytecode,
+            EXTPTRSXP =&gt; Rtype::ExternalPtr,
+            WEAKREFSXP =&gt; Rtype::WeakRef,
+            RAWSXP =&gt; Rtype::Raw,
+            S4SXP =&gt; Rtype::S4,
+            <span class="kw">_ </span>=&gt; Rtype::Unknown,
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">as_any</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Rany</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
-                <span class="ident">NILSXP</span> =&gt; <span class="ident">Rany::Null</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">SYMSXP</span> =&gt; <span class="ident">Rany::Symbol</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">LISTSXP</span> =&gt; <span class="ident">Rany::Pairlist</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">CLOSXP</span> =&gt; <span class="ident">Rany::Function</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">ENVSXP</span> =&gt; <span class="ident">Rany::Environment</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">PROMSXP</span> =&gt; <span class="ident">Rany::Promise</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">LANGSXP</span> =&gt; <span class="ident">Rany::Language</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">SPECIALSXP</span> =&gt; <span class="ident">Rany::Special</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">BUILTINSXP</span> =&gt; <span class="ident">Rany::Builtin</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">CHARSXP</span> =&gt; <span class="ident">Rany::Rstr</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">LGLSXP</span> =&gt; <span class="ident">Rany::Logicals</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">INTSXP</span> =&gt; <span class="ident">Rany::Integers</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">REALSXP</span> =&gt; <span class="ident">Rany::Doubles</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">CPLXSXP</span> =&gt; <span class="ident">Rany::Complexes</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">STRSXP</span> =&gt; <span class="ident">Rany::Strings</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">DOTSXP</span> =&gt; <span class="ident">Rany::Dot</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">ANYSXP</span> =&gt; <span class="ident">Rany::Any</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">VECSXP</span> =&gt; <span class="ident">Rany::List</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">EXPRSXP</span> =&gt; <span class="ident">Rany::Expressions</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">BCODESXP</span> =&gt; <span class="ident">Rany::Bytecode</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">EXTPTRSXP</span> =&gt; <span class="ident">Rany::ExternalPtr</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">WEAKREFSXP</span> =&gt; <span class="ident">Rany::WeakRef</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">RAWSXP</span> =&gt; <span class="ident">Rany::Raw</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="ident">S4SXP</span> =&gt; <span class="ident">Rany::S4</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
-                <span class="kw">_</span> =&gt; <span class="ident">Rany::Unknown</span>(<span class="ident">std::mem::transmute</span>(<span class="self">self</span>.<span class="ident">as_robj</span>())),
+    <span class="kw">fn </span>as_any(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Rany {
+        <span class="kw">unsafe </span>{
+            <span class="kw">match </span><span class="self">self</span>.sexptype() {
+                NILSXP =&gt; Rany::Null(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                SYMSXP =&gt; Rany::Symbol(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                LISTSXP =&gt; Rany::Pairlist(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                CLOSXP =&gt; Rany::Function(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                ENVSXP =&gt; Rany::Environment(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                PROMSXP =&gt; Rany::Promise(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                LANGSXP =&gt; Rany::Language(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                SPECIALSXP =&gt; Rany::Special(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                BUILTINSXP =&gt; Rany::Builtin(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                CHARSXP =&gt; Rany::Rstr(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                LGLSXP =&gt; Rany::Logicals(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                INTSXP =&gt; Rany::Integers(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                REALSXP =&gt; Rany::Doubles(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                CPLXSXP =&gt; Rany::Complexes(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                STRSXP =&gt; Rany::Strings(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                DOTSXP =&gt; Rany::Dot(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                ANYSXP =&gt; Rany::Any(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                VECSXP =&gt; Rany::List(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                EXPRSXP =&gt; Rany::Expressions(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                BCODESXP =&gt; Rany::Bytecode(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                EXTPTRSXP =&gt; Rany::ExternalPtr(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                WEAKREFSXP =&gt; Rany::WeakRef(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                RAWSXP =&gt; Rany::Raw(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                S4SXP =&gt; Rany::S4(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                <span class="kw">_ </span>=&gt; Rany::Unknown(std::mem::transmute(<span class="self">self</span>.as_robj())),
             }
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Types</span> <span class="kw">for</span> <span class="ident">Robj</span> {}
+<span class="kw">impl </span>Types <span class="kw">for </span>Robj {}
 
-<span class="kw">impl</span> <span class="ident">Robj</span> {
-    <span class="doccomment">/// Is this object is an NA scalar?</span>
-    <span class="doccomment">/// Works for character, integer and numeric types.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// assert_eq!(r!(NA_INTEGER).is_na(), true);</span>
-    <span class="doccomment">/// assert_eq!(r!(NA_REAL).is_na(), true);</span>
-    <span class="doccomment">/// assert_eq!(r!(NA_STRING).is_na(), true);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_na</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">len</span>() <span class="op">!</span><span class="op">=</span> <span class="number">1</span> {
-            <span class="bool-val">false</span>
-        } <span class="kw">else</span> {
-            <span class="kw">unsafe</span> {
-                <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get</span>();
-                <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
-                    <span class="ident">STRSXP</span> =&gt; <span class="ident">STRING_ELT</span>(<span class="ident">sexp</span>, <span class="number">0</span>) <span class="op">==</span> <span class="ident">libR_sys::R_NaString</span>,
-                    <span class="ident">INTSXP</span> =&gt; <span class="kw-2">*</span>(<span class="ident">INTEGER</span>(<span class="ident">sexp</span>)) <span class="op">==</span> <span class="ident">libR_sys::R_NaInt</span>,
-                    <span class="ident">LGLSXP</span> =&gt; <span class="kw-2">*</span>(<span class="ident">LOGICAL</span>(<span class="ident">sexp</span>)) <span class="op">==</span> <span class="ident">libR_sys::R_NaInt</span>,
-                    <span class="ident">REALSXP</span> =&gt; <span class="ident">R_IsNA</span>(<span class="kw-2">*</span>(<span class="ident">REAL</span>(<span class="ident">sexp</span>))) <span class="op">!</span><span class="op">=</span> <span class="number">0</span>,
-                    <span class="ident">CPLXSXP</span> =&gt; <span class="ident">R_IsNA</span>((<span class="kw-2">*</span><span class="ident">COMPLEX</span>(<span class="ident">sexp</span>)).<span class="ident">r</span>) <span class="op">!</span><span class="op">=</span> <span class="number">0</span>,
-                    <span class="kw">_</span> =&gt; <span class="bool-val">false</span>,
+<span class="kw">impl </span>Robj {
+    <span class="doccomment">/// Is this object is an NA scalar?
+    /// Works for character, integer and numeric types.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///
+    /// assert_eq!(r!(NA_INTEGER).is_na(), true);
+    /// assert_eq!(r!(NA_REAL).is_na(), true);
+    /// assert_eq!(r!(NA_STRING).is_na(), true);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>is_na(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">if </span><span class="self">self</span>.len() != <span class="number">1 </span>{
+            <span class="bool-val">false
+        </span>} <span class="kw">else </span>{
+            <span class="kw">unsafe </span>{
+                <span class="kw">let </span>sexp = <span class="self">self</span>.get();
+                <span class="kw">match </span><span class="self">self</span>.sexptype() {
+                    STRSXP =&gt; STRING_ELT(sexp, <span class="number">0</span>) == libR_sys::R_NaString,
+                    INTSXP =&gt; <span class="kw-2">*</span>(INTEGER(sexp)) == libR_sys::R_NaInt,
+                    LGLSXP =&gt; <span class="kw-2">*</span>(LOGICAL(sexp)) == libR_sys::R_NaInt,
+                    REALSXP =&gt; R_IsNA(<span class="kw-2">*</span>(REAL(sexp))) != <span class="number">0</span>,
+                    CPLXSXP =&gt; R_IsNA((<span class="kw-2">*</span>COMPLEX(sexp)).r) != <span class="number">0</span>,
+                    <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
                 }
             }
         }
     }
 
-    <span class="doccomment">/// Get a read-only reference to the content of an integer vector.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let robj = r!([1, 2, 3]);</span>
-    <span class="doccomment">/// assert_eq!(robj.as_integer_slice().unwrap(), [1, 2, 3]);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_integer_slice</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">i32</span>]<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">as_typed_slice</span>()
+    <span class="doccomment">/// Get a read-only reference to the content of an integer vector.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///
+    /// let robj = r!([1, 2, 3]);
+    /// assert_eq!(robj.as_integer_slice().unwrap(), [1, 2, 3]);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>as_integer_slice&lt;<span class="lifetime">&#39;a</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[i32]&gt; {
+        <span class="self">self</span>.as_typed_slice()
     }
 
-    <span class="doccomment">/// Convert an [`Robj`] into [`Integers`].</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_integers</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integers</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">clone</span>().<span class="ident">try_into</span>().<span class="ident">ok</span>()
+    <span class="doccomment">/// Convert an [`Robj`] into [`Integers`].
+    </span><span class="kw">pub fn </span>as_integers(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Integers&gt; {
+        <span class="self">self</span>.clone().try_into().ok()
     }
 
-    <span class="doccomment">/// Get a Vec&lt;i32&gt; copied from the object.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let robj = r!([1, 2, 3]);</span>
-    <span class="doccomment">/// assert_eq!(robj.as_integer_slice().unwrap(), vec![1, 2, 3]);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_integer_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">as_integer_slice</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">value</span><span class="op">|</span> <span class="ident">value</span>.<span class="ident">to_vec</span>())
+    <span class="doccomment">/// Get a Vec&lt;i32&gt; copied from the object.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///
+    /// let robj = r!([1, 2, 3]);
+    /// assert_eq!(robj.as_integer_slice().unwrap(), vec![1, 2, 3]);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>as_integer_vector(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Vec&lt;i32&gt;&gt; {
+        <span class="self">self</span>.as_integer_slice().map(|value| value.to_vec())
     }
 
-    <span class="doccomment">/// Get a read-only reference to the content of a logical vector</span>
-    <span class="doccomment">/// using the tri-state [Rbool]. Returns None if not a logical vector.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let robj = r!([TRUE, FALSE]);</span>
-    <span class="doccomment">///     assert_eq!(robj.as_logical_slice().unwrap(), [TRUE, FALSE]);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_logical_slice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">Rbool</span>]<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">as_typed_slice</span>()
+    <span class="doccomment">/// Get a read-only reference to the content of a logical vector
+    /// using the tri-state [Rbool]. Returns None if not a logical vector.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let robj = r!([TRUE, FALSE]);
+    ///     assert_eq!(robj.as_logical_slice().unwrap(), [TRUE, FALSE]);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>as_logical_slice(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>[Rbool]&gt; {
+        <span class="self">self</span>.as_typed_slice()
     }
 
-    <span class="doccomment">/// Get a Vec&lt;Rbool&gt; copied from the object</span>
-    <span class="doccomment">/// using the tri-state [Rbool].</span>
-    <span class="doccomment">/// Returns None if not a logical vector.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let robj = r!([TRUE, FALSE]);</span>
-    <span class="doccomment">///     assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE]);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_logical_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rbool</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">as_logical_slice</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">value</span><span class="op">|</span> <span class="ident">value</span>.<span class="ident">to_vec</span>())
+    <span class="doccomment">/// Get a Vec&lt;Rbool&gt; copied from the object
+    /// using the tri-state [Rbool].
+    /// Returns None if not a logical vector.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let robj = r!([TRUE, FALSE]);
+    ///     assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE]);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>as_logical_vector(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Vec&lt;Rbool&gt;&gt; {
+        <span class="self">self</span>.as_logical_slice().map(|value| value.to_vec())
     }
 
-    <span class="doccomment">/// Get an iterator over logical elements of this slice.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let robj = r!([TRUE, FALSE, NA_LOGICAL]);</span>
-    <span class="doccomment">///     let mut num_na = 0;</span>
-    <span class="doccomment">///     for val in robj.as_logical_iter().unwrap() {</span>
-    <span class="doccomment">///       if val.is_na() {</span>
-    <span class="doccomment">///           num_na += 1;</span>
-    <span class="doccomment">///       }</span>
-    <span class="doccomment">///     }</span>
-    <span class="doccomment">///     assert_eq!(num_na, 1);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_logical_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">Rbool</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">as_logical_slice</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">slice</span><span class="op">|</span> <span class="ident">slice</span>.<span class="ident">iter</span>())
+    <span class="doccomment">/// Get an iterator over logical elements of this slice.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let robj = r!([TRUE, FALSE, NA_LOGICAL]);
+    ///     let mut num_na = 0;
+    ///     for val in robj.as_logical_iter().unwrap() {
+    ///       if val.is_na() {
+    ///           num_na += 1;
+    ///       }
+    ///     }
+    ///     assert_eq!(num_na, 1);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>as_logical_iter(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw">impl </span>Iterator&lt;Item = <span class="kw-2">&amp;</span>Rbool&gt;&gt; {
+        <span class="self">self</span>.as_logical_slice().map(|slice| slice.iter())
     }
 
-    <span class="doccomment">/// Get a read-only reference to the content of a double vector.</span>
-    <span class="doccomment">/// Note: the slice may contain NaN or NA values.</span>
-    <span class="doccomment">/// We may introduce a &quot;Real&quot; type to handle this like the Rbool type.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let robj = r!([Some(1.), None, Some(3.)]);</span>
-    <span class="doccomment">///     let mut tot = 0.;</span>
-    <span class="doccomment">///     for val in robj.as_real_slice().unwrap() {</span>
-    <span class="doccomment">///       if !val.is_na() {</span>
-    <span class="doccomment">///         tot += val;</span>
-    <span class="doccomment">///       }</span>
-    <span class="doccomment">///     }</span>
-    <span class="doccomment">///     assert_eq!(tot, 4.);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_real_slice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">f64</span>]<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">as_typed_slice</span>()
+    <span class="doccomment">/// Get a read-only reference to the content of a double vector.
+    /// Note: the slice may contain NaN or NA values.
+    /// We may introduce a &quot;Real&quot; type to handle this like the Rbool type.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let robj = r!([Some(1.), None, Some(3.)]);
+    ///     let mut tot = 0.;
+    ///     for val in robj.as_real_slice().unwrap() {
+    ///       if !val.is_na() {
+    ///         tot += val;
+    ///       }
+    ///     }
+    ///     assert_eq!(tot, 4.);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>as_real_slice(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>[f64]&gt; {
+        <span class="self">self</span>.as_typed_slice()
     }
 
-    <span class="doccomment">/// Get an iterator over real elements of this slice.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let robj = r!([1., 2., 3.]);</span>
-    <span class="doccomment">///     let mut tot = 0.;</span>
-    <span class="doccomment">///     for val in robj.as_real_iter().unwrap() {</span>
-    <span class="doccomment">///       if !val.is_na() {</span>
-    <span class="doccomment">///         tot += val;</span>
-    <span class="doccomment">///       }</span>
-    <span class="doccomment">///     }</span>
-    <span class="doccomment">///     assert_eq!(tot, 6.);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_real_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">as_real_slice</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">slice</span><span class="op">|</span> <span class="ident">slice</span>.<span class="ident">iter</span>())
+    <span class="doccomment">/// Get an iterator over real elements of this slice.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let robj = r!([1., 2., 3.]);
+    ///     let mut tot = 0.;
+    ///     for val in robj.as_real_iter().unwrap() {
+    ///       if !val.is_na() {
+    ///         tot += val;
+    ///       }
+    ///     }
+    ///     assert_eq!(tot, 6.);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>as_real_iter(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw">impl </span>Iterator&lt;Item = <span class="kw-2">&amp;</span>f64&gt;&gt; {
+        <span class="self">self</span>.as_real_slice().map(|slice| slice.iter())
     }
 
-    <span class="doccomment">/// Get a Vec&lt;f64&gt; copied from the object.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let robj = r!([1., 2., 3.]);</span>
-    <span class="doccomment">///     assert_eq!(robj.as_real_vector().unwrap(), vec![1., 2., 3.]);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_real_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">as_real_slice</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">value</span><span class="op">|</span> <span class="ident">value</span>.<span class="ident">to_vec</span>())
+    <span class="doccomment">/// Get a Vec&lt;f64&gt; copied from the object.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let robj = r!([1., 2., 3.]);
+    ///     assert_eq!(robj.as_real_vector().unwrap(), vec![1., 2., 3.]);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>as_real_vector(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Vec&lt;f64&gt;&gt; {
+        <span class="self">self</span>.as_real_slice().map(|value| value.to_vec())
     }
 
-    <span class="doccomment">/// Get a read-only reference to the content of an integer or logical vector.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let robj = r!(Raw::from_bytes(&amp;[1, 2, 3]));</span>
-    <span class="doccomment">///     assert_eq!(robj.as_raw_slice().unwrap(), &amp;[1, 2, 3]);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_raw_slice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">as_typed_slice</span>()
+    <span class="doccomment">/// Get a read-only reference to the content of an integer or logical vector.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let robj = r!(Raw::from_bytes(&amp;[1, 2, 3]));
+    ///     assert_eq!(robj.as_raw_slice().unwrap(), &amp;[1, 2, 3]);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>as_raw_slice(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>[u8]&gt; {
+        <span class="self">self</span>.as_typed_slice()
     }
 
-    <span class="doccomment">/// Get a read-write reference to the content of an integer or logical vector.</span>
-    <span class="doccomment">/// Note that rust slices are 0-based so `slice[1]` is the middle value.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let mut robj = r!([1, 2, 3]);</span>
-    <span class="doccomment">///     let slice : &amp; mut [i32] = robj.as_integer_slice_mut().unwrap();</span>
-    <span class="doccomment">///     slice[1] = 100;</span>
-    <span class="doccomment">///     assert_eq!(robj, r!([1, 100, 3]));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_integer_slice_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;mut</span> [<span class="ident">i32</span>]<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">as_typed_slice_mut</span>()
+    <span class="doccomment">/// Get a read-write reference to the content of an integer or logical vector.
+    /// Note that rust slices are 0-based so `slice[1]` is the middle value.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let mut robj = r!([1, 2, 3]);
+    ///     let slice : &amp; mut [i32] = robj.as_integer_slice_mut().unwrap();
+    ///     slice[1] = 100;
+    ///     assert_eq!(robj, r!([1, 100, 3]));
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>as_integer_slice_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>[i32]&gt; {
+        <span class="self">self</span>.as_typed_slice_mut()
     }
 
-    <span class="doccomment">/// Get a read-write reference to the content of a double vector.</span>
-    <span class="doccomment">/// Note that rust slices are 0-based so `slice[1]` is the middle value.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let mut robj = r!([1.0, 2.0, 3.0]);</span>
-    <span class="doccomment">///     let slice = robj.as_real_slice_mut().unwrap();</span>
-    <span class="doccomment">///     slice[1] = 100.0;</span>
-    <span class="doccomment">///     assert_eq!(robj, r!([1.0, 100.0, 3.0]));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_real_slice_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;mut</span> [<span class="ident">f64</span>]<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">as_typed_slice_mut</span>()
+    <span class="doccomment">/// Get a read-write reference to the content of a double vector.
+    /// Note that rust slices are 0-based so `slice[1]` is the middle value.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let mut robj = r!([1.0, 2.0, 3.0]);
+    ///     let slice = robj.as_real_slice_mut().unwrap();
+    ///     slice[1] = 100.0;
+    ///     assert_eq!(robj, r!([1.0, 100.0, 3.0]));
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>as_real_slice_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>[f64]&gt; {
+        <span class="self">self</span>.as_typed_slice_mut()
     }
 
-    <span class="doccomment">/// Get a read-write reference to the content of a raw vector.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let mut robj = r!(Raw::from_bytes(&amp;[1, 2, 3]));</span>
-    <span class="doccomment">///     let slice = robj.as_raw_slice_mut().unwrap();</span>
-    <span class="doccomment">///     slice[1] = 100;</span>
-    <span class="doccomment">///     assert_eq!(robj, r!(Raw::from_bytes(&amp;[1, 100, 3])));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_raw_slice_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;mut</span> [<span class="ident">u8</span>]<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">as_typed_slice_mut</span>()
+    <span class="doccomment">/// Get a read-write reference to the content of a raw vector.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let mut robj = r!(Raw::from_bytes(&amp;[1, 2, 3]));
+    ///     let slice = robj.as_raw_slice_mut().unwrap();
+    ///     slice[1] = 100;
+    ///     assert_eq!(robj, r!(Raw::from_bytes(&amp;[1, 100, 3])));
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>as_raw_slice_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>[u8]&gt; {
+        <span class="self">self</span>.as_typed_slice_mut()
     }
 
-    <span class="doccomment">/// Get a vector of owned strings.</span>
-    <span class="doccomment">/// Owned strings have long lifetimes, but are much slower than references.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///    let robj1 = Robj::from(&quot;xyz&quot;);</span>
-    <span class="doccomment">///    assert_eq!(robj1.as_string_vector(), Some(vec![&quot;xyz&quot;.to_string()]));</span>
-    <span class="doccomment">///    let robj2 = Robj::from(1);</span>
-    <span class="doccomment">///    assert_eq!(robj2.as_string_vector(), None);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_string_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">as_str_iter</span>()
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">iter</span><span class="op">|</span> <span class="ident">iter</span>.<span class="ident">map</span>(<span class="ident">str::to_string</span>).<span class="ident">collect</span>())
+    <span class="doccomment">/// Get a vector of owned strings.
+    /// Owned strings have long lifetimes, but are much slower than references.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///    let robj1 = Robj::from(&quot;xyz&quot;);
+    ///    assert_eq!(robj1.as_string_vector(), Some(vec![&quot;xyz&quot;.to_string()]));
+    ///    let robj2 = Robj::from(1);
+    ///    assert_eq!(robj2.as_string_vector(), None);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>as_string_vector(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt; {
+        <span class="self">self</span>.as_str_iter()
+            .map(|iter| iter.map(str::to_string).collect())
     }
 
-    <span class="doccomment">/// Get a vector of string references.</span>
-    <span class="doccomment">/// String references (&amp;str) are faster, but have short lifetimes.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///    let robj1 = Robj::from(&quot;xyz&quot;);</span>
-    <span class="doccomment">///    assert_eq!(robj1.as_str_vector(), Some(vec![&quot;xyz&quot;]));</span>
-    <span class="doccomment">///    let robj2 = Robj::from(1);</span>
-    <span class="doccomment">///    assert_eq!(robj2.as_str_vector(), None);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_str_vector</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">as_str_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">iter</span><span class="op">|</span> <span class="ident">iter</span>.<span class="ident">collect</span>())
+    <span class="doccomment">/// Get a vector of string references.
+    /// String references (&amp;str) are faster, but have short lifetimes.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///    let robj1 = Robj::from(&quot;xyz&quot;);
+    ///    assert_eq!(robj1.as_str_vector(), Some(vec![&quot;xyz&quot;]));
+    ///    let robj2 = Robj::from(1);
+    ///    assert_eq!(robj2.as_str_vector(), None);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>as_str_vector(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Vec&lt;<span class="kw-2">&amp;</span>str&gt;&gt; {
+        <span class="self">self</span>.as_str_iter().map(|iter| iter.collect())
     }
 
-    <span class="doccomment">/// Get a read-only reference to a scalar string type.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///    let robj1 = Robj::from(&quot;xyz&quot;);</span>
-    <span class="doccomment">///    let robj2 = Robj::from(1);</span>
-    <span class="doccomment">///    assert_eq!(robj1.as_str(), Some(&quot;xyz&quot;));</span>
-    <span class="doccomment">///    assert_eq!(robj2.as_str(), None);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_str</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span><span class="op">&gt;</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
-                <span class="ident">STRSXP</span> =&gt; {
-                    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">len</span>() <span class="op">!</span><span class="op">=</span> <span class="number">1</span> {
-                        <span class="prelude-val">None</span>
-                    } <span class="kw">else</span> {
-                        <span class="prelude-val">Some</span>(<span class="ident">to_str</span>(<span class="ident">R_CHAR</span>(<span class="ident">STRING_ELT</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="number">0</span>)) <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">u8</span>))
+    <span class="doccomment">/// Get a read-only reference to a scalar string type.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///    let robj1 = Robj::from(&quot;xyz&quot;);
+    ///    let robj2 = Robj::from(1);
+    ///    assert_eq!(robj1.as_str(), Some(&quot;xyz&quot;));
+    ///    assert_eq!(robj2.as_str(), None);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>as_str&lt;<span class="lifetime">&#39;a</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt; {
+        <span class="kw">unsafe </span>{
+            <span class="kw">match </span><span class="self">self</span>.sexptype() {
+                STRSXP =&gt; {
+                    <span class="kw">if </span><span class="self">self</span>.len() != <span class="number">1 </span>{
+                        <span class="prelude-val">None
+                    </span>} <span class="kw">else </span>{
+                        <span class="prelude-val">Some</span>(to_str(R_CHAR(STRING_ELT(<span class="self">self</span>.get(), <span class="number">0</span>)) <span class="kw">as </span><span class="kw-2">*const </span>u8))
                     }
                 }
-                <span class="comment">// CHARSXP =&gt; Some(to_str(R_CHAR(self.get()) as *const u8)),</span>
-                <span class="comment">// SYMSXP =&gt; Some(to_str(R_CHAR(PRINTNAME(self.get())) as *const u8)),</span>
-                <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
+                <span class="comment">// CHARSXP =&gt; Some(to_str(R_CHAR(self.get()) as *const u8)),
+                // SYMSXP =&gt; Some(to_str(R_CHAR(PRINTNAME(self.get())) as *const u8)),
+                </span><span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
             }
         }
     }
 
-    <span class="doccomment">/// Get a scalar integer.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///    let robj1 = Robj::from(&quot;xyz&quot;);</span>
-    <span class="doccomment">///    let robj2 = Robj::from(1);</span>
-    <span class="doccomment">///    let robj3 = Robj::from(NA_INTEGER);</span>
-    <span class="doccomment">///    assert_eq!(robj1.as_integer(), None);</span>
-    <span class="doccomment">///    assert_eq!(robj2.as_integer(), Some(1));</span>
-    <span class="doccomment">///    assert_eq!(robj3.as_integer(), None);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_integer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">as_integer_slice</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">slice</span>) <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">slice</span>[<span class="number">0</span>].<span class="ident">is_na</span>() =&gt; <span class="prelude-val">Some</span>(<span class="ident">slice</span>[<span class="number">0</span>]),
-            <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
+    <span class="doccomment">/// Get a scalar integer.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///    let robj1 = Robj::from(&quot;xyz&quot;);
+    ///    let robj2 = Robj::from(1);
+    ///    let robj3 = Robj::from(NA_INTEGER);
+    ///    assert_eq!(robj1.as_integer(), None);
+    ///    assert_eq!(robj2.as_integer(), Some(1));
+    ///    assert_eq!(robj3.as_integer(), None);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>as_integer(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;i32&gt; {
+        <span class="kw">match </span><span class="self">self</span>.as_integer_slice() {
+            <span class="prelude-val">Some</span>(slice) <span class="kw">if </span>slice.len() == <span class="number">1 </span>&amp;&amp; !slice[<span class="number">0</span>].is_na() =&gt; <span class="prelude-val">Some</span>(slice[<span class="number">0</span>]),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
         }
     }
 
-    <span class="doccomment">/// Get a scalar real.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///    let robj1 = Robj::from(1);</span>
-    <span class="doccomment">///    let robj2 = Robj::from(1.);</span>
-    <span class="doccomment">///    let robj3 = Robj::from(NA_REAL);</span>
-    <span class="doccomment">///    assert_eq!(robj1.as_real(), None);</span>
-    <span class="doccomment">///    assert_eq!(robj2.as_real(), Some(1.));</span>
-    <span class="doccomment">///    assert_eq!(robj3.as_real(), None);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_real</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">as_real_slice</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">slice</span>) <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">slice</span>[<span class="number">0</span>].<span class="ident">is_na</span>() =&gt; <span class="prelude-val">Some</span>(<span class="ident">slice</span>[<span class="number">0</span>]),
-            <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
+    <span class="doccomment">/// Get a scalar real.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///    let robj1 = Robj::from(1);
+    ///    let robj2 = Robj::from(1.);
+    ///    let robj3 = Robj::from(NA_REAL);
+    ///    assert_eq!(robj1.as_real(), None);
+    ///    assert_eq!(robj2.as_real(), Some(1.));
+    ///    assert_eq!(robj3.as_real(), None);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>as_real(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;f64&gt; {
+        <span class="kw">match </span><span class="self">self</span>.as_real_slice() {
+            <span class="prelude-val">Some</span>(slice) <span class="kw">if </span>slice.len() == <span class="number">1 </span>&amp;&amp; !slice[<span class="number">0</span>].is_na() =&gt; <span class="prelude-val">Some</span>(slice[<span class="number">0</span>]),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
         }
     }
 
-    <span class="doccomment">/// Get a scalar rust boolean.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///    let robj1 = Robj::from(TRUE);</span>
-    <span class="doccomment">///    let robj2 = Robj::from(1.);</span>
-    <span class="doccomment">///    let robj3 = Robj::from(NA_LOGICAL);</span>
-    <span class="doccomment">///    assert_eq!(robj1.as_bool(), Some(true));</span>
-    <span class="doccomment">///    assert_eq!(robj2.as_bool(), None);</span>
-    <span class="doccomment">///    assert_eq!(robj3.as_bool(), None);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_bool</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">as_logical_slice</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">slice</span>) <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">slice</span>[<span class="number">0</span>].<span class="ident">is_na</span>() =&gt; <span class="prelude-val">Some</span>(<span class="ident">slice</span>[<span class="number">0</span>].<span class="ident">is_true</span>()),
-            <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
+    <span class="doccomment">/// Get a scalar rust boolean.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///    let robj1 = Robj::from(TRUE);
+    ///    let robj2 = Robj::from(1.);
+    ///    let robj3 = Robj::from(NA_LOGICAL);
+    ///    assert_eq!(robj1.as_bool(), Some(true));
+    ///    assert_eq!(robj2.as_bool(), None);
+    ///    assert_eq!(robj3.as_bool(), None);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>as_bool(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;bool&gt; {
+        <span class="kw">match </span><span class="self">self</span>.as_logical_slice() {
+            <span class="prelude-val">Some</span>(slice) <span class="kw">if </span>slice.len() == <span class="number">1 </span>&amp;&amp; !slice[<span class="number">0</span>].is_na() =&gt; <span class="prelude-val">Some</span>(slice[<span class="number">0</span>].is_true()),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
         }
     }
 
-    <span class="doccomment">/// Get a scalar boolean as a tri-boolean [Rbool] value.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///    let robj1 = Robj::from(TRUE);</span>
-    <span class="doccomment">///    let robj2 = Robj::from([TRUE, FALSE]);</span>
-    <span class="doccomment">///    let robj3 = Robj::from(NA_LOGICAL);</span>
-    <span class="doccomment">///    assert_eq!(robj1.as_logical(), Some(TRUE));</span>
-    <span class="doccomment">///    assert_eq!(robj2.as_logical(), None);</span>
-    <span class="doccomment">///    assert_eq!(robj3.as_logical().unwrap().is_na(), true);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_logical</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Rbool</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">as_logical_slice</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">slice</span>) <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">slice</span>[<span class="number">0</span>]),
-            <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
+    <span class="doccomment">/// Get a scalar boolean as a tri-boolean [Rbool] value.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///    let robj1 = Robj::from(TRUE);
+    ///    let robj2 = Robj::from([TRUE, FALSE]);
+    ///    let robj3 = Robj::from(NA_LOGICAL);
+    ///    assert_eq!(robj1.as_logical(), Some(TRUE));
+    ///    assert_eq!(robj2.as_logical(), None);
+    ///    assert_eq!(robj3.as_logical().unwrap().is_na(), true);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>as_logical(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Rbool&gt; {
+        <span class="kw">match </span><span class="self">self</span>.as_logical_slice() {
+            <span class="prelude-val">Some</span>(slice) <span class="kw">if </span>slice.len() == <span class="number">1 </span>=&gt; <span class="prelude-val">Some</span>(slice[<span class="number">0</span>]),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
         }
     }
 }
 
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Eval</span>: <span class="ident">GetSexp</span> {
-    <span class="doccomment">/// Evaluate the expression in R and return an error or an R object.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">///    let add = lang!(&quot;+&quot;, 1, 2);</span>
-    <span class="doccomment">///    assert_eq!(add.eval().unwrap(), r!(3));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">eval</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">eval_with_env</span>(<span class="kw-2">&amp;</span><span class="ident">global_env</span>())
+<span class="kw">pub trait </span>Eval: GetSexp {
+    <span class="doccomment">/// Evaluate the expression in R and return an error or an R object.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///
+    ///    let add = lang!(&quot;+&quot;, 1, 2);
+    ///    assert_eq!(add.eval().unwrap(), r!(3));
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>eval(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt; {
+        <span class="self">self</span>.eval_with_env(<span class="kw-2">&amp;</span>global_env())
     }
 
-    <span class="doccomment">/// Evaluate the expression in R and return an error or an R object.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">///    let add = lang!(&quot;+&quot;, 1, 2);</span>
-    <span class="doccomment">///    assert_eq!(add.eval_with_env(&amp;global_env()).unwrap(), r!(3));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">eval_with_env</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">env</span>: <span class="kw-2">&amp;</span><span class="ident">Environment</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
-        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">error</span>: <span class="ident">raw::c_int</span> <span class="op">=</span> <span class="number">0</span>;
-            <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">R_tryEval</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">env</span>.<span class="ident">get</span>(), <span class="kw-2">&amp;mut</span> <span class="ident">error</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">raw::c_int</span>);
-            <span class="kw">if</span> <span class="ident">error</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-                <span class="prelude-val">Err</span>(<span class="ident">Error::EvalError</span>(<span class="ident">Robj::from_sexp</span>(<span class="self">self</span>.<span class="ident">get</span>())))
-            } <span class="kw">else</span> {
-                <span class="prelude-val">Ok</span>(<span class="ident">Robj::from_sexp</span>(<span class="ident">res</span>))
+    <span class="doccomment">/// Evaluate the expression in R and return an error or an R object.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///
+    ///    let add = lang!(&quot;+&quot;, 1, 2);
+    ///    assert_eq!(add.eval_with_env(&amp;global_env()).unwrap(), r!(3));
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>eval_with_env(<span class="kw-2">&amp;</span><span class="self">self</span>, env: <span class="kw-2">&amp;</span>Environment) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt; {
+        single_threaded(|| <span class="kw">unsafe </span>{
+            <span class="kw">let </span><span class="kw-2">mut </span>error: raw::c_int = <span class="number">0</span>;
+            <span class="kw">let </span>res = R_tryEval(<span class="self">self</span>.get(), env.get(), <span class="kw-2">&amp;mut </span>error <span class="kw">as </span><span class="kw-2">*mut </span>raw::c_int);
+            <span class="kw">if </span>error != <span class="number">0 </span>{
+                <span class="prelude-val">Err</span>(Error::EvalError(Robj::from_sexp(<span class="self">self</span>.get())))
+            } <span class="kw">else </span>{
+                <span class="prelude-val">Ok</span>(Robj::from_sexp(res))
             }
         })
     }
 
-    <span class="doccomment">/// Evaluate the expression and return NULL or an R object.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///    let bad = lang!(&quot;imnotavalidfunctioninR&quot;, 1, 2);</span>
-    <span class="doccomment">///    assert_eq!(bad.eval_blind(), r!(NULL));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">eval_blind</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Robj</span> {
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">eval</span>();
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">robj</span>) <span class="op">=</span> <span class="ident">res</span> {
-            <span class="ident">robj</span>
-        } <span class="kw">else</span> {
-            <span class="ident">Robj::from</span>(())
+    <span class="doccomment">/// Evaluate the expression and return NULL or an R object.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///    let bad = lang!(&quot;imnotavalidfunctioninR&quot;, 1, 2);
+    ///    assert_eq!(bad.eval_blind(), r!(NULL));
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>eval_blind(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Robj {
+        <span class="kw">let </span>res = <span class="self">self</span>.eval();
+        <span class="kw">if let </span><span class="prelude-val">Ok</span>(robj) = res {
+            robj
+        } <span class="kw">else </span>{
+            Robj::from(())
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Eval</span> <span class="kw">for</span> <span class="ident">Robj</span> {}
+<span class="kw">impl </span>Eval <span class="kw">for </span>Robj {}
 
-<span class="doccomment">/// Generic access to typed slices in an Robj.</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">AsTypedSlice</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
+<span class="doccomment">/// Generic access to typed slices in an Robj.
+</span><span class="kw">pub trait </span>AsTypedSlice&lt;<span class="lifetime">&#39;a</span>, T&gt;
+<span class="kw">where
+    </span><span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
 {
-    <span class="kw">fn</span> <span class="ident">as_typed_slice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">T</span>]<span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
+    <span class="kw">fn </span>as_typed_slice(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[T]&gt;
+    <span class="kw">where
+        </span><span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
     {
-        <span class="prelude-val">None</span>
-    }
+        <span class="prelude-val">None
+    </span>}
 
-    <span class="kw">fn</span> <span class="ident">as_typed_slice_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> [<span class="ident">T</span>]<span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
+    <span class="kw">fn </span>as_typed_slice_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>[T]&gt;
+    <span class="kw">where
+        </span><span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
     {
-        <span class="prelude-val">None</span>
-    }
+        <span class="prelude-val">None
+    </span>}
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">make_typed_slice</span> {
-    (<span class="macro-nonterminal">$</span><span class="kw">type</span>: <span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$</span><span class="kw">fn</span>: <span class="macro-nonterminal">tt</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">sexp</span>: <span class="ident">tt</span>),<span class="op">*</span> ) =&gt; {
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">AsTypedSlice</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">Robj</span>
-        <span class="kw">where</span>
-            <span class="self">Self</span> : <span class="lifetime">&#39;a</span>,
+<span class="macro">macro_rules! </span>make_typed_slice {
+    (<span class="macro-nonterminal">$</span><span class="kw">type</span>: <span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$</span><span class="kw">fn</span>: <span class="macro-nonterminal">tt</span>, $(<span class="macro-nonterminal">$sexp</span>: tt),* ) =&gt; {
+        <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; AsTypedSlice&lt;<span class="lifetime">&#39;a</span>, <span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">Robj
+        </span><span class="kw">where
+            </span><span class="self">Self </span>: <span class="lifetime">&#39;a</span>,
         {
-            <span class="kw">fn</span> <span class="ident">as_typed_slice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="macro-nonterminal">$</span><span class="kw">type</span>]<span class="op">&gt;</span> {
-                <span class="kw">match</span> <span class="macro-nonterminal">self</span>.<span class="ident">sexptype</span>() {
-                    $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">sexp</span> )<span class="op">|</span><span class="op">*</span> =&gt; {
-                        <span class="kw">unsafe</span> {
-                            <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">fn</span>(<span class="macro-nonterminal">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="kw-2">*const</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>;
-                            <span class="prelude-val">Some</span>(<span class="macro-nonterminal">std::slice::from_raw_parts</span>(<span class="ident">ptr</span>, <span class="self">self</span>.<span class="ident">len</span>()))
+            <span class="kw">fn </span>as_typed_slice(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[<span class="macro-nonterminal">$</span><span class="kw">type</span>]&gt; {
+                <span class="kw">match </span><span class="macro-nonterminal">self</span>.sexptype() {
+                    $( <span class="macro-nonterminal">$sexp </span>)|* =&gt; {
+                        <span class="kw">unsafe </span>{
+                            <span class="kw">let </span>ptr = <span class="macro-nonterminal">$</span><span class="kw">fn</span>(<span class="macro-nonterminal">self</span>.get()) <span class="kw">as </span><span class="kw-2">*const </span><span class="macro-nonterminal">$</span><span class="kw">type</span>;
+                            <span class="prelude-val">Some</span>(<span class="macro-nonterminal">std::slice::from_raw_parts</span>(ptr, <span class="self">self</span>.len()))
                         }
                     }
-                    <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>
-                }
+                    <span class="kw">_ </span>=&gt; <span class="prelude-val">None
+                </span>}
             }
 
-            <span class="kw">fn</span> <span class="ident">as_typed_slice_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> [<span class="macro-nonterminal">$</span><span class="kw">type</span>]<span class="op">&gt;</span> {
-                <span class="kw">match</span> <span class="macro-nonterminal">self</span>.<span class="ident">sexptype</span>() {
-                    $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">sexp</span> )<span class="op">|</span><span class="op">*</span> =&gt; {
-                        <span class="kw">unsafe</span> {
-                            <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="kw">fn</span>(<span class="macro-nonterminal">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>;
-                            <span class="prelude-val">Some</span>(<span class="macro-nonterminal">std::slice::from_raw_parts_mut</span>(<span class="ident">ptr</span>, <span class="self">self</span>.<span class="ident">len</span>()))
+            <span class="kw">fn </span>as_typed_slice_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>[<span class="macro-nonterminal">$</span><span class="kw">type</span>]&gt; {
+                <span class="kw">match </span><span class="macro-nonterminal">self</span>.sexptype() {
+                    $( <span class="macro-nonterminal">$sexp </span>)|* =&gt; {
+                        <span class="kw">unsafe </span>{
+                            <span class="kw">let </span>ptr = <span class="macro-nonterminal">$</span><span class="kw">fn</span>(<span class="macro-nonterminal">self</span>.get()) <span class="kw">as </span><span class="kw-2">*mut </span><span class="macro-nonterminal">$</span><span class="kw">type</span>;
+                            <span class="prelude-val">Some</span>(<span class="macro-nonterminal">std::slice::from_raw_parts_mut</span>(ptr, <span class="self">self</span>.len()))
                         }
                     }
-                    <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>
-                }
+                    <span class="kw">_ </span>=&gt; <span class="prelude-val">None
+                </span>}
             }
         }
     }
 }
 
-<span class="macro">make_typed_slice!</span>(<span class="ident">Rbool</span>, <span class="ident">INTEGER</span>, <span class="ident">LGLSXP</span>);
-<span class="macro">make_typed_slice!</span>(<span class="ident">i32</span>, <span class="ident">INTEGER</span>, <span class="ident">INTSXP</span>);
-<span class="macro">make_typed_slice!</span>(<span class="ident">Rint</span>, <span class="ident">INTEGER</span>, <span class="ident">INTSXP</span>);
-<span class="macro">make_typed_slice!</span>(<span class="ident">f64</span>, <span class="ident">REAL</span>, <span class="ident">REALSXP</span>);
-<span class="macro">make_typed_slice!</span>(<span class="ident">Rfloat</span>, <span class="ident">REAL</span>, <span class="ident">REALSXP</span>);
-<span class="macro">make_typed_slice!</span>(<span class="ident">u8</span>, <span class="ident">RAW</span>, <span class="ident">RAWSXP</span>);
-<span class="macro">make_typed_slice!</span>(<span class="ident">Robj</span>, <span class="ident">VECTOR_PTR</span>, <span class="ident">VECSXP</span>);
-<span class="macro">make_typed_slice!</span>(<span class="ident">Rstr</span>, <span class="ident">STRING_PTR</span>, <span class="ident">STRSXP</span>);
-<span class="macro">make_typed_slice!</span>(<span class="ident">c64</span>, <span class="ident">COMPLEX</span>, <span class="ident">CPLXSXP</span>);
-<span class="macro">make_typed_slice!</span>(<span class="ident">Rcplx</span>, <span class="ident">COMPLEX</span>, <span class="ident">CPLXSXP</span>);
-<span class="macro">make_typed_slice!</span>(<span class="ident">Rcomplex</span>, <span class="ident">COMPLEX</span>, <span class="ident">CPLXSXP</span>);
+<span class="macro">make_typed_slice!</span>(Rbool, INTEGER, LGLSXP);
+<span class="macro">make_typed_slice!</span>(i32, INTEGER, INTSXP);
+<span class="macro">make_typed_slice!</span>(Rint, INTEGER, INTSXP);
+<span class="macro">make_typed_slice!</span>(f64, REAL, REALSXP);
+<span class="macro">make_typed_slice!</span>(Rfloat, REAL, REALSXP);
+<span class="macro">make_typed_slice!</span>(u8, RAW, RAWSXP);
+<span class="macro">make_typed_slice!</span>(Robj, VECTOR_PTR, VECSXP);
+<span class="macro">make_typed_slice!</span>(Rstr, STRING_PTR, STRSXP);
+<span class="macro">make_typed_slice!</span>(c64, COMPLEX, CPLXSXP);
+<span class="macro">make_typed_slice!</span>(Rcplx, COMPLEX, CPLXSXP);
+<span class="macro">make_typed_slice!</span>(Rcomplex, COMPLEX, CPLXSXP);
 
-<span class="doccomment">/// These are helper functions which give access to common properties of R objects.</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Attributes</span>: <span class="ident">Types</span> <span class="op">+</span> <span class="ident">Length</span> {
-    <span class="doccomment">/// Get a specific attribute as a borrowed robj if it exists.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">///    let mut robj = r!(&quot;hello&quot;);</span>
-    <span class="doccomment">///    robj.set_attrib(sym!(xyz), 1);</span>
-    <span class="doccomment">///    assert_eq!(robj.get_attrib(sym!(xyz)), Some(r!(1)));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">get_attrib</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">N</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="ident">N</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
-        <span class="ident">Robj</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">N</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>,
+<span class="doccomment">/// These are helper functions which give access to common properties of R objects.
+</span><span class="attribute">#[allow(non_snake_case)]
+</span><span class="kw">pub trait </span>Attributes: Types + Length {
+    <span class="doccomment">/// Get a specific attribute as a borrowed robj if it exists.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///
+    ///    let mut robj = r!(&quot;hello&quot;);
+    ///    robj.set_attrib(sym!(xyz), 1);
+    ///    assert_eq!(robj.get_attrib(sym!(xyz)), Some(r!(1)));
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>get_attrib&lt;<span class="lifetime">&#39;a</span>, N&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, name: N) -&gt; <span class="prelude-ty">Option</span>&lt;Robj&gt;
+    <span class="kw">where
+        </span><span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
+        Robj: From&lt;N&gt; + <span class="lifetime">&#39;a</span>,
     {
-        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">Robj::from</span>(<span class="ident">name</span>);
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">sexptype</span>() <span class="op">==</span> <span class="ident">CHARSXP</span> {
-            <span class="prelude-val">None</span>
-        } <span class="kw">else</span> {
-            <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">Rf_getAttrib</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">name</span>.<span class="ident">get</span>())) };
-            <span class="kw">if</span> <span class="ident">res</span>.<span class="ident">is_null</span>() {
-                <span class="prelude-val">None</span>
-            } <span class="kw">else</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">res</span>)
+        <span class="kw">let </span>name = Robj::from(name);
+        <span class="kw">if </span><span class="self">self</span>.sexptype() == CHARSXP {
+            <span class="prelude-val">None
+        </span>} <span class="kw">else </span>{
+            <span class="kw">let </span>res = <span class="kw">unsafe </span>{ Robj::from_sexp(Rf_getAttrib(<span class="self">self</span>.get(), name.get())) };
+            <span class="kw">if </span>res.is_null() {
+                <span class="prelude-val">None
+            </span>} <span class="kw">else </span>{
+                <span class="prelude-val">Some</span>(res)
             }
         }
     }
 
-    <span class="doccomment">/// Return true if an attribute exists.</span>
-    <span class="kw">fn</span> <span class="ident">has_attrib</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">N</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="ident">N</span>) -&gt; <span class="ident">bool</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
-        <span class="ident">Robj</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">N</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>,
+    <span class="doccomment">/// Return true if an attribute exists.
+    </span><span class="kw">fn </span>has_attrib&lt;<span class="lifetime">&#39;a</span>, N&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, name: N) -&gt; bool
+    <span class="kw">where
+        </span><span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
+        Robj: From&lt;N&gt; + <span class="lifetime">&#39;a</span>,
     {
-        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">Robj::from</span>(<span class="ident">name</span>);
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">sexptype</span>() <span class="op">==</span> <span class="ident">CHARSXP</span> {
-            <span class="bool-val">false</span>
-        } <span class="kw">else</span> {
-            <span class="kw">unsafe</span> { <span class="ident">Rf_getAttrib</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">name</span>.<span class="ident">get</span>()) <span class="op">!</span><span class="op">=</span> <span class="ident">R_NilValue</span> }
+        <span class="kw">let </span>name = Robj::from(name);
+        <span class="kw">if </span><span class="self">self</span>.sexptype() == CHARSXP {
+            <span class="bool-val">false
+        </span>} <span class="kw">else </span>{
+            <span class="kw">unsafe </span>{ Rf_getAttrib(<span class="self">self</span>.get(), name.get()) != R_NilValue }
         }
     }
 
-    <span class="doccomment">/// Set a specific attribute and return the object.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Note that some combinations of attributes are illegal and this will</span>
-    <span class="doccomment">/// return an error.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">///    let mut robj = r!(&quot;hello&quot;).set_attrib(sym!(xyz), 1)?;</span>
-    <span class="doccomment">///    assert_eq!(robj.get_attrib(sym!(xyz)), Some(r!(1)));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">set_attrib</span><span class="op">&lt;</span><span class="ident">N</span>, <span class="ident">V</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="ident">N</span>, <span class="ident">value</span>: <span class="ident">V</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">N</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
-        <span class="ident">V</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Set a specific attribute and return the object.
+    ///
+    /// Note that some combinations of attributes are illegal and this will
+    /// return an error.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///
+    ///    let mut robj = r!(&quot;hello&quot;).set_attrib(sym!(xyz), 1)?;
+    ///    assert_eq!(robj.get_attrib(sym!(xyz)), Some(r!(1)));
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>set_attrib&lt;N, V&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, name: N, value: V) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt;
+    <span class="kw">where
+        </span>N: Into&lt;Robj&gt;,
+        V: Into&lt;Robj&gt;,
     {
-        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">name</span>.<span class="ident">into</span>();
-        <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">into</span>();
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get</span>();
-            <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
-                <span class="ident">catch_r_error</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Rf_setAttrib</span>(<span class="ident">sexp</span>, <span class="ident">name</span>.<span class="ident">get</span>(), <span class="ident">value</span>.<span class="ident">get</span>()))
-                    .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">Robj::from_sexp</span>(<span class="ident">sexp</span>))
+        <span class="kw">let </span>name = name.into();
+        <span class="kw">let </span>value = value.into();
+        <span class="kw">unsafe </span>{
+            <span class="kw">let </span>sexp = <span class="self">self</span>.get();
+            single_threaded(|| {
+                catch_r_error(|| Rf_setAttrib(sexp, name.get(), value.get()))
+                    .map(|<span class="kw">_</span>| Robj::from_sexp(sexp))
             })
         }
     }
 
-    <span class="doccomment">/// Get the names attribute as a string iterator if one exists.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///    let list = list!(a = 1, b = 2, c = 3);</span>
-    <span class="doccomment">///    let names : Vec&lt;_&gt; = list.names().unwrap().collect();</span>
-    <span class="doccomment">///    assert_eq!(names, vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">names</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StrIter</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">names</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_attrib</span>(<span class="ident">wrapper::symbol::names_symbol</span>()) {
-            <span class="ident">names</span>.<span class="ident">as_str_iter</span>()
-        } <span class="kw">else</span> {
-            <span class="prelude-val">None</span>
-        }
+    <span class="doccomment">/// Get the names attribute as a string iterator if one exists.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///    let list = list!(a = 1, b = 2, c = 3);
+    ///    let names : Vec&lt;_&gt; = list.names().unwrap().collect();
+    ///    assert_eq!(names, vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>names(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;StrIter&gt; {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(names) = <span class="self">self</span>.get_attrib(wrapper::symbol::names_symbol()) {
+            names.as_str_iter()
+        } <span class="kw">else </span>{
+            <span class="prelude-val">None
+        </span>}
     }
 
-    <span class="doccomment">/// Return true if this object has names.</span>
-    <span class="kw">fn</span> <span class="ident">has_names</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">has_attrib</span>(<span class="ident">wrapper::symbol::names_symbol</span>())
+    <span class="doccomment">/// Return true if this object has names.
+    </span><span class="kw">fn </span>has_names(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="self">self</span>.has_attrib(wrapper::symbol::names_symbol())
     }
 
-    <span class="doccomment">/// Set the names attribute from a string iterator.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Returns Error::NamesLengthMismatch if the length of the names does</span>
-    <span class="doccomment">/// not match the length of the object.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let mut obj = r!([1, 2, 3]).set_names(&amp;[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]).unwrap();</span>
-    <span class="doccomment">///     assert_eq!(obj.names().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</span>
-    <span class="doccomment">///     assert_eq!(r!([1, 2, 3]).set_names(&amp;[&quot;a&quot;, &quot;b&quot;]), Err(Error::NamesLengthMismatch(r!([&quot;a&quot;, &quot;b&quot;]))));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">set_names</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">names</span>: <span class="ident">T</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="ident">IntoIterator</span>,
-        <span class="ident">T::IntoIter</span>: <span class="ident">ExactSizeIterator</span>,
-        <span class="ident">T::Item</span>: <span class="ident">ToVectorValue</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Set the names attribute from a string iterator.
+    ///
+    /// Returns Error::NamesLengthMismatch if the length of the names does
+    /// not match the length of the object.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let mut obj = r!([1, 2, 3]).set_names(&amp;[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]).unwrap();
+    ///     assert_eq!(obj.names().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);
+    ///     assert_eq!(r!([1, 2, 3]).set_names(&amp;[&quot;a&quot;, &quot;b&quot;]), Err(Error::NamesLengthMismatch(r!([&quot;a&quot;, &quot;b&quot;]))));
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>set_names&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, names: T) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt;
+    <span class="kw">where
+        </span>T: IntoIterator,
+        T::IntoIter: ExactSizeIterator,
+        T::Item: ToVectorValue + AsRef&lt;str&gt;,
     {
-        <span class="kw">let</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">names</span>.<span class="ident">into_iter</span>();
-        <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">iter</span>.<span class="ident">collect_robj</span>();
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">robj</span>.<span class="ident">is_vector</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">robj</span>.<span class="ident">is_pairlist</span>() {
-            <span class="prelude-val">Err</span>(<span class="ident">Error::ExpectedVector</span>(<span class="ident">robj</span>))
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">robj</span>.<span class="ident">len</span>() <span class="op">!</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span>() {
-            <span class="prelude-val">Err</span>(<span class="ident">Error::NamesLengthMismatch</span>(<span class="ident">robj</span>))
-        } <span class="kw">else</span> {
-            <span class="self">self</span>.<span class="ident">set_attrib</span>(<span class="ident">wrapper::symbol::names_symbol</span>(), <span class="ident">robj</span>)
+        <span class="kw">let </span>iter = names.into_iter();
+        <span class="kw">let </span>robj = iter.collect_robj();
+        <span class="kw">if </span>!robj.is_vector() &amp;&amp; !robj.is_pairlist() {
+            <span class="prelude-val">Err</span>(Error::ExpectedVector(robj))
+        } <span class="kw">else if </span>robj.len() != <span class="self">self</span>.len() {
+            <span class="prelude-val">Err</span>(Error::NamesLengthMismatch(robj))
+        } <span class="kw">else </span>{
+            <span class="self">self</span>.set_attrib(wrapper::symbol::names_symbol(), robj)
         }
     }
 
-    <span class="doccomment">/// Get the dim attribute as an integer iterator if one exists.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">///    let array = R!(r#&quot;array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c(&quot;x&quot;, &quot;y&quot;), c(&quot;a&quot;,&quot;b&quot;)))&quot;#).unwrap();</span>
-    <span class="doccomment">///    let dim : Vec&lt;_&gt; = array.dim().unwrap().iter().collect();</span>
-    <span class="doccomment">///    assert_eq!(dim, vec![2, 2]);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">dim</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integers</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">dim</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_attrib</span>(<span class="ident">wrapper::symbol::dim_symbol</span>()) {
-            <span class="ident">dim</span>.<span class="ident">as_integers</span>()
-        } <span class="kw">else</span> {
-            <span class="prelude-val">None</span>
-        }
+    <span class="doccomment">/// Get the dim attribute as an integer iterator if one exists.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///
+    ///    let array = R!(r#&quot;array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c(&quot;x&quot;, &quot;y&quot;), c(&quot;a&quot;,&quot;b&quot;)))&quot;#).unwrap();
+    ///    let dim : Vec&lt;_&gt; = array.dim().unwrap().iter().collect();
+    ///    assert_eq!(dim, vec![2, 2]);
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>dim(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Integers&gt; {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(dim) = <span class="self">self</span>.get_attrib(wrapper::symbol::dim_symbol()) {
+            dim.as_integers()
+        } <span class="kw">else </span>{
+            <span class="prelude-val">None
+        </span>}
     }
 
-    <span class="doccomment">/// Get the dimnames attribute as a list iterator if one exists.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///    let array = R!(r#&quot;array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c(&quot;x&quot;, &quot;y&quot;), c(&quot;a&quot;,&quot;b&quot;)))&quot;#).unwrap();</span>
-    <span class="doccomment">///    let names : Vec&lt;_&gt; = array.dimnames().unwrap().collect();</span>
-    <span class="doccomment">///    assert_eq!(names, vec![r!([&quot;x&quot;, &quot;y&quot;]), r!([&quot;a&quot;, &quot;b&quot;])]);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">dimnames</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ListIter</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">names</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_attrib</span>(<span class="ident">wrapper::symbol::dimnames_symbol</span>()) {
-            <span class="ident">names</span>.<span class="ident">as_list</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="ident">v</span>.<span class="ident">values</span>())
-        } <span class="kw">else</span> {
-            <span class="prelude-val">None</span>
-        }
+    <span class="doccomment">/// Get the dimnames attribute as a list iterator if one exists.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///    let array = R!(r#&quot;array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c(&quot;x&quot;, &quot;y&quot;), c(&quot;a&quot;,&quot;b&quot;)))&quot;#).unwrap();
+    ///    let names : Vec&lt;_&gt; = array.dimnames().unwrap().collect();
+    ///    assert_eq!(names, vec![r!([&quot;x&quot;, &quot;y&quot;]), r!([&quot;a&quot;, &quot;b&quot;])]);
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>dimnames(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;ListIter&gt; {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(names) = <span class="self">self</span>.get_attrib(wrapper::symbol::dimnames_symbol()) {
+            names.as_list().map(|v| v.values())
+        } <span class="kw">else </span>{
+            <span class="prelude-val">None
+        </span>}
     }
 
-    <span class="doccomment">/// Get the class attribute as a string iterator if one exists.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///    let formula = R!(&quot;y ~ A * x + b&quot;).unwrap();</span>
-    <span class="doccomment">///    let class : Vec&lt;_&gt; = formula.class().unwrap().collect();</span>
-    <span class="doccomment">///    assert_eq!(class, [&quot;formula&quot;]);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">class</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StrIter</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">class</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_attrib</span>(<span class="ident">wrapper::symbol::class_symbol</span>()) {
-            <span class="ident">class</span>.<span class="ident">as_str_iter</span>()
-        } <span class="kw">else</span> {
-            <span class="prelude-val">None</span>
-        }
+    <span class="doccomment">/// Get the class attribute as a string iterator if one exists.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///    let formula = R!(&quot;y ~ A * x + b&quot;).unwrap();
+    ///    let class : Vec&lt;_&gt; = formula.class().unwrap().collect();
+    ///    assert_eq!(class, [&quot;formula&quot;]);
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>class(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;StrIter&gt; {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(class) = <span class="self">self</span>.get_attrib(wrapper::symbol::class_symbol()) {
+            class.as_str_iter()
+        } <span class="kw">else </span>{
+            <span class="prelude-val">None
+        </span>}
     }
 
-    <span class="doccomment">/// Set the class attribute from a string iterator, returning</span>
-    <span class="doccomment">/// a new object.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// May return an error for some class names.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let mut obj = r!([1, 2, 3]).set_class(&amp;[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;])?;</span>
-    <span class="doccomment">///     assert_eq!(obj.class().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</span>
-    <span class="doccomment">///     assert_eq!(obj.inherits(&quot;a&quot;), true);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">set_class</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">class</span>: <span class="ident">T</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="ident">IntoIterator</span>,
-        <span class="ident">T::IntoIter</span>: <span class="ident">ExactSizeIterator</span>,
-        <span class="ident">T::Item</span>: <span class="ident">ToVectorValue</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Set the class attribute from a string iterator, returning
+    /// a new object.
+    ///
+    /// May return an error for some class names.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let mut obj = r!([1, 2, 3]).set_class(&amp;[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;])?;
+    ///     assert_eq!(obj.class().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);
+    ///     assert_eq!(obj.inherits(&quot;a&quot;), true);
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>set_class&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, class: T) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt;
+    <span class="kw">where
+        </span>T: IntoIterator,
+        T::IntoIter: ExactSizeIterator,
+        T::Item: ToVectorValue + AsRef&lt;str&gt;,
     {
-        <span class="kw">let</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">class</span>.<span class="ident">into_iter</span>();
-        <span class="self">self</span>.<span class="ident">set_attrib</span>(<span class="ident">wrapper::symbol::class_symbol</span>(), <span class="ident">iter</span>.<span class="ident">collect_robj</span>())
+        <span class="kw">let </span>iter = class.into_iter();
+        <span class="self">self</span>.set_attrib(wrapper::symbol::class_symbol(), iter.collect_robj())
     }
 
-    <span class="doccomment">/// Return true if this class inherits this class.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///    let formula = R!(&quot;y ~ A * x + b&quot;).unwrap();</span>
-    <span class="doccomment">///    assert_eq!(formula.inherits(&quot;formula&quot;), true);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">inherits</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">classname</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">mut</span> <span class="ident">iter</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">class</span>() {
-            <span class="ident">iter</span>.<span class="ident">any</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">n</span> <span class="op">==</span> <span class="ident">classname</span>)
-        } <span class="kw">else</span> {
-            <span class="bool-val">false</span>
-        }
+    <span class="doccomment">/// Return true if this class inherits this class.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///    let formula = R!(&quot;y ~ A * x + b&quot;).unwrap();
+    ///    assert_eq!(formula.inherits(&quot;formula&quot;), true);
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>inherits(<span class="kw-2">&amp;</span><span class="self">self</span>, classname: <span class="kw-2">&amp;</span>str) -&gt; bool {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">mut </span>iter) = <span class="self">self</span>.class() {
+            iter.any(|n| n == classname)
+        } <span class="kw">else </span>{
+            <span class="bool-val">false
+        </span>}
     }
 
-    <span class="doccomment">/// Get the levels attribute as a string iterator if one exists.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///    let factor = factor!(vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
-    <span class="doccomment">///    let levels : Vec&lt;_&gt; = factor.levels().unwrap().collect();</span>
-    <span class="doccomment">///    assert_eq!(levels, vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;]);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">levels</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StrIter</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">levels</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_attrib</span>(<span class="ident">wrapper::symbol::levels_symbol</span>()) {
-            <span class="ident">levels</span>.<span class="ident">as_str_iter</span>()
-        } <span class="kw">else</span> {
-            <span class="prelude-val">None</span>
-        }
+    <span class="doccomment">/// Get the levels attribute as a string iterator if one exists.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///    let factor = factor!(vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);
+    ///    let levels : Vec&lt;_&gt; = factor.levels().unwrap().collect();
+    ///    assert_eq!(levels, vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;]);
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>levels(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;StrIter&gt; {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(levels) = <span class="self">self</span>.get_attrib(wrapper::symbol::levels_symbol()) {
+            levels.as_str_iter()
+        } <span class="kw">else </span>{
+            <span class="prelude-val">None
+        </span>}
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Attributes</span> <span class="kw">for</span> <span class="ident">Robj</span> {}
+<span class="kw">impl </span>Attributes <span class="kw">for </span>Robj {}
 
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">new_owned</span>(<span class="ident">sexp</span>: <span class="ident">SEXP</span>) -&gt; <span class="ident">Robj</span> {
-    <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
-        <span class="ident">ownership::protect</span>(<span class="ident">sexp</span>);
-        <span class="ident">Robj</span> { <span class="ident">inner</span>: <span class="ident">sexp</span> }
+<span class="attribute">#[doc(hidden)]
+</span><span class="kw">pub unsafe fn </span>new_owned(sexp: SEXP) -&gt; Robj {
+    single_threaded(|| {
+        ownership::protect(sexp);
+        Robj { inner: sexp }
     })
 }
 
-<span class="doccomment">/// Compare equality with integer slices.</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">PartialEq</span><span class="op">&lt;</span>[<span class="ident">i32</span>]<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rhs</span>: <span class="kw-2">&amp;</span>[<span class="ident">i32</span>]) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">as_integer_slice</span>() <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">rhs</span>)
+<span class="doccomment">/// Compare equality with integer slices.
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; PartialEq&lt;[i32]&gt; <span class="kw">for </span>Robj {
+    <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, rhs: <span class="kw-2">&amp;</span>[i32]) -&gt; bool {
+        <span class="self">self</span>.as_integer_slice() == <span class="prelude-val">Some</span>(rhs)
     }
 }
 
-<span class="doccomment">/// Compare equality with slices of double.</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">PartialEq</span><span class="op">&lt;</span>[<span class="ident">f64</span>]<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rhs</span>: <span class="kw-2">&amp;</span>[<span class="ident">f64</span>]) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">as_real_slice</span>() <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">rhs</span>)
+<span class="doccomment">/// Compare equality with slices of double.
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; PartialEq&lt;[f64]&gt; <span class="kw">for </span>Robj {
+    <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, rhs: <span class="kw-2">&amp;</span>[f64]) -&gt; bool {
+        <span class="self">self</span>.as_real_slice() == <span class="prelude-val">Some</span>(rhs)
     }
 }
 
-<span class="doccomment">/// Compare equality with strings.</span>
-<span class="kw">impl</span> <span class="ident">PartialEq</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rhs</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">as_str</span>() <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">rhs</span>)
+<span class="doccomment">/// Compare equality with strings.
+</span><span class="kw">impl </span>PartialEq&lt;str&gt; <span class="kw">for </span>Robj {
+    <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, rhs: <span class="kw-2">&amp;</span>str) -&gt; bool {
+        <span class="self">self</span>.as_str() == <span class="prelude-val">Some</span>(rhs)
     }
 }
 
-<span class="doccomment">/// Compare equality with two Robjs.</span>
-<span class="kw">impl</span> <span class="ident">PartialEq</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rhs</span>: <span class="kw-2">&amp;</span><span class="ident">Robj</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">get</span>() <span class="op">==</span> <span class="ident">rhs</span>.<span class="ident">get</span>() {
-                <span class="kw">return</span> <span class="bool-val">true</span>;
+<span class="doccomment">/// Compare equality with two Robjs.
+</span><span class="kw">impl </span>PartialEq&lt;Robj&gt; <span class="kw">for </span>Robj {
+    <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, rhs: <span class="kw-2">&amp;</span>Robj) -&gt; bool {
+        <span class="kw">unsafe </span>{
+            <span class="kw">if </span><span class="self">self</span>.get() == rhs.get() {
+                <span class="kw">return </span><span class="bool-val">true</span>;
             }
 
-            <span class="comment">// see https://github.com/hadley/r-internals/blob/master/misc.md</span>
-            <span class="ident">R_compute_identical</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">rhs</span>.<span class="ident">get</span>(), <span class="number">16</span>) <span class="op">!</span><span class="op">=</span> <span class="number">0</span>
-        }
+            <span class="comment">// see https://github.com/hadley/r-internals/blob/master/misc.md
+            </span>R_compute_identical(<span class="self">self</span>.get(), rhs.get(), <span class="number">16</span>) != <span class="number">0
+        </span>}
     }
 }
 
-<span class="comment">// Internal utf8 to str conversion.</span>
-<span class="comment">// Lets not worry about non-ascii/unicode strings for now (or ever).</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">to_str</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">ptr</span>: <span class="kw-2">*const</span> <span class="ident">u8</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">len</span> <span class="op">=</span> <span class="number">0</span>;
-    <span class="kw">loop</span> {
-        <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">ptr</span>.<span class="ident">offset</span>(<span class="ident">len</span>) <span class="op">==</span> <span class="number">0</span> {
+<span class="comment">// Internal utf8 to str conversion.
+// Lets not worry about non-ascii/unicode strings for now (or ever).
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe fn </span>to_str&lt;<span class="lifetime">&#39;a</span>&gt;(ptr: <span class="kw-2">*const </span>u8) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str {
+    <span class="kw">let </span><span class="kw-2">mut </span>len = <span class="number">0</span>;
+    <span class="kw">loop </span>{
+        <span class="kw">if </span><span class="kw-2">*</span>ptr.offset(len) == <span class="number">0 </span>{
             <span class="kw">break</span>;
         }
-        <span class="ident">len</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+        len += <span class="number">1</span>;
     }
-    <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">std::slice::from_raw_parts</span>(<span class="ident">ptr</span>, <span class="ident">len</span> <span class="kw">as</span> <span class="ident">usize</span>);
-    <span class="ident">std::str::from_utf8_unchecked</span>(<span class="ident">slice</span>)
+    <span class="kw">let </span>slice = std::slice::from_raw_parts(ptr, len <span class="kw">as </span>usize);
+    std::str::from_utf8_unchecked(slice)
 }
 
-<span class="doccomment">/// Release any owned objects.</span>
-<span class="kw">impl</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="kw">unsafe</span> {
-            <span class="ident">ownership::unprotect</span>(<span class="self">self</span>.<span class="ident">inner</span>);
+<span class="doccomment">/// Release any owned objects.
+</span><span class="kw">impl </span>Drop <span class="kw">for </span>Robj {
+    <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="kw">unsafe </span>{
+            ownership::unprotect(<span class="self">self</span>.inner);
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

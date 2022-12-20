@@ -1,6 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/iter.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>iter.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../extendr_api/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../extendr_api/index.html"><div class="logo-container">
-                    <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../extendr_api/index.html">
-                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/iter.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>iter.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../extendr_api/index.html">
+                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -199,204 +198,204 @@
 <span id="197">197</span>
 <span id="198">198</span>
 <span id="199">199</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
+</pre><pre class="rust"><code><span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
-<span class="kw">use</span> <span class="ident">wrapper::symbol::levels_symbol</span>;
+<span class="kw">use </span>wrapper::symbol::levels_symbol;
 
-<span class="doccomment">/// Iterator over name-value pairs in lists.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">NamedListIter</span> <span class="op">=</span> <span class="ident">std::iter::Zip</span><span class="op">&lt;</span><span class="ident">StrIter</span>, <span class="ident">ListIter</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Iterator over name-value pairs in lists.
+</span><span class="kw">pub type </span>NamedListIter = std::iter::Zip&lt;StrIter, ListIter&gt;;
 
-<span class="doccomment">/// Iterator over strings or string factors.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///     let robj = r!([&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</span>
-<span class="doccomment">///     assert_eq!(robj.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">///     let factor = factor!([&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
-<span class="doccomment">///     assert_eq!(factor.levels().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;]);</span>
-<span class="doccomment">///     assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);</span>
-<span class="doccomment">///     assert_eq!(factor.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
-<span class="doccomment">///     assert_eq!(factor.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StrIter</span> {
-    <span class="ident">vector</span>: <span class="ident">Robj</span>,
-    <span class="ident">i</span>: <span class="ident">usize</span>,
-    <span class="ident">len</span>: <span class="ident">usize</span>,
-    <span class="ident">levels</span>: <span class="ident">SEXP</span>,
+<span class="doccomment">/// Iterator over strings or string factors.
+///
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     let robj = r!([&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);
+///     assert_eq!(robj.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);
+///
+///     let factor = factor!([&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);
+///     assert_eq!(factor.levels().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;]);
+///     assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);
+///     assert_eq!(factor.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);
+///     assert_eq!(factor.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);
+/// }
+/// ```
+</span><span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub struct </span>StrIter {
+    vector: Robj,
+    i: usize,
+    len: usize,
+    levels: SEXP,
 }
 
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">StrIter</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident">StrIter::new</span>(<span class="number">0</span>)
+<span class="kw">impl </span>Default <span class="kw">for </span>StrIter {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        StrIter::new(<span class="number">0</span>)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">StrIter</span> {
-    <span class="doccomment">/// Make an empty str iterator.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">len</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">unsafe</span> {
-            <span class="self">Self</span> {
-                <span class="ident">vector</span>: ().<span class="ident">into</span>(),
-                <span class="ident">i</span>: <span class="number">0</span>,
-                <span class="ident">len</span>,
-                <span class="ident">levels</span>: <span class="ident">R_NilValue</span>,
+<span class="kw">impl </span>StrIter {
+    <span class="doccomment">/// Make an empty str iterator.
+    </span><span class="kw">pub fn </span>new(len: usize) -&gt; <span class="self">Self </span>{
+        <span class="kw">unsafe </span>{
+            <span class="self">Self </span>{
+                vector: ().into(),
+                i: <span class="number">0</span>,
+                len,
+                levels: R_NilValue,
             }
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">na_iter</span>(<span class="ident">len</span>: <span class="ident">usize</span>) -&gt; <span class="ident">StrIter</span> {
-        <span class="self">Self</span> {
-            <span class="ident">len</span>,
-            ..<span class="ident">Default::default</span>()
+    <span class="kw">pub fn </span>na_iter(len: usize) -&gt; StrIter {
+        <span class="self">Self </span>{
+            len,
+            ..Default::default()
         }
     }
 }
 
-<span class="comment">// Get a string reference from a CHARSXP</span>
-<span class="kw">fn</span> <span class="ident">str_from_strsxp</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">sexp</span>: <span class="ident">SEXP</span>, <span class="ident">index</span>: <span class="ident">isize</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span> {
-    <span class="kw">unsafe</span> {
-        <span class="kw">if</span> <span class="ident">index</span> <span class="op">&lt;</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">index</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">Rf_xlength</span>(<span class="ident">sexp</span>) {
-            <span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span><span class="ident">::na</span>()
-        } <span class="kw">else</span> {
-            <span class="kw">let</span> <span class="ident">charsxp</span> <span class="op">=</span> <span class="ident">STRING_ELT</span>(<span class="ident">sexp</span>, <span class="ident">index</span>);
-            <span class="kw">if</span> <span class="ident">charsxp</span> <span class="op">==</span> <span class="ident">R_NaString</span> {
-                <span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span><span class="ident">::na</span>()
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">TYPEOF</span>(<span class="ident">charsxp</span>) <span class="op">==</span> <span class="ident">CHARSXP</span> <span class="kw">as</span> <span class="ident">i32</span> {
-                <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">R_CHAR</span>(<span class="ident">charsxp</span>) <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">u8</span>;
-                <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">std::slice::from_raw_parts</span>(<span class="ident">ptr</span>, <span class="ident">Rf_xlength</span>(<span class="ident">charsxp</span>) <span class="kw">as</span> <span class="ident">usize</span>);
-                <span class="ident">std::str::from_utf8_unchecked</span>(<span class="ident">slice</span>)
-            } <span class="kw">else</span> {
-                <span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span><span class="ident">::na</span>()
+<span class="comment">// Get a string reference from a CHARSXP
+</span><span class="kw">fn </span>str_from_strsxp&lt;<span class="lifetime">&#39;a</span>&gt;(sexp: SEXP, index: isize) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str {
+    <span class="kw">unsafe </span>{
+        <span class="kw">if </span>index &lt; <span class="number">0 </span>|| index &gt;= Rf_xlength(sexp) {
+            &lt;<span class="kw-2">&amp;</span>str&gt;::na()
+        } <span class="kw">else </span>{
+            <span class="kw">let </span>charsxp = STRING_ELT(sexp, index);
+            <span class="kw">if </span>charsxp == R_NaString {
+                &lt;<span class="kw-2">&amp;</span>str&gt;::na()
+            } <span class="kw">else if </span>TYPEOF(charsxp) == CHARSXP <span class="kw">as </span>i32 {
+                <span class="kw">let </span>ptr = R_CHAR(charsxp) <span class="kw">as </span><span class="kw-2">*const </span>u8;
+                <span class="kw">let </span>slice = std::slice::from_raw_parts(ptr, Rf_xlength(charsxp) <span class="kw">as </span>usize);
+                std::str::from_utf8_unchecked(slice)
+            } <span class="kw">else </span>{
+                &lt;<span class="kw-2">&amp;</span>str&gt;::na()
             }
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">StrIter</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>;
+<span class="kw">impl </span>Iterator <span class="kw">for </span>StrIter {
+    <span class="kw">type </span>Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str;
 
-    <span class="kw">fn</span> <span class="ident">size_hint</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (<span class="ident">usize</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) {
-        (<span class="self">self</span>.<span class="ident">len</span>, <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">len</span>))
+    <span class="kw">fn </span>size_hint(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (usize, <span class="prelude-ty">Option</span>&lt;usize&gt;) {
+        (<span class="self">self</span>.len, <span class="prelude-val">Some</span>(<span class="self">self</span>.len))
     }
 
-    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">i</span>;
-            <span class="self">self</span>.<span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-            <span class="kw">let</span> <span class="ident">vector</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">vector</span>.<span class="ident">get</span>();
-            <span class="kw">if</span> <span class="ident">i</span> <span class="op">&gt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span> {
-                <span class="prelude-val">None</span>
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">TYPEOF</span>(<span class="ident">vector</span>) <span class="kw">as</span> <span class="ident">u32</span> <span class="op">==</span> <span class="ident">STRSXP</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">str_from_strsxp</span>(<span class="ident">vector</span>, <span class="ident">i</span> <span class="kw">as</span> <span class="ident">isize</span>))
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">TYPEOF</span>(<span class="ident">vector</span>) <span class="kw">as</span> <span class="ident">u32</span> <span class="op">==</span> <span class="ident">INTSXP</span> <span class="op">&amp;&amp;</span> <span class="ident">TYPEOF</span>(<span class="self">self</span>.<span class="ident">levels</span>) <span class="kw">as</span> <span class="ident">u32</span> <span class="op">==</span> <span class="ident">STRSXP</span> {
-                <span class="kw">let</span> <span class="ident">j</span> <span class="op">=</span> <span class="kw-2">*</span>(<span class="ident">INTEGER</span>(<span class="ident">vector</span>).<span class="ident">add</span>(<span class="ident">i</span>));
-                <span class="prelude-val">Some</span>(<span class="ident">str_from_strsxp</span>(<span class="self">self</span>.<span class="ident">levels</span>, <span class="ident">j</span> <span class="kw">as</span> <span class="ident">isize</span> <span class="op">-</span> <span class="number">1</span>))
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">TYPEOF</span>(<span class="ident">vector</span>) <span class="kw">as</span> <span class="ident">u32</span> <span class="op">==</span> <span class="ident">NILSXP</span> {
-                <span class="prelude-val">Some</span>(<span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span><span class="ident">::na</span>())
-            } <span class="kw">else</span> {
-                <span class="prelude-val">None</span>
-            }
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
+        <span class="kw">unsafe </span>{
+            <span class="kw">let </span>i = <span class="self">self</span>.i;
+            <span class="self">self</span>.i += <span class="number">1</span>;
+            <span class="kw">let </span>vector = <span class="self">self</span>.vector.get();
+            <span class="kw">if </span>i &gt;= <span class="self">self</span>.len {
+                <span class="prelude-val">None
+            </span>} <span class="kw">else if </span>TYPEOF(vector) <span class="kw">as </span>u32 == STRSXP {
+                <span class="prelude-val">Some</span>(str_from_strsxp(vector, i <span class="kw">as </span>isize))
+            } <span class="kw">else if </span>TYPEOF(vector) <span class="kw">as </span>u32 == INTSXP &amp;&amp; TYPEOF(<span class="self">self</span>.levels) <span class="kw">as </span>u32 == STRSXP {
+                <span class="kw">let </span>j = <span class="kw-2">*</span>(INTEGER(vector).add(i));
+                <span class="prelude-val">Some</span>(str_from_strsxp(<span class="self">self</span>.levels, j <span class="kw">as </span>isize - <span class="number">1</span>))
+            } <span class="kw">else if </span>TYPEOF(vector) <span class="kw">as </span>u32 == NILSXP {
+                <span class="prelude-val">Some</span>(&lt;<span class="kw-2">&amp;</span>str&gt;::na())
+            } <span class="kw">else </span>{
+                <span class="prelude-val">None
+            </span>}
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">nth</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="ident">n</span>;
-        <span class="self">self</span>.<span class="ident">next</span>()
+    <span class="kw">fn </span>nth(<span class="kw-2">&amp;mut </span><span class="self">self</span>, n: usize) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
+        <span class="self">self</span>.i += n;
+        <span class="self">self</span>.next()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">ExactSizeIterator</span> <span class="kw">for</span> <span class="ident">StrIter</span> {
-    <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-        <span class="self">self</span>.<span class="ident">len</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">i</span>
+<span class="kw">impl </span>ExactSizeIterator <span class="kw">for </span>StrIter {
+    <span class="kw">fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+        <span class="self">self</span>.len - <span class="self">self</span>.i
     }
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_iter_debug</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>: <span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span> <span class="ident">std::fmt::Debug</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span> {
-            <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::fmt::Result</span> {
-                <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;[&quot;</span>)<span class="question-mark">?</span>;
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">comma</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>;
-                <span class="kw">for</span> <span class="ident">s</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">clone</span>() {
-                    <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}{:?}&quot;</span>, <span class="ident">comma</span>, <span class="ident">s</span>)<span class="question-mark">?</span>;
-                    <span class="ident">comma</span> <span class="op">=</span> <span class="string">&quot;, &quot;</span>;
+<span class="macro">macro_rules! </span>impl_iter_debug {
+    (<span class="macro-nonterminal">$name</span>: ty) =&gt; {
+        <span class="kw">impl </span>std::fmt::Debug <span class="kw">for </span><span class="macro-nonterminal">$name </span>{
+            <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+                <span class="macro">write!</span>(f, <span class="string">&quot;[&quot;</span>)<span class="question-mark">?</span>;
+                <span class="kw">let </span><span class="kw-2">mut </span>comma = <span class="string">&quot;&quot;</span>;
+                <span class="kw">for </span>s <span class="kw">in </span><span class="self">self</span>.clone() {
+                    <span class="macro">write!</span>(f, <span class="string">&quot;{}{:?}&quot;</span>, comma, s)<span class="question-mark">?</span>;
+                    comma = <span class="string">&quot;, &quot;</span>;
                 }
-                <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;]&quot;</span>)
+                <span class="macro">write!</span>(f, <span class="string">&quot;]&quot;</span>)
             }
         }
     };
 }
 
-<span class="macro">impl_iter_debug!</span>(<span class="ident">ListIter</span>);
-<span class="macro">impl_iter_debug!</span>(<span class="ident">PairlistIter</span>);
-<span class="macro">impl_iter_debug!</span>(<span class="ident">StrIter</span>);
-<span class="macro">impl_iter_debug!</span>(<span class="ident">EnvIter</span>);
+<span class="macro">impl_iter_debug!</span>(ListIter);
+<span class="macro">impl_iter_debug!</span>(PairlistIter);
+<span class="macro">impl_iter_debug!</span>(StrIter);
+<span class="macro">impl_iter_debug!</span>(EnvIter);
 
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">AsStrIter</span>: <span class="ident">GetSexp</span> <span class="op">+</span> <span class="ident">Types</span> <span class="op">+</span> <span class="ident">Length</span> <span class="op">+</span> <span class="ident">Attributes</span> <span class="op">+</span> <span class="ident">Rinternals</span> {
-    <span class="doccomment">/// Get an iterator over a string vector.</span>
-    <span class="doccomment">/// Returns None if the object is not a string vector</span>
-    <span class="doccomment">/// but works for factors.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let obj = Robj::from(vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</span>
-    <span class="doccomment">///     assert_eq!(obj.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">///     let factor = factor!(vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
-    <span class="doccomment">///     assert_eq!(factor.levels().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;]);</span>
-    <span class="doccomment">///     assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);</span>
-    <span class="doccomment">///     assert_eq!(factor.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
-    <span class="doccomment">///     assert_eq!(factor.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">///     let obj = Robj::from(vec![Some(&quot;a&quot;), Some(&quot;b&quot;), None]);</span>
-    <span class="doccomment">///     assert_eq!(obj.as_str_iter().unwrap().map(|s| s.is_na()).collect::&lt;Vec&lt;_&gt;&gt;(), vec![false, false, true]);</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">///     let obj = Robj::from(vec![&quot;a&quot;, &quot;b&quot;, &lt;&amp;str&gt;::na()]);</span>
-    <span class="doccomment">///     assert_eq!(obj.as_str_iter().unwrap().map(|s| s.is_na()).collect::&lt;Vec&lt;_&gt;&gt;(), vec![false, false, true]);</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">///     let obj = Robj::from(vec![&quot;a&quot;, &quot;b&quot;, &quot;NA&quot;]);</span>
-    <span class="doccomment">///     assert_eq!(obj.as_str_iter().unwrap().map(|s| s.is_na()).collect::&lt;Vec&lt;_&gt;&gt;(), vec![false, false, false]);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">as_str_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StrIter</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span>();
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">sexptype</span>() {
-            <span class="ident">STRSXP</span> =&gt; <span class="kw">unsafe</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">StrIter</span> {
-                    <span class="ident">vector</span>: <span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">clone</span>(),
-                    <span class="ident">i</span>,
-                    <span class="ident">len</span>,
-                    <span class="ident">levels</span>: <span class="ident">R_NilValue</span>,
+<span class="kw">pub trait </span>AsStrIter: GetSexp + Types + Length + Attributes + Rinternals {
+    <span class="doccomment">/// Get an iterator over a string vector.
+    /// Returns None if the object is not a string vector
+    /// but works for factors.
+    ///
+    /// ```
+    /// use extendr_api::prelude::*;
+    ///
+    /// test! {
+    ///     let obj = Robj::from(vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);
+    ///     assert_eq!(obj.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);
+    ///
+    ///     let factor = factor!(vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);
+    ///     assert_eq!(factor.levels().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;]);
+    ///     assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);
+    ///     assert_eq!(factor.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);
+    ///     assert_eq!(factor.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);
+    ///
+    ///     let obj = Robj::from(vec![Some(&quot;a&quot;), Some(&quot;b&quot;), None]);
+    ///     assert_eq!(obj.as_str_iter().unwrap().map(|s| s.is_na()).collect::&lt;Vec&lt;_&gt;&gt;(), vec![false, false, true]);
+    ///
+    ///     let obj = Robj::from(vec![&quot;a&quot;, &quot;b&quot;, &lt;&amp;str&gt;::na()]);
+    ///     assert_eq!(obj.as_str_iter().unwrap().map(|s| s.is_na()).collect::&lt;Vec&lt;_&gt;&gt;(), vec![false, false, true]);
+    ///
+    ///     let obj = Robj::from(vec![&quot;a&quot;, &quot;b&quot;, &quot;NA&quot;]);
+    ///     assert_eq!(obj.as_str_iter().unwrap().map(|s| s.is_na()).collect::&lt;Vec&lt;_&gt;&gt;(), vec![false, false, false]);
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>as_str_iter(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;StrIter&gt; {
+        <span class="kw">let </span>i = <span class="number">0</span>;
+        <span class="kw">let </span>len = <span class="self">self</span>.len();
+        <span class="kw">match </span><span class="self">self</span>.sexptype() {
+            STRSXP =&gt; <span class="kw">unsafe </span>{
+                <span class="prelude-val">Some</span>(StrIter {
+                    vector: <span class="self">self</span>.as_robj().clone(),
+                    i,
+                    len,
+                    levels: R_NilValue,
                 })
             },
-            <span class="ident">INTSXP</span> =&gt; <span class="kw">unsafe</span> {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">levels</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_attrib</span>(<span class="ident">levels_symbol</span>()) {
-                    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_factor</span>() <span class="op">&amp;&amp;</span> <span class="ident">levels</span>.<span class="ident">sexptype</span>() <span class="op">==</span> <span class="ident">STRSXP</span> {
-                        <span class="prelude-val">Some</span>(<span class="ident">StrIter</span> {
-                            <span class="ident">vector</span>: <span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">clone</span>(),
-                            <span class="ident">i</span>,
-                            <span class="ident">len</span>,
-                            <span class="ident">levels</span>: <span class="ident">levels</span>.<span class="ident">get</span>(),
+            INTSXP =&gt; <span class="kw">unsafe </span>{
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(levels) = <span class="self">self</span>.get_attrib(levels_symbol()) {
+                    <span class="kw">if </span><span class="self">self</span>.is_factor() &amp;&amp; levels.sexptype() == STRSXP {
+                        <span class="prelude-val">Some</span>(StrIter {
+                            vector: <span class="self">self</span>.as_robj().clone(),
+                            i,
+                            len,
+                            levels: levels.get(),
                         })
-                    } <span class="kw">else</span> {
-                        <span class="prelude-val">None</span>
-                    }
-                } <span class="kw">else</span> {
-                    <span class="prelude-val">None</span>
-                }
+                    } <span class="kw">else </span>{
+                        <span class="prelude-val">None
+                    </span>}
+                } <span class="kw">else </span>{
+                    <span class="prelude-val">None
+                </span>}
             },
-            <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">AsStrIter</span> <span class="kw">for</span> <span class="ident">Robj</span> {}
+<span class="kw">impl </span>AsStrIter <span class="kw">for </span>Robj {}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

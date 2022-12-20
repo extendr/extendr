@@ -1,6 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/functions.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>functions.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../extendr_api/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../extendr_api/index.html"><div class="logo-container">
-                    <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../extendr_api/index.html">
-                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/functions.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>functions.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../extendr_api/index.html">
+                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -302,307 +301,307 @@
 <span id="300">300</span>
 <span id="301">301</span>
 <span id="302">302</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">crate</span> <span class="kw">as</span> <span class="ident">extendr_api</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
+</pre><pre class="rust"><code><span class="kw">use crate as </span>extendr_api;
+<span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
-<span class="doccomment">/// Get a global variable from global_env() and ancestors.</span>
-<span class="doccomment">/// If the result is a promise, evaulate the promise.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// See also [global_var()].</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///    let iris = global_var(sym!(iris))?;</span>
-<span class="doccomment">///    assert_eq!(iris.len(), 5);</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">global_var</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">key</span>: <span class="ident">K</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">into</span>();
-    <span class="ident">global_env</span>().<span class="ident">find_var</span>(<span class="ident">key</span>)<span class="question-mark">?</span>.<span class="ident">eval_promise</span>()
+<span class="doccomment">/// Get a global variable from global_env() and ancestors.
+/// If the result is a promise, evaulate the promise.
+///
+/// See also [global_var()].
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///    let iris = global_var(sym!(iris))?;
+///    assert_eq!(iris.len(), 5);
+/// }
+/// ```
+</span><span class="kw">pub fn </span>global_var&lt;K: Into&lt;Robj&gt;&gt;(key: K) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt; {
+    <span class="kw">let </span>key = key.into();
+    global_env().find_var(key)<span class="question-mark">?</span>.eval_promise()
 }
 
-<span class="doccomment">/// Get a local variable from current_env() and ancestors.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// If the result is a promise, evaulate the promise.</span>
-<span class="doccomment">/// The result will come from the calling environment</span>
-<span class="doccomment">/// of an R function which will enable you to use variables</span>
-<span class="doccomment">/// from the caller.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// See also [var!].</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Note that outside of R, current_env() will be base_env()</span>
-<span class="doccomment">/// and cannot be modified.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```no_run</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///    current_env().set_local(sym!(my_var), 1);</span>
-<span class="doccomment">///    assert_eq!(local_var(sym!(my_var))?, r!(1));</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">local_var</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">key</span>: <span class="ident">K</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">into</span>();
-    <span class="ident">current_env</span>().<span class="ident">find_var</span>(<span class="ident">key</span>)<span class="question-mark">?</span>.<span class="ident">eval_promise</span>()
+<span class="doccomment">/// Get a local variable from current_env() and ancestors.
+///
+/// If the result is a promise, evaulate the promise.
+/// The result will come from the calling environment
+/// of an R function which will enable you to use variables
+/// from the caller.
+///
+/// See also [var!].
+///
+/// Note that outside of R, current_env() will be base_env()
+/// and cannot be modified.
+///
+/// ```no_run
+/// use extendr_api::prelude::*;
+/// test! {
+///    current_env().set_local(sym!(my_var), 1);
+///    assert_eq!(local_var(sym!(my_var))?, r!(1));
+/// }
+/// ```
+</span><span class="kw">pub fn </span>local_var&lt;K: Into&lt;Robj&gt;&gt;(key: K) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt; {
+    <span class="kw">let </span>key = key.into();
+    current_env().find_var(key)<span class="question-mark">?</span>.eval_promise()
 }
 
-<span class="doccomment">/// Get a global function from global_env() and ancestors.</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///     let ls = global_function(sym!(ls))?;</span>
-<span class="doccomment">///     assert_eq!(ls.is_function(), true);</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">global_function</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">key</span>: <span class="ident">K</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">into</span>();
-    <span class="ident">global_env</span>().<span class="ident">find_function</span>(<span class="ident">key</span>)
+<span class="doccomment">/// Get a global function from global_env() and ancestors.
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     let ls = global_function(sym!(ls))?;
+///     assert_eq!(ls.is_function(), true);
+/// }
+/// ```
+</span><span class="kw">pub fn </span>global_function&lt;K: Into&lt;Robj&gt;&gt;(key: K) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt; {
+    <span class="kw">let </span>key = key.into();
+    global_env().find_function(key)
 }
 
-<span class="doccomment">/// Find a namespace by name.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// See also [Robj::double_colon].</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///    assert_eq!(find_namespace(&quot;base&quot;).is_ok(), true);</span>
-<span class="doccomment">///    assert_eq!(find_namespace(&quot;stats&quot;).is_ok(), true);</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_namespace</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">key</span>: <span class="ident">K</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Environment</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">key</span>.<span class="ident">into</span>();
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">call!</span>(<span class="string">&quot;.getNamespace&quot;</span>, <span class="ident">key</span>.<span class="ident">clone</span>()));
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">res</span>) <span class="op">=</span> <span class="ident">res</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">res</span>.<span class="ident">try_into</span>()<span class="question-mark">?</span>)
-    } <span class="kw">else</span> {
-        <span class="prelude-val">Err</span>(<span class="ident">Error::NamespaceNotFound</span>(<span class="ident">key</span>))
+<span class="doccomment">/// Find a namespace by name.
+///
+/// See also [Robj::double_colon].
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///    assert_eq!(find_namespace(&quot;base&quot;).is_ok(), true);
+///    assert_eq!(find_namespace(&quot;stats&quot;).is_ok(), true);
+/// }
+/// ```
+</span><span class="kw">pub fn </span>find_namespace&lt;K: Into&lt;Robj&gt;&gt;(key: K) -&gt; <span class="prelude-ty">Result</span>&lt;Environment&gt; {
+    <span class="kw">let </span>key = key.into();
+    <span class="kw">let </span>res = single_threaded(|| <span class="macro">call!</span>(<span class="string">&quot;.getNamespace&quot;</span>, key.clone()));
+    <span class="kw">if let </span><span class="prelude-val">Ok</span>(res) = res {
+        <span class="prelude-val">Ok</span>(res.try_into()<span class="question-mark">?</span>)
+    } <span class="kw">else </span>{
+        <span class="prelude-val">Err</span>(Error::NamespaceNotFound(key))
     }
 }
 
-<span class="doccomment">/// The current interpreter environment.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///    assert_eq!(current_env(), base_env());</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">current_env</span>() -&gt; <span class="ident">Environment</span> {
-    <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_GetCurrentEnv</span>()).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
+<span class="doccomment">/// The current interpreter environment.
+///
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///    assert_eq!(current_env(), base_env());
+/// }
+/// ```
+</span><span class="kw">pub fn </span>current_env() -&gt; Environment {
+    <span class="kw">unsafe </span>{ Robj::from_sexp(R_GetCurrentEnv()).try_into().unwrap() }
 }
 
-<span class="doccomment">/// The &quot;global&quot; environment</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///     global_env().set_local(sym!(x), &quot;hello&quot;);</span>
-<span class="doccomment">///     assert_eq!(global_env().local(sym!(x)), Ok(r!(&quot;hello&quot;)));</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">global_env</span>() -&gt; <span class="ident">Environment</span> {
-    <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_GlobalEnv</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
+<span class="doccomment">/// The &quot;global&quot; environment
+///
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     global_env().set_local(sym!(x), &quot;hello&quot;);
+///     assert_eq!(global_env().local(sym!(x)), Ok(r!(&quot;hello&quot;)));
+/// }
+/// ```
+</span><span class="kw">pub fn </span>global_env() -&gt; Environment {
+    <span class="kw">unsafe </span>{ Robj::from_sexp(R_GlobalEnv).try_into().unwrap() }
 }
 
-<span class="doccomment">/// An empty environment at the root of the environment tree</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">empty_env</span>() -&gt; <span class="ident">Environment</span> {
-    <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_EmptyEnv</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
+<span class="doccomment">/// An empty environment at the root of the environment tree
+</span><span class="kw">pub fn </span>empty_env() -&gt; Environment {
+    <span class="kw">unsafe </span>{ Robj::from_sexp(R_EmptyEnv).try_into().unwrap() }
 }
 
-<span class="doccomment">/// Create a new environment</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///     let env: Environment = new_env(global_env(), true, 10).try_into().unwrap();</span>
-<span class="doccomment">///     env.set_local(sym!(x), &quot;hello&quot;);</span>
-<span class="doccomment">///     assert_eq!(env.local(sym!(x)), Ok(r!(&quot;hello&quot;)));</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">use_r_newenv</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_env</span>(<span class="ident">parent</span>: <span class="ident">Environment</span>, <span class="ident">hash</span>: <span class="ident">bool</span>, <span class="ident">capacity</span>: <span class="ident">i32</span>) -&gt; <span class="ident">Environment</span> {
-    <span class="kw">unsafe</span> {
-        <span class="kw">let</span> <span class="ident">env</span> <span class="op">=</span> <span class="ident">R_NewEnv</span>(<span class="ident">parent</span>.<span class="ident">robj</span>.<span class="ident">get</span>(), <span class="ident">hash</span> <span class="kw">as</span> <span class="ident">i32</span>, <span class="ident">capacity</span>);
-        <span class="ident">Robj::from_sexp</span>(<span class="ident">env</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>()
+<span class="doccomment">/// Create a new environment
+///
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     let env: Environment = new_env(global_env(), true, 10).try_into().unwrap();
+///     env.set_local(sym!(x), &quot;hello&quot;);
+///     assert_eq!(env.local(sym!(x)), Ok(r!(&quot;hello&quot;)));
+/// }
+/// ```
+</span><span class="attribute">#[cfg(use_r_newenv)]
+</span><span class="kw">pub fn </span>new_env(parent: Environment, hash: bool, capacity: i32) -&gt; Environment {
+    <span class="kw">unsafe </span>{
+        <span class="kw">let </span>env = R_NewEnv(parent.robj.get(), hash <span class="kw">as </span>i32, capacity);
+        Robj::from_sexp(env).try_into().unwrap()
     }
 }
 
-<span class="comment">// R_NewEnv is available as of R 4.1.0. For the older version, we call an R function `new.env()`.</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">use_r_newenv</span>))]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_env</span>(<span class="ident">parent</span>: <span class="ident">Environment</span>, <span class="ident">hash</span>: <span class="ident">bool</span>, <span class="ident">capacity</span>: <span class="ident">i32</span>) -&gt; <span class="ident">Environment</span> {
-    <span class="macro">call!</span>(<span class="string">&quot;new.env&quot;</span>, <span class="ident">hash</span>, <span class="ident">parent</span>, <span class="ident">capacity</span>)
-        .<span class="ident">unwrap</span>()
-        .<span class="ident">try_into</span>()
-        .<span class="ident">unwrap</span>()
+<span class="comment">// R_NewEnv is available as of R 4.1.0. For the older version, we call an R function `new.env()`.
+</span><span class="attribute">#[cfg(not(use_r_newenv))]
+</span><span class="kw">pub fn </span>new_env(parent: Environment, hash: bool, capacity: i32) -&gt; Environment {
+    <span class="macro">call!</span>(<span class="string">&quot;new.env&quot;</span>, hash, parent, capacity)
+        .unwrap()
+        .try_into()
+        .unwrap()
 }
 
-<span class="doccomment">/// The base environment; formerly R_NilValue</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///     global_env().set_local(sym!(x), &quot;hello&quot;);</span>
-<span class="doccomment">///     assert_eq!(base_env().local(sym!(+)), Ok(r!(Primitive::from_string(&quot;+&quot;))));</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">base_env</span>() -&gt; <span class="ident">Environment</span> {
-    <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_BaseEnv</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
+<span class="doccomment">/// The base environment; formerly R_NilValue
+///
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     global_env().set_local(sym!(x), &quot;hello&quot;);
+///     assert_eq!(base_env().local(sym!(+)), Ok(r!(Primitive::from_string(&quot;+&quot;))));
+/// }
+/// ```
+</span><span class="kw">pub fn </span>base_env() -&gt; Environment {
+    <span class="kw">unsafe </span>{ Robj::from_sexp(R_BaseEnv).try_into().unwrap() }
 }
 
-<span class="doccomment">/// The namespace for base.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///    assert_eq!(base_namespace().parent().ok_or(&quot;no parent&quot;)?, global_env());</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">base_namespace</span>() -&gt; <span class="ident">Environment</span> {
-    <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_BaseNamespace</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
+<span class="doccomment">/// The namespace for base.
+///
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///    assert_eq!(base_namespace().parent().ok_or(&quot;no parent&quot;)?, global_env());
+/// }
+/// ```
+</span><span class="kw">pub fn </span>base_namespace() -&gt; Environment {
+    <span class="kw">unsafe </span>{ Robj::from_sexp(R_BaseNamespace).try_into().unwrap() }
 }
 
-<span class="doccomment">/// For registered namespaces.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///    assert_eq!(namespace_registry().is_environment(), true);</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">namespace_registry</span>() -&gt; <span class="ident">Environment</span> {
-    <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_NamespaceRegistry</span>).<span class="ident">try_into</span>().<span class="ident">unwrap</span>() }
+<span class="doccomment">/// For registered namespaces.
+///
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///    assert_eq!(namespace_registry().is_environment(), true);
+/// }
+/// ```
+</span><span class="kw">pub fn </span>namespace_registry() -&gt; Environment {
+    <span class="kw">unsafe </span>{ Robj::from_sexp(R_NamespaceRegistry).try_into().unwrap() }
 }
 
-<span class="doccomment">/// Current srcref, for debuggers</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">srcref</span>() -&gt; <span class="ident">Robj</span> {
-    <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_Srcref</span>) }
+<span class="doccomment">/// Current srcref, for debuggers
+</span><span class="kw">pub fn </span>srcref() -&gt; Robj {
+    <span class="kw">unsafe </span>{ Robj::from_sexp(R_Srcref) }
 }
 
-<span class="doccomment">/// The nil object</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">nil_value</span>() -&gt; <span class="ident">Robj</span> {
-    <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_NilValue</span>) }
+<span class="doccomment">/// The nil object
+</span><span class="kw">pub fn </span>nil_value() -&gt; Robj {
+    <span class="kw">unsafe </span>{ Robj::from_sexp(R_NilValue) }
 }
 
 <span class="comment">/* fix version issues.
 /// &quot;.Generic&quot;
 pub fn dot_Generic() -&gt; Robj { unsafe { Robj::from_sexp(R_dot_Generic) }}
-*/</span>
+*/
 
-<span class="doccomment">/// NA_STRING as a CHARSXP</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">na_string</span>() -&gt; <span class="ident">Robj</span> {
-    <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_NaString</span>) }
+</span><span class="doccomment">/// NA_STRING as a CHARSXP
+</span><span class="kw">pub fn </span>na_string() -&gt; Robj {
+    <span class="kw">unsafe </span>{ Robj::from_sexp(R_NaString) }
 }
 
-<span class="doccomment">/// &quot;&quot; as a CHARSXP</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">blank_string</span>() -&gt; <span class="ident">Robj</span> {
-    <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_BlankString</span>) }
+<span class="doccomment">/// &quot;&quot; as a CHARSXP
+</span><span class="kw">pub fn </span>blank_string() -&gt; Robj {
+    <span class="kw">unsafe </span>{ Robj::from_sexp(R_BlankString) }
 }
 
-<span class="doccomment">/// &quot;&quot; as a STRSXP</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">blank_scalar_string</span>() -&gt; <span class="ident">Robj</span> {
-    <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_BlankScalarString</span>) }
+<span class="doccomment">/// &quot;&quot; as a STRSXP
+</span><span class="kw">pub fn </span>blank_scalar_string() -&gt; Robj {
+    <span class="kw">unsafe </span>{ Robj::from_sexp(R_BlankScalarString) }
 }
 
-<span class="doccomment">/// Parse a string into an R executable object</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///    let expr = parse(&quot;1 + 2&quot;).unwrap();</span>
-<span class="doccomment">///    assert!(expr.is_expressions());</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">parse</span>(<span class="ident">code</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Expressions</span><span class="op">&gt;</span> {
-    <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
-        <span class="kw">use</span> <span class="ident">libR_sys</span>::<span class="kw-2">*</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">status</span> <span class="op">=</span> <span class="number">0_u32</span>;
-        <span class="kw">let</span> <span class="ident">status_ptr</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="ident">status</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">u32</span>;
-        <span class="kw">let</span> <span class="ident">codeobj</span>: <span class="ident">Robj</span> <span class="op">=</span> <span class="ident">code</span>.<span class="ident">into</span>();
-        <span class="kw">let</span> <span class="ident">parsed</span> <span class="op">=</span> <span class="ident">Robj::from_sexp</span>(<span class="ident">R_ParseVector</span>(<span class="ident">codeobj</span>.<span class="ident">get</span>(), <span class="op">-</span><span class="number">1</span>, <span class="ident">status_ptr</span>, <span class="ident">R_NilValue</span>));
-        <span class="kw">match</span> <span class="ident">status</span> {
-            <span class="number">1</span> =&gt; <span class="ident">parsed</span>.<span class="ident">try_into</span>(),
-            <span class="kw">_</span> =&gt; <span class="prelude-val">Err</span>(<span class="ident">Error::ParseError</span>(<span class="ident">code</span>.<span class="ident">into</span>())),
+<span class="doccomment">/// Parse a string into an R executable object
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///    let expr = parse(&quot;1 + 2&quot;).unwrap();
+///    assert!(expr.is_expressions());
+/// }
+/// ```
+</span><span class="kw">pub fn </span>parse(code: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Expressions&gt; {
+    single_threaded(|| <span class="kw">unsafe </span>{
+        <span class="kw">use </span>libR_sys::<span class="kw-2">*</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>status = <span class="number">0_u32</span>;
+        <span class="kw">let </span>status_ptr = <span class="kw-2">&amp;mut </span>status <span class="kw">as </span><span class="kw-2">*mut </span>u32;
+        <span class="kw">let </span>codeobj: Robj = code.into();
+        <span class="kw">let </span>parsed = Robj::from_sexp(R_ParseVector(codeobj.get(), -<span class="number">1</span>, status_ptr, R_NilValue));
+        <span class="kw">match </span>status {
+            <span class="number">1 </span>=&gt; parsed.try_into(),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(Error::ParseError(code.into())),
         }
     })
 }
 
-<span class="doccomment">/// Parse a string into an R executable object and run it.</span>
-<span class="doccomment">/// Used by the R! macro.</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///    let res = eval_string(&quot;1 + 2&quot;).unwrap();</span>
-<span class="doccomment">///    assert_eq!(res, r!(3.));</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">eval_string</span>(<span class="ident">code</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
-    <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
-        <span class="kw">let</span> <span class="ident">expr</span> <span class="op">=</span> <span class="ident">parse</span>(<span class="ident">code</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">Robj::from</span>(());
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">expr</span>) <span class="op">=</span> <span class="ident">expr</span>.<span class="ident">as_expressions</span>() {
-            <span class="kw">for</span> <span class="ident">lang</span> <span class="kw">in</span> <span class="ident">expr</span>.<span class="ident">values</span>() {
-                <span class="ident">res</span> <span class="op">=</span> <span class="ident">lang</span>.<span class="ident">eval</span>()<span class="question-mark">?</span>
-            }
+<span class="doccomment">/// Parse a string into an R executable object and run it.
+/// Used by the R! macro.
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///    let res = eval_string(&quot;1 + 2&quot;).unwrap();
+///    assert_eq!(res, r!(3.));
+/// }
+/// ```
+</span><span class="kw">pub fn </span>eval_string(code: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt; {
+    single_threaded(|| {
+        <span class="kw">let </span>expr = parse(code)<span class="question-mark">?</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>res = Robj::from(());
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(expr) = expr.as_expressions() {
+            <span class="kw">for </span>lang <span class="kw">in </span>expr.values() {
+                res = lang.eval()<span class="question-mark">?
+            </span>}
         }
-        <span class="prelude-val">Ok</span>(<span class="ident">res</span>)
+        <span class="prelude-val">Ok</span>(res)
     })
 }
 
-<span class="doccomment">/// Parse a string into an R executable object and run it using</span>
-<span class="doccomment">///   parameters param.0, param.1, ...</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Used by the R! macro.</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///    let res = eval_string_with_params(&quot;param.0&quot;, &amp;[&amp;r!(3.)]).unwrap();</span>
-<span class="doccomment">///    assert_eq!(res, r!(3.));</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">eval_string_with_params</span>(<span class="ident">code</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">values</span>: <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">Robj</span>]) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
-    <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
-        <span class="kw">let</span> <span class="ident">env</span> <span class="op">=</span> <span class="ident">Environment::new_with_parent</span>(<span class="ident">global_env</span>());
-        <span class="kw">for</span> (<span class="ident">i</span>, <span class="kw-2">&amp;</span><span class="ident">v</span>) <span class="kw">in</span> <span class="ident">values</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
-            <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">Symbol::from_string</span>(<span class="macro">format!</span>(<span class="string">&quot;param.{}&quot;</span>, <span class="ident">i</span>));
-            <span class="ident">env</span>.<span class="ident">set_local</span>(<span class="ident">key</span>, <span class="ident">v</span>);
+<span class="doccomment">/// Parse a string into an R executable object and run it using
+///   parameters param.0, param.1, ...
+///
+/// Used by the R! macro.
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///    let res = eval_string_with_params(&quot;param.0&quot;, &amp;[&amp;r!(3.)]).unwrap();
+///    assert_eq!(res, r!(3.));
+/// }
+/// ```
+</span><span class="kw">pub fn </span>eval_string_with_params(code: <span class="kw-2">&amp;</span>str, values: <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>Robj]) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt; {
+    single_threaded(|| {
+        <span class="kw">let </span>env = Environment::new_with_parent(global_env());
+        <span class="kw">for </span>(i, <span class="kw-2">&amp;</span>v) <span class="kw">in </span>values.iter().enumerate() {
+            <span class="kw">let </span>key = Symbol::from_string(<span class="macro">format!</span>(<span class="string">&quot;param.{}&quot;</span>, i));
+            env.set_local(key, v);
         }
 
-        <span class="kw">let</span> <span class="ident">expr</span> <span class="op">=</span> <span class="ident">parse</span>(<span class="ident">code</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">Robj::from</span>(());
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">expr</span>) <span class="op">=</span> <span class="ident">expr</span>.<span class="ident">as_expressions</span>() {
-            <span class="kw">for</span> <span class="ident">lang</span> <span class="kw">in</span> <span class="ident">expr</span>.<span class="ident">values</span>() {
-                <span class="ident">res</span> <span class="op">=</span> <span class="ident">lang</span>.<span class="ident">eval_with_env</span>(<span class="kw-2">&amp;</span><span class="ident">env</span>)<span class="question-mark">?</span>
-            }
+        <span class="kw">let </span>expr = parse(code)<span class="question-mark">?</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>res = Robj::from(());
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(expr) = expr.as_expressions() {
+            <span class="kw">for </span>lang <span class="kw">in </span>expr.values() {
+                res = lang.eval_with_env(<span class="kw-2">&amp;</span>env)<span class="question-mark">?
+            </span>}
         }
 
-        <span class="prelude-val">Ok</span>(<span class="ident">res</span>)
+        <span class="prelude-val">Ok</span>(res)
     })
 }
 
-<span class="doccomment">/// Find a function or primitive that may be in a namespace.</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///    assert!(find_namespaced_function(&quot;+&quot;).is_ok());</span>
-<span class="doccomment">///    assert!(find_namespaced_function(&quot;ls&quot;).is_ok());</span>
-<span class="doccomment">///    assert!(find_namespaced_function(&quot;base::ls&quot;).is_ok());</span>
-<span class="doccomment">///    assert!(find_namespaced_function(&quot;ls&quot;)?.is_language());</span>
-<span class="doccomment">///    assert!(!find_namespaced_function(&quot;basex::ls&quot;).is_ok());</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_namespaced_function</span>(<span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Language</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">name</span>.<span class="ident">split</span>(<span class="string">&quot;::&quot;</span>);
-    <span class="kw">match</span> (<span class="ident">iter</span>.<span class="ident">next</span>(), <span class="ident">iter</span>.<span class="ident">next</span>(), <span class="ident">iter</span>.<span class="ident">next</span>()) {
-        (<span class="prelude-val">Some</span>(<span class="ident">key</span>), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; {
-            <span class="kw">let</span> <span class="ident">gf</span> <span class="op">=</span> <span class="ident">global_function</span>(<span class="ident">Symbol::from_string</span>(<span class="ident">key</span>))<span class="question-mark">?</span>;
-            <span class="prelude-val">Ok</span>(<span class="ident">Language::from_values</span>(<span class="kw-2">&amp;</span>[<span class="ident">gf</span>]))
+<span class="doccomment">/// Find a function or primitive that may be in a namespace.
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///    assert!(find_namespaced_function(&quot;+&quot;).is_ok());
+///    assert!(find_namespaced_function(&quot;ls&quot;).is_ok());
+///    assert!(find_namespaced_function(&quot;base::ls&quot;).is_ok());
+///    assert!(find_namespaced_function(&quot;ls&quot;)?.is_language());
+///    assert!(!find_namespaced_function(&quot;basex::ls&quot;).is_ok());
+/// }
+/// ```
+</span><span class="kw">pub fn </span>find_namespaced_function(name: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Language&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>iter = name.split(<span class="string">&quot;::&quot;</span>);
+    <span class="kw">match </span>(iter.next(), iter.next(), iter.next()) {
+        (<span class="prelude-val">Some</span>(key), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; {
+            <span class="kw">let </span>gf = global_function(Symbol::from_string(key))<span class="question-mark">?</span>;
+            <span class="prelude-val">Ok</span>(Language::from_values(<span class="kw-2">&amp;</span>[gf]))
         }
-        (<span class="prelude-val">Some</span>(<span class="ident">ns</span>), <span class="prelude-val">Some</span>(<span class="ident">key</span>), <span class="prelude-val">None</span>) =&gt; {
-            <span class="kw">let</span> <span class="ident">namespace</span> <span class="op">=</span> <span class="ident">find_namespace</span>(<span class="ident">ns</span>)<span class="question-mark">?</span>;
-            <span class="prelude-val">Ok</span>(<span class="ident">Language::from_values</span>(<span class="kw-2">&amp;</span>[
-                <span class="ident">namespace</span>.<span class="ident">local</span>(<span class="ident">Symbol::from_string</span>(<span class="ident">key</span>))<span class="question-mark">?</span>
-            ]))
+        (<span class="prelude-val">Some</span>(ns), <span class="prelude-val">Some</span>(key), <span class="prelude-val">None</span>) =&gt; {
+            <span class="kw">let </span>namespace = find_namespace(ns)<span class="question-mark">?</span>;
+            <span class="prelude-val">Ok</span>(Language::from_values(<span class="kw-2">&amp;</span>[
+                namespace.local(Symbol::from_string(key))<span class="question-mark">?
+            </span>]))
         }
-        <span class="kw">_</span> =&gt; <span class="prelude-val">Err</span>(<span class="ident">Error::NotFound</span>(<span class="macro">r!</span>(<span class="ident">name</span>))),
+        <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(Error::NotFound(<span class="macro">r!</span>(name))),
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

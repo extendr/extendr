@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-macros/src/wrappers.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>wrappers.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../extendr_macros/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../extendr_macros/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../extendr_macros/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-macros/src/wrappers.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>wrappers.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../extendr_macros/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -336,343 +336,343 @@
 <span id="336">336</span>
 <span id="337">337</span>
 <span id="338">338</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">quote</span>::{<span class="ident">format_ident</span>, <span class="ident">quote</span>};
-<span class="kw">use</span> <span class="ident">syn</span>::{<span class="ident">parse_quote</span>, <span class="ident">punctuated::Punctuated</span>, <span class="ident">Expr</span>, <span class="ident">FnArg</span>, <span class="ident">ItemFn</span>, <span class="ident">Token</span>, <span class="ident">Type</span>};
+</pre><pre class="rust"><code><span class="kw">use </span>quote::{format_ident, quote};
+<span class="kw">use </span>syn::{parse_quote, punctuated::Punctuated, Expr, FnArg, ItemFn, Token, Type};
 
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">META_PREFIX</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;meta__&quot;</span>;
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">WRAP_PREFIX</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;wrap__&quot;</span>;
+<span class="kw">pub const </span>META_PREFIX: <span class="kw-2">&amp;</span>str = <span class="string">&quot;meta__&quot;</span>;
+<span class="kw">pub const </span>WRAP_PREFIX: <span class="kw-2">&amp;</span>str = <span class="string">&quot;wrap__&quot;</span>;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ExtendrOptions</span> {
-    <span class="kw">pub</span> <span class="ident">use_try_from</span>: <span class="ident">bool</span>,
-    <span class="kw">pub</span> <span class="ident">r_name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">mod_name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+<span class="attribute">#[derive(Debug, Default)]
+</span><span class="kw">pub struct </span>ExtendrOptions {
+    <span class="kw">pub </span>use_try_from: bool,
+    <span class="kw">pub </span>r_name: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="kw">pub </span>mod_name: <span class="prelude-ty">Option</span>&lt;String&gt;,
 }
 
-<span class="comment">// Generate wrappers for a specific function.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_function_wrappers</span>(
-    <span class="ident">opts</span>: <span class="kw-2">&amp;</span><span class="ident">ExtendrOptions</span>,
-    <span class="ident">wrappers</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ItemFn</span><span class="op">&gt;</span>,
-    <span class="ident">prefix</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    <span class="ident">attrs</span>: <span class="kw-2">&amp;</span>[<span class="ident">syn::Attribute</span>],
-    <span class="ident">sig</span>: <span class="kw-2">&amp;mut</span> <span class="ident">syn::Signature</span>,
-    <span class="ident">self_ty</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">syn::Type</span><span class="op">&gt;</span>,
+<span class="comment">// Generate wrappers for a specific function.
+</span><span class="kw">pub fn </span>make_function_wrappers(
+    opts: <span class="kw-2">&amp;</span>ExtendrOptions,
+    wrappers: <span class="kw-2">&amp;mut </span>Vec&lt;ItemFn&gt;,
+    prefix: <span class="kw-2">&amp;</span>str,
+    attrs: <span class="kw-2">&amp;</span>[syn::Attribute],
+    sig: <span class="kw-2">&amp;mut </span>syn::Signature,
+    self_ty: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>syn::Type&gt;,
 ) {
-    <span class="kw">let</span> <span class="ident">rust_name</span> <span class="op">=</span> <span class="ident">sig</span>.<span class="ident">ident</span>.<span class="ident">clone</span>();
+    <span class="kw">let </span>rust_name = sig.ident.clone();
 
-    <span class="kw">let</span> <span class="ident">r_name_str</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">r_name</span>) <span class="op">=</span> <span class="ident">opts</span>.<span class="ident">r_name</span>.<span class="ident">as_ref</span>() {
-        <span class="ident">r_name</span>.<span class="ident">clone</span>()
-    } <span class="kw">else</span> {
-        <span class="ident">sig</span>.<span class="ident">ident</span>.<span class="ident">to_string</span>()
+    <span class="kw">let </span>r_name_str = <span class="kw">if let </span><span class="prelude-val">Some</span>(r_name) = opts.r_name.as_ref() {
+        r_name.clone()
+    } <span class="kw">else </span>{
+        sig.ident.to_string()
     };
 
-    <span class="kw">let</span> <span class="ident">mod_name</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">mod_name</span>) <span class="op">=</span> <span class="ident">opts</span>.<span class="ident">mod_name</span>.<span class="ident">as_ref</span>() {
-        <span class="macro">format_ident!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">mod_name</span>)
-    } <span class="kw">else</span> {
-        <span class="ident">sig</span>.<span class="ident">ident</span>.<span class="ident">clone</span>()
+    <span class="kw">let </span>mod_name = <span class="kw">if let </span><span class="prelude-val">Some</span>(mod_name) = opts.mod_name.as_ref() {
+        <span class="macro">format_ident!</span>(<span class="string">&quot;{}&quot;</span>, mod_name)
+    } <span class="kw">else </span>{
+        sig.ident.clone()
     };
 
-    <span class="kw">let</span> <span class="ident">wrap_name</span> <span class="op">=</span> <span class="macro">format_ident!</span>(<span class="string">&quot;{}{}{}&quot;</span>, <span class="ident">WRAP_PREFIX</span>, <span class="ident">prefix</span>, <span class="ident">mod_name</span>);
-    <span class="kw">let</span> <span class="ident">meta_name</span> <span class="op">=</span> <span class="macro">format_ident!</span>(<span class="string">&quot;{}{}{}&quot;</span>, <span class="ident">META_PREFIX</span>, <span class="ident">prefix</span>, <span class="ident">mod_name</span>);
+    <span class="kw">let </span>wrap_name = <span class="macro">format_ident!</span>(<span class="string">&quot;{}{}{}&quot;</span>, WRAP_PREFIX, prefix, mod_name);
+    <span class="kw">let </span>meta_name = <span class="macro">format_ident!</span>(<span class="string">&quot;{}{}{}&quot;</span>, META_PREFIX, prefix, mod_name);
 
-    <span class="kw">let</span> <span class="ident">rust_name_str</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">rust_name</span>);
-    <span class="kw">let</span> <span class="ident">c_name_str</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">mod_name</span>);
-    <span class="kw">let</span> <span class="ident">doc_string</span> <span class="op">=</span> <span class="ident">get_doc_string</span>(<span class="ident">attrs</span>);
-    <span class="kw">let</span> <span class="ident">return_type_string</span> <span class="op">=</span> <span class="ident">get_return_type</span>(<span class="ident">sig</span>);
+    <span class="kw">let </span>rust_name_str = <span class="macro">format!</span>(<span class="string">&quot;{}&quot;</span>, rust_name);
+    <span class="kw">let </span>c_name_str = <span class="macro">format!</span>(<span class="string">&quot;{}&quot;</span>, mod_name);
+    <span class="kw">let </span>doc_string = get_doc_string(attrs);
+    <span class="kw">let </span>return_type_string = get_return_type(sig);
 
-    <span class="kw">let</span> <span class="ident">panic_str</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{} panicked.\0&quot;</span>, <span class="ident">r_name_str</span>);
+    <span class="kw">let </span>panic_str = <span class="macro">format!</span>(<span class="string">&quot;{} panicked.\0&quot;</span>, r_name_str);
 
-    <span class="kw">let</span> <span class="ident">inputs</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="ident">sig</span>.<span class="ident">inputs</span>;
-    <span class="kw">let</span> <span class="ident">has_self</span> <span class="op">=</span> <span class="macro">matches!</span>(<span class="ident">inputs</span>.<span class="ident">iter</span>().<span class="ident">next</span>(), <span class="prelude-val">Some</span>(<span class="ident">FnArg::Receiver</span>(<span class="kw">_</span>)));
+    <span class="kw">let </span>inputs = <span class="kw-2">&amp;mut </span>sig.inputs;
+    <span class="kw">let </span>has_self = <span class="macro">matches!</span>(inputs.iter().next(), <span class="prelude-val">Some</span>(FnArg::Receiver(<span class="kw">_</span>)));
 
-    <span class="kw">let</span> <span class="ident">call_name</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">has_self</span> {
-        <span class="kw">let</span> <span class="ident">is_mut</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">inputs</span>.<span class="ident">iter</span>().<span class="ident">next</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">FnArg::Receiver</span>(<span class="kw-2">ref</span> <span class="ident">reciever</span>)) =&gt; <span class="ident">reciever</span>.<span class="ident">mutability</span>.<span class="ident">is_some</span>(),
-            <span class="kw">_</span> =&gt; <span class="bool-val">false</span>,
+    <span class="kw">let </span>call_name = <span class="kw">if </span>has_self {
+        <span class="kw">let </span>is_mut = <span class="kw">match </span>inputs.iter().next() {
+            <span class="prelude-val">Some</span>(FnArg::Receiver(<span class="kw-2">ref </span>reciever)) =&gt; reciever.mutability.is_some(),
+            <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
         };
-        <span class="kw">if</span> <span class="ident">is_mut</span> {
-            <span class="comment">// eg. Person::name(&amp;mut self)</span>
-            <span class="macro">quote!</span> { <span class="ident">extendr_api::unwrap_or_throw</span>(
-                <span class="op">&lt;</span><span class="kw-2">&amp;mut</span> #<span class="ident">self_ty</span><span class="op">&gt;</span><span class="ident">::from_robj</span>(<span class="kw-2">&amp;</span><span class="ident">_self_robj</span>)
-            ).#<span class="ident">rust_name</span> }
-        } <span class="kw">else</span> {
-            <span class="comment">// eg. Person::name(&amp;self)</span>
-            <span class="macro">quote!</span> { <span class="ident">extendr_api::unwrap_or_throw</span>(
-                <span class="op">&lt;</span><span class="kw-2">&amp;</span>#<span class="ident">self_ty</span><span class="op">&gt;</span><span class="ident">::from_robj</span>(<span class="kw-2">&amp;</span><span class="ident">_self_robj</span>)
-            ).#<span class="ident">rust_name</span> }
+        <span class="kw">if </span>is_mut {
+            <span class="comment">// eg. Person::name(&amp;mut self)
+            </span><span class="macro">quote! </span>{ extendr_api::unwrap_or_throw(
+                &lt;<span class="kw-2">&amp;mut </span>#self_ty&gt;::from_robj(<span class="kw-2">&amp;</span>_self_robj)
+            ).#rust_name }
+        } <span class="kw">else </span>{
+            <span class="comment">// eg. Person::name(&amp;self)
+            </span><span class="macro">quote! </span>{ extendr_api::unwrap_or_throw(
+                &lt;<span class="kw-2">&amp;</span>#self_ty&gt;::from_robj(<span class="kw-2">&amp;</span>_self_robj)
+            ).#rust_name }
         }
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">self_ty</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">self_ty</span> {
-        <span class="comment">// eg. Person::new()</span>
-        <span class="macro">quote!</span> { <span class="op">&lt;</span>#<span class="ident">self_ty</span><span class="op">&gt;</span>::#<span class="ident">rust_name</span> }
-    } <span class="kw">else</span> {
-        <span class="comment">// eg. aux_func()</span>
-        <span class="macro">quote!</span> { #<span class="ident">rust_name</span> }
+    } <span class="kw">else if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>self_ty) = <span class="kw-2">&amp;</span>self_ty {
+        <span class="comment">// eg. Person::new()
+        </span><span class="macro">quote! </span>{ &lt;#self_ty&gt;::#rust_name }
+    } <span class="kw">else </span>{
+        <span class="comment">// eg. aux_func()
+        </span><span class="macro">quote! </span>{ #rust_name }
     };
 
-    <span class="kw">let</span> <span class="ident">formal_args</span>: <span class="ident">Punctuated</span><span class="op">&lt;</span><span class="ident">FnArg</span>, <span class="macro">Token!</span>[,]<span class="op">&gt;</span> <span class="op">=</span> <span class="ident">inputs</span>
-        .<span class="ident">iter</span>()
-        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">input</span><span class="op">|</span> <span class="ident">translate_formal</span>(<span class="ident">input</span>, <span class="ident">self_ty</span>))
-        .<span class="ident">collect</span>();
+    <span class="kw">let </span>formal_args: Punctuated&lt;FnArg, <span class="macro">Token!</span>[,]&gt; = inputs
+        .iter()
+        .map(|input| translate_formal(input, self_ty))
+        .collect();
 
-    <span class="kw">let</span> <span class="ident">convert_args</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">syn::Stmt</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">inputs</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="ident">translate_to_robj</span>).<span class="ident">collect</span>();
+    <span class="kw">let </span>convert_args: Vec&lt;syn::Stmt&gt; = inputs.iter().map(translate_to_robj).collect();
 
-    <span class="kw">let</span> <span class="ident">actual_args</span>: <span class="ident">Punctuated</span><span class="op">&lt;</span><span class="ident">Expr</span>, <span class="macro">Token!</span>[,]<span class="op">&gt;</span> <span class="op">=</span> <span class="ident">inputs</span>
-        .<span class="ident">iter</span>()
-        .<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">input</span><span class="op">|</span> <span class="ident">translate_actual</span>(<span class="ident">opts</span>, <span class="ident">input</span>))
-        .<span class="ident">collect</span>();
+    <span class="kw">let </span>actual_args: Punctuated&lt;Expr, <span class="macro">Token!</span>[,]&gt; = inputs
+        .iter()
+        .filter_map(|input| translate_actual(opts, input))
+        .collect();
 
-    <span class="kw">let</span> <span class="ident">meta_args</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Expr</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">inputs</span>
-        .<span class="ident">iter_mut</span>()
-        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">input</span><span class="op">|</span> <span class="ident">translate_meta_arg</span>(<span class="ident">input</span>, <span class="ident">self_ty</span>))
-        .<span class="ident">collect</span>();
+    <span class="kw">let </span>meta_args: Vec&lt;Expr&gt; = inputs
+        .iter_mut()
+        .map(|input| translate_meta_arg(input, self_ty))
+        .collect();
 
-    <span class="comment">// Generate wrappers for rust functions to be called from R.</span>
-    <span class="comment">// Example:</span>
-    <span class="comment">// ```</span>
-    <span class="comment">// #[no_mangle]</span>
-    <span class="comment">// #[allow(non_snake_case)]</span>
-    <span class="comment">// pub extern &quot;C&quot; fn wrap__hello() -&gt; extendr_api::SEXP {</span>
-    <span class="comment">//     unsafe {</span>
-    <span class="comment">//         use extendr_api::FromRobj;</span>
-    <span class="comment">//         extendr_api::Robj::from(hello()).get()</span>
-    <span class="comment">//     }</span>
-    <span class="comment">// }</span>
-    <span class="comment">// ```</span>
-    <span class="ident">wrappers</span>.<span class="ident">push</span>(<span class="macro">parse_quote!</span>(
-        <span class="attribute">#[<span class="ident">no_mangle</span>]</span>
-        <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
-        <span class="kw">pub</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> #<span class="ident">wrap_name</span>(#<span class="ident">formal_args</span>) -&gt; <span class="ident">extendr_api::SEXP</span> {
-            <span class="kw">unsafe</span> {
-                <span class="kw">use</span> <span class="ident">extendr_api::robj</span>::<span class="kw-2">*</span>;
-                #( #<span class="ident">convert_args</span> )<span class="op">*</span>
-                <span class="ident">extendr_api::handle_panic</span>(#<span class="ident">panic_str</span>, <span class="op">|</span><span class="op">|</span>
-                    <span class="ident">extendr_api::Robj::from</span>(#<span class="ident">call_name</span>(#<span class="ident">actual_args</span>)).<span class="ident">get</span>()
+    <span class="comment">// Generate wrappers for rust functions to be called from R.
+    // Example:
+    // ```
+    // #[no_mangle]
+    // #[allow(non_snake_case)]
+    // pub extern &quot;C&quot; fn wrap__hello() -&gt; extendr_api::SEXP {
+    //     unsafe {
+    //         use extendr_api::FromRobj;
+    //         extendr_api::Robj::from(hello()).get()
+    //     }
+    // }
+    // ```
+    </span>wrappers.push(<span class="macro">parse_quote!</span>(
+        <span class="attribute">#[no_mangle]
+        #[allow(non_snake_case)]
+        </span><span class="kw">pub extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>#wrap_name(#formal_args) -&gt; extendr_api::SEXP {
+            <span class="kw">unsafe </span>{
+                <span class="kw">use </span>extendr_api::robj::<span class="kw-2">*</span>;
+                #( #convert_args )*
+                extendr_api::handle_panic(#panic_str, ||
+                    extendr_api::Robj::from(#call_name(#actual_args)).get()
                 )
             }
         }
     ));
 
-    <span class="comment">// Generate a function to push the metadata for a function.</span>
-    <span class="ident">wrappers</span>.<span class="ident">push</span>(<span class="macro">parse_quote!</span>(
-        <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
-        <span class="kw">fn</span> #<span class="ident">meta_name</span>(<span class="ident">metadata</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">extendr_api::metadata::Func</span><span class="op">&gt;</span>) {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">args</span> <span class="op">=</span> <span class="macro">vec!</span>[
-                #( #<span class="ident">meta_args</span>, )<span class="op">*</span>
+    <span class="comment">// Generate a function to push the metadata for a function.
+    </span>wrappers.push(<span class="macro">parse_quote!</span>(
+        <span class="attribute">#[allow(non_snake_case)]
+        </span><span class="kw">fn </span>#meta_name(metadata: <span class="kw-2">&amp;mut </span>Vec&lt;extendr_api::metadata::Func&gt;) {
+            <span class="kw">let </span><span class="kw-2">mut </span>args = <span class="macro">vec!</span>[
+                #( #meta_args, )*
             ];
-            <span class="ident">metadata</span>.<span class="ident">push</span>(<span class="ident">extendr_api::metadata::Func</span> {
-                <span class="ident">doc</span>: #<span class="ident">doc_string</span>,
-                <span class="ident">rust_name</span>: #<span class="ident">rust_name_str</span>,
-                <span class="ident">r_name</span>: #<span class="ident">r_name_str</span>,
-                <span class="ident">mod_name</span>: #<span class="ident">c_name_str</span>,
-                <span class="ident">args</span>: <span class="ident">args</span>,
-                <span class="ident">return_type</span>: #<span class="ident">return_type_string</span>,
-                <span class="ident">func_ptr</span>: #<span class="ident">wrap_name</span> <span class="kw">as</span> <span class="op">*</span> <span class="kw">const</span> <span class="ident">u8</span>,
-                <span class="ident">hidden</span>: <span class="bool-val">false</span>,
+            metadata.push(extendr_api::metadata::Func {
+                doc: #doc_string,
+                rust_name: #rust_name_str,
+                r_name: #r_name_str,
+                mod_name: #c_name_str,
+                args: args,
+                return_type: #return_type_string,
+                func_ptr: #wrap_name <span class="kw">as </span>* <span class="kw">const </span>u8,
+                hidden: <span class="bool-val">false</span>,
             })
         }
     ));
 }
 
-<span class="comment">// Extract doc strings from attributes.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_doc_string</span>(<span class="ident">attrs</span>: <span class="kw-2">&amp;</span>[<span class="ident">syn::Attribute</span>]) -&gt; <span class="ident">String</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">String::new</span>();
-    <span class="kw">for</span> <span class="ident">attr</span> <span class="kw">in</span> <span class="ident">attrs</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">id</span>) <span class="op">=</span> <span class="ident">attr</span>.<span class="ident">path</span>.<span class="ident">get_ident</span>() {
-            <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">id</span> <span class="op">!</span><span class="op">=</span> <span class="string">&quot;doc&quot;</span> {
+<span class="comment">// Extract doc strings from attributes.
+</span><span class="kw">pub fn </span>get_doc_string(attrs: <span class="kw-2">&amp;</span>[syn::Attribute]) -&gt; String {
+    <span class="kw">let </span><span class="kw-2">mut </span>res = String::new();
+    <span class="kw">for </span>attr <span class="kw">in </span>attrs {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(id) = attr.path.get_ident() {
+            <span class="kw">if </span><span class="kw-2">*</span>id != <span class="string">&quot;doc&quot; </span>{
                 <span class="kw">continue</span>;
             }
 
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">syn::Meta::NameValue</span>(<span class="ident">nv</span>)) <span class="op">=</span> <span class="ident">attr</span>.<span class="ident">parse_meta</span>() {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">syn::Lit::Str</span>(<span class="ident">litstr</span>) <span class="op">=</span> <span class="ident">nv</span>.<span class="ident">lit</span> {
-                    <span class="kw">if</span> <span class="op">!</span><span class="ident">res</span>.<span class="ident">is_empty</span>() {
-                        <span class="ident">res</span>.<span class="ident">push</span>(<span class="string">&#39;\n&#39;</span>);
+            <span class="kw">if let </span><span class="prelude-val">Ok</span>(syn::Meta::NameValue(nv)) = attr.parse_meta() {
+                <span class="kw">if let </span>syn::Lit::Str(litstr) = nv.lit {
+                    <span class="kw">if </span>!res.is_empty() {
+                        res.push(<span class="string">&#39;\n&#39;</span>);
                     }
-                    <span class="ident">res</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">litstr</span>.<span class="ident">value</span>());
+                    res.push_str(<span class="kw-2">&amp;</span>litstr.value());
                 }
             }
         }
     }
-    <span class="ident">res</span>
+    res
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_return_type</span>(<span class="ident">sig</span>: <span class="kw-2">&amp;</span><span class="ident">syn::Signature</span>) -&gt; <span class="ident">String</span> {
-    <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">sig</span>.<span class="ident">output</span> {
-        <span class="ident">syn::ReturnType::Default</span> =&gt; <span class="string">&quot;()&quot;</span>.<span class="ident">into</span>(),
-        <span class="ident">syn::ReturnType::Type</span>(<span class="kw">_</span>, <span class="kw-2">ref</span> <span class="ident">rettype</span>) =&gt; <span class="ident">type_name</span>(<span class="ident">rettype</span>),
+<span class="kw">pub fn </span>get_return_type(sig: <span class="kw-2">&amp;</span>syn::Signature) -&gt; String {
+    <span class="kw">match </span><span class="kw-2">&amp;</span>sig.output {
+        syn::ReturnType::Default =&gt; <span class="string">&quot;()&quot;</span>.into(),
+        syn::ReturnType::Type(<span class="kw">_</span>, <span class="kw-2">ref </span>rettype) =&gt; type_name(rettype),
     }
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mangled_type_name</span>(<span class="ident">type_</span>: <span class="kw-2">&amp;</span><span class="ident">Type</span>) -&gt; <span class="ident">String</span> {
-    <span class="kw">let</span> <span class="ident">src</span> <span class="op">=</span> <span class="macro">quote!</span>( #<span class="ident">type_</span> ).<span class="ident">to_string</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">String::new</span>();
-    <span class="kw">for</span> <span class="ident">c</span> <span class="kw">in</span> <span class="ident">src</span>.<span class="ident">chars</span>() {
-        <span class="kw">if</span> <span class="ident">c</span> <span class="op">!</span><span class="op">=</span> <span class="string">&#39; &#39;</span> {
-            <span class="kw">if</span> <span class="ident">c</span>.<span class="ident">is_alphanumeric</span>() {
-                <span class="ident">res</span>.<span class="ident">push</span>(<span class="ident">c</span>)
-            } <span class="kw">else</span> {
-                <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;_{:02x}&quot;</span>, <span class="ident">c</span> <span class="kw">as</span> <span class="ident">u32</span>);
-                <span class="ident">res</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">f</span>);
+<span class="kw">pub fn </span>mangled_type_name(type_: <span class="kw-2">&amp;</span>Type) -&gt; String {
+    <span class="kw">let </span>src = <span class="macro">quote!</span>( #type_ ).to_string();
+    <span class="kw">let </span><span class="kw-2">mut </span>res = String::new();
+    <span class="kw">for </span>c <span class="kw">in </span>src.chars() {
+        <span class="kw">if </span>c != <span class="string">&#39; &#39; </span>{
+            <span class="kw">if </span>c.is_alphanumeric() {
+                res.push(c)
+            } <span class="kw">else </span>{
+                <span class="kw">let </span>f = <span class="macro">format!</span>(<span class="string">&quot;_{:02x}&quot;</span>, c <span class="kw">as </span>u32);
+                res.push_str(<span class="kw-2">&amp;</span>f);
             }
         }
     }
-    <span class="ident">res</span>
+    res
 }
 
-<span class="comment">// Return a simplified type name that will be meaningful to R. Defaults to a digest.</span>
-<span class="comment">// For example:</span>
-<span class="comment">// &amp; Fred -&gt; Fred</span>
-<span class="comment">// * Fred -&gt; Fred</span>
-<span class="comment">// &amp;&amp; Fred -&gt; Fred</span>
-<span class="comment">// Fred&lt;&#39;a&gt; -&gt; Fred</span>
-<span class="comment">// &amp;[i32] -&gt; _hex_hex_hex_hex</span>
-<span class="comment">//</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">type_name</span>(<span class="ident">type_</span>: <span class="kw-2">&amp;</span><span class="ident">Type</span>) -&gt; <span class="ident">String</span> {
-    <span class="kw">match</span> <span class="ident">type_</span> {
-        <span class="ident">Type::Path</span>(<span class="ident">syn::TypePath</span> { <span class="ident">path</span>, .. }) =&gt; {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ident</span>) <span class="op">=</span> <span class="ident">path</span>.<span class="ident">get_ident</span>() {
-                <span class="ident">ident</span>.<span class="ident">to_string</span>()
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">path</span>.<span class="ident">segments</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> {
-                <span class="kw">let</span> <span class="ident">seg</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">segments</span>.<span class="ident">clone</span>().<span class="ident">into_iter</span>().<span class="ident">next</span>().<span class="ident">unwrap</span>();
-                <span class="ident">seg</span>.<span class="ident">ident</span>.<span class="ident">to_string</span>()
-            } <span class="kw">else</span> {
-                <span class="ident">mangled_type_name</span>(<span class="ident">type_</span>)
+<span class="comment">// Return a simplified type name that will be meaningful to R. Defaults to a digest.
+// For example:
+// &amp; Fred -&gt; Fred
+// * Fred -&gt; Fred
+// &amp;&amp; Fred -&gt; Fred
+// Fred&lt;&#39;a&gt; -&gt; Fred
+// &amp;[i32] -&gt; _hex_hex_hex_hex
+//
+</span><span class="kw">pub fn </span>type_name(type_: <span class="kw-2">&amp;</span>Type) -&gt; String {
+    <span class="kw">match </span>type_ {
+        Type::Path(syn::TypePath { path, .. }) =&gt; {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(ident) = path.get_ident() {
+                ident.to_string()
+            } <span class="kw">else if </span>path.segments.len() == <span class="number">1 </span>{
+                <span class="kw">let </span>seg = path.segments.clone().into_iter().next().unwrap();
+                seg.ident.to_string()
+            } <span class="kw">else </span>{
+                mangled_type_name(type_)
             }
         }
-        <span class="ident">Type::Group</span>(<span class="ident">syn::TypeGroup</span> { <span class="ident">elem</span>, .. }) =&gt; <span class="ident">type_name</span>(<span class="ident">elem</span>),
-        <span class="ident">Type::Reference</span>(<span class="ident">syn::TypeReference</span> { <span class="ident">elem</span>, .. }) =&gt; <span class="ident">type_name</span>(<span class="ident">elem</span>),
-        <span class="ident">Type::Paren</span>(<span class="ident">syn::TypeParen</span> { <span class="ident">elem</span>, .. }) =&gt; <span class="ident">type_name</span>(<span class="ident">elem</span>),
-        <span class="ident">Type::Ptr</span>(<span class="ident">syn::TypePtr</span> { <span class="ident">elem</span>, .. }) =&gt; <span class="ident">type_name</span>(<span class="ident">elem</span>),
-        <span class="kw">_</span> =&gt; <span class="ident">mangled_type_name</span>(<span class="ident">type_</span>),
+        Type::Group(syn::TypeGroup { elem, .. }) =&gt; type_name(elem),
+        Type::Reference(syn::TypeReference { elem, .. }) =&gt; type_name(elem),
+        Type::Paren(syn::TypeParen { elem, .. }) =&gt; type_name(elem),
+        Type::Ptr(syn::TypePtr { elem, .. }) =&gt; type_name(elem),
+        <span class="kw">_ </span>=&gt; mangled_type_name(type_),
     }
 }
 
-<span class="comment">// Generate a list of arguments for the wrapper. All arguments are SEXP for .Call in R.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">translate_formal</span>(<span class="ident">input</span>: <span class="kw-2">&amp;</span><span class="ident">FnArg</span>, <span class="ident">self_ty</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">syn::Type</span><span class="op">&gt;</span>) -&gt; <span class="ident">FnArg</span> {
-    <span class="kw">match</span> <span class="ident">input</span> {
-        <span class="comment">// function argument.</span>
-        <span class="ident">FnArg::Typed</span>(<span class="kw-2">ref</span> <span class="ident">pattype</span>) =&gt; {
-            <span class="kw">let</span> <span class="ident">pat</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">pattype</span>.<span class="ident">pat</span>.<span class="ident">as_ref</span>();
-            <span class="kw">return</span> <span class="macro">parse_quote!</span> { #<span class="ident">pat</span> : <span class="ident">extendr_api::SEXP</span> };
+<span class="comment">// Generate a list of arguments for the wrapper. All arguments are SEXP for .Call in R.
+</span><span class="kw">pub fn </span>translate_formal(input: <span class="kw-2">&amp;</span>FnArg, self_ty: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>syn::Type&gt;) -&gt; FnArg {
+    <span class="kw">match </span>input {
+        <span class="comment">// function argument.
+        </span>FnArg::Typed(<span class="kw-2">ref </span>pattype) =&gt; {
+            <span class="kw">let </span>pat = <span class="kw-2">&amp;</span>pattype.pat.as_ref();
+            <span class="kw">return </span><span class="macro">parse_quote! </span>{ #pat : extendr_api::SEXP };
         }
-        <span class="comment">// &amp;self</span>
-        <span class="ident">FnArg::Receiver</span>(<span class="kw-2">ref</span> <span class="ident">reciever</span>) =&gt; {
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">reciever</span>.<span class="ident">attrs</span>.<span class="ident">is_empty</span>() <span class="op">|</span><span class="op">|</span> <span class="ident">reciever</span>.<span class="ident">reference</span>.<span class="ident">is_none</span>() {
+        <span class="comment">// &amp;self
+        </span>FnArg::Receiver(<span class="kw-2">ref </span>reciever) =&gt; {
+            <span class="kw">if </span>!reciever.attrs.is_empty() || reciever.reference.is_none() {
                 <span class="macro">panic!</span>(<span class="string">&quot;expected &amp;self or &amp;mut self&quot;</span>);
             }
-            <span class="kw">if</span> <span class="ident">self_ty</span>.<span class="ident">is_none</span>() {
+            <span class="kw">if </span>self_ty.is_none() {
                 <span class="macro">panic!</span>(<span class="string">&quot;found &amp;self in non-impl function - have you missed the #[extendr] before the impl?&quot;</span>);
             }
-            <span class="kw">return</span> <span class="macro">parse_quote!</span> { <span class="ident">_self</span> : <span class="ident">extendr_api::SEXP</span> };
+            <span class="kw">return </span><span class="macro">parse_quote! </span>{ _self : extendr_api::SEXP };
         }
     }
 }
 
-<span class="comment">// Generate code to make a metadata::Arg.</span>
-<span class="kw">fn</span> <span class="ident">translate_meta_arg</span>(<span class="ident">input</span>: <span class="kw-2">&amp;mut</span> <span class="ident">FnArg</span>, <span class="ident">self_ty</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">syn::Type</span><span class="op">&gt;</span>) -&gt; <span class="ident">Expr</span> {
-    <span class="kw">match</span> <span class="ident">input</span> {
-        <span class="comment">// function argument.</span>
-        <span class="ident">FnArg::Typed</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">pattype</span>) =&gt; {
-            <span class="kw">let</span> <span class="ident">pat</span> <span class="op">=</span> <span class="ident">pattype</span>.<span class="ident">pat</span>.<span class="ident">as_ref</span>();
-            <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">pattype</span>.<span class="ident">ty</span>.<span class="ident">as_ref</span>();
-            <span class="kw">let</span> <span class="ident">name_string</span> <span class="op">=</span> <span class="macro">quote!</span> { #<span class="ident">pat</span> }.<span class="ident">to_string</span>();
-            <span class="kw">let</span> <span class="ident">type_string</span> <span class="op">=</span> <span class="ident">type_name</span>(<span class="ident">ty</span>);
-            <span class="kw">let</span> <span class="ident">default</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">default</span>) <span class="op">=</span> <span class="ident">get_named_lit</span>(<span class="kw-2">&amp;mut</span> <span class="ident">pattype</span>.<span class="ident">attrs</span>, <span class="string">&quot;default&quot;</span>) {
-                <span class="macro">quote!</span>(<span class="prelude-val">Some</span>(#<span class="ident">default</span>))
-            } <span class="kw">else</span> {
+<span class="comment">// Generate code to make a metadata::Arg.
+</span><span class="kw">fn </span>translate_meta_arg(input: <span class="kw-2">&amp;mut </span>FnArg, self_ty: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>syn::Type&gt;) -&gt; Expr {
+    <span class="kw">match </span>input {
+        <span class="comment">// function argument.
+        </span>FnArg::Typed(<span class="kw-2">ref mut </span>pattype) =&gt; {
+            <span class="kw">let </span>pat = pattype.pat.as_ref();
+            <span class="kw">let </span>ty = pattype.ty.as_ref();
+            <span class="kw">let </span>name_string = <span class="macro">quote! </span>{ #pat }.to_string();
+            <span class="kw">let </span>type_string = type_name(ty);
+            <span class="kw">let </span>default = <span class="kw">if let </span><span class="prelude-val">Some</span>(default) = get_named_lit(<span class="kw-2">&amp;mut </span>pattype.attrs, <span class="string">&quot;default&quot;</span>) {
+                <span class="macro">quote!</span>(<span class="prelude-val">Some</span>(#default))
+            } <span class="kw">else </span>{
                 <span class="macro">quote!</span>(<span class="prelude-val">None</span>)
             };
-            <span class="kw">return</span> <span class="macro">parse_quote!</span> {
-                <span class="ident">extendr_api::metadata::Arg</span> {
-                    <span class="ident">name</span>: #<span class="ident">name_string</span>,
-                    <span class="ident">arg_type</span>: #<span class="ident">type_string</span>,
-                    <span class="ident">default</span>: #<span class="ident">default</span>
+            <span class="kw">return </span><span class="macro">parse_quote! </span>{
+                extendr_api::metadata::Arg {
+                    name: #name_string,
+                    arg_type: #type_string,
+                    default: #default
                 }
             };
         }
-        <span class="comment">// &amp;self</span>
-        <span class="ident">FnArg::Receiver</span>(<span class="kw-2">ref</span> <span class="ident">reciever</span>) =&gt; {
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">reciever</span>.<span class="ident">attrs</span>.<span class="ident">is_empty</span>() <span class="op">|</span><span class="op">|</span> <span class="ident">reciever</span>.<span class="ident">reference</span>.<span class="ident">is_none</span>() {
+        <span class="comment">// &amp;self
+        </span>FnArg::Receiver(<span class="kw-2">ref </span>reciever) =&gt; {
+            <span class="kw">if </span>!reciever.attrs.is_empty() || reciever.reference.is_none() {
                 <span class="macro">panic!</span>(<span class="string">&quot;expected &amp;self or &amp;mut self&quot;</span>);
             }
-            <span class="kw">if</span> <span class="ident">self_ty</span>.<span class="ident">is_none</span>() {
+            <span class="kw">if </span>self_ty.is_none() {
                 <span class="macro">panic!</span>(<span class="string">&quot;found &amp;self in non-impl function - have you missed the #[extendr] before the impl?&quot;</span>);
             }
-            <span class="kw">let</span> <span class="ident">type_string</span> <span class="op">=</span> <span class="ident">type_name</span>(<span class="ident">self_ty</span>.<span class="ident">unwrap</span>());
-            <span class="kw">return</span> <span class="macro">parse_quote!</span> {
-                <span class="ident">extendr_api::metadata::Arg</span> {
-                    <span class="ident">name</span>: <span class="string">&quot;self&quot;</span>,
-                    <span class="ident">arg_type</span>: #<span class="ident">type_string</span>,
-                    <span class="ident">default</span>: <span class="prelude-val">None</span>
-                }
+            <span class="kw">let </span>type_string = type_name(self_ty.unwrap());
+            <span class="kw">return </span><span class="macro">parse_quote! </span>{
+                extendr_api::metadata::Arg {
+                    name: <span class="string">&quot;self&quot;</span>,
+                    arg_type: #type_string,
+                    default: <span class="prelude-val">None
+                </span>}
             };
         }
     }
 }
 
-<span class="comment">// Convert SEXP arguments into Robj. This maintains the lifetime of references.</span>
-<span class="kw">fn</span> <span class="ident">translate_to_robj</span>(<span class="ident">input</span>: <span class="kw-2">&amp;</span><span class="ident">FnArg</span>) -&gt; <span class="ident">syn::Stmt</span> {
-    <span class="kw">match</span> <span class="ident">input</span> {
-        <span class="ident">FnArg::Typed</span>(<span class="kw-2">ref</span> <span class="ident">pattype</span>) =&gt; {
-            <span class="kw">let</span> <span class="ident">pat</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">pattype</span>.<span class="ident">pat</span>.<span class="ident">as_ref</span>();
-            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">syn::Pat::Ident</span>(<span class="kw-2">ref</span> <span class="ident">ident</span>) <span class="op">=</span> <span class="ident">pat</span> {
-                <span class="kw">let</span> <span class="ident">varname</span> <span class="op">=</span> <span class="macro">format_ident!</span>(<span class="string">&quot;_{}_robj&quot;</span>, <span class="ident">ident</span>.<span class="ident">ident</span>);
-                <span class="macro">parse_quote!</span> { <span class="kw">let</span> #<span class="ident">varname</span> <span class="op">=</span> <span class="ident">extendr_api::new_owned</span>(#<span class="ident">pat</span>); }
-            } <span class="kw">else</span> {
+<span class="comment">// Convert SEXP arguments into Robj. This maintains the lifetime of references.
+</span><span class="kw">fn </span>translate_to_robj(input: <span class="kw-2">&amp;</span>FnArg) -&gt; syn::Stmt {
+    <span class="kw">match </span>input {
+        FnArg::Typed(<span class="kw-2">ref </span>pattype) =&gt; {
+            <span class="kw">let </span>pat = <span class="kw-2">&amp;</span>pattype.pat.as_ref();
+            <span class="kw">if let </span>syn::Pat::Ident(<span class="kw-2">ref </span>ident) = pat {
+                <span class="kw">let </span>varname = <span class="macro">format_ident!</span>(<span class="string">&quot;_{}_robj&quot;</span>, ident.ident);
+                <span class="macro">parse_quote! </span>{ <span class="kw">let </span>#varname = extendr_api::new_owned(#pat); }
+            } <span class="kw">else </span>{
                 <span class="macro">panic!</span>(<span class="string">&quot;expect identifier as arg name&quot;</span>)
             }
         }
-        <span class="ident">FnArg::Receiver</span>(<span class="kw">_</span>) =&gt; {
-            <span class="macro">parse_quote!</span> { <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">_self_robj</span> <span class="op">=</span> <span class="ident">extendr_api::new_owned</span>(<span class="ident">_self</span>); }
+        FnArg::Receiver(<span class="kw">_</span>) =&gt; {
+            <span class="macro">parse_quote! </span>{ <span class="kw">let </span><span class="kw-2">mut </span>_self_robj = extendr_api::new_owned(_self); }
         }
     }
 }
 
-<span class="comment">// Generate actual argument list for the call (ie. a list of conversions).</span>
-<span class="kw">fn</span> <span class="ident">translate_actual</span>(<span class="ident">opts</span>: <span class="kw-2">&amp;</span><span class="ident">ExtendrOptions</span>, <span class="ident">input</span>: <span class="kw-2">&amp;</span><span class="ident">FnArg</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Expr</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">input</span> {
-        <span class="ident">FnArg::Typed</span>(<span class="kw-2">ref</span> <span class="ident">pattype</span>) =&gt; {
-            <span class="kw">let</span> <span class="ident">pat</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">pattype</span>.<span class="ident">pat</span>.<span class="ident">as_ref</span>();
-            <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">pattype</span>.<span class="ident">ty</span>.<span class="ident">as_ref</span>();
-            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">syn::Pat::Ident</span>(<span class="kw-2">ref</span> <span class="ident">ident</span>) <span class="op">=</span> <span class="ident">pat</span> {
-                <span class="kw">let</span> <span class="ident">varname</span> <span class="op">=</span> <span class="macro">format_ident!</span>(<span class="string">&quot;_{}_robj&quot;</span>, <span class="ident">ident</span>.<span class="ident">ident</span>);
-                <span class="kw">if</span> <span class="ident">opts</span>.<span class="ident">use_try_from</span> {
-                    <span class="prelude-val">Some</span>(<span class="macro">parse_quote!</span> { <span class="ident">extendr_api::unwrap_or_throw_error</span>(
-                        #<span class="ident">varname</span>.<span class="ident">try_into</span>()
-                        .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">extendr_api::Error::from</span>(<span class="ident">e</span>)))
+<span class="comment">// Generate actual argument list for the call (ie. a list of conversions).
+</span><span class="kw">fn </span>translate_actual(opts: <span class="kw-2">&amp;</span>ExtendrOptions, input: <span class="kw-2">&amp;</span>FnArg) -&gt; <span class="prelude-ty">Option</span>&lt;Expr&gt; {
+    <span class="kw">match </span>input {
+        FnArg::Typed(<span class="kw-2">ref </span>pattype) =&gt; {
+            <span class="kw">let </span>pat = <span class="kw-2">&amp;</span>pattype.pat.as_ref();
+            <span class="kw">let </span>ty = <span class="kw-2">&amp;</span>pattype.ty.as_ref();
+            <span class="kw">if let </span>syn::Pat::Ident(<span class="kw-2">ref </span>ident) = pat {
+                <span class="kw">let </span>varname = <span class="macro">format_ident!</span>(<span class="string">&quot;_{}_robj&quot;</span>, ident.ident);
+                <span class="kw">if </span>opts.use_try_from {
+                    <span class="prelude-val">Some</span>(<span class="macro">parse_quote! </span>{ extendr_api::unwrap_or_throw_error(
+                        #varname.try_into()
+                        .map_err(|e| extendr_api::Error::from(e)))
                     })
-                } <span class="kw">else</span> {
-                    <span class="prelude-val">Some</span>(<span class="macro">parse_quote!</span> { <span class="ident">extendr_api::unwrap_or_throw</span>(<span class="op">&lt;</span>#<span class="ident">ty</span><span class="op">&gt;</span><span class="ident">::from_robj</span>(<span class="kw-2">&amp;</span>#<span class="ident">varname</span>)) })
+                } <span class="kw">else </span>{
+                    <span class="prelude-val">Some</span>(<span class="macro">parse_quote! </span>{ extendr_api::unwrap_or_throw(&lt;#ty&gt;::from_robj(<span class="kw-2">&amp;</span>#varname)) })
                 }
-            } <span class="kw">else</span> {
-                <span class="prelude-val">None</span>
-            }
+            } <span class="kw">else </span>{
+                <span class="prelude-val">None
+            </span>}
         }
-        <span class="ident">FnArg::Receiver</span>(<span class="kw">_</span>) =&gt; {
-            <span class="comment">// Do not use self explicitly as an actual arg.</span>
-            <span class="prelude-val">None</span>
-        }
+        FnArg::Receiver(<span class="kw">_</span>) =&gt; {
+            <span class="comment">// Do not use self explicitly as an actual arg.
+            </span><span class="prelude-val">None
+        </span>}
     }
 }
 
-<span class="comment">// Get a single named literal from a list of attributes.</span>
-<span class="comment">// eg. #[default=&quot;xyz&quot;]</span>
-<span class="comment">// Remove the attribute from the list.</span>
-<span class="kw">fn</span> <span class="ident">get_named_lit</span>(<span class="ident">attrs</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">syn::Attribute</span><span class="op">&gt;</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new_attrs</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-    <span class="lifetime">&#39;f</span>: <span class="kw">for</span> <span class="ident">a</span> <span class="kw">in</span> <span class="ident">attrs</span>.<span class="ident">drain</span>(<span class="number">0</span>..) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">syn::Meta::NameValue</span>(<span class="ident">nv</span>)) <span class="op">=</span> <span class="ident">a</span>.<span class="ident">parse_meta</span>() {
-            <span class="kw">if</span> <span class="ident">nv</span>.<span class="ident">path</span>.<span class="ident">is_ident</span>(<span class="ident">name</span>) {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">syn::Lit::Str</span>(<span class="ident">litstr</span>) <span class="op">=</span> <span class="ident">nv</span>.<span class="ident">lit</span> {
-                    <span class="ident">res</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">litstr</span>.<span class="ident">value</span>());
-                    <span class="kw">continue</span> <span class="lifetime">&#39;f</span>;
+<span class="comment">// Get a single named literal from a list of attributes.
+// eg. #[default=&quot;xyz&quot;]
+// Remove the attribute from the list.
+</span><span class="kw">fn </span>get_named_lit(attrs: <span class="kw-2">&amp;mut </span>Vec&lt;syn::Attribute&gt;, name: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>new_attrs = Vec::new();
+    <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="prelude-val">None</span>;
+    <span class="lifetime">&#39;f</span>: <span class="kw">for </span>a <span class="kw">in </span>attrs.drain(<span class="number">0</span>..) {
+        <span class="kw">if let </span><span class="prelude-val">Ok</span>(syn::Meta::NameValue(nv)) = a.parse_meta() {
+            <span class="kw">if </span>nv.path.is_ident(name) {
+                <span class="kw">if let </span>syn::Lit::Str(litstr) = nv.lit {
+                    res = <span class="prelude-val">Some</span>(litstr.value());
+                    <span class="kw">continue </span><span class="lifetime">&#39;f</span>;
                 }
             }
         }
-        <span class="ident">new_attrs</span>.<span class="ident">push</span>(<span class="ident">a</span>);
+        new_attrs.push(a);
     }
-    <span class="kw-2">*</span><span class="ident">attrs</span> <span class="op">=</span> <span class="ident">new_attrs</span>;
-    <span class="ident">res</span>
+    <span class="kw-2">*</span>attrs = new_attrs;
+    res
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_macros" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_macros" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

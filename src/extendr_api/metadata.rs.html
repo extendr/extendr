@@ -1,6 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/metadata.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>metadata.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../extendr_api/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../extendr_api/index.html"><div class="logo-container">
-                    <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../extendr_api/index.html">
-                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/metadata.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>metadata.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../extendr_api/index.html">
+                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -368,104 +367,104 @@
 <span id="366">366</span>
 <span id="367">367</span>
 <span id="368">368</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Module metadata</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! This data is returned by get_module_metadata()</span>
-<span class="doccomment">//! which is generated by [extendr_module!].</span>
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::robj::IntoRobj</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">std::io::Write</span>;
+</pre><pre class="rust"><code><span class="doccomment">//! Module metadata
+//!
+//! This data is returned by get_module_metadata()
+//! which is generated by [extendr_module!].
+</span><span class="kw">use </span><span class="kw">crate</span>::robj::IntoRobj;
+<span class="kw">use crate</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>std::io::Write;
 
-<span class="doccomment">/// Metadata function argument.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Arg</span> {
-    <span class="kw">pub</span> <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-    <span class="kw">pub</span> <span class="ident">arg_type</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-    <span class="kw">pub</span> <span class="ident">default</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span>,
+<span class="doccomment">/// Metadata function argument.
+</span><span class="attribute">#[derive(Debug, PartialEq)]
+</span><span class="kw">pub struct </span>Arg {
+    <span class="kw">pub </span>name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    <span class="kw">pub </span>arg_type: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    <span class="kw">pub </span>default: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt;,
 }
 
-<span class="doccomment">/// Metadata function.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Func</span> {
-    <span class="kw">pub</span> <span class="ident">doc</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-    <span class="kw">pub</span> <span class="ident">rust_name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-    <span class="kw">pub</span> <span class="ident">mod_name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-    <span class="kw">pub</span> <span class="ident">r_name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-    <span class="kw">pub</span> <span class="ident">args</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Arg</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">return_type</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-    <span class="kw">pub</span> <span class="ident">func_ptr</span>: <span class="kw-2">*const</span> <span class="ident">u8</span>,
-    <span class="kw">pub</span> <span class="ident">hidden</span>: <span class="ident">bool</span>,
+<span class="doccomment">/// Metadata function.
+</span><span class="attribute">#[derive(Debug, PartialEq)]
+</span><span class="kw">pub struct </span>Func {
+    <span class="kw">pub </span>doc: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    <span class="kw">pub </span>rust_name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    <span class="kw">pub </span>mod_name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    <span class="kw">pub </span>r_name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    <span class="kw">pub </span>args: Vec&lt;Arg&gt;,
+    <span class="kw">pub </span>return_type: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    <span class="kw">pub </span>func_ptr: <span class="kw-2">*const </span>u8,
+    <span class="kw">pub </span>hidden: bool,
 }
 
-<span class="doccomment">/// Metadata Impl.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Impl</span> {
-    <span class="kw">pub</span> <span class="ident">doc</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-    <span class="kw">pub</span> <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-    <span class="kw">pub</span> <span class="ident">methods</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Func</span><span class="op">&gt;</span>,
+<span class="doccomment">/// Metadata Impl.
+</span><span class="attribute">#[derive(Debug, PartialEq)]
+</span><span class="kw">pub struct </span>Impl {
+    <span class="kw">pub </span>doc: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    <span class="kw">pub </span>name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    <span class="kw">pub </span>methods: Vec&lt;Func&gt;,
 }
 
-<span class="doccomment">/// Module metadata.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Metadata</span> {
-    <span class="kw">pub</span> <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-    <span class="kw">pub</span> <span class="ident">functions</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Func</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">impls</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Impl</span><span class="op">&gt;</span>,
+<span class="doccomment">/// Module metadata.
+</span><span class="attribute">#[derive(Debug, PartialEq)]
+</span><span class="kw">pub struct </span>Metadata {
+    <span class="kw">pub </span>name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    <span class="kw">pub </span>functions: Vec&lt;Func&gt;,
+    <span class="kw">pub </span>impls: Vec&lt;Impl&gt;,
 }
 
-<span class="kw">struct</span> <span class="ident">RArg</span> {
-    <span class="ident">name</span>: <span class="ident">String</span>,
-    <span class="ident">default</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span>,
+<span class="kw">struct </span>RArg {
+    name: String,
+    default: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">RArg</span> {
-    <span class="kw">fn</span> <span class="ident">is_self</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">name</span> <span class="op">==</span> <span class="string">&quot;self&quot;</span>
+<span class="kw">impl </span>RArg {
+    <span class="kw">fn </span>is_self(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="self">self</span>.name == <span class="string">&quot;self&quot;
+    </span>}
+
+    <span class="kw">fn </span>to_actual_arg(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
+        <span class="self">self</span>.name.clone()
     }
 
-    <span class="kw">fn</span> <span class="ident">to_actual_arg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">String</span> {
-        <span class="self">self</span>.<span class="ident">name</span>.<span class="ident">clone</span>()
-    }
-
-    <span class="kw">fn</span> <span class="ident">to_formal_arg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">String</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">default</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">default_val</span>) =&gt; <span class="macro">format!</span>(<span class="string">&quot;{} = {}&quot;</span>, <span class="self">self</span>.<span class="ident">name</span>, <span class="ident">default_val</span>),
-            <span class="prelude-val">None</span> =&gt; <span class="self">self</span>.<span class="ident">name</span>.<span class="ident">clone</span>(),
+    <span class="kw">fn </span>to_formal_arg(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
+        <span class="kw">match </span><span class="self">self</span>.default {
+            <span class="prelude-val">Some</span>(default_val) =&gt; <span class="macro">format!</span>(<span class="string">&quot;{} = {}&quot;</span>, <span class="self">self</span>.name, default_val),
+            <span class="prelude-val">None </span>=&gt; <span class="self">self</span>.name.clone(),
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Arg</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">RArg</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">arg</span>: <span class="kw-2">&amp;</span><span class="ident">Arg</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">name</span>: <span class="ident">sanitize_identifier</span>(<span class="ident">arg</span>.<span class="ident">name</span>),
-            <span class="ident">default</span>: <span class="ident">arg</span>.<span class="ident">default</span>,
+<span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span>Arg&gt; <span class="kw">for </span>RArg {
+    <span class="kw">fn </span>from(arg: <span class="kw-2">&amp;</span>Arg) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            name: sanitize_identifier(arg.name),
+            default: arg.default,
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Arg</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">val</span>: <span class="ident">Arg</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">List::from_values</span>(<span class="kw-2">&amp;</span>[<span class="macro">r!</span>(<span class="ident">val</span>.<span class="ident">name</span>), <span class="macro">r!</span>(<span class="ident">val</span>.<span class="ident">arg_type</span>)])
-            .<span class="ident">into_robj</span>()
-            .<span class="ident">set_names</span>(<span class="kw-2">&amp;</span>[<span class="string">&quot;name&quot;</span>, <span class="string">&quot;arg_type&quot;</span>])
-            .<span class="ident">expect</span>(<span class="string">&quot;From&lt;Arg&gt; failed&quot;</span>)
+<span class="kw">impl </span>From&lt;Arg&gt; <span class="kw">for </span>Robj {
+    <span class="kw">fn </span>from(val: Arg) -&gt; <span class="self">Self </span>{
+        List::from_values(<span class="kw-2">&amp;</span>[<span class="macro">r!</span>(val.name), <span class="macro">r!</span>(val.arg_type)])
+            .into_robj()
+            .set_names(<span class="kw-2">&amp;</span>[<span class="string">&quot;name&quot;</span>, <span class="string">&quot;arg_type&quot;</span>])
+            .expect(<span class="string">&quot;From&lt;Arg&gt; failed&quot;</span>)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Func</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">val</span>: <span class="ident">Func</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">List::from_values</span>(<span class="kw-2">&amp;</span>[
-            <span class="macro">r!</span>(<span class="ident">val</span>.<span class="ident">doc</span>),
-            <span class="macro">r!</span>(<span class="ident">val</span>.<span class="ident">rust_name</span>),
-            <span class="macro">r!</span>(<span class="ident">val</span>.<span class="ident">mod_name</span>),
-            <span class="macro">r!</span>(<span class="ident">val</span>.<span class="ident">r_name</span>),
-            <span class="macro">r!</span>(<span class="ident">List::from_values</span>(<span class="ident">val</span>.<span class="ident">args</span>)),
-            <span class="macro">r!</span>(<span class="ident">val</span>.<span class="ident">return_type</span>),
-            <span class="macro">r!</span>(<span class="ident">val</span>.<span class="ident">hidden</span>),
+<span class="kw">impl </span>From&lt;Func&gt; <span class="kw">for </span>Robj {
+    <span class="kw">fn </span>from(val: Func) -&gt; <span class="self">Self </span>{
+        List::from_values(<span class="kw-2">&amp;</span>[
+            <span class="macro">r!</span>(val.doc),
+            <span class="macro">r!</span>(val.rust_name),
+            <span class="macro">r!</span>(val.mod_name),
+            <span class="macro">r!</span>(val.r_name),
+            <span class="macro">r!</span>(List::from_values(val.args)),
+            <span class="macro">r!</span>(val.return_type),
+            <span class="macro">r!</span>(val.hidden),
         ])
-        .<span class="ident">into_robj</span>()
-        .<span class="ident">set_names</span>(<span class="kw-2">&amp;</span>[
+        .into_robj()
+        .set_names(<span class="kw-2">&amp;</span>[
             <span class="string">&quot;doc&quot;</span>,
             <span class="string">&quot;rust_name&quot;</span>,
             <span class="string">&quot;mod_name&quot;</span>,
@@ -474,267 +473,267 @@
             <span class="string">&quot;return.type&quot;</span>,
             <span class="string">&quot;hidden&quot;</span>,
         ])
-        .<span class="ident">expect</span>(<span class="string">&quot;From&lt;Func&gt; failed&quot;</span>)
+        .expect(<span class="string">&quot;From&lt;Func&gt; failed&quot;</span>)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Impl</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">val</span>: <span class="ident">Impl</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">List::from_values</span>(<span class="kw-2">&amp;</span>[
-            <span class="macro">r!</span>(<span class="ident">val</span>.<span class="ident">doc</span>),
-            <span class="macro">r!</span>(<span class="ident">val</span>.<span class="ident">name</span>),
-            <span class="macro">r!</span>(<span class="ident">List::from_values</span>(<span class="ident">val</span>.<span class="ident">methods</span>)),
+<span class="kw">impl </span>From&lt;Impl&gt; <span class="kw">for </span>Robj {
+    <span class="kw">fn </span>from(val: Impl) -&gt; <span class="self">Self </span>{
+        List::from_values(<span class="kw-2">&amp;</span>[
+            <span class="macro">r!</span>(val.doc),
+            <span class="macro">r!</span>(val.name),
+            <span class="macro">r!</span>(List::from_values(val.methods)),
         ])
-        .<span class="ident">into_robj</span>()
-        .<span class="ident">set_names</span>(<span class="kw-2">&amp;</span>[<span class="string">&quot;doc&quot;</span>, <span class="string">&quot;name&quot;</span>, <span class="string">&quot;methods&quot;</span>])
-        .<span class="ident">expect</span>(<span class="string">&quot;From&lt;Impl&gt; failed&quot;</span>)
+        .into_robj()
+        .set_names(<span class="kw-2">&amp;</span>[<span class="string">&quot;doc&quot;</span>, <span class="string">&quot;name&quot;</span>, <span class="string">&quot;methods&quot;</span>])
+        .expect(<span class="string">&quot;From&lt;Impl&gt; failed&quot;</span>)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Metadata</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">val</span>: <span class="ident">Metadata</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">List::from_values</span>(<span class="kw-2">&amp;</span>[
-            <span class="macro">r!</span>(<span class="ident">val</span>.<span class="ident">name</span>),
-            <span class="macro">r!</span>(<span class="ident">List::from_values</span>(<span class="ident">val</span>.<span class="ident">functions</span>)),
-            <span class="macro">r!</span>(<span class="ident">List::from_values</span>(<span class="ident">val</span>.<span class="ident">impls</span>)),
+<span class="kw">impl </span>From&lt;Metadata&gt; <span class="kw">for </span>Robj {
+    <span class="kw">fn </span>from(val: Metadata) -&gt; <span class="self">Self </span>{
+        List::from_values(<span class="kw-2">&amp;</span>[
+            <span class="macro">r!</span>(val.name),
+            <span class="macro">r!</span>(List::from_values(val.functions)),
+            <span class="macro">r!</span>(List::from_values(val.impls)),
         ])
-        .<span class="ident">into_robj</span>()
-        .<span class="ident">set_names</span>(<span class="kw-2">&amp;</span>[<span class="string">&quot;name&quot;</span>, <span class="string">&quot;functions&quot;</span>, <span class="string">&quot;impls&quot;</span>])
-        .<span class="ident">expect</span>(<span class="string">&quot;From&lt;Metadata&gt; failed&quot;</span>)
+        .into_robj()
+        .set_names(<span class="kw-2">&amp;</span>[<span class="string">&quot;name&quot;</span>, <span class="string">&quot;functions&quot;</span>, <span class="string">&quot;impls&quot;</span>])
+        .expect(<span class="string">&quot;From&lt;Metadata&gt; failed&quot;</span>)
     }
 }
 
-<span class="kw">fn</span> <span class="ident">write_doc</span>(<span class="ident">w</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">doc</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">std::io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">if</span> <span class="op">!</span><span class="ident">doc</span>.<span class="ident">is_empty</span>() {
-        <span class="macro">write!</span>(<span class="ident">w</span>, <span class="string">&quot;#&#39;&quot;</span>)<span class="question-mark">?</span>;
-        <span class="kw">for</span> <span class="ident">c</span> <span class="kw">in</span> <span class="ident">doc</span>.<span class="ident">chars</span>() {
-            <span class="kw">if</span> <span class="ident">c</span> <span class="op">==</span> <span class="string">&#39;\n&#39;</span> {
-                <span class="macro">write!</span>(<span class="ident">w</span>, <span class="string">&quot;\n#&#39;&quot;</span>)<span class="question-mark">?</span>;
-            } <span class="kw">else</span> {
-                <span class="macro">write!</span>(<span class="ident">w</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">c</span>)<span class="question-mark">?</span>;
+<span class="kw">fn </span>write_doc(w: <span class="kw-2">&amp;mut </span>Vec&lt;u8&gt;, doc: <span class="kw-2">&amp;</span>str) -&gt; std::io::Result&lt;()&gt; {
+    <span class="kw">if </span>!doc.is_empty() {
+        <span class="macro">write!</span>(w, <span class="string">&quot;#&#39;&quot;</span>)<span class="question-mark">?</span>;
+        <span class="kw">for </span>c <span class="kw">in </span>doc.chars() {
+            <span class="kw">if </span>c == <span class="string">&#39;\n&#39; </span>{
+                <span class="macro">write!</span>(w, <span class="string">&quot;\n#&#39;&quot;</span>)<span class="question-mark">?</span>;
+            } <span class="kw">else </span>{
+                <span class="macro">write!</span>(w, <span class="string">&quot;{}&quot;</span>, c)<span class="question-mark">?</span>;
             }
         }
-        <span class="macro">writeln!</span>(<span class="ident">w</span>)<span class="question-mark">?</span>;
+        <span class="macro">writeln!</span>(w)<span class="question-mark">?</span>;
     }
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="doccomment">/// Wraps invalid R identifiers, like `_function_name`, into backticks.</span>
-<span class="kw">fn</span> <span class="ident">sanitize_identifier</span>(<span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">String</span> {
-    <span class="kw">if</span> <span class="ident">name</span>.<span class="ident">starts_with</span>(<span class="string">&#39;_&#39;</span>) {
-        <span class="macro">format!</span>(<span class="string">&quot;`{}`&quot;</span>, <span class="ident">name</span>)
-    } <span class="kw">else</span> {
-        <span class="ident">name</span>.<span class="ident">to_string</span>()
+<span class="doccomment">/// Wraps invalid R identifiers, like `_function_name`, into backticks.
+</span><span class="kw">fn </span>sanitize_identifier(name: <span class="kw-2">&amp;</span>str) -&gt; String {
+    <span class="kw">if </span>name.starts_with(<span class="string">&#39;_&#39;</span>) {
+        <span class="macro">format!</span>(<span class="string">&quot;`{}`&quot;</span>, name)
+    } <span class="kw">else </span>{
+        name.to_string()
     }
 }
 
-<span class="kw">fn</span> <span class="ident">join_str</span>(<span class="ident">input</span>: <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">String</span><span class="op">&gt;</span>, <span class="ident">sep</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">String</span> {
-    <span class="ident">input</span>.<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>().<span class="ident">join</span>(<span class="ident">sep</span>)
+<span class="kw">fn </span>join_str(input: <span class="kw">impl </span>Iterator&lt;Item = String&gt;, sep: <span class="kw-2">&amp;</span>str) -&gt; String {
+    input.collect::&lt;Vec&lt;String&gt;&gt;().join(sep)
 }
 
-<span class="doccomment">/// Generate a wrapper for a non-method function.</span>
-<span class="kw">fn</span> <span class="ident">write_function_wrapper</span>(
-    <span class="ident">w</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="ident">func</span>: <span class="kw-2">&amp;</span><span class="ident">Func</span>,
-    <span class="ident">package_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    <span class="ident">use_symbols</span>: <span class="ident">bool</span>,
-) -&gt; <span class="ident">std::io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">if</span> <span class="ident">func</span>.<span class="ident">hidden</span> {
-        <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
+<span class="doccomment">/// Generate a wrapper for a non-method function.
+</span><span class="kw">fn </span>write_function_wrapper(
+    w: <span class="kw-2">&amp;mut </span>Vec&lt;u8&gt;,
+    func: <span class="kw-2">&amp;</span>Func,
+    package_name: <span class="kw-2">&amp;</span>str,
+    use_symbols: bool,
+) -&gt; std::io::Result&lt;()&gt; {
+    <span class="kw">if </span>func.hidden {
+        <span class="kw">return </span><span class="prelude-val">Ok</span>(());
     }
 
-    <span class="ident">write_doc</span>(<span class="ident">w</span>, <span class="ident">func</span>.<span class="ident">doc</span>)<span class="question-mark">?</span>;
+    write_doc(w, func.doc)<span class="question-mark">?</span>;
 
-    <span class="kw">let</span> <span class="ident">r_args</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RArg</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">func</span>.<span class="ident">args</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="ident">Into::into</span>).<span class="ident">collect</span>();
-    <span class="kw">let</span> <span class="ident">actual_args</span> <span class="op">=</span> <span class="ident">r_args</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="ident">a</span>.<span class="ident">to_actual_arg</span>());
-    <span class="kw">let</span> <span class="ident">formal_args</span> <span class="op">=</span> <span class="ident">r_args</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="ident">a</span>.<span class="ident">to_formal_arg</span>());
+    <span class="kw">let </span>r_args: Vec&lt;RArg&gt; = func.args.iter().map(Into::into).collect();
+    <span class="kw">let </span>actual_args = r_args.iter().map(|a| a.to_actual_arg());
+    <span class="kw">let </span>formal_args = r_args.iter().map(|a| a.to_formal_arg());
 
-    <span class="kw">if</span> <span class="ident">func</span>.<span class="ident">return_type</span> <span class="op">==</span> <span class="string">&quot;()&quot;</span> {
+    <span class="kw">if </span>func.return_type == <span class="string">&quot;()&quot; </span>{
         <span class="macro">write!</span>(
-            <span class="ident">w</span>,
+            w,
             <span class="string">&quot;{} &lt;- function({}) invisible(.Call(&quot;</span>,
-            <span class="ident">sanitize_identifier</span>(<span class="ident">func</span>.<span class="ident">r_name</span>),
-            <span class="ident">join_str</span>(<span class="ident">formal_args</span>, <span class="string">&quot;, &quot;</span>)
+            sanitize_identifier(func.r_name),
+            join_str(formal_args, <span class="string">&quot;, &quot;</span>)
         )<span class="question-mark">?</span>;
-    } <span class="kw">else</span> {
+    } <span class="kw">else </span>{
         <span class="macro">write!</span>(
-            <span class="ident">w</span>,
+            w,
             <span class="string">&quot;{} &lt;- function({}) .Call(&quot;</span>,
-            <span class="ident">sanitize_identifier</span>(<span class="ident">func</span>.<span class="ident">r_name</span>),
-            <span class="ident">join_str</span>(<span class="ident">formal_args</span>, <span class="string">&quot;, &quot;</span>)
+            sanitize_identifier(func.r_name),
+            join_str(formal_args, <span class="string">&quot;, &quot;</span>)
         )<span class="question-mark">?</span>;
     }
 
-    <span class="kw">if</span> <span class="ident">use_symbols</span> {
-        <span class="macro">write!</span>(<span class="ident">w</span>, <span class="string">&quot;wrap__{}&quot;</span>, <span class="ident">func</span>.<span class="ident">mod_name</span>)<span class="question-mark">?</span>;
-    } <span class="kw">else</span> {
-        <span class="macro">write!</span>(<span class="ident">w</span>, <span class="string">&quot;\&quot;wrap__{}\&quot;&quot;</span>, <span class="ident">func</span>.<span class="ident">mod_name</span>)<span class="question-mark">?</span>;
+    <span class="kw">if </span>use_symbols {
+        <span class="macro">write!</span>(w, <span class="string">&quot;wrap__{}&quot;</span>, func.mod_name)<span class="question-mark">?</span>;
+    } <span class="kw">else </span>{
+        <span class="macro">write!</span>(w, <span class="string">&quot;\&quot;wrap__{}\&quot;&quot;</span>, func.mod_name)<span class="question-mark">?</span>;
     }
 
-    <span class="kw">if</span> <span class="op">!</span><span class="ident">func</span>.<span class="ident">args</span>.<span class="ident">is_empty</span>() {
-        <span class="macro">write!</span>(<span class="ident">w</span>, <span class="string">&quot;, {}&quot;</span>, <span class="ident">join_str</span>(<span class="ident">actual_args</span>, <span class="string">&quot;, &quot;</span>))<span class="question-mark">?</span>;
+    <span class="kw">if </span>!func.args.is_empty() {
+        <span class="macro">write!</span>(w, <span class="string">&quot;, {}&quot;</span>, join_str(actual_args, <span class="string">&quot;, &quot;</span>))<span class="question-mark">?</span>;
     }
 
-    <span class="kw">if</span> <span class="op">!</span><span class="ident">use_symbols</span> {
-        <span class="macro">write!</span>(<span class="ident">w</span>, <span class="string">&quot;, PACKAGE = \&quot;{}\&quot;&quot;</span>, <span class="ident">package_name</span>)<span class="question-mark">?</span>;
+    <span class="kw">if </span>!use_symbols {
+        <span class="macro">write!</span>(w, <span class="string">&quot;, PACKAGE = \&quot;{}\&quot;&quot;</span>, package_name)<span class="question-mark">?</span>;
     }
 
-    <span class="kw">if</span> <span class="ident">func</span>.<span class="ident">return_type</span> <span class="op">==</span> <span class="string">&quot;()&quot;</span> {
-        <span class="macro">writeln!</span>(<span class="ident">w</span>, <span class="string">&quot;))\n&quot;</span>)<span class="question-mark">?</span>;
-    } <span class="kw">else</span> {
-        <span class="macro">writeln!</span>(<span class="ident">w</span>, <span class="string">&quot;)\n&quot;</span>)<span class="question-mark">?</span>;
+    <span class="kw">if </span>func.return_type == <span class="string">&quot;()&quot; </span>{
+        <span class="macro">writeln!</span>(w, <span class="string">&quot;))\n&quot;</span>)<span class="question-mark">?</span>;
+    } <span class="kw">else </span>{
+        <span class="macro">writeln!</span>(w, <span class="string">&quot;)\n&quot;</span>)<span class="question-mark">?</span>;
     }
 
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="doccomment">/// Generate a wrapper for a method.</span>
-<span class="kw">fn</span> <span class="ident">write_method_wrapper</span>(
-    <span class="ident">w</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="ident">func</span>: <span class="kw-2">&amp;</span><span class="ident">Func</span>,
-    <span class="ident">package_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    <span class="ident">use_symbols</span>: <span class="ident">bool</span>,
-    <span class="ident">class_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-) -&gt; <span class="ident">std::io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">if</span> <span class="ident">func</span>.<span class="ident">hidden</span> {
-        <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
+<span class="doccomment">/// Generate a wrapper for a method.
+</span><span class="kw">fn </span>write_method_wrapper(
+    w: <span class="kw-2">&amp;mut </span>Vec&lt;u8&gt;,
+    func: <span class="kw-2">&amp;</span>Func,
+    package_name: <span class="kw-2">&amp;</span>str,
+    use_symbols: bool,
+    class_name: <span class="kw-2">&amp;</span>str,
+) -&gt; std::io::Result&lt;()&gt; {
+    <span class="kw">if </span>func.hidden {
+        <span class="kw">return </span><span class="prelude-val">Ok</span>(());
     }
 
-    <span class="kw">let</span> <span class="ident">r_args</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RArg</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">func</span>.<span class="ident">args</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="ident">Into::into</span>).<span class="ident">collect</span>();
-    <span class="kw">let</span> <span class="ident">actual_args</span> <span class="op">=</span> <span class="ident">r_args</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="ident">a</span>.<span class="ident">to_actual_arg</span>());
+    <span class="kw">let </span>r_args: Vec&lt;RArg&gt; = func.args.iter().map(Into::into).collect();
+    <span class="kw">let </span>actual_args = r_args.iter().map(|a| a.to_actual_arg());
 
-    <span class="comment">// Skip a leading &quot;self&quot; argument.</span>
-    <span class="comment">// This is supplied by the environment.</span>
-    <span class="kw">let</span> <span class="ident">formal_args</span> <span class="op">=</span> <span class="ident">r_args</span>
-        .<span class="ident">iter</span>()
-        .<span class="ident">skip_while</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="ident">a</span>.<span class="ident">is_self</span>())
-        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="ident">a</span>.<span class="ident">to_formal_arg</span>());
+    <span class="comment">// Skip a leading &quot;self&quot; argument.
+    // This is supplied by the environment.
+    </span><span class="kw">let </span>formal_args = r_args
+        .iter()
+        .skip_while(|a| a.is_self())
+        .map(|a| a.to_formal_arg());
 
-    <span class="comment">// Both `class_name` and `func.name` should be processed</span>
-    <span class="comment">// because they are exposed to R</span>
-    <span class="kw">if</span> <span class="ident">func</span>.<span class="ident">return_type</span> <span class="op">==</span> <span class="string">&quot;()&quot;</span> {
+    <span class="comment">// Both `class_name` and `func.name` should be processed
+    // because they are exposed to R
+    </span><span class="kw">if </span>func.return_type == <span class="string">&quot;()&quot; </span>{
         <span class="macro">write!</span>(
-            <span class="ident">w</span>,
+            w,
             <span class="string">&quot;{}${} &lt;- function({}) invisible(.Call(&quot;</span>,
-            <span class="ident">sanitize_identifier</span>(<span class="ident">class_name</span>),
-            <span class="ident">sanitize_identifier</span>(<span class="ident">func</span>.<span class="ident">r_name</span>),
-            <span class="ident">join_str</span>(<span class="ident">formal_args</span>, <span class="string">&quot;, &quot;</span>)
+            sanitize_identifier(class_name),
+            sanitize_identifier(func.r_name),
+            join_str(formal_args, <span class="string">&quot;, &quot;</span>)
         )<span class="question-mark">?</span>;
-    } <span class="kw">else</span> {
+    } <span class="kw">else </span>{
         <span class="macro">write!</span>(
-            <span class="ident">w</span>,
+            w,
             <span class="string">&quot;{}${} &lt;- function({}) .Call(&quot;</span>,
-            <span class="ident">sanitize_identifier</span>(<span class="ident">class_name</span>),
-            <span class="ident">sanitize_identifier</span>(<span class="ident">func</span>.<span class="ident">r_name</span>),
-            <span class="ident">join_str</span>(<span class="ident">formal_args</span>, <span class="string">&quot;, &quot;</span>)
+            sanitize_identifier(class_name),
+            sanitize_identifier(func.r_name),
+            join_str(formal_args, <span class="string">&quot;, &quot;</span>)
         )<span class="question-mark">?</span>;
     }
 
-    <span class="comment">// Here no processing is needed because of `wrap__` prefix</span>
-    <span class="kw">if</span> <span class="ident">use_symbols</span> {
-        <span class="macro">write!</span>(<span class="ident">w</span>, <span class="string">&quot;wrap__{}__{}&quot;</span>, <span class="ident">class_name</span>, <span class="ident">func</span>.<span class="ident">mod_name</span>)<span class="question-mark">?</span>;
-    } <span class="kw">else</span> {
-        <span class="macro">write!</span>(<span class="ident">w</span>, <span class="string">&quot;\&quot;wrap__{}__{}\&quot;&quot;</span>, <span class="ident">class_name</span>, <span class="ident">func</span>.<span class="ident">mod_name</span>)<span class="question-mark">?</span>;
+    <span class="comment">// Here no processing is needed because of `wrap__` prefix
+    </span><span class="kw">if </span>use_symbols {
+        <span class="macro">write!</span>(w, <span class="string">&quot;wrap__{}__{}&quot;</span>, class_name, func.mod_name)<span class="question-mark">?</span>;
+    } <span class="kw">else </span>{
+        <span class="macro">write!</span>(w, <span class="string">&quot;\&quot;wrap__{}__{}\&quot;&quot;</span>, class_name, func.mod_name)<span class="question-mark">?</span>;
     }
 
-    <span class="kw">if</span> <span class="ident">actual_args</span>.<span class="ident">len</span>() <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-        <span class="macro">write!</span>(<span class="ident">w</span>, <span class="string">&quot;, {}&quot;</span>, <span class="ident">join_str</span>(<span class="ident">actual_args</span>, <span class="string">&quot;, &quot;</span>))<span class="question-mark">?</span>;
+    <span class="kw">if </span>actual_args.len() != <span class="number">0 </span>{
+        <span class="macro">write!</span>(w, <span class="string">&quot;, {}&quot;</span>, join_str(actual_args, <span class="string">&quot;, &quot;</span>))<span class="question-mark">?</span>;
     }
 
-    <span class="kw">if</span> <span class="op">!</span><span class="ident">use_symbols</span> {
-        <span class="macro">write!</span>(<span class="ident">w</span>, <span class="string">&quot;, PACKAGE = \&quot;{}\&quot;&quot;</span>, <span class="ident">package_name</span>)<span class="question-mark">?</span>;
+    <span class="kw">if </span>!use_symbols {
+        <span class="macro">write!</span>(w, <span class="string">&quot;, PACKAGE = \&quot;{}\&quot;&quot;</span>, package_name)<span class="question-mark">?</span>;
     }
 
-    <span class="kw">if</span> <span class="ident">func</span>.<span class="ident">return_type</span> <span class="op">==</span> <span class="string">&quot;()&quot;</span> {
-        <span class="macro">writeln!</span>(<span class="ident">w</span>, <span class="string">&quot;))\n&quot;</span>)<span class="question-mark">?</span>;
-    } <span class="kw">else</span> {
-        <span class="macro">writeln!</span>(<span class="ident">w</span>, <span class="string">&quot;)\n&quot;</span>)<span class="question-mark">?</span>;
+    <span class="kw">if </span>func.return_type == <span class="string">&quot;()&quot; </span>{
+        <span class="macro">writeln!</span>(w, <span class="string">&quot;))\n&quot;</span>)<span class="question-mark">?</span>;
+    } <span class="kw">else </span>{
+        <span class="macro">writeln!</span>(w, <span class="string">&quot;)\n&quot;</span>)<span class="question-mark">?</span>;
     }
 
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="doccomment">/// Generate a wrapper for an implementation block.</span>
-<span class="kw">fn</span> <span class="ident">write_impl_wrapper</span>(
-    <span class="ident">w</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="ident">imp</span>: <span class="kw-2">&amp;</span><span class="ident">Impl</span>,
-    <span class="ident">package_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    <span class="ident">use_symbols</span>: <span class="ident">bool</span>,
-) -&gt; <span class="ident">std::io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">exported</span> <span class="op">=</span> <span class="ident">imp</span>.<span class="ident">doc</span>.<span class="ident">contains</span>(<span class="string">&quot;@export&quot;</span>);
+<span class="doccomment">/// Generate a wrapper for an implementation block.
+</span><span class="kw">fn </span>write_impl_wrapper(
+    w: <span class="kw-2">&amp;mut </span>Vec&lt;u8&gt;,
+    imp: <span class="kw-2">&amp;</span>Impl,
+    package_name: <span class="kw-2">&amp;</span>str,
+    use_symbols: bool,
+) -&gt; std::io::Result&lt;()&gt; {
+    <span class="kw">let </span>exported = imp.doc.contains(<span class="string">&quot;@export&quot;</span>);
 
-    <span class="ident">write_doc</span>(<span class="ident">w</span>, <span class="ident">imp</span>.<span class="ident">doc</span>)<span class="question-mark">?</span>;
+    write_doc(w, imp.doc)<span class="question-mark">?</span>;
 
-    <span class="kw">let</span> <span class="ident">imp_name_fixed</span> <span class="op">=</span> <span class="ident">sanitize_identifier</span>(<span class="ident">imp</span>.<span class="ident">name</span>);
+    <span class="kw">let </span>imp_name_fixed = sanitize_identifier(imp.name);
 
-    <span class="comment">// Using fixed name because it is exposed to R</span>
-    <span class="macro">writeln!</span>(<span class="ident">w</span>, <span class="string">&quot;{} &lt;- new.env(parent = emptyenv())\n&quot;</span>, <span class="ident">imp_name_fixed</span>)<span class="question-mark">?</span>;
+    <span class="comment">// Using fixed name because it is exposed to R
+    </span><span class="macro">writeln!</span>(w, <span class="string">&quot;{} &lt;- new.env(parent = emptyenv())\n&quot;</span>, imp_name_fixed)<span class="question-mark">?</span>;
 
-    <span class="kw">for</span> <span class="ident">func</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">imp</span>.<span class="ident">methods</span> {
-        <span class="comment">// write_doc(&amp; mut w, func.doc)?;</span>
-        <span class="comment">// `imp.name` is passed as is and sanitized within the function</span>
-        <span class="ident">write_method_wrapper</span>(<span class="ident">w</span>, <span class="ident">func</span>, <span class="ident">package_name</span>, <span class="ident">use_symbols</span>, <span class="ident">imp</span>.<span class="ident">name</span>)<span class="question-mark">?</span>;
+    <span class="kw">for </span>func <span class="kw">in </span><span class="kw-2">&amp;</span>imp.methods {
+        <span class="comment">// write_doc(&amp; mut w, func.doc)?;
+        // `imp.name` is passed as is and sanitized within the function
+        </span>write_method_wrapper(w, func, package_name, use_symbols, imp.name)<span class="question-mark">?</span>;
     }
 
-    <span class="kw">if</span> <span class="ident">exported</span> {
-        <span class="macro">writeln!</span>(<span class="ident">w</span>, <span class="string">&quot;#&#39; @rdname {}&quot;</span>, <span class="ident">imp</span>.<span class="ident">name</span>)<span class="question-mark">?</span>;
-        <span class="macro">writeln!</span>(<span class="ident">w</span>, <span class="string">&quot;#&#39; @usage NULL&quot;</span>)<span class="question-mark">?</span>;
+    <span class="kw">if </span>exported {
+        <span class="macro">writeln!</span>(w, <span class="string">&quot;#&#39; @rdname {}&quot;</span>, imp.name)<span class="question-mark">?</span>;
+        <span class="macro">writeln!</span>(w, <span class="string">&quot;#&#39; @usage NULL&quot;</span>)<span class="question-mark">?</span>;
     }
 
-    <span class="comment">// This is needed no matter whether the user added `@export` or</span>
-    <span class="comment">// not; even if we don&#39;t export the class itself and its</span>
-    <span class="comment">// initializers, we always export the `$` method so the method is</span>
-    <span class="comment">// correctly added to the NAMESPACE.</span>
-    <span class="macro">writeln!</span>(<span class="ident">w</span>, <span class="string">&quot;#&#39; @export&quot;</span>)<span class="question-mark">?</span>;
+    <span class="comment">// This is needed no matter whether the user added `@export` or
+    // not; even if we don&#39;t export the class itself and its
+    // initializers, we always export the `$` method so the method is
+    // correctly added to the NAMESPACE.
+    </span><span class="macro">writeln!</span>(w, <span class="string">&quot;#&#39; @export&quot;</span>)<span class="question-mark">?</span>;
 
-    <span class="comment">// LHS with dollar operator is wrapped in ``, so pass name as is,</span>
-    <span class="comment">// but in the body `imp_name_fixed` is called as valid R function,</span>
-    <span class="comment">// so we pass preprocessed value</span>
-    <span class="macro">writeln!</span>(<span class="ident">w</span>, <span class="string">&quot;`$.{}` &lt;- function (self, name) {{ func &lt;- {}[[name]]; environment(func) &lt;- environment(); func }}\n&quot;</span>, <span class="ident">imp</span>.<span class="ident">name</span>, <span class="ident">imp_name_fixed</span>)<span class="question-mark">?</span>;
+    <span class="comment">// LHS with dollar operator is wrapped in ``, so pass name as is,
+    // but in the body `imp_name_fixed` is called as valid R function,
+    // so we pass preprocessed value
+    </span><span class="macro">writeln!</span>(w, <span class="string">&quot;`$.{}` &lt;- function (self, name) {{ func &lt;- {}[[name]]; environment(func) &lt;- environment(); func }}\n&quot;</span>, imp.name, imp_name_fixed)<span class="question-mark">?</span>;
 
-    <span class="macro">writeln!</span>(<span class="ident">w</span>, <span class="string">&quot;#&#39; @export&quot;</span>)<span class="question-mark">?</span>;
-    <span class="macro">writeln!</span>(<span class="ident">w</span>, <span class="string">&quot;`[[.{}` &lt;- `$.{}`\n&quot;</span>, <span class="ident">imp</span>.<span class="ident">name</span>, <span class="ident">imp</span>.<span class="ident">name</span>)<span class="question-mark">?</span>;
+    <span class="macro">writeln!</span>(w, <span class="string">&quot;#&#39; @export&quot;</span>)<span class="question-mark">?</span>;
+    <span class="macro">writeln!</span>(w, <span class="string">&quot;`[[.{}` &lt;- `$.{}`\n&quot;</span>, imp.name, imp.name)<span class="question-mark">?</span>;
 
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="kw">impl</span> <span class="ident">Metadata</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_r_wrappers</span>(
+<span class="kw">impl </span>Metadata {
+    <span class="kw">pub fn </span>make_r_wrappers(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">use_symbols</span>: <span class="ident">bool</span>,
-        <span class="ident">package_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    ) -&gt; <span class="ident">std::io::Result</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">w</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
+        use_symbols: bool,
+        package_name: <span class="kw-2">&amp;</span>str,
+    ) -&gt; std::io::Result&lt;String&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>w = Vec::new();
 
         <span class="macro">writeln!</span>(
-            <span class="ident">w</span>,
+            w,
             <span class="string">r#&quot;# Generated by extendr: Do not edit by hand
 #
 # This file was created with the following call:
 #   .Call(&quot;wrap__make_{}_wrappers&quot;, use_symbols = {}, package_name = &quot;{}&quot;)
 &quot;#</span>,
-            <span class="self">self</span>.<span class="ident">name</span>,
-            <span class="kw">if</span> <span class="ident">use_symbols</span> { <span class="string">&quot;TRUE&quot;</span> } <span class="kw">else</span> { <span class="string">&quot;FALSE&quot;</span> },
-            <span class="ident">package_name</span>
+            <span class="self">self</span>.name,
+            <span class="kw">if </span>use_symbols { <span class="string">&quot;TRUE&quot; </span>} <span class="kw">else </span>{ <span class="string">&quot;FALSE&quot; </span>},
+            package_name
         )<span class="question-mark">?</span>;
 
-        <span class="kw">if</span> <span class="ident">use_symbols</span> {
-            <span class="macro">writeln!</span>(<span class="ident">w</span>, <span class="string">&quot;#&#39; @docType package&quot;</span>)<span class="question-mark">?</span>;
-            <span class="macro">writeln!</span>(<span class="ident">w</span>, <span class="string">&quot;#&#39; @usage NULL&quot;</span>)<span class="question-mark">?</span>;
-            <span class="macro">writeln!</span>(<span class="ident">w</span>, <span class="string">&quot;#&#39; @useDynLib {}, .registration = TRUE&quot;</span>, <span class="ident">package_name</span>)<span class="question-mark">?</span>;
-            <span class="macro">writeln!</span>(<span class="ident">w</span>, <span class="string">&quot;NULL&quot;</span>)<span class="question-mark">?</span>;
-            <span class="macro">writeln!</span>(<span class="ident">w</span>)<span class="question-mark">?</span>;
+        <span class="kw">if </span>use_symbols {
+            <span class="macro">writeln!</span>(w, <span class="string">&quot;#&#39; @docType package&quot;</span>)<span class="question-mark">?</span>;
+            <span class="macro">writeln!</span>(w, <span class="string">&quot;#&#39; @usage NULL&quot;</span>)<span class="question-mark">?</span>;
+            <span class="macro">writeln!</span>(w, <span class="string">&quot;#&#39; @useDynLib {}, .registration = TRUE&quot;</span>, package_name)<span class="question-mark">?</span>;
+            <span class="macro">writeln!</span>(w, <span class="string">&quot;NULL&quot;</span>)<span class="question-mark">?</span>;
+            <span class="macro">writeln!</span>(w)<span class="question-mark">?</span>;
         }
 
-        <span class="kw">for</span> <span class="ident">func</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">functions</span> {
-            <span class="ident">write_function_wrapper</span>(<span class="kw-2">&amp;mut</span> <span class="ident">w</span>, <span class="ident">func</span>, <span class="ident">package_name</span>, <span class="ident">use_symbols</span>)<span class="question-mark">?</span>;
+        <span class="kw">for </span>func <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.functions {
+            write_function_wrapper(<span class="kw-2">&amp;mut </span>w, func, package_name, use_symbols)<span class="question-mark">?</span>;
         }
 
-        <span class="kw">for</span> <span class="ident">imp</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">impls</span> {
-            <span class="ident">write_impl_wrapper</span>(<span class="kw-2">&amp;mut</span> <span class="ident">w</span>, <span class="ident">imp</span>, <span class="ident">package_name</span>, <span class="ident">use_symbols</span>)<span class="question-mark">?</span>;
+        <span class="kw">for </span>imp <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.impls {
+            write_impl_wrapper(<span class="kw-2">&amp;mut </span>w, imp, package_name, use_symbols)<span class="question-mark">?</span>;
         }
-        <span class="kw">unsafe</span> { <span class="prelude-val">Ok</span>(<span class="ident">String::from_utf8_unchecked</span>(<span class="ident">w</span>)) }
+        <span class="kw">unsafe </span>{ <span class="prelude-val">Ok</span>(String::from_utf8_unchecked(w)) }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

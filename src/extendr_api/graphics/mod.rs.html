@@ -1,6 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/graphics/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container">
-                    <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../extendr_api/index.html">
-                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/graphics/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../extendr_api/index.html">
+                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -884,889 +883,889 @@
 <span id="882">882</span>
 <span id="883">883</span>
 <span id="884">884</span>
-</pre><pre class="rust"><code><span class="comment">// ## Resources for Developers</span>
-<span class="comment">//</span>
-<span class="comment">// Graphic device is documented in the R-internals. The header file also</span>
-<span class="comment">// contains the useful information. The code of the graphics package is also useful to</span>
-<span class="comment">// see what values are used by default (i.e. `GInit`).</span>
-<span class="comment">//</span>
-<span class="comment">// - https://cran.r-project.org/doc/manuals/r-devel/R-ints.html</span>
-<span class="comment">// - https://github.com/wch/r-source/blob/trunk/src/include/R_ext/GraphicsDevice.h</span>
-<span class="comment">// - https://github.com/wch/r-source/blob/trunk/src/library/graphics/src/graphics.c</span>
-<span class="comment">//</span>
-<span class="comment">// While the documents are good, we need to refer to the real implementaions to</span>
-<span class="comment">// find hints.</span>
-<span class="comment">//</span>
-<span class="comment">// - postscript device: https://github.com/wch/r-source/blob/trunk/src/library/grDevices/src/devPS.c</span>
-<span class="comment">// - svglite package: https://github.com/r-lib/svglite/blob/main/src/devSVG.cpp</span>
-<span class="comment">// - devout package: https://github.com/coolbutuseless/devout/blob/master/src/rdevice.cpp</span>
-<span class="comment">//</span>
-<span class="comment">// For newer features, the blog posts by Paul Murrell might be helpful:</span>
-<span class="comment">//</span>
-<span class="comment">// - https://developer.r-project.org/Blog/public/2020/07/15/new-features-in-the-r-graphics-engine/index.html</span>
-<span class="comment">// - https://developer.r-project.org/Blog/public/2021/12/06/groups-and-paths-and-masks-in-r-graphics/index.html</span>
-<span class="comment">// - https://developer.r-project.org/Blog/public/2021/12/14/updating-graphics-devices-for-r-4.2.0/index.html</span>
+</pre><pre class="rust"><code><span class="comment">// ## Resources for Developers
+//
+// Graphic device is documented in the R-internals. The header file also
+// contains the useful information. The code of the graphics package is also useful to
+// see what values are used by default (i.e. `GInit`).
+//
+// - https://cran.r-project.org/doc/manuals/r-devel/R-ints.html
+// - https://github.com/wch/r-source/blob/trunk/src/include/R_ext/GraphicsDevice.h
+// - https://github.com/wch/r-source/blob/trunk/src/library/graphics/src/graphics.c
+//
+// While the documents are good, we need to refer to the real implementaions to
+// find hints.
+//
+// - postscript device: https://github.com/wch/r-source/blob/trunk/src/library/grDevices/src/devPS.c
+// - svglite package: https://github.com/r-lib/svglite/blob/main/src/devSVG.cpp
+// - devout package: https://github.com/coolbutuseless/devout/blob/master/src/rdevice.cpp
+//
+// For newer features, the blog posts by Paul Murrell might be helpful:
+//
+// - https://developer.r-project.org/Blog/public/2020/07/15/new-features-in-the-r-graphics-engine/index.html
+// - https://developer.r-project.org/Blog/public/2021/12/06/groups-and-paths-and-masks-in-r-graphics/index.html
+// - https://developer.r-project.org/Blog/public/2021/12/14/updating-graphics-devices-for-r-4.2.0/index.html
 
-<span class="doccomment">//! Graphic Device Operations</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ## Control an existing graphic device</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! TODO</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ## Implement a new graphic device</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! The following two things are needed to implement a graphic device.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! - [DeviceDriver] trait: the actual implementation of graphic device methods.</span>
-<span class="doccomment">//! - [DeviceDescriptor] struct: the parameters that might differ per device</span>
-<span class="doccomment">//!   instance (e.g. sizes, and colors).</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! For example, the following code implements a simple graphic device that shows a message when it&#39;s</span>
-<span class="doccomment">//! activated (and ignores everything else).</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ```</span>
-<span class="doccomment">//! use extendr_api::{</span>
-<span class="doccomment">//!     graphics::{DeviceDescriptor, DeviceDriver, DevDesc},</span>
-<span class="doccomment">//!     prelude::*,</span>
-<span class="doccomment">//! };</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! struct MyDevice&lt;&#39;a&gt; {</span>
-<span class="doccomment">//!     welcome_message: &amp;&#39;a str,</span>
-<span class="doccomment">//! }</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! impl&lt;&#39;a&gt; DeviceDriver for MyDevice&lt;&#39;a&gt; {</span>
-<span class="doccomment">//!     fn activate(&amp;mut self, _dd: DevDesc) {</span>
-<span class="doccomment">//!         let welcome_message = self.welcome_message;</span>
-<span class="doccomment">//!         rprintln!(&quot;message from device: {welcome_message}&quot;);</span>
-<span class="doccomment">//!     }</span>
-<span class="doccomment">//! }</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! /// Create a new device.</span>
-<span class="doccomment">//! ///</span>
-<span class="doccomment">//! /// @export</span>
-<span class="doccomment">//! #[extendr]</span>
-<span class="doccomment">//! fn my_device(welcome_message: String) {</span>
-<span class="doccomment">//!     let device_driver = MyDevice {</span>
-<span class="doccomment">//!         welcome_message: welcome_message.as_str(),</span>
-<span class="doccomment">//!     };</span>
-<span class="doccomment">//!     </span>
-<span class="doccomment">//!     let device_descriptor = DeviceDescriptor::new();</span>
-<span class="doccomment">//!     let device = device_driver.create_device::&lt;MyDevice&gt;(device_descriptor, &quot;my device&quot;);</span>
-<span class="doccomment">//! }</span>
-<span class="doccomment">//! ```</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! This can be called from R.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ```r</span>
-<span class="doccomment">//! my_device(&quot;I&#39;m so active!!!&quot;)</span>
-<span class="doccomment">//! #&gt; message from device: I&#39;m so active!!!</span>
-<span class="doccomment">//! ```</span>
+</span><span class="doccomment">//! Graphic Device Operations
+//!
+//! ## Control an existing graphic device
+//!
+//! TODO
+//!
+//! ## Implement a new graphic device
+//!
+//! The following two things are needed to implement a graphic device.
+//!
+//! - [DeviceDriver] trait: the actual implementation of graphic device methods.
+//! - [DeviceDescriptor] struct: the parameters that might differ per device
+//!   instance (e.g. sizes, and colors).
+//!
+//! For example, the following code implements a simple graphic device that shows a message when it&#39;s
+//! activated (and ignores everything else).
+//!
+//! ```
+//! use extendr_api::{
+//!     graphics::{DeviceDescriptor, DeviceDriver, DevDesc},
+//!     prelude::*,
+//! };
+//!
+//! struct MyDevice&lt;&#39;a&gt; {
+//!     welcome_message: &amp;&#39;a str,
+//! }
+//!
+//! impl&lt;&#39;a&gt; DeviceDriver for MyDevice&lt;&#39;a&gt; {
+//!     fn activate(&amp;mut self, _dd: DevDesc) {
+//!         let welcome_message = self.welcome_message;
+//!         rprintln!(&quot;message from device: {welcome_message}&quot;);
+//!     }
+//! }
+//!
+//! /// Create a new device.
+//! ///
+//! /// @export
+//! #[extendr]
+//! fn my_device(welcome_message: String) {
+//!     let device_driver = MyDevice {
+//!         welcome_message: welcome_message.as_str(),
+//!     };
+//!     
+//!     let device_descriptor = DeviceDescriptor::new();
+//!     let device = device_driver.create_device::&lt;MyDevice&gt;(device_descriptor, &quot;my device&quot;);
+//! }
+//! ```
+//!
+//! This can be called from R.
+//!
+//! ```r
+//! my_device(&quot;I&#39;m so active!!!&quot;)
+//! #&gt; message from device: I&#39;m so active!!!
+//! ```
 
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">libR_sys</span>::<span class="kw-2">*</span>;
+</span><span class="kw">use crate</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>libR_sys::<span class="kw-2">*</span>;
 
-<span class="comment">// These are used in the callback functions.</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">libR_sys</span>::{<span class="ident">DevDesc</span>, <span class="ident">R_GE_gcontext</span>};
+<span class="comment">// These are used in the callback functions.
+</span><span class="kw">pub use </span>libR_sys::{DevDesc, R_GE_gcontext};
 
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">color</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">device_descriptor</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">device_driver</span>;
+<span class="kw">pub mod </span>color;
+<span class="kw">pub mod </span>device_descriptor;
+<span class="kw">pub mod </span>device_driver;
 
-<span class="kw">use</span> <span class="ident">color::Color</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">device_descriptor</span>::<span class="kw-2">*</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">device_driver</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>color::Color;
+<span class="kw">pub use </span>device_descriptor::<span class="kw-2">*</span>;
+<span class="kw">pub use </span>device_driver::<span class="kw-2">*</span>;
 
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Context</span> {
-    <span class="ident">context</span>: <span class="ident">R_GE_gcontext</span>,
-    <span class="ident">xscale</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>),
-    <span class="ident">yscale</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>),
-    <span class="ident">offset</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>),
-    <span class="ident">scalar</span>: <span class="ident">f64</span>,
+<span class="kw">pub struct </span>Context {
+    context: R_GE_gcontext,
+    xscale: (f64, f64),
+    yscale: (f64, f64),
+    offset: (f64, f64),
+    scalar: f64,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Device</span> {
-    <span class="ident">inner</span>: <span class="ident">pGEDevDesc</span>,
+<span class="attribute">#[derive(Clone, Debug, PartialEq)]
+</span><span class="kw">pub struct </span>Device {
+    inner: pGEDevDesc,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Pattern</span> {
-    <span class="ident">inner</span>: <span class="ident">Robj</span>,
+<span class="attribute">#[derive(Clone, Debug, PartialEq)]
+</span><span class="kw">pub struct </span>Pattern {
+    inner: Robj,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TextMetric</span> {
-    <span class="kw">pub</span> <span class="ident">ascent</span>: <span class="ident">f64</span>,
-    <span class="kw">pub</span> <span class="ident">descent</span>: <span class="ident">f64</span>,
-    <span class="kw">pub</span> <span class="ident">width</span>: <span class="ident">f64</span>,
+<span class="attribute">#[derive(Clone, Debug, PartialEq)]
+</span><span class="kw">pub struct </span>TextMetric {
+    <span class="kw">pub </span>ascent: f64,
+    <span class="kw">pub </span>descent: f64,
+    <span class="kw">pub </span>width: f64,
 }
 
-<span class="doccomment">/// A row-major array of pixels. One pixel is 32-bit, whose each byte represents</span>
-<span class="doccomment">/// alpha, blue, green, and red in the order.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Raster</span><span class="op">&lt;</span><span class="ident">P</span>: <span class="ident">AsRef</span><span class="op">&lt;</span>[<span class="ident">u32</span>]<span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="ident">pixels</span>: <span class="ident">P</span>,
-    <span class="kw">pub</span> <span class="ident">width</span>: <span class="ident">usize</span>,
+<span class="doccomment">/// A row-major array of pixels. One pixel is 32-bit, whose each byte represents
+/// alpha, blue, green, and red in the order.
+</span><span class="attribute">#[derive(Clone, Debug, PartialEq)]
+</span><span class="kw">pub struct </span>Raster&lt;P: AsRef&lt;[u32]&gt;&gt; {
+    <span class="kw">pub </span>pixels: P,
+    <span class="kw">pub </span>width: usize,
 }
 
-<span class="kw">impl</span> <span class="ident">Device</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">inner</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">pGEDevDesc</span> {
-        <span class="self">self</span>.<span class="ident">inner</span>
+<span class="kw">impl </span>Device {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>inner(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; pGEDevDesc {
+        <span class="self">self</span>.inner
     }
 
-    <span class="comment">// pub(crate) fn asref(&amp;self) -&gt; &amp;GEDevDesc {</span>
-    <span class="comment">//     unsafe { &amp;*self.inner }</span>
-    <span class="comment">// }</span>
+    <span class="comment">// pub(crate) fn asref(&amp;self) -&gt; &amp;GEDevDesc {
+    //     unsafe { &amp;*self.inner }
+    // }
 
-    <span class="comment">// pub(crate) fn dev(&amp;self) -&gt; &amp;DevDesc {</span>
-    <span class="comment">//     unsafe { &amp;*self.asref().dev }</span>
-    <span class="comment">// }</span>
+    // pub(crate) fn dev(&amp;self) -&gt; &amp;DevDesc {
+    //     unsafe { &amp;*self.asref().dev }
+    // }
+</span>}
+
+<span class="attribute">#[derive(PartialEq, Debug, Clone)]
+</span><span class="kw">pub enum </span>LineEnd {
+    Round,
+    Butt,
+    Square,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">LineEnd</span> {
-    <span class="ident">Round</span>,
-    <span class="ident">Butt</span>,
-    <span class="ident">Square</span>,
+<span class="attribute">#[derive(PartialEq, Debug, Clone)]
+</span><span class="kw">pub enum </span>LineJoin {
+    Round,
+    Mitre,
+    Bevel,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">LineJoin</span> {
-    <span class="ident">Round</span>,
-    <span class="ident">Mitre</span>,
-    <span class="ident">Bevel</span>,
+<span class="attribute">#[derive(PartialEq, Debug, Clone)]
+</span><span class="kw">pub enum </span>LineType {
+    Blank,
+    Solid,
+    Dashed,
+    Dotted,
+    DotDash,
+    LongDash,
+    TwoDash,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">LineType</span> {
-    <span class="ident">Blank</span>,
-    <span class="ident">Solid</span>,
-    <span class="ident">Dashed</span>,
-    <span class="ident">Dotted</span>,
-    <span class="ident">DotDash</span>,
-    <span class="ident">LongDash</span>,
-    <span class="ident">TwoDash</span>,
+<span class="attribute">#[derive(PartialEq, Debug, Clone)]
+</span><span class="kw">pub enum </span>Unit {
+    Device,
+    Normalized,
+    Inches,
+    CM,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Unit</span> {
-    <span class="ident">Device</span>,
-    <span class="ident">Normalized</span>,
-    <span class="ident">Inches</span>,
-    <span class="ident">CM</span>,
+<span class="attribute">#[derive(PartialEq, Debug, Clone)]
+</span><span class="kw">pub enum </span>FontFace {
+    Plain,
+    Bold,
+    Italic,
+    BoldItalic,
+    Symbol,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">FontFace</span> {
-    <span class="ident">Plain</span>,
-    <span class="ident">Bold</span>,
-    <span class="ident">Italic</span>,
-    <span class="ident">BoldItalic</span>,
-    <span class="ident">Symbol</span>,
-}
-
-<span class="kw">impl</span> <span class="ident">LineEnd</span> {
-    <span class="kw">fn</span> <span class="ident">to_u32</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u32</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident"><span class="self">Self</span>::Round</span> =&gt; <span class="number">1</span>,
-            <span class="ident"><span class="self">Self</span>::Butt</span> =&gt; <span class="number">2</span>,
-            <span class="ident"><span class="self">Self</span>::Square</span> =&gt; <span class="number">3</span>,
+<span class="kw">impl </span>LineEnd {
+    <span class="kw">fn </span>to_u32(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::Round =&gt; <span class="number">1</span>,
+            <span class="self">Self</span>::Butt =&gt; <span class="number">2</span>,
+            <span class="self">Self</span>::Square =&gt; <span class="number">3</span>,
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">LineJoin</span> {
-    <span class="kw">fn</span> <span class="ident">to_u32</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u32</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident"><span class="self">Self</span>::Round</span> =&gt; <span class="number">1</span>,
-            <span class="ident"><span class="self">Self</span>::Mitre</span> =&gt; <span class="number">2</span>,
-            <span class="ident"><span class="self">Self</span>::Bevel</span> =&gt; <span class="number">3</span>,
+<span class="kw">impl </span>LineJoin {
+    <span class="kw">fn </span>to_u32(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::Round =&gt; <span class="number">1</span>,
+            <span class="self">Self</span>::Mitre =&gt; <span class="number">2</span>,
+            <span class="self">Self</span>::Bevel =&gt; <span class="number">3</span>,
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">LineType</span> {
-    <span class="kw">fn</span> <span class="ident">to_i32</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">i32</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident"><span class="self">Self</span>::Blank</span> =&gt; <span class="ident">LTY_BLANK</span> <span class="kw">as</span> <span class="kw">_</span>,
-            <span class="ident"><span class="self">Self</span>::Solid</span> =&gt; <span class="ident">LTY_SOLID</span> <span class="kw">as</span> <span class="kw">_</span>,
-            <span class="ident"><span class="self">Self</span>::Dashed</span> =&gt; <span class="ident">LTY_DASHED</span> <span class="kw">as</span> <span class="kw">_</span>,
-            <span class="ident"><span class="self">Self</span>::Dotted</span> =&gt; <span class="ident">LTY_DOTTED</span> <span class="kw">as</span> <span class="kw">_</span>,
-            <span class="ident"><span class="self">Self</span>::DotDash</span> =&gt; <span class="ident">LTY_DOTDASH</span> <span class="kw">as</span> <span class="kw">_</span>,
-            <span class="ident"><span class="self">Self</span>::LongDash</span> =&gt; <span class="ident">LTY_LONGDASH</span> <span class="kw">as</span> <span class="kw">_</span>,
-            <span class="ident"><span class="self">Self</span>::TwoDash</span> =&gt; <span class="ident">LTY_TWODASH</span> <span class="kw">as</span> <span class="kw">_</span>,
+<span class="kw">impl </span>LineType {
+    <span class="kw">fn </span>to_i32(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32 {
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::Blank =&gt; LTY_BLANK <span class="kw">as _</span>,
+            <span class="self">Self</span>::Solid =&gt; LTY_SOLID <span class="kw">as _</span>,
+            <span class="self">Self</span>::Dashed =&gt; LTY_DASHED <span class="kw">as _</span>,
+            <span class="self">Self</span>::Dotted =&gt; LTY_DOTTED <span class="kw">as _</span>,
+            <span class="self">Self</span>::DotDash =&gt; LTY_DOTDASH <span class="kw">as _</span>,
+            <span class="self">Self</span>::LongDash =&gt; LTY_LONGDASH <span class="kw">as _</span>,
+            <span class="self">Self</span>::TwoDash =&gt; LTY_TWODASH <span class="kw">as _</span>,
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">FontFace</span> {
-    <span class="kw">fn</span> <span class="ident">to_i32</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">i32</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident"><span class="self">Self</span>::Plain</span> =&gt; <span class="number">1</span>,
-            <span class="ident"><span class="self">Self</span>::Bold</span> =&gt; <span class="number">2</span>,
-            <span class="ident"><span class="self">Self</span>::Italic</span> =&gt; <span class="number">3</span>,
-            <span class="ident"><span class="self">Self</span>::BoldItalic</span> =&gt; <span class="number">4</span>,
-            <span class="ident"><span class="self">Self</span>::Symbol</span> =&gt; <span class="number">5</span>,
+<span class="kw">impl </span>FontFace {
+    <span class="kw">fn </span>to_i32(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32 {
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::Plain =&gt; <span class="number">1</span>,
+            <span class="self">Self</span>::Bold =&gt; <span class="number">2</span>,
+            <span class="self">Self</span>::Italic =&gt; <span class="number">3</span>,
+            <span class="self">Self</span>::BoldItalic =&gt; <span class="number">4</span>,
+            <span class="self">Self</span>::Symbol =&gt; <span class="number">5</span>,
         }
     }
 }
 
-<span class="kw">fn</span> <span class="ident">unit_to_ge</span>(<span class="ident">unit</span>: <span class="ident">Unit</span>) -&gt; <span class="ident">GEUnit</span> {
-    <span class="kw">match</span> <span class="ident">unit</span> {
-        <span class="ident">Unit::Device</span> =&gt; <span class="ident">GEUnit_GE_DEVICE</span>,
-        <span class="ident">Unit::Normalized</span> =&gt; <span class="ident">GEUnit_GE_NDC</span>,
-        <span class="ident">Unit::Inches</span> =&gt; <span class="ident">GEUnit_GE_INCHES</span>,
-        <span class="ident">Unit::CM</span> =&gt; <span class="ident">GEUnit_GE_CM</span>,
+<span class="kw">fn </span>unit_to_ge(unit: Unit) -&gt; GEUnit {
+    <span class="kw">match </span>unit {
+        Unit::Device =&gt; GEUnit_GE_DEVICE,
+        Unit::Normalized =&gt; GEUnit_GE_NDC,
+        Unit::Inches =&gt; GEUnit_GE_INCHES,
+        Unit::CM =&gt; GEUnit_GE_CM,
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Context</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_device</span>(<span class="ident">dev</span>: <span class="kw-2">&amp;</span><span class="ident">Device</span>, <span class="ident">unit</span>: <span class="ident">Unit</span>) -&gt; <span class="self">Self</span> {
-        <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused_unsafe</span>)]</span>
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">dev</span>.<span class="ident">to_device_coords</span>((<span class="number">0.</span>, <span class="number">0.</span>), <span class="ident">unit</span>.<span class="ident">clone</span>());
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xscale</span> <span class="op">=</span> <span class="ident">dev</span>.<span class="ident">to_device_coords</span>((<span class="number">1.</span>, <span class="number">0.</span>), <span class="ident">unit</span>.<span class="ident">clone</span>());
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">yscale</span> <span class="op">=</span> <span class="ident">dev</span>.<span class="ident">to_device_coords</span>((<span class="number">0.</span>, <span class="number">1.</span>), <span class="ident">unit</span>);
-            <span class="ident">xscale</span>.<span class="number">0</span> <span class="op">-</span><span class="op">=</span> <span class="ident">offset</span>.<span class="number">0</span>;
-            <span class="ident">xscale</span>.<span class="number">1</span> <span class="op">-</span><span class="op">=</span> <span class="ident">offset</span>.<span class="number">1</span>;
-            <span class="ident">yscale</span>.<span class="number">0</span> <span class="op">-</span><span class="op">=</span> <span class="ident">offset</span>.<span class="number">0</span>;
-            <span class="ident">yscale</span>.<span class="number">1</span> <span class="op">-</span><span class="op">=</span> <span class="ident">offset</span>.<span class="number">1</span>;
+<span class="kw">impl </span>Context {
+    <span class="kw">pub fn </span>from_device(dev: <span class="kw-2">&amp;</span>Device, unit: Unit) -&gt; <span class="self">Self </span>{
+        <span class="attribute">#[allow(unused_unsafe)]
+        </span><span class="kw">unsafe </span>{
+            <span class="kw">let </span>offset = dev.to_device_coords((<span class="number">0.</span>, <span class="number">0.</span>), unit.clone());
+            <span class="kw">let </span><span class="kw-2">mut </span>xscale = dev.to_device_coords((<span class="number">1.</span>, <span class="number">0.</span>), unit.clone());
+            <span class="kw">let </span><span class="kw-2">mut </span>yscale = dev.to_device_coords((<span class="number">0.</span>, <span class="number">1.</span>), unit);
+            xscale.<span class="number">0 </span>-= offset.<span class="number">0</span>;
+            xscale.<span class="number">1 </span>-= offset.<span class="number">1</span>;
+            yscale.<span class="number">0 </span>-= offset.<span class="number">0</span>;
+            yscale.<span class="number">1 </span>-= offset.<span class="number">1</span>;
 
-            <span class="comment">// sqrt(abs(det(m)))</span>
-            <span class="kw">let</span> <span class="ident">scalar</span> <span class="op">=</span> (<span class="ident">xscale</span>.<span class="number">0</span> <span class="op">*</span> <span class="ident">yscale</span>.<span class="number">1</span> <span class="op">-</span> <span class="ident">xscale</span>.<span class="number">1</span> <span class="op">*</span> <span class="ident">yscale</span>.<span class="number">0</span>).<span class="ident">abs</span>().<span class="ident">sqrt</span>();
+            <span class="comment">// sqrt(abs(det(m)))
+            </span><span class="kw">let </span>scalar = (xscale.<span class="number">0 </span>* yscale.<span class="number">1 </span>- xscale.<span class="number">1 </span>* yscale.<span class="number">0</span>).abs().sqrt();
 
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">context</span> <span class="op">=</span> <span class="ident">R_GE_gcontext</span> {
-                <span class="ident">col</span>: <span class="ident">Color::rgb</span>(<span class="number">0xff</span>, <span class="number">0xff</span>, <span class="number">0xff</span>).<span class="ident">to_i32</span>(),
-                <span class="ident">fill</span>: <span class="ident">Color::rgb</span>(<span class="number">0xc0</span>, <span class="number">0xc0</span>, <span class="number">0xc0</span>).<span class="ident">to_i32</span>(),
-                <span class="ident">gamma</span>: <span class="number">1.0</span>,
-                <span class="ident">lwd</span>: <span class="number">1.0</span>,
-                <span class="ident">lty</span>: <span class="number">0</span>,
-                <span class="ident">lend</span>: <span class="ident">R_GE_lineend_GE_ROUND_CAP</span>,
-                <span class="ident">ljoin</span>: <span class="ident">R_GE_linejoin_GE_ROUND_JOIN</span>,
-                <span class="ident">lmitre</span>: <span class="number">10.0</span>,
-                <span class="ident">cex</span>: <span class="number">1.0</span>,
-                <span class="ident">ps</span>: <span class="number">14.0</span>,
-                <span class="ident">lineheight</span>: <span class="number">1.0</span>,
-                <span class="ident">fontface</span>: <span class="number">1</span>,
-                <span class="ident">fontfamily</span>: [<span class="number">0</span>; <span class="number">201</span>],
+            <span class="kw">let </span><span class="kw-2">mut </span>context = R_GE_gcontext {
+                col: Color::rgb(<span class="number">0xff</span>, <span class="number">0xff</span>, <span class="number">0xff</span>).to_i32(),
+                fill: Color::rgb(<span class="number">0xc0</span>, <span class="number">0xc0</span>, <span class="number">0xc0</span>).to_i32(),
+                gamma: <span class="number">1.0</span>,
+                lwd: <span class="number">1.0</span>,
+                lty: <span class="number">0</span>,
+                lend: R_GE_lineend_GE_ROUND_CAP,
+                ljoin: R_GE_linejoin_GE_ROUND_JOIN,
+                lmitre: <span class="number">10.0</span>,
+                cex: <span class="number">1.0</span>,
+                ps: <span class="number">14.0</span>,
+                lineheight: <span class="number">1.0</span>,
+                fontface: <span class="number">1</span>,
+                fontfamily: [<span class="number">0</span>; <span class="number">201</span>],
 
-                <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">use_r_ge_version_14</span>)]</span>
-                <span class="ident">patternFill</span>: <span class="ident">R_NilValue</span>,
+                <span class="attribute">#[cfg(use_r_ge_version_14)]
+                </span>patternFill: R_NilValue,
             };
 
-            <span class="ident">context</span>
-                .<span class="ident">fontfamily</span>
-                .<span class="ident">iter_mut</span>()
-                .<span class="ident">zip</span>(<span class="string">b&quot;Helvetica&quot;</span>.<span class="ident">iter</span>())
-                .<span class="ident">for_each</span>(<span class="op">|</span>(<span class="ident">d</span>, <span class="ident">s</span>)<span class="op">|</span> <span class="kw-2">*</span><span class="ident">d</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">s</span> <span class="kw">as</span> <span class="ident">i8</span>);
+            context
+                .fontfamily
+                .iter_mut()
+                .zip(<span class="string">b&quot;Helvetica&quot;</span>.iter())
+                .for_each(|(d, s)| <span class="kw-2">*</span>d = <span class="kw-2">*</span>s <span class="kw">as </span>i8);
 
-            <span class="self">Self</span> {
-                <span class="ident">context</span>,
-                <span class="ident">xscale</span>,
-                <span class="ident">yscale</span>,
-                <span class="ident">offset</span>,
-                <span class="ident">scalar</span>,
+            <span class="self">Self </span>{
+                context,
+                xscale,
+                yscale,
+                offset,
+                scalar,
             }
         }
     }
 
-    <span class="doccomment">/// Set the line or text color of a primitive.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">color</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">col</span>: <span class="ident">Color</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">col</span> <span class="op">=</span> <span class="ident">col</span>.<span class="ident">to_i32</span>();
-        <span class="self">self</span>
-    }
+    <span class="doccomment">/// Set the line or text color of a primitive.
+    </span><span class="kw">pub fn </span>color(<span class="kw-2">&amp;mut </span><span class="self">self</span>, col: Color) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.context.col = col.to_i32();
+        <span class="self">self
+    </span>}
 
-    <span class="doccomment">/// Set the fill color of a primitive.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fill</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">fill</span>: <span class="ident">Color</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">fill</span> <span class="op">=</span> <span class="ident">fill</span>.<span class="ident">to_i32</span>();
-        <span class="self">self</span>
-    }
+    <span class="doccomment">/// Set the fill color of a primitive.
+    </span><span class="kw">pub fn </span>fill(<span class="kw-2">&amp;mut </span><span class="self">self</span>, fill: Color) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.context.fill = fill.to_i32();
+        <span class="self">self
+    </span>}
 
-    <span class="doccomment">/// Set the gamma of the device. `out_color = in_color ** gamma`</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">gamma</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">gamma</span>: <span class="ident">f64</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">gamma</span> <span class="op">=</span> <span class="ident">gamma</span>;
-        <span class="self">self</span>
-    }
+    <span class="doccomment">/// Set the gamma of the device. `out_color = in_color ** gamma`
+    </span><span class="kw">pub fn </span>gamma(<span class="kw-2">&amp;mut </span><span class="self">self</span>, gamma: f64) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.context.gamma = gamma;
+        <span class="self">self
+    </span>}
 
-    <span class="doccomment">/// Set the width of the line in chosen units.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">line_width</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">lwd</span>: <span class="ident">f64</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">lwd</span> <span class="op">=</span> (<span class="ident">lwd</span> <span class="op">*</span> <span class="self">self</span>.<span class="ident">scalar</span>).<span class="ident">max</span>(<span class="number">1.0</span>);
-        <span class="self">self</span>
-    }
+    <span class="doccomment">/// Set the width of the line in chosen units.
+    </span><span class="kw">pub fn </span>line_width(<span class="kw-2">&amp;mut </span><span class="self">self</span>, lwd: f64) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.context.lwd = (lwd * <span class="self">self</span>.scalar).max(<span class="number">1.0</span>);
+        <span class="self">self
+    </span>}
 
-    <span class="doccomment">/// Set the type of the line.</span>
-    <span class="doccomment">/// ```ignore</span>
-    <span class="doccomment">/// Blank    =&gt; &lt;invisible&gt;</span>
-    <span class="doccomment">/// Solid    =&gt; ------</span>
-    <span class="doccomment">/// Dashed   =&gt; - - - -</span>
-    <span class="doccomment">/// Dotted   =&gt; . . . .</span>
-    <span class="doccomment">/// DotDash  =&gt; . - . -</span>
-    <span class="doccomment">/// LongDash =&gt; --  --</span>
-    <span class="doccomment">/// TwoDash  =&gt; . . - -</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">line_type</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">lty</span>: <span class="ident">LineType</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">lty</span> <span class="op">=</span> <span class="ident">lty</span>.<span class="ident">to_i32</span>();
-        <span class="self">self</span>
-    }
+    <span class="doccomment">/// Set the type of the line.
+    /// ```ignore
+    /// Blank    =&gt; &lt;invisible&gt;
+    /// Solid    =&gt; ------
+    /// Dashed   =&gt; - - - -
+    /// Dotted   =&gt; . . . .
+    /// DotDash  =&gt; . - . -
+    /// LongDash =&gt; --  --
+    /// TwoDash  =&gt; . . - -
+    /// ```
+    </span><span class="kw">pub fn </span>line_type(<span class="kw-2">&amp;mut </span><span class="self">self</span>, lty: LineType) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.context.lty = lty.to_i32();
+        <span class="self">self
+    </span>}
 
-    <span class="doccomment">/// Set the line end type.</span>
-    <span class="doccomment">/// ```ignore</span>
-    <span class="doccomment">///   LineEnd::RoundCap</span>
-    <span class="doccomment">///   LineEnd::ButtCap  </span>
-    <span class="doccomment">///   LineEnd::SquareCap</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">line_end</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">lend</span>: <span class="ident">LineEnd</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">lend</span> <span class="op">=</span> <span class="ident">lend</span>.<span class="ident">to_u32</span>();
-        <span class="self">self</span>
-    }
+    <span class="doccomment">/// Set the line end type.
+    /// ```ignore
+    ///   LineEnd::RoundCap
+    ///   LineEnd::ButtCap  
+    ///   LineEnd::SquareCap
+    /// ```
+    </span><span class="kw">pub fn </span>line_end(<span class="kw-2">&amp;mut </span><span class="self">self</span>, lend: LineEnd) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.context.lend = lend.to_u32();
+        <span class="self">self
+    </span>}
 
-    <span class="doccomment">/// Set the line join type.</span>
-    <span class="doccomment">/// ```ignore</span>
-    <span class="doccomment">///   LineJoin::RoundJoin</span>
-    <span class="doccomment">///   LineJoin::MitreJoin</span>
-    <span class="doccomment">///   LineJoin::BevelJoin</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">line_join</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">ljoin</span>: <span class="ident">LineJoin</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">ljoin</span> <span class="op">=</span> <span class="ident">ljoin</span>.<span class="ident">to_u32</span>();
-        <span class="self">self</span>
-    }
+    <span class="doccomment">/// Set the line join type.
+    /// ```ignore
+    ///   LineJoin::RoundJoin
+    ///   LineJoin::MitreJoin
+    ///   LineJoin::BevelJoin
+    /// ```
+    </span><span class="kw">pub fn </span>line_join(<span class="kw-2">&amp;mut </span><span class="self">self</span>, ljoin: LineJoin) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.context.ljoin = ljoin.to_u32();
+        <span class="self">self
+    </span>}
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">point_size</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">ps</span>: <span class="ident">f64</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">ps</span> <span class="op">=</span> <span class="ident">ps</span>;
-        <span class="self">self</span>
-    }
+    <span class="kw">pub fn </span>point_size(<span class="kw-2">&amp;mut </span><span class="self">self</span>, ps: f64) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.context.ps = ps;
+        <span class="self">self
+    </span>}
 
-    <span class="doccomment">/// Set the line miter limit - the point where the line becomes a bevel join.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">line_mitre</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">lmitre</span>: <span class="ident">f64</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">lmitre</span> <span class="op">=</span> <span class="ident">lmitre</span> <span class="op">*</span> <span class="self">self</span>.<span class="ident">scalar</span>;
-        <span class="self">self</span>
-    }
+    <span class="doccomment">/// Set the line miter limit - the point where the line becomes a bevel join.
+    </span><span class="kw">pub fn </span>line_mitre(<span class="kw-2">&amp;mut </span><span class="self">self</span>, lmitre: f64) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.context.lmitre = lmitre * <span class="self">self</span>.scalar;
+        <span class="self">self
+    </span>}
 
-    <span class="doccomment">/// Set the line height for text.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">line_height</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">lineheight</span>: <span class="ident">f64</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">lineheight</span> <span class="op">=</span> <span class="ident">lineheight</span>;
-        <span class="self">self</span>
-    }
+    <span class="doccomment">/// Set the line height for text.
+    </span><span class="kw">pub fn </span>line_height(<span class="kw-2">&amp;mut </span><span class="self">self</span>, lineheight: f64) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.context.lineheight = lineheight;
+        <span class="self">self
+    </span>}
 
-    <span class="comment">// pub fn char_extra_size(&amp;mut self, cex: f64) -&gt; &amp;mut Self {</span>
-    <span class="comment">//     self.context.cex = cex;</span>
-    <span class="comment">//     self</span>
-    <span class="comment">// }</span>
+    <span class="comment">// pub fn char_extra_size(&amp;mut self, cex: f64) -&gt; &amp;mut Self {
+    //     self.context.cex = cex;
+    //     self
+    // }
 
-    <span class="doccomment">/// Set the font face.</span>
-    <span class="doccomment">/// ```ignore</span>
-    <span class="doccomment">///   FontFace::PlainFont</span>
-    <span class="doccomment">///   FontFace::BoldFont</span>
-    <span class="doccomment">///   FontFace::ItalicFont</span>
-    <span class="doccomment">///   FontFace::BoldItalicFont</span>
-    <span class="doccomment">///   FontFace::SymbolFont</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">font_face</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">fontface</span>: <span class="ident">FontFace</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">fontface</span> <span class="op">=</span> <span class="ident">fontface</span>.<span class="ident">to_i32</span>();
-        <span class="self">self</span>
-    }
+    </span><span class="doccomment">/// Set the font face.
+    /// ```ignore
+    ///   FontFace::PlainFont
+    ///   FontFace::BoldFont
+    ///   FontFace::ItalicFont
+    ///   FontFace::BoldItalicFont
+    ///   FontFace::SymbolFont
+    /// ```
+    </span><span class="kw">pub fn </span>font_face(<span class="kw-2">&amp;mut </span><span class="self">self</span>, fontface: FontFace) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.context.fontface = fontface.to_i32();
+        <span class="self">self
+    </span>}
 
-    <span class="comment">//</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">font_family</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">fontfamily</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">maxlen</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">fontfamily</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>;
+    <span class="comment">//
+    </span><span class="kw">pub fn </span>font_family(<span class="kw-2">&amp;mut </span><span class="self">self</span>, fontfamily: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="kw">let </span>maxlen = <span class="self">self</span>.context.fontfamily.len() - <span class="number">1</span>;
 
-        <span class="kw">for</span> <span class="ident">c</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">fontfamily</span>.<span class="ident">iter_mut</span>() {
-            <span class="kw-2">*</span><span class="ident">c</span> <span class="op">=</span> <span class="number">0</span>;
+        <span class="kw">for </span>c <span class="kw">in </span><span class="self">self</span>.context.fontfamily.iter_mut() {
+            <span class="kw-2">*</span>c = <span class="number">0</span>;
         }
 
-        <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">b</span>) <span class="kw">in</span> <span class="ident">fontfamily</span>.<span class="ident">bytes</span>().<span class="ident">enumerate</span>().<span class="ident">take</span>(<span class="ident">maxlen</span>) {
-            <span class="self">self</span>.<span class="ident">context</span>.<span class="ident">fontfamily</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">b</span> <span class="kw">as</span> <span class="ident">std::os::raw::c_char</span>;
+        <span class="kw">for </span>(i, b) <span class="kw">in </span>fontfamily.bytes().enumerate().take(maxlen) {
+            <span class="self">self</span>.context.fontfamily[i] = b <span class="kw">as </span>std::os::raw::c_char;
         }
-        <span class="self">self</span>
+        <span class="self">self
+    </span>}
+
+    <span class="doccomment">/// Set the transform as a 3x2 matrix.
+    </span><span class="kw">pub fn </span>transform(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        xscale: (f64, f64),
+        yscale: (f64, f64),
+        offset: (f64, f64),
+    ) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.xscale = xscale;
+        <span class="self">self</span>.yscale = yscale;
+        <span class="self">self</span>.offset = offset;
+        <span class="self">self
+    </span>}
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>context(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; pGEcontext {
+        <span class="kw">unsafe </span>{ std::mem::transmute(<span class="kw-2">&amp;</span><span class="self">self</span>.context) }
     }
 
-    <span class="doccomment">/// Set the transform as a 3x2 matrix.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">transform</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="ident">xscale</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>),
-        <span class="ident">yscale</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>),
-        <span class="ident">offset</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>),
-    ) -&gt; <span class="kw-2">&amp;mut</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">xscale</span> <span class="op">=</span> <span class="ident">xscale</span>;
-        <span class="self">self</span>.<span class="ident">yscale</span> <span class="op">=</span> <span class="ident">yscale</span>;
-        <span class="self">self</span>.<span class="ident">offset</span> <span class="op">=</span> <span class="ident">offset</span>;
-        <span class="self">self</span>
-    }
-
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">context</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">pGEcontext</span> {
-        <span class="kw">unsafe</span> { <span class="ident">std::mem::transmute</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">context</span>) }
-    }
-
-    <span class="comment">// Affine transform.</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">t</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">xy</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>)) -&gt; (<span class="ident">f64</span>, <span class="ident">f64</span>) {
+    <span class="comment">// Affine transform.
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>t(<span class="kw-2">&amp;</span><span class="self">self</span>, xy: (f64, f64)) -&gt; (f64, f64) {
         (
-            <span class="self">self</span>.<span class="ident">offset</span>.<span class="number">0</span> <span class="op">+</span> <span class="ident">xy</span>.<span class="number">0</span> <span class="op">*</span> <span class="self">self</span>.<span class="ident">xscale</span>.<span class="number">0</span> <span class="op">+</span> <span class="ident">xy</span>.<span class="number">1</span> <span class="op">*</span> <span class="self">self</span>.<span class="ident">yscale</span>.<span class="number">0</span>,
-            <span class="self">self</span>.<span class="ident">offset</span>.<span class="number">1</span> <span class="op">+</span> <span class="ident">xy</span>.<span class="number">0</span> <span class="op">*</span> <span class="self">self</span>.<span class="ident">xscale</span>.<span class="number">1</span> <span class="op">+</span> <span class="ident">xy</span>.<span class="number">1</span> <span class="op">*</span> <span class="self">self</span>.<span class="ident">yscale</span>.<span class="number">1</span>,
+            <span class="self">self</span>.offset.<span class="number">0 </span>+ xy.<span class="number">0 </span>* <span class="self">self</span>.xscale.<span class="number">0 </span>+ xy.<span class="number">1 </span>* <span class="self">self</span>.yscale.<span class="number">0</span>,
+            <span class="self">self</span>.offset.<span class="number">1 </span>+ xy.<span class="number">0 </span>* <span class="self">self</span>.xscale.<span class="number">1 </span>+ xy.<span class="number">1 </span>* <span class="self">self</span>.yscale.<span class="number">1</span>,
         )
     }
 
-    <span class="comment">// Affine relative transform (width, height).</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">trel</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">wh</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>)) -&gt; (<span class="ident">f64</span>, <span class="ident">f64</span>) {
+    <span class="comment">// Affine relative transform (width, height).
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>trel(<span class="kw-2">&amp;</span><span class="self">self</span>, wh: (f64, f64)) -&gt; (f64, f64) {
         (
-            <span class="ident">wh</span>.<span class="number">0</span> <span class="op">*</span> <span class="self">self</span>.<span class="ident">xscale</span>.<span class="number">0</span> <span class="op">+</span> <span class="ident">wh</span>.<span class="number">1</span> <span class="op">*</span> <span class="self">self</span>.<span class="ident">yscale</span>.<span class="number">0</span>,
-            <span class="ident">wh</span>.<span class="number">0</span> <span class="op">*</span> <span class="self">self</span>.<span class="ident">xscale</span>.<span class="number">1</span> <span class="op">+</span> <span class="ident">wh</span>.<span class="number">1</span> <span class="op">*</span> <span class="self">self</span>.<span class="ident">yscale</span>.<span class="number">1</span>,
+            wh.<span class="number">0 </span>* <span class="self">self</span>.xscale.<span class="number">0 </span>+ wh.<span class="number">1 </span>* <span class="self">self</span>.yscale.<span class="number">0</span>,
+            wh.<span class="number">0 </span>* <span class="self">self</span>.xscale.<span class="number">1 </span>+ wh.<span class="number">1 </span>* <span class="self">self</span>.yscale.<span class="number">1</span>,
         )
     }
 
-    <span class="comment">// Scalar transform (eg. radius etc).</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">ts</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">value</span>: <span class="ident">f64</span>) -&gt; <span class="ident">f64</span> {
-        <span class="ident">value</span> <span class="op">*</span> <span class="self">self</span>.<span class="ident">scalar</span>
+    <span class="comment">// Scalar transform (eg. radius etc).
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>ts(<span class="kw-2">&amp;</span><span class="self">self</span>, value: f64) -&gt; f64 {
+        value * <span class="self">self</span>.scalar
     }
 
-    <span class="comment">// Inverse scalar transform (eg. text width etc).</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">its</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">value</span>: <span class="ident">f64</span>) -&gt; <span class="ident">f64</span> {
-        <span class="ident">value</span> <span class="op">/</span> <span class="self">self</span>.<span class="ident">scalar</span>
+    <span class="comment">// Inverse scalar transform (eg. text width etc).
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>its(<span class="kw-2">&amp;</span><span class="self">self</span>, value: f64) -&gt; f64 {
+        value / <span class="self">self</span>.scalar
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">tmetric</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tm</span>: <span class="ident">TextMetric</span>) -&gt; <span class="ident">TextMetric</span> {
-        <span class="ident">TextMetric</span> {
-            <span class="ident">ascent</span>: <span class="ident">tm</span>.<span class="ident">ascent</span> <span class="op">/</span> <span class="self">self</span>.<span class="ident">scalar</span>,
-            <span class="ident">descent</span>: <span class="ident">tm</span>.<span class="ident">descent</span> <span class="op">/</span> <span class="self">self</span>.<span class="ident">scalar</span>,
-            <span class="ident">width</span>: <span class="ident">tm</span>.<span class="ident">width</span> <span class="op">/</span> <span class="self">self</span>.<span class="ident">scalar</span>,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>tmetric(<span class="kw-2">&amp;</span><span class="self">self</span>, tm: TextMetric) -&gt; TextMetric {
+        TextMetric {
+            ascent: tm.ascent / <span class="self">self</span>.scalar,
+            descent: tm.descent / <span class="self">self</span>.scalar,
+            width: tm.width / <span class="self">self</span>.scalar,
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
-<span class="kw">impl</span> <span class="ident">Device</span> {
-    <span class="doccomment">/// Get the current device.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">current</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Device</span><span class="op">&gt;</span> {
-        <span class="comment">// At present we can&#39;t trap an R error from a function</span>
-        <span class="comment">// that does not return a SEXP.</span>
-        <span class="kw">unsafe</span> {
-            <span class="prelude-val">Ok</span>(<span class="ident">Device</span> {
-                <span class="ident">inner</span>: <span class="ident">GEcurrentDevice</span>(),
+<span class="attribute">#[allow(non_snake_case)]
+</span><span class="kw">impl </span>Device {
+    <span class="doccomment">/// Get the current device.
+    </span><span class="kw">pub fn </span>current() -&gt; <span class="prelude-ty">Result</span>&lt;Device&gt; {
+        <span class="comment">// At present we can&#39;t trap an R error from a function
+        // that does not return a SEXP.
+        </span><span class="kw">unsafe </span>{
+            <span class="prelude-val">Ok</span>(Device {
+                inner: GEcurrentDevice(),
             })
         }
     }
 
-    <span class="doccomment">/// Enable device rendering.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mode_on</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">if</span> <span class="ident">Rf_NoDevices</span>() <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-                <span class="prelude-val">Err</span>(<span class="ident">Error::NoGraphicsDevices</span>(<span class="macro">r!</span>(())))
-            } <span class="kw">else</span> {
-                <span class="ident">GEMode</span>(<span class="number">1</span>, <span class="self">self</span>.<span class="ident">inner</span>());
+    <span class="doccomment">/// Enable device rendering.
+    </span><span class="kw">pub fn </span>mode_on(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="kw">unsafe </span>{
+            <span class="kw">if </span>Rf_NoDevices() != <span class="number">0 </span>{
+                <span class="prelude-val">Err</span>(Error::NoGraphicsDevices(<span class="macro">r!</span>(())))
+            } <span class="kw">else </span>{
+                GEMode(<span class="number">1</span>, <span class="self">self</span>.inner());
                 <span class="prelude-val">Ok</span>(())
             }
         }
     }
 
-    <span class="doccomment">/// Disable device rendering and flush.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mode_off</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">if</span> <span class="ident">Rf_NoDevices</span>() <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-                <span class="prelude-val">Err</span>(<span class="ident">Error::NoGraphicsDevices</span>(<span class="macro">r!</span>(())))
-            } <span class="kw">else</span> {
-                <span class="ident">GEMode</span>(<span class="number">0</span>, <span class="self">self</span>.<span class="ident">inner</span>());
+    <span class="doccomment">/// Disable device rendering and flush.
+    </span><span class="kw">pub fn </span>mode_off(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="kw">unsafe </span>{
+            <span class="kw">if </span>Rf_NoDevices() != <span class="number">0 </span>{
+                <span class="prelude-val">Err</span>(Error::NoGraphicsDevices(<span class="macro">r!</span>(())))
+            } <span class="kw">else </span>{
+                GEMode(<span class="number">0</span>, <span class="self">self</span>.inner());
                 <span class="prelude-val">Ok</span>(())
             }
         }
     }
 
-    <span class="doccomment">/// Get the device number for this device.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">device_number</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">i32</span> {
-        <span class="kw">unsafe</span> { <span class="ident">GEdeviceNumber</span>(<span class="self">self</span>.<span class="ident">inner</span>()) }
+    <span class="doccomment">/// Get the device number for this device.
+    </span><span class="kw">pub fn </span>device_number(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32 {
+        <span class="kw">unsafe </span>{ GEdeviceNumber(<span class="self">self</span>.inner()) }
     }
 
-    <span class="doccomment">/// Get a device by number.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_device</span>(<span class="ident">number</span>: <span class="ident">i32</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Device</span><span class="op">&gt;</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">if</span> <span class="ident">number</span> <span class="op">&lt;</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">number</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">Rf_NumDevices</span>() {
-                <span class="prelude-val">Err</span>(<span class="ident">Error::NoGraphicsDevices</span>(<span class="macro">r!</span>(())))
-            } <span class="kw">else</span> {
-                <span class="prelude-val">Ok</span>(<span class="ident">Device</span> {
-                    <span class="ident">inner</span>: <span class="ident">GEgetDevice</span>(<span class="ident">number</span>),
+    <span class="doccomment">/// Get a device by number.
+    </span><span class="kw">pub fn </span>get_device(number: i32) -&gt; <span class="prelude-ty">Result</span>&lt;Device&gt; {
+        <span class="kw">unsafe </span>{
+            <span class="kw">if </span>number &lt; <span class="number">0 </span>|| number &gt;= Rf_NumDevices() {
+                <span class="prelude-val">Err</span>(Error::NoGraphicsDevices(<span class="macro">r!</span>(())))
+            } <span class="kw">else </span>{
+                <span class="prelude-val">Ok</span>(Device {
+                    inner: GEgetDevice(number),
                 })
             }
         }
     }
 
-    <span class="doccomment">/// Convert device coordinates into a specified unit.</span>
-    <span class="doccomment">/// This is usually done by the API.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_device_coords</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">value</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>), <span class="ident">from</span>: <span class="ident">Unit</span>) -&gt; (<span class="ident">f64</span>, <span class="ident">f64</span>) {
-        <span class="kw">let</span> <span class="ident">from</span> <span class="op">=</span> <span class="ident">unit_to_ge</span>(<span class="ident">from</span>);
-        <span class="kw">unsafe</span> {
+    <span class="doccomment">/// Convert device coordinates into a specified unit.
+    /// This is usually done by the API.
+    </span><span class="kw">pub fn </span>from_device_coords(<span class="kw-2">&amp;</span><span class="self">self</span>, value: (f64, f64), from: Unit) -&gt; (f64, f64) {
+        <span class="kw">let </span>from = unit_to_ge(from);
+        <span class="kw">unsafe </span>{
             (
-                <span class="ident">GEfromDeviceX</span>(<span class="ident">value</span>.<span class="number">0</span>, <span class="ident">from</span>, <span class="self">self</span>.<span class="ident">inner</span>()),
-                <span class="ident">GEfromDeviceY</span>(<span class="ident">value</span>.<span class="number">1</span>, <span class="ident">from</span>, <span class="self">self</span>.<span class="ident">inner</span>()),
+                GEfromDeviceX(value.<span class="number">0</span>, from, <span class="self">self</span>.inner()),
+                GEfromDeviceY(value.<span class="number">1</span>, from, <span class="self">self</span>.inner()),
             )
         }
     }
 
-    <span class="doccomment">/// Convert a specified unit coordinates into device coordinates.</span>
-    <span class="doccomment">/// This is usually done by the API.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_device_coords</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">value</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>), <span class="ident">to</span>: <span class="ident">Unit</span>) -&gt; (<span class="ident">f64</span>, <span class="ident">f64</span>) {
-        <span class="kw">if</span> <span class="ident">to</span> <span class="op">==</span> <span class="ident">Unit::Device</span> {
-            <span class="ident">value</span>
-        } <span class="kw">else</span> {
-            <span class="kw">let</span> <span class="ident">to</span> <span class="op">=</span> <span class="ident">unit_to_ge</span>(<span class="ident">to</span>);
-            <span class="kw">unsafe</span> {
+    <span class="doccomment">/// Convert a specified unit coordinates into device coordinates.
+    /// This is usually done by the API.
+    </span><span class="kw">pub fn </span>to_device_coords(<span class="kw-2">&amp;</span><span class="self">self</span>, value: (f64, f64), to: Unit) -&gt; (f64, f64) {
+        <span class="kw">if </span>to == Unit::Device {
+            value
+        } <span class="kw">else </span>{
+            <span class="kw">let </span>to = unit_to_ge(to);
+            <span class="kw">unsafe </span>{
                 (
-                    <span class="ident">GEtoDeviceX</span>(<span class="ident">value</span>.<span class="number">0</span>, <span class="ident">to</span>, <span class="self">self</span>.<span class="ident">inner</span>()),
-                    <span class="ident">GEtoDeviceY</span>(<span class="ident">value</span>.<span class="number">1</span>, <span class="ident">to</span>, <span class="self">self</span>.<span class="ident">inner</span>()),
+                    GEtoDeviceX(value.<span class="number">0</span>, to, <span class="self">self</span>.inner()),
+                    GEtoDeviceY(value.<span class="number">1</span>, to, <span class="self">self</span>.inner()),
                 )
             }
         }
     }
 
-    <span class="doccomment">/// Convert device width/height coordinates into a specified unit.</span>
-    <span class="doccomment">/// This is usually done by the API.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_device_wh</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">value</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>), <span class="ident">from</span>: <span class="ident">Unit</span>) -&gt; (<span class="ident">f64</span>, <span class="ident">f64</span>) {
-        <span class="kw">let</span> <span class="ident">from</span> <span class="op">=</span> <span class="ident">unit_to_ge</span>(<span class="ident">from</span>);
-        <span class="kw">unsafe</span> {
+    <span class="doccomment">/// Convert device width/height coordinates into a specified unit.
+    /// This is usually done by the API.
+    </span><span class="kw">pub fn </span>from_device_wh(<span class="kw-2">&amp;</span><span class="self">self</span>, value: (f64, f64), from: Unit) -&gt; (f64, f64) {
+        <span class="kw">let </span>from = unit_to_ge(from);
+        <span class="kw">unsafe </span>{
             (
-                <span class="ident">GEfromDeviceWidth</span>(<span class="ident">value</span>.<span class="number">0</span>, <span class="ident">from</span>, <span class="self">self</span>.<span class="ident">inner</span>()),
-                <span class="ident">GEfromDeviceHeight</span>(<span class="ident">value</span>.<span class="number">1</span>, <span class="ident">from</span>, <span class="self">self</span>.<span class="ident">inner</span>()),
+                GEfromDeviceWidth(value.<span class="number">0</span>, from, <span class="self">self</span>.inner()),
+                GEfromDeviceHeight(value.<span class="number">1</span>, from, <span class="self">self</span>.inner()),
             )
         }
     }
 
-    <span class="doccomment">/// Convert a specified unit width/height coordinates into device coordinates.</span>
-    <span class="doccomment">/// This is usually done by the API.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_device_wh</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">value</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>), <span class="ident">to</span>: <span class="ident">Unit</span>) -&gt; (<span class="ident">f64</span>, <span class="ident">f64</span>) {
-        <span class="kw">let</span> <span class="ident">to</span> <span class="op">=</span> <span class="ident">unit_to_ge</span>(<span class="ident">to</span>);
-        <span class="kw">unsafe</span> {
+    <span class="doccomment">/// Convert a specified unit width/height coordinates into device coordinates.
+    /// This is usually done by the API.
+    </span><span class="kw">pub fn </span>to_device_wh(<span class="kw-2">&amp;</span><span class="self">self</span>, value: (f64, f64), to: Unit) -&gt; (f64, f64) {
+        <span class="kw">let </span>to = unit_to_ge(to);
+        <span class="kw">unsafe </span>{
             (
-                <span class="ident">GEtoDeviceWidth</span>(<span class="ident">value</span>.<span class="number">0</span>, <span class="ident">to</span>, <span class="self">self</span>.<span class="ident">inner</span>()),
-                <span class="ident">GEtoDeviceHeight</span>(<span class="ident">value</span>.<span class="number">1</span>, <span class="ident">to</span>, <span class="self">self</span>.<span class="ident">inner</span>()),
+                GEtoDeviceWidth(value.<span class="number">0</span>, to, <span class="self">self</span>.inner()),
+                GEtoDeviceHeight(value.<span class="number">1</span>, to, <span class="self">self</span>.inner()),
             )
         }
     }
 
-    <span class="doccomment">/// Start a new page. The page color can be set in advance.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_page</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">gc</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>) {
-        <span class="kw">unsafe</span> { <span class="ident">GENewPage</span>(<span class="ident">gc</span>.<span class="ident">context</span>(), <span class="self">self</span>.<span class="ident">inner</span>()) }
+    <span class="doccomment">/// Start a new page. The page color can be set in advance.
+    </span><span class="kw">pub fn </span>new_page(<span class="kw-2">&amp;</span><span class="self">self</span>, gc: <span class="kw-2">&amp;</span>Context) {
+        <span class="kw">unsafe </span>{ GENewPage(gc.context(), <span class="self">self</span>.inner()) }
     }
 
-    <span class="doccomment">/// Change the clip rectangle.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">clip</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">from</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>), <span class="ident">to</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>), <span class="ident">gc</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>) {
-        <span class="kw">let</span> <span class="ident">from</span> <span class="op">=</span> <span class="ident">gc</span>.<span class="ident">t</span>(<span class="ident">from</span>);
-        <span class="kw">let</span> <span class="ident">to</span> <span class="op">=</span> <span class="ident">gc</span>.<span class="ident">t</span>(<span class="ident">to</span>);
-        <span class="kw">unsafe</span> { <span class="ident">GESetClip</span>(<span class="ident">from</span>.<span class="number">0</span>, <span class="ident">from</span>.<span class="number">1</span>, <span class="ident">to</span>.<span class="number">0</span>, <span class="ident">to</span>.<span class="number">1</span>, <span class="self">self</span>.<span class="ident">inner</span>()) }
+    <span class="doccomment">/// Change the clip rectangle.
+    </span><span class="kw">pub fn </span>clip(<span class="kw-2">&amp;</span><span class="self">self</span>, from: (f64, f64), to: (f64, f64), gc: <span class="kw-2">&amp;</span>Context) {
+        <span class="kw">let </span>from = gc.t(from);
+        <span class="kw">let </span>to = gc.t(to);
+        <span class="kw">unsafe </span>{ GESetClip(from.<span class="number">0</span>, from.<span class="number">1</span>, to.<span class="number">0</span>, to.<span class="number">1</span>, <span class="self">self</span>.inner()) }
     }
 
-    <span class="doccomment">/// Draw a stroked line. gc.color() is the stroke color.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">line</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">from</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>), <span class="ident">to</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>), <span class="ident">gc</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>) {
-        <span class="kw">let</span> <span class="ident">from</span> <span class="op">=</span> <span class="ident">gc</span>.<span class="ident">t</span>(<span class="ident">from</span>);
-        <span class="kw">let</span> <span class="ident">to</span> <span class="op">=</span> <span class="ident">gc</span>.<span class="ident">t</span>(<span class="ident">to</span>);
-        <span class="kw">unsafe</span> { <span class="ident">GELine</span>(<span class="ident">from</span>.<span class="number">0</span>, <span class="ident">from</span>.<span class="number">1</span>, <span class="ident">to</span>.<span class="number">0</span>, <span class="ident">to</span>.<span class="number">1</span>, <span class="ident">gc</span>.<span class="ident">context</span>(), <span class="self">self</span>.<span class="ident">inner</span>()) }
+    <span class="doccomment">/// Draw a stroked line. gc.color() is the stroke color.
+    </span><span class="kw">pub fn </span>line(<span class="kw-2">&amp;</span><span class="self">self</span>, from: (f64, f64), to: (f64, f64), gc: <span class="kw-2">&amp;</span>Context) {
+        <span class="kw">let </span>from = gc.t(from);
+        <span class="kw">let </span>to = gc.t(to);
+        <span class="kw">unsafe </span>{ GELine(from.<span class="number">0</span>, from.<span class="number">1</span>, to.<span class="number">0</span>, to.<span class="number">1</span>, gc.context(), <span class="self">self</span>.inner()) }
     }
 
-    <span class="doccomment">/// Draw a stroked/filled polyline. gc.color() is the stroke color.</span>
-    <span class="doccomment">/// The input is anything yielding (x,y) coordinate pairs.</span>
-    <span class="doccomment">/// Polylines are not closed.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">polyline</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="ident">f64</span>, <span class="ident">f64</span>)<span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">coords</span>: <span class="ident">T</span>, <span class="ident">gc</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>) {
-        <span class="kw">let</span> (<span class="kw-2">mut</span> <span class="ident">x</span>, <span class="kw-2">mut</span> <span class="ident">y</span>): (<span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span>) <span class="op">=</span> <span class="ident">coords</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">xy</span><span class="op">|</span> <span class="ident">gc</span>.<span class="ident">t</span>(<span class="ident">xy</span>)).<span class="ident">unzip</span>();
-        <span class="kw">let</span> <span class="ident">xptr</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">as_mut_slice</span>().<span class="ident">as_mut_ptr</span>();
-        <span class="kw">let</span> <span class="ident">yptr</span> <span class="op">=</span> <span class="ident">y</span>.<span class="ident">as_mut_slice</span>().<span class="ident">as_mut_ptr</span>();
-        <span class="kw">unsafe</span> {
-            <span class="ident">GEPolyline</span>(
-                <span class="ident">x</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">std::os::raw::c_int</span>,
-                <span class="ident">xptr</span>,
-                <span class="ident">yptr</span>,
-                <span class="ident">gc</span>.<span class="ident">context</span>(),
-                <span class="self">self</span>.<span class="ident">inner</span>(),
+    <span class="doccomment">/// Draw a stroked/filled polyline. gc.color() is the stroke color.
+    /// The input is anything yielding (x,y) coordinate pairs.
+    /// Polylines are not closed.
+    </span><span class="kw">pub fn </span>polyline&lt;T: IntoIterator&lt;Item = (f64, f64)&gt;&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, coords: T, gc: <span class="kw-2">&amp;</span>Context) {
+        <span class="kw">let </span>(<span class="kw-2">mut </span>x, <span class="kw-2">mut </span>y): (Vec&lt;<span class="kw">_</span>&gt;, Vec&lt;<span class="kw">_</span>&gt;) = coords.into_iter().map(|xy| gc.t(xy)).unzip();
+        <span class="kw">let </span>xptr = x.as_mut_slice().as_mut_ptr();
+        <span class="kw">let </span>yptr = y.as_mut_slice().as_mut_ptr();
+        <span class="kw">unsafe </span>{
+            GEPolyline(
+                x.len() <span class="kw">as </span>std::os::raw::c_int,
+                xptr,
+                yptr,
+                gc.context(),
+                <span class="self">self</span>.inner(),
             )
         }
     }
 
-    <span class="doccomment">/// Draw a stroked/filled polygon. gc.color() is the stroke color.</span>
-    <span class="doccomment">/// The input is anything yielding (x,y) coordinate pairs.</span>
-    <span class="doccomment">/// Polygons are closed.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">polygon</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="ident">f64</span>, <span class="ident">f64</span>)<span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">coords</span>: <span class="ident">T</span>, <span class="ident">gc</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>) {
-        <span class="kw">let</span> (<span class="kw-2">mut</span> <span class="ident">x</span>, <span class="kw-2">mut</span> <span class="ident">y</span>): (<span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span>) <span class="op">=</span> <span class="ident">coords</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">xy</span><span class="op">|</span> <span class="ident">gc</span>.<span class="ident">t</span>(<span class="ident">xy</span>)).<span class="ident">unzip</span>();
-        <span class="kw">let</span> <span class="ident">xptr</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">as_mut_slice</span>().<span class="ident">as_mut_ptr</span>();
-        <span class="kw">let</span> <span class="ident">yptr</span> <span class="op">=</span> <span class="ident">y</span>.<span class="ident">as_mut_slice</span>().<span class="ident">as_mut_ptr</span>();
-        <span class="kw">unsafe</span> {
-            <span class="ident">GEPolygon</span>(
-                <span class="ident">x</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">std::os::raw::c_int</span>,
-                <span class="ident">xptr</span>,
-                <span class="ident">yptr</span>,
-                <span class="ident">gc</span>.<span class="ident">context</span>(),
-                <span class="self">self</span>.<span class="ident">inner</span>(),
+    <span class="doccomment">/// Draw a stroked/filled polygon. gc.color() is the stroke color.
+    /// The input is anything yielding (x,y) coordinate pairs.
+    /// Polygons are closed.
+    </span><span class="kw">pub fn </span>polygon&lt;T: IntoIterator&lt;Item = (f64, f64)&gt;&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, coords: T, gc: <span class="kw-2">&amp;</span>Context) {
+        <span class="kw">let </span>(<span class="kw-2">mut </span>x, <span class="kw-2">mut </span>y): (Vec&lt;<span class="kw">_</span>&gt;, Vec&lt;<span class="kw">_</span>&gt;) = coords.into_iter().map(|xy| gc.t(xy)).unzip();
+        <span class="kw">let </span>xptr = x.as_mut_slice().as_mut_ptr();
+        <span class="kw">let </span>yptr = y.as_mut_slice().as_mut_ptr();
+        <span class="kw">unsafe </span>{
+            GEPolygon(
+                x.len() <span class="kw">as </span>std::os::raw::c_int,
+                xptr,
+                yptr,
+                gc.context(),
+                <span class="self">self</span>.inner(),
             )
         }
     }
 
-    <span class="comment">// /// Return a list of (x, y) points generated from a spline.</span>
-    <span class="comment">// /// The iterator returns ((x, y), s) where s is -1 to 1.</span>
-    <span class="comment">// pub fn xspline&lt;T: Iterator&lt;Item = ((f64, f64), f64)&gt; + Clone&gt;(</span>
-    <span class="comment">//     &amp;self,</span>
-    <span class="comment">//     coords: T,</span>
-    <span class="comment">//     open: bool,</span>
-    <span class="comment">//     rep_ends: bool,</span>
-    <span class="comment">//     draw: bool,</span>
-    <span class="comment">//     gc: &amp;Context,</span>
-    <span class="comment">// ) -&gt; Robj {</span>
-    <span class="comment">//     let (mut x, mut y): (Vec&lt;_&gt;, Vec&lt;_&gt;) = coords</span>
-    <span class="comment">//         .clone()</span>
-    <span class="comment">//         .map(|(xy, _s)| gc.t(xy))</span>
-    <span class="comment">//         .unzip();</span>
-    <span class="comment">//     let mut s: Vec&lt;_&gt; = coords.map(|(_xy, s)| s).collect();</span>
-    <span class="comment">//     let xptr = x.as_mut_slice().as_mut_ptr();</span>
-    <span class="comment">//     let yptr = y.as_mut_slice().as_mut_ptr();</span>
-    <span class="comment">//     let sptr = s.as_mut_slice().as_mut_ptr();</span>
-    <span class="comment">//     unsafe {</span>
-    <span class="comment">//         new_owned(GEXspline(</span>
-    <span class="comment">//             x.len() as std::os::raw::c_int,</span>
-    <span class="comment">//             xptr,</span>
-    <span class="comment">//             yptr,</span>
-    <span class="comment">//             sptr,</span>
-    <span class="comment">//             if open { 1 } else { 0 },</span>
-    <span class="comment">//             if rep_ends { 1 } else { 0 },</span>
-    <span class="comment">//             if draw { 1 } else { 0 },</span>
-    <span class="comment">//             gc.context(),</span>
-    <span class="comment">//             self.inner(),</span>
-    <span class="comment">//         ))</span>
-    <span class="comment">//     }</span>
-    <span class="comment">// }</span>
+    <span class="comment">// /// Return a list of (x, y) points generated from a spline.
+    // /// The iterator returns ((x, y), s) where s is -1 to 1.
+    // pub fn xspline&lt;T: Iterator&lt;Item = ((f64, f64), f64)&gt; + Clone&gt;(
+    //     &amp;self,
+    //     coords: T,
+    //     open: bool,
+    //     rep_ends: bool,
+    //     draw: bool,
+    //     gc: &amp;Context,
+    // ) -&gt; Robj {
+    //     let (mut x, mut y): (Vec&lt;_&gt;, Vec&lt;_&gt;) = coords
+    //         .clone()
+    //         .map(|(xy, _s)| gc.t(xy))
+    //         .unzip();
+    //     let mut s: Vec&lt;_&gt; = coords.map(|(_xy, s)| s).collect();
+    //     let xptr = x.as_mut_slice().as_mut_ptr();
+    //     let yptr = y.as_mut_slice().as_mut_ptr();
+    //     let sptr = s.as_mut_slice().as_mut_ptr();
+    //     unsafe {
+    //         new_owned(GEXspline(
+    //             x.len() as std::os::raw::c_int,
+    //             xptr,
+    //             yptr,
+    //             sptr,
+    //             if open { 1 } else { 0 },
+    //             if rep_ends { 1 } else { 0 },
+    //             if draw { 1 } else { 0 },
+    //             gc.context(),
+    //             self.inner(),
+    //         ))
+    //     }
+    // }
 
-    <span class="doccomment">/// Draw a stroked/filled circle.</span>
-    <span class="doccomment">/// gc.color() is the stroke color.</span>
-    <span class="doccomment">/// gc.fill() is the fill color.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">circle</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">center</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>), <span class="ident">radius</span>: <span class="ident">f64</span>, <span class="ident">gc</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>) {
-        <span class="kw">let</span> <span class="ident">center</span> <span class="op">=</span> <span class="ident">gc</span>.<span class="ident">t</span>(<span class="ident">center</span>);
-        <span class="kw">let</span> <span class="ident">radius</span> <span class="op">=</span> <span class="ident">gc</span>.<span class="ident">ts</span>(<span class="ident">radius</span>);
-        <span class="kw">unsafe</span> { <span class="ident">GECircle</span>(<span class="ident">center</span>.<span class="number">0</span>, <span class="ident">center</span>.<span class="number">1</span>, <span class="ident">radius</span>, <span class="ident">gc</span>.<span class="ident">context</span>(), <span class="self">self</span>.<span class="ident">inner</span>()) }
+    </span><span class="doccomment">/// Draw a stroked/filled circle.
+    /// gc.color() is the stroke color.
+    /// gc.fill() is the fill color.
+    </span><span class="kw">pub fn </span>circle(<span class="kw-2">&amp;</span><span class="self">self</span>, center: (f64, f64), radius: f64, gc: <span class="kw-2">&amp;</span>Context) {
+        <span class="kw">let </span>center = gc.t(center);
+        <span class="kw">let </span>radius = gc.ts(radius);
+        <span class="kw">unsafe </span>{ GECircle(center.<span class="number">0</span>, center.<span class="number">1</span>, radius, gc.context(), <span class="self">self</span>.inner()) }
     }
 
-    <span class="doccomment">/// Draw a stroked/filled axis-aligned rectangle.</span>
-    <span class="doccomment">/// gc.color() is the stroke color.</span>
-    <span class="doccomment">/// gc.fill() is the fill color.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rect</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">from</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>), <span class="ident">to</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>), <span class="ident">gc</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>) {
-        <span class="kw">let</span> <span class="ident">from</span> <span class="op">=</span> <span class="ident">gc</span>.<span class="ident">t</span>(<span class="ident">from</span>);
-        <span class="kw">let</span> <span class="ident">to</span> <span class="op">=</span> <span class="ident">gc</span>.<span class="ident">t</span>(<span class="ident">to</span>);
-        <span class="kw">unsafe</span> { <span class="ident">GERect</span>(<span class="ident">from</span>.<span class="number">0</span>, <span class="ident">from</span>.<span class="number">1</span>, <span class="ident">to</span>.<span class="number">0</span>, <span class="ident">to</span>.<span class="number">1</span>, <span class="ident">gc</span>.<span class="ident">context</span>(), <span class="self">self</span>.<span class="ident">inner</span>()) }
+    <span class="doccomment">/// Draw a stroked/filled axis-aligned rectangle.
+    /// gc.color() is the stroke color.
+    /// gc.fill() is the fill color.
+    </span><span class="kw">pub fn </span>rect(<span class="kw-2">&amp;</span><span class="self">self</span>, from: (f64, f64), to: (f64, f64), gc: <span class="kw-2">&amp;</span>Context) {
+        <span class="kw">let </span>from = gc.t(from);
+        <span class="kw">let </span>to = gc.t(to);
+        <span class="kw">unsafe </span>{ GERect(from.<span class="number">0</span>, from.<span class="number">1</span>, to.<span class="number">0</span>, to.<span class="number">1</span>, gc.context(), <span class="self">self</span>.inner()) }
     }
 
-    <span class="doccomment">/// Draw a path with multiple segments.</span>
-    <span class="doccomment">/// gc.color() is the stroke color.</span>
-    <span class="doccomment">/// gc.fill() is the fill color.</span>
-    <span class="doccomment">/// The input is an interator of iterators yielding (x,y) pairs.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">path</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw">impl</span> <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="ident">f64</span>, <span class="ident">f64</span>)<span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>(
+    <span class="doccomment">/// Draw a path with multiple segments.
+    /// gc.color() is the stroke color.
+    /// gc.fill() is the fill color.
+    /// The input is an interator of iterators yielding (x,y) pairs.
+    </span><span class="kw">pub fn </span>path&lt;T: IntoIterator&lt;Item = <span class="kw">impl </span>IntoIterator&lt;Item = (f64, f64)&gt;&gt;&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">coords</span>: <span class="ident">T</span>,
-        <span class="ident">winding</span>: <span class="ident">bool</span>,
-        <span class="ident">gc</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>,
+        coords: T,
+        winding: bool,
+        gc: <span class="kw-2">&amp;</span>Context,
     ) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">y</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">nper</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">std::os::raw::c_int</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-        <span class="kw">let</span> <span class="ident">coords</span> <span class="op">=</span> <span class="ident">coords</span>.<span class="ident">into_iter</span>();
-        <span class="kw">for</span> <span class="ident">segment</span> <span class="kw">in</span> <span class="ident">coords</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">n</span> <span class="op">=</span> <span class="number">0</span>;
-            <span class="kw">for</span> <span class="ident">xy</span> <span class="kw">in</span> <span class="ident">segment</span> {
-                <span class="kw">let</span> <span class="ident">xy</span> <span class="op">=</span> <span class="ident">gc</span>.<span class="ident">t</span>(<span class="ident">xy</span>);
-                <span class="ident">x</span>.<span class="ident">push</span>(<span class="ident">xy</span>.<span class="number">0</span>);
-                <span class="ident">y</span>.<span class="ident">push</span>(<span class="ident">xy</span>.<span class="number">1</span>);
-                <span class="ident">n</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>x = Vec::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>y = Vec::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>nper: Vec&lt;std::os::raw::c_int&gt; = Vec::new();
+        <span class="kw">let </span>coords = coords.into_iter();
+        <span class="kw">for </span>segment <span class="kw">in </span>coords {
+            <span class="kw">let </span><span class="kw-2">mut </span>n = <span class="number">0</span>;
+            <span class="kw">for </span>xy <span class="kw">in </span>segment {
+                <span class="kw">let </span>xy = gc.t(xy);
+                x.push(xy.<span class="number">0</span>);
+                y.push(xy.<span class="number">1</span>);
+                n += <span class="number">1</span>;
             }
-            <span class="ident">nper</span>.<span class="ident">push</span>(<span class="ident">n</span>);
+            nper.push(n);
         }
 
-        <span class="kw">let</span> <span class="ident">xptr</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">as_mut_slice</span>().<span class="ident">as_mut_ptr</span>();
-        <span class="kw">let</span> <span class="ident">yptr</span> <span class="op">=</span> <span class="ident">y</span>.<span class="ident">as_mut_slice</span>().<span class="ident">as_mut_ptr</span>();
-        <span class="kw">let</span> <span class="ident">nperptr</span> <span class="op">=</span> <span class="ident">nper</span>.<span class="ident">as_mut_slice</span>().<span class="ident">as_mut_ptr</span>();
-        <span class="kw">unsafe</span> {
-            <span class="ident">GEPath</span>(
-                <span class="ident">xptr</span>,
-                <span class="ident">yptr</span>,
-                <span class="ident">nper</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">std::os::raw::c_int</span>,
-                <span class="ident">nperptr</span>,
-                <span class="kw">if</span> <span class="ident">winding</span> { <span class="number">1</span> } <span class="kw">else</span> { <span class="number">0</span> },
-                <span class="ident">gc</span>.<span class="ident">context</span>(),
-                <span class="self">self</span>.<span class="ident">inner</span>(),
+        <span class="kw">let </span>xptr = x.as_mut_slice().as_mut_ptr();
+        <span class="kw">let </span>yptr = y.as_mut_slice().as_mut_ptr();
+        <span class="kw">let </span>nperptr = nper.as_mut_slice().as_mut_ptr();
+        <span class="kw">unsafe </span>{
+            GEPath(
+                xptr,
+                yptr,
+                nper.len() <span class="kw">as </span>std::os::raw::c_int,
+                nperptr,
+                <span class="kw">if </span>winding { <span class="number">1 </span>} <span class="kw">else </span>{ <span class="number">0 </span>},
+                gc.context(),
+                <span class="self">self</span>.inner(),
             )
         }
     }
 
-    <span class="doccomment">/// Screen capture. Returns an integer matrix representing pixels if it is able.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">capture</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Robj</span> {
-        <span class="kw">unsafe</span> { <span class="ident">new_owned</span>(<span class="ident">GECap</span>(<span class="self">self</span>.<span class="ident">inner</span>())) }
+    <span class="doccomment">/// Screen capture. Returns an integer matrix representing pixels if it is able.
+    </span><span class="kw">pub fn </span>capture(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Robj {
+        <span class="kw">unsafe </span>{ new_owned(GECap(<span class="self">self</span>.inner())) }
     }
 
-    <span class="doccomment">/// Draw a bitmap.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">raster</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">AsRef</span><span class="op">&lt;</span>[<span class="ident">u32</span>]<span class="op">&gt;</span><span class="op">&gt;</span>(
+    <span class="doccomment">/// Draw a bitmap.
+    </span><span class="kw">pub fn </span>raster&lt;T: AsRef&lt;[u32]&gt;&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">raster</span>: <span class="ident">Raster</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
-        <span class="ident">pos</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>),
-        <span class="ident">size</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>),
-        <span class="ident">angle</span>: <span class="ident">f64</span>,
-        <span class="ident">interpolate</span>: <span class="ident">bool</span>,
-        <span class="ident">gc</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>,
+        raster: Raster&lt;T&gt;,
+        pos: (f64, f64),
+        size: (f64, f64),
+        angle: f64,
+        interpolate: bool,
+        gc: <span class="kw-2">&amp;</span>Context,
     ) {
-        <span class="kw">let</span> (<span class="ident">x</span>, <span class="ident">y</span>) <span class="op">=</span> <span class="ident">gc</span>.<span class="ident">t</span>(<span class="ident">pos</span>);
-        <span class="kw">let</span> (<span class="ident">width</span>, <span class="ident">height</span>) <span class="op">=</span> <span class="ident">gc</span>.<span class="ident">trel</span>(<span class="ident">size</span>);
-        <span class="kw">let</span> <span class="ident">w</span> <span class="op">=</span> <span class="ident">raster</span>.<span class="ident">width</span>;
-        <span class="kw">let</span> <span class="ident">pixels</span> <span class="op">=</span> <span class="ident">raster</span>.<span class="ident">pixels</span>.<span class="ident">as_ref</span>();
-        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">pixels</span>.<span class="ident">len</span>() <span class="op">/</span> <span class="ident">w</span>;
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">raster</span> <span class="op">=</span> <span class="ident">pixels</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">u32</span>;
-            <span class="kw">let</span> <span class="ident">w</span> <span class="op">=</span> <span class="ident">w</span> <span class="kw">as</span> <span class="ident">i32</span>;
-            <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">h</span> <span class="kw">as</span> <span class="ident">i32</span>;
-            <span class="kw">let</span> <span class="ident">interpolate</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">interpolate</span> { <span class="number">1</span> } <span class="kw">else</span> { <span class="number">0</span> };
-            <span class="ident">GERaster</span>(
-                <span class="ident">raster</span>,
-                <span class="ident">w</span>,
-                <span class="ident">h</span>,
-                <span class="ident">x</span>,
-                <span class="ident">y</span>,
-                <span class="ident">width</span>,
-                <span class="ident">height</span>,
-                <span class="ident">angle</span>,
-                <span class="ident">interpolate</span>,
-                <span class="ident">gc</span>.<span class="ident">context</span>(),
-                <span class="self">self</span>.<span class="ident">inner</span>(),
+        <span class="kw">let </span>(x, y) = gc.t(pos);
+        <span class="kw">let </span>(width, height) = gc.trel(size);
+        <span class="kw">let </span>w = raster.width;
+        <span class="kw">let </span>pixels = raster.pixels.as_ref();
+        <span class="kw">let </span>h = pixels.len() / w;
+        <span class="kw">unsafe </span>{
+            <span class="kw">let </span>raster = pixels.as_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>u32;
+            <span class="kw">let </span>w = w <span class="kw">as </span>i32;
+            <span class="kw">let </span>h = h <span class="kw">as </span>i32;
+            <span class="kw">let </span>interpolate = <span class="kw">if </span>interpolate { <span class="number">1 </span>} <span class="kw">else </span>{ <span class="number">0 </span>};
+            GERaster(
+                raster,
+                w,
+                h,
+                x,
+                y,
+                width,
+                height,
+                angle,
+                interpolate,
+                gc.context(),
+                <span class="self">self</span>.inner(),
             )
         };
     }
 
-    <span class="doccomment">/// Draw a text string starting at pos.</span>
-    <span class="doccomment">/// TODO: do we need to convert units?</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">text</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span>(
+    <span class="doccomment">/// Draw a text string starting at pos.
+    /// TODO: do we need to convert units?
+    </span><span class="kw">pub fn </span>text&lt;T: AsRef&lt;str&gt;&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">pos</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>),
-        <span class="ident">text</span>: <span class="ident">T</span>,
-        <span class="ident">center</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>),
-        <span class="ident">rot</span>: <span class="ident">f64</span>,
-        <span class="ident">gc</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>,
+        pos: (f64, f64),
+        text: T,
+        center: (f64, f64),
+        rot: f64,
+        gc: <span class="kw-2">&amp;</span>Context,
     ) {
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> (<span class="ident">x</span>, <span class="ident">y</span>) <span class="op">=</span> <span class="ident">gc</span>.<span class="ident">t</span>(<span class="ident">pos</span>);
-            <span class="kw">let</span> (<span class="ident">xc</span>, <span class="ident">yc</span>) <span class="op">=</span> <span class="ident">gc</span>.<span class="ident">trel</span>(<span class="ident">center</span>);
-            <span class="kw">let</span> <span class="ident">text</span> <span class="op">=</span> <span class="ident">std::ffi::CString::new</span>(<span class="ident">text</span>.<span class="ident">as_ref</span>()).<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="ident">enc</span> <span class="op">=</span> <span class="ident">cetype_t_CE_UTF8</span>;
-            <span class="ident">GEText</span>(
-                <span class="ident">x</span>,
-                <span class="ident">y</span>,
-                <span class="ident">text</span>.<span class="ident">as_ptr</span>(),
-                <span class="ident">enc</span>,
-                <span class="ident">xc</span>,
-                <span class="ident">yc</span>,
-                <span class="ident">rot</span>,
-                <span class="ident">gc</span>.<span class="ident">context</span>(),
-                <span class="self">self</span>.<span class="ident">inner</span>(),
+        <span class="kw">unsafe </span>{
+            <span class="kw">let </span>(x, y) = gc.t(pos);
+            <span class="kw">let </span>(xc, yc) = gc.trel(center);
+            <span class="kw">let </span>text = std::ffi::CString::new(text.as_ref()).unwrap();
+            <span class="kw">let </span>enc = cetype_t_CE_UTF8;
+            GEText(
+                x,
+                y,
+                text.as_ptr(),
+                enc,
+                xc,
+                yc,
+                rot,
+                gc.context(),
+                <span class="self">self</span>.inner(),
             );
         }
     }
 
-    <span class="doccomment">/// Draw a special symbol centered on pos.</span>
-    <span class="doccomment">/// See &lt;https://stat.ethz.ch/R-manual/R-devel/library/graphics/html/points.html&gt;</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">symbol</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">pos</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>), <span class="ident">symbol</span>: <span class="ident">i32</span>, <span class="ident">size</span>: <span class="ident">f64</span>, <span class="ident">gc</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>) {
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> (<span class="ident">x</span>, <span class="ident">y</span>) <span class="op">=</span> <span class="ident">gc</span>.<span class="ident">t</span>(<span class="ident">pos</span>);
-            <span class="ident">GESymbol</span>(<span class="ident">x</span>, <span class="ident">y</span>, <span class="ident">symbol</span>, <span class="ident">gc</span>.<span class="ident">ts</span>(<span class="ident">size</span>), <span class="ident">gc</span>.<span class="ident">context</span>(), <span class="self">self</span>.<span class="ident">inner</span>());
+    <span class="doccomment">/// Draw a special symbol centered on pos.
+    /// See &lt;https://stat.ethz.ch/R-manual/R-devel/library/graphics/html/points.html&gt;
+    </span><span class="kw">pub fn </span>symbol(<span class="kw-2">&amp;</span><span class="self">self</span>, pos: (f64, f64), symbol: i32, size: f64, gc: <span class="kw-2">&amp;</span>Context) {
+        <span class="kw">unsafe </span>{
+            <span class="kw">let </span>(x, y) = gc.t(pos);
+            GESymbol(x, y, symbol, gc.ts(size), gc.context(), <span class="self">self</span>.inner());
         }
     }
 
-    <span class="doccomment">/// Get the metrics for a single unicode codepoint.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">char_metric</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">c</span>: <span class="ident">char</span>, <span class="ident">gc</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>) -&gt; <span class="ident">TextMetric</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">TextMetric</span> {
-                <span class="ident">ascent</span>: <span class="number">0.0</span>,
-                <span class="ident">descent</span>: <span class="number">0.0</span>,
-                <span class="ident">width</span>: <span class="number">0.0</span>,
+    <span class="doccomment">/// Get the metrics for a single unicode codepoint.
+    </span><span class="kw">pub fn </span>char_metric(<span class="kw-2">&amp;</span><span class="self">self</span>, c: char, gc: <span class="kw-2">&amp;</span>Context) -&gt; TextMetric {
+        <span class="kw">unsafe </span>{
+            <span class="kw">let </span><span class="kw-2">mut </span>res = TextMetric {
+                ascent: <span class="number">0.0</span>,
+                descent: <span class="number">0.0</span>,
+                width: <span class="number">0.0</span>,
             };
-            <span class="ident">GEMetricInfo</span>(
-                <span class="ident">c</span> <span class="kw">as</span> <span class="ident">i32</span>,
-                <span class="ident">gc</span>.<span class="ident">context</span>(),
-                <span class="kw-2">&amp;mut</span> <span class="ident">res</span>.<span class="ident">ascent</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">f64</span>,
-                <span class="kw-2">&amp;mut</span> <span class="ident">res</span>.<span class="ident">descent</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">f64</span>,
-                <span class="kw-2">&amp;mut</span> <span class="ident">res</span>.<span class="ident">width</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">f64</span>,
-                <span class="self">self</span>.<span class="ident">inner</span>(),
+            GEMetricInfo(
+                c <span class="kw">as </span>i32,
+                gc.context(),
+                <span class="kw-2">&amp;mut </span>res.ascent <span class="kw">as </span><span class="kw-2">*mut </span>f64,
+                <span class="kw-2">&amp;mut </span>res.descent <span class="kw">as </span><span class="kw-2">*mut </span>f64,
+                <span class="kw-2">&amp;mut </span>res.width <span class="kw">as </span><span class="kw-2">*mut </span>f64,
+                <span class="self">self</span>.inner(),
             );
-            <span class="ident">gc</span>.<span class="ident">tmetric</span>(<span class="ident">res</span>)
+            gc.tmetric(res)
         }
     }
 
-    <span class="doccomment">/// Get the width of a unicode string.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">text_width</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">text</span>: <span class="ident">T</span>, <span class="ident">gc</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>) -&gt; <span class="ident">f64</span> {
-        <span class="kw">let</span> <span class="ident">text</span> <span class="op">=</span> <span class="ident">std::ffi::CString::new</span>(<span class="ident">text</span>.<span class="ident">as_ref</span>()).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">enc</span> <span class="op">=</span> <span class="ident">cetype_t_CE_UTF8</span>;
-        <span class="kw">unsafe</span> { <span class="ident">gc</span>.<span class="ident">its</span>(<span class="ident">GEStrWidth</span>(<span class="ident">text</span>.<span class="ident">as_ptr</span>(), <span class="ident">enc</span>, <span class="ident">gc</span>.<span class="ident">context</span>(), <span class="self">self</span>.<span class="ident">inner</span>())) }
+    <span class="doccomment">/// Get the width of a unicode string.
+    </span><span class="kw">pub fn </span>text_width&lt;T: AsRef&lt;str&gt;&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, text: T, gc: <span class="kw-2">&amp;</span>Context) -&gt; f64 {
+        <span class="kw">let </span>text = std::ffi::CString::new(text.as_ref()).unwrap();
+        <span class="kw">let </span>enc = cetype_t_CE_UTF8;
+        <span class="kw">unsafe </span>{ gc.its(GEStrWidth(text.as_ptr(), enc, gc.context(), <span class="self">self</span>.inner())) }
     }
 
-    <span class="doccomment">/// Get the height of a unicode string.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">text_height</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">text</span>: <span class="ident">T</span>, <span class="ident">gc</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>) -&gt; <span class="ident">f64</span> {
-        <span class="kw">let</span> <span class="ident">text</span> <span class="op">=</span> <span class="ident">std::ffi::CString::new</span>(<span class="ident">text</span>.<span class="ident">as_ref</span>()).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">enc</span> <span class="op">=</span> <span class="ident">cetype_t_CE_UTF8</span>;
-        <span class="kw">unsafe</span> { <span class="ident">gc</span>.<span class="ident">its</span>(<span class="ident">GEStrHeight</span>(<span class="ident">text</span>.<span class="ident">as_ptr</span>(), <span class="ident">enc</span>, <span class="ident">gc</span>.<span class="ident">context</span>(), <span class="self">self</span>.<span class="ident">inner</span>())) }
+    <span class="doccomment">/// Get the height of a unicode string.
+    </span><span class="kw">pub fn </span>text_height&lt;T: AsRef&lt;str&gt;&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, text: T, gc: <span class="kw-2">&amp;</span>Context) -&gt; f64 {
+        <span class="kw">let </span>text = std::ffi::CString::new(text.as_ref()).unwrap();
+        <span class="kw">let </span>enc = cetype_t_CE_UTF8;
+        <span class="kw">unsafe </span>{ gc.its(GEStrHeight(text.as_ptr(), enc, gc.context(), <span class="self">self</span>.inner())) }
     }
 
-    <span class="doccomment">/// Get the metrics for a unicode string.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">text_metric</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">text</span>: <span class="ident">T</span>, <span class="ident">gc</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>) -&gt; <span class="ident">TextMetric</span> {
-        <span class="kw">let</span> <span class="ident">text</span> <span class="op">=</span> <span class="ident">std::ffi::CString::new</span>(<span class="ident">text</span>.<span class="ident">as_ref</span>()).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">enc</span> <span class="op">=</span> <span class="ident">cetype_t_CE_UTF8</span>;
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">TextMetric</span> {
-                <span class="ident">ascent</span>: <span class="number">0.0</span>,
-                <span class="ident">descent</span>: <span class="number">0.0</span>,
-                <span class="ident">width</span>: <span class="number">0.0</span>,
+    <span class="doccomment">/// Get the metrics for a unicode string.
+    </span><span class="kw">pub fn </span>text_metric&lt;T: AsRef&lt;str&gt;&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, text: T, gc: <span class="kw-2">&amp;</span>Context) -&gt; TextMetric {
+        <span class="kw">let </span>text = std::ffi::CString::new(text.as_ref()).unwrap();
+        <span class="kw">let </span>enc = cetype_t_CE_UTF8;
+        <span class="kw">unsafe </span>{
+            <span class="kw">let </span><span class="kw-2">mut </span>res = TextMetric {
+                ascent: <span class="number">0.0</span>,
+                descent: <span class="number">0.0</span>,
+                width: <span class="number">0.0</span>,
             };
-            <span class="ident">GEStrMetric</span>(
-                <span class="ident">text</span>.<span class="ident">as_ptr</span>(),
-                <span class="ident">enc</span>,
-                <span class="ident">gc</span>.<span class="ident">context</span>(),
-                <span class="kw-2">&amp;mut</span> <span class="ident">res</span>.<span class="ident">ascent</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">f64</span>,
-                <span class="kw-2">&amp;mut</span> <span class="ident">res</span>.<span class="ident">descent</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">f64</span>,
-                <span class="kw-2">&amp;mut</span> <span class="ident">res</span>.<span class="ident">width</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">f64</span>,
-                <span class="self">self</span>.<span class="ident">inner</span>(),
+            GEStrMetric(
+                text.as_ptr(),
+                enc,
+                gc.context(),
+                <span class="kw-2">&amp;mut </span>res.ascent <span class="kw">as </span><span class="kw-2">*mut </span>f64,
+                <span class="kw-2">&amp;mut </span>res.descent <span class="kw">as </span><span class="kw-2">*mut </span>f64,
+                <span class="kw-2">&amp;mut </span>res.width <span class="kw">as </span><span class="kw-2">*mut </span>f64,
+                <span class="self">self</span>.inner(),
             );
-            <span class="ident">gc</span>.<span class="ident">tmetric</span>(<span class="ident">res</span>)
+            gc.tmetric(res)
         }
     }
 
-    <span class="doccomment">/// Get the width of a mathematical expression.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">math_text_width</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">expr</span>: <span class="kw-2">&amp;</span><span class="ident">Robj</span>, <span class="ident">gc</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>) -&gt; <span class="ident">f64</span> {
-        <span class="kw">unsafe</span> { <span class="ident">gc</span>.<span class="ident">its</span>(<span class="ident">GEExpressionWidth</span>(<span class="ident">expr</span>.<span class="ident">get</span>(), <span class="ident">gc</span>.<span class="ident">context</span>(), <span class="self">self</span>.<span class="ident">inner</span>())) }
+    <span class="doccomment">/// Get the width of a mathematical expression.
+    </span><span class="kw">pub fn </span>math_text_width(<span class="kw-2">&amp;</span><span class="self">self</span>, expr: <span class="kw-2">&amp;</span>Robj, gc: <span class="kw-2">&amp;</span>Context) -&gt; f64 {
+        <span class="kw">unsafe </span>{ gc.its(GEExpressionWidth(expr.get(), gc.context(), <span class="self">self</span>.inner())) }
     }
 
-    <span class="doccomment">/// Get the height of a mathematical expression.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">math_text_height</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">expr</span>: <span class="kw-2">&amp;</span><span class="ident">Robj</span>, <span class="ident">gc</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>) -&gt; <span class="ident">f64</span> {
-        <span class="kw">unsafe</span> { <span class="ident">gc</span>.<span class="ident">its</span>(<span class="ident">GEExpressionHeight</span>(<span class="ident">expr</span>.<span class="ident">get</span>(), <span class="ident">gc</span>.<span class="ident">context</span>(), <span class="self">self</span>.<span class="ident">inner</span>())) }
+    <span class="doccomment">/// Get the height of a mathematical expression.
+    </span><span class="kw">pub fn </span>math_text_height(<span class="kw-2">&amp;</span><span class="self">self</span>, expr: <span class="kw-2">&amp;</span>Robj, gc: <span class="kw-2">&amp;</span>Context) -&gt; f64 {
+        <span class="kw">unsafe </span>{ gc.its(GEExpressionHeight(expr.get(), gc.context(), <span class="self">self</span>.inner())) }
     }
 
-    <span class="doccomment">/// Get the metrics for a mathematical expression.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">math_text_metric</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">expr</span>: <span class="kw-2">&amp;</span><span class="ident">Robj</span>, <span class="ident">gc</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>) -&gt; <span class="ident">TextMetric</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">TextMetric</span> {
-                <span class="ident">ascent</span>: <span class="number">0.0</span>,
-                <span class="ident">descent</span>: <span class="number">0.0</span>,
-                <span class="ident">width</span>: <span class="number">0.0</span>,
+    <span class="doccomment">/// Get the metrics for a mathematical expression.
+    </span><span class="kw">pub fn </span>math_text_metric(<span class="kw-2">&amp;</span><span class="self">self</span>, expr: <span class="kw-2">&amp;</span>Robj, gc: <span class="kw-2">&amp;</span>Context) -&gt; TextMetric {
+        <span class="kw">unsafe </span>{
+            <span class="kw">let </span><span class="kw-2">mut </span>res = TextMetric {
+                ascent: <span class="number">0.0</span>,
+                descent: <span class="number">0.0</span>,
+                width: <span class="number">0.0</span>,
             };
-            <span class="ident">GEExpressionMetric</span>(
-                <span class="ident">expr</span>.<span class="ident">get</span>(),
-                <span class="ident">gc</span>.<span class="ident">context</span>(),
-                <span class="kw-2">&amp;mut</span> <span class="ident">res</span>.<span class="ident">ascent</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">f64</span>,
-                <span class="kw-2">&amp;mut</span> <span class="ident">res</span>.<span class="ident">descent</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">f64</span>,
-                <span class="kw-2">&amp;mut</span> <span class="ident">res</span>.<span class="ident">width</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">f64</span>,
-                <span class="self">self</span>.<span class="ident">inner</span>(),
+            GEExpressionMetric(
+                expr.get(),
+                gc.context(),
+                <span class="kw-2">&amp;mut </span>res.ascent <span class="kw">as </span><span class="kw-2">*mut </span>f64,
+                <span class="kw-2">&amp;mut </span>res.descent <span class="kw">as </span><span class="kw-2">*mut </span>f64,
+                <span class="kw-2">&amp;mut </span>res.width <span class="kw">as </span><span class="kw-2">*mut </span>f64,
+                <span class="self">self</span>.inner(),
             );
-            <span class="ident">gc</span>.<span class="ident">tmetric</span>(<span class="ident">res</span>)
+            gc.tmetric(res)
         }
     }
 
-    <span class="doccomment">/// Draw a mathematical expression.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">math_text</span>(
+    <span class="doccomment">/// Draw a mathematical expression.
+    </span><span class="kw">pub fn </span>math_text(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">expr</span>: <span class="kw-2">&amp;</span><span class="ident">Robj</span>,
-        <span class="ident">pos</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>),
-        <span class="ident">center</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>),
-        <span class="ident">rot</span>: <span class="ident">f64</span>,
-        <span class="ident">gc</span>: <span class="kw-2">&amp;</span><span class="ident">Context</span>,
+        expr: <span class="kw-2">&amp;</span>Robj,
+        pos: (f64, f64),
+        center: (f64, f64),
+        rot: f64,
+        gc: <span class="kw-2">&amp;</span>Context,
     ) {
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> (<span class="ident">x</span>, <span class="ident">y</span>) <span class="op">=</span> <span class="ident">gc</span>.<span class="ident">t</span>(<span class="ident">pos</span>);
-            <span class="kw">let</span> (<span class="ident">xc</span>, <span class="ident">yc</span>) <span class="op">=</span> <span class="ident">gc</span>.<span class="ident">trel</span>(<span class="ident">center</span>);
-            <span class="ident">GEMathText</span>(<span class="ident">x</span>, <span class="ident">y</span>, <span class="ident">expr</span>.<span class="ident">get</span>(), <span class="ident">xc</span>, <span class="ident">yc</span>, <span class="ident">rot</span>, <span class="ident">gc</span>.<span class="ident">context</span>(), <span class="self">self</span>.<span class="ident">inner</span>());
+        <span class="kw">unsafe </span>{
+            <span class="kw">let </span>(x, y) = gc.t(pos);
+            <span class="kw">let </span>(xc, yc) = gc.trel(center);
+            GEMathText(x, y, expr.get(), xc, yc, rot, gc.context(), <span class="self">self</span>.inner());
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

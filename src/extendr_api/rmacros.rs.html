@@ -1,6 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/rmacros.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>rmacros.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../extendr_api/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../extendr_api/index.html"><div class="logo-container">
-                    <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../extendr_api/index.html">
-                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/rmacros.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>rmacros.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../extendr_api/index.html">
+                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -219,224 +218,224 @@
 <span id="217">217</span>
 <span id="218">218</span>
 <span id="219">219</span>
-</pre><pre class="rust"><code><span class="doccomment">//!</span>
-<span class="doccomment">//! rmacros - a set of macros to call actual R functions in a rusty way.</span>
-<span class="doccomment">//!</span>
+</pre><pre class="rust"><code><span class="doccomment">//!
+//! rmacros - a set of macros to call actual R functions in a rusty way.
+//!
 
-<span class="doccomment">/// Convert a rust expression to an R object.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Shorthand for Robj::from(x).</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Example:</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">/// let fred = r!(1);</span>
-<span class="doccomment">/// assert_eq!(fred, Robj::from(1));</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let int_array = r!([1, 2, 3]);</span>
-<span class="doccomment">/// assert_eq!(int_array.len(), 3);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let numeric_array = r!([1., 2., 3.]);</span>
-<span class="doccomment">/// assert_eq!(numeric_array.len(), 3);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let logical_array = r!([true, false, true]);</span>
-<span class="doccomment">/// assert_eq!(logical_array.len(), 3);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let numeric_array_with_na = r!([Some(1.), None, Some(3.)]);</span>
-<span class="doccomment">/// assert_eq!(numeric_array_with_na.len(), 3);</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">r</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">e</span>: <span class="ident">expr</span>) =&gt; {
-        <span class="ident">Robj::from</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">e</span>)
+/// Convert a rust expression to an R object.
+///
+/// Shorthand for Robj::from(x).
+///
+/// Example:
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+/// let fred = r!(1);
+/// assert_eq!(fred, Robj::from(1));
+///
+/// let int_array = r!([1, 2, 3]);
+/// assert_eq!(int_array.len(), 3);
+///
+/// let numeric_array = r!([1., 2., 3.]);
+/// assert_eq!(numeric_array.len(), 3);
+///
+/// let logical_array = r!([true, false, true]);
+/// assert_eq!(logical_array.len(), 3);
+///
+/// let numeric_array_with_na = r!([Some(1.), None, Some(3.)]);
+/// assert_eq!(numeric_array_with_na.len(), 3);
+/// }
+/// ```
+</span><span class="attribute">#[macro_export]
+</span><span class="macro">macro_rules! </span>r {
+    (<span class="macro-nonterminal">$e</span>: expr) =&gt; {
+        Robj::from(<span class="macro-nonterminal">$e</span>)
     };
 }
 
-<span class="doccomment">/// Get a local variable from the calling function</span>
-<span class="doccomment">/// or a global variable if no such variable exists.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Variables with embedded &quot;.&quot; may not work.</span>
-<span class="comment">/*
+<span class="doccomment">/// Get a local variable from the calling function
+/// or a global variable if no such variable exists.
+///
+/// Variables with embedded &quot;.&quot; may not work.
+</span><span class="comment">/*
 TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
       test outside of R process, so this doc test is disabled for now. See #211
       for the details.
-*/</span>
-<span class="doccomment">/// ```no_run</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///     current_env().set_local(sym!(myvar), 1.0);</span>
-<span class="doccomment">///     assert_eq!(var!(myvar), Ok(r!(1.0)));</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">var</span> {
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) =&gt; {{
-        <span class="ident">local_var</span>(<span class="macro">sym!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>)<span class="kw-2">*</span>))
+*/
+</span><span class="doccomment">/// ```no_run
+/// use extendr_api::prelude::*;
+/// test! {
+///     current_env().set_local(sym!(myvar), 1.0);
+///     assert_eq!(var!(myvar), Ok(r!(1.0)));
+/// }
+/// ```
+</span><span class="attribute">#[macro_export]
+</span><span class="macro">macro_rules! </span>var {
+    ($(<span class="macro-nonterminal">$tokens</span>: tt)<span class="kw-2">*</span>) =&gt; {{
+        local_var(<span class="macro">sym!</span>($(<span class="macro-nonterminal">$tokens</span>)<span class="kw-2">*</span>))
     }};
 }
 
-<span class="doccomment">/// Get a global variable.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Variables with embedded &quot;.&quot; may not work.</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///      // The &quot;iris&quot; dataset is a dataframe.</span>
-<span class="doccomment">///      assert_eq!(global!(iris)?.is_frame(), true);</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">global</span> {
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) =&gt; {{
-        <span class="ident">global_var</span>(<span class="macro">sym!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>)<span class="kw-2">*</span>))
+<span class="doccomment">/// Get a global variable.
+///
+/// Variables with embedded &quot;.&quot; may not work.
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///      // The &quot;iris&quot; dataset is a dataframe.
+///      assert_eq!(global!(iris)?.is_frame(), true);
+/// }
+/// ```
+</span><span class="attribute">#[macro_export]
+</span><span class="macro">macro_rules! </span>global {
+    ($(<span class="macro-nonterminal">$tokens</span>: tt)<span class="kw-2">*</span>) =&gt; {{
+        global_var(<span class="macro">sym!</span>($(<span class="macro-nonterminal">$tokens</span>)<span class="kw-2">*</span>))
     }};
 }
 
-<span class="doccomment">/// The sym! macro install symbols.</span>
-<span class="doccomment">/// You should cache your symbols in variables</span>
-<span class="doccomment">/// as generating them is costly.</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let wombat = sym!(wombat);</span>
-<span class="doccomment">/// assert_eq!(wombat, r!(Symbol::from_string(&quot;wombat&quot;)));</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">sym</span> {
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) =&gt; {
-        <span class="ident">Robj::from</span>(<span class="ident">Symbol::from_string</span>(<span class="macro">stringify!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>)<span class="kw-2">*</span>)))
+<span class="doccomment">/// The sym! macro install symbols.
+/// You should cache your symbols in variables
+/// as generating them is costly.
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///
+/// let wombat = sym!(wombat);
+/// assert_eq!(wombat, r!(Symbol::from_string(&quot;wombat&quot;)));
+/// }
+/// ```
+</span><span class="attribute">#[macro_export]
+</span><span class="macro">macro_rules! </span>sym {
+    ($(<span class="macro-nonterminal">$tokens</span>: tt)<span class="kw-2">*</span>) =&gt; {
+        Robj::from(Symbol::from_string(<span class="macro">stringify!</span>($(<span class="macro-nonterminal">$tokens</span>)<span class="kw-2">*</span>)))
     };
 }
 
-<span class="doccomment">/// Create a dataframe.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Example:</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///     let mydata = data_frame!(x=1, y=2);</span>
-<span class="doccomment">///     assert_eq!(mydata.inherits(&quot;data.frame&quot;), true);</span>
-<span class="doccomment">///     //assert_eq!(mydata, r!(List::from_pairs(vec![(&quot;x&quot;, r!(1)), (&quot;y&quot;, r!(2))])).set_class(&amp;[&quot;data.frame&quot;])?);</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Panics on error.</span>
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">data_frame</span> {
+<span class="doccomment">/// Create a dataframe.
+///
+/// Example:
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     let mydata = data_frame!(x=1, y=2);
+///     assert_eq!(mydata.inherits(&quot;data.frame&quot;), true);
+///     //assert_eq!(mydata, r!(List::from_pairs(vec![(&quot;x&quot;, r!(1)), (&quot;y&quot;, r!(2))])).set_class(&amp;[&quot;data.frame&quot;])?);
+/// }
+/// ```
+///
+/// Panics on error.
+</span><span class="attribute">#[macro_export]
+</span><span class="macro">macro_rules! </span>data_frame {
     () =&gt; {
-        <span class="macro">call!</span>(<span class="string">&quot;data.frame&quot;</span>).<span class="ident">unwrap</span>()
+        <span class="macro">call!</span>(<span class="string">&quot;data.frame&quot;</span>).unwrap()
     };
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">call!</span>(<span class="string">&quot;data.frame&quot;</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>).<span class="ident">unwrap</span>()
-    };
-}
-
-<span class="doccomment">/// Create a factor.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Example:</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///     let factor = factor!(vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
-<span class="doccomment">///     assert_eq!(factor.levels().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;]);</span>
-<span class="doccomment">///     assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);</span>
-<span class="doccomment">///     assert_eq!(factor.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Panics on error.</span>
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">factor</span> {
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">call!</span>(<span class="string">&quot;factor&quot;</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>).<span class="ident">unwrap</span>()
+    ($(<span class="macro-nonterminal">$rest</span>: tt)<span class="kw-2">*</span>) =&gt; {
+        <span class="macro">call!</span>(<span class="string">&quot;data.frame&quot;</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>).unwrap()
     };
 }
 
-<span class="doccomment">/// Print via the R output stream.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Works like [`print!`] but integrates with R and respects</span>
-<span class="doccomment">/// redirection with functions like `sink()` and `capture.output()`</span>
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">rprint</span> {
-    () =&gt; {
-    };
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) =&gt; {
-        <span class="ident">print_r_output</span>(<span class="macro">format!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>));
-    };
-}
-
-<span class="doccomment">/// Print with a newline via the R output stream.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Works like [`println!`] but integrates with R and respects</span>
-<span class="doccomment">/// redirection with functions like `sink()` and `capture.output()`</span>
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">rprintln</span> {
-    () =&gt; {
-        <span class="ident">print_r_output</span>(<span class="string">&quot;\n&quot;</span>);
-    };
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) =&gt; {
-        <span class="ident">print_r_output</span>(<span class="macro">format!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>));
-        <span class="ident">print_r_output</span>(<span class="string">&quot;\n&quot;</span>);
+<span class="doccomment">/// Create a factor.
+///
+/// Example:
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     let factor = factor!(vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);
+///     assert_eq!(factor.levels().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;]);
+///     assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);
+///     assert_eq!(factor.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);
+/// }
+/// ```
+///
+/// Panics on error.
+</span><span class="attribute">#[macro_export]
+</span><span class="macro">macro_rules! </span>factor {
+    ($(<span class="macro-nonterminal">$rest</span>: tt)<span class="kw-2">*</span>) =&gt; {
+        <span class="macro">call!</span>(<span class="string">&quot;factor&quot;</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>).unwrap()
     };
 }
 
-<span class="doccomment">/// Print via the R error stream.</span>
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">reprint</span> {
+<span class="doccomment">/// Print via the R output stream.
+///
+/// Works like [`print!`] but integrates with R and respects
+/// redirection with functions like `sink()` and `capture.output()`
+</span><span class="attribute">#[macro_export]
+</span><span class="macro">macro_rules! </span>rprint {
     () =&gt; {
     };
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) =&gt; {
-        <span class="ident">print_r_error</span>(<span class="macro">format!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>));
+    ($(<span class="macro-nonterminal">$rest</span>: tt)<span class="kw-2">*</span>) =&gt; {
+        print_r_output(<span class="macro">format!</span>($(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>));
     };
 }
 
-<span class="doccomment">/// Print with a newline via the R output stream.</span>
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">reprintln</span> {
+<span class="doccomment">/// Print with a newline via the R output stream.
+///
+/// Works like [`println!`] but integrates with R and respects
+/// redirection with functions like `sink()` and `capture.output()`
+</span><span class="attribute">#[macro_export]
+</span><span class="macro">macro_rules! </span>rprintln {
     () =&gt; {
-        <span class="ident">print_r_error</span>(<span class="string">&quot;\n&quot;</span>);
+        print_r_output(<span class="string">&quot;\n&quot;</span>);
     };
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) =&gt; {
-        <span class="ident">print_r_error</span>(<span class="macro">format!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="kw-2">*</span>));
-        <span class="ident">print_r_error</span>(<span class="string">&quot;\n&quot;</span>);
+    ($(<span class="macro-nonterminal">$rest</span>: tt)<span class="kw-2">*</span>) =&gt; {
+        print_r_output(<span class="macro">format!</span>($(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>));
+        print_r_output(<span class="string">&quot;\n&quot;</span>);
     };
 }
 
-<span class="doccomment">/// Macro for running tests.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This starts up the underlying [`extendr_engine`] so that interactions with R will work.</span>
-<span class="doccomment">/// Additionally, this allows us to use `?` in example code instead of `unwrap()`.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// **Note:** This macro is meant to be used in test code (annotated with</span>
-<span class="doccomment">/// `#[cfg(test)]`) or in doc strings. If it is used in library code that</span>
-<span class="doccomment">/// gets incorporated into an R package, R CMD check will complain about</span>
-<span class="doccomment">/// non-API calls.</span>
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">test</span> {
+<span class="doccomment">/// Print via the R error stream.
+</span><span class="attribute">#[macro_export]
+</span><span class="macro">macro_rules! </span>reprint {
     () =&gt; {
-        <span class="ident">test</span>(<span class="op">|</span><span class="op">|</span> <span class="prelude-val">Ok</span>(()))
     };
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>: <span class="ident">tt</span>)<span class="kw-2">*</span>) =&gt; {
+    ($(<span class="macro-nonterminal">$rest</span>: tt)<span class="kw-2">*</span>) =&gt; {
+        print_r_error(<span class="macro">format!</span>($(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>));
+    };
+}
+
+<span class="doccomment">/// Print with a newline via the R output stream.
+</span><span class="attribute">#[macro_export]
+</span><span class="macro">macro_rules! </span>reprintln {
+    () =&gt; {
+        print_r_error(<span class="string">&quot;\n&quot;</span>);
+    };
+    ($(<span class="macro-nonterminal">$rest</span>: tt)<span class="kw-2">*</span>) =&gt; {
+        print_r_error(<span class="macro">format!</span>($(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>));
+        print_r_error(<span class="string">&quot;\n&quot;</span>);
+    };
+}
+
+<span class="doccomment">/// Macro for running tests.
+///
+/// This starts up the underlying [`extendr_engine`] so that interactions with R will work.
+/// Additionally, this allows us to use `?` in example code instead of `unwrap()`.
+///
+/// **Note:** This macro is meant to be used in test code (annotated with
+/// `#[cfg(test)]`) or in doc strings. If it is used in library code that
+/// gets incorporated into an R package, R CMD check will complain about
+/// non-API calls.
+</span><span class="attribute">#[macro_export]
+</span><span class="macro">macro_rules! </span>test {
+    () =&gt; {
+        test(|| <span class="prelude-val">Ok</span>(()))
+    };
+    ($(<span class="macro-nonterminal">$rest</span>: tt)<span class="kw-2">*</span>) =&gt; {
         {
-            <span class="kw">use</span> <span class="ident">extendr_engine</span>;
+            <span class="kw">use </span>extendr_engine;
 
-            <span class="comment">// this helper function must reside in the macro so it doesn&#39;t get compiled</span>
-            <span class="comment">// unless the macro actually gets used (e.g., in testing code)</span>
-            <span class="kw">fn</span> <span class="ident">test</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">FnOnce</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">f</span>: <span class="ident">F</span>) {
-                <span class="ident">extendr_engine::start_r</span>();
-                <span class="ident">f</span>().<span class="ident">unwrap</span>();
+            <span class="comment">// this helper function must reside in the macro so it doesn&#39;t get compiled
+            // unless the macro actually gets used (e.g., in testing code)
+            </span><span class="kw">fn </span>test&lt;F: FnOnce() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;&gt;(f: F) {
+                extendr_engine::start_r();
+                f().unwrap();
             }
 
-            <span class="ident">test</span>(<span class="op">|</span><span class="op">|</span> {
-                $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>)<span class="op">*</span>
+            test(|| {
+                $(<span class="macro-nonterminal">$rest</span>)*
                 <span class="prelude-val">Ok</span>(())
             })
         }
     };
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

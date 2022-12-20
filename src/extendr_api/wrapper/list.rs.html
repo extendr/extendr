@@ -1,6 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/list.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>list.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container">
-                    <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../extendr_api/index.html">
-                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/list.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>list.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../extendr_api/index.html">
+                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -438,443 +437,443 @@
 <span id="436">436</span>
 <span id="437">437</span>
 <span id="438">438</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::robj::Attributes</span>;
-<span class="kw">use</span> <span class="ident">std::iter::FromIterator</span>;
+</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::robj::Attributes;
+<span class="kw">use </span>std::iter::FromIterator;
 
-<span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+<span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">List</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">robj</span>: <span class="ident">Robj</span>,
+<span class="attribute">#[derive(PartialEq, Clone)]
+</span><span class="kw">pub struct </span>List {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) robj: Robj,
 }
 
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">List</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident">List::new</span>(<span class="number">0</span>)
+<span class="kw">impl </span>Default <span class="kw">for </span>List {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        List::new(<span class="number">0</span>)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">List</span> {
-    <span class="doccomment">/// Create a new list.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let list = List::new(10);</span>
-    <span class="doccomment">///     assert_eq!(list.is_list(), true);</span>
-    <span class="doccomment">///     assert_eq!(list.len(), 10);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">size</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">Robj::alloc_vector</span>(<span class="ident">VECSXP</span>, <span class="ident">size</span>);
-        <span class="self">Self</span> { <span class="ident">robj</span> }
+<span class="kw">impl </span>List {
+    <span class="doccomment">/// Create a new list.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let list = List::new(10);
+    ///     assert_eq!(list.is_list(), true);
+    ///     assert_eq!(list.len(), 10);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>new(size: usize) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>robj = Robj::alloc_vector(VECSXP, size);
+        <span class="self">Self </span>{ robj }
     }
 
-    <span class="doccomment">/// Wrapper for creating a list (VECSXP) object.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let list = r!(List::from_values(&amp;[r!(0), r!(1), r!(2)]));</span>
-    <span class="doccomment">///     assert_eq!(list.is_list(), true);</span>
-    <span class="doccomment">///     assert_eq!(list.len(), 3);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_values</span><span class="op">&lt;</span><span class="ident">V</span><span class="op">&gt;</span>(<span class="ident">values</span>: <span class="ident">V</span>) -&gt; <span class="self">Self</span>
-    <span class="kw">where</span>
-        <span class="ident">V</span>: <span class="ident">IntoIterator</span>,
-        <span class="ident">V::IntoIter</span>: <span class="ident">ExactSizeIterator</span>,
-        <span class="ident">V::Item</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Wrapper for creating a list (VECSXP) object.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let list = r!(List::from_values(&amp;[r!(0), r!(1), r!(2)]));
+    ///     assert_eq!(list.is_list(), true);
+    ///     assert_eq!(list.len(), 3);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>from_values&lt;V&gt;(values: V) -&gt; <span class="self">Self
+    </span><span class="kw">where
+        </span>V: IntoIterator,
+        V::IntoIter: ExactSizeIterator,
+        V::Item: Into&lt;Robj&gt;,
     {
-        <span class="self">Self</span> {
-            <span class="ident">robj</span>: <span class="ident">make_vector</span>(<span class="ident">VECSXP</span>, <span class="ident">values</span>),
+        <span class="self">Self </span>{
+            robj: make_vector(VECSXP, values),
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_pairs</span><span class="op">&lt;</span><span class="ident">V</span><span class="op">&gt;</span>(<span class="ident">pairs</span>: <span class="ident">V</span>) -&gt; <span class="self">Self</span>
-    <span class="kw">where</span>
-        <span class="ident">V</span>: <span class="ident">IntoIterator</span>,
-        <span class="ident">V::IntoIter</span>: <span class="ident">ExactSizeIterator</span> <span class="op">+</span> <span class="ident">Clone</span>,
-        <span class="ident">V::Item</span>: <span class="ident">KeyValue</span>,
+    <span class="kw">pub fn </span>from_pairs&lt;V&gt;(pairs: V) -&gt; <span class="self">Self
+    </span><span class="kw">where
+        </span>V: IntoIterator,
+        V::IntoIter: ExactSizeIterator + Clone,
+        V::Item: KeyValue,
     {
-        <span class="kw">let</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">pairs</span>.<span class="ident">into_iter</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">names</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">iter</span>.<span class="ident">len</span>());
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">values</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">iter</span>.<span class="ident">len</span>());
-        <span class="kw">for</span> <span class="ident">pair</span> <span class="kw">in</span> <span class="ident">iter</span> {
-            <span class="ident">names</span>.<span class="ident">push</span>(<span class="ident">pair</span>.<span class="ident">key</span>());
-            <span class="ident">values</span>.<span class="ident">push</span>(<span class="ident">pair</span>.<span class="ident">value</span>());
+        <span class="kw">let </span>iter = pairs.into_iter();
+        <span class="kw">let </span><span class="kw-2">mut </span>names = Vec::with_capacity(iter.len());
+        <span class="kw">let </span><span class="kw-2">mut </span>values = Vec::with_capacity(iter.len());
+        <span class="kw">for </span>pair <span class="kw">in </span>iter {
+            names.push(pair.key());
+            values.push(pair.value());
         }
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">List::from_values</span>(<span class="ident">values</span>);
-        <span class="ident">res</span>.<span class="ident">as_robj_mut</span>()
-            .<span class="ident">set_names</span>(<span class="ident">names</span>)
-            .<span class="ident">unwrap</span>()
-            .<span class="ident">as_list</span>()
-            .<span class="ident">unwrap</span>()
+        <span class="kw">let </span><span class="kw-2">mut </span>res = List::from_values(values);
+        res.as_robj_mut()
+            .set_names(names)
+            .unwrap()
+            .as_list()
+            .unwrap()
     }
 
-    <span class="doccomment">/// Wrapper for creating a list (VECSXP) object from an existing `HashMap`.</span>
-    <span class="doccomment">/// The `HashMap` is consumed.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// use std::collections::HashMap;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let mut map: HashMap&lt;&amp;str, Robj&gt; = HashMap::new();</span>
-    <span class="doccomment">///     map.insert(&quot;a&quot;, r!(1));</span>
-    <span class="doccomment">///     map.insert(&quot;b&quot;, r!(2));</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">///     let list = List::from_hashmap(map).unwrap();</span>
-    <span class="doccomment">///     assert_eq!(list.is_list(), true);</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">///     let mut names : Vec&lt;_&gt; = list.names().unwrap().collect();</span>
-    <span class="doccomment">///     names.sort();</span>
-    <span class="doccomment">///     assert_eq!(names, vec![&quot;a&quot;, &quot;b&quot;]);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_hashmap</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span>(<span class="ident">val</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">K</span>, <span class="ident">Robj</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">K</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Wrapper for creating a list (VECSXP) object from an existing `HashMap`.
+    /// The `HashMap` is consumed.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// use std::collections::HashMap;
+    /// test! {
+    ///     let mut map: HashMap&lt;&amp;str, Robj&gt; = HashMap::new();
+    ///     map.insert(&quot;a&quot;, r!(1));
+    ///     map.insert(&quot;b&quot;, r!(2));
+    ///
+    ///     let list = List::from_hashmap(map).unwrap();
+    ///     assert_eq!(list.is_list(), true);
+    ///
+    ///     let mut names : Vec&lt;_&gt; = list.names().unwrap().collect();
+    ///     names.sort();
+    ///     assert_eq!(names, vec![&quot;a&quot;, &quot;b&quot;]);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>from_hashmap&lt;K&gt;(val: HashMap&lt;K, Robj&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt;
+    <span class="kw">where
+        </span>K: Into&lt;String&gt;,
     {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span>: <span class="self">Self</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::from_values</span>(<span class="ident">val</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="kw">_</span>, <span class="ident">v</span>)<span class="op">|</span> <span class="ident">v</span>));
-        <span class="ident">res</span>.<span class="ident">set_names</span>(<span class="ident">val</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">k</span>, <span class="kw">_</span>)<span class="op">|</span> <span class="ident">k</span>.<span class="ident">into</span>()))<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">res</span>)
+        <span class="kw">let </span><span class="kw-2">mut </span>res: <span class="self">Self </span>= <span class="self">Self</span>::from_values(val.iter().map(|(<span class="kw">_</span>, v)| v));
+        res.set_names(val.into_iter().map(|(k, <span class="kw">_</span>)| k.into()))<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(res)
     }
 
-    <span class="doccomment">/// Build a list using separate names and values iterators.</span>
-    <span class="doccomment">/// Used internally by the list! macro.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_names_and_values</span><span class="op">&lt;</span><span class="ident">N</span>, <span class="ident">V</span><span class="op">&gt;</span>(<span class="ident">names</span>: <span class="ident">N</span>, <span class="ident">values</span>: <span class="ident">V</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">N</span>: <span class="ident">IntoIterator</span>,
-        <span class="ident">N::IntoIter</span>: <span class="ident">ExactSizeIterator</span>,
-        <span class="ident">N::Item</span>: <span class="ident">ToVectorValue</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>,
-        <span class="ident">V</span>: <span class="ident">IntoIterator</span>,
-        <span class="ident">V::IntoIter</span>: <span class="ident">ExactSizeIterator</span>,
-        <span class="ident">V::Item</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Build a list using separate names and values iterators.
+    /// Used internally by the list! macro.
+    </span><span class="kw">pub fn </span>from_names_and_values&lt;N, V&gt;(names: N, values: V) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt;
+    <span class="kw">where
+        </span>N: IntoIterator,
+        N::IntoIter: ExactSizeIterator,
+        N::Item: ToVectorValue + AsRef&lt;str&gt;,
+        V: IntoIterator,
+        V::IntoIter: ExactSizeIterator,
+        V::Item: Into&lt;Robj&gt;,
     {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">list</span> <span class="op">=</span> <span class="ident">List::from_values</span>(<span class="ident">values</span>);
-        <span class="ident">list</span>.<span class="ident">set_names</span>(<span class="ident">names</span>)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">list</span>)
+        <span class="kw">let </span><span class="kw-2">mut </span>list = List::from_values(values);
+        list.set_names(names)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(list)
     }
 
-    <span class="doccomment">/// Return an iterator over the values of this list.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let mut robj = list!(1, 2, 3);</span>
-    <span class="doccomment">///     let objects : Vec&lt;_&gt; = robj.as_list().unwrap().values().collect();</span>
-    <span class="doccomment">///     assert_eq!(objects, vec![r!(1), r!(2), r!(3)]);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">values</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ListIter</span> {
-        <span class="ident">ListIter::from_parts</span>(<span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">clone</span>(), <span class="number">0</span>, <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">len</span>())
+    <span class="doccomment">/// Return an iterator over the values of this list.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let mut robj = list!(1, 2, 3);
+    ///     let objects : Vec&lt;_&gt; = robj.as_list().unwrap().values().collect();
+    ///     assert_eq!(objects, vec![r!(1), r!(2), r!(3)]);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>values(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ListIter {
+        ListIter::from_parts(<span class="self">self</span>.robj.clone(), <span class="number">0</span>, <span class="self">self</span>.robj.len())
     }
 
-    <span class="doccomment">/// Return an iterator over the names and values of this list.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let mut list = list!(a=1, 2);</span>
-    <span class="doccomment">///     let names_and_values : Vec&lt;_&gt; = list.iter().collect();</span>
-    <span class="doccomment">///     assert_eq!(names_and_values, vec![(&quot;a&quot;, r!(1)), (&quot;&quot;, r!(2))]);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">NamedListIter</span> {
-        <span class="comment">// TODO: Make a proper NamedListIter.</span>
-        <span class="self">self</span>.<span class="ident">names</span>()
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">n</span>.<span class="ident">zip</span>(<span class="self">self</span>.<span class="ident">values</span>()))
-            .<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">StrIter::new</span>(<span class="self">self</span>.<span class="ident">len</span>()).<span class="ident">zip</span>(<span class="self">self</span>.<span class="ident">values</span>()))
+    <span class="doccomment">/// Return an iterator over the names and values of this list.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let mut list = list!(a=1, 2);
+    ///     let names_and_values : Vec&lt;_&gt; = list.iter().collect();
+    ///     assert_eq!(names_and_values, vec![(&quot;a&quot;, r!(1)), (&quot;&quot;, r!(2))]);
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>iter(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; NamedListIter {
+        <span class="comment">// TODO: Make a proper NamedListIter.
+        </span><span class="self">self</span>.names()
+            .map(|n| n.zip(<span class="self">self</span>.values()))
+            .unwrap_or_else(|| StrIter::new(<span class="self">self</span>.len()).zip(<span class="self">self</span>.values()))
     }
 
-    <span class="doccomment">/// Get the list a slice of `Robj`s.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_slice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[<span class="ident">Robj</span>] {
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">DATAPTR</span>(<span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">Robj</span>;
-            <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">len</span>();
-            <span class="ident">std::slice::from_raw_parts</span>(<span class="ident">data</span>, <span class="ident">len</span>)
+    <span class="doccomment">/// Get the list a slice of `Robj`s.
+    </span><span class="kw">pub fn </span>as_slice(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[Robj] {
+        <span class="kw">unsafe </span>{
+            <span class="kw">let </span>data = DATAPTR(<span class="self">self</span>.robj.get()) <span class="kw">as </span><span class="kw-2">*const </span>Robj;
+            <span class="kw">let </span>len = <span class="self">self</span>.robj.len();
+            std::slice::from_raw_parts(data, len)
         }
     }
 
-    <span class="doccomment">/// Get a reference to an element in the list.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">elt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">i</span> <span class="op">&gt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">len</span>() {
-            <span class="prelude-val">Err</span>(<span class="ident">Error::OutOfRange</span>(<span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">clone</span>()))
-        } <span class="kw">else</span> {
-            <span class="kw">unsafe</span> {
-                <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="ident">VECTOR_ELT</span>(<span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>(), <span class="ident">i</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>);
-                <span class="prelude-val">Ok</span>(<span class="ident">Robj::from_sexp</span>(<span class="ident">sexp</span>))
+    <span class="doccomment">/// Get a reference to an element in the list.
+    </span><span class="kw">pub fn </span>elt(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt; {
+        <span class="kw">if </span>i &gt;= <span class="self">self</span>.robj.len() {
+            <span class="prelude-val">Err</span>(Error::OutOfRange(<span class="self">self</span>.robj.clone()))
+        } <span class="kw">else </span>{
+            <span class="kw">unsafe </span>{
+                <span class="kw">let </span>sexp = VECTOR_ELT(<span class="self">self</span>.robj.get(), i <span class="kw">as </span>R_xlen_t);
+                <span class="prelude-val">Ok</span>(Robj::from_sexp(sexp))
             }
         }
     }
 
-    <span class="doccomment">/// Set an element in the list.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_elt</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">i</span>: <span class="ident">usize</span>, <span class="ident">value</span>: <span class="ident">Robj</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">if</span> <span class="ident">i</span> <span class="op">&gt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">len</span>() {
-                <span class="prelude-val">Err</span>(<span class="ident">Error::OutOfRange</span>(<span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">clone</span>()))
-            } <span class="kw">else</span> {
-                <span class="ident">SET_VECTOR_ELT</span>(<span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>(), <span class="ident">i</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">value</span>.<span class="ident">get</span>());
+    <span class="doccomment">/// Set an element in the list.
+    </span><span class="kw">pub fn </span>set_elt(<span class="kw-2">&amp;mut </span><span class="self">self</span>, i: usize, value: Robj) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="kw">unsafe </span>{
+            <span class="kw">if </span>i &gt;= <span class="self">self</span>.robj.len() {
+                <span class="prelude-val">Err</span>(Error::OutOfRange(<span class="self">self</span>.robj.clone()))
+            } <span class="kw">else </span>{
+                SET_VECTOR_ELT(<span class="self">self</span>.robj.get(), i <span class="kw">as </span>R_xlen_t, value.get());
                 <span class="prelude-val">Ok</span>(())
             }
         }
     }
 
-    <span class="doccomment">/// Convert a List into a HashMap, consuming the list.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// - If an element doesn&#39;t have a name, an empty string (i.e. `&quot;&quot;`) will be used as the key.</span>
-    <span class="doccomment">/// - If there are some duplicated names (including no name, which will be translated as `&quot;&quot;`) of elements, only one of those will be preserved.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// use std::collections::HashMap;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let mut robj = list!(a=1, 2);</span>
-    <span class="doccomment">///     let names_and_values = robj.as_list().unwrap().into_hashmap();</span>
-    <span class="doccomment">///     assert_eq!(names_and_values, vec![(&quot;a&quot;, r!(1)), (&quot;&quot;, r!(2))].into_iter().collect::&lt;HashMap&lt;_, _&gt;&gt;());</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">into_hashmap</span>(<span class="self">self</span>) -&gt; <span class="ident">HashMap</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">Robj</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">iter</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span>()
+    <span class="doccomment">/// Convert a List into a HashMap, consuming the list.
+    ///
+    /// - If an element doesn&#39;t have a name, an empty string (i.e. `&quot;&quot;`) will be used as the key.
+    /// - If there are some duplicated names (including no name, which will be translated as `&quot;&quot;`) of elements, only one of those will be preserved.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// use std::collections::HashMap;
+    /// test! {
+    ///     let mut robj = list!(a=1, 2);
+    ///     let names_and_values = robj.as_list().unwrap().into_hashmap();
+    ///     assert_eq!(names_and_values, vec![(&quot;a&quot;, r!(1)), (&quot;&quot;, r!(2))].into_iter().collect::&lt;HashMap&lt;_, _&gt;&gt;());
+    /// }
+    /// ```
+    </span><span class="kw">pub fn </span>into_hashmap(<span class="self">self</span>) -&gt; HashMap&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, Robj&gt; {
+        <span class="self">self</span>.iter().collect::&lt;HashMap&lt;<span class="kw-2">&amp;</span>str, Robj&gt;&gt;()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">IntoIterator</span> <span class="kw">for</span> <span class="ident">List</span> {
-    <span class="kw">type</span> <span class="ident">IntoIter</span> <span class="op">=</span> <span class="ident">NamedListIter</span>;
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> (<span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">Robj</span>);
+<span class="kw">impl </span>IntoIterator <span class="kw">for </span>List {
+    <span class="kw">type </span>IntoIter = NamedListIter;
+    <span class="kw">type </span>Item = (<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, Robj);
 
-    <span class="doccomment">/// Convert a List into an interator, consuming the list.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let list = list!(a=1, 2).as_list().unwrap();</span>
-    <span class="doccomment">///     let vec : Vec&lt;_&gt; = list.into_iter().collect();</span>
-    <span class="doccomment">///     assert_eq!(vec, vec![(&quot;a&quot;, r!(1)), (&quot;&quot;, r!(2))]);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::IntoIter</span> {
-        <span class="self">self</span>.<span class="ident">iter</span>()
+    <span class="doccomment">/// Convert a List into an interator, consuming the list.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let list = list!(a=1, 2).as_list().unwrap();
+    ///     let vec : Vec&lt;_&gt; = list.into_iter().collect();
+    ///     assert_eq!(vec, vec![(&quot;a&quot;, r!(1)), (&quot;&quot;, r!(2))]);
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>into_iter(<span class="self">self</span>) -&gt; <span class="self">Self</span>::IntoIter {
+        <span class="self">self</span>.iter()
     }
 }
 
-<span class="doccomment">/// Iterator over the objects in a VECSXP, EXPRSXP or WEAKREFSXP.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///     let my_list = list!(a = 1, b = 2);</span>
-<span class="doccomment">///     let mut total = 0;</span>
-<span class="doccomment">///     for robj in my_list.as_list().unwrap().values() {</span>
-<span class="doccomment">///       if let Some(val) = robj.as_integer() {</span>
-<span class="doccomment">///         total += val;</span>
-<span class="doccomment">///       }</span>
-<span class="doccomment">///     }</span>
-<span class="doccomment">///     assert_eq!(total, 3);</span>
-<span class="doccomment">///    </span>
-<span class="doccomment">///     for name in my_list.names().unwrap() {</span>
-<span class="doccomment">///        assert!(name == &quot;a&quot; || name == &quot;b&quot;)</span>
-<span class="doccomment">///     }</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ListIter</span> {
-    <span class="ident">robj</span>: <span class="ident">Robj</span>,
-    <span class="ident">i</span>: <span class="ident">usize</span>,
-    <span class="ident">len</span>: <span class="ident">usize</span>,
+<span class="doccomment">/// Iterator over the objects in a VECSXP, EXPRSXP or WEAKREFSXP.
+///
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     let my_list = list!(a = 1, b = 2);
+///     let mut total = 0;
+///     for robj in my_list.as_list().unwrap().values() {
+///       if let Some(val) = robj.as_integer() {
+///         total += val;
+///       }
+///     }
+///     assert_eq!(total, 3);
+///    
+///     for name in my_list.names().unwrap() {
+///        assert!(name == &quot;a&quot; || name == &quot;b&quot;)
+///     }
+/// }
+/// ```
+</span><span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub struct </span>ListIter {
+    robj: Robj,
+    i: usize,
+    len: usize,
 }
 
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">ListIter</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident">ListIter::new</span>()
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">ListIter</span> {
-    <span class="comment">// A new, empty list iterator.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident">ListIter::from_parts</span>(().<span class="ident">into</span>(), <span class="number">0</span>, <span class="number">0</span>)
-    }
-
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">from_parts</span>(<span class="ident">robj</span>: <span class="ident">Robj</span>, <span class="ident">i</span>: <span class="ident">usize</span>, <span class="ident">len</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> { <span class="ident">robj</span>, <span class="ident">i</span>, <span class="ident">len</span> }
+<span class="kw">impl </span>Default <span class="kw">for </span>ListIter {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        ListIter::new()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">ListIter</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">Robj</span>;
-
-    <span class="kw">fn</span> <span class="ident">size_hint</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (<span class="ident">usize</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) {
-        (<span class="self">self</span>.<span class="ident">len</span>, <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">len</span>))
+<span class="kw">impl </span>ListIter {
+    <span class="comment">// A new, empty list iterator.
+    </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
+        ListIter::from_parts(().into(), <span class="number">0</span>, <span class="number">0</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">i</span>;
-        <span class="self">self</span>.<span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-        <span class="kw">if</span> <span class="ident">i</span> <span class="op">&gt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span> {
-            <span class="prelude-val">None</span>
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Some</span>(<span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">VECTOR_ELT</span>(<span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>(), <span class="ident">i</span> <span class="kw">as</span> <span class="ident">isize</span>)) })
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>from_parts(robj: Robj, i: usize, len: usize) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{ robj, i, len }
+    }
+}
+
+<span class="kw">impl </span>Iterator <span class="kw">for </span>ListIter {
+    <span class="kw">type </span>Item = Robj;
+
+    <span class="kw">fn </span>size_hint(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (usize, <span class="prelude-ty">Option</span>&lt;usize&gt;) {
+        (<span class="self">self</span>.len, <span class="prelude-val">Some</span>(<span class="self">self</span>.len))
+    }
+
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
+        <span class="kw">let </span>i = <span class="self">self</span>.i;
+        <span class="self">self</span>.i += <span class="number">1</span>;
+        <span class="kw">if </span>i &gt;= <span class="self">self</span>.len {
+            <span class="prelude-val">None
+        </span>} <span class="kw">else </span>{
+            <span class="prelude-val">Some</span>(<span class="kw">unsafe </span>{ Robj::from_sexp(VECTOR_ELT(<span class="self">self</span>.robj.get(), i <span class="kw">as </span>isize)) })
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">nth</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="ident">n</span>;
-        <span class="self">self</span>.<span class="ident">next</span>()
+    <span class="kw">fn </span>nth(<span class="kw-2">&amp;mut </span><span class="self">self</span>, n: usize) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
+        <span class="self">self</span>.i += n;
+        <span class="self">self</span>.next()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">ExactSizeIterator</span> <span class="kw">for</span> <span class="ident">ListIter</span> {
-    <span class="doccomment">/// Length of a list iterator.</span>
-    <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-        <span class="self">self</span>.<span class="ident">len</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">i</span>
+<span class="kw">impl </span>ExactSizeIterator <span class="kw">for </span>ListIter {
+    <span class="doccomment">/// Length of a list iterator.
+    </span><span class="kw">fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+        <span class="self">self</span>.len - <span class="self">self</span>.i
     }
 }
 
-<span class="doccomment">/// You can use the FromList wrapper to coerce a Robj into a list.</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///     let list = Robj::from(list!(1, 2));</span>
-<span class="doccomment">///     let vec : FromList&lt;Vec&lt;i32&gt;&gt; = list.try_into()?;</span>
-<span class="doccomment">///     assert_eq!(vec.0, vec![1, 2]);</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FromList</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw">pub</span> <span class="ident">T</span>);
+<span class="doccomment">/// You can use the FromList wrapper to coerce a Robj into a list.
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     let list = Robj::from(list!(1, 2));
+///     let vec : FromList&lt;Vec&lt;i32&gt;&gt; = list.try_into()?;
+///     assert_eq!(vec.0, vec![1, 2]);
+/// }
+/// ```
+</span><span class="kw">pub struct </span>FromList&lt;T&gt;(<span class="kw">pub </span>T);
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Robj</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">FromList</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
-    <span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::Error</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Error</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;T&gt; TryFrom&lt;<span class="kw-2">&amp;</span>Robj&gt; <span class="kw">for </span>FromList&lt;Vec&lt;T&gt;&gt;
+<span class="kw">where
+    </span>T: TryFrom&lt;Robj&gt;,
+    &lt;T <span class="kw">as </span>TryFrom&lt;Robj&gt;&gt;::Error: Into&lt;Error&gt;,
 {
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>;
+    <span class="kw">type </span>Error = Error;
 
-    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">robj</span>: <span class="kw-2">&amp;</span><span class="ident">Robj</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">listiter</span>: <span class="ident">ListIter</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">try_into</span>()<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">res</span>: <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">listiter</span>
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">robj</span><span class="op">|</span> <span class="ident">T::try_from</span>(<span class="ident">robj</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">into</span>()))
-            .<span class="ident">collect</span>();
-        <span class="ident">res</span>.<span class="ident">map</span>(<span class="ident">FromList</span>)
+    <span class="kw">fn </span>try_from(robj: <span class="kw-2">&amp;</span>Robj) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">let </span>listiter: ListIter = robj.try_into()<span class="question-mark">?</span>;
+        <span class="kw">let </span>res: <span class="prelude-ty">Result</span>&lt;Vec&lt;<span class="kw">_</span>&gt;&gt; = listiter
+            .map(|robj| T::try_from(robj).map_err(|e| e.into()))
+            .collect();
+        res.map(FromList)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">FromList</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
-    <span class="op">&lt;</span><span class="ident">T</span> <span class="kw">as</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::Error</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Error</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;T&gt; TryFrom&lt;Robj&gt; <span class="kw">for </span>FromList&lt;Vec&lt;T&gt;&gt;
+<span class="kw">where
+    </span>T: TryFrom&lt;Robj&gt;,
+    &lt;T <span class="kw">as </span>TryFrom&lt;Robj&gt;&gt;::Error: Into&lt;Error&gt;,
 {
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>;
+    <span class="kw">type </span>Error = Error;
 
-    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">robj</span>: <span class="ident">Robj</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="op">&lt;</span><span class="ident">FromList</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::try_from</span>(<span class="kw-2">&amp;</span><span class="ident">robj</span>)
+    <span class="kw">fn </span>try_from(robj: Robj) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+        &lt;FromList&lt;Vec&lt;T&gt;&gt;&gt;::try_from(<span class="kw-2">&amp;</span>robj)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Robj</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ListIter</span> {
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>;
+<span class="kw">impl </span>TryFrom&lt;<span class="kw-2">&amp;</span>Robj&gt; <span class="kw">for </span>ListIter {
+    <span class="kw">type </span>Error = Error;
 
-    <span class="doccomment">/// Convert a general R object into a List iterator if possible.</span>
-    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">robj</span>: <span class="kw-2">&amp;</span><span class="ident">Robj</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">list</span>: <span class="ident">List</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">try_into</span>()<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">list</span>.<span class="ident">values</span>())
+    <span class="doccomment">/// Convert a general R object into a List iterator if possible.
+    </span><span class="kw">fn </span>try_from(robj: <span class="kw-2">&amp;</span>Robj) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">let </span>list: List = robj.try_into()<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(list.values())
     }
 }
 
-<span class="kw">impl</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ListIter</span> {
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>;
+<span class="kw">impl </span>TryFrom&lt;Robj&gt; <span class="kw">for </span>ListIter {
+    <span class="kw">type </span>Error = Error;
 
-    <span class="doccomment">/// Convert a general R object into a List iterator if possible.</span>
-    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">robj</span>: <span class="ident">Robj</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="op">&lt;</span><span class="ident">ListIter</span><span class="op">&gt;</span><span class="ident">::try_from</span>(<span class="kw-2">&amp;</span><span class="ident">robj</span>)
+    <span class="doccomment">/// Convert a general R object into a List iterator if possible.
+    </span><span class="kw">fn </span>try_from(robj: Robj) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+        &lt;ListIter&gt;::try_from(<span class="kw-2">&amp;</span>robj)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ListIter</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="doccomment">/// You can return a ListIter from a function.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let listiter = list!(1, 2).values();</span>
-    <span class="doccomment">///     assert_eq!(Robj::from(listiter), Robj::from(list!(1, 2)));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">iter</span>: <span class="ident">ListIter</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">iter</span>.<span class="ident">robj</span>
+<span class="kw">impl </span>From&lt;ListIter&gt; <span class="kw">for </span>Robj {
+    <span class="doccomment">/// You can return a ListIter from a function.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let listiter = list!(1, 2).values();
+    ///     assert_eq!(Robj::from(listiter), Robj::from(list!(1, 2)));
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>from(iter: ListIter) -&gt; <span class="self">Self </span>{
+        iter.robj
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">FromRobj</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ListIter</span> {
-    <span class="kw">fn</span> <span class="ident">from_robj</span>(<span class="ident">robj</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>) -&gt; <span class="ident">std::result::Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
-        <span class="ident">robj</span>.<span class="ident">as_list</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">l</span><span class="op">|</span> <span class="ident">l</span>.<span class="ident">values</span>()).<span class="ident">ok_or</span>(<span class="string">&quot;Not a list.&quot;</span>)
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; FromRobj&lt;<span class="lifetime">&#39;a</span>&gt; <span class="kw">for </span>ListIter {
+    <span class="kw">fn </span>from_robj(robj: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Robj) -&gt; std::result::Result&lt;<span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt; {
+        robj.as_list().map(|l| l.values()).ok_or(<span class="string">&quot;Not a list.&quot;</span>)
     }
 }
 
-<span class="comment">// TODO: use Rstr or Sym instead of String.</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">KeyValue</span> {
-    <span class="kw">fn</span> <span class="ident">key</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">String</span>;
-    <span class="kw">fn</span> <span class="ident">value</span>(<span class="self">self</span>) -&gt; <span class="ident">Robj</span>;
+<span class="comment">// TODO: use Rstr or Sym instead of String.
+</span><span class="kw">pub trait </span>KeyValue {
+    <span class="kw">fn </span>key(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String;
+    <span class="kw">fn </span>value(<span class="self">self</span>) -&gt; Robj;
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">KeyValue</span> <span class="kw">for</span> (<span class="ident">T</span>, <span class="ident">Robj</span>) {
-    <span class="kw">fn</span> <span class="ident">key</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">String</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">as_ref</span>().<span class="ident">to_owned</span>()
+<span class="kw">impl</span>&lt;T: AsRef&lt;str&gt;&gt; KeyValue <span class="kw">for </span>(T, Robj) {
+    <span class="kw">fn </span>key(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
+        <span class="self">self</span>.<span class="number">0</span>.as_ref().to_owned()
     }
-    <span class="kw">fn</span> <span class="ident">value</span>(<span class="self">self</span>) -&gt; <span class="ident">Robj</span> {
-        <span class="self">self</span>.<span class="number">1</span>
-    }
+    <span class="kw">fn </span>value(<span class="self">self</span>) -&gt; Robj {
+        <span class="self">self</span>.<span class="number">1
+    </span>}
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">FromIterator</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">List</span> {
-    <span class="doccomment">/// Convert an iterator to a List object.</span>
-    <span class="kw">fn</span> <span class="ident">from_iter</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">iter</span>: <span class="ident">I</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="kw">crate</span>::single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">values</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">SEXP</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">iter</span>
-                .<span class="ident">into_iter</span>()
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">Rf_protect</span>(<span class="ident">s</span>.<span class="ident">into</span>().<span class="ident">get</span>()))
-                .<span class="ident">collect</span>();
+<span class="kw">impl</span>&lt;T: Into&lt;Robj&gt;&gt; FromIterator&lt;T&gt; <span class="kw">for </span>List {
+    <span class="doccomment">/// Convert an iterator to a List object.
+    </span><span class="kw">fn </span>from_iter&lt;I: IntoIterator&lt;Item = T&gt;&gt;(iter: I) -&gt; <span class="self">Self </span>{
+        <span class="kw">crate</span>::single_threaded(|| <span class="kw">unsafe </span>{
+            <span class="kw">let </span>values: Vec&lt;SEXP&gt; = iter
+                .into_iter()
+                .map(|s| Rf_protect(s.into().get()))
+                .collect();
 
-            <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">values</span>.<span class="ident">len</span>();
-            <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">Robj::alloc_vector</span>(<span class="ident">VECSXP</span>, <span class="ident">len</span>);
-            <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">v</span>) <span class="kw">in</span> <span class="ident">values</span>.<span class="ident">into_iter</span>().<span class="ident">enumerate</span>() {
-                <span class="ident">SET_VECTOR_ELT</span>(<span class="ident">robj</span>.<span class="ident">get</span>(), <span class="ident">i</span> <span class="kw">as</span> <span class="ident">isize</span>, <span class="ident">v</span>);
+            <span class="kw">let </span>len = values.len();
+            <span class="kw">let </span>robj = Robj::alloc_vector(VECSXP, len);
+            <span class="kw">for </span>(i, v) <span class="kw">in </span>values.into_iter().enumerate() {
+                SET_VECTOR_ELT(robj.get(), i <span class="kw">as </span>isize, v);
             }
-            <span class="ident">Rf_unprotect</span>(<span class="ident">len</span> <span class="kw">as</span> <span class="ident">i32</span>);
+            Rf_unprotect(len <span class="kw">as </span>i32);
 
-            <span class="ident">List</span> { <span class="ident">robj</span> }
+            List { robj }
         })
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Attributes</span> <span class="kw">for</span> <span class="ident">List</span> {}
+<span class="kw">impl </span>Attributes <span class="kw">for </span>List {}
 
-<span class="kw">impl</span> <span class="ident">Deref</span> <span class="kw">for</span> <span class="ident">List</span> {
-    <span class="kw">type</span> <span class="ident">Target</span> <span class="op">=</span> [<span class="ident">Robj</span>];
+<span class="kw">impl </span>Deref <span class="kw">for </span>List {
+    <span class="kw">type </span>Target = [Robj];
 
-    <span class="doccomment">/// Lists behave like slices of Robj.</span>
-    <span class="kw">fn</span> <span class="ident">deref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::Target</span> {
-        <span class="self">self</span>.<span class="ident">as_slice</span>()
+    <span class="doccomment">/// Lists behave like slices of Robj.
+    </span><span class="kw">fn </span>deref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Target {
+        <span class="self">self</span>.as_slice()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">std::fmt::Debug</span> <span class="kw">for</span> <span class="ident">List</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::fmt::Result</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">names</span>().<span class="ident">is_none</span>() {
+<span class="kw">impl </span>std::fmt::Debug <span class="kw">for </span>List {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">if </span><span class="self">self</span>.names().is_none() {
             <span class="macro">write!</span>(
-                <span class="ident">f</span>,
+                f,
                 <span class="string">&quot;list!({})&quot;</span>,
-                <span class="self">self</span>.<span class="ident">values</span>()
-                    .<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">v</span>))
-                    .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()
-                    .<span class="ident">join</span>(<span class="string">&quot;, &quot;</span>)
+                <span class="self">self</span>.values()
+                    .map(|v| <span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, v))
+                    .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()
+                    .join(<span class="string">&quot;, &quot;</span>)
             )
-        } <span class="kw">else</span> {
+        } <span class="kw">else </span>{
             <span class="macro">write!</span>(
-                <span class="ident">f</span>,
+                f,
                 <span class="string">&quot;list!({})&quot;</span>,
-                <span class="self">self</span>.<span class="ident">iter</span>()
-                    .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">k</span>, <span class="ident">v</span>)<span class="op">|</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">k</span>.<span class="ident">is_empty</span>() {
-                        <span class="macro">format!</span>(<span class="string">&quot;{}={:?}&quot;</span>, <span class="ident">k</span>, <span class="ident">v</span>)
-                    } <span class="kw">else</span> {
-                        <span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">v</span>)
+                <span class="self">self</span>.iter()
+                    .map(|(k, v)| <span class="kw">if </span>!k.is_empty() {
+                        <span class="macro">format!</span>(<span class="string">&quot;{}={:?}&quot;</span>, k, v)
+                    } <span class="kw">else </span>{
+                        <span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, v)
                     })
-                    .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()
-                    .<span class="ident">join</span>(<span class="string">&quot;, &quot;</span>)
+                    .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()
+                    .join(<span class="string">&quot;, &quot;</span>)
             )
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

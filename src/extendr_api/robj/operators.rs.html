@@ -1,6 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/robj/operators.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>operators.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container">
-                    <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../extendr_api/index.html">
-                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/robj/operators.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>operators.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../extendr_api/index.html">
+                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -301,259 +300,259 @@
 <span id="299">299</span>
 <span id="300">300</span>
 <span id="301">301</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">crate</span> <span class="kw">as</span> <span class="ident">extendr_api</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">std::ops</span>::{<span class="ident">Add</span>, <span class="ident">Div</span>, <span class="ident">Mul</span>, <span class="ident">Sub</span>};
+</pre><pre class="rust"><code><span class="kw">use crate as </span>extendr_api;
+<span class="kw">use crate</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>std::ops::{Add, Div, Mul, Sub};
 
-<span class="comment">///////////////////////////////////////////////////////////////</span>
-<span class="doccomment">/// The following impls add operators to Robj.</span>
-<span class="doccomment">///</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Operators</span>: <span class="ident">Rinternals</span> {
-    <span class="doccomment">/// Do the equivalent of x$y</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">/// let env = Environment::from_pairs(global_env(),</span>
-    <span class="doccomment">///    vec![(&quot;a&quot;.to_string(), r!(1)), (&quot;b&quot;.to_string(), r!(2))]);</span>
-    <span class="doccomment">/// assert_eq!(env.dollar(&quot;a&quot;).unwrap(), r!(1));</span>
-    <span class="doccomment">/// assert_eq!(env.dollar(&quot;b&quot;).unwrap(), r!(2));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">dollar</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">symbol</span>: <span class="ident">T</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>,
+<span class="comment">///////////////////////////////////////////////////////////////
+</span><span class="doccomment">/// The following impls add operators to Robj.
+///
+</span><span class="kw">pub trait </span>Operators: Rinternals {
+    <span class="doccomment">/// Do the equivalent of x$y
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    /// let env = Environment::from_pairs(global_env(),
+    ///    vec![(&quot;a&quot;.to_string(), r!(1)), (&quot;b&quot;.to_string(), r!(2))]);
+    /// assert_eq!(env.dollar(&quot;a&quot;).unwrap(), r!(1));
+    /// assert_eq!(env.dollar(&quot;b&quot;).unwrap(), r!(2));
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>dollar&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, symbol: T) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt;
+    <span class="kw">where
+        </span>T: AsRef&lt;str&gt;,
     {
-        <span class="kw">let</span> <span class="ident">symbol</span>: <span class="ident">Symbol</span> <span class="op">=</span> <span class="ident">Symbol::from_string</span>(<span class="ident">symbol</span>.<span class="ident">as_ref</span>());
-        <span class="macro">call!</span>(<span class="string">&quot;`$`&quot;</span>, <span class="self">self</span>.<span class="ident">as_robj</span>(), <span class="ident">symbol</span>)
+        <span class="kw">let </span>symbol: Symbol = Symbol::from_string(symbol.as_ref());
+        <span class="macro">call!</span>(<span class="string">&quot;`$`&quot;</span>, <span class="self">self</span>.as_robj(), symbol)
     }
 
-    <span class="doccomment">/// Do the equivalent of `x[y]`</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">/// let vec = r!([10, 20, 30]);</span>
-    <span class="doccomment">/// assert_eq!(vec.slice(2).unwrap(), r!(20));</span>
-    <span class="doccomment">/// assert_eq!(vec.slice(2..=3).unwrap(), r!([20, 30]));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">slice</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">T</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Do the equivalent of `x[y]`
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    /// let vec = r!([10, 20, 30]);
+    /// assert_eq!(vec.slice(2).unwrap(), r!(20));
+    /// assert_eq!(vec.slice(2..=3).unwrap(), r!([20, 30]));
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>slice&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, rhs: T) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt;
+    <span class="kw">where
+        </span>T: Into&lt;Robj&gt;,
     {
-        <span class="macro">call!</span>(<span class="string">&quot;`[`&quot;</span>, <span class="self">self</span>.<span class="ident">as_robj</span>(), <span class="ident">rhs</span>.<span class="ident">into</span>())
+        <span class="macro">call!</span>(<span class="string">&quot;`[`&quot;</span>, <span class="self">self</span>.as_robj(), rhs.into())
     }
 
-    <span class="doccomment">/// Do the equivalent of `x[[y]]`</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">/// let vec = r!([10, 20, 30]);</span>
-    <span class="doccomment">/// assert_eq!(vec.index(2).unwrap(), r!(20));</span>
-    <span class="doccomment">/// assert_eq!(vec.index(2..=3).is_err(), true);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">index</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">T</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Do the equivalent of `x[[y]]`
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    /// let vec = r!([10, 20, 30]);
+    /// assert_eq!(vec.index(2).unwrap(), r!(20));
+    /// assert_eq!(vec.index(2..=3).is_err(), true);
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>index&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, rhs: T) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt;
+    <span class="kw">where
+        </span>T: Into&lt;Robj&gt;,
     {
-        <span class="macro">call!</span>(<span class="string">&quot;`[[`&quot;</span>, <span class="self">self</span>.<span class="ident">as_robj</span>(), <span class="ident">rhs</span>.<span class="ident">into</span>())
+        <span class="macro">call!</span>(<span class="string">&quot;`[[`&quot;</span>, <span class="self">self</span>.as_robj(), rhs.into())
     }
 
-    <span class="doccomment">/// Do the equivalent of x ~ y</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let x = r!(Symbol::from_string(&quot;x&quot;));</span>
-    <span class="doccomment">///     let y = r!(Symbol::from_string(&quot;y&quot;));</span>
-    <span class="doccomment">///     let tilde = x.tilde(y).unwrap();</span>
-    <span class="doccomment">///     assert_eq!(tilde.inherits(&quot;formula&quot;), true);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">tilde</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">T</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Do the equivalent of x ~ y
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let x = r!(Symbol::from_string(&quot;x&quot;));
+    ///     let y = r!(Symbol::from_string(&quot;y&quot;));
+    ///     let tilde = x.tilde(y).unwrap();
+    ///     assert_eq!(tilde.inherits(&quot;formula&quot;), true);
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>tilde&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, rhs: T) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt;
+    <span class="kw">where
+        </span>T: Into&lt;Robj&gt;,
     {
-        <span class="macro">call!</span>(<span class="string">&quot;`~`&quot;</span>, <span class="self">self</span>.<span class="ident">as_robj</span>(), <span class="ident">rhs</span>.<span class="ident">into</span>())
+        <span class="macro">call!</span>(<span class="string">&quot;`~`&quot;</span>, <span class="self">self</span>.as_robj(), rhs.into())
     }
 
-    <span class="doccomment">/// Do the equivalent of x :: y</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let base = r!(Symbol::from_string(&quot;base&quot;));</span>
-    <span class="doccomment">///     let list = r!(Symbol::from_string(&quot;list&quot;));</span>
-    <span class="doccomment">///     let base_list = base.double_colon(list).unwrap();</span>
-    <span class="doccomment">///     assert_eq!(base_list.is_function(), true);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">double_colon</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">T</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Do the equivalent of x :: y
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let base = r!(Symbol::from_string(&quot;base&quot;));
+    ///     let list = r!(Symbol::from_string(&quot;list&quot;));
+    ///     let base_list = base.double_colon(list).unwrap();
+    ///     assert_eq!(base_list.is_function(), true);
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>double_colon&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, rhs: T) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt;
+    <span class="kw">where
+        </span>T: Into&lt;Robj&gt;,
     {
-        <span class="macro">call!</span>(<span class="string">&quot;`::`&quot;</span>, <span class="self">self</span>.<span class="ident">as_robj</span>(), <span class="ident">rhs</span>.<span class="ident">into</span>())
+        <span class="macro">call!</span>(<span class="string">&quot;`::`&quot;</span>, <span class="self">self</span>.as_robj(), rhs.into())
     }
 
-    <span class="doccomment">/// Do the equivalent of x(a, b, c)</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let function = R!(&quot;function(a, b) a + b&quot;).unwrap();</span>
-    <span class="doccomment">///     assert_eq!(function.is_function(), true);</span>
-    <span class="doccomment">///     assert_eq!(function.call(pairlist!(a=1, b=2)).unwrap(), r!(3));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">call</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">args</span>: <span class="ident">Pairlist</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_function</span>() {
-            <span class="kw">unsafe</span> {
-                <span class="kw">let</span> <span class="ident">call</span> <span class="op">=</span> <span class="ident">Robj::from_sexp</span>(<span class="ident">Rf_lcons</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">args</span>.<span class="ident">get</span>()));
-                <span class="ident">call</span>.<span class="ident">eval</span>()
+    <span class="doccomment">/// Do the equivalent of x(a, b, c)
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let function = R!(&quot;function(a, b) a + b&quot;).unwrap();
+    ///     assert_eq!(function.is_function(), true);
+    ///     assert_eq!(function.call(pairlist!(a=1, b=2)).unwrap(), r!(3));
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>call(<span class="kw-2">&amp;</span><span class="self">self</span>, args: Pairlist) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt; {
+        <span class="kw">if </span><span class="self">self</span>.is_function() {
+            <span class="kw">unsafe </span>{
+                <span class="kw">let </span>call = Robj::from_sexp(Rf_lcons(<span class="self">self</span>.get(), args.get()));
+                call.eval()
             }
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="ident">Error::ExpectedFunction</span>(<span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">clone</span>()))
+        } <span class="kw">else </span>{
+            <span class="prelude-val">Err</span>(Error::ExpectedFunction(<span class="self">self</span>.as_robj().clone()))
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">Rhs</span><span class="op">&gt;</span> <span class="ident">Add</span><span class="op">&lt;</span><span class="ident">Rhs</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span>
-<span class="kw">where</span>
-    <span class="ident">Rhs</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;Rhs&gt; Add&lt;Rhs&gt; <span class="kw">for </span>Robj
+<span class="kw">where
+    </span>Rhs: Into&lt;Robj&gt;,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">Robj</span>;
+    <span class="kw">type </span>Output = Robj;
 
-    <span class="doccomment">/// Add two R objects, consuming the left hand side.</span>
-    <span class="doccomment">/// panics on error.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// // lhs and rhs get dropped here</span>
-    <span class="doccomment">/// let lhs = r!([1, 2]);</span>
-    <span class="doccomment">/// let rhs = r!([10, 20]);</span>
-    <span class="doccomment">/// assert_eq!(lhs + rhs, r!([11, 22]));</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// // lhs gets dropped and rhs is a temporary object.</span>
-    <span class="doccomment">/// let lhs = r!([1, 2]);</span>
-    <span class="doccomment">/// assert_eq!(lhs + 1000, r!([1001, 1002]));</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// // Only lhs gets dropped.</span>
-    <span class="doccomment">/// let lhs = r!([1, 2]);</span>
-    <span class="doccomment">/// let rhs = r!([10, 20]);</span>
-    <span class="doccomment">/// assert_eq!(lhs + &amp;rhs, r!([11, 22]));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">add</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">Rhs</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
-        <span class="macro">call!</span>(<span class="string">&quot;`+`&quot;</span>, <span class="self">self</span>, <span class="ident">rhs</span>.<span class="ident">into</span>()).<span class="ident">expect</span>(<span class="string">&quot;Robj add failed&quot;</span>)
+    <span class="doccomment">/// Add two R objects, consuming the left hand side.
+    /// panics on error.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///
+    /// // lhs and rhs get dropped here
+    /// let lhs = r!([1, 2]);
+    /// let rhs = r!([10, 20]);
+    /// assert_eq!(lhs + rhs, r!([11, 22]));
+    ///
+    /// // lhs gets dropped and rhs is a temporary object.
+    /// let lhs = r!([1, 2]);
+    /// assert_eq!(lhs + 1000, r!([1001, 1002]));
+    ///
+    /// // Only lhs gets dropped.
+    /// let lhs = r!([1, 2]);
+    /// let rhs = r!([10, 20]);
+    /// assert_eq!(lhs + &amp;rhs, r!([11, 22]));
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>add(<span class="self">self</span>, rhs: Rhs) -&gt; <span class="self">Self</span>::Output {
+        <span class="macro">call!</span>(<span class="string">&quot;`+`&quot;</span>, <span class="self">self</span>, rhs.into()).expect(<span class="string">&quot;Robj add failed&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">Rhs</span><span class="op">&gt;</span> <span class="ident">Sub</span><span class="op">&lt;</span><span class="ident">Rhs</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span>
-<span class="kw">where</span>
-    <span class="ident">Rhs</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;Rhs&gt; Sub&lt;Rhs&gt; <span class="kw">for </span>Robj
+<span class="kw">where
+    </span>Rhs: Into&lt;Robj&gt;,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">Robj</span>;
+    <span class="kw">type </span>Output = Robj;
 
-    <span class="doccomment">/// Subtract two R objects, consuming the left hand side.</span>
-    <span class="doccomment">/// panics on error.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// // lhs and rhs get dropped here</span>
-    <span class="doccomment">/// let lhs = r!([10, 20]);</span>
-    <span class="doccomment">/// let rhs = r!([1, 2]);</span>
-    <span class="doccomment">/// assert_eq!(lhs - rhs, r!([9, 18]));</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// // lhs gets dropped and rhs is a temporary object.</span>
-    <span class="doccomment">/// let lhs = r!([1000, 2000]);</span>
-    <span class="doccomment">/// assert_eq!(lhs - 1, r!([999, 1999]));</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// // Only lhs gets dropped.</span>
-    <span class="doccomment">/// let lhs = r!([10, 20]);</span>
-    <span class="doccomment">/// let rhs = r!([1, 2]);</span>
-    <span class="doccomment">/// assert_eq!(lhs - &amp;rhs, r!([9, 18]));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">sub</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">Rhs</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
-        <span class="macro">call!</span>(<span class="string">&quot;`-`&quot;</span>, <span class="self">self</span>, <span class="ident">rhs</span>.<span class="ident">into</span>()).<span class="ident">expect</span>(<span class="string">&quot;Robj subtract failed&quot;</span>)
+    <span class="doccomment">/// Subtract two R objects, consuming the left hand side.
+    /// panics on error.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///
+    /// // lhs and rhs get dropped here
+    /// let lhs = r!([10, 20]);
+    /// let rhs = r!([1, 2]);
+    /// assert_eq!(lhs - rhs, r!([9, 18]));
+    ///
+    /// // lhs gets dropped and rhs is a temporary object.
+    /// let lhs = r!([1000, 2000]);
+    /// assert_eq!(lhs - 1, r!([999, 1999]));
+    ///
+    /// // Only lhs gets dropped.
+    /// let lhs = r!([10, 20]);
+    /// let rhs = r!([1, 2]);
+    /// assert_eq!(lhs - &amp;rhs, r!([9, 18]));
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>sub(<span class="self">self</span>, rhs: Rhs) -&gt; <span class="self">Self</span>::Output {
+        <span class="macro">call!</span>(<span class="string">&quot;`-`&quot;</span>, <span class="self">self</span>, rhs.into()).expect(<span class="string">&quot;Robj subtract failed&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">Rhs</span><span class="op">&gt;</span> <span class="ident">Mul</span><span class="op">&lt;</span><span class="ident">Rhs</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span>
-<span class="kw">where</span>
-    <span class="ident">Rhs</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;Rhs&gt; Mul&lt;Rhs&gt; <span class="kw">for </span>Robj
+<span class="kw">where
+    </span>Rhs: Into&lt;Robj&gt;,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">Robj</span>;
+    <span class="kw">type </span>Output = Robj;
 
-    <span class="doccomment">/// Multiply two R objects, consuming the left hand side.</span>
-    <span class="doccomment">/// panics on error.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// // lhs and rhs get dropped here</span>
-    <span class="doccomment">/// let lhs = r!([10.0, 20.0]);</span>
-    <span class="doccomment">/// let rhs = r!([1.0, 2.0]);</span>
-    <span class="doccomment">/// assert_eq!(lhs * rhs, r!([10.0, 40.0]));</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// // lhs gets dropped and rhs is a temporary object.</span>
-    <span class="doccomment">/// let lhs = r!([1.0, 2.0]);</span>
-    <span class="doccomment">/// assert_eq!(lhs * 10.0, r!([10.0, 20.0]));</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// // Only lhs gets dropped.</span>
-    <span class="doccomment">/// let lhs = r!([10.0, 20.0]);</span>
-    <span class="doccomment">/// let rhs = r!([1.0, 2.0]);</span>
-    <span class="doccomment">/// assert_eq!(lhs * &amp;rhs, r!([10.0, 40.0]));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">mul</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">Rhs</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
-        <span class="macro">call!</span>(<span class="string">&quot;`*`&quot;</span>, <span class="self">self</span>, <span class="ident">rhs</span>.<span class="ident">into</span>()).<span class="ident">expect</span>(<span class="string">&quot;Robj multiply failed&quot;</span>)
+    <span class="doccomment">/// Multiply two R objects, consuming the left hand side.
+    /// panics on error.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///
+    /// // lhs and rhs get dropped here
+    /// let lhs = r!([10.0, 20.0]);
+    /// let rhs = r!([1.0, 2.0]);
+    /// assert_eq!(lhs * rhs, r!([10.0, 40.0]));
+    ///
+    /// // lhs gets dropped and rhs is a temporary object.
+    /// let lhs = r!([1.0, 2.0]);
+    /// assert_eq!(lhs * 10.0, r!([10.0, 20.0]));
+    ///
+    /// // Only lhs gets dropped.
+    /// let lhs = r!([10.0, 20.0]);
+    /// let rhs = r!([1.0, 2.0]);
+    /// assert_eq!(lhs * &amp;rhs, r!([10.0, 40.0]));
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>mul(<span class="self">self</span>, rhs: Rhs) -&gt; <span class="self">Self</span>::Output {
+        <span class="macro">call!</span>(<span class="string">&quot;`*`&quot;</span>, <span class="self">self</span>, rhs.into()).expect(<span class="string">&quot;Robj multiply failed&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">Rhs</span><span class="op">&gt;</span> <span class="ident">Div</span><span class="op">&lt;</span><span class="ident">Rhs</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span>
-<span class="kw">where</span>
-    <span class="ident">Rhs</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;Rhs&gt; Div&lt;Rhs&gt; <span class="kw">for </span>Robj
+<span class="kw">where
+    </span>Rhs: Into&lt;Robj&gt;,
 {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">Robj</span>;
+    <span class="kw">type </span>Output = Robj;
 
-    <span class="doccomment">/// Divide two R objects, consuming the left hand side.</span>
-    <span class="doccomment">/// panics on error.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// // lhs and rhs get dropped here</span>
-    <span class="doccomment">/// let lhs = r!([10.0, 20.0]);</span>
-    <span class="doccomment">/// let rhs = r!([1.0, 2.0]);</span>
-    <span class="doccomment">/// assert_eq!(lhs / rhs, r!([10.0, 10.0]));</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// // lhs gets dropped and rhs is a temporary object.</span>
-    <span class="doccomment">/// let lhs = r!([10.0, 30.0]);</span>
-    <span class="doccomment">/// assert_eq!(lhs / 10.0, r!([1.0, 3.0]));</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// // Only lhs gets dropped.</span>
-    <span class="doccomment">/// let lhs = r!([10.0, 20.0]);</span>
-    <span class="doccomment">/// let rhs = r!([1.0, 2.0]);</span>
-    <span class="doccomment">/// assert_eq!(lhs / &amp;rhs, r!([10.0, 10.0]));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">div</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">Rhs</span>) -&gt; <span class="ident"><span class="self">Self</span>::Output</span> {
-        <span class="macro">call!</span>(<span class="string">&quot;`/`&quot;</span>, <span class="self">self</span>, <span class="ident">rhs</span>.<span class="ident">into</span>()).<span class="ident">expect</span>(<span class="string">&quot;Robj divide failed&quot;</span>)
+    <span class="doccomment">/// Divide two R objects, consuming the left hand side.
+    /// panics on error.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///
+    /// // lhs and rhs get dropped here
+    /// let lhs = r!([10.0, 20.0]);
+    /// let rhs = r!([1.0, 2.0]);
+    /// assert_eq!(lhs / rhs, r!([10.0, 10.0]));
+    ///
+    /// // lhs gets dropped and rhs is a temporary object.
+    /// let lhs = r!([10.0, 30.0]);
+    /// assert_eq!(lhs / 10.0, r!([1.0, 3.0]));
+    ///
+    /// // Only lhs gets dropped.
+    /// let lhs = r!([10.0, 20.0]);
+    /// let rhs = r!([1.0, 2.0]);
+    /// assert_eq!(lhs / &amp;rhs, r!([10.0, 10.0]));
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>div(<span class="self">self</span>, rhs: Rhs) -&gt; <span class="self">Self</span>::Output {
+        <span class="macro">call!</span>(<span class="string">&quot;`/`&quot;</span>, <span class="self">self</span>, rhs.into()).expect(<span class="string">&quot;Robj divide failed&quot;</span>)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Operators</span> <span class="kw">for</span> <span class="ident">Robj</span> {}
+<span class="kw">impl </span>Operators <span class="kw">for </span>Robj {}
 
-<span class="comment">// Calls are still experimental.</span>
-<span class="comment">//</span>
-<span class="comment">// impl&lt;Args&gt; Fn(Args) for Robj</span>
-<span class="comment">// {</span>
-<span class="comment">//     extern &quot;rust-call&quot; fn call(&amp;self, args: Args) -&gt; Self::Output {</span>
+<span class="comment">// Calls are still experimental.
+//
+// impl&lt;Args&gt; Fn(Args) for Robj
+// {
+//     extern &quot;rust-call&quot; fn call(&amp;self, args: Args) -&gt; Self::Output {
 
-<span class="comment">//     }</span>
-<span class="comment">// }</span>
+//     }
+// }
 
-<span class="comment">/* list of primitives in base.
+/* list of primitives in base.
 &gt; b[sapply(b, function(b) is.primitive(get(b, baseenv())))]
   [1] &quot;-&quot;               &quot;:&quot;               &quot;!&quot;               &quot;!=&quot;
   [5] &quot;(&quot;               &quot;[&quot;               &quot;[[&quot;              &quot;[[&lt;-&quot;
@@ -601,6 +600,6 @@
 [173] &quot;tan&quot;             &quot;tanh&quot;            &quot;tanpi&quot;           &quot;tracemem&quot;
 [177] &quot;trigamma&quot;        &quot;trunc&quot;           &quot;unclass&quot;         &quot;untracemem&quot;
 [181] &quot;UseMethod&quot;       &quot;while&quot;           &quot;xtfrm&quot;
-*/</span>
-</code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+*/
+</span></code></pre></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

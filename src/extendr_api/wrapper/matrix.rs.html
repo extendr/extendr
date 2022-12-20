@@ -1,6 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/matrix.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>matrix.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container">
-                    <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../extendr_api/index.html">
-                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/matrix.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>matrix.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../extendr_api/index.html">
+                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -395,400 +394,400 @@
 <span id="393">393</span>
 <span id="394">394</span>
 <span id="395">395</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Wrappers for matrices with deferred arithmetic.</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Wrappers for matrices with deferred arithmetic.
 
-<span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::robj::GetSexp</span>;
-<span class="kw">use</span> <span class="ident">std::ops</span>::{<span class="ident">Index</span>, <span class="ident">IndexMut</span>};
+</span><span class="kw">use super</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span><span class="kw">crate</span>::robj::GetSexp;
+<span class="kw">use </span>std::ops::{Index, IndexMut};
 
-<span class="doccomment">/// Wrapper for creating and using matrices and arrays.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///     let matrix = RMatrix::new_matrix(3, 2, |r, c| [</span>
-<span class="doccomment">///         [1., 2., 3.],</span>
-<span class="doccomment">///          [4., 5., 6.]][c][r]);</span>
-<span class="doccomment">///     let robj = r!(matrix);</span>
-<span class="doccomment">///     assert_eq!(robj.is_matrix(), true);</span>
-<span class="doccomment">///     assert_eq!(robj.nrows(), 3);</span>
-<span class="doccomment">///     assert_eq!(robj.ncols(), 2);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">///     let matrix2 : RMatrix&lt;f64&gt; = robj.as_matrix().ok_or(&quot;error&quot;)?;</span>
-<span class="doccomment">///     assert_eq!(matrix2.data().len(), 6);</span>
-<span class="doccomment">///     assert_eq!(matrix2.nrows(), 3);</span>
-<span class="doccomment">///     assert_eq!(matrix2.ncols(), 2);</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RArray</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">D</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Owning Robj (probably should be a Pin).</span>
-    <span class="ident">robj</span>: <span class="ident">Robj</span>,
+<span class="doccomment">/// Wrapper for creating and using matrices and arrays.
+///
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     let matrix = RMatrix::new_matrix(3, 2, |r, c| [
+///         [1., 2., 3.],
+///          [4., 5., 6.]][c][r]);
+///     let robj = r!(matrix);
+///     assert_eq!(robj.is_matrix(), true);
+///     assert_eq!(robj.nrows(), 3);
+///     assert_eq!(robj.ncols(), 2);
+///
+///     let matrix2 : RMatrix&lt;f64&gt; = robj.as_matrix().ok_or(&quot;error&quot;)?;
+///     assert_eq!(matrix2.data().len(), 6);
+///     assert_eq!(matrix2.nrows(), 3);
+///     assert_eq!(matrix2.ncols(), 2);
+/// }
+/// ```
+</span><span class="attribute">#[derive(Debug, PartialEq)]
+</span><span class="kw">pub struct </span>RArray&lt;T, D&gt; {
+    <span class="doccomment">/// Owning Robj (probably should be a Pin).
+    </span>robj: Robj,
 
-    <span class="doccomment">/// Slice of the data references the Robj.</span>
-    <span class="ident">data</span>: <span class="kw-2">*mut</span> <span class="ident">T</span>,
+    <span class="doccomment">/// Slice of the data references the Robj.
+    </span>data: <span class="kw-2">*mut </span>T,
 
-    <span class="doccomment">/// Dimensions of the array.</span>
-    <span class="ident">dim</span>: <span class="ident">D</span>,
+    <span class="doccomment">/// Dimensions of the array.
+    </span>dim: D,
 }
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">RColumn</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">RArray</span><span class="op">&lt;</span><span class="ident">T</span>, [<span class="ident">usize</span>; <span class="number">1</span>]<span class="op">&gt;</span>;
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">RMatrix</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">RArray</span><span class="op">&lt;</span><span class="ident">T</span>, [<span class="ident">usize</span>; <span class="number">2</span>]<span class="op">&gt;</span>;
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">RMatrix3D</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">RArray</span><span class="op">&lt;</span><span class="ident">T</span>, [<span class="ident">usize</span>; <span class="number">3</span>]<span class="op">&gt;</span>;
+<span class="kw">pub type </span>RColumn&lt;T&gt; = RArray&lt;T, [usize; <span class="number">1</span>]&gt;;
+<span class="kw">pub type </span>RMatrix&lt;T&gt; = RArray&lt;T, [usize; <span class="number">2</span>]&gt;;
+<span class="kw">pub type </span>RMatrix3D&lt;T&gt; = RArray&lt;T, [usize; <span class="number">3</span>]&gt;;
 
-<span class="kw">const</span> <span class="ident">BASE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">0</span>;
+<span class="kw">const </span>BASE: usize = <span class="number">0</span>;
 
-<span class="kw">trait</span> <span class="ident">Offset</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Get the offset into the array for a given index.</span>
-    <span class="kw">fn</span> <span class="ident">offset</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">idx</span>: <span class="ident">D</span>) -&gt; <span class="ident">usize</span>;
+<span class="kw">trait </span>Offset&lt;D&gt; {
+    <span class="doccomment">/// Get the offset into the array for a given index.
+    </span><span class="kw">fn </span>offset(<span class="kw-2">&amp;</span><span class="self">self</span>, idx: D) -&gt; usize;
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Offset</span><span class="op">&lt;</span>[<span class="ident">usize</span>; <span class="number">1</span>]<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">RArray</span><span class="op">&lt;</span><span class="ident">T</span>, [<span class="ident">usize</span>; <span class="number">1</span>]<span class="op">&gt;</span> {
-    <span class="doccomment">/// Get the offset into the array for a given index.</span>
-    <span class="kw">fn</span> <span class="ident">offset</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: [<span class="ident">usize</span>; <span class="number">1</span>]) -&gt; <span class="ident">usize</span> {
-        <span class="kw">if</span> <span class="ident">index</span>[<span class="number">0</span>] <span class="op">-</span> <span class="ident">BASE</span> <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">dim</span>[<span class="number">0</span>] {
+<span class="kw">impl</span>&lt;T&gt; Offset&lt;[usize; <span class="number">1</span>]&gt; <span class="kw">for </span>RArray&lt;T, [usize; <span class="number">1</span>]&gt; {
+    <span class="doccomment">/// Get the offset into the array for a given index.
+    </span><span class="kw">fn </span>offset(<span class="kw-2">&amp;</span><span class="self">self</span>, index: [usize; <span class="number">1</span>]) -&gt; usize {
+        <span class="kw">if </span>index[<span class="number">0</span>] - BASE &gt; <span class="self">self</span>.dim[<span class="number">0</span>] {
             <span class="macro">panic!</span>(<span class="string">&quot;array index: row overflow&quot;</span>);
         }
-        <span class="ident">index</span>[<span class="number">0</span>] <span class="op">-</span> <span class="ident">BASE</span>
+        index[<span class="number">0</span>] - BASE
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Offset</span><span class="op">&lt;</span>[<span class="ident">usize</span>; <span class="number">2</span>]<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">RArray</span><span class="op">&lt;</span><span class="ident">T</span>, [<span class="ident">usize</span>; <span class="number">2</span>]<span class="op">&gt;</span> {
-    <span class="doccomment">/// Get the offset into the array for a given index.</span>
-    <span class="kw">fn</span> <span class="ident">offset</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: [<span class="ident">usize</span>; <span class="number">2</span>]) -&gt; <span class="ident">usize</span> {
-        <span class="kw">if</span> <span class="ident">index</span>[<span class="number">0</span>] <span class="op">-</span> <span class="ident">BASE</span> <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">dim</span>[<span class="number">0</span>] {
+<span class="kw">impl</span>&lt;T&gt; Offset&lt;[usize; <span class="number">2</span>]&gt; <span class="kw">for </span>RArray&lt;T, [usize; <span class="number">2</span>]&gt; {
+    <span class="doccomment">/// Get the offset into the array for a given index.
+    </span><span class="kw">fn </span>offset(<span class="kw-2">&amp;</span><span class="self">self</span>, index: [usize; <span class="number">2</span>]) -&gt; usize {
+        <span class="kw">if </span>index[<span class="number">0</span>] - BASE &gt; <span class="self">self</span>.dim[<span class="number">0</span>] {
             <span class="macro">panic!</span>(<span class="string">&quot;matrix index: row overflow&quot;</span>);
         }
-        <span class="kw">if</span> <span class="ident">index</span>[<span class="number">1</span>] <span class="op">-</span> <span class="ident">BASE</span> <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">dim</span>[<span class="number">1</span>] {
+        <span class="kw">if </span>index[<span class="number">1</span>] - BASE &gt; <span class="self">self</span>.dim[<span class="number">1</span>] {
             <span class="macro">panic!</span>(<span class="string">&quot;matrix index: column overflow&quot;</span>);
         }
-        (<span class="ident">index</span>[<span class="number">0</span>] <span class="op">-</span> <span class="ident">BASE</span>) <span class="op">+</span> <span class="self">self</span>.<span class="ident">dim</span>[<span class="number">0</span>] <span class="op">*</span> (<span class="ident">index</span>[<span class="number">1</span>] <span class="op">-</span> <span class="ident">BASE</span>)
+        (index[<span class="number">0</span>] - BASE) + <span class="self">self</span>.dim[<span class="number">0</span>] * (index[<span class="number">1</span>] - BASE)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Offset</span><span class="op">&lt;</span>[<span class="ident">usize</span>; <span class="number">3</span>]<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">RArray</span><span class="op">&lt;</span><span class="ident">T</span>, [<span class="ident">usize</span>; <span class="number">3</span>]<span class="op">&gt;</span> {
-    <span class="doccomment">/// Get the offset into the array for a given index.</span>
-    <span class="kw">fn</span> <span class="ident">offset</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: [<span class="ident">usize</span>; <span class="number">3</span>]) -&gt; <span class="ident">usize</span> {
-        <span class="kw">if</span> <span class="ident">index</span>[<span class="number">0</span>] <span class="op">-</span> <span class="ident">BASE</span> <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">dim</span>[<span class="number">0</span>] {
+<span class="kw">impl</span>&lt;T&gt; Offset&lt;[usize; <span class="number">3</span>]&gt; <span class="kw">for </span>RArray&lt;T, [usize; <span class="number">3</span>]&gt; {
+    <span class="doccomment">/// Get the offset into the array for a given index.
+    </span><span class="kw">fn </span>offset(<span class="kw-2">&amp;</span><span class="self">self</span>, index: [usize; <span class="number">3</span>]) -&gt; usize {
+        <span class="kw">if </span>index[<span class="number">0</span>] - BASE &gt; <span class="self">self</span>.dim[<span class="number">0</span>] {
             <span class="macro">panic!</span>(<span class="string">&quot;RMatrix3D index: row overflow&quot;</span>);
         }
-        <span class="kw">if</span> <span class="ident">index</span>[<span class="number">1</span>] <span class="op">-</span> <span class="ident">BASE</span> <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">dim</span>[<span class="number">1</span>] {
+        <span class="kw">if </span>index[<span class="number">1</span>] - BASE &gt; <span class="self">self</span>.dim[<span class="number">1</span>] {
             <span class="macro">panic!</span>(<span class="string">&quot;RMatrix3D index: column overflow&quot;</span>);
         }
-        <span class="kw">if</span> <span class="ident">index</span>[<span class="number">2</span>] <span class="op">-</span> <span class="ident">BASE</span> <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">dim</span>[<span class="number">2</span>] {
+        <span class="kw">if </span>index[<span class="number">2</span>] - BASE &gt; <span class="self">self</span>.dim[<span class="number">2</span>] {
             <span class="macro">panic!</span>(<span class="string">&quot;RMatrix3D index: submatrix overflow&quot;</span>);
         }
-        (<span class="ident">index</span>[<span class="number">0</span>] <span class="op">-</span> <span class="ident">BASE</span>) <span class="op">+</span> <span class="self">self</span>.<span class="ident">dim</span>[<span class="number">0</span>] <span class="op">*</span> (<span class="ident">index</span>[<span class="number">1</span>] <span class="op">-</span> <span class="ident">BASE</span> <span class="op">+</span> <span class="self">self</span>.<span class="ident">dim</span>[<span class="number">1</span>] <span class="op">*</span> (<span class="ident">index</span>[<span class="number">2</span>] <span class="op">-</span> <span class="ident">BASE</span>))
+        (index[<span class="number">0</span>] - BASE) + <span class="self">self</span>.dim[<span class="number">0</span>] * (index[<span class="number">1</span>] - BASE + <span class="self">self</span>.dim[<span class="number">1</span>] * (index[<span class="number">2</span>] - BASE))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">D</span><span class="op">&gt;</span> <span class="ident">RArray</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">D</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_parts</span>(<span class="ident">robj</span>: <span class="ident">Robj</span>, <span class="ident">data</span>: <span class="kw-2">*mut</span> <span class="ident">T</span>, <span class="ident">dim</span>: <span class="ident">D</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> { <span class="ident">robj</span>, <span class="ident">data</span>, <span class="ident">dim</span> }
+<span class="kw">impl</span>&lt;T, D&gt; RArray&lt;T, D&gt; {
+    <span class="kw">pub fn </span>from_parts(robj: Robj, data: <span class="kw-2">*mut </span>T, dim: D) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{ robj, data, dim }
     }
 
-    <span class="doccomment">/// Get the underlying data fro this array.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">data</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[<span class="ident">T</span>] {
-        <span class="kw">unsafe</span> { <span class="ident">std::slice::from_raw_parts</span>(<span class="self">self</span>.<span class="ident">data</span>, <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">len</span>()) }
+    <span class="doccomment">/// Get the underlying data fro this array.
+    </span><span class="kw">pub fn </span>data(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[T] {
+        <span class="kw">unsafe </span>{ std::slice::from_raw_parts(<span class="self">self</span>.data, <span class="self">self</span>.robj.len()) }
     }
 
-    <span class="doccomment">/// Get the dimensions for this array.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dim</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">D</span> {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dim</span>
+    <span class="doccomment">/// Get the dimensions for this array.
+    </span><span class="kw">pub fn </span>dim(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>D {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.dim
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span>: <span class="ident">ToVectorValue</span> <span class="op">+</span> <span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">RColumn</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">Robj</span>: <span class="ident">AsTypedSlice</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, T: ToVectorValue + <span class="lifetime">&#39;a</span>&gt; RColumn&lt;T&gt;
+<span class="kw">where
+    </span>Robj: AsTypedSlice&lt;<span class="lifetime">&#39;a</span>, T&gt;,
 {
-    <span class="doccomment">/// Make a new column type.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_column</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">usize</span>) -&gt; <span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">nrows</span>: <span class="ident">usize</span>, <span class="ident">f</span>: <span class="ident">F</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">nrows</span>).<span class="ident">map</span>(<span class="ident">f</span>).<span class="ident">collect_robj</span>();
-        <span class="kw">let</span> <span class="ident">dim</span> <span class="op">=</span> [<span class="ident">nrows</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">set_attrib</span>(<span class="ident">wrapper::symbol::dim_symbol</span>(), <span class="ident">dim</span>).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_typed_slice_mut</span>().<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">slice</span>.<span class="ident">as_mut_ptr</span>();
-        <span class="ident">RArray::from_parts</span>(<span class="ident">robj</span>, <span class="ident">data</span>, <span class="ident">dim</span>)
+    <span class="doccomment">/// Make a new column type.
+    </span><span class="kw">pub fn </span>new_column&lt;F: FnMut(usize) -&gt; T&gt;(nrows: usize, f: F) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>robj = (<span class="number">0</span>..nrows).map(f).collect_robj();
+        <span class="kw">let </span>dim = [nrows];
+        <span class="kw">let </span><span class="kw-2">mut </span>robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
+        <span class="kw">let </span>slice = robj.as_typed_slice_mut().unwrap();
+        <span class="kw">let </span>data = slice.as_mut_ptr();
+        RArray::from_parts(robj, data, dim)
     }
 
-    <span class="doccomment">/// Get the number of rows.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">nrows</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-        <span class="self">self</span>.<span class="ident">dim</span>[<span class="number">0</span>]
+    <span class="doccomment">/// Get the number of rows.
+    </span><span class="kw">pub fn </span>nrows(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+        <span class="self">self</span>.dim[<span class="number">0</span>]
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span>: <span class="ident">ToVectorValue</span> <span class="op">+</span> <span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">RMatrix</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">Robj</span>: <span class="ident">AsTypedSlice</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, T: ToVectorValue + <span class="lifetime">&#39;a</span>&gt; RMatrix&lt;T&gt;
+<span class="kw">where
+    </span>Robj: AsTypedSlice&lt;<span class="lifetime">&#39;a</span>, T&gt;,
 {
-    <span class="doccomment">/// Create a new matrix wrapper.</span>
-    <span class="doccomment">/// Make a new column type.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_matrix</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">FnMut</span>(<span class="ident">usize</span>, <span class="ident">usize</span>) -&gt; <span class="ident">T</span><span class="op">&gt;</span>(
-        <span class="ident">nrows</span>: <span class="ident">usize</span>,
-        <span class="ident">ncols</span>: <span class="ident">usize</span>,
-        <span class="ident">f</span>: <span class="ident">F</span>,
-    ) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">ncols</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">g</span> <span class="op">=</span> <span class="ident">f</span>.<span class="ident">clone</span>();
-                (<span class="number">0</span>..<span class="ident">nrows</span>).<span class="ident">map</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">g</span>(<span class="ident">r</span>, <span class="ident">c</span>))
+    <span class="doccomment">/// Create a new matrix wrapper.
+    /// Make a new column type.
+    </span><span class="kw">pub fn </span>new_matrix&lt;F: Clone + FnMut(usize, usize) -&gt; T&gt;(
+        nrows: usize,
+        ncols: usize,
+        f: F,
+    ) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>robj = (<span class="number">0</span>..ncols)
+            .map(|c| {
+                <span class="kw">let </span><span class="kw-2">mut </span>g = f.clone();
+                (<span class="number">0</span>..nrows).map(<span class="kw">move </span>|r| g(r, c))
             })
-            .<span class="ident">flatten</span>()
-            .<span class="ident">collect_robj</span>();
-        <span class="kw">let</span> <span class="ident">dim</span> <span class="op">=</span> [<span class="ident">nrows</span>, <span class="ident">ncols</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">set_attrib</span>(<span class="ident">wrapper::symbol::dim_symbol</span>(), <span class="ident">dim</span>).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_typed_slice_mut</span>().<span class="ident">unwrap</span>().<span class="ident">as_mut_ptr</span>();
-        <span class="ident">RArray::from_parts</span>(<span class="ident">robj</span>, <span class="ident">data</span>, <span class="ident">dim</span>)
+            .flatten()
+            .collect_robj();
+        <span class="kw">let </span>dim = [nrows, ncols];
+        <span class="kw">let </span><span class="kw-2">mut </span>robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
+        <span class="kw">let </span>data = robj.as_typed_slice_mut().unwrap().as_mut_ptr();
+        RArray::from_parts(robj, data, dim)
     }
 
-    <span class="doccomment">/// Get the number of rows.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">nrows</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-        <span class="self">self</span>.<span class="ident">dim</span>[<span class="number">0</span>]
+    <span class="doccomment">/// Get the number of rows.
+    </span><span class="kw">pub fn </span>nrows(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+        <span class="self">self</span>.dim[<span class="number">0</span>]
     }
 
-    <span class="doccomment">/// Get the number of columns.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ncols</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-        <span class="self">self</span>.<span class="ident">dim</span>[<span class="number">1</span>]
+    <span class="doccomment">/// Get the number of columns.
+    </span><span class="kw">pub fn </span>ncols(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+        <span class="self">self</span>.dim[<span class="number">1</span>]
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span>: <span class="ident">ToVectorValue</span> <span class="op">+</span> <span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">RMatrix3D</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">Robj</span>: <span class="ident">AsTypedSlice</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, T: ToVectorValue + <span class="lifetime">&#39;a</span>&gt; RMatrix3D&lt;T&gt;
+<span class="kw">where
+    </span>Robj: AsTypedSlice&lt;<span class="lifetime">&#39;a</span>, T&gt;,
 {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_matrix3d</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">FnMut</span>(<span class="ident">usize</span>, <span class="ident">usize</span>, <span class="ident">usize</span>) -&gt; <span class="ident">T</span><span class="op">&gt;</span>(
-        <span class="ident">nrows</span>: <span class="ident">usize</span>,
-        <span class="ident">ncols</span>: <span class="ident">usize</span>,
-        <span class="ident">nmatrix</span>: <span class="ident">usize</span>,
-        <span class="ident">f</span>: <span class="ident">F</span>,
-    ) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">nmatrix</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">m</span><span class="op">|</span> {
-                <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">f</span>.<span class="ident">clone</span>();
-                (<span class="number">0</span>..<span class="ident">ncols</span>)
-                    .<span class="ident">map</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">c</span><span class="op">|</span> {
-                        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">g</span> <span class="op">=</span> <span class="ident">h</span>.<span class="ident">clone</span>();
-                        (<span class="number">0</span>..<span class="ident">nrows</span>).<span class="ident">map</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">g</span>(<span class="ident">r</span>, <span class="ident">c</span>, <span class="ident">m</span>))
+    <span class="kw">pub fn </span>new_matrix3d&lt;F: Clone + FnMut(usize, usize, usize) -&gt; T&gt;(
+        nrows: usize,
+        ncols: usize,
+        nmatrix: usize,
+        f: F,
+    ) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>robj = (<span class="number">0</span>..nmatrix)
+            .map(|m| {
+                <span class="kw">let </span>h = f.clone();
+                (<span class="number">0</span>..ncols)
+                    .map(<span class="kw">move </span>|c| {
+                        <span class="kw">let </span><span class="kw-2">mut </span>g = h.clone();
+                        (<span class="number">0</span>..nrows).map(<span class="kw">move </span>|r| g(r, c, m))
                     })
-                    .<span class="ident">flatten</span>()
+                    .flatten()
             })
-            .<span class="ident">flatten</span>()
-            .<span class="ident">collect_robj</span>();
-        <span class="kw">let</span> <span class="ident">dim</span> <span class="op">=</span> [<span class="ident">nrows</span>, <span class="ident">ncols</span>, <span class="ident">nmatrix</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">set_attrib</span>(<span class="ident">wrapper::symbol::dim_symbol</span>(), <span class="ident">dim</span>).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_typed_slice_mut</span>().<span class="ident">unwrap</span>().<span class="ident">as_mut_ptr</span>();
-        <span class="ident">RArray::from_parts</span>(<span class="ident">robj</span>, <span class="ident">data</span>, <span class="ident">dim</span>)
+            .flatten()
+            .collect_robj();
+        <span class="kw">let </span>dim = [nrows, ncols, nmatrix];
+        <span class="kw">let </span><span class="kw-2">mut </span>robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
+        <span class="kw">let </span>data = robj.as_typed_slice_mut().unwrap().as_mut_ptr();
+        RArray::from_parts(robj, data, dim)
     }
 
-    <span class="doccomment">/// Get the number of rows.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">nrows</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-        <span class="self">self</span>.<span class="ident">dim</span>[<span class="number">0</span>]
+    <span class="doccomment">/// Get the number of rows.
+    </span><span class="kw">pub fn </span>nrows(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+        <span class="self">self</span>.dim[<span class="number">0</span>]
     }
 
-    <span class="doccomment">/// Get the number of columns.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ncols</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-        <span class="self">self</span>.<span class="ident">dim</span>[<span class="number">1</span>]
+    <span class="doccomment">/// Get the number of columns.
+    </span><span class="kw">pub fn </span>ncols(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+        <span class="self">self</span>.dim[<span class="number">1</span>]
     }
 
-    <span class="doccomment">/// Get the number of submatrices.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">nsub</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-        <span class="self">self</span>.<span class="ident">dim</span>[<span class="number">2</span>]
+    <span class="doccomment">/// Get the number of submatrices.
+    </span><span class="kw">pub fn </span>nsub(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+        <span class="self">self</span>.dim[<span class="number">2</span>]
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">RColumn</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">Robj</span>: <span class="ident">AsTypedSlice</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, T: <span class="lifetime">&#39;a</span>&gt; TryFrom&lt;Robj&gt; <span class="kw">for </span>RColumn&lt;T&gt;
+<span class="kw">where
+    </span>Robj: AsTypedSlice&lt;<span class="lifetime">&#39;a</span>, T&gt;,
 {
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>;
+    <span class="kw">type </span>Error = Error;
 
-    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="kw-2">mut</span> <span class="ident">robj</span>: <span class="ident">Robj</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">slice</span>) <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_typed_slice_mut</span>() {
-            <span class="prelude-val">Ok</span>(<span class="ident">RArray::from_parts</span>(<span class="ident">robj</span>, <span class="ident">slice</span>.<span class="ident">as_mut_ptr</span>(), [<span class="ident">slice</span>.<span class="ident">len</span>()]))
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="ident">Error::ExpectedVector</span>(<span class="ident">robj</span>))
+    <span class="kw">fn </span>try_from(<span class="kw-2">mut </span>robj: Robj) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(slice) = robj.as_typed_slice_mut() {
+            <span class="prelude-val">Ok</span>(RArray::from_parts(robj, slice.as_mut_ptr(), [slice.len()]))
+        } <span class="kw">else </span>{
+            <span class="prelude-val">Err</span>(Error::ExpectedVector(robj))
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">RMatrix</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">Robj</span>: <span class="ident">AsTypedSlice</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, T: <span class="lifetime">&#39;a</span>&gt; TryFrom&lt;Robj&gt; <span class="kw">for </span>RMatrix&lt;T&gt;
+<span class="kw">where
+    </span>Robj: AsTypedSlice&lt;<span class="lifetime">&#39;a</span>, T&gt;,
 {
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>;
+    <span class="kw">type </span>Error = Error;
 
-    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="kw-2">mut</span> <span class="ident">robj</span>: <span class="ident">Robj</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">robj</span>.<span class="ident">is_matrix</span>() {
-            <span class="prelude-val">Err</span>(<span class="ident">Error::ExpectedMatrix</span>(<span class="ident">robj</span>))
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">slice</span>) <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_typed_slice_mut</span>() {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">dim</span>) <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">dim</span>() {
-                <span class="kw">let</span> <span class="ident">dim</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">dim</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">d</span><span class="op">|</span> <span class="ident">d</span>.<span class="ident">inner</span>() <span class="kw">as</span> <span class="ident">usize</span>).<span class="ident">collect</span>();
-                <span class="kw">if</span> <span class="ident">dim</span>.<span class="ident">len</span>() <span class="op">!</span><span class="op">=</span> <span class="number">2</span> {
-                    <span class="prelude-val">Err</span>(<span class="ident">Error::ExpectedMatrix</span>(<span class="ident">robj</span>))
-                } <span class="kw">else</span> {
-                    <span class="prelude-val">Ok</span>(<span class="ident">RArray::from_parts</span>(
-                        <span class="ident">robj</span>,
-                        <span class="ident">slice</span>.<span class="ident">as_mut_ptr</span>(),
-                        [<span class="ident">dim</span>[<span class="number">0</span>], <span class="ident">dim</span>[<span class="number">1</span>]],
+    <span class="kw">fn </span>try_from(<span class="kw-2">mut </span>robj: Robj) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">if </span>!robj.is_matrix() {
+            <span class="prelude-val">Err</span>(Error::ExpectedMatrix(robj))
+        } <span class="kw">else if let </span><span class="prelude-val">Some</span>(slice) = robj.as_typed_slice_mut() {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(dim) = robj.dim() {
+                <span class="kw">let </span>dim: Vec&lt;<span class="kw">_</span>&gt; = dim.iter().map(|d| d.inner() <span class="kw">as </span>usize).collect();
+                <span class="kw">if </span>dim.len() != <span class="number">2 </span>{
+                    <span class="prelude-val">Err</span>(Error::ExpectedMatrix(robj))
+                } <span class="kw">else </span>{
+                    <span class="prelude-val">Ok</span>(RArray::from_parts(
+                        robj,
+                        slice.as_mut_ptr(),
+                        [dim[<span class="number">0</span>], dim[<span class="number">1</span>]],
                     ))
                 }
-            } <span class="kw">else</span> {
-                <span class="prelude-val">Err</span>(<span class="ident">Error::ExpectedMatrix</span>(<span class="ident">robj</span>))
+            } <span class="kw">else </span>{
+                <span class="prelude-val">Err</span>(Error::ExpectedMatrix(robj))
             }
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="ident">Error::TypeMismatch</span>(<span class="ident">robj</span>))
+        } <span class="kw">else </span>{
+            <span class="prelude-val">Err</span>(Error::TypeMismatch(robj))
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">RMatrix3D</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">Robj</span>: <span class="ident">AsTypedSlice</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, T: <span class="lifetime">&#39;a</span>&gt; TryFrom&lt;Robj&gt; <span class="kw">for </span>RMatrix3D&lt;T&gt;
+<span class="kw">where
+    </span>Robj: AsTypedSlice&lt;<span class="lifetime">&#39;a</span>, T&gt;,
 {
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>;
+    <span class="kw">type </span>Error = Error;
 
-    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="kw-2">mut</span> <span class="ident">robj</span>: <span class="ident">Robj</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">slice</span>) <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_typed_slice_mut</span>() {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">dim</span>) <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">dim</span>() {
-                <span class="kw">if</span> <span class="ident">dim</span>.<span class="ident">len</span>() <span class="op">!</span><span class="op">=</span> <span class="number">3</span> {
-                    <span class="prelude-val">Err</span>(<span class="ident">Error::ExpectedMatrix3D</span>(<span class="ident">robj</span>))
-                } <span class="kw">else</span> {
-                    <span class="kw">let</span> <span class="ident">dim</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">dim</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">d</span><span class="op">|</span> <span class="ident">d</span>.<span class="ident">inner</span>() <span class="kw">as</span> <span class="ident">usize</span>).<span class="ident">collect</span>();
-                    <span class="prelude-val">Ok</span>(<span class="ident">RArray::from_parts</span>(
-                        <span class="ident">robj</span>,
-                        <span class="ident">slice</span>.<span class="ident">as_mut_ptr</span>(),
-                        [<span class="ident">dim</span>[<span class="number">0</span>], <span class="ident">dim</span>[<span class="number">1</span>], <span class="ident">dim</span>[<span class="number">2</span>]],
+    <span class="kw">fn </span>try_from(<span class="kw-2">mut </span>robj: Robj) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(slice) = robj.as_typed_slice_mut() {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(dim) = robj.dim() {
+                <span class="kw">if </span>dim.len() != <span class="number">3 </span>{
+                    <span class="prelude-val">Err</span>(Error::ExpectedMatrix3D(robj))
+                } <span class="kw">else </span>{
+                    <span class="kw">let </span>dim: Vec&lt;<span class="kw">_</span>&gt; = dim.iter().map(|d| d.inner() <span class="kw">as </span>usize).collect();
+                    <span class="prelude-val">Ok</span>(RArray::from_parts(
+                        robj,
+                        slice.as_mut_ptr(),
+                        [dim[<span class="number">0</span>], dim[<span class="number">1</span>], dim[<span class="number">2</span>]],
                     ))
                 }
-            } <span class="kw">else</span> {
-                <span class="prelude-val">Err</span>(<span class="ident">Error::ExpectedMatrix3D</span>(<span class="ident">robj</span>))
+            } <span class="kw">else </span>{
+                <span class="prelude-val">Err</span>(Error::ExpectedMatrix3D(robj))
             }
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="ident">Error::TypeMismatch</span>(<span class="ident">robj</span>))
+        } <span class="kw">else </span>{
+            <span class="prelude-val">Err</span>(Error::TypeMismatch(robj))
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">D</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">RArray</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="doccomment">/// Convert a column, matrix or matrix3d to an Robj.</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">array</span>: <span class="ident">RArray</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">D</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">array</span>.<span class="ident">robj</span>
+<span class="kw">impl</span>&lt;T, D&gt; From&lt;RArray&lt;T, D&gt;&gt; <span class="kw">for </span>Robj {
+    <span class="doccomment">/// Convert a column, matrix or matrix3d to an Robj.
+    </span><span class="kw">fn </span>from(array: RArray&lt;T, D&gt;) -&gt; <span class="self">Self </span>{
+        array.robj
     }
 }
 
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">MatrixConversions</span>: <span class="ident">GetSexp</span> {
-    <span class="kw">fn</span> <span class="ident">as_column</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">E</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RColumn</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">Robj</span>: <span class="ident">AsTypedSlice</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">E</span><span class="op">&gt;</span>,
+<span class="kw">pub trait </span>MatrixConversions: GetSexp {
+    <span class="kw">fn </span>as_column&lt;<span class="lifetime">&#39;a</span>, E: <span class="lifetime">&#39;a</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;RColumn&lt;E&gt;&gt;
+    <span class="kw">where
+        </span>Robj: AsTypedSlice&lt;<span class="lifetime">&#39;a</span>, E&gt;,
     {
-        <span class="op">&lt;</span><span class="ident">RColumn</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::try_from</span>(<span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">clone</span>()).<span class="ident">ok</span>()
+        &lt;RColumn&lt;E&gt;&gt;::try_from(<span class="self">self</span>.as_robj().clone()).ok()
     }
 
-    <span class="kw">fn</span> <span class="ident">as_matrix</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">E</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RMatrix</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">Robj</span>: <span class="ident">AsTypedSlice</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">E</span><span class="op">&gt;</span>,
+    <span class="kw">fn </span>as_matrix&lt;<span class="lifetime">&#39;a</span>, E: <span class="lifetime">&#39;a</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;RMatrix&lt;E&gt;&gt;
+    <span class="kw">where
+        </span>Robj: AsTypedSlice&lt;<span class="lifetime">&#39;a</span>, E&gt;,
     {
-        <span class="op">&lt;</span><span class="ident">RMatrix</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::try_from</span>(<span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">clone</span>()).<span class="ident">ok</span>()
+        &lt;RMatrix&lt;E&gt;&gt;::try_from(<span class="self">self</span>.as_robj().clone()).ok()
     }
 
-    <span class="kw">fn</span> <span class="ident">as_matrix3d</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">E</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RMatrix3D</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">Robj</span>: <span class="ident">AsTypedSlice</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">E</span><span class="op">&gt;</span>,
+    <span class="kw">fn </span>as_matrix3d&lt;<span class="lifetime">&#39;a</span>, E: <span class="lifetime">&#39;a</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;RMatrix3D&lt;E&gt;&gt;
+    <span class="kw">where
+        </span>Robj: AsTypedSlice&lt;<span class="lifetime">&#39;a</span>, E&gt;,
     {
-        <span class="op">&lt;</span><span class="ident">RMatrix3D</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::try_from</span>(<span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">clone</span>()).<span class="ident">ok</span>()
+        &lt;RMatrix3D&lt;E&gt;&gt;::try_from(<span class="self">self</span>.as_robj().clone()).ok()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">MatrixConversions</span> <span class="kw">for</span> <span class="ident">Robj</span> {}
+<span class="kw">impl </span>MatrixConversions <span class="kw">for </span>Robj {}
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Index</span><span class="op">&lt;</span>[<span class="ident">usize</span>; <span class="number">2</span>]<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">RArray</span><span class="op">&lt;</span><span class="ident">T</span>, [<span class="ident">usize</span>; <span class="number">2</span>]<span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">T</span>;
+<span class="kw">impl</span>&lt;T&gt; Index&lt;[usize; <span class="number">2</span>]&gt; <span class="kw">for </span>RArray&lt;T, [usize; <span class="number">2</span>]&gt; {
+    <span class="kw">type </span>Output = T;
 
-    <span class="doccomment">/// Zero-based indexing in row, column order.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Panics if out of bounds.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///    let matrix = RArray::new_matrix(3, 2, |r, c| [</span>
-    <span class="doccomment">///        [1., 2., 3.],</span>
-    <span class="doccomment">///        [4., 5., 6.]][c][r]);</span>
-    <span class="doccomment">///     assert_eq!(matrix[[0, 0]], 1.);</span>
-    <span class="doccomment">///     assert_eq!(matrix[[1, 0]], 2.);</span>
-    <span class="doccomment">///     assert_eq!(matrix[[2, 1]], 6.);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">index</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: [<span class="ident">usize</span>; <span class="number">2</span>]) -&gt; <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::Output</span> {
-        <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">add</span>(<span class="self">self</span>.<span class="ident">offset</span>(<span class="ident">index</span>)).<span class="ident">as_ref</span>().<span class="ident">unwrap</span>() }
+    <span class="doccomment">/// Zero-based indexing in row, column order.
+    ///
+    /// Panics if out of bounds.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///    let matrix = RArray::new_matrix(3, 2, |r, c| [
+    ///        [1., 2., 3.],
+    ///        [4., 5., 6.]][c][r]);
+    ///     assert_eq!(matrix[[0, 0]], 1.);
+    ///     assert_eq!(matrix[[1, 0]], 2.);
+    ///     assert_eq!(matrix[[2, 1]], 6.);
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>index(<span class="kw-2">&amp;</span><span class="self">self</span>, index: [usize; <span class="number">2</span>]) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Output {
+        <span class="kw">unsafe </span>{ <span class="self">self</span>.data.add(<span class="self">self</span>.offset(index)).as_ref().unwrap() }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">IndexMut</span><span class="op">&lt;</span>[<span class="ident">usize</span>; <span class="number">2</span>]<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">RArray</span><span class="op">&lt;</span><span class="ident">T</span>, [<span class="ident">usize</span>; <span class="number">2</span>]<span class="op">&gt;</span> {
-    <span class="doccomment">/// Zero-based mutable indexing in row, column order.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Panics if out of bounds.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let mut matrix = RMatrix::new_matrix(3, 2, |_, _| 0.);</span>
-    <span class="doccomment">///     matrix[[0, 0]] = 1.;</span>
-    <span class="doccomment">///     matrix[[1, 0]] = 2.;</span>
-    <span class="doccomment">///     matrix[[2, 0]] = 3.;</span>
-    <span class="doccomment">///     matrix[[0, 1]] = 4.;</span>
-    <span class="doccomment">///     assert_eq!(matrix.as_real_slice().unwrap(), &amp;[1., 2., 3., 4., 0., 0.]);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">index_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">index</span>: [<span class="ident">usize</span>; <span class="number">2</span>]) -&gt; <span class="kw-2">&amp;mut</span> <span class="ident"><span class="self">Self</span>::Output</span> {
-        <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">add</span>(<span class="self">self</span>.<span class="ident">offset</span>(<span class="ident">index</span>)).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>() }
+<span class="kw">impl</span>&lt;T&gt; IndexMut&lt;[usize; <span class="number">2</span>]&gt; <span class="kw">for </span>RArray&lt;T, [usize; <span class="number">2</span>]&gt; {
+    <span class="doccomment">/// Zero-based mutable indexing in row, column order.
+    ///
+    /// Panics if out of bounds.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let mut matrix = RMatrix::new_matrix(3, 2, |_, _| 0.);
+    ///     matrix[[0, 0]] = 1.;
+    ///     matrix[[1, 0]] = 2.;
+    ///     matrix[[2, 0]] = 3.;
+    ///     matrix[[0, 1]] = 4.;
+    ///     assert_eq!(matrix.as_real_slice().unwrap(), &amp;[1., 2., 3., 4., 0., 0.]);
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>index_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>, index: [usize; <span class="number">2</span>]) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Output {
+        <span class="kw">unsafe </span>{ <span class="self">self</span>.data.add(<span class="self">self</span>.offset(index)).as_mut().unwrap() }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">D</span><span class="op">&gt;</span> <span class="ident">Deref</span> <span class="kw">for</span> <span class="ident">RArray</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">D</span><span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">Target</span> <span class="op">=</span> <span class="ident">Robj</span>;
+<span class="kw">impl</span>&lt;T, D&gt; Deref <span class="kw">for </span>RArray&lt;T, D&gt; {
+    <span class="kw">type </span>Target = Robj;
 
-    <span class="kw">fn</span> <span class="ident">deref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::Target</span> {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">robj</span>
+    <span class="kw">fn </span>deref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Target {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.robj
     }
 }
 
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">matrix_ops</span>() {
-    <span class="macro">test!</span> {
-        <span class="kw">let</span> <span class="ident">vector</span> <span class="op">=</span> <span class="ident">RColumn::new_column</span>(<span class="number">3</span>, <span class="op">|</span><span class="ident">r</span><span class="op">|</span> [<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>][<span class="ident">r</span>]);
-        <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r!</span>(<span class="ident">vector</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">robj</span>.<span class="ident">is_vector</span>(), <span class="bool-val">true</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">robj</span>.<span class="ident">nrows</span>(), <span class="number">3</span>);
+<span class="attribute">#[test]
+</span><span class="kw">fn </span>matrix_ops() {
+    <span class="macro">test! </span>{
+        <span class="kw">let </span>vector = RColumn::new_column(<span class="number">3</span>, |r| [<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>][r]);
+        <span class="kw">let </span>robj = <span class="macro">r!</span>(vector);
+        <span class="macro">assert_eq!</span>(robj.is_vector(), <span class="bool-val">true</span>);
+        <span class="macro">assert_eq!</span>(robj.nrows(), <span class="number">3</span>);
 
-        <span class="kw">let</span> <span class="ident">vector2</span> : <span class="ident">RColumn</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_column</span>().<span class="ident">ok_or</span>(<span class="string">&quot;expected array&quot;</span>)<span class="question-mark">?</span>;
-        <span class="macro">assert_eq!</span>(<span class="ident">vector2</span>.<span class="ident">data</span>().<span class="ident">len</span>(), <span class="number">3</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">vector2</span>.<span class="ident">nrows</span>(), <span class="number">3</span>);
+        <span class="kw">let </span>vector2 : RColumn&lt;f64&gt; = robj.as_column().ok_or(<span class="string">&quot;expected array&quot;</span>)<span class="question-mark">?</span>;
+        <span class="macro">assert_eq!</span>(vector2.data().len(), <span class="number">3</span>);
+        <span class="macro">assert_eq!</span>(vector2.nrows(), <span class="number">3</span>);
 
-        <span class="kw">let</span> <span class="ident">matrix</span> <span class="op">=</span> <span class="ident">RMatrix::new_matrix</span>(<span class="number">3</span>, <span class="number">2</span>, <span class="op">|</span><span class="ident">r</span>, <span class="ident">c</span><span class="op">|</span> [
+        <span class="kw">let </span>matrix = RMatrix::new_matrix(<span class="number">3</span>, <span class="number">2</span>, |r, c| [
             [<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>],
-            [<span class="number">4.</span>, <span class="number">5.</span>, <span class="number">6.</span>]][<span class="ident">c</span>][<span class="ident">r</span>]);
-        <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r!</span>(<span class="ident">matrix</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">robj</span>.<span class="ident">is_matrix</span>(), <span class="bool-val">true</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">robj</span>.<span class="ident">nrows</span>(), <span class="number">3</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">robj</span>.<span class="ident">ncols</span>(), <span class="number">2</span>);
-        <span class="kw">let</span> <span class="ident">matrix2</span> : <span class="ident">RMatrix</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_matrix</span>().<span class="ident">ok_or</span>(<span class="string">&quot;expected matrix&quot;</span>)<span class="question-mark">?</span>;
-        <span class="macro">assert_eq!</span>(<span class="ident">matrix2</span>.<span class="ident">data</span>().<span class="ident">len</span>(), <span class="number">6</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">matrix2</span>.<span class="ident">nrows</span>(), <span class="number">3</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">matrix2</span>.<span class="ident">ncols</span>(), <span class="number">2</span>);
+            [<span class="number">4.</span>, <span class="number">5.</span>, <span class="number">6.</span>]][c][r]);
+        <span class="kw">let </span>robj = <span class="macro">r!</span>(matrix);
+        <span class="macro">assert_eq!</span>(robj.is_matrix(), <span class="bool-val">true</span>);
+        <span class="macro">assert_eq!</span>(robj.nrows(), <span class="number">3</span>);
+        <span class="macro">assert_eq!</span>(robj.ncols(), <span class="number">2</span>);
+        <span class="kw">let </span>matrix2 : RMatrix&lt;f64&gt; = robj.as_matrix().ok_or(<span class="string">&quot;expected matrix&quot;</span>)<span class="question-mark">?</span>;
+        <span class="macro">assert_eq!</span>(matrix2.data().len(), <span class="number">6</span>);
+        <span class="macro">assert_eq!</span>(matrix2.nrows(), <span class="number">3</span>);
+        <span class="macro">assert_eq!</span>(matrix2.ncols(), <span class="number">2</span>);
 
-        <span class="kw">let</span> <span class="ident">array</span> <span class="op">=</span> <span class="ident">RMatrix3D::new_matrix3d</span>(<span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="op">|</span><span class="ident">r</span>, <span class="ident">c</span>, <span class="ident">m</span><span class="op">|</span> [
+        <span class="kw">let </span>array = RMatrix3D::new_matrix3d(<span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, |r, c, m| [
             [[<span class="number">1.</span>, <span class="number">2.</span>],  [<span class="number">3.</span>, <span class="number">4.</span>]],
-            [[<span class="number">5.</span>,  <span class="number">6.</span>], [<span class="number">7.</span>, <span class="number">8.</span>]]][<span class="ident">m</span>][<span class="ident">c</span>][<span class="ident">r</span>]);
-        <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="macro">r!</span>(<span class="ident">array</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">robj</span>.<span class="ident">is_array</span>(), <span class="bool-val">true</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">robj</span>.<span class="ident">nrows</span>(), <span class="number">2</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">robj</span>.<span class="ident">ncols</span>(), <span class="number">2</span>);
-        <span class="kw">let</span> <span class="ident">array2</span> : <span class="ident">RMatrix3D</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">robj</span>.<span class="ident">as_matrix3d</span>().<span class="ident">ok_or</span>(<span class="string">&quot;expected matrix3d&quot;</span>)<span class="question-mark">?</span>;
-        <span class="macro">assert_eq!</span>(<span class="ident">array2</span>.<span class="ident">data</span>().<span class="ident">len</span>(), <span class="number">8</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">array2</span>.<span class="ident">nrows</span>(), <span class="number">2</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">array2</span>.<span class="ident">ncols</span>(), <span class="number">2</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">array2</span>.<span class="ident">nsub</span>(), <span class="number">2</span>);
+            [[<span class="number">5.</span>,  <span class="number">6.</span>], [<span class="number">7.</span>, <span class="number">8.</span>]]][m][c][r]);
+        <span class="kw">let </span>robj = <span class="macro">r!</span>(array);
+        <span class="macro">assert_eq!</span>(robj.is_array(), <span class="bool-val">true</span>);
+        <span class="macro">assert_eq!</span>(robj.nrows(), <span class="number">2</span>);
+        <span class="macro">assert_eq!</span>(robj.ncols(), <span class="number">2</span>);
+        <span class="kw">let </span>array2 : RMatrix3D&lt;f64&gt; = robj.as_matrix3d().ok_or(<span class="string">&quot;expected matrix3d&quot;</span>)<span class="question-mark">?</span>;
+        <span class="macro">assert_eq!</span>(array2.data().len(), <span class="number">8</span>);
+        <span class="macro">assert_eq!</span>(array2.nrows(), <span class="number">2</span>);
+        <span class="macro">assert_eq!</span>(array2.ncols(), <span class="number">2</span>);
+        <span class="macro">assert_eq!</span>(array2.nsub(), <span class="number">2</span>);
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

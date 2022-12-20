@@ -1,6 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/robj/into_robj.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>into_robj.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container">
-                    <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../extendr_api/index.html">
-                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/robj/into_robj.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>into_robj.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../extendr_api/index.html">
+                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -601,606 +600,606 @@
 <span id="599">599</span>
 <span id="600">600</span>
 <span id="601">601</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::single_threaded</span>;
+</pre><pre class="rust"><code><span class="kw">use super</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span><span class="kw">crate</span>::single_threaded;
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">str_to_character</span>(<span class="ident">s</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">SEXP</span> {
-    <span class="kw">unsafe</span> {
-        <span class="kw">if</span> <span class="ident">s</span>.<span class="ident">is_na</span>() {
-            <span class="ident">R_NaString</span>
-        } <span class="kw">else</span> {
-            <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">Rf_mkCharLen</span>(<span class="ident">s</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">raw::c_char</span>, <span class="ident">s</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">i32</span>))
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>str_to_character(s: <span class="kw-2">&amp;</span>str) -&gt; SEXP {
+    <span class="kw">unsafe </span>{
+        <span class="kw">if </span>s.is_na() {
+            R_NaString
+        } <span class="kw">else </span>{
+            single_threaded(|| Rf_mkCharLen(s.as_ptr() <span class="kw">as </span><span class="kw-2">*const </span>raw::c_char, s.len() <span class="kw">as </span>i32))
         }
     }
 }
 
-<span class="doccomment">/// Convert a null to an Robj.</span>
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span>()<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="kw">_</span>: ()) -&gt; <span class="self">Self</span> {
-        <span class="comment">// Note: we do not need to protect this.</span>
-        <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">R_NilValue</span>) }
+<span class="doccomment">/// Convert a null to an Robj.
+</span><span class="kw">impl </span>From&lt;()&gt; <span class="kw">for </span>Robj {
+    <span class="kw">fn </span>from(<span class="kw">_</span>: ()) -&gt; <span class="self">Self </span>{
+        <span class="comment">// Note: we do not need to protect this.
+        </span><span class="kw">unsafe </span>{ Robj::from_sexp(R_NilValue) }
     }
 }
 
-<span class="doccomment">/// Convert a Result to an Robj. This is used to allow</span>
-<span class="doccomment">/// functions to use the ? operator and return [Result&lt;T&gt;].</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Panics if there is an error.</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// fn my_func() -&gt; Result&lt;f64&gt; {</span>
-<span class="doccomment">///     Ok(1.0)</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///     assert_eq!(r!(my_func()), r!(1.0));</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
+<span class="doccomment">/// Convert a Result to an Robj. This is used to allow
+/// functions to use the ? operator and return [Result&lt;T&gt;].
+///
+/// Panics if there is an error.
+/// ```
+/// use extendr_api::prelude::*;
+/// fn my_func() -&gt; Result&lt;f64&gt; {
+///     Ok(1.0)
+/// }
+///
+/// test! {
+///     assert_eq!(r!(my_func()), r!(1.0));
+/// }
+/// ```
+</span><span class="kw">impl</span>&lt;T&gt; From&lt;<span class="prelude-ty">Result</span>&lt;T&gt;&gt; <span class="kw">for </span>Robj
+<span class="kw">where
+    </span>T: Into&lt;Robj&gt;,
 {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">res</span>: <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="comment">// Force a panic on error.</span>
-        <span class="ident">res</span>.<span class="ident">unwrap</span>().<span class="ident">into</span>()
+    <span class="kw">fn </span>from(res: <span class="prelude-ty">Result</span>&lt;T&gt;) -&gt; <span class="self">Self </span>{
+        <span class="comment">// Force a panic on error.
+        </span>res.unwrap().into()
     }
 }
 
-<span class="doccomment">/// Convert an Robj reference into a borrowed Robj.</span>
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Robj</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="comment">// Note: we should probably have a much better reference</span>
-    <span class="comment">// mechanism as double-free or underprotection is a distinct possibility.</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">val</span>: <span class="kw-2">&amp;</span><span class="ident">Robj</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">unsafe</span> { <span class="ident">Robj::from_sexp</span>(<span class="ident">val</span>.<span class="ident">get</span>()) }
+<span class="doccomment">/// Convert an Robj reference into a borrowed Robj.
+</span><span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span>Robj&gt; <span class="kw">for </span>Robj {
+    <span class="comment">// Note: we should probably have a much better reference
+    // mechanism as double-free or underprotection is a distinct possibility.
+    </span><span class="kw">fn </span>from(val: <span class="kw-2">&amp;</span>Robj) -&gt; <span class="self">Self </span>{
+        <span class="kw">unsafe </span>{ Robj::from_sexp(val.get()) }
     }
 }
 
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">IntoRobj</span> {
-    <span class="kw">fn</span> <span class="ident">into_robj</span>(<span class="self">self</span>) -&gt; <span class="ident">Robj</span>;
+<span class="kw">pub trait </span>IntoRobj {
+    <span class="kw">fn </span>into_robj(<span class="self">self</span>) -&gt; Robj;
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">IntoRobj</span> <span class="kw">for</span> <span class="ident">T</span>
-<span class="kw">where</span>
-    <span class="ident">Robj</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;T&gt; IntoRobj <span class="kw">for </span>T
+<span class="kw">where
+    </span>Robj: From&lt;T&gt;,
 {
-    <span class="kw">fn</span> <span class="ident">into_robj</span>(<span class="self">self</span>) -&gt; <span class="ident">Robj</span> {
-        <span class="self">self</span>.<span class="ident">into</span>()
+    <span class="kw">fn </span>into_robj(<span class="self">self</span>) -&gt; Robj {
+        <span class="self">self</span>.into()
     }
 }
 
-<span class="doccomment">/// `ToVectorValue` is a trait that allows many different types</span>
-<span class="doccomment">/// to be converted to vectors. It is used as a type parameter</span>
-<span class="doccomment">/// to `collect_robj()`.</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">ToVectorValue</span> {
-    <span class="kw">fn</span> <span class="ident">sexptype</span>() -&gt; <span class="ident">SEXPTYPE</span> {
-        <span class="number">0</span>
+<span class="doccomment">/// `ToVectorValue` is a trait that allows many different types
+/// to be converted to vectors. It is used as a type parameter
+/// to `collect_robj()`.
+</span><span class="kw">pub trait </span>ToVectorValue {
+    <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
+        <span class="number">0
+    </span>}
+
+    <span class="kw">fn </span>to_real(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; f64
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
+    {
+        <span class="number">0.
+    </span>}
+
+    <span class="kw">fn </span>to_complex(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Rcomplex
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
+    {
+        Rcomplex { r: <span class="number">0.</span>, i: <span class="number">0. </span>}
     }
 
-    <span class="kw">fn</span> <span class="ident">to_real</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">f64</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">Sized</span>,
+    <span class="kw">fn </span>to_integer(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
     {
-        <span class="number">0.</span>
+        std::i32::MIN
     }
 
-    <span class="kw">fn</span> <span class="ident">to_complex</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Rcomplex</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">Sized</span>,
+    <span class="kw">fn </span>to_logical(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
     {
-        <span class="ident">Rcomplex</span> { <span class="ident">r</span>: <span class="number">0.</span>, <span class="ident">i</span>: <span class="number">0.</span> }
+        std::i32::MIN
     }
 
-    <span class="kw">fn</span> <span class="ident">to_integer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">i32</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">Sized</span>,
+    <span class="kw">fn </span>to_raw(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u8
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
     {
-        <span class="ident">std::i32::MIN</span>
-    }
+        <span class="number">0
+    </span>}
 
-    <span class="kw">fn</span> <span class="ident">to_logical</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">i32</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">Sized</span>,
+    <span class="kw">fn </span>to_sexp(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SEXP
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
     {
-        <span class="ident">std::i32::MIN</span>
-    }
-
-    <span class="kw">fn</span> <span class="ident">to_raw</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u8</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">Sized</span>,
-    {
-        <span class="number">0</span>
-    }
-
-    <span class="kw">fn</span> <span class="ident">to_sexp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">SEXP</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">Sized</span>,
-    {
-        <span class="kw">unsafe</span> { <span class="ident">R_NilValue</span> }
+        <span class="kw">unsafe </span>{ R_NilValue }
     }
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_real_tvv</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>: <span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span> <span class="ident">ToVectorValue</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">sexptype</span>() -&gt; <span class="ident">SEXPTYPE</span> {
-                <span class="ident">REALSXP</span>
+<span class="macro">macro_rules! </span>impl_real_tvv {
+    (<span class="macro-nonterminal">$t</span>: ty) =&gt; {
+        <span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
+                REALSXP
             }
 
-            <span class="kw">fn</span> <span class="ident">to_real</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">f64</span> {
-                <span class="kw-2">*</span><span class="self">self</span> <span class="kw">as</span> <span class="ident">f64</span>
-            }
-        }
-
-        <span class="kw">impl</span> <span class="ident">ToVectorValue</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">sexptype</span>() -&gt; <span class="ident">SEXPTYPE</span> {
-                <span class="ident">REALSXP</span>
-            }
-
-            <span class="kw">fn</span> <span class="ident">to_real</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">f64</span> {
-                <span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span> <span class="kw">as</span> <span class="ident">f64</span>
+            <span class="kw">fn </span>to_real(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; f64 {
+                <span class="kw-2">*</span><span class="self">self </span><span class="kw">as </span>f64
             }
         }
 
-        <span class="kw">impl</span> <span class="ident">ToVectorValue</span> <span class="kw">for</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span> {
-            <span class="kw">fn</span> <span class="ident">sexptype</span>() -&gt; <span class="ident">SEXPTYPE</span> {
-                <span class="ident">REALSXP</span>
+        <span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="kw-2">&amp;</span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
+                REALSXP
             }
 
-            <span class="kw">fn</span> <span class="ident">to_real</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">f64</span> {
-                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_some</span>() {
-                    <span class="self">self</span>.<span class="ident">unwrap</span>() <span class="kw">as</span> <span class="ident">f64</span>
-                } <span class="kw">else</span> {
-                    <span class="kw">unsafe</span> { <span class="ident">R_NaReal</span> }
+            <span class="kw">fn </span>to_real(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; f64 {
+                <span class="kw-2">**</span><span class="self">self </span><span class="kw">as </span>f64
+            }
+        }
+
+        <span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="prelude-ty">Option</span>&lt;<span class="macro-nonterminal">$t</span>&gt; {
+            <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
+                REALSXP
+            }
+
+            <span class="kw">fn </span>to_real(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; f64 {
+                <span class="kw">if </span><span class="self">self</span>.is_some() {
+                    <span class="self">self</span>.unwrap() <span class="kw">as </span>f64
+                } <span class="kw">else </span>{
+                    <span class="kw">unsafe </span>{ R_NaReal }
                 }
             }
         }
     };
 }
 
-<span class="macro">impl_real_tvv!</span>(<span class="ident">f64</span>);
-<span class="macro">impl_real_tvv!</span>(<span class="ident">f32</span>);
+<span class="macro">impl_real_tvv!</span>(f64);
+<span class="macro">impl_real_tvv!</span>(f32);
 
-<span class="comment">// Since these types might exceeds the max or min of R&#39;s 32bit integer, we need</span>
-<span class="comment">// to return as REALSXP</span>
-<span class="macro">impl_real_tvv!</span>(<span class="ident">i64</span>);
-<span class="macro">impl_real_tvv!</span>(<span class="ident">u32</span>);
-<span class="macro">impl_real_tvv!</span>(<span class="ident">u64</span>);
-<span class="macro">impl_real_tvv!</span>(<span class="ident">usize</span>);
+<span class="comment">// Since these types might exceeds the max or min of R&#39;s 32bit integer, we need
+// to return as REALSXP
+</span><span class="macro">impl_real_tvv!</span>(i64);
+<span class="macro">impl_real_tvv!</span>(u32);
+<span class="macro">impl_real_tvv!</span>(u64);
+<span class="macro">impl_real_tvv!</span>(usize);
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_complex_tvv</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>: <span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span> <span class="ident">ToVectorValue</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">sexptype</span>() -&gt; <span class="ident">SEXPTYPE</span> {
-                <span class="ident">CPLXSXP</span>
+<span class="macro">macro_rules! </span>impl_complex_tvv {
+    (<span class="macro-nonterminal">$t</span>: ty) =&gt; {
+        <span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
+                CPLXSXP
             }
 
-            <span class="kw">fn</span> <span class="ident">to_complex</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Rcomplex</span> {
-                <span class="kw">unsafe</span> { <span class="ident">std::mem::transmute</span>(<span class="kw-2">*</span><span class="self">self</span>) }
+            <span class="kw">fn </span>to_complex(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Rcomplex {
+                <span class="kw">unsafe </span>{ std::mem::transmute(<span class="kw-2">*</span><span class="self">self</span>) }
             }
         }
 
-        <span class="kw">impl</span> <span class="ident">ToVectorValue</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">sexptype</span>() -&gt; <span class="ident">SEXPTYPE</span> {
-                <span class="ident">CPLXSXP</span>
+        <span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="kw-2">&amp;</span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
+                CPLXSXP
             }
 
-            <span class="kw">fn</span> <span class="ident">to_complex</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Rcomplex</span> {
-                <span class="kw">unsafe</span> { <span class="ident">std::mem::transmute</span>(<span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>) }
+            <span class="kw">fn </span>to_complex(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Rcomplex {
+                <span class="kw">unsafe </span>{ std::mem::transmute(<span class="kw-2">**</span><span class="self">self</span>) }
             }
         }
     };
 }
 
-<span class="macro">impl_complex_tvv!</span>(<span class="ident">c64</span>);
-<span class="macro">impl_complex_tvv!</span>(<span class="ident">Rcplx</span>);
-<span class="macro">impl_complex_tvv!</span>((<span class="ident">f64</span>, <span class="ident">f64</span>));
+<span class="macro">impl_complex_tvv!</span>(c64);
+<span class="macro">impl_complex_tvv!</span>(Rcplx);
+<span class="macro">impl_complex_tvv!</span>((f64, f64));
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_integer_tvv</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>: <span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span> <span class="ident">ToVectorValue</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">sexptype</span>() -&gt; <span class="ident">SEXPTYPE</span> {
-                <span class="ident">INTSXP</span>
+<span class="macro">macro_rules! </span>impl_integer_tvv {
+    (<span class="macro-nonterminal">$t</span>: ty) =&gt; {
+        <span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
+                INTSXP
             }
 
-            <span class="kw">fn</span> <span class="ident">to_integer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">i32</span> {
-                <span class="kw-2">*</span><span class="self">self</span> <span class="kw">as</span> <span class="ident">i32</span>
-            }
-        }
-
-        <span class="kw">impl</span> <span class="ident">ToVectorValue</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">sexptype</span>() -&gt; <span class="ident">SEXPTYPE</span> {
-                <span class="ident">INTSXP</span>
-            }
-
-            <span class="kw">fn</span> <span class="ident">to_integer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">i32</span> {
-                <span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span> <span class="kw">as</span> <span class="ident">i32</span>
+            <span class="kw">fn </span>to_integer(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32 {
+                <span class="kw-2">*</span><span class="self">self </span><span class="kw">as </span>i32
             }
         }
 
-        <span class="kw">impl</span> <span class="ident">ToVectorValue</span> <span class="kw">for</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span> {
-            <span class="kw">fn</span> <span class="ident">sexptype</span>() -&gt; <span class="ident">SEXPTYPE</span> {
-                <span class="ident">INTSXP</span>
+        <span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="kw-2">&amp;</span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
+                INTSXP
             }
 
-            <span class="kw">fn</span> <span class="ident">to_integer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">i32</span> {
-                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_some</span>() {
-                    <span class="self">self</span>.<span class="ident">unwrap</span>() <span class="kw">as</span> <span class="ident">i32</span>
-                } <span class="kw">else</span> {
-                    <span class="kw">unsafe</span> { <span class="ident">R_NaInt</span> }
+            <span class="kw">fn </span>to_integer(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32 {
+                <span class="kw-2">**</span><span class="self">self </span><span class="kw">as </span>i32
+            }
+        }
+
+        <span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="prelude-ty">Option</span>&lt;<span class="macro-nonterminal">$t</span>&gt; {
+            <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
+                INTSXP
+            }
+
+            <span class="kw">fn </span>to_integer(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32 {
+                <span class="kw">if </span><span class="self">self</span>.is_some() {
+                    <span class="self">self</span>.unwrap() <span class="kw">as </span>i32
+                } <span class="kw">else </span>{
+                    <span class="kw">unsafe </span>{ R_NaInt }
                 }
             }
         }
     };
 }
 
-<span class="macro">impl_integer_tvv!</span>(<span class="ident">i8</span>);
-<span class="macro">impl_integer_tvv!</span>(<span class="ident">i16</span>);
-<span class="macro">impl_integer_tvv!</span>(<span class="ident">i32</span>);
-<span class="macro">impl_integer_tvv!</span>(<span class="ident">u16</span>);
+<span class="macro">impl_integer_tvv!</span>(i8);
+<span class="macro">impl_integer_tvv!</span>(i16);
+<span class="macro">impl_integer_tvv!</span>(i32);
+<span class="macro">impl_integer_tvv!</span>(u16);
 
-<span class="kw">impl</span> <span class="ident">ToVectorValue</span> <span class="kw">for</span> <span class="ident">u8</span> {
-    <span class="kw">fn</span> <span class="ident">sexptype</span>() -&gt; <span class="ident">SEXPTYPE</span> {
-        <span class="ident">RAWSXP</span>
+<span class="kw">impl </span>ToVectorValue <span class="kw">for </span>u8 {
+    <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
+        RAWSXP
     }
 
-    <span class="kw">fn</span> <span class="ident">to_raw</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u8</span> {
-        <span class="kw-2">*</span><span class="self">self</span> <span class="kw">as</span> <span class="ident">u8</span>
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">ToVectorValue</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">u8</span> {
-    <span class="kw">fn</span> <span class="ident">sexptype</span>() -&gt; <span class="ident">SEXPTYPE</span> {
-        <span class="ident">RAWSXP</span>
-    }
-
-    <span class="kw">fn</span> <span class="ident">to_raw</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u8</span> {
-        <span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span> <span class="kw">as</span> <span class="ident">u8</span>
+    <span class="kw">fn </span>to_raw(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u8 {
+        <span class="kw-2">*</span><span class="self">self </span><span class="kw">as </span>u8
     }
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_str_tvv</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>: <span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span> <span class="ident">ToVectorValue</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">sexptype</span>() -&gt; <span class="ident">SEXPTYPE</span> {
-                <span class="ident">STRSXP</span>
+<span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="kw-2">&amp;</span>u8 {
+    <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
+        RAWSXP
+    }
+
+    <span class="kw">fn </span>to_raw(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u8 {
+        <span class="kw-2">**</span><span class="self">self </span><span class="kw">as </span>u8
+    }
+}
+
+<span class="macro">macro_rules! </span>impl_str_tvv {
+    (<span class="macro-nonterminal">$t</span>: ty) =&gt; {
+        <span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
+                STRSXP
             }
 
-            <span class="kw">fn</span> <span class="ident">to_sexp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">SEXP</span>
-            <span class="kw">where</span>
-                <span class="self">Self</span>: <span class="ident">Sized</span>,
+            <span class="kw">fn </span>to_sexp(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SEXP
+            <span class="kw">where
+                </span><span class="self">Self</span>: Sized,
             {
-                <span class="ident">str_to_character</span>(<span class="self">self</span>.<span class="ident">as_ref</span>())
+                str_to_character(<span class="self">self</span>.as_ref())
             }
         }
 
-        <span class="kw">impl</span> <span class="ident">ToVectorValue</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">sexptype</span>() -&gt; <span class="ident">SEXPTYPE</span> {
-                <span class="ident">STRSXP</span>
+        <span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="kw-2">&amp;</span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
+                STRSXP
             }
 
-            <span class="kw">fn</span> <span class="ident">to_sexp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">SEXP</span>
-            <span class="kw">where</span>
-                <span class="self">Self</span>: <span class="ident">Sized</span>,
+            <span class="kw">fn </span>to_sexp(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SEXP
+            <span class="kw">where
+                </span><span class="self">Self</span>: Sized,
             {
-                <span class="ident">str_to_character</span>(<span class="self">self</span>.<span class="ident">as_ref</span>())
+                str_to_character(<span class="self">self</span>.as_ref())
             }
         }
 
-        <span class="kw">impl</span> <span class="ident">ToVectorValue</span> <span class="kw">for</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span> {
-            <span class="kw">fn</span> <span class="ident">sexptype</span>() -&gt; <span class="ident">SEXPTYPE</span> {
-                <span class="ident">STRSXP</span>
+        <span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="prelude-ty">Option</span>&lt;<span class="macro-nonterminal">$t</span>&gt; {
+            <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
+                STRSXP
             }
 
-            <span class="kw">fn</span> <span class="ident">to_sexp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">SEXP</span>
-            <span class="kw">where</span>
-                <span class="self">Self</span>: <span class="ident">Sized</span>,
+            <span class="kw">fn </span>to_sexp(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SEXP
+            <span class="kw">where
+                </span><span class="self">Self</span>: Sized,
             {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">s</span>) <span class="op">=</span> <span class="self">self</span> {
-                    <span class="ident">str_to_character</span>(<span class="ident">s</span>.<span class="ident">as_ref</span>())
-                } <span class="kw">else</span> {
-                    <span class="kw">unsafe</span> { <span class="ident">R_NaString</span> }
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(s) = <span class="self">self </span>{
+                    str_to_character(s.as_ref())
+                } <span class="kw">else </span>{
+                    <span class="kw">unsafe </span>{ R_NaString }
                 }
             }
         }
     };
 }
 
-<span class="macro">impl_str_tvv!</span> {<span class="kw-2">&amp;</span><span class="ident">str</span>}
-<span class="macro">impl_str_tvv!</span> {<span class="ident">String</span>}
+<span class="macro">impl_str_tvv! </span>{<span class="kw-2">&amp;</span>str}
+<span class="macro">impl_str_tvv! </span>{String}
 
-<span class="kw">impl</span> <span class="ident">ToVectorValue</span> <span class="kw">for</span> <span class="ident">bool</span> {
-    <span class="kw">fn</span> <span class="ident">sexptype</span>() -&gt; <span class="ident">SEXPTYPE</span> {
-        <span class="ident">LGLSXP</span>
+<span class="kw">impl </span>ToVectorValue <span class="kw">for </span>bool {
+    <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
+        LGLSXP
     }
 
-    <span class="kw">fn</span> <span class="ident">to_logical</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">i32</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">Sized</span>,
+    <span class="kw">fn </span>to_logical(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
     {
-        <span class="kw-2">*</span><span class="self">self</span> <span class="kw">as</span> <span class="ident">i32</span>
+        <span class="kw-2">*</span><span class="self">self </span><span class="kw">as </span>i32
     }
 }
 
-<span class="kw">impl</span> <span class="ident">ToVectorValue</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">bool</span> {
-    <span class="kw">fn</span> <span class="ident">sexptype</span>() -&gt; <span class="ident">SEXPTYPE</span> {
-        <span class="ident">LGLSXP</span>
+<span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="kw-2">&amp;</span>bool {
+    <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
+        LGLSXP
     }
 
-    <span class="kw">fn</span> <span class="ident">to_logical</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">i32</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">Sized</span>,
+    <span class="kw">fn </span>to_logical(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
     {
-        <span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span> <span class="kw">as</span> <span class="ident">i32</span>
+        <span class="kw-2">**</span><span class="self">self </span><span class="kw">as </span>i32
     }
 }
 
-<span class="kw">impl</span> <span class="ident">ToVectorValue</span> <span class="kw">for</span> <span class="ident">Rbool</span> {
-    <span class="kw">fn</span> <span class="ident">sexptype</span>() -&gt; <span class="ident">SEXPTYPE</span> {
-        <span class="ident">LGLSXP</span>
+<span class="kw">impl </span>ToVectorValue <span class="kw">for </span>Rbool {
+    <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
+        LGLSXP
     }
 
-    <span class="kw">fn</span> <span class="ident">to_logical</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">i32</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">Sized</span>,
+    <span class="kw">fn </span>to_logical(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
     {
-        <span class="self">self</span>.<span class="ident">inner</span>()
+        <span class="self">self</span>.inner()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">ToVectorValue</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">Rbool</span> {
-    <span class="kw">fn</span> <span class="ident">sexptype</span>() -&gt; <span class="ident">SEXPTYPE</span> {
-        <span class="ident">LGLSXP</span>
+<span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="kw-2">&amp;</span>Rbool {
+    <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
+        LGLSXP
     }
 
-    <span class="kw">fn</span> <span class="ident">to_logical</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">i32</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">Sized</span>,
+    <span class="kw">fn </span>to_logical(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
     {
-        <span class="self">self</span>.<span class="ident">inner</span>()
+        <span class="self">self</span>.inner()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">ToVectorValue</span> <span class="kw">for</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">sexptype</span>() -&gt; <span class="ident">SEXPTYPE</span> {
-        <span class="ident">LGLSXP</span>
+<span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="prelude-ty">Option</span>&lt;bool&gt; {
+    <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
+        LGLSXP
     }
 
-    <span class="kw">fn</span> <span class="ident">to_logical</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">i32</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_some</span>() {
-            <span class="self">self</span>.<span class="ident">unwrap</span>() <span class="kw">as</span> <span class="ident">i32</span>
-        } <span class="kw">else</span> {
-            <span class="kw">unsafe</span> { <span class="ident">R_NaInt</span> }
+    <span class="kw">fn </span>to_logical(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32 {
+        <span class="kw">if </span><span class="self">self</span>.is_some() {
+            <span class="self">self</span>.unwrap() <span class="kw">as </span>i32
+        } <span class="kw">else </span>{
+            <span class="kw">unsafe </span>{ R_NaInt }
         }
     }
 }
 
-<span class="comment">// Not thread safe.</span>
-<span class="kw">fn</span> <span class="ident">fixed_size_collect</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>(<span class="ident">iter</span>: <span class="ident">I</span>, <span class="ident">len</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Robj</span>
-<span class="kw">where</span>
-    <span class="ident">I</span>: <span class="ident">Iterator</span>,
-    <span class="ident">I</span>: <span class="ident">Sized</span>,
-    <span class="ident">I::Item</span>: <span class="ident">ToVectorValue</span>,
+<span class="comment">// Not thread safe.
+</span><span class="kw">fn </span>fixed_size_collect&lt;I&gt;(iter: I, len: usize) -&gt; Robj
+<span class="kw">where
+    </span>I: Iterator,
+    I: Sized,
+    I::Item: ToVectorValue,
 {
-    <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
-        <span class="comment">// Length of the vector is known in advance.</span>
-        <span class="kw">let</span> <span class="ident">sexptype</span> <span class="op">=</span> <span class="ident">I::Item::sexptype</span>();
-        <span class="kw">if</span> <span class="ident">sexptype</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-            <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">Robj::alloc_vector</span>(<span class="ident">sexptype</span>, <span class="ident">len</span>);
-            <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="ident">res</span>.<span class="ident">get</span>();
-            <span class="kw">match</span> <span class="ident">sexptype</span> {
-                <span class="ident">REALSXP</span> =&gt; {
-                    <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">REAL</span>(<span class="ident">sexp</span>);
-                    <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">v</span>) <span class="kw">in</span> <span class="ident">iter</span>.<span class="ident">enumerate</span>() {
-                        <span class="kw-2">*</span><span class="ident">ptr</span>.<span class="ident">add</span>(<span class="ident">i</span>) <span class="op">=</span> <span class="ident">v</span>.<span class="ident">to_real</span>();
+    single_threaded(|| <span class="kw">unsafe </span>{
+        <span class="comment">// Length of the vector is known in advance.
+        </span><span class="kw">let </span>sexptype = I::Item::sexptype();
+        <span class="kw">if </span>sexptype != <span class="number">0 </span>{
+            <span class="kw">let </span>res = Robj::alloc_vector(sexptype, len);
+            <span class="kw">let </span>sexp = res.get();
+            <span class="kw">match </span>sexptype {
+                REALSXP =&gt; {
+                    <span class="kw">let </span>ptr = REAL(sexp);
+                    <span class="kw">for </span>(i, v) <span class="kw">in </span>iter.enumerate() {
+                        <span class="kw-2">*</span>ptr.add(i) = v.to_real();
                     }
                 }
-                <span class="ident">CPLXSXP</span> =&gt; {
-                    <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">COMPLEX</span>(<span class="ident">sexp</span>);
-                    <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">v</span>) <span class="kw">in</span> <span class="ident">iter</span>.<span class="ident">enumerate</span>() {
-                        <span class="kw-2">*</span><span class="ident">ptr</span>.<span class="ident">add</span>(<span class="ident">i</span>) <span class="op">=</span> <span class="ident">v</span>.<span class="ident">to_complex</span>();
+                CPLXSXP =&gt; {
+                    <span class="kw">let </span>ptr = COMPLEX(sexp);
+                    <span class="kw">for </span>(i, v) <span class="kw">in </span>iter.enumerate() {
+                        <span class="kw-2">*</span>ptr.add(i) = v.to_complex();
                     }
                 }
-                <span class="ident">INTSXP</span> =&gt; {
-                    <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">INTEGER</span>(<span class="ident">sexp</span>);
-                    <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">v</span>) <span class="kw">in</span> <span class="ident">iter</span>.<span class="ident">enumerate</span>() {
-                        <span class="kw-2">*</span><span class="ident">ptr</span>.<span class="ident">add</span>(<span class="ident">i</span>) <span class="op">=</span> <span class="ident">v</span>.<span class="ident">to_integer</span>();
+                INTSXP =&gt; {
+                    <span class="kw">let </span>ptr = INTEGER(sexp);
+                    <span class="kw">for </span>(i, v) <span class="kw">in </span>iter.enumerate() {
+                        <span class="kw-2">*</span>ptr.add(i) = v.to_integer();
                     }
                 }
-                <span class="ident">LGLSXP</span> =&gt; {
-                    <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">LOGICAL</span>(<span class="ident">sexp</span>);
-                    <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">v</span>) <span class="kw">in</span> <span class="ident">iter</span>.<span class="ident">enumerate</span>() {
-                        <span class="kw-2">*</span><span class="ident">ptr</span>.<span class="ident">add</span>(<span class="ident">i</span>) <span class="op">=</span> <span class="ident">v</span>.<span class="ident">to_logical</span>();
+                LGLSXP =&gt; {
+                    <span class="kw">let </span>ptr = LOGICAL(sexp);
+                    <span class="kw">for </span>(i, v) <span class="kw">in </span>iter.enumerate() {
+                        <span class="kw-2">*</span>ptr.add(i) = v.to_logical();
                     }
                 }
-                <span class="ident">STRSXP</span> =&gt; {
-                    <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">v</span>) <span class="kw">in</span> <span class="ident">iter</span>.<span class="ident">enumerate</span>() {
-                        <span class="ident">SET_STRING_ELT</span>(<span class="ident">sexp</span>, <span class="ident">i</span> <span class="kw">as</span> <span class="ident">isize</span>, <span class="ident">v</span>.<span class="ident">to_sexp</span>());
+                STRSXP =&gt; {
+                    <span class="kw">for </span>(i, v) <span class="kw">in </span>iter.enumerate() {
+                        SET_STRING_ELT(sexp, i <span class="kw">as </span>isize, v.to_sexp());
                     }
                 }
-                <span class="ident">RAWSXP</span> =&gt; {
-                    <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">RAW</span>(<span class="ident">sexp</span>);
-                    <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">v</span>) <span class="kw">in</span> <span class="ident">iter</span>.<span class="ident">enumerate</span>() {
-                        <span class="kw-2">*</span><span class="ident">ptr</span>.<span class="ident">add</span>(<span class="ident">i</span>) <span class="op">=</span> <span class="ident">v</span>.<span class="ident">to_raw</span>();
+                RAWSXP =&gt; {
+                    <span class="kw">let </span>ptr = RAW(sexp);
+                    <span class="kw">for </span>(i, v) <span class="kw">in </span>iter.enumerate() {
+                        <span class="kw-2">*</span>ptr.add(i) = v.to_raw();
                     }
                 }
-                <span class="kw">_</span> =&gt; {
+                <span class="kw">_ </span>=&gt; {
                     <span class="macro">panic!</span>(<span class="string">&quot;unexpected SEXPTYPE in collect_robj&quot;</span>);
                 }
             }
-            <span class="ident">res</span>
-        } <span class="kw">else</span> {
-            <span class="ident">Robj::from</span>(())
+            res
+        } <span class="kw">else </span>{
+            Robj::from(())
         }
     })
 }
 
-<span class="doccomment">/// Extensions to iterators for R objects including [RobjItertools::collect_robj()].</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">RobjItertools</span>: <span class="ident">Iterator</span> {
-    <span class="doccomment">/// Convert a wide range of iterators to Robj.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">/// // Integer iterators.</span>
-    <span class="doccomment">/// let robj = (0..3).collect_robj();</span>
-    <span class="doccomment">/// assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// // Logical iterators.</span>
-    <span class="doccomment">/// let robj = (0..3).map(|x| x % 2 == 0).collect_robj();</span>
-    <span class="doccomment">/// assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, TRUE]);</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// // Numeric iterators.</span>
-    <span class="doccomment">/// let robj = (0..3).map(|x| x as f64).collect_robj();</span>
-    <span class="doccomment">/// assert_eq!(robj.as_real_vector().unwrap(), vec![0., 1., 2.]);</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// // String iterators.</span>
-    <span class="doccomment">/// let robj = (0..3).map(|x| format!(&quot;{}&quot;, x)).collect_robj();</span>
-    <span class="doccomment">/// assert_eq!(robj.as_str_vector(), Some(vec![&quot;0&quot;, &quot;1&quot;, &quot;2&quot;]));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">collect_robj</span>(<span class="self">self</span>) -&gt; <span class="ident">Robj</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">Iterator</span>,
-        <span class="self">Self</span>: <span class="ident">Sized</span>,
-        <span class="ident"><span class="self">Self</span>::Item</span>: <span class="ident">ToVectorValue</span>,
+<span class="doccomment">/// Extensions to iterators for R objects including [RobjItertools::collect_robj()].
+</span><span class="kw">pub trait </span>RobjItertools: Iterator {
+    <span class="doccomment">/// Convert a wide range of iterators to Robj.
+    /// ```
+    /// use extendr_api::prelude::*;
+    ///
+    /// test! {
+    /// // Integer iterators.
+    /// let robj = (0..3).collect_robj();
+    /// assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);
+    ///
+    /// // Logical iterators.
+    /// let robj = (0..3).map(|x| x % 2 == 0).collect_robj();
+    /// assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, TRUE]);
+    ///
+    /// // Numeric iterators.
+    /// let robj = (0..3).map(|x| x as f64).collect_robj();
+    /// assert_eq!(robj.as_real_vector().unwrap(), vec![0., 1., 2.]);
+    ///
+    /// // String iterators.
+    /// let robj = (0..3).map(|x| format!(&quot;{}&quot;, x)).collect_robj();
+    /// assert_eq!(robj.as_str_vector(), Some(vec![&quot;0&quot;, &quot;1&quot;, &quot;2&quot;]));
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>collect_robj(<span class="self">self</span>) -&gt; Robj
+    <span class="kw">where
+        </span><span class="self">Self</span>: Iterator,
+        <span class="self">Self</span>: Sized,
+        <span class="self">Self</span>::Item: ToVectorValue,
     {
-        <span class="kw">if</span> <span class="kw">let</span> (<span class="ident">len</span>, <span class="prelude-val">Some</span>(<span class="ident">max</span>)) <span class="op">=</span> <span class="self">self</span>.<span class="ident">size_hint</span>() {
-            <span class="kw">if</span> <span class="ident">len</span> <span class="op">==</span> <span class="ident">max</span> {
-                <span class="kw">return</span> <span class="ident">fixed_size_collect</span>(<span class="self">self</span>, <span class="ident">len</span>);
+        <span class="kw">if let </span>(len, <span class="prelude-val">Some</span>(max)) = <span class="self">self</span>.size_hint() {
+            <span class="kw">if </span>len == max {
+                <span class="kw">return </span>fixed_size_collect(<span class="self">self</span>, len);
             }
         }
-        <span class="comment">// If the size is indeterminate, create a vector and call recursively.</span>
-        <span class="kw">let</span> <span class="ident">vec</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">collect</span>();
-        <span class="macro">assert!</span>(<span class="ident">vec</span>.<span class="ident">iter</span>().<span class="ident">size_hint</span>() <span class="op">==</span> (<span class="ident">vec</span>.<span class="ident">len</span>(), <span class="prelude-val">Some</span>(<span class="ident">vec</span>.<span class="ident">len</span>())));
-        <span class="ident">vec</span>.<span class="ident">into_iter</span>().<span class="ident">collect_robj</span>()
+        <span class="comment">// If the size is indeterminate, create a vector and call recursively.
+        </span><span class="kw">let </span>vec: Vec&lt;<span class="kw">_</span>&gt; = <span class="self">self</span>.collect();
+        <span class="macro">assert!</span>(vec.iter().size_hint() == (vec.len(), <span class="prelude-val">Some</span>(vec.len())));
+        vec.into_iter().collect_robj()
     }
 }
 
-<span class="comment">// Thanks to *pretzelhammer* on stackoverflow for this.</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">RobjItertools</span> <span class="kw">for</span> <span class="ident">T</span> <span class="kw">where</span> <span class="ident">T</span>: <span class="ident">Iterator</span> {}
+<span class="comment">// Thanks to *pretzelhammer* on stackoverflow for this.
+</span><span class="kw">impl</span>&lt;T&gt; RobjItertools <span class="kw">for </span>T <span class="kw">where </span>T: Iterator {}
 
-<span class="comment">// Scalars which are ToVectorValue</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">ToVectorValue</span>,
+<span class="comment">// Scalars which are ToVectorValue
+</span><span class="kw">impl</span>&lt;T&gt; From&lt;T&gt; <span class="kw">for </span>Robj
+<span class="kw">where
+    </span>T: ToVectorValue,
 {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">scalar</span>: <span class="ident">T</span>) -&gt; <span class="self">Self</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">scalar</span>).<span class="ident">into_iter</span>().<span class="ident">collect_robj</span>()
+    <span class="kw">fn </span>from(scalar: T) -&gt; <span class="self">Self </span>{
+        <span class="prelude-val">Some</span>(scalar).into_iter().collect_robj()
     }
 }
 
-<span class="comment">// We would love to do a blanket IntoIterator impl.</span>
-<span class="comment">// But the matching rules would clash with the above.</span>
-<span class="macro">macro_rules!</span> <span class="ident">impl_from_iter</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>: <span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span>
-        <span class="kw">where</span>
-            <span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
-            <span class="ident">T</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>,
-            <span class="ident">T</span>: <span class="ident">ToVectorValue</span>,
+<span class="comment">// We would love to do a blanket IntoIterator impl.
+// But the matching rules would clash with the above.
+</span><span class="macro">macro_rules! </span>impl_from_iter {
+    (<span class="macro-nonterminal">$t</span>: ty) =&gt; {
+        <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, T&gt; From&lt;<span class="macro-nonterminal">$t</span>&gt; <span class="kw">for </span>Robj
+        <span class="kw">where
+            </span><span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
+            T: Clone + <span class="lifetime">&#39;a</span>,
+            T: ToVectorValue,
         {
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">val</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>) -&gt; <span class="self">Self</span> {
-                <span class="ident">val</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>().<span class="ident">collect_robj</span>()
+            <span class="kw">fn </span>from(val: <span class="macro-nonterminal">$t</span>) -&gt; <span class="self">Self </span>{
+                val.iter().cloned().collect_robj()
             }
         }
     };
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_from_into_iter</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>: <span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span>
-        <span class="kw">where</span>
-            <span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
-            <span class="ident">T</span>: <span class="lifetime">&#39;a</span>,
-            <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">T</span>: <span class="ident">ToVectorValue</span>,
+<span class="macro">macro_rules! </span>impl_from_into_iter {
+    (<span class="macro-nonterminal">$t</span>: ty) =&gt; {
+        <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, T&gt; From&lt;<span class="macro-nonterminal">$t</span>&gt; <span class="kw">for </span>Robj
+        <span class="kw">where
+            </span><span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
+            T: <span class="lifetime">&#39;a</span>,
+            <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>T: ToVectorValue,
         {
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">val</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>) -&gt; <span class="self">Self</span> {
-                <span class="ident">val</span>.<span class="ident">into_iter</span>().<span class="ident">collect_robj</span>()
+            <span class="kw">fn </span>from(val: <span class="macro-nonterminal">$t</span>) -&gt; <span class="self">Self </span>{
+                val.into_iter().collect_robj()
             }
         }
     };
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">impl_from_as_iterator</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>: <span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span>
-        <span class="kw">where</span>
-            <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>: <span class="ident">RobjItertools</span>,
-            <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> <span class="kw">as</span> <span class="ident">Iterator</span><span class="op">&gt;</span><span class="ident">::Item</span>: <span class="ident">ToVectorValue</span>,
-            <span class="ident">T</span>: <span class="ident">ToVectorValue</span>,
+<span class="macro">macro_rules! </span>impl_from_as_iterator {
+    (<span class="macro-nonterminal">$t</span>: ty) =&gt; {
+        <span class="kw">impl</span>&lt;T&gt; From&lt;<span class="macro-nonterminal">$t</span>&gt; <span class="kw">for </span>Robj
+        <span class="kw">where
+            </span><span class="macro-nonterminal">$t</span>: RobjItertools,
+            &lt;<span class="macro-nonterminal">$t </span><span class="kw">as </span>Iterator&gt;::Item: ToVectorValue,
+            T: ToVectorValue,
         {
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">val</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>) -&gt; <span class="self">Self</span> {
-                <span class="ident">val</span>.<span class="ident">collect_robj</span>()
+            <span class="kw">fn </span>from(val: <span class="macro-nonterminal">$t</span>) -&gt; <span class="self">Self </span>{
+                val.collect_robj()
             }
         }
     };
 }
 
-<span class="comment">// impl&lt;T&gt; From&lt;Range&lt;T&gt;&gt; for Robj</span>
-<span class="comment">// where</span>
-<span class="comment">//     Range&lt;T&gt; : RobjItertools,</span>
-<span class="comment">//     &lt;Range&lt;T&gt; as Iterator&gt;::Item: ToVectorValue,</span>
-<span class="comment">//     T : ToVectorValue</span>
-<span class="comment">// {</span>
-<span class="comment">//     fn from(val: Range&lt;T&gt;) -&gt; Self {</span>
-<span class="comment">//         val.collect_robj()</span>
-<span class="comment">//     }</span>
-<span class="comment">// }</span>
+<span class="comment">// impl&lt;T&gt; From&lt;Range&lt;T&gt;&gt; for Robj
+// where
+//     Range&lt;T&gt; : RobjItertools,
+//     &lt;Range&lt;T&gt; as Iterator&gt;::Item: ToVectorValue,
+//     T : ToVectorValue
+// {
+//     fn from(val: Range&lt;T&gt;) -&gt; Self {
+//         val.collect_robj()
+//     }
+// }
 
-<span class="comment">// Template constants are still unstable in rust.</span>
-<span class="macro">impl_from_iter!</span> {[<span class="ident">T</span>; <span class="number">1</span>]}
-<span class="macro">impl_from_iter!</span> {[<span class="ident">T</span>; <span class="number">2</span>]}
-<span class="macro">impl_from_iter!</span> {[<span class="ident">T</span>; <span class="number">3</span>]}
-<span class="macro">impl_from_iter!</span> {[<span class="ident">T</span>; <span class="number">4</span>]}
-<span class="macro">impl_from_iter!</span> {[<span class="ident">T</span>; <span class="number">5</span>]}
-<span class="macro">impl_from_iter!</span> {[<span class="ident">T</span>; <span class="number">6</span>]}
-<span class="macro">impl_from_iter!</span> {[<span class="ident">T</span>; <span class="number">7</span>]}
-<span class="macro">impl_from_iter!</span> {[<span class="ident">T</span>; <span class="number">8</span>]}
-<span class="macro">impl_from_iter!</span> {[<span class="ident">T</span>; <span class="number">9</span>]}
-<span class="macro">impl_from_iter!</span> {[<span class="ident">T</span>; <span class="number">10</span>]}
-<span class="macro">impl_from_iter!</span> {[<span class="ident">T</span>; <span class="number">11</span>]}
-<span class="macro">impl_from_iter!</span> {[<span class="ident">T</span>; <span class="number">12</span>]}
-<span class="macro">impl_from_iter!</span> {[<span class="ident">T</span>; <span class="number">13</span>]}
-<span class="macro">impl_from_iter!</span> {[<span class="ident">T</span>; <span class="number">14</span>]}
-<span class="macro">impl_from_iter!</span> {[<span class="ident">T</span>; <span class="number">15</span>]}
-<span class="macro">impl_from_iter!</span> {[<span class="ident">T</span>; <span class="number">16</span>]}
-<span class="macro">impl_from_iter!</span> {[<span class="ident">T</span>; <span class="number">17</span>]}
-<span class="macro">impl_from_iter!</span> {[<span class="ident">T</span>; <span class="number">18</span>]}
-<span class="macro">impl_from_iter!</span> {[<span class="ident">T</span>; <span class="number">19</span>]}
-<span class="macro">impl_from_iter!</span> {<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>}
-<span class="macro">impl_from_iter!</span> {<span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>}
+// Template constants are still unstable in rust.
+</span><span class="macro">impl_from_iter! </span>{[T; <span class="number">1</span>]}
+<span class="macro">impl_from_iter! </span>{[T; <span class="number">2</span>]}
+<span class="macro">impl_from_iter! </span>{[T; <span class="number">3</span>]}
+<span class="macro">impl_from_iter! </span>{[T; <span class="number">4</span>]}
+<span class="macro">impl_from_iter! </span>{[T; <span class="number">5</span>]}
+<span class="macro">impl_from_iter! </span>{[T; <span class="number">6</span>]}
+<span class="macro">impl_from_iter! </span>{[T; <span class="number">7</span>]}
+<span class="macro">impl_from_iter! </span>{[T; <span class="number">8</span>]}
+<span class="macro">impl_from_iter! </span>{[T; <span class="number">9</span>]}
+<span class="macro">impl_from_iter! </span>{[T; <span class="number">10</span>]}
+<span class="macro">impl_from_iter! </span>{[T; <span class="number">11</span>]}
+<span class="macro">impl_from_iter! </span>{[T; <span class="number">12</span>]}
+<span class="macro">impl_from_iter! </span>{[T; <span class="number">13</span>]}
+<span class="macro">impl_from_iter! </span>{[T; <span class="number">14</span>]}
+<span class="macro">impl_from_iter! </span>{[T; <span class="number">15</span>]}
+<span class="macro">impl_from_iter! </span>{[T; <span class="number">16</span>]}
+<span class="macro">impl_from_iter! </span>{[T; <span class="number">17</span>]}
+<span class="macro">impl_from_iter! </span>{[T; <span class="number">18</span>]}
+<span class="macro">impl_from_iter! </span>{[T; <span class="number">19</span>]}
+<span class="macro">impl_from_iter! </span>{Vec&lt;T&gt;}
+<span class="macro">impl_from_iter! </span>{<span class="kw-2">&amp;</span>Vec&lt;T&gt;}
 
-<span class="macro">impl_from_into_iter!</span> {<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">T</span>]}
+<span class="macro">impl_from_into_iter! </span>{<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[T]}
 
-<span class="macro">impl_from_as_iterator!</span> {<span class="ident">Range</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>}
-<span class="macro">impl_from_as_iterator!</span> {<span class="ident">RangeInclusive</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>}
+<span class="macro">impl_from_as_iterator! </span>{Range&lt;T&gt;}
+<span class="macro">impl_from_as_iterator! </span>{RangeInclusive&lt;T&gt;}
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="doccomment">/// Convert a vector of Robj into a list.</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">val</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">List::from_values</span>(<span class="ident">val</span>.<span class="ident">iter</span>()).<span class="ident">into</span>()
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; From&lt;Vec&lt;Robj&gt;&gt; <span class="kw">for </span>Robj {
+    <span class="doccomment">/// Convert a vector of Robj into a list.
+    </span><span class="kw">fn </span>from(val: Vec&lt;Robj&gt;) -&gt; <span class="self">Self </span>{
+        List::from_values(val.iter()).into()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rstr</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="doccomment">/// Convert a vector of Rstr into strings.</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">val</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rstr</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">Strings::from_values</span>(<span class="ident">val</span>.<span class="ident">into_iter</span>()).<span class="ident">into</span>()
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; From&lt;Vec&lt;Rstr&gt;&gt; <span class="kw">for </span>Robj {
+    <span class="doccomment">/// Convert a vector of Rstr into strings.
+    </span><span class="kw">fn </span>from(val: Vec&lt;Rstr&gt;) -&gt; <span class="self">Self </span>{
+        Strings::from_values(val.into_iter()).into()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rint</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="doccomment">/// Convert a vector of Rint into integers.</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">val</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rint</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">Integers::from_values</span>(<span class="ident">val</span>.<span class="ident">into_iter</span>()).<span class="ident">into</span>()
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; From&lt;Vec&lt;Rint&gt;&gt; <span class="kw">for </span>Robj {
+    <span class="doccomment">/// Convert a vector of Rint into integers.
+    </span><span class="kw">fn </span>from(val: Vec&lt;Rint&gt;) -&gt; <span class="self">Self </span>{
+        Integers::from_values(val.into_iter()).into()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rfloat</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-    <span class="doccomment">/// Convert a vector of Rfloat into doubles.</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">val</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rfloat</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">Doubles::from_values</span>(<span class="ident">val</span>.<span class="ident">into_iter</span>()).<span class="ident">into</span>()
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; From&lt;Vec&lt;Rfloat&gt;&gt; <span class="kw">for </span>Robj {
+    <span class="doccomment">/// Convert a vector of Rfloat into doubles.
+    </span><span class="kw">fn </span>from(val: Vec&lt;Rfloat&gt;) -&gt; <span class="self">Self </span>{
+        Doubles::from_values(val.into_iter()).into()
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

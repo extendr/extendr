@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-macros/src/extendr_module.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>extendr_module.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../extendr_macros/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../extendr_macros/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../extendr_macros/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-macros/src/extendr_module.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>extendr_module.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../extendr_macros/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -166,173 +166,173 @@
 <span id="166">166</span>
 <span id="167">167</span>
 <span id="168">168</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::wrappers</span>;
-<span class="kw">use</span> <span class="ident">proc_macro::TokenStream</span>;
-<span class="kw">use</span> <span class="ident">quote</span>::{<span class="ident">format_ident</span>, <span class="ident">quote</span>};
-<span class="kw">use</span> <span class="ident">syn</span>::{<span class="ident">parse::ParseStream</span>, <span class="ident">parse_macro_input</span>, <span class="ident">Ident</span>, <span class="ident">Token</span>, <span class="ident">Type</span>};
+</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::wrappers;
+<span class="kw">use </span>proc_macro::TokenStream;
+<span class="kw">use </span>quote::{format_ident, quote};
+<span class="kw">use </span>syn::{parse::ParseStream, parse_macro_input, Ident, Token, Type};
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extendr_module</span>(<span class="ident">item</span>: <span class="ident">TokenStream</span>) -&gt; <span class="ident">TokenStream</span> {
-    <span class="kw">let</span> <span class="ident">module</span> <span class="op">=</span> <span class="macro">parse_macro_input!</span>(<span class="ident">item</span> <span class="kw">as</span> <span class="ident">Module</span>);
-    <span class="kw">let</span> <span class="ident">Module</span> {
-        <span class="ident">modname</span>,
-        <span class="ident">fnnames</span>,
-        <span class="ident">implnames</span>,
-        <span class="ident">usenames</span>,
-    } <span class="op">=</span> <span class="ident">module</span>;
-    <span class="kw">let</span> <span class="ident">modname</span> <span class="op">=</span> <span class="ident">modname</span>.<span class="ident">unwrap</span>();
-    <span class="kw">let</span> <span class="ident">modname_string</span> <span class="op">=</span> <span class="ident">modname</span>.<span class="ident">to_string</span>();
-    <span class="kw">let</span> <span class="ident">module_init_name</span> <span class="op">=</span> <span class="macro">format_ident!</span>(<span class="string">&quot;R_init_{}_extendr&quot;</span>, <span class="ident">modname</span>);
+<span class="kw">pub fn </span>extendr_module(item: TokenStream) -&gt; TokenStream {
+    <span class="kw">let </span>module = <span class="macro">parse_macro_input!</span>(item <span class="kw">as </span>Module);
+    <span class="kw">let </span>Module {
+        modname,
+        fnnames,
+        implnames,
+        usenames,
+    } = module;
+    <span class="kw">let </span>modname = modname.unwrap();
+    <span class="kw">let </span>modname_string = modname.to_string();
+    <span class="kw">let </span>module_init_name = <span class="macro">format_ident!</span>(<span class="string">&quot;R_init_{}_extendr&quot;</span>, modname);
 
-    <span class="kw">let</span> <span class="ident">module_metadata_name</span> <span class="op">=</span> <span class="macro">format_ident!</span>(<span class="string">&quot;get_{}_metadata&quot;</span>, <span class="ident">modname</span>);
-    <span class="kw">let</span> <span class="ident">module_metadata_name_string</span> <span class="op">=</span> <span class="ident">module_metadata_name</span>.<span class="ident">to_string</span>();
-    <span class="kw">let</span> <span class="ident">wrap_module_metadata_name</span> <span class="op">=</span>
-        <span class="macro">format_ident!</span>(<span class="string">&quot;{}get_{}_metadata&quot;</span>, <span class="ident">wrappers::WRAP_PREFIX</span>, <span class="ident">modname</span>);
+    <span class="kw">let </span>module_metadata_name = <span class="macro">format_ident!</span>(<span class="string">&quot;get_{}_metadata&quot;</span>, modname);
+    <span class="kw">let </span>module_metadata_name_string = module_metadata_name.to_string();
+    <span class="kw">let </span>wrap_module_metadata_name =
+        <span class="macro">format_ident!</span>(<span class="string">&quot;{}get_{}_metadata&quot;</span>, wrappers::WRAP_PREFIX, modname);
 
-    <span class="kw">let</span> <span class="ident">make_module_wrappers_name</span> <span class="op">=</span> <span class="macro">format_ident!</span>(<span class="string">&quot;make_{}_wrappers&quot;</span>, <span class="ident">modname</span>);
-    <span class="kw">let</span> <span class="ident">make_module_wrappers_name_string</span> <span class="op">=</span> <span class="ident">make_module_wrappers_name</span>.<span class="ident">to_string</span>();
-    <span class="kw">let</span> <span class="ident">wrap_make_module_wrappers</span> <span class="op">=</span>
-        <span class="macro">format_ident!</span>(<span class="string">&quot;{}make_{}_wrappers&quot;</span>, <span class="ident">wrappers::WRAP_PREFIX</span>, <span class="ident">modname</span>);
+    <span class="kw">let </span>make_module_wrappers_name = <span class="macro">format_ident!</span>(<span class="string">&quot;make_{}_wrappers&quot;</span>, modname);
+    <span class="kw">let </span>make_module_wrappers_name_string = make_module_wrappers_name.to_string();
+    <span class="kw">let </span>wrap_make_module_wrappers =
+        <span class="macro">format_ident!</span>(<span class="string">&quot;{}make_{}_wrappers&quot;</span>, wrappers::WRAP_PREFIX, modname);
 
-    <span class="kw">let</span> <span class="ident">fnmetanames</span> <span class="op">=</span> <span class="ident">fnnames</span>
-        .<span class="ident">iter</span>()
-        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">id</span><span class="op">|</span> <span class="macro">format_ident!</span>(<span class="string">&quot;{}{}&quot;</span>, <span class="ident">wrappers::META_PREFIX</span>, <span class="ident">id</span>));
-    <span class="kw">let</span> <span class="ident">implmetanames</span> <span class="op">=</span> <span class="ident">implnames</span>
-        .<span class="ident">iter</span>()
-        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">id</span><span class="op">|</span> <span class="macro">format_ident!</span>(<span class="string">&quot;{}{}&quot;</span>, <span class="ident">wrappers::META_PREFIX</span>, <span class="ident">wrappers::type_name</span>(<span class="ident">id</span>)));
-    <span class="kw">let</span> <span class="ident">usemetanames</span> <span class="op">=</span> <span class="ident">usenames</span>
-        .<span class="ident">iter</span>()
-        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">id</span><span class="op">|</span> <span class="macro">format_ident!</span>(<span class="string">&quot;get_{}_metadata&quot;</span>, <span class="ident">id</span>))
-        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Ident</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+    <span class="kw">let </span>fnmetanames = fnnames
+        .iter()
+        .map(|id| <span class="macro">format_ident!</span>(<span class="string">&quot;{}{}&quot;</span>, wrappers::META_PREFIX, id));
+    <span class="kw">let </span>implmetanames = implnames
+        .iter()
+        .map(|id| <span class="macro">format_ident!</span>(<span class="string">&quot;{}{}&quot;</span>, wrappers::META_PREFIX, wrappers::type_name(id)));
+    <span class="kw">let </span>usemetanames = usenames
+        .iter()
+        .map(|id| <span class="macro">format_ident!</span>(<span class="string">&quot;get_{}_metadata&quot;</span>, id))
+        .collect::&lt;Vec&lt;Ident&gt;&gt;();
 
-    <span class="ident">TokenStream::from</span>(<span class="macro">quote!</span> {
-        <span class="attribute">#[<span class="ident">no_mangle</span>]</span>
-        <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> #<span class="ident">module_metadata_name</span>() -&gt; <span class="ident">extendr_api::metadata::Metadata</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">functions</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">impls</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
+    TokenStream::from(<span class="macro">quote! </span>{
+        <span class="attribute">#[no_mangle]
+        #[allow(non_snake_case)]
+        </span><span class="kw">pub fn </span>#module_metadata_name() -&gt; extendr_api::metadata::Metadata {
+            <span class="kw">let </span><span class="kw-2">mut </span>functions = Vec::new();
+            <span class="kw">let </span><span class="kw-2">mut </span>impls = Vec::new();
 
-            <span class="comment">// Pushes metadata (eg. extendr_api::metadata::Func) to functions and impl vectors.</span>
-            #( #<span class="ident">fnmetanames</span>(<span class="kw-2">&amp;mut</span> <span class="ident">functions</span>); )<span class="op">*</span>
-            #( #<span class="ident">implmetanames</span>(<span class="kw-2">&amp;mut</span> <span class="ident">impls</span>); )<span class="op">*</span>
+            <span class="comment">// Pushes metadata (eg. extendr_api::metadata::Func) to functions and impl vectors.
+            </span>#( #fnmetanames(<span class="kw-2">&amp;mut </span>functions); )*
+            #( #implmetanames(<span class="kw-2">&amp;mut </span>impls); )*
 
-            <span class="comment">// Extends functions and impls with the submodules metadata</span>
-            #( <span class="ident">functions</span>.<span class="ident">extend</span>(#<span class="ident">usemetanames</span>().<span class="ident">functions</span>); )<span class="op">*</span>
-            #( <span class="ident">impls</span>.<span class="ident">extend</span>(#<span class="ident">usemetanames</span>().<span class="ident">impls</span>); )<span class="op">*</span>
+            <span class="comment">// Extends functions and impls with the submodules metadata
+            </span>#( functions.extend(#usemetanames().functions); )*
+            #( impls.extend(#usemetanames().impls); )*
 
-            <span class="comment">// Add this function to the list, but set hidden: true.</span>
-            <span class="ident">functions</span>.<span class="ident">push</span>(<span class="ident">extendr_api::metadata::Func</span> {
-                <span class="ident">doc</span>: <span class="string">&quot;Metadata access function.&quot;</span>,
-                <span class="ident">rust_name</span>: #<span class="ident">module_metadata_name_string</span>,
-                <span class="ident">mod_name</span>: #<span class="ident">module_metadata_name_string</span>,
-                <span class="ident">r_name</span>: #<span class="ident">module_metadata_name_string</span>,
-                <span class="ident">args</span>: <span class="ident">Vec::new</span>(),
-                <span class="ident">return_type</span>: <span class="string">&quot;Metadata&quot;</span>,
-                <span class="ident">func_ptr</span>: #<span class="ident">wrap_module_metadata_name</span> <span class="kw">as</span> <span class="op">*</span> <span class="kw">const</span> <span class="ident">u8</span>,
-                <span class="ident">hidden</span>: <span class="bool-val">true</span>,
+            <span class="comment">// Add this function to the list, but set hidden: true.
+            </span>functions.push(extendr_api::metadata::Func {
+                doc: <span class="string">&quot;Metadata access function.&quot;</span>,
+                rust_name: #module_metadata_name_string,
+                mod_name: #module_metadata_name_string,
+                r_name: #module_metadata_name_string,
+                args: Vec::new(),
+                return_type: <span class="string">&quot;Metadata&quot;</span>,
+                func_ptr: #wrap_module_metadata_name <span class="kw">as </span>* <span class="kw">const </span>u8,
+                hidden: <span class="bool-val">true</span>,
             });
 
-            <span class="comment">// Add this function to the list, but set hidden: true.</span>
-            <span class="ident">functions</span>.<span class="ident">push</span>(<span class="ident">extendr_api::metadata::Func</span> {
-                <span class="ident">doc</span>: <span class="string">&quot;Wrapper generator.&quot;</span>,
-                <span class="ident">rust_name</span>: #<span class="ident">make_module_wrappers_name_string</span>,
-                <span class="ident">mod_name</span>: #<span class="ident">make_module_wrappers_name_string</span>,
-                <span class="ident">r_name</span>: #<span class="ident">make_module_wrappers_name_string</span>,
-                <span class="ident">args</span>: <span class="macro">vec!</span>[
-                    <span class="ident">extendr_api::metadata::Arg</span> { <span class="ident">name</span>: <span class="string">&quot;use_symbols&quot;</span>, <span class="ident">arg_type</span>: <span class="string">&quot;bool&quot;</span>, <span class="ident">default</span>: <span class="prelude-val">None</span> },
-                    <span class="ident">extendr_api::metadata::Arg</span> { <span class="ident">name</span>: <span class="string">&quot;package_name&quot;</span>, <span class="ident">arg_type</span>: <span class="string">&quot;&amp;str&quot;</span>, <span class="ident">default</span>: <span class="prelude-val">None</span> },
+            <span class="comment">// Add this function to the list, but set hidden: true.
+            </span>functions.push(extendr_api::metadata::Func {
+                doc: <span class="string">&quot;Wrapper generator.&quot;</span>,
+                rust_name: #make_module_wrappers_name_string,
+                mod_name: #make_module_wrappers_name_string,
+                r_name: #make_module_wrappers_name_string,
+                args: <span class="macro">vec!</span>[
+                    extendr_api::metadata::Arg { name: <span class="string">&quot;use_symbols&quot;</span>, arg_type: <span class="string">&quot;bool&quot;</span>, default: <span class="prelude-val">None </span>},
+                    extendr_api::metadata::Arg { name: <span class="string">&quot;package_name&quot;</span>, arg_type: <span class="string">&quot;&amp;str&quot;</span>, default: <span class="prelude-val">None </span>},
                     ],
-                <span class="ident">return_type</span>: <span class="string">&quot;String&quot;</span>,
-                <span class="ident">func_ptr</span>: #<span class="ident">wrap_make_module_wrappers</span> <span class="kw">as</span> <span class="op">*</span> <span class="kw">const</span> <span class="ident">u8</span>,
-                <span class="ident">hidden</span>: <span class="bool-val">true</span>,
+                return_type: <span class="string">&quot;String&quot;</span>,
+                func_ptr: #wrap_make_module_wrappers <span class="kw">as </span>* <span class="kw">const </span>u8,
+                hidden: <span class="bool-val">true</span>,
             });
 
-            <span class="ident">extendr_api::metadata::Metadata</span> {
-                <span class="ident">name</span>: #<span class="ident">modname_string</span>,
-                <span class="ident">functions</span>,
-                <span class="ident">impls</span>,
+            extendr_api::metadata::Metadata {
+                name: #modname_string,
+                functions,
+                impls,
             }
         }
 
-        <span class="attribute">#[<span class="ident">no_mangle</span>]</span>
-        <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
-        <span class="kw">pub</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> #<span class="ident">wrap_module_metadata_name</span>() -&gt; <span class="ident">extendr_api::SEXP</span> {
-            <span class="kw">unsafe</span> { <span class="ident">extendr_api::Robj::from</span>(#<span class="ident">module_metadata_name</span>()).<span class="ident">get</span>() }
+        <span class="attribute">#[no_mangle]
+        #[allow(non_snake_case)]
+        </span><span class="kw">pub extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>#wrap_module_metadata_name() -&gt; extendr_api::SEXP {
+            <span class="kw">unsafe </span>{ extendr_api::Robj::from(#module_metadata_name()).get() }
         }
 
-        <span class="attribute">#[<span class="ident">no_mangle</span>]</span>
-        <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
-        <span class="kw">pub</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> #<span class="ident">wrap_make_module_wrappers</span>(
-            <span class="ident">use_symbols_sexp</span>: <span class="ident">extendr_api::SEXP</span>,
-            <span class="ident">package_name_sexp</span>: <span class="ident">extendr_api::SEXP</span>,
-        ) -&gt; <span class="ident">extendr_api::SEXP</span> {
-            <span class="kw">unsafe</span> {
-                <span class="kw">use</span> <span class="ident">extendr_api::robj</span>::<span class="kw-2">*</span>;
-                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">new_owned</span>(<span class="ident">use_symbols_sexp</span>);
-                <span class="kw">let</span> <span class="ident">use_symbols</span>: <span class="ident">bool</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span><span class="ident">::from_robj</span>(<span class="kw-2">&amp;</span><span class="ident">robj</span>).<span class="ident">unwrap</span>();
+        <span class="attribute">#[no_mangle]
+        #[allow(non_snake_case)]
+        </span><span class="kw">pub extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>#wrap_make_module_wrappers(
+            use_symbols_sexp: extendr_api::SEXP,
+            package_name_sexp: extendr_api::SEXP,
+        ) -&gt; extendr_api::SEXP {
+            <span class="kw">unsafe </span>{
+                <span class="kw">use </span>extendr_api::robj::<span class="kw-2">*</span>;
+                <span class="kw">let </span>robj = new_owned(use_symbols_sexp);
+                <span class="kw">let </span>use_symbols: bool = &lt;bool&gt;::from_robj(<span class="kw-2">&amp;</span>robj).unwrap();
 
-                <span class="kw">let</span> <span class="ident">robj</span> <span class="op">=</span> <span class="ident">new_owned</span>(<span class="ident">package_name_sexp</span>);
-                <span class="kw">let</span> <span class="ident">package_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span><span class="ident">::from_robj</span>(<span class="kw-2">&amp;</span><span class="ident">robj</span>).<span class="ident">unwrap</span>();
+                <span class="kw">let </span>robj = new_owned(package_name_sexp);
+                <span class="kw">let </span>package_name: <span class="kw-2">&amp;</span>str = &lt;<span class="kw-2">&amp;</span>str&gt;::from_robj(<span class="kw-2">&amp;</span>robj).unwrap();
 
-                <span class="ident">extendr_api::Robj::from</span>(
-                    #<span class="ident">module_metadata_name</span>()
-                        .<span class="ident">make_r_wrappers</span>(
-                            <span class="ident">use_symbols</span>,
-                            <span class="ident">package_name</span>,
-                        ).<span class="ident">unwrap</span>()
-                ).<span class="ident">get</span>()
+                extendr_api::Robj::from(
+                    #module_metadata_name()
+                        .make_r_wrappers(
+                            use_symbols,
+                            package_name,
+                        ).unwrap()
+                ).get()
             }
         }
 
-        <span class="attribute">#[<span class="ident">no_mangle</span>]</span>
-        <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>, <span class="ident">clippy::not_unsafe_ptr_arg_deref</span>)]</span>
-        <span class="kw">pub</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> #<span class="ident">module_init_name</span>(<span class="ident">info</span>: <span class="op">*</span> <span class="kw-2">mut</span> <span class="ident">extendr_api::DllInfo</span>) {
-            <span class="kw">unsafe</span> { <span class="ident">extendr_api::register_call_methods</span>(<span class="ident">info</span>, #<span class="ident">module_metadata_name</span>()) };
+        <span class="attribute">#[no_mangle]
+        #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+        </span><span class="kw">pub extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>#module_init_name(info: * <span class="kw-2">mut </span>extendr_api::DllInfo) {
+            <span class="kw">unsafe </span>{ extendr_api::register_call_methods(info, #module_metadata_name()) };
         }
     })
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">struct</span> <span class="ident">Module</span> {
-    <span class="ident">modname</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ident</span><span class="op">&gt;</span>,
-    <span class="ident">fnnames</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Ident</span><span class="op">&gt;</span>,
-    <span class="ident">implnames</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Type</span><span class="op">&gt;</span>,
-    <span class="ident">usenames</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Ident</span><span class="op">&gt;</span>,
+<span class="attribute">#[derive(Debug)]
+</span><span class="kw">struct </span>Module {
+    modname: <span class="prelude-ty">Option</span>&lt;Ident&gt;,
+    fnnames: Vec&lt;Ident&gt;,
+    implnames: Vec&lt;Type&gt;,
+    usenames: Vec&lt;Ident&gt;,
 }
 
-<span class="comment">// Custom parser for the module.</span>
-<span class="kw">impl</span> <span class="ident">syn::parse::Parse</span> <span class="kw">for</span> <span class="ident">Module</span> {
-    <span class="kw">fn</span> <span class="ident">parse</span>(<span class="ident">input</span>: <span class="ident">ParseStream</span>) -&gt; <span class="ident">syn::Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="kw">use</span> <span class="ident">syn::spanned::Spanned</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="self">Self</span> {
-            <span class="ident">modname</span>: <span class="prelude-val">None</span>,
-            <span class="ident">fnnames</span>: <span class="ident">Vec::new</span>(),
-            <span class="ident">implnames</span>: <span class="ident">Vec::new</span>(),
-            <span class="ident">usenames</span>: <span class="ident">Vec::new</span>(),
+<span class="comment">// Custom parser for the module.
+</span><span class="kw">impl </span>syn::parse::Parse <span class="kw">for </span>Module {
+    <span class="kw">fn </span>parse(input: ParseStream) -&gt; syn::Result&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">use </span>syn::spanned::Spanned;
+        <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="self">Self </span>{
+            modname: <span class="prelude-val">None</span>,
+            fnnames: Vec::new(),
+            implnames: Vec::new(),
+            usenames: Vec::new(),
         };
-        <span class="kw">while</span> <span class="op">!</span><span class="ident">input</span>.<span class="ident">is_empty</span>() {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">kmod</span>) <span class="op">=</span> <span class="ident">input</span>.<span class="ident">parse</span>::<span class="op">&lt;</span><span class="macro">Token!</span>[<span class="kw">mod</span>]<span class="op">&gt;</span>() {
-                <span class="kw">let</span> <span class="ident">name</span>: <span class="ident">Ident</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">parse</span>()<span class="question-mark">?</span>;
-                <span class="kw">if</span> <span class="ident">res</span>.<span class="ident">modname</span>.<span class="ident">is_some</span>() {
-                    <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">syn::Error::new</span>(<span class="ident">kmod</span>.<span class="ident">span</span>(), <span class="string">&quot;only one mod allowed&quot;</span>));
+        <span class="kw">while </span>!input.is_empty() {
+            <span class="kw">if let </span><span class="prelude-val">Ok</span>(kmod) = input.parse::&lt;<span class="macro">Token!</span>[<span class="kw">mod</span>]&gt;() {
+                <span class="kw">let </span>name: Ident = input.parse()<span class="question-mark">?</span>;
+                <span class="kw">if </span>res.modname.is_some() {
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(kmod.span(), <span class="string">&quot;only one mod allowed&quot;</span>));
                 }
-                <span class="ident">res</span>.<span class="ident">modname</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>);
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">input</span>.<span class="ident">parse</span>::<span class="op">&lt;</span><span class="macro">Token!</span>[<span class="kw">fn</span>]<span class="op">&gt;</span>().<span class="ident">is_ok</span>() {
-                <span class="ident">res</span>.<span class="ident">fnnames</span>.<span class="ident">push</span>(<span class="ident">input</span>.<span class="ident">parse</span>()<span class="question-mark">?</span>);
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">input</span>.<span class="ident">parse</span>::<span class="op">&lt;</span><span class="macro">Token!</span>[<span class="kw">impl</span>]<span class="op">&gt;</span>().<span class="ident">is_ok</span>() {
-                <span class="ident">res</span>.<span class="ident">implnames</span>.<span class="ident">push</span>(<span class="ident">input</span>.<span class="ident">parse</span>()<span class="question-mark">?</span>);
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">input</span>.<span class="ident">parse</span>::<span class="op">&lt;</span><span class="macro">Token!</span>[<span class="kw">use</span>]<span class="op">&gt;</span>().<span class="ident">is_ok</span>() {
-                <span class="ident">res</span>.<span class="ident">usenames</span>.<span class="ident">push</span>(<span class="ident">input</span>.<span class="ident">parse</span>()<span class="question-mark">?</span>);
-            } <span class="kw">else</span> {
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">syn::Error::new</span>(<span class="ident">input</span>.<span class="ident">span</span>(), <span class="string">&quot;expected mod, fn or impl&quot;</span>));
+                res.modname = <span class="prelude-val">Some</span>(name);
+            } <span class="kw">else if </span>input.parse::&lt;<span class="macro">Token!</span>[<span class="kw">fn</span>]&gt;().is_ok() {
+                res.fnnames.push(input.parse()<span class="question-mark">?</span>);
+            } <span class="kw">else if </span>input.parse::&lt;<span class="macro">Token!</span>[<span class="kw">impl</span>]&gt;().is_ok() {
+                res.implnames.push(input.parse()<span class="question-mark">?</span>);
+            } <span class="kw">else if </span>input.parse::&lt;<span class="macro">Token!</span>[<span class="kw">use</span>]&gt;().is_ok() {
+                res.usenames.push(input.parse()<span class="question-mark">?</span>);
+            } <span class="kw">else </span>{
+                <span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(input.span(), <span class="string">&quot;expected mod, fn or impl&quot;</span>));
             }
 
-            <span class="ident">input</span>.<span class="ident">parse</span>::<span class="op">&lt;</span><span class="macro">Token!</span>[;]<span class="op">&gt;</span>()<span class="question-mark">?</span>;
+            input.parse::&lt;<span class="macro">Token!</span>[;]&gt;()<span class="question-mark">?</span>;
         }
-        <span class="kw">if</span> <span class="ident">res</span>.<span class="ident">modname</span>.<span class="ident">is_none</span>() {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">syn::Error::new</span>(<span class="ident">input</span>.<span class="ident">span</span>(), <span class="string">&quot;expected one &#39;mod name&#39;&quot;</span>));
+        <span class="kw">if </span>res.modname.is_none() {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(input.span(), <span class="string">&quot;expected one &#39;mod name&#39;&quot;</span>));
         }
-        <span class="prelude-val">Ok</span>(<span class="ident">res</span>)
+        <span class="prelude-val">Ok</span>(res)
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_macros" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_macros" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

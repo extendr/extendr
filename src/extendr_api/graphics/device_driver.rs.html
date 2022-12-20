@@ -1,6 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/graphics/device_driver.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>device_driver.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container">
-                    <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../extendr_api/index.html">
-                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/graphics/device_driver.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>device_driver.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../extendr_api/index.html">
+                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -936,941 +935,941 @@
 <span id="934">934</span>
 <span id="935">935</span>
 <span id="936">936</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">core::slice</span>;
+</pre><pre class="rust"><code><span class="kw">use </span>core::slice;
 
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">libR_sys</span>::<span class="kw-2">*</span>;
+<span class="kw">use crate</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>libR_sys::<span class="kw-2">*</span>;
 
-<span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">device_descriptor</span>::<span class="kw-2">*</span>, <span class="ident">Device</span>, <span class="ident">Raster</span>, <span class="ident">TextMetric</span>};
+<span class="kw">use super</span>::{device_descriptor::<span class="kw-2">*</span>, Device, Raster, TextMetric};
 
-<span class="doccomment">/// The underlying C structure `DevDesc` has two fields related to clipping:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// - `canClip`</span>
-<span class="doccomment">/// - `deviceClip` (available on R &gt;= 4.1)</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// `canClip` indicates whether the device has clipping functionality at all. If</span>
-<span class="doccomment">/// not, the graphic engine kindly clips before sending the drawing operations</span>
-<span class="doccomment">/// to the device. But, this isn&#39;t very ideal in some points. Especially, it&#39;s</span>
-<span class="doccomment">/// bad that the engine will omit &quot;any text that does not appear to be wholly</span>
-<span class="doccomment">/// inside the clipping region,&quot; according to [the R Internals]. So, the device</span>
-<span class="doccomment">/// should implement `clip()` and set `canClip` to `true` if possible.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Even when `canClip` is `true`, the engine does clip to protect the device</span>
-<span class="doccomment">/// from large values by default. But, for efficiency, the device can take all</span>
-<span class="doccomment">/// the responsibility of clipping. That is `deviceClip`, which was introduced</span>
-<span class="doccomment">/// in R 4.1. If this is set to `true`, the engine will perform no clipping at</span>
-<span class="doccomment">/// all. For more details, please refer to [the offical announcement blog post].</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// So, in short, a graphic device can choose either of the following:</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// - clipping without the help of the graphic engine (`Device`)</span>
-<span class="doccomment">/// - clipping with the help of the graphic engine (`DeviceAndEngine`)</span>
-<span class="doccomment">/// - no clipping at all (`Engine`)</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [the R Internals]:</span>
-<span class="doccomment">///     https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Handling-text</span>
-<span class="doccomment">/// [the announcement blog post]:</span>
-<span class="doccomment">///     https://developer.r-project.org/Blog/public/2020/06/08/improvements-to-clipping-in-the-r-graphics-engine/</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ClippingStrategy</span> {
-    <span class="ident">Device</span>,
-    <span class="ident">DeviceAndEngine</span>,
-    <span class="ident">Engine</span>,
+<span class="doccomment">/// The underlying C structure `DevDesc` has two fields related to clipping:
+///
+/// - `canClip`
+/// - `deviceClip` (available on R &gt;= 4.1)
+///
+/// `canClip` indicates whether the device has clipping functionality at all. If
+/// not, the graphic engine kindly clips before sending the drawing operations
+/// to the device. But, this isn&#39;t very ideal in some points. Especially, it&#39;s
+/// bad that the engine will omit &quot;any text that does not appear to be wholly
+/// inside the clipping region,&quot; according to [the R Internals]. So, the device
+/// should implement `clip()` and set `canClip` to `true` if possible.
+///
+/// Even when `canClip` is `true`, the engine does clip to protect the device
+/// from large values by default. But, for efficiency, the device can take all
+/// the responsibility of clipping. That is `deviceClip`, which was introduced
+/// in R 4.1. If this is set to `true`, the engine will perform no clipping at
+/// all. For more details, please refer to [the offical announcement blog post].
+///
+/// So, in short, a graphic device can choose either of the following:
+///
+/// - clipping without the help of the graphic engine (`Device`)
+/// - clipping with the help of the graphic engine (`DeviceAndEngine`)
+/// - no clipping at all (`Engine`)
+///
+/// [the R Internals]:
+///     https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Handling-text
+/// [the announcement blog post]:
+///     https://developer.r-project.org/Blog/public/2020/06/08/improvements-to-clipping-in-the-r-graphics-engine/
+</span><span class="kw">pub enum </span>ClippingStrategy {
+    Device,
+    DeviceAndEngine,
+    Engine,
 }
 
-<span class="doccomment">/// A graphic device implementation.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Safety</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// To implement these callback functions, extreme care is needed to avoid any</span>
-<span class="doccomment">/// `panic!()` because it immediately crashes the R session. Usually, extendr</span>
-<span class="doccomment">/// handles a panic gracefully, but there&#39;s no such protect on the callback</span>
-<span class="doccomment">/// functions.</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>, <span class="ident">unused_variables</span>, <span class="ident">clippy::too_many_arguments</span>)]</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">DeviceDriver</span>: <span class="ident">std::marker::Sized</span> {
-    <span class="doccomment">/// Whether the device accepts the drawing operation of a raster. By</span>
-    <span class="doccomment">/// default, the default implementation, which just ignores the raster,</span>
-    <span class="doccomment">/// is used so this can be left `true`. If there&#39;s a necessity to</span>
-    <span class="doccomment">/// explicitly refuse the operation, this can be set `false`.</span>
-    <span class="kw">const</span> <span class="ident">USE_RASTER</span>: <span class="ident">bool</span> <span class="op">=</span> <span class="bool-val">true</span>;
+<span class="doccomment">/// A graphic device implementation.
+///
+/// # Safety
+///
+/// To implement these callback functions, extreme care is needed to avoid any
+/// `panic!()` because it immediately crashes the R session. Usually, extendr
+/// handles a panic gracefully, but there&#39;s no such protect on the callback
+/// functions.
+</span><span class="attribute">#[allow(non_snake_case, unused_variables, clippy::too_many_arguments)]
+</span><span class="kw">pub trait </span>DeviceDriver: std::marker::Sized {
+    <span class="doccomment">/// Whether the device accepts the drawing operation of a raster. By
+    /// default, the default implementation, which just ignores the raster,
+    /// is used so this can be left `true`. If there&#39;s a necessity to
+    /// explicitly refuse the operation, this can be set `false`.
+    </span><span class="kw">const </span>USE_RASTER: bool = <span class="bool-val">true</span>;
 
-    <span class="doccomment">/// Whether the device accepts a capturing operation. By default, the</span>
-    <span class="doccomment">/// default implementation, which just returns an empty capture, is used so</span>
-    <span class="doccomment">/// this can be left `true`. If there&#39;s a necessity to explicitly refuse the</span>
-    <span class="doccomment">/// operation, this can be set `false`.</span>
-    <span class="kw">const</span> <span class="ident">USE_CAPTURE</span>: <span class="ident">bool</span> <span class="op">=</span> <span class="bool-val">true</span>;
+    <span class="doccomment">/// Whether the device accepts a capturing operation. By default, the
+    /// default implementation, which just returns an empty capture, is used so
+    /// this can be left `true`. If there&#39;s a necessity to explicitly refuse the
+    /// operation, this can be set `false`.
+    </span><span class="kw">const </span>USE_CAPTURE: bool = <span class="bool-val">true</span>;
 
-    <span class="doccomment">/// Whether the device has a locator capability, i.e.,</span>
-    <span class="doccomment">/// reading the position of the graphics cursor when the mouse button is pressed.</span>
-    <span class="doccomment">/// It works with X11, windows and quartz devices.</span>
-    <span class="kw">const</span> <span class="ident">USE_LOCATOR</span>: <span class="ident">bool</span> <span class="op">=</span> <span class="bool-val">true</span>;
+    <span class="doccomment">/// Whether the device has a locator capability, i.e.,
+    /// reading the position of the graphics cursor when the mouse button is pressed.
+    /// It works with X11, windows and quartz devices.
+    </span><span class="kw">const </span>USE_LOCATOR: bool = <span class="bool-val">true</span>;
 
-    <span class="doccomment">/// Whether the device maintains a plot history. This corresponds to</span>
-    <span class="doccomment">/// `displayListOn` in the underlying [DevDesc].</span>
-    <span class="kw">const</span> <span class="ident">USE_PLOT_HISTORY</span>: <span class="ident">bool</span> <span class="op">=</span> <span class="bool-val">false</span>;
+    <span class="doccomment">/// Whether the device maintains a plot history. This corresponds to
+    /// `displayListOn` in the underlying [DevDesc].
+    </span><span class="kw">const </span>USE_PLOT_HISTORY: bool = <span class="bool-val">false</span>;
 
-    <span class="doccomment">/// To what extent the device takes the responsibility of clipping. See</span>
-    <span class="doccomment">/// [ClippingStrategy] for the details.</span>
-    <span class="kw">const</span> <span class="ident">CLIPPING_STRATEGY</span>: <span class="ident">ClippingStrategy</span> <span class="op">=</span> <span class="ident">ClippingStrategy::DeviceAndEngine</span>;
+    <span class="doccomment">/// To what extent the device takes the responsibility of clipping. See
+    /// [ClippingStrategy] for the details.
+    </span><span class="kw">const </span>CLIPPING_STRATEGY: ClippingStrategy = ClippingStrategy::DeviceAndEngine;
 
-    <span class="doccomment">/// Set this to `false` if the implemented `strWidth()` and `text()` only</span>
-    <span class="doccomment">/// accept ASCII text.</span>
-    <span class="kw">const</span> <span class="ident">ACCEPT_UTF8_TEXT</span>: <span class="ident">bool</span> <span class="op">=</span> <span class="bool-val">true</span>;
+    <span class="doccomment">/// Set this to `false` if the implemented `strWidth()` and `text()` only
+    /// accept ASCII text.
+    </span><span class="kw">const </span>ACCEPT_UTF8_TEXT: bool = <span class="bool-val">true</span>;
 
-    <span class="doccomment">/// A callback function to setup the device when the device is activated.</span>
-    <span class="kw">fn</span> <span class="ident">activate</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">dd</span>: <span class="ident">DevDesc</span>) {}
+    <span class="doccomment">/// A callback function to setup the device when the device is activated.
+    </span><span class="kw">fn </span>activate(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dd: DevDesc) {}
 
-    <span class="doccomment">/// A callback function to draw a circle.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The header file[^1] states:</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// * The border of the circle should be drawn in the given `col` (i.e. `gc.col`).</span>
-    <span class="doccomment">/// * The circle should be filled with the given `fill` (i.e. `gc.fill`) colour.</span>
-    <span class="doccomment">/// * If `col` is `NA_INTEGER` then no border should be drawn.</span>
-    <span class="doccomment">/// * If `fill` is `NA_INTEGER` then the circle should not be filled.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [^1]: &lt;https://github.com/wch/r-source/blob/9f284035b7e503aebe4a804579e9e80a541311bb/src/include/R_ext/GraphicsDevice.h#L205-L210&gt;</span>
-    <span class="kw">fn</span> <span class="ident">circle</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">center</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>), <span class="ident">r</span>: <span class="ident">f64</span>, <span class="ident">gc</span>: <span class="ident">R_GE_gcontext</span>, <span class="ident">dd</span>: <span class="ident">DevDesc</span>) {}
+    <span class="doccomment">/// A callback function to draw a circle.
+    ///
+    /// The header file[^1] states:
+    ///
+    /// * The border of the circle should be drawn in the given `col` (i.e. `gc.col`).
+    /// * The circle should be filled with the given `fill` (i.e. `gc.fill`) colour.
+    /// * If `col` is `NA_INTEGER` then no border should be drawn.
+    /// * If `fill` is `NA_INTEGER` then the circle should not be filled.
+    ///
+    /// [^1]: &lt;https://github.com/wch/r-source/blob/9f284035b7e503aebe4a804579e9e80a541311bb/src/include/R_ext/GraphicsDevice.h#L205-L210&gt;
+    </span><span class="kw">fn </span>circle(<span class="kw-2">&amp;mut </span><span class="self">self</span>, center: (f64, f64), r: f64, gc: R_GE_gcontext, dd: DevDesc) {}
 
-    <span class="doccomment">/// A callback function to clip.</span>
-    <span class="kw">fn</span> <span class="ident">clip</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">from</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>), <span class="ident">to</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>), <span class="ident">dd</span>: <span class="ident">DevDesc</span>) {}
+    <span class="doccomment">/// A callback function to clip.
+    </span><span class="kw">fn </span>clip(<span class="kw-2">&amp;mut </span><span class="self">self</span>, from: (f64, f64), to: (f64, f64), dd: DevDesc) {}
 
-    <span class="doccomment">/// A callback function to free device-specific resources when the device is</span>
-    <span class="doccomment">/// killed. Note that, `self` MUST NOT be dropped within this function</span>
-    <span class="doccomment">/// because the wrapper that extendr internally generates will do it.</span>
-    <span class="kw">fn</span> <span class="ident">close</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">dd</span>: <span class="ident">DevDesc</span>) {}
+    <span class="doccomment">/// A callback function to free device-specific resources when the device is
+    /// killed. Note that, `self` MUST NOT be dropped within this function
+    /// because the wrapper that extendr internally generates will do it.
+    </span><span class="kw">fn </span>close(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dd: DevDesc) {}
 
-    <span class="doccomment">/// A callback function to clean up when the device is deactivated.</span>
-    <span class="kw">fn</span> <span class="ident">deactivate</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">dd</span>: <span class="ident">DevDesc</span>) {}
+    <span class="doccomment">/// A callback function to clean up when the device is deactivated.
+    </span><span class="kw">fn </span>deactivate(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dd: DevDesc) {}
 
-    <span class="doccomment">/// A callback function to draw a line.</span>
-    <span class="kw">fn</span> <span class="ident">line</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">from</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>), <span class="ident">to</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>), <span class="ident">gc</span>: <span class="ident">R_GE_gcontext</span>, <span class="ident">dd</span>: <span class="ident">DevDesc</span>) {}
+    <span class="doccomment">/// A callback function to draw a line.
+    </span><span class="kw">fn </span>line(<span class="kw-2">&amp;mut </span><span class="self">self</span>, from: (f64, f64), to: (f64, f64), gc: R_GE_gcontext, dd: DevDesc) {}
 
-    <span class="doccomment">/// A callback function that returns the [TextMetric] (ascent, descent, and width) of the</span>
-    <span class="doccomment">/// given character in device unit.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The default implementation returns `(0, 0, 0)`, following the convention</span>
-    <span class="doccomment">/// described in [the header file]:</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// &gt; If the device cannot provide metric information then it MUST return</span>
-    <span class="doccomment">/// &gt; 0.0 for ascent, descent, and width.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [The header file]:</span>
-    <span class="doccomment">///     https://github.com/wch/r-source/blob/9bb47ca929c41a133786fa8fff7c70162bb75e50/src/include/R_ext/GraphicsDevice.h#L321-L322</span>
-    <span class="kw">fn</span> <span class="ident">char_metric</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">c</span>: <span class="ident">char</span>, <span class="ident">gc</span>: <span class="ident">R_GE_gcontext</span>, <span class="ident">dd</span>: <span class="ident">DevDesc</span>) -&gt; <span class="ident">TextMetric</span> {
-        <span class="ident">TextMetric</span> {
-            <span class="ident">ascent</span>: <span class="number">0.0</span>,
-            <span class="ident">descent</span>: <span class="number">0.0</span>,
-            <span class="ident">width</span>: <span class="number">0.0</span>,
+    <span class="doccomment">/// A callback function that returns the [TextMetric] (ascent, descent, and width) of the
+    /// given character in device unit.
+    ///
+    /// The default implementation returns `(0, 0, 0)`, following the convention
+    /// described in [the header file]:
+    ///
+    /// &gt; If the device cannot provide metric information then it MUST return
+    /// &gt; 0.0 for ascent, descent, and width.
+    ///
+    /// [The header file]:
+    ///     https://github.com/wch/r-source/blob/9bb47ca929c41a133786fa8fff7c70162bb75e50/src/include/R_ext/GraphicsDevice.h#L321-L322
+    </span><span class="kw">fn </span>char_metric(<span class="kw-2">&amp;mut </span><span class="self">self</span>, c: char, gc: R_GE_gcontext, dd: DevDesc) -&gt; TextMetric {
+        TextMetric {
+            ascent: <span class="number">0.0</span>,
+            descent: <span class="number">0.0</span>,
+            width: <span class="number">0.0</span>,
         }
     }
 
-    <span class="doccomment">/// A callback function called whenever the graphics engine starts</span>
-    <span class="doccomment">/// drawing (mode=1) or stops drawing (mode=0).</span>
-    <span class="kw">fn</span> <span class="ident">mode</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">mode</span>: <span class="ident">i32</span>, <span class="ident">dd</span>: <span class="ident">DevDesc</span>) {}
+    <span class="doccomment">/// A callback function called whenever the graphics engine starts
+    /// drawing (mode=1) or stops drawing (mode=0).
+    </span><span class="kw">fn </span>mode(<span class="kw-2">&amp;mut </span><span class="self">self</span>, mode: i32, dd: DevDesc) {}
 
-    <span class="doccomment">/// A callback function called whenever a new plot requires a new page.</span>
-    <span class="kw">fn</span> <span class="ident">new_page</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">gc</span>: <span class="ident">R_GE_gcontext</span>, <span class="ident">dd</span>: <span class="ident">DevDesc</span>) {}
+    <span class="doccomment">/// A callback function called whenever a new plot requires a new page.
+    </span><span class="kw">fn </span>new_page(<span class="kw-2">&amp;mut </span><span class="self">self</span>, gc: R_GE_gcontext, dd: DevDesc) {}
 
-    <span class="doccomment">/// A callback function to draw a polygon.</span>
-    <span class="kw">fn</span> <span class="ident">polygon</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="ident">f64</span>, <span class="ident">f64</span>)<span class="op">&gt;</span><span class="op">&gt;</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="ident">coords</span>: <span class="ident">T</span>,
-        <span class="ident">gc</span>: <span class="ident">R_GE_gcontext</span>,
-        <span class="ident">dd</span>: <span class="ident">DevDesc</span>,
+    <span class="doccomment">/// A callback function to draw a polygon.
+    </span><span class="kw">fn </span>polygon&lt;T: IntoIterator&lt;Item = (f64, f64)&gt;&gt;(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        coords: T,
+        gc: R_GE_gcontext,
+        dd: DevDesc,
     ) {
     }
 
-    <span class="doccomment">/// A callback function to draw a polyline.</span>
-    <span class="kw">fn</span> <span class="ident">polyline</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="ident">f64</span>, <span class="ident">f64</span>)<span class="op">&gt;</span><span class="op">&gt;</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="ident">coords</span>: <span class="ident">T</span>,
-        <span class="ident">gc</span>: <span class="ident">R_GE_gcontext</span>,
-        <span class="ident">dd</span>: <span class="ident">DevDesc</span>,
+    <span class="doccomment">/// A callback function to draw a polyline.
+    </span><span class="kw">fn </span>polyline&lt;T: IntoIterator&lt;Item = (f64, f64)&gt;&gt;(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        coords: T,
+        gc: R_GE_gcontext,
+        dd: DevDesc,
     ) {
     }
 
-    <span class="doccomment">/// A callback function to draw a rect.</span>
-    <span class="kw">fn</span> <span class="ident">rect</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">from</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>), <span class="ident">to</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>), <span class="ident">gc</span>: <span class="ident">R_GE_gcontext</span>, <span class="ident">dd</span>: <span class="ident">DevDesc</span>) {}
+    <span class="doccomment">/// A callback function to draw a rect.
+    </span><span class="kw">fn </span>rect(<span class="kw-2">&amp;mut </span><span class="self">self</span>, from: (f64, f64), to: (f64, f64), gc: R_GE_gcontext, dd: DevDesc) {}
 
-    <span class="doccomment">/// A callback function to draw paths.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// `nper` contains number of points in each polygon. `winding` represents</span>
-    <span class="doccomment">/// the filling rule; `true` means &quot;nonzero&quot;, `false` means &quot;evenodd&quot; (c.f.</span>
-    <span class="doccomment">/// &lt;https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule&gt;).</span>
-    <span class="kw">fn</span> <span class="ident">path</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw">impl</span> <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> (<span class="ident">f64</span>, <span class="ident">f64</span>)<span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="ident">coords</span>: <span class="ident">T</span>,
-        <span class="ident">winding</span>: <span class="ident">bool</span>,
-        <span class="ident">gc</span>: <span class="ident">R_GE_gcontext</span>,
-        <span class="ident">dd</span>: <span class="ident">DevDesc</span>,
+    <span class="doccomment">/// A callback function to draw paths.
+    ///
+    /// `nper` contains number of points in each polygon. `winding` represents
+    /// the filling rule; `true` means &quot;nonzero&quot;, `false` means &quot;evenodd&quot; (c.f.
+    /// &lt;https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule&gt;).
+    </span><span class="kw">fn </span>path&lt;T: IntoIterator&lt;Item = <span class="kw">impl </span>IntoIterator&lt;Item = (f64, f64)&gt;&gt;&gt;(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        coords: T,
+        winding: bool,
+        gc: R_GE_gcontext,
+        dd: DevDesc,
     ) {
     }
 
-    <span class="doccomment">/// A callback function to draw a [Raster].</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// `pos` gives the bottom-left corner. `angle` is the rotation in degrees,</span>
-    <span class="doccomment">/// with positive rotation anticlockwise from the positive x-axis.</span>
-    <span class="doccomment">/// `interpolate` is whether to apply the linear interpolation on the raster</span>
-    <span class="doccomment">/// image.</span>
-    <span class="kw">fn</span> <span class="ident">raster</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">AsRef</span><span class="op">&lt;</span>[<span class="ident">u32</span>]<span class="op">&gt;</span><span class="op">&gt;</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="ident">raster</span>: <span class="ident">Raster</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
-        <span class="ident">pos</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>),
-        <span class="ident">size</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>),
-        <span class="ident">angle</span>: <span class="ident">f64</span>,
-        <span class="ident">interpolate</span>: <span class="ident">bool</span>,
-        <span class="ident">gc</span>: <span class="ident">R_GE_gcontext</span>,
-        <span class="ident">dd</span>: <span class="ident">DevDesc</span>,
+    <span class="doccomment">/// A callback function to draw a [Raster].
+    ///
+    /// `pos` gives the bottom-left corner. `angle` is the rotation in degrees,
+    /// with positive rotation anticlockwise from the positive x-axis.
+    /// `interpolate` is whether to apply the linear interpolation on the raster
+    /// image.
+    </span><span class="kw">fn </span>raster&lt;T: AsRef&lt;[u32]&gt;&gt;(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        raster: Raster&lt;T&gt;,
+        pos: (f64, f64),
+        size: (f64, f64),
+        angle: f64,
+        interpolate: bool,
+        gc: R_GE_gcontext,
+        dd: DevDesc,
     ) {
     }
 
-    <span class="doccomment">/// A callback function that captures and returns the current canvas.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This is only meaningful for raster devices.</span>
-    <span class="kw">fn</span> <span class="ident">capture</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">dd</span>: <span class="ident">DevDesc</span>) -&gt; <span class="ident">Robj</span> {
-        ().<span class="ident">into</span>()
+    <span class="doccomment">/// A callback function that captures and returns the current canvas.
+    ///
+    /// This is only meaningful for raster devices.
+    </span><span class="kw">fn </span>capture(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dd: DevDesc) -&gt; Robj {
+        ().into()
     }
 
-    <span class="doccomment">/// A callback function that returns the current device size in the format</span>
-    <span class="doccomment">/// of `(left, right, bottom, top)` in points.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// - If the size of the graphic device won&#39;t change after creation, the</span>
-    <span class="doccomment">///   function can simply return the `left`, `right`, `bottom`, and `top` of</span>
-    <span class="doccomment">///   the `DevDesc` (the default implementation).</span>
-    <span class="doccomment">/// - If the size can change, probably the actual size should be tracked in</span>
-    <span class="doccomment">///   the device-specific struct, i.e. `self`, and the function should refer</span>
-    <span class="doccomment">///   to the field (e.g., [`cbm_Size()` in the cairo device]).</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Note that, while this function is what is supposed to be called</span>
-    <span class="doccomment">/// &quot;whenever the device is resized,&quot; it&#39;s not automatically done by the</span>
-    <span class="doccomment">/// graphic engine. [The header file] states:</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// &gt; This is not usually called directly by the graphics engine because the</span>
-    <span class="doccomment">/// &gt; detection of device resizes (e.g., a window resize) are usually</span>
-    <span class="doccomment">/// &gt; detected by device-specific code.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [The header file]:</span>
-    <span class="doccomment">///     &lt;https://github.com/wch/r-source/blob/8ebcb33a9f70e729109b1adf60edd5a3b22d3c6f/src/include/R_ext/GraphicsDevice.h#L508-L527&gt;</span>
-    <span class="doccomment">/// [`cbm_Size()` in the cairo device]:</span>
-    <span class="doccomment">///     &lt;https://github.com/wch/r-source/blob/8ebcb33a9f70e729109b1adf60edd5a3b22d3c6f/src/library/grDevices/src/cairo/cairoBM.c#L73-L83&gt;</span>
-    <span class="kw">fn</span> <span class="ident">size</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">dd</span>: <span class="ident">DevDesc</span>) -&gt; (<span class="ident">f64</span>, <span class="ident">f64</span>, <span class="ident">f64</span>, <span class="ident">f64</span>) {
-        (<span class="ident">dd</span>.<span class="ident">left</span>, <span class="ident">dd</span>.<span class="ident">right</span>, <span class="ident">dd</span>.<span class="ident">bottom</span>, <span class="ident">dd</span>.<span class="ident">top</span>)
+    <span class="doccomment">/// A callback function that returns the current device size in the format
+    /// of `(left, right, bottom, top)` in points.
+    ///
+    /// - If the size of the graphic device won&#39;t change after creation, the
+    ///   function can simply return the `left`, `right`, `bottom`, and `top` of
+    ///   the `DevDesc` (the default implementation).
+    /// - If the size can change, probably the actual size should be tracked in
+    ///   the device-specific struct, i.e. `self`, and the function should refer
+    ///   to the field (e.g., [`cbm_Size()` in the cairo device]).
+    ///
+    /// Note that, while this function is what is supposed to be called
+    /// &quot;whenever the device is resized,&quot; it&#39;s not automatically done by the
+    /// graphic engine. [The header file] states:
+    ///
+    /// &gt; This is not usually called directly by the graphics engine because the
+    /// &gt; detection of device resizes (e.g., a window resize) are usually
+    /// &gt; detected by device-specific code.
+    ///
+    /// [The header file]:
+    ///     &lt;https://github.com/wch/r-source/blob/8ebcb33a9f70e729109b1adf60edd5a3b22d3c6f/src/include/R_ext/GraphicsDevice.h#L508-L527&gt;
+    /// [`cbm_Size()` in the cairo device]:
+    ///     &lt;https://github.com/wch/r-source/blob/8ebcb33a9f70e729109b1adf60edd5a3b22d3c6f/src/library/grDevices/src/cairo/cairoBM.c#L73-L83&gt;
+    </span><span class="kw">fn </span>size(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dd: DevDesc) -&gt; (f64, f64, f64, f64) {
+        (dd.left, dd.right, dd.bottom, dd.top)
     }
 
-    <span class="doccomment">/// A callback function that returns the width of the given string in the</span>
-    <span class="doccomment">/// device units.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The default implementation use `char_metric()` on each character in the</span>
-    <span class="doccomment">/// text and sums the widths. This should be sufficient for most of the</span>
-    <span class="doccomment">/// cases, but the developer can choose to implement this. The header</span>
-    <span class="doccomment">/// file[^1] suggests the possible reasons:</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// - for performance</span>
-    <span class="doccomment">/// - to decide what to do when font metric information is not available</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [^1]: &lt;https://github.com/wch/r-source/blob/9bb47ca929c41a133786fa8fff7c70162bb75e50/src/include/R_ext/GraphicsDevice.h#L67-L74&gt;</span>
-    <span class="kw">fn</span> <span class="ident">text_width</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">text</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">gc</span>: <span class="ident">R_GE_gcontext</span>, <span class="ident">dd</span>: <span class="ident">DevDesc</span>) -&gt; <span class="ident">f64</span> {
-        <span class="ident">text</span>.<span class="ident">chars</span>()
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">char_metric</span>(<span class="ident">c</span>, <span class="ident">gc</span>, <span class="ident">dd</span>).<span class="ident">width</span>)
-            .<span class="ident">sum</span>()
+    <span class="doccomment">/// A callback function that returns the width of the given string in the
+    /// device units.
+    ///
+    /// The default implementation use `char_metric()` on each character in the
+    /// text and sums the widths. This should be sufficient for most of the
+    /// cases, but the developer can choose to implement this. The header
+    /// file[^1] suggests the possible reasons:
+    ///
+    /// - for performance
+    /// - to decide what to do when font metric information is not available
+    ///
+    /// [^1]: &lt;https://github.com/wch/r-source/blob/9bb47ca929c41a133786fa8fff7c70162bb75e50/src/include/R_ext/GraphicsDevice.h#L67-L74&gt;
+    </span><span class="kw">fn </span>text_width(<span class="kw-2">&amp;mut </span><span class="self">self</span>, text: <span class="kw-2">&amp;</span>str, gc: R_GE_gcontext, dd: DevDesc) -&gt; f64 {
+        text.chars()
+            .map(|c| <span class="self">self</span>.char_metric(c, gc, dd).width)
+            .sum()
     }
 
-    <span class="doccomment">/// A callback function to draw a text.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// `angle` is the rotation in degrees, with positive rotation anticlockwise</span>
-    <span class="doccomment">/// from the positive x-axis.</span>
-    <span class="kw">fn</span> <span class="ident">text</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="ident">pos</span>: (<span class="ident">f64</span>, <span class="ident">f64</span>),
-        <span class="ident">text</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-        <span class="ident">angle</span>: <span class="ident">f64</span>,
-        <span class="ident">hadj</span>: <span class="ident">f64</span>,
-        <span class="ident">gc</span>: <span class="ident">R_GE_gcontext</span>,
-        <span class="ident">dd</span>: <span class="ident">DevDesc</span>,
+    <span class="doccomment">/// A callback function to draw a text.
+    ///
+    /// `angle` is the rotation in degrees, with positive rotation anticlockwise
+    /// from the positive x-axis.
+    </span><span class="kw">fn </span>text(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        pos: (f64, f64),
+        text: <span class="kw-2">&amp;</span>str,
+        angle: f64,
+        hadj: f64,
+        gc: R_GE_gcontext,
+        dd: DevDesc,
     ) {
     }
 
-    <span class="doccomment">/// A callback function called when the user aborts some operation. It seems</span>
-    <span class="doccomment">/// this is rarely implemented.</span>
-    <span class="kw">fn</span> <span class="ident">on_exit</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">dd</span>: <span class="ident">DevDesc</span>) {}
+    <span class="doccomment">/// A callback function called when the user aborts some operation. It seems
+    /// this is rarely implemented.
+    </span><span class="kw">fn </span>on_exit(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dd: DevDesc) {}
 
-    <span class="doccomment">/// A callback function to confirm a new frame. It seems this is rarely</span>
-    <span class="doccomment">/// implementad.</span>
-    <span class="kw">fn</span> <span class="ident">new_frame_confirm</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">dd</span>: <span class="ident">DevDesc</span>) -&gt; <span class="ident">bool</span> {
-        <span class="bool-val">true</span>
-    }
+    <span class="doccomment">/// A callback function to confirm a new frame. It seems this is rarely
+    /// implementad.
+    </span><span class="kw">fn </span>new_frame_confirm(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dd: DevDesc) -&gt; bool {
+        <span class="bool-val">true
+    </span>}
 
-    <span class="doccomment">/// A callback function to manage the &quot;suspension level&quot; of the device. R</span>
-    <span class="doccomment">/// function `dev.hold()` is used to increase the level,  and `dev.flush()`</span>
-    <span class="doccomment">/// to decrease it. When the level reaches zero, output is supposed to be</span>
-    <span class="doccomment">/// flushed to the device. This is only meaningful for screen devices.</span>
-    <span class="kw">fn</span> <span class="ident">holdflush</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">dd</span>: <span class="ident">DevDesc</span>, <span class="ident">level</span>: <span class="ident">i32</span>) -&gt; <span class="ident">i32</span> {
-        <span class="number">0</span>
-    }
+    <span class="doccomment">/// A callback function to manage the &quot;suspension level&quot; of the device. R
+    /// function `dev.hold()` is used to increase the level,  and `dev.flush()`
+    /// to decrease it. When the level reaches zero, output is supposed to be
+    /// flushed to the device. This is only meaningful for screen devices.
+    </span><span class="kw">fn </span>holdflush(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dd: DevDesc, level: i32) -&gt; i32 {
+        <span class="number">0
+    </span>}
 
-    <span class="doccomment">/// A callback function that returns the coords of the event</span>
-    <span class="kw">fn</span> <span class="ident">locator</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">x</span>: <span class="kw-2">*mut</span> <span class="ident">f64</span>, <span class="ident">y</span>: <span class="kw-2">*mut</span> <span class="ident">f64</span>, <span class="ident">dd</span>: <span class="ident">DevDesc</span>) -&gt; <span class="ident">bool</span> {
-        <span class="bool-val">true</span>
-    }
+    <span class="doccomment">/// A callback function that returns the coords of the event
+    </span><span class="kw">fn </span>locator(<span class="kw-2">&amp;mut </span><span class="self">self</span>, x: <span class="kw-2">*mut </span>f64, y: <span class="kw-2">*mut </span>f64, dd: DevDesc) -&gt; bool {
+        <span class="bool-val">true
+    </span>}
 
-    <span class="doccomment">/// A callback function for X11_eventHelper.</span>
-    <span class="comment">// TODO:</span>
-    <span class="comment">// Argument `code` should, ideally, be of type c_int,</span>
-    <span class="comment">// but compiler throws erors. It should be ok to use</span>
-    <span class="comment">// i32 here.</span>
-    <span class="kw">fn</span> <span class="ident">eventHelper</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">dd</span>: <span class="ident">DevDesc</span>, <span class="ident">code</span>: <span class="ident">i32</span>) {}
+    <span class="doccomment">/// A callback function for X11_eventHelper.
+    </span><span class="comment">// TODO:
+    // Argument `code` should, ideally, be of type c_int,
+    // but compiler throws erors. It should be ok to use
+    // i32 here.
+    </span><span class="kw">fn </span>eventHelper(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dd: DevDesc, code: i32) {}
 
-    <span class="doccomment">/// Create a [Device].</span>
-    <span class="kw">fn</span> <span class="ident">create_device</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(
+    <span class="doccomment">/// Create a [Device].
+    </span><span class="kw">fn </span>create_device&lt;T: DeviceDriver&gt;(
         <span class="self">self</span>,
-        <span class="ident">device_descriptor</span>: <span class="ident">DeviceDescriptor</span>,
-        <span class="ident">device_name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-    ) -&gt; <span class="ident">Device</span> {
-        <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
-        <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">unused_variables</span>)]</span>
-        <span class="kw">use</span> <span class="ident">std::os::raw</span>::{<span class="ident">c_char</span>, <span class="ident">c_int</span>, <span class="ident">c_uint</span>};
+        device_descriptor: DeviceDescriptor,
+        device_name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    ) -&gt; Device {
+        <span class="attribute">#![allow(non_snake_case)]
+        #![allow(unused_variables)]
+        </span><span class="kw">use </span>std::os::raw::{c_char, c_int, c_uint};
 
-        <span class="comment">// The code here is a Rust interpretation of the C-version of example</span>
-        <span class="comment">// code on the R Internals:</span>
-        <span class="comment">//</span>
-        <span class="comment">// https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Device-structures</span>
+        <span class="comment">// The code here is a Rust interpretation of the C-version of example
+        // code on the R Internals:
+        //
+        // https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Device-structures
 
-        <span class="kw">unsafe</span> {
-            <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> {
-                <span class="comment">// Check the API version</span>
-                <span class="ident">R_GE_checkVersionOrDie</span>(<span class="ident">R_GE_version</span> <span class="kw">as</span> <span class="kw">_</span>);
+        </span><span class="kw">unsafe </span>{
+            single_threaded(|| {
+                <span class="comment">// Check the API version
+                </span>R_GE_checkVersionOrDie(R_GE_version <span class="kw">as _</span>);
 
-                <span class="comment">// Check if there are too many devices</span>
-                <span class="ident">R_CheckDeviceAvailable</span>();
+                <span class="comment">// Check if there are too many devices
+                </span>R_CheckDeviceAvailable();
             });
         }
 
-        <span class="comment">// Define wrapper functions. This is a bit boring, and frustrationg to</span>
-        <span class="comment">// see `create_device()` bloats to such a massive function because of</span>
-        <span class="comment">// this, but probably there&#39;s no other way to do this nicely...</span>
+        <span class="comment">// Define wrapper functions. This is a bit boring, and frustrationg to
+        // see `create_device()` bloats to such a massive function because of
+        // this, but probably there&#39;s no other way to do this nicely...
 
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_activate</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(<span class="ident">arg1</span>: <span class="ident">pDevDesc</span>) {
-            <span class="comment">// Derefernce to the original struct without moving it. While this</span>
-            <span class="comment">// is a dangerous operation, it should be safe as long as the data</span>
-            <span class="comment">// lives only within this function.</span>
-            <span class="comment">//</span>
-            <span class="comment">// Note that, we bravely unwrap() here because deviceSpecific should</span>
-            <span class="comment">// never be a null pointer, as we set it. If the pDevDesc got</span>
-            <span class="comment">// currupted, it might happen, but we can do nothing in that weird</span>
-            <span class="comment">// case anyway.</span>
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">arg1</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
+        </span><span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_activate&lt;T: DeviceDriver&gt;(arg1: pDevDesc) {
+            <span class="comment">// Derefernce to the original struct without moving it. While this
+            // is a dangerous operation, it should be safe as long as the data
+            // lives only within this function.
+            //
+            // Note that, we bravely unwrap() here because deviceSpecific should
+            // never be a null pointer, as we set it. If the pDevDesc got
+            // currupted, it might happen, but we can do nothing in that weird
+            // case anyway.
+            </span><span class="kw">let </span>data = ((<span class="kw-2">*</span>arg1).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
 
-            <span class="ident">data</span>.<span class="ident">activate</span>(<span class="kw-2">*</span><span class="ident">arg1</span>);
+            data.activate(<span class="kw-2">*</span>arg1);
         }
 
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_circle</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(
-            <span class="ident">x</span>: <span class="ident">f64</span>,
-            <span class="ident">y</span>: <span class="ident">f64</span>,
-            <span class="ident">r</span>: <span class="ident">f64</span>,
-            <span class="ident">gc</span>: <span class="ident">pGEcontext</span>,
-            <span class="ident">dd</span>: <span class="ident">pDevDesc</span>,
+        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_circle&lt;T: DeviceDriver&gt;(
+            x: f64,
+            y: f64,
+            r: f64,
+            gc: pGEcontext,
+            dd: pDevDesc,
         ) {
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
-            <span class="ident">data</span>.<span class="ident">circle</span>((<span class="ident">x</span>, <span class="ident">y</span>), <span class="ident">r</span>, <span class="kw-2">*</span><span class="ident">gc</span>, <span class="kw-2">*</span><span class="ident">dd</span>);
+            <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
+            data.circle((x, y), r, <span class="kw-2">*</span>gc, <span class="kw-2">*</span>dd);
         }
 
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_clip</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(
-            <span class="ident">x0</span>: <span class="ident">f64</span>,
-            <span class="ident">x1</span>: <span class="ident">f64</span>,
-            <span class="ident">y0</span>: <span class="ident">f64</span>,
-            <span class="ident">y1</span>: <span class="ident">f64</span>,
-            <span class="ident">dd</span>: <span class="ident">pDevDesc</span>,
+        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_clip&lt;T: DeviceDriver&gt;(
+            x0: f64,
+            x1: f64,
+            y0: f64,
+            y1: f64,
+            dd: pDevDesc,
         ) {
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
-            <span class="ident">data</span>.<span class="ident">clip</span>((<span class="ident">x0</span>, <span class="ident">y0</span>), (<span class="ident">x1</span>, <span class="ident">y1</span>), <span class="kw-2">*</span><span class="ident">dd</span>);
+            <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
+            data.clip((x0, y0), (x1, y1), <span class="kw-2">*</span>dd);
         }
 
-        <span class="comment">// Note: the close() wrapper is special. This function is responsible</span>
-        <span class="comment">// for tearing down the DeviceDriver itself, which is always needed even</span>
-        <span class="comment">// when no close callback is implemented.</span>
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_close</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(<span class="ident">dd</span>: <span class="ident">pDevDesc</span>) {
-            <span class="kw">let</span> <span class="ident">dev_desc</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">dd</span>;
-            <span class="kw">let</span> <span class="ident">data_ptr</span> <span class="op">=</span> <span class="ident">dev_desc</span>.<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>;
-            <span class="comment">// Convert back to a Rust struct to drop the resources on Rust&#39;s side.</span>
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">Box::from_raw</span>(<span class="ident">data_ptr</span>);
+        <span class="comment">// Note: the close() wrapper is special. This function is responsible
+        // for tearing down the DeviceDriver itself, which is always needed even
+        // when no close callback is implemented.
+        </span><span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_close&lt;T: DeviceDriver&gt;(dd: pDevDesc) {
+            <span class="kw">let </span>dev_desc = <span class="kw-2">*</span>dd;
+            <span class="kw">let </span>data_ptr = dev_desc.deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T;
+            <span class="comment">// Convert back to a Rust struct to drop the resources on Rust&#39;s side.
+            </span><span class="kw">let </span><span class="kw-2">mut </span>data = Box::from_raw(data_ptr);
 
-            <span class="ident">data</span>.<span class="ident">close</span>(<span class="ident">dev_desc</span>);
+            data.close(dev_desc);
         }
 
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_deactivate</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(<span class="ident">arg1</span>: <span class="ident">pDevDesc</span>) {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">arg1</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">read</span>();
-            <span class="ident">data</span>.<span class="ident">deactivate</span>(<span class="kw-2">*</span><span class="ident">arg1</span>);
+        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_deactivate&lt;T: DeviceDriver&gt;(arg1: pDevDesc) {
+            <span class="kw">let </span><span class="kw-2">mut </span>data = ((<span class="kw-2">*</span>arg1).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).read();
+            data.deactivate(<span class="kw-2">*</span>arg1);
         }
 
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_line</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(
-            <span class="ident">x1</span>: <span class="ident">f64</span>,
-            <span class="ident">y1</span>: <span class="ident">f64</span>,
-            <span class="ident">x2</span>: <span class="ident">f64</span>,
-            <span class="ident">y2</span>: <span class="ident">f64</span>,
-            <span class="ident">gc</span>: <span class="ident">pGEcontext</span>,
-            <span class="ident">dd</span>: <span class="ident">pDevDesc</span>,
+        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_line&lt;T: DeviceDriver&gt;(
+            x1: f64,
+            y1: f64,
+            x2: f64,
+            y2: f64,
+            gc: pGEcontext,
+            dd: pDevDesc,
         ) {
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
-            <span class="ident">data</span>.<span class="ident">line</span>((<span class="ident">x1</span>, <span class="ident">y1</span>), (<span class="ident">x2</span>, <span class="ident">y2</span>), <span class="kw-2">*</span><span class="ident">gc</span>, <span class="kw-2">*</span><span class="ident">dd</span>);
+            <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
+            data.line((x1, y1), (x2, y2), <span class="kw-2">*</span>gc, <span class="kw-2">*</span>dd);
         }
 
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_char_metric</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(
-            <span class="ident">c</span>: <span class="ident">c_int</span>,
-            <span class="ident">gc</span>: <span class="ident">pGEcontext</span>,
-            <span class="ident">ascent</span>: <span class="kw-2">*mut</span> <span class="ident">f64</span>,
-            <span class="ident">descent</span>: <span class="kw-2">*mut</span> <span class="ident">f64</span>,
-            <span class="ident">width</span>: <span class="kw-2">*mut</span> <span class="ident">f64</span>,
-            <span class="ident">dd</span>: <span class="ident">pDevDesc</span>,
+        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_char_metric&lt;T: DeviceDriver&gt;(
+            c: c_int,
+            gc: pGEcontext,
+            ascent: <span class="kw-2">*mut </span>f64,
+            descent: <span class="kw-2">*mut </span>f64,
+            width: <span class="kw-2">*mut </span>f64,
+            dd: pDevDesc,
         ) {
-            <span class="comment">// Be aware that `c` can be a negative value if `hasTextUTF8` is</span>
-            <span class="comment">// true, and we do set it true. The header file[^1] states:</span>
-            <span class="comment">//</span>
-            <span class="comment">// &gt; the metricInfo entry point should accept negative values for</span>
-            <span class="comment">// &gt; &#39;c&#39; and treat them as indicating Unicode points (as well as</span>
-            <span class="comment">// &gt; positive values in a MBCS locale).</span>
-            <span class="comment">//</span>
-            <span class="comment">// The negativity might be useful if the implementation treats ASCII</span>
-            <span class="comment">// and non-ASCII characters differently, but I think it&#39;s rare. So,</span>
-            <span class="comment">// we just use `c.abs()`.</span>
-            <span class="comment">//</span>
-            <span class="comment">// [^1]: https://github.com/wch/r-source/blob/9bb47ca929c41a133786fa8fff7c70162bb75e50/src/include/R_ext/GraphicsDevice.h#L615-L617</span>
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">c</span>) <span class="op">=</span> <span class="ident">std::char::from_u32</span>(<span class="ident">c</span>.<span class="ident">abs</span>() <span class="kw">as</span> <span class="kw">_</span>) {
-                <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
-                <span class="kw">let</span> <span class="ident">metric_info</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">char_metric</span>(<span class="ident">c</span>, <span class="kw-2">*</span><span class="ident">gc</span>, <span class="kw-2">*</span><span class="ident">dd</span>);
-                <span class="kw-2">*</span><span class="ident">ascent</span> <span class="op">=</span> <span class="ident">metric_info</span>.<span class="ident">ascent</span>;
-                <span class="kw-2">*</span><span class="ident">descent</span> <span class="op">=</span> <span class="ident">metric_info</span>.<span class="ident">descent</span>;
-                <span class="kw-2">*</span><span class="ident">width</span> <span class="op">=</span> <span class="ident">metric_info</span>.<span class="ident">width</span>;
+            <span class="comment">// Be aware that `c` can be a negative value if `hasTextUTF8` is
+            // true, and we do set it true. The header file[^1] states:
+            //
+            // &gt; the metricInfo entry point should accept negative values for
+            // &gt; &#39;c&#39; and treat them as indicating Unicode points (as well as
+            // &gt; positive values in a MBCS locale).
+            //
+            // The negativity might be useful if the implementation treats ASCII
+            // and non-ASCII characters differently, but I think it&#39;s rare. So,
+            // we just use `c.abs()`.
+            //
+            // [^1]: https://github.com/wch/r-source/blob/9bb47ca929c41a133786fa8fff7c70162bb75e50/src/include/R_ext/GraphicsDevice.h#L615-L617
+            </span><span class="kw">if let </span><span class="prelude-val">Some</span>(c) = std::char::from_u32(c.abs() <span class="kw">as _</span>) {
+                <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
+                <span class="kw">let </span>metric_info = data.char_metric(c, <span class="kw-2">*</span>gc, <span class="kw-2">*</span>dd);
+                <span class="kw-2">*</span>ascent = metric_info.ascent;
+                <span class="kw-2">*</span>descent = metric_info.descent;
+                <span class="kw-2">*</span>width = metric_info.width;
             }
         }
 
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_mode</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(<span class="ident">mode</span>: <span class="ident">c_int</span>, <span class="ident">dd</span>: <span class="ident">pDevDesc</span>) {
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
-            <span class="ident">data</span>.<span class="ident">mode</span>(<span class="ident">mode</span> <span class="kw">as</span> <span class="kw">_</span>, <span class="kw-2">*</span><span class="ident">dd</span>);
+        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_mode&lt;T: DeviceDriver&gt;(mode: c_int, dd: pDevDesc) {
+            <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
+            data.mode(mode <span class="kw">as _</span>, <span class="kw-2">*</span>dd);
         }
 
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_new_page</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(<span class="ident">gc</span>: <span class="ident">pGEcontext</span>, <span class="ident">dd</span>: <span class="ident">pDevDesc</span>) {
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
-            <span class="ident">data</span>.<span class="ident">new_page</span>(<span class="kw-2">*</span><span class="ident">gc</span>, <span class="kw-2">*</span><span class="ident">dd</span>);
+        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_new_page&lt;T: DeviceDriver&gt;(gc: pGEcontext, dd: pDevDesc) {
+            <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
+            data.new_page(<span class="kw-2">*</span>gc, <span class="kw-2">*</span>dd);
         }
 
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_polygon</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(
-            <span class="ident">n</span>: <span class="ident">c_int</span>,
-            <span class="ident">x</span>: <span class="kw-2">*mut</span> <span class="ident">f64</span>,
-            <span class="ident">y</span>: <span class="kw-2">*mut</span> <span class="ident">f64</span>,
-            <span class="ident">gc</span>: <span class="ident">pGEcontext</span>,
-            <span class="ident">dd</span>: <span class="ident">pDevDesc</span>,
+        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_polygon&lt;T: DeviceDriver&gt;(
+            n: c_int,
+            x: <span class="kw-2">*mut </span>f64,
+            y: <span class="kw-2">*mut </span>f64,
+            gc: pGEcontext,
+            dd: pDevDesc,
         ) {
-            <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">slice::from_raw_parts</span>(<span class="ident">x</span>, <span class="ident">n</span> <span class="kw">as</span> <span class="kw">_</span>).<span class="ident">iter</span>();
-            <span class="kw">let</span> <span class="ident">y</span> <span class="op">=</span> <span class="ident">slice::from_raw_parts</span>(<span class="ident">y</span>, <span class="ident">n</span> <span class="kw">as</span> <span class="kw">_</span>).<span class="ident">iter</span>();
-            <span class="comment">// TODO: does this map has some overhead? If so, maybe we should change the interface?</span>
-            <span class="kw">let</span> <span class="ident">coords</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">zip</span>(<span class="ident">y</span>).<span class="ident">map</span>(<span class="op">|</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>, <span class="kw-2">&amp;</span><span class="ident">y</span>)<span class="op">|</span> (<span class="ident">x</span>, <span class="ident">y</span>));
+            <span class="kw">let </span>x = slice::from_raw_parts(x, n <span class="kw">as _</span>).iter();
+            <span class="kw">let </span>y = slice::from_raw_parts(y, n <span class="kw">as _</span>).iter();
+            <span class="comment">// TODO: does this map has some overhead? If so, maybe we should change the interface?
+            </span><span class="kw">let </span>coords = x.zip(y).map(|(<span class="kw-2">&amp;</span>x, <span class="kw-2">&amp;</span>y)| (x, y));
 
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
-            <span class="ident">data</span>.<span class="ident">polygon</span>(<span class="ident">coords</span>, <span class="kw-2">*</span><span class="ident">gc</span>, <span class="kw-2">*</span><span class="ident">dd</span>);
+            <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
+            data.polygon(coords, <span class="kw-2">*</span>gc, <span class="kw-2">*</span>dd);
         }
 
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_polyline</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(
-            <span class="ident">n</span>: <span class="ident">c_int</span>,
-            <span class="ident">x</span>: <span class="kw-2">*mut</span> <span class="ident">f64</span>,
-            <span class="ident">y</span>: <span class="kw-2">*mut</span> <span class="ident">f64</span>,
-            <span class="ident">gc</span>: <span class="ident">pGEcontext</span>,
-            <span class="ident">dd</span>: <span class="ident">pDevDesc</span>,
+        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_polyline&lt;T: DeviceDriver&gt;(
+            n: c_int,
+            x: <span class="kw-2">*mut </span>f64,
+            y: <span class="kw-2">*mut </span>f64,
+            gc: pGEcontext,
+            dd: pDevDesc,
         ) {
-            <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">slice::from_raw_parts</span>(<span class="ident">x</span>, <span class="ident">n</span> <span class="kw">as</span> <span class="kw">_</span>).<span class="ident">iter</span>();
-            <span class="kw">let</span> <span class="ident">y</span> <span class="op">=</span> <span class="ident">slice::from_raw_parts</span>(<span class="ident">y</span>, <span class="ident">n</span> <span class="kw">as</span> <span class="kw">_</span>).<span class="ident">iter</span>();
-            <span class="comment">// TODO: does this map has some overhead? If so, maybe we should change the interface?</span>
-            <span class="kw">let</span> <span class="ident">coords</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">zip</span>(<span class="ident">y</span>).<span class="ident">map</span>(<span class="op">|</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>, <span class="kw-2">&amp;</span><span class="ident">y</span>)<span class="op">|</span> (<span class="ident">x</span>, <span class="ident">y</span>));
+            <span class="kw">let </span>x = slice::from_raw_parts(x, n <span class="kw">as _</span>).iter();
+            <span class="kw">let </span>y = slice::from_raw_parts(y, n <span class="kw">as _</span>).iter();
+            <span class="comment">// TODO: does this map has some overhead? If so, maybe we should change the interface?
+            </span><span class="kw">let </span>coords = x.zip(y).map(|(<span class="kw-2">&amp;</span>x, <span class="kw-2">&amp;</span>y)| (x, y));
 
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
-            <span class="ident">data</span>.<span class="ident">polyline</span>(<span class="ident">coords</span>, <span class="kw-2">*</span><span class="ident">gc</span>, <span class="kw-2">*</span><span class="ident">dd</span>);
+            <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
+            data.polyline(coords, <span class="kw-2">*</span>gc, <span class="kw-2">*</span>dd);
         }
 
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_rect</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(
-            <span class="ident">x0</span>: <span class="ident">f64</span>,
-            <span class="ident">y0</span>: <span class="ident">f64</span>,
-            <span class="ident">x1</span>: <span class="ident">f64</span>,
-            <span class="ident">y1</span>: <span class="ident">f64</span>,
-            <span class="ident">gc</span>: <span class="ident">pGEcontext</span>,
-            <span class="ident">dd</span>: <span class="ident">pDevDesc</span>,
+        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_rect&lt;T: DeviceDriver&gt;(
+            x0: f64,
+            y0: f64,
+            x1: f64,
+            y1: f64,
+            gc: pGEcontext,
+            dd: pDevDesc,
         ) {
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
-            <span class="ident">data</span>.<span class="ident">rect</span>((<span class="ident">x0</span>, <span class="ident">y0</span>), (<span class="ident">x1</span>, <span class="ident">y1</span>), <span class="kw-2">*</span><span class="ident">gc</span>, <span class="kw-2">*</span><span class="ident">dd</span>);
+            <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
+            data.rect((x0, y0), (x1, y1), <span class="kw-2">*</span>gc, <span class="kw-2">*</span>dd);
         }
 
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_path</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(
-            <span class="ident">x</span>: <span class="kw-2">*mut</span> <span class="ident">f64</span>,
-            <span class="ident">y</span>: <span class="kw-2">*mut</span> <span class="ident">f64</span>,
-            <span class="ident">npoly</span>: <span class="ident">c_int</span>,
-            <span class="ident">nper</span>: <span class="kw-2">*mut</span> <span class="ident">c_int</span>,
-            <span class="ident">winding</span>: <span class="ident">Rboolean</span>,
-            <span class="ident">gc</span>: <span class="ident">pGEcontext</span>,
-            <span class="ident">dd</span>: <span class="ident">pDevDesc</span>,
+        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_path&lt;T: DeviceDriver&gt;(
+            x: <span class="kw-2">*mut </span>f64,
+            y: <span class="kw-2">*mut </span>f64,
+            npoly: c_int,
+            nper: <span class="kw-2">*mut </span>c_int,
+            winding: Rboolean,
+            gc: pGEcontext,
+            dd: pDevDesc,
         ) {
-            <span class="kw">let</span> <span class="ident">nper</span> <span class="op">=</span> <span class="ident">slice::from_raw_parts</span>(<span class="ident">nper</span>, <span class="ident">npoly</span> <span class="kw">as</span> <span class="kw">_</span>);
-            <span class="comment">// TODO: This isn&#39;t very efficient as we need to iterate over nper at least twice.</span>
-            <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">nper</span>.<span class="ident">iter</span>().<span class="ident">sum</span>::<span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>() <span class="kw">as</span> <span class="ident">usize</span>;
-            <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="ident">slice::from_raw_parts</span>(<span class="ident">x</span>, <span class="ident">n</span> <span class="kw">as</span> <span class="kw">_</span>).<span class="ident">iter</span>();
-            <span class="kw">let</span> <span class="ident">y</span> <span class="op">=</span> <span class="ident">slice::from_raw_parts</span>(<span class="ident">y</span>, <span class="ident">n</span> <span class="kw">as</span> <span class="kw">_</span>).<span class="ident">iter</span>();
-            <span class="comment">// TODO: does this map has some overhead? If so, maybe we should change the interface?</span>
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">coords_flat</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">zip</span>(<span class="ident">y</span>).<span class="ident">map</span>(<span class="op">|</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>, <span class="kw-2">&amp;</span><span class="ident">y</span>)<span class="op">|</span> (<span class="ident">x</span>, <span class="ident">y</span>));
+            <span class="kw">let </span>nper = slice::from_raw_parts(nper, npoly <span class="kw">as _</span>);
+            <span class="comment">// TODO: This isn&#39;t very efficient as we need to iterate over nper at least twice.
+            </span><span class="kw">let </span>n = nper.iter().sum::&lt;i32&gt;() <span class="kw">as </span>usize;
+            <span class="kw">let </span>x = slice::from_raw_parts(x, n <span class="kw">as _</span>).iter();
+            <span class="kw">let </span>y = slice::from_raw_parts(y, n <span class="kw">as _</span>).iter();
+            <span class="comment">// TODO: does this map has some overhead? If so, maybe we should change the interface?
+            </span><span class="kw">let </span><span class="kw-2">mut </span>coords_flat = x.zip(y).map(|(<span class="kw-2">&amp;</span>x, <span class="kw-2">&amp;</span>y)| (x, y));
 
-            <span class="kw">let</span> <span class="ident">coords</span> <span class="op">=</span> <span class="ident">nper</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">np</span><span class="op">|</span> {
-                <span class="ident">coords_flat</span>
-                    .<span class="ident">by_ref</span>()
-                    .<span class="ident">take</span>(<span class="ident">np</span> <span class="kw">as</span> <span class="kw">_</span>)
-                    <span class="comment">// TODO: Probably this don&#39;t need to be collected.</span>
-                    .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">f64</span>, <span class="ident">f64</span>)<span class="op">&gt;</span><span class="op">&gt;</span>()
+            <span class="kw">let </span>coords = nper.iter().map(|<span class="kw-2">&amp;</span>np| {
+                coords_flat
+                    .by_ref()
+                    .take(np <span class="kw">as _</span>)
+                    <span class="comment">// TODO: Probably this don&#39;t need to be collected.
+                    </span>.collect::&lt;Vec&lt;(f64, f64)&gt;&gt;()
             });
 
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
+            <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
 
-            <span class="comment">// It seems `NA` is just treated as `true`. Probably it doesn&#39;t matter much here.</span>
-            <span class="comment">// c.f. https://github.com/wch/r-source/blob/6b22b60126646714e0f25143ac679240be251dbe/src/library/grDevices/src/devPS.c#L4235</span>
-            <span class="kw">let</span> <span class="ident">winding</span> <span class="op">=</span> <span class="ident">winding</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>;
+            <span class="comment">// It seems `NA` is just treated as `true`. Probably it doesn&#39;t matter much here.
+            // c.f. https://github.com/wch/r-source/blob/6b22b60126646714e0f25143ac679240be251dbe/src/library/grDevices/src/devPS.c#L4235
+            </span><span class="kw">let </span>winding = winding != <span class="number">0</span>;
 
-            <span class="ident">data</span>.<span class="ident">path</span>(<span class="ident">coords</span>, <span class="ident">winding</span>, <span class="kw-2">*</span><span class="ident">gc</span>, <span class="kw-2">*</span><span class="ident">dd</span>);
+            data.path(coords, winding, <span class="kw-2">*</span>gc, <span class="kw-2">*</span>dd);
         }
 
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_raster</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(
-            <span class="ident">raster</span>: <span class="kw-2">*mut</span> <span class="ident">c_uint</span>,
-            <span class="ident">w</span>: <span class="ident">c_int</span>,
-            <span class="ident">h</span>: <span class="ident">c_int</span>,
-            <span class="ident">x</span>: <span class="ident">f64</span>,
-            <span class="ident">y</span>: <span class="ident">f64</span>,
-            <span class="ident">width</span>: <span class="ident">f64</span>,
-            <span class="ident">height</span>: <span class="ident">f64</span>,
-            <span class="ident">rot</span>: <span class="ident">f64</span>,
-            <span class="ident">interpolate</span>: <span class="ident">Rboolean</span>,
-            <span class="ident">gc</span>: <span class="ident">pGEcontext</span>,
-            <span class="ident">dd</span>: <span class="ident">pDevDesc</span>,
+        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_raster&lt;T: DeviceDriver&gt;(
+            raster: <span class="kw-2">*mut </span>c_uint,
+            w: c_int,
+            h: c_int,
+            x: f64,
+            y: f64,
+            width: f64,
+            height: f64,
+            rot: f64,
+            interpolate: Rboolean,
+            gc: pGEcontext,
+            dd: pDevDesc,
         ) {
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="ident">raster</span> <span class="op">=</span> <span class="ident">slice::from_raw_parts</span>(<span class="ident">raster</span>, (<span class="ident">w</span> <span class="op">*</span> <span class="ident">h</span>) <span class="kw">as</span> <span class="kw">_</span>);
+            <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
+            <span class="kw">let </span>raster = slice::from_raw_parts(raster, (w * h) <span class="kw">as _</span>);
 
-            <span class="ident">data</span>.<span class="ident">raster</span>::<span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">u32</span>]<span class="op">&gt;</span>(
-                <span class="ident">Raster</span> {
-                    <span class="ident">pixels</span>: <span class="ident">raster</span>,
-                    <span class="ident">width</span>: <span class="ident">w</span> <span class="kw">as</span> <span class="kw">_</span>,
+            data.raster::&lt;<span class="kw-2">&amp;</span>[u32]&gt;(
+                Raster {
+                    pixels: raster,
+                    width: w <span class="kw">as _</span>,
                 },
-                (<span class="ident">x</span>, <span class="ident">y</span>),
-                (<span class="ident">width</span>, <span class="ident">height</span>),
-                <span class="ident">rot</span>,
-                <span class="comment">// It seems `NA` is just treated as `true`. Probably it doesn&#39;t matter much here.</span>
-                <span class="comment">// c.f. https://github.com/wch/r-source/blob/6b22b60126646714e0f25143ac679240be251dbe/src/library/grDevices/src/devPS.c#L4062</span>
-                <span class="ident">interpolate</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span>,
-                <span class="kw-2">*</span><span class="ident">gc</span>,
-                <span class="kw-2">*</span><span class="ident">dd</span>,
+                (x, y),
+                (width, height),
+                rot,
+                <span class="comment">// It seems `NA` is just treated as `true`. Probably it doesn&#39;t matter much here.
+                // c.f. https://github.com/wch/r-source/blob/6b22b60126646714e0f25143ac679240be251dbe/src/library/grDevices/src/devPS.c#L4062
+                </span>interpolate != <span class="number">0</span>,
+                <span class="kw-2">*</span>gc,
+                <span class="kw-2">*</span>dd,
             );
         }
 
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_capture</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(<span class="ident">dd</span>: <span class="ident">pDevDesc</span>) -&gt; <span class="ident">SEXP</span> {
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
-            <span class="comment">// TODO: convert the output more nicely</span>
-            <span class="ident">data</span>.<span class="ident">capture</span>(<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">get</span>()
+        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_capture&lt;T: DeviceDriver&gt;(dd: pDevDesc) -&gt; SEXP {
+            <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
+            <span class="comment">// TODO: convert the output more nicely
+            </span>data.capture(<span class="kw-2">*</span>dd).get()
         }
 
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_size</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(
-            <span class="ident">left</span>: <span class="kw-2">*mut</span> <span class="ident">f64</span>,
-            <span class="ident">right</span>: <span class="kw-2">*mut</span> <span class="ident">f64</span>,
-            <span class="ident">bottom</span>: <span class="kw-2">*mut</span> <span class="ident">f64</span>,
-            <span class="ident">top</span>: <span class="kw-2">*mut</span> <span class="ident">f64</span>,
-            <span class="ident">dd</span>: <span class="ident">pDevDesc</span>,
+        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_size&lt;T: DeviceDriver&gt;(
+            left: <span class="kw-2">*mut </span>f64,
+            right: <span class="kw-2">*mut </span>f64,
+            bottom: <span class="kw-2">*mut </span>f64,
+            top: <span class="kw-2">*mut </span>f64,
+            dd: pDevDesc,
         ) {
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="ident">sizes</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">size</span>(<span class="kw-2">*</span><span class="ident">dd</span>);
-            <span class="kw-2">*</span><span class="ident">left</span> <span class="op">=</span> <span class="ident">sizes</span>.<span class="number">0</span>;
-            <span class="kw-2">*</span><span class="ident">right</span> <span class="op">=</span> <span class="ident">sizes</span>.<span class="number">1</span>;
-            <span class="kw-2">*</span><span class="ident">bottom</span> <span class="op">=</span> <span class="ident">sizes</span>.<span class="number">2</span>;
-            <span class="kw-2">*</span><span class="ident">top</span> <span class="op">=</span> <span class="ident">sizes</span>.<span class="number">3</span>;
+            <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
+            <span class="kw">let </span>sizes = data.size(<span class="kw-2">*</span>dd);
+            <span class="kw-2">*</span>left = sizes.<span class="number">0</span>;
+            <span class="kw-2">*</span>right = sizes.<span class="number">1</span>;
+            <span class="kw-2">*</span>bottom = sizes.<span class="number">2</span>;
+            <span class="kw-2">*</span>top = sizes.<span class="number">3</span>;
         }
 
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_text_width</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(
-            <span class="ident">str</span>: <span class="kw-2">*const</span> <span class="ident">c_char</span>,
-            <span class="ident">gc</span>: <span class="ident">pGEcontext</span>,
-            <span class="ident">dd</span>: <span class="ident">pDevDesc</span>,
-        ) -&gt; <span class="ident">f64</span> {
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="ident">cstr</span> <span class="op">=</span> <span class="ident">std::ffi::CStr::from_ptr</span>(<span class="ident">str</span>);
+        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_text_width&lt;T: DeviceDriver&gt;(
+            str: <span class="kw-2">*const </span>c_char,
+            gc: pGEcontext,
+            dd: pDevDesc,
+        ) -&gt; f64 {
+            <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
+            <span class="kw">let </span>cstr = std::ffi::CStr::from_ptr(str);
 
-            <span class="comment">// TODO: Should we do something when the str is not available?</span>
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">cstr</span>) <span class="op">=</span> <span class="ident">cstr</span>.<span class="ident">to_str</span>() {
-                <span class="ident">data</span>.<span class="ident">text_width</span>(<span class="ident">cstr</span>, <span class="kw-2">*</span><span class="ident">gc</span>, <span class="kw-2">*</span><span class="ident">dd</span>)
-            } <span class="kw">else</span> {
-                <span class="number">0.0</span>
+            <span class="comment">// TODO: Should we do something when the str is not available?
+            </span><span class="kw">if let </span><span class="prelude-val">Ok</span>(cstr) = cstr.to_str() {
+                data.text_width(cstr, <span class="kw-2">*</span>gc, <span class="kw-2">*</span>dd)
+            } <span class="kw">else </span>{
+                <span class="number">0.0
+            </span>}
+        }
+
+        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_text&lt;T: DeviceDriver&gt;(
+            x: f64,
+            y: f64,
+            str: <span class="kw-2">*const </span>c_char,
+            rot: f64,
+            hadj: f64,
+            gc: pGEcontext,
+            dd: pDevDesc,
+        ) {
+            <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
+            <span class="kw">let </span>cstr = std::ffi::CStr::from_ptr(str);
+
+            <span class="comment">// TODO: Should we do something when the str is not available?
+            </span><span class="kw">if let </span><span class="prelude-val">Ok</span>(cstr) = cstr.to_str() {
+                data.text((x, y), cstr, rot, hadj, <span class="kw-2">*</span>gc, <span class="kw-2">*</span>dd);
             }
         }
 
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_text</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(
-            <span class="ident">x</span>: <span class="ident">f64</span>,
-            <span class="ident">y</span>: <span class="ident">f64</span>,
-            <span class="ident">str</span>: <span class="kw-2">*const</span> <span class="ident">c_char</span>,
-            <span class="ident">rot</span>: <span class="ident">f64</span>,
-            <span class="ident">hadj</span>: <span class="ident">f64</span>,
-            <span class="ident">gc</span>: <span class="ident">pGEcontext</span>,
-            <span class="ident">dd</span>: <span class="ident">pDevDesc</span>,
-        ) {
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="ident">cstr</span> <span class="op">=</span> <span class="ident">std::ffi::CStr::from_ptr</span>(<span class="ident">str</span>);
+        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_on_exit&lt;T: DeviceDriver&gt;(dd: pDevDesc) {
+            <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
+            data.on_exit(<span class="kw-2">*</span>dd);
+        }
 
-            <span class="comment">// TODO: Should we do something when the str is not available?</span>
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">cstr</span>) <span class="op">=</span> <span class="ident">cstr</span>.<span class="ident">to_str</span>() {
-                <span class="ident">data</span>.<span class="ident">text</span>((<span class="ident">x</span>, <span class="ident">y</span>), <span class="ident">cstr</span>, <span class="ident">rot</span>, <span class="ident">hadj</span>, <span class="kw-2">*</span><span class="ident">gc</span>, <span class="kw-2">*</span><span class="ident">dd</span>);
+        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_new_frame_confirm&lt;T: DeviceDriver&gt;(
+            dd: pDevDesc,
+        ) -&gt; Rboolean {
+            <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
+            <span class="kw">if let </span><span class="prelude-val">Ok</span>(confirm) = data.new_frame_confirm(<span class="kw-2">*</span>dd).try_into() {
+                confirm
+            } <span class="kw">else </span>{
+                <span class="bool-val">false</span>.into()
             }
         }
 
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_on_exit</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(<span class="ident">dd</span>: <span class="ident">pDevDesc</span>) {
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
-            <span class="ident">data</span>.<span class="ident">on_exit</span>(<span class="kw-2">*</span><span class="ident">dd</span>);
+        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_holdflush&lt;T: DeviceDriver&gt;(
+            dd: pDevDesc,
+            level: c_int,
+        ) -&gt; c_int {
+            <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
+            data.holdflush(<span class="kw-2">*</span>dd, level <span class="kw">as _</span>)
         }
 
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_new_frame_confirm</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(
-            <span class="ident">dd</span>: <span class="ident">pDevDesc</span>,
-        ) -&gt; <span class="ident">Rboolean</span> {
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">confirm</span>) <span class="op">=</span> <span class="ident">data</span>.<span class="ident">new_frame_confirm</span>(<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">try_into</span>() {
-                <span class="ident">confirm</span>
-            } <span class="kw">else</span> {
-                <span class="bool-val">false</span>.<span class="ident">into</span>()
+        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_locator&lt;T: DeviceDriver&gt;(
+            x: <span class="kw-2">*mut </span>f64,
+            y: <span class="kw-2">*mut </span>f64,
+            dd: pDevDesc,
+        ) -&gt; Rboolean {
+            <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
+            <span class="kw">if let </span><span class="prelude-val">Ok</span>(success) = data.locator(x, y, <span class="kw-2">*</span>dd).try_into() {
+                success
+            } <span class="kw">else </span>{
+                <span class="bool-val">false</span>.into()
             }
         }
 
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_holdflush</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(
-            <span class="ident">dd</span>: <span class="ident">pDevDesc</span>,
-            <span class="ident">level</span>: <span class="ident">c_int</span>,
-        ) -&gt; <span class="ident">c_int</span> {
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
-            <span class="ident">data</span>.<span class="ident">holdflush</span>(<span class="kw-2">*</span><span class="ident">dd</span>, <span class="ident">level</span> <span class="kw">as</span> <span class="kw">_</span>)
+        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_eventHelper&lt;T: DeviceDriver&gt;(dd: pDevDesc, code: c_int) {
+            <span class="kw">let </span><span class="kw-2">mut </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).read();
+            data.eventHelper(<span class="kw-2">*</span>dd, code);
         }
 
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_locator</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(
-            <span class="ident">x</span>: <span class="kw-2">*mut</span> <span class="ident">f64</span>,
-            <span class="ident">y</span>: <span class="kw-2">*mut</span> <span class="ident">f64</span>,
-            <span class="ident">dd</span>: <span class="ident">pDevDesc</span>,
-        ) -&gt; <span class="ident">Rboolean</span> {
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">success</span>) <span class="op">=</span> <span class="ident">data</span>.<span class="ident">locator</span>(<span class="ident">x</span>, <span class="ident">y</span>, <span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">try_into</span>() {
-                <span class="ident">success</span>
-            } <span class="kw">else</span> {
-                <span class="bool-val">false</span>.<span class="ident">into</span>()
-            }
+        <span class="attribute">#[cfg(use_r_ge_version_14)]
+        </span><span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_setPattern&lt;T: DeviceDriver&gt;(
+            pattern: SEXP,
+            dd: pDevDesc,
+        ) -&gt; SEXP {
+            <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
+            <span class="comment">// TODO
+            // data.setPattern(pattern, *dd)
+            </span>R_NilValue
         }
 
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_eventHelper</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(<span class="ident">dd</span>: <span class="ident">pDevDesc</span>, <span class="ident">code</span>: <span class="ident">c_int</span>) {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">read</span>();
-            <span class="ident">data</span>.<span class="ident">eventHelper</span>(<span class="kw-2">*</span><span class="ident">dd</span>, <span class="ident">code</span>);
-        }
-
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">use_r_ge_version_14</span>)]</span>
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_setPattern</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(
-            <span class="ident">pattern</span>: <span class="ident">SEXP</span>,
-            <span class="ident">dd</span>: <span class="ident">pDevDesc</span>,
-        ) -&gt; <span class="ident">SEXP</span> {
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
-            <span class="comment">// TODO</span>
-            <span class="comment">// data.setPattern(pattern, *dd)</span>
-            <span class="ident">R_NilValue</span>
-        }
-
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">use_r_ge_version_14</span>)]</span>
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_releasePattern</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(
-            <span class="ident">ref_</span>: <span class="ident">SEXP</span>,
-            <span class="ident">dd</span>: <span class="ident">pDevDesc</span>,
+        <span class="attribute">#[cfg(use_r_ge_version_14)]
+        </span><span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_releasePattern&lt;T: DeviceDriver&gt;(
+            ref_: SEXP,
+            dd: pDevDesc,
         ) {
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
-            <span class="comment">// TODO</span>
-            <span class="comment">// data.reelasePattern(ref_, *dd);</span>
+            <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
+            <span class="comment">// TODO
+            // data.reelasePattern(ref_, *dd);
+        </span>}
+
+        <span class="attribute">#[cfg(use_r_ge_version_14)]
+        </span><span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_setClipPath&lt;T: DeviceDriver&gt;(
+            path: SEXP,
+            ref_: SEXP,
+            dd: pDevDesc,
+        ) -&gt; SEXP {
+            <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
+            <span class="comment">// TODO
+            // data.setClipPath(path, ref_, *dd)
+            </span>R_NilValue
         }
 
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">use_r_ge_version_14</span>)]</span>
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_setClipPath</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(
-            <span class="ident">path</span>: <span class="ident">SEXP</span>,
-            <span class="ident">ref_</span>: <span class="ident">SEXP</span>,
-            <span class="ident">dd</span>: <span class="ident">pDevDesc</span>,
-        ) -&gt; <span class="ident">SEXP</span> {
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
-            <span class="comment">// TODO</span>
-            <span class="comment">// data.setClipPath(path, ref_, *dd)</span>
-            <span class="ident">R_NilValue</span>
-        }
-
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">use_r_ge_version_14</span>)]</span>
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_releaseClipPath</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(
-            <span class="ident">ref_</span>: <span class="ident">SEXP</span>,
-            <span class="ident">dd</span>: <span class="ident">pDevDesc</span>,
+        <span class="attribute">#[cfg(use_r_ge_version_14)]
+        </span><span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_releaseClipPath&lt;T: DeviceDriver&gt;(
+            ref_: SEXP,
+            dd: pDevDesc,
         ) {
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
-            <span class="comment">// TODO</span>
-            <span class="comment">// data.releaseClipPath(ref_, *dd);</span>
+            <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
+            <span class="comment">// TODO
+            // data.releaseClipPath(ref_, *dd);
+        </span>}
+
+        <span class="attribute">#[cfg(use_r_ge_version_14)]
+        </span><span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_setMask&lt;T: DeviceDriver&gt;(
+            path: SEXP,
+            ref_: SEXP,
+            dd: pDevDesc,
+        ) -&gt; SEXP {
+            <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
+            <span class="comment">// TODO
+            // data.setMask(path, ref_, *dd)
+            </span>R_NilValue
         }
 
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">use_r_ge_version_14</span>)]</span>
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_setMask</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(
-            <span class="ident">path</span>: <span class="ident">SEXP</span>,
-            <span class="ident">ref_</span>: <span class="ident">SEXP</span>,
-            <span class="ident">dd</span>: <span class="ident">pDevDesc</span>,
-        ) -&gt; <span class="ident">SEXP</span> {
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
-            <span class="comment">// TODO</span>
-            <span class="comment">// data.setMask(path, ref_, *dd)</span>
-            <span class="ident">R_NilValue</span>
-        }
+        <span class="attribute">#[cfg(use_r_ge_version_14)]
+        </span><span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>device_driver_releaseMask&lt;T: DeviceDriver&gt;(ref_: SEXP, dd: pDevDesc) {
+            <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
+            <span class="comment">// TODO
+            // data.releaseMask(ref_, *dd);
+        </span>}
 
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">use_r_ge_version_14</span>)]</span>
-        <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">device_driver_releaseMask</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">DeviceDriver</span><span class="op">&gt;</span>(<span class="ident">ref_</span>: <span class="ident">SEXP</span>, <span class="ident">dd</span>: <span class="ident">pDevDesc</span>) {
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> ((<span class="kw-2">*</span><span class="ident">dd</span>).<span class="ident">deviceSpecific</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>).<span class="ident">as_mut</span>().<span class="ident">unwrap</span>();
-            <span class="comment">// TODO</span>
-            <span class="comment">// data.releaseMask(ref_, *dd);</span>
-        }
+        <span class="comment">//
+        // ************* defining the wrapper functions ends here ****************
+        //
 
-        <span class="comment">//</span>
-        <span class="comment">// ************* defining the wrapper functions ends here ****************</span>
-        <span class="comment">//</span>
+        // `Box::new()` allocates memory on the heap and places `self` into it.
+        // Then, an unsafe function `Box::into_raw()` converts it to a raw
+        // pointer. By doing so, Rust won&#39;t drop the object so that it will
+        // survive after after being passed to the R&#39;s side. Accordingly, it&#39;s
+        // extendr&#39;s responsibility to drop it. This deallocation will be done
+        // in the `close()` wrapper; the struct will be gotten back to the
+        // Rust&#39;s side by `Box::from_raw()` so that Rust will drop it when
+        // returning from the function.
+        </span><span class="kw">let </span>deviceSpecific = Box::into_raw(Box::new(<span class="self">self</span>)) <span class="kw">as </span><span class="kw-2">*mut </span>std::os::raw::c_void;
 
-        <span class="comment">// `Box::new()` allocates memory on the heap and places `self` into it.</span>
-        <span class="comment">// Then, an unsafe function `Box::into_raw()` converts it to a raw</span>
-        <span class="comment">// pointer. By doing so, Rust won&#39;t drop the object so that it will</span>
-        <span class="comment">// survive after after being passed to the R&#39;s side. Accordingly, it&#39;s</span>
-        <span class="comment">// extendr&#39;s responsibility to drop it. This deallocation will be done</span>
-        <span class="comment">// in the `close()` wrapper; the struct will be gotten back to the</span>
-        <span class="comment">// Rust&#39;s side by `Box::from_raw()` so that Rust will drop it when</span>
-        <span class="comment">// returning from the function.</span>
-        <span class="kw">let</span> <span class="ident">deviceSpecific</span> <span class="op">=</span> <span class="ident">Box::into_raw</span>(<span class="ident">Box::new</span>(<span class="self">self</span>)) <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">std::os::raw::c_void</span>;
+        <span class="comment">// When we go across the boundary of FFI, the general rule is that the
+        // allocated memory needs to be deallocated by the same allocator; if we
+        // allocate memory on Rust&#39;s side, it needs to be dropped on Rust&#39;s
+        // side. If we allocate memory on R&#39;s side, it needs to be freed on R&#39;s
+        // side. Here, `DevDesc` is the latter case.
+        //
+        // The problem is that, while `DevDesc` is supposed to be `free()`ed on
+        // R&#39;s side when device is closed by `dev.off()` (more specifically, in
+        // `GEdestroyDevDesc()`), there&#39;s no API that creates a `DevDesc`
+        // instance; typically, it&#39;s created by `calloc()` and a manual cast to
+        // `DevDesc*`. Please see [the example code on R Internals].
+        //
+        // Because of the absence of such an API, the only choice here is to use
+        // `libc::calloc()` and treat it as `*DevDesc`, taking the risk of
+        // uninitialized fields. This solves the problem if the same &quot;libc&quot; (or
+        // C runtime) as R is used. In other words, there&#39;s still a risk of
+        // allocator mismatch. We need to be careful to configure PATHs
+        // correctly to make sure the same toolchain used for compiling R itself
+        // is chosen when the program is compiled.
+        //
+        // [Example code on R Internals]:
+        //     https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Device-structures
+        </span><span class="kw">let </span>p_dev_desc = <span class="kw">unsafe </span>{ libc::calloc(<span class="number">1</span>, std::mem::size_of::&lt;DevDesc&gt;()) <span class="kw">as </span><span class="kw-2">*mut </span>DevDesc };
 
-        <span class="comment">// When we go across the boundary of FFI, the general rule is that the</span>
-        <span class="comment">// allocated memory needs to be deallocated by the same allocator; if we</span>
-        <span class="comment">// allocate memory on Rust&#39;s side, it needs to be dropped on Rust&#39;s</span>
-        <span class="comment">// side. If we allocate memory on R&#39;s side, it needs to be freed on R&#39;s</span>
-        <span class="comment">// side. Here, `DevDesc` is the latter case.</span>
-        <span class="comment">//</span>
-        <span class="comment">// The problem is that, while `DevDesc` is supposed to be `free()`ed on</span>
-        <span class="comment">// R&#39;s side when device is closed by `dev.off()` (more specifically, in</span>
-        <span class="comment">// `GEdestroyDevDesc()`), there&#39;s no API that creates a `DevDesc`</span>
-        <span class="comment">// instance; typically, it&#39;s created by `calloc()` and a manual cast to</span>
-        <span class="comment">// `DevDesc*`. Please see [the example code on R Internals].</span>
-        <span class="comment">//</span>
-        <span class="comment">// Because of the absence of such an API, the only choice here is to use</span>
-        <span class="comment">// `libc::calloc()` and treat it as `*DevDesc`, taking the risk of</span>
-        <span class="comment">// uninitialized fields. This solves the problem if the same &quot;libc&quot; (or</span>
-        <span class="comment">// C runtime) as R is used. In other words, there&#39;s still a risk of</span>
-        <span class="comment">// allocator mismatch. We need to be careful to configure PATHs</span>
-        <span class="comment">// correctly to make sure the same toolchain used for compiling R itself</span>
-        <span class="comment">// is chosen when the program is compiled.</span>
-        <span class="comment">//</span>
-        <span class="comment">// [Example code on R Internals]:</span>
-        <span class="comment">//     https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Device-structures</span>
-        <span class="kw">let</span> <span class="ident">p_dev_desc</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">libc::calloc</span>(<span class="number">1</span>, <span class="ident">std::mem::size_of</span>::<span class="op">&lt;</span><span class="ident">DevDesc</span><span class="op">&gt;</span>()) <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">DevDesc</span> };
+        <span class="kw">unsafe </span>{
+            (<span class="kw-2">*</span>p_dev_desc).left = device_descriptor.left;
+            (<span class="kw-2">*</span>p_dev_desc).right = device_descriptor.right;
+            (<span class="kw-2">*</span>p_dev_desc).bottom = device_descriptor.bottom;
+            (<span class="kw-2">*</span>p_dev_desc).top = device_descriptor.top;
 
-        <span class="kw">unsafe</span> {
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">left</span> <span class="op">=</span> <span class="ident">device_descriptor</span>.<span class="ident">left</span>;
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">right</span> <span class="op">=</span> <span class="ident">device_descriptor</span>.<span class="ident">right</span>;
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">bottom</span> <span class="op">=</span> <span class="ident">device_descriptor</span>.<span class="ident">bottom</span>;
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">top</span> <span class="op">=</span> <span class="ident">device_descriptor</span>.<span class="ident">top</span>;
+            <span class="comment">// This should be the same as the size of the device
+            </span>(<span class="kw-2">*</span>p_dev_desc).clipLeft = device_descriptor.left;
+            (<span class="kw-2">*</span>p_dev_desc).clipRight = device_descriptor.right;
+            (<span class="kw-2">*</span>p_dev_desc).clipBottom = device_descriptor.bottom;
+            (<span class="kw-2">*</span>p_dev_desc).clipTop = device_descriptor.top;
 
-            <span class="comment">// This should be the same as the size of the device</span>
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">clipLeft</span> <span class="op">=</span> <span class="ident">device_descriptor</span>.<span class="ident">left</span>;
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">clipRight</span> <span class="op">=</span> <span class="ident">device_descriptor</span>.<span class="ident">right</span>;
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">clipBottom</span> <span class="op">=</span> <span class="ident">device_descriptor</span>.<span class="ident">bottom</span>;
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">clipTop</span> <span class="op">=</span> <span class="ident">device_descriptor</span>.<span class="ident">top</span>;
+            <span class="comment">// Not sure where these numbers came from, but it seems this is a
+            // common practice, considering the postscript device and svglite
+            // device do so.
+            </span>(<span class="kw-2">*</span>p_dev_desc).xCharOffset = <span class="number">0.4900</span>;
+            (<span class="kw-2">*</span>p_dev_desc).yCharOffset = <span class="number">0.3333</span>;
+            (<span class="kw-2">*</span>p_dev_desc).yLineBias = <span class="number">0.2</span>;
 
-            <span class="comment">// Not sure where these numbers came from, but it seems this is a</span>
-            <span class="comment">// common practice, considering the postscript device and svglite</span>
-            <span class="comment">// device do so.</span>
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">xCharOffset</span> <span class="op">=</span> <span class="number">0.4900</span>;
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">yCharOffset</span> <span class="op">=</span> <span class="number">0.3333</span>;
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">yLineBias</span> <span class="op">=</span> <span class="number">0.2</span>;
+            (<span class="kw-2">*</span>p_dev_desc).ipr = device_descriptor.ipr;
+            (<span class="kw-2">*</span>p_dev_desc).cra = device_descriptor.cra;
 
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">ipr</span> <span class="op">=</span> <span class="ident">device_descriptor</span>.<span class="ident">ipr</span>;
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">cra</span> <span class="op">=</span> <span class="ident">device_descriptor</span>.<span class="ident">cra</span>;
+            <span class="comment">// Gamma-related parameters are all ignored. R-internals indicates so:
+            //
+            // canChangeGamma – Rboolean: can the display gamma be adjusted? This is now
+            // ignored, as gamma support has been removed.
+            //
+            // and actually it seems this parameter is never used.
+            </span>(<span class="kw-2">*</span>p_dev_desc).gamma = <span class="number">1.0</span>;
 
-            <span class="comment">// Gamma-related parameters are all ignored. R-internals indicates so:</span>
-            <span class="comment">//</span>
-            <span class="comment">// canChangeGamma – Rboolean: can the display gamma be adjusted? This is now</span>
-            <span class="comment">// ignored, as gamma support has been removed.</span>
-            <span class="comment">//</span>
-            <span class="comment">// and actually it seems this parameter is never used.</span>
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">gamma</span> <span class="op">=</span> <span class="number">1.0</span>;
-
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">canClip</span> <span class="op">=</span> <span class="kw">match</span> <span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::CLIPPING_STRATEGY</span> {
-                <span class="ident">ClippingStrategy::Engine</span> =&gt; <span class="number">0</span>,
-                <span class="kw">_</span> =&gt; <span class="number">1</span>,
+            (<span class="kw-2">*</span>p_dev_desc).canClip = <span class="kw">match </span>&lt;T&gt;::CLIPPING_STRATEGY {
+                ClippingStrategy::Engine =&gt; <span class="number">0</span>,
+                <span class="kw">_ </span>=&gt; <span class="number">1</span>,
             };
 
-            <span class="comment">// As described above, gamma is not supported.</span>
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">canChangeGamma</span> <span class="op">=</span> <span class="number">0</span>;
+            <span class="comment">// As described above, gamma is not supported.
+            </span>(<span class="kw-2">*</span>p_dev_desc).canChangeGamma = <span class="number">0</span>;
 
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">canHAdj</span> <span class="op">=</span> <span class="ident">CanHAdjOption::VariableAdjustment</span> <span class="kw">as</span> <span class="kw">_</span>;
+            (<span class="kw-2">*</span>p_dev_desc).canHAdj = CanHAdjOption::VariableAdjustment <span class="kw">as _</span>;
 
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">startps</span> <span class="op">=</span> <span class="ident">device_descriptor</span>.<span class="ident">startps</span>;
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">startcol</span> <span class="op">=</span> <span class="ident">device_descriptor</span>.<span class="ident">startcol</span>.<span class="ident">to_i32</span>();
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">startfill</span> <span class="op">=</span> <span class="ident">device_descriptor</span>.<span class="ident">startfill</span>.<span class="ident">to_i32</span>();
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">startlty</span> <span class="op">=</span> <span class="ident">device_descriptor</span>.<span class="ident">startlty</span>.<span class="ident">to_i32</span>();
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">startfont</span> <span class="op">=</span> <span class="ident">device_descriptor</span>.<span class="ident">startfont</span>.<span class="ident">to_i32</span>();
+            (<span class="kw-2">*</span>p_dev_desc).startps = device_descriptor.startps;
+            (<span class="kw-2">*</span>p_dev_desc).startcol = device_descriptor.startcol.to_i32();
+            (<span class="kw-2">*</span>p_dev_desc).startfill = device_descriptor.startfill.to_i32();
+            (<span class="kw-2">*</span>p_dev_desc).startlty = device_descriptor.startlty.to_i32();
+            (<span class="kw-2">*</span>p_dev_desc).startfont = device_descriptor.startfont.to_i32();
 
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">startgamma</span> <span class="op">=</span> <span class="number">1.0</span>;
+            (<span class="kw-2">*</span>p_dev_desc).startgamma = <span class="number">1.0</span>;
 
-            <span class="comment">// A raw pointer to the data specific to the device.</span>
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">deviceSpecific</span> <span class="op">=</span> <span class="ident">deviceSpecific</span>;
+            <span class="comment">// A raw pointer to the data specific to the device.
+            </span>(<span class="kw-2">*</span>p_dev_desc).deviceSpecific = deviceSpecific;
 
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">displayListOn</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::USE_PLOT_HISTORY</span> { <span class="number">1</span> } <span class="kw">else</span> { <span class="number">0</span> };
+            (<span class="kw-2">*</span>p_dev_desc).displayListOn = <span class="kw">if </span>&lt;T&gt;::USE_PLOT_HISTORY { <span class="number">1 </span>} <span class="kw">else </span>{ <span class="number">0 </span>};
 
-            <span class="comment">// These are currently not used, so just set FALSE.</span>
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">canGenMouseDown</span> <span class="op">=</span> <span class="number">0</span>;
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">canGenMouseMove</span> <span class="op">=</span> <span class="number">0</span>;
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">canGenMouseUp</span> <span class="op">=</span> <span class="number">0</span>;
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">canGenKeybd</span> <span class="op">=</span> <span class="number">0</span>;
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">canGenIdle</span> <span class="op">=</span> <span class="number">0</span>;
+            <span class="comment">// These are currently not used, so just set FALSE.
+            </span>(<span class="kw-2">*</span>p_dev_desc).canGenMouseDown = <span class="number">0</span>;
+            (<span class="kw-2">*</span>p_dev_desc).canGenMouseMove = <span class="number">0</span>;
+            (<span class="kw-2">*</span>p_dev_desc).canGenMouseUp = <span class="number">0</span>;
+            (<span class="kw-2">*</span>p_dev_desc).canGenKeybd = <span class="number">0</span>;
+            (<span class="kw-2">*</span>p_dev_desc).canGenIdle = <span class="number">0</span>;
 
-            <span class="comment">// The header file says:</span>
-            <span class="comment">//</span>
-            <span class="comment">// This is set while getGraphicsEvent is actively looking for events.</span>
-            <span class="comment">//</span>
-            <span class="comment">// It seems no implementation sets this, so this is probably what is</span>
-            <span class="comment">// modified on the engine&#39;s side.</span>
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">gettingEvent</span> <span class="op">=</span> <span class="number">0</span>;
+            <span class="comment">// The header file says:
+            //
+            // This is set while getGraphicsEvent is actively looking for events.
+            //
+            // It seems no implementation sets this, so this is probably what is
+            // modified on the engine&#39;s side.
+            </span>(<span class="kw-2">*</span>p_dev_desc).gettingEvent = <span class="number">0</span>;
 
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">activate</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_activate</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">circle</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_circle</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">clip</span> <span class="op">=</span> <span class="kw">match</span> <span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::CLIPPING_STRATEGY</span> {
-                <span class="ident">ClippingStrategy::Engine</span> =&gt; <span class="prelude-val">None</span>,
-                <span class="kw">_</span> =&gt; <span class="prelude-val">Some</span>(<span class="ident">device_driver_clip</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>),
+            (<span class="kw-2">*</span>p_dev_desc).activate = <span class="prelude-val">Some</span>(device_driver_activate::&lt;T&gt;);
+            (<span class="kw-2">*</span>p_dev_desc).circle = <span class="prelude-val">Some</span>(device_driver_circle::&lt;T&gt;);
+            (<span class="kw-2">*</span>p_dev_desc).clip = <span class="kw">match </span>&lt;T&gt;::CLIPPING_STRATEGY {
+                ClippingStrategy::Engine =&gt; <span class="prelude-val">None</span>,
+                <span class="kw">_ </span>=&gt; <span class="prelude-val">Some</span>(device_driver_clip::&lt;T&gt;),
             };
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">close</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_close</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">deactivate</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_deactivate</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">locator</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_locator</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>); <span class="comment">// TOD;</span>
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">line</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_line</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">metricInfo</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_char_metric</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">mode</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_mode</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">newPage</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_new_page</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">polygon</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_polygon</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">polyline</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_polyline</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">rect</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_rect</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">path</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_path</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">raster</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::USE_RASTER</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">device_driver_raster</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>)
-            } <span class="kw">else</span> {
-                <span class="prelude-val">None</span>
-            };
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">cap</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::USE_CAPTURE</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">device_driver_capture</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>)
-            } <span class="kw">else</span> {
-                <span class="prelude-val">None</span>
-            };
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">size</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_size</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">strWidth</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_text_width</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">text</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_text</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">onExit</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_on_exit</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
+            (<span class="kw-2">*</span>p_dev_desc).close = <span class="prelude-val">Some</span>(device_driver_close::&lt;T&gt;);
+            (<span class="kw-2">*</span>p_dev_desc).deactivate = <span class="prelude-val">Some</span>(device_driver_deactivate::&lt;T&gt;);
+            (<span class="kw-2">*</span>p_dev_desc).locator = <span class="prelude-val">Some</span>(device_driver_locator::&lt;T&gt;); <span class="comment">// TOD;
+            </span>(<span class="kw-2">*</span>p_dev_desc).line = <span class="prelude-val">Some</span>(device_driver_line::&lt;T&gt;);
+            (<span class="kw-2">*</span>p_dev_desc).metricInfo = <span class="prelude-val">Some</span>(device_driver_char_metric::&lt;T&gt;);
+            (<span class="kw-2">*</span>p_dev_desc).mode = <span class="prelude-val">Some</span>(device_driver_mode::&lt;T&gt;);
+            (<span class="kw-2">*</span>p_dev_desc).newPage = <span class="prelude-val">Some</span>(device_driver_new_page::&lt;T&gt;);
+            (<span class="kw-2">*</span>p_dev_desc).polygon = <span class="prelude-val">Some</span>(device_driver_polygon::&lt;T&gt;);
+            (<span class="kw-2">*</span>p_dev_desc).polyline = <span class="prelude-val">Some</span>(device_driver_polyline::&lt;T&gt;);
+            (<span class="kw-2">*</span>p_dev_desc).rect = <span class="prelude-val">Some</span>(device_driver_rect::&lt;T&gt;);
+            (<span class="kw-2">*</span>p_dev_desc).path = <span class="prelude-val">Some</span>(device_driver_path::&lt;T&gt;);
+            (<span class="kw-2">*</span>p_dev_desc).raster = <span class="kw">if </span>&lt;T&gt;::USE_RASTER {
+                <span class="prelude-val">Some</span>(device_driver_raster::&lt;T&gt;)
+            } <span class="kw">else </span>{
+                <span class="prelude-val">None
+            </span>};
+            (<span class="kw-2">*</span>p_dev_desc).cap = <span class="kw">if </span>&lt;T&gt;::USE_CAPTURE {
+                <span class="prelude-val">Some</span>(device_driver_capture::&lt;T&gt;)
+            } <span class="kw">else </span>{
+                <span class="prelude-val">None
+            </span>};
+            (<span class="kw-2">*</span>p_dev_desc).size = <span class="prelude-val">Some</span>(device_driver_size::&lt;T&gt;);
+            (<span class="kw-2">*</span>p_dev_desc).strWidth = <span class="prelude-val">Some</span>(device_driver_text_width::&lt;T&gt;);
+            (<span class="kw-2">*</span>p_dev_desc).text = <span class="prelude-val">Some</span>(device_driver_text::&lt;T&gt;);
+            (<span class="kw-2">*</span>p_dev_desc).onExit = <span class="prelude-val">Some</span>(device_driver_on_exit::&lt;T&gt;);
 
-            <span class="comment">// This is no longer used and exists only for backward-compatibility</span>
-            <span class="comment">// of the structure.</span>
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">getEvent</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+            <span class="comment">// This is no longer used and exists only for backward-compatibility
+            // of the structure.
+            </span>(<span class="kw-2">*</span>p_dev_desc).getEvent = <span class="prelude-val">None</span>;
 
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">newFrameConfirm</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_new_frame_confirm</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
+            (<span class="kw-2">*</span>p_dev_desc).newFrameConfirm = <span class="prelude-val">Some</span>(device_driver_new_frame_confirm::&lt;T&gt;);
 
-            <span class="comment">// UTF-8 support</span>
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">hasTextUTF8</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::ACCEPT_UTF8_TEXT</span> { <span class="number">1</span> } <span class="kw">else</span> { <span class="number">0</span> };
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">textUTF8</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::ACCEPT_UTF8_TEXT</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">device_driver_text</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>)
-            } <span class="kw">else</span> {
-                <span class="prelude-val">None</span>
-            };
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">strWidthUTF8</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::ACCEPT_UTF8_TEXT</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">device_driver_text_width</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>)
-            } <span class="kw">else</span> {
-                <span class="prelude-val">None</span>
-            };
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">wantSymbolUTF8</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::ACCEPT_UTF8_TEXT</span> { <span class="number">1</span> } <span class="kw">else</span> { <span class="number">0</span> };
+            <span class="comment">// UTF-8 support
+            </span>(<span class="kw-2">*</span>p_dev_desc).hasTextUTF8 = <span class="kw">if </span>&lt;T&gt;::ACCEPT_UTF8_TEXT { <span class="number">1 </span>} <span class="kw">else </span>{ <span class="number">0 </span>};
+            (<span class="kw-2">*</span>p_dev_desc).textUTF8 = <span class="kw">if </span>&lt;T&gt;::ACCEPT_UTF8_TEXT {
+                <span class="prelude-val">Some</span>(device_driver_text::&lt;T&gt;)
+            } <span class="kw">else </span>{
+                <span class="prelude-val">None
+            </span>};
+            (<span class="kw-2">*</span>p_dev_desc).strWidthUTF8 = <span class="kw">if </span>&lt;T&gt;::ACCEPT_UTF8_TEXT {
+                <span class="prelude-val">Some</span>(device_driver_text_width::&lt;T&gt;)
+            } <span class="kw">else </span>{
+                <span class="prelude-val">None
+            </span>};
+            (<span class="kw-2">*</span>p_dev_desc).wantSymbolUTF8 = <span class="kw">if </span>&lt;T&gt;::ACCEPT_UTF8_TEXT { <span class="number">1 </span>} <span class="kw">else </span>{ <span class="number">0 </span>};
 
-            <span class="comment">// R internals says:</span>
-            <span class="comment">//</span>
-            <span class="comment">//     Some devices can produce high-quality rotated text, but those based on</span>
-            <span class="comment">//     bitmaps often cannot. Those which can should set useRotatedTextInContour</span>
-            <span class="comment">//     to be true from graphics API version 4.</span>
-            <span class="comment">//</span>
-            <span class="comment">// It seems this is used only by plot3d, so FALSE should be appropriate in</span>
-            <span class="comment">// most of the cases.</span>
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">useRotatedTextInContour</span> <span class="op">=</span> <span class="number">0</span>;
+            <span class="comment">// R internals says:
+            //
+            //     Some devices can produce high-quality rotated text, but those based on
+            //     bitmaps often cannot. Those which can should set useRotatedTextInContour
+            //     to be true from graphics API version 4.
+            //
+            // It seems this is used only by plot3d, so FALSE should be appropriate in
+            // most of the cases.
+            </span>(<span class="kw-2">*</span>p_dev_desc).useRotatedTextInContour = <span class="number">0</span>;
 
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">eventEnv</span> <span class="op">=</span> <span class="ident">empty_env</span>().<span class="ident">get</span>();
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">eventHelper</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_eventHelper</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
+            (<span class="kw-2">*</span>p_dev_desc).eventEnv = empty_env().get();
+            (<span class="kw-2">*</span>p_dev_desc).eventHelper = <span class="prelude-val">Some</span>(device_driver_eventHelper::&lt;T&gt;);
 
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">holdflush</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_holdflush</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
+            (<span class="kw-2">*</span>p_dev_desc).holdflush = <span class="prelude-val">Some</span>(device_driver_holdflush::&lt;T&gt;);
 
-            <span class="comment">// TODO: implement capability properly.</span>
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">haveTransparency</span> <span class="op">=</span> <span class="ident">DevCapTransparency::Yes</span> <span class="kw">as</span> <span class="kw">_</span>;
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">haveTransparentBg</span> <span class="op">=</span> <span class="ident">DevCapTransparentBg::Fully</span> <span class="kw">as</span> <span class="kw">_</span>;
+            <span class="comment">// TODO: implement capability properly.
+            </span>(<span class="kw-2">*</span>p_dev_desc).haveTransparency = DevCapTransparency::Yes <span class="kw">as _</span>;
+            (<span class="kw-2">*</span>p_dev_desc).haveTransparentBg = DevCapTransparentBg::Fully <span class="kw">as _</span>;
 
-            <span class="comment">// There might be some cases where we want to use `Unset` or</span>
-            <span class="comment">// `ExceptForMissingValues`, but, for the sake of simplicity, we</span>
-            <span class="comment">// only use yes or no. Let&#39;s revisit here when necessary.</span>
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">haveRaster</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::USE_RASTER</span> {
-                <span class="ident">DevCapRaster::Yes</span> <span class="kw">as</span> <span class="kw">_</span>
-            } <span class="kw">else</span> {
-                <span class="ident">DevCapRaster::No</span> <span class="kw">as</span> <span class="kw">_</span>
-            };
+            <span class="comment">// There might be some cases where we want to use `Unset` or
+            // `ExceptForMissingValues`, but, for the sake of simplicity, we
+            // only use yes or no. Let&#39;s revisit here when necessary.
+            </span>(<span class="kw-2">*</span>p_dev_desc).haveRaster = <span class="kw">if </span>&lt;T&gt;::USE_RASTER {
+                DevCapRaster::Yes <span class="kw">as _
+            </span>} <span class="kw">else </span>{
+                DevCapRaster::No <span class="kw">as _
+            </span>};
 
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">haveCapture</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::USE_CAPTURE</span> {
-                <span class="ident">DevCapCapture::Yes</span> <span class="kw">as</span> <span class="kw">_</span>
-            } <span class="kw">else</span> {
-                <span class="ident">DevCapCapture::No</span> <span class="kw">as</span> <span class="kw">_</span>
-            };
+            (<span class="kw-2">*</span>p_dev_desc).haveCapture = <span class="kw">if </span>&lt;T&gt;::USE_CAPTURE {
+                DevCapCapture::Yes <span class="kw">as _
+            </span>} <span class="kw">else </span>{
+                DevCapCapture::No <span class="kw">as _
+            </span>};
 
-            (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">haveLocator</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::USE_LOCATOR</span> {
-                <span class="ident">DevCapLocator::Yes</span> <span class="kw">as</span> <span class="kw">_</span>
-            } <span class="kw">else</span> {
-                <span class="ident">DevCapLocator::No</span> <span class="kw">as</span> <span class="kw">_</span>
-            };
+            (<span class="kw-2">*</span>p_dev_desc).haveLocator = <span class="kw">if </span>&lt;T&gt;::USE_LOCATOR {
+                DevCapLocator::Yes <span class="kw">as _
+            </span>} <span class="kw">else </span>{
+                DevCapLocator::No <span class="kw">as _
+            </span>};
 
-            <span class="comment">// NOTE: Unlike the features that will be added in  Graphics API</span>
-            <span class="comment">// version 15 (i.e. R 4.2), the features in API v13 &amp; v14 (i.e. R</span>
-            <span class="comment">// 4.1) are not optional. We need to provide the placeholder</span>
-            <span class="comment">// functions for it.</span>
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">use_r_ge_version_14</span>)]</span>
-            {
-                (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">setPattern</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_setPattern</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
-                (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">releasePattern</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_releasePattern</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
+            <span class="comment">// NOTE: Unlike the features that will be added in  Graphics API
+            // version 15 (i.e. R 4.2), the features in API v13 &amp; v14 (i.e. R
+            // 4.1) are not optional. We need to provide the placeholder
+            // functions for it.
+            </span><span class="attribute">#[cfg(use_r_ge_version_14)]
+            </span>{
+                (<span class="kw-2">*</span>p_dev_desc).setPattern = <span class="prelude-val">Some</span>(device_driver_setPattern::&lt;T&gt;);
+                (<span class="kw-2">*</span>p_dev_desc).releasePattern = <span class="prelude-val">Some</span>(device_driver_releasePattern::&lt;T&gt;);
 
-                (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">setClipPath</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_setClipPath</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
-                (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">releaseClipPath</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_releaseClipPath</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
+                (<span class="kw-2">*</span>p_dev_desc).setClipPath = <span class="prelude-val">Some</span>(device_driver_setClipPath::&lt;T&gt;);
+                (<span class="kw-2">*</span>p_dev_desc).releaseClipPath = <span class="prelude-val">Some</span>(device_driver_releaseClipPath::&lt;T&gt;);
 
-                (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">setMask</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_setMask</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
-                (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">releaseMask</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">device_driver_releaseMask</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
+                (<span class="kw-2">*</span>p_dev_desc).setMask = <span class="prelude-val">Some</span>(device_driver_setMask::&lt;T&gt;);
+                (<span class="kw-2">*</span>p_dev_desc).releaseMask = <span class="prelude-val">Some</span>(device_driver_releaseMask::&lt;T&gt;);
 
-                (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">deviceVersion</span> <span class="op">=</span> <span class="ident">R_GE_definitions</span> <span class="kw">as</span> <span class="kw">_</span>;
+                (<span class="kw-2">*</span>p_dev_desc).deviceVersion = R_GE_definitions <span class="kw">as _</span>;
 
-                (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">deviceClip</span> <span class="op">=</span> <span class="kw">match</span> <span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="ident">::CLIPPING_STRATEGY</span> {
-                    <span class="ident">ClippingStrategy::Device</span> =&gt; <span class="number">1</span>,
-                    <span class="kw">_</span> =&gt; <span class="number">0</span>,
+                (<span class="kw-2">*</span>p_dev_desc).deviceClip = <span class="kw">match </span>&lt;T&gt;::CLIPPING_STRATEGY {
+                    ClippingStrategy::Device =&gt; <span class="number">1</span>,
+                    <span class="kw">_ </span>=&gt; <span class="number">0</span>,
                 };
             }
 
-            <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">use_r_ge_version_15</span>)]</span>
-            {
-                (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">defineGroup</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-                (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">useGroup</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-                (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">releaseGroup</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+            <span class="attribute">#[cfg(use_r_ge_version_15)]
+            </span>{
+                (<span class="kw-2">*</span>p_dev_desc).defineGroup = <span class="prelude-val">None</span>;
+                (<span class="kw-2">*</span>p_dev_desc).useGroup = <span class="prelude-val">None</span>;
+                (<span class="kw-2">*</span>p_dev_desc).releaseGroup = <span class="prelude-val">None</span>;
 
-                (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">stroke</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-                (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">fill</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-                (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">fillStroke</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+                (<span class="kw-2">*</span>p_dev_desc).stroke = <span class="prelude-val">None</span>;
+                (<span class="kw-2">*</span>p_dev_desc).fill = <span class="prelude-val">None</span>;
+                (<span class="kw-2">*</span>p_dev_desc).fillStroke = <span class="prelude-val">None</span>;
 
-                (<span class="kw-2">*</span><span class="ident">p_dev_desc</span>).<span class="ident">capabilities</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+                (<span class="kw-2">*</span>p_dev_desc).capabilities = <span class="prelude-val">None</span>;
             }
-        } <span class="comment">// unsafe ends here</span>
+        } <span class="comment">// unsafe ends here
 
-        <span class="kw">let</span> <span class="ident">device_name</span> <span class="op">=</span> <span class="ident">CString::new</span>(<span class="ident">device_name</span>).<span class="ident">unwrap</span>();
+        </span><span class="kw">let </span>device_name = CString::new(device_name).unwrap();
 
-        <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">device</span> <span class="op">=</span> <span class="ident">GEcreateDevDesc</span>(<span class="ident">p_dev_desc</span>);
+        single_threaded(|| <span class="kw">unsafe </span>{
+            <span class="kw">let </span>device = GEcreateDevDesc(p_dev_desc);
 
-            <span class="comment">// NOTE: Some graphic device use `GEaddDevice2f()`, a version of</span>
-            <span class="comment">// `GEaddDevice2()` with a filename, instead, but `GEaddDevice2()`</span>
-            <span class="comment">// should be appropriate for general purposes.</span>
-            <span class="ident">GEaddDevice2</span>(<span class="ident">device</span>, <span class="ident">device_name</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">i8</span>);
-            <span class="ident">GEinitDisplayList</span>(<span class="ident">device</span>);
+            <span class="comment">// NOTE: Some graphic device use `GEaddDevice2f()`, a version of
+            // `GEaddDevice2()` with a filename, instead, but `GEaddDevice2()`
+            // should be appropriate for general purposes.
+            </span>GEaddDevice2(device, device_name.as_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>i8);
+            GEinitDisplayList(device);
 
-            <span class="ident">Device</span> { <span class="ident">inner</span>: <span class="ident">device</span> }
+            Device { inner: device }
         })
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

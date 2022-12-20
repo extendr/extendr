@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-engine/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../extendr_engine/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../extendr_engine/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../extendr_engine/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-engine/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../extendr_engine/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -78,85 +78,85 @@
 <span id="78">78</span>
 <span id="79">79</span>
 <span id="80">80</span>
-</pre><pre class="rust"><code><span class="doccomment">//! A sigleton instance of the R interpreter.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Only call this from main() if you want to run stand-alone.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Its principal use is for testing.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! See &lt;https://github.com/wch/r-source/blob/trunk/src/unix/Rembedded.c&gt;</span>
+</pre><pre class="rust"><code><span class="doccomment">//! A sigleton instance of the R interpreter.
+//!
+//! Only call this from main() if you want to run stand-alone.
+//!
+//! Its principal use is for testing.
+//!
+//! See &lt;https://github.com/wch/r-source/blob/trunk/src/unix/Rembedded.c&gt;
 
-<span class="kw">use</span> <span class="ident">libR_sys</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">std::os::raw</span>;
-<span class="kw">use</span> <span class="ident">std::sync::Once</span>;
+</span><span class="kw">use </span>libR_sys::<span class="kw-2">*</span>;
+<span class="kw">use </span>std::os::raw;
+<span class="kw">use </span>std::sync::Once;
 
-<span class="comment">// Generate mutable static strings.</span>
-<span class="comment">// Much more efficient than CString.</span>
-<span class="comment">// Generates asciiz.</span>
-<span class="macro">macro_rules!</span> <span class="ident">cstr_mut</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">s</span>: <span class="ident">expr</span>) =&gt; {
-        <span class="macro">concat!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">s</span>, <span class="string">&quot;\0&quot;</span>).<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">raw::c_char</span>
+<span class="comment">// Generate mutable static strings.
+// Much more efficient than CString.
+// Generates asciiz.
+</span><span class="macro">macro_rules! </span>cstr_mut {
+    (<span class="macro-nonterminal">$s</span>: expr) =&gt; {
+        <span class="macro">concat!</span>(<span class="macro-nonterminal">$s</span>, <span class="string">&quot;\0&quot;</span>).as_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>raw::c_char
     };
 }
 
-<span class="kw">static</span> <span class="ident">START_R</span>: <span class="ident">Once</span> <span class="op">=</span> <span class="ident">Once::new</span>();
+<span class="kw">static </span>START_R: Once = Once::new();
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">start_r</span>() {
-    <span class="ident">START_R</span>.<span class="ident">call_once</span>(<span class="op">|</span><span class="op">|</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">if</span> <span class="ident">std::env::var</span>(<span class="string">&quot;R_HOME&quot;</span>).<span class="ident">is_err</span>() {
-                <span class="comment">// env! gets the build-time R_HOME stored by libR-sys</span>
-                <span class="ident">std::env::set_var</span>(<span class="string">&quot;R_HOME&quot;</span>, <span class="macro">env!</span>(<span class="string">&quot;R_HOME&quot;</span>));
+<span class="kw">pub fn </span>start_r() {
+    START_R.call_once(|| {
+        <span class="kw">unsafe </span>{
+            <span class="kw">if </span>std::env::var(<span class="string">&quot;R_HOME&quot;</span>).is_err() {
+                <span class="comment">// env! gets the build-time R_HOME stored by libR-sys
+                </span>std::env::set_var(<span class="string">&quot;R_HOME&quot;</span>, <span class="macro">env!</span>(<span class="string">&quot;R_HOME&quot;</span>));
             }
 
-            <span class="comment">// Due to Rf_initEmbeddedR using __libc_stack_end</span>
-            <span class="comment">// We can&#39;t call Rf_initEmbeddedR.</span>
-            <span class="comment">// Instead we must follow rustr&#39;s example and call the parts.</span>
+            <span class="comment">// Due to Rf_initEmbeddedR using __libc_stack_end
+            // We can&#39;t call Rf_initEmbeddedR.
+            // Instead we must follow rustr&#39;s example and call the parts.
 
-            <span class="comment">//let res = unsafe { Rf_initEmbeddedR(1, args.as_mut_ptr()) };</span>
-            <span class="comment">// NOTE: R will crash if this is called twice in the same process.</span>
-            <span class="ident">Rf_initialize_R</span>(
+            //let res = unsafe { Rf_initEmbeddedR(1, args.as_mut_ptr()) };
+            // NOTE: R will crash if this is called twice in the same process.
+            </span>Rf_initialize_R(
                 <span class="number">3</span>,
-                [<span class="macro">cstr_mut!</span>(<span class="string">&quot;R&quot;</span>), <span class="macro">cstr_mut!</span>(<span class="string">&quot;--slave&quot;</span>), <span class="macro">cstr_mut!</span>(<span class="string">&quot;--no-save&quot;</span>)].<span class="ident">as_mut_ptr</span>(),
+                [<span class="macro">cstr_mut!</span>(<span class="string">&quot;R&quot;</span>), <span class="macro">cstr_mut!</span>(<span class="string">&quot;--slave&quot;</span>), <span class="macro">cstr_mut!</span>(<span class="string">&quot;--no-save&quot;</span>)].as_mut_ptr(),
             );
 
-            <span class="comment">// In case you are curious.</span>
-            <span class="comment">// Maybe 8MB is a bit small.</span>
-            <span class="comment">// eprintln!(&quot;R_CStackLimit={:016x}&quot;, R_CStackLimit);</span>
-            <span class="ident">R_CStackLimit</span> <span class="op">=</span> <span class="ident">usize::MAX</span>;
+            <span class="comment">// In case you are curious.
+            // Maybe 8MB is a bit small.
+            // eprintln!(&quot;R_CStackLimit={:016x}&quot;, R_CStackLimit);
+            </span>R_CStackLimit = usize::MAX;
 
-            <span class="ident">setup_Rmainloop</span>();
+            setup_Rmainloop();
         }
     });
 }
 
-<span class="doccomment">/// Close down the R interpreter. Note you won&#39;t be able to</span>
-<span class="doccomment">/// Restart it, so use with care or not at all.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">end_r</span>() {
-    <span class="kw">unsafe</span> {
-        <span class="comment">//Rf_endEmbeddedR(0);</span>
-        <span class="ident">R_RunExitFinalizers</span>();
-        <span class="comment">//CleanEd();</span>
-        <span class="ident">R_CleanTempDir</span>();
+<span class="doccomment">/// Close down the R interpreter. Note you won&#39;t be able to
+/// Restart it, so use with care or not at all.
+</span><span class="kw">pub fn </span>end_r() {
+    <span class="kw">unsafe </span>{
+        <span class="comment">//Rf_endEmbeddedR(0);
+        </span>R_RunExitFinalizers();
+        <span class="comment">//CleanEd();
+        </span>R_CleanTempDir();
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_engine</span>() {
-        <span class="comment">// If this is the first call, it should wake up the interpreter.</span>
-        <span class="ident">start_r</span>();
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>test_engine() {
+        <span class="comment">// If this is the first call, it should wake up the interpreter.
+        </span>start_r();
 
-        <span class="comment">// This should do nothing.</span>
-        <span class="ident">start_r</span>();
+        <span class="comment">// This should do nothing.
+        </span>start_r();
 
-        <span class="comment">// Ending the interpreter is bad if we are running multiple threads.</span>
-        <span class="comment">// So avoid doing this in tests.</span>
-        <span class="comment">//end_r();</span>
-    }
+        <span class="comment">// Ending the interpreter is bad if we are running multiple threads.
+        // So avoid doing this in tests.
+        //end_r();
+    </span>}
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_engine" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_engine" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

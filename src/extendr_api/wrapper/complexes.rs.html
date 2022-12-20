@@ -1,6 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/complexes.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>complexes.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container">
-                    <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../extendr_api/index.html">
-                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/complexes.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>complexes.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../extendr_api/index.html">
+                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -70,75 +69,75 @@
 <span id="68">68</span>
 <span id="69">69</span>
 <span id="70">70</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">super</span>::scalar</span>::{<span class="ident">c64</span>, <span class="ident">Rcplx</span>};
-<span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">std::iter::FromIterator</span>;
+</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::scalar::{c64, Rcplx};
+<span class="kw">use super</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>std::iter::FromIterator;
 
-<span class="doccomment">/// An obscure `NA`-aware wrapper for R&#39;s complex vectors.</span>
-<span class="doccomment">/// Can be used to iterate over vectors obtained from R</span>
-<span class="doccomment">/// or to create new vectors that can be returned back to R.</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use extendr_api::prelude::*;</span>
-<span class="doccomment">/// test! {</span>
-<span class="doccomment">///     let mut vec = (0..5).map(|i| (i as f64).into()).collect::&lt;Complexes&gt;();</span>
-<span class="doccomment">///     assert_eq!(vec.len(), 5);</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```  </span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Complexes</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">robj</span>: <span class="ident">Robj</span>,
+<span class="doccomment">/// An obscure `NA`-aware wrapper for R&#39;s complex vectors.
+/// Can be used to iterate over vectors obtained from R
+/// or to create new vectors that can be returned back to R.
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     let mut vec = (0..5).map(|i| (i as f64).into()).collect::&lt;Complexes&gt;();
+///     assert_eq!(vec.len(), 5);
+/// }
+/// ```  
+</span><span class="attribute">#[derive(Debug, PartialEq, Clone)]
+</span><span class="kw">pub struct </span>Complexes {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) robj: Robj,
 }
 
 <span class="macro">crate::wrapper::macros::gen_vector_wrapper_impl!</span>(
-    <span class="ident">vector_type</span>: <span class="ident">Complexes</span>,
-    <span class="ident">scalar_type</span>: <span class="ident">Rcplx</span>,
-    <span class="ident">primitive_type</span>: <span class="ident">c64</span>,
-    <span class="ident">r_prefix</span>: <span class="ident">COMPLEX</span>,
-    <span class="ident">SEXP</span>: <span class="ident">CPLXSXP</span>,
-    <span class="ident">doc_name</span>: <span class="ident">complex</span>,
-    <span class="ident">altrep_constructor</span>: <span class="ident">make_altcomplex_from_iterator</span>,
+    vector_type: Complexes,
+    scalar_type: Rcplx,
+    primitive_type: c64,
+    r_prefix: COMPLEX,
+    SEXP: CPLXSXP,
+    doc_name: complex,
+    altrep_constructor: make_altcomplex_from_iterator,
 );
 
-<span class="kw">impl</span> <span class="ident">Complexes</span> {
-    <span class="doccomment">/// Get a region of elements from the vector.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">dest</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">Rcplx</span>]) -&gt; <span class="ident">usize</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">ptr</span>: <span class="kw-2">*mut</span> <span class="ident">Rcomplex</span> <span class="op">=</span> <span class="ident">dest</span>.<span class="ident">as_mut_ptr</span>() <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">Rcomplex</span>;
-            <span class="ident">COMPLEX_GET_REGION</span>(<span class="self">self</span>.<span class="ident">get</span>(), <span class="ident">index</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">dest</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">ptr</span>) <span class="kw">as</span> <span class="ident">usize</span>
+<span class="kw">impl </span>Complexes {
+    <span class="doccomment">/// Get a region of elements from the vector.
+    </span><span class="kw">pub fn </span>get_region(<span class="kw-2">&amp;</span><span class="self">self</span>, index: usize, dest: <span class="kw-2">&amp;mut </span>[Rcplx]) -&gt; usize {
+        <span class="kw">unsafe </span>{
+            <span class="kw">let </span>ptr: <span class="kw-2">*mut </span>Rcomplex = dest.as_mut_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>Rcomplex;
+            COMPLEX_GET_REGION(<span class="self">self</span>.get(), index <span class="kw">as </span>R_xlen_t, dest.len() <span class="kw">as </span>R_xlen_t, ptr) <span class="kw">as </span>usize
         }
     }
 }
 
-<span class="comment">// There is no SET_COMPLEX_ELT</span>
-<span class="comment">//</span>
-<span class="comment">// impl Complexes {</span>
-<span class="comment">//     pub fn set_elt(&amp;mut self, index: usize, val: Rcplx) {</span>
-<span class="comment">//         unsafe {</span>
-<span class="comment">//             SET_COMPLEX_ELT(self.get(), index as R_xlen_t, val.inner());</span>
-<span class="comment">//         }</span>
-<span class="comment">//     }</span>
-<span class="comment">// }</span>
+<span class="comment">// There is no SET_COMPLEX_ELT
+//
+// impl Complexes {
+//     pub fn set_elt(&amp;mut self, index: usize, val: Rcplx) {
+//         unsafe {
+//             SET_COMPLEX_ELT(self.get(), index as R_xlen_t, val.inner());
+//         }
+//     }
+// }
 
-<span class="kw">impl</span> <span class="ident">Deref</span> <span class="kw">for</span> <span class="ident">Complexes</span> {
-    <span class="kw">type</span> <span class="ident">Target</span> <span class="op">=</span> [<span class="ident">Rcplx</span>];
+</span><span class="kw">impl </span>Deref <span class="kw">for </span>Complexes {
+    <span class="kw">type </span>Target = [Rcplx];
 
-    <span class="doccomment">/// Treat Complexes as if it is a slice, like Vec&lt;Rcplx&gt;</span>
-    <span class="kw">fn</span> <span class="ident">deref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::Target</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">DATAPTR_RO</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">Rcplx</span>;
-            <span class="ident">std::slice::from_raw_parts</span>(<span class="ident">ptr</span>, <span class="self">self</span>.<span class="ident">len</span>())
+    <span class="doccomment">/// Treat Complexes as if it is a slice, like Vec&lt;Rcplx&gt;
+    </span><span class="kw">fn </span>deref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Target {
+        <span class="kw">unsafe </span>{
+            <span class="kw">let </span>ptr = DATAPTR_RO(<span class="self">self</span>.get()) <span class="kw">as </span><span class="kw-2">*const </span>Rcplx;
+            std::slice::from_raw_parts(ptr, <span class="self">self</span>.len())
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">DerefMut</span> <span class="kw">for</span> <span class="ident">Complexes</span> {
-    <span class="doccomment">/// Treat Complexes as if it is a mutable slice, like Vec&lt;Rcplx&gt;</span>
-    <span class="kw">fn</span> <span class="ident">deref_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="ident"><span class="self">Self</span>::Target</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">DATAPTR</span>(<span class="self">self</span>.<span class="ident">get</span>()) <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">Rcplx</span>;
-            <span class="ident">std::slice::from_raw_parts_mut</span>(<span class="ident">ptr</span>, <span class="self">self</span>.<span class="ident">len</span>())
+<span class="kw">impl </span>DerefMut <span class="kw">for </span>Complexes {
+    <span class="doccomment">/// Treat Complexes as if it is a mutable slice, like Vec&lt;Rcplx&gt;
+    </span><span class="kw">fn </span>deref_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Target {
+        <span class="kw">unsafe </span>{
+            <span class="kw">let </span>ptr = DATAPTR(<span class="self">self</span>.get()) <span class="kw">as </span><span class="kw-2">*mut </span>Rcplx;
+            std::slice::from_raw_parts_mut(ptr, <span class="self">self</span>.len())
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

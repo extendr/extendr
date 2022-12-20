@@ -1,6 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/ownership.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>ownership.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../extendr_api/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../extendr_api/index.html"><div class="logo-container">
-                    <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../extendr_api/index.html">
-                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/ownership.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>ownership.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../extendr_api/index.html">
+                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -338,343 +337,343 @@
 <span id="336">336</span>
 <span id="337">337</span>
 <span id="338">338</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Maintain ownership of R objects.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! This provides the functions protect() and unprotect()</span>
-<span class="doccomment">//! A single preserved vector holds ownership of all protected objects.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Objects are reference counted, so multiple calls are possible,</span>
-<span class="doccomment">//! unlike R_PreserveObject.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! This module exports two functions, protect(sexp) and unprotect(sexp).</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Maintain ownership of R objects.
+//!
+//! This provides the functions protect() and unprotect()
+//! A single preserved vector holds ownership of all protected objects.
+//!
+//! Objects are reference counted, so multiple calls are possible,
+//! unlike R_PreserveObject.
+//!
+//! This module exports two functions, protect(sexp) and unprotect(sexp).
 
-<span class="kw">use</span> <span class="ident">lazy_static::lazy_static</span>;
-<span class="kw">use</span> <span class="ident">std::collections::hash_map</span>::{<span class="ident">Entry</span>, <span class="ident">HashMap</span>};
-<span class="kw">use</span> <span class="ident">std::sync::Mutex</span>;
+</span><span class="kw">use </span>lazy_static::lazy_static;
+<span class="kw">use </span>std::collections::hash_map::{Entry, HashMap};
+<span class="kw">use </span>std::sync::Mutex;
 
-<span class="kw">use</span> <span class="ident">libR_sys</span>::{
-    <span class="ident">R_NilValue</span>, <span class="ident">R_PreserveObject</span>, <span class="ident">R_ReleaseObject</span>, <span class="ident">R_xlen_t</span>, <span class="ident">Rf_allocVector</span>, <span class="ident">Rf_protect</span>,
-    <span class="ident">Rf_unprotect</span>, <span class="ident">LENGTH</span>, <span class="ident">SET_VECTOR_ELT</span>, <span class="ident">SEXP</span>, <span class="ident">VECSXP</span>, <span class="ident">VECTOR_ELT</span>,
+<span class="kw">use </span>libR_sys::{
+    R_NilValue, R_PreserveObject, R_ReleaseObject, R_xlen_t, Rf_allocVector, Rf_protect,
+    Rf_unprotect, LENGTH, SET_VECTOR_ELT, SEXP, VECSXP, VECTOR_ELT,
 };
 
-<span class="macro">lazy_static!</span> {
-    <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">OWNERSHIP</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Ownership</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Mutex::new</span>(<span class="ident">Ownership::new</span>());
+<span class="macro">lazy_static! </span>{
+    <span class="kw">static </span><span class="kw-2">ref </span>OWNERSHIP: Mutex&lt;Ownership&gt; = Mutex::new(Ownership::new());
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">protect</span>(<span class="ident">sexp</span>: <span class="ident">SEXP</span>) {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">own</span> <span class="op">=</span> <span class="ident">OWNERSHIP</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;protect failed&quot;</span>);
-    <span class="ident">own</span>.<span class="ident">protect</span>(<span class="ident">sexp</span>);
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe fn </span>protect(sexp: SEXP) {
+    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">&quot;protect failed&quot;</span>);
+    own.protect(sexp);
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">unprotect</span>(<span class="ident">sexp</span>: <span class="ident">SEXP</span>) {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">own</span> <span class="op">=</span> <span class="ident">OWNERSHIP</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;unprotect failed&quot;</span>);
-    <span class="ident">own</span>.<span class="ident">unprotect</span>(<span class="ident">sexp</span>);
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe fn </span>unprotect(sexp: SEXP) {
+    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">&quot;unprotect failed&quot;</span>);
+    own.unprotect(sexp);
 }
 
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">INITIAL_PRESERVATION_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">100000</span>;
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">EXTRA_PRESERVATION_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">100000</span>;
+<span class="kw">pub const </span>INITIAL_PRESERVATION_SIZE: usize = <span class="number">100000</span>;
+<span class="kw">pub const </span>EXTRA_PRESERVATION_SIZE: usize = <span class="number">100000</span>;
 
-<span class="kw">struct</span> <span class="ident">Object</span> {
-    <span class="ident">refcount</span>: <span class="ident">usize</span>,
-    <span class="ident">index</span>: <span class="ident">usize</span>,
+<span class="kw">struct </span>Object {
+    refcount: usize,
+    index: usize,
 }
 
-<span class="comment">// A reference counted object with an index in the preservation vector.</span>
-<span class="kw">struct</span> <span class="ident">Ownership</span> {
-    <span class="comment">// A growable vector containing all owned objects.</span>
-    <span class="ident">preservation</span>: <span class="ident">usize</span>,
+<span class="comment">// A reference counted object with an index in the preservation vector.
+</span><span class="kw">struct </span>Ownership {
+    <span class="comment">// A growable vector containing all owned objects.
+    </span>preservation: usize,
 
-    <span class="comment">// An incrementing count of objects through the vector.</span>
-    <span class="ident">cur_index</span>: <span class="ident">usize</span>,
+    <span class="comment">// An incrementing count of objects through the vector.
+    </span>cur_index: usize,
 
-    <span class="comment">// The size of the vector.</span>
-    <span class="ident">max_index</span>: <span class="ident">usize</span>,
+    <span class="comment">// The size of the vector.
+    </span>max_index: usize,
 
-    <span class="comment">// A hash map from SEXP address to object.</span>
-    <span class="ident">objects</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">Object</span><span class="op">&gt;</span>,
+    <span class="comment">// A hash map from SEXP address to object.
+    </span>objects: HashMap&lt;usize, Object&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">Ownership</span> {
-    <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">preservation</span> <span class="op">=</span> <span class="ident">Rf_allocVector</span>(<span class="ident">VECSXP</span>, <span class="ident">INITIAL_PRESERVATION_SIZE</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>);
-            <span class="ident">R_PreserveObject</span>(<span class="ident">preservation</span>);
-            <span class="ident">Ownership</span> {
-                <span class="ident">preservation</span>: <span class="ident">preservation</span> <span class="kw">as</span> <span class="ident">usize</span>,
-                <span class="ident">cur_index</span>: <span class="number">0</span>,
-                <span class="ident">max_index</span>: <span class="ident">INITIAL_PRESERVATION_SIZE</span>,
-                <span class="ident">objects</span>: <span class="ident">HashMap::with_capacity</span>(<span class="ident">INITIAL_PRESERVATION_SIZE</span>),
+<span class="kw">impl </span>Ownership {
+    <span class="kw">fn </span>new() -&gt; <span class="self">Self </span>{
+        <span class="kw">unsafe </span>{
+            <span class="kw">let </span>preservation = Rf_allocVector(VECSXP, INITIAL_PRESERVATION_SIZE <span class="kw">as </span>R_xlen_t);
+            R_PreserveObject(preservation);
+            Ownership {
+                preservation: preservation <span class="kw">as </span>usize,
+                cur_index: <span class="number">0</span>,
+                max_index: INITIAL_PRESERVATION_SIZE,
+                objects: HashMap::with_capacity(INITIAL_PRESERVATION_SIZE),
             }
         }
     }
 
-    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">protect</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">sexp</span>: <span class="ident">SEXP</span>) {
-        <span class="ident">Rf_protect</span>(<span class="ident">sexp</span>);
+    <span class="kw">unsafe fn </span>protect(<span class="kw-2">&amp;mut </span><span class="self">self</span>, sexp: SEXP) {
+        Rf_protect(sexp);
 
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">cur_index</span> <span class="op">==</span> <span class="self">self</span>.<span class="ident">max_index</span> {
-            <span class="self">self</span>.<span class="ident">garbage_collect</span>();
+        <span class="kw">if </span><span class="self">self</span>.cur_index == <span class="self">self</span>.max_index {
+            <span class="self">self</span>.garbage_collect();
         }
 
-        <span class="kw">let</span> <span class="ident">sexp_usize</span> <span class="op">=</span> <span class="ident">sexp</span> <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">let</span> <span class="ident">Ownership</span> {
-            <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">preservation</span>,
-            <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">cur_index</span>,
-            <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">max_index</span>,
-            <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">objects</span>,
-        } <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>;
+        <span class="kw">let </span>sexp_usize = sexp <span class="kw">as </span>usize;
+        <span class="kw">let </span>Ownership {
+            <span class="kw-2">ref mut </span>preservation,
+            <span class="kw-2">ref mut </span>cur_index,
+            <span class="kw-2">ref mut </span>max_index,
+            <span class="kw-2">ref mut </span>objects,
+        } = <span class="kw-2">*</span><span class="self">self</span>;
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">entry</span> <span class="op">=</span> <span class="ident">objects</span>.<span class="ident">entry</span>(<span class="ident">sexp_usize</span>);
-        <span class="kw">let</span> <span class="ident">preservation_sexp</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">preservation</span> <span class="kw">as</span> <span class="ident">SEXP</span>;
-        <span class="kw">match</span> <span class="ident">entry</span> {
-            <span class="ident">Entry::Occupied</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">occupied</span>) =&gt; {
-                <span class="kw">if</span> <span class="ident">occupied</span>.<span class="ident">get</span>().<span class="ident">refcount</span> <span class="op">==</span> <span class="number">0</span> {
-                    <span class="comment">// Address re-used - re-set the sexp.</span>
-                    <span class="ident">SET_VECTOR_ELT</span>(<span class="ident">preservation_sexp</span>, <span class="ident">occupied</span>.<span class="ident">get</span>().<span class="ident">index</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">sexp</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>entry = objects.entry(sexp_usize);
+        <span class="kw">let </span>preservation_sexp = <span class="kw-2">*</span>preservation <span class="kw">as </span>SEXP;
+        <span class="kw">match </span>entry {
+            Entry::Occupied(<span class="kw-2">ref mut </span>occupied) =&gt; {
+                <span class="kw">if </span>occupied.get().refcount == <span class="number">0 </span>{
+                    <span class="comment">// Address re-used - re-set the sexp.
+                    </span>SET_VECTOR_ELT(preservation_sexp, occupied.get().index <span class="kw">as </span>R_xlen_t, sexp);
                 }
-                <span class="ident">occupied</span>.<span class="ident">get_mut</span>().<span class="ident">refcount</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+                occupied.get_mut().refcount += <span class="number">1</span>;
             }
-            <span class="ident">Entry::Vacant</span>(<span class="ident">vacant</span>) =&gt; {
-                <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">cur_index</span>;
-                <span class="ident">SET_VECTOR_ELT</span>(<span class="ident">preservation_sexp</span>, <span class="ident">index</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">sexp</span>);
-                <span class="kw-2">*</span><span class="ident">cur_index</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-                <span class="macro">assert!</span>(<span class="ident">index</span> <span class="op">!</span><span class="op">=</span> <span class="kw-2">*</span><span class="ident">max_index</span>);
-                <span class="kw">let</span> <span class="ident">refcount</span> <span class="op">=</span> <span class="number">1</span>;
-                <span class="ident">vacant</span>.<span class="ident">insert</span>(<span class="ident">Object</span> { <span class="ident">refcount</span>, <span class="ident">index</span> });
+            Entry::Vacant(vacant) =&gt; {
+                <span class="kw">let </span>index = <span class="kw-2">*</span>cur_index;
+                SET_VECTOR_ELT(preservation_sexp, index <span class="kw">as </span>R_xlen_t, sexp);
+                <span class="kw-2">*</span>cur_index += <span class="number">1</span>;
+                <span class="macro">assert!</span>(index != <span class="kw-2">*</span>max_index);
+                <span class="kw">let </span>refcount = <span class="number">1</span>;
+                vacant.insert(Object { refcount, index });
             }
         }
 
-        <span class="ident">Rf_unprotect</span>(<span class="number">1</span>);
+        Rf_unprotect(<span class="number">1</span>);
     }
 
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">unprotect</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">sexp</span>: <span class="ident">SEXP</span>) {
-        <span class="kw">let</span> <span class="ident">sexp_usize</span> <span class="op">=</span> <span class="ident">sexp</span> <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">let</span> <span class="ident">Ownership</span> {
-            <span class="ident">preservation</span>,
-            <span class="ident">cur_index</span>: <span class="kw">_</span>,
-            <span class="ident">max_index</span>: <span class="kw">_</span>,
-            <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">objects</span>,
-        } <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>;
+    <span class="kw">pub unsafe fn </span>unprotect(<span class="kw-2">&amp;mut </span><span class="self">self</span>, sexp: SEXP) {
+        <span class="kw">let </span>sexp_usize = sexp <span class="kw">as </span>usize;
+        <span class="kw">let </span>Ownership {
+            preservation,
+            cur_index: <span class="kw">_</span>,
+            max_index: <span class="kw">_</span>,
+            <span class="kw-2">ref mut </span>objects,
+        } = <span class="kw-2">*</span><span class="self">self</span>;
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">entry</span> <span class="op">=</span> <span class="ident">objects</span>.<span class="ident">entry</span>(<span class="ident">sexp_usize</span>);
-        <span class="kw">match</span> <span class="ident">entry</span> {
-            <span class="ident">Entry::Occupied</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">occupied</span>) =&gt; {
-                <span class="kw">let</span> <span class="ident">object</span> <span class="op">=</span> <span class="ident">occupied</span>.<span class="ident">get_mut</span>();
-                <span class="kw">if</span> <span class="ident">object</span>.<span class="ident">refcount</span> <span class="op">==</span> <span class="number">0</span> {
+        <span class="kw">let </span><span class="kw-2">mut </span>entry = objects.entry(sexp_usize);
+        <span class="kw">match </span>entry {
+            Entry::Occupied(<span class="kw-2">ref mut </span>occupied) =&gt; {
+                <span class="kw">let </span>object = occupied.get_mut();
+                <span class="kw">if </span>object.refcount == <span class="number">0 </span>{
                     <span class="macro">panic!</span>(<span class="string">&quot;Attempt to unprotect an already unprotected object.&quot;</span>)
-                } <span class="kw">else</span> {
-                    <span class="ident">object</span>.<span class="ident">refcount</span> <span class="op">-</span><span class="op">=</span> <span class="number">1</span>;
-                    <span class="kw">if</span> <span class="ident">object</span>.<span class="ident">refcount</span> <span class="op">==</span> <span class="number">0</span> {
-                        <span class="comment">// Clear the preservation vector, but keep the hash table entry.</span>
-                        <span class="comment">// It is hard to clear the hash table entry here because we don&#39;t</span>
-                        <span class="comment">// have a ref to objects anymore and it is faster to clear them up en-masse.</span>
-                        <span class="kw">let</span> <span class="ident">preservation_sexp</span> <span class="op">=</span> <span class="ident">preservation</span> <span class="kw">as</span> <span class="ident">SEXP</span>;
-                        <span class="ident">SET_VECTOR_ELT</span>(<span class="ident">preservation_sexp</span>, <span class="ident">object</span>.<span class="ident">index</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">R_NilValue</span>);
+                } <span class="kw">else </span>{
+                    object.refcount -= <span class="number">1</span>;
+                    <span class="kw">if </span>object.refcount == <span class="number">0 </span>{
+                        <span class="comment">// Clear the preservation vector, but keep the hash table entry.
+                        // It is hard to clear the hash table entry here because we don&#39;t
+                        // have a ref to objects anymore and it is faster to clear them up en-masse.
+                        </span><span class="kw">let </span>preservation_sexp = preservation <span class="kw">as </span>SEXP;
+                        SET_VECTOR_ELT(preservation_sexp, object.index <span class="kw">as </span>R_xlen_t, R_NilValue);
                     }
                 }
             }
-            <span class="ident">Entry::Vacant</span>(<span class="kw">_</span>) =&gt; {
+            Entry::Vacant(<span class="kw">_</span>) =&gt; {
                 <span class="macro">panic!</span>(<span class="string">&quot;Attempt to unprotect a never protected object.&quot;</span>)
             }
         }
     }
 
-    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
-    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">ref_count</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">sexp</span>: <span class="ident">SEXP</span>) -&gt; <span class="ident">usize</span> {
-        <span class="kw">let</span> <span class="ident">Ownership</span> {
-            <span class="ident">preservation</span>: <span class="kw">_</span>,
-            <span class="ident">cur_index</span>: <span class="kw">_</span>,
-            <span class="ident">max_index</span>: <span class="kw">_</span>,
-            <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">objects</span>,
-        } <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>;
+    <span class="attribute">#[allow(dead_code)]
+    </span><span class="kw">unsafe fn </span>ref_count(<span class="kw-2">&amp;mut </span><span class="self">self</span>, sexp: SEXP) -&gt; usize {
+        <span class="kw">let </span>Ownership {
+            preservation: <span class="kw">_</span>,
+            cur_index: <span class="kw">_</span>,
+            max_index: <span class="kw">_</span>,
+            <span class="kw-2">ref mut </span>objects,
+        } = <span class="kw-2">*</span><span class="self">self</span>;
 
-        <span class="kw">let</span> <span class="ident">sexp_usize</span> <span class="op">=</span> <span class="ident">sexp</span> <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">entry</span> <span class="op">=</span> <span class="ident">objects</span>.<span class="ident">entry</span>(<span class="ident">sexp_usize</span>);
-        <span class="kw">match</span> <span class="ident">entry</span> {
-            <span class="ident">Entry::Occupied</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">occupied</span>) =&gt; <span class="ident">occupied</span>.<span class="ident">get</span>().<span class="ident">refcount</span>,
-            <span class="ident">Entry::Vacant</span>(<span class="kw">_</span>) =&gt; <span class="number">0</span>,
+        <span class="kw">let </span>sexp_usize = sexp <span class="kw">as </span>usize;
+        <span class="kw">let </span><span class="kw-2">mut </span>entry = objects.entry(sexp_usize);
+        <span class="kw">match </span>entry {
+            Entry::Occupied(<span class="kw-2">ref mut </span>occupied) =&gt; occupied.get().refcount,
+            Entry::Vacant(<span class="kw">_</span>) =&gt; <span class="number">0</span>,
         }
     }
 
-    <span class="comment">// Garbage collect the tracking structures.</span>
-    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">garbage_collect</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="comment">// println!(&quot;garbage_collect {} {}&quot;, self.cur_index, self.max_index);</span>
-        <span class="kw">let</span> <span class="ident">new_size</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">cur_index</span> <span class="op">*</span> <span class="number">2</span> <span class="op">+</span> <span class="ident">EXTRA_PRESERVATION_SIZE</span>;
-        <span class="kw">let</span> <span class="ident">new_sexp</span> <span class="op">=</span> <span class="ident">Rf_allocVector</span>(<span class="ident">VECSXP</span>, <span class="ident">new_size</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>);
-        <span class="ident">R_PreserveObject</span>(<span class="ident">new_sexp</span>);
-        <span class="kw">let</span> <span class="ident">old_sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">preservation</span> <span class="kw">as</span> <span class="ident">SEXP</span>;
+    <span class="comment">// Garbage collect the tracking structures.
+    </span><span class="kw">unsafe fn </span>garbage_collect(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="comment">// println!(&quot;garbage_collect {} {}&quot;, self.cur_index, self.max_index);
+        </span><span class="kw">let </span>new_size = <span class="self">self</span>.cur_index * <span class="number">2 </span>+ EXTRA_PRESERVATION_SIZE;
+        <span class="kw">let </span>new_sexp = Rf_allocVector(VECSXP, new_size <span class="kw">as </span>R_xlen_t);
+        R_PreserveObject(new_sexp);
+        <span class="kw">let </span>old_sexp = <span class="self">self</span>.preservation <span class="kw">as </span>SEXP;
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new_objects</span> <span class="op">=</span> <span class="ident">HashMap::with_capacity</span>(<span class="ident">new_size</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>new_objects = HashMap::with_capacity(new_size);
 
-        <span class="comment">// copy non-null elements to new vector and hashmap.</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">j</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">for</span> (<span class="ident">addr</span>, <span class="ident">object</span>) <span class="kw">in</span> <span class="self">self</span>.<span class="ident">objects</span>.<span class="ident">iter</span>() {
-            <span class="kw">if</span> <span class="ident">object</span>.<span class="ident">refcount</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-                <span class="ident">SET_VECTOR_ELT</span>(<span class="ident">new_sexp</span>, <span class="ident">j</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="kw-2">*</span><span class="ident">addr</span> <span class="kw">as</span> <span class="ident">SEXP</span>);
-                <span class="ident">new_objects</span>.<span class="ident">insert</span>(
-                    <span class="kw-2">*</span><span class="ident">addr</span>,
-                    <span class="ident">Object</span> {
-                        <span class="ident">refcount</span>: <span class="ident">object</span>.<span class="ident">refcount</span>,
-                        <span class="ident">index</span>: <span class="ident">j</span>,
+        <span class="comment">// copy non-null elements to new vector and hashmap.
+        </span><span class="kw">let </span><span class="kw-2">mut </span>j = <span class="number">0</span>;
+        <span class="kw">for </span>(addr, object) <span class="kw">in </span><span class="self">self</span>.objects.iter() {
+            <span class="kw">if </span>object.refcount != <span class="number">0 </span>{
+                SET_VECTOR_ELT(new_sexp, j <span class="kw">as </span>R_xlen_t, <span class="kw-2">*</span>addr <span class="kw">as </span>SEXP);
+                new_objects.insert(
+                    <span class="kw-2">*</span>addr,
+                    Object {
+                        refcount: object.refcount,
+                        index: j,
                     },
                 );
-                <span class="ident">j</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+                j += <span class="number">1</span>;
             }
         }
-        <span class="comment">// println!(&quot;j={}&quot;, j);</span>
+        <span class="comment">// println!(&quot;j={}&quot;, j);
 
-        <span class="ident">R_ReleaseObject</span>(<span class="ident">old_sexp</span>);
-        <span class="self">self</span>.<span class="ident">preservation</span> <span class="op">=</span> <span class="ident">new_sexp</span> <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="self">self</span>.<span class="ident">cur_index</span> <span class="op">=</span> <span class="ident">j</span>;
-        <span class="self">self</span>.<span class="ident">max_index</span> <span class="op">=</span> <span class="ident">new_size</span>;
-        <span class="self">self</span>.<span class="ident">objects</span> <span class="op">=</span> <span class="ident">new_objects</span>;
+        </span>R_ReleaseObject(old_sexp);
+        <span class="self">self</span>.preservation = new_sexp <span class="kw">as </span>usize;
+        <span class="self">self</span>.cur_index = j;
+        <span class="self">self</span>.max_index = new_size;
+        <span class="self">self</span>.objects = new_objects;
     }
 
-    <span class="comment">// Check the consistency of the model.</span>
-    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
-    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">check_objects</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
-        <span class="kw">let</span> <span class="ident">preservation_sexp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">preservation</span> <span class="kw">as</span> <span class="ident">SEXP</span>;
-        <span class="macro">assert_eq!</span>(<span class="self">self</span>.<span class="ident">max_index</span>, <span class="ident">LENGTH</span>(<span class="ident">preservation_sexp</span>) <span class="kw">as</span> <span class="ident">usize</span>);
+    <span class="comment">// Check the consistency of the model.
+    </span><span class="attribute">#[allow(dead_code)]
+    </span><span class="kw">unsafe fn </span>check_objects(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="kw">let </span>preservation_sexp = <span class="self">self</span>.preservation <span class="kw">as </span>SEXP;
+        <span class="macro">assert_eq!</span>(<span class="self">self</span>.max_index, LENGTH(preservation_sexp) <span class="kw">as </span>usize);
 
-        <span class="comment">// println!(&quot;\ncheck&quot;);</span>
+        <span class="comment">// println!(&quot;\ncheck&quot;);
 
-        <span class="kw">for</span> (<span class="ident">addr</span>, <span class="ident">object</span>) <span class="kw">in</span> <span class="self">self</span>.<span class="ident">objects</span>.<span class="ident">iter</span>() {
-            <span class="macro">assert!</span>(<span class="ident">object</span>.<span class="ident">index</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">max_index</span>);
-            <span class="kw">let</span> <span class="ident">elt</span> <span class="op">=</span> <span class="ident">VECTOR_ELT</span>(<span class="ident">preservation_sexp</span>, <span class="ident">object</span>.<span class="ident">index</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>);
-            <span class="comment">// println!(</span>
-            <span class="comment">//     &quot;refcount={:?} index={:?} elt={:?}&quot;,</span>
-            <span class="comment">//     object.refcount, object.index, elt</span>
-            <span class="comment">// );</span>
-            <span class="kw">if</span> <span class="ident">object</span>.<span class="ident">refcount</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-                <span class="comment">// A non-zero refcount implies the object is in the vector.</span>
-                <span class="macro">assert_eq!</span>(<span class="ident">elt</span>, <span class="kw-2">*</span><span class="ident">addr</span> <span class="kw">as</span> <span class="ident">SEXP</span>);
-            } <span class="kw">else</span> {
-                <span class="comment">// A zero refcount implies the object is NULL in the vector.</span>
-                <span class="macro">assert_eq!</span>(<span class="ident">elt</span>, <span class="ident">R_NilValue</span>);
+        </span><span class="kw">for </span>(addr, object) <span class="kw">in </span><span class="self">self</span>.objects.iter() {
+            <span class="macro">assert!</span>(object.index &lt; <span class="self">self</span>.max_index);
+            <span class="kw">let </span>elt = VECTOR_ELT(preservation_sexp, object.index <span class="kw">as </span>R_xlen_t);
+            <span class="comment">// println!(
+            //     &quot;refcount={:?} index={:?} elt={:?}&quot;,
+            //     object.refcount, object.index, elt
+            // );
+            </span><span class="kw">if </span>object.refcount != <span class="number">0 </span>{
+                <span class="comment">// A non-zero refcount implies the object is in the vector.
+                </span><span class="macro">assert_eq!</span>(elt, <span class="kw-2">*</span>addr <span class="kw">as </span>SEXP);
+            } <span class="kw">else </span>{
+                <span class="comment">// A zero refcount implies the object is NULL in the vector.
+                </span><span class="macro">assert_eq!</span>(elt, R_NilValue);
             }
         }
 
-        <span class="comment">// println!(&quot;check 2&quot;);</span>
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="self">self</span>.<span class="ident">max_index</span> {
-            <span class="kw">let</span> <span class="ident">elt</span> <span class="op">=</span> <span class="ident">VECTOR_ELT</span>(<span class="ident">preservation_sexp</span>, <span class="ident">i</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>);
-            <span class="kw">if</span> <span class="ident">elt</span> <span class="op">==</span> <span class="ident">R_NilValue</span> {
-                <span class="macro">assert_eq!</span>(<span class="self">self</span>.<span class="ident">ref_count</span>(<span class="ident">elt</span>), <span class="number">0</span>);
-            } <span class="kw">else</span> {
-                <span class="macro">assert!</span>(<span class="self">self</span>.<span class="ident">ref_count</span>(<span class="ident">elt</span>) <span class="op">!</span><span class="op">=</span> <span class="number">0</span>);
+        <span class="comment">// println!(&quot;check 2&quot;);
+        </span><span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..<span class="self">self</span>.max_index {
+            <span class="kw">let </span>elt = VECTOR_ELT(preservation_sexp, i <span class="kw">as </span>R_xlen_t);
+            <span class="kw">if </span>elt == R_NilValue {
+                <span class="macro">assert_eq!</span>(<span class="self">self</span>.ref_count(elt), <span class="number">0</span>);
+            } <span class="kw">else </span>{
+                <span class="macro">assert!</span>(<span class="self">self</span>.ref_count(elt) != <span class="number">0</span>);
             }
         }
-        <span class="comment">// println!(&quot;/check&quot;);</span>
-    }
+        <span class="comment">// println!(&quot;/check&quot;);
+    </span>}
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">test</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident">libR_sys</span>::{<span class="ident">Rf_ScalarInteger</span>, <span class="ident">Rf_protect</span>, <span class="ident">Rf_unprotect</span>};
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>test {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use crate</span>::<span class="kw-2">*</span>;
+    <span class="kw">use </span>libR_sys::{Rf_ScalarInteger, Rf_protect, Rf_unprotect};
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">basic_test</span>() {
-        <span class="macro">test!</span> {
-            <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>basic_test() {
+        <span class="macro">test! </span>{
+            single_threaded(|| <span class="kw">unsafe </span>{
                 {
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">own</span> <span class="op">=</span> <span class="ident">OWNERSHIP</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;lock failed&quot;</span>);
-                    <span class="ident">own</span>.<span class="ident">check_objects</span>();
+                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">&quot;lock failed&quot;</span>);
+                    own.check_objects();
                 }
 
-                <span class="kw">let</span> <span class="ident">sexp1</span> <span class="op">=</span> <span class="ident">Rf_protect</span>(<span class="ident">Rf_ScalarInteger</span>(<span class="number">1</span>));
-                <span class="kw">let</span> <span class="ident">sexp2</span> <span class="op">=</span> <span class="ident">Rf_protect</span>(<span class="ident">Rf_ScalarInteger</span>(<span class="number">2</span>));
-                <span class="ident">protect</span>(<span class="ident">sexp1</span>);
+                <span class="kw">let </span>sexp1 = Rf_protect(Rf_ScalarInteger(<span class="number">1</span>));
+                <span class="kw">let </span>sexp2 = Rf_protect(Rf_ScalarInteger(<span class="number">2</span>));
+                protect(sexp1);
                 {
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">own</span> <span class="op">=</span> <span class="ident">OWNERSHIP</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;lock failed&quot;</span>);
-                    <span class="ident">own</span>.<span class="ident">check_objects</span>();
-                    <span class="macro">assert_eq!</span>(<span class="ident">own</span>.<span class="ident">ref_count</span>(<span class="ident">sexp1</span>), <span class="number">1</span>);
-                    <span class="macro">assert_eq!</span>(<span class="ident">own</span>.<span class="ident">ref_count</span>(<span class="ident">sexp2</span>), <span class="number">0</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">&quot;lock failed&quot;</span>);
+                    own.check_objects();
+                    <span class="macro">assert_eq!</span>(own.ref_count(sexp1), <span class="number">1</span>);
+                    <span class="macro">assert_eq!</span>(own.ref_count(sexp2), <span class="number">0</span>);
                 }
 
-                <span class="ident">protect</span>(<span class="ident">sexp1</span>);
+                protect(sexp1);
                 {
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">own</span> <span class="op">=</span> <span class="ident">OWNERSHIP</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;lock failed&quot;</span>);
-                    <span class="ident">own</span>.<span class="ident">check_objects</span>();
-                    <span class="macro">assert_eq!</span>(<span class="ident">own</span>.<span class="ident">ref_count</span>(<span class="ident">sexp1</span>), <span class="number">2</span>);
-                    <span class="macro">assert_eq!</span>(<span class="ident">own</span>.<span class="ident">ref_count</span>(<span class="ident">sexp2</span>), <span class="number">0</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">&quot;lock failed&quot;</span>);
+                    own.check_objects();
+                    <span class="macro">assert_eq!</span>(own.ref_count(sexp1), <span class="number">2</span>);
+                    <span class="macro">assert_eq!</span>(own.ref_count(sexp2), <span class="number">0</span>);
                 }
 
-                <span class="ident">unprotect</span>(<span class="ident">sexp1</span>);
+                unprotect(sexp1);
                 {
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">own</span> <span class="op">=</span> <span class="ident">OWNERSHIP</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;lock failed&quot;</span>);
-                    <span class="ident">own</span>.<span class="ident">check_objects</span>();
-                    <span class="macro">assert_eq!</span>(<span class="ident">own</span>.<span class="ident">ref_count</span>(<span class="ident">sexp1</span>), <span class="number">1</span>);
-                    <span class="macro">assert_eq!</span>(<span class="ident">own</span>.<span class="ident">ref_count</span>(<span class="ident">sexp2</span>), <span class="number">0</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">&quot;lock failed&quot;</span>);
+                    own.check_objects();
+                    <span class="macro">assert_eq!</span>(own.ref_count(sexp1), <span class="number">1</span>);
+                    <span class="macro">assert_eq!</span>(own.ref_count(sexp2), <span class="number">0</span>);
                 }
 
-                <span class="ident">unprotect</span>(<span class="ident">sexp1</span>);
+                unprotect(sexp1);
                 {
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">own</span> <span class="op">=</span> <span class="ident">OWNERSHIP</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;lock failed&quot;</span>);
-                    <span class="ident">own</span>.<span class="ident">check_objects</span>();
-                    <span class="macro">assert_eq!</span>(<span class="ident">own</span>.<span class="ident">ref_count</span>(<span class="ident">sexp1</span>), <span class="number">0</span>);
-                    <span class="macro">assert_eq!</span>(<span class="ident">own</span>.<span class="ident">ref_count</span>(<span class="ident">sexp2</span>), <span class="number">0</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">&quot;lock failed&quot;</span>);
+                    own.check_objects();
+                    <span class="macro">assert_eq!</span>(own.ref_count(sexp1), <span class="number">0</span>);
+                    <span class="macro">assert_eq!</span>(own.ref_count(sexp2), <span class="number">0</span>);
                 }
 
-                <span class="ident">protect</span>(<span class="ident">sexp2</span>);
+                protect(sexp2);
                 {
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">own</span> <span class="op">=</span> <span class="ident">OWNERSHIP</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;lock failed&quot;</span>);
-                    <span class="ident">own</span>.<span class="ident">check_objects</span>();
-                    <span class="macro">assert_eq!</span>(<span class="ident">own</span>.<span class="ident">ref_count</span>(<span class="ident">sexp1</span>), <span class="number">0</span>);
-                    <span class="macro">assert_eq!</span>(<span class="ident">own</span>.<span class="ident">ref_count</span>(<span class="ident">sexp2</span>), <span class="number">1</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">&quot;lock failed&quot;</span>);
+                    own.check_objects();
+                    <span class="macro">assert_eq!</span>(own.ref_count(sexp1), <span class="number">0</span>);
+                    <span class="macro">assert_eq!</span>(own.ref_count(sexp2), <span class="number">1</span>);
                 }
 
-                <span class="ident">protect</span>(<span class="ident">sexp1</span>);
+                protect(sexp1);
                 {
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">own</span> <span class="op">=</span> <span class="ident">OWNERSHIP</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;lock failed&quot;</span>);
-                    <span class="ident">own</span>.<span class="ident">check_objects</span>();
-                    <span class="macro">assert_eq!</span>(<span class="ident">own</span>.<span class="ident">ref_count</span>(<span class="ident">sexp1</span>), <span class="number">1</span>);
-                    <span class="macro">assert_eq!</span>(<span class="ident">own</span>.<span class="ident">ref_count</span>(<span class="ident">sexp2</span>), <span class="number">1</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">&quot;lock failed&quot;</span>);
+                    own.check_objects();
+                    <span class="macro">assert_eq!</span>(own.ref_count(sexp1), <span class="number">1</span>);
+                    <span class="macro">assert_eq!</span>(own.ref_count(sexp2), <span class="number">1</span>);
                 }
-                <span class="ident">Rf_unprotect</span>(<span class="number">2</span>);
+                Rf_unprotect(<span class="number">2</span>);
             });
         }
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">collection_test</span>() {
-        <span class="macro">test!</span> {
-            <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>collection_test() {
+        <span class="macro">test! </span>{
+            single_threaded(|| <span class="kw">unsafe </span>{
                 {
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">own</span> <span class="op">=</span> <span class="ident">OWNERSHIP</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;protect failed&quot;</span>);
-                    <span class="ident">own</span>.<span class="ident">check_objects</span>();
+                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">&quot;protect failed&quot;</span>);
+                    own.check_objects();
                 }
 
-                <span class="comment">// Force a garbage collect.</span>
-                <span class="kw">let</span> <span class="ident">test_size</span> <span class="op">=</span> <span class="ident">INITIAL_PRESERVATION_SIZE</span> <span class="op">+</span> <span class="ident">EXTRA_PRESERVATION_SIZE</span> <span class="op">*</span> <span class="number">5</span>;
+                <span class="comment">// Force a garbage collect.
+                </span><span class="kw">let </span>test_size = INITIAL_PRESERVATION_SIZE + EXTRA_PRESERVATION_SIZE * <span class="number">5</span>;
 
-                <span class="comment">// Make some test objects.</span>
-                <span class="kw">let</span> <span class="ident">sexp_pres</span> <span class="op">=</span> <span class="ident">Rf_allocVector</span>(<span class="ident">VECSXP</span>, <span class="ident">test_size</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>);
-                <span class="ident">Rf_protect</span>(<span class="ident">sexp_pres</span>);
+                <span class="comment">// Make some test objects.
+                </span><span class="kw">let </span>sexp_pres = Rf_allocVector(VECSXP, test_size <span class="kw">as </span>R_xlen_t);
+                Rf_protect(sexp_pres);
 
-                <span class="kw">let</span> <span class="ident">sexps</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">test_size</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> {
-                    <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="ident">Rf_ScalarInteger</span>(<span class="number">1</span>);
-                    <span class="ident">SET_VECTOR_ELT</span>(<span class="ident">sexp_pres</span>, <span class="ident">i</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">sexp</span>);
-                    <span class="ident">sexp</span>
-                }).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
+                <span class="kw">let </span>sexps = (<span class="number">0</span>..test_size).map(|i| {
+                    <span class="kw">let </span>sexp = Rf_ScalarInteger(<span class="number">1</span>);
+                    SET_VECTOR_ELT(sexp_pres, i <span class="kw">as </span>R_xlen_t, sexp);
+                    sexp
+                }).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
 
-                <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">sexp</span>) <span class="kw">in</span> <span class="ident">sexps</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
-                    <span class="ident">protect</span>(<span class="kw-2">*</span><span class="ident">sexp</span>);
-                    <span class="kw">if</span> <span class="ident">i</span> <span class="op">%</span> <span class="number">2</span> <span class="op">==</span> <span class="number">0</span> {
-                        <span class="ident">unprotect</span>(<span class="kw-2">*</span><span class="ident">sexp</span>);
+                <span class="kw">for </span>(i, sexp) <span class="kw">in </span>sexps.iter().enumerate() {
+                    protect(<span class="kw-2">*</span>sexp);
+                    <span class="kw">if </span>i % <span class="number">2 </span>== <span class="number">0 </span>{
+                        unprotect(<span class="kw-2">*</span>sexp);
                     }
                 }
 
                 {
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">own</span> <span class="op">=</span> <span class="ident">OWNERSHIP</span>.<span class="ident">lock</span>().<span class="ident">expect</span>(<span class="string">&quot;protect failed&quot;</span>);
-                    <span class="ident">own</span>.<span class="ident">check_objects</span>();
-                    <span class="ident">own</span>.<span class="ident">garbage_collect</span>();
-                    <span class="ident">own</span>.<span class="ident">check_objects</span>();
+                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">&quot;protect failed&quot;</span>);
+                    own.check_objects();
+                    own.garbage_collect();
+                    own.check_objects();
                 }
 
-                <span class="ident">Rf_unprotect</span>(<span class="number">1</span>);
+                Rf_unprotect(<span class="number">1</span>);
             });
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

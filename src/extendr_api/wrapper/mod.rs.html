@@ -1,6 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../extendr_api/index.html"><div class="logo-container">
-                    <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../extendr_api/index.html">
-                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../extendr_api/index.html">
+                        <img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -409,414 +408,414 @@
 <span id="407">407</span>
 <span id="408">408</span>
 <span id="409">409</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Wrappers are lightweight proxies for references to R datatypes.</span>
-<span class="doccomment">//! They do not contain an Robj (see array.rs for an example of this).</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Wrappers are lightweight proxies for references to R datatypes.
+//! They do not contain an Robj (see array.rs for an example of this).
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::robj</span>::{<span class="ident">GetSexp</span>, <span class="ident">Rinternals</span>};
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">libR_sys</span>::<span class="kw-2">*</span>;
+</span><span class="kw">use </span><span class="kw">crate</span>::robj::{GetSexp, Rinternals};
+<span class="kw">use crate</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>libR_sys::<span class="kw-2">*</span>;
 
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">altrep</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">complexes</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">dataframe</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">doubles</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">environment</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">expr</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">externalptr</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">function</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">integers</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">lang</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">list</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">logicals</span>;
-<span class="kw">mod</span> <span class="ident">macros</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">matrix</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">nullable</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">pairlist</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">primitive</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">promise</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">raw</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">rstr</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">s4</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">strings</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">symbol</span>;
+<span class="kw">pub mod </span>altrep;
+<span class="kw">pub mod </span>complexes;
+<span class="kw">pub mod </span>dataframe;
+<span class="kw">pub mod </span>doubles;
+<span class="kw">pub mod </span>environment;
+<span class="kw">pub mod </span>expr;
+<span class="kw">pub mod </span>externalptr;
+<span class="kw">pub mod </span>function;
+<span class="kw">pub mod </span>integers;
+<span class="kw">pub mod </span>lang;
+<span class="kw">pub mod </span>list;
+<span class="kw">pub mod </span>logicals;
+<span class="kw">mod </span>macros;
+<span class="kw">pub mod </span>matrix;
+<span class="kw">pub mod </span>nullable;
+<span class="kw">pub mod </span>pairlist;
+<span class="kw">pub mod </span>primitive;
+<span class="kw">pub mod </span>promise;
+<span class="kw">pub mod </span>raw;
+<span class="kw">pub mod </span>rstr;
+<span class="kw">pub mod </span>s4;
+<span class="kw">pub mod </span>strings;
+<span class="kw">pub mod </span>symbol;
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::rstr::Rstr</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">altrep</span>::{
-    <span class="ident">AltComplexImpl</span>, <span class="ident">AltIntegerImpl</span>, <span class="ident">AltLogicalImpl</span>, <span class="ident">AltRawImpl</span>, <span class="ident">AltRealImpl</span>, <span class="ident">AltStringImpl</span>, <span class="ident">Altrep</span>,
-    <span class="ident">AltrepImpl</span>,
+<span class="kw">pub use </span><span class="self">self</span>::rstr::Rstr;
+<span class="kw">pub use </span>altrep::{
+    AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,
+    AltrepImpl,
 };
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">complexes::Complexes</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">dataframe</span>::{<span class="ident">Dataframe</span>, <span class="ident">IntoDataFrameRow</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">doubles::Doubles</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">environment</span>::{<span class="ident">EnvIter</span>, <span class="ident">Environment</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">expr::Expressions</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">externalptr::ExternalPtr</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">function::Function</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">integers::Integers</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">lang::Language</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">list</span>::{<span class="ident">FromList</span>, <span class="ident">List</span>, <span class="ident">ListIter</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">logicals::Logicals</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">matrix</span>::{<span class="ident">MatrixConversions</span>, <span class="ident">RArray</span>, <span class="ident">RColumn</span>, <span class="ident">RMatrix</span>, <span class="ident">RMatrix3D</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">nullable::Nullable</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">pairlist</span>::{<span class="ident">Pairlist</span>, <span class="ident">PairlistIter</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">primitive::Primitive</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">promise::Promise</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">raw::Raw</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">s4::S4</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">strings::Strings</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">symbol::Symbol</span>;
+<span class="kw">pub use </span>complexes::Complexes;
+<span class="kw">pub use </span>dataframe::{Dataframe, IntoDataFrameRow};
+<span class="kw">pub use </span>doubles::Doubles;
+<span class="kw">pub use </span>environment::{EnvIter, Environment};
+<span class="kw">pub use </span>expr::Expressions;
+<span class="kw">pub use </span>externalptr::ExternalPtr;
+<span class="kw">pub use </span>function::Function;
+<span class="kw">pub use </span>integers::Integers;
+<span class="kw">pub use </span>lang::Language;
+<span class="kw">pub use </span>list::{FromList, List, ListIter};
+<span class="kw">pub use </span>logicals::Logicals;
+<span class="kw">pub use </span>matrix::{MatrixConversions, RArray, RColumn, RMatrix, RMatrix3D};
+<span class="kw">pub use </span>nullable::Nullable;
+<span class="kw">pub use </span>pairlist::{Pairlist, PairlistIter};
+<span class="kw">pub use </span>primitive::Primitive;
+<span class="kw">pub use </span>promise::Promise;
+<span class="kw">pub use </span>raw::Raw;
+<span class="kw">pub use </span>s4::S4;
+<span class="kw">pub use </span>strings::Strings;
+<span class="kw">pub use </span>symbol::Symbol;
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">make_symbol</span>(<span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">SEXP</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">name</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="number">1</span>);
-    <span class="ident">bytes</span>.<span class="ident">extend</span>(<span class="ident">name</span>.<span class="ident">bytes</span>());
-    <span class="ident">bytes</span>.<span class="ident">push</span>(<span class="number">0</span>);
-    <span class="kw">unsafe</span> { <span class="ident">Rf_install</span>(<span class="ident">bytes</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">::std::os::raw::c_char</span>) }
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>make_symbol(name: <span class="kw-2">&amp;</span>str) -&gt; SEXP {
+    <span class="kw">let </span><span class="kw-2">mut </span>bytes = Vec::with_capacity(name.len() + <span class="number">1</span>);
+    bytes.extend(name.bytes());
+    bytes.push(<span class="number">0</span>);
+    <span class="kw">unsafe </span>{ Rf_install(bytes.as_ptr() <span class="kw">as </span><span class="kw-2">*const </span>::std::os::raw::c_char) }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">make_vector</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">sexptype</span>: <span class="ident">u32</span>, <span class="ident">values</span>: <span class="ident">T</span>) -&gt; <span class="ident">Robj</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">IntoIterator</span>,
-    <span class="ident">T::IntoIter</span>: <span class="ident">ExactSizeIterator</span>,
-    <span class="ident">T::Item</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>make_vector&lt;T&gt;(sexptype: u32, values: T) -&gt; Robj
+<span class="kw">where
+    </span>T: IntoIterator,
+    T::IntoIter: ExactSizeIterator,
+    T::Item: Into&lt;Robj&gt;,
 {
-    <span class="ident">single_threaded</span>(<span class="op">|</span><span class="op">|</span> <span class="kw">unsafe</span> {
-        <span class="kw">let</span> <span class="ident">values</span> <span class="op">=</span> <span class="ident">values</span>.<span class="ident">into_iter</span>();
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">Robj::alloc_vector</span>(<span class="ident">sexptype</span>, <span class="ident">values</span>.<span class="ident">len</span>());
-        <span class="kw">let</span> <span class="ident">sexp</span> <span class="op">=</span> <span class="ident">res</span>.<span class="ident">get</span>();
-        <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">val</span>) <span class="kw">in</span> <span class="ident">values</span>.<span class="ident">enumerate</span>() {
-            <span class="ident">SET_VECTOR_ELT</span>(<span class="ident">sexp</span>, <span class="ident">i</span> <span class="kw">as</span> <span class="ident">R_xlen_t</span>, <span class="ident">val</span>.<span class="ident">into</span>().<span class="ident">get</span>());
+    single_threaded(|| <span class="kw">unsafe </span>{
+        <span class="kw">let </span>values = values.into_iter();
+        <span class="kw">let </span>res = Robj::alloc_vector(sexptype, values.len());
+        <span class="kw">let </span>sexp = res.get();
+        <span class="kw">for </span>(i, val) <span class="kw">in </span>values.enumerate() {
+            SET_VECTOR_ELT(sexp, i <span class="kw">as </span>R_xlen_t, val.into().get());
         }
-        <span class="ident">res</span>
+        res
     })
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">make_conversions</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span>: <span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">errname</span>: <span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">isfunc</span>: <span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">errstr</span>: <span class="ident">expr</span>) =&gt; {
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">FromRobj</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {
-            <span class="kw">fn</span> <span class="ident">from_robj</span>(<span class="ident">robj</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Robj</span>) -&gt; <span class="ident">std::result::Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">f</span>) <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename::try_from</span>(<span class="ident">robj</span>.<span class="ident">clone</span>()) {
-                    <span class="prelude-val">Ok</span>(<span class="ident">f</span>)
-                } <span class="kw">else</span> {
-                    <span class="prelude-val">Err</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">errstr</span>)
+<span class="macro">macro_rules! </span>make_conversions {
+    (<span class="macro-nonterminal">$typename</span>: ident, <span class="macro-nonterminal">$errname</span>: ident, <span class="macro-nonterminal">$isfunc</span>: ident, <span class="macro-nonterminal">$errstr</span>: expr) =&gt; {
+        <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; FromRobj&lt;<span class="lifetime">&#39;a</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$typename </span>{
+            <span class="kw">fn </span>from_robj(robj: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Robj) -&gt; std::result::Result&lt;<span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt; {
+                <span class="kw">if let </span><span class="prelude-val">Ok</span>(f) = <span class="macro-nonterminal">$typename::try_from</span>(robj.clone()) {
+                    <span class="prelude-val">Ok</span>(f)
+                } <span class="kw">else </span>{
+                    <span class="prelude-val">Err</span>(<span class="macro-nonterminal">$errstr</span>)
                 }
             }
         }
 
-        <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-            <span class="doccomment">/// Make an robj from a wrapper.</span>
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">val</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span>) -&gt; <span class="self">Self</span> {
-                <span class="ident">val</span>.<span class="ident">robj</span>
+        <span class="kw">impl </span>From&lt;<span class="macro-nonterminal">$typename</span>&gt; <span class="kw">for </span>Robj {
+            <span class="doccomment">/// Make an robj from a wrapper.
+            </span><span class="kw">fn </span>from(val: <span class="macro-nonterminal">$typename</span>) -&gt; <span class="self">Self </span>{
+                val.robj
             }
         }
 
-        <span class="comment">// We can convert a reference to any wrapper to a Robj by cloning the robj pointer</span>
-        <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Robj</span> {
-            <span class="doccomment">/// Make an robj from a wrapper.</span>
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">val</span>: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span>) -&gt; <span class="self">Self</span> {
-                <span class="ident">val</span>.<span class="ident">robj</span>.<span class="ident">to_owned</span>()
+        <span class="comment">// We can convert a reference to any wrapper to a Robj by cloning the robj pointer
+        </span><span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span><span class="macro-nonterminal">$typename</span>&gt; <span class="kw">for </span>Robj {
+            <span class="doccomment">/// Make an robj from a wrapper.
+            </span><span class="kw">fn </span>from(val: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$typename</span>) -&gt; <span class="self">Self </span>{
+                val.robj.to_owned()
             }
         }
 
-        <span class="kw">impl</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Robj</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {
-            <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::Error</span>;
+        <span class="kw">impl </span>TryFrom&lt;<span class="kw-2">&amp;</span>Robj&gt; <span class="kw">for </span><span class="macro-nonterminal">$typename </span>{
+            <span class="kw">type </span>Error = <span class="kw">crate</span>::Error;
 
-            <span class="doccomment">/// Make a wrapper from a robj if it matches.</span>
-            <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">robj</span>: <span class="kw-2">&amp;</span><span class="ident">Robj</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-                <span class="kw">if</span> <span class="ident">robj</span>.<span class="macro-nonterminal">$</span><span class="macro-nonterminal">isfunc</span>() {
-                    <span class="prelude-val">Ok</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> { <span class="ident">robj</span>: <span class="ident">robj</span>.<span class="ident">clone</span>() })
-                } <span class="kw">else</span> {
-                    <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">errname</span>(<span class="ident">robj</span>.<span class="ident">clone</span>()))
+            <span class="doccomment">/// Make a wrapper from a robj if it matches.
+            </span><span class="kw">fn </span>try_from(robj: <span class="kw-2">&amp;</span>Robj) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+                <span class="kw">if </span>robj.<span class="macro-nonterminal">$isfunc</span>() {
+                    <span class="prelude-val">Ok</span>(<span class="macro-nonterminal">$typename </span>{ robj: robj.clone() })
+                } <span class="kw">else </span>{
+                    <span class="prelude-val">Err</span>(Error::<span class="macro-nonterminal">$errname</span>(robj.clone()))
                 }
             }
         }
 
-        <span class="kw">impl</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {
-            <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::Error</span>;
+        <span class="kw">impl </span>TryFrom&lt;Robj&gt; <span class="kw">for </span><span class="macro-nonterminal">$typename </span>{
+            <span class="kw">type </span>Error = <span class="kw">crate</span>::Error;
 
-            <span class="doccomment">/// Make a wrapper from a robj if it matches.</span>
-            <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">robj</span>: <span class="ident">Robj</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-                <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span><span class="op">&gt;</span><span class="ident">::try_from</span>(<span class="kw-2">&amp;</span><span class="ident">robj</span>)
+            <span class="doccomment">/// Make a wrapper from a robj if it matches.
+            </span><span class="kw">fn </span>try_from(robj: Robj) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+                &lt;<span class="macro-nonterminal">$typename</span>&gt;::try_from(<span class="kw-2">&amp;</span>robj)
             }
         }
 
-        <span class="macro">make_getsexp!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span>, <span class="kw">impl</span>);
+        <span class="macro">make_getsexp!</span>(<span class="macro-nonterminal">$typename</span>, <span class="kw">impl</span>);
     };
 }
 
-<span class="macro">macro_rules!</span> <span class="ident">make_getsexp</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span>: <span class="ident">ty</span>, $(<span class="macro-nonterminal">$</span><span class="kw">impl</span> : <span class="macro-nonterminal">tt</span>)<span class="kw-2">*</span>) =&gt; {
-        $(<span class="macro-nonterminal">$</span><span class="kw">impl</span>)<span class="op">*</span> <span class="macro-nonterminal">GetSexp</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {
-            <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">SEXP</span> {
-                <span class="self">self</span>.<span class="ident">robj</span>.<span class="ident">get</span>()
+<span class="macro">macro_rules! </span>make_getsexp {
+    (<span class="macro-nonterminal">$typename</span>: ty, $(<span class="macro-nonterminal">$</span><span class="kw">impl </span>: <span class="macro-nonterminal">tt</span>)<span class="kw-2">*</span>) =&gt; {
+        $(<span class="macro-nonterminal">$</span><span class="kw">impl</span>)* <span class="macro-nonterminal">GetSexp </span><span class="kw">for </span><span class="macro-nonterminal">$typename </span>{
+            <span class="kw">unsafe fn </span>get(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SEXP {
+                <span class="self">self</span>.robj.get()
             }
 
-            <span class="kw">fn</span> <span class="ident">as_robj</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">Robj</span> {
-                <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">robj</span>
+            <span class="kw">fn </span>as_robj(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Robj {
+                <span class="kw-2">&amp;</span><span class="self">self</span>.robj
             }
 
-            <span class="kw">fn</span> <span class="ident">as_robj_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="ident">Robj</span> {
-                <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">robj</span>
+            <span class="kw">fn </span>as_robj_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>Robj {
+                <span class="kw-2">&amp;mut </span><span class="self">self</span>.robj
             }
         }
 
-        <span class="comment">// These traits all derive from GetSexp</span>
+        <span class="comment">// These traits all derive from GetSexp
 
-        <span class="doccomment">/// len() and is_empty()</span>
-        $(<span class="macro-nonterminal">$</span><span class="kw">impl</span>)<span class="op">*</span> <span class="macro-nonterminal">Length</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {}
+        </span><span class="doccomment">/// len() and is_empty()
+        </span>$(<span class="macro-nonterminal">$</span><span class="kw">impl</span>)* <span class="macro-nonterminal">Length </span><span class="kw">for </span><span class="macro-nonterminal">$typename </span>{}
 
-        <span class="doccomment">/// rtype() and rany()</span>
-        $(<span class="macro-nonterminal">$</span><span class="kw">impl</span>)<span class="op">*</span> <span class="macro-nonterminal">Types</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {}
+        <span class="doccomment">/// rtype() and rany()
+        </span>$(<span class="macro-nonterminal">$</span><span class="kw">impl</span>)* <span class="macro-nonterminal">Types </span><span class="kw">for </span><span class="macro-nonterminal">$typename </span>{}
 
-        <span class="doccomment">/// as_*()</span>
-        $(<span class="macro-nonterminal">$</span><span class="kw">impl</span>)<span class="op">*</span> <span class="macro-nonterminal">Conversions</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {}
+        <span class="doccomment">/// as_*()
+        </span>$(<span class="macro-nonterminal">$</span><span class="kw">impl</span>)* <span class="macro-nonterminal">Conversions </span><span class="kw">for </span><span class="macro-nonterminal">$typename </span>{}
 
-        <span class="doccomment">/// find_var() etc.</span>
-        $(<span class="macro-nonterminal">$</span><span class="kw">impl</span>)<span class="op">*</span> <span class="macro-nonterminal">Rinternals</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {}
+        <span class="doccomment">/// find_var() etc.
+        </span>$(<span class="macro-nonterminal">$</span><span class="kw">impl</span>)* <span class="macro-nonterminal">Rinternals </span><span class="kw">for </span><span class="macro-nonterminal">$typename </span>{}
 
-        <span class="doccomment">/// as_typed_slice_raw() etc.</span>
-        $(<span class="macro-nonterminal">$</span><span class="kw">impl</span>)<span class="op">*</span> <span class="macro-nonterminal">Slices</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {}
+        <span class="doccomment">/// as_typed_slice_raw() etc.
+        </span>$(<span class="macro-nonterminal">$</span><span class="kw">impl</span>)* <span class="macro-nonterminal">Slices </span><span class="kw">for </span><span class="macro-nonterminal">$typename </span>{}
 
-        <span class="doccomment">/// dollar() etc.</span>
-        $(<span class="macro-nonterminal">$</span><span class="kw">impl</span>)<span class="op">*</span> <span class="macro-nonterminal">Operators</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">typename</span> {}
+        <span class="doccomment">/// dollar() etc.
+        </span>$(<span class="macro-nonterminal">$</span><span class="kw">impl</span>)* <span class="macro-nonterminal">Operators </span><span class="kw">for </span><span class="macro-nonterminal">$typename </span>{}
     };
 }
 
-<span class="macro">make_conversions!</span>(<span class="ident">Pairlist</span>, <span class="ident">ExpectedPairlist</span>, <span class="ident">is_pairlist</span>, <span class="string">&quot;Not a pairlist&quot;</span>);
+<span class="macro">make_conversions!</span>(Pairlist, ExpectedPairlist, is_pairlist, <span class="string">&quot;Not a pairlist&quot;</span>);
 
 <span class="macro">make_conversions!</span>(
-    <span class="ident">Function</span>,
-    <span class="ident">ExpectedFunction</span>,
-    <span class="ident">is_function</span>,
-    <span class="string">&quot;Not a function or primitive.&quot;</span>
-);
+    Function,
+    ExpectedFunction,
+    is_function,
+    <span class="string">&quot;Not a function or primitive.&quot;
+</span>);
 
-<span class="macro">make_conversions!</span>(<span class="ident">Raw</span>, <span class="ident">ExpectedRaw</span>, <span class="ident">is_raw</span>, <span class="string">&quot;Not a raw object&quot;</span>);
+<span class="macro">make_conversions!</span>(Raw, ExpectedRaw, is_raw, <span class="string">&quot;Not a raw object&quot;</span>);
 
-<span class="macro">make_conversions!</span>(<span class="ident">Rstr</span>, <span class="ident">ExpectedRstr</span>, <span class="ident">is_char</span>, <span class="string">&quot;Not a character object&quot;</span>);
-
-<span class="macro">make_conversions!</span>(
-    <span class="ident">Environment</span>,
-    <span class="ident">ExpectedEnvironment</span>,
-    <span class="ident">is_environment</span>,
-    <span class="string">&quot;Not an Environment&quot;</span>
-);
-
-<span class="macro">make_conversions!</span>(<span class="ident">List</span>, <span class="ident">ExpectedList</span>, <span class="ident">is_list</span>, <span class="string">&quot;Not a List&quot;</span>);
+<span class="macro">make_conversions!</span>(Rstr, ExpectedRstr, is_char, <span class="string">&quot;Not a character object&quot;</span>);
 
 <span class="macro">make_conversions!</span>(
-    <span class="ident">Expressions</span>,
-    <span class="ident">ExpectedExpression</span>,
-    <span class="ident">is_expressions</span>,
-    <span class="string">&quot;Not an Expression&quot;</span>
-);
+    Environment,
+    ExpectedEnvironment,
+    is_environment,
+    <span class="string">&quot;Not an Environment&quot;
+</span>);
+
+<span class="macro">make_conversions!</span>(List, ExpectedList, is_list, <span class="string">&quot;Not a List&quot;</span>);
 
 <span class="macro">make_conversions!</span>(
-    <span class="ident">Language</span>,
-    <span class="ident">ExpectedLanguage</span>,
-    <span class="ident">is_language</span>,
-    <span class="string">&quot;Not a Language object&quot;</span>
-);
-
-<span class="macro">make_conversions!</span>(<span class="ident">Symbol</span>, <span class="ident">ExpectedSymbol</span>, <span class="ident">is_symbol</span>, <span class="string">&quot;Not a Symbol object&quot;</span>);
+    Expressions,
+    ExpectedExpression,
+    is_expressions,
+    <span class="string">&quot;Not an Expression&quot;
+</span>);
 
 <span class="macro">make_conversions!</span>(
-    <span class="ident">Primitive</span>,
-    <span class="ident">ExpectedPrimitive</span>,
-    <span class="ident">is_primitive</span>,
-    <span class="string">&quot;Not a Primitive object&quot;</span>
-);
+    Language,
+    ExpectedLanguage,
+    is_language,
+    <span class="string">&quot;Not a Language object&quot;
+</span>);
 
-<span class="macro">make_conversions!</span>(<span class="ident">Promise</span>, <span class="ident">ExpectedPromise</span>, <span class="ident">is_promise</span>, <span class="string">&quot;Not a Promise object&quot;</span>);
+<span class="macro">make_conversions!</span>(Symbol, ExpectedSymbol, is_symbol, <span class="string">&quot;Not a Symbol object&quot;</span>);
 
-<span class="macro">make_conversions!</span>(<span class="ident">Altrep</span>, <span class="ident">ExpectedAltrep</span>, <span class="ident">is_altrep</span>, <span class="string">&quot;Not an Altrep type&quot;</span>);
-
-<span class="macro">make_conversions!</span>(<span class="ident">S4</span>, <span class="ident">ExpectedS4</span>, <span class="ident">is_s4</span>, <span class="string">&quot;Not a S4 type&quot;</span>);
-
-<span class="macro">make_conversions!</span>(<span class="ident">Integers</span>, <span class="ident">ExpectedInteger</span>, <span class="ident">is_integer</span>, <span class="string">&quot;Not an integer type&quot;</span>);
-<span class="macro">make_conversions!</span>(<span class="ident">Logicals</span>, <span class="ident">ExpectedLogical</span>, <span class="ident">is_logical</span>, <span class="string">&quot;Not a logical type&quot;</span>);
-<span class="macro">make_conversions!</span>(<span class="ident">Doubles</span>, <span class="ident">ExpectedReal</span>, <span class="ident">is_real</span>, <span class="string">&quot;Not a floating point type&quot;</span>);
 <span class="macro">make_conversions!</span>(
-    <span class="ident">Complexes</span>,
-    <span class="ident">ExpectedComplex</span>,
-    <span class="ident">is_complex</span>,
-    <span class="string">&quot;Not a complex number or vector&quot;</span>
-);
-<span class="comment">// make_conversions!(Function, ExpectedFunction, is_function, &quot;Not a function&quot;);</span>
+    Primitive,
+    ExpectedPrimitive,
+    is_primitive,
+    <span class="string">&quot;Not a Primitive object&quot;
+</span>);
 
-<span class="macro">make_conversions!</span>(<span class="ident">Strings</span>, <span class="ident">ExpectedString</span>, <span class="ident">is_string</span>, <span class="string">&quot;Not a string vector&quot;</span>);
+<span class="macro">make_conversions!</span>(Promise, ExpectedPromise, is_promise, <span class="string">&quot;Not a Promise object&quot;</span>);
 
-<span class="macro">make_getsexp!</span>(<span class="ident">Dataframe</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
+<span class="macro">make_conversions!</span>(Altrep, ExpectedAltrep, is_altrep, <span class="string">&quot;Not an Altrep type&quot;</span>);
 
-<span class="comment">// impl Deref for Integers {</span>
-<span class="comment">//     type Target = [Rint];</span>
+<span class="macro">make_conversions!</span>(S4, ExpectedS4, is_s4, <span class="string">&quot;Not a S4 type&quot;</span>);
 
-<span class="comment">//     fn deref(&amp;self) -&gt; &amp;Self::Target {</span>
-<span class="comment">//         unsafe { self.as_typed_slice_raw() }</span>
-<span class="comment">//     }</span>
-<span class="comment">// }</span>
+<span class="macro">make_conversions!</span>(Integers, ExpectedInteger, is_integer, <span class="string">&quot;Not an integer type&quot;</span>);
+<span class="macro">make_conversions!</span>(Logicals, ExpectedLogical, is_logical, <span class="string">&quot;Not a logical type&quot;</span>);
+<span class="macro">make_conversions!</span>(Doubles, ExpectedReal, is_real, <span class="string">&quot;Not a floating point type&quot;</span>);
+<span class="macro">make_conversions!</span>(
+    Complexes,
+    ExpectedComplex,
+    is_complex,
+    <span class="string">&quot;Not a complex number or vector&quot;
+</span>);
+<span class="comment">// make_conversions!(Function, ExpectedFunction, is_function, &quot;Not a function&quot;);
 
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Conversions</span>: <span class="ident">GetSexp</span> {
-    <span class="doccomment">/// Convert a symbol object to a Symbol wrapper.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let fred = sym!(fred);</span>
-    <span class="doccomment">///     assert_eq!(fred.as_symbol(), Some(Symbol::from_string(&quot;fred&quot;)));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">as_symbol</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Symbol</span><span class="op">&gt;</span> {
-        <span class="ident">Symbol::try_from</span>(<span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">clone</span>()).<span class="ident">ok</span>()
+</span><span class="macro">make_conversions!</span>(Strings, ExpectedString, is_string, <span class="string">&quot;Not a string vector&quot;</span>);
+
+<span class="macro">make_getsexp!</span>(Dataframe&lt;T&gt;, <span class="kw">impl</span>&lt;T&gt;);
+
+<span class="comment">// impl Deref for Integers {
+//     type Target = [Rint];
+
+//     fn deref(&amp;self) -&gt; &amp;Self::Target {
+//         unsafe { self.as_typed_slice_raw() }
+//     }
+// }
+
+</span><span class="kw">pub trait </span>Conversions: GetSexp {
+    <span class="doccomment">/// Convert a symbol object to a Symbol wrapper.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let fred = sym!(fred);
+    ///     assert_eq!(fred.as_symbol(), Some(Symbol::from_string(&quot;fred&quot;)));
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>as_symbol(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Symbol&gt; {
+        Symbol::try_from(<span class="self">self</span>.as_robj().clone()).ok()
     }
 
-    <span class="doccomment">/// Convert a CHARSXP object to a Rstr wrapper.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let fred = r!(Rstr::from_string(&quot;fred&quot;));</span>
-    <span class="doccomment">///     assert_eq!(fred.as_char(), Some(Rstr::from_string(&quot;fred&quot;)));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">as_char</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Rstr</span><span class="op">&gt;</span> {
-        <span class="ident">Rstr::try_from</span>(<span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">clone</span>()).<span class="ident">ok</span>()
+    <span class="doccomment">/// Convert a CHARSXP object to a Rstr wrapper.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let fred = r!(Rstr::from_string(&quot;fred&quot;));
+    ///     assert_eq!(fred.as_char(), Some(Rstr::from_string(&quot;fred&quot;)));
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>as_char(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Rstr&gt; {
+        Rstr::try_from(<span class="self">self</span>.as_robj().clone()).ok()
     }
 
-    <span class="doccomment">/// Convert a raw object to a Rstr wrapper.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let bytes = r!(Raw::from_bytes(&amp;[1, 2, 3]));</span>
-    <span class="doccomment">///     assert_eq!(bytes.len(), 3);</span>
-    <span class="doccomment">///     assert_eq!(bytes.as_raw(), Some(Raw::from_bytes(&amp;[1, 2, 3])));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">as_raw</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Raw</span><span class="op">&gt;</span> {
-        <span class="ident">Raw::try_from</span>(<span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">clone</span>()).<span class="ident">ok</span>()
+    <span class="doccomment">/// Convert a raw object to a Rstr wrapper.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let bytes = r!(Raw::from_bytes(&amp;[1, 2, 3]));
+    ///     assert_eq!(bytes.len(), 3);
+    ///     assert_eq!(bytes.as_raw(), Some(Raw::from_bytes(&amp;[1, 2, 3])));
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>as_raw(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Raw&gt; {
+        Raw::try_from(<span class="self">self</span>.as_robj().clone()).ok()
     }
 
-    <span class="doccomment">/// Convert a language object to a Language wrapper.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let call_to_xyz = r!(Language::from_values(&amp;[r!(Symbol::from_string(&quot;xyz&quot;)), r!(1), r!(2)]));</span>
-    <span class="doccomment">///     assert_eq!(call_to_xyz.is_language(), true);</span>
-    <span class="doccomment">///     assert_eq!(call_to_xyz.len(), 3);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">as_language</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Language</span><span class="op">&gt;</span> {
-        <span class="ident">Language::try_from</span>(<span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">clone</span>()).<span class="ident">ok</span>()
+    <span class="doccomment">/// Convert a language object to a Language wrapper.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let call_to_xyz = r!(Language::from_values(&amp;[r!(Symbol::from_string(&quot;xyz&quot;)), r!(1), r!(2)]));
+    ///     assert_eq!(call_to_xyz.is_language(), true);
+    ///     assert_eq!(call_to_xyz.len(), 3);
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>as_language(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Language&gt; {
+        Language::try_from(<span class="self">self</span>.as_robj().clone()).ok()
     }
 
-    <span class="doccomment">/// Convert a pair list object (LISTSXP) to a Pairlist wrapper.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let names_and_values = vec![(&quot;a&quot;, r!(1)), (&quot;b&quot;, r!(2)), (&quot;&quot;, r!(3))];</span>
-    <span class="doccomment">///     let pairlist = Pairlist::from_pairs(names_and_values);</span>
-    <span class="doccomment">///     let robj = r!(pairlist.clone());</span>
-    <span class="doccomment">///     assert_eq!(robj.as_pairlist().unwrap(), pairlist);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">as_pairlist</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Pairlist</span><span class="op">&gt;</span> {
-        <span class="ident">Pairlist::try_from</span>(<span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">clone</span>()).<span class="ident">ok</span>()
+    <span class="doccomment">/// Convert a pair list object (LISTSXP) to a Pairlist wrapper.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let names_and_values = vec![(&quot;a&quot;, r!(1)), (&quot;b&quot;, r!(2)), (&quot;&quot;, r!(3))];
+    ///     let pairlist = Pairlist::from_pairs(names_and_values);
+    ///     let robj = r!(pairlist.clone());
+    ///     assert_eq!(robj.as_pairlist().unwrap(), pairlist);
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>as_pairlist(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Pairlist&gt; {
+        Pairlist::try_from(<span class="self">self</span>.as_robj().clone()).ok()
     }
 
-    <span class="doccomment">/// Convert a list object (VECSXP) to a List wrapper.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let list = r!(List::from_values(&amp;[r!(0), r!(1), r!(2)]));</span>
-    <span class="doccomment">///     assert_eq!(list.is_list(), true);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">as_list</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">List</span><span class="op">&gt;</span> {
-        <span class="ident">List::try_from</span>(<span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">clone</span>()).<span class="ident">ok</span>()
+    <span class="doccomment">/// Convert a list object (VECSXP) to a List wrapper.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let list = r!(List::from_values(&amp;[r!(0), r!(1), r!(2)]));
+    ///     assert_eq!(list.is_list(), true);
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>as_list(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;List&gt; {
+        List::try_from(<span class="self">self</span>.as_robj().clone()).ok()
     }
 
-    <span class="doccomment">/// Convert an expression object (EXPRSXP) to a Expr wrapper.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let expr = r!(Expressions::from_values(&amp;[r!(0), r!(1), r!(2)]));</span>
-    <span class="doccomment">///     assert_eq!(expr.is_expressions(), true);</span>
-    <span class="doccomment">///     assert_eq!(expr.as_expressions(), Some(Expressions::from_values(vec![r!(0), r!(1), r!(2)])));</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">as_expressions</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Expressions</span><span class="op">&gt;</span> {
-        <span class="ident">Expressions::try_from</span>(<span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">clone</span>()).<span class="ident">ok</span>()
+    <span class="doccomment">/// Convert an expression object (EXPRSXP) to a Expr wrapper.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let expr = r!(Expressions::from_values(&amp;[r!(0), r!(1), r!(2)]));
+    ///     assert_eq!(expr.is_expressions(), true);
+    ///     assert_eq!(expr.as_expressions(), Some(Expressions::from_values(vec![r!(0), r!(1), r!(2)])));
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>as_expressions(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Expressions&gt; {
+        Expressions::try_from(<span class="self">self</span>.as_robj().clone()).ok()
     }
 
-    <span class="doccomment">/// Convert an environment object (ENVSXP) to a Env wrapper.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let names_and_values = (0..100).map(|i| (format!(&quot;n{}&quot;, i), i));</span>
-    <span class="doccomment">///     let env = Environment::from_pairs(global_env(), names_and_values);</span>
-    <span class="doccomment">///     let expr = env.clone();</span>
-    <span class="doccomment">///     assert_eq!(expr.len(), 100);</span>
-    <span class="doccomment">///     let env2 = expr.as_environment().unwrap();</span>
-    <span class="doccomment">///     assert_eq!(env2.len(), 100);</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">as_environment</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Environment</span><span class="op">&gt;</span> {
-        <span class="ident">Environment::try_from</span>(<span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">clone</span>()).<span class="ident">ok</span>()
+    <span class="doccomment">/// Convert an environment object (ENVSXP) to a Env wrapper.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let names_and_values = (0..100).map(|i| (format!(&quot;n{}&quot;, i), i));
+    ///     let env = Environment::from_pairs(global_env(), names_and_values);
+    ///     let expr = env.clone();
+    ///     assert_eq!(expr.len(), 100);
+    ///     let env2 = expr.as_environment().unwrap();
+    ///     assert_eq!(env2.len(), 100);
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>as_environment(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Environment&gt; {
+        Environment::try_from(<span class="self">self</span>.as_robj().clone()).ok()
     }
 
-    <span class="doccomment">/// Convert a function object (CLOSXP) to a Function wrapper.</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// use extendr_api::prelude::*;</span>
-    <span class="doccomment">/// test! {</span>
-    <span class="doccomment">///     let func = R!(&quot;function(a,b) a + b&quot;).unwrap();</span>
-    <span class="doccomment">///     println!(&quot;{:?}&quot;, func.as_function());</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">fn</span> <span class="ident">as_function</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Function</span><span class="op">&gt;</span> {
-        <span class="ident">Function::try_from</span>(<span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">clone</span>()).<span class="ident">ok</span>()
+    <span class="doccomment">/// Convert a function object (CLOSXP) to a Function wrapper.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let func = R!(&quot;function(a,b) a + b&quot;).unwrap();
+    ///     println!(&quot;{:?}&quot;, func.as_function());
+    /// }
+    /// ```
+    </span><span class="kw">fn </span>as_function(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Function&gt; {
+        Function::try_from(<span class="self">self</span>.as_robj().clone()).ok()
     }
 
-    <span class="doccomment">/// Get a wrapper for a promise.</span>
-    <span class="kw">fn</span> <span class="ident">as_promise</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Promise</span><span class="op">&gt;</span> {
-        <span class="ident">Promise::try_from</span>(<span class="self">self</span>.<span class="ident">as_robj</span>().<span class="ident">clone</span>()).<span class="ident">ok</span>()
+    <span class="doccomment">/// Get a wrapper for a promise.
+    </span><span class="kw">fn </span>as_promise(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Promise&gt; {
+        Promise::try_from(<span class="self">self</span>.as_robj().clone()).ok()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Conversions</span> <span class="kw">for</span> <span class="ident">Robj</span> {}
+<span class="kw">impl </span>Conversions <span class="kw">for </span>Robj {}
 
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">SymPair</span> {
-    <span class="kw">fn</span> <span class="ident">sym_pair</span>(<span class="self">self</span>) -&gt; (<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>, <span class="ident">Robj</span>);
+<span class="kw">pub trait </span>SymPair {
+    <span class="kw">fn </span>sym_pair(<span class="self">self</span>) -&gt; (<span class="prelude-ty">Option</span>&lt;Robj&gt;, Robj);
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">R</span><span class="op">&gt;</span> <span class="ident">SymPair</span> <span class="kw">for</span> (<span class="ident">S</span>, <span class="ident">R</span>)
-<span class="kw">where</span>
-    <span class="ident">S</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>,
-    <span class="ident">R</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;S, R&gt; SymPair <span class="kw">for </span>(S, R)
+<span class="kw">where
+    </span>S: AsRef&lt;str&gt;,
+    R: Into&lt;Robj&gt;,
 {
-    <span class="kw">fn</span> <span class="ident">sym_pair</span>(<span class="self">self</span>) -&gt; (<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>, <span class="ident">Robj</span>) {
-        <span class="kw">let</span> <span class="ident">val</span> <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">as_ref</span>();
-        <span class="comment">// &quot;&quot; represents the absense of the name</span>
-        <span class="kw">let</span> <span class="ident">nm</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">val</span>.<span class="ident">is_empty</span>() {
-            <span class="prelude-val">None</span>
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Some</span>(<span class="macro">r!</span>(<span class="ident">Symbol::from_string</span>(<span class="ident">val</span>)))
+    <span class="kw">fn </span>sym_pair(<span class="self">self</span>) -&gt; (<span class="prelude-ty">Option</span>&lt;Robj&gt;, Robj) {
+        <span class="kw">let </span>val = <span class="self">self</span>.<span class="number">0</span>.as_ref();
+        <span class="comment">// &quot;&quot; represents the absense of the name
+        </span><span class="kw">let </span>nm = <span class="kw">if </span>val.is_empty() {
+            <span class="prelude-val">None
+        </span>} <span class="kw">else </span>{
+            <span class="prelude-val">Some</span>(<span class="macro">r!</span>(Symbol::from_string(val)))
         };
-        (<span class="ident">nm</span>, <span class="self">self</span>.<span class="number">1</span>.<span class="ident">into</span>())
+        (nm, <span class="self">self</span>.<span class="number">1</span>.into())
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">R</span><span class="op">&gt;</span> <span class="ident">SymPair</span> <span class="kw">for</span> <span class="kw-2">&amp;</span>(<span class="ident">S</span>, <span class="ident">R</span>)
-<span class="kw">where</span>
-    <span class="ident">S</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>,
-    <span class="ident">R</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>,
-    <span class="ident">R</span>: <span class="ident">Clone</span>,
+<span class="kw">impl</span>&lt;S, R&gt; SymPair <span class="kw">for </span><span class="kw-2">&amp;</span>(S, R)
+<span class="kw">where
+    </span>S: AsRef&lt;str&gt;,
+    R: Into&lt;Robj&gt;,
+    R: Clone,
 {
-    <span class="kw">fn</span> <span class="ident">sym_pair</span>(<span class="self">self</span>) -&gt; (<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Robj</span><span class="op">&gt;</span>, <span class="ident">Robj</span>) {
-        <span class="kw">let</span> <span class="ident">val</span> <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">as_ref</span>();
-        <span class="kw">let</span> <span class="ident">nm</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">val</span>.<span class="ident">is_empty</span>() {
-            <span class="prelude-val">None</span>
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Some</span>(<span class="macro">r!</span>(<span class="ident">Symbol::from_string</span>(<span class="ident">val</span>)))
+    <span class="kw">fn </span>sym_pair(<span class="self">self</span>) -&gt; (<span class="prelude-ty">Option</span>&lt;Robj&gt;, Robj) {
+        <span class="kw">let </span>val = <span class="self">self</span>.<span class="number">0</span>.as_ref();
+        <span class="kw">let </span>nm = <span class="kw">if </span>val.is_empty() {
+            <span class="prelude-val">None
+        </span>} <span class="kw">else </span>{
+            <span class="prelude-val">Some</span>(<span class="macro">r!</span>(Symbol::from_string(val)))
         };
-        (<span class="ident">nm</span>, <span class="self">self</span>.<span class="number">1</span>.<span class="ident">clone</span>().<span class="ident">into</span>())
+        (nm, <span class="self">self</span>.<span class="number">1</span>.clone().into())
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>
