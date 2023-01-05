@@ -2,7 +2,7 @@
 use ndarray::prelude::*;
 use ndarray::{Data, ShapeBuilder};
 
-use crate::prelude::{dim_symbol};
+use crate::prelude::{dim_symbol, Rint, Rfloat, Rcplx, c64};
 use crate::*;
 
 impl<'a, T> FromRobj<'a> for ArrayView1<'a, T>
@@ -64,12 +64,21 @@ macro_rules! make_array_view_2 {
     };
 }
 make_array_view_1!(Rbool, Error::ExpectedLogical);
+make_array_view_1!(Rint, Error::ExpectedInteger);
 make_array_view_1!(i32, Error::ExpectedInteger);
+make_array_view_1!(Rfloat, Error::ExpectedReal);
 make_array_view_1!(f64, Error::ExpectedReal);
+make_array_view_1!(Rcplx, Error::ExpectedComplex);
+make_array_view_1!(c64, Error::ExpectedComplex);
+
 
 make_array_view_2!(Rbool, "Not a logical matrix.");
+make_array_view_2!(Rint, "Not an integer matrix.");
 make_array_view_2!(i32, "Not an integer matrix.");
+make_array_view_2!(Rfloat, "Not a floating point matrix.");
 make_array_view_2!(f64, "Not a floating point matrix.");
+make_array_view_2!(Rcplx, "Not a complex number matrix.");
+make_array_view_2!(c64, "Not a complex number matrix.");
 //make_array_view_2!(u8, "Not a raw matrix.");
 
 // impl<'a, T> From<ArrayView2<'a, T>> for Robj
