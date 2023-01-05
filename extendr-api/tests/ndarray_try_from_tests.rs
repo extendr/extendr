@@ -1,7 +1,6 @@
 #[cfg(feature = "ndarray")]
 mod ndarray_try_from_tests {
     use extendr_api::prelude::*;
-    use ndarray::prelude::*;
 
     #[test]
     fn integer_matrix_2d() {
