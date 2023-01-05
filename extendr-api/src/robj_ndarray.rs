@@ -2,7 +2,7 @@
 use ndarray::prelude::*;
 use ndarray::{Data, ShapeBuilder};
 
-use crate::prelude::dim_symbol;
+use crate::prelude::{dim_symbol};
 use crate::*;
 
 impl<'a, T> FromRobj<'a> for ArrayView1<'a, T>
@@ -17,6 +17,22 @@ where
             Err("Not a vector of the correct type.")
         }
     }
+}
+
+macro_rules! make_array_view_1 {
+    ($type: ty, $error_fn: expr) => {
+        impl<'a> TryFrom<&'a Robj> for ArrayView1<'a, $type> {
+            type Error = crate::Error;
+
+            fn try_from(robj: &Robj) -> Result<Self> {
+                if let Some(v) = robj.as_typed_slice() {
+                    Ok(ArrayView1::<'a, $type>::from(v))
+                } else {
+                    Err($error_fn(robj.clone()))
+                }
+            }
+        }
+    };
 }
 
 macro_rules! make_array_view_2 {
@@ -47,6 +63,9 @@ macro_rules! make_array_view_2 {
         }
     };
 }
+make_array_view_1!(Rbool, Error::ExpectedLogical);
+make_array_view_1!(i32, Error::ExpectedInteger);
+make_array_view_1!(f64, Error::ExpectedReal);
 
 make_array_view_2!(Rbool, "Not a logical matrix.");
 make_array_view_2!(i32, "Not an integer matrix.");
