@@ -24,18 +24,25 @@ macro_rules! make_array_view_2 {
         impl<'a> FromRobj<'a> for ArrayView2<'a, $type> {
             /// Convert an R object to a `ndarray` ArrayView2.
             fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+                <ArrayView2<'a, $type>>::try_from(robj).map_err(|_| $error_str)
+            }
+        }
+
+        impl<'a> TryFrom<&'a Robj> for ArrayView2<'a, $type> {
+            type Error = crate::Error;
+            fn try_from(robj: &Robj) -> Result<Self> {
                 if robj.is_matrix() {
                     let nrows = robj.nrows();
                     let ncols = robj.ncols();
                     if let Some(v) = robj.as_typed_slice() {
                         // use fortran order.
                         let shape = (nrows, ncols).into_shape().f();
-                        if let Ok(res) = ArrayView2::from_shape(shape, v) {
-                            return Ok(res);
-                        }
+                        return ArrayView2::from_shape(shape, v).map_err(|err| Error::NDArrayError(err));
+                    } else {
+                        return Err(Error::Other("Not a slice.".to_string()));
                     }
                 }
-                return Err($error_str);
+                return Err(Error::ExpectedMatrix(robj.clone()));
             }
         }
     };
