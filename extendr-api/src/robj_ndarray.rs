@@ -36,7 +36,7 @@ macro_rules! make_array_view_1 {
 }
 
 macro_rules! make_array_view_2 {
-    ($type: ty, $error_str: expr) => {
+    ($type: ty, $error_str: expr, $error_fn: expr) => {
         impl<'a> FromRobj<'a> for ArrayView2<'a, $type> {
             /// Convert an R object to a `ndarray` ArrayView2.
             fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
@@ -55,7 +55,7 @@ macro_rules! make_array_view_2 {
                         let shape = (nrows, ncols).into_shape().f();
                         return ArrayView2::from_shape(shape, v).map_err(|err| Error::NDArrayError(err));
                     } else {
-                        return Err(Error::Other("Not a slice.".to_string()));
+                        return Err($error_fn(robj.clone()));
                     }
                 }
                 return Err(Error::ExpectedMatrix(robj.clone()));
@@ -72,14 +72,14 @@ make_array_view_1!(Rcplx, Error::ExpectedComplex);
 make_array_view_1!(c64, Error::ExpectedComplex);
 make_array_view_1!(Rstr, Error::ExpectedString);
 
-make_array_view_2!(Rbool, "Not a logical matrix.");
-make_array_view_2!(Rint, "Not an integer matrix.");
-make_array_view_2!(i32, "Not an integer matrix.");
-make_array_view_2!(Rfloat, "Not a floating point matrix.");
-make_array_view_2!(f64, "Not a floating point matrix.");
-make_array_view_2!(Rcplx, "Not a complex number matrix.");
-make_array_view_2!(c64, "Not a complex number matrix.");
-make_array_view_2!(Rstr, "Not a string matrix.");
+make_array_view_2!(Rbool, "Not a logical matrix.", Error::ExpectedLogical);
+make_array_view_2!(Rint, "Not an integer matrix.", Error::ExpectedInteger);
+make_array_view_2!(i32, "Not an integer matrix.", Error::ExpectedInteger);
+make_array_view_2!(Rfloat, "Not a floating point matrix.", Error::ExpectedReal);
+make_array_view_2!(f64, "Not a floating point matrix.", Error::ExpectedReal);
+make_array_view_2!(Rcplx, "Not a complex number matrix.", Error::ExpectedComplex);
+make_array_view_2!(c64, "Not a complex number matrix.", Error::ExpectedComplex);
+make_array_view_2!(Rstr, "Not a string matrix.", Error::ExpectedString);
 
 //make_array_view_2!(u8, "Not a raw matrix.");
 
