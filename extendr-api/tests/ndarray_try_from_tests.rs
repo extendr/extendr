@@ -1,7 +1,3 @@
-fn test() {
-    let _ = (1..9);
-}
-
 #[cfg(feature = "ndarray")]
 mod ndarray_try_from_tests {
     use extendr_api::prelude::*;
