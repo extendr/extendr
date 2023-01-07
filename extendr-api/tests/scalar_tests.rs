@@ -18,6 +18,8 @@ fn test_rint() {
     assert_eq!(-&a, Rint::from(-20));
     assert_eq!(!&a, Rint::from(-21));
 
+    assert!(Rint::na().is_na());
+
     // NA lhs
     let a = Rint::na();
     let b = Rint::from(10);
@@ -171,6 +173,8 @@ fn test_rfloat() {
         assert_eq!(&a / b, Rfloat::from(2.));
         assert_eq!(-&a, Rfloat::from(-20.));
 
+        assert!(Rfloat::na().is_na());
+
         // NA lhs
         let a = Rfloat::na();
         let b = Rfloat::from(10.);
@@ -257,6 +261,8 @@ fn test_rcplx() {
         assert_eq!(&a * b, Rcplx::from(200.));
         assert_eq!(&a / b, Rcplx::from(2.));
         assert_eq!(-&a, Rcplx::from(-20.));
+
+        assert!(Rcplx::na().is_na());
 
         // NA lhs
         let a = Rcplx::na();
