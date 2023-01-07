@@ -229,6 +229,11 @@ fn test_rfloat() {
         // Some more, testing mixed binary operators
         assert!((Rfloat::from(f64::INFINITY) + 1.).is_infinite());
         assert!((42. - Rfloat::from(f64::INFINITY)).is_sign_negative());
+
+        // Absolute value
+        assert_eq!(Rfloat::from(-42.).abs(), Rfloat::from(42.));
+        assert_eq!(Rfloat::from(42.).abs(), Rfloat::from(42.));
+        assert_eq!(Rfloat::from(0.).abs(), Rfloat::from(0.));
     }
 }
 
