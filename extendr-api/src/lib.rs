@@ -471,7 +471,7 @@ pub enum Rany<'a> {
     Logicals(&'a Logicals),       // LGLSXP
     Integers(&'a Integers),       // INTSXP
     Doubles(&'a Doubles),         // REALSXP
-    Complexes(&'a Robj),          // CPLXSXP
+    Complexes(&'a Complexes),     // CPLXSXP
     Strings(&'a Strings),         // STRSXP
     Dot(&'a Robj),                // DOTSXP
     Any(&'a Robj),                // ANYSXP
