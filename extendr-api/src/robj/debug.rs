@@ -35,9 +35,7 @@ impl std::fmt::Debug for Robj {
             Rany::Logicals(value) => value.fmt(f),
             Rany::Integers(value) => value.fmt(f),
             Rany::Doubles(value) => value.fmt(f),
-            Rany::Complexes(_complex) => {
-                todo!("implement Complexes")
-            }
+            Rany::Complexes(value) => value.fmt(f),
             Rany::Strings(value) => write!(f, "{:?}", value.as_slice()),
             Rany::Dot(_dot) => write!(f, "Dot"),
             Rany::Any(_any) => write!(f, "Any"),
