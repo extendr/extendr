@@ -89,8 +89,12 @@ impl PartialEq<str> for Rstr {
 
 impl std::fmt::Debug for Rstr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let s = self.as_str();
-        write!(f, "{:?}", s)
+        if self.is_na() {
+            write!(f, "NA_CHARACTER")
+        } else {
+            let s = self.as_str();
+            write!(f, "{:?}", s)
+        }
     }
 }
 

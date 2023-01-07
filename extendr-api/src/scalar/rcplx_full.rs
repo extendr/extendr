@@ -29,6 +29,8 @@ pub struct Rcplx(c64);
 impl Rcplx {
     gen_impl!(Rcplx, c64);
 
+    pub fn new(re: f64, im: f64) -> Self { Self(c64::new(re, im)) }
+
     pub fn is_nan(&self) -> bool {
         self.0.is_nan()
     }
@@ -163,7 +165,7 @@ impl PartialEq<f64> for Rcplx {
 impl std::fmt::Debug for Rcplx {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if self.is_na() {
-            write!(f, "NA_complex_")
+            write!(f, "NA_COMPLEX")
         } else {
             write!(f, "{:?} {} {:?}i", self.re(), if self.im().is_sign_negative() { '-' } else { '+' }, self.im().abs())
         }
