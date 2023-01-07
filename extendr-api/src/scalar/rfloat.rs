@@ -30,6 +30,7 @@ impl Rfloat {
     pub fn is_subnormal(&self) -> bool {
         self.0.is_subnormal()
     }
+    pub fn abs(&self) -> Rfloat {self.0.abs().into()}
 }
 
 // `NA_real_` is a `NaN` with specific bit representation.
