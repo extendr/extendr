@@ -58,6 +58,59 @@ where
     }
 }
 
+
+impl<T> TryFrom<Robj> for Nullable<T>
+    where T: TryFrom<Robj, Error = Error>,
+{
+    type Error = Error;
+
+    /// Convert an object that may be null to a rust type.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let s1 = r!(1);
+    ///     let n1 = <Nullable<i32>>::try_from(s1)?;
+    ///     assert_eq!(n1, Nullable::NotNull(1));
+    ///     let snull = r!(NULL);
+    ///     let nnull = <Nullable<i32>>::try_from(snull)?;
+    ///     assert_eq!(nnull, Nullable::Null);
+    /// }
+    /// ```
+    fn try_from(robj: Robj) -> std::result::Result<Self, Self::Error> {
+        if robj.is_null() {
+            Ok(Nullable::Null)
+        } else {
+            Ok(Nullable::NotNull(robj.try_into()?))
+        }
+    }
+}
+
+impl<'a, T> TryFrom<&'a Robj> for Nullable<T>
+    where T: TryFrom<&'a Robj, Error = Error>,
+{
+    type Error = Error;
+
+    /// Convert an object that may be null to a rust type.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let s1 = r!(1);
+    ///     let n1 = <Nullable<i32>>::try_from(&s1)?;
+    ///     assert_eq!(n1, Nullable::NotNull(1));
+    ///     let snull = r!(NULL);
+    ///     let nnull = <Nullable<i32>>::try_from(&snull)?;
+    ///     assert_eq!(nnull, Nullable::Null);
+    /// }
+    /// ```
+    fn try_from(robj: &'a Robj) -> std::result::Result<Self, Self::Error> {
+        if robj.is_null() {
+            Ok(Nullable::Null)
+        } else {
+            Ok(Nullable::NotNull(robj.try_into()?))
+        }
+    }
+}
+
 impl<T> From<Nullable<T>> for Robj
 where
     T: Into<Robj>,
