@@ -33,6 +33,20 @@ macro_rules! make_array_view_1 {
             }
         }
     };
+
+    ($type: ty, $error_fn: expr) => {
+        impl<'a> TryFrom<Robj> for ArrayView1<'a, $type> {
+            type Error = crate::Error;
+
+            fn try_from(robj: &Robj) -> Result<Self> {
+                if let Some(v) = robj.as_typed_slice() {
+                    Ok(ArrayView1::<'a, $type>::from(v))
+                } else {
+                    Err($error_fn(robj.clone()))
+                }
+            }
+        }
+    };
 }
 
 macro_rules! make_array_view_2 {
@@ -54,6 +68,25 @@ macro_rules! make_array_view_2 {
                         // use fortran order.
                         let shape = (nrows, ncols).into_shape().f();
                         return ArrayView2::from_shape(shape, v).map_err(|err| Error::NDArrayError(err));
+                    } else {
+                        return Err($error_fn(robj.clone()));
+                    }
+                }
+                return Err(Error::ExpectedMatrix(robj.clone()));
+            }
+        }
+
+        impl<'a> TryFrom<Robj> for ArrayView2<'a, $type> {
+            type Error = crate::Error;
+            fn try_from(robj: Robj) -> Result<Self> {
+                if robj.is_matrix() {
+                    let nrows = robj.nrows();
+                    let ncols = robj.ncols();
+                    if let Some(v) = robj.as_typed_slice() {
+                        // use fortran order.
+                        let shape = (nrows, ncols).into_shape().f();
+                        return ArrayView2::from_shape(shape, v)
+                            .map_err(|err| Error::NDArrayError(err));
                     } else {
                         return Err($error_fn(robj.clone()));
                     }
