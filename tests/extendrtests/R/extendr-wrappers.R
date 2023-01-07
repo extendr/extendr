@@ -81,6 +81,11 @@ my_device <- function(welcome_message) invisible(.Call(wrap__my_device, welcome_
 #' @export
 hello_submodule <- function() .Call(wrap__hello_submodule)
 
+#' Calculate Euclidean distance matrix
+#' Test case adopted from https://github.com/mikemahoney218/examplerust/blob/23d21b1ced4e24b7a7c00dd36290114dc1bbd113/src/rust/src/lib.rs#L5
+#' @export
+euclidean_dist <- function(a) .Call(wrap__euclidean_dist, a)
+
 #' Class for testing (exported)
 #' @examples
 #' x <- MyClass$new()
