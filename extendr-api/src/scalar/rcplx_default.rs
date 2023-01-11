@@ -41,11 +41,15 @@ impl CanBeNA for c64 {
 /// Rcplx has a special NA value, obtained from R headers via R_NaReal.
 ///
 /// Rcplx has the same footprint as R's complex value allowing us to use it in zero copy slices.
-#[derive(Clone, Copy, Debug, Default, PartialEq)]
+#[derive(Clone, Copy, Default, PartialEq)]
+#[repr(C)]
 pub struct Rcplx(c64);
 
 impl Rcplx {
     // gen_impl!(Rcplx, c64);
+    pub fn new(re: f64, im: f64) -> Self {
+        Self(c64::new(re, im))
+    }
 
     pub fn re(&self) -> Rfloat {
         Rfloat::from(self.0.re)
@@ -115,5 +119,25 @@ impl From<Rcplx> for Option<c64> {
 impl PartialEq<f64> for Rcplx {
     fn eq(&self, other: &f64) -> bool {
         self.re().inner() == *other && self.im() == 0.0
+    }
+}
+
+impl std::fmt::Debug for Rcplx {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.is_na() {
+            write!(f, "NA_COMPLEX")
+        } else {
+            write!(
+                f,
+                "{:?} {} {:?}i",
+                self.re(),
+                if self.im().is_sign_negative() {
+                    '-'
+                } else {
+                    '+'
+                },
+                self.im().abs()
+            )
+        }
     }
 }
