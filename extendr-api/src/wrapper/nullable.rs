@@ -58,9 +58,9 @@ where
     }
 }
 
-
 impl<T> TryFrom<Robj> for Nullable<T>
-    where T: TryFrom<Robj, Error = Error>,
+where
+    T: TryFrom<Robj, Error = Error>,
 {
     type Error = Error;
 
@@ -86,7 +86,8 @@ impl<T> TryFrom<Robj> for Nullable<T>
 }
 
 impl<'a, T> TryFrom<&'a Robj> for Nullable<T>
-    where T: TryFrom<&'a Robj, Error = Error>,
+where
+    T: TryFrom<&'a Robj, Error = Error>,
 {
     type Error = Error;
 
@@ -127,6 +128,94 @@ where
         match val {
             Nullable::NotNull(t) => t.into(),
             Nullable::Null => r!(NULL),
+        }
+    }
+}
+
+impl<T> Into<Option<T>> for Nullable<T> {
+
+    /// Convert a Nullable type into Option
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     assert_eq!(Into::<Option<i32>>::into(Nullable::Null), None);
+    ///     assert_eq!(Into::<Option<i32>>::into(Nullable::NotNull(42)), Some(42));
+    /// }
+    /// ```
+    fn into(self) -> Option<T> {
+        match self {
+            Nullable::NotNull(value) => Some(value),
+            _ => None,
+        }
+    }
+}
+
+impl<'a, T> Into<Option<&'a T>> for &'a Nullable<T> {
+
+    /// Convert a Nullable type into Option
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     assert_eq!(Into::<Option<&i32>>::into(&Nullable::Null), None);
+    ///     assert_eq!(Into::<Option<&i32>>::into(&Nullable::NotNull(42)), Some(&42));
+    /// }
+    /// ```
+    fn into(self) -> Option<&'a T> {
+        match self {
+            Nullable::NotNull(value) => Some(value),
+            _ => None,
+        }
+    }
+}
+
+impl<T> From<Option<T>> for Nullable<T>
+{
+    /// Convert an Option into Nullable type
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let x : Nullable<_> = From::<Option<i32>>::from(None);
+    ///     assert_eq!(x, Nullable::<i32>::Null);
+    ///     let x : Nullable<_> = From::<Option<i32>>::from(Some(42));
+    ///     assert_eq!(x, Nullable::<i32>::NotNull(42));
+    /// }
+    /// ```
+    fn from(value: Option<T>) -> Self {
+        match value {
+            Some(value) => Nullable::NotNull(value),
+            _ => Nullable::Null,
+        }
+    }
+}
+
+impl<T> Nullable<T> {
+    /// Convert Nullable R object into Option
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     assert_eq!(Nullable::<Rint>::Null.into_option(), None);
+    ///     assert_eq!(Nullable::<Rint>::NotNull(Rint::from(42)).into_option(), Some(Rint::from(42)));
+    /// }
+    /// ```
+    pub fn into_option(self) -> Option<T> {
+        self.into()
+    }
+
+    /// Map Nullable<T> into Nullable<U>
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     assert_eq!(Nullable::<Rfloat>::Null.map(|x| x.abs()), Nullable::<Rfloat>::Null);
+    ///     assert_eq!(Nullable::<Rfloat>::NotNull(Rfloat::from(42.0)).map(|x| x.abs()), Nullable::<Rfloat>::NotNull(Rfloat::from(42.0)));
+    /// }
+    /// ```
+    pub fn map<F, U>(self, f: F) -> Nullable<U>
+    where
+        F: FnOnce(T) -> U,
+    {
+        match self {
+            Nullable::NotNull(value) => Nullable::NotNull(f(value)),
+            _ => Nullable::Null,
         }
     }
 }
