@@ -69,3 +69,11 @@ test_that("Default parameter values are emitted to wrappers", {
   expect_equal(get_default_value(), 42L)
   expect_equal(MyClass$get_default_value(), 42L)
 })
+
+test_that("Nullable wrapper processes not null value", {
+  expect_equal(add_5_if_not_null(5L), 10L)
+})
+
+test_that("Nullable wrapper propagates NULL", {
+  expect_null(add_5_if_not_null(NULL))
+})
