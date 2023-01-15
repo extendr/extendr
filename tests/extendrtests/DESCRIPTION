@@ -1,23 +1,25 @@
 Package: extendrtests
 Title: Integration Tests for Calling Extendr from an R Package
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: c(
     person("Andy", "Thomason", , "andy@andythomason.com", c("aut")),
     person("Claus O.", "Wilke", , "wilke@austin.utexas.edu", c("aut", "cre"),
-      comment = c(ORCID = "0000-0002-7470-9261"))
+      comment = c(ORCID = "0000-0002-7470-9261")),
+    person("Ilia", "Kosenkov", , "ilia.kosenkov@outlook.com", c("aut"), comment = c(ORCID = "0000-0001-5563-7840"))
   )
 Description:
-  This package provides tests for extendr functionality used from
+  Provides tests for extendr functionality used from
   within an R package.
 License: MIT + file LICENSE
 SystemRequirements: Rust
 Encoding: UTF-8
-LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Imports:
-    brio,
-    here
+    rextendr,
 Suggests:
+    brio,
     rmarkdown,
+    stringi,
     testthat
+Config/rextendr/version: 0.2.0.9000

@@ -2,12 +2,13 @@
 
 [package]
 name = "extendrtests"
-version = "0.1.0"
+version = "0.2.0"
 authors = [
     "andy-thomason <andy@andythomason.com>",
-    "Claus O. Wilke <wilke@austin.utexas.edu>"
+    "Claus O. Wilke <wilke@austin.utexas.edu>",
+    "Ilia Kosenkov <ilia.kosenkov@outlook.com",
 ]
-edition = "2018"
+edition = "2021"
 
 [lib]
 crate-type = ["staticlib"]
