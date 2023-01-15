@@ -185,8 +185,6 @@
 <span id="184">184</span>
 <span id="185">185</span>
 <span id="186">186</span>
-<span id="187">187</span>
-<span id="188">188</span>
 </pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::wrapper::<span class="kw-2">*</span>;
 <span class="comment">// use crate::robj::GetSexp;
 </span><span class="kw">use </span><span class="kw">crate</span>::robj::Attributes;
@@ -224,9 +222,7 @@
             Rany::Logicals(value) =&gt; value.fmt(f),
             Rany::Integers(value) =&gt; value.fmt(f),
             Rany::Doubles(value) =&gt; value.fmt(f),
-            Rany::Complexes(_complex) =&gt; {
-                <span class="macro">todo!</span>(<span class="string">&quot;implement Complexes&quot;</span>)
-            }
+            Rany::Complexes(value) =&gt; value.fmt(f),
             Rany::Strings(value) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;{:?}&quot;</span>, value.as_slice()),
             Rany::Dot(_dot) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Dot&quot;</span>),
             Rany::Any(_any) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Any&quot;</span>),
@@ -376,4 +372,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="extendr_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

@@ -1,3 +1,3 @@
 (function() {var implementors = {
-"extendr_api":[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.66.0/core/convert/trait.AsRef.html\" title=\"trait core::convert::AsRef\">AsRef</a>&lt;<a class=\"primitive\" href=\"https://doc.rust-lang.org/1.66.0/std/primitive.str.html\">str</a>&gt; for <a class=\"struct\" href=\"extendr_api/wrapper/rstr/struct.Rstr.html\" title=\"struct extendr_api::wrapper::rstr::Rstr\">Rstr</a>"]]
+"extendr_api":[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.66.1/core/convert/trait.AsRef.html\" title=\"trait core::convert::AsRef\">AsRef</a>&lt;<a class=\"primitive\" href=\"https://doc.rust-lang.org/1.66.1/std/primitive.str.html\">str</a>&gt; for <a class=\"struct\" href=\"extendr_api/wrapper/rstr/struct.Rstr.html\" title=\"struct extendr_api::wrapper::rstr::Rstr\">Rstr</a>"]]
 };if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
