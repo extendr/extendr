@@ -1,4 +1,14 @@
 test_that("Wrapper code is up-to-date", {
+
+# This helper function removes all empty lines and all # nolint statements
+# from wrappers, which may differ
+clean_wrappers <- function(lines) {
+  lines <- stringi::stri_trim(lines)
+  lines <- lines[nzchar(lines)]
+  idx <- stringi::stri_detect_regex(lines, "#\\s*nolint", negate = TRUE)
+  lines[idx]
+}
+
   # What we're doing here is generating the latest wrappers for the
   # Rust library and comparing to the wrappers file stored in the
   # package R code. There are two reasons why this test may fail:
@@ -32,7 +42,7 @@ test_that("Wrapper code is up-to-date", {
   }
   
   y <- brio::read_lines(source)
-  expect_equal(x, y)
+  expect_equal(clean_wrappers(x), clean_wrappers(y))
 })
 
 test_that("Rust function prefixed with `_` can be called", {
