@@ -200,7 +200,7 @@ fn get_default_value(#[default = "42"] x: i32) -> i32 {
 }
 
 #[extendr(use_try_from = true)]
-fn add_5_if_not_null(x : Nullable<Rint>) -> Nullable<Rint> {
+fn add_5_if_not_null(x: Nullable<Rint>) -> Nullable<Rint> {
     x.map(|y| y + 5)
 }
 

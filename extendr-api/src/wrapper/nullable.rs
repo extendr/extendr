@@ -133,7 +133,6 @@ where
 }
 
 impl<T> Into<Option<T>> for Nullable<T> {
-
     /// Convert a Nullable type into Option
     /// ```
     /// use extendr_api::prelude::*;
@@ -151,7 +150,6 @@ impl<T> Into<Option<T>> for Nullable<T> {
 }
 
 impl<'a, T> Into<Option<&'a T>> for &'a Nullable<T> {
-
     /// Convert a Nullable type into Option
     /// ```
     /// use extendr_api::prelude::*;
@@ -168,8 +166,7 @@ impl<'a, T> Into<Option<&'a T>> for &'a Nullable<T> {
     }
 }
 
-impl<T> From<Option<T>> for Nullable<T>
-{
+impl<T> From<Option<T>> for Nullable<T> {
     /// Convert an Option into Nullable type
     /// ```
     /// use extendr_api::prelude::*;
