@@ -132,34 +132,34 @@ where
     }
 }
 
-impl<T> Into<Option<T>> for Nullable<T> {
+impl<T> From<Nullable<T>> for Option<T> {
     /// Convert a Nullable type into Option
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     assert_eq!(Into::<Option<i32>>::into(Nullable::Null), None);
-    ///     assert_eq!(Into::<Option<i32>>::into(Nullable::NotNull(42)), Some(42));
+    ///     assert_eq!(<Option<i32>>::from(Nullable::Null), None);
+    ///     assert_eq!(<Option<i32>>::from(Nullable::NotNull(42)), Some(42));
     /// }
     /// ```
-    fn into(self) -> Option<T> {
-        match self {
+    fn from(value: Nullable<T>) -> Self {
+        match value {
             Nullable::NotNull(value) => Some(value),
             _ => None,
         }
     }
 }
 
-impl<'a, T> Into<Option<&'a T>> for &'a Nullable<T> {
-    /// Convert a Nullable type into Option
+impl<'a, T> From<&'a Nullable<T>> for Option<&'a T> {
+    /// Convert a Nullable reference type into Option containing reference
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     assert_eq!(Into::<Option<&i32>>::into(&Nullable::Null), None);
-    ///     assert_eq!(Into::<Option<&i32>>::into(&Nullable::NotNull(42)), Some(&42));
+    ///     assert_eq!(<Option<&i32>>::from(&Nullable::Null), None);
+    ///     assert_eq!(<Option<&i32>>::from(&Nullable::NotNull(42)), Some(&42));
     /// }
     /// ```
-    fn into(self) -> Option<&'a T> {
-        match self {
+    fn from(value: &'a Nullable<T>) -> Self {
+        match value {
             Nullable::NotNull(value) => Some(value),
             _ => None,
         }
