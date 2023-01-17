@@ -93,11 +93,15 @@ jobs:
       - name: Configure Windows (R >= 4.2)
         if: startsWith(runner.os, 'Windows') && matrix.config.r != '4.1'
         run: |
-          $rtools42_home = "C:\rtools42"
+          if ("${{ matrix.config.rtools_version }}" -eq "42") {
+            $rtools_home = "C:\rtools42"   # for R 4.2
+          } else {
+            $rtools_home = "C:\rtools43"   # for R >= 4.3
+          }
 
           # c.f. https://github.com/wch/r-source/blob/f1501504df8df1668a57d3a1b6f80167f24441d3/src/library/profile/Rprofile.windows#L70-L71
-          echo "${rtools42_home}\x86_64-w64-mingw32.static.posix\bin"      | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
-          echo "${rtools42_home}\usr\bin"                                  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          echo "${rtools_home}\x86_64-w64-mingw32.static.posix\bin"      | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          echo "${rtools_home}\usr\bin"                                  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
           echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
 
           # Add target
@@ -371,13 +375,17 @@ jobs:
       - name: Configure Windows (R >= 4.2)
         if: startsWith(runner.os, 'Windows') && matrix.config.r != '4.1'
         run: |
-          $rtools42_home = "C:\rtools42"
+          if ("${{ matrix.config.rtools_version }}" -eq "42") {
+            $rtools_home = "C:\rtools42"   # for R 4.2
+          } else {
+            $rtools_home = "C:\rtools43"   # for R >= 4.3
+          }
 
           echo "::group::Setting up x86_64"
           echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           # c.f. https://github.com/wch/r-source/blob/f1501504df8df1668a57d3a1b6f80167f24441d3/src/library/profile/Rprofile.windows#L70-L71
-          echo "${rtools42_home}\x86_64-w64-mingw32.static.posix\bin"      | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
-          echo "${rtools42_home}\usr\bin"                                  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          echo "${rtools_home}\x86_64-w64-mingw32.static.posix\bin"      | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          echo "${rtools_home}\usr\bin"                                  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
           echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           echo "::endgroup::"
           
