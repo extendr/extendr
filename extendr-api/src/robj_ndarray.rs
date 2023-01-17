@@ -1,3 +1,14 @@
+//! Defines conversions between R objects and the [ndarray](https://docs.rs/ndarray/latest/ndarray/) crate, which offers native Rust array types and numerical computation routines.
+//! 
+//! Specifically, extendr supports the following conversions:
+//! * [`Robj` → `ArrayView1`](FromRobj#impl-FromRobj<%27a>-for-ArrayView1<%27a%2C%20T>), for when you have an R vector that you want to analyse in Rust.
+//! * [`Robj` → `ArrayView2`](FromRobj#impl-FromRobj<%27a>-for-ArrayView2<%27a%2C%20f64>), for when you have an R matrix that you want to analyse in Rust.
+//! * [`ArrayBase` → `Robj`](Robj#impl-TryFrom<%26ArrayBase<S%2C%20D>>-for-Robj), for when you want to return an [`ndarray`] Array from Rust back to R.
+//! 
+//! Note that that means that extendr only supports accessing R arrays as [`ArrayView`], which are immutable.
+//! It is recommended that you therefore return back to R a new array which you allocate in Rust.
+//! 
+//! For all array uses in Rust, refer to the [`ndarray::ArrayBase`] documentation, which explains the usage for all of the above types.
 #[doc(hidden)]
 use ndarray::prelude::*;
 use ndarray::{Data, ShapeBuilder};
