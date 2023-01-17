@@ -1,12 +1,68 @@
 //! Defines conversions between R objects and the [ndarray](https://docs.rs/ndarray/latest/ndarray/) crate, which offers native Rust array types and numerical computation routines.
 //!
-//! Specifically, extendr supports the following conversions:
-//! * [`Robj` → `ArrayView1`](FromRobj#impl-FromRobj<%27a>-for-ArrayView1<%27a%2C%20T>), for when you have an R vector that you want to analyse in Rust.
-//! * [`Robj` → `ArrayView2`](FromRobj#impl-FromRobj<%27a>-for-ArrayView2<%27a%2C%20f64>), for when you have an R matrix that you want to analyse in Rust.
-//! * [`ArrayBase` → `Robj`](Robj#impl-TryFrom<%26ArrayBase<S%2C%20D>>-for-Robj), for when you want to return an [`ndarray`] Array from Rust back to R.
+//! To enable these conversions, you must first enable the `ndarray` feature for extendr:
+//! ```toml
+//! [dependencies]
+//! extendr-api = { version = "0.3.1", features = ["ndarray"] }
+//! ```
 //!
-//! Note that that means that extendr only supports accessing R arrays as [`ArrayView`], which are immutable.
-//! It is recommended that you therefore return back to R a new array which you allocate in Rust.
+//! Specifically, extendr supports the following conversions:
+//! * [`Robj` → `ArrayView1`](FromRobj#impl-FromRobj<%27a>-for-ArrayView1<%27a%2C%20T>), for when you have an R vector that you want to analyse in Rust:
+//!     ```rust
+//!     use extendr_api::prelude::*;
+//!     use ndarray::ArrayView1;
+//!
+//!     #[extendr]
+//!     fn describe_vector(vector: ArrayView1<f64>){
+//!         println!("This R vector has length {:?}", vector.len())
+//!     }
+//!     ```
+//! * [`Robj` → `ArrayView2`](FromRobj#impl-FromRobj<%27a>-for-ArrayView2<%27a%2C%20f64>), for when you have an R matrix that you want to analyse in Rust.
+//!     ```rust
+//!     use extendr_api::prelude::*;
+//!     use ndarray::ArrayView2;
+//!
+//!     #[extendr]
+//!     fn describe_matrix(matrix: ArrayView2<f64>){
+//!         println!("This R matrix has shape {:?}", matrix.dim())
+//!     }
+//!     ```
+//! * [`ArrayBase` → `Robj`](Robj#impl-TryFrom<%26ArrayBase<S%2C%20D>>-for-Robj), for when you want to return a reference to an [`ndarray`] Array from Rust back to R.
+//!     ```rust
+//!     use extendr_api::prelude::*;
+//!     use ndarray::Array2;
+//!
+//!     struct MyWrapper {
+//!         matrix: Array2<f64>
+//!     }
+//!
+//!     #[extendr]
+//!     impl MyWrapper {
+//!         fn return_matrix(&self) -> Robj {
+//!             (&self.matrix).try_into().unwrap()
+//!         }
+//!     }
+//!     ```
+//!
+//! Note that extendr only supports accessing R arrays as [`ArrayView`], which are immutable.
+//! It is recommended that you therefore return back to R a reference to a new array which you allocate in Rust:
+//! ```rust
+//! use extendr_api::prelude::*;
+//! use ndarray::Array2;
+//!
+//! struct MyWrapper {
+//!     matrix: Array2<f64>
+//! }
+//!
+//! #[extendr]
+//! impl MyWrapper {
+//!     fn scalar_multiplication(&mut self, matrix: ArrayView2<f64>, scalar: f64) -> Robj {
+//!         // Allocate a new array
+//!         self.matrix = (&matrix * scalar);
+//!         (&self.matrix).try_into().unwrap()
+//!     }
+//! }
+//!```
 //!
 //! For all array uses in Rust, refer to the [`ndarray::ArrayBase`] documentation, which explains the usage for all of the above types.
 #[doc(hidden)]
