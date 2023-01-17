@@ -93,7 +93,7 @@ jobs:
       - name: Configure Windows (R >= 4.2)
         if: startsWith(runner.os, 'Windows') && matrix.config.r != '4.1'
         run: |
-          if ("${{ matrix.config.rtools_version }}" -eq "42") {
+          if ("${{ matrix.config.rtools-version }}" -eq "42") {
             $rtools_home = "C:\rtools42"   # for R 4.2
           } else {
             $rtools_home = "C:\rtools43"   # for R >= 4.3
@@ -375,7 +375,7 @@ jobs:
       - name: Configure Windows (R >= 4.2)
         if: startsWith(runner.os, 'Windows') && matrix.config.r != '4.1'
         run: |
-          if ("${{ matrix.config.rtools_version }}" -eq "42") {
+          if ("${{ matrix.config.rtools-version }}" -eq "42") {
             $rtools_home = "C:\rtools42"   # for R 4.2
           } else {
             $rtools_home = "C:\rtools43"   # for R >= 4.3
