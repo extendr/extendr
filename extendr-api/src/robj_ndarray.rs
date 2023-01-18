@@ -27,7 +27,7 @@
 //!         println!("This R matrix has shape {:?}", matrix.dim())
 //!     }
 //!     ```
-//! * [`ArrayBase` → `Robj`](Robj#impl-TryFrom<%26ArrayBase<S%2C%20D>>-for-Robj), for when you want to return a reference to an [`ndarray`] Array from Rust back to R.
+//! * [`ArrayBase` → `Robj`](Robj#impl-TryFrom<ArrayBase<S%2C%20D>>-for-Robj), for when you want to return a reference to an [`ndarray`] Array from Rust back to R.
 //!     ```rust
 //!     use extendr_api::prelude::*;
 //!     use ndarray::Array2;
