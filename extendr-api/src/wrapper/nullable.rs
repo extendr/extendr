@@ -132,7 +132,10 @@ where
     }
 }
 
-impl<T> From<Nullable<T>> for Option<T> {
+impl<T> From<Nullable<T>> for Option<T>
+where
+    T: TryFrom<Robj, Error = Error>,
+{
     /// Convert a Nullable type into Option
     /// ```
     /// use extendr_api::prelude::*;
@@ -149,7 +152,10 @@ impl<T> From<Nullable<T>> for Option<T> {
     }
 }
 
-impl<'a, T> From<&'a Nullable<T>> for Option<&'a T> {
+impl<'a, T> From<&'a Nullable<T>> for Option<&'a T>
+where
+    T: TryFrom<Robj, Error = Error>,
+{
     /// Convert a Nullable reference type into Option containing reference
     /// ```
     /// use extendr_api::prelude::*;
@@ -166,7 +172,10 @@ impl<'a, T> From<&'a Nullable<T>> for Option<&'a T> {
     }
 }
 
-impl<T> From<Option<T>> for Nullable<T> {
+impl<T> From<Option<T>> for Nullable<T>
+where
+    T: Into<Robj>,
+{
     /// Convert an Option into Nullable type
     /// ```
     /// use extendr_api::prelude::*;
@@ -185,7 +194,10 @@ impl<T> From<Option<T>> for Nullable<T> {
     }
 }
 
-impl<T> Nullable<T> {
+impl<T> Nullable<T>
+where
+    T: TryFrom<Robj, Error = Error>,
+{
     /// Convert Nullable R object into Option
     /// ```
     /// use extendr_api::prelude::*;
@@ -197,7 +209,8 @@ impl<T> Nullable<T> {
     pub fn into_option(self) -> Option<T> {
         self.into()
     }
-
+}
+impl<T> Nullable<T> {
     /// Map Nullable<T> into Nullable<U>
     /// ```
     /// use extendr_api::prelude::*;
