@@ -92,7 +92,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         }
 
         #[no_mangle]
-        #[allow(non_snake_case)]
+        #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
         pub extern "C" fn #wrap_make_module_wrappers(
             use_symbols_sexp: extendr_api::SEXP,
             package_name_sexp: extendr_api::SEXP,
