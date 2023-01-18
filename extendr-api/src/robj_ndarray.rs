@@ -39,14 +39,14 @@
 //!     ```
 //!
 //! Note that extendr only supports accessing R arrays as [`ArrayView`], which are immutable.
-//! It is recommended that you therefore return back to R a reference to a new array which you allocate in Rust:
+//! It is recommended that you therefore return back to R a reference to a new array which you allocate in Rust.
+//! This is made easier by the fact that [ndarray allocates a new array automatically when performing operations on array references](ArrayBase#binary-operators-with-array-and-scalar):
 //! ```rust
 //! use extendr_api::prelude::*;
 //! use ndarray::Array2;
 //!
 //! #[extendr]
 //! fn scalar_multiplication(matrix: ArrayView2<f64>, scalar: f64) -> Robj {
-//!     // Allocate a new array
 //!     (&matrix * scalar).try_into().unwrap()
 //! }
 //!```
