@@ -32,15 +32,9 @@
 //!     use extendr_api::prelude::*;
 //!     use ndarray::Array2;
 //!
-//!     struct MyWrapper {
-//!         matrix: Array2<f64>
-//!     }
-//!
 //!     #[extendr]
-//!     impl MyWrapper {
-//!         fn return_matrix(&self) -> Robj {
-//!             (&self.matrix).try_into().unwrap()
-//!         }
+//!     fn return_matrix() -> Robj {
+//!         Array2::<f64>::zeros((4, 4)).try_into().unwrap()
 //!     }
 //!     ```
 //!
@@ -50,17 +44,10 @@
 //! use extendr_api::prelude::*;
 //! use ndarray::Array2;
 //!
-//! struct MyWrapper {
-//!     matrix: Array2<f64>
-//! }
-//!
 //! #[extendr]
-//! impl MyWrapper {
-//!     fn scalar_multiplication(&mut self, matrix: ArrayView2<f64>, scalar: f64) -> Robj {
-//!         // Allocate a new array
-//!         self.matrix = (&matrix * scalar);
-//!         (&self.matrix).try_into().unwrap()
-//!     }
+//! fn scalar_multiplication(matrix: ArrayView2<f64>, scalar: f64) -> Robj {
+//!     // Allocate a new array
+//!     (&matrix * scalar).try_into().unwrap()
 //! }
 //!```
 //!
@@ -113,21 +100,6 @@ make_array_view_2!(i32, "Not an integer matrix.");
 make_array_view_2!(f64, "Not a floating point matrix.");
 //make_array_view_2!(u8, "Not a raw matrix.");
 
-impl<A, S, D> TryFrom<ArrayBase<S, D>> for Robj
-where
-    S: Data<Elem = A>,
-    A: Copy + ToVectorValue,
-    D: Dimension,
-{
-    type Error = Error;
-
-    /// Converts an ndarray Array into an equivalent R array.
-    /// The data itself is copied.
-    fn try_from(value: ArrayBase<S, D>) -> Result<Self> {
-        (&value).try_from()
-    }
-}
-
 impl<A, S, D> TryFrom<&ArrayBase<S, D>> for Robj
 where
     S: Data<Elem = A>,
@@ -164,6 +136,21 @@ where
                         ))
                     })?,
             )
+    }
+}
+
+impl<A, S, D> TryFrom<ArrayBase<S, D>> for Robj
+where
+    S: Data<Elem = A>,
+    A: Copy + ToVectorValue,
+    D: Dimension,
+{
+    type Error = Error;
+
+    /// Converts an ndarray Array into an equivalent R array.
+    /// The data itself is copied.
+    fn try_from(value: ArrayBase<S, D>) -> Result<Self> {
+        Robj::try_from(&value)
     }
 }
 
@@ -247,31 +234,36 @@ mod tests {
     #[test]
     fn test_to_robj() {
         test! {
+            duplicate!{
+                [
+                    array robj;
 
-        duplicate!{
-            [
-                array robj;
                     // An empty array should still convert to an empty R array with the same shape
                     [Array4::<i32>::zeros((0, 1, 2, 3).f())] ["array(integer(), c(0, 1, 2, 3))"];
+
                     [array![1., 2., 3.]] ["array(c(1, 2, 3))"];
+
                     // We give both R and Rust the same 1d vector and tell them both to read it as a matrix
                     // in C order. Therefore these arrays should be the same.
                     [Array::from_shape_vec((2, 3), vec![1., 2., 3., 4., 5., 6.]).unwrap()] ["matrix(c(1, 2, 3, 4, 5, 6), nrow=2, byrow=TRUE)"];
+
                     // We give both R and Rust the same 1d vector and tell them both to read it as a matrix
                     // in fortran order. Therefore these arrays should be the same.
                     [Array::from_shape_vec((2, 3).f(), vec![1., 2., 3., 4., 5., 6.]).unwrap()] ["matrix(c(1, 2, 3, 4, 5, 6), nrow=2, byrow=FALSE)"];
+
                     // We give both R and Rust the same 1d vector and tell them both to read it as a 3d array
                     // in fortran order. Therefore these arrays should be the same.
                     [Array::from_shape_vec((1, 2, 3).f(), vec![1, 2, 3, 4, 5, 6]).unwrap()] ["array(1:6, c(1, 2, 3))"];
+
                     // We give R a 1d vector and tell it to read it as a 3d vector
                     // Then we give Rust the equivalent vector manually split out.
                     [array![[[1, 5], [3, 7]], [[2, 6], [4, 8]]]] ["array(1:8, dim=c(2, 2, 2))"];
-            ]
-            assert_eq!(&Robj::try_from(array)?, &R!(robj)?);
-            assert_eq!(&Robj::try_from(&array)?, &R!(robj)?);
+                ]
+                assert_eq!(&Robj::try_from(array)?, &R!(robj)?);
+                assert_eq!(&Robj::try_from(&array)?, &R!(robj)?);
+            }
         }
     }
-}
     #[test]
     fn test_round_trip() {
         test! {
