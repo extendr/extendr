@@ -39,7 +39,7 @@
 //!     ```
 //!
 //! Note that extendr only supports accessing R arrays as [`ArrayView`], which are immutable.
-//! It is recommended that you therefore return back to R a reference to a new array which you allocate in Rust.
+//! It is recommended that you therefore return back to R a reference to a new array which you allocate in Rust (which, however, will perform a copy of array data to a block of memory managed by R).
 //! This is made easier by the fact that [ndarray allocates a new array automatically when performing operations on array references](ArrayBase#binary-operators-with-array-and-scalar):
 //! ```rust
 //! use extendr_api::prelude::*;
