@@ -203,7 +203,8 @@ jobs:
       - name: Obtain 'rextendr'
         uses: actions/checkout@v2
         with:
-          repository: extendr/rextendr
+          repository: yutannihilation/rextendr
+          ref: use-rtools43
           path: ./tests/rextendr
 
       - name: Install dependencies for extendrtests and rcmdcheck
