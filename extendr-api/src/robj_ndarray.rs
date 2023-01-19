@@ -19,6 +19,20 @@ where
     }
 }
 
+impl<'a, T> TryFrom<&'a mut Robj> for ArrayViewMut1<'a, T>
+where
+    Robj: AsTypedSlice<'a, T>,
+{
+    type Error = Error;
+    fn try_from(robj: &'a mut Robj) -> std::result::Result<Self, Error> {
+        if let Some(v) = robj.as_typed_slice_mut() {
+            Ok(ArrayViewMut1::<'a, T>::from(v))
+        } else {
+            Err(Error::TypeMismatch(robj.to_owned()))
+        }
+    }
+}
+
 macro_rules! make_array_view_2 {
     ($type: ty, $error_str: expr) => {
         impl<'a> FromRobj<'a> for ArrayView2<'a, $type> {
@@ -31,6 +45,23 @@ macro_rules! make_array_view_2 {
                         // use fortran order.
                         let shape = (nrows, ncols).into_shape().f();
                         if let Ok(res) = ArrayView2::from_shape(shape, v) {
+                            return Ok(res);
+                        }
+                    }
+                }
+                return Err($error_str);
+            }
+        }
+
+        impl<'a> TryFrom<&mut Robj> for ArrayViewMut2<'a, $type> {
+            type Error = &'static str;
+            fn try_from(robj: &mut Robj) -> std::result::Result<Self, &'static str> {
+                if robj.is_matrix() {
+                    let nrows = robj.nrows();
+                    let ncols = robj.ncols();
+                    if let Some(v) = robj.as_typed_slice_mut() {
+                        let shape = (nrows, ncols).into_shape().f();
+                        if let Ok(res) = ArrayViewMut2::from_shape(shape, v) {
                             return Ok(res);
                         }
                     }
@@ -151,6 +182,24 @@ fn test_from_robj() {
         assert_eq!(mx[[1, 1]], FALSE);
         assert_eq!(mx[[2, 1]], FALSE);
         assert_eq!(mx[[3, 1]], FALSE);
+
+        // Check mutable vector
+        let mut robj = R!("1:5").unwrap();
+        let mut arr : ArrayViewMut1<i32> = TryFrom::try_from(&mut robj).unwrap();
+        arr += 1;
+        // If the robj itself has been modified, then this worked correctly
+        assert_eq!(robj.as_integer_slice().unwrap(), [2, 3, 4, 5, 6]);
+
+        // Check mutable matrix
+        let mut robj = R!("matrix(1:4, nrow=2)").unwrap();
+        let mut arr : ArrayViewMut2<i32> = TryFrom::try_from(&mut robj).unwrap();
+        arr *= 2;
+        // If the robj itself has been modified, then this worked correctly
+        let matrix: RMatrix<i32> = robj.as_matrix().unwrap();
+        assert_eq!(matrix[[0, 0]], 2);
+        assert_eq!(matrix[[1, 0]], 4);
+        assert_eq!(matrix[[0, 1]], 6);
+        assert_eq!(matrix[[1, 1]], 8);
 
         // check raw matrices
         // let robj = r!(Matrix::new(vec![1_u8, 2, 3, 4, 5, 6, 7, 8], 4, 2));
