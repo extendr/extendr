@@ -808,7 +808,7 @@ macro_rules! gen_sum_iter {
         // impl std::iter::Sum for $type {
         //     /// Documentation comments/test built by the #[doc] attributes
         //     fn sum<I: Iterator<Item = Rint>>(iter: I) -> Rint {
-        //         iter.fold(Rint::from(0i32), |a, b| a + b)
+        //         iter.fold(Rint::default(), |a, b| a + b)
         //     }
         // }
         impl std::iter::Sum for $type {
@@ -823,7 +823,32 @@ macro_rules! gen_sum_iter {
                 #[doc = "}"]
                 #[doc = "```"]
                 fn sum<I: Iterator<Item = $type>>(iter: I) -> $type {
-                    iter.fold($type::from($zero), |a, b| a + b)
+                    iter.fold($type::default(), |a, b| a + b)
+                }
+            }
+        }
+
+        // The 'example usage' expands to...
+        //
+        // impl std::iter::Sum for &$type {
+        //     /// Documentation comments/test built by the #[doc] attributes
+        //     fn sum<I: Iterator<Item = &Rint>>(iter: I) -> Rint {
+        //         iter.fold(Rint::default(), |a, b| a + b)
+        //     }
+        // }
+        impl<'a> std::iter::Sum<&'a $type> for $type {
+            paste::paste! {
+                #[doc = "Yields NA on overflow if NAs present."]
+                #[doc = "```"]
+                #[doc = "use extendr_api::prelude::*;"]
+                #[doc = "use std::iter::Sum;"]
+                #[doc = "test! {"]
+                #[doc = "    let x = (0..100).map(|x| &" $type "::default());"]
+                #[doc = "    assert_eq!(<" $type " as Sum>::sum(x), <" $type ">::default());"]
+                #[doc = "}"]
+                #[doc = "```"]
+                fn sum<I: Iterator<Item = &'a $type>>(iter: I) -> $type {
+                    iter.fold($type::default(), |a, b| a + *b)
                 }
             }
         }
