@@ -199,6 +199,11 @@ fn get_default_value(#[default = "42"] x: i32) -> i32 {
     x
 }
 
+#[extendr(use_try_from = true)]
+fn add_5_if_not_null(x: Nullable<Rint>) -> Nullable<Rint> {
+    x.map(|y| y + 5)
+}
+
 // Class for testing
 #[derive(Default, Debug)]
 struct MyClass {
@@ -337,6 +342,8 @@ extendr_module! {
     fn test_rename_mymod;
 
     fn get_default_value;
+
+    fn add_5_if_not_null;
 
     impl MyClass;
     impl __MyClass;

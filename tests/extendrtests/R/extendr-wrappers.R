@@ -69,6 +69,8 @@ test.rename.rlike <- function() .Call(wrap__test_rename_mymod)
 
 get_default_value <- function(x = 42) .Call(wrap__get_default_value, x)
 
+add_5_if_not_null <- function(x) .Call(wrap__add_5_if_not_null, x)
+
 #' Create a new device.
 #'
 #' @param welcome_message A warm message to welcome you.
