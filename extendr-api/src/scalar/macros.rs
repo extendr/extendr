@@ -843,8 +843,9 @@ macro_rules! gen_sum_iter {
                 #[doc = "use extendr_api::prelude::*;"]
                 #[doc = "use std::iter::Sum;"]
                 #[doc = "test! {"]
-                #[doc = "    let x = (0..100).map(|x| &" $type "::default());"]
-                #[doc = "    assert_eq!(<" $type " as Sum>::sum(x), <" $type ">::default());"]
+                #[doc = "    let z =" $type "::default();"]
+                #[doc = "    let x = (0..100).map(|_| &z);"]
+                #[doc = "    assert_eq!(<" $type " as Sum<& " $type ">>::sum(x), <" $type ">::default());"]
                 #[doc = "}"]
                 #[doc = "```"]
                 fn sum<I: Iterator<Item = &'a $type>>(iter: I) -> $type {
