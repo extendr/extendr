@@ -1,5 +1,4 @@
 use extendr_api::prelude::*;
-use std::fmt::format;
 
 #[test]
 fn test_debug() {
