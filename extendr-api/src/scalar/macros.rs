@@ -791,18 +791,17 @@ macro_rules! gen_trait_impl {
 
 /// Generates an implementation of `std::iter::Sum` for a scalar type
 ///
-/// This macro requires the following arguments:
+/// This macro requires the following argument:
 ///
 /// * `$type`   - The Type to implement `std::iter::Sum` for
-/// * `$zero`   - The zero value for the primitive counterpart to Type
 ///
 /// Example Usage:
 ///
 /// ```ignore
-/// gen_sum_iter!(Rint, 0i32);
+/// gen_sum_iter!(Rint);
 /// ```
 macro_rules! gen_sum_iter {
-    ($type : tt, $zero : expr) => {
+    ($type : tt) => {
         // The 'example usage' expands to...
         //
         // impl std::iter::Sum for $type {
