@@ -839,6 +839,31 @@
 <span id="838">838</span>
 <span id="839">839</span>
 <span id="840">840</span>
+<span id="841">841</span>
+<span id="842">842</span>
+<span id="843">843</span>
+<span id="844">844</span>
+<span id="845">845</span>
+<span id="846">846</span>
+<span id="847">847</span>
+<span id="848">848</span>
+<span id="849">849</span>
+<span id="850">850</span>
+<span id="851">851</span>
+<span id="852">852</span>
+<span id="853">853</span>
+<span id="854">854</span>
+<span id="855">855</span>
+<span id="856">856</span>
+<span id="857">857</span>
+<span id="858">858</span>
+<span id="859">859</span>
+<span id="860">860</span>
+<span id="861">861</span>
+<span id="862">862</span>
+<span id="863">863</span>
+<span id="864">864</span>
+<span id="865">865</span>
 </pre><pre class="rust"><code><span class="doccomment">/// Generates an implementation of a unary operator Trait for a scalar type
 ///
 /// Generates the implementation of the specified unary operator for both `Type` and
@@ -1632,24 +1657,23 @@
 
 <span class="doccomment">/// Generates an implementation of `std::iter::Sum` for a scalar type
 ///
-/// This macro requires the following arguments:
+/// This macro requires the following argument:
 ///
 /// * `$type`   - The Type to implement `std::iter::Sum` for
-/// * `$zero`   - The zero value for the primitive counterpart to Type
 ///
 /// Example Usage:
 ///
 /// ```ignore
-/// gen_sum_iter!(Rint, 0i32);
+/// gen_sum_iter!(Rint);
 /// ```
 </span><span class="macro">macro_rules! </span>gen_sum_iter {
-    (<span class="macro-nonterminal">$</span><span class="kw">type </span>: <span class="macro-nonterminal">tt</span>, <span class="macro-nonterminal">$zero </span>: expr) =&gt; {
+    (<span class="macro-nonterminal">$</span><span class="kw">type </span>: <span class="macro-nonterminal">tt</span>) =&gt; {
         <span class="comment">// The &#39;example usage&#39; expands to...
         //
         // impl std::iter::Sum for $type {
         //     /// Documentation comments/test built by the #[doc] attributes
         //     fn sum&lt;I: Iterator&lt;Item = Rint&gt;&gt;(iter: I) -&gt; Rint {
-        //         iter.fold(Rint::from(0i32), |a, b| a + b)
+        //         iter.fold(Rint::default(), |a, b| a + b)
         //     }
         // }
         </span><span class="kw">impl </span>std::iter::Sum <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
@@ -1664,7 +1688,33 @@
                 #[<span class="macro-nonterminal">doc </span>= <span class="string">&quot;}&quot;</span>]
                 #[doc = <span class="string">&quot;```&quot;</span>]
                 </span><span class="kw">fn </span>sum&lt;I: Iterator&lt;Item = <span class="macro-nonterminal">$</span><span class="kw">type</span>&gt;&gt;(<span class="macro-nonterminal">iter</span>: I) -&gt; <span class="macro-nonterminal">$</span><span class="kw">type </span>{
-                    <span class="macro-nonterminal">iter</span>.fold(<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(<span class="macro-nonterminal">$zero</span>), |a, b| a + b)
+                    <span class="macro-nonterminal">iter</span>.fold(<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::default</span>(), |a, b| a + b)
+                }
+            }
+        }
+
+        <span class="comment">// The &#39;example usage&#39; expands to...
+        //
+        // impl std::iter::Sum for &amp;$type {
+        //     /// Documentation comments/test built by the #[doc] attributes
+        //     fn sum&lt;I: Iterator&lt;Item = &amp;Rint&gt;&gt;(iter: I) -&gt; Rint {
+        //         iter.fold(Rint::default(), |a, b| a + b)
+        //     }
+        // }
+        </span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; std::iter::Sum&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+            <span class="macro">paste::paste! </span>{
+                <span class="attribute">#[<span class="macro-nonterminal">doc </span>= <span class="string">&quot;Yields NA on overflow if NAs present.&quot;</span>]
+                #[doc = <span class="string">&quot;```&quot;</span>]
+                #[doc = <span class="string">&quot;use extendr_api::prelude::*;&quot;</span>]
+                #[doc = <span class="string">&quot;use std::iter::Sum;&quot;</span>]
+                #[doc = <span class="string">&quot;test! {&quot;</span>]
+                #[doc = <span class="string">&quot;    let z =&quot; </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">&quot;::default();&quot;</span>]
+                #[<span class="macro-nonterminal">doc </span>= <span class="string">&quot;    let x = (0..100).map(|_| &amp;z);&quot;</span>]
+                #[doc = <span class="string">&quot;    assert_eq!(&lt;&quot; </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">&quot; as Sum&lt;&amp; &quot; </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">&quot;&gt;&gt;::sum(x), &lt;&quot; </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">&quot;&gt;::default());&quot;</span>]
+                #[<span class="macro-nonterminal">doc </span>= <span class="string">&quot;}&quot;</span>]
+                #[doc = <span class="string">&quot;```&quot;</span>]
+                </span><span class="kw">fn </span>sum&lt;I: Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="macro-nonterminal">$</span><span class="kw">type</span>&gt;&gt;(<span class="macro-nonterminal">iter</span>: I) -&gt; <span class="macro-nonterminal">$</span><span class="kw">type </span>{
+                    <span class="macro-nonterminal">iter</span>.fold(<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::default</span>(), |a, b| a + <span class="kw-2">*</span>b)
                 }
             }
         }
