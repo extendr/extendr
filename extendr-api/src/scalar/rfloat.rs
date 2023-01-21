@@ -33,6 +33,7 @@ impl Rfloat {
     pub fn abs(&self) -> Rfloat {
         self.0.abs().into()
     }
+    pub fn sqrt(&self) -> Rfloat { self.0.sqrt().into() }
 }
 
 // `NA_real_` is a `NaN` with specific bit representation.
