@@ -2,7 +2,7 @@
 use ndarray::prelude::*;
 use ndarray::{Data, ShapeBuilder};
 
-use crate::prelude::{dim_symbol, Rint, Rfloat, Rcplx, c64};
+use crate::prelude::{c64, dim_symbol, Rcplx, Rfloat, Rint};
 use crate::*;
 
 impl<'a, T> FromRobj<'a> for ArrayView1<'a, T>
@@ -67,7 +67,8 @@ macro_rules! make_array_view_2 {
                     if let Some(v) = robj.as_typed_slice() {
                         // use fortran order.
                         let shape = (nrows, ncols).into_shape().f();
-                        return ArrayView2::from_shape(shape, v).map_err(|err| Error::NDArrayError(err));
+                        return ArrayView2::from_shape(shape, v)
+                            .map_err(|err| Error::NDArrayError(err));
                     } else {
                         return Err($error_fn(robj.clone()));
                     }
@@ -110,7 +111,11 @@ make_array_view_2!(Rint, "Not an integer matrix.", Error::ExpectedInteger);
 make_array_view_2!(i32, "Not an integer matrix.", Error::ExpectedInteger);
 make_array_view_2!(Rfloat, "Not a floating point matrix.", Error::ExpectedReal);
 make_array_view_2!(f64, "Not a floating point matrix.", Error::ExpectedReal);
-make_array_view_2!(Rcplx, "Not a complex number matrix.", Error::ExpectedComplex);
+make_array_view_2!(
+    Rcplx,
+    "Not a complex number matrix.",
+    Error::ExpectedComplex
+);
 make_array_view_2!(c64, "Not a complex number matrix.", Error::ExpectedComplex);
 make_array_view_2!(Rstr, "Not a string matrix.", Error::ExpectedString);
 

@@ -82,9 +82,8 @@ pub enum Error {
     ExpectedExternalPtrType(Robj, String),
     Other(String),
 
-
     #[cfg(feature = "ndarray")]
-    NDArrayError(ndarray::ShapeError)
+    NDArrayError(ndarray::ShapeError),
 }
 
 impl std::fmt::Display for Error {
@@ -165,7 +164,9 @@ impl std::fmt::Display for Error {
             Error::Other(str) => write!(f, "{}", str),
 
             #[cfg(feature = "ndarray")]
-            Error::NDArrayError(shape_error) => write!(f, "NDArray failed with error: {}.", shape_error)
+            Error::NDArrayError(shape_error) => {
+                write!(f, "NDArray failed with error: {}.", shape_error)
+            }
         }
     }
 }
