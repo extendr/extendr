@@ -7,6 +7,9 @@ Test case adopted from https://github.com/mikemahoney218/examplerust/blob/23d21b
 \usage{
 euclidean_dist(a)
 }
+\arguments{
+\item{a}{: Matrix of real values or \code{NULL}}
+}
 \description{
 Calculate Euclidean distance matrix
 Test case adopted from https://github.com/mikemahoney218/examplerust/blob/23d21b1ced4e24b7a7c00dd36290114dc1bbd113/src/rust/src/lib.rs#L5
