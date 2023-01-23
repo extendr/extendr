@@ -39,7 +39,7 @@ macro_rules! make_array_view_1 {
             type Error = crate::Error;
 
             fn try_from(robj: Robj) -> Result<Self> {
-               Self::try_from(&robj)
+                Self::try_from(&robj)
             }
         }
     };
@@ -57,7 +57,7 @@ macro_rules! make_array_view_2 {
         impl<'a> TryFrom<&'_ Robj> for ArrayView2<'a, $type> {
             type Error = crate::Error;
             fn try_from(robj: &Robj) -> Result<Self> {
-                 if robj.is_matrix() {
+                if robj.is_matrix() {
                     let nrows = robj.nrows();
                     let ncols = robj.ncols();
                     if let Some(v) = robj.as_typed_slice() {
@@ -104,7 +104,6 @@ make_array_view_2!(
 );
 make_array_view_2!(c64, "Not a complex number matrix.", Error::ExpectedComplex);
 make_array_view_2!(Rstr, "Not a string matrix.", Error::ExpectedString);
-
 
 impl<A, S, D> TryFrom<&ArrayBase<S, D>> for Robj
 where
