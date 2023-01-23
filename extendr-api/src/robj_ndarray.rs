@@ -38,12 +38,8 @@ macro_rules! make_array_view_1 {
         impl<'a> TryFrom<Robj> for ArrayView1<'a, $type> {
             type Error = crate::Error;
 
-            fn try_from(robj: &Robj) -> Result<Self> {
-                if let Some(v) = robj.as_typed_slice() {
-                    Ok(ArrayView1::<'a, $type>::from(v))
-                } else {
-                    Err($error_fn(robj.clone()))
-                }
+            fn try_from(robj: Robj) -> Result<Self> {
+               Self::try_from(&robj)
             }
         }
     };
@@ -58,10 +54,10 @@ macro_rules! make_array_view_2 {
             }
         }
 
-        impl<'a> TryFrom<&'a Robj> for ArrayView2<'a, $type> {
+        impl<'a> TryFrom<&'_ Robj> for ArrayView2<'a, $type> {
             type Error = crate::Error;
             fn try_from(robj: &Robj) -> Result<Self> {
-                if robj.is_matrix() {
+                 if robj.is_matrix() {
                     let nrows = robj.nrows();
                     let ncols = robj.ncols();
                     if let Some(v) = robj.as_typed_slice() {
@@ -80,19 +76,7 @@ macro_rules! make_array_view_2 {
         impl<'a> TryFrom<Robj> for ArrayView2<'a, $type> {
             type Error = crate::Error;
             fn try_from(robj: Robj) -> Result<Self> {
-                if robj.is_matrix() {
-                    let nrows = robj.nrows();
-                    let ncols = robj.ncols();
-                    if let Some(v) = robj.as_typed_slice() {
-                        // use fortran order.
-                        let shape = (nrows, ncols).into_shape().f();
-                        return ArrayView2::from_shape(shape, v)
-                            .map_err(|err| Error::NDArrayShapeError(err));
-                    } else {
-                        return Err($error_fn(robj.clone()));
-                    }
-                }
-                return Err(Error::ExpectedMatrix(robj.clone()));
+                Self::try_from(&robj)
             }
         }
     };
@@ -100,6 +84,7 @@ macro_rules! make_array_view_2 {
 make_array_view_1!(Rbool, Error::ExpectedLogical);
 make_array_view_1!(Rint, Error::ExpectedInteger);
 make_array_view_1!(i32, Error::ExpectedInteger);
+make_array_view_1!(u32, Error::ExpectedInteger);
 make_array_view_1!(Rfloat, Error::ExpectedReal);
 make_array_view_1!(f64, Error::ExpectedReal);
 make_array_view_1!(Rcplx, Error::ExpectedComplex);
@@ -120,19 +105,7 @@ make_array_view_2!(
 make_array_view_2!(c64, "Not a complex number matrix.", Error::ExpectedComplex);
 make_array_view_2!(Rstr, "Not a string matrix.", Error::ExpectedString);
 
-//make_array_view_2!(u8, "Not a raw matrix.");
 
-// impl<'a, T> From<ArrayView2<'a, T>> for Robj
-// where
-//     T : ToVectorValue
-// {
-//     fn from(array: ArrayView2<T>) -> Self {
-//         let dims = array.dim();
-//         let slice : &[T] = array.as_slice().unwrap();
-//         let mx = Matrix::new(slice, dims.0, dims.1);
-//         r!(mx)
-//     }
-// }
 impl<A, S, D> TryFrom<&ArrayBase<S, D>> for Robj
 where
     S: Data<Elem = A>,
