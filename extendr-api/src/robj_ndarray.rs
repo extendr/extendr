@@ -109,6 +109,7 @@ make_array_view_1!(Rstr, Error::ExpectedString);
 make_array_view_2!(Rbool, "Not a logical matrix.", Error::ExpectedLogical);
 make_array_view_2!(Rint, "Not an integer matrix.", Error::ExpectedInteger);
 make_array_view_2!(i32, "Not an integer matrix.", Error::ExpectedInteger);
+make_array_view_2!(u32, "Not an integer matrix.", Error::ExpectedInteger);
 make_array_view_2!(Rfloat, "Not a floating point matrix.", Error::ExpectedReal);
 make_array_view_2!(f64, "Not a floating point matrix.", Error::ExpectedReal);
 make_array_view_2!(
