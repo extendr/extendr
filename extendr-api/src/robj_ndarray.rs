@@ -68,7 +68,7 @@ macro_rules! make_array_view_2 {
                         // use fortran order.
                         let shape = (nrows, ncols).into_shape().f();
                         return ArrayView2::from_shape(shape, v)
-                            .map_err(|err| Error::NDArrayError(err));
+                            .map_err(|err| Error::NDArrayShapeError(err));
                     } else {
                         return Err($error_fn(robj.clone()));
                     }
@@ -87,7 +87,7 @@ macro_rules! make_array_view_2 {
                         // use fortran order.
                         let shape = (nrows, ncols).into_shape().f();
                         return ArrayView2::from_shape(shape, v)
-                            .map_err(|err| Error::NDArrayError(err));
+                            .map_err(|err| Error::NDArrayShapeError(err));
                     } else {
                         return Err($error_fn(robj.clone()));
                     }
