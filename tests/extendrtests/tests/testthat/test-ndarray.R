@@ -1,5 +1,5 @@
 test_that("[ndarray] Euclidean distance", {
-    m <- matrix(1.0 * 1:100, nrow = 10, ncol = 10)
+    m <- matrix(rnorm(100), nrow = 10, ncol = 10)
     dist <- euclidean_dist(m)
     expected_dist <- dist(m, method = "euclidean") |> as.numeric()
 
