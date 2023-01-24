@@ -1031,14 +1031,14 @@ pub unsafe fn new_owned(sexp: SEXP) -> Robj {
 }
 
 /// Compare equality with integer slices.
-impl<'a> PartialEq<[i32]> for Robj {
+impl PartialEq<[i32]> for Robj {
     fn eq(&self, rhs: &[i32]) -> bool {
         self.as_integer_slice() == Some(rhs)
     }
 }
 
 /// Compare equality with slices of double.
-impl<'a> PartialEq<[f64]> for Robj {
+impl PartialEq<[f64]> for Robj {
     fn eq(&self, rhs: &[f64]) -> bool {
         self.as_real_slice() == Some(rhs)
     }
