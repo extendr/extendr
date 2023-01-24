@@ -180,6 +180,6 @@ impl<T: Any + Debug> From<ExternalPtr<T>> for Robj {
 
 impl<T: Debug + 'static> std::fmt::Debug for ExternalPtr<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        (&*self as &T).fmt(f)
+        (&**self as &T).fmt(f)
     }
 }
