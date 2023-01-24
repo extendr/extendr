@@ -133,11 +133,10 @@ where
         f: F,
     ) -> Self {
         let robj = (0..ncols)
-            .map(|c| {
+            .flat_map(|c| {
                 let mut g = f.clone();
                 (0..nrows).map(move |r| g(r, c))
             })
-            .flatten()
             .collect_robj();
         let dim = [nrows, ncols];
         let mut robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
@@ -167,16 +166,13 @@ where
         f: F,
     ) -> Self {
         let robj = (0..nmatrix)
-            .map(|m| {
+            .flat_map(|m| {
                 let h = f.clone();
-                (0..ncols)
-                    .map(move |c| {
-                        let mut g = h.clone();
-                        (0..nrows).map(move |r| g(r, c, m))
-                    })
-                    .flatten()
+                (0..ncols).flat_map(move |c| {
+                    let mut g = h.clone();
+                    (0..nrows).map(move |r| g(r, c, m))
+                })
             })
-            .flatten()
             .collect_robj();
         let dim = [nrows, ncols, nmatrix];
         let mut robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
