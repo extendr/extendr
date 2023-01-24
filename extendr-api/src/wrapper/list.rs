@@ -92,8 +92,8 @@ impl List {
     where
         K: Into<String>,
     {
-        let mut res: Self = Self::from_values(val.iter().map(|(_, v)| v));
-        res.set_names(val.into_iter().map(|(k, _)| k.into()))?;
+        let mut res: Self = Self::from_values(val.values());
+        res.set_names(val.into_keys().map(|k| k.into()))?;
         Ok(res)
     }
 
