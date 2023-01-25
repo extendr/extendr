@@ -55,7 +55,7 @@ gen_from_primitive!(Rbool, i32);
 
 impl From<bool> for Rbool {
     fn from(v: bool) -> Self {
-        Rbool(if v { 1 } else { 0 })
+        Rbool(i32::from(v))
     }
 }
 
