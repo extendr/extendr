@@ -185,7 +185,7 @@
 
 <span class="kw">impl </span>From&lt;bool&gt; <span class="kw">for </span>Rbool {
     <span class="kw">fn </span>from(v: bool) -&gt; <span class="self">Self </span>{
-        Rbool(<span class="kw">if </span>v { <span class="number">1 </span>} <span class="kw">else </span>{ <span class="number">0 </span>})
+        Rbool(i32::from(v))
     }
 }
 

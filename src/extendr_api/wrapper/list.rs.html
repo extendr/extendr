@@ -531,8 +531,8 @@
     <span class="kw">where
         </span>K: Into&lt;String&gt;,
     {
-        <span class="kw">let </span><span class="kw-2">mut </span>res: <span class="self">Self </span>= <span class="self">Self</span>::from_values(val.iter().map(|(<span class="kw">_</span>, v)| v));
-        res.set_names(val.into_iter().map(|(k, <span class="kw">_</span>)| k.into()))<span class="question-mark">?</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>res: <span class="self">Self </span>= <span class="self">Self</span>::from_values(val.values());
+        res.set_names(val.into_keys().map(|k| k.into()))<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(res)
     }
 

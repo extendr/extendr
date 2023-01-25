@@ -1039,26 +1039,6 @@
 <span id="1038">1038</span>
 <span id="1039">1039</span>
 <span id="1040">1040</span>
-<span id="1041">1041</span>
-<span id="1042">1042</span>
-<span id="1043">1043</span>
-<span id="1044">1044</span>
-<span id="1045">1045</span>
-<span id="1046">1046</span>
-<span id="1047">1047</span>
-<span id="1048">1048</span>
-<span id="1049">1049</span>
-<span id="1050">1050</span>
-<span id="1051">1051</span>
-<span id="1052">1052</span>
-<span id="1053">1053</span>
-<span id="1054">1054</span>
-<span id="1055">1055</span>
-<span id="1056">1056</span>
-<span id="1057">1057</span>
-<span id="1058">1058</span>
-<span id="1059">1059</span>
-<span id="1060">1060</span>
 </pre><pre class="rust"><code><span class="kw">use </span>prelude::{Rbool, Rcplx, Rfloat, Rint};
 
 <span class="kw">use super</span>::<span class="kw-2">*</span>;
@@ -1660,11 +1640,7 @@
             pvec: c_int,
             func: <span class="prelude-ty">Option</span>&lt;<span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn</span>(arg1: SEXP, arg2: c_int, arg3: c_int, arg4: c_int)&gt;,
         ) -&gt; Rboolean {
-            <span class="kw">if </span>Altrep::get_state::&lt;StateType&gt;(x).inspect(pre, deep == <span class="number">1</span>, pvec) {
-                <span class="number">1
-            </span>} <span class="kw">else </span>{
-                <span class="number">0
-            </span>}
+            u32::from(Altrep::get_state::&lt;StateType&gt;(x).inspect(pre, deep == <span class="number">1</span>, pvec))
         }
 
         <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altrep_Length&lt;StateType: AltrepImpl + <span class="lifetime">&#39;static</span>&gt;(x: SEXP) -&gt; R_xlen_t {
@@ -1784,11 +1760,7 @@
             <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altinteger_No_NA&lt;StateType: AltIntegerImpl + <span class="lifetime">&#39;static</span>&gt;(
                 x: SEXP,
             ) -&gt; c_int {
-                <span class="kw">if </span>Altrep::get_state::&lt;StateType&gt;(x).no_na() {
-                    <span class="number">1
-                </span>} <span class="kw">else </span>{
-                    <span class="number">0
-                </span>}
+                i32::from(Altrep::get_state::&lt;StateType&gt;(x).no_na())
             }
 
             <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altinteger_Sum&lt;StateType: AltIntegerImpl + <span class="lifetime">&#39;static</span>&gt;(
@@ -1860,11 +1832,7 @@
             }
 
             <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altreal_No_NA&lt;StateType: AltRealImpl + <span class="lifetime">&#39;static</span>&gt;(x: SEXP) -&gt; c_int {
-                <span class="kw">if </span>Altrep::get_state::&lt;StateType&gt;(x).no_na() {
-                    <span class="number">1
-                </span>} <span class="kw">else </span>{
-                    <span class="number">0
-                </span>}
+                i32::from(Altrep::get_state::&lt;StateType&gt;(x).no_na())
             }
 
             <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altreal_Sum&lt;StateType: AltRealImpl + <span class="lifetime">&#39;static</span>&gt;(
@@ -1937,11 +1905,7 @@
             <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altlogical_No_NA&lt;StateType: AltLogicalImpl + <span class="lifetime">&#39;static</span>&gt;(
                 x: SEXP,
             ) -&gt; c_int {
-                <span class="kw">if </span>Altrep::get_state::&lt;StateType&gt;(x).no_na() {
-                    <span class="number">1
-                </span>} <span class="kw">else </span>{
-                    <span class="number">0
-                </span>}
+                i32::from(Altrep::get_state::&lt;StateType&gt;(x).no_na())
             }
 
             <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altlogical_Sum&lt;StateType: AltLogicalImpl + <span class="lifetime">&#39;static</span>&gt;(
@@ -2068,11 +2032,7 @@
             <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altstring_No_NA&lt;StateType: AltStringImpl + <span class="lifetime">&#39;static</span>&gt;(
                 x: SEXP,
             ) -&gt; c_int {
-                <span class="kw">if </span>Altrep::get_state::&lt;StateType&gt;(x).no_na() {
-                    <span class="number">1
-                </span>} <span class="kw">else </span>{
-                    <span class="number">0
-                </span>}
+                i32::from(Altrep::get_state::&lt;StateType&gt;(x).no_na())
             }
 
             R_set_altstring_Elt_method(class_ptr, <span class="prelude-val">Some</span>(altstring_Elt::&lt;StateType&gt;));

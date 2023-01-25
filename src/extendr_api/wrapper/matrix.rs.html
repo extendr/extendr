@@ -390,10 +390,6 @@
 <span id="389">389</span>
 <span id="390">390</span>
 <span id="391">391</span>
-<span id="392">392</span>
-<span id="393">393</span>
-<span id="394">394</span>
-<span id="395">395</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Wrappers for matrices with deferred arithmetic.
 
 </span><span class="kw">use super</span>::<span class="kw-2">*</span>;
@@ -529,11 +525,10 @@
         f: F,
     ) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>robj = (<span class="number">0</span>..ncols)
-            .map(|c| {
+            .flat_map(|c| {
                 <span class="kw">let </span><span class="kw-2">mut </span>g = f.clone();
                 (<span class="number">0</span>..nrows).map(<span class="kw">move </span>|r| g(r, c))
             })
-            .flatten()
             .collect_robj();
         <span class="kw">let </span>dim = [nrows, ncols];
         <span class="kw">let </span><span class="kw-2">mut </span>robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
@@ -563,16 +558,13 @@
         f: F,
     ) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>robj = (<span class="number">0</span>..nmatrix)
-            .map(|m| {
+            .flat_map(|m| {
                 <span class="kw">let </span>h = f.clone();
-                (<span class="number">0</span>..ncols)
-                    .map(<span class="kw">move </span>|c| {
-                        <span class="kw">let </span><span class="kw-2">mut </span>g = h.clone();
-                        (<span class="number">0</span>..nrows).map(<span class="kw">move </span>|r| g(r, c, m))
-                    })
-                    .flatten()
+                (<span class="number">0</span>..ncols).flat_map(<span class="kw">move </span>|c| {
+                    <span class="kw">let </span><span class="kw-2">mut </span>g = h.clone();
+                    (<span class="number">0</span>..nrows).map(<span class="kw">move </span>|r| g(r, c, m))
+                })
             })
-            .flatten()
             .collect_robj();
         <span class="kw">let </span>dim = [nrows, ncols, nmatrix];
         <span class="kw">let </span><span class="kw-2">mut </span>robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();

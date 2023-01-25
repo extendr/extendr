@@ -1174,28 +1174,28 @@
 <span class="macro">impl_from_as_iterator! </span>{Range&lt;T&gt;}
 <span class="macro">impl_from_as_iterator! </span>{RangeInclusive&lt;T&gt;}
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; From&lt;Vec&lt;Robj&gt;&gt; <span class="kw">for </span>Robj {
+<span class="kw">impl </span>From&lt;Vec&lt;Robj&gt;&gt; <span class="kw">for </span>Robj {
     <span class="doccomment">/// Convert a vector of Robj into a list.
     </span><span class="kw">fn </span>from(val: Vec&lt;Robj&gt;) -&gt; <span class="self">Self </span>{
         List::from_values(val.iter()).into()
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; From&lt;Vec&lt;Rstr&gt;&gt; <span class="kw">for </span>Robj {
+<span class="kw">impl </span>From&lt;Vec&lt;Rstr&gt;&gt; <span class="kw">for </span>Robj {
     <span class="doccomment">/// Convert a vector of Rstr into strings.
     </span><span class="kw">fn </span>from(val: Vec&lt;Rstr&gt;) -&gt; <span class="self">Self </span>{
         Strings::from_values(val.into_iter()).into()
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; From&lt;Vec&lt;Rint&gt;&gt; <span class="kw">for </span>Robj {
+<span class="kw">impl </span>From&lt;Vec&lt;Rint&gt;&gt; <span class="kw">for </span>Robj {
     <span class="doccomment">/// Convert a vector of Rint into integers.
     </span><span class="kw">fn </span>from(val: Vec&lt;Rint&gt;) -&gt; <span class="self">Self </span>{
         Integers::from_values(val.into_iter()).into()
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; From&lt;Vec&lt;Rfloat&gt;&gt; <span class="kw">for </span>Robj {
+<span class="kw">impl </span>From&lt;Vec&lt;Rfloat&gt;&gt; <span class="kw">for </span>Robj {
     <span class="doccomment">/// Convert a vector of Rfloat into doubles.
     </span><span class="kw">fn </span>from(val: Vec&lt;Rfloat&gt;) -&gt; <span class="self">Self </span>{
         Doubles::from_values(val.into_iter()).into()
