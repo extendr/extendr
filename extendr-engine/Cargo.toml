@@ -9,7 +9,7 @@ authors = [
     "Hiroaki Yutani",
     "Ilia A. Kosenkov <ilia.kosenkov@outlook.com>"
 ]
-edition = "2018"
+edition = "2021"
 description = "Safe and user friendly bindings to the R programming language."
 license = "MIT"
 repository = "https://github.com/extendr/extendr"
