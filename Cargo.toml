@@ -10,4 +10,4 @@ members = [
 # When uncommenting this, do not forget to uncomment the same line in
 # ./tests/extendrtests/src/rust/Cargo.toml, and "Run R integration tests using
 # {rextendr}" on .github/workflows/test.yml !
-libR-sys = { git = "https://github.com/extendr/libR-sys" }
+libR-sys = { git = "https://github.com/extendr/libR-sys", branch = "generated_bindings" }
