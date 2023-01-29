@@ -2,6 +2,7 @@
 
 use super::*;
 use crate::robj::GetSexp;
+use crate::Robj;
 use std::ops::{Index, IndexMut};
 
 /// Wrapper for creating and using matrices and arrays.
@@ -126,7 +127,16 @@ where
     Robj: AsTypedSlice<'a, T>,
 {
     /// Create a new matrix wrapper.
-    /// Make a new column type.
+    ///
+    /// # Arguments
+    ///
+    /// * `nrows` - the number of rows the returned matrix will have
+    /// * `ncols` - the number of columns the returned matrix will have
+    /// * `f` - a function that will be called for each entry of the matrix in order to populate it with values.
+    ///     It should return a scalar value that can be converted to an R scalar, such as `u32`, `f64` etc.
+    ///     It accepts two arguments:
+    ///     * `r` (usize) - the current row of the entry we are creating
+    ///     * `c` (usize) - the current column of the entry we are creating
     pub fn new_matrix<F: Clone + FnMut(usize, usize) -> T>(
         nrows: usize,
         ncols: usize,
@@ -351,6 +361,27 @@ impl<T, D> Deref for RArray<T, D> {
     }
 }
 
+trait CollectRMatrix<T> {
+    fn collect_rmatrix(self, nrow: usize) -> RMatrix<T>;
+}
+
+impl<'a, T, U> CollectRMatrix<U> for T
+where
+    T: Iterator<Item = U>,
+    U: ToVectorValue + 'a,
+    Robj: AsTypedSlice<'a, U>,
+{
+    fn collect_rmatrix(self, nrow: usize) -> RMatrix<U> {
+        let vector = self.collect_robj();
+        let dim = [nrow, vector.len() / nrow];
+        let mut robj = vector
+            .set_attrib(wrapper::symbol::dim_symbol(), dim)
+            .unwrap();
+        let data = robj.as_typed_slice_mut().unwrap().as_mut_ptr();
+        RMatrix::from_parts(robj, data, dim)
+    }
+}
+
 #[test]
 fn matrix_ops() {
     test! {
@@ -387,5 +418,10 @@ fn matrix_ops() {
         assert_eq!(array2.nrows(), 2);
         assert_eq!(array2.ncols(), 2);
         assert_eq!(array2.nsub(), 2);
+
+        // Check that collect_rmatrix works the same as R's matrix() function
+        let range = 1i32..=16;
+        let rmat = range.collect_rmatrix(4);
+        assert_eq!(Robj::from(rmat), R!("matrix(1:16, nrow=4)").unwrap());
     }
 }
