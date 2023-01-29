@@ -371,6 +371,12 @@ where
     U: ToVectorValue + 'a,
     Robj: AsTypedSlice<'a, U>,
 {
+    /// Collects an iterable into an RMatrix.
+    /// The iterable must yield items column by column (aka Fortan order)
+    /// 
+    /// # Arguments
+    /// 
+    /// * `nrow` - the number of rows the matrix will have
     fn collect_rmatrix(self, nrow: usize) -> RMatrix<U> {
         let vector = self.collect_robj();
         let dim = [nrow, vector.len() / nrow];
