@@ -9,6 +9,7 @@ pub struct ExtendrOptions {
     pub use_try_from: bool,
     pub r_name: Option<String>,
     pub mod_name: Option<String>,
+    pub use_rng: bool,
 }
 
 // Generate wrappers for a specific function.
@@ -100,6 +101,14 @@ pub fn make_function_wrappers(
     //     }
     // }
     // ```
+    let rng_start = opts
+        .use_rng
+        .then(|| quote!(libR_sys::GetRNGstate();))
+        .unwrap_or_default();
+    let rng_end = opts
+        .use_rng
+        .then(|| quote!(libR_sys::PutRNGstate();))
+        .unwrap_or_default();
     wrappers.push(parse_quote!(
         #[no_mangle]
         #[allow(non_snake_case)]
@@ -107,9 +116,12 @@ pub fn make_function_wrappers(
             unsafe {
                 use extendr_api::robj::*;
                 #( #convert_args )*
-                extendr_api::handle_panic(#panic_str, ||
+                #rng_start
+                let result = extendr_api::handle_panic(#panic_str, ||
                     extendr_api::Robj::from(#call_name(#actual_args)).get()
-                )
+                );
+                #rng_end
+                result
             }
         }
     ));
