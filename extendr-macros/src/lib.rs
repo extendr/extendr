@@ -71,6 +71,22 @@ use proc_macro::TokenStream;
 use quote::quote;
 use syn::{parse_macro_input, Item};
 
+
+/// Derive macro for wrapping Rust modules, functions and traits to R.
+/// 
+/// On functions:
+/// 
+/// - Supported types are converted from [`Robj`].
+/// - `extendr(use_try_from = true)`
+/// - `extendr(r_name = "r_wrapper_name")`
+/// - `extendr(mod_name = "r_wrapper_module_name")`
+/// - To set default arguments on the R-side, use `#[default = "value"]`
+/// 
+/// On `impl`-blocks:
+/// 
+/// - Create S4 wrapper methods on the type.
+/// 
+/// 
 #[proc_macro_attribute]
 pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
     let args = parse_macro_input!(attr as syn::AttributeArgs);
