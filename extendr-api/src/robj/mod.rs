@@ -1,11 +1,11 @@
 //! R object handling.
 //!
-//! See. <https://cran.r-project.org/doc/manuals/R-exts.html>
+//! See. [Writing R Extensions](https://cran.r-project.org/doc/manuals/R-exts.html)
 //!
 //! Fundamental principals:
 //!
 //! * Any function that can break the protection mechanism is unsafe.
-//! * Users should be able to do almost everything without using libR_sys.
+//! * Users should be able to do almost everything without using `libR_sys`.
 //! * The interface should be friendly to R users without Rust experience.
 //!
 
