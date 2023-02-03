@@ -5,7 +5,7 @@
 //! Its principal use is for testing.
 //!
 //! See [Rembedded.c](https://github.com/wch/r-source/blob/trunk/src/unix/Rembedded.c).
-//! 
+//!
 
 use libR_sys::*;
 use std::os::raw;
