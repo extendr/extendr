@@ -3,12 +3,10 @@
 mod root {
     use extendr_api::extendr;
     use extendr_api::extendr_module;
-    use extendr_api::GetSexp;
 
     mod nested_module {
         use extendr_api::extendr;
         use extendr_api::extendr_module;
-        use extendr_api::GetSexp;
 
         #[extendr]
         fn dummy() {}
