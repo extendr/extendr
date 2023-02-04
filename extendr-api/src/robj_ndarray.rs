@@ -97,77 +97,56 @@ where
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::FromRobj;
+    use ndarray::array;
     use rstest::rstest;
 
     #[rstest]
-    fn test_from_robj() {
+    // Scalars
+    #[case(
+        "1.0",
+        ArrayView1::<f64>::from(&[1.][..])
+    )]
+    #[case(
+        "1L",
+        ArrayView1::<i32>::from(&[1][..])
+    )]
+    #[case(
+        "TRUE",
+        ArrayView1::<Rbool>::from(&[TRUE][..])
+    )]
+    // Matrices
+    #[case(
+       "matrix(c(1, 2, 3, 4, 5, 6, 7, 8), ncol=2, nrow=4)",
+        <Array2<f64>>::from_shape_vec((4, 2).f(), vec![1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0]).unwrap()
+    )]
+    #[case(
+        // Testing the memory layout is Fortran
+        "matrix(c(1, 2, 3, 4, 5, 6, 7, 8), ncol=2, nrow=4)[, 1]",
+        <Array2<f64>>::from_shape_vec((4, 2).f(), vec![1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0]).unwrap().column(0).to_owned()
+    )]
+    #[case(
+        "matrix(c(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L), ncol=2, nrow=4)",
+        <Array2<i32>>::from_shape_vec((4, 2).f(), vec![1, 2, 3, 4, 5, 6, 7, 8]).unwrap()
+    )]
+    #[case(
+        "matrix(c(T, T, T, T, F, F, F, F), ncol=2, nrow=4)",
+        <Array2<Rbool>>::from_shape_vec((4, 2).f(), vec![true.into(), true.into(), true.into(), true.into(), false.into(), false.into(), false.into(), false.into()]).unwrap()
+    )]
+    fn test_from_robj<DataType, DimType>(
+        #[case] left: &'static str,
+        #[case] right: ArrayBase<DataType, DimType>,
+    ) where
+        DataType: Data,
+        for<'a> ArrayView<'a, <DataType as ndarray::RawData>::Elem, DimType>: FromRobj<'a>,
+        DimType: Dimension,
+        <DataType as ndarray::RawData>::Elem: PartialEq + std::fmt::Debug,
+    {
+        // Tests for the R → Rust conversion
         test! {
-            assert_eq!(
-                <ArrayView1<f64>>::from_robj(&Robj::from(1.)),
-                Ok(ArrayView1::<f64>::from(&[1.][..]))
-            );
-            assert_eq!(
-                <ArrayView1<i32>>::from_robj(&Robj::from(1)),
-                Ok(ArrayView1::<i32>::from(&[1][..]))
-            );
-            assert_eq!(
-                <ArrayView1<Rbool>>::from_robj(&Robj::from(true)),
-                Ok(ArrayView1::<Rbool>::from(&[TRUE][..]))
-            );
-
-            let robj = R!("matrix(c(1, 2, 3, 4, 5, 6, 7, 8), ncol=2, nrow=4)")?;
-            let mx = <ArrayView2<f64>>::from_robj(&robj)?;
-            assert_eq!(mx[[0, 0]], 1.0);
-            assert_eq!(mx[[1, 0]], 2.0);
-            assert_eq!(mx[[2, 0]], 3.0);
-            assert_eq!(mx[[3, 0]], 4.0);
-            assert_eq!(mx[[0, 1]], 5.0);
-            assert_eq!(mx[[1, 1]], 6.0);
-            assert_eq!(mx[[2, 1]], 7.0);
-            assert_eq!(mx[[3, 1]], 8.0);
-
-            // check basic logic of fortran-order matrices.
-            let col0 = mx.column(0);
-            assert_eq!(col0[0], 1.0);
-            assert_eq!(col0[1], 2.0);
-            assert_eq!(col0[2], 3.0);
-            assert_eq!(col0[3], 4.0);
-
-            // check integer matrices
-            let robj = R!("matrix(c(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L), ncol=2, nrow=4)")?;
-            let mx = <ArrayView2<i32>>::from_robj(&robj)?;
-            assert_eq!(mx[[0, 0]], 1);
-            assert_eq!(mx[[1, 0]], 2);
-            assert_eq!(mx[[2, 0]], 3);
-            assert_eq!(mx[[3, 0]], 4);
-            assert_eq!(mx[[0, 1]], 5);
-            assert_eq!(mx[[1, 1]], 6);
-            assert_eq!(mx[[2, 1]], 7);
-            assert_eq!(mx[[3, 1]], 8);
-
-            // check logical matrices
-            let robj = R!("matrix(c(T, T, T, T, F, F, F, F), ncol=2, nrow=4)")?;
-            let mx = <ArrayView2<Rbool>>::from_robj(&robj)?;
-            assert_eq!(mx[[0, 0]], TRUE);
-            assert_eq!(mx[[1, 0]], TRUE);
-            assert_eq!(mx[[2, 0]], TRUE);
-            assert_eq!(mx[[3, 0]], TRUE);
-            assert_eq!(mx[[0, 1]], FALSE);
-            assert_eq!(mx[[1, 1]], FALSE);
-            assert_eq!(mx[[2, 1]], FALSE);
-            assert_eq!(mx[[3, 1]], FALSE);
-
-            // check raw matrices
-            // let robj = r!(Matrix::new(vec![1_u8, 2, 3, 4, 5, 6, 7, 8], 4, 2));
-            // let mx = <ArrayView2<u8>>::from_robj(&robj)?;
-            // assert_eq!(mx[[0, 0]], 1);
-            // assert_eq!(mx[[1, 0]], 2);
-            // assert_eq!(mx[[2, 0]], 3);
-            // assert_eq!(mx[[3, 0]], 4);
-            // assert_eq!(mx[[0, 1]], 5);
-            // assert_eq!(mx[[1, 1]], 6);
-            // assert_eq!(mx[[2, 1]], 7);
-            // assert_eq!(mx[[3, 1]], 8);
+            let left_robj = eval_string(left).unwrap();
+            let left_array = <ArrayView<DataType::Elem, DimType>>::from_robj(&left_robj).unwrap();
+            assert_eq!( left_array, right );
         }
     }
 
@@ -210,6 +189,8 @@ mod test {
         Robj: TryFrom<T>,
         <Robj as TryFrom<T>>::Error: std::fmt::Debug,
     {
+        // Tests for the Rust → R conversion, so we therefore perform the
+        // comparison in R
         test! {
             assert_eq!(
                 &(Robj::try_from(array).unwrap()),
