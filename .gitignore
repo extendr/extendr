@@ -33,5 +33,4 @@
 extendr.Rproj
 tests/extendrtests.Rcheck/
 tests/extendrtests_0.1.0.tar.gz
-
 **/.cargo/*
