@@ -79,6 +79,8 @@ pub enum Error {
     NamespaceNotFound(Robj),
     NoGraphicsDevices(Robj),
 
+    ExpectedNonZeroValue,
+
     ExpectedExternalPtrType(Robj, String),
     Other(String),
 }
@@ -158,6 +160,9 @@ impl std::fmt::Display for Error {
                 write!(f, "Incorrect external pointer type {}", type_name)
             }
             Error::NoGraphicsDevices(_robj) => write!(f, "No graphics devices active."),
+
+            Error::ExpectedNonZeroValue => write!(f, "Provided value is zero"),
+
             Error::Other(str) => write!(f, "{}", str),
         }
     }
