@@ -817,7 +817,7 @@
     }
 }
 
-<span class="comment">// Convert TryFrom&lt;&amp;Robj&gt; into TryFrom&lt;&amp;Robj&gt;. Sadly, we are unable to make a blanket
+<span class="comment">// Convert TryFrom&lt;&amp;Robj&gt; into TryFrom&lt;Robj&gt;. Sadly, we are unable to make a blanket
 // conversion using GetSexp with the current version of Rust.
 </span><span class="macro">macro_rules! </span>impl_try_from_robj {
     ($(<span class="macro-nonterminal">$</span><span class="kw">type </span>: <span class="macro-nonterminal">ty</span>)<span class="kw-2">*</span>) =&gt; {

@@ -1088,6 +1088,7 @@
 <a href="#1087" id="1087">1087</a>
 <a href="#1088" id="1088">1088</a>
 <a href="#1089" id="1089">1089</a>
+<a href="#1090" id="1090">1090</a>
 </pre><pre class="rust"><code><span class="doccomment">//! R object handling.
 //!
 //! See. &lt;https://cran.r-project.org/doc/manuals/R-exts.html&gt;
@@ -1868,6 +1869,7 @@
 
 <span class="macro">make_typed_slice!</span>(Rbool, INTEGER, LGLSXP);
 <span class="macro">make_typed_slice!</span>(i32, INTEGER, INTSXP);
+<span class="macro">make_typed_slice!</span>(u32, INTEGER, INTSXP);
 <span class="macro">make_typed_slice!</span>(Rint, INTEGER, INTSXP);
 <span class="macro">make_typed_slice!</span>(f64, REAL, REALSXP);
 <span class="macro">make_typed_slice!</span>(Rfloat, REAL, REALSXP);

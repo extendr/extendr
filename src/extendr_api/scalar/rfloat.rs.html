@@ -145,6 +145,9 @@
 <a href="#144" id="144">144</a>
 <a href="#145" id="145">145</a>
 <a href="#146" id="146">146</a>
+<a href="#147" id="147">147</a>
+<a href="#148" id="148">148</a>
+<a href="#149" id="149">149</a>
 </pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::scalar::macros::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 <span class="kw">use </span>std::convert::TryFrom;
@@ -179,6 +182,9 @@
     }
     <span class="kw">pub fn </span>abs(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Rfloat {
         <span class="self">self</span>.<span class="number">0</span>.abs().into()
+    }
+    <span class="kw">pub fn </span>sqrt(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Rfloat {
+        <span class="self">self</span>.<span class="number">0</span>.sqrt().into()
     }
 }
 
