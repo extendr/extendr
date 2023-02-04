@@ -2,7 +2,7 @@
 use ndarray::prelude::*;
 use ndarray::{Data, ShapeBuilder};
 
-use crate::prelude::dim_symbol;
+use crate::prelude::{c64, dim_symbol, Rcplx, Rfloat, Rint};
 use crate::*;
 
 impl<'a, T> FromRobj<'a> for ArrayView1<'a, T>
@@ -19,44 +19,92 @@ where
     }
 }
 
+macro_rules! make_array_view_1 {
+    ($type: ty, $error_fn: expr) => {
+        impl<'a> TryFrom<&'a Robj> for ArrayView1<'a, $type> {
+            type Error = crate::Error;
+
+            fn try_from(robj: &Robj) -> Result<Self> {
+                if let Some(v) = robj.as_typed_slice() {
+                    Ok(ArrayView1::<'a, $type>::from(v))
+                } else {
+                    Err($error_fn(robj.clone()))
+                }
+            }
+        }
+    };
+
+    ($type: ty, $error_fn: expr) => {
+        impl<'a> TryFrom<Robj> for ArrayView1<'a, $type> {
+            type Error = crate::Error;
+
+            fn try_from(robj: Robj) -> Result<Self> {
+                Self::try_from(&robj)
+            }
+        }
+    };
+}
+
 macro_rules! make_array_view_2 {
-    ($type: ty, $error_str: expr) => {
+    ($type: ty, $error_str: expr, $error_fn: expr) => {
         impl<'a> FromRobj<'a> for ArrayView2<'a, $type> {
             /// Convert an R object to a `ndarray` ArrayView2.
             fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+                <ArrayView2<'a, $type>>::try_from(robj).map_err(|_| $error_str)
+            }
+        }
+
+        impl<'a> TryFrom<&'_ Robj> for ArrayView2<'a, $type> {
+            type Error = crate::Error;
+            fn try_from(robj: &Robj) -> Result<Self> {
                 if robj.is_matrix() {
                     let nrows = robj.nrows();
                     let ncols = robj.ncols();
                     if let Some(v) = robj.as_typed_slice() {
                         // use fortran order.
                         let shape = (nrows, ncols).into_shape().f();
-                        if let Ok(res) = ArrayView2::from_shape(shape, v) {
-                            return Ok(res);
-                        }
+                        return ArrayView2::from_shape(shape, v)
+                            .map_err(|err| Error::NDArrayShapeError(err));
+                    } else {
+                        return Err($error_fn(robj.clone()));
                     }
                 }
-                return Err($error_str);
+                return Err(Error::ExpectedMatrix(robj.clone()));
+            }
+        }
+
+        impl<'a> TryFrom<Robj> for ArrayView2<'a, $type> {
+            type Error = crate::Error;
+            fn try_from(robj: Robj) -> Result<Self> {
+                Self::try_from(&robj)
             }
         }
     };
 }
+make_array_view_1!(Rbool, Error::ExpectedLogical);
+make_array_view_1!(Rint, Error::ExpectedInteger);
+make_array_view_1!(i32, Error::ExpectedInteger);
+make_array_view_1!(u32, Error::ExpectedInteger);
+make_array_view_1!(Rfloat, Error::ExpectedReal);
+make_array_view_1!(f64, Error::ExpectedReal);
+make_array_view_1!(Rcplx, Error::ExpectedComplex);
+make_array_view_1!(c64, Error::ExpectedComplex);
+make_array_view_1!(Rstr, Error::ExpectedString);
 
-make_array_view_2!(Rbool, "Not a logical matrix.");
-make_array_view_2!(i32, "Not an integer matrix.");
-make_array_view_2!(f64, "Not a floating point matrix.");
-//make_array_view_2!(u8, "Not a raw matrix.");
+make_array_view_2!(Rbool, "Not a logical matrix.", Error::ExpectedLogical);
+make_array_view_2!(Rint, "Not an integer matrix.", Error::ExpectedInteger);
+make_array_view_2!(i32, "Not an integer matrix.", Error::ExpectedInteger);
+make_array_view_2!(u32, "Not an integer matrix.", Error::ExpectedInteger);
+make_array_view_2!(Rfloat, "Not a floating point matrix.", Error::ExpectedReal);
+make_array_view_2!(f64, "Not a floating point matrix.", Error::ExpectedReal);
+make_array_view_2!(
+    Rcplx,
+    "Not a complex number matrix.",
+    Error::ExpectedComplex
+);
+make_array_view_2!(c64, "Not a complex number matrix.", Error::ExpectedComplex);
+make_array_view_2!(Rstr, "Not a string matrix.", Error::ExpectedString);
 
-// impl<'a, T> From<ArrayView2<'a, T>> for Robj
-// where
-//     T : ToVectorValue
-// {
-//     fn from(array: ArrayView2<T>) -> Self {
-//         let dims = array.dim();
-//         let slice : &[T] = array.as_slice().unwrap();
-//         let mx = Matrix::new(slice, dims.0, dims.1);
-//         r!(mx)
-//     }
-// }
 impl<A, S, D> TryFrom<&ArrayBase<S, D>> for Robj
 where
     S: Data<Elem = A>,

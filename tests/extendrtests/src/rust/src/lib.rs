@@ -3,6 +3,9 @@ use extendr_api::{graphics::*, prelude::*};
 mod submodule;
 use submodule::*;
 
+mod ndarray;
+use ndarray::*;
+
 mod graphic_device;
 
 // Return string `"Hello world!"` to R.
@@ -352,4 +355,5 @@ extendr_module! {
     fn my_device;
 
     use submodule;
+    use ndarray;
 }
