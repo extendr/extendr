@@ -2,7 +2,7 @@
 
 [package]
 name = "extendrtests"
-version = "0.2.0"
+version = "0.2.1"
 authors = [
     "andy-thomason <andy@andythomason.com>",
     "Claus O. Wilke <wilke@austin.utexas.edu>",
@@ -14,7 +14,7 @@ edition = "2021"
 crate-type = ["staticlib"]
 
 [dependencies]
-extendr-api = { version = "*", features = ["graphics"] }
+extendr-api = { version = "*", features = ["graphics", "ndarray"] }
 
 [patch.crates-io]
 ## This is configured to work with RStudio features.
