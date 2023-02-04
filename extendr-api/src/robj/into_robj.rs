@@ -38,8 +38,14 @@ where
     T: Into<Robj>,
 {
     fn from(res: Result<T>) -> Self {
-        // Force a panic on error.
-        res.unwrap().into()
+        match res {
+            Ok(x) => x.into(),
+            Err(x) => x
+                .to_string()
+                .into_robj()
+                .set_attrib("extendr_err", true)
+                .unwrap(),
+        }
     }
 }
 
