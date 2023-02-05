@@ -70,6 +70,12 @@ impl From<Error> for Robj {
     }
 }
 
+impl From<Error> for String {
+    fn from(res: Error) -> Self {
+        res.to_string().into()
+    }
+}
+
 // // ... and Err does not have to implement Display
 // impl<T, E> From<std::result::Result<T, E>> for Robj
 // where
