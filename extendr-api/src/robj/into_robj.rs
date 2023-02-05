@@ -50,20 +50,23 @@ impl From<()> for Robj {
 // }
 
 // it does not have to be extendr result
+
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
     T: Into<Robj>,
-    E: std::fmt::Display,
+    E: Into<Robj>,
 {
     fn from(res: std::result::Result<T, E>) -> Self {
         match res {
             Ok(x) => x.into(),
-            Err(x) => x
-                .to_string()
-                .into_robj()
-                .set_attrib("extendr_err", true)
-                .unwrap(),
+            Err(x) => x.into().set_attrib("extendr_err", true).unwrap(),
         }
+    }
+}
+
+impl From<Error> for Robj {
+    fn from(res: Error) -> Self {
+        res.to_string().into()
     }
 }
 
