@@ -33,24 +33,18 @@ impl From<()> for Robj {
 ///     assert_eq!(r!(my_func()), r!(1.0));
 /// }
 /// ```
-// impl<T> From<Result<T>> for Robj
-// where
-//     T: Into<Robj>,
-// {
-//     fn from(res: Result<T>) -> Self {
-//         match res {
-//             Ok(x) => x.into(),
-//             Err(x) => x
-//                 .to_string()
-//                 .into_robj()
-//                 .set_attrib("extendr_err", true)
-//                 .unwrap(),
-//         }
-//     }
-// }
 
-// it does not have to be extendr result
+#[cfg(result_handling = "panic")]
+impl<T, E> From<std::result::Result<T, E>> for Robj
+where
+    T: Into<Robj>,
+{
+    fn from(res: std::result::Result<T, E>) -> Self {
+        unwrap(res)
+    }
+}
 
+#[cfg(result_handling = "condition")]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
     T: Into<Robj>,
@@ -59,7 +53,39 @@ where
     fn from(res: std::result::Result<T, E>) -> Self {
         match res {
             Ok(x) => x.into(),
-            Err(x) => x.into().set_attrib("extendr_err", true).unwrap(),
+            Err(x) => {
+                let robj: Robj = x.into();
+                if let Ok(err_cnd) = R!("simpleError(message = 'extendr_Error', class = {{robj}})")
+                {
+                    err_cnd
+                } else {
+                    R!("simpleError(message = 'internal extendr error'")
+                        .expect("can return the simplest err-condition")
+                }
+            }
+        }
+    }
+}
+
+#[cfg(result_handling = "attribute")]
+impl<T, E> From<std::result::Result<T, E>> for Robj
+where
+    T: Into<Robj>,
+    E: Into<Robj>,
+{
+    fn from(res: std::result::Result<T, E>) -> Self {
+        match res {
+            Ok(x) => x.into(),
+            Err(x) => {
+                //x.into().set_attrib("extendr_err", true).unwrap(),
+                if let Ok(err_attr) = x.into().set_attrib("extendr_err", true) {
+                    err_attr
+                } else {
+                    r!("internal extendr error")
+                        .set_attrib("extendr_err", true)
+                        .expect("can return the simplest attr-err")
+                }
+            }
         }
     }
 }
