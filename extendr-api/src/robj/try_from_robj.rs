@@ -105,26 +105,22 @@ impl_try_from_scalar_real_nonzero!(std::num::NonZeroI8);
 impl_try_from_scalar_real_nonzero!(std::num::NonZeroI16);
 impl_try_from_scalar_real_nonzero!(std::num::NonZeroI32);
 impl_try_from_scalar_real_nonzero!(std::num::NonZeroI64);
-impl_try_from_scalar_real_nonzero!(std::num::NonZeroI128);
 impl_try_from_scalar_real_nonzero!(std::num::NonZeroIsize);
 impl_try_from_scalar_real_nonzero!(std::num::NonZeroU8);
 impl_try_from_scalar_real_nonzero!(std::num::NonZeroU16);
 impl_try_from_scalar_real_nonzero!(std::num::NonZeroU32);
 impl_try_from_scalar_real_nonzero!(std::num::NonZeroU64);
-impl_try_from_scalar_real_nonzero!(std::num::NonZeroU128);
 impl_try_from_scalar_real_nonzero!(std::num::NonZeroUsize);
 
 impl_try_from_scalar_integer!(u8);
 impl_try_from_scalar_integer!(u16);
 impl_try_from_scalar_integer!(u32);
 impl_try_from_scalar_integer!(u64);
-impl_try_from_scalar_integer!(u128);
 impl_try_from_scalar_integer!(usize);
 impl_try_from_scalar_integer!(i8);
 impl_try_from_scalar_integer!(i16);
 impl_try_from_scalar_integer!(i32);
 impl_try_from_scalar_integer!(i64);
-impl_try_from_scalar_integer!(i128);
 impl_try_from_scalar_integer!(isize);
 impl_try_from_scalar_real!(f32);
 impl_try_from_scalar_real!(f64);
@@ -449,19 +445,17 @@ macro_rules! impl_try_from_robj {
 }
 
 impl_try_from_robj!(
-    u8 u16 u32 u64 u128 usize
-    i8 i16 i32 i64 i128 isize
+    u8 u16 u32 u64 usize
+    i8 i16 i32 i64 isize
     std::num::NonZeroI8
     std::num::NonZeroI16
     std::num::NonZeroI32
     std::num::NonZeroI64
-    std::num::NonZeroI128
     std::num::NonZeroIsize
     std::num::NonZeroU8
     std::num::NonZeroU16
     std::num::NonZeroU32
     std::num::NonZeroU64
-    std::num::NonZeroU128
     std::num::NonZeroUsize
     bool
     Rint Rfloat Rbool Rcplx
