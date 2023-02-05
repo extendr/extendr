@@ -19,10 +19,11 @@ impl From<()> for Robj {
     }
 }
 
-/// Convert a Result to an Robj. This is used to allow
-/// functions to use the ? operator and return [Result<T>].
+/// Convert a Result to an [`Robj`]. This is used to allow
+/// functions to use the `?`-operator and return `Result<T>`.
 ///
 /// Panics if there is an error.
+/// 
 /// ```
 /// use extendr_api::prelude::*;
 /// fn my_func() -> Result<f64> {

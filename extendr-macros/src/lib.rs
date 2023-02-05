@@ -1,6 +1,4 @@
-//!
-//! Macros for generating wrappers for rust functions.
-
+#![doc = include_str!("../README.md")]
 //
 // We can invoke the #[extendr] macro on functions or struct impls.
 //

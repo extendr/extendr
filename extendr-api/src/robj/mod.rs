@@ -1,11 +1,11 @@
 //! R object handling.
 //!
-//! See. <https://cran.r-project.org/doc/manuals/R-exts.html>
+//! See [Writing R Extensions](https://cran.r-project.org/doc/manuals/R-exts.html)
 //!
 //! Fundamental principals:
 //!
 //! * Any function that can break the protection mechanism is unsafe.
-//! * Users should be able to do almost everything without using libR_sys.
+//! * Users should be able to do almost everything without using [`libR_sys`].
 //! * The interface should be friendly to R users without Rust experience.
 //!
 
@@ -39,7 +39,7 @@ pub use operators::Operators;
 pub use operators::*;
 pub use rinternals::Rinternals;
 
-/// Wrapper for an R S-expression pointer (SEXP).
+/// Wrapper for an R S-expression pointer ([`SEXP`]).
 ///
 /// Create R objects from rust types and iterators:
 ///
@@ -129,13 +129,13 @@ pub trait GetSexp {
     ///
     /// # Safety
     ///
-    /// Access to a raw SEXP pointer can cause undefined behaviour and is not thread safe.
+    /// Access to a raw [`SEXP`] pointer can cause undefined behaviour and is not thread safe.
     unsafe fn get(&self) -> SEXP;
 
-    /// Get a reference to a Robj for this type.
+    /// Get a reference to a [`Robj`] for this type.
     fn as_robj(&self) -> &Robj;
 
-    /// Get a mutable reference to a Robj for this type.
+    /// Get a mutable reference to a [`Robj`] for this type.
     fn as_robj_mut(&mut self) -> &mut Robj;
 }
 
@@ -159,7 +159,7 @@ pub trait Slices: GetSexp {
     /// # Safety
     ///
     /// Unless the type is correct, this will cause undefined behaviour.
-    /// Creating this slice will also instatiate and Altrep objects.
+    /// Creating this slice will also instantiate and Altrep objects.
     unsafe fn as_typed_slice_raw<T>(&self) -> &[T] {
         let len = XLENGTH(self.get()) as usize;
         let data = DATAPTR_RO(self.get()) as *const T;
@@ -184,6 +184,7 @@ impl Slices for Robj {}
 
 pub trait Length: GetSexp {
     /// Get the extended length of the object.
+    /// 
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -196,7 +197,8 @@ pub trait Length: GetSexp {
         unsafe { Rf_xlength(self.get()) as usize }
     }
 
-    /// Returns `true` if the `Robj` contains no elements.
+    /// Returns `true` if the [`Robj`] contains no elements.
+    /// 
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -220,7 +222,7 @@ impl Robj {
         })
     }
 
-    /// A ref of an robj can be constructed from a ref to a SEXP
+    /// A ref of an [`Robj`] can be constructed from a ref to a [`SEXP`]
     /// as they have the same layout.
     pub fn from_sexp_ref(sexp: &SEXP) -> &Self {
         unsafe { std::mem::transmute(sexp) }
@@ -235,6 +237,7 @@ pub trait Types: GetSexp {
     }
 
     /// Get the type of an R object.
+    /// 
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -322,8 +325,9 @@ pub trait Types: GetSexp {
 impl Types for Robj {}
 
 impl Robj {
-    /// Is this object is an NA scalar?
+    /// Is this object is an `NA` scalar?
     /// Works for character, integer and numeric types.
+    /// 
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -352,6 +356,7 @@ impl Robj {
     }
 
     /// Get a read-only reference to the content of an integer vector.
+    /// 
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -369,7 +374,8 @@ impl Robj {
         self.clone().try_into().ok()
     }
 
-    /// Get a Vec<i32> copied from the object.
+    /// Get a `Vec<i32>` copied from the object.
+    /// 
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -383,7 +389,8 @@ impl Robj {
     }
 
     /// Get a read-only reference to the content of a logical vector
-    /// using the tri-state [Rbool]. Returns None if not a logical vector.
+    /// using the tri-state [`Rbool`]. Returns None if not a logical vector.
+    /// 
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -395,9 +402,10 @@ impl Robj {
         self.as_typed_slice()
     }
 
-    /// Get a Vec<Rbool> copied from the object
-    /// using the tri-state [Rbool].
+    /// Get a `Vec<Rbool>` copied from the object
+    /// using the tri-state [`Rbool`].
     /// Returns None if not a logical vector.
+    /// 
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -410,6 +418,7 @@ impl Robj {
     }
 
     /// Get an iterator over logical elements of this slice.
+    /// 
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -428,8 +437,9 @@ impl Robj {
     }
 
     /// Get a read-only reference to the content of a double vector.
-    /// Note: the slice may contain NaN or NA values.
-    /// We may introduce a "Real" type to handle this like the Rbool type.
+    /// Note: the slice may contain `NaN` or `NA` values.
+    /// We may introduce a "Real" type to handle this like the `Rbool` type.
+    /// 
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -448,6 +458,7 @@ impl Robj {
     }
 
     /// Get an iterator over real elements of this slice.
+    /// 
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -465,7 +476,8 @@ impl Robj {
         self.as_real_slice().map(|slice| slice.iter())
     }
 
-    /// Get a Vec<f64> copied from the object.
+    /// Get a `Vec<f64>` copied from the object.
+    /// 
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -478,6 +490,7 @@ impl Robj {
     }
 
     /// Get a read-only reference to the content of an integer or logical vector.
+    /// 
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -491,6 +504,7 @@ impl Robj {
 
     /// Get a read-write reference to the content of an integer or logical vector.
     /// Note that rust slices are 0-based so `slice[1]` is the middle value.
+    /// 
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -506,6 +520,7 @@ impl Robj {
 
     /// Get a read-write reference to the content of a double vector.
     /// Note that rust slices are 0-based so `slice[1]` is the middle value.
+    /// 
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {

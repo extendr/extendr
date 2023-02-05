@@ -211,7 +211,8 @@ where
     }
 }
 impl<T> Nullable<T> {
-    /// Map Nullable<T> into Nullable<U>
+    /// Map `Nullable<T>` into `Nullable<U>`
+    /// 
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {

@@ -1,8 +1,8 @@
 use crate as extendr_api;
 use crate::*;
 
-/// Get a global variable from global_env() and ancestors.
-/// If the result is a promise, evaulate the promise.
+/// Get a global variable from `global_env()` and ancestors.
+/// If the result is a promise, evaluate the promise.
 ///
 /// See also [global_var()].
 /// ```
@@ -17,16 +17,16 @@ pub fn global_var<K: Into<Robj>>(key: K) -> Result<Robj> {
     global_env().find_var(key)?.eval_promise()
 }
 
-/// Get a local variable from current_env() and ancestors.
+/// Get a local variable from `current_env()` and ancestors.
 ///
-/// If the result is a promise, evaulate the promise.
+/// If the result is a promise, evaluate the promise.
 /// The result will come from the calling environment
 /// of an R function which will enable you to use variables
 /// from the caller.
 ///
-/// See also [var!].
+/// See also [`var!`].
 ///
-/// Note that outside of R, current_env() will be base_env()
+/// Note that outside of R, `current_env()` will be `base_env()`
 /// and cannot be modified.
 ///
 /// ```no_run
@@ -41,7 +41,8 @@ pub fn local_var<K: Into<Robj>>(key: K) -> Result<Robj> {
     current_env().find_var(key)?.eval_promise()
 }
 
-/// Get a global function from global_env() and ancestors.
+/// Get a global function from `global_env()` and ancestors.
+///
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
@@ -56,7 +57,7 @@ pub fn global_function<K: Into<Robj>>(key: K) -> Result<Robj> {
 
 /// Find a namespace by name.
 ///
-/// See also [Robj::double_colon].
+/// See also [`Robj::double_colon`].
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
@@ -131,7 +132,7 @@ pub fn new_env(parent: Environment, hash: bool, capacity: i32) -> Environment {
         .unwrap()
 }
 
-/// The base environment; formerly R_NilValue
+/// The base environment; formerly `R_NilValue`
 ///
 /// ```
 /// use extendr_api::prelude::*;
@@ -168,7 +169,7 @@ pub fn namespace_registry() -> Environment {
     unsafe { Robj::from_sexp(R_NamespaceRegistry).try_into().unwrap() }
 }
 
-/// Current srcref, for debuggers
+/// Current `srcref`, for debuggers
 pub fn srcref() -> Robj {
     unsafe { Robj::from_sexp(R_Srcref) }
 }
@@ -221,7 +222,8 @@ pub fn parse(code: &str) -> Result<Expressions> {
 }
 
 /// Parse a string into an R executable object and run it.
-/// Used by the R! macro.
+/// Used by the [`R!`] macro.
+/// 
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
@@ -243,9 +245,10 @@ pub fn eval_string(code: &str) -> Result<Robj> {
 }
 
 /// Parse a string into an R executable object and run it using
-///   parameters param.0, param.1, ...
+///   parameters `param.0, param.1, ...`
 ///
-/// Used by the R! macro.
+/// Used by the [`R!`] macro.
+/// 
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
@@ -274,6 +277,7 @@ pub fn eval_string_with_params(code: &str, values: &[&Robj]) -> Result<Robj> {
 }
 
 /// Find a function or primitive that may be in a namespace.
+/// 
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {

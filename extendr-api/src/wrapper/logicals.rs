@@ -118,7 +118,7 @@ impl Logicals {
 impl Deref for Logicals {
     type Target = [Rbool];
 
-    /// Treat Logicals as if it is a slice, like Vec<Rint>
+    /// Treat Logicals as if it is a slice, like `Vec<Rint>`
     fn deref(&self) -> &Self::Target {
         unsafe {
             let ptr = DATAPTR_RO(self.get()) as *const Rbool;
@@ -128,7 +128,7 @@ impl Deref for Logicals {
 }
 
 impl DerefMut for Logicals {
-    /// Treat Logicals as if it is a mutable slice, like Vec<Rint>
+    /// Treat Logicals as if it is a mutable slice, like `Vec<Rint>`
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
             let ptr = DATAPTR(self.get()) as *mut Rbool;

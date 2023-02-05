@@ -1,11 +1,4 @@
-//! A sigleton instance of the R interpreter.
-//!
-//! Only call this from main() if you want to run stand-alone.
-//!
-//! Its principal use is for testing.
-//!
-//! See <https://github.com/wch/r-source/blob/trunk/src/unix/Rembedded.c>
-
+#![doc = include_str!("../README.md")]
 use libR_sys::*;
 use std::os::raw;
 use std::sync::Once;
