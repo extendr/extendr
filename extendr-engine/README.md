@@ -9,4 +9,4 @@ Only call this from `main()` if you want to run stand-alone.
 
 Its principal use is for testing.
 
-See [`Rembedded.c`](https://github.com/wch/r-source/blob/trunk/src/unix/Rembedded.c).
+See [`Rembedded.c`](https://github.com/wch/r-source/blob/trunk/src/unix/Rembedded.c) for more details.

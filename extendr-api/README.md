@@ -37,7 +37,7 @@ result <- fred(1)
 ```
 
 [`Robj`] is a wrapper for R objects.
-The `r!()` and `R!()` macros let you build R objects
+The [`r!()`] and [`R!()`] macros let you build R objects
 using Rust and R syntax respectively.
 
 ```rust

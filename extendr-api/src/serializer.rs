@@ -1,4 +1,4 @@
-//! See <https://serde.rs/impl-serializer.html>
+//! See [Implementing a Serializer](https://serde.rs/impl-serializer.html).
 
 use crate::error::{Error, Result};
 use crate::na::CanBeNA;
