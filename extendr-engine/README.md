@@ -3,6 +3,8 @@
 This crate is mostly use for testing [`extendr-api`]. See
 [`extendr-api`] for more details.
 
+[`extendr-api`]: https://extendr.github.io/extendr/extendr_api/index.html
+
 Provides a singleton instance of the R interpreter.
 
 Only call this from `main()` if you want to run stand-alone.

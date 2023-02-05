@@ -138,7 +138,7 @@ test! {
 The [`R!`] macro lets you embed R code in Rust
 and takes Rust expressions in `{{ }}` pairs.
 
-The `[Rraw!]` macro will not expand the `{{ }}` pairs.
+The [`Rraw!`] macro will not expand the `{{ }}` pairs.
 
 ```rust
 use extendr_api::prelude::*;
@@ -204,7 +204,7 @@ Rust has a concept of "Owned" and "Borrowed" objects.
 Owned objects, such as [`Vec`] and [`String`] allocate memory
 which is released when the object lifetime ends.
 
-Borrowed objects such as `&[i32]` and `&str` are just pointers
+Borrowed objects such as `&[i32]` and [`&str`] are just pointers
 to another object's memory and can't live longer than the
 object they reference.
 
@@ -261,11 +261,11 @@ mod test {
 
 ## Feature gates
 
-`extendr-api` has some optional features behind these feature gates:
+`extendr_api` has some optional features behind these feature gates:
 
-* `ndarray`: provides the conversion between R's matrices and [`ndarray`](https://docs.rs/ndarray/latest/ndarray/).
-* `num-complex`: provides the conversion between R's complex numbers and [`num-complex`](https://docs.rs/num-complex/latest/num_complex/).
-* `serde`: provides the [`serde`](https://serde.rs/) support.
+* [`ndarray`]: provides the conversion between R's matrices.
+* [`num_complex`]: provides the conversion between R's complex numbers.
+* [`serde`]: provides serialisation and deserialisation support.
 * `graphics`: provides the functionality to control or implement graphics devices.
 
 ## License
