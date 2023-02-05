@@ -33,11 +33,29 @@ impl From<()> for Robj {
 ///     assert_eq!(r!(my_func()), r!(1.0));
 /// }
 /// ```
-impl<T> From<Result<T>> for Robj
+// impl<T> From<Result<T>> for Robj
+// where
+//     T: Into<Robj>,
+// {
+//     fn from(res: Result<T>) -> Self {
+//         match res {
+//             Ok(x) => x.into(),
+//             Err(x) => x
+//                 .to_string()
+//                 .into_robj()
+//                 .set_attrib("extendr_err", true)
+//                 .unwrap(),
+//         }
+//     }
+// }
+
+// it does not have to be extendr result
+impl<T, E> From<std::result::Result<T, E>> for Robj
 where
     T: Into<Robj>,
+    E: std::fmt::Display,
 {
-    fn from(res: Result<T>) -> Self {
+    fn from(res: std::result::Result<T, E>) -> Self {
         match res {
             Ok(x) => x.into(),
             Err(x) => x
@@ -48,6 +66,20 @@ where
         }
     }
 }
+
+// // ... and Err does not have to implement Display
+// impl<T, E> From<std::result::Result<T, E>> for Robj
+// where
+//     T: Into<Robj>,
+//     E: Into<Robj>,
+// {
+//     fn from(res: std::result::Result<T, E>) -> Self {
+//         match res {
+//             Ok(x) => x.into(),
+//             Err(x) => x.into_robj().set_attrib("extendr_err", true).unwrap(),
+//         }
+//     }
+// }
 
 /// Convert an Robj reference into a borrowed Robj.
 impl From<&Robj> for Robj {
