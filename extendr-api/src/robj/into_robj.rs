@@ -34,17 +34,18 @@ impl From<()> for Robj {
 /// }
 /// ```
 
-#[cfg(result_handling = "result_panic")]
+#[cfg(feature = "result_panic")]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
     T: Into<Robj>,
+    E: std::fmt::Debug,
 {
     fn from(res: std::result::Result<T, E>) -> Self {
-        unwrap(res)
+        res.unwrap().into()
     }
 }
 
-#[cfg(result_handling = "result_condition")]
+#[cfg(feature = "result_condition")]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
     T: Into<Robj>,
@@ -67,7 +68,7 @@ where
     }
 }
 
-#[cfg(result_handling = "result_attribute")]
+#[cfg(feature = "result_attribute")]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
     T: Into<Robj>,
