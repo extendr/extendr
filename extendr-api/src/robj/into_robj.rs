@@ -34,7 +34,7 @@ impl From<()> for Robj {
 /// }
 /// ```
 
-#[cfg(result_handling = "panic")]
+#[cfg(result_handling = "result_panic")]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
     T: Into<Robj>,
@@ -44,7 +44,7 @@ where
     }
 }
 
-#[cfg(result_handling = "condition")]
+#[cfg(result_handling = "result_condition")]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
     T: Into<Robj>,
@@ -67,7 +67,7 @@ where
     }
 }
 
-#[cfg(result_handling = "attribute")]
+#[cfg(result_handling = "result_attribute")]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
     T: Into<Robj>,
