@@ -223,7 +223,7 @@ pub fn parse(code: &str) -> Result<Expressions> {
 
 /// Parse a string into an R executable object and run it.
 /// Used by the [`R!`] macro.
-/// 
+///
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
@@ -248,7 +248,7 @@ pub fn eval_string(code: &str) -> Result<Robj> {
 ///   parameters `param.0, param.1, ...`
 ///
 /// Used by the [`R!`] macro.
-/// 
+///
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
@@ -277,7 +277,7 @@ pub fn eval_string_with_params(code: &str, values: &[&Robj]) -> Result<Robj> {
 }
 
 /// Find a function or primitive that may be in a namespace.
-/// 
+///
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {

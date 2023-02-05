@@ -23,7 +23,7 @@ impl From<()> for Robj {
 /// functions to use the `?`-operator and return `Result<T>`.
 ///
 /// Panics if there is an error.
-/// 
+///
 /// ```
 /// use extendr_api::prelude::*;
 /// fn my_func() -> Result<f64> {
