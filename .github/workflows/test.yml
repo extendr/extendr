@@ -73,10 +73,9 @@ jobs:
       - uses: actions/checkout@v2
       
       - name: Set up Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: ${{ matrix.config.rust-version }}
-          default: true
           components: rustfmt, clippy
       
       - name: Set up R
@@ -323,10 +322,9 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Set up Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: ${{ matrix.config.rust-version }}
-          default: true
 
       # 1. Update rustup
       # 2. For each target add respective toolchain &
