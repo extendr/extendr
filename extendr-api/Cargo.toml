@@ -15,7 +15,7 @@ license = "MIT"
 repository = "https://github.com/extendr/extendr"
 
 [dependencies]
-libR-sys = "0.3.0"
+libR-sys = { workspace = true }
 extendr-macros = { path = "../extendr-macros", version="0.3.1" }
 extendr-engine = { path = "../extendr-engine", version="0.3.1" }
 ndarray = { version = "0.15.3", optional = true }

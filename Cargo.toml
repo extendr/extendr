@@ -2,9 +2,9 @@
 
 members = [
 	"extendr-api",
-	"extendr-engine",
-	"extendr-macros",
-]
+
+[workspace.dependencies]
+libR-sys = "0.3.0"
 
 [patch.crates-io]
 # When uncommenting this, do not forget to uncomment the same line in
