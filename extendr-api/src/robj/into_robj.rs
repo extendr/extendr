@@ -56,13 +56,22 @@ where
             Ok(x) => x.into(),
             Err(x) => {
                 let robj: Robj = x.into();
-                if let Ok(err_cnd) = R!("simpleError(message = 'extendr_Error', class = {{robj}})")
-                {
-                    err_cnd
+                if let Some(cnd_msg) = robj.as_str() {
+                    //if error is a string make it the message and value of condtion
+                    List::from_names_and_values(&["message", "value"], &[cnd_msg.into_robj(), robj])
                 } else {
-                    R!("simpleError(message = 'internal extendr error'")
-                        .expect("can return the simplest err-condition")
+                    List::from_names_and_values(
+                        &["message", "value"],
+                        &[
+                            "extendr non-string error placed in cond$value".into_robj(),
+                            robj,
+                        ],
+                    )
                 }
+                //can only imagine this would ever fail due memory allcation error, but then panicking is the right choice
+                .expect("internal error: failed to create an R list")
+                .set_class(["error", "condition"])
+                .expect("internal error: failed to set class")
             }
         }
     }
@@ -82,21 +91,39 @@ where
                 if let Ok(err_attr) = x.into().set_attrib("extendr_err", true) {
                     err_attr
                 } else {
-                    r!("internal extendr error")
+                    r!("extendr internal error: failed to set_attrib on returning Robj")
+                        //can only imagine this would ever fail due memory allcation error, but then panicking is the right choice
                         .set_attrib("extendr_err", true)
-                        .expect("can return the simplest attr-err")
+                        .expect("internal error: failed to set attr")
                 }
             }
         }
     }
 }
 
+#[cfg(feature = "result_list")]
+impl<T, E> From<std::result::Result<T, E>> for Robj
+where
+    T: Into<Robj>,
+    E: Into<Robj>,
+{
+    fn from(res: std::result::Result<T, E>) -> Self {
+        match res {
+            Ok(x) => List::from_names_and_values(&["ok", "err"], &[x.into(), NULL.into()]),
+            Err(x) => List::from_names_and_values(&["ok", "err"], &[NULL.into(), x.into()]),
+        }
+        //can only imagine this would ever fail due memory allcation error, but then panicking is the right choice
+        .expect("internal error: failed to create an R list")
+        .into()
+    }
+}
+
+// string conversions from Error trait to Robj and String
 impl From<Error> for Robj {
     fn from(res: Error) -> Self {
         res.to_string().into()
     }
 }
-
 impl From<Error> for String {
     fn from(res: Error) -> Self {
         res.to_string().into()
