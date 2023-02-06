@@ -2,12 +2,12 @@ use super::*;
 use std::any::Any;
 use std::fmt::Debug;
 
-/// Wrapper for creating R objects containing any Rust object. 
-/// External pointers (`ExternalPtr`) are accessible from R as an object of class `externalptr`. 
+/// Wrapper for creating R objects containing any Rust object.
+/// External pointers (`ExternalPtr`) are accessible from R as an object of class `externalptr`.
 /// Your R code can use external pointers to reference objects in Rust memory.
 ///
-/// External pointers can be made avaialable as their underlying type by dereferencing. 
-/// In order to deference, the object must either implement the `Copy` trait or be a reference—e.g. `&T`. 
+/// External pointers can be made avaialable as their underlying type by dereferencing.
+/// In order to deference, the object must either implement the `Copy` trait or be a reference—e.g. `&T`.
 ///
 /// ```
 /// use extendr_api::prelude::*;
