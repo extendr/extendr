@@ -4,6 +4,11 @@
 
 ### Added
 
+- [**ndarray**] `TryFrom<&Robj>` for `ArrayView1<T>` and `ArrayView2<T>`, where `T` is `i32`, `f64`, `c64`, `Rint`, `Rfloat`, `Rcplx`, `Rstr`, `Rbool` [[#443]](https://github.com/extendr/extendr/pull/443)
+- `Sum` for scalars like `Rint`, `Rfloat` and `Rcplx`, which accept `Iterator<Item = &Rtype>` [[#454]](https://github.com/extendr/extendr/pull/454)
+- `Nullable<T>` is now part of `extendr_api::prelude` [[#446]](https://github.com/extendr/extendr/pull/446)
+- `TryFrom<Robj>`, `From<Option<T>>`, `Into<Option<T>>` and their variations for `Nullable<T>` [[#446]](https://github.com/extendr/extendr/pull/446)
+- `Nullable<T>::map()` that acts on not null value and propagates `NULL` [[#446]](https://github.com/extendr/extendr/pull/446)
 - `Debug` trait implementation for `Rcplx` and `Complexes` [[#444]](https://github.com/extendr/extendr/pull/444)
 - `Function` type that wraps an R function, which can be invoked using the `call()` method. [[#188]](https://github.com/extendr/extendr/pull/188)
 - `pairlist!` macro for generating `Pairlist` objects, e.g. for use in function calls. [[#202]](https://github.com/extendr/extendr/pull/202)

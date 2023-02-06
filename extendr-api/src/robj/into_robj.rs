@@ -6,7 +6,13 @@ pub(crate) fn str_to_character(s: &str) -> SEXP {
         if s.is_na() {
             R_NaString
         } else {
-            single_threaded(|| Rf_mkCharLen(s.as_ptr() as *const raw::c_char, s.len() as i32))
+            single_threaded(|| {
+                Rf_mkCharLenCE(
+                    s.as_ptr() as *const raw::c_char,
+                    s.len() as i32,
+                    cetype_t_CE_UTF8,
+                )
+            })
         }
     }
 }
@@ -572,28 +578,28 @@ impl_from_into_iter! {&'a [T]}
 impl_from_as_iterator! {Range<T>}
 impl_from_as_iterator! {RangeInclusive<T>}
 
-impl<'a> From<Vec<Robj>> for Robj {
+impl From<Vec<Robj>> for Robj {
     /// Convert a vector of Robj into a list.
     fn from(val: Vec<Robj>) -> Self {
         List::from_values(val.iter()).into()
     }
 }
 
-impl<'a> From<Vec<Rstr>> for Robj {
+impl From<Vec<Rstr>> for Robj {
     /// Convert a vector of Rstr into strings.
     fn from(val: Vec<Rstr>) -> Self {
         Strings::from_values(val.into_iter()).into()
     }
 }
 
-impl<'a> From<Vec<Rint>> for Robj {
+impl From<Vec<Rint>> for Robj {
     /// Convert a vector of Rint into integers.
     fn from(val: Vec<Rint>) -> Self {
         Integers::from_values(val.into_iter()).into()
     }
 }
 
-impl<'a> From<Vec<Rfloat>> for Robj {
+impl From<Vec<Rfloat>> for Robj {
     /// Convert a vector of Rfloat into doubles.
     fn from(val: Vec<Rfloat>) -> Self {
         Doubles::from_values(val.into_iter()).into()

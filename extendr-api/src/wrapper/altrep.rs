@@ -599,11 +599,7 @@ impl Altrep {
             pvec: c_int,
             func: Option<unsafe extern "C" fn(arg1: SEXP, arg2: c_int, arg3: c_int, arg4: c_int)>,
         ) -> Rboolean {
-            if Altrep::get_state::<StateType>(x).inspect(pre, deep == 1, pvec) {
-                1
-            } else {
-                0
-            }
+            u32::from(Altrep::get_state::<StateType>(x).inspect(pre, deep == 1, pvec))
         }
 
         unsafe extern "C" fn altrep_Length<StateType: AltrepImpl + 'static>(x: SEXP) -> R_xlen_t {
@@ -723,11 +719,7 @@ impl Altrep {
             unsafe extern "C" fn altinteger_No_NA<StateType: AltIntegerImpl + 'static>(
                 x: SEXP,
             ) -> c_int {
-                if Altrep::get_state::<StateType>(x).no_na() {
-                    1
-                } else {
-                    0
-                }
+                i32::from(Altrep::get_state::<StateType>(x).no_na())
             }
 
             unsafe extern "C" fn altinteger_Sum<StateType: AltIntegerImpl + 'static>(
@@ -799,11 +791,7 @@ impl Altrep {
             }
 
             unsafe extern "C" fn altreal_No_NA<StateType: AltRealImpl + 'static>(x: SEXP) -> c_int {
-                if Altrep::get_state::<StateType>(x).no_na() {
-                    1
-                } else {
-                    0
-                }
+                i32::from(Altrep::get_state::<StateType>(x).no_na())
             }
 
             unsafe extern "C" fn altreal_Sum<StateType: AltRealImpl + 'static>(
@@ -876,11 +864,7 @@ impl Altrep {
             unsafe extern "C" fn altlogical_No_NA<StateType: AltLogicalImpl + 'static>(
                 x: SEXP,
             ) -> c_int {
-                if Altrep::get_state::<StateType>(x).no_na() {
-                    1
-                } else {
-                    0
-                }
+                i32::from(Altrep::get_state::<StateType>(x).no_na())
             }
 
             unsafe extern "C" fn altlogical_Sum<StateType: AltLogicalImpl + 'static>(
@@ -1007,11 +991,7 @@ impl Altrep {
             unsafe extern "C" fn altstring_No_NA<StateType: AltStringImpl + 'static>(
                 x: SEXP,
             ) -> c_int {
-                if Altrep::get_state::<StateType>(x).no_na() {
-                    1
-                } else {
-                    0
-                }
+                i32::from(Altrep::get_state::<StateType>(x).no_na())
             }
 
             R_set_altstring_Elt_method(class_ptr, Some(altstring_Elt::<StateType>));

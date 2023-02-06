@@ -384,7 +384,7 @@ impl TryFrom<&Robj> for Rcplx {
     }
 }
 
-// Convert TryFrom<&Robj> into TryFrom<&Robj>. Sadly, we are unable to make a blanket
+// Convert TryFrom<&Robj> into TryFrom<Robj>. Sadly, we are unable to make a blanket
 // conversion using GetSexp with the current version of Rust.
 macro_rules! impl_try_from_robj {
     ($($type : ty)*) => {

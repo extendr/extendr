@@ -33,6 +33,9 @@ impl Rfloat {
     pub fn abs(&self) -> Rfloat {
         self.0.abs().into()
     }
+    pub fn sqrt(&self) -> Rfloat {
+        self.0.sqrt().into()
+    }
 }
 
 // `NA_real_` is a `NaN` with specific bit representation.
@@ -40,7 +43,7 @@ impl Rfloat {
 gen_trait_impl!(Rfloat, f64, |x: &Rfloat| x.inner().is_na(), f64::na());
 gen_from_primitive!(Rfloat, f64);
 gen_from_scalar!(Rfloat, f64);
-gen_sum_iter!(Rfloat, 0f64);
+gen_sum_iter!(Rfloat);
 
 // Generate binary ops for +, -, * and /
 gen_binop!(

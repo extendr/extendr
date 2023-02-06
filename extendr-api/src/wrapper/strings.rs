@@ -52,7 +52,6 @@ impl Strings {
             for (i, v) in values.into_iter().take(maxlen).enumerate() {
                 let v = v.as_ref();
                 let ch = str_to_character(v);
-                // let ch = Rf_mkCharLen(v.as_ptr() as *mut c_char, v.len() as c_int);
                 SET_STRING_ELT(sexp, i as R_xlen_t, ch);
             }
             Self { robj }

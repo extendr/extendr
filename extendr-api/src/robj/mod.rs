@@ -778,6 +778,7 @@ macro_rules! make_typed_slice {
 
 make_typed_slice!(Rbool, INTEGER, LGLSXP);
 make_typed_slice!(i32, INTEGER, INTSXP);
+make_typed_slice!(u32, INTEGER, INTSXP);
 make_typed_slice!(Rint, INTEGER, INTSXP);
 make_typed_slice!(f64, REAL, REALSXP);
 make_typed_slice!(Rfloat, REAL, REALSXP);
@@ -1031,14 +1032,14 @@ pub unsafe fn new_owned(sexp: SEXP) -> Robj {
 }
 
 /// Compare equality with integer slices.
-impl<'a> PartialEq<[i32]> for Robj {
+impl PartialEq<[i32]> for Robj {
     fn eq(&self, rhs: &[i32]) -> bool {
         self.as_integer_slice() == Some(rhs)
     }
 }
 
 /// Compare equality with slices of double.
-impl<'a> PartialEq<[f64]> for Robj {
+impl PartialEq<[f64]> for Robj {
     fn eq(&self, rhs: &[f64]) -> bool {
         self.as_real_slice() == Some(rhs)
     }

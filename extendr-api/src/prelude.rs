@@ -75,3 +75,5 @@ pub use std::convert::{TryFrom, TryInto};
 pub use std::ops::Index;
 
 pub use super::scalar::*;
+
+pub use super::Nullable::*;

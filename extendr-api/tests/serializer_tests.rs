@@ -4,8 +4,6 @@ mod test {
     use extendr_api::serializer::to_robj;
     use serde::Serialize;
 
-    ////////////////////////////////////////////////////////////////////////////////
-
     #[test]
     fn test_serialize_struct() {
         test! {
