@@ -267,17 +267,6 @@
 <a href="#266" id="266">266</a>
 <a href="#267" id="267">267</a>
 <a href="#268" id="268">268</a>
-<a href="#269" id="269">269</a>
-<a href="#270" id="270">270</a>
-<a href="#271" id="271">271</a>
-<a href="#272" id="272">272</a>
-<a href="#273" id="273">273</a>
-<a href="#274" id="274">274</a>
-<a href="#275" id="275">275</a>
-<a href="#276" id="276">276</a>
-<a href="#277" id="277">277</a>
-<a href="#278" id="278">278</a>
-<a href="#279" id="279">279</a>
 </pre><pre class="rust"><code><span class="attr">#[doc(hidden)]
 </span><span class="kw">use </span>ndarray::prelude::<span class="kw-2">*</span>;
 <span class="kw">use </span>ndarray::{Data, ShapeBuilder};
@@ -422,138 +411,127 @@
     }
 }
 
-<span class="attr">#[test]
-</span><span class="kw">fn </span>test_from_robj() {
-    <span class="macro">test! </span>{
-        <span class="macro">assert_eq!</span>(
-            &lt;ArrayView1&lt;f64&gt;&gt;::from_robj(<span class="kw-2">&amp;</span>Robj::from(<span class="number">1.</span>)),
-            <span class="prelude-val">Ok</span>(ArrayView1::&lt;f64&gt;::from(<span class="kw-2">&amp;</span>[<span class="number">1.</span>][..]))
-        );
-        <span class="macro">assert_eq!</span>(
-            &lt;ArrayView1&lt;i32&gt;&gt;::from_robj(<span class="kw-2">&amp;</span>Robj::from(<span class="number">1</span>)),
-            <span class="prelude-val">Ok</span>(ArrayView1::&lt;i32&gt;::from(<span class="kw-2">&amp;</span>[<span class="number">1</span>][..]))
-        );
-        <span class="macro">assert_eq!</span>(
-            &lt;ArrayView1&lt;Rbool&gt;&gt;::from_robj(<span class="kw-2">&amp;</span>Robj::from(<span class="bool-val">true</span>)),
-            <span class="prelude-val">Ok</span>(ArrayView1::&lt;Rbool&gt;::from(<span class="kw-2">&amp;</span>[TRUE][..]))
-        );
+<span class="attr">#[cfg(test)]
+</span><span class="kw">mod </span>test {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use </span><span class="kw">crate</span>::FromRobj;
+    <span class="kw">use </span>ndarray::array;
+    <span class="kw">use </span>rstest::rstest;
 
-        <span class="kw">let </span>robj = <span class="macro">R!</span>(<span class="string">&quot;matrix(c(1, 2, 3, 4, 5, 6, 7, 8), ncol=2, nrow=4)&quot;</span>)<span class="question-mark">?</span>;
-        <span class="kw">let </span>mx = &lt;ArrayView2&lt;f64&gt;&gt;::from_robj(<span class="kw-2">&amp;</span>robj)<span class="question-mark">?</span>;
-        <span class="macro">assert_eq!</span>(mx[[<span class="number">0</span>, <span class="number">0</span>]], <span class="number">1.0</span>);
-        <span class="macro">assert_eq!</span>(mx[[<span class="number">1</span>, <span class="number">0</span>]], <span class="number">2.0</span>);
-        <span class="macro">assert_eq!</span>(mx[[<span class="number">2</span>, <span class="number">0</span>]], <span class="number">3.0</span>);
-        <span class="macro">assert_eq!</span>(mx[[<span class="number">3</span>, <span class="number">0</span>]], <span class="number">4.0</span>);
-        <span class="macro">assert_eq!</span>(mx[[<span class="number">0</span>, <span class="number">1</span>]], <span class="number">5.0</span>);
-        <span class="macro">assert_eq!</span>(mx[[<span class="number">1</span>, <span class="number">1</span>]], <span class="number">6.0</span>);
-        <span class="macro">assert_eq!</span>(mx[[<span class="number">2</span>, <span class="number">1</span>]], <span class="number">7.0</span>);
-        <span class="macro">assert_eq!</span>(mx[[<span class="number">3</span>, <span class="number">1</span>]], <span class="number">8.0</span>);
+    <span class="attr">#[rstest]
+    </span><span class="comment">// Scalars
+    </span><span class="attr">#[case(
+        <span class="string">&quot;1.0&quot;</span>,
+        ArrayView1::&lt;f64&gt;::from(<span class="kw-2">&amp;</span>[<span class="number">1.</span>]</span>[..])
+    )]
+    <span class="attr">#[case(
+        <span class="string">&quot;1L&quot;</span>,
+        ArrayView1::&lt;i32&gt;::from(<span class="kw-2">&amp;</span>[<span class="number">1</span>]</span>[..])
+    )]
+    <span class="attr">#[case(
+        <span class="string">&quot;TRUE&quot;</span>,
+        ArrayView1::&lt;Rbool&gt;::from(<span class="kw-2">&amp;</span>[TRUE]</span>[..])
+    )]
+    <span class="comment">// Matrices
+    </span><span class="attr">#[case(
+       <span class="string">&quot;matrix(c(1, 2, 3, 4, 5, 6, 7, 8), ncol=2, nrow=4)&quot;</span>,
+        &lt;Array2&lt;f64&gt;&gt;::from_shape_vec((<span class="number">4</span>, <span class="number">2</span>).f(), <span class="macro">vec!</span>[<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>, <span class="number">4.0</span>, <span class="number">5.0</span>, <span class="number">6.0</span>, <span class="number">7.0</span>, <span class="number">8.0</span>]</span>).unwrap()
+    )]
+    <span class="attr">#[case(
+        <span class="comment">// Testing the memory layout is Fortran
+        </span><span class="string">&quot;matrix(c(1, 2, 3, 4, 5, 6, 7, 8), ncol=2, nrow=4)[, 1]&quot;</span>,
+        &lt;Array2&lt;f64&gt;&gt;::from_shape_vec((<span class="number">4</span>, <span class="number">2</span>).f(), <span class="macro">vec!</span>[<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>, <span class="number">4.0</span>, <span class="number">5.0</span>, <span class="number">6.0</span>, <span class="number">7.0</span>, <span class="number">8.0</span>]</span>).unwrap().column(<span class="number">0</span>).to_owned()
+    )]
+    <span class="attr">#[case(
+        <span class="string">&quot;matrix(c(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L), ncol=2, nrow=4)&quot;</span>,
+        &lt;Array2&lt;i32&gt;&gt;::from_shape_vec((<span class="number">4</span>, <span class="number">2</span>).f(), <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>]</span>).unwrap()
+    )]
+    <span class="attr">#[case(
+        <span class="string">&quot;matrix(c(T, T, T, T, F, F, F, F), ncol=2, nrow=4)&quot;</span>,
+        &lt;Array2&lt;Rbool&gt;&gt;::from_shape_vec((<span class="number">4</span>, <span class="number">2</span>).f(), <span class="macro">vec!</span>[<span class="bool-val">true</span>.into(), <span class="bool-val">true</span>.into(), <span class="bool-val">true</span>.into(), <span class="bool-val">true</span>.into(), <span class="bool-val">false</span>.into(), <span class="bool-val">false</span>.into(), <span class="bool-val">false</span>.into(), <span class="bool-val">false</span>.into()]</span>).unwrap()
+    )]
+    <span class="kw">fn </span>test_from_robj&lt;DataType, DimType&gt;(
+        <span class="attr">#[case] </span>left: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+        <span class="attr">#[case] </span>right: ArrayBase&lt;DataType, DimType&gt;,
+    ) <span class="kw">where
+        </span>DataType: Data,
+        <span class="kw">for</span>&lt;<span class="lifetime">&#39;a</span>&gt; ArrayView&lt;<span class="lifetime">&#39;a</span>, &lt;DataType <span class="kw">as </span>ndarray::RawData&gt;::Elem, DimType&gt;: FromRobj&lt;<span class="lifetime">&#39;a</span>&gt;,
+        DimType: Dimension,
+        &lt;DataType <span class="kw">as </span>ndarray::RawData&gt;::Elem: PartialEq + std::fmt::Debug,
+    {
+        <span class="comment">// Tests for the R → Rust conversion
+        </span><span class="macro">test! </span>{
+            <span class="kw">let </span>left_robj = eval_string(left).unwrap();
+            <span class="kw">let </span>left_array = &lt;ArrayView&lt;DataType::Elem, DimType&gt;&gt;::from_robj(<span class="kw-2">&amp;</span>left_robj).unwrap();
+            <span class="macro">assert_eq!</span>( left_array, right );
+        }
+    }
 
-        <span class="comment">// check basic logic of fortran-order matrices.
-        </span><span class="kw">let </span>col0 = mx.column(<span class="number">0</span>);
-        <span class="macro">assert_eq!</span>(col0[<span class="number">0</span>], <span class="number">1.0</span>);
-        <span class="macro">assert_eq!</span>(col0[<span class="number">1</span>], <span class="number">2.0</span>);
-        <span class="macro">assert_eq!</span>(col0[<span class="number">2</span>], <span class="number">3.0</span>);
-        <span class="macro">assert_eq!</span>(col0[<span class="number">3</span>], <span class="number">4.0</span>);
-
-        <span class="comment">// check integer matrices
-        </span><span class="kw">let </span>robj = <span class="macro">R!</span>(<span class="string">&quot;matrix(c(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L), ncol=2, nrow=4)&quot;</span>)<span class="question-mark">?</span>;
-        <span class="kw">let </span>mx = &lt;ArrayView2&lt;i32&gt;&gt;::from_robj(<span class="kw-2">&amp;</span>robj)<span class="question-mark">?</span>;
-        <span class="macro">assert_eq!</span>(mx[[<span class="number">0</span>, <span class="number">0</span>]], <span class="number">1</span>);
-        <span class="macro">assert_eq!</span>(mx[[<span class="number">1</span>, <span class="number">0</span>]], <span class="number">2</span>);
-        <span class="macro">assert_eq!</span>(mx[[<span class="number">2</span>, <span class="number">0</span>]], <span class="number">3</span>);
-        <span class="macro">assert_eq!</span>(mx[[<span class="number">3</span>, <span class="number">0</span>]], <span class="number">4</span>);
-        <span class="macro">assert_eq!</span>(mx[[<span class="number">0</span>, <span class="number">1</span>]], <span class="number">5</span>);
-        <span class="macro">assert_eq!</span>(mx[[<span class="number">1</span>, <span class="number">1</span>]], <span class="number">6</span>);
-        <span class="macro">assert_eq!</span>(mx[[<span class="number">2</span>, <span class="number">1</span>]], <span class="number">7</span>);
-        <span class="macro">assert_eq!</span>(mx[[<span class="number">3</span>, <span class="number">1</span>]], <span class="number">8</span>);
-
-        <span class="comment">// check logical matrices
-        </span><span class="kw">let </span>robj = <span class="macro">R!</span>(<span class="string">&quot;matrix(c(T, T, T, T, F, F, F, F), ncol=2, nrow=4)&quot;</span>)<span class="question-mark">?</span>;
-        <span class="kw">let </span>mx = &lt;ArrayView2&lt;Rbool&gt;&gt;::from_robj(<span class="kw-2">&amp;</span>robj)<span class="question-mark">?</span>;
-        <span class="macro">assert_eq!</span>(mx[[<span class="number">0</span>, <span class="number">0</span>]], TRUE);
-        <span class="macro">assert_eq!</span>(mx[[<span class="number">1</span>, <span class="number">0</span>]], TRUE);
-        <span class="macro">assert_eq!</span>(mx[[<span class="number">2</span>, <span class="number">0</span>]], TRUE);
-        <span class="macro">assert_eq!</span>(mx[[<span class="number">3</span>, <span class="number">0</span>]], TRUE);
-        <span class="macro">assert_eq!</span>(mx[[<span class="number">0</span>, <span class="number">1</span>]], FALSE);
-        <span class="macro">assert_eq!</span>(mx[[<span class="number">1</span>, <span class="number">1</span>]], FALSE);
-        <span class="macro">assert_eq!</span>(mx[[<span class="number">2</span>, <span class="number">1</span>]], FALSE);
-        <span class="macro">assert_eq!</span>(mx[[<span class="number">3</span>, <span class="number">1</span>]], FALSE);
-
-        <span class="comment">// check raw matrices
-        // let robj = r!(Matrix::new(vec![1_u8, 2, 3, 4, 5, 6, 7, 8], 4, 2));
-        // let mx = &lt;ArrayView2&lt;u8&gt;&gt;::from_robj(&amp;robj)?;
-        // assert_eq!(mx[[0, 0]], 1);
-        // assert_eq!(mx[[1, 0]], 2);
-        // assert_eq!(mx[[2, 0]], 3);
-        // assert_eq!(mx[[3, 0]], 4);
-        // assert_eq!(mx[[0, 1]], 5);
-        // assert_eq!(mx[[1, 1]], 6);
-        // assert_eq!(mx[[2, 1]], 7);
-        // assert_eq!(mx[[3, 1]], 8);
-    </span>}
-}
-
-<span class="attr">#[test]
-</span><span class="kw">fn </span>test_to_robj() {
-    <span class="macro">test! </span>{
+    <span class="attr">#[rstest]
+    #[case(
         <span class="comment">// An empty array should still convert to an empty R array with the same shape
-        </span><span class="macro">assert_eq!</span>(
-            <span class="kw-2">&amp;</span>Robj::try_from(<span class="kw-2">&amp;</span>Array4::&lt;i32&gt;::zeros((<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>).f()))<span class="question-mark">?</span>,
-            <span class="kw-2">&amp;</span><span class="macro">R!</span>(<span class="string">&quot;array(integer(), c(0, 1, 2, 3))&quot;</span>)<span class="question-mark">?
-        </span>);
-
-        <span class="macro">assert_eq!</span>(
-            <span class="kw-2">&amp;</span>Robj::try_from(<span class="kw-2">&amp;</span><span class="macro">array!</span>[<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>])<span class="question-mark">?</span>,
-            <span class="kw-2">&amp;</span><span class="macro">R!</span>(<span class="string">&quot;array(c(1, 2, 3))&quot;</span>)<span class="question-mark">?
-        </span>);
-
-        <span class="comment">// We give both R and Rust the same 1d vector and tell them both to read it as a matrix
-        // in C order. Therefore these arrays should be the same.
-        </span><span class="macro">assert_eq!</span>(
-            <span class="kw-2">&amp;</span>Robj::try_from(<span class="kw-2">&amp;</span>Array::from_shape_vec((<span class="number">2</span>, <span class="number">3</span>), <span class="macro">vec!</span>[<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>, <span class="number">4.</span>, <span class="number">5.</span>, <span class="number">6.</span>]).unwrap())<span class="question-mark">?</span>,
-            <span class="kw-2">&amp;</span><span class="macro">R!</span>(<span class="string">&quot;matrix(c(1, 2, 3, 4, 5, 6), nrow=2, byrow=TRUE)&quot;</span>)<span class="question-mark">?
-        </span>);
-
+        </span><span class="kw-2">&amp;</span>Array4::&lt;i32&gt;::zeros((<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>).f()),
+        <span class="string">&quot;array(integer(), c(0, 1, 2, 3))&quot;
+    </span>)]
+    #[case(
+        <span class="kw-2">&amp;</span><span class="macro">array!</span>[<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>]</span>,
+        <span class="string">&quot;array(c(1, 2, 3))&quot;
+    </span>)]
+    <span class="attr">#[case(
+        <span class="comment">// We give both R and Rust the same 1d vector and tell them both to read it as a matrix in C order.
+        // Therefore these arrays should be the same.
+        </span><span class="kw-2">&amp;</span>Array::from_shape_vec((<span class="number">2</span>, <span class="number">3</span>), <span class="macro">vec!</span>[<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>, <span class="number">4.</span>, <span class="number">5.</span>, <span class="number">6.</span>]</span>).unwrap(),
+        <span class="string">&quot;matrix(c(1, 2, 3, 4, 5, 6), nrow=2, byrow=TRUE)&quot;
+    </span>)]
+    <span class="attr">#[case(
         <span class="comment">// We give both R and Rust the same 1d vector and tell them both to read it as a matrix
         // in fortran order. Therefore these arrays should be the same.
-        </span><span class="macro">assert_eq!</span>(
-            <span class="kw-2">&amp;</span>Robj::try_from(<span class="kw-2">&amp;</span>Array::from_shape_vec((<span class="number">2</span>, <span class="number">3</span>).f(), <span class="macro">vec!</span>[<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>, <span class="number">4.</span>, <span class="number">5.</span>, <span class="number">6.</span>]).unwrap())<span class="question-mark">?</span>,
-            <span class="kw-2">&amp;</span><span class="macro">R!</span>(<span class="string">&quot;matrix(c(1, 2, 3, 4, 5, 6), nrow=2, byrow=FALSE)&quot;</span>)<span class="question-mark">?
-        </span>);
-
+        </span><span class="kw-2">&amp;</span>Array::from_shape_vec((<span class="number">2</span>, <span class="number">3</span>).f(), <span class="macro">vec!</span>[<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>, <span class="number">4.</span>, <span class="number">5.</span>, <span class="number">6.</span>]</span>).unwrap(),
+        <span class="string">&quot;matrix(c(1, 2, 3, 4, 5, 6), nrow=2, byrow=FALSE)&quot;
+    </span>)]
+    <span class="attr">#[case(
         <span class="comment">// We give both R and Rust the same 1d vector and tell them both to read it as a 3d array
         // in fortran order. Therefore these arrays should be the same.
-        </span><span class="macro">assert_eq!</span>(
-            <span class="kw-2">&amp;</span>Robj::try_from(<span class="kw-2">&amp;</span>Array::from_shape_vec((<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>).f(), <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>]).unwrap())<span class="question-mark">?</span>,
-            <span class="kw-2">&amp;</span><span class="macro">R!</span>(<span class="string">&quot;array(1:6, c(1, 2, 3))&quot;</span>)<span class="question-mark">?
-        </span>);
-
-
+        </span><span class="kw-2">&amp;</span>Array::from_shape_vec((<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>).f(), <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>]</span>).unwrap(),
+        <span class="string">&quot;array(1:6, c(1, 2, 3))&quot;
+    </span>)]
+    <span class="attr">#[case(
         <span class="comment">// We give R a 1d vector and tell it to read it as a 3d vector
         // Then we give Rust the equivalent vector manually split out.
-        </span><span class="macro">assert_eq!</span>(
-            <span class="kw-2">&amp;</span>Robj::try_from(<span class="kw-2">&amp;</span><span class="macro">array!</span>[[[<span class="number">1</span>, <span class="number">5</span>], [<span class="number">3</span>, <span class="number">7</span>]], [[<span class="number">2</span>, <span class="number">6</span>], [<span class="number">4</span>, <span class="number">8</span>]]])<span class="question-mark">?</span>,
-            <span class="kw-2">&amp;</span><span class="macro">R!</span>(<span class="string">&quot;array(1:8, dim=c(2, 2, 2))&quot;</span>)<span class="question-mark">?
-        </span>);
-    }
-}
-
-<span class="attr">#[test]
-</span><span class="kw">fn </span>test_round_trip() {
-    <span class="macro">test! </span>{
-        <span class="kw">let </span>rvals = [
-            <span class="macro">R!</span>(<span class="string">&quot;matrix(c(1L, 2L, 3L, 4L, 5L, 6L), nrow=2)&quot;</span>),
-            <span class="macro">R!</span>(<span class="string">&quot;array(1:8, c(4, 2))&quot;</span>)
-        ];
-        <span class="kw">for </span>rval <span class="kw">in </span>rvals {
-            <span class="kw">let </span>rval = rval.unwrap();
-            <span class="kw">let </span>rust_arr= &lt;ArrayView2&lt;i32&gt;&gt;::from_robj(<span class="kw-2">&amp;</span>rval).unwrap();
-            <span class="kw">let </span>r_arr: Robj = (<span class="kw-2">&amp;</span>rust_arr).try_into().unwrap();
+        </span><span class="kw-2">&amp;</span><span class="macro">array!</span>[[[<span class="number">1</span>, <span class="number">5</span>]</span>, [<span class="number">3</span>, <span class="number">7</span>]], [[<span class="number">2</span>, <span class="number">6</span>], [<span class="number">4</span>, <span class="number">8</span>]]],
+        <span class="string">&quot;array(1:8, dim=c(2, 2, 2))&quot;
+    </span>)]
+    <span class="kw">fn </span>test_to_robj&lt;T&gt;(<span class="attr">#[case] </span>array: T, <span class="attr">#[case] </span>r_expr: <span class="kw-2">&amp;</span>str)
+    <span class="kw">where
+        </span>Robj: TryFrom&lt;T&gt;,
+        &lt;Robj <span class="kw">as </span>TryFrom&lt;T&gt;&gt;::Error: std::fmt::Debug,
+    {
+        <span class="comment">// Tests for the Rust → R conversion, so we therefore perform the
+        // comparison in R
+        </span><span class="macro">test! </span>{
             <span class="macro">assert_eq!</span>(
-                rval,
-                r_arr
+                <span class="kw-2">&amp;</span>(Robj::try_from(array).unwrap()),
+                <span class="kw-2">&amp;</span>eval_string(r_expr).unwrap()
             );
+        }
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_round_trip() {
+        <span class="macro">test! </span>{
+            <span class="kw">let </span>rvals = [
+                <span class="macro">R!</span>(<span class="string">&quot;matrix(c(1L, 2L, 3L, 4L, 5L, 6L), nrow=2)&quot;</span>),
+                <span class="macro">R!</span>(<span class="string">&quot;array(1:8, c(4, 2))&quot;</span>)
+            ];
+            <span class="kw">for </span>rval <span class="kw">in </span>rvals {
+                <span class="kw">let </span>rval = rval.unwrap();
+                <span class="kw">let </span>rust_arr= &lt;ArrayView2&lt;i32&gt;&gt;::from_robj(<span class="kw-2">&amp;</span>rval).unwrap();
+                <span class="kw">let </span>r_arr: Robj = (<span class="kw-2">&amp;</span>rust_arr).try_into().unwrap();
+                <span class="macro">assert_eq!</span>(
+                    rval,
+                    r_arr
+                );
+            }
         }
     }
 }
