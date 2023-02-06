@@ -600,12 +600,6 @@
 <a href="#599" id="599">599</a>
 <a href="#600" id="600">600</a>
 <a href="#601" id="601">601</a>
-<a href="#602" id="602">602</a>
-<a href="#603" id="603">603</a>
-<a href="#604" id="604">604</a>
-<a href="#605" id="605">605</a>
-<a href="#606" id="606">606</a>
-<a href="#607" id="607">607</a>
 </pre><pre class="rust"><code><span class="kw">use super</span>::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::single_threaded;
 
@@ -614,13 +608,7 @@
         <span class="kw">if </span>s.is_na() {
             R_NaString
         } <span class="kw">else </span>{
-            single_threaded(|| {
-                Rf_mkCharLenCE(
-                    s.as_ptr() <span class="kw">as </span><span class="kw-2">*const </span>raw::c_char,
-                    s.len() <span class="kw">as </span>i32,
-                    cetype_t_CE_UTF8,
-                )
-            })
+            single_threaded(|| Rf_mkCharLen(s.as_ptr() <span class="kw">as </span><span class="kw-2">*const </span>raw::c_char, s.len() <span class="kw">as </span>i32))
         }
     }
 }

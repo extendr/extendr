@@ -152,6 +152,7 @@
 <a href="#151" id="151">151</a>
 <a href="#152" id="152">152</a>
 <a href="#153" id="153">153</a>
+<a href="#154" id="154">154</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::convert::From;
 <span class="kw">use </span>std::iter::FromIterator;
 
@@ -206,7 +207,8 @@
             <span class="kw">for </span>(i, v) <span class="kw">in </span>values.into_iter().take(maxlen).enumerate() {
                 <span class="kw">let </span>v = v.as_ref();
                 <span class="kw">let </span>ch = str_to_character(v);
-                SET_STRING_ELT(sexp, i <span class="kw">as </span>R_xlen_t, ch);
+                <span class="comment">// let ch = Rf_mkCharLen(v.as_ptr() as *mut c_char, v.len() as c_int);
+                </span>SET_STRING_ELT(sexp, i <span class="kw">as </span>R_xlen_t, ch);
             }
             <span class="self">Self </span>{ robj }
         })
