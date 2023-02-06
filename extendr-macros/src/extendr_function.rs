@@ -20,7 +20,12 @@ pub fn extendr_function(args: Vec<syn::NestedMeta>, mut func: ItemFn) -> TokenSt
     })
 }
 
-/// Parse a set of attribute arguments for #[extendr(opts...)]
+/// Parse a set of attribute arguments for `#[extendr(opts...)]`
+///
+/// Supported options:
+///
+/// - `use_try_from = bool` which employs `TryFrom<Robj>` for argument conversions.
+/// - `r_name = "name"` which
 pub fn parse_options(opts: &mut wrappers::ExtendrOptions, arg: &syn::NestedMeta) {
     use syn::{Lit, LitBool, Meta, MetaNameValue, NestedMeta};
 
