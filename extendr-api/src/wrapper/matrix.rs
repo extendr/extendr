@@ -132,7 +132,7 @@ where
     /// * `nrows` - the number of rows the returned matrix will have
     /// * `ncols` - the number of columns the returned matrix will have
     /// * `f` - a function that will be called for each entry of the matrix in order to populate it with values.
-    ///     It should return a scalar value that can be converted to an R scalar, such as `u32`, `f64` etc.
+    ///     It must return a scalar value that can be converted to an R scalar, such as `u32`, `f64`, i.e. see [ToVectorValue].
     ///     It accepts two arguments:
     ///     * `r` (usize) - the current row of the entry we are creating
     ///     * `c` (usize) - the current column of the entry we are creating
@@ -361,6 +361,7 @@ impl<T, D> Deref for RArray<T, D> {
 }
 
 trait CollectRMatrix<T> {
+    /// Returns a [RMatrix]
     fn collect_rmatrix(self, nrow: usize) -> Result<RMatrix<T>>;
 }
 
@@ -370,8 +371,8 @@ where
     U: ToVectorValue + 'a,
     Robj: AsTypedSlice<'a, U>,
 {
-    /// Collects an iterable into an RMatrix.
-    /// The iterable must yield items column by column (aka Fortan order)
+    /// Collects an iterable into an [RMatrix].
+    /// The iterable must yield items column by column (column major order / Fortan order)
     ///
     /// # Arguments
     ///
@@ -387,9 +388,7 @@ where
             )));
         }
         let dim = [nrow, ncol];
-        let mut robj = vector
-            .set_attrib(wrapper::symbol::dim_symbol(), dim)
-            .unwrap();
+        let mut robj = vector.set_attrib(wrapper::symbol::dim_symbol(), dim)?;
         let data = robj.as_typed_slice_mut().unwrap().as_mut_ptr();
         Ok(RMatrix::from_parts(robj, data, dim))
     }
