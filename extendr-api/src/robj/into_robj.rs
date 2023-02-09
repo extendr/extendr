@@ -483,7 +483,7 @@ pub trait RobjItertools: Iterator {
     ///
     /// # Arguments
     ///
-    /// * `nrow` - the number of rows the matrix will have
+    /// * `dims` - an array containing the length of each dimension
     fn collect_rarray<'a, const LEN: usize>(
         self,
         dims: [usize; LEN],
@@ -506,7 +506,12 @@ pub trait RobjItertools: Iterator {
         }
         let mut robj =
             vector.set_attrib(wrapper::symbol::dim_symbol(), dims.iter().collect_robj())?;
-        let data = robj.as_typed_slice_mut().unwrap().as_mut_ptr();
+        let data = robj
+            .as_typed_slice_mut()
+            .ok_or(Error::Other(
+                "Unknown error in converting to slice".to_string(),
+            ))?
+            .as_mut_ptr();
         Ok(RArray::from_parts(robj, data, dims))
     }
 }

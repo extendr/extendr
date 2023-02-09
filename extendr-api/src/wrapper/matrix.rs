@@ -132,7 +132,7 @@ where
     /// * `nrows` - the number of rows the returned matrix will have
     /// * `ncols` - the number of columns the returned matrix will have
     /// * `f` - a function that will be called for each entry of the matrix in order to populate it with values.
-    ///     It should return a scalar value that can be converted to an R scalar, such as `u32`, `f64` etc.
+    ///     It must return a scalar value that can be converted to an R scalar, such as `u32`, `f64`, i.e. see [ToVectorValue].
     ///     It accepts two arguments:
     ///     * `r` (usize) - the current row of the entry we are creating
     ///     * `c` (usize) - the current column of the entry we are creating
