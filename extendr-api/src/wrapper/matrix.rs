@@ -360,41 +360,6 @@ impl<T, D> Deref for RArray<T, D> {
     }
 }
 
-trait CollectRMatrix<T> {
-    fn collect_rmatrix(self, nrow: usize) -> Result<RMatrix<T>>;
-}
-
-impl<'a, T, U> CollectRMatrix<U> for T
-where
-    T: Iterator<Item = U>,
-    U: ToVectorValue + 'a,
-    Robj: AsTypedSlice<'a, U>,
-{
-    /// Collects an iterable into an RMatrix.
-    /// The iterable must yield items column by column (aka Fortan order)
-    ///
-    /// # Arguments
-    ///
-    /// * `nrow` - the number of rows the matrix will have
-    fn collect_rmatrix(self, nrow: usize) -> Result<RMatrix<U>> {
-        let vector = self.collect_robj();
-        let ncol = vector.len() / nrow;
-        if ncol * nrow != vector.len() {
-            return Err(Error::Other(format!(
-                "The vector length ({}) is not divisible by nrow ({})",
-                vector.len(),
-                nrow
-            )));
-        }
-        let dim = [nrow, ncol];
-        let mut robj = vector
-            .set_attrib(wrapper::symbol::dim_symbol(), dim)
-            .unwrap();
-        let data = robj.as_typed_slice_mut().unwrap().as_mut_ptr();
-        Ok(RMatrix::from_parts(robj, data, dim))
-    }
-}
-
 #[test]
 fn matrix_ops() {
     test! {
@@ -431,16 +396,5 @@ fn matrix_ops() {
         assert_eq!(array2.nrows(), 2);
         assert_eq!(array2.ncols(), 2);
         assert_eq!(array2.nsub(), 2);
-
-        // Check that collect_rmatrix works the same as R's matrix() function
-        let range = 1i32..=16;
-        let rmat = range.clone().collect_rmatrix(4);
-        assert!(rmat.is_ok());
-        assert_eq!(Robj::from(rmat), R!("matrix(1:16, nrow=4)").unwrap());
-
-        // Check that collect_rmatrix fails when given an invalid nrow
-        let rmat = range.collect_rmatrix(3);
-        assert!(rmat.is_err());
-        assert!(rmat.unwrap_err().to_string().contains("not divisible"));
     }
 }
