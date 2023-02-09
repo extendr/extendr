@@ -116,8 +116,7 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
 ///
 /// In order to include these functions in your R package you must include them in `lib.rs`.
 /// To do so you must include the `mod` and `use` keywords to make them available.
-/// There will be a function with the naming convention `get_{module}_metadata` that needs to be imported.
-/// And lastly the module must be imported in the `extendr_module` macro as well.
+/// Lastly, the module must be imported in the `extendr_module` macro.
 ///
 ///
 /// ```ignore
