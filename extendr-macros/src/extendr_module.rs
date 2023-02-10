@@ -48,8 +48,8 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
             #( #implmetanames(&mut impls); )*
 
             // Extends functions and impls with the submodules metadata
-            #( functions.extend(#usemetanames().functions); )*
-            #( impls.extend(#usemetanames().impls); )*
+            #( functions.extend(#usenames::#usemetanames().functions); )*
+            #( impls.extend(#usenames::#usemetanames().impls); )*
 
             // Add this function to the list, but set hidden: true.
             functions.push(extendr_api::metadata::Func {
@@ -88,6 +88,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         #[no_mangle]
         #[allow(non_snake_case)]
         pub extern "C" fn #wrap_module_metadata_name() -> extendr_api::SEXP {
+            use extendr_api::GetSexp;
             unsafe { extendr_api::Robj::from(#module_metadata_name()).get() }
         }
 
@@ -99,6 +100,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         ) -> extendr_api::SEXP {
             unsafe {
                 use extendr_api::robj::*;
+                use extendr_api::GetSexp;
                 let robj = new_owned(use_symbols_sexp);
                 let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
 
