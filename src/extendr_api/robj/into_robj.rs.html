@@ -600,6 +600,12 @@
 <a href="#599" id="599">599</a>
 <a href="#600" id="600">600</a>
 <a href="#601" id="601">601</a>
+<a href="#602" id="602">602</a>
+<a href="#603" id="603">603</a>
+<a href="#604" id="604">604</a>
+<a href="#605" id="605">605</a>
+<a href="#606" id="606">606</a>
+<a href="#607" id="607">607</a>
 </pre><pre class="rust"><code><span class="kw">use super</span>::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::single_threaded;
 
@@ -608,7 +614,13 @@
         <span class="kw">if </span>s.is_na() {
             R_NaString
         } <span class="kw">else </span>{
-            single_threaded(|| Rf_mkCharLen(s.as_ptr() <span class="kw">as </span><span class="kw-2">*const </span>raw::c_char, s.len() <span class="kw">as </span>i32))
+            single_threaded(|| {
+                Rf_mkCharLenCE(
+                    s.as_ptr() <span class="kw">as </span><span class="kw-2">*const </span>raw::c_char,
+                    s.len() <span class="kw">as </span>i32,
+                    cetype_t_CE_UTF8,
+                )
+            })
         }
     }
 }
@@ -1202,4 +1214,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.67.0 (fc594f156 2023-01-24)" data-search-js="search-444266647c4dba98.js" data-settings-js="settings-bebeae96e00e4617.js" data-settings-css="settings-af96d9e2fc13e081.css" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.67.1 (d5a82bbd2 2023-02-07)" data-search-js="search-444266647c4dba98.js" data-settings-js="settings-bebeae96e00e4617.js" data-settings-css="settings-af96d9e2fc13e081.css" ></div></body></html>
