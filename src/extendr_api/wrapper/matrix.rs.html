@@ -390,6 +390,15 @@
 <a href="#389" id="389">389</a>
 <a href="#390" id="390">390</a>
 <a href="#391" id="391">391</a>
+<a href="#392" id="392">392</a>
+<a href="#393" id="393">393</a>
+<a href="#394" id="394">394</a>
+<a href="#395" id="395">395</a>
+<a href="#396" id="396">396</a>
+<a href="#397" id="397">397</a>
+<a href="#398" id="398">398</a>
+<a href="#399" id="399">399</a>
+<a href="#400" id="400">400</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Wrappers for matrices with deferred arithmetic.
 
 </span><span class="kw">use super</span>::<span class="kw-2">*</span>;
@@ -518,7 +527,16 @@
     </span>Robj: AsTypedSlice&lt;<span class="lifetime">&#39;a</span>, T&gt;,
 {
     <span class="doccomment">/// Create a new matrix wrapper.
-    /// Make a new column type.
+    ///
+    /// # Arguments
+    ///
+    /// * `nrows` - the number of rows the returned matrix will have
+    /// * `ncols` - the number of columns the returned matrix will have
+    /// * `f` - a function that will be called for each entry of the matrix in order to populate it with values.
+    ///     It must return a scalar value that can be converted to an R scalar, such as `u32`, `f64`, i.e. see [ToVectorValue].
+    ///     It accepts two arguments:
+    ///     * `r` - the current row of the entry we are creating
+    ///     * `c` - the current column of the entry we are creating
     </span><span class="kw">pub fn </span>new_matrix&lt;F: Clone + FnMut(usize, usize) -&gt; T&gt;(
         nrows: usize,
         ncols: usize,
