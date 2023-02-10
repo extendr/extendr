@@ -43,7 +43,7 @@ The item type (ie the `T` in [`Array2<T>`]) can be a variety of Rust types that 
 enabled, `Complex<f64>`. Items can also be extendr's wrapper types: [`Rbool`], [`Rint`], [`Rfloat`] and [`Rcplx`].
 
 Note that the extendr-ndarray integration only supports accessing R arrays as [`ArrayView`], which are immutable.
-Therefore, instead of directly editing the input array, it is recommended that you therefore return a new array from your `#[extendr]`-annotated function, which you allocate in Rust.
+Therefore, instead of directly editing the input array, it is recommended that you instead return a new array from your `#[extendr]`-annotated function, which you allocate in Rust.
 It will then be copied into a new block of memory managed by R.
 This is made easier by the fact that [ndarray allocates a new array automatically when performing operations on array references](ArrayBase#binary-operators-with-array-and-scalar):
 ```rust
