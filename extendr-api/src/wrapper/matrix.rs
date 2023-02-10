@@ -148,7 +148,7 @@ where
             })
             .collect_robj();
         let dim = [nrows, ncols];
-        let mut robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim);
+        let mut robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
         let data = robj.as_typed_slice_mut().unwrap().as_mut_ptr();
         RArray::from_parts(robj, data, dim)
     }
