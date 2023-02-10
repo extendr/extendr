@@ -478,7 +478,7 @@ pub trait RobjItertools: Iterator {
         vec.into_iter().collect_robj()
     }
 
-    /// Collects an iterable into an RArray.
+    /// Collects an iterable into an [`RArray`].
     /// The iterable must yield items column by column (aka Fortan order)
     ///
     /// # Arguments
