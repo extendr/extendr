@@ -121,7 +121,6 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
 ///
 /// ```ignore
 /// mod utils;
-/// use utils::get_utils_metadata;
 /// . . .
 /// extendr_module! {
 ///    mod name;
