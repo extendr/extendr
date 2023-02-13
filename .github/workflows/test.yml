@@ -44,11 +44,11 @@ jobs:
           # - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
           # - {os: macOS-latest,   r: 'oldrel', rust-version: 'stable'}
 
-          - {os: ubuntu-20.04,   r: 'release', rust-version: 'stable', check_fmt: true}
-          - {os: ubuntu-20.04,   r: 'release', rust-version: 'nightly'}
+          - {os: ubuntu-latest,   r: 'release', rust-version: 'stable', check_fmt: true}
+          - {os: ubuntu-latest,   r: 'release', rust-version: 'nightly'}
           # R-devel requires LD_LIBRARY_PATH
-          - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable'}
-          - {os: ubuntu-20.04,   r: 'oldrel',  rust-version: 'stable'}
+          - {os: ubuntu-latest,   r: 'devel',   rust-version: 'stable'}
+          - {os: ubuntu-latest,   r: 'oldrel',  rust-version: 'stable'}
 
 
 
@@ -299,7 +299,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: ubuntu-20.04,   r: 'devel', rust-version: 'stable'}
+          - {os: ubuntu-latest,   r: 'devel', rust-version: 'stable'}
           - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
           - {os: windows-latest, r: 'release', rust-version: 'stable-gnu',   rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '42'}
           - {os: windows-latest, r: 'release', rust-version: 'stable-msvc',  rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '42'}
