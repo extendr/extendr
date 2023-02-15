@@ -18,7 +18,7 @@ repository = "https://github.com/extendr/extendr"
 libR-sys = "0.3.0"
 extendr-macros = { path = "../extendr-macros", version = "0.3.1" }
 extendr-engine = { path = "../extendr-engine", version = "0.3.1" }
-either = { version = "1.8.1" }
+either = { version = "1.8.1", optional = true }
 ndarray = { version = "0.15.3", optional = true }
 lazy_static = "1.4"
 paste = "1.0.5"
@@ -40,7 +40,7 @@ tests-minimal = ["libR-sys/use-bindgen"]
 
 # All features to test except for graphics; graphics tests are currently unstable
 # and require --test-threads=1, so we decided to exclude it from here (c.f. #378).
-tests = ["tests-minimal", "ndarray", "serde", "num-complex"]
+tests = ["tests-minimal", "ndarray", "serde", "num-complex", "either"]
 
 tests-graphics = ["tests-minimal", "graphics"]
 

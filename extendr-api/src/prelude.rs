@@ -66,6 +66,9 @@ pub use super::robj_ndarray::*;
 #[cfg(feature = "ndarray")]
 pub use ndarray::*;
 
+#[cfg(feature = "either")]
+pub use super::optional::either;
+
 pub use extendr_macros::{call, extendr, extendr_module, pairlist, IntoDataFrameRow, Rraw, R};
 
 pub use super::iter::StrIter;
