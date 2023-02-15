@@ -1,29 +1,29 @@
-use crate::{IntoRobj, Robj};
+use crate::{Error, IntoRobj, Robj};
 use either::Either::{self, Left, Right};
 
 impl<'a, TLeft, TRight> TryFrom<&'a Robj> for Either<TLeft, TRight>
 where
-    TLeft: TryFrom<&'a Robj, Error = crate::Error>,
-    TRight: TryFrom<&'a Robj, Error = crate::Error>,
+    TLeft: TryFrom<&'a Robj, Error = Error>,
+    TRight: TryFrom<&'a Robj, Error = Error>,
 {
-    type Error = crate::Error;
+    type Error = Error;
 
     fn try_from(value: &'a Robj) -> Result<Self, Self::Error> {
-        if let Ok(left) = TLeft::try_from(value) {
-            Ok(Left(left))
-        } else if let Ok(right) = TRight::try_from(value) {
-            Ok(Right(right))
-        } else {
-            Err(crate::Error::Other("todo".to_string()))
+        match TLeft::try_from(value) {
+            Ok(left) => Ok(Left(left)),
+            Err(left_err) => match TRight::try_from(value) {
+                Ok(right) => Ok(Right(right)),
+                Err(right_err) => Err(Error::EitherError(Box::new(left_err), Box::new(right_err))),
+            },
         }
     }
 }
 
 impl<TLeft, TRight> TryFrom<Robj> for Either<TLeft, TRight>
 where
-    for<'a> Either<TLeft, TRight>: TryFrom<&'a Robj, Error = crate::Error>,
+    for<'a> Either<TLeft, TRight>: TryFrom<&'a Robj, Error = Error>,
 {
-    type Error = crate::Error;
+    type Error = Error;
 
     fn try_from(value: Robj) -> Result<Self, Self::Error> {
         (&value).try_into()
