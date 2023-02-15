@@ -29,6 +29,7 @@ libc = { version = "0.2", optional = true }
 default = ["result_panic"]
 result_panic =[]
 result_list = []
+result_list_faster = []
 result_attribute = []
 result_condition = []
 

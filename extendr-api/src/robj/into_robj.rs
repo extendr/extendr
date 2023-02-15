@@ -118,6 +118,25 @@ where
     }
 }
 
+#[cfg(feature = "result_list_faster")]
+impl<T, E> From<std::result::Result<T, E>> for Robj
+where
+    T: Into<Robj>,
+    E: Into<Robj>,
+{
+    fn from(res: std::result::Result<T, E>) -> Self {
+        match res {
+            Ok(x) => List::from_names_and_values(&["ok", "err"], &[x.into(), NULL.into()]),
+            Err(x) => List::from_names_and_values(&["ok", "err"], &[NULL.into(), x.into()]),
+        }
+        //can only imagine this would ever fail due memory allcation error, but then panicking is the right choice
+        .expect("internal error: failed to create an R list")
+        .set_class(&["extendr_result"])
+        .expect("internal error: failed to set class")
+        .into()
+    }
+}
+
 // string conversions from Error trait to Robj and String
 impl From<Error> for Robj {
     fn from(res: Error) -> Self {
