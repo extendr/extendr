@@ -33,7 +33,6 @@ impl From<()> for Robj {
 ///     assert_eq!(r!(my_func()), r!(1.0));
 /// }
 /// ```
-
 #[cfg(feature = "result_panic")]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
@@ -45,6 +44,38 @@ where
     }
 }
 
+/// Convert a Result to an Robj either an Ok value or the Err value wrapped in a
+/// error condition. This is used to allow functions to use the ? operator
+/// and return [Result<T>] without panicking on an Err. T must impl IntoRobj.
+///
+/// Returns ok-value as is. Return err wrapped in a R error condition. The err is placed in
+/// $value. The condition messeage is simply
+/// ```
+/// use extendr_api::prelude::*;
+/// fn my_func() -> Result<f64> {
+///     Ok(1.0)
+/// }
+///
+/// test! {
+///     assert_eq!(r!(my_func()), r!(1.0));
+/// }
+///
+/// //ok and err type is any IntoRobj
+/// fn my_err_f() -> std::result::Result<f64, f64> {
+///     Err(42.0) // return err float
+/// }
+///
+/// test! {
+///     assert_eq!(
+///         r!(my_err_f()),
+///         R!(
+/// "structure(list(message = 'extendr_err',
+/// value = 42.0), class = c('extendr_error', 'error', 'condition'))"
+///         ).unwrap()
+///     );
+/// }
+///
+/// ```
 #[cfg(feature = "result_condition")]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
@@ -56,51 +87,52 @@ where
             Ok(x) => x.into(),
             Err(x) => {
                 let robj: Robj = x.into();
-                if let Some(cnd_msg) = robj.as_str() {
-                    //if error is a string make it the message and value of condtion
-                    List::from_names_and_values(&["message", "value"], &[cnd_msg.into_robj(), robj])
-                } else {
-                    List::from_names_and_values(
-                        &["message", "value"],
-                        &[
-                            "extendr non-string error placed in cond$value".into_robj(),
-                            robj,
-                        ],
-                    )
-                }
-                //can only imagine this would ever fail due memory allcation error, but then panicking is the right choice
-                .expect("internal error: failed to create an R list")
-                .set_class(["error", "condition"])
-                .expect("internal error: failed to set class")
+                List::from_names_and_values(
+                    &["message", "value"],
+                    &["extendr_err".into_robj(), robj],
+                )
             }
+            //can only imagine this would ever fail due memory allcation error, but then panicking is the right choice
+            .expect("internal error: failed to create an R list")
+            .set_class(["extendr_error", "error", "condition"])
+            .expect("internal error: failed to set class"),
         }
     }
 }
 
-#[cfg(feature = "result_attribute")]
-impl<T, E> From<std::result::Result<T, E>> for Robj
-where
-    T: Into<Robj>,
-    E: Into<Robj>,
-{
-    fn from(res: std::result::Result<T, E>) -> Self {
-        match res {
-            Ok(x) => x.into(),
-            Err(x) => {
-                //x.into().set_attrib("extendr_err", true).unwrap(),
-                if let Ok(err_attr) = x.into().set_attrib("extendr_err", true) {
-                    err_attr
-                } else {
-                    r!("extendr internal error: failed to set_attrib on returning Robj")
-                        //can only imagine this would ever fail due memory allcation error, but then panicking is the right choice
-                        .set_attrib("extendr_err", true)
-                        .expect("internal error: failed to set attr")
-                }
-            }
-        }
-    }
-}
-
+/// Convert a Result to an R `List` with an `ok` and `err` element.
+/// This is used to allow functions to use the ? operator
+/// and return [std::result::Result<T,E> or extendr_api::result::Result<T>]
+/// without panicking on an Err.
+///
+///
+/// ```
+/// use extendr_api::prelude::*;
+/// fn my_err_f() -> std::result::Result<f64, String> {
+///     Err("We have water in the engine room!".to_string())
+/// }
+/// fn my_ok_f() -> std::result::Result<f64, String> {
+///     Ok(123.123)
+/// }
+///
+/// test! {
+///     assert_eq!(
+///         r!(my_err_f()),
+///         R!("x=list(ok=NULL, err='We have water in the engine room!')
+///             class(x)='extendr_result'
+///             x"
+///         ).unwrap()
+///     );
+///     assert_eq!(
+///         r!(my_ok_f()),
+///         R!("x = list(ok=123.123, err=NULL)
+///             class(x)='extendr_result'
+///             x"
+///         ).unwrap()
+///     );
+/// }
+///
+/// ```
 #[cfg(feature = "result_list")]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
@@ -110,29 +142,18 @@ where
     fn from(res: std::result::Result<T, E>) -> Self {
         match res {
             Ok(x) => List::from_names_and_values(&["ok", "err"], &[x.into(), NULL.into()]),
-            Err(x) => List::from_names_and_values(&["ok", "err"], &[NULL.into(), x.into()]),
+            Err(x) => {
+                let err_robj = x.into();
+                if err_robj.is_null() {
+                    panic!("Internal error: result_list not allowed to return NULL as err-value")
+                }
+                List::from_names_and_values(&["ok", "err"], &[NULL.into(), err_robj])
+            }
         }
         //can only imagine this would ever fail due memory allcation error, but then panicking is the right choice
-        .expect("internal error: failed to create an R list")
-        .into()
-    }
-}
-
-#[cfg(feature = "result_list_faster")]
-impl<T, E> From<std::result::Result<T, E>> for Robj
-where
-    T: Into<Robj>,
-    E: Into<Robj>,
-{
-    fn from(res: std::result::Result<T, E>) -> Self {
-        match res {
-            Ok(x) => List::from_names_and_values(&["ok", "err"], &[x.into(), NULL.into()]),
-            Err(x) => List::from_names_and_values(&["ok", "err"], &[NULL.into(), x.into()]),
-        }
-        //can only imagine this would ever fail due memory allcation error, but then panicking is the right choice
-        .expect("internal error: failed to create an R list")
+        .expect("Internal error: failed to create an R list")
         .set_class(&["extendr_result"])
-        .expect("internal error: failed to set class")
+        .expect("Internal error: failed to set class")
         .into()
     }
 }

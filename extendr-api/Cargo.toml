@@ -29,8 +29,6 @@ libc = { version = "0.2", optional = true }
 default = ["result_panic"]
 result_panic =[]
 result_list = []
-result_list_faster = []
-result_attribute = []
 result_condition = []
 
 # libc is needed to allocate a DevDesc (c.f., https://bugs.r-project.org/show_bug.cgi?id=18292)

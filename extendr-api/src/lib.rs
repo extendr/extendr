@@ -252,6 +252,46 @@
 //! }
 //! ```
 //!
+//! ## Returning Result<T,E> to R
+//!
+//! Use attributes and macros to export to R.
+//! ```ignore
+//! use extendr_api::prelude::*;
+//! // Export a function or impl to R.
+//! #[extendr]
+//! fn oups(a: i32) -> std::result::Result<i32, String> {
+//!     Err("I did it again".to_string())
+//! }
+//!
+//! // define exports using extendr_module
+//! extendr_module! {
+//!    mod mymodule;
+//!    fn oups;    
+//! }
+//!
+//! ```
+//!
+//! In R:
+//!
+//! ```ignore
+//! #defalt result_panic feature
+//! oups(1)
+//! #long panic traceback from rust
+//!
+//! #result_list feature
+//! lst <-oups(1)
+//! print(lst)
+//! > list(ok=NULL, err="I did it again")
+//! #result_condition feature
+//! cnd = oups(1)
+//! print(cnd)
+//! > <error: extendr_error>
+//! print(cnd$value)
+//! > "I did it again"
+//!
+//! ```
+//!
+//!
 //! ## Feature gates
 //!
 //! extendr-api has some optional features behind these feature gates:
@@ -260,6 +300,14 @@
 //! - `num-complex`: provides the conversion between R's complex numbers and [num-complex](https://docs.rs/num-complex/latest/num_complex/).
 //! - `serde`: provides the [Serde](https://serde.rs/) support.
 //! - `graphics`: provides the functionality to control or implement graphics devices.
+//!
+//! extendr-api has three ways to return a Result<T,E> to R. Only one behavior features can be picked.
+//! - `result_panic`: Default behavior, return `Ok` as is, panic! on any `Err`
+//!
+//! To choose either if these set e.g. `extendr-api = {..., default-features = false, features= ["result_condition"]}`
+//! These features are experimental and may change.
+//! - `result_list`: return `Ok` as `list(ok=?, err=NULL)` or `Err` `list(ok=NULL, err=?)`
+//! - `result_condition`: return `Ok` as is or `Err` as $value in an R error condition.
 
 #![doc(
     html_logo_url = "https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png"
