@@ -254,10 +254,25 @@
 //!
 //! ## Returning Result<T,E> to R
 //!
-//! Use attributes and macros to export to R.
+//! Currently `throw_r_error()` does leak memory because it jumps to R without releasing
+//! memory for rust objects.
+//!
+//! The memory safe way to do error handling with extendr is to return a Result<T, E>
+//! to R. By default any Err will trigger a panic! on rust side which unwinds the stack.
+//! The rust error trace will be printed via stderr, not R terminal. Any Ok value is returned
+//! as is.
+//!
+//! Alternatively two experimental non-leaking features `result_list` and `result_condition`
+//! can be used to not cause panics on `Err`. Instead an `Err` `x` is returned respectively as
+//!  - list: `list(ok=NULL, err=x)`
+//!  - error condition: `<error: extendr_error>`, with `x` placed in `condition$value`
+//!
+//! It is currently solely up to the user to handle any result on R side.
+//!
+//!
 //! ```ignore
 //! use extendr_api::prelude::*;
-//! // Export a function or impl to R.
+//! // simple function always returning an Err string
 //! #[extendr]
 //! fn oups(a: i32) -> std::result::Result<i32, String> {
 //!     Err("I did it again".to_string())
@@ -274,14 +289,15 @@
 //! In R:
 //!
 //! ```ignore
-//! #defalt result_panic feature
+//! #default result_panic feature
 //! oups(1)
-//! #long panic traceback from rust
+//! > ... long panic traceback from rust printed to stderr
 //!
 //! #result_list feature
 //! lst <-oups(1)
 //! print(lst)
 //! > list(ok=NULL, err="I did it again")
+//!
 //! #result_condition feature
 //! cnd = oups(1)
 //! print(cnd)
@@ -289,8 +305,14 @@
 //! print(cnd$value)
 //! > "I did it again"
 //!
-//! ```
+//! #handling example for result_condition
+//! oups_handled = function(a) {
+//!   val_or_err = oups(1)  
+//!   if(inherits(val_or_err,"extendr_error")) stop(val_or_err)
+//!   val_or_err
+//! }
 //!
+//! ```
 //!
 //! ## Feature gates
 //!

@@ -220,22 +220,22 @@ test! {
 }
 ```
 
-## Feature gates
+ ## Feature gates
 
-extendr-api has some optional features behind these feature gates:
+ extendr-api has some optional features behind these feature gates:
 
-- `ndarray`: provides the conversion between R's matrices and [ndarray](https://docs.rs/ndarray/latest/ndarray/).
-- `num-complex`: provides the conversion between R's complex numbers and [num-complex](https://docs.rs/num-complex/latest/num_complex/).
-- `serde`: provides the [Serde](https://serde.rs/) support.
-- `graphics`: provides the functionality to control or implement graphics devices.
+ - `ndarray`: provides the conversion between R's matrices and [ndarray](https://docs.rs/ndarray/latest/ndarray/).
+ - `num-complex`: provides the conversion between R's complex numbers and [num-complex](https://docs.rs/num-complex/latest/num_complex/).
+ - `serde`: provides the [Serde](https://serde.rs/) support.
+ - `graphics`: provides the functionality to control or implement graphics devices.
 
-extend-api has three ways to return a Result<T,E> to R. Only one behavior features can be picked.
-- `result_panic`: Default behavior, return `Ok` as is, panic! on any `Err`
+ extendr-api has three ways to return a Result<T,E> to R. Only one behavior features can be picked.
+ - `result_panic`: Default behavior, return `Ok` as is, panic! on any `Err`
 
-To choose either if these set e.g. `extendr-api = {..., default-features = false, features= ["result_condition"]}`
-These features are experimental and may change.
-- `result_list`: return `Ok` as `list(ok=?, err=NULL)` or `Err` `list(ok=NULL, err=?)`
-- `result_condition`: return `Ok` as is or `Err` as $value in an R error condition.
+ To choose either if these set e.g. `extendr-api = {..., default-features = false, features= ["result_condition"]}`
+ These features are experimental and may change.
+ - `result_list`: return `Ok` as `list(ok=?, err=NULL)` or `Err` `list(ok=NULL, err=?)`
+ - `result_condition`: return `Ok` as is or `Err` as $value in an R error condition.
 
 ## License
 
