@@ -1,5 +1,4 @@
 use either::Either::{self, Left, Right};
-use extendr_api::optional::either::*;
 use extendr_api::prelude::*;
 use rstest::rstest;
 
