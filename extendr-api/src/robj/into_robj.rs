@@ -3,17 +3,13 @@ use crate::single_threaded;
 
 pub(crate) fn str_to_character(s: &str) -> SEXP {
     unsafe {
-        if s.is_na() {
-            R_NaString
-        } else {
-            single_threaded(|| {
-                Rf_mkCharLenCE(
-                    s.as_ptr() as *const raw::c_char,
-                    s.len() as i32,
-                    cetype_t_CE_UTF8,
-                )
-            })
-        }
+        single_threaded(|| {
+            Rf_mkCharLenCE(
+                s.as_ptr() as *const raw::c_char,
+                s.len() as i32,
+                cetype_t_CE_UTF8,
+            )
+        })
     }
 }
 
