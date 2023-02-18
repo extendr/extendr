@@ -545,8 +545,13 @@ impl Robj {
     /// }
     /// ```
     pub fn as_string_vector(&self) -> Option<Vec<String>> {
-        self.as_str_iter()
-            .map(|iter| iter.map(str::to_string).collect())
+        if let Some(iter) = self.as_str_iter() {
+            if !iter.any_na() {
+                return Some(iter.map(str::to_string).collect());
+            }
+        }
+
+        None
     }
 
     /// Get a vector of string references.
@@ -561,7 +566,13 @@ impl Robj {
     /// }
     /// ```
     pub fn as_str_vector(&self) -> Option<Vec<&str>> {
-        self.as_str_iter().map(|iter| iter.collect())
+        if let Some(iter) = self.as_str_iter() {
+            if !iter.any_na() {
+                return Some(iter.collect());
+            }
+        }
+
+        None
     }
 
     /// Get a read-only reference to a scalar string type.

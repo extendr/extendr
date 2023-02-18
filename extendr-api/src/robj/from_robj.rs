@@ -126,15 +126,11 @@ impl<'a> FromRobj<'a> for Vec<String> {
             Err("Input must be a character vector. Got 'NA'.")
         } else if let Some(v) = robj.as_string_vector() {
             let str_vec = v.to_vec();
-            // check for NA's in the string vector
-            // The check is by-value, so `<&str>::is_na()` cannot be used
-            if let Some(_str) = str_vec.iter().find(|&s| *s == <&str>::na()) {
-                Err("Input vector cannot contain NA's.")
-            } else {
-                Ok(str_vec)
-            }
+            Ok(str_vec)
         } else {
-            Err("Input must be a character vector.")
+            // TODO: can we propagate some error to distinguish the case of a
+            // non-character vector and the case of containing NAs?
+            Err("Input must be a character vector containing no NAs.")
         }
     }
 }

@@ -46,6 +46,17 @@ impl StrIter {
             }
         }
     }
+
+    pub(crate) fn any_na(&self) -> bool {
+        unsafe {
+            let vector = self.vector.get();
+            match TYPEOF(vector) as u32 {
+                STRSXP => (0..self.len).any(|i| STRING_ELT(vector, i as _) == R_NaString),
+                INTSXP => (0..self.len).any(|i| *INTEGER(vector).add(i) == R_NaInt),
+                _ => false,
+            }
+        }
+    }
 }
 
 // Get a string reference from a CHARSXP
