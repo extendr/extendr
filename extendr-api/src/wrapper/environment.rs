@@ -221,7 +221,7 @@ impl Iterator for EnvIter {
             // Get the first available value from the pair list.
             for (key, value) in &mut self.pairlist {
                 // if the key and value are valid, return a pair.
-                if !key.is_na() && !value.is_unbound_value() {
+                if !value.is_unbound_value() {
                     return Some((key, value));
                 }
             }
