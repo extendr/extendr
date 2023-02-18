@@ -18,11 +18,7 @@ pub struct Rstr {
 }
 
 pub(crate) unsafe fn sexp_to_str(sexp: SEXP) -> &'static str {
-    if sexp == R_NaString {
-        <&str>::na()
-    } else {
-        std::mem::transmute(to_str(R_CHAR(sexp) as *const u8))
-    }
+    std::mem::transmute(to_str(R_CHAR(sexp) as *const u8))
 }
 
 impl Rstr {
