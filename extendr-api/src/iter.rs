@@ -58,19 +58,15 @@ impl StrIter {
 // Get a string reference from a CHARSXP
 fn str_from_strsxp<'a>(sexp: SEXP, index: isize) -> &'a str {
     unsafe {
-        if index < 0 || index >= Rf_xlength(sexp) {
+        let charsxp = STRING_ELT(sexp, index);
+        if charsxp == R_NaString {
             <&str>::na()
+        } else if TYPEOF(charsxp) == CHARSXP as i32 {
+            let ptr = R_CHAR(charsxp) as *const u8;
+            let slice = std::slice::from_raw_parts(ptr, Rf_xlength(charsxp) as usize);
+            std::str::from_utf8_unchecked(slice)
         } else {
-            let charsxp = STRING_ELT(sexp, index);
-            if charsxp == R_NaString {
-                <&str>::na()
-            } else if TYPEOF(charsxp) == CHARSXP as i32 {
-                let ptr = R_CHAR(charsxp) as *const u8;
-                let slice = std::slice::from_raw_parts(ptr, Rf_xlength(charsxp) as usize);
-                std::str::from_utf8_unchecked(slice)
-            } else {
-                <&str>::na()
-            }
+            <&str>::na()
         }
     }
 }
