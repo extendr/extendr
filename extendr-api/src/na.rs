@@ -8,7 +8,7 @@ use std::alloc::{self, Layout};
 lazy_static! {
     static ref EXTENDR_NA_STRING: &'static str = unsafe {
         // Layout::array() can fail when the size exceeds `isize::MAX`, but we
-        // only need 2 hwre, so it's safe to unwrap().
+        // only need 2 here, so it's safe to unwrap().
         let layout = Layout::array::<u8>(2).unwrap();
 
         // We allocate and never free it because we need this pointer to be
