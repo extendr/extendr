@@ -61,12 +61,10 @@ fn str_from_strsxp<'a>(sexp: SEXP, index: isize) -> &'a str {
         let charsxp = STRING_ELT(sexp, index);
         if charsxp == R_NaString {
             <&str>::na()
-        } else if TYPEOF(charsxp) == CHARSXP as i32 {
+        } else {
             let ptr = R_CHAR(charsxp) as *const u8;
             let slice = std::slice::from_raw_parts(ptr, Rf_xlength(charsxp) as usize);
             std::str::from_utf8_unchecked(slice)
-        } else {
-            <&str>::na()
         }
     }
 }
