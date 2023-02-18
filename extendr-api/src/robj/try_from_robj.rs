@@ -261,7 +261,7 @@ impl TryFrom<&Robj> for Vec<String> {
     fn try_from(robj: &Robj) -> Result<Self> {
         if let Some(iter) = robj.as_str_iter() {
             // check for NA's in the string vector
-            if iter.clone().any(|s| s.is_na()) {
+            if iter.any_na() {
                 Err(Error::MustNotBeNA(robj.clone()))
             } else {
                 Ok(iter.map(|s| s.to_string()).collect::<Vec<String>>())

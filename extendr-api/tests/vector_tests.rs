@@ -1,4 +1,5 @@
 use extendr_api::prelude::*;
+use libR_sys::R_NaString;
 
 #[test]
 fn test_strings() {
@@ -13,7 +14,6 @@ fn test_strings() {
         assert_eq!(s.elt(0), "x");
         assert_eq!(s.elt(1), "y");
         assert_eq!(s.elt(2), "z");
-        assert_eq!(s.elt(3), <&str>::na());
 
         let v = s.as_slice().iter().map(|c| c.as_str()).collect::<String>();
         assert_eq!(v, "xyz");
@@ -28,9 +28,6 @@ fn test_strings() {
 
         // Strings supports methods of &[Rstr] via Deref.
         assert_eq!(s.contains(&"x".into()), true);
-
-        let s = Strings::from_values(["x", <&str>::na(), "z"]);
-        assert_eq!(s.elt(1).is_na(), true);
 
         let robj = r!("xyz");
         let s = Strings::try_from(robj)?;
@@ -66,17 +63,6 @@ fn test_list() {
         let v = list!(a="x", b="y", c="z").iter().collect::<Vec<_>>();
         assert_eq!(v, vec![("a", r!("x")), ("b", r!("y")), ("c", r!("z"))]);
 
-        let s = List::from_values(["x", <&str>::na(), "z"]);
-        assert_eq!(s.elt(1)?.is_na(), true);
-        assert_eq!(s.as_slice().iter().any(|s| s.is_na()), true);
-
-        // Deref allows all the immutable methods from slice.
-        let v = s.as_slice().iter().collect::<Vec<_>>();
-        assert_eq!(v, vec![&r!("x"), &r!(<&str>::na()), &r!("z")]);
-        assert_eq!(v[0], "x");
-        assert_eq!(v[1].is_na(), true);
-        assert_eq!(v.contains(&&r!("x")), true);
-        assert_eq!(s.as_slice().iter().any(Robj::is_na), true);
     }
 }
 

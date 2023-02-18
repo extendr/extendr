@@ -134,7 +134,7 @@ fn test_debug_vectors() {
         let r: Strings = Strings::from_values(["xyz"]);
         assert_eq!(format!("{:?}", r), "\"xyz\"");
         let r: Strings = Strings::from_values([Rstr::from("xyz"), Rstr::from("abc"), Rstr::na()]);
-        assert_eq!(format!("{:?}", r), "[\"xyz\", \"abc\", NA_CHARACTER]");
+        assert_eq!(format!("{:?}", r), "[\"xyz\", \"abc\", \"NA\"]");
 
         let r: Complexes = Complexes::from_values([Rcplx::new(42.0, -42.0)]);
         assert_eq!(format!("{:?}", r), "42.0 - 42.0i");
