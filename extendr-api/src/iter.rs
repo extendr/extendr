@@ -46,13 +46,6 @@ impl StrIter {
             }
         }
     }
-
-    pub fn na_iter(len: usize) -> StrIter {
-        Self {
-            len,
-            ..Default::default()
-        }
-    }
 }
 
 // Get a string reference from a CHARSXP
