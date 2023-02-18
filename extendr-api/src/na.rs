@@ -36,24 +36,3 @@ impl CanBeNA for i32 {
         i32::MIN
     }
 }
-
-/// Special "NA" string that represents null strings.
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///     assert_ne!(<&str>::na().as_ptr(), "NA".as_ptr());
-///     assert_eq!(<&str>::na(), "NA");
-///     assert_eq!("NA".is_na(), false);
-///     assert_eq!(<&str>::na().is_na(), true);
-/// }
-/// ```
-impl CanBeNA for &str {
-    /// Check for NA in a string by address.
-    fn is_na(&self) -> bool {
-        self.as_ptr() == <&str>::na().as_ptr()
-    }
-
-    fn na() -> Self {
-        unsafe { std::str::from_utf8_unchecked(&[b'N', b'A']) }
-    }
-}
