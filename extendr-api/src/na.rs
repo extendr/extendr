@@ -7,8 +7,14 @@ use std::alloc::{self, Layout};
 // ourselves.
 lazy_static! {
     static ref EXTENDR_NA_STRING: &'static str = unsafe {
+        // Layout::array() can fail when the size exceeds `isize::MAX`, but we
+        // only need 2 hwre, so it's safe to unwrap().
         let layout = Layout::array::<u8>(2).unwrap();
+
+        // We allocate and never free it because we need this pointer to be
+        // alive until the program ends.
         let ptr = alloc::alloc(layout);
+
         let v: &mut [u8] = std::slice::from_raw_parts_mut(ptr, 2);
         v[0] = b'N';
         v[1] = b'A';
@@ -72,6 +78,6 @@ impl CanBeNA for &str {
     }
 
     fn na() -> Self {
-        *EXTENDR_NA_STRING
+        &EXTENDR_NA_STRING
     }
 }
