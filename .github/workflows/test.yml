@@ -70,13 +70,12 @@ jobs:
         shell: pwsh
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       
       - name: Set up Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.config.rust-version }}
-          default: true
           components: rustfmt, clippy
       
       - name: Set up R
@@ -201,7 +200,7 @@ jobs:
 
       # c.f. https://github.com/actions/checkout#checkout-multiple-repos-side-by-side
       - name: Obtain 'rextendr'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: extendr/rextendr
           path: ./tests/rextendr
@@ -320,13 +319,12 @@ jobs:
         shell: pwsh
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.config.rust-version }}
-          default: true
 
       # 1. Update rustup
       # 2. For each target add respective toolchain &
