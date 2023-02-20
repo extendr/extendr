@@ -1,4 +1,3 @@
-// use extendr_api::prelude::*;
 use extendr_api::{list, test, List, Result};
 
 #[test]

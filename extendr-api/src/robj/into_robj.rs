@@ -6,7 +6,13 @@ pub(crate) fn str_to_character(s: &str) -> SEXP {
         if s.is_na() {
             R_NaString
         } else {
-            single_threaded(|| Rf_mkCharLen(s.as_ptr() as *const raw::c_char, s.len() as i32))
+            single_threaded(|| {
+                Rf_mkCharLenCE(
+                    s.as_ptr() as *const raw::c_char,
+                    s.len() as i32,
+                    cetype_t_CE_UTF8,
+                )
+            })
         }
     }
 }
@@ -612,6 +618,43 @@ pub trait RobjItertools: Iterator {
         assert!(vec.iter().size_hint() == (vec.len(), Some(vec.len())));
         vec.into_iter().collect_robj()
     }
+
+    /// Collects an iterable into an [`RArray`].
+    /// The iterable must yield items column by column (aka Fortan order)
+    ///
+    /// # Arguments
+    ///
+    /// * `dims` - an array containing the length of each dimension
+    fn collect_rarray<'a, const LEN: usize>(
+        self,
+        dims: [usize; LEN],
+    ) -> Result<RArray<Self::Item, [usize; LEN]>>
+    where
+        Self: Iterator,
+        Self: Sized,
+        Self::Item: ToVectorValue,
+        Robj: AsTypedSlice<'a, Self::Item>,
+        Self::Item: 'a,
+    {
+        let vector = self.collect_robj();
+        let prod = dims.iter().product::<usize>();
+        if prod != vector.len() {
+            return Err(Error::Other(format!(
+                "The vector length ({}) does not match the length implied by the dimensions ({})",
+                vector.len(),
+                prod
+            )));
+        }
+        let mut robj =
+            vector.set_attrib(wrapper::symbol::dim_symbol(), dims.iter().collect_robj())?;
+        let data = robj
+            .as_typed_slice_mut()
+            .ok_or(Error::Other(
+                "Unknown error in converting to slice".to_string(),
+            ))?
+            .as_mut_ptr();
+        Ok(RArray::from_parts(robj, data, dims))
+    }
 }
 
 // Thanks to *pretzelhammer* on stackoverflow for this.
@@ -738,5 +781,54 @@ impl From<Vec<Rfloat>> for Robj {
     /// Convert a vector of Rfloat into doubles.
     fn from(val: Vec<Rfloat>) -> Self {
         Doubles::from_values(val.into_iter()).into()
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_collect_rarray_matrix() {
+        test! {
+            // Check that collect_rarray works the same as R's matrix() function
+            let rmat = (1i32..=16).collect_rarray([4, 4]);
+            assert!(rmat.is_ok());
+            assert_eq!(Robj::from(rmat), R!("matrix(1:16, nrow=4)").unwrap());
+        }
+    }
+
+    #[test]
+    fn test_collect_rarray_tensor() {
+        test! {
+            // Check that collect_rarray works the same as R's array() function
+            let rmat = (1i32..=16).collect_rarray([2, 4, 2]);
+            assert!(rmat.is_ok());
+            assert_eq!(Robj::from(rmat), R!("array(1:16, dim=c(2, 4, 2))").unwrap());
+        }
+    }
+
+    #[test]
+    fn test_collect_rarray_matrix_failure() {
+        test! {
+            // Check that collect_rarray fails when given an invalid shape
+            let rmat = (1i32..=16).collect_rarray([3, 3]);
+            assert!(rmat.is_err());
+            let msg = rmat.unwrap_err().to_string();
+            assert!(msg.contains("9"));
+            assert!(msg.contains("dimension"));
+        }
+    }
+
+    #[test]
+    fn test_collect_tensor_failure() {
+        test! {
+            // Check that collect_rarray fails when given an invalid shape
+            let rmat = (1i32..=16).collect_rarray([3, 3, 3]);
+            assert!(rmat.is_err());
+            let msg = rmat.unwrap_err().to_string();
+            assert!(msg.contains("27"));
+            assert!(msg.contains("dimension"));
+        }
     }
 }
