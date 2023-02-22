@@ -3,9 +3,10 @@ use extendr_api::{graphics::*, prelude::*};
 mod submodule;
 
 mod ndarray;
-use ndarray::*;
 
 mod graphic_device;
+
+mod optional_either;
 
 // Return string `"Hello world!"` to R.
 #[extendr]
@@ -355,4 +356,5 @@ extendr_module! {
 
     use submodule;
     use ndarray;
+    use optional_either;
 }
