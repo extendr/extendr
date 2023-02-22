@@ -1,4 +1,4 @@
-use crate::{Error, IntoRobj, Robj};
+use crate::{Error, Robj};
 use either::Either::{self, Left, Right};
 
 impl<'a, TLeft, TRight> TryFrom<&'a Robj> for Either<TLeft, TRight>
@@ -30,15 +30,14 @@ where
     }
 }
 
-impl<TLeft, TRight> IntoRobj for Either<TLeft, TRight>
+impl<TLeft, TRight> From<Either<TLeft, TRight>> for Robj
 where
-    TLeft: IntoRobj,
-    TRight: IntoRobj,
+    Robj: From<TLeft> + From<TRight>,
 {
-    fn into_robj(self) -> Robj {
-        match self {
-            Left(left) => left.into_robj(),
-            Right(right) => right.into_robj(),
+    fn from(value: Either<TLeft, TRight>) -> Self {
+        match value {
+            Left(left) => Robj::from(left),
+            Right(right) => Robj::from(right),
         }
     }
 }

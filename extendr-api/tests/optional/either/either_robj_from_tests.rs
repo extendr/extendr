@@ -13,8 +13,7 @@ fn return_left<TLeft, TRight>(
     #[case] left: TLeft,
     #[case] _right: TRight,
 ) where
-    TLeft: IntoRobj,
-    TRight: IntoRobj,
+    Robj: From<TLeft> + From<TRight>,
 {
     test! {
         let expected = eval_string(expected)?;
@@ -35,13 +34,12 @@ fn return_right<TLeft, TRight>(
     #[case] right: TRight,
     #[case] _left: TLeft,
 ) where
-    TLeft: IntoRobj,
-    TRight: IntoRobj,
+    Robj: From<TLeft> + From<TRight>,
 {
     test! {
         let expected = eval_string(expected)?;
         let val : Either<TLeft, TRight> = Right(right);
-        let robj = val.into_robj();
+        let robj : Robj = val.into();
         assert_eq!(expected, robj);
     }
 }
