@@ -20,8 +20,7 @@
 ### Changed
 
 - [**Documentation**] Use bindgen on docs.rs, to ensure newer R features will still be documented [[#426]](https://github.com/extendr/extendr/pull/426)
-- Unified how regular structs and ExternalPtr are treated (TODO: more detail needed) [[#433]](https://github.com/extendr/extendr/pull/433)
-- Updated `roxygen2` and `rextendr` versions used in integration tests [[#447]](https://github.com/extendr/extendr/pull/447)
+- Unify the tagging mechanism used to identify Rust types inside `ExternalPtr`. This allows `#[extendr]`-annotated functions to directly accept `ExternalPtr<MyStruct>` as well as `MyStruct` [[#433]](https://github.com/extendr/extendr/pull/433)
 - Bump the Rust edition from 2018 to 2021 [[#458]](https://github.com/extendr/extendr/pull/458)
 - Use `Rf_mkCharLenCE()` instead of `Rf_mkCharLen()` when creating R strings (TODO: more user friendly) [[#467]](https://github.com/extendr/extendr/pull/467)
 
