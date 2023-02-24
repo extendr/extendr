@@ -4,7 +4,7 @@ patrick::with_parameters_test_that(
         result <- type_aware_sum(input)
 
         vctrs::vec_assert(result, ptype = expected_ptype, size = 1L)
-        expect_equal(sum(input), result)
+        expect_equal(object = result, expected = sum(input))
     },
 
     patrick::cases(
