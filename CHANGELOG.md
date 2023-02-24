@@ -27,13 +27,7 @@
 ### Fixed
 
 - The R CMD check note "Found non-API calls to R" by moving `use extendr_engine;` inside `test!` macro [[#424]](https://github.com/extendr/extendr/pull/424)
-- The Rust compiler warning "call `drop(from_raw(ptr))` if you intend to drop the `Box`" [[#434]](https://github.com/extendr/extendr/pull/434)
 - The clippy lint "this public function might dereference a raw pointer but is not marked `unsafe`" [[#451]](https://github.com/extendr/extendr/pull/451)
-- The clippy lint `clippy::extra_unused_lifetimes` [[#459]](https://github.com/extendr/extendr/pull/459)
-- The clippy lint `clippy::bool_to_int_with_if` [[#459]](https://github.com/extendr/extendr/pull/459)
-- The clippy lint `clippy::map_flatten` [[#459]](https://github.com/extendr/extendr/pull/459)
-- The clippy lint `clippy::iter_kv_map` [[#459]](https://github.com/extendr/extendr/pull/459)
-- The clippy lint `clippy::borrow_deref_ref` [[#459]](https://github.com/extendr/extendr/pull/459)
 - A bug where importing a submodule via `use some_module;` inside the `extendr_module!` macro wasn't working [[#469]](https://github.com/extendr/extendr/pull/469)
 
 ## 0.3.0
