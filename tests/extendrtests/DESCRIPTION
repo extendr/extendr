@@ -19,6 +19,7 @@ Imports:
     rextendr,
 Suggests:
     brio,
+    patrick,
     rmarkdown,
     stringi,
     testthat,
