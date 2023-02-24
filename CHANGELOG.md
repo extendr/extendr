@@ -22,7 +22,7 @@
 - [**Documentation**] Use bindgen on docs.rs, to ensure newer R features will still be documented [[#426]](https://github.com/extendr/extendr/pull/426)
 - Unify the tagging mechanism used to identify Rust types inside `ExternalPtr`. This allows `#[extendr]`-annotated functions to directly accept `ExternalPtr<MyStruct>` as well as `MyStruct` [[#433]](https://github.com/extendr/extendr/pull/433)
 - Bump the Rust edition from 2018 to 2021 [[#458]](https://github.com/extendr/extendr/pull/458)
-- Use `Rf_mkCharLenCE()` instead of `Rf_mkCharLen()` when creating R strings (TODO: more user friendly) [[#467]](https://github.com/extendr/extendr/pull/467)
+- When converted to `STRSXP`, strings are now correctly marked as UTF-8 even on non-UTF-8 platforms (i.e., R < 4.2 on Windows), which shouldn't matter for most of the users [[#467]](https://github.com/extendr/extendr/pull/467)
 
 ### Fixed
 
