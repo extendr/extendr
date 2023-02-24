@@ -116,6 +116,7 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
         impl<'a> extendr_api::FromRobj<'a> for &#self_ty {
             fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
                 if robj.check_external_ptr_type::<#self_ty>() {
+                    #[allow(clippy::transmute_ptr_to_ref)]
                     Ok(unsafe { std::mem::transmute(robj.external_ptr_addr::<#self_ty>()) })
                 } else {
                     Err(concat!("expected ", #self_ty_name))
@@ -127,6 +128,7 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
         impl<'a> extendr_api::FromRobj<'a> for &mut #self_ty {
             fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
                 if robj.check_external_ptr_type::<#self_ty>() {
+                    #[allow(clippy::transmute_ptr_to_ref)]
                     Ok(unsafe { std::mem::transmute(robj.external_ptr_addr::<#self_ty>()) })
                 } else {
                     Err(concat!("expected ", #self_ty_name))
