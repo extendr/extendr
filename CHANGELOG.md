@@ -13,7 +13,7 @@
 - [**ndarray**] Conversion from owned arrays (ie `ndarray::Array`) into `Robj` [[#450]](https://github.com/extendr/extendr/pull/450)
 - [**ndarray**] Documentation for the `robj_ndarray` module [[#450]](https://github.com/extendr/extendr/pull/450)
 - `Sum` for scalars like `Rint`, `Rfloat` and `Rcplx`, which accept `Iterator<Item = &Rtype>` [[#454]](https://github.com/extendr/extendr/pull/454)
-- Add a new `CollectRMatrix` trait that can be used to collect arbitrary iterables into an R matrix
+- Add a new `collect_rarray` method that can be used to collect arbitrary iterables into an R matrix
  [[#466]](https://github.com/extendr/extendr/pull/466)
 - Documentation for `RArray::new_matrix()` [[#466]](https://github.com/extendr/extendr/pull/466)
 
