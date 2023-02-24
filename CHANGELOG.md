@@ -1,15 +1,59 @@
 # Changelog
 
+## 0.4.0
+
+### Added
+
+- Support for #[default = "..."] in struct methods [[#436]](https://github.com/extendr/extendr/pull/436)
+- [**ndarray**] `TryFrom<&Robj>` for `ArrayView1<T>` and `ArrayView2<T>`, where `T` is `i32`, `f64`, `c64`, `Rint`, `Rfloat`, `Rcplx`, `Rstr`, `Rbool` [[#443]](https://github.com/extendr/extendr/pull/443)
+- `Debug` trait implementation for `Rcplx` and `Complexes` [[#444]](https://github.com/extendr/extendr/pull/444)
+- `Nullable<T>` is now part of `extendr_api::prelude` [[#446]](https://github.com/extendr/extendr/pull/446)
+- `TryFrom<Robj>`, `From<Option<T>>`, `Into<Option<T>>` and their variations for `Nullable<T>` [[#446]](https://github.com/extendr/extendr/pull/446)
+- `Nullable<T>::map()` that acts on not null value and propagates `NULL` [[#446]](https://github.com/extendr/extendr/pull/446)
+- [**ndarray**] Conversion from owned arrays (ie `ndarray::Array`) into `Robj` [[#450]](https://github.com/extendr/extendr/pull/450)
+- [**ndarray**] Documentation for the `robj_ndarray` module [[#450]](https://github.com/extendr/extendr/pull/450)
+- `Sum` for scalars like `Rint`, `Rfloat` and `Rcplx`, which accept `Iterator<Item = &Rtype>` [[#454]](https://github.com/extendr/extendr/pull/454)
+- Add a new `CollectRMatrix` trait that can be used to collect arbitrary iterables into an R matrix
+ [[#466]](https://github.com/extendr/extendr/pull/466)
+- Documentation for `RArray::new_matrix()` [[#466]](https://github.com/extendr/extendr/pull/466)
+
+- [**Internal**] Add `rstest` as a unit testing aide [[#460]](https://github.com/extendr/extendr/pull/460)
+
+### Changed
+
+- [**Documentation**] Use bindgen on docs.rs, to ensure newer R features will still be documented [[#426]](https://github.com/extendr/extendr/pull/426)
+- Unified how regular structs and ExternalPtr are treated (TODO: more detail needed) [[#433]](https://github.com/extendr/extendr/pull/433)
+- Updated `roxygen2` and `rextendr` versions used in integration tests [[#447]](https://github.com/extendr/extendr/pull/447)
+- Bump the Rust edition from 2018 to 2021 [[#458]](https://github.com/extendr/extendr/pull/458)
+- Use `Rf_mkCharLenCE()` instead of `Rf_mkCharLen()` when creating R strings (TODO: more user friendly) [[#467]](https://github.com/extendr/extendr/pull/467)
+
+- [**Internal**] Use the `r-lib/actions/check-r-package` instead of running `rcmdcheck::rcmdcheck` on the CI [[#416]](https://github.com/extendr/extendr/pull/416)
+- [**Internal**] Do not specify the toolchain used in the CI on Windows with R >= 4.2 [[#439]](https://github.com/extendr/extendr/pull/439)
+- [**Internal**] Use the `Rtools43` tool chain on the CI [[#449]](https://github.com/extendr/extendr/pull/449)
+- [**Internal**] Renamed a number of test files and removed comments from tests [[#471]](https://github.com/extendr/extendr/pull/471)
+- [**Internal**] Use `dtolnay/rust-toolchain` instead of `actions-rs/toolchain@` for setting up the Rust toolchain in the CI [[#477]](https://github.com/extendr/extendr/pull/477)
+- [**Internal**] Use `ubuntu-latest` instead of `ubuntu-20.04` in the CI [[#479]](https://github.com/extendr/extendr/pull/479)
+
+
+### Fixed
+
+- The R CMD check note "Found non-API calls to R" by moving `use extendr_engine;` inside `test!` macro [[#424]](https://github.com/extendr/extendr/pull/424)
+- The Rust compiler warning "call `drop(from_raw(ptr))` if you intend to drop the `Box`" [[#434]](https://github.com/extendr/extendr/pull/434)
+- The clippy lint "this public function might dereference a raw pointer but is not marked `unsafe`" [[#451]](https://github.com/extendr/extendr/pull/451)
+- The clippy lint `clippy::extra_unused_lifetimes` [[#459]](https://github.com/extendr/extendr/pull/459)
+- The clippy lint `clippy::bool_to_int_with_if` [[#459]](https://github.com/extendr/extendr/pull/459)
+- The clippy lint `clippy::map_flatten` [[#459]](https://github.com/extendr/extendr/pull/459)
+- The clippy lint `clippy::iter_kv_map` [[#459]](https://github.com/extendr/extendr/pull/459)
+- The clippy lint `clippy::borrow_deref_ref` [[#459]](https://github.com/extendr/extendr/pull/459)
+- A bug where importing a submodule via `use some_module;` inside the `extendr_module!` macro wasn't working [[#469]](https://github.com/extendr/extendr/pull/469)
+
+
+
+
 ## 0.3.0
 
 ### Added
 
-- [**ndarray**] `TryFrom<&Robj>` for `ArrayView1<T>` and `ArrayView2<T>`, where `T` is `i32`, `f64`, `c64`, `Rint`, `Rfloat`, `Rcplx`, `Rstr`, `Rbool` [[#443]](https://github.com/extendr/extendr/pull/443)
-- `Sum` for scalars like `Rint`, `Rfloat` and `Rcplx`, which accept `Iterator<Item = &Rtype>` [[#454]](https://github.com/extendr/extendr/pull/454)
-- `Nullable<T>` is now part of `extendr_api::prelude` [[#446]](https://github.com/extendr/extendr/pull/446)
-- `TryFrom<Robj>`, `From<Option<T>>`, `Into<Option<T>>` and their variations for `Nullable<T>` [[#446]](https://github.com/extendr/extendr/pull/446)
-- `Nullable<T>::map()` that acts on not null value and propagates `NULL` [[#446]](https://github.com/extendr/extendr/pull/446)
-- `Debug` trait implementation for `Rcplx` and `Complexes` [[#444]](https://github.com/extendr/extendr/pull/444)
 - `Function` type that wraps an R function, which can be invoked using the `call()` method. [[#188]](https://github.com/extendr/extendr/pull/188)
 - `pairlist!` macro for generating `Pairlist` objects, e.g. for use in function calls. [[#202]](https://github.com/extendr/extendr/pull/202)
 - `use_try_from` option for the `extendr` macro, which allows the use of any type that implements `TryInto<Robj>`/`TryFrom<Robj>`, e.g. `#[extendr(use_try_from = true)]`. [[#222]](https://github.com/extendr/extendr/pull/222)
