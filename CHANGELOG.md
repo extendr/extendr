@@ -7,20 +7,20 @@
 - Support for setting the default value of arguments to struct methods, using `#[default = "..."]` [[#436]](https://github.com/extendr/extendr/pull/436)
 - [**ndarray**] `TryFrom<&Robj>` for `ArrayView1<T>` and `ArrayView2<T>`, where `T` is `i32`, `f64`, `c64`, `Rint`, `Rfloat`, `Rcplx`, `Rstr`, `Rbool` [[#443]](https://github.com/extendr/extendr/pull/443)
 - `Debug` trait implementation for `Rcplx` and `Complexes` [[#444]](https://github.com/extendr/extendr/pull/444)
-- `Nullable<T>` is now part of `extendr_api::prelude` [[#446]](https://github.com/extendr/extendr/pull/446)
 - `TryFrom<Robj>`, `From<Option<T>>`, `Into<Option<T>>` and their variations for `Nullable<T>` [[#446]](https://github.com/extendr/extendr/pull/446)
 - `Nullable<T>::map()` that acts on not null value and propagates `NULL` [[#446]](https://github.com/extendr/extendr/pull/446)
 - [**ndarray**] Conversion from owned arrays (ie `ndarray::Array`) into `Robj` [[#450]](https://github.com/extendr/extendr/pull/450)
-- [**ndarray**] Documentation for the `robj_ndarray` module [[#450]](https://github.com/extendr/extendr/pull/450)
+- [**ndarray**][**docs**] Documentation for the `robj_ndarray` module [[#450]](https://github.com/extendr/extendr/pull/450)
 - `Sum` for scalars like `Rint`, `Rfloat` and `Rcplx`, which accept `Iterator<Item = &Rtype>` [[#454]](https://github.com/extendr/extendr/pull/454)
-- Add a new `collect_rarray` method that can be used to collect arbitrary iterables into an R matrix
+- A new `collect_rarray` method that can be used to collect arbitrary iterables into an R matrix
  [[#466]](https://github.com/extendr/extendr/pull/466)
-- Documentation for `RArray::new_matrix()` [[#466]](https://github.com/extendr/extendr/pull/466)
+- [**docs**] Documentation for `RArray::new_matrix()` [[#466]](https://github.com/extendr/extendr/pull/466)
 
 ### Changed
 
-- [**Documentation**] Use bindgen on docs.rs, to ensure newer R features will still be documented [[#426]](https://github.com/extendr/extendr/pull/426)
+- [**docs**] Use bindgen on docs.rs, to ensure newer R features will still be documented [[#426]](https://github.com/extendr/extendr/pull/426)
 - Unify the tagging mechanism used to identify Rust types inside `ExternalPtr`. This allows `#[extendr]`-annotated functions to directly accept `ExternalPtr<MyStruct>` as well as `MyStruct` [[#433]](https://github.com/extendr/extendr/pull/433)
+- `Nullable<T>` is now part of `extendr_api::prelude` [[#446]](https://github.com/extendr/extendr/pull/446)
 - Bump the Rust edition from 2018 to 2021 [[#458]](https://github.com/extendr/extendr/pull/458)
 - When converted to `STRSXP`, strings are now correctly marked as UTF-8 even on non-UTF-8 platforms (i.e., R < 4.2 on Windows), which shouldn't matter for most of the users [[#467]](https://github.com/extendr/extendr/pull/467)
 
