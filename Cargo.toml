@@ -6,6 +6,9 @@ members = [
 	"extendr-macros",
 ]
 
+[workspace.dependencies]
+libR-sys = "0.3.0"
+
 [patch.crates-io]
 # When uncommenting this, do not forget to uncomment the same line in
 # ./tests/extendrtests/src/rust/Cargo.toml, and "Run R integration tests using
