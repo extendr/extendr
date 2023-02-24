@@ -4,7 +4,7 @@
 
 ### Added
 
-- Support for `#[default = "..."]` in struct methods [[#436]](https://github.com/extendr/extendr/pull/436)
+- Support for setting the default value of arguments to struct methods, using `#[default = "..."]` [[#436]](https://github.com/extendr/extendr/pull/436)
 - [**ndarray**] `TryFrom<&Robj>` for `ArrayView1<T>` and `ArrayView2<T>`, where `T` is `i32`, `f64`, `c64`, `Rint`, `Rfloat`, `Rcplx`, `Rstr`, `Rbool` [[#443]](https://github.com/extendr/extendr/pull/443)
 - `Debug` trait implementation for `Rcplx` and `Complexes` [[#444]](https://github.com/extendr/extendr/pull/444)
 - `Nullable<T>` is now part of `extendr_api::prelude` [[#446]](https://github.com/extendr/extendr/pull/446)
