@@ -28,7 +28,6 @@ libc = { version = "0.2", optional = true }
 
 [dev-dependencies]
 rstest = "0.16.0"
-rstest_reuse = "0.5.0"
 
 [features]
 default = []
