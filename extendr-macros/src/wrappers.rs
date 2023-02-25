@@ -102,7 +102,7 @@ pub fn make_function_wrappers(
     // ```
     wrappers.push(parse_quote!(
         #[no_mangle]
-        #[allow(non_snake_case)]
+        #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
         pub extern "C" fn #wrap_name(#formal_args) -> extendr_api::SEXP {
             unsafe {
                 use extendr_api::robj::*;
