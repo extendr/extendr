@@ -189,6 +189,8 @@
 <a href="#189" id="189">189</a>
 <a href="#190" id="190">190</a>
 <a href="#191" id="191">191</a>
+<a href="#192" id="192">192</a>
+<a href="#193" id="193">193</a>
 </pre><pre class="rust"><code><span class="kw">extern crate </span>proc_macro;
 <span class="kw">use </span>proc_macro::TokenStream;
 <span class="kw">use </span>quote::{format_ident, quote};
@@ -307,7 +309,8 @@
         </span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; extendr_api::FromRobj&lt;<span class="lifetime">&#39;a</span>&gt; <span class="kw">for </span><span class="kw-2">&amp;</span>#self_ty {
             <span class="kw">fn </span>from_robj(robj: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Robj) -&gt; std::result::Result&lt;<span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt; {
                 <span class="kw">if </span>robj.check_external_ptr_type::&lt;#self_ty&gt;() {
-                    <span class="prelude-val">Ok</span>(<span class="kw">unsafe </span>{ std::mem::transmute(robj.external_ptr_addr::&lt;#self_ty&gt;()) })
+                    <span class="attr">#[allow(clippy::transmute_ptr_to_ref)]
+                    </span><span class="prelude-val">Ok</span>(<span class="kw">unsafe </span>{ std::mem::transmute(robj.external_ptr_addr::&lt;#self_ty&gt;()) })
                 } <span class="kw">else </span>{
                     <span class="prelude-val">Err</span>(<span class="macro">concat!</span>(<span class="string">&quot;expected &quot;</span>, #self_ty_name))
                 }
@@ -318,7 +321,8 @@
         </span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; extendr_api::FromRobj&lt;<span class="lifetime">&#39;a</span>&gt; <span class="kw">for </span><span class="kw-2">&amp;mut </span>#self_ty {
             <span class="kw">fn </span>from_robj(robj: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Robj) -&gt; std::result::Result&lt;<span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt; {
                 <span class="kw">if </span>robj.check_external_ptr_type::&lt;#self_ty&gt;() {
-                    <span class="prelude-val">Ok</span>(<span class="kw">unsafe </span>{ std::mem::transmute(robj.external_ptr_addr::&lt;#self_ty&gt;()) })
+                    <span class="attr">#[allow(clippy::transmute_ptr_to_ref)]
+                    </span><span class="prelude-val">Ok</span>(<span class="kw">unsafe </span>{ std::mem::transmute(robj.external_ptr_addr::&lt;#self_ty&gt;()) })
                 } <span class="kw">else </span>{
                     <span class="prelude-val">Err</span>(<span class="macro">concat!</span>(<span class="string">&quot;expected &quot;</span>, #self_ty_name))
                 }

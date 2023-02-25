@@ -440,7 +440,7 @@
     // ```
     </span>wrappers.push(<span class="macro">parse_quote!</span>(
         <span class="attr">#[no_mangle]
-        #[allow(non_snake_case)]
+        #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
         </span><span class="kw">pub extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>#wrap_name(#formal_args) -&gt; extendr_api::SEXP {
             <span class="kw">unsafe </span>{
                 <span class="kw">use </span>extendr_api::robj::<span class="kw-2">*</span>;
