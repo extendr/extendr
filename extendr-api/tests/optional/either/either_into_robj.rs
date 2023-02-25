@@ -1,13 +1,25 @@
 use either::Either::{self, Left, Right};
 use extendr_api::prelude::*;
 use rstest::rstest;
+use rstest_reuse::{apply, template};
 
+#[template]
 #[rstest]
 #[case("1L", Rint::from(1i32), "")]
 #[case("1.5", Rfloat::from(1.5), Rint::default())]
 #[case("\"string\"", "string", false)]
 #[case("TRUE", true, 0)]
 #[case("1 + 2i", Rcplx::new(1.0, 2.0), 0)]
+fn into_robj_test_case_source<TLeft, TRight>(
+    #[case] _expected: &'static str,
+    #[case] _left: TLeft,
+    #[case] _right: TRight,
+) where
+    Robj: From<TLeft> + From<TRight>,
+{
+}
+
+#[apply(into_robj_test_case_source)]
 fn return_left<TLeft, TRight>(
     #[case] expected: &'static str,
     #[case] left: TLeft,
@@ -23,12 +35,7 @@ fn return_left<TLeft, TRight>(
     }
 }
 
-#[rstest]
-#[case("1L", Rint::from(1i32), "")]
-#[case("1.5", Rfloat::from(1.5), Rint::default())]
-#[case("\"string\"", "string", false)]
-#[case("TRUE", true, 0)]
-#[case("1 + 2i", Rcplx::new(1.0, 2.0), 0)]
+#[apply(into_robj_test_case_source)]
 fn return_right<TLeft, TRight>(
     #[case] expected: &'static str,
     #[case] right: TRight,

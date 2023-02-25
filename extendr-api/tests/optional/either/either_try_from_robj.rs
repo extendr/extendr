@@ -1,13 +1,26 @@
 use either::Either::{self, Left, Right};
 use extendr_api::prelude::*;
 use rstest::rstest;
+use rstest_reuse::{apply, template};
 
+#[template]
 #[rstest]
 #[case("1L", Rint::from(1i32), "")]
 #[case("1.5", Rfloat::from(1.5), Rint::default())]
 #[case("\"string\"", "string", false)]
 #[case("TRUE", true, 0)]
 #[case("1 + 2i", Rcplx::new(1.0, 2.0), 0)]
+fn try_from_robj_test_case_source<TLeft, TRight>(
+    #[case] _src: &'static str,
+    #[case] _left: TLeft,
+    #[case] _right: TRight,
+) where
+    for<'a> TLeft: TryFrom<&'a Robj, Error = Error> + PartialEq + std::fmt::Debug,
+    for<'a> TRight: TryFrom<&'a Robj, Error = Error> + PartialEq + std::fmt::Debug,
+{
+}
+
+#[apply(try_from_robj_test_case_source)]
 fn expect_left<TLeft, TRight>(
     #[case] src: &'static str,
     #[case] left: TLeft,
@@ -23,12 +36,7 @@ fn expect_left<TLeft, TRight>(
     }
 }
 
-#[rstest]
-#[case("1L", Rint::from(1i32), "")]
-#[case("1.5", Rfloat::from(1.5), Rint::default())]
-#[case("\"string\"", "string", false)]
-#[case("TRUE", true, 0)]
-#[case("1 + 2i", Rcplx::new(1.0, 2.0), 0)]
+#[apply(try_from_robj_test_case_source)]
 fn expect_right<TLeft, TRight>(
     #[case] src: &'static str,
     #[case] right: TRight,
