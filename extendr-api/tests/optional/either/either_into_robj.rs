@@ -18,7 +18,7 @@ fn return_left<TLeft, TRight>(
     test! {
         let expected = eval_string(expected)?;
         let val : Either<TLeft, TRight> = Left(left);
-        let robj = val.into_robj();
+        let robj : Robj = val.into();
         assert_eq!(expected, robj);
     }
 }
@@ -51,7 +51,7 @@ fn return_integers() {
                 vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
             )
         );
-        let robj = val.into_robj();
+        let robj : Robj = val.into();
         assert_eq!(eval_string("1:10")?, robj);
     }
 }
@@ -64,7 +64,7 @@ fn return_doubles() {
                 vec![1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]
             )
         );
-        let robj = val.into_robj();
+        let robj : Robj = val.into();
         assert_eq!(eval_string("c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)")?, robj);
     }
 }
