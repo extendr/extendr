@@ -1,17 +1,17 @@
 use crate::{Error, Robj};
 use either::Either::{self, Left, Right};
 
-impl<'a, TLeft, TRight> TryFrom<&'a Robj> for Either<TLeft, TRight>
+impl<'a, L, R> TryFrom<&'a Robj> for Either<L, R>
 where
-    TLeft: TryFrom<&'a Robj, Error = Error>,
-    TRight: TryFrom<&'a Robj, Error = Error>,
+    L: TryFrom<&'a Robj, Error = Error>,
+    R: TryFrom<&'a Robj, Error = Error>,
 {
     type Error = Error;
 
     fn try_from(value: &'a Robj) -> Result<Self, Self::Error> {
-        match TLeft::try_from(value) {
+        match L::try_from(value) {
             Ok(left) => Ok(Left(left)),
-            Err(left_err) => match TRight::try_from(value) {
+            Err(left_err) => match R::try_from(value) {
                 Ok(right) => Ok(Right(right)),
                 Err(right_err) => Err(Error::EitherError(Box::new(left_err), Box::new(right_err))),
             },
@@ -19,9 +19,9 @@ where
     }
 }
 
-impl<TLeft, TRight> TryFrom<Robj> for Either<TLeft, TRight>
+impl<L, R> TryFrom<Robj> for Either<L, R>
 where
-    for<'a> Either<TLeft, TRight>: TryFrom<&'a Robj, Error = Error>,
+    for<'a> Either<L, R>: TryFrom<&'a Robj, Error = Error>,
 {
     type Error = Error;
 
@@ -30,11 +30,11 @@ where
     }
 }
 
-impl<TLeft, TRight> From<Either<TLeft, TRight>> for Robj
+impl<L, R> From<Either<L, R>> for Robj
 where
-    Robj: From<TLeft> + From<TRight>,
+    Robj: From<L> + From<R>,
 {
-    fn from(value: Either<TLeft, TRight>) -> Self {
+    fn from(value: Either<L, R>) -> Self {
         match value {
             Left(left) => Robj::from(left),
             Right(right) => Robj::from(right),
