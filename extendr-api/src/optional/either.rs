@@ -8,6 +8,8 @@ where
 {
     type Error = Error;
 
+    /// Returns the first type that matches the provided `Robj`, starting from
+    /// `L`-type, and if that fails, then the `R`-type is converted.
     fn try_from(value: &'a Robj) -> Result<Self, Self::Error> {
         match L::try_from(value) {
             Ok(left) => Ok(Left(left)),
@@ -25,6 +27,8 @@ where
 {
     type Error = Error;
 
+    /// Returns the first type that matches the provided `Robj`, starting from
+    /// `L`-type, and if that fails, then the `R`-type is converted.
     fn try_from(value: Robj) -> Result<Self, Self::Error> {
         (&value).try_into()
     }
