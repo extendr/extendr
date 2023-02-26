@@ -17,7 +17,7 @@ pub(crate) fn str_to_character(s: &str) -> SEXP {
     }
 }
 
-/// Convert a null to an Robj.
+/// Convert a `NULL` to an `Robj`.
 impl From<()> for Robj {
     fn from(_: ()) -> Self {
         // Note: we do not need to protect this.
@@ -25,8 +25,8 @@ impl From<()> for Robj {
     }
 }
 
-/// Convert a Result to an Robj. This is used to allow
-/// functions to use the ? operator and return [Result<T>].
+/// Convert a `Result` to an `Robj`. This is used to allow
+/// functions to use the `?` operator and return [`Result<T>`].
 ///
 /// Panics if there is an error.
 /// ```
