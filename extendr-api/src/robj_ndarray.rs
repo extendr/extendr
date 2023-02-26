@@ -1,10 +1,10 @@
 /*!
-Defines conversions between R objects and the [ndarray](https://docs.rs/ndarray/latest/ndarray/) crate, which offers native Rust array types and numerical computation routines.
+Defines conversions between R objects and the [`ndarray`](https://docs.rs/ndarray/latest/ndarray/) crate, which offers native Rust array types and numerical computation routines.
 
 To enable these conversions, you must first enable the `ndarray` feature for extendr:
 ```toml
 [dependencies]
-extendr-api = { version = "0.3.1", features = ["ndarray"] }
+extendr-api = { version = "0.4", features = ["ndarray"] }
 ```
 
 Specifically, extendr supports the following conversions:
