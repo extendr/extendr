@@ -370,7 +370,7 @@ impl Robj {
     }
 
     /// Get a `Vec<i32>` copied from the object.
-    /// 
+    ///
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -399,7 +399,7 @@ impl Robj {
     /// Get a `Vec<Rbool>` copied from the object
     /// using the tri-state [`Rbool`].
     /// Returns `None` if not a logical vector.
-    /// 
+    ///
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -450,7 +450,7 @@ impl Robj {
     }
 
     /// Get an iterator over real elements of this slice.
-    /// 
+    ///
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -469,7 +469,7 @@ impl Robj {
     }
 
     /// Get a `Vec<f64>` copied from the object.
-    /// 
+    ///
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
