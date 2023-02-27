@@ -1089,6 +1089,10 @@
 <a href="#1088" id="1088">1088</a>
 <a href="#1089" id="1089">1089</a>
 <a href="#1090" id="1090">1090</a>
+<a href="#1091" id="1091">1091</a>
+<a href="#1092" id="1092">1092</a>
+<a href="#1093" id="1093">1093</a>
+<a href="#1094" id="1094">1094</a>
 </pre><pre class="rust"><code><span class="doccomment">//! R object handling.
 //!
 //! See. [Writing R Extensions](https://cran.r-project.org/doc/manuals/R-exts.html)
@@ -1460,7 +1464,8 @@
         <span class="self">self</span>.clone().try_into().ok()
     }
 
-    <span class="doccomment">/// Get a Vec&lt;i32&gt; copied from the object.
+    <span class="doccomment">/// Get a `Vec&lt;i32&gt;` copied from the object.
+    ///
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -1486,9 +1491,10 @@
         <span class="self">self</span>.as_typed_slice()
     }
 
-    <span class="doccomment">/// Get a Vec&lt;Rbool&gt; copied from the object
-    /// using the tri-state [Rbool].
-    /// Returns None if not a logical vector.
+    <span class="doccomment">/// Get a `Vec&lt;Rbool&gt;` copied from the object
+    /// using the tri-state [`Rbool`].
+    /// Returns `None` if not a logical vector.
+    ///
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -1539,6 +1545,7 @@
     }
 
     <span class="doccomment">/// Get an iterator over real elements of this slice.
+    ///
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -1556,7 +1563,8 @@
         <span class="self">self</span>.as_real_slice().map(|slice| slice.iter())
     }
 
-    <span class="doccomment">/// Get a Vec&lt;f64&gt; copied from the object.
+    <span class="doccomment">/// Get a `Vec&lt;f64&gt;` copied from the object.
+    ///
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {

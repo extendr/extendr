@@ -230,6 +230,7 @@
 <a href="#229" id="229">229</a>
 <a href="#230" id="230">230</a>
 <a href="#231" id="231">231</a>
+<a href="#232" id="232">232</a>
 </pre><pre class="rust"><code><span class="kw">use super</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// Wrapper for handling potentially NULL values.
@@ -430,7 +431,7 @@
 <span class="kw">where
     </span>T: TryFrom&lt;Robj, Error = Error&gt;,
 {
-    <span class="doccomment">/// Convert Nullable R object into Option
+    <span class="doccomment">/// Convert Nullable R object into `Option`
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -443,7 +444,8 @@
     }
 }
 <span class="kw">impl</span>&lt;T&gt; Nullable&lt;T&gt; {
-    <span class="doccomment">/// Map Nullable&lt;T&gt; into Nullable&lt;U&gt;
+    <span class="doccomment">/// Map `Nullable&lt;T&gt;` into `Nullable&lt;U&gt;`
+    ///
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {

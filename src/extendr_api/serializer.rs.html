@@ -767,6 +767,8 @@
 <a href="#766" id="766">766</a>
 <a href="#767" id="767">767</a>
 <a href="#768" id="768">768</a>
+<a href="#769" id="769">769</a>
+<a href="#770" id="770">770</a>
 </pre><pre class="rust"><code><span class="doccomment">//! See &lt;https://serde.rs/impl-serializer.html&gt;
 
 </span><span class="kw">use </span><span class="kw">crate</span>::error::{Error, <span class="prelude-ty">Result</span>};
@@ -831,12 +833,14 @@
 <span class="doccomment">/// Convert a serializable object to a Robj.
 ///
 /// Requires the &quot;serde&quot; feature.
+///
 /// ```toml
-/// extendr-api = { version = &quot;0&quot;, features = [&quot;serde&quot;] }
+/// extendr-api = { version = &quot;0.4&quot;, features = [&quot;serde&quot;] }
 /// ```
 ///
 /// Example:
-/// ```
+///
+/// ```rust
 /// use extendr_api::prelude::*;
 /// use extendr_api::serializer::to_robj;
 /// use serde::Serialize;

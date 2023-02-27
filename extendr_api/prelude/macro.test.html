@@ -4,7 +4,7 @@
     ($(<span class="macro-nonterminal">$rest</span>: tt)<span class="kw-2">*</span>) =&gt; { ... };
 }</code></pre></div>
 </div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Macro for running tests.</p>
-<p>This starts up the underlying <a href="../../extendr_engine/index.html" title="extendr_engine"><code>extendr_engine</code></a> so that interactions with R will work.
+<p>This starts up the underlying [<code>extendr_engine</code>] so that interactions with R will work.
 Additionally, this allows us to use <code>?</code> in example code instead of <code>unwrap()</code>.</p>
 <p><strong>Note:</strong> This macro is meant to be used in test code (annotated with
 <code>#[cfg(test)]</code>) or in doc strings. If it is used in library code that

@@ -155,7 +155,7 @@
 <span class="kw">impl </span>Deref <span class="kw">for </span>Doubles {
     <span class="kw">type </span>Target = [Rfloat];
 
-    <span class="doccomment">/// Treat Doubles as if it is a slice, like Vec&lt;Rfloat&gt;
+    <span class="doccomment">/// Treat Doubles as if it is a slice, like `Vec&lt;Rfloat&gt;`
     </span><span class="kw">fn </span>deref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Target {
         <span class="kw">unsafe </span>{
             <span class="kw">let </span>ptr = DATAPTR_RO(<span class="self">self</span>.get()) <span class="kw">as </span><span class="kw-2">*const </span>Rfloat;
@@ -165,7 +165,7 @@
 }
 
 <span class="kw">impl </span>DerefMut <span class="kw">for </span>Doubles {
-    <span class="doccomment">/// Treat Doubles as if it is a mutable slice, like Vec&lt;Rfloat&gt;
+    <span class="doccomment">/// Treat Doubles as if it is a mutable slice, like `Vec&lt;Rfloat&gt;`
     </span><span class="kw">fn </span>deref_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Target {
         <span class="kw">unsafe </span>{
             <span class="kw">let </span>ptr = DATAPTR(<span class="self">self</span>.get()) <span class="kw">as </span><span class="kw-2">*mut </span>Rfloat;
