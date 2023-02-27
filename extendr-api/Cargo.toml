@@ -1,6 +1,6 @@
 [package]
 name = "extendr-api"
-version = "0.3.1"
+version = "0.4.0"
 authors = [
     "andy-thomason <andy@andythomason.com>",
     "Thomas Down",
@@ -8,6 +8,7 @@ authors = [
     "Claus O. Wilke <wilke@austin.utexas.edu>",
     "Hiroaki Yutani",
     "Ilia A. Kosenkov <ilia.kosenkov@outlook.com>",
+    "Michael Milton <michael.r.milton@gmail.com>",
 ]
 edition = "2021"
 description = "Safe and user friendly bindings to the R programming language."
@@ -15,9 +16,9 @@ license = "MIT"
 repository = "https://github.com/extendr/extendr"
 
 [dependencies]
-libR-sys = "0.3.0"
-extendr-macros = { path = "../extendr-macros", version = "0.3.1" }
-extendr-engine = { path = "../extendr-engine", version = "0.3.1" }
+libR-sys = "0.4.0"
+extendr-macros = { path = "../extendr-macros", version = "0.4.0" }
+extendr-engine = { path = "../extendr-engine", version = "0.4.0" }
 lazy_static = "1.4"
 paste = "1.0.5"
 
