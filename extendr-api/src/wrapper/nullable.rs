@@ -198,7 +198,7 @@ impl<T> Nullable<T>
 where
     T: TryFrom<Robj, Error = Error>,
 {
-    /// Convert Nullable R object into Option
+    /// Convert Nullable R object into `Option`
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -211,7 +211,8 @@ where
     }
 }
 impl<T> Nullable<T> {
-    /// Map Nullable<T> into Nullable<U>
+    /// Map `Nullable<T>` into `Nullable<U>`
+    ///
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
