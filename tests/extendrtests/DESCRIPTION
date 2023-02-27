@@ -19,7 +19,9 @@ Imports:
     rextendr,
 Suggests:
     brio,
+    patrick,
     rmarkdown,
     stringi,
-    testthat
+    testthat,
+    vctrs
 Config/rextendr/version: 0.2.0.9000
