@@ -92,9 +92,7 @@ macro_rules! make_array_view_1 {
                 }
             }
         }
-    };
 
-    ($type: ty, $error_fn: expr) => {
         impl<'a> TryFrom<Robj> for ArrayView1<'a, $type> {
             type Error = crate::Error;
 
