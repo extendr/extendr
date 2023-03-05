@@ -1,7 +1,6 @@
 use extendr_api::{graphics::*, prelude::*};
 
 mod submodule;
-use submodule::*;
 
 mod ndarray;
 use ndarray::*;
@@ -170,7 +169,7 @@ fn check_default(#[default = "NULL"] x: Robj) -> bool {
 }
 
 // Weird behavior of parameter descriptions:
-// first passes tests as is, second -- only in backqutoes.
+// first passes tests as is, second -- only in backquotes.
 /// Test whether `_arg` parameters are treated correctly in R
 /// Executes \code{`_x` - `_y`}
 /// @param _x an integer scalar, ignored

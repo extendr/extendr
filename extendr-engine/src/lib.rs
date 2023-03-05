@@ -1,17 +1,18 @@
-//! A sigleton instance of the R interpreter.
+//! A singleton instance of the R interpreter.
 //!
-//! Only call this from main() if you want to run stand-alone.
+//! Only call this from `main()` if you want to run stand-alone.
 //!
 //! Its principal use is for testing.
 //!
-//! See <https://github.com/wch/r-source/blob/trunk/src/unix/Rembedded.c>
+//! See [Rembedded.c](https://github.com/wch/r-source/blob/trunk/src/unix/Rembedded.c).
+//!
 
 use libR_sys::*;
 use std::os::raw;
 use std::sync::Once;
 
 // Generate mutable static strings.
-// Much more efficient than CString.
+// Much more efficient than `CString`.
 // Generates asciiz.
 macro_rules! cstr_mut {
     ($s: expr) => {
