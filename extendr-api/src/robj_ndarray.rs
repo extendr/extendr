@@ -1,10 +1,10 @@
 /*!
-Defines conversions between R objects and the [ndarray](https://docs.rs/ndarray/latest/ndarray/) crate, which offers native Rust array types and numerical computation routines.
+Defines conversions between R objects and the [`ndarray`](https://docs.rs/ndarray/latest/ndarray/) crate, which offers native Rust array types and numerical computation routines.
 
 To enable these conversions, you must first enable the `ndarray` feature for extendr:
 ```toml
 [dependencies]
-extendr-api = { version = "0.3.1", features = ["ndarray"] }
+extendr-api = { version = "0.4", features = ["ndarray"] }
 ```
 
 Specifically, extendr supports the following conversions:
@@ -81,7 +81,7 @@ where
 
 macro_rules! make_array_view_1 {
     ($type: ty, $error_fn: expr) => {
-        impl<'a> TryFrom<&'a Robj> for ArrayView1<'a, $type> {
+        impl<'a> TryFrom<&'_ Robj> for ArrayView1<'a, $type> {
             type Error = crate::Error;
 
             fn try_from(robj: &Robj) -> Result<Self> {
@@ -92,9 +92,7 @@ macro_rules! make_array_view_1 {
                 }
             }
         }
-    };
 
-    ($type: ty, $error_fn: expr) => {
         impl<'a> TryFrom<Robj> for ArrayView1<'a, $type> {
             type Error = crate::Error;
 
