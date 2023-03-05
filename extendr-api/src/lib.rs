@@ -13,7 +13,7 @@
 //! ## Examples
 //!
 //! Use attributes and macros to export to R.
-//! 
+//!
 //! ```ignore
 //! use extendr_api::prelude::*;
 //! // Export a function or impl to R.
