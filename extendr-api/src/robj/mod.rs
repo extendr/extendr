@@ -734,64 +734,131 @@ where
 {
     fn as_typed_slice(&self) -> Option<&'a [T]>
     where
-        Self: 'a,
-    {
-        None
-    }
+        Self: 'a;
 
     fn as_typed_slice_mut(&mut self) -> Option<&'a mut [T]>
     where
-        Self: 'a,
-    {
-        None
+        Self: 'a;
+}
+
+trait SExpAccessor {
+    const XP: u32;
+    type AccessorType;
+    fn acessor(x: SEXP) -> *mut Self::AccessorType;
+}
+
+impl SExpAccessor for Rbool {
+    const XP: u32 = LGLSXP;
+    type AccessorType = raw::c_int;
+    fn acessor(x: SEXP) -> *mut Self::AccessorType {
+        unsafe { INTEGER(x) }
+    }
+}
+impl SExpAccessor for i32 {
+    const XP: u32 = INTSXP;
+    type AccessorType = raw::c_int;
+    fn acessor(x: SEXP) -> *mut Self::AccessorType {
+        unsafe { INTEGER(x) }
+    }
+}
+impl SExpAccessor for u32 {
+    const XP: u32 = INTSXP;
+    type AccessorType = raw::c_int;
+    fn acessor(x: SEXP) -> *mut Self::AccessorType {
+        unsafe { INTEGER(x) }
+    }
+}
+impl SExpAccessor for Rint {
+    const XP: u32 = INTSXP;
+    type AccessorType = raw::c_int;
+    fn acessor(x: SEXP) -> *mut Self::AccessorType {
+        unsafe { INTEGER(x) }
+    }
+}
+impl SExpAccessor for f64 {
+    const XP: u32 = REALSXP;
+    type AccessorType = Self;
+    fn acessor(x: SEXP) -> *mut Self::AccessorType {
+        unsafe { REAL(x) }
+    }
+}
+impl SExpAccessor for Rfloat {
+    const XP: u32 = REALSXP;
+    type AccessorType = f64;
+    fn acessor(x: SEXP) -> *mut Self::AccessorType {
+        unsafe { REAL(x) }
+    }
+}
+impl SExpAccessor for u8 {
+    const XP: u32 = RAWSXP;
+    type AccessorType = Rbyte;
+    fn acessor(x: SEXP) -> *mut Self::AccessorType {
+        unsafe { RAW(x) }
+    }
+}
+impl SExpAccessor for Robj {
+    const XP: u32 = VECSXP;
+    type AccessorType = Rbyte;
+    fn acessor(x: SEXP) -> *mut Self::AccessorType {
+        unsafe { VECTOR_PTR(x) }
+    }
+}
+impl SExpAccessor for Rstr {
+    const XP: u32 = STRSXP;
+    type AccessorType = SEXP;
+    fn acessor(x: SEXP) -> *mut Self::AccessorType {
+        unsafe { STRING_PTR(x) }
+    }
+}
+impl SExpAccessor for c64 {
+    const XP: u32 = CPLXSXP;
+    type AccessorType = Rcomplex;
+    fn acessor(x: SEXP) -> *mut Self::AccessorType {
+        unsafe { COMPLEX(x) }
+    }
+}
+impl SExpAccessor for Rcplx {
+    const XP: u32 = CPLXSXP;
+    type AccessorType = Rcomplex;
+    fn acessor(x: SEXP) -> *mut Self::AccessorType {
+        unsafe { COMPLEX(x) }
+    }
+}
+impl SExpAccessor for Rcomplex {
+    const XP: u32 = CPLXSXP;
+    type AccessorType = Rcomplex;
+    fn acessor(x: SEXP) -> *mut Self::AccessorType {
+        unsafe { COMPLEX(x) }
     }
 }
 
-macro_rules! make_typed_slice {
-    ($type: ty, $fn: tt, $($sexp: tt),* ) => {
-        impl<'a> AsTypedSlice<'a, $type> for Robj
-        where
-            Self : 'a,
-        {
-            fn as_typed_slice(&self) -> Option<&'a [$type]> {
-                match self.sexptype() {
-                    $( $sexp )|* => {
-                        unsafe {
-                            let ptr = $fn(self.get()) as *const $type;
-                            Some(std::slice::from_raw_parts(ptr, self.len()))
-                        }
-                    }
-                    _ => None
-                }
+impl<'a, T> AsTypedSlice<'a, T> for Robj
+where
+    Self: 'a,
+    T: SExpAccessor,
+{
+    fn as_typed_slice(&self) -> Option<&'a [T]> {
+        if self.sexptype() == <T as SExpAccessor>::XP {
+            unsafe {
+                let ptr = <T as SExpAccessor>::acessor(self.get()) as *const T;
+                Some(std::slice::from_raw_parts(ptr, self.len()))
             }
+        } else {
+            None
+        }
+    }
 
-            fn as_typed_slice_mut(&mut self) -> Option<&'a mut [$type]> {
-                match self.sexptype() {
-                    $( $sexp )|* => {
-                        unsafe {
-                            let ptr = $fn(self.get()) as *mut $type;
-                            Some(std::slice::from_raw_parts_mut(ptr, self.len()))
-                        }
-                    }
-                    _ => None
-                }
+    fn as_typed_slice_mut(&mut self) -> Option<&'a mut [T]> {
+        if self.sexptype() == <T as SExpAccessor>::XP {
+            unsafe {
+                let ptr = <T as SExpAccessor>::acessor(self.get()) as *mut T;
+                Some(std::slice::from_raw_parts_mut(ptr, self.len()))
             }
+        } else {
+            None
         }
     }
 }
-
-make_typed_slice!(Rbool, INTEGER, LGLSXP);
-make_typed_slice!(i32, INTEGER, INTSXP);
-make_typed_slice!(u32, INTEGER, INTSXP);
-make_typed_slice!(Rint, INTEGER, INTSXP);
-make_typed_slice!(f64, REAL, REALSXP);
-make_typed_slice!(Rfloat, REAL, REALSXP);
-make_typed_slice!(u8, RAW, RAWSXP);
-make_typed_slice!(Robj, VECTOR_PTR, VECSXP);
-make_typed_slice!(Rstr, STRING_PTR, STRSXP);
-make_typed_slice!(c64, COMPLEX, CPLXSXP);
-make_typed_slice!(Rcplx, COMPLEX, CPLXSXP);
-make_typed_slice!(Rcomplex, COMPLEX, CPLXSXP);
 
 /// These are helper functions which give access to common properties of R objects.
 #[allow(non_snake_case)]
