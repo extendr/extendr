@@ -3,6 +3,15 @@ mod ndarray_try_from_tests {
     use extendr_api::prelude::*;
 
     #[test]
+    fn test_1d_view_from_robj() {
+        test! {
+            let robj = R!("c(1L, 2L, 3L, 4L, 5L)")?;
+            let view = <ArrayView1<Rint>>::try_from(robj)?;
+            assert_eq!(view.dim(), 5);
+        }
+    }
+
+    #[test]
     fn integer_matrix_2d() {
         test! {
              let robj = R!("matrix(c(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L), ncol = 2, nrow = 4, byrow = TRUE)")?;

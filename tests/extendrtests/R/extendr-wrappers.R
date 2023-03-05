@@ -87,6 +87,8 @@ hello_submodule <- function() .Call(wrap__hello_submodule)
 #' @export
 euclidean_dist <- function(a) .Call(wrap__euclidean_dist, a)
 
+type_aware_sum <- function(input) .Call(wrap__type_aware_sum, input)
+
 #' Class for testing (exported)
 #' @examples
 #' x <- MyClass$new()

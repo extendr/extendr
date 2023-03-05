@@ -44,11 +44,11 @@ jobs:
           # - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
           # - {os: macOS-latest,   r: 'oldrel', rust-version: 'stable'}
 
-          - {os: ubuntu-20.04,   r: 'release', rust-version: 'stable', check_fmt: true}
-          - {os: ubuntu-20.04,   r: 'release', rust-version: 'nightly'}
+          - {os: ubuntu-latest,   r: 'release', rust-version: 'stable', check_fmt: true}
+          - {os: ubuntu-latest,   r: 'release', rust-version: 'nightly'}
           # R-devel requires LD_LIBRARY_PATH
-          - {os: ubuntu-20.04,   r: 'devel',   rust-version: 'stable'}
-          - {os: ubuntu-20.04,   r: 'oldrel',  rust-version: 'stable'}
+          - {os: ubuntu-latest,   r: 'devel',   rust-version: 'stable'}
+          - {os: ubuntu-latest,   r: 'oldrel',  rust-version: 'stable'}
 
 
 
@@ -70,13 +70,12 @@ jobs:
         shell: pwsh
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       
       - name: Set up Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.config.rust-version }}
-          default: true
           components: rustfmt, clippy
       
       - name: Set up R
@@ -201,7 +200,7 @@ jobs:
 
       # c.f. https://github.com/actions/checkout#checkout-multiple-repos-side-by-side
       - name: Obtain 'rextendr'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: extendr/rextendr
           path: ./tests/rextendr
@@ -299,7 +298,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: ubuntu-20.04,   r: 'devel', rust-version: 'stable'}
+          - {os: ubuntu-latest,   r: 'devel', rust-version: 'stable'}
           - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
           - {os: windows-latest, r: 'release', rust-version: 'stable-gnu',   rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '42'}
           - {os: windows-latest, r: 'release', rust-version: 'stable-msvc',  rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '42'}
@@ -320,13 +319,12 @@ jobs:
         shell: pwsh
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.config.rust-version }}
-          default: true
 
       # 1. Update rustup
       # 2. For each target add respective toolchain &
