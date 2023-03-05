@@ -93,9 +93,9 @@ macro_rules! impl_try_from_scalar_real_nonzero {
         impl TryFrom<&Robj> for $t {
             type Error = Error;
 
-            /// Convert a numeric object to a real value.
+            /// Convert a numeric object without zeros, to a non-zero type.
             fn try_from(robj: &Robj) -> Result<Self> {
-                Self::new(robj.try_into()?).ok_or(Error::ExpectedNonZeroValue)
+                Self::new(robj.try_into()?).ok_or(Error::ExpectedNonZeroValue(robj.clone()))
             }
         }
     };
