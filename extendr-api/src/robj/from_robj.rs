@@ -78,7 +78,7 @@ impl<'a> FromRobj<'a> for bool {
 
 impl<'a> FromRobj<'a> for &'a str {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if robj.is_na() {
+        if robj.is_na_scalar() {
             Err("Input must not be NA.")
         } else if let Some(s) = robj.as_str() {
             Ok(s)
@@ -90,7 +90,7 @@ impl<'a> FromRobj<'a> for &'a str {
 
 impl<'a> FromRobj<'a> for String {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if robj.is_na() {
+        if robj.is_na_scalar() {
             Err("Input must not be NA.")
         } else if let Some(s) = robj.as_str() {
             Ok(s.to_string())
@@ -122,7 +122,7 @@ impl<'a> FromRobj<'a> for Vec<f64> {
 
 impl<'a> FromRobj<'a> for Vec<String> {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if robj.is_na() {
+        if robj.is_na_scalar() {
             Err("Input must be a character vector. Got 'NA'.")
         } else if let Some(v) = robj.as_string_vector() {
             let str_vec = v.to_vec();
@@ -187,7 +187,7 @@ impl<'a> FromRobj<'a> for HashMap<&str, Robj> {
 // NA-sensitive integer input handling
 impl<'a> FromRobj<'a> for Option<i32> {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if robj.is_na() {
+        if robj.is_na_scalar() {
             Ok(None)
         } else if let Some(val) = robj.as_integer() {
             Ok(Some(val))
@@ -215,7 +215,7 @@ impl<'a> FromRobj<'a> for Option<bool> {
 // NA-sensitive real input handling
 impl<'a> FromRobj<'a> for Option<f64> {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if robj.is_na() {
+        if robj.is_na_scalar() {
             Ok(None)
         } else if let Some(val) = robj.as_real() {
             Ok(Some(val))
@@ -228,7 +228,7 @@ impl<'a> FromRobj<'a> for Option<f64> {
 // NA-sensitive string input handling
 impl<'a> FromRobj<'a> for Option<&'a str> {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if robj.is_na() {
+        if robj.is_na_scalar() {
             Ok(None)
         } else if let Some(val) = robj.as_str() {
             Ok(Some(val))
@@ -241,7 +241,7 @@ impl<'a> FromRobj<'a> for Option<&'a str> {
 // NA-sensitive string input handling
 impl<'a> FromRobj<'a> for Option<String> {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if robj.is_na() {
+        if robj.is_na_scalar() {
             Ok(None)
         } else if let Some(val) = robj.as_str() {
             Ok(Some(val.to_string()))

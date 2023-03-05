@@ -67,16 +67,16 @@ fn test_list() {
         assert_eq!(v, vec![("a", r!("x")), ("b", r!("y")), ("c", r!("z"))]);
 
         let s = List::from_values(["x", <&str>::na(), "z"]);
-        assert_eq!(s.elt(1)?.is_na(), true);
-        assert_eq!(s.as_slice().iter().any(|s| s.is_na()), true);
+        assert_eq!(s.elt(1)?.is_na_scalar(), true);
+        assert_eq!(s.as_slice().iter().any(|s| s.is_na_scalar()), true);
 
         // Deref allows all the immutable methods from slice.
         let v = s.as_slice().iter().collect::<Vec<_>>();
         assert_eq!(v, vec![&r!("x"), &r!(<&str>::na()), &r!("z")]);
         assert_eq!(v[0], "x");
-        assert_eq!(v[1].is_na(), true);
+        assert_eq!(v[1].is_na_scalar(), true);
         assert_eq!(v.contains(&&r!("x")), true);
-        assert_eq!(s.as_slice().iter().any(Robj::is_na), true);
+        assert_eq!(s.as_slice().iter().any(Robj::is_na_scalar), true);
     }
 }
 

@@ -247,20 +247,20 @@ fn test_to_robj() {
         assert_eq!(ab, ab2);
 
         assert_eq!(Robj::from(Some(1)), Robj::from(1));
-        assert!(!Robj::from(Some(1)).is_na());
-        assert!(Robj::from(<Option<i32>>::None).is_na());
+        assert!(!Robj::from(Some(1)).is_na_scalar());
+        assert!(Robj::from(<Option<i32>>::None).is_na_scalar());
 
         assert_eq!(Robj::from(Some(true)), Robj::from(true));
-        assert!(!Robj::from(Some(true)).is_na());
-        assert!(Robj::from(<Option<bool>>::None).is_na());
+        assert!(!Robj::from(Some(true)).is_na_scalar());
+        assert!(Robj::from(<Option<bool>>::None).is_na_scalar());
 
         assert_eq!(Robj::from(Some(1.)), Robj::from(1.));
-        assert!(!Robj::from(Some(1.)).is_na());
-        assert!(Robj::from(<Option<f64>>::None).is_na());
+        assert!(!Robj::from(Some(1.)).is_na_scalar());
+        assert!(Robj::from(<Option<f64>>::None).is_na_scalar());
 
         assert_eq!(Robj::from(Some("xyz")), Robj::from("xyz"));
-        assert!(!Robj::from(Some("xyz")).is_na());
-        assert!(Robj::from(<Option<&str>>::None).is_na());
+        assert!(!Robj::from(Some("xyz")).is_na_scalar());
+        assert!(Robj::from(<Option<&str>>::None).is_na_scalar());
     }
 }
 
