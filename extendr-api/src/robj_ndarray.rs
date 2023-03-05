@@ -105,56 +105,47 @@ where
     }
 }
 
-macro_rules! make_array_view_2 {
-    ($type: ty, $error_str: expr, $error_fn: expr) => {
-        impl<'a> FromRobj<'a> for ArrayView2<'a, $type> {
-            /// Convert an R object to a `ndarray` ArrayView2.
-            fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-                <ArrayView2<'a, $type>>::try_from(robj).map_err(|_| $error_str)
+impl<'a, T> TryFrom<&'_ Robj> for ArrayView2<'a, T>
+where
+    Robj: AsTypedSlice<'a, T, Error = Error>,
+{
+    type Error = crate::error::Error;
+    fn try_from(robj: &Robj) -> Result<Self> {
+        if robj.is_matrix() {
+            let nrows = robj.nrows();
+            let ncols = robj.ncols();
+            if let Some(v) = robj.as_typed_slice() {
+                // use fortran order.
+                let shape = (nrows, ncols).into_shape().f();
+                return ArrayView2::from_shape(shape, v)
+                    .map_err(|err| Error::NDArrayShapeError(err));
+            } else {
+                return Err(<Robj as AsTypedSlice<'a, T>>::error(robj.clone()));
             }
         }
-
-        impl<'a> TryFrom<&'_ Robj> for ArrayView2<'a, $type> {
-            type Error = crate::Error;
-            fn try_from(robj: &Robj) -> Result<Self> {
-                if robj.is_matrix() {
-                    let nrows = robj.nrows();
-                    let ncols = robj.ncols();
-                    if let Some(v) = robj.as_typed_slice() {
-                        // use fortran order.
-                        let shape = (nrows, ncols).into_shape().f();
-                        return ArrayView2::from_shape(shape, v)
-                            .map_err(|err| Error::NDArrayShapeError(err));
-                    } else {
-                        return Err($error_fn(robj.clone()));
-                    }
-                }
-                return Err(Error::ExpectedMatrix(robj.clone()));
-            }
-        }
-
-        impl<'a> TryFrom<Robj> for ArrayView2<'a, $type> {
-            type Error = crate::Error;
-            fn try_from(robj: Robj) -> Result<Self> {
-                Self::try_from(&robj)
-            }
-        }
-    };
+        return Err(Error::ExpectedMatrix(robj.clone()));
+    }
 }
 
-make_array_view_2!(Rbool, "Not a logical matrix.", Error::ExpectedLogical);
-make_array_view_2!(Rint, "Not an integer matrix.", Error::ExpectedInteger);
-make_array_view_2!(i32, "Not an integer matrix.", Error::ExpectedInteger);
-make_array_view_2!(u32, "Not an integer matrix.", Error::ExpectedInteger);
-make_array_view_2!(Rfloat, "Not a floating point matrix.", Error::ExpectedReal);
-make_array_view_2!(f64, "Not a floating point matrix.", Error::ExpectedReal);
-make_array_view_2!(
-    Rcplx,
-    "Not a complex number matrix.",
-    Error::ExpectedComplex
-);
-make_array_view_2!(c64, "Not a complex number matrix.", Error::ExpectedComplex);
-make_array_view_2!(Rstr, "Not a string matrix.", Error::ExpectedString);
+impl<'a, T> FromRobj<'a> for ArrayView2<'a, T>
+where
+    Robj: AsTypedSlice<'a, T, Error = Error>,
+{
+    /// Convert an R object to a `ndarray` ArrayView2.
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+        <ArrayView2<'a, T>>::try_from(robj).map_err(|_| "not matrix type")
+    }
+}
+
+impl<'a, T> TryFrom<Robj> for ArrayView2<'a, T>
+where
+    Robj: AsTypedSlice<'a, T, Error = Error>,
+{
+    type Error = crate::error::Error;
+    fn try_from(robj: Robj) -> Result<Self> {
+        Self::try_from(&robj)
+    }
+}
 
 impl<A, S, D> TryFrom<&ArrayBase<S, D>> for Robj
 where

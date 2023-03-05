@@ -789,7 +789,6 @@ macro_rules! make_typed_slice {
     }
 }
 
-
 make_typed_slice!(Rbool, ExpectedLogical, INTEGER, LGLSXP);
 make_typed_slice!(i32, ExpectedInteger, INTEGER, INTSXP);
 make_typed_slice!(u32, ExpectedInteger, INTEGER, INTSXP);
