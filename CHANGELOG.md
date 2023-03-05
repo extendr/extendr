@@ -1,11 +1,16 @@
 # Changelog
 
-## 0.3.0
+## Unreleased
 
 ### Added
 
 - `use_rng` option for the `extendr` attribute macro, which enables the use of
-random number sampling methods from R, e.g. `#[extendr(use_rng = true)`. [[#476]](https://github.com/extendr/extendr/pull/476)
+random number sampling methods from R, e.g. `#[extendr(use_rng = true)`. [[#488]](https://github.com/extendr/extendr/pull/488)
+
+## extendr 4.0
+
+### Added
+
 - [**ndarray**] `TryFrom<&Robj>` for `ArrayView1<T>` and `ArrayView2<T>`, where `T` is `i32`, `f64`, `c64`, `Rint`, `Rfloat`, `Rcplx`, `Rstr`, `Rbool` [[#443]](https://github.com/extendr/extendr/pull/443)
 - `Sum` for scalars like `Rint`, `Rfloat` and `Rcplx`, which accept `Iterator<Item = &Rtype>` [[#454]](https://github.com/extendr/extendr/pull/454)
 - `Nullable<T>` is now part of `extendr_api::prelude` [[#446]](https://github.com/extendr/extendr/pull/446)
