@@ -732,6 +732,7 @@ pub trait AsTypedSlice<'a, T>
 where
     Self: 'a,
 {
+    type Error;
     fn as_typed_slice(&self) -> Option<&'a [T]>
     where
         Self: 'a,
@@ -745,14 +746,18 @@ where
     {
         None
     }
+
+    fn error(robj: Robj) -> Self::Error;
 }
 
 macro_rules! make_typed_slice {
-    ($type: ty, $fn: tt, $($sexp: tt),* ) => {
+    ($type: ty, $error: ident, $fn: tt, $($sexp: tt),* ) => {
         impl<'a> AsTypedSlice<'a, $type> for Robj
         where
             Self : 'a,
         {
+            type Error = crate::error::Error;
+
             fn as_typed_slice(&self) -> Option<&'a [$type]> {
                 match self.sexptype() {
                     $( $sexp )|* => {
@@ -776,22 +781,27 @@ macro_rules! make_typed_slice {
                     _ => None
                 }
             }
+
+            fn error(robj: Robj) -> Self::Error {
+                Self::Error::$error(robj)
+            }
         }
     }
 }
 
-make_typed_slice!(Rbool, INTEGER, LGLSXP);
-make_typed_slice!(i32, INTEGER, INTSXP);
-make_typed_slice!(u32, INTEGER, INTSXP);
-make_typed_slice!(Rint, INTEGER, INTSXP);
-make_typed_slice!(f64, REAL, REALSXP);
-make_typed_slice!(Rfloat, REAL, REALSXP);
-make_typed_slice!(u8, RAW, RAWSXP);
-make_typed_slice!(Robj, VECTOR_PTR, VECSXP);
-make_typed_slice!(Rstr, STRING_PTR, STRSXP);
-make_typed_slice!(c64, COMPLEX, CPLXSXP);
-make_typed_slice!(Rcplx, COMPLEX, CPLXSXP);
-make_typed_slice!(Rcomplex, COMPLEX, CPLXSXP);
+
+make_typed_slice!(Rbool, ExpectedLogical, INTEGER, LGLSXP);
+make_typed_slice!(i32, ExpectedInteger, INTEGER, INTSXP);
+make_typed_slice!(u32, ExpectedInteger, INTEGER, INTSXP);
+make_typed_slice!(Rint, ExpectedInteger, INTEGER, INTSXP);
+make_typed_slice!(f64, ExpectedReal, REAL, REALSXP);
+make_typed_slice!(Rfloat, ExpectedReal, REAL, REALSXP);
+make_typed_slice!(u8, ExpectedRaw, RAW, RAWSXP);
+make_typed_slice!(Robj, ExpectedString, VECTOR_PTR, VECSXP);
+make_typed_slice!(Rstr, ExpectedString, STRING_PTR, STRSXP);
+make_typed_slice!(c64, ExpectedComplex, COMPLEX, CPLXSXP);
+make_typed_slice!(Rcplx, ExpectedComplex, COMPLEX, CPLXSXP);
+make_typed_slice!(Rcomplex, ExpectedComplex, COMPLEX, CPLXSXP);
 
 /// These are helper functions which give access to common properties of R objects.
 #[allow(non_snake_case)]

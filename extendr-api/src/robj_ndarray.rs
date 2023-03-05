@@ -79,28 +79,30 @@ where
     }
 }
 
-macro_rules! make_array_view_1 {
-    ($type: ty, $error_fn: expr) => {
-        impl<'a> TryFrom<&'_ Robj> for ArrayView1<'a, $type> {
-            type Error = crate::Error;
+impl<'a, T> TryFrom<&'_ Robj> for ArrayView1<'a, T>
+where
+    Robj: AsTypedSlice<'a, T, Error = Error>,
+{
+    type Error = crate::error::Error;
 
-            fn try_from(robj: &Robj) -> Result<Self> {
-                if let Some(v) = robj.as_typed_slice() {
-                    Ok(ArrayView1::<'a, $type>::from(v))
-                } else {
-                    Err($error_fn(robj.clone()))
-                }
-            }
+    fn try_from(robj: &Robj) -> std::result::Result<Self, Self::Error> {
+        if let Some(v) = robj.as_typed_slice() {
+            Ok(ArrayView1::<'a, T>::from(v))
+        } else {
+            Err(<Robj as AsTypedSlice<'a, T>>::error(robj.clone()))
         }
+    }
+}
 
-        impl<'a> TryFrom<Robj> for ArrayView1<'a, $type> {
-            type Error = crate::Error;
+impl<'a, T> TryFrom<Robj> for ArrayView1<'a, T>
+where
+    Robj: AsTypedSlice<'a, T, Error = Error>,
+{
+    type Error = crate::error::Error;
 
-            fn try_from(robj: Robj) -> Result<Self> {
-                Self::try_from(&robj)
-            }
-        }
-    };
+    fn try_from(robj: Robj) -> std::result::Result<Self, Self::Error> {
+        Self::try_from(&robj)
+    }
 }
 
 macro_rules! make_array_view_2 {
@@ -139,15 +141,6 @@ macro_rules! make_array_view_2 {
         }
     };
 }
-make_array_view_1!(Rbool, Error::ExpectedLogical);
-make_array_view_1!(Rint, Error::ExpectedInteger);
-make_array_view_1!(i32, Error::ExpectedInteger);
-make_array_view_1!(u32, Error::ExpectedInteger);
-make_array_view_1!(Rfloat, Error::ExpectedReal);
-make_array_view_1!(f64, Error::ExpectedReal);
-make_array_view_1!(Rcplx, Error::ExpectedComplex);
-make_array_view_1!(c64, Error::ExpectedComplex);
-make_array_view_1!(Rstr, Error::ExpectedString);
 
 make_array_view_2!(Rbool, "Not a logical matrix.", Error::ExpectedLogical);
 make_array_view_2!(Rint, "Not an integer matrix.", Error::ExpectedInteger);
