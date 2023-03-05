@@ -1,3 +1,5 @@
+use rstest::rstest;
+
 use crate::scalar::*;
 use crate::*;
 
@@ -92,34 +94,48 @@ fn test_from_robj() {
     }
 }
 
-#[test]
-fn test_try_from_robj() {
+#[rstest]
+#[case(1)]
+fn test_try_from_robj(#[case] value: i32) {
     test! {
         assert_eq!(<bool>::try_from(Robj::from(true)), Ok(true));
-        assert_eq!(<u8>::try_from(Robj::from(1)), Ok(1));
-        assert_eq!(<u16>::try_from(Robj::from(1)), Ok(1));
-        assert_eq!(<u32>::try_from(Robj::from(1)), Ok(1));
-        assert_eq!(<u64>::try_from(Robj::from(1)), Ok(1));
-        assert_eq!(<usize>::try_from(Robj::from(1)), Ok(1));
-        assert_eq!(<i8>::try_from(Robj::from(1)), Ok(1));
-        assert_eq!(<i16>::try_from(Robj::from(1)), Ok(1));
-        assert_eq!(<i32>::try_from(Robj::from(1)), Ok(1));
-        assert_eq!(<i64>::try_from(Robj::from(1)), Ok(1));
-        assert_eq!(<isize>::try_from(Robj::from(1)), Ok(1));
-        assert_eq!(<f32>::try_from(Robj::from(1)), Ok(1.));
-        assert_eq!(<f64>::try_from(Robj::from(1)), Ok(1.));
+        assert_eq!(<u8>::try_from(Robj::from(value)), Ok(value as u8));
+        assert_eq!(<u16>::try_from(Robj::from(value)), Ok(value as u16));
+        assert_eq!(<u32>::try_from(Robj::from(value)), Ok(value as u32));
+        assert_eq!(<u64>::try_from(Robj::from(value)), Ok(value as u64));
+        assert_eq!(<usize>::try_from(Robj::from(value)), Ok(value as usize));
+        assert_eq!(<i8>::try_from(Robj::from(value)), Ok(value as i8));
+        assert_eq!(<i16>::try_from(Robj::from(value)), Ok(value as i16));
+        assert_eq!(<i32>::try_from(Robj::from(value)), Ok(value as i32));
+        assert_eq!(<i64>::try_from(Robj::from(value)), Ok(value as i64));
+        assert_eq!(<isize>::try_from(Robj::from(value)), Ok(value as isize));
+        assert_eq!(<f32>::try_from(Robj::from(value as f32)), Ok(value as f32));
+        assert_eq!(<f64>::try_from(Robj::from(value as f64)), Ok(value as f64));
+        assert_eq!(<f32>::try_from(Robj::from(value)), Ok(value as f32));
+        assert_eq!(<f64>::try_from(Robj::from(value)), Ok(value as f64));
+    }
+}
 
-        assert_eq!(<std::num::NonZeroU8>::try_from(Robj::from(1)).ok(), std::num::NonZeroU8::new(1));
-        assert_eq!(<std::num::NonZeroU16>::try_from(Robj::from(1)).ok(), std::num::NonZeroU16::new(1));
-        assert_eq!(<std::num::NonZeroU32>::try_from(Robj::from(1)).ok(), std::num::NonZeroU32::new(1));
-        assert_eq!(<std::num::NonZeroU64>::try_from(Robj::from(1)).ok(), std::num::NonZeroU64::new(1));
-        assert_eq!(<std::num::NonZeroUsize>::try_from(Robj::from(1)).ok(), std::num::NonZeroUsize::new(1));
-        assert_eq!(<std::num::NonZeroI8>::try_from(Robj::from(1)).ok(), std::num::NonZeroI8::new(1));
-        assert_eq!(<std::num::NonZeroI16>::try_from(Robj::from(1)).ok(), std::num::NonZeroI16::new(1));
-        assert_eq!(<std::num::NonZeroI32>::try_from(Robj::from(1)).ok(), std::num::NonZeroI32::new(1));
-        assert_eq!(<std::num::NonZeroI64>::try_from(Robj::from(1)).ok(), std::num::NonZeroI64::new(1));
-        assert_eq!(<std::num::NonZeroIsize>::try_from(Robj::from(1)).ok(), std::num::NonZeroIsize::new(1));
+#[rstest]
+#[case(1)]
+fn test_try_from_robj_nonzero(#[case] value: i32) {
+    test! {
+        assert_eq!(<std::num::NonZeroU8>::try_from(Robj::from(value)).ok(), std::num::NonZeroU8::new(value as _));
+        assert_eq!(<std::num::NonZeroU16>::try_from(Robj::from(value)).ok(), std::num::NonZeroU16::new(value as _));
+        assert_eq!(<std::num::NonZeroU32>::try_from(Robj::from(value)).ok(), std::num::NonZeroU32::new(value as _));
+        assert_eq!(<std::num::NonZeroU64>::try_from(Robj::from(value)).ok(), std::num::NonZeroU64::new(value as _));
+        assert_eq!(<std::num::NonZeroUsize>::try_from(Robj::from(value)).ok(), std::num::NonZeroUsize::new(value as _));
+        assert_eq!(<std::num::NonZeroI8>::try_from(Robj::from(value)).ok(), std::num::NonZeroI8::new(value as _));
+        assert_eq!(<std::num::NonZeroI16>::try_from(Robj::from(value)).ok(), std::num::NonZeroI16::new(value as _));
+        assert_eq!(<std::num::NonZeroI32>::try_from(Robj::from(value)).ok(), std::num::NonZeroI32::new(value as _));
+        assert_eq!(<std::num::NonZeroI64>::try_from(Robj::from(value)).ok(), std::num::NonZeroI64::new(value as _));
+        assert_eq!(<std::num::NonZeroIsize>::try_from(Robj::from(value)).ok(), std::num::NonZeroIsize::new(value as _));
+    }
+}
 
+#[test]
+fn test_try_from_robj_nonzero_fail_on_zero() {
+    test! {
         assert!(<std::num::NonZeroU8>::try_from(Robj::from(0)).is_err());
         assert!(<std::num::NonZeroU16>::try_from(Robj::from(0)).is_err());
         assert!(<std::num::NonZeroU32>::try_from(Robj::from(0)).is_err());
@@ -130,7 +146,13 @@ fn test_try_from_robj() {
         assert!(<std::num::NonZeroI32>::try_from(Robj::from(0)).is_err());
         assert!(<std::num::NonZeroI64>::try_from(Robj::from(0)).is_err());
         assert!(<std::num::NonZeroIsize>::try_from(Robj::from(0)).is_err());
+    }
+}
 
+#[rstest]
+#[case(1)]
+fn test_try_from_robj_std(#[case] value: i32) {
+    test! {
         // conversion from non-integer-ish value to integer should fail
         let robj = Robj::from(1.5);
         assert_eq!(<i32>::try_from(robj.clone()), Err(Error::ExpectedWholeNumber(robj)));
