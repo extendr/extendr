@@ -28,7 +28,7 @@ pub fn extendr_function(args: Vec<syn::NestedMeta>, mut func: ItemFn) -> TokenSt
 /// - `use_try_from = bool` which uses `TryFrom<Robj>` for argument conversions.
 /// - `r_name = "name"` which specifies the name of the wrapper on the R-side.
 /// - `use_rng = bool` ensures the RNG-state is pulled and pushed
-/// 
+///
 pub fn parse_options(opts: &mut wrappers::ExtendrOptions, arg: &syn::NestedMeta) {
     use syn::{Lit, LitBool, Meta, MetaNameValue, NestedMeta};
 
