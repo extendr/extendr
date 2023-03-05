@@ -2,13 +2,13 @@ use crate::scalar::macros::*;
 use crate::*;
 use std::convert::TryFrom;
 
-/// Rbool is a wrapper for i32 in the context of an R's logical vector.
+/// `Rbool` is a wrapper for `i32` in the context of an R's logical vector.
 ///
-/// Rbool can have a value of 0, 1 or i32::MIN.
+/// `Rbool` can have a value of `0`, `1` or `i32::MIN`.
 ///
-/// The value i32::MIN is used as "NA".
+/// The value `i32::MIN` is used as `NA`.
 ///
-/// Rbool has the same footprint as an i32 value allowing us to use it in zero copy slices.
+/// `Rbool` has the same footprint as an `i32` value allowing us to use it in zero copy slices.
 pub struct Rbool(i32);
 
 impl Rbool {
@@ -29,22 +29,22 @@ impl Rbool {
         Rbool(i32::MIN)
     }
 
-    /// Return `true` if this triboolean is `true` but not NA.
+    /// Return `true` if this triboolean is `true` but not `NA`.
     pub fn is_true(&self) -> bool {
         self.inner() != 0 && !self.is_na()
     }
 
-    /// Return `true` if this triboolean is `false` but not NA.
+    /// Return `true` if this triboolean is `false` but not `NA`.
     pub fn is_false(&self) -> bool {
         self.inner() == 0 && !self.is_na()
     }
 
-    /// Convert this Rbool to a bool. Note NA will be true.
+    /// Convert this `Rbool` to a bool. Note `NA` will be true.
     pub fn to_bool(&self) -> bool {
         self.inner() != 0
     }
 
-    /// Convert this construct a Rbool from a rust boolean.
+    /// Convert this construct a `Rbool` from a rust boolean.
     pub fn from_bool(val: bool) -> Self {
         Rbool(val as i32)
     }
@@ -94,7 +94,6 @@ impl std::ops::Not for Rbool {
 }
 
 impl std::fmt::Debug for Rbool {
-    /// Debug format.
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
@@ -113,7 +112,7 @@ impl std::fmt::Debug for Rbool {
 impl TryFrom<&Robj> for Rbool {
     type Error = Error;
 
-    /// Convert an LGLSXP object into a Rbool (tri-state boolean).
+    /// Convert an `LGLSXP` object into a `Rbool` (tri-state boolean).
     /// Use `value.is_na()` to detect NA values.
     fn try_from(robj: &Robj) -> Result<Self> {
         if let Some(v) = robj.as_logical_slice() {

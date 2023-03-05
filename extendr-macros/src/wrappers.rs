@@ -271,7 +271,8 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> Expr {
     }
 }
 
-// Convert SEXP arguments into Robj. This maintains the lifetime of references.
+/// Convert `SEXP` arguments into `Robj`. 
+/// This maintains the lifetime of references.
 fn translate_to_robj(input: &FnArg) -> syn::Stmt {
     match input {
         FnArg::Typed(ref pattype) => {
