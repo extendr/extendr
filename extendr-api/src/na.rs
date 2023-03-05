@@ -23,9 +23,11 @@ lazy_static! {
     };
 }
 
-/// Return true if this primitive is NA.
+/// Trait signifying if a given type may take the value `NA` in the R sense.
 pub trait CanBeNA {
+    /// Returns `true` if it is `NA`.
     fn is_na(&self) -> bool;
+    /// Returns the sentinel `NA` value for this type.
     fn na() -> Self;
 }
 
@@ -81,3 +83,17 @@ impl CanBeNA for &str {
         &EXTENDR_NA_STRING
     }
 }
+
+/// Marker trait for types that may not be `NA` in the R sense.
+///
+/// See [`CanBeNA`].
+pub trait CannotBeNA {}
+
+impl CannotBeNA for u8 {}
+impl CannotBeNA for u16 {}
+impl CannotBeNA for u32 {}
+impl CannotBeNA for u64 {}
+impl CannotBeNA for i8 {}
+impl CannotBeNA for i16 {}
+impl CannotBeNA for i64 {}
+impl CannotBeNA for f32 {}
