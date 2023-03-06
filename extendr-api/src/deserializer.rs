@@ -470,7 +470,7 @@ impl<'de> Deserializer<'de> for &'de Robj {
         #![allow(clippy::if_same_then_else)]
         if let Rany::Null(_) = self.as_any() {
             visitor.visit_none()
-        } else if self.is_na() {
+        } else if self.is_na_scalar() {
             visitor.visit_none()
         } else {
             visitor.visit_some(self)
