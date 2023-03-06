@@ -32,10 +32,12 @@ jobs:
 
       - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: stable
+          toolchain: nightly
 
       - name: Docs
         run: cargo doc --workspace --no-deps --all-features
+        env:
+          RUSTDOCFLAGS: "--enable-index-page -Zunstable-options"
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
