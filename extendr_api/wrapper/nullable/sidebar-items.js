@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":[["Nullable","Wrapper for handling potentially NULL values."]]};
+window.SIDEBAR_ITEMS = {"enum":["Nullable"]};

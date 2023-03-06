@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["Raw","Wrapper for creating raw (byte) objects."]]};
+window.SIDEBAR_ITEMS = {"struct":["Raw"]};

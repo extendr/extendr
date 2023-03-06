@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["RArray","Wrapper for creating and using matrices and arrays."]],"trait":[["MatrixConversions",""]],"type":[["RColumn",""],["RMatrix",""],["RMatrix3D",""]]};
+window.SIDEBAR_ITEMS = {"struct":["RArray"],"trait":["MatrixConversions"],"type":["RColumn","RMatrix","RMatrix3D"]};

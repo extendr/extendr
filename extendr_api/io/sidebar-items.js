@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":[["PstreamFormat",""]],"trait":[["Load",""],["Save",""]]};
+window.SIDEBAR_ITEMS = {"enum":["PstreamFormat"],"trait":["Load","Save"]};

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["FromList","You can use the FromList wrapper to coerce a Robj into a list."],["List",""],["ListIter","Iterator over the objects in a VECSXP, EXPRSXP or WEAKREFSXP."]],"trait":[["KeyValue",""]]};
+window.SIDEBAR_ITEMS = {"struct":["FromList","List","ListIter"],"trait":["KeyValue"]};

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["Arg","Metadata function argument."],["Func","Metadata function."],["Impl","Metadata Impl."],["Metadata","Module metadata."]]};
+window.SIDEBAR_ITEMS = {"struct":["Arg","Func","Impl","Metadata"]};

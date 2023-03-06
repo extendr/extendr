@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["Pairlist",""],["PairlistIter","Generate paits of names and values."]]};
+window.SIDEBAR_ITEMS = {"struct":["Pairlist","PairlistIter"]};

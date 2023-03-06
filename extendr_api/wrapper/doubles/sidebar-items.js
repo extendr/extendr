@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["Doubles","An obscure `NA`-aware wrapper for R’s double vectors. Can be used to iterate over vectors obtained from R or to create new vectors that can be returned back to R."]]};
+window.SIDEBAR_ITEMS = {"struct":["Doubles"]};

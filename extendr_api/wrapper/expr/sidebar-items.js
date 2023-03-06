@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["Expressions",""]]};
+window.SIDEBAR_ITEMS = {"struct":["Expressions"]};

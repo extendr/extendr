@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["Language","Wrapper for creating language objects."]]};
+window.SIDEBAR_ITEMS = {"struct":["Language"]};

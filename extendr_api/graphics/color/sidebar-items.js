@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":[["predefined",""]],"struct":[["Color",""]]};
+window.SIDEBAR_ITEMS = {"mod":["predefined"],"struct":["Color"]};
