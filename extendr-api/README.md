@@ -224,10 +224,11 @@ test! {
 
 extendr-api has some optional features behind these feature gates:
 
-- `ndarray`: provides the conversion between R's matrices and [ndarray](https://docs.rs/ndarray/latest/ndarray/).
-- `num-complex`: provides the conversion between R's complex numbers and [num-complex](https://docs.rs/num-complex/latest/num_complex/).
-- `serde`: provides the [Serde](https://serde.rs/) support.
-- `graphics`: provides the functionality to control or implement graphics devices.
+* `ndarray`: provides the conversion between R's matrices and [ndarray](https://docs.rs/ndarray/latest/ndarray/).
+* `num-complex`: provides the conversion between R's complex numbers and [num-complex](https://docs.rs/num-complex/latest/num_complex/).
+* `serde`: provides the [Serde](https://serde.rs/) support.
+* `graphics`: provides the functionality to control or implement graphics devices.
+* `either`: provides implementation of type conversion traits for `Either<L, R>` from [either](https://docs.rs/either/latest/either/) if `L` and `R` both implement those traits.
 
 ## License
 

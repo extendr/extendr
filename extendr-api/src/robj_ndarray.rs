@@ -81,7 +81,7 @@ where
 
 macro_rules! make_array_view_1 {
     ($type: ty, $error_fn: expr) => {
-        impl<'a> TryFrom<&'a Robj> for ArrayView1<'a, $type> {
+        impl<'a> TryFrom<&'_ Robj> for ArrayView1<'a, $type> {
             type Error = crate::Error;
 
             fn try_from(robj: &Robj) -> Result<Self> {
@@ -92,9 +92,7 @@ macro_rules! make_array_view_1 {
                 }
             }
         }
-    };
 
-    ($type: ty, $error_fn: expr) => {
         impl<'a> TryFrom<Robj> for ArrayView1<'a, $type> {
             type Error = crate::Error;
 
