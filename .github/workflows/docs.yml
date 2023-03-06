@@ -33,6 +33,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: nightly
+
       - name: Docs
         run: cargo doc --workspace --no-deps --all-features
         env:
