@@ -796,13 +796,6 @@ impl SExpAccessor for u8 {
         unsafe { RAW(x) }
     }
 }
-impl SExpAccessor for Robj {
-    const XP: u32 = VECSXP;
-    type AccessorType = Rbyte;
-    fn acessor(x: SEXP) -> *mut Self::AccessorType {
-        unsafe { VECTOR_PTR(x) }
-    }
-}
 impl SExpAccessor for Rstr {
     const XP: u32 = STRSXP;
     type AccessorType = SEXP;
