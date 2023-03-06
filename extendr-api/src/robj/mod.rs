@@ -328,9 +328,9 @@ impl Robj {
     /// use extendr_api::prelude::*;
     /// test! {
     ///
-    /// assert_eq!(r!(NA_INTEGER).is_na(), true);
-    /// assert_eq!(r!(NA_REAL).is_na(), true);
-    /// assert_eq!(r!(NA_STRING).is_na(), true);
+    /// assert_eq!(r!(NA_INTEGER).is_na_scalar(), true);
+    /// assert_eq!(r!(NA_REAL).is_na_scalar(), true);
+    /// assert_eq!(r!(NA_STRING).is_na_scalar(), true);
     /// }
     /// ```
     pub fn is_na_scalar(&self) -> bool {
