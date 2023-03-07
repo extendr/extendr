@@ -127,41 +127,58 @@ where
 }
 
 #[rstest]
-#[case(1)]
-fn test_try_from_robj_nonzero(#[case] value: i32) {
+#[case(1_i32, std::num::NonZeroU8::new(1).unwrap())]
+#[case(1_i32, std::num::NonZeroU16::new(1).unwrap())]
+#[case(1_i32, std::num::NonZeroU32::new(1).unwrap())]
+#[case(1_i32, std::num::NonZeroU64::new(1).unwrap())]
+#[case(1_i32, std::num::NonZeroUsize::new(1).unwrap())]
+#[case(1_i32, std::num::NonZeroI8::new(1).unwrap())]
+#[case(1_i32, std::num::NonZeroI16::new(1).unwrap())]
+#[case(1_i32, std::num::NonZeroI32::new(1).unwrap())]
+#[case(1_i32, std::num::NonZeroI64::new(1).unwrap())]
+#[case(1_i32, std::num::NonZeroIsize::new(1).unwrap())]
+fn test_try_from_robj_nonzero<Value, FromValue>(#[case] from_value: FromValue, #[case] value: Value)
+where
+    Robj: From<FromValue>,
+    FromValue: ToVectorValue,
+    Value: TryFrom<Robj>,
+    Value: Copy + std::fmt::Debug + PartialEq,
+    FromValue: Copy + std::fmt::Debug + PartialEq,
+    <Value as std::convert::TryFrom<robj::Robj>>::Error: std::fmt::Debug,
+    <Value as std::convert::TryFrom<robj::Robj>>::Error: PartialEq,
+{
     test! {
-        assert_eq!(<std::num::NonZeroU8>::try_from(Robj::from(value)).ok(), std::num::NonZeroU8::new(value as _));
-        assert_eq!(<std::num::NonZeroU16>::try_from(Robj::from(value)).ok(), std::num::NonZeroU16::new(value as _));
-        assert_eq!(<std::num::NonZeroU32>::try_from(Robj::from(value)).ok(), std::num::NonZeroU32::new(value as _));
-        assert_eq!(<std::num::NonZeroU64>::try_from(Robj::from(value)).ok(), std::num::NonZeroU64::new(value as _));
-        assert_eq!(<std::num::NonZeroUsize>::try_from(Robj::from(value)).ok(), std::num::NonZeroUsize::new(value as _));
-        assert_eq!(<std::num::NonZeroI8>::try_from(Robj::from(value)).ok(), std::num::NonZeroI8::new(value as _));
-        assert_eq!(<std::num::NonZeroI16>::try_from(Robj::from(value)).ok(), std::num::NonZeroI16::new(value as _));
-        assert_eq!(<std::num::NonZeroI32>::try_from(Robj::from(value)).ok(), std::num::NonZeroI32::new(value as _));
-        assert_eq!(<std::num::NonZeroI64>::try_from(Robj::from(value)).ok(), std::num::NonZeroI64::new(value as _));
-        assert_eq!(<std::num::NonZeroIsize>::try_from(Robj::from(value)).ok(), std::num::NonZeroIsize::new(value as _));
-    }
-}
-
-#[test]
-fn test_try_from_robj_nonzero_fail_on_zero() {
-    test! {
-        assert!(<std::num::NonZeroU8>::try_from(Robj::from(0)).is_err());
-        assert!(<std::num::NonZeroU16>::try_from(Robj::from(0)).is_err());
-        assert!(<std::num::NonZeroU32>::try_from(Robj::from(0)).is_err());
-        assert!(<std::num::NonZeroU64>::try_from(Robj::from(0)).is_err());
-        assert!(<std::num::NonZeroUsize>::try_from(Robj::from(0)).is_err());
-        assert!(<std::num::NonZeroI8>::try_from(Robj::from(0)).is_err());
-        assert!(<std::num::NonZeroI16>::try_from(Robj::from(0)).is_err());
-        assert!(<std::num::NonZeroI32>::try_from(Robj::from(0)).is_err());
-        assert!(<std::num::NonZeroI64>::try_from(Robj::from(0)).is_err());
-        assert!(<std::num::NonZeroIsize>::try_from(Robj::from(0)).is_err());
+        assert_eq!(TryFrom::try_from(Robj::from(from_value)).ok(), Some(value));
     }
 }
 
 #[rstest]
-#[case(1)]
-fn test_try_from_robj_std(#[case] value: i32) {
+#[case(std::num::NonZeroU8::new(1).unwrap())]
+#[case(std::num::NonZeroU8::new(1).unwrap())]
+#[case(std::num::NonZeroU16::new(1).unwrap())]
+#[case(std::num::NonZeroU32::new(1).unwrap())]
+#[case(std::num::NonZeroU64::new(1).unwrap())]
+#[case(std::num::NonZeroUsize::new(1).unwrap())]
+#[case(std::num::NonZeroI8::new(1).unwrap())]
+#[case(std::num::NonZeroI16::new(1).unwrap())]
+#[case(std::num::NonZeroI32::new(1).unwrap())]
+#[case(std::num::NonZeroI64::new(1).unwrap())]
+#[case(std::num::NonZeroIsize::new(1).unwrap())]
+fn test_try_from_robj_nonzero_fail_on_zero<Value>(#[case] _value: Value)
+where
+    Value: TryFrom<Robj>,
+    Value: Copy + std::fmt::Debug + PartialEq,
+    Value: Copy + std::fmt::Debug + PartialEq,
+    <Value as std::convert::TryFrom<robj::Robj>>::Error: std::fmt::Debug,
+    <Value as std::convert::TryFrom<robj::Robj>>::Error: PartialEq,
+{
+    test! {
+        assert!(Value::try_from(Robj::from(0)).is_err());
+    }
+}
+
+#[test]
+fn test_try_from_robj_std() {
     test! {
         // conversion from non-integer-ish value to integer should fail
         let robj = Robj::from(1.5);
