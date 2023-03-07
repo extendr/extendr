@@ -740,13 +740,17 @@ where
         Self: 'a;
 }
 
+/// Trait for accessing underlying [`SEXP`] value directly.
 trait SexpAccessibleAs {
+    /// Identifier for the R object modes / types represented as a value.
+    /// See [`Rtype`] for reference.
     const XP: u32;
     type AccessorType;
     fn access(x: SEXP) -> *mut Self::AccessorType;
 }
 
 impl SexpAccessibleAs for Rbool {
+    /// Corresponds to `logical` in R
     const XP: u32 = LGLSXP;
     type AccessorType = raw::c_int;
     fn access(x: SEXP) -> *mut Self::AccessorType {
@@ -754,6 +758,7 @@ impl SexpAccessibleAs for Rbool {
     }
 }
 impl SexpAccessibleAs for i32 {
+    /// Corresponds to `integer` in R
     const XP: u32 = INTSXP;
     type AccessorType = raw::c_int;
     fn access(x: SEXP) -> *mut Self::AccessorType {
@@ -761,6 +766,7 @@ impl SexpAccessibleAs for i32 {
     }
 }
 impl SexpAccessibleAs for u32 {
+    /// Corresponds to `integer` in R
     const XP: u32 = INTSXP;
     type AccessorType = raw::c_int;
     fn access(x: SEXP) -> *mut Self::AccessorType {
@@ -768,6 +774,7 @@ impl SexpAccessibleAs for u32 {
     }
 }
 impl SexpAccessibleAs for Rint {
+    /// Corresponds to `integer` in R
     const XP: u32 = INTSXP;
     type AccessorType = raw::c_int;
     fn access(x: SEXP) -> *mut Self::AccessorType {
@@ -775,6 +782,7 @@ impl SexpAccessibleAs for Rint {
     }
 }
 impl SexpAccessibleAs for f64 {
+    /// Corresponds to `numeric` in R
     const XP: u32 = REALSXP;
     type AccessorType = Self;
     fn access(x: SEXP) -> *mut Self::AccessorType {
@@ -782,6 +790,7 @@ impl SexpAccessibleAs for f64 {
     }
 }
 impl SexpAccessibleAs for Rfloat {
+    /// Corresponds to `numeric` in R
     const XP: u32 = REALSXP;
     type AccessorType = f64;
     fn access(x: SEXP) -> *mut Self::AccessorType {
@@ -796,6 +805,7 @@ impl SexpAccessibleAs for u8 {
     }
 }
 impl SexpAccessibleAs for Rstr {
+    /// Corresponds to `character` in R
     const XP: u32 = STRSXP;
     type AccessorType = SEXP;
     fn access(x: SEXP) -> *mut Self::AccessorType {
@@ -803,6 +813,7 @@ impl SexpAccessibleAs for Rstr {
     }
 }
 impl SexpAccessibleAs for c64 {
+    /// Corresponds to `complex` in R
     const XP: u32 = CPLXSXP;
     type AccessorType = Rcomplex;
     fn access(x: SEXP) -> *mut Self::AccessorType {
@@ -810,6 +821,7 @@ impl SexpAccessibleAs for c64 {
     }
 }
 impl SexpAccessibleAs for Rcplx {
+    /// Corresponds to `complex` in R
     const XP: u32 = CPLXSXP;
     type AccessorType = Rcomplex;
     fn access(x: SEXP) -> *mut Self::AccessorType {
@@ -817,6 +829,7 @@ impl SexpAccessibleAs for Rcplx {
     }
 }
 impl SexpAccessibleAs for Rcomplex {
+    /// Corresponds to `complex` in R
     const XP: u32 = CPLXSXP;
     type AccessorType = Rcomplex;
     fn access(x: SEXP) -> *mut Self::AccessorType {
