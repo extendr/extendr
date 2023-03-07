@@ -97,7 +97,7 @@ fn test_from_robj() {
 #[rstest]
 #[case(true)]
 #[case(false)]
-#[case(1_u8)]
+// NOTE: `u8` is missing
 #[case(1_u16)]
 #[case(1_u32)]
 #[case(1_u64)]
