@@ -23,7 +23,7 @@ lazy_static! {
     };
 }
 
-/// Trait signifying if a given type may take the value `NA` in the R sense.
+/// Trait signifying if a given type may represent the value `NA` in the R sense.
 pub trait CanBeNA {
     /// Returns `true` if it is `NA`.
     fn is_na(&self) -> bool;
