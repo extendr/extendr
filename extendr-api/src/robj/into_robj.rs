@@ -387,16 +387,16 @@ macro_rules! impl_into_robj_nonzero {
     };
 }
 
-impl_into_robj_nonzero!(std::num::NonZeroI8);
-impl_into_robj_nonzero!(std::num::NonZeroI16);
-impl_into_robj_nonzero!(std::num::NonZeroI32);
-impl_into_robj_nonzero!(std::num::NonZeroI64);
-// NOTE: `NonZeroIsize` is missing
 impl_into_robj_nonzero!(std::num::NonZeroU8);
 impl_into_robj_nonzero!(std::num::NonZeroU16);
 impl_into_robj_nonzero!(std::num::NonZeroU32);
 impl_into_robj_nonzero!(std::num::NonZeroU64);
 impl_into_robj_nonzero!(std::num::NonZeroUsize);
+impl_into_robj_nonzero!(std::num::NonZeroI8);
+impl_into_robj_nonzero!(std::num::NonZeroI16);
+impl_into_robj_nonzero!(std::num::NonZeroI32);
+impl_into_robj_nonzero!(std::num::NonZeroI64);
+// NOTE: `NonZeroIsize` is missing
 
 // Not thread safe.
 fn fixed_size_collect<I>(iter: I, len: usize) -> Robj
