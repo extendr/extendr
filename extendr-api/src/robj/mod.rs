@@ -8,7 +8,6 @@
 //! * Users should be able to do almost everything without using `libR_sys`.
 //! * The interface should be friendly to R users without Rust experience.
 //!
-
 use libR_sys::*;
 use prelude::{c64, Rcplx};
 use std::os::raw;
@@ -741,86 +740,86 @@ where
         Self: 'a;
 }
 
-trait SExpAccessor {
+trait SexpAccessibleAs {
     const XP: u32;
     type AccessorType;
-    fn acessor(x: SEXP) -> *mut Self::AccessorType;
+    fn access(x: SEXP) -> *mut Self::AccessorType;
 }
 
-impl SExpAccessor for Rbool {
+impl SexpAccessibleAs for Rbool {
     const XP: u32 = LGLSXP;
     type AccessorType = raw::c_int;
-    fn acessor(x: SEXP) -> *mut Self::AccessorType {
+    fn access(x: SEXP) -> *mut Self::AccessorType {
         unsafe { INTEGER(x) }
     }
 }
-impl SExpAccessor for i32 {
+impl SexpAccessibleAs for i32 {
     const XP: u32 = INTSXP;
     type AccessorType = raw::c_int;
-    fn acessor(x: SEXP) -> *mut Self::AccessorType {
+    fn access(x: SEXP) -> *mut Self::AccessorType {
         unsafe { INTEGER(x) }
     }
 }
-impl SExpAccessor for u32 {
+impl SexpAccessibleAs for u32 {
     const XP: u32 = INTSXP;
     type AccessorType = raw::c_int;
-    fn acessor(x: SEXP) -> *mut Self::AccessorType {
+    fn access(x: SEXP) -> *mut Self::AccessorType {
         unsafe { INTEGER(x) }
     }
 }
-impl SExpAccessor for Rint {
+impl SexpAccessibleAs for Rint {
     const XP: u32 = INTSXP;
     type AccessorType = raw::c_int;
-    fn acessor(x: SEXP) -> *mut Self::AccessorType {
+    fn access(x: SEXP) -> *mut Self::AccessorType {
         unsafe { INTEGER(x) }
     }
 }
-impl SExpAccessor for f64 {
+impl SexpAccessibleAs for f64 {
     const XP: u32 = REALSXP;
     type AccessorType = Self;
-    fn acessor(x: SEXP) -> *mut Self::AccessorType {
+    fn access(x: SEXP) -> *mut Self::AccessorType {
         unsafe { REAL(x) }
     }
 }
-impl SExpAccessor for Rfloat {
+impl SexpAccessibleAs for Rfloat {
     const XP: u32 = REALSXP;
     type AccessorType = f64;
-    fn acessor(x: SEXP) -> *mut Self::AccessorType {
+    fn access(x: SEXP) -> *mut Self::AccessorType {
         unsafe { REAL(x) }
     }
 }
-impl SExpAccessor for u8 {
+impl SexpAccessibleAs for u8 {
     const XP: u32 = RAWSXP;
     type AccessorType = Rbyte;
-    fn acessor(x: SEXP) -> *mut Self::AccessorType {
+    fn access(x: SEXP) -> *mut Self::AccessorType {
         unsafe { RAW(x) }
     }
 }
-impl SExpAccessor for Rstr {
+impl SexpAccessibleAs for Rstr {
     const XP: u32 = STRSXP;
     type AccessorType = SEXP;
-    fn acessor(x: SEXP) -> *mut Self::AccessorType {
+    fn access(x: SEXP) -> *mut Self::AccessorType {
         unsafe { STRING_PTR(x) }
     }
 }
-impl SExpAccessor for c64 {
+impl SexpAccessibleAs for c64 {
     const XP: u32 = CPLXSXP;
     type AccessorType = Rcomplex;
-    fn acessor(x: SEXP) -> *mut Self::AccessorType {
+    fn access(x: SEXP) -> *mut Self::AccessorType {
         unsafe { COMPLEX(x) }
     }
 }
-impl SExpAccessor for Rcplx {
+impl SexpAccessibleAs for Rcplx {
     const XP: u32 = CPLXSXP;
     type AccessorType = Rcomplex;
-    fn acessor(x: SEXP) -> *mut Self::AccessorType {
+    fn access(x: SEXP) -> *mut Self::AccessorType {
         unsafe { COMPLEX(x) }
     }
 }
-impl SExpAccessor for Rcomplex {
+impl SexpAccessibleAs for Rcomplex {
     const XP: u32 = CPLXSXP;
     type AccessorType = Rcomplex;
-    fn acessor(x: SEXP) -> *mut Self::AccessorType {
+    fn access(x: SEXP) -> *mut Self::AccessorType {
         unsafe { COMPLEX(x) }
     }
 }
@@ -828,12 +827,12 @@ impl SExpAccessor for Rcomplex {
 impl<'a, T> AsTypedSlice<'a, T> for Robj
 where
     Self: 'a,
-    T: SExpAccessor,
+    T: SexpAccessibleAs,
 {
     fn as_typed_slice(&self) -> Option<&'a [T]> {
-        if self.sexptype() == <T as SExpAccessor>::XP {
+        if self.sexptype() == <T as SexpAccessibleAs>::XP {
             unsafe {
-                let ptr = <T as SExpAccessor>::acessor(self.get()) as *const T;
+                let ptr = <T as SexpAccessibleAs>::access(self.get()) as *const T;
                 Some(std::slice::from_raw_parts(ptr, self.len()))
             }
         } else {
@@ -842,9 +841,9 @@ where
     }
 
     fn as_typed_slice_mut(&mut self) -> Option<&'a mut [T]> {
-        if self.sexptype() == <T as SExpAccessor>::XP {
+        if self.sexptype() == <T as SexpAccessibleAs>::XP {
             unsafe {
-                let ptr = <T as SExpAccessor>::acessor(self.get()) as *mut T;
+                let ptr = <T as SexpAccessibleAs>::access(self.get()) as *mut T;
                 Some(std::slice::from_raw_parts_mut(ptr, self.len()))
             }
         } else {
