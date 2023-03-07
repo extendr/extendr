@@ -593,12 +593,13 @@ where
     }
 }
 
-impl<T> From<&Vec<T>> for Robj
+impl<'a, T> From<&'a Vec<T>> for Robj
 where
-    T: ToVectorValue + Clone,
+    T: 'a,
+    &'a T: into_robj::ToVectorValue,
 {
-    fn from(value: &Vec<T>) -> Self {
-        value.into_iter().cloned().collect_robj()
+    fn from(value: &'a Vec<T>) -> Self {
+        value.iter().collect_robj()
     }
 }
 
