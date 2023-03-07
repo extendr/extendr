@@ -127,28 +127,26 @@ where
 }
 
 #[rstest]
-#[case(1_i32, std::num::NonZeroU8::new(1).unwrap())]
-#[case(1_i32, std::num::NonZeroU16::new(1).unwrap())]
-#[case(1_i32, std::num::NonZeroU32::new(1).unwrap())]
-#[case(1_i32, std::num::NonZeroU64::new(1).unwrap())]
-#[case(1_i32, std::num::NonZeroUsize::new(1).unwrap())]
-#[case(1_i32, std::num::NonZeroI8::new(1).unwrap())]
-#[case(1_i32, std::num::NonZeroI16::new(1).unwrap())]
-#[case(1_i32, std::num::NonZeroI32::new(1).unwrap())]
-#[case(1_i32, std::num::NonZeroI64::new(1).unwrap())]
-#[case(1_i32, std::num::NonZeroIsize::new(1).unwrap())]
-fn test_try_from_robj_nonzero<Value, FromValue>(#[case] from_value: FromValue, #[case] value: Value)
+#[case(std::num::NonZeroU8::new(1).unwrap())]
+#[case(std::num::NonZeroU16::new(1).unwrap())]
+#[case(std::num::NonZeroU32::new(1).unwrap())]
+#[case(std::num::NonZeroU64::new(1).unwrap())]
+#[case(std::num::NonZeroUsize::new(1).unwrap())]
+#[case(std::num::NonZeroI8::new(1).unwrap())]
+#[case(std::num::NonZeroI16::new(1).unwrap())]
+#[case(std::num::NonZeroI32::new(1).unwrap())]
+#[case(std::num::NonZeroI64::new(1).unwrap())]
+// NOTE: `NonZeroIsize` is missing
+fn test_try_from_robj_nonzero<Value>(#[case] value: Value)
 where
-    Robj: From<FromValue>,
-    FromValue: ToVectorValue,
+    Robj: From<Value>,
     Value: TryFrom<Robj>,
     Value: Copy + std::fmt::Debug + PartialEq,
-    FromValue: Copy + std::fmt::Debug + PartialEq,
     <Value as std::convert::TryFrom<robj::Robj>>::Error: std::fmt::Debug,
     <Value as std::convert::TryFrom<robj::Robj>>::Error: PartialEq,
 {
     test! {
-        assert_eq!(TryFrom::try_from(Robj::from(from_value)).ok(), Some(value));
+        assert_eq!(TryFrom::try_from(Robj::from(value)).ok(), Some(value));
     }
 }
 
@@ -163,9 +161,10 @@ where
 #[case(std::num::NonZeroI16::new(1).unwrap())]
 #[case(std::num::NonZeroI32::new(1).unwrap())]
 #[case(std::num::NonZeroI64::new(1).unwrap())]
-#[case(std::num::NonZeroIsize::new(1).unwrap())]
-fn test_try_from_robj_nonzero_fail_on_zero<Value>(#[case] _value: Value)
+// NOTE: `NonZeroIsize` is missing
+fn test_try_from_robj_nonzero_fail_on_zero<Value>(#[case] value: Value)
 where
+    Robj: From<Value>,
     Value: TryFrom<Robj>,
     Value: Copy + std::fmt::Debug + PartialEq,
     Value: Copy + std::fmt::Debug + PartialEq,
@@ -173,7 +172,7 @@ where
     <Value as std::convert::TryFrom<robj::Robj>>::Error: PartialEq,
 {
     test! {
-        assert!(Value::try_from(Robj::from(0)).is_err());
+        assert!(Value::try_from(Robj::from(value)).is_err());
     }
 }
 
