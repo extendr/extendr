@@ -34,7 +34,7 @@ rstest = "0.16.0"
 [features]
 default = []
 
-full_support = ["graphics", "either", "ndarray", "num-complex", "serde"]
+full-support = ["graphics", "either", "ndarray", "num-complex", "serde"]
 
 # libc is needed to allocate a DevDesc (c.f., https://bugs.r-project.org/show_bug.cgi?id=18292)
 graphics = ["libc"]
@@ -53,4 +53,3 @@ tests-all = ["tests", "graphics"]
 
 [package.metadata.docs.rs]
 features = ["graphics", "either", "ndarray", "num-complex", "serde"]
-
