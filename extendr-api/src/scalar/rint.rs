@@ -4,13 +4,13 @@ use std::convert::TryFrom;
 use std::ops::{Add, Div, Mul, Neg, Not, Sub};
 use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 
-/// Rint is a wrapper for i32 in the context of an R's integer vector.
+/// `Rint` is a wrapper for `i32` in the context of an R's integer vector.
 ///
-/// Rint can have a value between i32::MIN+1 and i32::MAX
+/// `Rint` can have a value between `i32::MIN+1` and `i32::MAX`
 ///
-/// The value i32::MIN is used as "NA".
+/// The value `i32::MIN` is used as `"NA"`.
 ///
-/// Rint has the same footprint as an i32 value allowing us to use it in zero copy slices.
+/// `Rint` has the same footprint as an `i32` value allowing us to use it in zero copy slices.
 pub struct Rint(pub i32);
 
 impl Rint {
@@ -22,7 +22,7 @@ gen_from_primitive!(Rint, i32);
 gen_from_scalar!(Rint, i32);
 gen_sum_iter!(Rint);
 
-// Generate binary ops for +, -, * and /
+// Generate binary ops for `+`, `-`, `*` and `/`
 gen_binop!(
     Rint,
     i32,

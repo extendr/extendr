@@ -7,12 +7,13 @@
 //! This library aims to provide an interface that will be familiar to
 //! first-time users of Rust or indeed any compiled language.
 //!
-//! See [Robj] for much of the content of this crate.
-//! [Robj] provides a safe wrapper for the R object type.
+//! See [`Robj`] for much of the content of this crate.
+//! [`Robj`] provides a safe wrapper for the R object type.
 //!
 //! ## Examples
 //!
 //! Use attributes and macros to export to R.
+//!
 //! ```ignore
 //! use extendr_api::prelude::*;
 //! // Export a function or impl to R.
