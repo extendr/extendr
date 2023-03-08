@@ -336,6 +336,7 @@
 <a href="#336" id="336">336</a>
 <a href="#337" id="337">337</a>
 <a href="#338" id="338">338</a>
+<a href="#339" id="339">339</a>
 </pre><pre class="rust"><code><span class="kw">use </span>quote::{format_ident, quote};
 <span class="kw">use </span>syn::{parse_quote, punctuated::Punctuated, Expr, FnArg, ItemFn, Token, Type};
 
@@ -609,7 +610,8 @@
     }
 }
 
-<span class="comment">// Convert SEXP arguments into Robj. This maintains the lifetime of references.
+<span class="doccomment">/// Convert `SEXP` arguments into `Robj`.
+/// This maintains the lifetime of references.
 </span><span class="kw">fn </span>translate_to_robj(input: <span class="kw-2">&amp;</span>FnArg) -&gt; syn::Stmt {
     <span class="kw">match </span>input {
         FnArg::Typed(<span class="kw-2">ref </span>pattype) =&gt; {
@@ -675,4 +677,4 @@
     res
 }
 </code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0-nightly (7820b62d2 2023-03-05)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
+</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0-nightly (e3dfeeaa4 2023-03-07)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
