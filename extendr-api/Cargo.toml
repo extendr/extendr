@@ -50,5 +50,5 @@ tests-graphics = ["tests-minimal", "graphics"]
 tests-all = ["tests", "graphics"]
 
 [package.metadata.docs.rs]
-features = ["graphics", "either", "ndarray", "num-complex", "serde", "libR-sys/use-bindgen"]
+features = ["graphics", "either", "ndarray", "num-complex", "serde"]
 
