@@ -740,99 +740,104 @@ where
         Self: 'a;
 }
 
-/// Trait for accessing underlying [`SEXP`] value directly.
-trait SexpAccessibleAs {
+/// Trait for providing a rust typed pointer to an r type.
+/// R data are hidden behind [`SEXP`] opaque pointers with an identifier
+/// for the underlying r storage type. Thus this trait is only meaningful for
+/// [`SEXP`]-wrappers.
+trait SexpAs {
     /// Identifier for the R object modes / types represented as a value.
     /// See [`Rtype`] for reference.
-    const XP: u32;
-    type AccessorType;
-    fn access(x: SEXP) -> *mut Self::AccessorType;
+    const R_TYPE_ID: u32;
+    /// Corresponding rust type to `XP`.
+    type Type;
+    /// Returns a typed pointer to the underlying value
+    fn as_(x: SEXP) -> *mut Self::Type;
 }
 
-impl SexpAccessibleAs for Rbool {
+impl SexpAs for Rbool {
     /// Corresponds to `logical` in R
-    const XP: u32 = LGLSXP;
-    type AccessorType = raw::c_int;
-    fn access(x: SEXP) -> *mut Self::AccessorType {
+    const R_TYPE_ID: u32 = LGLSXP;
+    type Type = raw::c_int;
+    fn as_(x: SEXP) -> *mut Self::Type {
         unsafe { INTEGER(x) }
     }
 }
-impl SexpAccessibleAs for i32 {
+impl SexpAs for i32 {
     /// Corresponds to `integer` in R
-    const XP: u32 = INTSXP;
-    type AccessorType = raw::c_int;
-    fn access(x: SEXP) -> *mut Self::AccessorType {
+    const R_TYPE_ID: u32 = INTSXP;
+    type Type = raw::c_int;
+    fn as_(x: SEXP) -> *mut Self::Type {
         unsafe { INTEGER(x) }
     }
 }
-impl SexpAccessibleAs for u32 {
+impl SexpAs for u32 {
     /// Corresponds to `integer` in R
-    const XP: u32 = INTSXP;
-    type AccessorType = raw::c_int;
-    fn access(x: SEXP) -> *mut Self::AccessorType {
+    const R_TYPE_ID: u32 = INTSXP;
+    type Type = raw::c_int;
+    fn as_(x: SEXP) -> *mut Self::Type {
         unsafe { INTEGER(x) }
     }
 }
-impl SexpAccessibleAs for Rint {
+impl SexpAs for Rint {
     /// Corresponds to `integer` in R
-    const XP: u32 = INTSXP;
-    type AccessorType = raw::c_int;
-    fn access(x: SEXP) -> *mut Self::AccessorType {
+    const R_TYPE_ID: u32 = INTSXP;
+    type Type = raw::c_int;
+    fn as_(x: SEXP) -> *mut Self::Type {
         unsafe { INTEGER(x) }
     }
 }
-impl SexpAccessibleAs for f64 {
+impl SexpAs for f64 {
     /// Corresponds to `numeric` in R
-    const XP: u32 = REALSXP;
-    type AccessorType = Self;
-    fn access(x: SEXP) -> *mut Self::AccessorType {
+    const R_TYPE_ID: u32 = REALSXP;
+    type Type = Self;
+    fn as_(x: SEXP) -> *mut Self::Type {
         unsafe { REAL(x) }
     }
 }
-impl SexpAccessibleAs for Rfloat {
+impl SexpAs for Rfloat {
     /// Corresponds to `numeric` in R
-    const XP: u32 = REALSXP;
-    type AccessorType = f64;
-    fn access(x: SEXP) -> *mut Self::AccessorType {
+    const R_TYPE_ID: u32 = REALSXP;
+    type Type = f64;
+    fn as_(x: SEXP) -> *mut Self::Type {
         unsafe { REAL(x) }
     }
 }
-impl SexpAccessibleAs for u8 {
-    const XP: u32 = RAWSXP;
-    type AccessorType = Rbyte;
-    fn access(x: SEXP) -> *mut Self::AccessorType {
+impl SexpAs for u8 {
+    const R_TYPE_ID: u32 = RAWSXP;
+    type Type = Rbyte;
+    fn as_(x: SEXP) -> *mut Self::Type {
         unsafe { RAW(x) }
     }
 }
-impl SexpAccessibleAs for Rstr {
+impl SexpAs for Rstr {
     /// Corresponds to `character` in R
-    const XP: u32 = STRSXP;
-    type AccessorType = SEXP;
-    fn access(x: SEXP) -> *mut Self::AccessorType {
+    const R_TYPE_ID: u32 = STRSXP;
+    type Type = SEXP;
+    fn as_(x: SEXP) -> *mut Self::Type {
         unsafe { STRING_PTR(x) }
     }
 }
-impl SexpAccessibleAs for c64 {
+impl SexpAs for c64 {
     /// Corresponds to `complex` in R
-    const XP: u32 = CPLXSXP;
-    type AccessorType = Rcomplex;
-    fn access(x: SEXP) -> *mut Self::AccessorType {
+    const R_TYPE_ID: u32 = CPLXSXP;
+    type Type = Rcomplex;
+    fn as_(x: SEXP) -> *mut Self::Type {
         unsafe { COMPLEX(x) }
     }
 }
-impl SexpAccessibleAs for Rcplx {
+impl SexpAs for Rcplx {
     /// Corresponds to `complex` in R
-    const XP: u32 = CPLXSXP;
-    type AccessorType = Rcomplex;
-    fn access(x: SEXP) -> *mut Self::AccessorType {
+    const R_TYPE_ID: u32 = CPLXSXP;
+    type Type = Rcomplex;
+    fn as_(x: SEXP) -> *mut Self::Type {
         unsafe { COMPLEX(x) }
     }
 }
-impl SexpAccessibleAs for Rcomplex {
+impl SexpAs for Rcomplex {
     /// Corresponds to `complex` in R
-    const XP: u32 = CPLXSXP;
-    type AccessorType = Rcomplex;
-    fn access(x: SEXP) -> *mut Self::AccessorType {
+    const R_TYPE_ID: u32 = CPLXSXP;
+    type Type = Rcomplex;
+    fn as_(x: SEXP) -> *mut Self::Type {
         unsafe { COMPLEX(x) }
     }
 }
@@ -840,12 +845,12 @@ impl SexpAccessibleAs for Rcomplex {
 impl<'a, T> AsTypedSlice<'a, T> for Robj
 where
     Self: 'a,
-    T: SexpAccessibleAs,
+    T: SexpAs,
 {
     fn as_typed_slice(&self) -> Option<&'a [T]> {
-        if self.sexptype() == <T as SexpAccessibleAs>::XP {
+        if self.sexptype() == <T as SexpAs>::R_TYPE_ID {
             unsafe {
-                let ptr = <T as SexpAccessibleAs>::access(self.get()) as *const T;
+                let ptr = <T as SexpAs>::as_(self.get()) as *const T;
                 Some(std::slice::from_raw_parts(ptr, self.len()))
             }
         } else {
@@ -854,9 +859,9 @@ where
     }
 
     fn as_typed_slice_mut(&mut self) -> Option<&'a mut [T]> {
-        if self.sexptype() == <T as SexpAccessibleAs>::XP {
+        if self.sexptype() == <T as SexpAs>::R_TYPE_ID {
             unsafe {
-                let ptr = <T as SexpAccessibleAs>::access(self.get()) as *mut T;
+                let ptr = <T as SexpAs>::as_(self.get()) as *mut T;
                 Some(std::slice::from_raw_parts_mut(ptr, self.len()))
             }
         } else {
