@@ -225,8 +225,6 @@
 <a href="#225" id="225">225</a>
 <a href="#226" id="226">226</a>
 <a href="#227" id="227">227</a>
-<a href="#228" id="228">228</a>
-<a href="#229" id="229">229</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Error handling in Rust called from R.
 
 </span><span class="kw">use </span><span class="kw">crate</span>::robj::Types;
@@ -240,7 +238,6 @@
     <span class="kw">match </span>r {
         <span class="prelude-val">Err</span>(e) =&gt; {
             throw_r_error(e.to_string());
-            <span class="macro">unreachable!</span>(<span class="string">&quot;&quot;</span>);
         }
         <span class="prelude-val">Ok</span>(v) =&gt; v,
     }
@@ -251,7 +248,6 @@
     <span class="kw">match </span>r {
         <span class="prelude-val">Err</span>(e) =&gt; {
             throw_r_error(e.to_string());
-            <span class="macro">unreachable!</span>(<span class="string">&quot;&quot;</span>);
         }
         <span class="prelude-val">Ok</span>(v) =&gt; v,
     }
@@ -457,4 +453,4 @@
     }
 }
 </code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0-nightly (e3dfeeaa4 2023-03-07)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
+</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0-nightly (39f2657d1 2023-03-09)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>

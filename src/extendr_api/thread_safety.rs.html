@@ -146,12 +146,6 @@
 <a href="#146" id="146">146</a>
 <a href="#147" id="147">147</a>
 <a href="#148" id="148">148</a>
-<a href="#149" id="149">149</a>
-<a href="#150" id="150">150</a>
-<a href="#151" id="151">151</a>
-<a href="#152" id="152">152</a>
-<a href="#153" id="153">153</a>
-<a href="#154" id="154">154</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Provide limited protection for multithreaded access to the R API.
 
 </span><span class="kw">use crate</span>::<span class="kw-2">*</span>;
@@ -231,23 +225,17 @@
 {
     <span class="kw">match </span>std::panic::catch_unwind(f) {
         <span class="prelude-val">Ok</span>(res) =&gt; res,
-        <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {
-            <span class="kw">unsafe </span>{
-                libR_sys::Rf_error(err_str.as_ptr() <span class="kw">as </span><span class="kw-2">*const </span>std::os::raw::c_char);
-            }
-            <span class="macro">unreachable!</span>(<span class="string">&quot;handle_panic unreachable&quot;</span>)
-        }
+        <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="kw">unsafe </span>{ libR_sys::Rf_error(err_str.as_ptr() <span class="kw">as </span><span class="kw-2">*const </span>std::os::raw::c_char) },
     }
 }
 
 <span class="kw">static </span><span class="kw-2">mut </span>R_ERROR_BUF: <span class="prelude-ty">Option</span>&lt;std::ffi::CString&gt; = <span class="prelude-val">None</span>;
 
-<span class="kw">pub fn </span>throw_r_error&lt;S: AsRef&lt;str&gt;&gt;(s: S) {
+<span class="kw">pub fn </span>throw_r_error&lt;S: AsRef&lt;str&gt;&gt;(s: S) -&gt; ! {
     <span class="kw">let </span>s = s.as_ref();
     <span class="kw">unsafe </span>{
         R_ERROR_BUF = <span class="prelude-val">Some</span>(std::ffi::CString::new(s).unwrap());
         libR_sys::Rf_error(R_ERROR_BUF.as_ref().unwrap().as_ptr());
-        <span class="macro">unreachable!</span>(<span class="string">&quot;Rf_error does not return&quot;</span>);
     };
 }
 
@@ -307,4 +295,4 @@
     }
 }
 </code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0-nightly (e3dfeeaa4 2023-03-07)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
+</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0-nightly (39f2657d1 2023-03-09)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
