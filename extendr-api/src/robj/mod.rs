@@ -788,6 +788,7 @@ make_typed_slice!(Rint, INTEGER, INTSXP);
 make_typed_slice!(f64, REAL, REALSXP);
 make_typed_slice!(Rfloat, REAL, REALSXP);
 make_typed_slice!(u8, RAW, RAWSXP);
+make_typed_slice!(Robj, VECTOR_PTR, VECSXP);
 make_typed_slice!(Rstr, STRING_PTR, STRSXP);
 make_typed_slice!(c64, COMPLEX, CPLXSXP);
 make_typed_slice!(Rcplx, COMPLEX, CPLXSXP);
