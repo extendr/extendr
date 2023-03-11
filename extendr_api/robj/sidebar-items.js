@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["Robj"],"trait":["AsTypedSlice","Attributes","Eval","FromRobj","GetSexp","IntoRobj","Length","Operators","Rinternals","RobjItertools","Slices","ToVectorValue","Types"]};
+window.SIDEBAR_ITEMS = {"struct":["Robj"],"trait":["AsTypedSlice","Attributes","Eval","FromRobj","GetSexp","IntoRobj","Length","Operators","RobjItertools","Slices","ToVectorValue","Types"]};
