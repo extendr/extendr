@@ -15,6 +15,7 @@ crate-type = ["staticlib"]
 
 [dependencies]
 extendr-api = { version = "*", features = ["graphics", "ndarray", "either"] }
+ndarray = '0.15'
 either = '1'
 
 [patch.crates-io]

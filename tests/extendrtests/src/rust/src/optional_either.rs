@@ -1,5 +1,5 @@
+use ::either::Either::{self, Left, Right};
 use extendr_api::prelude::*;
-use either::Either::{self, Left, Right};
 
 #[extendr(use_try_from = true)]
 fn type_aware_sum(input : Either<Integers, Doubles>) -> Either<Rint, Rfloat> {
