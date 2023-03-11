@@ -11,18 +11,18 @@ Accepting `Either<L,R>` as an input requires enabling `extendr` option `use_try_
 
 ```rust
 use extendr_api::prelude::*;
-use either::Either;
+use ::either::Either;
 
-#[extendr(use_try_from = TRUE)]
+#[extendr(use_try_from = true)]
 fn accept_numeric(input : Either<Integers, Doubles>) {}
 ```
 
 Here is an example of `either` usage -- a type-aware sum:
 ```rust
 use extendr_api::prelude::*;
-use either::Either::{self, Left, Right};
+use ::either::Either::{self, Left, Right};
 
-#[extendr(use_try_from = TRUE)]
+#[extendr(use_try_from = true)]
 fn type_aware_sum(input : Either<Integers, Doubles>) -> Either<Rint, Rfloat> {
     match input {
         Left(ints) => Left(ints.iter().sum::<Rint>()),
