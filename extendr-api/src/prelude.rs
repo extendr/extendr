@@ -60,11 +60,7 @@ pub use super::wrapper::{
     Primitive, Promise, Raw, Rstr, Strings, Symbol,
 };
 
-#[cfg(feature = "ndarray")]
-pub use super::robj_ndarray::*;
-
-#[cfg(feature = "ndarray")]
-pub use ndarray::*;
+pub use super::optional::*;
 
 pub use extendr_macros::{call, extendr, extendr_module, pairlist, IntoDataFrameRow, Rraw, R};
 
