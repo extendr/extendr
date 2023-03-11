@@ -270,8 +270,14 @@ jobs:
               'libR-sys = { git = "https://github.com/extendr/libR-sys" }',
 
               sep = ";")
+          
+          patch.crates_io <- paste0("REXTENDR_PATCH_CRATES_IO='", patch.crates_io, "'")
 
-          Sys.setenv(REXTENDR_PATCH_CRATES_IO = patch.crates_io)
+          github_env_file <- Sys.getenv("GITHUB_ENV")
+          print(github_env_file)
+          con <- file(github_env_file, "a")
+          writeLines(patch.crates_io, con)
+          close(con)
 
           cat("::endgroup::\n")
         shell: Rscript {0}
