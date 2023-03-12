@@ -1,4 +1,3 @@
-use ::ndarray::*;
 use extendr_api::prelude::*;
 
 /// Calculate Euclidean distance matrix
