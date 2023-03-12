@@ -1,5 +1,5 @@
 /*!
-Enables support for [`either`](https://docs.rs/either/latest/either/) crate, allowing accepting and returning `Either<L,R>` values if both `L` and `R` are convertible to/from `Robj`.
+Enables support for the [`either`](https://docs.rs/either/latest/either/) crate, to allow accepting and returning `Either<L, R>` values if both `L` and `R` are convertible to/from `Robj`.
 
 `either` crate support is currently available in the dev version of `extendr-api` and requires enabling `either` feature:
 ```toml
@@ -7,7 +7,7 @@ Enables support for [`either`](https://docs.rs/either/latest/either/) crate, all
 extendr-api = { git = "https://github.com/extendr/extendr" , features = ["either"] }
 ```
 
-Accepting `Either<L,R>` as an input requires enabling `extendr` option `use_try_from = TRUE`:
+Accepting `Either<L, R>` as an input requires enabling the `extendr` option `use_try_from = TRUE`:
 
 ```rust
 use extendr_api::prelude::*;
