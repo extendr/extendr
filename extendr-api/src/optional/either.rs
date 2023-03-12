@@ -11,7 +11,6 @@ Accepting `Either<L,R>` as an input requires enabling `extendr` option `use_try_
 
 ```rust
 use extendr_api::prelude::*;
-use ::either::Either;
 
 #[extendr(use_try_from = true)]
 fn accept_numeric(input : Either<Integers, Doubles>) {}
@@ -20,7 +19,6 @@ fn accept_numeric(input : Either<Integers, Doubles>) {}
 Here is an example of `either` usage -- a type-aware sum:
 ```rust
 use extendr_api::prelude::*;
-use ::either::Either::{self, Left, Right};
 
 #[extendr(use_try_from = true)]
 fn type_aware_sum(input : Either<Integers, Doubles>) -> Either<Rint, Rfloat> {
@@ -31,8 +29,8 @@ fn type_aware_sum(input : Either<Integers, Doubles>) -> Either<Rint, Rfloat> {
 }
 ```
 */
+use crate::prelude::*;
 use crate::{Error, Robj};
-use either::Either::{self, Left, Right};
 
 impl<'a, L, R> TryFrom<&'a Robj> for Either<L, R>
 where
@@ -43,7 +41,7 @@ where
 
     /// Returns the first type that matches the provided `Robj`, starting from
     /// `L`-type, and if that fails, then the `R`-type is converted.
-    fn try_from(value: &'a Robj) -> Result<Self, Self::Error> {
+    fn try_from(value: &'a Robj) -> Result<Self> {
         match L::try_from(value) {
             Ok(left) => Ok(Left(left)),
             Err(left_err) => match R::try_from(value) {
@@ -62,7 +60,7 @@ where
 
     /// Returns the first type that matches the provided `Robj`, starting from
     /// `L`-type, and if that fails, then the `R`-type is converted.
-    fn try_from(value: Robj) -> Result<Self, Self::Error> {
+    fn try_from(value: Robj) -> Result<Self> {
         (&value).try_into()
     }
 }

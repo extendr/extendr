@@ -1,6 +1,5 @@
 #[cfg(feature = "ndarray")]
 mod ndarray_try_from_tests {
-    use ::ndarray::*;
     use extendr_api::prelude::*;
 
     #[test]
