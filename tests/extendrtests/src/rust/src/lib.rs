@@ -2,7 +2,7 @@ use extendr_api::{graphics::*, prelude::*};
 
 mod submodule;
 
-mod ndarray;
+mod optional_ndarray;
 
 mod graphic_device;
 
@@ -355,6 +355,6 @@ extendr_module! {
     fn my_device;
 
     use submodule;
-    use ndarray;
+    use optional_ndarray;
     use optional_either;
 }
