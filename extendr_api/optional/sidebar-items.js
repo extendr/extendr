@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["either"]};
+window.SIDEBAR_ITEMS = {"mod":["either","ndarray"]};
