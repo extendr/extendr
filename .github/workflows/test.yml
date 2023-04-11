@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - master
+      - on_libR-sys_main
   pull_request:
     branches:
       - main
