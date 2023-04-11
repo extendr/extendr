@@ -1,0 +1,2 @@
+[patch.crates-io]
+libR-sys = { branch = "maintenance_build_rs", git = "https://github.com/extendr/libR-sys.git" }
