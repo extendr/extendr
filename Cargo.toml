@@ -1,13 +1,2 @@
 [workspace]
-
-members = [
-	"extendr-api",
-	"extendr-engine",
-	"extendr-macros",
-]
-
-[patch.crates-io]
-# When uncommenting this, do not forget to uncomment the same line in
-# ./tests/extendrtests/src/rust/Cargo.toml, and "Run R integration tests using
-# {rextendr}" on .github/workflows/test.yml !
-libR-sys = { git = "https://github.com/extendr/libR-sys" }
+members = ["extendr-api", "extendr-engine", "extendr-macros"]
