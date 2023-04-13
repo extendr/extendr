@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":["CanBeNA"]};
+window.SIDEBAR_ITEMS = {"fn":["__stability","__static_ref_initialize"],"static":["LAZY"],"struct":["EXTENDR_NA_STRING"],"trait":["CanBeNA"]};

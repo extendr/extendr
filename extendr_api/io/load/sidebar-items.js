@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["inbytes","inchar"],"struct":["ReadHook"],"trait":["Load"]};

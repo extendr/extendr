@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["ExternalPtr"]};
+window.SIDEBAR_ITEMS = {"fn":["finalizer"],"struct":["ExternalPtr"]};

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["Arg","Func","Impl","Metadata"]};
+window.SIDEBAR_ITEMS = {"fn":["join_str","sanitize_identifier","write_doc","write_function_wrapper","write_impl_wrapper","write_method_wrapper"],"struct":["Arg","Func","Impl","Metadata","RArg"]};

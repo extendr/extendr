@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["extendr_function","help_message","parse_options"]};

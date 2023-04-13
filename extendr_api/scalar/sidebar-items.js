@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["Rbool","Rcplx","Rfloat","Rint"],"type":["c64"]};
+window.SIDEBAR_ITEMS = {"mod":["macros","rbool","rcplx_full","rfloat","rint"],"struct":["Rbool","Rcplx","Rfloat","Rint"],"type":["c64"]};

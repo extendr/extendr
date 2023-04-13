@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["outbytes","outchar"],"struct":["OutStream","WriteHook"],"trait":["Save"]};

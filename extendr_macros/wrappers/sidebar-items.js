@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["META_PREFIX","WRAP_PREFIX"],"fn":["get_doc_string","get_named_lit","get_return_type","make_function_wrappers","mangled_type_name","translate_actual","translate_formal","translate_meta_arg","translate_to_robj","type_name"],"struct":["ExtendrOptions"]};

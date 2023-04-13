@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["derive_into_dataframe","parse_struct"]};

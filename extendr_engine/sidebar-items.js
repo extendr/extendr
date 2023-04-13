@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["end_r","start_r"]};
+window.SIDEBAR_ITEMS = {"fn":["end_r","start_r"],"macro":["cstr_mut"],"static":["START_R"]};

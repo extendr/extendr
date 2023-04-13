@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["RArray"],"trait":["MatrixConversions"],"type":["RColumn","RMatrix","RMatrix3D"]};
+window.SIDEBAR_ITEMS = {"constant":["BASE"],"struct":["RArray"],"trait":["MatrixConversions","Offset"],"type":["RColumn","RMatrix","RMatrix3D"]};
