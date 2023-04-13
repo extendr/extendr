@@ -16,7 +16,7 @@ jobs:
         with:
           toolchain: nightly
       - name: Docs
-        run: cargo doc --workspace --no-deps --all-features
+        run: cargo doc --workspace --no-deps --document-private-items --features full-functionality
         env:
           RUSTDOCFLAGS: "--enable-index-page -Zunstable-options"
       - name: Deploy
