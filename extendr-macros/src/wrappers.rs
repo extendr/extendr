@@ -1,3 +1,4 @@
+use proc_macro2::Ident;
 use quote::{format_ident, quote};
 use syn::{parse_quote, punctuated::Punctuated, Expr, FnArg, ItemFn, Token, Type};
 
@@ -34,6 +35,7 @@ pub fn make_function_wrappers(
         sig.ident.clone()
     };
 
+    let mod_name = sanitize_identifier(mod_name);
     let wrap_name = format_ident!("{}{}{}", WRAP_PREFIX, prefix, mod_name);
     let meta_name = format_ident!("{}{}{}", META_PREFIX, prefix, mod_name);
 
@@ -237,7 +239,7 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> Expr {
         FnArg::Typed(ref mut pattype) => {
             let pat = pattype.pat.as_ref();
             let ty = pattype.ty.as_ref();
-            let name_string = remove_raw_identifier(quote! { #pat }.to_string());
+            let name_string = quote! { #pat }.to_string();
             let type_string = type_name(ty);
             let default = if let Some(default) = get_named_lit(&mut pattype.attrs, "default") {
                 quote!(Some(#default))
@@ -339,14 +341,15 @@ fn get_named_lit(attrs: &mut Vec<syn::Attribute>, name: &str) -> Option<String> 
     res
 }
 
-// Remove the raw identifier prefix (`r#`) from a string.
-// If the string does not start with the prefix, it is returned as is.
-fn remove_raw_identifier(s: impl Into<String>) -> String {
+// Remove the raw identifier prefix (`r#`) from an [`Ident`]
+// If the `Ident` does not start with the prefix, it is returned as is.
+fn sanitize_identifier(ident: Ident) -> Ident {
     static PREFIX: &str = "r#";
-    let s = s.into();
-    if let Some(s) = s.strip_prefix(PREFIX) {
-        return s.into();
-    } else {
-        return s;
-    }
+    let (ident, span) = (ident.to_string(), ident.span());
+    let ident = match ident.strip_prefix(PREFIX) {
+        Some(ident) => ident.into(),
+        None => ident,
+    };
+
+    Ident::new(&ident, span)
 }
