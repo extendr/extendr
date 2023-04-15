@@ -1,2 +1,0 @@
-[patch.crates-io]
-libR-sys = { branch = "full_r_complex_fix", git = "https://github.com/extendr/libR-sys.git" }
