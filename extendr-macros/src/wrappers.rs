@@ -121,6 +121,7 @@ pub fn make_function_wrappers(
             let mut args = vec![
                 #( #meta_args, )*
             ];
+
             metadata.push(extendr_api::metadata::Func {
                 doc: #doc_string,
                 rust_name: #rust_name_str,
@@ -236,7 +237,7 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> Expr {
         FnArg::Typed(ref mut pattype) => {
             let pat = pattype.pat.as_ref();
             let ty = pattype.ty.as_ref();
-            let name_string = quote! { #pat }.to_string();
+            let name_string = remove_raw_identifier(quote! { #pat }.to_string());
             let type_string = type_name(ty);
             let default = if let Some(default) = get_named_lit(&mut pattype.attrs, "default") {
                 quote!(Some(#default))
@@ -336,4 +337,16 @@ fn get_named_lit(attrs: &mut Vec<syn::Attribute>, name: &str) -> Option<String> 
     }
     *attrs = new_attrs;
     res
+}
+
+// Remove the raw identifier prefix (`r#`) from a string.
+// If the string does not start with the prefix, it is returned as is.
+fn remove_raw_identifier(s: impl Into<String>) -> String {
+    static PREFIX: &str = "r#";
+    let s = s.into();
+    if let Some(s) = s.strip_prefix(PREFIX) {
+        return s.into();
+    } else {
+        return s;
+    }
 }

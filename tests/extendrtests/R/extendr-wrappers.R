@@ -89,6 +89,11 @@ euclidean_dist <- function(a) .Call(wrap__euclidean_dist, a)
 
 type_aware_sum <- function(input) .Call(wrap__type_aware_sum, input)
 
+#' Test raw identifiers (`r#`) in function arguments are parsed correctly.
+#' See (Issue #582)[https://github.com/extendr/extendr/issues/528] for details.
+#' @export
+raw_identifier_in_fn_args <- function(type = NULL) .Call(wrap__raw_identifier_in_fn_args, type)
+
 #' Class for testing (exported)
 #' @examples
 #' x <- MyClass$new()
