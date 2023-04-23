@@ -171,14 +171,14 @@ jobs:
       - name: Install dependencies for extendrtests and rcmdcheck
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          cache-version: 3
+          cache-version: 4
           working-directory: tests/extendrtests
           extra-packages: any::rcmdcheck
 
       - name: Install dependencies for rextendr
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          cache-version: 3
+          cache-version: 4
           working-directory: tests/rextendr
 
       # Regex is used to inject absolute path into Cargo.toml
