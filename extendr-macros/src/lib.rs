@@ -102,6 +102,33 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
 ///     unsafe { extendr_api::register_call_methods(info, call_methods.as_ref()) };
 /// }
 /// ```
+
+/// The use of the `extendr_module` macro is not limited to `lib.rs`. It can be included in any module.
+/// For example you may have a module `utils.rs` which contains the functions `sweep` and `tidy`.
+///
+/// ```ignore
+/// extendr_module! {
+///     mod utils;
+///     fn sweep;
+///     fn tidy;
+/// }
+/// ```
+///
+/// In order to include these functions in your R package you must include them in `lib.rs`.
+/// To do so you must include the `mod` and `use` keywords to make them available.
+/// Lastly, the module must be imported in the `extendr_module` macro.
+///
+///
+/// ```ignore
+/// mod utils;
+/// . . .
+/// extendr_module! {
+///    mod name;
+///    use utils;
+///    . . .
+/// }
+/// ```
+
 #[proc_macro]
 pub fn extendr_module(item: TokenStream) -> TokenStream {
     extendr_module::extendr_module(item)
