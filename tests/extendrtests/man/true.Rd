@@ -3,11 +3,11 @@
 \name{true}
 \alias{true}
 \title{Test raw identifiers (\code{r#}) as function names are parsed correctly.
-See (Issue #582)\link{https://github.com/extendr/extendr/issues/528} for details.}
+See \href{https://github.com/extendr/extendr/issues/528}{Issue #582} for details.}
 \usage{
 true()
 }
 \description{
 Test raw identifiers (\code{r#}) as function names are parsed correctly.
-See (Issue #582)\link{https://github.com/extendr/extendr/issues/528} for details.
+See \href{https://github.com/extendr/extendr/issues/528}{Issue #582} for details.
 }

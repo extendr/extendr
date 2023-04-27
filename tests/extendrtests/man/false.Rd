@@ -3,7 +3,7 @@
 \name{false}
 \alias{false}
 \title{Combine raw identifiers (\code{r#}) as a function name and in arguments are parsed correctly.
-See (Issue #582)\link{https://github.com/extendr/extendr/issues/528} for details.}
+See \href{https://github.com/extendr/extendr/issues/528}{Issue #582} for details.}
 \usage{
 false(type)
 }
@@ -12,5 +12,5 @@ false(type)
 }
 \description{
 Combine raw identifiers (\code{r#}) as a function name and in arguments are parsed correctly.
-See (Issue #582)\link{https://github.com/extendr/extendr/issues/528} for details.
+See \href{https://github.com/extendr/extendr/issues/528}{Issue #582} for details.
 }

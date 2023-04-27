@@ -3,7 +3,7 @@
 \name{raw_identifier_in_fn_args}
 \alias{raw_identifier_in_fn_args}
 \title{Test raw identifiers (\code{r#}) in function arguments are parsed correctly.
-See (Issue #582)\link{https://github.com/extendr/extendr/issues/528} for details.}
+See \href{https://github.com/extendr/extendr/issues/528}{Issue #582} for details.}
 \usage{
 raw_identifier_in_fn_args(type = NULL)
 }
@@ -12,5 +12,5 @@ raw_identifier_in_fn_args(type = NULL)
 }
 \description{
 Test raw identifiers (\code{r#}) in function arguments are parsed correctly.
-See (Issue #582)\link{https://github.com/extendr/extendr/issues/528} for details.
+See \href{https://github.com/extendr/extendr/issues/528}{Issue #582} for details.
 }
