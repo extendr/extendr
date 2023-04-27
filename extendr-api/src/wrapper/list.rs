@@ -380,18 +380,15 @@ impl<T: AsRef<str>> KeyValue for (T, Robj) {
 impl<T: Into<Robj>> FromIterator<T> for List {
     /// Convert an iterator to a List object.
     fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
-        crate::single_threaded(|| unsafe {
-            let values: Vec<SEXP> = iter
-                .into_iter()
-                .map(|s| Rf_protect(s.into().get()))
-                .collect();
+        let iter_collect: Vec<_> = iter.into_iter().collect();
+        let len = iter_collect.len();
 
-            let len = values.len();
+        crate::single_threaded(|| unsafe {
             let robj = Robj::alloc_vector(VECSXP, len);
-            for (i, v) in values.into_iter().enumerate() {
-                SET_VECTOR_ELT(robj.get(), i as isize, v);
+            for (i, v) in iter_collect.into_iter().enumerate() {
+                let item: Robj = v.into();
+                SET_VECTOR_ELT(robj.get(), i as isize, item.get());
             }
-            Rf_unprotect(len as i32);
 
             List { robj }
         })
