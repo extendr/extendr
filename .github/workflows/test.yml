@@ -26,18 +26,9 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          # On Windows,
-          #
-          # * for R >= 4.2, both the MSVC toolchain and the GNU toolchain should
-          #   work. Since our main support is on MSVC, we mainly test MSVC here.
-          #   Also, at least one GNU case should be included so that we can
-          #   detect when something gets broken. 
-          # * for R < 4.2, the MSVC toolchain must be used to support
-          #   cross-compilation for the 32-bit. 
-          - {os: windows-latest, r: 'release', rust-version: 'stable-msvc', rtools-version: '42'}
-          - {os: windows-latest, r: 'devel',   rust-version: 'stable-msvc'}
-          - {os: windows-latest, r: 'release', rust-version: 'stable-gnu',  rtools-version: '42'}
-          - {os: windows-latest, r: '4.1',     rust-version: 'stable-msvc'}  # TODO: Remove this runner when we drop the support for R < 4.2
+          - {os: windows-latest, r: 'release', rust-version: 'stable-msvc', rtools-version: '43'}
+          - {os: windows-latest, r: 'devel',   rust-version: 'stable-msvc', rtools-version: '43'}
+          - {os: windows-latest, r: 'oldrel',  rust-version: 'stable-msvc', rtools-version: '42'}
 
           - {os: macOS-latest,   r: 'release', rust-version: 'stable'}
           # - {os: macOS-latest,   r: 'release', rust-version: 'nightly'}
@@ -89,14 +80,10 @@ jobs:
       - name: Set up Pandoc
         uses: r-lib/actions/setup-pandoc@v2
 
-      - name: Configure Windows (R >= 4.2)
-        if: startsWith(runner.os, 'Windows') && matrix.config.r != '4.1'
+      - name: Configure Windows
+        if: startsWith(runner.os, 'Windows')
         run: |
-          if ("${{ matrix.config.rtools-version }}" -eq "42") {
-            $rtools_home = "C:\rtools42"   # for R 4.2
-          } else {
-            $rtools_home = "C:\rtools43"   # for R >= 4.3
-          }
+          $rtools_home = "C:\rtools${{ matrix.config.rtools-version }}"
 
           # c.f. https://github.com/wch/r-source/blob/f1501504df8df1668a57d3a1b6f80167f24441d3/src/library/profile/Rprofile.windows#L70-L71
           echo "${rtools_home}\x86_64-w64-mingw32.static.posix\bin"      | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
@@ -138,31 +125,6 @@ jobs:
           [env]
           LIBRARY_PATH = "${pwd_slash}/libgcc_mock"
           "@ | Out-File -FilePath .cargo/config.toml -Encoding utf8 -Append ;
-        env: 
-          RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
-
-      # TODO: Remove this runner when we drop the support for R < 4.2
-      - name: Configure Windows (R < 4.2)
-        if: startsWith(runner.os, 'Windows') && matrix.config.r == '4.1'
-        # 1. Add rust target
-        # 2. Add target name to the $targets variable
-        # 3. Add mingw32/mingw64 bin folders to PATH
-        # 4. Add R x64/i386 folders to PATH
-        run: |
-          $targets=@()
-          if ($env:RUST_TOOLCHAIN -notlike "*x86_64*") {
-            rustup target add i686-pc-windows-gnu ;
-            $targets+="i686-pc-windows-gnu"
-            echo "${env:RTOOLS40_HOME}\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
-            echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\i386"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
-          }
-          if ($env:RUST_TOOLCHAIN -notlike "*i686*") {
-            rustup target add x86_64-pc-windows-gnu ;
-            $targets+="x86_64-pc-windows-gnu"
-            echo "${env:RTOOLS40_HOME}\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
-            echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
-          }
-          echo "BUILD_TARGETS=$($targets -join ',')" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append ;
         env: 
           RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
 
@@ -208,14 +170,14 @@ jobs:
       - name: Install dependencies for extendrtests and rcmdcheck
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          cache-version: 3
+          cache-version: 4
           working-directory: tests/extendrtests
           extra-packages: any::rcmdcheck
 
       - name: Install dependencies for rextendr
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          cache-version: 3
+          cache-version: 4
           working-directory: tests/rextendr
 
       # Regex is used to inject absolute path into Cargo.toml
@@ -301,17 +263,15 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: ubuntu-latest,   r: 'devel', rust-version: 'stable'}
-          - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
-          - {os: windows-latest, r: 'release', rust-version: 'stable-gnu',   rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '42'}
-          - {os: windows-latest, r: 'release', rust-version: 'stable-msvc',  rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '42'}
-          - {os: windows-latest, r: 'devel',   rust-version: 'stable-msvc',  rust-targets: ['x86_64-pc-windows-gnu']}
+          - {os: ubuntu-latest,  r: 'devel',   rust-version: 'stable'}
+          - {os: macOS-latest,   r: 'devel',   rust-version: 'stable'}
+          - {os: windows-latest, r: 'release', rust-version: 'stable-msvc',  rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '43'}
+          - {os: windows-latest, r: 'devel',   rust-version: 'stable-msvc',  rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '43'}
           # When the MSVC target is used, since it's cross-compilation from MSVC
           # to GNU, the doc tests are usually skipped. Adding `-Zdoctest-xcompile`
           # lets the doctests run, which accordingly require the nightly toolchain.
-          - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '42', extra-args: ['-Zdoctest-xcompile']}
-          - {os: windows-latest, r: '4.1',     rust-version: 'nightly-msvc', rust-targets: ['x86_64-pc-windows-gnu'], extra-args: ['-Zdoctest-xcompile']}
-          - {os: windows-latest, r: '4.1',     rust-version: 'nightly-msvc', rust-targets: ['i686-pc-windows-gnu'],   extra-args: ['-Zdoctest-xcompile']}
+          - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '43', extra-args: ['-Zdoctest-xcompile']}
+          - {os: windows-latest, r: 'oldrel',  rust-version: 'nightly-msvc', rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '42', extra-args: ['-Zdoctest-xcompile']}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -365,22 +325,10 @@ jobs:
           install: mingw-w64-x86_64-clang mingw-w64-x86_64-toolchain
           release: false
 
-      - name: MINGW32
-        if: startsWith(runner.os, 'Windows') && contains(join(matrix.config.rust-targets, ','), 'i686')
-        uses: msys2/setup-msys2@v2
-        with:
-          msystem: mingw32
-          install: mingw32/mingw-w64-i686-clang mingw-w64-i686-toolchain
-          release: false
-
-      - name: Configure Windows (R >= 4.2)
-        if: startsWith(runner.os, 'Windows') && matrix.config.r != '4.1'
+      - name: Configure Windows
+        if: startsWith(runner.os, 'Windows')
         run: |
-          if ("${{ matrix.config.rtools-version }}" -eq "42") {
-            $rtools_home = "C:\rtools42"   # for R 4.2
-          } else {
-            $rtools_home = "C:\rtools43"   # for R >= 4.3
-          }
+          $rtools_home = "C:\rtools${{ matrix.config.rtools-version }}"
 
           echo "::group::Setting up x86_64"
           echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
@@ -421,31 +369,6 @@ jobs:
           [env]
           LIBRARY_PATH = "${pwd_slash}/libgcc_mock"
           "@ | Out-File -FilePath .cargo/config.toml -Encoding utf8 -Append ;
-        env:
-          RUST_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
-
-      # 1. Inspect targets. If empty, assume 'x86_64' arch
-      # 2. Install msys2 packages (--needed skips already installed)
-      # 3. Add msys2/mingw{bits}/bin to path
-      # 4. Add R/{arch}/bin to path
-      # 5. Create array of correct (arch-dependent) paths to 'libclang.dll', export as env variable
-      - name: Configure Windows (R < 4.2)
-        if: startsWith(runner.os, 'Windows') && matrix.config.r == '4.1'
-        run: |
-
-          # mingw64 is required for both 32 and 64 bit targets
-          echo "::group::Setting up x86_64"
-          echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          echo "::endgroup::"
-
-          # mingw32 is required only for 32 bit target
-          if ($env:RUST_TARGETS -like "*i686*") {
-            echo "::group::Setting up i686"
-            echo "C:\msys64\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-            echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\i386"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-            echo "::endgroup::"
-          }
         env:
           RUST_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
 
