@@ -101,7 +101,7 @@ raw_identifier_in_fn_args <- function(type = NULL) .Call(wrap__raw_identifier_in
 true <- function() .Call(wrap__true)
 
 #' Combine raw identifiers (`r#`) as a function name and in arguments are parsed correctly.
-#' See (Issue #582)[https://github.com/extendr/extendr/issues/528] for details.
+#' See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.
 #' @param type : i32 or `NULL`
 #' @export
 false <- function(type) .Call(wrap__false, type)
