@@ -96,7 +96,7 @@ type_aware_sum <- function(input) .Call(wrap__type_aware_sum, input)
 raw_identifier_in_fn_args <- function(type = NULL) .Call(wrap__raw_identifier_in_fn_args, type)
 
 #' Test raw identifiers (`r#`) as function names are parsed correctly.
-#' See (Issue #582)[https://github.com/extendr/extendr/issues/528] for details.
+#' See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.
 #' @export
 true <- function() .Call(wrap__true)
 
