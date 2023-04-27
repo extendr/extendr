@@ -599,7 +599,9 @@ impl Altrep {
             pvec: c_int,
             func: Option<unsafe extern "C" fn(arg1: SEXP, arg2: c_int, arg3: c_int, arg4: c_int)>,
         ) -> Rboolean {
-            u32::from(Altrep::get_state::<StateType>(x).inspect(pre, deep == 1, pvec))
+            Altrep::get_state::<StateType>(x)
+                .inspect(pre, deep == 1, pvec)
+                .into()
         }
 
         unsafe extern "C" fn altrep_Length<StateType: AltrepImpl + 'static>(x: SEXP) -> R_xlen_t {
