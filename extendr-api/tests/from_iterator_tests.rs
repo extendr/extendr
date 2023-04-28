@@ -1,5 +1,5 @@
 //! Test cases for this were made by @JosiahParry.
-//! 
+//!
 //!
 use extendr_api::prelude::*;
 
