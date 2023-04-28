@@ -378,7 +378,7 @@ impl<T: AsRef<str>> KeyValue for (T, Robj) {
 }
 
 impl<T: Into<Robj>> FromIterator<T> for List {
-    /// Convert an iterator to a List object.
+    /// Convert an iterator to a `List` object.
     fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
         let iter_collect: Vec<_> = iter.into_iter().collect();
         let len = iter_collect.len();
