@@ -17,7 +17,7 @@ $(STATLIB):
 		export CARGO_HOME=$(CARGOTMP); \
 	fi && \
 		export PATH="$(PATH):$(HOME)/.cargo/bin" && \
-		cargo build --lib --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR)  --color-always
+		cargo build --lib --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR)  --color=always
 	if [ "$(NOT_CRAN)" != "true" ]; then \
 		rm -Rf $(CARGOTMP) && \
 		rm -Rf $(LIBDIR)/build; \
