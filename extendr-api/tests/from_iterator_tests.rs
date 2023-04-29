@@ -33,3 +33,27 @@ fn test_from_iterator_collection() {
         protect_lim2(10_000 * 7);
     )
 }
+
+#[test]
+fn test_with_gc_torture() {
+    test!(
+        let x = vec![1, 4, 5, 6];
+        R!("gctorture(on = TRUE)")?;
+        let list: List = x.into_iter().collect();
+        R!("gctorture(on = FALSE)")?;
+        assert_eq!(list, list!(1, 4, 5, 6));
+    );
+}
+
+#[test]
+fn test_with_gc_torture_strings() {
+    test!(
+        let question_quote = ["the","answer","to", "the", "ultimate", "question"];
+        R!("gctorture(on = TRUE)")?;
+        let qq_r_character_vec: Strings = question_quote.into_iter().collect();
+        R!("gctorture(on = FALSE)")?;
+        // Strings::from_values is the same as `.collect`.
+        let qq_directly = Strings::from_robj(&Robj::from(question_quote)).unwrap();
+        assert_eq!(qq_r_character_vec, qq_directly);
+    );
+}
