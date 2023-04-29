@@ -1,8 +1,8 @@
 use quote::{format_ident, quote};
 use syn::{parse_quote, punctuated::Punctuated, Expr, FnArg, ItemFn, Token, Type};
 
-pub const META_PREFIX: &str = "meta__";
-pub const WRAP_PREFIX: &str = "wrap__";
+pub const META_PREFIX: &'static str = "meta__";
+pub const WRAP_PREFIX: &'static str = "wrap__";
 
 #[derive(Debug, Default)]
 pub struct ExtendrOptions {
@@ -37,12 +37,12 @@ pub fn make_function_wrappers(
     let wrap_name = format_ident!("{}{}{}", WRAP_PREFIX, prefix, mod_name);
     let meta_name = format_ident!("{}{}{}", META_PREFIX, prefix, mod_name);
 
-    let rust_name_str = format!("{}", rust_name);
-    let c_name_str = format!("{}", mod_name);
+    let rust_name_str = format!("{rust_name}");
+    let c_name_str = format!("{mod_name}");
     let doc_string = get_doc_string(attrs);
     let return_type_string = get_return_type(sig);
 
-    let panic_str = format!("{} panicked.\0", r_name_str);
+    let panic_str = format!("{r_name_str} panicked.\0");
 
     let inputs = &mut sig.inputs;
     let has_self = matches!(inputs.iter().next(), Some(FnArg::Receiver(_)));

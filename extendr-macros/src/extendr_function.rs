@@ -4,7 +4,8 @@ use quote::quote;
 use syn::ItemFn;
 
 /// Generate bindings for a single function.
-pub fn extendr_function(args: Vec<syn::NestedMeta>, mut func: ItemFn) -> TokenStream {
+pub fn extendr_function(args: TokenStream, mut func: ItemFn) -> TokenStream {
+    let args = syn::parse_macro_input!(args as syn::AttributeArgs);
     let mut opts = wrappers::ExtendrOptions::default();
 
     for arg in &args {

@@ -73,10 +73,9 @@ use syn::{parse_macro_input, Item};
 
 #[proc_macro_attribute]
 pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
-    let args = parse_macro_input!(attr as syn::AttributeArgs);
     match parse_macro_input!(item as Item) {
-        Item::Fn(func) => extendr_function::extendr_function(args, func),
-        Item::Impl(item_impl) => extendr_impl::extendr_impl(item_impl),
+        Item::Fn(func) => extendr_function::extendr_function(attr, func),
+        Item::Impl(item_impl) => extendr_impl::extendr_impl(attr, item_impl),
         other_item => TokenStream::from(quote! {#other_item}),
     }
 }

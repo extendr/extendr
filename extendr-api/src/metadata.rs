@@ -32,6 +32,7 @@ pub struct Func {
 pub struct Impl {
     pub doc: &'static str,
     pub name: &'static str,
+    pub r_name: &'static str,
     pub methods: Vec<Func>,
 }
 
@@ -113,10 +114,11 @@ impl From<Impl> for Robj {
         List::from_values(&[
             r!(val.doc),
             r!(val.name),
+            r!(val.r_name),
             r!(List::from_values(val.methods)),
         ])
         .into_robj()
-        .set_names(&["doc", "name", "methods"])
+        .set_names(&["doc", "name", "r_name", "methods"])
         .expect("From<Impl> failed")
     }
 }
@@ -224,7 +226,8 @@ fn write_method_wrapper(
     func: &Func,
     package_name: &str,
     use_symbols: bool,
-    class_name: &str,
+    r_class_name: &str,
+    rust_class_name: &str,
 ) -> std::io::Result<()> {
     if func.hidden {
         return Ok(());
@@ -246,7 +249,7 @@ fn write_method_wrapper(
         write!(
             w,
             "{}${} <- function({}) invisible(.Call(",
-            sanitize_identifier(class_name),
+            sanitize_identifier(r_class_name),
             sanitize_identifier(func.r_name),
             join_str(formal_args, ", ")
         )?;
@@ -254,7 +257,7 @@ fn write_method_wrapper(
         write!(
             w,
             "{}${} <- function({}) .Call(",
-            sanitize_identifier(class_name),
+            sanitize_identifier(r_class_name),
             sanitize_identifier(func.r_name),
             join_str(formal_args, ", ")
         )?;
@@ -262,9 +265,9 @@ fn write_method_wrapper(
 
     // Here no processing is needed because of `wrap__` prefix
     if use_symbols {
-        write!(w, "wrap__{}__{}", class_name, func.mod_name)?;
+        write!(w, "wrap__{}__{}", rust_class_name, func.mod_name)?;
     } else {
-        write!(w, "\"wrap__{}__{}\"", class_name, func.mod_name)?;
+        write!(w, "\"wrap__{}__{}\"", rust_class_name, func.mod_name)?;
     }
 
     if actual_args.len() != 0 {
@@ -296,18 +299,20 @@ fn write_impl_wrapper(
     write_doc(w, imp.doc)?;
 
     let imp_name_fixed = sanitize_identifier(imp.name);
+    let imp_r_name_fixed = sanitize_identifier(imp.r_name);
 
+    // Invariant: the environment is the `class_name`.
     // Using fixed name because it is exposed to R
-    writeln!(w, "{} <- new.env(parent = emptyenv())\n", imp_name_fixed)?;
+    writeln!(w, "{} <- new.env(parent = emptyenv())\n", imp_r_name_fixed)?;
 
     for func in &imp.methods {
         // write_doc(& mut w, func.doc)?;
         // `imp.name` is passed as is and sanitized within the function
-        write_method_wrapper(w, func, package_name, use_symbols, imp.name)?;
+        write_method_wrapper(w, func, package_name, use_symbols, &imp_r_name_fixed, &imp_name_fixed)?;
     }
 
     if exported {
-        writeln!(w, "#' @rdname {}", imp.name)?;
+        writeln!(w, "#' @rdname {}", imp.r_name)?;
         writeln!(w, "#' @usage NULL")?;
     }
 
@@ -320,10 +325,10 @@ fn write_impl_wrapper(
     // LHS with dollar operator is wrapped in ``, so pass name as is,
     // but in the body `imp_name_fixed` is called as valid R function,
     // so we pass preprocessed value
-    writeln!(w, "`$.{}` <- function (self, name) {{ func <- {}[[name]]; environment(func) <- environment(); func }}\n", imp.name, imp_name_fixed)?;
+    writeln!(w, "`$.{}` <- function (self, name) {{ func <- {}[[name]]; environment(func) <- environment(); func }}\n", imp.r_name, imp_r_name_fixed)?;
 
     writeln!(w, "#' @export")?;
-    writeln!(w, "`[[.{}` <- `$.{}`\n", imp.name, imp.name)?;
+    writeln!(w, "`[[.{}` <- `$.{}`\n", imp.r_name, imp.r_name)?;
 
     Ok(())
 }

@@ -36,7 +36,7 @@ use crate::wrappers;
 ///     fn aux_func;
 /// }
 /// ```
-pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
+pub fn extendr_impl(attr: TokenStream, mut item_impl: ItemImpl) -> TokenStream {
     // Only `impl name { }` allowed
     if item_impl.defaultness.is_some() {
         return quote! { compile_error!("default not allowed in #[extendr] impl"); }.into();
@@ -62,10 +62,27 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
         return quote! { compile_error!("where clause not allowed in #[extendr] impl"); }.into();
     }
 
+    let args = syn::parse_macro_input!(attr with syn::punctuated::Punctuated::<syn::MetaNameValue,syn::token::Comma>::parse_terminated);
+    let mut r_name = None;
+    for arg in args {
+        if arg.path.is_ident("r_name") {
+            match arg.lit {
+                syn::Lit::Str(r_name_val) => {
+                    r_name = Some(r_name_val.value());
+                }
+                _ => {
+                    return quote! { compile_error!("provided `r_name` is invalid") }.into();
+                }
+            }
+        }
+    }
+
+    // used in function wrappers
     let opts = wrappers::ExtendrOptions::default();
     let self_ty = item_impl.self_ty.as_ref();
     let self_ty_name = wrappers::type_name(self_ty);
-    let prefix = format!("{}__", self_ty_name);
+    let r_name = r_name.unwrap_or(self_ty_name.clone());
+    let prefix = format!("{}__", &self_ty_name);
     let mut method_meta_names = Vec::new();
     let doc_string = wrappers::get_doc_string(&item_impl.attrs);
 
@@ -181,6 +198,7 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
             impls.push(extendr_api::metadata::Impl {
                 doc: #doc_string,
                 name: #self_ty_name,
+                r_name: #r_name,
                 methods,
             });
         }
