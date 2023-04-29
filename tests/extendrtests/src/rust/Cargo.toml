@@ -11,7 +11,7 @@ authors = [
 edition = "2021"
 
 [lib]
-crate-type = ["staticlib"]
+name = 'extendrtests'
 
 [dependencies]
 extendr-api = { version = "*", features = ["graphics", "ndarray", "either"] }
