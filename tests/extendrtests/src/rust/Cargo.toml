@@ -1,5 +1,3 @@
-[workspace]
-
 [package]
 name = "extendrtests"
 version = "0.2.1"
