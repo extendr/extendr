@@ -1,3 +1,4 @@
+use proc_macro2::Ident;
 use quote::{format_ident, quote};
 use syn::{parse_quote, punctuated::Punctuated, Expr, FnArg, ItemFn, Token, Type};
 
@@ -34,6 +35,7 @@ pub fn make_function_wrappers(
         sig.ident.clone()
     };
 
+    let mod_name = sanitize_identifier(mod_name);
     let wrap_name = format_ident!("{}{}{}", WRAP_PREFIX, prefix, mod_name);
     let meta_name = format_ident!("{}{}{}", META_PREFIX, prefix, mod_name);
 
@@ -121,6 +123,7 @@ pub fn make_function_wrappers(
             let mut args = vec![
                 #( #meta_args, )*
             ];
+
             metadata.push(extendr_api::metadata::Func {
                 doc: #doc_string,
                 rust_name: #rust_name_str,
@@ -336,4 +339,17 @@ fn get_named_lit(attrs: &mut Vec<syn::Attribute>, name: &str) -> Option<String> 
     }
     *attrs = new_attrs;
     res
+}
+
+// Remove the raw identifier prefix (`r#`) from an [`Ident`]
+// If the `Ident` does not start with the prefix, it is returned as is.
+fn sanitize_identifier(ident: Ident) -> Ident {
+    static PREFIX: &str = "r#";
+    let (ident, span) = (ident.to_string(), ident.span());
+    let ident = match ident.strip_prefix(PREFIX) {
+        Some(ident) => ident.into(),
+        None => ident,
+    };
+
+    Ident::new(&ident, span)
 }

@@ -8,6 +8,8 @@ mod graphic_device;
 
 mod optional_either;
 
+mod raw_identifiers;
+
 // Return string `"Hello world!"` to R.
 #[extendr]
 fn hello_world() -> &'static str {
@@ -357,4 +359,5 @@ extendr_module! {
     use submodule;
     use optional_ndarray;
     use optional_either;
+    use raw_identifiers;
 }

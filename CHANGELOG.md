@@ -10,6 +10,8 @@
 
 - You can now create `ArrayView1` from `&Robj` as well as `Robj`
     [[#501]](https://github.com/extendr/extendr/pull/501)
+- Raw literals from Rust can be used for function and argument names. e.g. `fn r#type()` in Rust is converted to `type()` in R.
+    [[#531]](https://github.com/extendr/extendr/pull/531)
 
 ## 0.4.0
 
