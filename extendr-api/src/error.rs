@@ -20,7 +20,9 @@ pub fn unwrap_or_throw<T>(r: std::result::Result<T, &'static str>) -> T {
 pub fn unwrap_or_throw_error<T>(r: std::result::Result<T, Error>) -> T {
     match r {
         Err(e) => {
-            throw_r_error(e.to_string());
+            let msg = e.to_string();
+            drop(e);
+            throw_r_error(msg);
         }
         Ok(v) => v,
     }
