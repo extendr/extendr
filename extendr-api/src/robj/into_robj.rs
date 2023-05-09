@@ -44,8 +44,13 @@ where
     T: Into<Robj>,
 {
     fn from(res: Result<T>) -> Self {
-        // Force a panic on error.
-        res.unwrap().into()
+        return match res {
+            Err(_e) => {
+                R!("stop('error!')").unwrap()
+            }
+            Ok(ok) => ok.into()
+
+        }
     }
 }
 
@@ -633,6 +638,18 @@ impl From<Vec<Rfloat>> for Robj {
     /// Convert a vector of Rfloat into doubles.
     fn from(val: Vec<Rfloat>) -> Self {
         Doubles::from_values(val.into_iter()).into()
+    }
+}
+
+// Convert a Rust error into an R condition
+impl From<Error> for Robj {
+    fn from(err: Error) -> Robj {
+        List::from_names_and_values(
+            ["message", "call"],
+            [Robj::from(err.to_string()), NULL.into()]
+        ).unwrap()
+        .set_class(&["simpleError", "error", "condition"])
+        .unwrap()
     }
 }
 
