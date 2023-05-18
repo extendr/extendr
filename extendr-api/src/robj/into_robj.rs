@@ -39,7 +39,7 @@ impl From<()> for Robj {
 ///     assert_eq!(r!(my_func()), r!(1.0));
 /// }
 /// ```
-#[cfg(feature = "result_panic")]
+#[cfg(not(result))]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
     T: Into<Robj>,
@@ -82,7 +82,7 @@ where
 /// }
 ///
 /// ```
-#[cfg(feature = "result_condition")]
+#[cfg(result = "result_condition")]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
     T: Into<Robj>,
@@ -139,7 +139,7 @@ where
 /// }
 ///
 /// ```
-#[cfg(feature = "result_list")]
+#[cfg(result = "result_list")]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
     T: Into<Robj>,
