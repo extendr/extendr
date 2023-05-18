@@ -82,7 +82,7 @@ where
 /// }
 ///
 /// ```
-#[cfg(result = "result_condition")]
+#[cfg(result = "condition")]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
     T: Into<Robj>,
@@ -139,7 +139,7 @@ where
 /// }
 ///
 /// ```
-#[cfg(result = "result_list")]
+#[cfg(result = "list")]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
     T: Into<Robj>,
