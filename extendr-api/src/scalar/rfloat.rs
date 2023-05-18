@@ -4,11 +4,11 @@ use std::convert::TryFrom;
 use std::ops::{Add, Div, Mul, Neg, Sub};
 use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 
-/// Rfloat is a wrapper for f64 in the context of an R's integer vector.
+/// `Rfloat` is a wrapper for `f64` in the context of an R's integer vector.
 ///
-/// Rfloat has a special NA value, obtained from R headers via R_NaReal.
+/// `Rfloat` has a special `NA` value, obtained from R headers via `R_NaReal`.
 ///
-/// Rfloat has the same footprint as an f64 value allowing us to use it in zero copy slices.
+/// `Rfloat` has the same footprint as an `f64` value allowing us to use it in zero copy slices.
 #[repr(C)]
 pub struct Rfloat(pub f64);
 

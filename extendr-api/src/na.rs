@@ -23,7 +23,7 @@ lazy_static! {
     };
 }
 
-/// Return true if this primitive is NA.
+/// Return true if this primitive is `NA`.
 pub trait CanBeNA {
     fn is_na(&self) -> bool;
     fn na() -> Self;

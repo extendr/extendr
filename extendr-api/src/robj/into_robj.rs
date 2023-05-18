@@ -17,7 +17,7 @@ pub(crate) fn str_to_character(s: &str) -> SEXP {
     }
 }
 
-/// Convert a null to an Robj.
+/// Convert a `NULL` to an `Robj`.
 impl From<()> for Robj {
     fn from(_: ()) -> Self {
         // Note: we do not need to protect this.
@@ -25,8 +25,8 @@ impl From<()> for Robj {
     }
 }
 
-/// Convert a Result to an Robj. This is used to allow
-/// functions to use the ? operator and return [Result<T>].
+/// Convert a `Result` to an `Robj`. This is used to allow
+/// functions to use the `?` operator and return [`Result<T>`].
 ///
 /// Panics if there is an error.
 /// ```
@@ -670,23 +670,6 @@ where
     }
 }
 
-// We would love to do a blanket IntoIterator impl.
-// But the matching rules would clash with the above.
-macro_rules! impl_from_iter {
-    ($t: ty) => {
-        impl<'a, T> From<$t> for Robj
-        where
-            Self: 'a,
-            T: Clone + 'a,
-            T: ToVectorValue,
-        {
-            fn from(val: $t) -> Self {
-                val.iter().cloned().collect_robj()
-            }
-        }
-    };
-}
-
 macro_rules! impl_from_into_iter {
     ($t: ty) => {
         impl<'a, T> From<$t> for Robj
@@ -728,28 +711,38 @@ macro_rules! impl_from_as_iterator {
 //     }
 // }
 
-// Template constants are still unstable in rust.
-impl_from_iter! {[T; 1]}
-impl_from_iter! {[T; 2]}
-impl_from_iter! {[T; 3]}
-impl_from_iter! {[T; 4]}
-impl_from_iter! {[T; 5]}
-impl_from_iter! {[T; 6]}
-impl_from_iter! {[T; 7]}
-impl_from_iter! {[T; 8]}
-impl_from_iter! {[T; 9]}
-impl_from_iter! {[T; 10]}
-impl_from_iter! {[T; 11]}
-impl_from_iter! {[T; 12]}
-impl_from_iter! {[T; 13]}
-impl_from_iter! {[T; 14]}
-impl_from_iter! {[T; 15]}
-impl_from_iter! {[T; 16]}
-impl_from_iter! {[T; 17]}
-impl_from_iter! {[T; 18]}
-impl_from_iter! {[T; 19]}
-impl_from_iter! {Vec<T>}
-impl_from_iter! {&Vec<T>}
+// TODO: Is this still relevant?
+// We would love to do a blanket IntoIterator impl.
+// But the matching rules would clash with the above.
+
+impl<'a, T, const N: usize> From<[T; N]> for Robj
+where
+    Self: 'a,
+    T: ToVectorValue,
+{
+    fn from(val: [T; N]) -> Self {
+        val.into_iter().collect_robj()
+    }
+}
+
+impl<T> From<Vec<T>> for Robj
+where
+    T: ToVectorValue,
+{
+    fn from(value: Vec<T>) -> Self {
+        value.into_iter().collect_robj()
+    }
+}
+
+impl<'a, T> From<&'a Vec<T>> for Robj
+where
+    T: 'a,
+    &'a T: into_robj::ToVectorValue,
+{
+    fn from(value: &'a Vec<T>) -> Self {
+        value.iter().collect_robj()
+    }
+}
 
 impl_from_into_iter! {&'a [T]}
 

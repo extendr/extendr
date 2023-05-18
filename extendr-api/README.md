@@ -223,19 +223,21 @@ test! {
  ## Feature gates
 
  extendr-api has some optional features behind these feature gates:
+* `ndarray`: provides the conversion between R's matrices and [ndarray](https://docs.rs/ndarray/latest/ndarray/).
+* `num-complex`: provides the conversion between R's complex numbers and [num-complex](https://docs.rs/num-complex/latest/num_complex/).
+* `serde`: provides the [Serde](https://serde.rs/) support.
+* `graphics`: provides the functionality to control or implement graphics devices.
+* `either`: provides implementation of type conversion traits for `Either<L, R>` from [either](https://docs.rs/either/latest/either/) if `L` and `R` both implement those traits.
 
- - `ndarray`: provides the conversion between R's matrices and [ndarray](https://docs.rs/ndarray/latest/ndarray/).
- - `num-complex`: provides the conversion between R's complex numbers and [num-complex](https://docs.rs/num-complex/latest/num_complex/).
- - `serde`: provides the [Serde](https://serde.rs/) support.
- - `graphics`: provides the functionality to control or implement graphics devices.
+## Compiler flags
 
- extendr-api has three ways to return a Result<T,E> to R. Only one behavior features can be picked.
- - `result_panic`: Default behavior, return `Ok` as is, panic! on any `Err`
-
- To choose either if these set e.g. `extendr-api = {..., default-features = false, features= ["result_condition"]}`
- These features are experimental and may change.
- - `result_list`: return `Ok` as `list(ok=?, err=NULL)` or `Err` `list(ok=NULL, err=?)`
- - `result_condition`: return `Ok` as is or `Err` as $value in an R error condition.
+### result
+ extendr-api has different encodings (conversions) of a `Result<T,E>` which is either `OK(T)` or `Err(E)` into the an `Robj`.
+  In below `x_ok` represents an R variable on R side which was returned from rust via `T::into_robj()` or similar. Likewise `x_err` was returned to R side from rust via `E::into_robj()` or similar.
+  - no `result` flag (default) `Ok(T)` is encoded as `x_ok` and `Err(E)` will make extendr call `throw_r_error()` (not recommended).
+  - `result='list'` `Ok(T)` is encoded as `list(ok = x_ok, err = NULL)` and `Err` as `list(ok = NULL, err = e_err)`
+  - `result='condition'` `Ok(T)` is encoded as `x_ok` and `Err(E)` as `condition(msg="extendr_error", value = x_err, class=c("extendr_error", "error", "condition"))`
+  - `result='attribute'` `Ok(T)` is encoded as `x_ok` and `Err(E)` as `structure(x_ok, extendr_error = TRUE)`
 
 ## License
 
