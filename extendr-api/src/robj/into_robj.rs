@@ -25,10 +25,22 @@ impl From<()> for Robj {
     }
 }
 
-/// Convert a Result to an Robj. This is used to allow
-/// functions to use the ? operator and return [Result<T>].
+/// Convert a Result to an Robj.
 ///
 /// Panics if there is an error.
+///
+/// To use the ?-operator the extendr-function must return an extendr_api::result::Result<T> type or in general the `std::result::Result<T,E>` enum.
+/// Use of panic! in extendr is discouraged due to memory leakage.
+///
+/// Alternative behaviors via feature gate:
+/// extendr-api has different encodings (conversions) of a `Result<T,E>` into an `Robj`.
+/// In below `x_ok` represents an R variable on R side which was returned from rust via `T::into_robj()` or similar.
+/// Likewise `x_err` was returned to R side from rust via `E::into_robj()` or similar.
+/// extendr-api
+/// * `result_list` `Ok(T)` is encoded as `list(ok = x_ok, err = NULL)` and `Err` as `list(ok = NULL, err = e_err)`.
+/// * `result_condition'` `Ok(T)` is encoded as `x_ok` and `Err(E)` as `condition(msg="extendr_error", value = x_err, class=c("extendr_error", "error", "condition"))`
+/// * Multiple of above result feature gates. Only one result feature gate will take effect, the precedence is currently [`result_list`, `result_condition`, ... ].
+/// * Neither of above (default) `Ok(T)` is encoded as `x_ok`and `Err(E)` will trigger `throw_r_error()` which is discouraged.
 /// ```
 /// use extendr_api::prelude::*;
 /// fn my_func() -> Result<f64> {
@@ -55,7 +67,7 @@ where
 /// and return [Result<T>] without panicking on an Err. T must impl IntoRobj.
 ///
 /// Returns ok-value as is. Return err wrapped in a R error condition. The err is placed in
-/// $value. The condition messeage is simply
+/// $value. The condition messeage is simply 'extendr_arr'
 /// ```
 /// use extendr_api::prelude::*;
 /// fn my_func() -> Result<f64> {

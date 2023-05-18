@@ -32,6 +32,10 @@ serde = { version = "1.0", features = ["derive"], optional = true }
 rstest = "0.16.0"
 
 [features]
+
+# features to modify behaviour of returning Result<T,E> from extendr to R.
+# add any new feture below here and likely implement in src/robj/into_robj.rs
+# None, one or both can be set but the one with highest precedence will take effect.
 result_list = []
 result_condition = []
 
