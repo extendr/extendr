@@ -36,7 +36,7 @@ use crate::wrappers;
 ///     fn aux_func;
 /// }
 /// ```
-pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
+pub fn extendr_impl(args: Vec<syn::NestedMeta>, mut item_impl: ItemImpl) -> TokenStream {
     // Only `impl name { }` allowed
     if item_impl.defaultness.is_some() {
         return quote! { compile_error!("default not allowed in #[extendr] impl"); }.into();
@@ -62,8 +62,17 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
         return quote! { compile_error!("where clause not allowed in #[extendr] impl"); }.into();
     }
 
-    let opts = wrappers::ExtendrOptions::default();
+    let mut opts = wrappers::ExtendrOptions::default();
+    for arg in &args {
+        crate::extendr_function::parse_options(&mut opts, arg);
+    }
+
     let self_ty = item_impl.self_ty.as_ref();
+    let self_ty_name = opts
+        .r_class_name
+        .clone()
+        .unwrap_or_else(|| wrappers::type_name(self_ty));
+
     let self_ty_name = wrappers::type_name(self_ty);
     let prefix = format!("{}__", self_ty_name);
     let mut method_meta_names = Vec::new();
