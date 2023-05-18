@@ -72,8 +72,6 @@ pub fn extendr_impl(args: Vec<syn::NestedMeta>, mut item_impl: ItemImpl) -> Toke
         .r_class_name
         .clone()
         .unwrap_or_else(|| wrappers::type_name(self_ty));
-
-    let self_ty_name = wrappers::type_name(self_ty);
     let prefix = format!("{}__", self_ty_name);
     let mut method_meta_names = Vec::new();
     let doc_string = wrappers::get_doc_string(&item_impl.attrs);
