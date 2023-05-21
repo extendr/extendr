@@ -111,13 +111,14 @@ pub fn make_function_wrappers(
             let res_res = unsafe {
                 use extendr_api::robj::*;
                 #( #convert_args )*
-                std::panic::catch_unwind(||-> Result<Robj, extendr_api::Error> {
+                std::panic::catch_unwind(||-> std::result::Result<Robj, extendr_api::Error> {
                     Ok(extendr_api::Robj::from(#call_name(#actual_args)))
                 })
             };
             //dbg!(&res_res);
             match res_res {
                 Ok(Ok(zz)) => {
+                    use extendr_api::robj::*;
                     return unsafe { zz.get() };
                 }
 
