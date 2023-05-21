@@ -102,16 +102,40 @@ pub fn make_function_wrappers(
     //     }
     // }
     // ```
+    //
+
     wrappers.push(parse_quote!(
         #[no_mangle]
         #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
         pub extern "C" fn #wrap_name(#formal_args) -> extendr_api::SEXP {
-            unsafe {
+            let res_res = unsafe {
                 use extendr_api::robj::*;
                 #( #convert_args )*
-                extendr_api::handle_panic(#panic_str, ||
-                    extendr_api::Robj::from(#call_name(#actual_args)).get()
-                )
+                std::panic::catch_unwind(||-> Result<Robj, extendr_api::Error> {
+                    Ok(extendr_api::Robj::from(#call_name(#actual_args)))
+                })
+            };
+            //dbg!(&res_res);
+            match res_res {
+                Ok(Ok(zz)) => {
+                    return unsafe { zz.get() };
+                }
+
+                Ok(Err(extendr_err)) => {
+                    let err_string = extendr_err.to_string();
+                    // try_from=true errors contain Robj, these must be dropped to not leak
+                    drop(extendr_err);
+                    extendr_api::throw_r_error(&err_string);
+                }
+                Err(unwind_err) => {
+                    drop(unwind_err);
+                    let err_string = format!("user function panicked: {}",#panic_str);
+                    // cannot use throw_r_error here for some reason.
+                    // handle panic export err string slightly different.
+                    extendr_api::handle_panic(err_string.as_str(), || panic!());
+                    unreachable!("internal extendr error, this should never happened");
+                }
+                _ => unreachable!("internal extendr error, this should never happened"),
             }
         }
     ));
@@ -302,12 +326,12 @@ fn translate_actual(opts: &ExtendrOptions, input: &FnArg) -> Option<Expr> {
             if let syn::Pat::Ident(ref ident) = pat {
                 let varname = format_ident!("_{}_robj", ident.ident);
                 if opts.use_try_from {
-                    Some(parse_quote! { extendr_api::unwrap_or_throw_error(
+                    Some(parse_quote! {
                         #varname.try_into()
-                        .map_err(|e| extendr_api::Error::from(e)))
+                        .map_err(|e| extendr_api::Error::from(e))?
                     })
                 } else {
-                    Some(parse_quote! { extendr_api::unwrap_or_throw(<#ty>::from_robj(&#varname)) })
+                    Some(parse_quote! { <#ty>::from_robj(&#varname)? })
                 }
             } else {
                 None
