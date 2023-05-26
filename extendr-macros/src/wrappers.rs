@@ -332,8 +332,7 @@ fn translate_actual(opts: &ExtendrOptions, input: &FnArg) -> Option<Expr> {
                 let varname = format_ident!("_{}_robj", ident.ident);
                 if opts.use_try_from {
                     Some(parse_quote! {
-                        #varname.try_into()
-                        .map_err(|e| extendr_api::Error::from(e))?
+                        #varname.try_into()?
                     })
                 } else {
                     Some(parse_quote! { <#ty>::from_robj(&#varname)? })
