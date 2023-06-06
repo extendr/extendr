@@ -23,5 +23,6 @@ Suggests:
     rmarkdown,
     stringi,
     testthat,
-    vctrs
+    vctrs,
+    lobstr
 Config/rextendr/version: 0.2.0.9000

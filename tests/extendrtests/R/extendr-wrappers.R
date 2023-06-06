@@ -106,6 +106,29 @@ true <- function() .Call(wrap__true)
 #' @export
 false <- function(type) .Call(wrap__false, type)
 
+#' @export
+leak_implicit_strings <- function(x) .Call(wrap__leak_implicit_strings, x)
+
+#' @export
+leak_implicit_doubles <- function(x) .Call(wrap__leak_implicit_doubles, x)
+
+#' @export
+leak_arg2_try_implicit_strings <- function(`_y`, x) .Call(wrap__leak_arg2_try_implicit_strings, `_y`, x)
+
+#' @export
+leak_arg2_try_implicit_doubles <- function(`_y`, x) .Call(wrap__leak_arg2_try_implicit_doubles, `_y`, x)
+
+#' @export
+leak_unwrap_strings <- function(x) .Call(wrap__leak_unwrap_strings, x)
+
+#' @export
+leak_unwrap_doubles <- function(x) .Call(wrap__leak_unwrap_doubles, x)
+
+#' @export
+leak_positive_control <- function(x) invisible(.Call(wrap__leak_positive_control, x))
+
+leak_negative_control <- function(x) invisible(.Call(wrap__leak_negative_control, x))
+
 #' Class for testing (exported)
 #' @examples
 #' x <- MyClass$new()
