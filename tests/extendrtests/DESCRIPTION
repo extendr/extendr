@@ -25,4 +25,4 @@ Suggests:
     testthat,
     vctrs,
     lobstr
-Config/rextendr/version: 0.2.0.9000
+Config/rextendr/version: 0.3.0
