@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["inbytes","inchar"],"struct":["ReadHook"],"trait":["Load"]};
+window.SIDEBAR_ITEMS = {"struct":["ReadHook"],"trait":["Load"]};

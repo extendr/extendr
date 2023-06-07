@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["outbytes","outchar"],"struct":["OutStream","WriteHook"],"trait":["Save"]};
+window.SIDEBAR_ITEMS = {"struct":["OutStream","WriteHook"],"trait":["Save"]};
