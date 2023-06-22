@@ -233,4 +233,3 @@ extendr-api has some optional features behind these feature gates:
 ## License
 
 MIT
-
