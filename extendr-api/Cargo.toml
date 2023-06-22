@@ -32,7 +32,10 @@ serde = { version = "1.0", features = ["derive"], optional = true }
 rstest = "0.16.0"
 
 [features]
-default = []
+default = ["result_panic"]
+result_panic =[]
+result_list = []
+result_condition = []
 
 # This dummy feature enables all features that increase the functionality of 
 # extendr, via conversions or R features. Features that change behaviour
