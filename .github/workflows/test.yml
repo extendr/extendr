@@ -284,8 +284,8 @@ jobs:
           # When the MSVC target is used, since it's cross-compilation from MSVC
           # to GNU, the doc tests are usually skipped. Adding `-Zdoctest-xcompile`
           # lets the doctests run, which accordingly require the nightly toolchain.
-          - {os: windows-latest, r: 'release', rust-version: 'nightly-2023-04-11-msvc', rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '43', extra-args: ['-Zdoctest-xcompile']}
-          - {os: windows-latest, r: 'oldrel',  rust-version: 'nightly-2023-04-11-msvc', rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '42', extra-args: ['-Zdoctest-xcompile']}
+          - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '43', extra-args: ['-Zdoctest-xcompile']}
+          - {os: windows-latest, r: 'oldrel',  rust-version: 'nightly-msvc', rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '42', extra-args: ['-Zdoctest-xcompile']}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
