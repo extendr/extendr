@@ -143,8 +143,11 @@ macro_rules! factor {
 macro_rules! rprint {
     () => {
     };
+    ($s: expr) => {
+        print_r_output($s);
+    };
     ($($rest: tt)*) => {
-        print_r_output(format!($($rest)*)).replace("%","%%");
+        print_r_output(format!($($rest)*));
     };
 }
 
@@ -157,9 +160,13 @@ macro_rules! rprintln {
     () => {
         print_r_output("\n");
     };
-    ($($rest: tt)*) => {
-        print_r_output(format!($($rest)*).replace("%","%%"));
+    ($s: expr) => {
+        print_r_output($s);
         print_r_output("\n");
+    };
+    ($($rest: tt)*) => {
+        print_r_output(format!($($rest)*));
+
     };
 }
 
@@ -168,8 +175,11 @@ macro_rules! rprintln {
 macro_rules! reprint {
     () => {
     };
+    ($s: expr) => {
+        print_r_error($s);
+    };
     ($($rest: tt)*) => {
-        print_r_error(format!($($rest)*)).replace("%","%%");
+        print_r_error(format!($($rest)*));
     };
 }
 
@@ -179,8 +189,12 @@ macro_rules! reprintln {
     () => {
         print_r_error("\n");
     };
+    ($s: expr) => {
+        print_r_error($s);
+        print_r_error("\n");
+    };
     ($($rest: tt)*) => {
-        print_r_error(format!($($rest)*)).replace("%","%%");
+        print_r_error(format!($($rest)*));
         print_r_error("\n");
     };
 }
