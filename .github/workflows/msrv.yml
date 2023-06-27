@@ -30,4 +30,4 @@ jobs:
         with:
           crate: cargo-msrv
       - name: Verify minimum rust version
-        run: cargo-msrv verify
+        run: cargo-msrv --path extendr-api/ verify
