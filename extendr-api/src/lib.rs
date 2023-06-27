@@ -874,11 +874,11 @@ mod tests {
         test! {
             let txt_con = R!(r#"textConnection("test_con", open = "w")"#).unwrap();
             call!("sink", &txt_con).unwrap();
-            rprintln!("Hello world");
+            rprintln!("Hello world %%!"); //%% checks printf formatting is off, yields one % if on
             call!("sink").unwrap();
             call!("close", &txt_con).unwrap();
             let result = R!("test_con").unwrap();
-            assert_eq!(result, r!("Hello world"));
+            assert_eq!(result, r!("Hello world %%!"));
         }
     }
 
