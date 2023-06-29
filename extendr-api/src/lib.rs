@@ -547,11 +547,12 @@ pub fn sxp_to_rtype(sxptype: i32) -> Rtype {
     }
 }
 
+const PRINTF_NO_FMT_CSTRING: &'static [i8] = &[37, 115, 0]; // same as "%s\0"
 #[doc(hidden)]
 pub fn print_r_output<T: Into<Vec<u8>>>(s: T) {
     let cs = CString::new(s).expect("NulError");
     unsafe {
-        Rprintf(cs.as_ptr());
+        Rprintf(PRINTF_NO_FMT_CSTRING.as_ptr(), cs.as_ptr());
     }
 }
 
@@ -559,7 +560,7 @@ pub fn print_r_output<T: Into<Vec<u8>>>(s: T) {
 pub fn print_r_error<T: Into<Vec<u8>>>(s: T) {
     let cs = CString::new(s).expect("NulError");
     unsafe {
-        REprintf(cs.as_ptr());
+        REprintf(PRINTF_NO_FMT_CSTRING.as_ptr(), cs.as_ptr());
     }
 }
 
@@ -873,11 +874,11 @@ mod tests {
         test! {
             let txt_con = R!(r#"textConnection("test_con", open = "w")"#).unwrap();
             call!("sink", &txt_con).unwrap();
-            rprintln!("Hello world");
+            rprintln!("Hello world %%!"); //%% checks printf formatting is off, yields one % if on
             call!("sink").unwrap();
             call!("close", &txt_con).unwrap();
             let result = R!("test_con").unwrap();
-            assert_eq!(result, r!("Hello world"));
+            assert_eq!(result, r!("Hello world %%!"));
         }
     }
 
