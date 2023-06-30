@@ -1,8 +1,0 @@
-{
-    "rust-analyzer.linkedProjects": [
-        "./extendr-api/Cargo.toml",
-        //"./src/rust/Cargo.toml",
-        //"py-polars",
-        //"./extendr-api/Cargo.toml"
-    ],
-}
