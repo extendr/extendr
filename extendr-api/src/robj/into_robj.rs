@@ -29,18 +29,18 @@ impl From<()> for Robj {
 ///
 /// Panics if there is an error.
 ///
-/// To use the ?-operator the extendr-function must return an extendr_api::result::Result<T> type or in general the `std::result::Result<T,E>` enum.
+/// To use the ?-operator, an extendr-function must return either extendr_api::result::Result<T> or `std::result::Result<T,E>`.
 /// Use of panic! in extendr is discouraged due to memory leakage.
 ///
-/// Alternative behaviors via feature gate:
-/// extendr-api has different encodings (conversions) of a `Result<T,E>` into an `Robj`.
-/// In below `x_ok` represents an R variable on R side which was returned from rust via `T::into_robj()` or similar.
-/// Likewise `x_err` was returned to R side from rust via `E::into_robj()` or similar.
+/// Alternative behaviors enabled by feature toggles:
+/// extendr-api supports different conversions from `Result<T,E>` into `Robj`.
+/// Below, `x_ok` represents an R variable on R side which was returned from rust via `T::into_robj()` or similar.
+/// Likewise, `x_err` was returned to R side from rust via `E::into_robj()` or similar.
 /// extendr-api
-/// * `result_list` `Ok(T)` is encoded as `list(ok = x_ok, err = NULL)` and `Err` as `list(ok = NULL, err = e_err)`.
-/// * `result_condition'` `Ok(T)` is encoded as `x_ok` and `Err(E)` as `condition(msg="extendr_error", value = x_err, class=c("extendr_error", "error", "condition"))`
-/// * Multiple of above result feature gates. Only one result feature gate will take effect, the precedence is currently [`result_list`, `result_condition`, ... ].
-/// * Neither of above (default) `Ok(T)` is encoded as `x_ok`and `Err(E)` will trigger `throw_r_error()` which is discouraged.
+/// * `result_list`: `Ok(T)` is encoded as `list(ok = x_ok, err = NULL)` and `Err` as `list(ok = NULL, err = e_err)`.
+/// * `result_condition'`: `Ok(T)` is encoded as `x_ok` and `Err(E)` as `condition(msg="extendr_error", value = x_err, class=c("extendr_error", "error", "condition"))`
+/// * More than one enabled feature: Only one feature gate will take effect, the current order of precedence is [`result_list`, `result_condition`, ... ].
+/// * Neither of the above (default): `Ok(T)` is encoded as `x_ok`and `Err(E)` will trigger `throw_r_error()`, which is discouraged.
 /// ```
 /// use extendr_api::prelude::*;
 /// fn my_func() -> Result<f64> {
@@ -51,7 +51,7 @@ impl From<()> for Robj {
 ///     assert_eq!(r!(my_func()), r!(1.0));
 /// }
 /// ```
-#[cfg(not(any(feature = "result_list", feature = "result_condition")))] //write all result features, as they all have precedence
+#[cfg(not(any(feature = "result_list", feature = "result_condition")))] // list all result features
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
     T: Into<Robj>,
@@ -62,12 +62,12 @@ where
     }
 }
 
-/// Convert a Result to an Robj either an Ok value or the Err value wrapped in a
-/// error condition. This is used to allow functions to use the ? operator
-/// and return [Result<T>] without panicking on an Err. T must impl IntoRobj.
+/// Convert a Result to an Robj. Return either Ok value or Err value wrapped in an
+/// error condition. This allows using ? operator in functions
+/// and returning [Result<T>] without panicking on Err. T must implement IntoRobj.
 ///
-/// Returns ok-value as is. Return err wrapped in a R error condition. The err is placed in
-/// $value. The condition messeage is simply 'extendr_arr'
+/// Returns Ok value as is. Returns Err wrapped in an R error condition. The Err is placed in
+/// $value field of the condition, and its message is set to 'extendr_err'
 /// ```
 /// use extendr_api::prelude::*;
 /// fn my_func() -> Result<f64> {
@@ -112,10 +112,10 @@ where
     }
 }
 
-/// Convert a Result to an R `List` with an `ok` and `err` element.
-/// This is used to allow functions to use the ? operator
-/// and return [std::result::Result<T,E> or extendr_api::result::Result<T>]
-/// without panicking on an Err.
+/// Convert a Result to an R `List` with an `ok` and `err` elements.
+/// This allows using ? operator in functions
+/// and returning [std::result::Result<T,E> or extendr_api::result::Result<T>]
+/// without panicking on Err.
 ///
 ///
 /// ```
@@ -162,7 +162,7 @@ where
                 list!(ok = NULL, err = err_robj)
             }
         }
-        //can only imagine this would ever fail due memory allcation error, but then panicking is the right choice
+        // can only imagine this would ever fail due to memory allocation error, but then panicking is the right choice
         .expect("Internal error: failed to create an R list")
         .set_class(&["extendr_result"])
         .expect("Internal error: failed to set class")

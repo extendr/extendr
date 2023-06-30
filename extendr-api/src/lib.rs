@@ -255,26 +255,25 @@
 //!
 //! ## Returning Result<T,E> to R
 //!
-//! Currently `throw_r_error()` does leak memory because it jumps to R without releasing
-//! memory for rust objects.
+//! Currently, `throw_r_error()` leaks memory because it jumps to R without properly dropping
+//! some rust objects.
 //!
-//! The memory safe way to do error handling with extendr is to return a Result<T, E>
-//! to R. By default any Err will trigger a panic! on rust side which unwinds the stack.
-//! The rust error trace will be printed via stderr, not R terminal. Any Ok value is returned
+//! The memory-safe way to do error handling with extendr is to return a Result<T, E>
+//! to R. By default, any Err will trigger a panic! on the rust side which unwinds the stack.
+//! The rust error trace will be printed to stderr, not R terminal. Any Ok value is returned
 //! as is.
 //!
-//! Alternatively two experimental non-leaking features `result_list` and `result_condition`
-//! can be used to not cause panics on `Err`. Instead an `Err` `x` is returned respectively as
-//!  - list: `list(ok=NULL, err=x)`
-//!  - error condition: `<error: extendr_error>`, with `x` placed in `condition$value`
+//! Alternatively, two experimental non-leaking features, `result_list` and `result_condition`,
+//! can be toggled to avoid panics on `Err`. Instead, an `Err` `x` is returned as either
+//!  - list: `list(ok=NULL, err=x)` when `result_list` is enabled,
+//!  - error condition: `<error: extendr_error>`, with `x` placed in `condition$value`, when `resultd_condition` is enabled.
 //!
 //! It is currently solely up to the user to handle any result on R side.
 //!
 //! The minimal overhead of calling an extendr function is in the ballpark of 2-4us.
-//! Returning a condition or list increases the overhead to 4-8us. To check and handle the result
-//! on R side will likely increase overall overhead to 8-16us, depending on how efficient the
-//! result is handled. If you plan to call an extendr-functions a million times every 5 seconds,
-//! this overhead matters. Otherwise the overhead is likely very negileble.
+//! Returning a condition or list increases the overhead to 4-8us. Checking & handling the result
+//! on R side will likely increase overall overhead to 8-16us, depending on how efficiently the
+//! result is handled. 
 //!
 //! ```ignore
 //! use extendr_api::prelude::*;
@@ -329,11 +328,11 @@
 //! - `serde`: provides the [Serde](https://serde.rs/) support.
 //! - `graphics`: provides the functionality to control or implement graphics devices.
 //!
-//! extendr-api has three ways to return a Result<T,E> to R. Only one behavior features can be picked.
+//! extendr-api supports three ways of returning a Result<T,E> to R. Only one behavior feature can be enabled at a time.
 //! - `result_panic`: Default behavior, return `Ok` as is, panic! on any `Err`
 //!
-//! To choose either if these set e.g. `extendr-api = {..., default-features = false, features= ["result_condition"]}`
-//! These features are experimental and may change.
+//! Default behavior can be overridden by specifying `extend_api` features, i.e. `extendr-api = {..., default-features = false, features= ["result_condition"]}`
+//! These features are experimental and are subject to change.
 //! - `result_list`: return `Ok` as `list(ok=?, err=NULL)` or `Err` `list(ok=NULL, err=?)`
 //! - `result_condition`: return `Ok` as is or `Err` as $value in an R error condition.
 
