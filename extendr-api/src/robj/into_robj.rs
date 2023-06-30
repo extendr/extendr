@@ -182,20 +182,6 @@ impl From<Error> for String {
     }
 }
 
-// // ... and Err does not have to implement Display
-// impl<T, E> From<std::result::Result<T, E>> for Robj
-// where
-//     T: Into<Robj>,
-//     E: Into<Robj>,
-// {
-//     fn from(res: std::result::Result<T, E>) -> Self {
-//         match res {
-//             Ok(x) => x.into(),
-//             Err(x) => x.into_robj().set_attrib("extendr_err", true).unwrap(),
-//         }
-//     }
-// }
-
 /// Convert an Robj reference into a borrowed Robj.
 impl From<&Robj> for Robj {
     // Note: we should probably have a much better reference
