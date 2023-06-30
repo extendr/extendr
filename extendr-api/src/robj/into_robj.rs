@@ -103,17 +103,11 @@ where
     fn from(res: std::result::Result<T, E>) -> Self {
         match res {
             Ok(x) => x.into(),
-            Err(x) => {
-                let robj: Robj = x.into();
-                List::from_names_and_values(
-                    &["message", "value"],
-                    &["extendr_err".into_robj(), robj],
-                )
-            }
-            //can only imagine this would ever fail due memory allcation error, but then panicking is the right choice
-            .expect("internal error: failed to create an R list")
-            .set_class(["extendr_error", "error", "condition"])
-            .expect("internal error: failed to set class"),
+            Err(x) => { list!(message = "extendr_err", value = x) }
+                //can only imagine this would ever fail due memory allocation error, but then panicking is the right choice
+                .expect("internal error: failed to create an R list")
+                .set_class(["extendr_error", "error", "condition"])
+                .expect("internal error: failed to set class"),
         }
     }
 }
@@ -159,13 +153,13 @@ where
 {
     fn from(res: std::result::Result<T, E>) -> Self {
         match res {
-            Ok(x) => List::from_names_and_values(&["ok", "err"], &[x.into(), NULL.into()]),
+            Ok(x) => list!(ok = x, err = NULL),
             Err(x) => {
-                let err_robj = x.into();
+                let err_robj = x.into_robj();
                 if err_robj.is_null() {
                     panic!("Internal error: result_list not allowed to return NULL as err-value")
                 }
-                List::from_names_and_values(&["ok", "err"], &[NULL.into(), err_robj])
+                list!(ok = NULL, err = err_robj)
             }
         }
         //can only imagine this would ever fail due memory allcation error, but then panicking is the right choice
