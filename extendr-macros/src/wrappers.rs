@@ -44,8 +44,6 @@ pub fn make_function_wrappers(
     let doc_string = get_doc_string(attrs);
     let return_type_string = get_return_type(sig);
 
-    let panic_str = format!("{} panicked.\0", r_name_str);
-
     let inputs = &mut sig.inputs;
     let has_self = matches!(inputs.iter().next(), Some(FnArg::Receiver(_)));
 
@@ -102,17 +100,48 @@ pub fn make_function_wrappers(
     //     }
     // }
     // ```
+    //
     wrappers.push(parse_quote!(
         #[no_mangle]
         #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
         pub extern "C" fn #wrap_name(#formal_args) -> extendr_api::SEXP {
-            unsafe {
-                use extendr_api::robj::*;
+            use extendr_api::robj::*;
+            let wrap_result_state: std::result::Result<
+                std::result::Result<Robj, extendr_api::Error>,
+                Box<dyn std::any::Any + Send>
+            > = unsafe {
                 #( #convert_args )*
-                extendr_api::handle_panic(#panic_str, ||
-                    extendr_api::Robj::from(#call_name(#actual_args)).get()
-                )
+                std::panic::catch_unwind(||-> std::result::Result<Robj, extendr_api::Error> {
+                    Ok(extendr_api::Robj::from(#call_name(#actual_args)))
+                })
+            };
+            // any obj created in above unsafe scope, which are not moved into wrap_result_state are now dropped
+
+
+            match wrap_result_state {
+                Ok(Ok(zz)) => {
+                    return unsafe { zz.get() };
+                }
+                // any conversion error bubbled from #actual_args conversions of incomming args from R.
+                Ok(Err(conversion_err)) => {
+                    let err_string = conversion_err.to_string();
+                    drop(conversion_err); // try_from=true errors contain Robj, this must be dropped to not leak
+                    extendr_api::throw_r_error(&err_string);
+                }
+                // any panic (induced by user func code or if user func yields a Result-Err as return value)
+                Err(unwind_err) => {
+                    drop(unwind_err); //did not notice any difference if dropped or not.
+                    // It should be possible to downcast the unwind_err Any type to the error
+                    // included in panic. The advantage would be the panic cause could be included
+                    // in the R terminal error message and not only via std-err.
+                    // but it should be handled in a separate function and not in-lined here.
+                    let err_string = format!("user function panicked: {}\0",#r_name_str);
+                    // cannot use throw_r_error here for some reason.
+                    // handle_panic() exports err string differently than throw_r_error.
+                    extendr_api::handle_panic(err_string.as_str(), || panic!());
+                }
             }
+            unreachable!("internal extendr error, this should never happen.")
         }
     ));
 
@@ -302,12 +331,11 @@ fn translate_actual(opts: &ExtendrOptions, input: &FnArg) -> Option<Expr> {
             if let syn::Pat::Ident(ref ident) = pat {
                 let varname = format_ident!("_{}_robj", ident.ident);
                 if opts.use_try_from {
-                    Some(parse_quote! { extendr_api::unwrap_or_throw_error(
-                        #varname.try_into()
-                        .map_err(|e| extendr_api::Error::from(e)))
+                    Some(parse_quote! {
+                        #varname.try_into()?
                     })
                 } else {
-                    Some(parse_quote! { extendr_api::unwrap_or_throw(<#ty>::from_robj(&#varname)) })
+                    Some(parse_quote! { <#ty>::from_robj(&#varname)? })
                 }
             } else {
                 None

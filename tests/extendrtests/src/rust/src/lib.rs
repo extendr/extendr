@@ -10,6 +10,8 @@ mod optional_either;
 
 mod raw_identifiers;
 
+mod memory_leaks;
+
 // Return string `"Hello world!"` to R.
 #[extendr]
 fn hello_world() -> &'static str {
@@ -360,4 +362,5 @@ extendr_module! {
     use optional_ndarray;
     use optional_either;
     use raw_identifiers;
+    use memory_leaks;
 }
