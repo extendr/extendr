@@ -727,6 +727,32 @@ macro_rules! gen_trait_impl {
             }
         }
 
+        // The 'example usage' expands to...
+        //
+        // /// Documentation comments/test built by the #[doc] attributes
+        // impl std::default::Default for Rint {
+        //     fn default() -> Self {
+        //         Rint(<i32>::default())
+        //     }
+        // }
+        paste::paste! {
+            #[doc = "```"]
+            #[doc = "use extendr_api::prelude::*;"]
+            #[doc = "test! {"]
+            #[doc = "    assert_eq!(<" $type ">::default(), <" $type_prim ">::default());"]
+            #[doc = "}"]
+            #[doc = "```"]
+            impl std::default::Default for $type {
+                fn default() -> Self {
+                    $type::from(<$type_prim>::default())
+                }
+            }
+        }
+    };
+}
+
+macro_rules! gen_partial_ord {
+    ($type : ident, $type_prim : ty) => {
         impl std::cmp::PartialOrd<$type> for $type {
             fn partial_cmp(&self, other: &$type) -> Option<std::cmp::Ordering> {
                 if self.is_na() || other.is_na() {
@@ -748,28 +774,6 @@ macro_rules! gen_trait_impl {
             fn partial_cmp(&self, other: &$type) -> Option<std::cmp::Ordering> {
                 let slf: $type = (*self).try_into().unwrap_or($type::na());
                 slf.partial_cmp(other)
-            }
-        }
-
-        // The 'example usage' expands to...
-        //
-        // /// Documentation comments/test built by the #[doc] attributes
-        // impl std::default::Default for Rint {
-        //     fn default() -> Self {
-        //         Rint(<i32>::default())
-        //     }
-        // }
-        paste::paste! {
-            #[doc = "```"]
-            #[doc = "use extendr_api::prelude::*;"]
-            #[doc = "test! {"]
-            #[doc = "    assert_eq!(<" $type ">::default(), <" $type_prim ">::default());"]
-            #[doc = "}"]
-            #[doc = "```"]
-            impl std::default::Default for $type {
-                fn default() -> Self {
-                    $type::from(<$type_prim>::default())
-                }
             }
         }
     };
@@ -845,6 +849,7 @@ pub(in crate::scalar) use gen_binop;
 pub(in crate::scalar) use gen_binopassign;
 pub(in crate::scalar) use gen_from_primitive;
 pub(in crate::scalar) use gen_from_scalar;
+pub(in crate::scalar) use gen_partial_ord;
 pub(in crate::scalar) use gen_sum_iter;
 pub(in crate::scalar) use gen_trait_impl;
 pub(in crate::scalar) use gen_unop;
