@@ -17,6 +17,10 @@ impl Scalar<i32> for Rbool {
     fn inner(&self) -> i32 {
         self.0
     }
+
+    fn new(val: i32) -> Self {
+        Rbool(val)
+    }
 }
 
 impl Rbool {

@@ -6,10 +6,6 @@ pub use rbool::Rbool;
 pub use rfloat::Rfloat;
 pub use rint::Rint;
 
-pub trait Scalar<T> {
-    fn inner(&self) -> T;
-}
-
 #[cfg(feature = "num-complex")]
 mod rcplx_full;
 
@@ -21,3 +17,11 @@ mod rcplx_default;
 
 #[cfg(not(feature = "num-complex"))]
 pub use rcplx_default::{c64, Rcplx};
+
+pub trait Scalar<T>: crate::CanBeNA
+where
+    T: PartialEq + Copy,
+{
+    fn inner(&self) -> T;
+    fn new(val: T) -> Self;
+}

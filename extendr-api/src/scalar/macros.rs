@@ -693,7 +693,7 @@ macro_rules! gen_trait_impl {
             #[doc = "```"]
             impl PartialEq<$type> for $type {
                 fn eq(&self, other: &$type) -> bool {
-                    !(self.is_na() || other.is_na()) && self.0 == other.0
+                    !(self.is_na() || other.is_na()) && self.inner().eq(&other.inner())
                 }
             }
         }

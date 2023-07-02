@@ -13,11 +13,15 @@ use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 ///
 /// `Rint` has the same footprint as an `i32` value allowing us to use it in zero copy slices.
 #[repr(transparent)]
-pub struct Rint(pub i32);
+pub struct Rint(i32);
 
 impl Scalar<i32> for Rint {
     fn inner(&self) -> i32 {
         self.0
+    }
+
+    fn new(val: i32) -> Self {
+        Rint(val)
     }
 }
 

@@ -11,11 +11,15 @@ use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 ///
 /// `Rfloat` has the same footprint as an `f64` value allowing us to use it in zero copy slices.
 #[repr(transparent)]
-pub struct Rfloat(pub f64);
+pub struct Rfloat(f64);
 
 impl Scalar<f64> for Rfloat {
     fn inner(&self) -> f64 {
         self.0
+    }
+
+    fn new(val: f64) -> Self {
+        Rfloat(val)
     }
 }
 
