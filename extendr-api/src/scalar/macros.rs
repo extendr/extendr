@@ -713,34 +713,45 @@ macro_rules! gen_trait_impl {
             #[doc = "    assert!(<" $type ">::default().eq(&<" $type_prim ">::default()));"]
             #[doc = "}"]
             #[doc = "```"]
-            impl PartialEq<$type_prim> for &$type {
-                /// NA always fails.
-                fn eq(&self, other: &$type_prim) -> bool {
-                    <Option<$type_prim>>::try_from(**self) == Ok(Some(*other))
-                }
-            }
-        }
-
-        // The 'example usage' expands to...
-        //
-        // /// Documentation comments/test built by the #[doc] attributes
-        // impl PartialEq<i32> for Rint {
-        //     fn eq(&self, other: &i32) -> bool {
-        //         !self.is_na() && self.0 == *other
-        //     }
-        // }
-        paste::paste! {
-            #[doc = "```"]
-            #[doc = "use extendr_api::prelude::*;"]
-            #[doc = "test! {"]
-            #[doc = "    assert!(<" $type ">::default().eq(&<" $type_prim ">::default()));"]
-            #[doc = "}"]
-            #[doc = "```"]
             impl PartialEq<$type_prim> for $type {
                 /// NA always fails.
                 fn eq(&self, other: &$type_prim) -> bool {
                     <Option<$type_prim>>::try_from(self.clone()) == Ok(Some(*other))
                 }
+            }
+        }
+
+        impl PartialEq<$type> for $type_prim {
+            fn eq(&self, other: &$type) -> bool {
+                <Option<$type_prim>>::try_from(*other) == Ok(Some(*self))
+            }
+        }
+
+        impl std::cmp::PartialOrd<$type> for $type {
+            fn partial_cmp(&self, other: &$type) -> Option<std::cmp::Ordering> {
+                if self.is_na() || other.is_na() {
+                    None
+                } else {
+                    self.inner().partial_cmp(&other.inner())
+                }
+            }
+        }
+
+        impl std::cmp::PartialOrd<$type_prim> for $type {
+            fn partial_cmp(&self, other: &$type_prim) -> Option<std::cmp::Ordering> {
+                let other: Option<$type_prim> = Some(*other);
+                let slf: Option<$type_prim> = (*self).into();
+
+                slf.partial_cmp(&other)
+            }
+        }
+
+        impl std::cmp::PartialOrd<$type> for $type_prim {
+            fn partial_cmp(&self, other: &$type) -> Option<std::cmp::Ordering> {
+                let other: Option<$type_prim> = (*other).into();
+                let slf: Option<$type_prim> = Some(*self);
+
+                slf.partial_cmp(&other)
             }
         }
 
