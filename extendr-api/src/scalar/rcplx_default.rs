@@ -1,4 +1,5 @@
 use crate::scalar::Rfloat;
+use crate::scalar::Scalar;
 use crate::*;
 
 #[allow(non_camel_case_types)]

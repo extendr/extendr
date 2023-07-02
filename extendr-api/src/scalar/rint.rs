@@ -15,10 +15,10 @@ use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 #[repr(transparent)]
 pub struct Rint(pub i32);
 
-impl Scalar<i32> for Rint {}
-
-impl Rint {
-    gen_impl!(Rint, i32);
+impl Scalar<i32> for Rint {
+    fn inner(&self) -> i32 {
+        self.0
+    }
 }
 
 gen_trait_impl!(Rint, i32, |x: &Rint| x.0 == i32::MIN, i32::MIN);

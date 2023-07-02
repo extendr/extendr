@@ -13,11 +13,13 @@ use std::convert::TryFrom;
 #[repr(transparent)]
 pub struct Rbool(i32);
 
-impl Scalar<i32> for Rbool {}
+impl Scalar<i32> for Rbool {
+    fn inner(&self) -> i32 {
+        self.0
+    }
+}
 
 impl Rbool {
-    gen_impl!(Rbool, i32);
-
     /// Return a `true` `Rbool`.
     pub const fn true_value() -> Rbool {
         Rbool(1)

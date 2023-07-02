@@ -13,11 +13,13 @@ use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 #[repr(transparent)]
 pub struct Rfloat(pub f64);
 
-impl Scalar<f64> for Rfloat {}
+impl Scalar<f64> for Rfloat {
+    fn inner(&self) -> f64 {
+        self.0
+    }
+}
 
 impl Rfloat {
-    gen_impl!(Rfloat, f64);
-
     pub fn is_nan(&self) -> bool {
         self.0.is_nan()
     }

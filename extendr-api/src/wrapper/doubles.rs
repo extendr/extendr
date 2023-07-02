@@ -1,4 +1,4 @@
-use super::scalar::Rfloat;
+use super::scalar::{Rfloat, Scalar};
 use super::*;
 use std::iter::FromIterator;
 

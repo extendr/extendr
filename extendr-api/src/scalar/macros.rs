@@ -599,27 +599,6 @@ macro_rules! gen_from_scalar {
     };
 }
 
-/// Generates an implementation of the instance `inner()` method for a type
-///
-/// This macro requires the following arguments:
-///
-/// * `$type`      - The Type the `inner()` method is implemented for
-/// * `$type_prim` - The primitive Rust scalar type that corresponds to `$type`
-///
-/// Example Usage:
-///
-/// ```ignore
-/// gen_impl!(Rint, i32);
-/// ```
-macro_rules! gen_impl {
-    ($type : ident, $type_prim : ty) => {
-        /// Get underlying value.
-        pub fn inner(&self) -> $type_prim {
-            self.0
-        }
-    };
-}
-
 /// Generates an implementation of a number of Traits for the specified Type
 ///
 /// This macro requires the following arguments:
@@ -859,7 +838,6 @@ pub(in crate::scalar) use gen_binop;
 pub(in crate::scalar) use gen_binopassign;
 pub(in crate::scalar) use gen_from_primitive;
 pub(in crate::scalar) use gen_from_scalar;
-pub(in crate::scalar) use gen_impl;
 pub(in crate::scalar) use gen_sum_iter;
 pub(in crate::scalar) use gen_trait_impl;
 pub(in crate::scalar) use gen_unop;
