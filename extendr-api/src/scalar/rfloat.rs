@@ -1,3 +1,4 @@
+use crate::prelude::Scalar;
 use crate::scalar::macros::*;
 use crate::*;
 use std::convert::TryFrom;
@@ -9,8 +10,10 @@ use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 /// `Rfloat` has a special `NA` value, obtained from R headers via `R_NaReal`.
 ///
 /// `Rfloat` has the same footprint as an `f64` value allowing us to use it in zero copy slices.
-#[repr(C)]
+#[repr(transparent)]
 pub struct Rfloat(pub f64);
+
+impl Scalar<f64> for Rfloat {}
 
 impl Rfloat {
     gen_impl!(Rfloat, f64);

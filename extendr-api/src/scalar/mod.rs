@@ -6,6 +6,8 @@ pub use rbool::Rbool;
 pub use rfloat::Rfloat;
 pub use rint::Rint;
 
+pub trait Scalar<T> {}
+
 #[cfg(feature = "num-complex")]
 mod rcplx_full;
 
