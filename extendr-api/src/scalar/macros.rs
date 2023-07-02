@@ -739,19 +739,15 @@ macro_rules! gen_trait_impl {
 
         impl std::cmp::PartialOrd<$type_prim> for $type {
             fn partial_cmp(&self, other: &$type_prim) -> Option<std::cmp::Ordering> {
-                let other: Option<$type_prim> = Some(*other);
-                let slf: Option<$type_prim> = (*self).into();
-
-                slf.partial_cmp(&other)
+                let other: $type = (*other).try_into().unwrap_or($type::na());
+                self.partial_cmp(&other)
             }
         }
 
         impl std::cmp::PartialOrd<$type> for $type_prim {
             fn partial_cmp(&self, other: &$type) -> Option<std::cmp::Ordering> {
-                let other: Option<$type_prim> = (*other).into();
-                let slf: Option<$type_prim> = Some(*self);
-
-                slf.partial_cmp(&other)
+                let slf: $type = (*self).try_into().unwrap_or($type::na());
+                slf.partial_cmp(other)
             }
         }
 
