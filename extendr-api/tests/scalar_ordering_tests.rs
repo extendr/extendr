@@ -167,3 +167,43 @@ where
         assert_eq!(na.partial_cmp(&na), None);
     }
 }
+
+#[test]
+fn collection_sort_rint() {
+    let mut raw = vec![45, 192, 87, 23, 255];
+    let mut rints: Vec<Rint> = raw.iter().map(|&x| Rint::from(x)).collect();
+    raw.sort();
+    rints.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    assert!(raw.eq(&rints));
+}
+
+#[test]
+fn collection_sort_rfloat() {
+    let mut raw = vec![45.0, 192.0, 87.0, 23.0, 255.0];
+    let mut rfloats: Vec<Rfloat> = raw.iter().map(|&x| Rfloat::from(x)).collect();
+    raw.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    rfloats.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    assert!(raw.eq(&rfloats));
+}
+
+#[rstest]
+#[case(vec![45, 192, 87, 23, 255], vec![23, 45, 87, 192, 255], Rint::default())]
+#[case(vec![45.0, 192.0, 87.0, 23.0, 255.0], vec![23.0, 45.0, 87.0, 192.0, 255.0], Rfloat::default())]
+fn collection_sort<T, U>(#[case] raw: Vec<U>, #[case] ordered: Vec<U>, #[case] _marker: T)
+where
+    T: Scalar<U> + PartialOrd + PartialEq + Copy + From<U>,
+    U: PartialEq + Copy + PartialEq<T>,
+{
+    let mut scalars: Vec<T> = raw.iter().map(|&x| x.into()).collect();
+    scalars.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    assert!(ordered.eq(&scalars));
+}
+
+#[test]
+fn collection_sort_bool() {
+    let raw = vec![true, false, true, false, true];
+    let ordered = vec![false, false, true, true, true];
+    let mut scalars: Vec<Rbool> = raw.iter().map(|&x| x.into()).collect();
+    scalars.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    assert!(ordered.eq(&scalars));
+}
