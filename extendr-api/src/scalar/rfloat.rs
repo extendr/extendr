@@ -1,4 +1,4 @@
-use crate::prelude::Scalar;
+use crate::prelude::{Rint, Scalar};
 use crate::scalar::macros::*;
 use crate::*;
 use std::cmp::Ordering::*;
@@ -152,6 +152,22 @@ gen_binopassign!(
 
 // Generate unary ops for -, !
 gen_unop!(Rfloat, Neg, |lhs: f64| Some(-lhs), "Negate a Rfloat value.");
+
+impl From<i32> for Rfloat {
+    fn from(value: i32) -> Self {
+        Rfloat::from(value as f64)
+    }
+}
+
+impl From<Rint> for Rfloat {
+    fn from(value: Rint) -> Self {
+        if value.is_na() {
+            Rfloat::na()
+        } else {
+            Rfloat::from(value.inner())
+        }
+    }
+}
 
 impl TryFrom<&Robj> for Rfloat {
     type Error = Error;
