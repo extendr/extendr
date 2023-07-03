@@ -1,6 +1,7 @@
 use crate::scalar::macros::*;
 use crate::scalar::Scalar;
 use crate::*;
+use std::cmp::Ordering::*;
 use std::convert::TryFrom;
 use std::ops::{Add, Div, Mul, Neg, Not, Sub};
 use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
@@ -22,6 +23,44 @@ impl Scalar<i32> for Rint {
 
     fn new(val: i32) -> Self {
         Rint(val)
+    }
+}
+
+impl Rint {
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     assert!(Rint::na().min(Rint::default()).is_na());    
+    ///     assert!(Rint::default().min(Rint::na()).is_na());
+    ///     assert_eq!(Rint::default().min(Rint::default()), Rint::default());
+    ///     assert_eq!(Rint::from(1).min(Rint::from(2)), Rint::from(1));    
+    ///     assert_eq!(Rint::from(2).min(Rint::from(1)), Rint::from(1));    
+    /// }
+    /// ```
+    pub fn min(&self, other: Self) -> Self {
+        match self.partial_cmp(&other) {
+            Some(Less | Equal) => *self,
+            Some(Greater) => other,
+            _ => Self::na(),
+        }
+    }
+
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     assert!(Rint::na().max(Rint::default()).is_na());    
+    ///     assert!(Rint::default().max(Rint::na()).is_na());
+    ///     assert_eq!(Rint::default().max(Rint::default()), Rint::default());
+    ///     assert_eq!(Rint::from(1).max(Rint::from(2)), Rint::from(2));    
+    ///     assert_eq!(Rint::from(2).max(Rint::from(1)), Rint::from(2));    
+    /// }
+    /// ```
+    pub fn max(&self, other: Self) -> Self {
+        match self.partial_cmp(&other) {
+            Some(Less) => other,
+            Some(Greater | Equal) => *self,
+            _ => Self::na(),
+        }
     }
 }
 

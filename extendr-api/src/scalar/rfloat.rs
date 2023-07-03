@@ -1,6 +1,7 @@
 use crate::prelude::Scalar;
 use crate::scalar::macros::*;
 use crate::*;
+use std::cmp::Ordering::*;
 use std::convert::TryFrom;
 use std::ops::{Add, Div, Mul, Neg, Sub};
 use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
@@ -44,6 +45,42 @@ impl Rfloat {
     }
     pub fn sqrt(&self) -> Rfloat {
         self.0.sqrt().into()
+    }
+
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     assert!(Rfloat::na().min(Rfloat::default()).is_na());    
+    ///     assert!(Rfloat::default().min(Rfloat::na()).is_na());
+    ///     assert_eq!(Rfloat::default().min(Rfloat::default()), Rfloat::default());
+    ///     assert_eq!(Rfloat::from(1).min(Rfloat::from(2)), Rfloat::from(1));    
+    ///     assert_eq!(Rfloat::from(2).min(Rfloat::from(1)), Rfloat::from(1));    
+    /// }
+    /// ```
+    pub fn min(&self, other: Self) -> Self {
+        match self.partial_cmp(&other) {
+            Some(Less | Equal) => *self,
+            Some(Greater) => other,
+            _ => Self::na(),
+        }
+    }
+
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     assert!(Rfloat::na().max(Rfloat::default()).is_na());    
+    ///     assert!(Rfloat::default().max(Rfloat::na()).is_na());
+    ///     assert_eq!(Rfloat::default().max(Rfloat::default()), Rfloat::default());
+    ///     assert_eq!(Rfloat::from(1).max(Rfloat::from(2)), Rfloat::from(2));    
+    ///     assert_eq!(Rfloat::from(2).max(Rfloat::from(1)), Rfloat::from(2));    
+    /// }
+    /// ```
+    pub fn max(&self, other: Self) -> Self {
+        match self.partial_cmp(&other) {
+            Some(Less) => other,
+            Some(Greater | Equal) => *self,
+            _ => Self::na(),
+        }
     }
 }
 
