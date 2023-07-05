@@ -599,27 +599,6 @@ macro_rules! gen_from_scalar {
     };
 }
 
-/// Generates an implementation of the instance `inner()` method for a type
-///
-/// This macro requires the following arguments:
-///
-/// * `$type`      - The Type the `inner()` method is implemented for
-/// * `$type_prim` - The primitive Rust scalar type that corresponds to `$type`
-///
-/// Example Usage:
-///
-/// ```ignore
-/// gen_impl!(Rint, i32);
-/// ```
-macro_rules! gen_impl {
-    ($type : ident, $type_prim : ty) => {
-        /// Get underlying value.
-        pub fn inner(&self) -> $type_prim {
-            self.0
-        }
-    };
-}
-
 /// Generates an implementation of a number of Traits for the specified Type
 ///
 /// This macro requires the following arguments:
@@ -714,42 +693,11 @@ macro_rules! gen_trait_impl {
             #[doc = "```"]
             impl PartialEq<$type> for $type {
                 fn eq(&self, other: &$type) -> bool {
-                    !(self.is_na() || other.is_na()) && self.0 == other.0
+                    !(self.is_na() || other.is_na()) && self.inner().eq(&other.inner())
                 }
             }
         }
 
-        // The 'example usage' expands to...
-        //
-        // /// Documentation comments/test built by the #[doc] attributes
-        // impl PartialEq<i32> for Rint {
-        //     fn eq(&self, other: &i32) -> bool {
-        //         !self.is_na() && self.0 == *other
-        //     }
-        // }
-        paste::paste! {
-            #[doc = "```"]
-            #[doc = "use extendr_api::prelude::*;"]
-            #[doc = "test! {"]
-            #[doc = "    assert!(<" $type ">::default().eq(&<" $type_prim ">::default()));"]
-            #[doc = "}"]
-            #[doc = "```"]
-            impl PartialEq<$type_prim> for &$type {
-                /// NA always fails.
-                fn eq(&self, other: &$type_prim) -> bool {
-                    <Option<$type_prim>>::try_from(**self) == Ok(Some(*other))
-                }
-            }
-        }
-
-        // The 'example usage' expands to...
-        //
-        // /// Documentation comments/test built by the #[doc] attributes
-        // impl PartialEq<i32> for Rint {
-        //     fn eq(&self, other: &i32) -> bool {
-        //         !self.is_na() && self.0 == *other
-        //     }
-        // }
         paste::paste! {
             #[doc = "```"]
             #[doc = "use extendr_api::prelude::*;"]
@@ -761,6 +709,19 @@ macro_rules! gen_trait_impl {
                 /// NA always fails.
                 fn eq(&self, other: &$type_prim) -> bool {
                     <Option<$type_prim>>::try_from(self.clone()) == Ok(Some(*other))
+                }
+            }
+        }
+        paste::paste! {
+            #[doc = "```"]
+            #[doc = "use extendr_api::prelude::*;"]
+            #[doc = "test! {"]
+            #[doc = "    assert!(<" $type_prim ">::default().eq(&<" $type ">::default()));"]
+            #[doc = "}"]
+            #[doc = "```"]
+            impl PartialEq<$type> for $type_prim {
+                fn eq(&self, other: &$type) -> bool {
+                    <Option<$type_prim>>::try_from(*other) == Ok(Some(*self))
                 }
             }
         }
@@ -783,6 +744,75 @@ macro_rules! gen_trait_impl {
             impl std::default::Default for $type {
                 fn default() -> Self {
                     $type::from(<$type_prim>::default())
+                }
+            }
+        }
+    };
+}
+
+macro_rules! gen_partial_ord {
+    ($type : ident, $type_prim : ty) => {
+        paste::paste! {
+            #[doc = "```"]
+            #[doc = "use extendr_api::prelude::*;"]
+            #[doc = "test! {"]
+            #[doc = "    assert_eq!(<" $type ">::default() <  <" $type ">::na(), false);"]
+            #[doc = "    assert_eq!(<" $type ">::default() <= <" $type ">::na(), false);"]
+            #[doc = "    assert_eq!(<" $type ">::default() >  <" $type ">::na(), false);"]
+            #[doc = "    assert_eq!(<" $type ">::default() >= <" $type ">::na(), false);"]
+            #[doc = "    assert_eq!(<" $type ">::default() <  <" $type ">::default(), false);"]
+            #[doc = "    assert_eq!(<" $type ">::default() <= <" $type ">::default(), true);"]
+            #[doc = "    assert_eq!(<" $type ">::default() >  <" $type ">::default(), false);"]
+            #[doc = "    assert_eq!(<" $type ">::default() >= <" $type ">::default(), true);"]
+            #[doc = "}"]
+            #[doc = "```"]
+            impl std::cmp::PartialOrd<$type> for $type {
+                fn partial_cmp(&self, other: &$type) -> Option<std::cmp::Ordering> {
+                    if self.is_na() || other.is_na() {
+                        None
+                    } else {
+                        self.inner().partial_cmp(&other.inner())
+                    }
+                }
+            }
+        }
+
+        paste::paste! {
+            #[doc = "```"]
+            #[doc = "use extendr_api::prelude::*;"]
+            #[doc = "test! {"]
+            #[doc = "    assert_eq!(<" $type_prim ">::default() <  <" $type ">::na(), false);"]
+            #[doc = "    assert_eq!(<" $type_prim ">::default() <= <" $type ">::na(), false);"]
+            #[doc = "    assert_eq!(<" $type_prim ">::default() >  <" $type ">::na(), false);"]
+            #[doc = "    assert_eq!(<" $type_prim ">::default() >= <" $type ">::na(), false);"]
+            #[doc = "    assert_eq!(<" $type_prim ">::default() <  <" $type ">::default(), false);"]
+            #[doc = "    assert_eq!(<" $type_prim ">::default() <= <" $type ">::default(), true);"]
+            #[doc = "    assert_eq!(<" $type_prim ">::default() >  <" $type ">::default(), false);"]
+            #[doc = "    assert_eq!(<" $type_prim ">::default() >= <" $type ">::default(), true);"]
+            #[doc = "}"]
+            #[doc = "```"]
+            impl std::cmp::PartialOrd<$type_prim> for $type {
+                fn partial_cmp(&self, other: &$type_prim) -> Option<std::cmp::Ordering> {
+                    let other: $type = (*other).try_into().unwrap_or($type::na());
+                    self.partial_cmp(&other)
+                }
+            }
+        }
+
+        paste::paste! {
+            #[doc = "```"]
+            #[doc = "use extendr_api::prelude::*;"]
+            #[doc = "test! {"]
+            #[doc = "    assert_eq!(<" $type ">::default() <  <" $type ">::default(), false);"]
+            #[doc = "    assert_eq!(<" $type ">::default() <= <" $type ">::default(), true);"]
+            #[doc = "    assert_eq!(<" $type ">::default() >  <" $type ">::default(), false);"]
+            #[doc = "    assert_eq!(<" $type ">::default() >= <" $type ">::default(), true);"]
+            #[doc = "}"]
+            #[doc = "```"]
+            impl std::cmp::PartialOrd<$type> for $type_prim {
+                fn partial_cmp(&self, other: &$type) -> Option<std::cmp::Ordering> {
+                    let slf: $type = (*self).try_into().unwrap_or($type::na());
+                    slf.partial_cmp(other)
                 }
             }
         }
@@ -859,7 +889,7 @@ pub(in crate::scalar) use gen_binop;
 pub(in crate::scalar) use gen_binopassign;
 pub(in crate::scalar) use gen_from_primitive;
 pub(in crate::scalar) use gen_from_scalar;
-pub(in crate::scalar) use gen_impl;
+pub(in crate::scalar) use gen_partial_ord;
 pub(in crate::scalar) use gen_sum_iter;
 pub(in crate::scalar) use gen_trait_impl;
 pub(in crate::scalar) use gen_unop;

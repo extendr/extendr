@@ -1,5 +1,7 @@
+use crate::prelude::{Rint, Scalar};
 use crate::scalar::macros::*;
 use crate::*;
+use std::cmp::Ordering::*;
 use std::convert::TryFrom;
 use std::ops::{Add, Div, Mul, Neg, Sub};
 use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
@@ -9,12 +11,20 @@ use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 /// `Rfloat` has a special `NA` value, obtained from R headers via `R_NaReal`.
 ///
 /// `Rfloat` has the same footprint as an `f64` value allowing us to use it in zero copy slices.
-#[repr(C)]
-pub struct Rfloat(pub f64);
+#[repr(transparent)]
+pub struct Rfloat(f64);
+
+impl Scalar<f64> for Rfloat {
+    fn inner(&self) -> f64 {
+        self.0
+    }
+
+    fn new(val: f64) -> Self {
+        Rfloat(val)
+    }
+}
 
 impl Rfloat {
-    gen_impl!(Rfloat, f64);
-
     pub fn is_nan(&self) -> bool {
         self.0.is_nan()
     }
@@ -36,6 +46,42 @@ impl Rfloat {
     pub fn sqrt(&self) -> Rfloat {
         self.0.sqrt().into()
     }
+
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     assert!(Rfloat::na().min(Rfloat::default()).is_na());    
+    ///     assert!(Rfloat::default().min(Rfloat::na()).is_na());
+    ///     assert_eq!(Rfloat::default().min(Rfloat::default()), Rfloat::default());
+    ///     assert_eq!(Rfloat::from(1).min(Rfloat::from(2)), Rfloat::from(1));    
+    ///     assert_eq!(Rfloat::from(2).min(Rfloat::from(1)), Rfloat::from(1));    
+    /// }
+    /// ```
+    pub fn min(&self, other: Self) -> Self {
+        match self.partial_cmp(&other) {
+            Some(Less | Equal) => *self,
+            Some(Greater) => other,
+            _ => Self::na(),
+        }
+    }
+
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     assert!(Rfloat::na().max(Rfloat::default()).is_na());    
+    ///     assert!(Rfloat::default().max(Rfloat::na()).is_na());
+    ///     assert_eq!(Rfloat::default().max(Rfloat::default()), Rfloat::default());
+    ///     assert_eq!(Rfloat::from(1).max(Rfloat::from(2)), Rfloat::from(2));    
+    ///     assert_eq!(Rfloat::from(2).max(Rfloat::from(1)), Rfloat::from(2));    
+    /// }
+    /// ```
+    pub fn max(&self, other: Self) -> Self {
+        match self.partial_cmp(&other) {
+            Some(Less) => other,
+            Some(Greater | Equal) => *self,
+            _ => Self::na(),
+        }
+    }
 }
 
 // `NA_real_` is a `NaN` with specific bit representation.
@@ -44,6 +90,7 @@ gen_trait_impl!(Rfloat, f64, |x: &Rfloat| x.inner().is_na(), f64::na());
 gen_from_primitive!(Rfloat, f64);
 gen_from_scalar!(Rfloat, f64);
 gen_sum_iter!(Rfloat);
+gen_partial_ord!(Rfloat, f64);
 
 // Generate binary ops for +, -, * and /
 gen_binop!(
@@ -105,6 +152,22 @@ gen_binopassign!(
 
 // Generate unary ops for -, !
 gen_unop!(Rfloat, Neg, |lhs: f64| Some(-lhs), "Negate a Rfloat value.");
+
+impl From<i32> for Rfloat {
+    fn from(value: i32) -> Self {
+        Rfloat::from(value as f64)
+    }
+}
+
+impl From<Rint> for Rfloat {
+    fn from(value: Rint) -> Self {
+        if value.is_na() {
+            Rfloat::na()
+        } else {
+            Rfloat::from(value.inner())
+        }
+    }
+}
 
 impl TryFrom<&Robj> for Rfloat {
     type Error = Error;
