@@ -9,6 +9,7 @@ pub mod altrep;
 pub mod complexes;
 pub mod dataframe;
 pub mod doubles;
+pub mod ellipsis;
 pub mod environment;
 pub mod expr;
 pub mod externalptr;
@@ -37,6 +38,7 @@ pub use altrep::{
 pub use complexes::Complexes;
 pub use dataframe::{Dataframe, IntoDataFrameRow};
 pub use doubles::Doubles;
+pub use ellipsis::Ellipsis;
 pub use environment::{EnvIter, Environment};
 pub use expr::Expressions;
 pub use externalptr::ExternalPtr;
