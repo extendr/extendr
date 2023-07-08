@@ -1,3 +1,4 @@
+use crate::list::KeyValue;
 use crate::prelude::*;
 use crate::{Error, R_NilValue, Robj, Rtype, Types, SEXP};
 
@@ -10,6 +11,16 @@ pub struct Ellipsis {
 pub struct EllipsisValue {
     pub name: Option<String>,
     pub value: Robj,
+}
+
+impl KeyValue for EllipsisValue {
+    fn key(&self) -> String {
+        self.name.clone().unwrap_or("".to_string())
+    }
+
+    fn value(self) -> Robj {
+        self.value
+    }
 }
 
 impl Ellipsis {
