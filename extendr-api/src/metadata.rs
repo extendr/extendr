@@ -53,6 +53,7 @@ pub struct Metadata {
 struct RArg {
     name: String,
     default: Option<&'static str>,
+    is_ellipsis: bool,
 }
 
 impl RArg {
@@ -61,13 +62,25 @@ impl RArg {
     }
 
     fn to_actual_arg(&self) -> String {
-        self.name.clone()
+        if self.is_ellipsis {
+            "environment()".to_string()
+        } else {
+            self.name.clone()
+        }
     }
 
     fn to_formal_arg(&self) -> String {
-        match self.default {
-            Some(default_val) => format!("{} = {}", self.name, default_val),
-            None => self.name.clone(),
+        match self {
+            Self {
+                default: Some(default_val),
+                ..
+            } => {
+                format!("{} = {}", self.name, default_val)
+            }
+            Self {
+                is_ellipsis: true, ..
+            } => "...".to_string(),
+            _ => self.name.clone(),
         }
     }
 }
@@ -81,6 +94,7 @@ impl From<&Arg> for RArg {
             } else {
                 None
             },
+            is_ellipsis: matches!(arg.modifier, ArgModifier::Ellipsis),
         }
     }
 }
