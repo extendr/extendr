@@ -8,8 +8,8 @@ pub struct Ellipsis {
 
 #[derive(PartialEq, Clone, Debug)]
 pub struct EllipsisValue {
-    pub(crate) name: Option<String>,
-    pub(crate) value: Robj,
+    pub name: Option<String>,
+    pub value: Robj,
 }
 
 impl Ellipsis {
@@ -136,6 +136,14 @@ impl TryFrom<&Robj> for EllipsisItemValue {
         } else {
             <Promise as TryFrom<&Robj>>::try_from(value).map(EllipsisItemValue::Promise)
         }
+    }
+}
+
+impl TryFrom<Robj> for EllipsisItemValue {
+    type Error = Error;
+
+    fn try_from(value: Robj) -> std::result::Result<Self, Self::Error> {
+        <EllipsisItemValue as TryFrom<&Robj>>::try_from(&value)
     }
 }
 
