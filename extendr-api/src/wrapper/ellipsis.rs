@@ -1,6 +1,6 @@
 use crate::list::KeyValue;
 use crate::prelude::*;
-use crate::{Error, R_NilValue, Robj, Rtype, Types, SEXP};
+use crate::{Error, MissingArgId, R_NilValue, Robj, Rtype, Types, SEXP};
 
 #[derive(PartialEq, Clone)]
 pub struct Ellipsis {
@@ -72,11 +72,10 @@ impl Ellipsis {
                     if i == n {
                         None
                     } else {
-                        let name = name
-                            .clone()
-                            .map(|nm| format!("`{}`", nm.as_str()))
-                            .unwrap_or_else(|| format!("[{}] element", i + 1)); // To match R element numbering.
-                        Some(Err(Error::Other(format!("Missing value for {}", name))))
+                        name.clone()
+                            .map(|nm| MissingArgId::Name(nm.as_str().into()))
+                            .or_else(|| Some(MissingArgId::Index(i + 1)))
+                            .map(|x| Err(Error::NonTrailingMissingArg(x)))
                     }
                 }
             })
@@ -92,7 +91,7 @@ impl<'a> TryFrom<&'a Robj> for Ellipsis {
             Rtype::Dot => Ok(Self { robj: robj.clone() }),
             Rtype::Environment => try_from_env(robj),
             Rtype::Symbol if robj.is_missing_arg() => Ok(Ellipsis::new()),
-            tp => Err(Error::Other(format!("Got {:?}: {:?}", tp, robj))),
+            _ => Err(Error::ExpectedEllipsis(robj.clone(), None)),
         }
     }
 }
@@ -110,7 +109,7 @@ impl<'a> FromRobj<'a> for Ellipsis {
         if let Ok(f) = Ellipsis::try_from(robj) {
             Ok(f)
         } else {
-            Err("Not an ellipsis")
+            Err("Not an ellipsis (`...`)")
         }
     }
 }
@@ -120,7 +119,10 @@ fn try_from_env(env: &Robj) -> Result<Ellipsis> {
         .and_then(|e| {
             e.iter()
                 .find(|(k, _)| *k == "...")
-                .ok_or(Error::Other("Ellipsis missing".into()))
+                .ok_or(Error::ExpectedEllipsis(
+                    e.into(),
+                    Some("`...` is missing from the captured environment".into()),
+                ))
         })
         .and_then(|(_, v)| <Ellipsis as TryFrom<&Robj>>::try_from(&v))
 }

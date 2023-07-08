@@ -27,6 +27,12 @@ pub fn unwrap_or_throw_error<T>(r: std::result::Result<T, Error>) -> T {
 }
 
 #[derive(Debug, PartialEq)]
+pub enum MissingArgId {
+    Name(String),
+    Index(usize),
+}
+
+#[derive(Debug, PartialEq)]
 pub enum Error {
     Panic(Robj),
     NotFound(Robj),
@@ -78,6 +84,8 @@ pub enum Error {
     NoGraphicsDevices(Robj),
 
     ExpectedExternalPtrType(Robj, String),
+    ExpectedEllipsis(Robj, Option<String>),
+    NonTrailingMissingArg(MissingArgId),
     Other(String),
 
     #[cfg(feature = "ndarray")]
@@ -162,6 +170,18 @@ impl std::fmt::Display for Error {
                 write!(f, "Incorrect external pointer type {}", type_name)
             }
             Error::NoGraphicsDevices(_robj) => write!(f, "No graphics devices active."),
+
+            Error::ExpectedEllipsis(robj, str) => match str {
+                Some(str) => write!(f, "Expected `...`, got {:?}: {}", robj.rtype(), str),
+                None => write!(f, "Expected `...`, got {:?}", robj.rtype()),
+            },
+            Error::NonTrailingMissingArg(arg) => match arg {
+                MissingArgId::Name(name) => write!(f, "Non-trailing missing argument: `{}`", name),
+                MissingArgId::Index(index) => {
+                    write!(f, "Non-trailing missing argument: `..{}`", index)
+                }
+            },
+
             Error::Other(str) => write!(f, "{}", str),
 
             #[cfg(feature = "ndarray")]
