@@ -23,6 +23,16 @@ impl KeyValue for EllipsisValue {
     }
 }
 
+impl<'a> KeyValue for &'a EllipsisValue {
+    fn key(&self) -> String {
+        self.name.clone().unwrap_or("".to_string())
+    }
+
+    fn value(self) -> Robj {
+        self.value.clone()
+    }
+}
+
 impl Ellipsis {
     pub(crate) fn new() -> Ellipsis {
         Self { robj: ().into() }
@@ -35,13 +45,6 @@ impl Ellipsis {
                 list_elem: self.robj.get(),
             }
         }
-    }
-
-    pub fn collect_values(&self) -> Result<Vec<Robj>> {
-        self.iter()
-            .filter_map(|x| x.value.to_promise())
-            .map(|p| p.eval())
-            .collect()
     }
 
     pub fn values(&self) -> Result<Vec<EllipsisValue>> {
