@@ -77,6 +77,8 @@ add_5_if_not_null <- function(x) .Call(wrap__add_5_if_not_null, x)
 #' @export
 my_device <- function(welcome_message) invisible(.Call(wrap__my_device, welcome_message))
 
+collect_dots <- function(x, ..., y) .Call(wrap__collect_dots, x, environment(), y)
+
 #' Return string `"Hello world!"` to R.
 #' @export
 hello_submodule <- function() .Call(wrap__hello_submodule)

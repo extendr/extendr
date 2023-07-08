@@ -309,6 +309,20 @@ fn my_device(welcome_message: String) {
     device_driver.create_device::<graphic_device::MyDevice>(device_descriptor, "my device");
 }
 
+#[extendr(use_try_from = true)]
+fn collect_dots(x: Robj, #[ellipsis] dots: Ellipsis, y: Robj) -> Result<List> {
+    let dots = dots.values()?;
+    let has_names = dots.iter().any(|v| v.name.is_some());
+
+    let dots = if has_names {
+        List::from_pairs(dots.into_iter())
+    } else {
+        List::from_values(dots.into_iter().map(|v| v.value))
+    };
+
+    Ok(list!(x = x, dots = dots, y = y))
+}
+
 // Macro to generate exports
 extendr_module! {
     mod extendrtests;
@@ -357,6 +371,8 @@ extendr_module! {
     impl MyClassUnexported;
 
     fn my_device;
+
+    fn collect_dots;
 
     use submodule;
     use optional_ndarray;
