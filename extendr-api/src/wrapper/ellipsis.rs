@@ -39,6 +39,10 @@ impl Ellipsis {
             .map(|x| (x.name, x.value.to_promise()))
             .collect::<Vec<_>>();
 
+        if values.len() == 0 {
+            return Ok(vec![]);
+        }
+
         let n = values.len() - 1;
 
         values
@@ -57,7 +61,7 @@ impl Ellipsis {
                         let name = name
                             .clone()
                             .map(|nm| format!("`{}`", nm.as_str()))
-                            .unwrap_or_else(|| format!("[{}] element", i));
+                            .unwrap_or_else(|| format!("[{}] element", i + 1)); // To match R element numbering.
                         Some(Err(Error::Other(format!("Missing value for {}", name))))
                     }
                 }
@@ -75,6 +79,24 @@ impl<'a> TryFrom<&'a Robj> for Ellipsis {
             Rtype::Environment => try_from_env(robj),
             Rtype::Symbol if robj.is_missing_arg() => Ok(Ellipsis::new()),
             tp => Err(Error::Other(format!("Got {:?}: {:?}", tp, robj))),
+        }
+    }
+}
+
+impl TryFrom<Robj> for Ellipsis {
+    type Error = Error;
+
+    fn try_from(value: Robj) -> std::result::Result<Self, Self::Error> {
+        Ellipsis::try_from(&value)
+    }
+}
+
+impl<'a> FromRobj<'a> for Ellipsis {
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+        if let Ok(f) = Ellipsis::try_from(robj) {
+            Ok(f)
+        } else {
+            Err("Not an ellipsis")
         }
     }
 }
@@ -136,14 +158,6 @@ impl TryFrom<&Robj> for EllipsisItemValue {
         } else {
             <Promise as TryFrom<&Robj>>::try_from(value).map(EllipsisItemValue::Promise)
         }
-    }
-}
-
-impl TryFrom<Robj> for EllipsisItemValue {
-    type Error = Error;
-
-    fn try_from(value: Robj) -> std::result::Result<Self, Self::Error> {
-        <EllipsisItemValue as TryFrom<&Robj>>::try_from(&value)
     }
 }
 
