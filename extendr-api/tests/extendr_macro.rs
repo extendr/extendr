@@ -193,7 +193,7 @@ fn test_metadata() {
     let args = vec![Arg {
         name: "val",
         arg_type: "Robj",
-        modifier: ArgModifier::None,
+        modifier: ArgModifier::Default("NULL"),
     }];
 
     assert_eq!(
