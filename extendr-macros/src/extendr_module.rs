@@ -70,8 +70,8 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
                 mod_name: #make_module_wrappers_name_string,
                 r_name: #make_module_wrappers_name_string,
                 args: vec![
-                    extendr_api::metadata::Arg { name: "use_symbols", arg_type: "bool", default: None },
-                    extendr_api::metadata::Arg { name: "package_name", arg_type: "&str", default: None },
+                    extendr_api::metadata::Arg { name: "use_symbols", arg_type: "bool", modifier: extendr_api::metadata::ArgModifier::None },
+                    extendr_api::metadata::Arg { name: "package_name", arg_type: "&str", modifier: extendr_api::metadata::ArgModifier::None  },
                     ],
                 return_type: "String",
                 func_ptr: #wrap_make_module_wrappers as * const u8,

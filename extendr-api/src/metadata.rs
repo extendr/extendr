@@ -6,12 +6,19 @@ use crate::robj::IntoRobj;
 use crate::*;
 use std::io::Write;
 
+#[derive(Debug, PartialEq, Copy, Clone)]
+pub enum ArgModifier {
+    None,
+    Default(&'static str),
+    Ellipsis,
+}
+
 /// Metadata function argument.
 #[derive(Debug, PartialEq)]
 pub struct Arg {
     pub name: &'static str,
     pub arg_type: &'static str,
-    pub default: Option<&'static str>,
+    pub modifier: ArgModifier,
 }
 
 /// Metadata function.
@@ -69,7 +76,11 @@ impl From<&Arg> for RArg {
     fn from(arg: &Arg) -> Self {
         Self {
             name: sanitize_identifier(arg.name),
-            default: arg.default,
+            default: if let ArgModifier::Default(default) = arg.modifier {
+                Some(default)
+            } else {
+                None
+            },
         }
     }
 }

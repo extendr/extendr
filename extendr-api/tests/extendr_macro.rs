@@ -1,3 +1,4 @@
+use extendr_api::metadata::ArgModifier;
 use extendr_api::prelude::*;
 
 #[extendr(use_try_from = true)]
@@ -192,7 +193,7 @@ fn test_metadata() {
     let args = vec![Arg {
         name: "val",
         arg_type: "Robj",
-        default: Some("NULL"),
+        modifier: ArgModifier::None,
     }];
 
     assert_eq!(

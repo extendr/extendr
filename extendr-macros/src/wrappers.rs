@@ -270,16 +270,23 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> Expr {
             let ty = pattype.ty.as_ref();
             let name_string = quote! { #pat }.to_string();
             let type_string = type_name(ty);
-            let default = if let Some(default) = get_named_lit(&mut pattype.attrs, "default") {
-                quote!(Some(#default))
-            } else {
-                quote!(None)
+            let default = get_named_lit(&mut pattype.attrs, "default");
+            let ellipsis = get_named_flag(&mut pattype.attrs, "ellipsis");
+
+            let modifier = match (default, ellipsis) {
+                (None, false) => quote! { extendr_api::metadata::ArgModifier::None },
+                (None, true) => quote! {extendr_api::metadata::ArgModifier::Ellipsis },
+                (Some(def), false) => {
+                    quote! { extendr_api::metadata::ArgModifier::Default(#def) }
+                }
+                (Some(_), true) => panic!("#[ellipsis] and #[default] are incompatible"),
             };
+
             return parse_quote! {
                 extendr_api::metadata::Arg {
                     name: #name_string,
                     arg_type: #type_string,
-                    default: #default
+                    modifier: #modifier,
                 }
             };
         }
@@ -296,7 +303,7 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> Expr {
                 extendr_api::metadata::Arg {
                     name: "self",
                     arg_type: #type_string,
-                    default: None
+                    modifier: extendr_api::metadata::ArgModifier::None,
                 }
             };
         }
@@ -367,6 +374,26 @@ fn get_named_lit(attrs: &mut Vec<syn::Attribute>, name: &str) -> Option<String> 
     }
     *attrs = new_attrs;
     res
+}
+
+// Get a single named literal from a list of attributes.
+// eg. #[default="xyz"]
+// Remove the attribute from the list.
+fn get_named_flag(attrs: &mut Vec<syn::Attribute>, name: &str) -> bool {
+    let attr_idx = attrs
+        .iter()
+        .enumerate()
+        .find_map(|(i, a)| match a.parse_meta() {
+            Ok(syn::Meta::Path(path)) if path.is_ident(name) => Some(i),
+            _ => None,
+        });
+
+    if let Some(idx) = attr_idx {
+        attrs.remove(idx);
+        true
+    } else {
+        false
+    }
 }
 
 // Remove the raw identifier prefix (`r#`) from an [`Ident`]
