@@ -212,7 +212,7 @@ fn test_metadata() {
 }
 
 #[extendr(use_try_from = true)]
-fn test_ellipsis(#[ellipsis] val: Ellipsis) {}
+fn test_ellipsis(#[ellipsis] _val: Ellipsis) {}
 
 #[test]
 fn test_metadata_ellipsis() {
@@ -222,7 +222,7 @@ fn test_metadata_ellipsis() {
     meta__test_ellipsis(&mut funcs);
 
     let args = vec![Arg {
-        name: "val",
+        name: "_val",
         arg_type: "Ellipsis",
         modifier: ArgModifier::Ellipsis,
     }];
