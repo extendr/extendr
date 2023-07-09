@@ -1,12 +1,46 @@
+/*!
+Enables support for `...` parameters in R functions.
+`Ellipsis` can be used as a regular extendr-function argument. At most one `Ellipsis` is allowed per function,
+and it requires `#[ellipsis]` attribute in front of it in the signature.
+When encountered, `#[ellipsis]` attribute transforms parameter name into `...` on R side and captures current `environment()`.
+
+`Ellipsis` can be iterated over to obtain `EllipsisItemValue` objects, each representing a (potentially named) argument captured by `...`.
+`EllipsisItemValue` contains either a `Promise` that can be evaluated for value, or MissingArg, marking a missing argument in `...`.
+
+`Ellipsis` can quickly collect all promises and evaluate them, returning a vector of `EllipsisValue` objects.
+This allows at most one trailing missing arg, in all other cases collecting values will fail.
+
+The following Rust sample:
+```rust
+use extendr_api::prelude::*;
+
+#[extendr(use_try_from = true)]
+fn capture_dots(x : i32, y : i32, #[ellipsis]dots: Ellipsis) -> Result<List> {
+    let dots = dots.values()?;
+    let dots = List::from_pairs(dots.into_iter());
+
+    Ok(list!(x = x, y = y, dots = dots))
+}
+```
+producing this wrapper on R side:
+```R
+capture_dots <- function(x, y, ...) {
+    .Call("wrap__capture_dots", x, y, environment())
+}
+```
+
+*/
 use crate::list::KeyValue;
 use crate::prelude::*;
 use crate::{Error, MissingArgId, R_NilValue, Robj, Rtype, Types, SEXP};
 
+/// Ellipsis or dot-dot-dot, representing R's `...` parameter.
 #[derive(PartialEq, Clone)]
 pub struct Ellipsis {
     pub(crate) robj: Robj,
 }
 
+/// Materialized value of an argument captured by `...`.
 #[derive(PartialEq, Clone, Debug)]
 pub struct EllipsisValue {
     pub name: Option<String>,
@@ -34,10 +68,12 @@ impl<'a> KeyValue for &'a EllipsisValue {
 }
 
 impl Ellipsis {
+    /// Create new empty `Ellipsis`
     pub(crate) fn new() -> Ellipsis {
         Self { robj: ().into() }
     }
 
+    /// Iterate over arguments captured by `...`, without evaluating them.
     pub fn iter(&self) -> EllipsisIter {
         unsafe {
             EllipsisIter {
@@ -47,6 +83,8 @@ impl Ellipsis {
         }
     }
 
+    /// Collect all arguments captured by `...`, evaluating promises, allowing at most
+    /// one trailing missing argument. Every other missing argument will result in an error.
     pub fn values(&self) -> Result<Vec<EllipsisValue>> {
         let values = self
             .iter()
@@ -127,6 +165,7 @@ fn try_from_env(env: &Robj) -> Result<Ellipsis> {
         .and_then(|(_, v)| <Ellipsis as TryFrom<&Robj>>::try_from(&v))
 }
 
+/// Iterator over arguments captured by `...`.
 #[derive(Clone)]
 pub struct EllipsisIter {
     robj: Robj,
@@ -150,6 +189,7 @@ impl EllipsisIter {
     }
 }
 
+/// An argument captured by `...`.
 #[derive(Clone, PartialEq, Debug)]
 pub enum EllipsisItemValue {
     Promise(Promise),
@@ -177,6 +217,7 @@ impl TryFrom<&Robj> for EllipsisItemValue {
     }
 }
 
+/// An unevaluated (potentially) named argument captured by `...`.
 #[derive(Clone, PartialEq, Debug)]
 pub struct EllipsisIterItem {
     pub name: Option<Symbol>,
