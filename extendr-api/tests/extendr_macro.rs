@@ -210,3 +210,22 @@ fn test_metadata() {
         }
     );
 }
+
+#[extendr(use_try_from = true)]
+fn test_ellipsis(#[ellipsis] val: Ellipsis) {}
+
+#[test]
+fn test_metadata_ellipsis() {
+    use extendr_api::metadata::Arg;
+    use extendr_api::metadata::Func;
+    let mut funcs: Vec<Func> = Vec::new();
+    meta__test_ellipsis(&mut funcs);
+
+    let args = vec![Arg {
+        name: "val",
+        arg_type: "Ellipsis",
+        modifier: ArgModifier::Ellipsis,
+    }];
+
+    assert_eq!(funcs[0].args, args);
+}
