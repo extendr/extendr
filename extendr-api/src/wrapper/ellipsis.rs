@@ -1,8 +1,8 @@
 /*!
 Enables support for `...` parameters in R functions.
 `Ellipsis` can be used as a regular extendr-function argument. At most one `Ellipsis` is allowed per function,
-and it requires `#[ellipsis]` attribute in front of it in the signature.
-When encountered, `#[ellipsis]` attribute transforms parameter name into `...` on R side and captures current `environment()`.
+and it requires the `#[ellipsis]` attribute in front of it in the signature.
+When encountered, `#[ellipsis]` attribute transforms the parameter name into `...` on R side and captures current `environment()`.
 
 `Ellipsis` can be iterated over to obtain `EllipsisItemValue` objects, each representing a (potentially named) argument captured by `...`.
 `EllipsisItemValue` contains either a `Promise` that can be evaluated for value, or MissingArg, marking a missing argument in `...`.
