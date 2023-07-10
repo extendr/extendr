@@ -6,10 +6,14 @@ use crate::robj::IntoRobj;
 use crate::*;
 use std::io::Write;
 
+/// Argument modifier.
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub enum ArgModifier {
+    /// No modifier applied.
     None,
+    /// Default value is set via `#[default = "<value>"]`.
     Default(&'static str),
+    /// Argument is marked as `...` using `#[ellipsis]`.
     Ellipsis,
 }
 
