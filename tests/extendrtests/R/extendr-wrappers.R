@@ -145,6 +145,8 @@ MyClass$restore_from_robj <- function(robj) .Call(wrap__MyClass__restore_from_ro
 
 MyClass$get_default_value <- function(x = 42) .Call(wrap__MyClass__get_default_value, x)
 
+MyClass$process_dots <- function(...) .Call(wrap__MyClass__process_dots, environment())
+
 #' @rdname MyClass
 #' @usage NULL
 #' @export

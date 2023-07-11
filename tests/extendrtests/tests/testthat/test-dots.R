@@ -26,3 +26,9 @@ test_that("Dots throw if missing value in the middle", {
   expect_error(collect_dots(x = 42, y = "y", 1, 2, , 3))
 })
 
+test_that("Dots in class method", {
+  class <- MyClass$new()
+  result <- class$process_dots(x = 42, y = "y", 1, 2, 3, 4, 5,)
+  expected <- list(x = 42, y = "y", 1, 2, 3, 4, 5)
+  expect_equal(result, expected)
+})

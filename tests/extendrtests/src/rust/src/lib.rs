@@ -257,6 +257,17 @@ impl MyClass {
     fn get_default_value(#[default = "42"] x: i32) -> i32 {
         x
     }
+
+    fn process_dots(#[ellipsis] dots: Ellipsis) -> Result<List> {
+        let dots = dots.values()?;
+        let has_names = dots.iter().any(|v| v.name.is_some());
+
+        if has_names {
+            Ok(List::from_pairs(dots.into_iter()))
+        } else {
+            Ok(List::from_values(dots.into_iter().map(|v| v.value)))
+        }
+    }
 }
 
 // Class for testing special names
