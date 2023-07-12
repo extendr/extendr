@@ -273,7 +273,7 @@
 //! The minimal overhead of calling an extendr function is in the ballpark of 2-4us.
 //! Returning a condition or list increases the overhead to 4-8us. Checking & handling the result
 //! on R side will likely increase overall overhead to 8-16us, depending on how efficiently the
-//! result is handled. 
+//! result is handled.
 //!
 //! ```ignore
 //! use extendr_api::prelude::*;
