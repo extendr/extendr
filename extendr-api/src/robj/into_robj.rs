@@ -104,7 +104,7 @@ where
         match res {
             Ok(x) => x.into(),
             Err(x) => { list!(message = "extendr_err", value = x) }
-                //can only imagine this would ever fail due memory allocation error, but then panicking is the right choice
+                // can only imagine this would ever fail due to memory allocation error, but then panicking is the right choice
                 .expect("internal error: failed to create an R list")
                 .set_class(["extendr_error", "error", "condition"])
                 .expect("internal error: failed to set class"),
