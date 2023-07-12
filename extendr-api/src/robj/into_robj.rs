@@ -51,7 +51,7 @@ impl From<()> for Robj {
 ///     assert_eq!(r!(my_func()), r!(1.0));
 /// }
 /// ```
-#[cfg(not(any(feature = "result_list", feature = "result_condition")))] // list all result features
+#[cfg(not(any(feature = "result_list", feature = "result_condition")))]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
     T: Into<Robj>,
@@ -94,7 +94,7 @@ where
 /// }
 ///
 /// ```
-#[cfg(all(feature = "result_condition", not(feature = "result_list")))] //write this feature, right any feature with precedence
+#[cfg(all(feature = "result_condition", not(feature = "result_list")))]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
     T: Into<Robj>,
@@ -145,7 +145,7 @@ where
 /// }
 ///
 /// ```
-#[cfg(feature = "result_list")] //write this feature and not any result_feature with presecence
+#[cfg(feature = "result_list")]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
     T: Into<Robj>,
