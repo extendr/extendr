@@ -718,7 +718,7 @@ macro_rules! impl_from_as_iterator {
 //     fn from(val: Range<T>) -> Self {
 //         val.collect_robj()
 //     }
-// }
+// } //
 
 // Template constants are still unstable in rust.
 impl_from_iter! {[T; 1]}
