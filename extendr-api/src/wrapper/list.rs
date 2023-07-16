@@ -386,6 +386,9 @@ impl<T: Into<Robj>> FromIterator<T> for List {
         crate::single_threaded(|| unsafe {
             let robj = Robj::alloc_vector(VECSXP, len);
             for (i, v) in iter_collect.into_iter().enumerate() {
+                // We don't PROTECT each element here, as they will be immediately
+                // placed into a list which will protect them:
+                // https://cran.r-project.org/doc/manuals/R-exts.html#Garbage-Collection
                 let item: Robj = v.into();
                 SET_VECTOR_ELT(robj.get(), i as isize, item.get());
             }
