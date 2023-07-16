@@ -10,6 +10,8 @@
 
 - You can now create `ArrayView1` from `&Robj` as well as `Robj`
     [[#501]](https://github.com/extendr/extendr/pull/501)
+- Fixed error when collecting too many objects into `List`, etc.
+    [[#540]](https://github.com/extendr/extendr/pull/540)
 
 ## 0.4.0
 
