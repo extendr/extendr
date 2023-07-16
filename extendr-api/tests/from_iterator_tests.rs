@@ -35,13 +35,24 @@ fn test_from_iterator_collection() {
 }
 
 #[test]
-fn test_with_gc_torture() {
+fn test_with_gc_torture_small() {
     test!(
         let x = vec![1, 4, 5, 6];
         R!("gctorture(on = TRUE)")?;
         let list: List = x.into_iter().collect();
         R!("gctorture(on = FALSE)")?;
         assert_eq!(list, list!(1, 4, 5, 6));
+    );
+}
+
+#[test]
+fn test_with_gc_torture_large() {
+    test!(
+        let x = [0_f64; 150].map(|_|unsafe {libR_sys::Rf_runif(0., 100.)});
+        R!("gctorture(on = TRUE)")?;
+        let list: List = x.into_iter().collect();
+        R!("gctorture(on = FALSE)")?;
+        assert_eq!(list, List::from_values(x));
     );
 }
 

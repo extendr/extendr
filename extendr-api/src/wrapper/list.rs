@@ -389,6 +389,8 @@ impl<T: Into<Robj>> FromIterator<T> for List {
                 // We don't PROTECT each element here, as they will be immediately
                 // placed into a list which will protect them:
                 // https://cran.r-project.org/doc/manuals/R-exts.html#Garbage-Collection
+                // note: Currently, `Robj` automatically registers `v` by the
+                // `ownership`-module, making it protected, even though it isn't necessary to do so.
                 let item: Robj = v.into();
                 SET_VECTOR_ELT(robj.get(), i as isize, item.get());
             }
