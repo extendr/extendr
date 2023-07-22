@@ -1,5 +1,5 @@
 use proc_macro2::Ident;
-use quote::{format_ident, quote, ToTokens};
+use quote::{format_ident, quote};
 use syn::{parse_quote, punctuated::Punctuated, Expr, ExprLit, FnArg, ItemFn, Token, Type};
 
 pub const META_PREFIX: &str = "meta__";
@@ -175,27 +175,18 @@ pub fn get_doc_string(attrs: &[syn::Attribute]) -> String {
             continue;
         }
 
-        let _ = attr.parse_nested_meta(|meta| {
-            let value = match meta.value() {
-                Ok(value) => value,
-                Err(_) => return Err(meta.error("Failed to get value")),
-            };
-
-            if let Ok(syn::Meta::NameValue(syn::MetaNameValue { value, .. })) = value.parse() {
-                if let Expr::Lit(ExprLit {
-                    lit: syn::Lit::Str(litstr),
-                    ..
-                }) = value
-                {
-                    if !res.is_empty() {
-                        res.push('\n');
-                    }
-                    res.push_str(&litstr.value());
+        if let syn::Meta::NameValue(ref nv) = attr.meta {
+            if let Expr::Lit(ExprLit {
+                lit: syn::Lit::Str(ref litstr),
+                ..
+            }) = nv.value
+            {
+                if !res.is_empty() {
+                    res.push('\n');
                 }
+                res.push_str(&litstr.value());
             }
-
-            Ok(())
-        });
+        }
     }
     res
 }
