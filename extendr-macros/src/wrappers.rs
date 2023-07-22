@@ -171,7 +171,7 @@ pub fn make_function_wrappers(
 pub fn get_doc_string(attrs: &[syn::Attribute]) -> String {
     let mut res = String::new();
     for attr in attrs {
-        if let Some(id) = attr.path.get_ident() {
+        if let Some(id) = attr.path().get_ident() {
             if *id != "doc" {
                 continue;
             }
