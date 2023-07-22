@@ -7,7 +7,7 @@ authors = [
     "Mossa Merhi Reimert <mossa@sund.ku.dk>",
     "Claus O. Wilke <wilke@austin.utexas.edu>",
     "Hiroaki Yutani",
-    "Ilia A. Kosenkov <ilia.kosenkov@outlook.com>"
+    "Ilia A. Kosenkov <ilia.kosenkov@outlook.com>",
 ]
 edition = "2021"
 description = "Generate bindings from R to Rust."
@@ -18,7 +18,7 @@ repository = "https://github.com/extendr/extendr"
 proc_macro = true
 
 [dependencies]
-syn = { version = "1.0.22", features = ["full", "extra-traits"] }
+syn = { version = "2.0", features = ["full", "extra-traits"] }
 quote = "1.0.6"
 proc-macro2 = { version = "1.0" }
 
