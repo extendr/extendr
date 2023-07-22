@@ -83,7 +83,7 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
     // ```
     let mut wrappers: Vec<ItemFn> = Vec::new();
     for impl_item in &mut item_impl.items {
-        if let syn::ImplItem::Method(ref mut method) = impl_item {
+        if let syn::ImplItem::Fn(ref mut method) = impl_item {
             method_meta_names.push(format_ident!(
                 "{}{}__{}",
                 wrappers::META_PREFIX,
