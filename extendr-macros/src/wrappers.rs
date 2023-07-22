@@ -1,6 +1,6 @@
 use proc_macro2::Ident;
 use quote::{format_ident, quote};
-use syn::{parse_quote, punctuated::Punctuated, Expr, FnArg, ItemFn, Token, Type};
+use syn::{parse_quote, punctuated::Punctuated, Expr, ExprLit, FnArg, ItemFn, Token, Type};
 
 pub const META_PREFIX: &str = "meta__";
 pub const WRAP_PREFIX: &str = "wrap__";
@@ -171,20 +171,31 @@ pub fn make_function_wrappers(
 pub fn get_doc_string(attrs: &[syn::Attribute]) -> String {
     let mut res = String::new();
     for attr in attrs {
-        if let Some(id) = attr.path().get_ident() {
-            if *id != "doc" {
-                continue;
-            }
+        if !attr.path().is_ident("doc") {
+            continue;
+        }
 
-            if let Ok(syn::Meta::NameValue(nv)) = attr.parse_meta() {
-                if let syn::Lit::Str(litstr) = nv.lit {
+        let _ = attr.parse_nested_meta(|meta| {
+            let value = match meta.value() {
+                Ok(value) => value,
+                Err(_) => return Err(meta.error("Failed to parse value")),
+            };
+
+            if let Ok(syn::Meta::NameValue(syn::MetaNameValue { value, .. })) = value.parse() {
+                if let Expr::Lit(ExprLit {
+                    lit: syn::Lit::Str(litstr),
+                    ..
+                }) = value
+                {
                     if !res.is_empty() {
                         res.push('\n');
                     }
                     res.push_str(&litstr.value());
                 }
             }
-        }
+
+            Ok(())
+        });
     }
     res
 }
@@ -354,16 +365,33 @@ fn translate_actual(opts: &ExtendrOptions, input: &FnArg) -> Option<Expr> {
 fn get_named_lit(attrs: &mut Vec<syn::Attribute>, name: &str) -> Option<String> {
     let mut new_attrs = Vec::new();
     let mut res = None;
-    'f: for a in attrs.drain(0..) {
-        if let Ok(syn::Meta::NameValue(nv)) = a.parse_meta() {
-            if nv.path.is_ident(name) {
-                if let syn::Lit::Str(litstr) = nv.lit {
-                    res = Some(litstr.value());
-                    continue 'f;
+    for a in attrs.drain(0..) {
+        let found = a.parse_nested_meta(|meta| {
+            let value = match meta.value() {
+                Ok(value) => value,
+                Err(_) => return Err(meta.error("Failed to parse value")),
+            };
+
+            if let Ok(syn::Meta::NameValue(syn::MetaNameValue { path, value, .. })) = value.parse()
+            {
+                if path.is_ident(name) {
+                    if let Expr::Lit(ExprLit {
+                        lit: syn::Lit::Str(litstr),
+                        ..
+                    }) = value
+                    {
+                        res = Some(litstr.value());
+                        return Ok(());
+                    }
                 }
             }
+
+            Err(meta.error("Not this one"))
+        });
+
+        if found.is_err() {
+            new_attrs.push(a);
         }
-        new_attrs.push(a);
     }
     *attrs = new_attrs;
     res
