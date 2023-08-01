@@ -89,6 +89,39 @@ euclidean_dist <- function(a) .Call(wrap__euclidean_dist, a)
 
 type_aware_sum <- function(input) .Call(wrap__type_aware_sum, input)
 
+#' Test raw identifiers (`r#`) in function arguments are parsed correctly.
+#' See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.
+#' @param type : i32 or `NULL`
+#' @export
+raw_identifier_in_fn_args <- function(type = NULL) .Call(wrap__raw_identifier_in_fn_args, type)
+
+#' Test raw identifiers (`r#`) as function names are parsed correctly.
+#' See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.
+#' @export
+true <- function() .Call(wrap__true)
+
+#' Combine raw identifiers (`r#`) as a function name and in arguments are parsed correctly.
+#' See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.
+#' @param type : i32 or `NULL`
+#' @export
+false <- function(type) .Call(wrap__false, type)
+
+leak_implicit_strings <- function(x) .Call(wrap__leak_implicit_strings, x)
+
+leak_implicit_doubles <- function(x) .Call(wrap__leak_implicit_doubles, x)
+
+leak_arg2_try_implicit_strings <- function(`_y`, x) .Call(wrap__leak_arg2_try_implicit_strings, `_y`, x)
+
+leak_arg2_try_implicit_doubles <- function(`_y`, x) .Call(wrap__leak_arg2_try_implicit_doubles, `_y`, x)
+
+leak_unwrap_strings <- function(x) .Call(wrap__leak_unwrap_strings, x)
+
+leak_unwrap_doubles <- function(x) .Call(wrap__leak_unwrap_doubles, x)
+
+leak_positive_control <- function(x) invisible(.Call(wrap__leak_positive_control, x))
+
+leak_negative_control <- function(x) invisible(.Call(wrap__leak_negative_control, x))
+
 #' Class for testing (exported)
 #' @examples
 #' x <- MyClass$new()

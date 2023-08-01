@@ -194,6 +194,18 @@ jobs:
           writeLines(lines, toml_path)
         shell: Rscript {0}
 
+      # TODO: allow warnings on oldrel (cf., https://stat.ethz.ch/pipermail/r-package-devel/2023q2/009229.html)
+      - name: Check R version
+        id: error-on
+        run: |
+          output <- Sys.getenv("GITHUB_OUTPUT")
+          if (.Platform$OS.type == "windows" && getRversion() < "4.3.0") {
+            cat('level=error', file = output, append = TRUE)
+          } else {
+            cat('level=warning', file = output, append = TRUE)
+          }
+        shell: Rscript {0}
+
       # Windows: modified PATH will launch 32-bit Rscript if the build targets only i686/i386, so no conflict will arise
       # Rust pseudo multi-targeting: R CMD CHECK receives an extra argument '--no-multiarch' if BUILD_TARGETS is not 'default' and does not contain any commas
       # To enable RStudio support, extendrtests should be installable from 'extendr/tests/extendrtests',
@@ -204,6 +216,7 @@ jobs:
           args: 'c("--no-manual", "--as-cran", "--force-multiarch")'
           working-directory: 'tests/extendrtests'
           check-dir: '"extendrtests_check"'
+          error-on: '"${{ steps.error-on.outputs.level }}"'
 
       # With https://github.com/extendr/rextendr/pull/31
       # rextendr can be configured using environment variables.
@@ -247,6 +260,7 @@ jobs:
           args: 'c("--no-manual", "--as-cran", "--force-multiarch")'
           working-directory: 'tests/rextendr'
           check-dir: '"rextendr_check"'
+          error-on: '"${{ steps.error-on.outputs.level }}"'
 
   # All tests under this job are run with R devel and freshly generated bindings.
   # Run bindgen tests without cross-compilation.
