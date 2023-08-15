@@ -77,6 +77,8 @@ add_5_if_not_null <- function(x) .Call(wrap__add_5_if_not_null, x)
 #' @export
 my_device <- function(welcome_message) invisible(.Call(wrap__my_device, welcome_message))
 
+collect_dots <- function(x, ..., y) .Call(wrap__collect_dots, x, environment(), y)
+
 #' Return string `"Hello world!"` to R.
 #' @export
 hello_submodule <- function() .Call(wrap__hello_submodule)
@@ -142,6 +144,8 @@ MyClass$me <- function() .Call(wrap__MyClass__me, self)
 MyClass$restore_from_robj <- function(robj) .Call(wrap__MyClass__restore_from_robj, robj)
 
 MyClass$get_default_value <- function(x = 42) .Call(wrap__MyClass__get_default_value, x)
+
+MyClass$process_dots <- function(...) .Call(wrap__MyClass__process_dots, environment())
 
 #' @rdname MyClass
 #' @usage NULL

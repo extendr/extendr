@@ -55,9 +55,9 @@ pub use super::thread_safety::{
 };
 
 pub use super::wrapper::{
-    Complexes, Dataframe, Doubles, EnvIter, Environment, Expressions, ExternalPtr, FromList,
-    Function, Integers, IntoDataFrameRow, Language, List, ListIter, Logicals, Nullable, Pairlist,
-    Primitive, Promise, Raw, Rstr, Strings, Symbol,
+    Complexes, Dataframe, Doubles, Ellipsis, EnvIter, Environment, Expressions, ExternalPtr,
+    FromList, Function, Integers, IntoDataFrameRow, Language, List, ListIter, Logicals, Nullable,
+    Pairlist, Primitive, Promise, Raw, Rstr, Strings, Symbol,
 };
 
 pub use extendr_macros::{call, extendr, extendr_module, pairlist, IntoDataFrameRow, Rraw, R};

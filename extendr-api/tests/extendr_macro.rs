@@ -1,3 +1,4 @@
+use extendr_api::metadata::ArgModifier;
 use extendr_api::prelude::*;
 
 #[extendr(use_try_from = true)]
@@ -192,7 +193,7 @@ fn test_metadata() {
     let args = vec![Arg {
         name: "val",
         arg_type: "Robj",
-        default: Some("NULL"),
+        modifier: ArgModifier::Default("NULL"),
     }];
 
     assert_eq!(
@@ -208,4 +209,23 @@ fn test_metadata() {
             hidden: false,
         }
     );
+}
+
+#[extendr(use_try_from = true)]
+fn test_ellipsis(#[ellipsis] _val: Ellipsis) {}
+
+#[test]
+fn test_metadata_ellipsis() {
+    use extendr_api::metadata::Arg;
+    use extendr_api::metadata::Func;
+    let mut funcs: Vec<Func> = Vec::new();
+    meta__test_ellipsis(&mut funcs);
+
+    let args = vec![Arg {
+        name: "_val",
+        arg_type: "Ellipsis",
+        modifier: ArgModifier::Ellipsis,
+    }];
+
+    assert_eq!(funcs[0].args, args);
 }

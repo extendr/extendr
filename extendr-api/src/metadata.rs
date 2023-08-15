@@ -6,12 +6,23 @@ use crate::robj::IntoRobj;
 use crate::*;
 use std::io::Write;
 
+/// Argument modifier.
+#[derive(Debug, PartialEq, Copy, Clone)]
+pub enum ArgModifier {
+    /// No modifier applied.
+    None,
+    /// Default value is set via `#[default = "<value>"]`.
+    Default(&'static str),
+    /// Argument is marked as `...` using `#[ellipsis]`.
+    Ellipsis,
+}
+
 /// Metadata function argument.
 #[derive(Debug, PartialEq)]
 pub struct Arg {
     pub name: &'static str,
     pub arg_type: &'static str,
-    pub default: Option<&'static str>,
+    pub modifier: ArgModifier,
 }
 
 /// Metadata function.
@@ -45,7 +56,7 @@ pub struct Metadata {
 
 struct RArg {
     name: String,
-    default: Option<&'static str>,
+    modifier: ArgModifier,
 }
 
 impl RArg {
@@ -54,13 +65,20 @@ impl RArg {
     }
 
     fn to_actual_arg(&self) -> String {
-        self.name.clone()
+        if matches!(self.modifier, ArgModifier::Ellipsis) {
+            "environment()".into()
+        } else {
+            self.name.clone()
+        }
     }
 
     fn to_formal_arg(&self) -> String {
-        match self.default {
-            Some(default_val) => format!("{} = {}", self.name, default_val),
-            None => self.name.clone(),
+        match self.modifier {
+            ArgModifier::Default(default_val) => {
+                format!("{} = {}", self.name, default_val)
+            }
+            ArgModifier::Ellipsis => "...".to_string(),
+            _ => self.name.clone(),
         }
     }
 }
@@ -69,7 +87,7 @@ impl From<&Arg> for RArg {
     fn from(arg: &Arg) -> Self {
         Self {
             name: sanitize_identifier(arg.name),
-            default: arg.default,
+            modifier: arg.modifier,
         }
     }
 }

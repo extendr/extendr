@@ -40,3 +40,4 @@ vignettes/*.pdf
 
 # check dir
 check/
+/.vscode/settings.json
