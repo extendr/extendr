@@ -38,7 +38,7 @@ pub use crate::{
 
 pub use super::wrapper::{
     AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,
-    AltrepImpl, RArray, RColumn, RMatrix, RMatrix3D,
+    AltrepImpl, RArray, RArray3D, RColumn, RMatrix,
 };
 
 pub use super::wrapper::s4::S4;

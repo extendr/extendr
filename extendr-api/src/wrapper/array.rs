@@ -38,7 +38,7 @@ pub struct RArray<T, D> {
 
 pub type RColumn<T> = RArray<T, [usize; 1]>;
 pub type RMatrix<T> = RArray<T, [usize; 2]>;
-pub type RMatrix3D<T> = RArray<T, [usize; 3]>;
+pub type RArray3D<T> = RArray<T, [usize; 3]>;
 
 const BASE: usize = 0;
 
@@ -74,24 +74,25 @@ impl<T> Offset<[usize; 3]> for RArray<T, [usize; 3]> {
     /// Get the offset into the array for a given index.
     fn offset(&self, index: [usize; 3]) -> usize {
         if index[0] - BASE > self.dim[0] {
-            panic!("RMatrix3D index: row overflow");
+            panic!("RArray3D index: row overflow");
         }
         if index[1] - BASE > self.dim[1] {
-            panic!("RMatrix3D index: column overflow");
+            panic!("RArray3D index: column overflow");
         }
         if index[2] - BASE > self.dim[2] {
-            panic!("RMatrix3D index: submatrix overflow");
+            panic!("RArray3D index: submatrix overflow");
         }
         (index[0] - BASE) + self.dim[0] * (index[1] - BASE + self.dim[1] * (index[2] - BASE))
     }
 }
 
 impl<T, D> RArray<T, D> {
+    /// Make a new RArray type.
     pub fn from_parts(robj: Robj, data: *mut T, dim: D) -> Self {
         Self { robj, data, dim }
     }
 
-    /// Get the underlying data fro this array.
+    /// Get the underlying data from this RArray.
     pub fn data(&self) -> &[T] {
         unsafe { std::slice::from_raw_parts(self.data, self.robj.len()) }
     }
@@ -99,6 +100,38 @@ impl<T, D> RArray<T, D> {
     /// Get the dimensions for this array.
     pub fn dim(&self) -> &D {
         &self.dim
+    }
+
+    /// Make a new RArray type.
+    /// This is different than `from_parts` because it modifies the attributes of the `Robj` with
+    /// dim.
+    pub fn new_array<'a, P>(slice: P, dims: D) -> Result<Self>
+    where
+        P: AsRef<[T]>,
+        T: ToVectorValue + Clone + 'a,
+        D: AsRef<[usize]> + Clone,
+        Robj: AsTypedSlice<'a, T>,
+    {
+        let dims_ref = dims.as_ref();
+        let robj = slice.as_ref().iter().cloned().collect_robj();
+        let mut robj = robj
+            .set_attrib(
+                wrapper::symbol::dim_symbol(),
+                dims_ref.iter().collect_robj(),
+            )
+            .unwrap();
+        let data = robj
+            .as_typed_slice_mut()
+            .ok_or(Error::Other(
+                "Unknown error in converting to slice".to_string(),
+            ))?
+            .as_mut_ptr();
+
+        Ok(Self {
+            robj,
+            data,
+            dim: dims,
+        })
     }
 }
 
@@ -165,7 +198,7 @@ where
     }
 }
 
-impl<'a, T: ToVectorValue + 'a> RMatrix3D<T>
+impl<'a, T: ToVectorValue + 'a> RArray3D<T>
 where
     Robj: AsTypedSlice<'a, T>,
 {
@@ -251,7 +284,7 @@ where
     }
 }
 
-impl<'a, T: 'a> TryFrom<Robj> for RMatrix3D<T>
+impl<'a, T: 'a> TryFrom<Robj> for RArray3D<T>
 where
     Robj: AsTypedSlice<'a, T>,
 {
@@ -301,11 +334,11 @@ pub trait MatrixConversions: GetSexp {
         <RMatrix<E>>::try_from(self.as_robj().clone()).ok()
     }
 
-    fn as_matrix3d<'a, E: 'a>(&self) -> Option<RMatrix3D<E>>
+    fn as_array3d<'a, E: 'a>(&self) -> Option<RArray3D<E>>
     where
         Robj: AsTypedSlice<'a, E>,
     {
-        <RMatrix3D<E>>::try_from(self.as_robj().clone()).ok()
+        <RArray3D<E>>::try_from(self.as_robj().clone()).ok()
     }
 }
 
@@ -385,17 +418,33 @@ fn matrix_ops() {
         assert_eq!(matrix2.nrows(), 3);
         assert_eq!(matrix2.ncols(), 2);
 
-        let array = RMatrix3D::new_matrix3d(2, 2, 2, |r, c, m| [
+        let array = RArray3D::new_matrix3d(2, 2, 2, |r, c, m| [
             [[1., 2.],  [3., 4.]],
             [[5.,  6.], [7., 8.]]][m][c][r]);
         let robj = r!(array);
         assert_eq!(robj.is_array(), true);
         assert_eq!(robj.nrows(), 2);
         assert_eq!(robj.ncols(), 2);
-        let array2 : RMatrix3D<f64> = robj.as_matrix3d().ok_or("expected matrix3d")?;
+        let array2 : RArray3D<f64> = robj.as_array3d().ok_or("expected matrix3d")?;
         assert_eq!(array2.data().len(), 8);
         assert_eq!(array2.nrows(), 2);
         assert_eq!(array2.ncols(), 2);
         assert_eq!(array2.nsub(), 2);
+    }
+}
+
+#[test]
+fn new_array() {
+    test! {
+        let slice = [1,2,3,4,5,6];
+        let dim = [2,3];
+        let array = RArray::new_array(slice, dim).unwrap();
+        assert_eq!(array.data().len(), 6);
+        println!("{:?}", array);
+        let robj = r!(array);
+        println!("{:?}", robj);
+        assert_eq!(robj.is_array(), true);
+        assert_eq!(robj.nrows(), 2);
+        assert_eq!(robj.ncols(), 3);
     }
 }

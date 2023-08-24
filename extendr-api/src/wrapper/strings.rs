@@ -109,7 +109,7 @@ impl<T: AsRef<str>> FromIterator<T> for Strings {
         let iter_collect: Vec<_> = iter.into_iter().collect();
         let len = iter_collect.len();
 
-        let mut robj = Strings::alloc_vector(STRSXP, len);
+        let robj = Strings::alloc_vector(STRSXP, len);
         crate::single_threaded(|| unsafe {
             for (i, v) in iter_collect.into_iter().enumerate() {
                 SET_STRING_ELT(robj.get(), i as isize, str_to_character(v.as_ref()));
