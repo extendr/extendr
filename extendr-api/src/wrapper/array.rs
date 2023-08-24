@@ -440,9 +440,7 @@ fn new_array() {
         let dim = [2,3];
         let array = RArray::new_array(slice, dim).unwrap();
         assert_eq!(array.data().len(), 6);
-        println!("{:?}", array);
         let robj = r!(array);
-        println!("{:?}", robj);
         assert_eq!(robj.is_array(), true);
         assert_eq!(robj.nrows(), 2);
         assert_eq!(robj.ncols(), 3);
