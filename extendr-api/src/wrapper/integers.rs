@@ -113,6 +113,16 @@ mod tests {
             assert_eq!(vec.len(), 10);
         }
     }
+
+    #[test]
+    fn test_various_iter_methods() {
+        test!{
+            let a: Integers = (0..2).map(|z| Rint::from(z)).collect();
+            let b = <[Rint]>::iter(&a);
+            let c: Integers = b.rev().copied().collect();
+            let d = a.iter().rev();
+        }
+    }
 }
 
 // TODO: this should be a trait.
