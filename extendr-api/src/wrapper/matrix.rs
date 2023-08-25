@@ -406,6 +406,10 @@ mod tests {
 
     #[test]
     fn test_from_vec_doubles_to_matrix() {
+        test! {
+            // R: pracma::magic(5) -> x
+            //    x[1:5**2]
+            // Thus `res` is a list of col-vectors.
         let res: Vec<Doubles> = vec![
             vec![17.0, 23.0, 4.0, 10.0, 11.0].try_into().unwrap(),
             vec![24.0, 5.0, 6.0, 12.0, 18.0].try_into().unwrap(),
@@ -414,7 +418,9 @@ mod tests {
             vec![15.0, 16.0, 22.0, 3.0, 9.0].try_into().unwrap(),
         ];
         let (n_x, n_y) = (5, 5);
+            let matrix = RMatrix::new_matrix(n_x, n_y, |r, c| res[c][r]);
 
-        RMatrix::new_matrix(n_x, n_y, |r, c| res[r][c]);
+            }
+
     }
 }
