@@ -663,23 +663,6 @@ where
     }
 }
 
-// We would love to do a blanket IntoIterator impl.
-// But the matching rules would clash with the above.
-macro_rules! impl_from_iter {
-    ($t: ty) => {
-        impl<'a, T> From<$t> for Robj
-        where
-            Self: 'a,
-            T: Clone + 'a,
-            T: ToVectorValue,
-        {
-            fn from(val: $t) -> Self {
-                val.iter().cloned().collect_robj()
-            }
-        }
-    };
-}
-
 macro_rules! impl_from_into_iter {
     ($t: ty) => {
         impl<'a, T> From<$t> for Robj
@@ -751,8 +734,19 @@ where
     }
 }
 
-impl_from_iter! {Vec<T>}
-impl_from_iter! {&Vec<T>}
+impl<T: ToVectorValue + Clone> From<&Vec<T>> for Robj {
+    fn from(value: &Vec<T>) -> Self {
+        let len = value.len();
+        fixed_size_collect(value.iter().cloned(), len)
+    }
+}
+
+impl<T: ToVectorValue> From<Vec<T>> for Robj {
+    fn from(value: Vec<T>) -> Self {
+        let len = value.len();
+        fixed_size_collect(value.into_iter(), len)
+    }
+}
 
 impl_from_into_iter! {&'a [T]}
 
