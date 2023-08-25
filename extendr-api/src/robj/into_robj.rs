@@ -297,7 +297,9 @@ macro_rules! impl_real_tvv {
 impl_real_tvv!(f64);
 impl_real_tvv!(f32);
 
-impl ToVectorValue for Rfloat {
+macro_rules! impl_synonym_type {
+    ($type: ty, $synonym_type: ty) => {
+        impl ToVectorValue for $type {
     fn sexptype() -> SEXPTYPE {
         <f64 as ToVectorValue>::sexptype()
     }
@@ -306,44 +308,48 @@ impl ToVectorValue for Rfloat {
     where
         Self: Sized,
     {
-        <f64 as ToVectorValue>::to_real(&self.inner())
+                <$synonym_type as ToVectorValue>::to_real(&self.inner())
     }
 
     fn to_complex(&self) -> Rcomplex
     where
         Self: Sized,
     {
-        <f64 as ToVectorValue>::to_complex(&self.inner())
+                <$synonym_type as ToVectorValue>::to_complex(&self.inner())
     }
 
     fn to_integer(&self) -> i32
     where
         Self: Sized,
     {
-        <f64 as ToVectorValue>::to_integer(&self.inner())
+                <$synonym_type as ToVectorValue>::to_integer(&self.inner())
     }
 
     fn to_logical(&self) -> i32
     where
         Self: Sized,
     {
-        <f64 as ToVectorValue>::to_logical(&self.inner())
+                <$synonym_type as ToVectorValue>::to_logical(&self.inner())
     }
 
     fn to_raw(&self) -> u8
     where
         Self: Sized,
     {
-        <f64 as ToVectorValue>::to_raw(&self.inner())
+                <$synonym_type as ToVectorValue>::to_raw(&self.inner())
     }
 
     fn to_sexp(&self) -> SEXP
     where
         Self: Sized,
     {
-        <f64 as ToVectorValue>::to_sexp(&self.inner())
+                <$synonym_type as ToVectorValue>::to_sexp(&self.inner())
     }
 }
+    };
+}
+impl_synonym_type!(Rfloat, f64);
+impl_synonym_type!(Rint, i32);
 
 // Since these types might exceeds the max or min of R's 32bit integer, we need
 // to return as REALSXP
@@ -811,12 +817,6 @@ impl From<Vec<Rstr>> for Robj {
     }
 }
 
-impl From<Vec<Rint>> for Robj {
-    /// Convert a vector of Rint into integers.
-    fn from(val: Vec<Rint>) -> Self {
-        Integers::from_values(val.into_iter()).into()
-    }
-}
 
 #[cfg(test)]
 mod test {
