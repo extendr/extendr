@@ -300,52 +300,52 @@ impl_real_tvv!(f32);
 macro_rules! impl_synonym_type {
     ($type: ty, $synonym_type: ty) => {
         impl ToVectorValue for $type {
-    fn sexptype() -> SEXPTYPE {
-        <f64 as ToVectorValue>::sexptype()
-    }
+            fn sexptype() -> SEXPTYPE {
+                <f64 as ToVectorValue>::sexptype()
+            }
 
-    fn to_real(&self) -> f64
-    where
-        Self: Sized,
-    {
+            fn to_real(&self) -> f64
+            where
+                Self: Sized,
+            {
                 <$synonym_type as ToVectorValue>::to_real(&self.inner())
-    }
+            }
 
-    fn to_complex(&self) -> Rcomplex
-    where
-        Self: Sized,
-    {
+            fn to_complex(&self) -> Rcomplex
+            where
+                Self: Sized,
+            {
                 <$synonym_type as ToVectorValue>::to_complex(&self.inner())
-    }
+            }
 
-    fn to_integer(&self) -> i32
-    where
-        Self: Sized,
-    {
+            fn to_integer(&self) -> i32
+            where
+                Self: Sized,
+            {
                 <$synonym_type as ToVectorValue>::to_integer(&self.inner())
-    }
+            }
 
-    fn to_logical(&self) -> i32
-    where
-        Self: Sized,
-    {
+            fn to_logical(&self) -> i32
+            where
+                Self: Sized,
+            {
                 <$synonym_type as ToVectorValue>::to_logical(&self.inner())
-    }
+            }
 
-    fn to_raw(&self) -> u8
-    where
-        Self: Sized,
-    {
+            fn to_raw(&self) -> u8
+            where
+                Self: Sized,
+            {
                 <$synonym_type as ToVectorValue>::to_raw(&self.inner())
-    }
+            }
 
-    fn to_sexp(&self) -> SEXP
-    where
-        Self: Sized,
-    {
+            fn to_sexp(&self) -> SEXP
+            where
+                Self: Sized,
+            {
                 <$synonym_type as ToVectorValue>::to_sexp(&self.inner())
-    }
-}
+            }
+        }
     };
 }
 impl_synonym_type!(Rfloat, f64);
@@ -816,7 +816,6 @@ impl From<Vec<Rstr>> for Robj {
         Strings::from_values(val.into_iter()).into()
     }
 }
-
 
 #[cfg(test)]
 mod test {
