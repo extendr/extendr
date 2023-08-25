@@ -88,7 +88,17 @@ impl Rfloat {
 // Check that underlying `f64` is `NA_real_`.
 gen_trait_impl!(Rfloat, f64, |x: &Rfloat| x.inner().is_na(), f64::na());
 gen_from_primitive!(Rfloat, f64);
-gen_from_scalar!(Rfloat, f64);
+
+impl From<Rfloat> for Option<f64> {
+    fn from(v: Rfloat) -> Self {
+        if v.is_na() {
+            None
+        } else {
+            Some(v.0)
+        }
+    }
+}
+
 gen_sum_iter!(Rfloat);
 gen_partial_ord!(Rfloat, f64);
 

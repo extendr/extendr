@@ -297,6 +297,54 @@ macro_rules! impl_real_tvv {
 impl_real_tvv!(f64);
 impl_real_tvv!(f32);
 
+impl ToVectorValue for Rfloat {
+    fn sexptype() -> SEXPTYPE {
+        <f64 as ToVectorValue>::sexptype()
+    }
+
+    fn to_real(&self) -> f64
+    where
+        Self: Sized,
+    {
+        <f64 as ToVectorValue>::to_real(&self.inner())
+    }
+
+    fn to_complex(&self) -> Rcomplex
+    where
+        Self: Sized,
+    {
+        <f64 as ToVectorValue>::to_complex(&self.inner())
+    }
+
+    fn to_integer(&self) -> i32
+    where
+        Self: Sized,
+    {
+        <f64 as ToVectorValue>::to_integer(&self.inner())
+    }
+
+    fn to_logical(&self) -> i32
+    where
+        Self: Sized,
+    {
+        <f64 as ToVectorValue>::to_logical(&self.inner())
+    }
+
+    fn to_raw(&self) -> u8
+    where
+        Self: Sized,
+    {
+        <f64 as ToVectorValue>::to_raw(&self.inner())
+    }
+
+    fn to_sexp(&self) -> SEXP
+    where
+        Self: Sized,
+    {
+        <f64 as ToVectorValue>::to_sexp(&self.inner())
+    }
+}
+
 // Since these types might exceeds the max or min of R's 32bit integer, we need
 // to return as REALSXP
 impl_real_tvv!(i64);
@@ -767,13 +815,6 @@ impl From<Vec<Rint>> for Robj {
     /// Convert a vector of Rint into integers.
     fn from(val: Vec<Rint>) -> Self {
         Integers::from_values(val.into_iter()).into()
-    }
-}
-
-impl From<Vec<Rfloat>> for Robj {
-    /// Convert a vector of Rfloat into doubles.
-    fn from(val: Vec<Rfloat>) -> Self {
-        Doubles::from_values(val.into_iter()).into()
     }
 }
 

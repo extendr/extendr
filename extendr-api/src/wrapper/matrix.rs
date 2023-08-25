@@ -361,41 +361,60 @@ impl<T, D> Deref for RArray<T, D> {
     }
 }
 
-#[test]
-fn matrix_ops() {
-    test! {
-        let vector = RColumn::new_column(3, |r| [1., 2., 3.][r]);
-        let robj = r!(vector);
-        assert_eq!(robj.is_vector(), true);
-        assert_eq!(robj.nrows(), 3);
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-        let vector2 : RColumn<f64> = robj.as_column().ok_or("expected array")?;
-        assert_eq!(vector2.data().len(), 3);
-        assert_eq!(vector2.nrows(), 3);
+    #[test]
+    fn matrix_ops() {
+        test! {
+            let vector = RColumn::new_column(3, |r| [1., 2., 3.][r]);
+            let robj = r!(vector);
+            assert_eq!(robj.is_vector(), true);
+            assert_eq!(robj.nrows(), 3);
 
-        let matrix = RMatrix::new_matrix(3, 2, |r, c| [
-            [1., 2., 3.],
-            [4., 5., 6.]][c][r]);
-        let robj = r!(matrix);
-        assert_eq!(robj.is_matrix(), true);
-        assert_eq!(robj.nrows(), 3);
-        assert_eq!(robj.ncols(), 2);
-        let matrix2 : RMatrix<f64> = robj.as_matrix().ok_or("expected matrix")?;
-        assert_eq!(matrix2.data().len(), 6);
-        assert_eq!(matrix2.nrows(), 3);
-        assert_eq!(matrix2.ncols(), 2);
+            let vector2 : RColumn<f64> = robj.as_column().ok_or("expected array")?;
+            assert_eq!(vector2.data().len(), 3);
+            assert_eq!(vector2.nrows(), 3);
 
-        let array = RMatrix3D::new_matrix3d(2, 2, 2, |r, c, m| [
-            [[1., 2.],  [3., 4.]],
-            [[5.,  6.], [7., 8.]]][m][c][r]);
-        let robj = r!(array);
-        assert_eq!(robj.is_array(), true);
-        assert_eq!(robj.nrows(), 2);
-        assert_eq!(robj.ncols(), 2);
-        let array2 : RMatrix3D<f64> = robj.as_matrix3d().ok_or("expected matrix3d")?;
-        assert_eq!(array2.data().len(), 8);
-        assert_eq!(array2.nrows(), 2);
-        assert_eq!(array2.ncols(), 2);
-        assert_eq!(array2.nsub(), 2);
+            let matrix = RMatrix::new_matrix(3, 2, |r, c| [
+                [1., 2., 3.],
+                [4., 5., 6.]][c][r]);
+            let robj = r!(matrix);
+            assert_eq!(robj.is_matrix(), true);
+            assert_eq!(robj.nrows(), 3);
+            assert_eq!(robj.ncols(), 2);
+            let matrix2 : RMatrix<f64> = robj.as_matrix().ok_or("expected matrix")?;
+            assert_eq!(matrix2.data().len(), 6);
+            assert_eq!(matrix2.nrows(), 3);
+            assert_eq!(matrix2.ncols(), 2);
+
+            let array = RMatrix3D::new_matrix3d(2, 2, 2, |r, c, m| [
+                [[1., 2.],  [3., 4.]],
+                [[5.,  6.], [7., 8.]]][m][c][r]);
+            let robj = r!(array);
+            assert_eq!(robj.is_array(), true);
+            assert_eq!(robj.nrows(), 2);
+            assert_eq!(robj.ncols(), 2);
+            let array2 : RMatrix3D<f64> = robj.as_matrix3d().ok_or("expected matrix3d")?;
+            assert_eq!(array2.data().len(), 8);
+            assert_eq!(array2.nrows(), 2);
+            assert_eq!(array2.ncols(), 2);
+            assert_eq!(array2.nsub(), 2);
+        }
+    }
+
+    #[test]
+    fn test_from_vec_doubles_to_matrix() {
+        let res: Vec<Doubles> = vec![
+            vec![17.0, 23.0, 4.0, 10.0, 11.0].try_into().unwrap(),
+            vec![24.0, 5.0, 6.0, 12.0, 18.0].try_into().unwrap(),
+            vec![1.0, 7.0, 13.0, 19.0, 25.0].try_into().unwrap(),
+            vec![8.0, 14.0, 20.0, 21.0, 2.0].try_into().unwrap(),
+            vec![15.0, 16.0, 22.0, 3.0, 9.0].try_into().unwrap(),
+        ];
+        let (n_x, n_y) = (5, 5);
+
+        RMatrix::new_matrix(n_x, n_y, |r, c| res[r][c]);
     }
 }
