@@ -731,6 +731,26 @@ where
     }
 }
 
+impl<'a, T, const N: usize> From<&'a [T; N]> for Robj
+where
+    Self: 'a,
+    &'a T: ToVectorValue + 'a,
+{
+    fn from(val: &'a [T; N]) -> Self {
+        fixed_size_collect(val.into_iter(), N)
+    }
+}
+
+impl<'a, T, const N: usize> From<&'a mut [T; N]> for Robj
+where
+    Self: 'a,
+    &'a mut T: ToVectorValue + 'a,
+{
+    fn from(val: &'a mut [T; N]) -> Self {
+        fixed_size_collect(val.into_iter(), N)
+    }
+}
+
 impl_from_iter! {Vec<T>}
 impl_from_iter! {&Vec<T>}
 
