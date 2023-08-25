@@ -301,7 +301,7 @@ macro_rules! impl_synonym_type {
     ($type: ty, $synonym_type: ty) => {
         impl ToVectorValue for $type {
             fn sexptype() -> SEXPTYPE {
-                <f64 as ToVectorValue>::sexptype()
+                <$synonym_type as ToVectorValue>::sexptype()
             }
 
             fn to_real(&self) -> f64
@@ -822,6 +822,21 @@ impl From<Vec<Rstr>> for Robj {
 #[cfg(test)]
 mod test {
     use super::*;
+
+    #[test]
+    fn test_vec_rint_to_robj() {
+        test! {
+            let int_vec = vec![3,4,0,-2];
+            let int_vec_robj: Robj = int_vec.clone().into();
+            // unsafe { libR_sys::Rf_PrintValue(int_vec_robj.get())}
+            assert_eq!(int_vec_robj.as_integer_slice().unwrap(), &int_vec);
+
+            let rint_vec = vec![Rint::new(3), Rint::new(4), Rint::new(0), Rint::new(-2)];
+            let rint_vec_robj: Robj = rint_vec.into();
+            // unsafe { libR_sys::Rf_PrintValue(rint_vec_robj.get())}
+            assert_eq!(rint_vec_robj.as_integer_slice().unwrap(), &int_vec);
+        }
+    }
 
     #[test]
     fn test_collect_rarray_matrix() {
