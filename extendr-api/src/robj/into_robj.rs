@@ -349,7 +349,9 @@ macro_rules! impl_synonym_type {
     };
 }
 impl_synonym_type!(Rfloat, f64);
+impl_synonym_type!(&Rfloat, f64);
 impl_synonym_type!(Rint, i32);
+impl_synonym_type!(&Rint, i32);
 
 // Since these types might exceeds the max or min of R's 32bit integer, we need
 // to return as REALSXP
