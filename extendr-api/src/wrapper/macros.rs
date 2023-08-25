@@ -108,7 +108,7 @@ macro_rules! gen_vector_wrapper_impl {
                     self.as_robj().as_typed_slice().unwrap().iter().cloned()
                 }
             }
-            
+
             paste::paste!{
                 #[doc = "Return a writable iterator for a " $doc_name " object."]
                 #[doc = "Forces ALTREP objects to manifest."]

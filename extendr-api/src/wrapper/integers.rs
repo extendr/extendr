@@ -116,7 +116,7 @@ mod tests {
 
     #[test]
     fn test_various_iter_methods() {
-        test!{
+        test! {
             let a: Integers = (0..2).map(|z| Rint::from(z)).collect();
             let b = <[Rint]>::iter(&a);
             let c: Integers = b.rev().copied().collect();
