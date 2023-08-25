@@ -146,3 +146,23 @@ impl std::fmt::Debug for Logicals {
         }
     }
 }
+
+impl TryFrom<Vec<i32>> for Logicals {
+    type Error = Error;
+
+    fn try_from(value: Vec<i32>) -> std::result::Result<Self, Self::Error> {
+        Ok(Self {
+            robj: <Robj>::try_from(value)?,
+        })
+    }
+}
+
+impl TryFrom<Vec<bool>> for Logicals {
+    type Error = Error;
+
+    fn try_from(value: Vec<bool>) -> std::result::Result<Self, Self::Error> {
+        Ok(Self {
+            robj: <Robj>::try_from(value)?,
+        })
+    }
+}

@@ -91,8 +91,6 @@ impl std::fmt::Debug for Doubles {
     }
 }
 
-// TODO: Include Rfloat as well..
-
 impl TryFrom<Vec<f64>> for Doubles {
     type Error = Error;
 
