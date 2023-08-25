@@ -721,26 +721,16 @@ macro_rules! impl_from_as_iterator {
 //     }
 // } //
 
-// Template constants are still unstable in rust.
-impl_from_iter! {[T; 1]}
-impl_from_iter! {[T; 2]}
-impl_from_iter! {[T; 3]}
-impl_from_iter! {[T; 4]}
-impl_from_iter! {[T; 5]}
-impl_from_iter! {[T; 6]}
-impl_from_iter! {[T; 7]}
-impl_from_iter! {[T; 8]}
-impl_from_iter! {[T; 9]}
-impl_from_iter! {[T; 10]}
-impl_from_iter! {[T; 11]}
-impl_from_iter! {[T; 12]}
-impl_from_iter! {[T; 13]}
-impl_from_iter! {[T; 14]}
-impl_from_iter! {[T; 15]}
-impl_from_iter! {[T; 16]}
-impl_from_iter! {[T; 17]}
-impl_from_iter! {[T; 18]}
-impl_from_iter! {[T; 19]}
+impl<'a, T, const N: usize> From<[T; N]> for Robj
+where
+    Self: 'a,
+    T: ToVectorValue,
+{
+    fn from(val: [T; N]) -> Self {
+        fixed_size_collect(val.into_iter(), N)
+    }
+}
+
 impl_from_iter! {Vec<T>}
 impl_from_iter! {&Vec<T>}
 
