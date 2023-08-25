@@ -67,7 +67,7 @@ fn test_altreal() {
 
         impl AltrepImpl for MyCompactRealRange {
             fn length(&self) -> usize {
-                self.len as usize
+                self.len
             }
         }
 
@@ -121,7 +121,7 @@ fn test_altlogical() {
 
         impl AltrepImpl for IsEven {
             fn length(&self) -> usize {
-                self.len as usize
+                self.len
             }
         }
 
@@ -186,7 +186,7 @@ fn test_altcomplex() {
 
         impl AltrepImpl for MyCompactComplexRange {
             fn length(&self) -> usize {
-                self.len as usize
+                self.len
             }
         }
 
@@ -216,7 +216,7 @@ fn test_altstring() {
 
         impl AltrepImpl for StringInts {
             fn length(&self) -> usize {
-                self.len as usize
+                self.len
             }
         }
 

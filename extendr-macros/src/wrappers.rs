@@ -246,7 +246,7 @@ pub fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> FnArg {
         // function argument.
         FnArg::Typed(ref pattype) => {
             let pat = &pattype.pat.as_ref();
-            return parse_quote! { #pat : extendr_api::SEXP };
+            parse_quote! { #pat : extendr_api::SEXP }
         }
         // &self
         FnArg::Receiver(ref reciever) => {
@@ -256,7 +256,7 @@ pub fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> FnArg {
             if self_ty.is_none() {
                 panic!("found &self in non-impl function - have you missed the #[extendr] before the impl?");
             }
-            return parse_quote! { _self : extendr_api::SEXP };
+            parse_quote! { _self : extendr_api::SEXP }
         }
     }
 }
@@ -275,13 +275,13 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> Expr {
             } else {
                 quote!(None)
             };
-            return parse_quote! {
+            parse_quote! {
                 extendr_api::metadata::Arg {
                     name: #name_string,
                     arg_type: #type_string,
                     default: #default
                 }
-            };
+            }
         }
         // &self
         FnArg::Receiver(ref reciever) => {
@@ -292,13 +292,13 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> Expr {
                 panic!("found &self in non-impl function - have you missed the #[extendr] before the impl?");
             }
             let type_string = type_name(self_ty.unwrap());
-            return parse_quote! {
+            parse_quote! {
                 extendr_api::metadata::Arg {
                     name: "self",
                     arg_type: #type_string,
                     default: None
                 }
-            };
+            }
         }
     }
 }
