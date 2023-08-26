@@ -3,6 +3,9 @@ use crate::scalar::Scalar;
 use crate::*;
 use std::convert::TryFrom;
 
+/// Integer (`i32`) values that [`Rbool`] is allowed to take.
+const VALID_VALUES: [i32; 3] = [0, 1, i32::MIN];
+
 /// `Rbool` is a wrapper for `i32` in the context of an R's logical vector.
 ///
 /// `Rbool` can have a value of `0`, `1` or `i32::MIN`.
@@ -63,6 +66,24 @@ impl Rbool {
 gen_trait_impl!(Rbool, bool, |x: &Rbool| x.inner() == i32::MIN, i32::MIN);
 gen_from_primitive!(Rbool, i32);
 gen_partial_ord!(Rbool, bool);
+
+impl Rbool {
+    pub fn try_from_strict(value: i32) -> std::result::Result<Self, Error> {
+        VALID_VALUES
+            .contains(&value)
+            .then(|| Self::new(value))
+            .ok_or(Error::Other(
+                "`Rbool` may only be 0, 1 or `i32::MIN`".into(),
+            ))
+    }
+
+    pub fn try_from_strict_option(value: Option<i32>) -> std::result::Result<Self, Error> {
+        match value {
+            None => Ok(Self::na_value()),
+            Some(value) => Self::try_from_strict(value),
+        }
+    }
+}
 
 impl From<bool> for Rbool {
     fn from(v: bool) -> Self {

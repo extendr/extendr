@@ -45,8 +45,13 @@ impl TryFrom<Vec<i32>> for Logicals {
     type Error = Error;
 
     fn try_from(value: Vec<i32>) -> std::result::Result<Self, Self::Error> {
+        let value_rbools: std::result::Result<Vec<Rbool>, _> = value
+            .into_iter()
+            .map(|v| Rbool::try_from_strict(v))
+            .collect();
+
         Ok(Self {
-            robj: <Robj>::try_from(value)?,
+            robj: <Robj>::try_from(value_rbools?)?,
         })
     }
 }
@@ -120,14 +125,16 @@ mod tests {
         test! {
             // Only valid i32 are 0, 1 and i32:MIN.
             let minus: Result<Logicals> = vec![-1].try_into();
-            dbg!(&minus);
-            // // assert!(minus.is_err());
+            // dbg!(&minus);
+            assert!(minus.is_err());
             let minus: Result<Logicals> = vec![-1, -24].try_into();
-            dbg!(&minus);
+            // dbg!(&minus);
             assert!(minus.is_err());
             let without_na_vec = vec![0, 1, 1, 1, 0];
-            let without_na: Logicals = without_na_vec.clone().try_into().unwrap();
-            assert_eq!(without_na.robj.as_integer_slice().unwrap(), &without_na_vec);
+            let without_na_vec_rbool:Vec<_> = without_na_vec.iter().map(|x|Rbool::from(x)).collect();
+            let without_na: Logicals = without_na_vec.try_into().unwrap();
+            // unsafe { libR_sys::Rf_PrintValue(without_na.get())}
+            assert_eq!(without_na.robj.as_logical_slice().unwrap(), &without_na_vec_rbool);
             let with_na_vec = vec![0, 1, 1, 1, i32::MIN, i32::MIN];
             let with_na: Logicals = with_na_vec.clone().try_into().unwrap();
             assert!(with_na[4].is_na());
