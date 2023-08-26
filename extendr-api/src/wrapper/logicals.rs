@@ -41,6 +41,71 @@ impl Logicals {
     }
 }
 
+// TODO: this should be a trait.
+impl Logicals {
+    pub fn set_elt(&mut self, index: usize, val: Rbool) {
+        unsafe {
+            SET_INTEGER_ELT(self.get(), index as R_xlen_t, val.inner());
+        }
+    }
+}
+
+impl Deref for Logicals {
+    type Target = [Rbool];
+
+    /// Treat Logicals as if it is a slice, like `Vec<Rint>`
+    fn deref(&self) -> &Self::Target {
+        unsafe {
+            let ptr = DATAPTR_RO(self.get()) as *const Rbool;
+            std::slice::from_raw_parts(ptr, self.len())
+        }
+    }
+}
+
+impl DerefMut for Logicals {
+    /// Treat Logicals as if it is a mutable slice, like `Vec<Rint>`
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        unsafe {
+            let ptr = DATAPTR(self.get()) as *mut Rbool;
+            std::slice::from_raw_parts_mut(ptr, self.len())
+        }
+    }
+}
+
+impl std::fmt::Debug for Logicals {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.len() == 1 {
+            write!(f, "{:?}", self.elt(0))
+        } else {
+            f.debug_list().entries(self.iter()).finish()
+        }
+    }
+}
+
+impl TryFrom<Vec<bool>> for Logicals {
+    type Error = Error;
+
+    fn try_from(value: Vec<bool>) -> std::result::Result<Self, Self::Error> {
+        Ok(Self {
+            robj: <Robj>::try_from(value)?,
+        })
+    }
+}
+
+// region: TODO after test `test_vec_i32_logicals_conversion` is resolved
+
+// impl TryFrom<Vec<i32>> for Logicals {
+//     type Error = Error;
+
+//     fn try_from(value: Vec<i32>) -> std::result::Result<Self, Self::Error> {
+//         Ok(Self {
+//             robj: <Robj>::try_from(value)?,
+//         })
+//     }
+// }
+
+// endregion
+
 #[cfg(test)]
 mod tests {
     use crate::prelude::*;
@@ -104,65 +169,34 @@ mod tests {
             assert_eq!(vec.len(), 10);
         }
     }
-}
 
-// TODO: this should be a trait.
-impl Logicals {
-    pub fn set_elt(&mut self, index: usize, val: Rbool) {
-        unsafe {
-            SET_INTEGER_ELT(self.get(), index as R_xlen_t, val.inner());
+    // #[test]
+    // fn test_vec_i32_logicals_conversion() {
+    //     test! {
+    //         // Only valid i32 are 0, 1 and i32:MIN.
+    //         let minus: Result<Logicals> = vec![-1].try_into();
+    //         dbg!(&minus);
+    //         // // assert!(minus.is_err());
+    //         let minus: Result<Logicals> = vec![-1, -24].try_into();
+    //         dbg!(&minus);
+    //         assert!(minus.is_err());
+    //         let without_na_vec = vec![0, 1, 1, 1, 0];
+    //         let without_na: Logicals = without_na_vec.clone().try_into().unwrap();
+    //         assert_eq!(without_na.robj.as_integer_slice().unwrap(), &without_na_vec);
+    //         let with_na_vec = vec![0, 1, 1, 1, i32::MIN, i32::MIN];
+    //         let with_na: Logicals = with_na_vec.clone().try_into().unwrap();
+    //         assert!(with_na[4].is_na());
+    //         assert!(with_na[5].is_na());
+    //     }
+    // }
+
+    #[test]
+    fn test_vec_bool_logicals_conversion() {
+        test! {
+            let test = vec![false, true, true, false];
+            let test_rbool: Vec<Rbool> = test.clone().into_iter().map(|x|x.into()).collect();
+            let test_logicals: Logicals = test.try_into().unwrap();
+            assert_eq!(test_logicals.robj.as_logical_slice().unwrap(), &test_rbool);
         }
-    }
-}
-
-impl Deref for Logicals {
-    type Target = [Rbool];
-
-    /// Treat Logicals as if it is a slice, like `Vec<Rint>`
-    fn deref(&self) -> &Self::Target {
-        unsafe {
-            let ptr = DATAPTR_RO(self.get()) as *const Rbool;
-            std::slice::from_raw_parts(ptr, self.len())
-        }
-    }
-}
-
-impl DerefMut for Logicals {
-    /// Treat Logicals as if it is a mutable slice, like `Vec<Rint>`
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        unsafe {
-            let ptr = DATAPTR(self.get()) as *mut Rbool;
-            std::slice::from_raw_parts_mut(ptr, self.len())
-        }
-    }
-}
-
-impl std::fmt::Debug for Logicals {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        if self.len() == 1 {
-            write!(f, "{:?}", self.elt(0))
-        } else {
-            f.debug_list().entries(self.iter()).finish()
-        }
-    }
-}
-
-impl TryFrom<Vec<i32>> for Logicals {
-    type Error = Error;
-
-    fn try_from(value: Vec<i32>) -> std::result::Result<Self, Self::Error> {
-        Ok(Self {
-            robj: <Robj>::try_from(value)?,
-        })
-    }
-}
-
-impl TryFrom<Vec<bool>> for Logicals {
-    type Error = Error;
-
-    fn try_from(value: Vec<bool>) -> std::result::Result<Self, Self::Error> {
-        Ok(Self {
-            robj: <Robj>::try_from(value)?,
-        })
     }
 }
