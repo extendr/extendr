@@ -41,6 +41,16 @@ impl Logicals {
     }
 }
 
+impl TryFrom<Vec<i32>> for Logicals {
+    type Error = Error;
+
+    fn try_from(value: Vec<i32>) -> std::result::Result<Self, Self::Error> {
+        Ok(Self {
+            robj: <Robj>::try_from(value)?,
+        })
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::prelude::*;
@@ -102,6 +112,26 @@ mod tests {
             let vec = Logicals::new(10);
             assert_eq!(vec.is_logical(), true);
             assert_eq!(vec.len(), 10);
+        }
+    }
+
+    #[test]
+    fn test_vec_i32_logicals_conversion() {
+        test! {
+            // Only valid i32 are 0, 1 and i32:MIN.
+            let minus: Result<Logicals> = vec![-1].try_into();
+            dbg!(&minus);
+            // // assert!(minus.is_err());
+            let minus: Result<Logicals> = vec![-1, -24].try_into();
+            dbg!(&minus);
+            assert!(minus.is_err());
+            let without_na_vec = vec![0, 1, 1, 1, 0];
+            let without_na: Logicals = without_na_vec.clone().try_into().unwrap();
+            assert_eq!(without_na.robj.as_integer_slice().unwrap(), &without_na_vec);
+            let with_na_vec = vec![0, 1, 1, 1, i32::MIN, i32::MIN];
+            let with_na: Logicals = with_na_vec.clone().try_into().unwrap();
+            assert!(with_na[4].is_na());
+            assert!(with_na[5].is_na());
         }
     }
 }
