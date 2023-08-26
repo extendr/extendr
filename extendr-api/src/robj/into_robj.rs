@@ -302,32 +302,32 @@ impl_real_tvv!(f32);
 
 /// Generates a [`ToVectorValue`] for a type, by inheriting the properties
 /// of another type's [`ToVectorValue`]'s implementation.
-/// 
+///
 /// This is meant to be used for wrappers of types that may be represented
 /// in R. The marshalling rules for this is represented in `ToVectorValue`,
-/// and this macro merely co-opts 
-/// 
+/// and this macro merely co-opts
+///
 /// Arguments:
-/// 
+///
 /// * `$type`         - Target type
-/// * `$synonym_type` - A type that has a `ToVectorValue`-impl, and an `inner`-method. 
-/// 
+/// * `$synonym_type` - A type that has a `ToVectorValue`-impl, and an `inner`-method.
+///
 /// Requirements: `$type` must have an `inner`-method to extract the
 /// wrapped value. It suffices that `$type` implements `Scalar<T>`.
-/// 
+///
 /// Example usage:
-/// 
+///
 /// ```ignore
 /// impl_synonym_type(Rint, i32);
 /// ```
-/// 
+///
 /// The example here implements
-/// 
+///
 /// `impl ToVectorValue for Rint`,
-/// 
+///
 /// this entails that `Rint` would be stored in `R` exactly
-/// as `i32`. 
-/// 
+/// as `i32`.
+///
 macro_rules! impl_synonym_type {
     ($type: ty, $synonym_type: ty) => {
         impl ToVectorValue for $type {
