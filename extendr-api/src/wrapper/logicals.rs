@@ -92,20 +92,6 @@ impl TryFrom<Vec<bool>> for Logicals {
     }
 }
 
-// region: TODO after test `test_vec_i32_logicals_conversion` is resolved
-
-// impl TryFrom<Vec<i32>> for Logicals {
-//     type Error = Error;
-
-//     fn try_from(value: Vec<i32>) -> std::result::Result<Self, Self::Error> {
-//         Ok(Self {
-//             robj: <Robj>::try_from(value)?,
-//         })
-//     }
-// }
-
-// endregion
-
 #[cfg(test)]
 mod tests {
     use crate::prelude::*;

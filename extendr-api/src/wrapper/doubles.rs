@@ -100,6 +100,7 @@ impl TryFrom<Vec<f64>> for Doubles {
         })
     }
 }
+
 #[cfg(test)]
 mod tests {
     use super::*;
