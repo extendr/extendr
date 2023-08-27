@@ -93,7 +93,7 @@ macro_rules! impl_try_from_scalar_real_nonzero {
         impl TryFrom<&Robj> for $t {
             type Error = Error;
 
-            /// Convert a numeric object without zeros, to a non-zero type.
+            /// Convert a possibly non-zero R numeric object to a guaranteed non-zero Rust type.
             fn try_from(robj: &Robj) -> Result<Self> {
                 Self::new(robj.try_into()?).ok_or(Error::ExpectedNonZeroValue(robj.clone()))
             }
