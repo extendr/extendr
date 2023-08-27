@@ -137,7 +137,7 @@ where
 #[case(std::num::NonZeroI32::new(1).unwrap())]
 #[case(std::num::NonZeroI64::new(1).unwrap())]
 // NOTE: `NonZeroIsize` is missing
-fn test_try_from_robj_nonzero<Value>(#[case] value: Value)
+fn test_nonzero_round_trip_from_robj<Value>(#[case] value: Value)
 where
     Robj: From<Value>,
     Value: TryFrom<Robj>,
