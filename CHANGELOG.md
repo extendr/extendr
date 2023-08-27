@@ -6,8 +6,8 @@
 
 - [**either**] `TryFrom<&Robj> for Either<T, R>` and `From<Either<T, R>> for Robj` if `T` and `R` are themselves implement these traits. This unblocks scenarios like accepting any numeric vector from R via `Either<Integers, Doubles>` without extra memory allocation [[#480]](https://github.com/extendr/extendr/pull/480)
 - `PartialOrd` trait implementation for `Rfloat`, `Rint` and `Rbool`. `Rfloat` and `Rint` gained `min()` and `max()` methods [[#573]](https://github.com/extendr/extendr/pull/573)
-- Iterators from `Robj` now implements `DoubleEndedIterator` and `ExactSizeIterator`
-etc. allowing for more combinators to be used [[#591]](https://github.com/extendr/extendr/pull/591)
+- Iterators from `Robj` now implements `DoubleEndedIterator` and `ExactSizeIterator` allowing for more combinators to be used
+    [[#591]](https://github.com/extendr/extendr/pull/591)
 
 ### Fixed
 
