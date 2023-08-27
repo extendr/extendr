@@ -15,7 +15,6 @@ crate-type = ["staticlib"]
 
 [dependencies]
 extendr-api = { version = "*", features = ["graphics", "ndarray", "either"] }
-either = '1'
 
 [patch.crates-io]
 ## This is configured to work with RStudio features.

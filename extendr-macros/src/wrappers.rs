@@ -1,3 +1,4 @@
+use proc_macro2::Ident;
 use quote::{format_ident, quote};
 use syn::{parse_quote, punctuated::Punctuated, Expr, FnArg, ItemFn, Token, Type};
 
@@ -34,6 +35,7 @@ pub fn make_function_wrappers(
         sig.ident.clone()
     };
 
+    let mod_name = sanitize_identifier(mod_name);
     let wrap_name = format_ident!("{}{}{}", WRAP_PREFIX, prefix, mod_name);
     let meta_name = format_ident!("{}{}{}", META_PREFIX, prefix, mod_name);
 
@@ -41,8 +43,6 @@ pub fn make_function_wrappers(
     let c_name_str = format!("{}", mod_name);
     let doc_string = get_doc_string(attrs);
     let return_type_string = get_return_type(sig);
-
-    let panic_str = format!("{} panicked.\0", r_name_str);
 
     let inputs = &mut sig.inputs;
     let has_self = matches!(inputs.iter().next(), Some(FnArg::Receiver(_)));
@@ -100,17 +100,48 @@ pub fn make_function_wrappers(
     //     }
     // }
     // ```
+    //
     wrappers.push(parse_quote!(
         #[no_mangle]
         #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
         pub extern "C" fn #wrap_name(#formal_args) -> extendr_api::SEXP {
-            unsafe {
-                use extendr_api::robj::*;
+            use extendr_api::robj::*;
+            let wrap_result_state: std::result::Result<
+                std::result::Result<Robj, extendr_api::Error>,
+                Box<dyn std::any::Any + Send>
+            > = unsafe {
                 #( #convert_args )*
-                extendr_api::handle_panic(#panic_str, ||
-                    extendr_api::Robj::from(#call_name(#actual_args)).get()
-                )
+                std::panic::catch_unwind(||-> std::result::Result<Robj, extendr_api::Error> {
+                    Ok(extendr_api::Robj::from(#call_name(#actual_args)))
+                })
+            };
+            // any obj created in above unsafe scope, which are not moved into wrap_result_state are now dropped
+
+
+            match wrap_result_state {
+                Ok(Ok(zz)) => {
+                    return unsafe { zz.get() };
+                }
+                // any conversion error bubbled from #actual_args conversions of incomming args from R.
+                Ok(Err(conversion_err)) => {
+                    let err_string = conversion_err.to_string();
+                    drop(conversion_err); // try_from=true errors contain Robj, this must be dropped to not leak
+                    extendr_api::throw_r_error(&err_string);
+                }
+                // any panic (induced by user func code or if user func yields a Result-Err as return value)
+                Err(unwind_err) => {
+                    drop(unwind_err); //did not notice any difference if dropped or not.
+                    // It should be possible to downcast the unwind_err Any type to the error
+                    // included in panic. The advantage would be the panic cause could be included
+                    // in the R terminal error message and not only via std-err.
+                    // but it should be handled in a separate function and not in-lined here.
+                    let err_string = format!("user function panicked: {}\0",#r_name_str);
+                    // cannot use throw_r_error here for some reason.
+                    // handle_panic() exports err string differently than throw_r_error.
+                    extendr_api::handle_panic(err_string.as_str(), || panic!());
+                }
             }
+            unreachable!("internal extendr error, this should never happen.")
         }
     ));
 
@@ -121,6 +152,7 @@ pub fn make_function_wrappers(
             let mut args = vec![
                 #( #meta_args, )*
             ];
+
             metadata.push(extendr_api::metadata::Func {
                 doc: #doc_string,
                 rust_name: #rust_name_str,
@@ -271,7 +303,8 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> Expr {
     }
 }
 
-// Convert SEXP arguments into Robj. This maintains the lifetime of references.
+/// Convert `SEXP` arguments into `Robj`.
+/// This maintains the lifetime of references.
 fn translate_to_robj(input: &FnArg) -> syn::Stmt {
     match input {
         FnArg::Typed(ref pattype) => {
@@ -298,12 +331,11 @@ fn translate_actual(opts: &ExtendrOptions, input: &FnArg) -> Option<Expr> {
             if let syn::Pat::Ident(ref ident) = pat {
                 let varname = format_ident!("_{}_robj", ident.ident);
                 if opts.use_try_from {
-                    Some(parse_quote! { extendr_api::unwrap_or_throw_error(
-                        #varname.try_into()
-                        .map_err(|e| extendr_api::Error::from(e)))
+                    Some(parse_quote! {
+                        #varname.try_into()?
                     })
                 } else {
-                    Some(parse_quote! { extendr_api::unwrap_or_throw(<#ty>::from_robj(&#varname)) })
+                    Some(parse_quote! { <#ty>::from_robj(&#varname)? })
                 }
             } else {
                 None
@@ -335,4 +367,17 @@ fn get_named_lit(attrs: &mut Vec<syn::Attribute>, name: &str) -> Option<String> 
     }
     *attrs = new_attrs;
     res
+}
+
+// Remove the raw identifier prefix (`r#`) from an [`Ident`]
+// If the `Ident` does not start with the prefix, it is returned as is.
+fn sanitize_identifier(ident: Ident) -> Ident {
+    static PREFIX: &str = "r#";
+    let (ident, span) = (ident.to_string(), ident.span());
+    let ident = match ident.strip_prefix(PREFIX) {
+        Some(ident) => ident.into(),
+        None => ident,
+    };
+
+    Ident::new(&ident, span)
 }
