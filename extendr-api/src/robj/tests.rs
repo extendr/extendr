@@ -3,6 +3,11 @@ use rstest::rstest;
 use crate::scalar::*;
 use crate::*;
 
+use std::num::{
+    NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8, NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8,
+    NonZeroUsize,
+};
+
 #[test]
 fn test_from_robj() {
     test! {
@@ -111,14 +116,14 @@ fn test_from_robj() {
 #[case(0_f64)]
 #[case(1_f32)]
 #[case(1_f64)]
-fn test_try_from_robj<T>(#[case] value: T)
+fn test_round_trip_from_rust<T>(#[case] value: T)
 where
     Robj: From<T>,
     T: TryFrom<Robj>,
     T: ToVectorValue,
     T: Copy,
     T: std::fmt::Debug + PartialEq,
-    <T as std::convert::TryFrom<robj::Robj>>::Error: std::fmt::Debug + PartialEq
+    <T as std::convert::TryFrom<robj::Robj>>::Error: std::fmt::Debug + PartialEq,
 {
     test! {
         assert_eq!(TryFrom::try_from(Robj::from(value)), Ok(value));
@@ -127,14 +132,14 @@ where
 
 #[rstest]
 // NOTE: `NonZeroU8` is missing
-#[case(std::num::NonZeroU16::new(1).unwrap())]
-#[case(std::num::NonZeroU32::new(1).unwrap())]
-#[case(std::num::NonZeroU64::new(1).unwrap())]
-#[case(std::num::NonZeroUsize::new(1).unwrap())]
-#[case(std::num::NonZeroI8::new(1).unwrap())]
-#[case(std::num::NonZeroI16::new(1).unwrap())]
-#[case(std::num::NonZeroI32::new(1).unwrap())]
-#[case(std::num::NonZeroI64::new(1).unwrap())]
+#[case(NonZeroU16::new(1).unwrap())]
+#[case(NonZeroU32::new(1).unwrap())]
+#[case(NonZeroU64::new(1).unwrap())]
+#[case(NonZeroUsize::new(1).unwrap())]
+#[case(NonZeroI8::new(1).unwrap())]
+#[case(NonZeroI16::new(1).unwrap())]
+#[case(NonZeroI32::new(1).unwrap())]
+#[case(NonZeroI64::new(1).unwrap())]
 // NOTE: `NonZeroIsize` is missing
 fn test_nonzero_round_trip_from_robj<Value>(#[case] value: Value)
 where
@@ -149,18 +154,18 @@ where
 }
 
 #[rstest]
-#[case(std::num::NonZeroU8::new(1).unwrap())]
-#[case(std::num::NonZeroU8::new(1).unwrap())]
-#[case(std::num::NonZeroU16::new(1).unwrap())]
-#[case(std::num::NonZeroU32::new(1).unwrap())]
-#[case(std::num::NonZeroU64::new(1).unwrap())]
-#[case(std::num::NonZeroUsize::new(1).unwrap())]
-#[case(std::num::NonZeroI8::new(1).unwrap())]
-#[case(std::num::NonZeroI16::new(1).unwrap())]
-#[case(std::num::NonZeroI32::new(1).unwrap())]
-#[case(std::num::NonZeroI64::new(1).unwrap())]
+#[case(NonZeroU8::new(1).unwrap())]
+#[case(NonZeroU8::new(1).unwrap())]
+#[case(NonZeroU16::new(1).unwrap())]
+#[case(NonZeroU32::new(1).unwrap())]
+#[case(NonZeroU64::new(1).unwrap())]
+#[case(NonZeroUsize::new(1).unwrap())]
+#[case(NonZeroI8::new(1).unwrap())]
+#[case(NonZeroI16::new(1).unwrap())]
+#[case(NonZeroI32::new(1).unwrap())]
+#[case(NonZeroI64::new(1).unwrap())]
 // NOTE: `NonZeroIsize` is missing
-fn test_try_from_robj_nonzero_fail_on_zero<Value>(#[case] value: Value)
+fn test_try_from_robj_nonzero_fail_on_zero<Value>(#[case] _value: Value)
 where
     Value: TryFrom<Robj>,
     Value: Copy + std::fmt::Debug + PartialEq,
