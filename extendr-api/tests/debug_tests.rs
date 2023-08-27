@@ -19,15 +19,15 @@ fn test_debug() {
         assert_eq!(format!("{:?}", r), "base_env()");
         let r = Environment::new_with_parent(global_env());
         assert_eq!(format!("{:?}", r), "<environment>");
-        let r = Promise::from_parts(r!(1), global_env())?;
+        let r = Promise::from_parts(r!(1), global_env()).unwrap();
         assert_eq!(format!("{:?}", r), "Promise { code: 1, environment: global_env() }");
-        let r : Language = lang!("x").try_into()?;
+        let r : Language = lang!("x").try_into().unwrap();
         assert_eq!(format!("{:?}", r), "lang!(sym!(x))");
-        let r : Language = lang!("x", 1, 2).try_into()?;
+        let r : Language = lang!("x", 1, 2).try_into().unwrap();
         assert_eq!(format!("{:?}", r), "lang!(sym!(x), 1, 2)");
-        let r : Primitive = R!("`+`")?.try_into()?;
+        let r : Primitive = R!("`+`").unwrap().try_into().unwrap();
         assert_eq!(format!("{:?}", r), "\".Primitive(\\\"+\\\")\"");
-        let r : Primitive  = R!("`if`")?.try_into()?;
+        let r : Primitive  = R!("`if`").unwrap().try_into().unwrap();
         assert_eq!(format!("{:?}", r), "\".Primitive(\\\"if\\\")\"");
         let r : Rstr = Rstr::from_string("xyz");
         assert_eq!(format!("{:?}", r), "\"xyz\"");
@@ -57,8 +57,8 @@ fn test_debug() {
         assert_eq!(format!("{:?}", r), "Expressions { values: [lang!(sym!(+), 1.0, 2.0)] }");
         let r : Raw = Raw::new(2);
         assert_eq!(format!("{:02x?}", r), "Raw[00, 00]");
-        S4::set_class("fred", pairlist!(x="numeric"), r!(()))?;
-        let r : S4 = S4::new("fred")?;
+        S4::set_class("fred", pairlist!(x="numeric"), r!(())).unwrap();
+        let r : S4 = S4::new("fred").unwrap();
         assert_eq!(format!("{:?}", r), "S4");
     });
 }

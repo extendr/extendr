@@ -1,5 +1,6 @@
 use super::*;
 use crate::*;
+use extendr_engine::with_r;
 use libR_sys::{Rf_ScalarInteger, Rf_protect, Rf_unprotect};
 
 #[test]

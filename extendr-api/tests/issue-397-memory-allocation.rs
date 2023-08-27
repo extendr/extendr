@@ -18,7 +18,7 @@ fn test_allocation() {
         obj.set_attrib(
             row_names_symbol(),
             (1i32..=COUNT as i32).collect_robj(),
-        )?;
-        obj.set_class(&["data.frame"])?;
+        ).unwrap();
+        obj.set_class(&["data.frame"]).unwrap();
     });
 }

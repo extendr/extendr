@@ -42,7 +42,7 @@ fn test_altinteger() {
 
         let obj_w_missing = Altrep::from_state_and_class(mystate_w_missing, class, false);
         let robj_w_missing = Robj::from(obj_w_missing);
-        let integers_w_missing: Integers = robj_w_missing.try_into()?;
+        let integers_w_missing: Integers = robj_w_missing.try_into().unwrap();
         assert_eq!(integers_w_missing.elt(9), Rint::from(9));
         assert!(integers_w_missing.elt(5).is_na());
 
@@ -96,7 +96,7 @@ fn test_altreal() {
 
         let obj_w_missing = Altrep::from_state_and_class(mystate_w_missing, class, false);
         let robj_w_missing = Robj::from(obj_w_missing);
-        let doubles_w_missing: Doubles = robj_w_missing.try_into()?;
+        let doubles_w_missing: Doubles = robj_w_missing.try_into().unwrap();
         assert_eq!(doubles_w_missing.elt(9), Rfloat::from(9.0));
 
         // TODO: Win32 currently handles NA improperly. Re-enable this when the problem is fixed.

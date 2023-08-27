@@ -1,3 +1,5 @@
+use extendr_engine::with_r;
+
 use super::*;
 
 #[test]

@@ -12,7 +12,7 @@ fn test_derive_into_dataframe() {
         }
 
         let v = vec![MyStruct { x: 0.into(), y: "abc".into() }, MyStruct { x: 1.into(), y: "xyz".into() }];
-        let df = v.into_dataframe()?;
+        let df = v.into_dataframe().unwrap();
 
         assert!(df.inherits("data.frame"));
 
@@ -21,7 +21,7 @@ fn test_derive_into_dataframe() {
         assert_eq!(list[1], r!(["abc", "xyz"]));
 
         // Note the odd RFC 2451 (I,). If you can fix this, I'll be a happy bunny.
-        let df3 = ((0..2).map(|i| MyStruct { x: i.into(), y: i.to_string().into() }),).into_dataframe()?;
+        let df3 = ((0..2).map(|i| MyStruct { x: i.into(), y: i.to_string().into() }),).into_dataframe().unwrap();
         assert!(df3.inherits("data.frame"));
 
         let list : List = df3.as_list().unwrap();
