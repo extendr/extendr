@@ -663,21 +663,6 @@ where
     }
 }
 
-macro_rules! impl_from_into_iter {
-    ($t: ty) => {
-        impl<'a, T> From<$t> for Robj
-        where
-            Self: 'a,
-            T: 'a,
-            &'a T: ToVectorValue,
-        {
-            fn from(val: $t) -> Self {
-                val.into_iter().collect_robj()
-            }
-        }
-    };
-}
-
 macro_rules! impl_from_as_iterator {
     ($t: ty) => {
         impl<T> From<$t> for Robj
@@ -748,7 +733,16 @@ impl<T: ToVectorValue> From<Vec<T>> for Robj {
     }
 }
 
-impl_from_into_iter! {&'a [T]}
+impl<'a, T> From<&'a [T]> for Robj
+where
+    Self: 'a,
+    T: 'a,
+    &'a T: ToVectorValue,
+{
+    fn from(val: &'a [T]) -> Self {
+        val.into_iter().collect_robj()
+    }
+}
 
 impl_from_as_iterator! {Range<T>}
 impl_from_as_iterator! {RangeInclusive<T>}
