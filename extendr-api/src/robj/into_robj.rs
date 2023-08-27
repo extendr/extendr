@@ -179,7 +179,7 @@ impl From<Error> for Robj {
 }
 impl From<Error> for String {
     fn from(res: Error) -> Self {
-        res.to_string().into()
+        res.to_string()
     }
 }
 
@@ -381,7 +381,7 @@ impl ToVectorValue for u8 {
     }
 
     fn to_raw(&self) -> u8 {
-        *self as u8
+        *self
     }
 }
 
@@ -391,7 +391,7 @@ impl ToVectorValue for &u8 {
     }
 
     fn to_raw(&self) -> u8 {
-        **self as u8
+        **self
     }
 }
 
