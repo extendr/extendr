@@ -88,7 +88,7 @@ impl Strings {
     }
 
     /// Get an iterator for this string vector.
-    pub fn iter(&self) -> std::slice::Iter<Rstr> {
+    pub fn iter(&self) -> impl Iterator<Item = &Rstr> + DoubleEndedIterator + ExactSizeIterator {
         self.as_slice().iter()
     }
 

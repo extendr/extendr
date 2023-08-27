@@ -426,7 +426,7 @@ impl Robj {
     ///     assert_eq!(num_na, 1);
     /// }
     /// ```
-    pub fn as_logical_iter(&self) -> Option<std::slice::Iter<Rbool>> {
+    pub fn as_logical_iter(&self) -> Option<impl Iterator<Item = &Rbool> + DoubleEndedIterator + ExactSizeIterator> {
         self.as_logical_slice().map(|slice| slice.iter())
     }
 
