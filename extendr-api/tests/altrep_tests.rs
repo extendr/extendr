@@ -2,7 +2,7 @@ use extendr_api::prelude::*;
 
 #[test]
 fn test_altinteger() {
-    test! {
+    with_r(|| {
         #[derive(Debug, Clone)]
         struct MyCompactIntRange {
             start: i32,
@@ -50,13 +50,13 @@ fn test_altinteger() {
         let mut dest = [0.into(); 2];
         integers_w_missing.get_region(2, &mut dest);
         assert_eq!(dest, [2, 3]);
-    }
+    });
 }
 
 #[test]
 
 fn test_altreal() {
-    test! {
+    with_r(|| {
         #[derive(Debug, Clone)]
         struct MyCompactRealRange {
             start: f64,
@@ -108,12 +108,12 @@ fn test_altreal() {
         let mut dest = [0.0.into(); 2];
         doubles_w_missing.get_region(2, &mut dest);
         assert_eq!(dest, [2.0, 3.0]);
-    }
+    });
 }
 
 #[test]
 fn test_altlogical() {
-    test! {
+    with_r(|| {
         #[derive(Debug, Clone)]
         struct IsEven {
             len: usize,
@@ -139,12 +139,12 @@ fn test_altlogical() {
         assert_eq!(obj.len(), 10);
         // assert_eq!(obj.sum(true), r!(5.0));
         assert_eq!(obj.as_robj().as_logical_slice().unwrap(), [FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE]);
-    }
+    });
 }
 
 #[test]
 fn test_altraw() {
-    test! {
+    with_r(|| {
         #[derive(Debug, Clone)]
         struct MyCompactRawRange {
             start: i32,
@@ -171,12 +171,12 @@ fn test_altraw() {
 
         assert_eq!(obj.len(), 10);
         assert_eq!(obj.as_robj().as_raw_slice().unwrap(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
-    }
+    });
 }
 
 #[test]
 fn test_altcomplex() {
-    test! {
+    with_r(|| {
         #[derive(Debug, Clone)]
         struct MyCompactComplexRange {
             start: f64,
@@ -203,12 +203,12 @@ fn test_altcomplex() {
 
         assert_eq!(obj.len(), 10);
         //assert_eq!(obj.as_complex_slice().unwrap(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
-    }
+    });
 }
 
 #[test]
 fn test_altstring() {
-    test! {
+    with_r(|| {
         #[derive(Debug, Clone)]
         struct StringInts {
             len: usize
@@ -233,5 +233,5 @@ fn test_altstring() {
 
         assert_eq!(obj.len(), 10);
         assert_eq!(Robj::from(obj), r!(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]));
-    }
+    });
 }

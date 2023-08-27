@@ -2,7 +2,7 @@ use extendr_api::prelude::*;
 
 #[test]
 fn test_strings() {
-    test! {
+    with_r(|| {
         let s = Strings::new(10);
         assert_eq!(s.len(), 10);
         assert_eq!(s.rtype(), Rtype::Strings);
@@ -33,15 +33,15 @@ fn test_strings() {
         assert_eq!(s.elt(1).is_na(), true);
 
         let robj = r!("xyz");
-        let s = Strings::try_from(robj)?;
+        let s = Strings::try_from(robj).unwrap();
         assert_eq!(s.len(), 1);
         assert_eq!(s.elt(0), "xyz");
-    }
+    });
 }
 
 #[test]
 fn test_list() {
-    test! {
+    with_r(|| {
         let s = List::new(10);
         assert_eq!(s.len(), 10);
         assert_eq!(s.rtype(), Rtype::List);
@@ -49,16 +49,16 @@ fn test_list() {
         let mut s = List::from_values(["x", "y", "z"]);
         assert_eq!(s.len(), 3);
         assert_eq!(s.rtype(), Rtype::List);
-        assert_eq!(s.elt(0)?, r!("x"));
-        assert_eq!(s.elt(1)?, r!("y"));
-        assert_eq!(s.elt(2)?, r!("z"));
+        assert_eq!(s.elt(0).unwrap(), r!("x"));
+        assert_eq!(s.elt(1).unwrap(), r!("y"));
+        assert_eq!(s.elt(2).unwrap(), r!("z"));
         assert_eq!(s.elt(3).is_err(), true);
 
         let v = s.as_slice().iter().collect::<Vec<_>>();
         assert_eq!(v, vec![&r!("x"), &r!("y"), &r!("z")]);
 
-        s.set_elt(1, r!("q"))?;
-        assert_eq!(s.elt(1)?, r!("q"));
+        s.set_elt(1, r!("q")).unwrap();
+        assert_eq!(s.elt(1).unwrap(), r!("q"));
 
         let s : List = ["x", "y", "z"].iter().collect();
         assert_eq!(s, list!("x", "y", "z"));
@@ -67,7 +67,7 @@ fn test_list() {
         assert_eq!(v, vec![("a", r!("x")), ("b", r!("y")), ("c", r!("z"))]);
 
         let s = List::from_values(["x", <&str>::na(), "z"]);
-        assert_eq!(s.elt(1)?.is_na(), true);
+        assert_eq!(s.elt(1).unwrap().is_na(), true);
         assert_eq!(s.as_slice().iter().any(|s| s.is_na()), true);
 
         // Deref allows all the immutable methods from slice.
@@ -77,12 +77,12 @@ fn test_list() {
         assert_eq!(v[1].is_na(), true);
         assert_eq!(v.contains(&&r!("x")), true);
         assert_eq!(s.as_slice().iter().any(Robj::is_na), true);
-    }
+    });
 }
 
 #[test]
 fn test_doubles() {
-    test! {
+    with_r(|| {
         let s = Doubles::new(10);
         assert_eq!(s.len(), 10);
         assert_eq!(s.rtype(), Rtype::Doubles);
@@ -110,7 +110,7 @@ fn test_doubles() {
         //assert_eq!(s.elt(1).is_na(), true);
 
         let robj = r!([1.0, 2.0, 3.0]);
-        let s = Doubles::try_from(robj)?;
+        let s = Doubles::try_from(robj).unwrap();
         assert_eq!(s.len(), 3);
         assert_eq!(s.elt(0), 1.0);
 
@@ -126,12 +126,12 @@ fn test_doubles() {
         assert_eq!(s[0], 4.0);
         assert_eq!(s[1], 5.0);
         assert_eq!(s[2], 6.0);
-    }
+    });
 }
 
 #[test]
 fn test_complexes() {
-    test! {
+    with_r(|| {
         let s = Complexes::new(10);
         assert_eq!(s.len(), 10);
         assert_eq!(s.rtype(), Rtype::Complexes);
@@ -160,7 +160,7 @@ fn test_complexes() {
 
         // let robj = r!([Rcplx::from(1.0), Rcplx::from(2.0), Rcplx::from(3.0)]);
         let robj = r!([(1.0, 0.0), (2.0, 0.0), (3.0, 0.0)]);
-        let s = Complexes::try_from(robj)?;
+        let s = Complexes::try_from(robj).unwrap();
         assert_eq!(s.len(), 3);
         assert_eq!(s.elt(0), 1.0);
 
@@ -176,12 +176,12 @@ fn test_complexes() {
         assert_eq!(s[0], 4.0);
         assert_eq!(s[1], 5.0);
         assert_eq!(s[2], 6.0);
-    }
+    });
 }
 
 #[test]
 fn test_integers() {
-    test! {
+    with_r(|| {
         let s = Integers::new(10);
         assert_eq!(s.len(), 10);
         assert_eq!(s.rtype(), Rtype::Integers);
@@ -209,7 +209,7 @@ fn test_integers() {
         //assert_eq!(s.elt(1).is_na(), true);
 
         let robj = r!([1, 2, 3]);
-        let s = Integers::try_from(robj)?;
+        let s = Integers::try_from(robj).unwrap();
         assert_eq!(s.len(), 3);
         assert_eq!(s.elt(0), 1);
 
@@ -225,12 +225,12 @@ fn test_integers() {
         assert_eq!(s[0], 4);
         assert_eq!(s[1], 5);
         assert_eq!(s[2], 6);
-    }
+    });
 }
 
 #[test]
 fn test_rstr() {
-    test! {
+    with_r(|| {
         let x = Rstr::from_string("xyz");
         // All methods of &str are usable on Rstr.
         assert_eq!(x.contains('y'), true);
@@ -239,36 +239,36 @@ fn test_rstr() {
 
         let x : Rstr = "xyz".into();
         assert_eq!(x, "xyz");
-    }
+    });
 }
 
 #[test]
 fn test_doubles_from_iterator() {
-    test! {
+    with_r(|| {
         let vec : Doubles = (0..3).map(|i| (i as f64).into()).collect();
         assert_eq!(vec, Doubles::from_values([0.0, 1.0, 2.0]));
-    }
+    });
 }
 #[test]
 fn test_doubles_iter_mut() {
-    test! {
+    with_r(|| {
         let mut vec = Doubles::from_values([0.0, 1.0, 2.0, 3.0]);
         vec.iter_mut().for_each(|v| *v += 1.0);
         assert_eq!(vec, Doubles::from_values([1.0, 2.0, 3.0, 4.0]));
-    }
+    });
 }
 
 #[test]
 fn test_doubles_iter() {
-    test! {
+    with_r(|| {
         let vec = Doubles::from_values([0.0, 1.0, 2.0, 3.0]);
         assert_eq!(vec.iter().sum::<Rfloat>(), 6.0);
-    }
+    });
 }
 
 #[test]
 fn test_doubles_from_values_short() {
-    test! {
+    with_r(|| {
         let vec = Doubles::from_values((0..3).map(|i| 2.0 - i as f64));
         assert_eq!(vec.is_altrep(), false);
         assert_eq!(r!(vec.clone()), r!([2.0, 1.0, 0.0]));
@@ -276,27 +276,27 @@ fn test_doubles_from_values_short() {
         let mut dest = [0.0.into(); 2];
         vec.get_region(1, &mut dest);
         assert_eq!(dest, [1.0, 0.0]);
-    }
+    });
 }
 #[test]
 fn test_doubles_from_values_altrep() {
-    test! {
+    with_r(|| {
         let vec = Doubles::from_values_altrep((0..1000000000).map(|x| x as f64));
         assert_eq!(vec.is_altrep(), true);
         assert_eq!(vec.elt(12345678), 12345678.0);
         let mut dest = [0.0.into(); 2];
         vec.get_region(12345678, &mut dest);
         assert_eq!(dest, [12345678.0, 12345679.0]);
-    }
+    });
 }
 
 #[test]
 fn test_doubles_new() {
-    test! {
+    with_r(|| {
         let vec = Doubles::new(10);
         assert_eq!(vec.is_real(), true);
         assert_eq!(vec.len(), 10);
-    }
+    });
 }
 
 #[cfg(feature = "num-complex")]
@@ -305,31 +305,32 @@ mod num_complex {
 
     #[test]
     fn from_iterator() {
-        test! {
+        with_r(|| {
             let vec : Complexes = (0..3).map(|i| (i as f64).into()).collect();
             assert_eq!(vec, Complexes::from_values([0.0, 1.0, 2.0]));
-        }
+        });
     }
+
     #[test]
     fn iter_mut() {
-        test! {
+        with_r(|| {
             let mut vec = Complexes::from_values([0.0, 1.0, 2.0, 3.0]);
             vec.iter_mut().for_each(|v| *v = *v + Rcplx::from(1.0));
             assert_eq!(vec, Complexes::from_values([1.0, 2.0, 3.0, 4.0]));
-        }
+        });
     }
 
     #[test]
     fn iter() {
-        test! {
+        with_r(|| {
             let vec = Complexes::from_values([0.0, 1.0, 2.0, 3.0]);
             assert_eq!(vec.iter().sum::<Rcplx>(), Rcplx::from(6.0));
-        }
+        });
     }
 
     #[test]
     fn from_values_short() {
-        test! {
+        with_r(|| {
             // Short (<64k) vectors are allocated.
             let vec = Complexes::from_values((0..3).map(|i| 2.0 - i as f64));
             assert_eq!(vec.is_altrep(), false);
@@ -338,11 +339,11 @@ mod num_complex {
             let mut dest = [0.0.into(); 2];
             vec.get_region(1, &mut dest);
             assert_eq!(dest, [Rcplx::from(1.0), Rcplx::from(0.0)]);
-        }
+        });
     }
     #[test]
     fn from_values_long() {
-        test! {
+        with_r(|| {
             // Long (>=64k) vectors are lazy ALTREP objects.
             let vec = Complexes::from_values_altrep((0..1000000000).map(|x| x as f64));
             assert_eq!(vec.is_altrep(), true);
@@ -350,15 +351,15 @@ mod num_complex {
             let mut dest = [0.0.into(); 2];
             vec.get_region(12345678, &mut dest);
             assert_eq!(dest, [Rcplx::from(12345678.0), Rcplx::from(12345679.0)]);
-        }
+        });
     }
 
     #[test]
     fn new() {
-        test! {
+        with_r(|| {
             let vec = Complexes::new(10);
             assert_eq!(vec.is_complex(), true);
             assert_eq!(vec.len(), 10);
-        }
+        });
     }
 }

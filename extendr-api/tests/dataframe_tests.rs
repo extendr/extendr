@@ -2,7 +2,7 @@ use extendr_api::prelude::*;
 
 #[test]
 fn test_derive_into_dataframe() {
-    test! {
+    with_r(|| {
         use extendr_api::prelude::*;
 
         #[derive(Debug, IntoDataFrameRow)]
@@ -27,5 +27,5 @@ fn test_derive_into_dataframe() {
         let list : List = df3.as_list().unwrap();
         assert_eq!(list[0], r!([0, 1]));
         assert_eq!(list[1], r!(["0", "1"]));
-    }
+    });
 }

@@ -158,7 +158,7 @@ fn test_rint_opassign() {
 
 #[test]
 fn test_rfloat() {
-    test! {
+    with_r(|| {
         let a = Rfloat::from(20.);
         let b = Rfloat::from(10.);
         assert_eq!(a + b, Rfloat::from(30.));
@@ -238,13 +238,13 @@ fn test_rfloat() {
         assert_eq!(Rfloat::from(-42.).abs(), Rfloat::from(42.));
         assert_eq!(Rfloat::from(42.).abs(), Rfloat::from(42.));
         assert_eq!(Rfloat::from(0.).abs(), Rfloat::from(0.));
-    }
+    });
 }
 
 #[test]
 #[cfg(feature = "num-complex")]
 fn test_rcplx() {
-    test! {
+    with_r(|| {
         let a = Rcplx::from((20., 300.));
         let b = Rcplx::from((10., 400.));
         assert_eq!(a + b, Rcplx::from((30., 700.)));
@@ -314,12 +314,12 @@ fn test_rcplx() {
 
         // Some more, testing mixed binary operators
         assert!((Rcplx::from(f64::INFINITY) + Rcplx::from(1.)).is_infinite());
-    }
+    });
 }
 
 #[test]
 fn test_rfloat_opassign() {
-    test! {
+    with_r(|| {
         // LHS Rfloat, RHS Rfloat
         let mut a = Rfloat::from(20.);
         a += Rfloat::from(10.);
@@ -442,5 +442,5 @@ fn test_rfloat_opassign() {
         assert!(a.is_nan());
         b -= a;
         assert!(b.is_nan());
-    }
+    });
 }

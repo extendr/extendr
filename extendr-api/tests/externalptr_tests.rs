@@ -3,18 +3,18 @@ use lazy_static::lazy_static;
 
 #[test]
 fn test_externalptr() {
-    test! {
+    with_r(|| {
         let extptr = ExternalPtr::new(1);
         assert_eq!(*extptr, 1);
         let robj : Robj = extptr.into();
         let extptr2 : ExternalPtr<i32> = robj.try_into().unwrap();
         assert_eq!(*extptr2, 1);
-    }
+    });
 }
 
 #[test]
 fn test_externalptr_drop() {
-    test! {
+    with_r(|| {
         // This flag will get set when we do the drop.
         lazy_static! {
             static ref Z : std::sync::Mutex<bool> = std::sync::Mutex::new(false);
@@ -45,12 +45,12 @@ fn test_externalptr_drop() {
         drop(extptr);
         R!("gc()").unwrap();
         assert_eq!(*Z.lock().unwrap(), true);
-    }
+    });
 }
 
 #[test]
 fn test_externalptr_deref() {
-    test! {
+    with_r(|| {
         #[derive(Debug)]
         struct X {
             x: i32,
@@ -60,5 +60,5 @@ fn test_externalptr_deref() {
         let extptr = ExternalPtr::new(X { x: 1, y: 2});
         assert_eq!(extptr.x, 1);
         assert_eq!(extptr.y, 2);
-    }
+    });
 }

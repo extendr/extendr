@@ -2,7 +2,7 @@ use extendr_api::prelude::*;
 
 #[test]
 fn test_allocation() {
-    test! {
+    with_r(|| {
         const COUNT: u64 = 2_000_000u64;
         let mut data: Vec<Robj> = vec![];
         for i in 1u64..COUNT {
@@ -20,5 +20,5 @@ fn test_allocation() {
             (1i32..=COUNT as i32).collect_robj(),
         )?;
         obj.set_class(&["data.frame"])?;
-    }
+    });
 }

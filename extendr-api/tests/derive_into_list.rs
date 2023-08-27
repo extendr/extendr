@@ -9,7 +9,7 @@ fn test_derive_list() {
     use extendr_api::prelude::*;
     use extendr_macros::{IntoRobj, TryFromRobj};
 
-    test! {
+    with_r(|| {
         #[derive(TryFromRobj, IntoRobj, PartialEq, Debug)]
         struct Foo {
             a: u16,
@@ -50,5 +50,5 @@ fn test_derive_list() {
         // Check the Rust → R conversion with an owned struct
         let converted_r_owned: Robj = native_rust.into();
         assert_eq!(&converted_r_borrow, &converted_r_owned);
-    }
+    });
 }

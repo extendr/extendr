@@ -3,7 +3,7 @@ use crate::*;
 
 #[test]
 fn test_from_robj() {
-    test! {
+    with_r(|| {
         assert_eq!(<bool>::from_robj(&Robj::from(true)), Ok(true));
         assert_eq!(<u8>::from_robj(&Robj::from(1)), Ok(1));
         assert_eq!(<u16>::from_robj(&Robj::from(1)), Ok(1));
@@ -89,12 +89,12 @@ fn test_from_robj() {
             Ok(Some("1".to_string()))
         );
         assert!(<Option<String>>::from_robj(&Robj::from(["1", "2"])).is_err());
-    }
+    });
 }
 
 #[test]
 fn test_try_from_robj() {
-    test! {
+    with_r(|| {
         assert_eq!(<bool>::try_from(Robj::from(true)), Ok(true));
         assert_eq!(<u8>::try_from(Robj::from(1)), Ok(1));
         assert_eq!(<u16>::try_from(Robj::from(1)), Ok(1));
@@ -215,11 +215,11 @@ fn test_try_from_robj() {
             Ok(Some("1".to_string()))
         );
         assert!(<Option<String>>::try_from(Robj::from(["1", "2"])).is_err());
-    }
+    });
 }
 #[test]
 fn test_to_robj() {
-    test! {
+    with_r(|| {
         assert_eq!(Robj::from(true), Robj::from([Rbool::from(true)]));
         //assert_eq!(Robj::from(1_u8), Robj::from(1));
         assert_eq!(Robj::from(1_u16), Robj::from(1));
@@ -238,9 +238,9 @@ fn test_to_robj() {
         assert_eq!(Robj::from(i64::MIN), Robj::from(i64::MIN as f64));
 
         // check NaN and Inf
-        assert_eq!(Robj::from(f64::NAN), R!("NaN")?);
-        assert_eq!(Robj::from(f64::INFINITY), R!("Inf")?);
-        assert_eq!(Robj::from(-f64::INFINITY), R!("-Inf")?);
+        assert_eq!(Robj::from(f64::NAN), R!("NaN").unwrap());
+        assert_eq!(Robj::from(f64::INFINITY), R!("Inf").unwrap());
+        assert_eq!(Robj::from(-f64::INFINITY), R!("-Inf").unwrap());
 
         let ab = Robj::from(vec!["a", "b"]);
         let ab2 = Robj::from(vec!["a".to_string(), "b".to_string()]);
@@ -261,27 +261,27 @@ fn test_to_robj() {
         assert_eq!(Robj::from(Some("xyz")), Robj::from("xyz"));
         assert!(!Robj::from(Some("xyz")).is_na());
         assert!(Robj::from(<Option<&str>>::None).is_na());
-    }
+    });
 }
 
 #[test]
 fn parse_test() {
-    test! {
-    let p = parse("print(1L);print(1L);")?;
+    with_r(|| {
+    let p = parse("print(1L);print(1L);").unwrap();
     let q = Expressions::from_values(&[
         r!(Language::from_values(&[r!(Symbol::from_string("print")), r!(1)])),
         r!(Language::from_values(&[r!(Symbol::from_string("print")), r!(1)]))
     ]);
     assert_eq!(p, q);
 
-    let p = eval_string("1L + 1L")?;
+    let p = eval_string("1L + 1L").unwrap();
     assert_eq!(p, Robj::from(2));
-    }
+    });
 }
 
 #[test]
 fn output_iterator_test() {
-    test! {
+    with_r(|| {
         // Allocation where size is known in advance.
         let robj = (0..3).collect_robj();
         assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);
@@ -319,7 +319,7 @@ fn output_iterator_test() {
             .map(|x| format!("{}", x))
             .collect_robj();
         assert_eq!(robj.as_str_vector(), Some(vec!["0", "2"]));
-    }
+    });
 }
 
 // Test that we can use Iterators as the input to functions.
@@ -329,7 +329,7 @@ fn output_iterator_test() {
 // }
 #[test]
 fn input_iterator_test() {
-    test! {
+    with_r(|| {
         let src: &[&str] = &["1", "2", "3"];
         let robj = Robj::from(src);
         let iter = <StrIter>::from_robj(&robj).unwrap();
@@ -356,5 +356,5 @@ fn input_iterator_test() {
         let iter = <Logical>::from_robj(&robj).unwrap();
         assert_eq!(iter.collect::<Vec<_>>(), src);
         */
-    }
+    });
 }

@@ -95,11 +95,11 @@ where
     T: Scalar<U> + PartialOrd + PartialEq + Copy,
     U: PartialEq + Copy,
 {
-    test! {
+    with_r(|| {
         let right = T::na();
         assert_eq!(left > right, false);
         assert_eq!(left >= right, false);
-    }
+    });
 }
 
 #[rstest]
@@ -111,11 +111,11 @@ where
     T: Scalar<U> + PartialOrd + PartialEq + Copy,
     U: PartialEq + Copy,
 {
-    test! {
+    with_r(|| {
         let right = T::na();
         assert_eq!(left < right, false);
         assert_eq!(left <= right, false);
-    }
+    });
 }
 
 #[rstest]
@@ -127,11 +127,11 @@ where
     T: Scalar<U> + PartialOrd + PartialEq + Copy,
     U: PartialEq + Copy,
 {
-    test! {
+    with_r(|| {
         let left = T::na();
         assert_eq!(left < right, false);
         assert_eq!(left <= right, false);
-    }
+    });
 }
 
 #[rstest]
@@ -143,11 +143,11 @@ where
     T: Scalar<U> + PartialOrd + PartialEq + Copy,
     U: PartialEq + Copy,
 {
-    test! {
+    with_r(|| {
         let left = T::na();
         assert_eq!(left > right, false);
         assert_eq!(left >= right, false);
-    }
+    });
 }
 
 #[rstest]
@@ -160,12 +160,12 @@ where
     T: Scalar<U> + PartialOrd + PartialEq + Copy,
     U: PartialEq + Copy,
 {
-    test! {
+    with_r(|| {
         let na = T::na();
         assert_eq!(value.partial_cmp(&na), None);
         assert_eq!(na.partial_cmp(&value), None);
         assert_eq!(na.partial_cmp(&na), None);
-    }
+    });
 }
 
 #[test]

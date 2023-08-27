@@ -6,7 +6,7 @@ mod test {
 
     #[test]
     fn test_serialize_struct() {
-        test! {
+        with_r(|| {
             #[derive(Serialize)]
             struct Test<'a> {
                 int: i32,
@@ -20,12 +20,12 @@ mod test {
 
             let expected = list!(int=1, seq=list!("a", "b"));
             assert_eq!(to_robj(&test).unwrap(), Robj::from(expected));
-        }
+        });
     }
 
     #[test]
     fn test_serialize_enum() {
-        test! {
+        with_r(|| {
             #[derive(Serialize)]
             enum E {
                 Unit,
@@ -49,12 +49,12 @@ mod test {
             let s = E::Struct { a: 1 };
             let expected = list!(Struct=list!(a=1));
             assert_eq!(to_robj(&s).unwrap(), r!(expected));
-        }
+        });
     }
 
     #[test]
     fn test_serialize_robj() {
-        test! {
+        with_r(|| {
             #[derive(Serialize)]
             struct Null(Robj);
             let s = Null(r!(NULL));
@@ -152,6 +152,6 @@ mod test {
             let s = Rbool2(Rbool::na());
             let expected = r!(());
             assert_eq!(to_robj(&s).unwrap(), Robj::from(expected));
-        }
+        });
     }
 }

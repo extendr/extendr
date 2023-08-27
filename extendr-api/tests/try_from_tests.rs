@@ -73,7 +73,7 @@ fn test_try_from() {
         };
     }
 
-    test! {
+    with_r(|| {
         let integer = r!(1);
         test_matrix!(
             integer.clone(),
@@ -140,5 +140,5 @@ fn test_try_from() {
 
         // let strings = Strings::from_values(["1"]);
         // test_matrix!(strings.clone(), int_ok : true, float_ok : true, bool_ok : false, str_ok: false);
-    }
+    });
 }

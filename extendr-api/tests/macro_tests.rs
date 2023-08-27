@@ -2,7 +2,7 @@ use extendr_api::{list, test, List, Result};
 
 #[test]
 fn test_list() {
-    test! {
+    with_r(|| {
         let l : List = list!();
         assert_eq!(l, List::default());
         let l : List = list!(1);
@@ -13,5 +13,5 @@ fn test_list() {
         assert_eq!(l, List::from_names_and_values(["a", "b"], [1, 2]).unwrap());
 
         assert!(List::from_names_and_values(["a", "b"], [1, 2, 3]).is_err());
-    }
+    });
 }

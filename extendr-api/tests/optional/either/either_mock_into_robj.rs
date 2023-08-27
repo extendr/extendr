@@ -19,7 +19,7 @@ impl From<NotExecutedMock> for Robj {
 
 #[test]
 fn into_robj() {
-    test! {
+    with_r(|| {
         let left : Either<Mock, NotExecutedMock> = Left(Mock{});
         let robj : Robj = left.into();
 
@@ -29,5 +29,5 @@ fn into_robj() {
         let robj : Robj = right.into();
 
         assert_eq!(r!(()), robj);
-    }
+    });
 }

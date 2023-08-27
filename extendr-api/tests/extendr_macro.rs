@@ -72,7 +72,7 @@ fn test_integers3(val: Integers) -> Rint {
 #[test]
 fn tests_with_successful_outcomes() {
     unsafe {
-        test! {
+        with_r(|| {
             // Matching integer.
             assert_eq!(Robj::from_sexp(wrap__test_i32(r!(1).get())), r!(1));
 
@@ -127,7 +127,7 @@ fn tests_with_successful_outcomes() {
             assert_eq!(Robj::from_sexp(wrap__test_integers(r!([1, 2]).get())), r!([1, 2]));
             assert_eq!(Robj::from_sexp(wrap__test_integers2(r!([1, 2]).get())), r!([2, 3]));
             assert_eq!(Robj::from_sexp(wrap__test_integers3(r!(0..4).get())), r!(6));
-        }
+        });
     }
 }
 
@@ -137,7 +137,7 @@ fn tests_with_successful_outcomes() {
 fn tests_with_unsuccessful_outcomes() {
     // Using [single_threaded] here may help with sporadic test failures.
     single_threaded(|| unsafe {
-        test! {
+        with_r(|| {
             let old_hook = std::panic::take_hook();
 
             // Suppress backtrace with a custom hook.
@@ -155,13 +155,13 @@ fn tests_with_unsuccessful_outcomes() {
 
             assert!(catch_r_error(|| wrap__test_i16(r!(1234567890).get())).is_err());
             std::panic::set_hook(old_hook);
-        }
+        });
     });
 }
 
 #[test]
 fn test_call_macro() {
-    test! {
+    with_r(|| {
         let vec = call!("c", 1.0, 2.0, 3.0).unwrap();
         assert_eq!(vec, r!([1., 2., 3.]));
 
@@ -170,7 +170,7 @@ fn test_call_macro() {
 
         let three = call!("`+`", 1, 2).unwrap();
         assert_eq!(three, r!(3));
-    }
+    });
 }
 
 #[extendr(use_try_from = true)]

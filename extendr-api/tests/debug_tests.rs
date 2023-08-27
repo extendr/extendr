@@ -2,7 +2,7 @@ use extendr_api::prelude::*;
 
 #[test]
 fn test_debug() {
-    test! {
+    with_r(|| {
         let r = r!(());
         assert_eq!(format!("{:?}", r), "()");
         let r : Symbol = sym!("xyz").try_into().unwrap();
@@ -60,12 +60,12 @@ fn test_debug() {
         S4::set_class("fred", pairlist!(x="numeric"), r!(()))?;
         let r : S4 = S4::new("fred")?;
         assert_eq!(format!("{:?}", r), "S4");
-    }
+    });
 }
 
 #[test]
 fn test_debug_scalar() {
-    test! {
+    with_r(|| {
         let test_data = vec![(true, "TRUE"), (false, "FALSE")];
         for (val, dbg_str) in test_data {
             assert_eq!(format!("{:?}", Rbool::from(val)), dbg_str);
@@ -110,12 +110,12 @@ fn test_debug_scalar() {
             assert_eq!(format!("{:?}", Rstr::from(str)), format!("{:?}", str));
         }
         assert_eq!(format!("{:?}", Rstr::na()), "NA_CHARACTER");
-    }
+    });
 }
 
 #[test]
 fn test_debug_vectors() {
-    test! {
+    with_r(|| {
         let r: Logicals = Logicals::from_values([TRUE]);
         assert_eq!(format!("{:?}", r), "TRUE");
         let r: Logicals = Logicals::from_values([TRUE, FALSE, NA_LOGICAL]);
@@ -141,5 +141,5 @@ fn test_debug_vectors() {
         let r: Complexes =
             Complexes::from_values([Rcplx::new(42.0, -42.0), Rcplx::new(0.0, 0.0), Rcplx::na()]);
         assert_eq!(format!("{:?}", r), "[42.0 - 42.0i, 0.0 + 0.0i, NA_COMPLEX]");
-    }
+    });
 }
