@@ -62,6 +62,13 @@ pub fn end_r() {
     }
 }
 
+///
+pub fn with_r(f: impl FnOnce()) {
+    start_r();
+    f();
+    end_r();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
