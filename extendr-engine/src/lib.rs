@@ -10,6 +10,7 @@
 use libR_sys::*;
 use std::os::raw;
 use std::sync::Once;
+use std::sync::atomic::AtomicU32;
 
 // Generate mutable static strings.
 // Much more efficient than `CString`.
@@ -62,11 +63,26 @@ pub fn end_r() {
     }
 }
 
-///
+static WITH_R_COUNT: AtomicU32 = AtomicU32::new(0);
+
+/// Provides a way to ensure that an R environment is present.
+/// 
+/// ```ignore
+/// #[test]
+/// fn test_foo() {
+///     with_r(|| {
+///   });
+/// }
+/// ```
 pub fn with_r(f: impl FnOnce()) {
+    use std::sync::atomic::Ordering::SeqCst;
+    WITH_R_COUNT.fetch_add(1, SeqCst);
     start_r();
     f();
-    end_r();
+    WITH_R_COUNT.fetch_sub(1, SeqCst);
+    if WITH_R_COUNT.load(SeqCst) == 0 {
+        end_r();
+    }
 }
 
 #[cfg(test)]
