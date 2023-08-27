@@ -145,7 +145,7 @@ where
     <Value as std::convert::TryFrom<robj::Robj>>::Error: std::fmt::Debug + PartialEq,
 {
     test! {
-        assert_eq!(Value::try_from(dbg!(Robj::from(value))).ok(), Some(value));
+        assert_eq!(Value::try_from(Robj::from(value)).ok(), Some(value));
     }
 }
 
