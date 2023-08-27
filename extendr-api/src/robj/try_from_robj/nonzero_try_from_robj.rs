@@ -1,6 +1,6 @@
 //! Provides `TryFrom` implementations for Rust's Nonzero primitives, as
 //! found in [`std::num`].
-//! 
+//!
 //! Note that the conversions are exact, as R may only represent `i32` and
 //! `f64`.
 use super::*;
