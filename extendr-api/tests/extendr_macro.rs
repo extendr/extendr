@@ -79,7 +79,6 @@ fn tests_with_successful_outcomes() {
             // i32 takes any numeric.
             assert_eq!(Robj::from_sexp(wrap__test_i32(r!(1.0).get())), r!(1));
 
-
             // Matching integer.
             assert_eq!(Robj::from_sexp(wrap__test_option_i32(r!(1).get())), r!(1));
 
@@ -87,11 +86,16 @@ fn tests_with_successful_outcomes() {
             assert_eq!(Robj::from_sexp(wrap__test_option_i32(r!(1.0).get())), r!(1));
 
             // NA input.
-            assert_eq!(Robj::from_sexp(wrap__test_option_i32(r!(NA_REAL).get())), r!(-1));
+            assert_eq!(
+                Robj::from_sexp(wrap__test_option_i32(r!(NA_REAL).get())),
+                r!(-1)
+            );
 
             // NA input.
-            assert_eq!(Robj::from_sexp(wrap__test_option_i32(r!(NA_INTEGER).get())), r!(-1));
-
+            assert_eq!(
+                Robj::from_sexp(wrap__test_option_i32(r!(NA_INTEGER).get())),
+                r!(-1)
+            );
 
             // Matching integer.
             assert_eq!(Robj::from_sexp(wrap__test_option_i16(r!(1).get())), r!(1));
@@ -100,32 +104,55 @@ fn tests_with_successful_outcomes() {
             assert_eq!(Robj::from_sexp(wrap__test_option_i16(r!(1.0).get())), r!(1));
 
             // NA input.
-            assert_eq!(Robj::from_sexp(wrap__test_option_i16(r!(NA_REAL).get())), r!(-1));
+            assert_eq!(
+                Robj::from_sexp(wrap__test_option_i16(r!(NA_REAL).get())),
+                r!(-1)
+            );
 
             // NA input.
-            assert_eq!(Robj::from_sexp(wrap__test_option_i16(r!(NA_INTEGER).get())), r!(-1));
-
+            assert_eq!(
+                Robj::from_sexp(wrap__test_option_i16(r!(NA_INTEGER).get())),
+                r!(-1)
+            );
 
             // Matching integer.
             assert_eq!(Robj::from_sexp(wrap__test_option_f64(r!(1).get())), r!(1.0));
 
             // Option<f64> takes any numeric.
-            assert_eq!(Robj::from_sexp(wrap__test_option_f64(r!(1.0).get())), r!(1.0));
+            assert_eq!(
+                Robj::from_sexp(wrap__test_option_f64(r!(1.0).get())),
+                r!(1.0)
+            );
 
             // NA input.
-            assert_eq!(Robj::from_sexp(wrap__test_option_f64(r!(NA_REAL).get())), r!(-1.0));
+            assert_eq!(
+                Robj::from_sexp(wrap__test_option_f64(r!(NA_REAL).get())),
+                r!(-1.0)
+            );
 
             // NA input.
-            assert_eq!(Robj::from_sexp(wrap__test_option_f64(r!(NA_INTEGER).get())), r!(-1.0));
+            assert_eq!(
+                Robj::from_sexp(wrap__test_option_f64(r!(NA_INTEGER).get())),
+                r!(-1.0)
+            );
 
             // Rint.
             assert_eq!(Robj::from_sexp(wrap__test_rint(r!(1).get())), r!(1));
             assert_eq!(Robj::from_sexp(wrap__test_rint(r!(1.0).get())), r!(1));
-            assert_eq!(Robj::from_sexp(wrap__test_rint(r!(NA_INTEGER).get())), r!(NA_INTEGER));
+            assert_eq!(
+                Robj::from_sexp(wrap__test_rint(r!(NA_INTEGER).get())),
+                r!(NA_INTEGER)
+            );
 
             // Integers
-            assert_eq!(Robj::from_sexp(wrap__test_integers(r!([1, 2]).get())), r!([1, 2]));
-            assert_eq!(Robj::from_sexp(wrap__test_integers2(r!([1, 2]).get())), r!([2, 3]));
+            assert_eq!(
+                Robj::from_sexp(wrap__test_integers(r!([1, 2]).get())),
+                r!([1, 2])
+            );
+            assert_eq!(
+                Robj::from_sexp(wrap__test_integers2(r!([1, 2]).get())),
+                r!([2, 3])
+            );
             assert_eq!(Robj::from_sexp(wrap__test_integers3(r!(0..4).get())), r!(6));
         });
     }
@@ -141,13 +168,12 @@ fn tests_with_unsuccessful_outcomes() {
             let old_hook = std::panic::take_hook();
 
             // Suppress backtrace with a custom hook.
-            std::panic::set_hook(Box::new(|_| {
-            }));
+            std::panic::set_hook(Box::new(|_| {}));
 
             // These should throw R errors.
             // They may cause stack traces, but this is harmless.
             assert!(catch_r_error(|| wrap__test_i32(r!("xyz").get())).is_err());
-            assert!(catch_r_error(|| wrap__test_i32(r!(pairlist!(x=1)).get())).is_err());
+            assert!(catch_r_error(|| wrap__test_i32(r!(pairlist!(x = 1)).get())).is_err());
             assert!(catch_r_error(|| wrap__test_i32(r!(list!(1, 2, 3)).get())).is_err());
 
             assert!(catch_r_error(|| wrap__test_rint(r!([1, 2]).get())).is_err());
@@ -165,7 +191,7 @@ fn test_call_macro() {
         let vec = call!("c", 1.0, 2.0, 3.0).unwrap();
         assert_eq!(vec, r!([1., 2., 3.]));
 
-        let list = call!("list", a=1, b=2).unwrap();
+        let list = call!("list", a = 1, b = 2).unwrap();
         assert_eq!(list.len(), 2);
 
         let three = call!("`+`", 1, 2).unwrap();

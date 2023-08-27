@@ -157,9 +157,9 @@ impl Person {
 /// comment #1
 /// comment #2
 /**
-        comment #3
-        comment #4
-    **/
+    comment #3
+    comment #4
+**/
 #[extendr]
 /// aux_func doc comment.
 fn aux_func(_person: &Person) {}
@@ -285,7 +285,7 @@ fn slice_test() {
             // #[extendr]
             // pub fn matrix(x: Matrix<&[f64]>) -> Matrix<&[f64]> { x }
 
-            let m = RMatrix::new_matrix(1, 2, |r, c| if r == c {1.0} else {0.});
+            let m = RMatrix::new_matrix(1, 2, |r, c| if r == c { 1.0 } else { 0. });
             let robj = r!(m);
             assert_eq!(Robj::from_sexp(wrap__matrix(robj.get())), robj);
         }
@@ -348,11 +348,23 @@ fn metadata_test() {
 #[test]
 fn pairlist_macro_works() {
     with_r(|| {
-        assert_eq!(pairlist!(1, 2, 3), Pairlist::from_pairs(&[("", 1), ("", 2), ("", 3)]));
-        assert_eq!(pairlist!(a=1, 2, 3), Pairlist::from_pairs(&[("a", 1), ("", 2), ("", 3)]));
-        assert_eq!(pairlist!(1, b=2, 3), Pairlist::from_pairs(&[("", 1), ("b", 2), ("", 3)]));
-        assert_eq!(pairlist!(a=1, b=2, c=3), Pairlist::from_pairs(&[("a", 1), ("b", 2), ("c", 3)]));
-        assert_eq!(pairlist!(a=NULL), Pairlist::from_pairs(&[("a", ())]));
+        assert_eq!(
+            pairlist!(1, 2, 3),
+            Pairlist::from_pairs(&[("", 1), ("", 2), ("", 3)])
+        );
+        assert_eq!(
+            pairlist!(a = 1, 2, 3),
+            Pairlist::from_pairs(&[("a", 1), ("", 2), ("", 3)])
+        );
+        assert_eq!(
+            pairlist!(1, b = 2, 3),
+            Pairlist::from_pairs(&[("", 1), ("b", 2), ("", 3)])
+        );
+        assert_eq!(
+            pairlist!(a = 1, b = 2, c = 3),
+            Pairlist::from_pairs(&[("a", 1), ("b", 2), ("c", 3)])
+        );
+        assert_eq!(pairlist!(a = NULL), Pairlist::from_pairs(&[("a", ())]));
         assert_eq!(pairlist!(), Pairlist::from(()));
     });
 }
@@ -362,25 +374,47 @@ fn big_r_macro_works() {
     with_r(|| {
         assert_eq!(R!("1").unwrap(), r!(1.0));
         assert_eq!(R!(r"1").unwrap(), r!(1.0));
-        assert_eq!(R!(r"
+        assert_eq!(
+            R!(r"
                 x <- 1
                 x
-            ").unwrap(), r!(1.0));
-        assert_eq!(R!(r"
+            ")
+            .unwrap(),
+            r!(1.0)
+        );
+        assert_eq!(
+            R!(r"
                 x <- {{ 1.0 }}
                 x
-            ").unwrap(), r!(1.0));
-        assert_eq!(R!(r"
+            ")
+            .unwrap(),
+            r!(1.0)
+        );
+        assert_eq!(
+            R!(r"
                 x <- {{ (0..4).collect_robj() }}
                 x
-            ").unwrap(), r!([0, 1, 2, 3]));
-        assert_eq!(R!(r#"
+            ")
+            .unwrap(),
+            r!([0, 1, 2, 3])
+        );
+        assert_eq!(
+            R!(r#"
                 x <- "hello"
                 x
-            "#).unwrap(), r!("hello"));
-        assert_eq!(Rraw!(r"
+            "#)
+            .unwrap(),
+            r!("hello")
+        );
+        assert_eq!(
+            Rraw!(
+                r"
                 x <- {{ 1 }}
                 x
-            ").unwrap(), r!(1.0));
+            "
+            )
+            .unwrap(),
+            r!(1.0)
+        );
     });
 }

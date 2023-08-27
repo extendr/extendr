@@ -20,13 +20,13 @@ impl From<NotExecutedMock> for Robj {
 #[test]
 fn into_robj() {
     with_r(|| {
-        let left : Either<Mock, NotExecutedMock> = Left(Mock{});
-        let robj : Robj = left.into();
+        let left: Either<Mock, NotExecutedMock> = Left(Mock {});
+        let robj: Robj = left.into();
 
         assert_eq!(r!(()), robj);
 
-        let right : Either<NotExecutedMock, Mock> = Right(Mock{});
-        let robj : Robj = right.into();
+        let right: Either<NotExecutedMock, Mock> = Right(Mock {});
+        let robj: Robj = right.into();
 
         assert_eq!(r!(()), robj);
     });

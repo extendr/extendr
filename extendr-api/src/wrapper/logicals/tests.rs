@@ -3,7 +3,7 @@ use crate::prelude::*;
 #[test]
 fn from_iterator() {
     with_r(|| {
-        let vec : Logicals = (0..3).map(|i| (i % 2 == 0).into()).collect();
+        let vec: Logicals = (0..3).map(|i| (i % 2 == 0).into()).collect();
         assert_eq!(vec, Logicals::from_values([true, false, true]));
     });
 }

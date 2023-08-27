@@ -111,15 +111,24 @@ fn test_try_from_robj() {
 
         // conversion from non-integer-ish value to integer should fail
         let robj = Robj::from(1.5);
-        assert_eq!(<i32>::try_from(robj.clone()), Err(Error::ExpectedWholeNumber(robj)));
+        assert_eq!(
+            <i32>::try_from(robj.clone()),
+            Err(Error::ExpectedWholeNumber(robj))
+        );
         // conversion from out-of-limit value should fail
         let robj = Robj::from(32768);
         assert_eq!(<i16>::try_from(robj.clone()), Err(Error::OutOfLimits(robj)));
         let robj = Robj::from(-1);
         assert_eq!(<u32>::try_from(robj.clone()), Err(Error::OutOfLimits(robj)));
 
-        assert_eq!(<Vec::<Rint>>::try_from(Robj::from(1)), Ok(vec![Rint::from(1)]));
-        assert_eq!(<Vec::<Rfloat>>::try_from(Robj::from(1.)), Ok(vec![Rfloat::from(1.0)]));
+        assert_eq!(
+            <Vec::<Rint>>::try_from(Robj::from(1)),
+            Ok(vec![Rint::from(1)])
+        );
+        assert_eq!(
+            <Vec::<Rfloat>>::try_from(Robj::from(1.)),
+            Ok(vec![Rfloat::from(1.0)])
+        );
         assert_eq!(<Vec::<Rbool>>::try_from(Robj::from(TRUE)), Ok(vec![TRUE]));
         assert_eq!(<Vec::<u8>>::try_from(Robj::from(0_u8)), Ok(vec![0_u8]));
 
@@ -130,10 +139,24 @@ fn test_try_from_robj() {
         let v: Result<Doubles> = r!(NA_REAL).try_into();
         let mut v: Vec<_> = v.unwrap().iter().collect();
         assert!(v.pop().unwrap().is_nan());
-        assert_eq!(<Doubles>::try_from(r!([1.0, 2.0])).unwrap().iter().map(|v| v.inner()).collect::<Vec<f64>>(), vec![1.0, 2.0]);
+        assert_eq!(
+            <Doubles>::try_from(r!([1.0, 2.0]))
+                .unwrap()
+                .iter()
+                .map(|v| v.inner())
+                .collect::<Vec<f64>>(),
+            vec![1.0, 2.0]
+        );
         assert!(<Doubles>::try_from(r!([true])).is_err());
 
-        assert_eq!(<Integers>::try_from(r!([1, 2])).unwrap().iter().map(|v| v.inner()).collect::<Vec<i32>>(), vec![1, 2]);
+        assert_eq!(
+            <Integers>::try_from(r!([1, 2]))
+                .unwrap()
+                .iter()
+                .map(|v| v.inner())
+                .collect::<Vec<i32>>(),
+            vec![1, 2]
+        );
         assert!(<Integers>::try_from(r!([true])).is_err());
 
         // TODO: reinstate.
@@ -141,15 +164,30 @@ fn test_try_from_robj() {
         // assert!(<Logicals>::try_from(r!([1])).is_err());
 
         assert_eq!(<&[Rint]>::try_from(Robj::from(1)), Ok(&[Rint::from(1)][..]));
-        assert_eq!(<&[Rfloat]>::try_from(Robj::from(1.)), Ok(&[Rfloat::from(1.)][..]));
+        assert_eq!(
+            <&[Rfloat]>::try_from(Robj::from(1.)),
+            Ok(&[Rfloat::from(1.)][..])
+        );
         assert_eq!(<&[Rbool]>::try_from(Robj::from(TRUE)), Ok(&[TRUE][..]));
         assert_eq!(<&[u8]>::try_from(Robj::from(0_u8)), Ok(&[0_u8][..]));
 
         // Note the Vec<> cases use the same logic as the slices.
-        assert_eq!(<&[Rint]>::try_from(Robj::from(1.0)), Err(Error::ExpectedInteger(r!(1.0))));
-        assert_eq!(<&[Rfloat]>::try_from(Robj::from(1)), Err(Error::ExpectedReal(r!(1))));
-        assert_eq!(<&[Rbool]>::try_from(Robj::from(())), Err(Error::ExpectedLogical(r!(()))));
-        assert_eq!(<&[u8]>::try_from(Robj::from(())), Err(Error::ExpectedRaw(r!(()))));
+        assert_eq!(
+            <&[Rint]>::try_from(Robj::from(1.0)),
+            Err(Error::ExpectedInteger(r!(1.0)))
+        );
+        assert_eq!(
+            <&[Rfloat]>::try_from(Robj::from(1)),
+            Err(Error::ExpectedReal(r!(1)))
+        );
+        assert_eq!(
+            <&[Rbool]>::try_from(Robj::from(())),
+            Err(Error::ExpectedLogical(r!(())))
+        );
+        assert_eq!(
+            <&[u8]>::try_from(Robj::from(())),
+            Err(Error::ExpectedRaw(r!(())))
+        );
 
         let hello = Robj::from("hello");
         assert_eq!(<&str>::try_from(hello), Ok("hello"));
@@ -269,15 +307,21 @@ fn test_to_robj() {
 #[test]
 fn parse_test() {
     with_r(|| {
-    let p = parse("print(1L);print(1L);").unwrap();
-    let q = Expressions::from_values(&[
-        r!(Language::from_values(&[r!(Symbol::from_string("print")), r!(1)])),
-        r!(Language::from_values(&[r!(Symbol::from_string("print")), r!(1)]))
-    ]);
-    assert_eq!(p, q);
+        let p = parse("print(1L);print(1L);").unwrap();
+        let q = Expressions::from_values(&[
+            r!(Language::from_values(&[
+                r!(Symbol::from_string("print")),
+                r!(1)
+            ])),
+            r!(Language::from_values(&[
+                r!(Symbol::from_string("print")),
+                r!(1)
+            ])),
+        ]);
+        assert_eq!(p, q);
 
-    let p = eval_string("1L + 1L").unwrap();
-    assert_eq!(p, Robj::from(2));
+        let p = eval_string("1L + 1L").unwrap();
+        assert_eq!(p, Robj::from(2));
     });
 }
 

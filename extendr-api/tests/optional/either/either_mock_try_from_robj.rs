@@ -30,8 +30,8 @@ fn try_from_one_match() {
         let left_match = <Either<Success, Failure> as TryFrom<&Robj>>::try_from(&robj);
         let right_match = <Either<Failure, Success> as TryFrom<&Robj>>::try_from(&robj);
 
-        assert_eq!(left_match, Ok(Left(Success{})));
-        assert_eq!(right_match, Ok(Right(Success{})));
+        assert_eq!(left_match, Ok(Left(Success {})));
+        assert_eq!(right_match, Ok(Right(Success {})));
     });
 }
 
@@ -42,7 +42,7 @@ fn try_from_both_match_return_left() {
 
         let both_match = <Either<Success, Success> as TryFrom<&Robj>>::try_from(&robj);
 
-        assert_eq!(both_match, Ok(Left(Success{})));
+        assert_eq!(both_match, Ok(Left(Success {})));
     });
 }
 
@@ -55,11 +55,10 @@ fn try_from_none_match_return_error() {
 
         assert_eq!(
             none_match,
-            Err(
-                Error::EitherError(
-                    Box::new(Error::Other(String::new())),
-                    Box::new(Error::Other(String::new())))
-            )
+            Err(Error::EitherError(
+                Box::new(Error::Other(String::new())),
+                Box::new(Error::Other(String::new()))
+            ))
         );
     });
 }

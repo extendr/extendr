@@ -8,7 +8,7 @@ fn test_altinteger() {
             start: i32,
             len: i32,
             step: i32,
-            missing_index: usize,  // For testing NA
+            missing_index: usize, // For testing NA
         }
 
         impl AltrepImpl for MyCompactIntRange {
@@ -28,17 +28,30 @@ fn test_altinteger() {
         }
 
         // no missing values in the range
-        let mystate = MyCompactIntRange { start: 0, len: 10, step: 1, missing_index: usize::MAX };
+        let mystate = MyCompactIntRange {
+            start: 0,
+            len: 10,
+            step: 1,
+            missing_index: usize::MAX,
+        };
 
         let class = Altrep::make_altinteger_class::<MyCompactIntRange>("cir", "mypkg");
         let obj = Altrep::from_state_and_class(mystate, class.clone(), false);
 
         assert_eq!(obj.len(), 10);
         // assert_eq!(obj.sum(true), r!(45.0));
-        assert_eq!(obj.as_robj().as_integer_slice().unwrap(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        assert_eq!(
+            obj.as_robj().as_integer_slice().unwrap(),
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        );
 
         // index 5 is missing
-        let mystate_w_missing = MyCompactIntRange { start: 0, len: 10, step: 1, missing_index: 5 };
+        let mystate_w_missing = MyCompactIntRange {
+            start: 0,
+            len: 10,
+            step: 1,
+            missing_index: 5,
+        };
 
         let obj_w_missing = Altrep::from_state_and_class(mystate_w_missing, class, false);
         let robj_w_missing = Robj::from(obj_w_missing);
@@ -62,7 +75,7 @@ fn test_altreal() {
             start: f64,
             len: usize,
             step: f64,
-            missing_index: usize,  // For testing NA
+            missing_index: usize, // For testing NA
         }
 
         impl AltrepImpl for MyCompactRealRange {
@@ -82,17 +95,30 @@ fn test_altreal() {
         }
 
         // no missing values in the range
-        let mystate = MyCompactRealRange { start: 0.0, len: 10, step: 1.0, missing_index: usize::MAX };
+        let mystate = MyCompactRealRange {
+            start: 0.0,
+            len: 10,
+            step: 1.0,
+            missing_index: usize::MAX,
+        };
 
         let class = Altrep::make_altreal_class::<MyCompactRealRange>("crr", "mypkg");
         let obj = Altrep::from_state_and_class(mystate, class.clone(), false);
 
         assert_eq!(obj.len(), 10);
         // assert_eq!(obj.sum(true), r!(45.0));
-        assert_eq!(obj.as_robj().as_real_slice().unwrap(), [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]);
+        assert_eq!(
+            obj.as_robj().as_real_slice().unwrap(),
+            [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]
+        );
 
         // index 5 is missing
-        let mystate_w_missing = MyCompactRealRange { start: 0.0, len: 10, step: 1.0, missing_index: 5 };
+        let mystate_w_missing = MyCompactRealRange {
+            start: 0.0,
+            len: 10,
+            step: 1.0,
+            missing_index: 5,
+        };
 
         let obj_w_missing = Altrep::from_state_and_class(mystate_w_missing, class, false);
         let robj_w_missing = Robj::from(obj_w_missing);
@@ -138,7 +164,10 @@ fn test_altlogical() {
 
         assert_eq!(obj.len(), 10);
         // assert_eq!(obj.sum(true), r!(5.0));
-        assert_eq!(obj.as_robj().as_logical_slice().unwrap(), [FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE]);
+        assert_eq!(
+            obj.as_robj().as_logical_slice().unwrap(),
+            [FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE]
+        );
     });
 }
 
@@ -164,13 +193,20 @@ fn test_altraw() {
             }
         }
 
-        let mystate = MyCompactRawRange { start: 0, len: 10, step: 1 };
+        let mystate = MyCompactRawRange {
+            start: 0,
+            len: 10,
+            step: 1,
+        };
 
         let class = Altrep::make_altraw_class::<MyCompactRawRange>("cir", "mypkg");
         let obj = Altrep::from_state_and_class(mystate, class, false);
 
         assert_eq!(obj.len(), 10);
-        assert_eq!(obj.as_robj().as_raw_slice().unwrap(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        assert_eq!(
+            obj.as_robj().as_raw_slice().unwrap(),
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        );
     });
 }
 
@@ -192,11 +228,18 @@ fn test_altcomplex() {
 
         impl AltComplexImpl for MyCompactComplexRange {
             fn elt(&self, index: usize) -> Rcplx {
-                Rcplx::from(c64::new(self.start + self.step * index as f64, self.start + self.step * index as f64))
+                Rcplx::from(c64::new(
+                    self.start + self.step * index as f64,
+                    self.start + self.step * index as f64,
+                ))
             }
         }
 
-        let mystate = MyCompactComplexRange { start: 0.0, len: 10, step: 1.0 };
+        let mystate = MyCompactComplexRange {
+            start: 0.0,
+            len: 10,
+            step: 1.0,
+        };
 
         let class = Altrep::make_altcomplex_class::<MyCompactComplexRange>("ccr", "mypkg");
         let obj = Altrep::from_state_and_class(mystate, class, false);
@@ -211,7 +254,7 @@ fn test_altstring() {
     with_r(|| {
         #[derive(Debug, Clone)]
         struct StringInts {
-            len: usize
+            len: usize,
         }
 
         impl AltrepImpl for StringInts {
@@ -232,6 +275,9 @@ fn test_altstring() {
         let obj = Altrep::from_state_and_class(mystate, class, false);
 
         assert_eq!(obj.len(), 10);
-        assert_eq!(Robj::from(obj), r!(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]));
+        assert_eq!(
+            Robj::from(obj),
+            r!(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"])
+        );
     });
 }

@@ -265,7 +265,7 @@ mod test {
         with_r(|| {
             let left_robj = eval_string(left).unwrap();
             let left_array = <ArrayView<DataType::Elem, DimType>>::from_robj(&left_robj).unwrap();
-            assert_eq!( left_array, right );
+            assert_eq!(left_array, right);
         });
     }
 
@@ -333,16 +333,13 @@ mod test {
         with_r(|| {
             let rvals = [
                 R!("matrix(c(1L, 2L, 3L, 4L, 5L, 6L), nrow=2)"),
-                R!("array(1:8, c(4, 2))")
+                R!("array(1:8, c(4, 2))"),
             ];
             for rval in rvals {
                 let rval = rval.unwrap();
-                let rust_arr= <ArrayView2<i32>>::from_robj(&rval).unwrap();
+                let rust_arr = <ArrayView2<i32>>::from_robj(&rval).unwrap();
                 let r_arr: Robj = (&rust_arr).try_into().unwrap();
-                assert_eq!(
-                    rval,
-                    r_arr
-                );
+                assert_eq!(rval, r_arr);
             }
         });
     }

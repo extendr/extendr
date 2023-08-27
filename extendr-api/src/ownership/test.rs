@@ -82,11 +82,13 @@ fn collection_test() {
             let sexp_pres = Rf_allocVector(VECSXP, test_size as R_xlen_t);
             Rf_protect(sexp_pres);
 
-            let sexps = (0..test_size).map(|i| {
-                let sexp = Rf_ScalarInteger(1);
-                SET_VECTOR_ELT(sexp_pres, i as R_xlen_t, sexp);
-                sexp
-            }).collect::<Vec<_>>();
+            let sexps = (0..test_size)
+                .map(|i| {
+                    let sexp = Rf_ScalarInteger(1);
+                    SET_VECTOR_ELT(sexp_pres, i as R_xlen_t, sexp);
+                    sexp
+                })
+                .collect::<Vec<_>>();
 
             for (i, sexp) in sexps.iter().enumerate() {
                 protect(*sexp);

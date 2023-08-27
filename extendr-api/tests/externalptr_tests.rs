@@ -6,8 +6,8 @@ fn test_externalptr() {
     with_r(|| {
         let extptr = ExternalPtr::new(1);
         assert_eq!(*extptr, 1);
-        let robj : Robj = extptr.into();
-        let extptr2 : ExternalPtr<i32> = robj.try_into().unwrap();
+        let robj: Robj = extptr.into();
+        let extptr2: ExternalPtr<i32> = robj.try_into().unwrap();
         assert_eq!(*extptr2, 1);
     });
 }
@@ -17,13 +17,12 @@ fn test_externalptr_drop() {
     with_r(|| {
         // This flag will get set when we do the drop.
         lazy_static! {
-            static ref Z : std::sync::Mutex<bool> = std::sync::Mutex::new(false);
+            static ref Z: std::sync::Mutex<bool> = std::sync::Mutex::new(false);
         }
 
         // Dummy structure that will show if we drop correctly.
         #[derive(Debug)]
-        struct X {
-        }
+        struct X {}
 
         // Check that drop() is called after the owning object is dropped.
         impl Drop for X {
@@ -57,7 +56,7 @@ fn test_externalptr_deref() {
             y: i32,
         }
 
-        let extptr = ExternalPtr::new(X { x: 1, y: 2});
+        let extptr = ExternalPtr::new(X { x: 1, y: 2 });
         assert_eq!(extptr.x, 1);
         assert_eq!(extptr.y, 2);
     });

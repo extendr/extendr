@@ -18,7 +18,7 @@ mod test {
                 seq: vec!["a", "b"],
             };
 
-            let expected = list!(int=1, seq=list!("a", "b"));
+            let expected = list!(int = 1, seq = list!("a", "b"));
             assert_eq!(to_robj(&test).unwrap(), Robj::from(expected));
         });
     }
@@ -39,15 +39,15 @@ mod test {
             assert_eq!(to_robj(&u).unwrap(), r!(expected));
 
             let n = E::Newtype(1);
-            let expected = list!(Newtype=1);
+            let expected = list!(Newtype = 1);
             assert_eq!(to_robj(&n).unwrap(), r!(expected));
 
             let t = E::Tuple(1, 2);
-            let expected = list!(Tuple=list!(1, 2));
+            let expected = list!(Tuple = list!(1, 2));
             assert_eq!(to_robj(&t).unwrap(), r!(expected));
 
             let s = E::Struct { a: 1 };
-            let expected = list!(Struct=list!(a=1));
+            let expected = list!(Struct = list!(a = 1));
             assert_eq!(to_robj(&s).unwrap(), r!(expected));
         });
     }
@@ -69,8 +69,8 @@ mod test {
 
             #[derive(Serialize)]
             struct Plist(Pairlist);
-            let s = Plist(pairlist!(a=1, b=2));
-            let expected = list!(a=1, b=2);
+            let s = Plist(pairlist!(a = 1, b = 2));
+            let expected = list!(a = 1, b = 2);
             assert_eq!(to_robj(&s).unwrap(), Robj::from(expected));
 
             #[derive(Serialize)]

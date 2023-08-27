@@ -21,7 +21,7 @@ fn test_strings() {
         s.set_elt(1, Rstr::from("q"));
         assert_eq!(s.elt(1), "q");
 
-        let s : Strings = ["x", "y", "z"].iter().collect();
+        let s: Strings = ["x", "y", "z"].iter().collect();
         let v = s.iter().map(|c| c.as_str()).collect::<String>();
         assert_eq!(v, "xyz");
         assert_eq!(&*s, &["x", "y", "z"]);
@@ -60,10 +60,10 @@ fn test_list() {
         s.set_elt(1, r!("q")).unwrap();
         assert_eq!(s.elt(1).unwrap(), r!("q"));
 
-        let s : List = ["x", "y", "z"].iter().collect();
+        let s: List = ["x", "y", "z"].iter().collect();
         assert_eq!(s, list!("x", "y", "z"));
 
-        let v = list!(a="x", b="y", c="z").iter().collect::<Vec<_>>();
+        let v = list!(a = "x", b = "y", c = "z").iter().collect::<Vec<_>>();
         assert_eq!(v, vec![("a", r!("x")), ("b", r!("y")), ("c", r!("z"))]);
 
         let s = List::from_values(["x", <&str>::na(), "z"]);
@@ -101,7 +101,7 @@ fn test_doubles() {
         s.set_elt(1, 5.0.into());
         assert_eq!(s.elt(1), 5.0);
 
-        let s : Doubles = [1.0, 2.0, 3.0].iter().map(|i| Rfloat::from(*i)).collect();
+        let s: Doubles = [1.0, 2.0, 3.0].iter().map(|i| Rfloat::from(*i)).collect();
         let v = s.iter().collect::<Doubles>();
         assert_eq!(v, Doubles::from_values([1.0, 2.0, 3.0]));
 
@@ -150,7 +150,7 @@ fn test_complexes() {
         // s.set_elt(1, 5.0.into());
         // assert_eq!(s.elt(1), 5.0);
 
-        let s : Complexes = [1.0, 2.0, 3.0].iter().map(|i| Rcplx::from(*i)).collect();
+        let s: Complexes = [1.0, 2.0, 3.0].iter().map(|i| Rcplx::from(*i)).collect();
         let v = s.iter().collect::<Complexes>();
         assert_eq!(v, Complexes::from_values([1.0, 2.0, 3.0]));
 
@@ -200,7 +200,7 @@ fn test_integers() {
         s.set_elt(1, 5.into());
         assert_eq!(s.elt(1), 5);
 
-        let s : Integers = [1, 2, 3].iter().map(|i| Rint::from(*i)).collect();
+        let s: Integers = [1, 2, 3].iter().map(|i| Rint::from(*i)).collect();
         let v = s.iter().collect::<Integers>();
         assert_eq!(v, Integers::from_values([1, 2, 3]));
 
@@ -237,7 +237,7 @@ fn test_rstr() {
         assert_eq!(x.starts_with("xy"), true);
         assert_eq!(x.len(), 3);
 
-        let x : Rstr = "xyz".into();
+        let x: Rstr = "xyz".into();
         assert_eq!(x, "xyz");
     });
 }
@@ -245,7 +245,7 @@ fn test_rstr() {
 #[test]
 fn test_doubles_from_iterator() {
     with_r(|| {
-        let vec : Doubles = (0..3).map(|i| (i as f64).into()).collect();
+        let vec: Doubles = (0..3).map(|i| (i as f64).into()).collect();
         assert_eq!(vec, Doubles::from_values([0.0, 1.0, 2.0]));
     });
 }
@@ -306,7 +306,7 @@ mod num_complex {
     #[test]
     fn from_iterator() {
         with_r(|| {
-            let vec : Complexes = (0..3).map(|i| (i as f64).into()).collect();
+            let vec: Complexes = (0..3).map(|i| (i as f64).into()).collect();
             assert_eq!(vec, Complexes::from_values([0.0, 1.0, 2.0]));
         });
     }
@@ -334,7 +334,10 @@ mod num_complex {
             // Short (<64k) vectors are allocated.
             let vec = Complexes::from_values((0..3).map(|i| 2.0 - i as f64));
             assert_eq!(vec.is_altrep(), false);
-            assert_eq!(r!(vec.clone()), r!([Rcplx::from(2.0), Rcplx::from(1.0), Rcplx::from(0.0)]));
+            assert_eq!(
+                r!(vec.clone()),
+                r!([Rcplx::from(2.0), Rcplx::from(1.0), Rcplx::from(0.0)])
+            );
             assert_eq!(vec.elt(1), Rcplx::from(1.0));
             let mut dest = [0.0.into(); 2];
             vec.get_region(1, &mut dest);
