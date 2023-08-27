@@ -381,6 +381,8 @@ macro_rules! impl_into_robj_nonzero {
     ($type: ty) => {
         impl From<$type> for Robj {
             fn from(value: $type) -> Self {
+                // A nonzero Rust type is automatically guaranteed  
+                // to be a valid R type if the normal type can be converted to R
                 value.get().into()
             }
         }
