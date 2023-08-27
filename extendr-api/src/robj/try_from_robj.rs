@@ -2,6 +2,8 @@
 
 use super::*;
 
+mod nonzero_try_from_robj;
+
 macro_rules! impl_try_from_scalar_integer {
     ($t:ty) => {
         impl TryFrom<&Robj> for $t {
@@ -87,30 +89,6 @@ macro_rules! impl_try_from_scalar_real {
         }
     };
 }
-
-macro_rules! impl_try_from_scalar_real_nonzero {
-    ($t:ty) => {
-        impl TryFrom<&Robj> for $t {
-            type Error = Error;
-
-            /// Convert a possibly non-zero R numeric object to a guaranteed non-zero Rust type.
-            fn try_from(robj: &Robj) -> Result<Self> {
-                Self::new(robj.try_into()?).ok_or(Error::ExpectedNonZeroValue(robj.clone()))
-            }
-        }
-    };
-}
-
-impl_try_from_scalar_real_nonzero!(std::num::NonZeroI8);
-impl_try_from_scalar_real_nonzero!(std::num::NonZeroI16);
-impl_try_from_scalar_real_nonzero!(std::num::NonZeroI32);
-impl_try_from_scalar_real_nonzero!(std::num::NonZeroI64);
-impl_try_from_scalar_real_nonzero!(std::num::NonZeroIsize);
-impl_try_from_scalar_real_nonzero!(std::num::NonZeroU8);
-impl_try_from_scalar_real_nonzero!(std::num::NonZeroU16);
-impl_try_from_scalar_real_nonzero!(std::num::NonZeroU32);
-impl_try_from_scalar_real_nonzero!(std::num::NonZeroU64);
-impl_try_from_scalar_real_nonzero!(std::num::NonZeroUsize);
 
 impl_try_from_scalar_integer!(u8);
 impl_try_from_scalar_integer!(u16);
@@ -410,6 +388,7 @@ impl TryFrom<&Robj> for Rcplx {
 
 // Convert `TryFrom<&Robj>` into TryFrom<Robj>. Sadly, we are unable to make a blanket
 // conversion using `GetSexp` with the current version of Rust.
+#[macro_export]
 macro_rules! impl_try_from_robj {
     ($($type : ty)*) => {
         $(
@@ -447,16 +426,6 @@ macro_rules! impl_try_from_robj {
 impl_try_from_robj!(
     u8 u16 u32 u64 usize
     i8 i16 i32 i64 isize
-    std::num::NonZeroI8
-    std::num::NonZeroI16
-    std::num::NonZeroI32
-    std::num::NonZeroI64
-    std::num::NonZeroIsize
-    std::num::NonZeroU8
-    std::num::NonZeroU16
-    std::num::NonZeroU32
-    std::num::NonZeroU64
-    std::num::NonZeroUsize
     bool
     Rint Rfloat Rbool Rcplx
     f32 f64
