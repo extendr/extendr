@@ -1650,7 +1650,7 @@
     }
 }
 
-<span class="kw">const </span>PRINTF_NO_FMT_CSTRING: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>[i8] = <span class="kw-2">&amp;</span>[<span class="number">37</span>, <span class="number">115</span>, <span class="number">0</span>]; <span class="comment">// same as &quot;%s\0&quot;
+<span class="kw">const </span>PRINTF_NO_FMT_CSTRING: <span class="kw-2">&amp;</span>[i8] = <span class="kw-2">&amp;</span>[<span class="number">37</span>, <span class="number">115</span>, <span class="number">0</span>]; <span class="comment">// same as &quot;%s\0&quot;
 </span><span class="attr">#[doc(hidden)]
 </span><span class="kw">pub fn </span>print_r_output&lt;T: Into&lt;Vec&lt;u8&gt;&gt;&gt;(s: T) {
     <span class="kw">let </span>cs = CString::new(s).expect(<span class="string">&quot;NulError&quot;</span>);
@@ -1989,8 +1989,8 @@
     </span><span class="kw">fn </span>test_na_str() {
         <span class="macro">assert_ne!</span>(&lt;<span class="kw-2">&amp;</span>str&gt;::na().as_ptr(), <span class="string">&quot;NA&quot;</span>.as_ptr());
         <span class="macro">assert_eq!</span>(&lt;<span class="kw-2">&amp;</span>str&gt;::na(), <span class="string">&quot;NA&quot;</span>);
-        <span class="macro">assert_eq!</span>(<span class="string">&quot;NA&quot;</span>.is_na(), <span class="bool-val">false</span>);
-        <span class="macro">assert_eq!</span>(&lt;<span class="kw-2">&amp;</span>str&gt;::na().is_na(), <span class="bool-val">true</span>);
+        <span class="macro">assert!</span>(!<span class="string">&quot;NA&quot;</span>.is_na());
+        <span class="macro">assert!</span>(&lt;<span class="kw-2">&amp;</span>str&gt;::na().is_na());
     }
 
     <span class="attr">#[test]

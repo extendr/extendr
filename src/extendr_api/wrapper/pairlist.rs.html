@@ -265,7 +265,7 @@
             <span class="kw">let </span>res = Pairlist {
                 robj: Robj::from_sexp(res),
             };
-            Rf_unprotect(num_protects <span class="kw">as </span>i32);
+            Rf_unprotect(num_protects);
             res
         })
     }

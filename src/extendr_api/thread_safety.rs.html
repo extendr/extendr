@@ -278,8 +278,8 @@
         <span class="kw">let </span>x = <span class="bool-val">false</span>;
         <span class="kw">let </span>fun = std::mem::transmute(fun_ptr);
         <span class="kw">let </span>cleanfun = std::mem::transmute(clean_ptr);
-        <span class="kw">let </span>data = std::mem::transmute(<span class="kw-2">&amp;</span>f);
-        <span class="kw">let </span>cleandata = std::mem::transmute(<span class="kw-2">&amp;</span>x);
+        <span class="kw">let </span>data = <span class="kw-2">&amp;</span>f <span class="kw">as </span><span class="kw-2">*const </span><span class="kw">_ as _</span>;
+        <span class="kw">let </span>cleandata = <span class="kw-2">&amp;</span>x <span class="kw">as </span><span class="kw-2">*const </span><span class="kw">_ as _</span>;
         <span class="kw">let </span>cont = R_MakeUnwindCont();
         Rf_protect(cont);
 

@@ -354,7 +354,7 @@
     </span><span class="kw">pub fn </span>envflags(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32 {
         <span class="kw">unsafe </span>{
             <span class="kw">let </span>sexp = <span class="self">self</span>.robj.get();
-            ENVFLAGS(sexp) <span class="kw">as </span>i32
+            ENVFLAGS(sexp)
         }
     }
 

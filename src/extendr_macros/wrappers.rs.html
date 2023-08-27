@@ -629,7 +629,7 @@
         <span class="comment">// function argument.
         </span>FnArg::Typed(<span class="kw-2">ref </span>pattype) =&gt; {
             <span class="kw">let </span>pat = <span class="kw-2">&amp;</span>pattype.pat.as_ref();
-            <span class="kw">return </span><span class="macro">parse_quote! </span>{ #pat : extendr_api::SEXP };
+            <span class="macro">parse_quote! </span>{ #pat : extendr_api::SEXP }
         }
         <span class="comment">// &amp;self
         </span>FnArg::Receiver(<span class="kw-2">ref </span>reciever) =&gt; {
@@ -639,7 +639,7 @@
             <span class="kw">if </span>self_ty.is_none() {
                 <span class="macro">panic!</span>(<span class="string">&quot;found &amp;self in non-impl function - have you missed the #[extendr] before the impl?&quot;</span>);
             }
-            <span class="kw">return </span><span class="macro">parse_quote! </span>{ _self : extendr_api::SEXP };
+            <span class="macro">parse_quote! </span>{ _self : extendr_api::SEXP }
         }
     }
 }
@@ -658,13 +658,13 @@
             } <span class="kw">else </span>{
                 <span class="macro">quote!</span>(<span class="prelude-val">None</span>)
             };
-            <span class="kw">return </span><span class="macro">parse_quote! </span>{
+            <span class="macro">parse_quote! </span>{
                 extendr_api::metadata::Arg {
                     name: #name_string,
                     arg_type: #type_string,
                     default: #default
                 }
-            };
+            }
         }
         <span class="comment">// &amp;self
         </span>FnArg::Receiver(<span class="kw-2">ref </span>reciever) =&gt; {
@@ -675,13 +675,13 @@
                 <span class="macro">panic!</span>(<span class="string">&quot;found &amp;self in non-impl function - have you missed the #[extendr] before the impl?&quot;</span>);
             }
             <span class="kw">let </span>type_string = type_name(self_ty.unwrap());
-            <span class="kw">return </span><span class="macro">parse_quote! </span>{
+            <span class="macro">parse_quote! </span>{
                 extendr_api::metadata::Arg {
                     name: <span class="string">&quot;self&quot;</span>,
                     arg_type: #type_string,
                     default: <span class="prelude-val">None
                 </span>}
-            };
+            }
         }
     }
 }
