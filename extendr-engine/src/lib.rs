@@ -77,9 +77,14 @@ static WITH_R_COUNT: AtomicU32 = AtomicU32::new(0);
 pub fn with_r(f: impl FnOnce()) {
     use std::sync::atomic::Ordering::SeqCst;
     WITH_R_COUNT.fetch_add(1, SeqCst);
+
+    //FIXME: does `cargo test` call `start_r` after it has been called once before?
+    
     start_r();
+    //TODO: Handle in case `f` panics
     f();
     WITH_R_COUNT.fetch_sub(1, SeqCst);
+    dbg!(&WITH_R_COUNT);
     if WITH_R_COUNT.load(SeqCst) == 0 {
         end_r();
     }
