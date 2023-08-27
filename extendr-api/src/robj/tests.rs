@@ -118,8 +118,7 @@ where
     T: ToVectorValue,
     T: Copy,
     T: std::fmt::Debug + PartialEq,
-    <T as std::convert::TryFrom<robj::Robj>>::Error: std::fmt::Debug,
-    <T as std::convert::TryFrom<robj::Robj>>::Error: PartialEq,
+    <T as std::convert::TryFrom<robj::Robj>>::Error: std::fmt::Debug + PartialEq
 {
     test! {
         assert_eq!(TryFrom::try_from(Robj::from(value)), Ok(value));
