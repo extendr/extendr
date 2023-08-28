@@ -262,11 +262,11 @@ mod test {
         <DataType as ndarray::RawData>::Elem: PartialEq + std::fmt::Debug,
     {
         // Tests for the R → Rust conversion
-        with_r(|| {
+        test! {
             let left_robj = eval_string(left).unwrap();
             let left_array = <ArrayView<DataType::Elem, DimType>>::from_robj(&left_robj).unwrap();
-            assert_eq!(left_array, right);
-        });
+            assert_eq!( left_array, right );
+        }
     }
 
     #[rstest]
@@ -314,7 +314,7 @@ mod test {
     {
         // Tests for the Rust → R conversion, so we therefore perform the
         // comparison in R
-        with_r(|| {
+        test! {
             // Test for borrowed array
             assert_eq!(
                 &(Robj::try_from(&array).unwrap()),
@@ -325,22 +325,25 @@ mod test {
                 &(Robj::try_from(array).unwrap()),
                 &eval_string(r_expr).unwrap()
             );
-        });
+        }
     }
 
     #[test]
     fn test_round_trip() {
-        with_r(|| {
+        test! {
             let rvals = [
                 R!("matrix(c(1L, 2L, 3L, 4L, 5L, 6L), nrow=2)"),
-                R!("array(1:8, c(4, 2))"),
+                R!("array(1:8, c(4, 2))")
             ];
             for rval in rvals {
                 let rval = rval.unwrap();
-                let rust_arr = <ArrayView2<i32>>::from_robj(&rval).unwrap();
+                let rust_arr= <ArrayView2<i32>>::from_robj(&rval).unwrap();
                 let r_arr: Robj = (&rust_arr).try_into().unwrap();
-                assert_eq!(rval, r_arr);
+                assert_eq!(
+                    rval,
+                    r_arr
+                );
             }
-        });
+        }
     }
 }
