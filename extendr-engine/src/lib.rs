@@ -9,7 +9,6 @@
 
 use libR_sys::*;
 use std::os::raw;
-use std::sync::atomic::AtomicU32;
 use std::sync::Once;
 
 // Generate mutable static strings.
@@ -63,8 +62,6 @@ pub fn end_r() {
     }
 }
 
-static WITH_R_COUNT: AtomicU32 = AtomicU32::new(0);
-
 /// Provides a way to ensure that an R environment is present.
 ///
 /// ```ignore
@@ -75,19 +72,9 @@ static WITH_R_COUNT: AtomicU32 = AtomicU32::new(0);
 /// }
 /// ```
 pub fn with_r(f: impl FnOnce()) {
-    use std::sync::atomic::Ordering::SeqCst;
-    WITH_R_COUNT.fetch_add(1, SeqCst);
-
-    //FIXME: does `cargo test` call `start_r` after it has been called once before?
-    
     start_r();
-    //TODO: Handle in case `f` panics
     f();
-    WITH_R_COUNT.fetch_sub(1, SeqCst);
-    dbg!(&WITH_R_COUNT);
-    if WITH_R_COUNT.load(SeqCst) == 0 {
-        end_r();
-    }
+    // For compatibility with `test!`, r is never shut off.
 }
 
 #[cfg(test)]

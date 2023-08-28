@@ -327,7 +327,10 @@ fn metadata_test() {
     with_r(|| {
         // Rust interface.
         let metadata = get_my_module_metadata();
-        assert_eq!(metadata.functions[0].doc, " comment #1\n comment #2\n\n    comment #3\n    comment #4\n*\n aux_func doc comment.");
+        assert_eq!(
+            metadata.functions[0].doc,
+            " comment #1\n comment #2\n\n    comment #3\n    comment #4\n*\n aux_func doc comment."
+        );
         assert_eq!(metadata.functions[0].rust_name, "aux_func");
         assert_eq!(metadata.functions[0].mod_name, "aux_func");
         assert_eq!(metadata.functions[0].r_name, "aux_func");
