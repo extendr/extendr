@@ -471,6 +471,11 @@ pub trait Rinternals: Types + Conversions {
         unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == STRSXP as i32 }
     }
 
+    /// Returns `true` if this is an integer ALTREP object.
+    fn is_altlist(&self) -> bool {
+        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == LISTSXP as i32 }
+    }
+
     /// Generate a text representation of this object.
     fn deparse(&self) -> Result<String> {
         use crate as extendr_api;

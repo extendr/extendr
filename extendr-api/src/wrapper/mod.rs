@@ -33,6 +33,7 @@ pub use self::rstr::Rstr;
 pub use altrep::{
     AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,
     AltrepImpl,
+    AltListImpl,
 };
 pub use complexes::Complexes;
 pub use dataframe::{Dataframe, IntoDataFrameRow};

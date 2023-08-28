@@ -455,6 +455,15 @@ pub trait AltStringImpl {
     }
 }
 
+pub trait AltListImpl {
+    /// Get a single element from this vector
+    // a single element of a list can be any Robj
+    fn elt(&self, _index: usize) -> Robj;
+
+    /// Set a single element in this list.
+    fn set_elt(&mut self, _index: usize, _value: Robj) {}
+}
+
 impl Altrep {
     /// Safely implement R_altrep_data1, R_altrep_data2.
     /// When implementing Altrep classes, this gets the metadata.
@@ -656,6 +665,9 @@ impl Altrep {
                 }
                 Rtype::Strings => {
                     R_make_altstring_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
+                }
+                Rtype::List => {
+                    R_make_altlist_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
                 }
                 _ => panic!("expected Altvec compatible type"),
             };
@@ -956,7 +968,7 @@ impl Altrep {
         })
     }
 
-    /// Make a complex ALTREP class that can be used to make vectors.
+    /// Make a string ALTREP class that can be used to make vectors.
     pub fn make_altstring_class<StateType: AltrepImpl + AltStringImpl + 'static>(
         name: &str,
         base: &str,
@@ -1001,6 +1013,38 @@ impl Altrep {
             R_set_altstring_Is_sorted_method(class_ptr, Some(altstring_Is_sorted::<StateType>));
             R_set_altstring_No_NA_method(class_ptr, Some(altstring_No_NA::<StateType>));
 
+            class
+        })
+    }
+    
+    pub fn make_altlist_class<StateType: AltrepImpl + AltListImpl + 'static>(
+        name: &str,
+        base: &str,
+    ) -> Robj {
+        #![allow(non_snake_case)]
+
+        single_threaded(|| unsafe {
+            let class = Altrep::altrep_class::<StateType>(Rtype::List, name, base);
+            let class_ptr = R_altrep_class_t { ptr: class.get() };
+
+            unsafe extern "C" fn altlist_Elt<StateType: AltListImpl + 'static>(
+                x: SEXP,
+                i: R_xlen_t,
+            ) -> SEXP {
+                Altrep::get_state::<StateType>(x).elt(i as usize).get()
+            }
+
+            unsafe extern "C" fn altlist_Set_elt<StateType: AltListImpl + 'static>(
+                x: SEXP,
+                i: R_xlen_t,
+                v: SEXP,
+            ) {
+                Altrep::get_state_mut::<StateType>(x)
+                    .set_elt(i as usize, Robj::from_sexp(v).try_into().unwrap())
+            }
+
+            R_set_altstring_Elt_method(class_ptr, Some(altlist_Elt::<StateType>));
+            R_set_altstring_Set_elt_method(class_ptr, Some(altlist_Set_elt::<StateType>));
             class
         })
     }
