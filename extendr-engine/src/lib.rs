@@ -63,7 +63,7 @@ pub fn end_r() {
 }
 
 /// Ensures that an embedded R instance is present when evaluating
-/// `f`. 
+/// `f`.
 pub fn with_r(f: impl FnOnce()) {
     start_r();
     f();
