@@ -342,12 +342,14 @@ fn input_iterator_test() {
 
         let src: &[i32] = &[1, 2, 3];
         let robj = Robj::from(src);
-        let iter = <Integers>::from_robj(&robj).unwrap().iter();
+        let iter = <Integers>::from_robj(&robj).unwrap();
+        let iter = iter.iter();
         assert_eq!(iter.collect::<Vec<_>>(), src);
 
         let src: &[f64] = &[1., 2., 3.];
         let robj = Robj::from(src);
-        let iter = <Doubles>::from_robj(&robj).unwrap().iter();
+        let iter = <Doubles>::from_robj(&robj).unwrap();
+        let iter = iter.iter();
         assert_eq!(iter.collect::<Vec<_>>(), src);
 
         /*
