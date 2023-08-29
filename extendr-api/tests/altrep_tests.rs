@@ -22,7 +22,7 @@ fn test_altinteger() {
                 if index == self.missing_index {
                     Rint::na()
                 } else {
-                    Rint(self.start + self.step * index as i32)
+                    Rint::new(self.start + self.step * index as i32)
                 }
             }
         }
@@ -67,7 +67,7 @@ fn test_altreal() {
 
         impl AltrepImpl for MyCompactRealRange {
             fn length(&self) -> usize {
-                self.len as usize
+                self.len
             }
         }
 
@@ -76,7 +76,7 @@ fn test_altreal() {
                 if index == self.missing_index {
                     Rfloat::na()
                 } else {
-                    Rfloat(self.start + self.step * index as f64)
+                    Rfloat::new(self.start + self.step * index as f64)
                 }
             }
         }
@@ -121,7 +121,7 @@ fn test_altlogical() {
 
         impl AltrepImpl for IsEven {
             fn length(&self) -> usize {
-                self.len as usize
+                self.len
             }
         }
 
@@ -186,7 +186,7 @@ fn test_altcomplex() {
 
         impl AltrepImpl for MyCompactComplexRange {
             fn length(&self) -> usize {
-                self.len as usize
+                self.len
             }
         }
 
@@ -216,7 +216,7 @@ fn test_altstring() {
 
         impl AltrepImpl for StringInts {
             fn length(&self) -> usize {
-                self.len as usize
+                self.len
             }
         }
 

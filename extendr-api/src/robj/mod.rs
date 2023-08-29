@@ -321,8 +321,9 @@ pub trait Types: GetSexp {
 impl Types for Robj {}
 
 impl Robj {
-    /// Is this object is an NA scalar?
+    /// Is this object is an `NA` scalar?
     /// Works for character, integer and numeric types.
+    ///
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {

@@ -210,7 +210,7 @@ pub fn parse(code: &str) -> Result<Expressions> {
     single_threaded(|| unsafe {
         use libR_sys::*;
         let mut status = 0_u32;
-        let status_ptr = &mut status as *mut u32;
+        let status_ptr = &mut status as _;
         let codeobj: Robj = code.into();
         let parsed = Robj::from_sexp(R_ParseVector(codeobj.get(), -1, status_ptr, R_NilValue));
         match status {

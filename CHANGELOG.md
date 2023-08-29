@@ -5,11 +5,19 @@
 ### Added
 
 - [**either**] `TryFrom<&Robj> for Either<T, R>` and `From<Either<T, R>> for Robj` if `T` and `R` are themselves implement these traits. This unblocks scenarios like accepting any numeric vector from R via `Either<Integers, Doubles>` without extra memory allocation [[#480]](https://github.com/extendr/extendr/pull/480)
+- `PartialOrd` trait implementation for `Rfloat`, `Rint` and `Rbool`. `Rfloat` and `Rint` gained `min()` and `max()` methods [[#573]](https://github.com/extendr/extendr/pull/573)
 
 ### Fixed
 
 - You can now create `ArrayView1` from `&Robj` as well as `Robj`
     [[#501]](https://github.com/extendr/extendr/pull/501)
+- Raw literals from Rust can be used for function and argument names. e.g.
+    `fn r#type()` in Rust is converted to `type()` in R.
+    [[#531]](https://github.com/extendr/extendr/pull/531)
+- Fix memory leaks on errors and panics
+    [[#555]](https://github.com/extendr/extendr/pull/555)
+- Fixed error when collecting too many objects into `List`, etc.
+    [[#540]](https://github.com/extendr/extendr/pull/540)
 
 ## 0.4.0
 

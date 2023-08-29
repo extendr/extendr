@@ -14,9 +14,11 @@ jobs:
       - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: stable
+          toolchain: nightly
       - name: Docs
-        run: cargo doc --workspace --no-deps --all-features
+        run: cargo doc --workspace --no-deps --document-private-items --features full-functionality
+        env:
+          RUSTDOCFLAGS: "--enable-index-page -Zunstable-options"
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:

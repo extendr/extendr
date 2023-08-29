@@ -2,6 +2,7 @@
 
 use super::*;
 use crate::robj::GetSexp;
+use crate::scalar::Scalar;
 use std::ops::{Index, IndexMut};
 
 /// Wrapper for creating and using matrices and arrays.
