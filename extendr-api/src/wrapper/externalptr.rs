@@ -93,10 +93,12 @@ impl<T: Any + Debug> ExternalPtr<T> {
             extern "C" fn finalizer<T>(x: SEXP) {
                 unsafe {
                     let ptr = R_ExternalPtrAddr(x) as *mut T;
+                    let externalptr_box = Box::from_raw(ptr);
+                    R_SetExternalPtrTag(x, R_NilValue);
 
                     // Convert the pointer to a box and drop it implictly.
                     // This frees up the memory we have used and calls the "T::drop" method if there is one.
-                    drop(Box::from_raw(ptr));
+                    drop(externalptr_box)
                 }
             }
 

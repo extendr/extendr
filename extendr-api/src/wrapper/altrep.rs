@@ -496,9 +496,9 @@ impl Altrep {
             }
 
             let ptr: *mut StateType = Box::into_raw(Box::new(state));
-            let tag = r!(());
-            let prot = r!(());
-            let state = R_MakeExternalPtr(ptr as *mut c_void, tag.get(), prot.get());
+            let tag = R_NilValue;
+            let prot = R_NilValue;
+            let state = R_MakeExternalPtr(ptr as *mut c_void, tag, prot);
             R_RegisterCFinalizer(state, Some(finalizer::<StateType>));
 
             let class_ptr = R_altrep_class_t { ptr: class.get() };
