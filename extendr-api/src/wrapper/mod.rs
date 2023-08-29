@@ -30,7 +30,7 @@ pub mod strings;
 pub mod symbol;
 
 pub use self::rstr::Rstr;
-#[cfg(use_r_ge_version_16)]
+#[cfg(use_r_version_16)]
 pub use altrep::AltListImpl;
 pub use altrep::{
     AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,

@@ -472,7 +472,7 @@ pub trait Rinternals: Types + Conversions {
     }
 
     /// Returns `true` if this is an integer ALTREP object.
-    #[cfg(use_r_ge_version_16)]
+    #[cfg(use_r_version_16)]
     fn is_altlist(&self) -> bool {
         unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == VECSXP as i32 }
     }

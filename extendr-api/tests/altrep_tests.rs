@@ -239,7 +239,7 @@ fn test_altstring() {
 }
 
 #[test]
-#[cfg(use_r_ge_version_16)]
+#[cfg(use_r_version_16)]
 fn test_altlist() {
     use extendr_api::AltListImpl;
     with_r(|| {
