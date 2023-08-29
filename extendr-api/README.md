@@ -220,14 +220,24 @@ test! {
 }
 ```
 
-## Feature gates
+ ## Feature gates
 
-extendr-api has some optional features behind these feature gates:
+ extendr-api has some optional features behind these feature gates:
+* `ndarray`: provides the conversion between R's matrices and [ndarray](https://docs.rs/ndarray/latest/ndarray/).
+* `num-complex`: provides the conversion between R's complex numbers and [num-complex](https://docs.rs/num-complex/latest/num_complex/).
+* `serde`: provides the [Serde](https://serde.rs/) support.
+* `graphics`: provides the functionality to control or implement graphics devices.
+* `either`: provides implementation of type conversion traits for `Either<L, R>` from [either](https://docs.rs/either/latest/either/) if `L` and `R` both implement those traits.
 
-- `ndarray`: provides the conversion between R's matrices and [ndarray](https://docs.rs/ndarray/latest/ndarray/).
-- `num-complex`: provides the conversion between R's complex numbers and [num-complex](https://docs.rs/num-complex/latest/num_complex/).
-- `serde`: provides the [Serde](https://serde.rs/) support.
-- `graphics`: provides the functionality to control or implement graphics devices.
+extendr-api has different encodings (conversions) of a `Result<T,E>` into an `Robj`.
+In below `x_ok` represents an R variable on R side which was returned from rust via `T::into_robj()` or similar.
+Likewise `x_err` was returned to R side from rust via `E::into_robj()` or similar.
+extendr-api
+* `result_list'` `Ok(T)` is encoded as `list(ok = x_ok, err = NULL)` and `Err` as `list(ok = NULL, err = e_err)`
+* `result_condition'` `Ok(T)` is encoded as `x_ok` and `Err(E)` as `condition(msg="extendr_error", value = x_err, class=c("extendr_error", "error", "condition"))`
+* Multiple of above result feature gates. Only one result feature gate will take effect, the precedence is currently [`result_list`, `result_condition`, ... ].
+* Neither of above (default) `Ok(T)` is encoded as `x_ok`and `Err(E)` will trigger `throw_r_error()` which is discouraged.
+
 
 ## License
 

@@ -11,7 +11,6 @@ Specifically, extendr supports the following conversions:
 * [`Robj` → `ArrayView1`](FromRobj#impl-FromRobj<%27a>-for-ArrayView1<%27a%2C%20T>), for when you have an R vector that you want to analyse in Rust:
     ```rust
     use extendr_api::prelude::*;
-    use ndarray::ArrayView1;
 
     #[extendr]
     fn describe_vector(vector: ArrayView1<f64>){
@@ -21,7 +20,6 @@ Specifically, extendr supports the following conversions:
 * [`Robj` → `ArrayView2`](FromRobj#impl-FromRobj<%27a>-for-ArrayView2<%27a%2C%20f64>), for when you have an R matrix that you want to analyse in Rust.
     ```rust
     use extendr_api::prelude::*;
-    use ndarray::ArrayView2;
 
     #[extendr]
     fn describe_matrix(matrix: ArrayView2<f64>){
@@ -31,7 +29,6 @@ Specifically, extendr supports the following conversions:
 * [`ArrayBase` → `Robj`](Robj#impl-TryFrom<ArrayBase<S%2C%20D>>-for-Robj), for when you want to return a reference to an [`ndarray`] Array from Rust back to R.
     ```rust
     use extendr_api::prelude::*;
-    use ndarray::Array2;
 
     #[extendr]
     fn return_matrix() -> Robj {
@@ -48,7 +45,6 @@ It will then be copied into a new block of memory managed by R.
 This is made easier by the fact that [ndarray allocates a new array automatically when performing operations on array references](ArrayBase#binary-operators-with-array-and-scalar):
 ```rust
 use extendr_api::prelude::*;
-use ndarray::Array2;
 
 #[extendr]
 fn scalar_multiplication(matrix: ArrayView2<f64>, scalar: f64) -> Robj {

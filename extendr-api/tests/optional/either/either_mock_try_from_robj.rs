@@ -1,4 +1,3 @@
-use either::Either::{self, Left, Right};
 use extendr_api::prelude::*;
 
 #[derive(Debug, PartialEq)]
