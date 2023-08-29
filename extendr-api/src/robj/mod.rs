@@ -325,7 +325,7 @@ impl Robj {
     /// Returns `true` if the underlying value is a scalar `NA` value,
     ///  otherwise `false`.
     ///
-    /// NOTE: If the underlying value is not a single element vector then return `false`,
+    /// If the underlying value is not a single element vector then return `false`,
     /// regardless if said vector is empty, or filled with `NA`.
     ///
     /// ```
