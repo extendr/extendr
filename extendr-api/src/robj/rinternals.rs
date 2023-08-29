@@ -473,7 +473,7 @@ pub trait Rinternals: Types + Conversions {
 
     /// Returns `true` if this is an integer ALTREP object.
     fn is_altlist(&self) -> bool {
-        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == LISTSXP as i32 }
+        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == VECSXP as i32 }
     }
 
     /// Generate a text representation of this object.

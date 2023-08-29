@@ -1043,8 +1043,8 @@ impl Altrep {
                     .set_elt(i as usize, Robj::from_sexp(v).try_into().unwrap())
             }
 
-            R_set_altstring_Elt_method(class_ptr, Some(altlist_Elt::<StateType>));
-            R_set_altstring_Set_elt_method(class_ptr, Some(altlist_Set_elt::<StateType>));
+            R_set_altlist_Elt_method(class_ptr, Some(altlist_Elt::<StateType>));
+            R_set_altlist_Set_elt_method(class_ptr, Some(altlist_Set_elt::<StateType>));
             class
         })
     }
