@@ -752,7 +752,7 @@ trait SexpAsPtr {
     /// Identifier for the R object modes / types represented as a value.
     /// See [`Rtype`] for reference.
     const R_TYPE_ID: u32;
-    /// Corresponding rust type to `XP`.
+    /// Corresponding rust type to `R_TYPE_ID`.
     type Type;
     /// Returns a typed pointer to the underlying value
     fn as_(x: SEXP) -> *mut Self::Type;
