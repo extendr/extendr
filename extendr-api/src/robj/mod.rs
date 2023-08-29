@@ -746,10 +746,9 @@ where
 /// for the underlying r storage type. Thus this trait is only meaningful for
 /// [`SEXP`]-wrappers.
 ///
-///
 /// [`SEXP`]: libR_sys::SEXP
+/// Marker for the R object modes / types represented as a value.
 trait SexpAsPtr {
-    /// Identifier for the R object modes / types represented as a value.
     /// See [`Rtype`] for reference.
     const R_TYPE_ID: u32;
     /// Corresponding rust type to `R_TYPE_ID`.
