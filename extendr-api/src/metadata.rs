@@ -150,9 +150,12 @@ fn write_doc(w: &mut Vec<u8>, doc: &str) -> std::io::Result<()> {
 }
 
 /// Wraps invalid R identifiers, like `_function_name`, into backticks.
+/// Removes raw identifiers (`r#`).
 fn sanitize_identifier(name: &str) -> String {
     if name.starts_with('_') {
         format!("`{}`", name)
+    } else if name.starts_with("r#") {
+        name.strip_prefix("r#").unwrap().into()
     } else {
         name.to_string()
     }

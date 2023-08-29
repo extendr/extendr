@@ -11,10 +11,10 @@ fn test_rint() {
     assert_eq!(-a, Rint::from(-20));
     assert_eq!(!a, Rint::from(-21));
 
-    assert_eq!(&a + b, Rint::from(30));
-    assert_eq!(&a - b, Rint::from(10));
-    assert_eq!(&a * b, Rint::from(200));
-    assert_eq!(&a / b, Rint::from(2));
+    assert_eq!(a + b, Rint::from(30));
+    assert_eq!(a - b, Rint::from(10));
+    assert_eq!(a * b, Rint::from(200));
+    assert_eq!(a / b, Rint::from(2));
     assert_eq!(-&a, Rint::from(-20));
     assert_eq!(!&a, Rint::from(-21));
 
@@ -167,10 +167,10 @@ fn test_rfloat() {
         assert_eq!(a / b, Rfloat::from(2.));
         assert_eq!(-a, Rfloat::from(-20.));
 
-        assert_eq!(&a + b, Rfloat::from(30.));
-        assert_eq!(&a - b, Rfloat::from(10.));
-        assert_eq!(&a * b, Rfloat::from(200.));
-        assert_eq!(&a / b, Rfloat::from(2.));
+        assert_eq!(a + b, Rfloat::from(30.));
+        assert_eq!(a - b, Rfloat::from(10.));
+        assert_eq!(a * b, Rfloat::from(200.));
+        assert_eq!(a / b, Rfloat::from(2.));
         assert_eq!(-&a, Rfloat::from(-20.));
 
         assert!(Rfloat::na().is_na());

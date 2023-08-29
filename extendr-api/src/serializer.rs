@@ -62,12 +62,14 @@ struct SerializeStructVariant<'a> {
 /// Convert a serializable object to a Robj.
 ///
 /// Requires the "serde" feature.
+///
 /// ```toml
-/// extendr-api = { version = "0", features = ["serde"] }
+/// extendr-api = { version = "0.4", features = ["serde"] }
 /// ```
 ///
 /// Example:
-/// ```
+///
+/// ```rust
 /// use extendr_api::prelude::*;
 /// use extendr_api::serializer::to_robj;
 /// use serde::Serialize;

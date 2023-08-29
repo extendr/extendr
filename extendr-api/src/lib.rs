@@ -7,12 +7,13 @@
 //! This library aims to provide an interface that will be familiar to
 //! first-time users of Rust or indeed any compiled language.
 //!
-//! See [Robj] for much of the content of this crate.
-//! [Robj] provides a safe wrapper for the R object type.
+//! See [`Robj`] for much of the content of this crate.
+//! [`Robj`] provides a safe wrapper for the R object type.
 //!
 //! ## Examples
 //!
 //! Use attributes and macros to export to R.
+//!
 //! ```ignore
 //! use extendr_api::prelude::*;
 //! // Export a function or impl to R.
@@ -252,6 +253,72 @@
 //! }
 //! ```
 //!
+//! ## Returning Result<T,E> to R
+//!
+//! Currently, `throw_r_error()` leaks memory because it jumps to R without properly dropping
+//! some rust objects.
+//!
+//! The memory-safe way to do error handling with extendr is to return a Result<T, E>
+//! to R. By default, any Err will trigger a panic! on the rust side which unwinds the stack.
+//! The rust error trace will be printed to stderr, not R terminal. Any Ok value is returned
+//! as is.
+//!
+//! Alternatively, two experimental non-leaking features, `result_list` and `result_condition`,
+//! can be toggled to avoid panics on `Err`. Instead, an `Err` `x` is returned as either
+//!  - list: `list(ok=NULL, err=x)` when `result_list` is enabled,
+//!  - error condition: `<error: extendr_error>`, with `x` placed in `condition$value`, when `resultd_condition` is enabled.
+//!
+//! It is currently solely up to the user to handle any result on R side.
+//!
+//! The minimal overhead of calling an extendr function is in the ballpark of 2-4us.
+//! Returning a condition or list increases the overhead to 4-8us. Checking & handling the result
+//! on R side will likely increase overall overhead to 8-16us, depending on how efficiently the
+//! result is handled.
+//!
+//! ```ignore
+//! use extendr_api::prelude::*;
+//! // simple function always returning an Err string
+//! #[extendr]
+//! fn oups(a: i32) -> std::result::Result<i32, String> {
+//!     Err("I did it again".to_string())
+//! }
+//!
+//! // define exports using extendr_module
+//! extendr_module! {
+//!    mod mymodule;
+//!    fn oups;    
+//! }
+//!
+//! ```
+//!
+//! In R:
+//!
+//! ```ignore
+//! #default result_panic feature
+//! oups(1)
+//! > ... long panic traceback from rust printed to stderr
+//!
+//! #result_list feature
+//! lst <-oups(1)
+//! print(lst)
+//! > list(ok=NULL, err="I did it again")
+//!
+//! #result_condition feature
+//! cnd = oups(1)
+//! print(cnd)
+//! > <error: extendr_error>
+//! print(cnd$value)
+//! > "I did it again"
+//!
+//! #handling example for result_condition
+//! oups_handled = function(a) {
+//!   val_or_err = oups(1)  
+//!   if(inherits(val_or_err,"extendr_error")) stop(val_or_err)
+//!   val_or_err
+//! }
+//!
+//! ```
+//!
 //! ## Feature gates
 //!
 //! extendr-api has some optional features behind these feature gates:
@@ -260,6 +327,14 @@
 //! - `num-complex`: provides the conversion between R's complex numbers and [num-complex](https://docs.rs/num-complex/latest/num_complex/).
 //! - `serde`: provides the [Serde](https://serde.rs/) support.
 //! - `graphics`: provides the functionality to control or implement graphics devices.
+//!
+//! extendr-api supports three ways of returning a Result<T,E> to R. Only one behavior feature can be enabled at a time.
+//! - `result_panic`: Default behavior, return `Ok` as is, panic! on any `Err`
+//!
+//! Default behavior can be overridden by specifying `extend_api` features, i.e. `extendr-api = {..., default-features = false, features= ["result_condition"]}`
+//! These features are experimental and are subject to change.
+//! - `result_list`: return `Ok` as `list(ok=?, err=NULL)` or `Err` `list(ok=NULL, err=?)`
+//! - `result_condition`: return `Ok` as is or `Err` as $value in an R error condition.
 
 #![doc(
     html_logo_url = "https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png"
@@ -291,8 +366,7 @@ pub mod wrapper;
 
 pub mod na;
 
-#[cfg(feature = "ndarray")]
-pub mod robj_ndarray;
+pub mod optional;
 
 pub use std::convert::{TryFrom, TryInto};
 pub use std::ops::Deref;
@@ -317,9 +391,6 @@ pub use thread_safety::{
     catch_r_error, handle_panic, single_threaded, this_thread_id, throw_r_error,
 };
 pub use wrapper::*;
-
-#[cfg(feature = "ndarray")]
-pub use robj_ndarray::*;
 
 pub use extendr_macros::*;
 
@@ -550,11 +621,12 @@ pub fn sxp_to_rtype(sxptype: i32) -> Rtype {
     }
 }
 
+const PRINTF_NO_FMT_CSTRING: &[i8] = &[37, 115, 0]; // same as "%s\0"
 #[doc(hidden)]
 pub fn print_r_output<T: Into<Vec<u8>>>(s: T) {
     let cs = CString::new(s).expect("NulError");
     unsafe {
-        Rprintf(cs.as_ptr());
+        Rprintf(PRINTF_NO_FMT_CSTRING.as_ptr(), cs.as_ptr());
     }
 }
 
@@ -562,7 +634,7 @@ pub fn print_r_output<T: Into<Vec<u8>>>(s: T) {
 pub fn print_r_error<T: Into<Vec<u8>>>(s: T) {
     let cs = CString::new(s).expect("NulError");
     unsafe {
-        REprintf(cs.as_ptr());
+        REprintf(PRINTF_NO_FMT_CSTRING.as_ptr(), cs.as_ptr());
     }
 }
 
@@ -876,11 +948,11 @@ mod tests {
         test! {
             let txt_con = R!(r#"textConnection("test_con", open = "w")"#).unwrap();
             call!("sink", &txt_con).unwrap();
-            rprintln!("Hello world");
+            rprintln!("Hello world %%!"); //%% checks printf formatting is off, yields one % if on
             call!("sink").unwrap();
             call!("close", &txt_con).unwrap();
             let result = R!("test_con").unwrap();
-            assert_eq!(result, r!("Hello world"));
+            assert_eq!(result, r!("Hello world %%!"));
         }
     }
 
@@ -888,8 +960,8 @@ mod tests {
     fn test_na_str() {
         assert_ne!(<&str>::na().as_ptr(), "NA".as_ptr());
         assert_eq!(<&str>::na(), "NA");
-        assert_eq!("NA".is_na(), false);
-        assert_eq!(<&str>::na().is_na(), true);
+        assert!(!"NA".is_na());
+        assert!(<&str>::na().is_na());
     }
 
     #[test]

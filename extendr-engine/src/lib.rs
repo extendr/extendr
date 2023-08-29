@@ -62,6 +62,15 @@ pub fn end_r() {
     }
 }
 
+/// Ensures that an embedded R instance is present when evaluating
+/// `f`.
+pub fn with_r(f: impl FnOnce()) {
+    start_r();
+    f();
+    // For compatibility with `test!` in `extendr-api/src/rmacros.rs`, there
+    // is no `end_r()` call here.
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

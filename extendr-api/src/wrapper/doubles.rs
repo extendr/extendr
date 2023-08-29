@@ -1,4 +1,4 @@
-use super::scalar::Rfloat;
+use super::scalar::{Rfloat, Scalar};
 use super::*;
 use std::iter::FromIterator;
 
@@ -62,7 +62,7 @@ impl Doubles {
 impl Deref for Doubles {
     type Target = [Rfloat];
 
-    /// Treat Doubles as if it is a slice, like Vec<Rfloat>
+    /// Treat Doubles as if it is a slice, like `Vec<Rfloat>`
     fn deref(&self) -> &Self::Target {
         unsafe {
             let ptr = DATAPTR_RO(self.get()) as *const Rfloat;
@@ -72,7 +72,7 @@ impl Deref for Doubles {
 }
 
 impl DerefMut for Doubles {
-    /// Treat Doubles as if it is a mutable slice, like Vec<Rfloat>
+    /// Treat Doubles as if it is a mutable slice, like `Vec<Rfloat>`
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
             let ptr = DATAPTR(self.get()) as *mut Rfloat;

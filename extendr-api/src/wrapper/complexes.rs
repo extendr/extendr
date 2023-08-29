@@ -50,7 +50,7 @@ impl Complexes {
 impl Deref for Complexes {
     type Target = [Rcplx];
 
-    /// Treat Complexes as if it is a slice, like Vec<Rcplx>
+    /// Treat Complexes as if it is a slice, like `Vec<Rcplx>`
     fn deref(&self) -> &Self::Target {
         unsafe {
             let ptr = DATAPTR_RO(self.get()) as *const Rcplx;
@@ -60,7 +60,7 @@ impl Deref for Complexes {
 }
 
 impl DerefMut for Complexes {
-    /// Treat Complexes as if it is a mutable slice, like Vec<Rcplx>
+    /// Treat Complexes as if it is a mutable slice, like `Vec<Rcplx>`
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
             let ptr = DATAPTR(self.get()) as *mut Rcplx;

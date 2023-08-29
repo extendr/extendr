@@ -1,12 +1,16 @@
 use extendr_api::{graphics::*, prelude::*};
 
 mod submodule;
-use submodule::*;
 
-mod ndarray;
-use ndarray::*;
+mod optional_ndarray;
 
 mod graphic_device;
+
+mod optional_either;
+
+mod raw_identifiers;
+
+mod memory_leaks;
 
 // Return string `"Hello world!"` to R.
 #[extendr]
@@ -170,7 +174,7 @@ fn check_default(#[default = "NULL"] x: Robj) -> bool {
 }
 
 // Weird behavior of parameter descriptions:
-// first passes tests as is, second -- only in backqutoes.
+// first passes tests as is, second -- only in backquotes.
 /// Test whether `_arg` parameters are treated correctly in R
 /// Executes \code{`_x` - `_y`}
 /// @param _x an integer scalar, ignored
@@ -355,5 +359,8 @@ extendr_module! {
     fn my_device;
 
     use submodule;
-    use ndarray;
+    use optional_ndarray;
+    use optional_either;
+    use raw_identifiers;
+    use memory_leaks;
 }

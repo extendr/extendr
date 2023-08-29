@@ -1,12 +1,12 @@
 //! Tests for [`extendr_module`] procedural macro.
 //!
+use extendr_api::{extendr, extendr_module};
+
 mod root {
-    use extendr_api::extendr;
-    use extendr_api::extendr_module;
+    use super::*;
 
     mod nested_module {
-        use extendr_api::extendr;
-        use extendr_api::extendr_module;
+        use super::*;
 
         #[extendr]
         fn dummy() {}
@@ -23,6 +23,19 @@ mod root {
     extendr_module! {
         mod top_level;
         use nested_module;
+        use adjacent_module;
         fn hello_dummy;
+    }
+}
+
+mod adjacent_module {
+    use super::*;
+
+    #[extendr]
+    fn foo() {}
+
+    extendr_module! {
+        mod adjacent_module;
+        fn foo;
     }
 }

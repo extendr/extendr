@@ -1,3 +1,59 @@
+/*!
+Defines conversions between R objects and the [`ndarray`](https://docs.rs/ndarray/latest/ndarray/) crate, which offers native Rust array types and numerical computation routines.
+
+To enable these conversions, you must first enable the `ndarray` feature for extendr:
+```toml
+[dependencies]
+extendr-api = { version = "0.4", features = ["ndarray"] }
+```
+
+Specifically, extendr supports the following conversions:
+* [`Robj` → `ArrayView1`](FromRobj#impl-FromRobj<%27a>-for-ArrayView1<%27a%2C%20T>), for when you have an R vector that you want to analyse in Rust:
+    ```rust
+    use extendr_api::prelude::*;
+
+    #[extendr]
+    fn describe_vector(vector: ArrayView1<f64>){
+        println!("This R vector has length {:?}", vector.len())
+    }
+    ```
+* [`Robj` → `ArrayView2`](FromRobj#impl-FromRobj<%27a>-for-ArrayView2<%27a%2C%20f64>), for when you have an R matrix that you want to analyse in Rust.
+    ```rust
+    use extendr_api::prelude::*;
+
+    #[extendr]
+    fn describe_matrix(matrix: ArrayView2<f64>){
+        println!("This R matrix has shape {:?}", matrix.dim())
+    }
+    ```
+* [`ArrayBase` → `Robj`](Robj#impl-TryFrom<ArrayBase<S%2C%20D>>-for-Robj), for when you want to return a reference to an [`ndarray`] Array from Rust back to R.
+    ```rust
+    use extendr_api::prelude::*;
+
+    #[extendr]
+    fn return_matrix() -> Robj {
+        Array2::<f64>::zeros((4, 4)).try_into().unwrap()
+    }
+    ```
+
+The item type (ie the `T` in [`Array2<T>`]) can be a variety of Rust types that can represent scalars: [`u32`], [`i32`], [`f64`] and, if you have the `num_complex` compiled feature
+enabled, `Complex<f64>`. Items can also be extendr's wrapper types: [`Rbool`], [`Rint`], [`Rfloat`] and [`Rcplx`].
+
+Note that the extendr-ndarray integration only supports accessing R arrays as [`ArrayView`], which are immutable.
+Therefore, instead of directly editing the input array, it is recommended that you instead return a new array from your `#[extendr]`-annotated function, which you allocate in Rust.
+It will then be copied into a new block of memory managed by R.
+This is made easier by the fact that [ndarray allocates a new array automatically when performing operations on array references](ArrayBase#binary-operators-with-array-and-scalar):
+```rust
+use extendr_api::prelude::*;
+
+#[extendr]
+fn scalar_multiplication(matrix: ArrayView2<f64>, scalar: f64) -> Robj {
+    (&matrix * scalar).try_into().unwrap()
+}
+```
+
+For all array uses in Rust, refer to the [`ndarray::ArrayBase`] documentation, which explains the usage for all of the above types.
+*/
 #[doc(hidden)]
 use ndarray::prelude::*;
 use ndarray::{Data, ShapeBuilder};
@@ -21,7 +77,7 @@ where
 
 macro_rules! make_array_view_1 {
     ($type: ty, $error_fn: expr) => {
-        impl<'a> TryFrom<&'a Robj> for ArrayView1<'a, $type> {
+        impl<'a> TryFrom<&'_ Robj> for ArrayView1<'a, $type> {
             type Error = crate::Error;
 
             fn try_from(robj: &Robj) -> Result<Self> {
@@ -32,9 +88,7 @@ macro_rules! make_array_view_1 {
                 }
             }
         }
-    };
 
-    ($type: ty, $error_fn: expr) => {
         impl<'a> TryFrom<Robj> for ArrayView1<'a, $type> {
             type Error = crate::Error;
 
@@ -113,6 +167,8 @@ where
 {
     type Error = Error;
 
+    /// Converts a reference to an ndarray Array into an equivalent R array.
+    /// The data itself is copied.
     fn try_from(value: &ArrayBase<S, D>) -> Result<Self> {
         // Refer to https://github.com/rust-ndarray/ndarray/issues/1060 for an excellent discussion
         // on how to convert from `ndarray` types to R/fortran arrays
@@ -139,6 +195,21 @@ where
                         ))
                     })?,
             )
+    }
+}
+
+impl<A, S, D> TryFrom<ArrayBase<S, D>> for Robj
+where
+    S: Data<Elem = A>,
+    A: Copy + ToVectorValue,
+    D: Dimension,
+{
+    type Error = Error;
+
+    /// Converts an ndarray Array into an equivalent R array.
+    /// The data itself is copied.
+    fn try_from(value: ArrayBase<S, D>) -> Result<Self> {
+        Robj::try_from(&value)
     }
 }
 
@@ -201,45 +272,55 @@ mod test {
     #[rstest]
     #[case(
         // An empty array should still convert to an empty R array with the same shape
-        &Array4::<i32>::zeros((0, 1, 2, 3).f()),
+        Array4::<i32>::zeros((0, 1, 2, 3).f()),
         "array(integer(), c(0, 1, 2, 3))"
     )]
     #[case(
-        &array![1., 2., 3.],
+        array![1., 2., 3.],
         "array(c(1, 2, 3))"
     )]
     #[case(
         // We give both R and Rust the same 1d vector and tell them both to read it as a matrix in C order.
         // Therefore these arrays should be the same.
-        &Array::from_shape_vec((2, 3), vec![1., 2., 3., 4., 5., 6.]).unwrap(),
+        Array::from_shape_vec((2, 3), vec![1., 2., 3., 4., 5., 6.]).unwrap(),
         "matrix(c(1, 2, 3, 4, 5, 6), nrow=2, byrow=TRUE)"
     )]
     #[case(
         // We give both R and Rust the same 1d vector and tell them both to read it as a matrix
         // in fortran order. Therefore these arrays should be the same.
-        &Array::from_shape_vec((2, 3).f(), vec![1., 2., 3., 4., 5., 6.]).unwrap(),
+        Array::from_shape_vec((2, 3).f(), vec![1., 2., 3., 4., 5., 6.]).unwrap(),
         "matrix(c(1, 2, 3, 4, 5, 6), nrow=2, byrow=FALSE)"
     )]
     #[case(
         // We give both R and Rust the same 1d vector and tell them both to read it as a 3d array
         // in fortran order. Therefore these arrays should be the same.
-        &Array::from_shape_vec((1, 2, 3).f(), vec![1, 2, 3, 4, 5, 6]).unwrap(),
+        Array::from_shape_vec((1, 2, 3).f(), vec![1, 2, 3, 4, 5, 6]).unwrap(),
         "array(1:6, c(1, 2, 3))"
     )]
     #[case(
         // We give R a 1d vector and tell it to read it as a 3d vector
         // Then we give Rust the equivalent vector manually split out.
-        &array![[[1, 5], [3, 7]], [[2, 6], [4, 8]]],
+        array![[[1, 5], [3, 7]], [[2, 6], [4, 8]]],
         "array(1:8, dim=c(2, 2, 2))"
     )]
-    fn test_to_robj<T>(#[case] array: T, #[case] r_expr: &str)
-    where
-        Robj: TryFrom<T>,
-        <Robj as TryFrom<T>>::Error: std::fmt::Debug,
+    fn test_to_robj<ElementType, DimType>(
+        #[case] array: Array<ElementType, DimType>,
+        #[case] r_expr: &str,
+    ) where
+        Robj: TryFrom<Array<ElementType, DimType>>,
+        for<'a> Robj: TryFrom<&'a Array<ElementType, DimType>>,
+        <robj::Robj as TryFrom<Array<ElementType, DimType>>>::Error: std::fmt::Debug,
+        for<'a> <robj::Robj as TryFrom<&'a Array<ElementType, DimType>>>::Error: std::fmt::Debug,
     {
         // Tests for the Rust → R conversion, so we therefore perform the
         // comparison in R
         test! {
+            // Test for borrowed array
+            assert_eq!(
+                &(Robj::try_from(&array).unwrap()),
+                &eval_string(r_expr).unwrap()
+            );
+            // Test for owned array
             assert_eq!(
                 &(Robj::try_from(array).unwrap()),
                 &eval_string(r_expr).unwrap()

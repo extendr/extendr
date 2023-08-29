@@ -1,4 +1,4 @@
-use super::scalar::Rint;
+use super::scalar::{Rint, Scalar};
 use super::*;
 use std::iter::FromIterator;
 
@@ -127,7 +127,7 @@ impl Integers {
 impl Deref for Integers {
     type Target = [Rint];
 
-    /// Treat Integers as if it is a slice, like Vec<Rint>
+    /// Treat Integers as if it is a slice, like `Vec<Rint>`
     fn deref(&self) -> &Self::Target {
         unsafe {
             let ptr = DATAPTR_RO(self.get()) as *const Rint;
@@ -137,7 +137,7 @@ impl Deref for Integers {
 }
 
 impl DerefMut for Integers {
-    /// Treat Integers as if it is a mutable slice, like Vec<Rint>
+    /// Treat Integers as if it is a mutable slice, like `Vec<Rint>`
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
             let ptr = DATAPTR(self.get()) as *mut Rint;

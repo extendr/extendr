@@ -10,8 +10,7 @@ use std::convert::Infallible;
 pub fn unwrap_or_throw<T>(r: std::result::Result<T, &'static str>) -> T {
     match r {
         Err(e) => {
-            throw_r_error(e.to_string());
-            unreachable!("");
+            throw_r_error(e);
         }
         Ok(v) => v,
     }
@@ -22,7 +21,6 @@ pub fn unwrap_or_throw_error<T>(r: std::result::Result<T, Error>) -> T {
     match r {
         Err(e) => {
             throw_r_error(e.to_string());
-            unreachable!("");
         }
         Ok(v) => v,
     }
@@ -84,6 +82,9 @@ pub enum Error {
 
     #[cfg(feature = "ndarray")]
     NDArrayShapeError(ndarray::ShapeError),
+
+    #[cfg(feature = "either")]
+    EitherError(Box<Error>, Box<Error>),
 }
 
 impl std::fmt::Display for Error {
@@ -166,6 +167,15 @@ impl std::fmt::Display for Error {
             #[cfg(feature = "ndarray")]
             Error::NDArrayShapeError(shape_error) => {
                 write!(f, "NDArray failed with error: {}.", shape_error)
+            }
+
+            #[cfg(feature = "either")]
+            Error::EitherError(left_err, right_err) => {
+                write!(
+                    f,
+                    "Both cases of Either errored. Left: '{}'; Right: '{}'.",
+                    left_err, right_err
+                )
             }
         }
     }
