@@ -71,6 +71,13 @@ pub fn with_r(f: impl FnOnce()) {
     // is no `end_r()` call here.
 }
 
+#[ctor::dtor]
+fn shutdown_r() {
+    if START_R.is_completed() {
+        end_r();
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
