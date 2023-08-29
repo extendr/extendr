@@ -424,9 +424,10 @@ pub unsafe fn register_call_methods(info: *mut libR_sys::DllInfo, metadata: Meta
     libR_sys::R_forceSymbols(info, 0);
 }
 
-/// Type of R objects used by [Robj::rtype].
+/// These are the R types represented in a Rust enum,
+/// and their conversion to C-enum is found in [`Robj::rtype`].
 ///
-/// [Robj::rtype]: crate::robj::Types::rtype
+/// [`Robj::rtype`]: crate::robj::Types::rtype
 #[derive(Debug, PartialEq)]
 pub enum Rtype {
     Null,        // NILSXP

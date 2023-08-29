@@ -726,7 +726,7 @@ pub trait Eval: GetSexp {
 
 impl Eval for Robj {}
 
-/// Generic access to typed slices in an Robj.
+/// Generic access to typed slices in an [`Robj`].
 pub trait AsTypedSlice<'a, T>
 where
     Self: 'a,
@@ -740,10 +740,14 @@ where
         Self: 'a;
 }
 
-/// Trait for providing a rust typed pointer to an r type.
+/// Trait for providing rust with a typed pointer to an R scalar/vector type.
+///
 /// R data are hidden behind [`SEXP`] opaque pointers with an identifier
 /// for the underlying r storage type. Thus this trait is only meaningful for
 /// [`SEXP`]-wrappers.
+///
+///
+/// [`SEXP`]: libR_sys::SEXP
 trait SexpAs {
     /// Identifier for the R object modes / types represented as a value.
     /// See [`Rtype`] for reference.
