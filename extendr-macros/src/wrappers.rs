@@ -103,11 +103,19 @@ pub fn make_function_wrappers(
     // ```
     let rng_start = opts
         .use_rng
-        .then(|| quote!(libR_sys::GetRNGstate();))
+        .then(|| {
+            quote!(unsafe {
+                libR_sys::GetRNGstate();
+            })
+        })
         .unwrap_or_default();
     let rng_end = opts
         .use_rng
-        .then(|| quote!(libR_sys::PutRNGstate();))
+        .then(|| {
+            quote!(unsafe {
+                libR_sys::PutRNGstate();
+            })
+        })
         .unwrap_or_default();
     wrappers.push(parse_quote!(
         #[no_mangle]
@@ -123,7 +131,7 @@ pub fn make_function_wrappers(
                 Box<dyn std::any::Any + Send>
             > = unsafe {
                 #( #convert_args )*
-                let result = std::panic::catch_unwind(||-> std::result::Result<Robj, extendr_api::Error> {
+                std::panic::catch_unwind(||-> std::result::Result<Robj, extendr_api::Error> {
                     Ok(extendr_api::Robj::from(#call_name(#actual_args)))
                 })
             };
