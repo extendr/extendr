@@ -748,7 +748,7 @@ where
 ///
 ///
 /// [`SEXP`]: libR_sys::SEXP
-trait SexpAs {
+trait SexpAsPtr {
     /// Identifier for the R object modes / types represented as a value.
     /// See [`Rtype`] for reference.
     const R_TYPE_ID: u32;
@@ -758,7 +758,7 @@ trait SexpAs {
     fn as_(x: SEXP) -> *mut Self::Type;
 }
 
-impl SexpAs for Rbool {
+impl SexpAsPtr for Rbool {
     /// Corresponds to `logical` in R
     const R_TYPE_ID: u32 = LGLSXP;
     type Type = raw::c_int;
@@ -766,7 +766,7 @@ impl SexpAs for Rbool {
         unsafe { INTEGER(x) }
     }
 }
-impl SexpAs for i32 {
+impl SexpAsPtr for i32 {
     /// Corresponds to `integer` in R
     const R_TYPE_ID: u32 = INTSXP;
     type Type = raw::c_int;
@@ -774,7 +774,7 @@ impl SexpAs for i32 {
         unsafe { INTEGER(x) }
     }
 }
-impl SexpAs for u32 {
+impl SexpAsPtr for u32 {
     /// Corresponds to `integer` in R
     const R_TYPE_ID: u32 = INTSXP;
     type Type = raw::c_int;
@@ -782,7 +782,7 @@ impl SexpAs for u32 {
         unsafe { INTEGER(x) }
     }
 }
-impl SexpAs for Rint {
+impl SexpAsPtr for Rint {
     /// Corresponds to `integer` in R
     const R_TYPE_ID: u32 = INTSXP;
     type Type = raw::c_int;
@@ -790,7 +790,7 @@ impl SexpAs for Rint {
         unsafe { INTEGER(x) }
     }
 }
-impl SexpAs for f64 {
+impl SexpAsPtr for f64 {
     /// Corresponds to `numeric` in R
     const R_TYPE_ID: u32 = REALSXP;
     type Type = Self;
@@ -798,7 +798,7 @@ impl SexpAs for f64 {
         unsafe { REAL(x) }
     }
 }
-impl SexpAs for Rfloat {
+impl SexpAsPtr for Rfloat {
     /// Corresponds to `numeric` in R
     const R_TYPE_ID: u32 = REALSXP;
     type Type = f64;
@@ -806,14 +806,14 @@ impl SexpAs for Rfloat {
         unsafe { REAL(x) }
     }
 }
-impl SexpAs for u8 {
+impl SexpAsPtr for u8 {
     const R_TYPE_ID: u32 = RAWSXP;
     type Type = Rbyte;
     fn as_(x: SEXP) -> *mut Self::Type {
         unsafe { RAW(x) }
     }
 }
-impl SexpAs for Rstr {
+impl SexpAsPtr for Rstr {
     /// Corresponds to `character` in R
     const R_TYPE_ID: u32 = STRSXP;
     type Type = SEXP;
@@ -821,7 +821,7 @@ impl SexpAs for Rstr {
         unsafe { STRING_PTR(x) }
     }
 }
-impl SexpAs for c64 {
+impl SexpAsPtr for c64 {
     /// Corresponds to `complex` in R
     const R_TYPE_ID: u32 = CPLXSXP;
     type Type = Rcomplex;
@@ -829,7 +829,7 @@ impl SexpAs for c64 {
         unsafe { COMPLEX(x) }
     }
 }
-impl SexpAs for Rcplx {
+impl SexpAsPtr for Rcplx {
     /// Corresponds to `complex` in R
     const R_TYPE_ID: u32 = CPLXSXP;
     type Type = Rcomplex;
@@ -837,7 +837,7 @@ impl SexpAs for Rcplx {
         unsafe { COMPLEX(x) }
     }
 }
-impl SexpAs for Rcomplex {
+impl SexpAsPtr for Rcomplex {
     /// Corresponds to `complex` in R
     const R_TYPE_ID: u32 = CPLXSXP;
     type Type = Rcomplex;
@@ -849,12 +849,12 @@ impl SexpAs for Rcomplex {
 impl<'a, T> AsTypedSlice<'a, T> for Robj
 where
     Self: 'a,
-    T: SexpAs,
+    T: SexpAsPtr,
 {
     fn as_typed_slice(&self) -> Option<&'a [T]> {
-        if self.sexptype() == <T as SexpAs>::R_TYPE_ID {
+        if self.sexptype() == <T as SexpAsPtr>::R_TYPE_ID {
             unsafe {
-                let ptr = <T as SexpAs>::as_(self.get()) as *const T;
+                let ptr = <T as SexpAsPtr>::as_(self.get()) as *const T;
                 Some(std::slice::from_raw_parts(ptr, self.len()))
             }
         } else {
@@ -863,9 +863,9 @@ where
     }
 
     fn as_typed_slice_mut(&mut self) -> Option<&'a mut [T]> {
-        if self.sexptype() == <T as SexpAs>::R_TYPE_ID {
+        if self.sexptype() == <T as SexpAsPtr>::R_TYPE_ID {
             unsafe {
-                let ptr = <T as SexpAs>::as_(self.get()) as *mut T;
+                let ptr = <T as SexpAsPtr>::as_(self.get()) as *mut T;
                 Some(std::slice::from_raw_parts_mut(ptr, self.len()))
             }
         } else {
