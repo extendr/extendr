@@ -32,9 +32,10 @@ pub mod symbol;
 pub use self::rstr::Rstr;
 pub use altrep::{
     AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,
-    AltrepImpl,
-    AltListImpl,
+    AltrepImpl
 };
+#[cfg(use_r_ge_version_16)]
+pub use altrep::AltListImpl;
 pub use complexes::Complexes;
 pub use dataframe::{Dataframe, IntoDataFrameRow};
 pub use doubles::Doubles;

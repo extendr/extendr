@@ -455,6 +455,7 @@ pub trait AltStringImpl {
     }
 }
 
+#[cfg(use_r_ge_version_16)]
 pub trait AltListImpl {
     /// Get a single element from this vector
     // a single element of a list can be any Robj
@@ -666,6 +667,7 @@ impl Altrep {
                 Rtype::Strings => {
                     R_make_altstring_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
                 }
+                #[cfg(use_r_ge_version_16)]
                 Rtype::List => {
                     R_make_altlist_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
                 }
@@ -969,6 +971,7 @@ impl Altrep {
     }
 
     /// Make a string ALTREP class that can be used to make vectors.
+    #[cfg(use_r_ge_version_16)]
     pub fn make_altstring_class<StateType: AltrepImpl + AltStringImpl + 'static>(
         name: &str,
         base: &str,
@@ -1017,6 +1020,7 @@ impl Altrep {
         })
     }
     
+    #[cfg(use_r_ge_version_16)]
     pub fn make_altlist_class<StateType: AltrepImpl + AltListImpl + 'static>(
         name: &str,
         base: &str,
