@@ -28,6 +28,6 @@ fn main() {
     }
 
     if &*major >= "4" && &*minor >= "3" {
-        println!("cargo:rustc-cfg=use_r_version_16");
+        println!("cargo:rustc-cfg=use_r_altlist");
     }
 }
