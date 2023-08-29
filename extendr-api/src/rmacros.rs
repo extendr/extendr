@@ -205,6 +205,7 @@ macro_rules! test {
 
             // this helper function must reside in the macro so it doesn't get compiled
             // unless the macro actually gets used (e.g., in testing code)
+            // also it must return `Result`, otherwise `?` cannot be used within.
             fn test<F: FnOnce() -> Result<()>>(f: F) {
                 extendr_engine::start_r();
                 f().unwrap();

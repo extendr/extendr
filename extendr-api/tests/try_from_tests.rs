@@ -1,10 +1,12 @@
 //! See https://github.com/extendr/extendr/issues/369
 //!
 
+use extendr_engine::with_r;
+
 #[test]
 fn test_try_from() {
     use extendr_api::scalar::{Rbool, Rcplx, Rfloat, Rint};
-    use extendr_api::{r, test, Result, Robj, TryFrom};
+    use extendr_api::{r, Robj, TryFrom};
     // use extendr_api::wrapper::{Integers, Doubles, Strings};
 
     macro_rules! test_matrix {
@@ -73,7 +75,7 @@ fn test_try_from() {
         };
     }
 
-    test! {
+    with_r(|| {
         let integer = r!(1);
         test_matrix!(
             integer.clone(),
@@ -140,5 +142,5 @@ fn test_try_from() {
 
         // let strings = Strings::from_values(["1"]);
         // test_matrix!(strings.clone(), int_ok : true, float_ok : true, bool_ok : false, str_ok: false);
-    }
+    });
 }

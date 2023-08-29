@@ -36,6 +36,8 @@ pub use crate::{
     data_frame, factor, global, list, r, reprint, reprintln, rprint, rprintln, sym, test, var,
 };
 
+pub use extendr_engine::with_r;
+
 pub use super::wrapper::{
     AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,
     AltrepImpl, RArray, RColumn, RMatrix, RMatrix3D,

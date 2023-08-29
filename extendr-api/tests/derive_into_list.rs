@@ -9,14 +9,14 @@ fn test_derive_list() {
     use extendr_api::prelude::*;
     use extendr_macros::{IntoRobj, TryFromRobj};
 
-    test! {
+    with_r(|| {
         #[derive(TryFromRobj, IntoRobj, PartialEq, Debug)]
         struct Foo {
             a: u16,
             b: String,
             c: Vec<f64>,
             // This demonstrates the use of wrapper types
-            d: List
+            d: List,
         }
 
         // We define the objects "natively", ie the struct in Rust, and the list in R
@@ -24,9 +24,10 @@ fn test_derive_list() {
             a: 5,
             b: String::from("bar"),
             c: vec![1., 2., 3.],
-            d: list!(a = 1., b = true)
+            d: list!(a = 1., b = true),
         };
-        let native_r = R!("list(a = 5L, b = 'bar', c = as.double(1:3), d = list(a = 1, b = TRUE))").unwrap();
+        let native_r =
+            R!("list(a = 5L, b = 'bar', c = as.double(1:3), d = list(a = 1, b = TRUE))").unwrap();
 
         // Check the R → Rust conversion using a Robj reference
         let converted_rust_borrow: Foo = (&native_r).try_into().unwrap();
@@ -50,5 +51,5 @@ fn test_derive_list() {
         // Check the Rust → R conversion with an owned struct
         let converted_r_owned: Robj = native_rust.into();
         assert_eq!(&converted_r_borrow, &converted_r_owned);
-    }
+    });
 }
