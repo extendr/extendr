@@ -971,7 +971,6 @@ impl Altrep {
     }
 
     /// Make a string ALTREP class that can be used to make vectors.
-    #[cfg(use_r_version_16)]
     pub fn make_altstring_class<StateType: AltrepImpl + AltStringImpl + 'static>(
         name: &str,
         base: &str,
