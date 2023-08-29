@@ -23,8 +23,10 @@ lazy_static! {
     };
 }
 
-/// Trait signifying if a given type may be represented as an `NA` vlaue in an
-/// R vector. The `is_na_scalar` method is intended to be used on individual
+/// Trait signifying if a given scalar type may be represented as an `NA` vlaue
+/// in an R vector.
+///
+/// The `is_na_scalar` method is intended to be used on individual
 /// elements of a vector. It is not vectorized and will return `false` if the
 /// vector has a length greater than 1.
 pub trait CanBeNA {

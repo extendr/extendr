@@ -324,7 +324,7 @@ impl Types for Robj {}
 impl Robj {
     /// Returns `true` if the underlying vector is of length one, and the
     /// scalar value is `NA`, otherwise `false`.
-    /// 
+    ///
     /// While this is to be used on vectors, it is not vectorised, and will
     /// return `false` for any vector of length greater than one.
     ///
