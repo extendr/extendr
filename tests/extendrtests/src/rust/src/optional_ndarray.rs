@@ -29,5 +29,5 @@ fn euclidean_dist(a: Nullable<ArrayView2<Rfloat>>) -> Nullable<Doubles> {
 extendr_module! {
     fn euclidean_dist;
 
-    mod ndarray;
+    mod optional_ndarray;
 }

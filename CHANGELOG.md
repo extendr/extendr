@@ -4,9 +4,22 @@
 
 ### Added
 
-- `use_rng` option for the `extendr` attribute macro, which enables the use of
-random number sampling methods from R, e.g. `#[extendr(use_rng = true)`. [[#488]](https://github.com/extendr/extendr/pull/488)
-- [**either**] `TryFrom<&Robj> for Either<T, R>` and `From<Either<T, R>> for Robj` if `T` and `R` are themselves implement these traits. This unblocks scenarios like accepting any numeric vector from R via `Either<Integers, Doubles>` without extra memory allocation [[#480]](https://github.com/extendr/extendr/pull/480) 
+- [**either**] `TryFrom<&Robj> for Either<T, R>` and `From<Either<T, R>> for Robj` if `T` and `R` are themselves implement these traits. This unblocks scenarios like accepting any numeric vector from R via `Either<Integers, Doubles>` without extra memory allocation [[#480]](https://github.com/extendr/extendr/pull/480)
+- `PartialOrd` trait implementation for `Rfloat`, `Rint` and `Rbool`. `Rfloat` and `Rint` gained `min()` and `max()` methods [[#573]](https://github.com/extendr/extendr/pull/573)
+- Added `use_rng` option for the `extendr` attribute macro, which enables the use of
+random number sampling methods from R, e.g. `#[extendr(use_rng = true)`. [[#476]](https://github.com/extendr/extendr/pull/476)
+
+### Fixed
+
+- You can now create `ArrayView1` from `&Robj` as well as `Robj`
+    [[#501]](https://github.com/extendr/extendr/pull/501)
+- Raw literals from Rust can be used for function and argument names. e.g.
+    `fn r#type()` in Rust is converted to `type()` in R.
+    [[#531]](https://github.com/extendr/extendr/pull/531)
+- Fix memory leaks on errors and panics
+    [[#555]](https://github.com/extendr/extendr/pull/555)
+- Fixed error when collecting too many objects into `List`, etc.
+    [[#540]](https://github.com/extendr/extendr/pull/540)
 
 ## 0.4.0
 
@@ -59,6 +72,7 @@ random number sampling methods from R, e.g. `#[extendr(use_rng = true)`. [[#488]
 - `Deref` implementation for vector types (Rint/Rfloat/Rbool/Rstr/Robj) to appropriately typed Rust slices. [[#327]](https://github.com/extendr/extendr/pull/327)
 - `default` option for `extendr`-annotated functions, allowing them to have default values, e.g. `fn fred(#[default="NULL"] x: Option<i32>) { }`. [[#334]](https://github.com/extendr/extendr/pull/334)
 - `r_name` option for `extendr`-annotated functions, allowing the generated R function to have a different name. e.g.
+
     ```rust
     #[extendr(
         use_try_from = true,
@@ -67,6 +81,7 @@ random number sampling methods from R, e.g. `#[extendr(use_rng = true)`. [[#488]
     )]
     fn test_rename() { }
     ```
+
     [[#335]](https://github.com/extendr/extendr/pull/335)
 - `serde::Serialize` implementation for R types. [[#305]](https://github.com/extendr/extendr/pull/305), [[#355]](https://github.com/extendr/extendr/pull/355)
 - `Rany` type and the `as_any` conversion method. [[#320]](https://github.com/extendr/extendr/pull/320)
@@ -83,11 +98,13 @@ random number sampling methods from R, e.g. `#[extendr(use_rng = true)`. [[#488]
 - Renamed `RType` to `Rtype`. [[#345]](https://github.com/extendr/extendr/pull/345)
 - Wrapper types now contain `Robj` fields. [[#190]](https://github.com/extendr/extendr/pull/190)
 - The `R!` macro now accepts strings that contain R code. This is now the recommended way of using the macro, especially with raw strings e.g.
+
   ```rust
   R!(r#"
       print("hello")
   "#);
   ```
+
   [[#203]](https://github.com/extendr/extendr/pull/203)
 - Improved error handling for `<&str>::try_from(Robj)`. [[#226]](https://github.com/extendr/extendr/pull/226)
 - `SymPair::sym_pair()` now returns `(Option<Robj>, Robj)`. [[#225]](https://github.com/extendr/extendr/pull/225)
@@ -98,9 +115,11 @@ random number sampling methods from R, e.g. `#[extendr(use_rng = true)`. [[#488]
 - `list!` has been rewritten, and now returns a `List` struct. [[#303]](https://github.com/extendr/extendr/pull/303)
 
 ### Deprecated
+
 - Calling the `R!` macro with non-string types (e.g. `R!(1)`) is now deprecated. [[#203]](https://github.com/extendr/extendr/pull/203)
 
 ### Removed
+
 - `Real`, `Int`, `Bool` and the redundant trait `SliceIter`, which should be replaced with `Rdouble`, `Rint`, and `Rbool` respectively. [[#304]](https://github.com/extendr/extendr/pull/304), [[#338]](https://github.com/extendr/extendr/pull/338)
 - `TryFrom` conversions between `Robj` and `HashMap` for consistency. `List::into_hashmap()` and `List::from_hashmap()` should be used instead. [[#254]](https://github.com/extendr/extendr/pull/254)
 

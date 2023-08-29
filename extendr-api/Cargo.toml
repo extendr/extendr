@@ -14,11 +14,12 @@ edition = "2021"
 description = "Safe and user friendly bindings to the R programming language."
 license = "MIT"
 repository = "https://github.com/extendr/extendr"
+rust-version = "1.60"
 
 [dependencies]
 libR-sys = { workspace = true }
-extendr-macros = { path = "../extendr-macros" }
-extendr-engine = { path = "../extendr-engine" }
+extendr-macros = { path = "../extendr-macros", version="0.4.0" }
+extendr-engine = { path = "../extendr-engine", version="0.4.0" }
 lazy_static = "1.4"
 paste = "1.0.5"
 either = { version = "1.8.1", optional = true }
@@ -28,10 +29,20 @@ num-complex = { version = "0.4", optional = true }
 serde = { version = "1.0", features = ["derive"], optional = true }
 
 [dev-dependencies]
-rstest = "0.16.0"
+rstest = "0.18.1"
 
 [features]
-default = []
+
+# Features to modify behaviour of returning Result<T,E> from extendr to R, instead of unwrap-throw_r_error().
+# Add new features below
+# None, one or both can be set, but the one with highest precedence will take effect.
+result_list = []
+result_condition = []
+
+# This dummy feature enables all features that increase the functionality of 
+# extendr, via conversions or R features. Features that change behaviour
+# but do not add functionality (such as `libR-sys/use-bindgen`) are excluded
+full-functionality = ["graphics", "either", "ndarray", "num-complex", "serde"]
 
 # libc is needed to allocate a DevDesc (c.f., https://bugs.r-project.org/show_bug.cgi?id=18292)
 graphics = ["libc"]
@@ -49,11 +60,4 @@ tests-graphics = ["tests-minimal", "graphics"]
 tests-all = ["tests", "graphics"]
 
 [package.metadata.docs.rs]
-features = [
-    "graphics",
-    "either",
-    "ndarray",
-    "num-complex",
-    "serde",
-    "libR-sys/use-bindgen",
-]
+features = ["full-functionality", "libR-sys/use-bindgen"]

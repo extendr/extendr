@@ -10,7 +10,6 @@ pub fn extendr_function(args: Vec<syn::NestedMeta>, mut func: ItemFn) -> TokenSt
     for arg in &args {
         parse_options(&mut opts, arg);
     }
-
     let mut wrappers: Vec<ItemFn> = Vec::new();
     wrappers::make_function_wrappers(&opts, &mut wrappers, "", &func.attrs, &mut func.sig, None);
 
