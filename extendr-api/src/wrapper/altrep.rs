@@ -1019,7 +1019,7 @@ impl Altrep {
             class
         })
     }
-    
+
     #[cfg(use_r_ge_version_16)]
     pub fn make_altlist_class<StateType: AltrepImpl + AltListImpl + 'static>(
         name: &str,
