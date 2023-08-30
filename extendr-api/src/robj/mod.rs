@@ -755,14 +755,14 @@ trait SexpAsPtr {
     /// Corresponding rust type to `R_TYPE_ID`.
     type Type;
     /// Returns a typed pointer to the underlying value
-    fn as_(x: SEXP) -> *mut Self::Type;
+    unsafe fn as_(x: SEXP) -> *mut Self::Type;
 }
 
 impl SexpAsPtr for Rbool {
     /// Corresponds to `logical` in R
     const R_TYPE_ID: u32 = LGLSXP;
     type Type = raw::c_int;
-    fn as_(x: SEXP) -> *mut Self::Type {
+    unsafe fn as_(x: SEXP) -> *mut Self::Type {
         unsafe { INTEGER(x) }
     }
 }
@@ -770,7 +770,7 @@ impl SexpAsPtr for i32 {
     /// Corresponds to `integer` in R
     const R_TYPE_ID: u32 = INTSXP;
     type Type = raw::c_int;
-    fn as_(x: SEXP) -> *mut Self::Type {
+    unsafe fn as_(x: SEXP) -> *mut Self::Type {
         unsafe { INTEGER(x) }
     }
 }
@@ -778,7 +778,7 @@ impl SexpAsPtr for u32 {
     /// Corresponds to `integer` in R
     const R_TYPE_ID: u32 = INTSXP;
     type Type = raw::c_int;
-    fn as_(x: SEXP) -> *mut Self::Type {
+    unsafe fn as_(x: SEXP) -> *mut Self::Type {
         unsafe { INTEGER(x) }
     }
 }
@@ -786,7 +786,7 @@ impl SexpAsPtr for Rint {
     /// Corresponds to `integer` in R
     const R_TYPE_ID: u32 = INTSXP;
     type Type = raw::c_int;
-    fn as_(x: SEXP) -> *mut Self::Type {
+    unsafe fn as_(x: SEXP) -> *mut Self::Type {
         unsafe { INTEGER(x) }
     }
 }
@@ -794,7 +794,7 @@ impl SexpAsPtr for f64 {
     /// Corresponds to `numeric` in R
     const R_TYPE_ID: u32 = REALSXP;
     type Type = Self;
-    fn as_(x: SEXP) -> *mut Self::Type {
+    unsafe fn as_(x: SEXP) -> *mut Self::Type {
         unsafe { REAL(x) }
     }
 }
@@ -802,14 +802,14 @@ impl SexpAsPtr for Rfloat {
     /// Corresponds to `numeric` in R
     const R_TYPE_ID: u32 = REALSXP;
     type Type = f64;
-    fn as_(x: SEXP) -> *mut Self::Type {
+    unsafe fn as_(x: SEXP) -> *mut Self::Type {
         unsafe { REAL(x) }
     }
 }
 impl SexpAsPtr for u8 {
     const R_TYPE_ID: u32 = RAWSXP;
     type Type = Rbyte;
-    fn as_(x: SEXP) -> *mut Self::Type {
+    unsafe fn as_(x: SEXP) -> *mut Self::Type {
         unsafe { RAW(x) }
     }
 }
@@ -817,7 +817,7 @@ impl SexpAsPtr for Rstr {
     /// Corresponds to `character` in R
     const R_TYPE_ID: u32 = STRSXP;
     type Type = SEXP;
-    fn as_(x: SEXP) -> *mut Self::Type {
+    unsafe fn as_(x: SEXP) -> *mut Self::Type {
         unsafe { STRING_PTR(x) }
     }
 }
@@ -825,7 +825,7 @@ impl SexpAsPtr for c64 {
     /// Corresponds to `complex` in R
     const R_TYPE_ID: u32 = CPLXSXP;
     type Type = Rcomplex;
-    fn as_(x: SEXP) -> *mut Self::Type {
+    unsafe fn as_(x: SEXP) -> *mut Self::Type {
         unsafe { COMPLEX(x) }
     }
 }
@@ -833,7 +833,7 @@ impl SexpAsPtr for Rcplx {
     /// Corresponds to `complex` in R
     const R_TYPE_ID: u32 = CPLXSXP;
     type Type = Rcomplex;
-    fn as_(x: SEXP) -> *mut Self::Type {
+    unsafe fn as_(x: SEXP) -> *mut Self::Type {
         unsafe { COMPLEX(x) }
     }
 }
@@ -841,7 +841,7 @@ impl SexpAsPtr for Rcomplex {
     /// Corresponds to `complex` in R
     const R_TYPE_ID: u32 = CPLXSXP;
     type Type = Rcomplex;
-    fn as_(x: SEXP) -> *mut Self::Type {
+    unsafe fn as_(x: SEXP) -> *mut Self::Type {
         unsafe { COMPLEX(x) }
     }
 }
