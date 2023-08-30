@@ -381,6 +381,28 @@
 <a href="#381" id="381">381</a>
 <a href="#382" id="382">382</a>
 <a href="#383" id="383">383</a>
+<a href="#384" id="384">384</a>
+<a href="#385" id="385">385</a>
+<a href="#386" id="386">386</a>
+<a href="#387" id="387">387</a>
+<a href="#388" id="388">388</a>
+<a href="#389" id="389">389</a>
+<a href="#390" id="390">390</a>
+<a href="#391" id="391">391</a>
+<a href="#392" id="392">392</a>
+<a href="#393" id="393">393</a>
+<a href="#394" id="394">394</a>
+<a href="#395" id="395">395</a>
+<a href="#396" id="396">396</a>
+<a href="#397" id="397">397</a>
+<a href="#398" id="398">398</a>
+<a href="#399" id="399">399</a>
+<a href="#400" id="400">400</a>
+<a href="#401" id="401">401</a>
+<a href="#402" id="402">402</a>
+<a href="#403" id="403">403</a>
+<a href="#404" id="404">404</a>
+<a href="#405" id="405">405</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>proc_macro2::Ident;
 <span class="kw">use </span>quote::{format_ident, quote};
 <span class="kw">use </span>syn::{parse_quote, punctuated::Punctuated, Expr, FnArg, ItemFn, Token, Type};
@@ -393,6 +415,7 @@
     <span class="kw">pub </span>use_try_from: bool,
     <span class="kw">pub </span>r_name: <span class="prelude-ty">Option</span>&lt;String&gt;,
     <span class="kw">pub </span>mod_name: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="kw">pub </span>use_rng: bool,
 }
 
 <span class="comment">// Generate wrappers for a specific function.
@@ -483,12 +506,31 @@
     //     }
     // }
     // ```
-    //
-    </span>wrappers.push(<span class="macro">parse_quote!</span>(
+    </span><span class="kw">let </span>rng_start = opts
+        .use_rng
+        .then(|| {
+            <span class="macro">quote!</span>(<span class="kw">unsafe </span>{
+                libR_sys::GetRNGstate();
+            })
+        })
+        .unwrap_or_default();
+    <span class="kw">let </span>rng_end = opts
+        .use_rng
+        .then(|| {
+            <span class="macro">quote!</span>(<span class="kw">unsafe </span>{
+                libR_sys::PutRNGstate();
+            })
+        })
+        .unwrap_or_default();
+    wrappers.push(<span class="macro">parse_quote!</span>(
         <span class="attr">#[no_mangle]
         #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
         </span><span class="kw">pub extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>#wrap_name(#formal_args) -&gt; extendr_api::SEXP {
             <span class="kw">use </span>extendr_api::robj::<span class="kw-2">*</span>;
+
+            <span class="comment">// pull RNG state before evaluation
+            </span>#rng_start
+
             <span class="kw">let </span>wrap_result_state: std::result::Result&lt;
                 std::result::Result&lt;Robj, extendr_api::Error&gt;,
                 Box&lt;<span class="kw">dyn </span>std::any::Any + Send&gt;
@@ -498,9 +540,11 @@
                     <span class="prelude-val">Ok</span>(extendr_api::Robj::from(#call_name(#actual_args)))
                 })
             };
+
+            <span class="comment">// return RNG state back to r after evaluation
+            </span>#rng_end
+
             <span class="comment">// any obj created in above unsafe scope, which are not moved into wrap_result_state are now dropped
-
-
             </span><span class="kw">match </span>wrap_result_state {
                 <span class="prelude-val">Ok</span>(<span class="prelude-val">Ok</span>(zz)) =&gt; {
                     <span class="kw">return unsafe </span>{ zz.get() };
