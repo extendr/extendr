@@ -34,7 +34,7 @@ fn test_extendr_rng() {
         // if the rng state isn't retrieved, then distribution is
         // 0 always
         assert!(
-            !x.iter().all(|x|x.round() as isize == 0)
+            !x.iter().all(|&x| x == 0f64)
         );
     }
 }
