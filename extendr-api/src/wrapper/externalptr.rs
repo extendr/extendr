@@ -94,9 +94,15 @@ impl<T: Any + Debug> ExternalPtr<T> {
                 unsafe {
                     let ptr = R_ExternalPtrAddr(x) as *mut T;
 
+                    // Free the `tag`, which is the type-name
+                    R_SetExternalPtrTag(x, R_NilValue);
+
                     // Convert the pointer to a box and drop it implictly.
                     // This frees up the memory we have used and calls the "T::drop" method if there is one.
                     drop(Box::from_raw(ptr));
+
+                    // Now set the pointer in ExternalPTR to C `NULL`
+                    R_ClearExternalPtr(x);
                 }
             }
 
