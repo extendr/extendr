@@ -1026,14 +1026,6 @@ pub trait Attributes: Types + Length {
 
 impl Attributes for Robj {}
 
-#[doc(hidden)]
-pub unsafe fn new_owned(sexp: SEXP) -> Robj {
-    single_threaded(|| {
-        ownership::protect(sexp);
-        Robj { inner: sexp }
-    })
-}
-
 /// Compare equality with integer slices.
 impl PartialEq<[i32]> for Robj {
     fn eq(&self, rhs: &[i32]) -> bool {
