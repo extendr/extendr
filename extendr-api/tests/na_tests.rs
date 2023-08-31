@@ -12,8 +12,8 @@ fn test_float_na_is_na() {
 fn test_float_from_bits_is_na() {
     test! {
         let na_bits = 0x7ff00000u64 << 32 | 1954;
-        let na_r = Rfloat::new(unsafe {std::mem::transmute(na_bits)});
-        let na_f64 : f64 = unsafe {std::mem::transmute(na_bits)};
+        let na_r = Rfloat::new(f64::from_bits(na_bits));
+        let na_f64 = f64::from_bits(na_bits);
         assert!(na_r.is_na());
         assert!(na_f64.is_na());
     }

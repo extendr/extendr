@@ -11,7 +11,6 @@ fn protect_lim2(n: i32) -> List {
     let n = n as usize;
 
     (0..n)
-        .into_iter()
         .map(|xi| ExternalPtr::new(PlzBreak(xi as i32)))
         .collect::<List>()
 }
@@ -20,7 +19,6 @@ fn protect_lim2(n: i32) -> List {
 fn prot_strs(n: i32) -> Strings {
     let n = n as usize;
     (0..n)
-        .into_iter()
         .map(|_| Rstr::from_string("val"))
         .collect::<Strings>()
 }
