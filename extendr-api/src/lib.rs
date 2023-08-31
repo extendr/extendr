@@ -772,6 +772,7 @@ mod tests {
         x
     }
 
+    #[derive(Debug)]
     struct Person {
         pub name: String,
     }

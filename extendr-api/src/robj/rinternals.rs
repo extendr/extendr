@@ -407,6 +407,7 @@ pub trait Rinternals: Types + Conversions {
     /// Check an external pointer tag.
     /// This is used to wrap R objects.
     #[doc(hidden)]
+    #[deprecated]
     fn check_external_ptr_type<T>(&self) -> bool {
         if self.sexptype() == libR_sys::EXTPTRSXP {
             let tag = unsafe { self.external_ptr_tag() };

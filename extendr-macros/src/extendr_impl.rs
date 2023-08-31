@@ -5,7 +5,7 @@ use syn::{ItemFn, ItemImpl};
 
 use crate::wrappers;
 
-//TODO: It is now a requirement that these implement `Debug`. 
+//TODO: It is now a requirement that these implement `Debug`.
 
 /// Handle trait implementations.
 ///
@@ -105,8 +105,6 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
 
     let meta_name = format_ident!("{}{}", wrappers::META_PREFIX, self_ty_name);
 
-    let finalizer_name = format_ident!("__finalize__{}", self_ty_name);
-
     let expanded = TokenStream::from(quote! {
         // The impl itself copied from the source.
         #item_impl
@@ -141,8 +139,7 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
         // Output conversion function for this type.
         impl From<#self_ty> for Robj {
             fn from(value: #self_ty) -> Self {
-                let external_ptr = ExternalPtr::new(value);
-                external_ptr.into()
+                ExternalPtr::new(value).into()
             }
         }
 
