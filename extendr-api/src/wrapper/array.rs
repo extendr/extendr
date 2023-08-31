@@ -162,7 +162,7 @@ where
 
     fn try_from(robj: Robj) -> Result<Self> {
         if !robj.is_matrix() {
-            Err(Error::ExpectedArray(robj))
+            Err(Error::ExpectedMatrix(robj))
         } else {
             // Ok to unwrap since the robj is an array.
             let dim = robj.dim().unwrap();
