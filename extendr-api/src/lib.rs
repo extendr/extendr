@@ -763,12 +763,12 @@ mod tests {
     // }
 
     #[extendr]
-    pub fn symbol(x: Symbol) -> Symbol {
+    pub fn matrix(x: RMatrix<i32>) -> RMatrix<i32> {
         x
     }
 
     #[extendr]
-    pub fn matrix(x: RMatrix<f64>) -> RMatrix<f64> {
+    pub fn symbol(x: Symbol) -> Symbol {
         x
     }
 
@@ -925,10 +925,9 @@ mod tests {
                 assert_eq!(Robj::from_sexp(wrap__symbol(robj.get())), robj);
 
                 // #[extendr]
-                // pub fn matrix(x: Matrix<&[f64]>) -> Matrix<&[f64]> { x }
+                // pub fn matrix(x: RMatrix<i32>) -> RMatrix<i32> { x }
 
-                let m = RMatrix::new_matrix(1, 2, |r, c| if r == c {1.0} else {0.});
-                let robj = r!(m);
+                let robj = r!(RMatrix::from_slice(&[1,2,3,4,5,6], [2,3]));
                 assert_eq!(Robj::from_sexp(wrap__matrix(robj.get())), robj);
             }
         }

@@ -618,13 +618,12 @@ pub trait RobjItertools: Iterator {
     /// # Arguments
     ///
     /// * `dims` - an array containing the length of each dimension
-    fn collect_rarray<'a, D: AsRef<[usize]>>(self, dims: D) -> Result<RArray<Self::Item, D>>
+    fn collect_rarray<'a, D>(self, dims: D) -> Result<RArray<Self::Item, D>>
     where
-        Self: Iterator,
-        Self: Sized,
-        Self::Item: ToVectorValue,
+        D: AsRef<[usize]> + 'a,
+        Self: Iterator + Sized,
+        Self::Item: ToVectorValue + 'a + Clone,
         Robj: AsTypedSlice<'a, Self::Item>,
-        Self::Item: 'a,
     {
         let vector = self.collect_robj();
         let dims_ref = dims.as_ref();
@@ -636,17 +635,11 @@ pub trait RobjItertools: Iterator {
                 prod
             )));
         }
-        let mut robj = vector.set_attrib(
+        let robj = vector.set_attrib(
             wrapper::symbol::dim_symbol(),
             dims_ref.iter().collect_robj(),
         )?;
-        let data = robj
-            .as_typed_slice_mut()
-            .ok_or(Error::Other(
-                "Unknown error in converting to slice".to_string(),
-            ))?
-            .as_mut_ptr();
-        Ok(RArray::from_parts(robj, data, dims))
+        Ok(RArray::new(robj, dims))
     }
 }
 

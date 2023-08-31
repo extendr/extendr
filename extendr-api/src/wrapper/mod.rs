@@ -34,7 +34,7 @@ pub use altrep::{
     AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,
     AltrepImpl,
 };
-pub use array::{MatrixConversions, RArray, RArray3D, RColumn, RMatrix};
+pub use array::{RArray, RMatrix};
 pub use complexes::Complexes;
 pub use dataframe::{Dataframe, IntoDataFrameRow};
 pub use doubles::Doubles;

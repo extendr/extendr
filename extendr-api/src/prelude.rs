@@ -38,12 +38,12 @@ pub use crate::{
 
 pub use super::wrapper::{
     AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,
-    AltrepImpl, RArray, RArray3D, RColumn, RMatrix,
+    AltrepImpl, RArray, RMatrix,
 };
 
 pub use super::wrapper::s4::S4;
 
-pub use super::wrapper::{Conversions, MatrixConversions};
+pub use super::wrapper::Conversions;
 
 pub use super::robj::{
     AsStrIter, Attributes, Eval, GetSexp, IntoRobj, Length, Operators, Rinternals, Robj,

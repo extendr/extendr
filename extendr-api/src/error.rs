@@ -62,8 +62,7 @@ pub enum Error {
 
     ExpectedScalar(Robj),
     ExpectedVector(Robj),
-    ExpectedMatrix(Robj),
-    ExpectedMatrix3D(Robj),
+    ExpectedArray(Robj),
     ExpectedNumeric(Robj),
     ExpectedAltrep(Robj),
     ExpectedDataframe(Robj),
@@ -136,8 +135,7 @@ impl std::fmt::Display for Error {
 
             Error::ExpectedScalar(robj) => write!(f, "Expected Scalar, got {:?}", robj.rtype()),
             Error::ExpectedVector(robj) => write!(f, "Expected Vector, got {:?}", robj.rtype()),
-            Error::ExpectedMatrix(robj) => write!(f, "Expected Matrix, got {:?}", robj.rtype()),
-            Error::ExpectedMatrix3D(robj) => write!(f, "Expected Matrix3D, got {:?}", robj.rtype()),
+            Error::ExpectedArray(robj) => write!(f, "Expected Array, got {:?}", robj.rtype()),
             Error::ExpectedNumeric(robj) => write!(f, "Expected Numeric, got {:?}", robj.rtype()),
             Error::ExpectedAltrep(robj) => write!(f, "Expected Altrep, got {:?}", robj.rtype()),
             Error::ExpectedDataframe(robj) => {
