@@ -60,5 +60,8 @@ fn test_externalptr_deref() {
         let extptr = ExternalPtr::new(X { x: 1, y: 2});
         assert_eq!(extptr.x, 1);
         assert_eq!(extptr.y, 2);
+        let mut extptr = extptr;
+        extptr.x = 44;
+        assert_eq!(extptr.x, 44);
     }
 }

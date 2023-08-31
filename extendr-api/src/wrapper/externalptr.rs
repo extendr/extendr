@@ -1,6 +1,7 @@
 use super::*;
-use std::any::Any;
+use std::any::{Any, TypeId};
 use std::fmt::Debug;
+use std::marker::PhantomData;
 
 /// Wrapper for creating R objects containing any Rust object.
 ///
@@ -21,7 +22,7 @@ pub struct ExternalPtr<T: Debug + 'static> {
     pub(crate) robj: Robj,
 
     /// This is a zero-length object that holds the type of the object.
-    marker: std::marker::PhantomData<T>,
+    marker: PhantomData<T>,
 }
 
 impl<T: Debug + 'static> robj::GetSexp for ExternalPtr<T> {
@@ -74,6 +75,27 @@ impl<T: Debug + 'static> DerefMut for ExternalPtr<T> {
     }
 }
 
+/// Internal type to represent a Rust type tagged it's [`TypeId`].
+///
+/// This means that [`R_MakeExternalPtr`] returns a tagged pointer, that
+/// we can use to test the validity of the type-casting at runtime.
+///
+#[derive(Debug)]
+#[repr(C)]
+struct ExternalData<T> {
+    type_id: TypeId,
+    data: T,
+}
+
+impl<T: 'static> ExternalData<T> {
+    fn new(data: T) -> Self {
+        Self {
+            type_id: TypeId::of::<T>(),
+            data,
+        }
+    }
+}
+
 impl<T: Any + Debug> ExternalPtr<T> {
     /// Construct an external pointer object from any type T.
     /// In this case, the R object owns the data and will drop the Rust object
@@ -82,20 +104,19 @@ impl<T: Any + Debug> ExternalPtr<T> {
     /// An ExternalPtr behaves like a Box except that the information is
     /// tracked by a R object.
     pub fn new(val: T) -> Self {
+        use std::ffi::c_void;
+        // This allocates some memory for our object and moves the object into it.
+        let boxed = Box::new(ExternalData::new(val));
         unsafe {
-            // This allocates some memory for our object and moves the object into it.
-            let boxed = Box::new(val);
-
             // This constructs an external pointer to our boxed data.
             // into_raw() converts the box to a malloced pointer.
-            let robj = Robj::make_external_ptr(Box::into_raw(boxed), r!(()));
-
+            // let robj = Robj::make_external_ptr(Box::into_raw(boxed), r!(()));
+            let robj = Robj::from_sexp(single_threaded(|| {
+                R_MakeExternalPtr(Box::into_raw(boxed) as *mut c_void, R_NilValue, R_NilValue)
+            }));
             extern "C" fn finalizer<T>(x: SEXP) {
                 unsafe {
-                    let ptr = R_ExternalPtrAddr(x) as *mut T;
-
-                    // Free the `tag`, which is the type-name
-                    R_SetExternalPtrTag(x, R_NilValue);
+                    let ptr = R_ExternalPtrAddr(x) as *mut ExternalData<T>;
 
                     // Convert the pointer to a box and drop it implictly.
                     // This frees up the memory we have used and calls the "T::drop" method if there is one.
@@ -133,8 +154,8 @@ impl<T: Any + Debug> ExternalPtr<T> {
     /// Normally, we will use Deref to do this.
     pub fn addr<'a>(&self) -> &'a T {
         unsafe {
-            let ptr = R_ExternalPtrAddr(self.robj.get()) as *const T;
-            &*ptr as &'a T
+            let ptr = R_ExternalPtrAddr(self.robj.get()) as *const ExternalData<T>;
+            &(*ptr).data
         }
     }
 
@@ -142,8 +163,8 @@ impl<T: Any + Debug> ExternalPtr<T> {
     /// Normally, we will use DerefMut to do this.
     pub fn addr_mut(&mut self) -> &mut T {
         unsafe {
-            let ptr = R_ExternalPtrAddr(self.robj.get()) as *mut T;
-            &mut *ptr as &mut T
+            let ptr = R_ExternalPtrAddr(self.robj.get()) as *mut ExternalData<T>;
+            &mut (*ptr).data
         }
     }
 }
@@ -152,21 +173,22 @@ impl<T: Any + Debug> TryFrom<&Robj> for ExternalPtr<T> {
     type Error = Error;
 
     fn try_from(robj: &Robj) -> Result<Self> {
-        let clone = robj.clone();
-        if clone.rtype() != Rtype::ExternalPtr {
-            Err(Error::ExpectedExternalPtr(clone))
-        } else if clone.check_external_ptr_type::<T>() {
-            let res = ExternalPtr::<T> {
-                robj: clone,
-                marker: std::marker::PhantomData,
-            };
-            Ok(res)
-        } else {
-            Err(Error::ExpectedExternalPtrType(
-                clone,
-                std::any::type_name::<T>().into(),
-            ))
+        use std::ptr::addr_of;
+        if robj.rtype() != Rtype::ExternalPtr {
+            return Err(Error::ExpectedExternalPtr(robj.clone()));
         }
+        let external_ptr = single_threaded(|| unsafe { R_ExternalPtrAddr(robj.get()) });
+        let type_id = unsafe { *addr_of!((&*(external_ptr as *const ExternalData<()>)).type_id) };
+        if type_id != TypeId::of::<T>() {
+            return Err(Error::ExpectedExternalPtrType(
+                robj.clone(),
+                format!("expected {}", std::any::type_name::<T>()),
+            ));
+        }
+        Ok(ExternalPtr {
+            robj: robj.clone(),
+            marker: PhantomData,
+        })
     }
 }
 
