@@ -135,7 +135,8 @@ impl<T: Any + Debug> ExternalPtr<T> {
     pub fn addr(&self) -> &T {
         unsafe {
             let ptr = R_ExternalPtrAddr(self.robj.get()) as *const Box<dyn Any>;
-            ptr.as_ref().unwrap().downcast_ref().unwrap()
+            let ptr_ref: &Box<dyn Any> = ptr.as_ref().unwrap();
+            ptr_ref.downcast_ref().unwrap()
         }
     }
 
@@ -144,7 +145,8 @@ impl<T: Any + Debug> ExternalPtr<T> {
     pub fn addr_mut(&mut self) -> &mut T {
         unsafe {
             let ptr = R_ExternalPtrAddr(self.robj.get()) as *mut Box<dyn Any>;
-            ptr.as_mut().unwrap().downcast_mut().unwrap()
+            let ref_mut_ptr: &mut Box<dyn Any> = ptr.as_mut().unwrap();
+            ref_mut_ptr.downcast_mut().unwrap()
         }
     }
 }
@@ -158,8 +160,8 @@ impl<T: Any + Debug> TryFrom<&Robj> for ExternalPtr<T> {
         }
         let is_type = unsafe {
             let external_ptr = R_ExternalPtrAddr(robj.get()) as *mut Box<dyn Any>;
-            let is_type = external_ptr.as_ref().unwrap().downcast_ref::<T>().is_some();
-            is_type
+            let is_type: &Box<dyn Any> = external_ptr.as_ref().unwrap();
+            is_type.downcast_ref::<T>().is_some()
         };
         if is_type {
             let res = ExternalPtr::<T> {
