@@ -110,9 +110,15 @@ impl<T: Any + Debug> ExternalPtr<T> {
         unsafe {
             // This constructs an external pointer to our boxed data.
             // into_raw() converts the box to a malloced pointer.
-            // let robj = Robj::make_external_ptr(Box::into_raw(boxed), r!(()));
             let robj = Robj::from_sexp(single_threaded(|| {
-                R_MakeExternalPtr(Box::into_raw(boxed) as *mut c_void, R_NilValue, R_NilValue)
+                // add `tag` so that in R `.Internal(inspect(x))` would show 
+                // type-name.
+                let tag = Rf_install(
+                    std::ffi::CString::new(std::any::type_name::<T>())
+                        .unwrap()
+                        .as_ptr(),
+                );
+                R_MakeExternalPtr(Box::into_raw(boxed) as *mut c_void, tag, R_NilValue)
             }));
             extern "C" fn finalizer<T>(x: SEXP) {
                 unsafe {
