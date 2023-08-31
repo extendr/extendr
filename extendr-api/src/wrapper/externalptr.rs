@@ -85,38 +85,39 @@ impl<T: Any + Debug> ExternalPtr<T> {
     /// tracked by a R object.
     pub fn new(val: T) -> Self {
         use std::ffi::c_void;
+        // This allocates some memory for our object and moves the object into it.
+        let v = ExternalData(Box::new(val));
+        let ptr = Box::into_raw(Box::new(v));
         unsafe {
-            // This allocates some memory for our object and moves the object into it.
-            let v = ExternalData(Box::new(val));
+            single_threaded(|| {
+                // This constructs an external pointer to our boxed data.
+                // into_raw() converts the box to a malloced pointer.
+                let external_ptr = R_MakeExternalPtr(ptr as *mut c_void, R_NilValue, R_NilValue);
 
-            // This constructs an external pointer to our boxed data.
-            // into_raw() converts the box to a malloced pointer.
-            let ptr = Box::into_raw(Box::new(v));
-            let external_ptr = R_MakeExternalPtr(ptr as *mut c_void, R_NilValue, R_NilValue);
+                // ensure that this is protected
+                let robj = Robj::from_sexp(external_ptr);
 
-            // ensure that this is protected
-            let robj = Robj::from_sexp(external_ptr);
+                extern "C" fn finalizer<T: 'static>(x: SEXP) {
+                    unsafe {
+                        let ptr = R_ExternalPtrAddr(x);
+                        // Convert the pointer to a box and drop it implictly.
+                        // This frees up the memory we have used and calls the "T::drop" method if there is one.
+                        drop(Box::from_raw(ptr as *mut ExternalData));
 
-            extern "C" fn finalizer<T: 'static>(x: SEXP) {
-                unsafe {
-                    let ptr = R_ExternalPtrAddr(x);
-                    // Convert the pointer to a box and drop it implictly.
-                    // This frees up the memory we have used and calls the "T::drop" method if there is one.
-                    drop(Box::from_raw(ptr as *mut ExternalData));
-
-                    // Now set the pointer in ExternalPTR to C `NULL`
-                    R_ClearExternalPtr(x);
+                        // Now set the pointer in ExternalPtr to C `NULL`
+                        R_ClearExternalPtr(x);
+                    }
                 }
-            }
 
-            // Tell R about our finalizer
-            robj.register_c_finalizer(Some(finalizer::<T>));
+                // Tell R about our finalizer
+                robj.register_c_finalizer(Some(finalizer::<T>));
 
-            // Return an object in a wrapper.
-            Self {
-                robj,
-                marker: std::marker::PhantomData,
-            }
+                // Return an object in a wrapper.
+                Self {
+                    robj,
+                    marker: std::marker::PhantomData,
+                }
+            })
         }
     }
 
@@ -135,23 +136,23 @@ impl<T: Any + Debug> ExternalPtr<T> {
     /// Get the "address" field of an external pointer.
     /// Normally, we will use Deref to do this.
     pub fn addr(&self) -> &T {
-        unsafe {
+        single_threaded(|| unsafe {
             let ptr = R_ExternalPtrAddr(self.robj.get()) as *const ExternalData;
             let ptr_ref = &*ptr;
             let ptr_ref_downcast = ptr_ref.0.downcast_ref::<T>().unwrap();
             ptr_ref_downcast
-        }
+        })
     }
 
     /// Get the "address" field of an external pointer as a mutable reference.
     /// Normally, we will use DerefMut to do this.
     pub fn addr_mut(&mut self) -> &mut T {
-        unsafe {
+        single_threaded(|| unsafe {
             let ptr = R_ExternalPtrAddr(self.robj.get()) as *mut ExternalData;
             let ptr_ref = &mut *ptr;
             let ptr_ref_downcast = ptr_ref.0.downcast_mut::<T>().unwrap();
             ptr_ref_downcast
-        }
+        })
     }
 }
 
@@ -162,12 +163,12 @@ impl<T: Any + Debug> TryFrom<&Robj> for ExternalPtr<T> {
         if robj.rtype() != Rtype::ExternalPtr {
             return Err(Error::ExpectedExternalPtr(robj.clone()));
         }
-        let is_type = unsafe {
+        let is_type = single_threaded(|| unsafe {
             let external_ptr = R_ExternalPtrAddr(robj.get()) as *const ExternalData;
             let is_type = &*external_ptr;
             let is_type = is_type.0.downcast_ref::<T>();
             is_type.is_some()
-        };
+        });
         if is_type {
             let res = ExternalPtr::<T> {
                 robj: robj.clone(),
