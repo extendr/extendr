@@ -1,7 +1,23 @@
 [workspace]
 resolver = "2"
 
-members = ["extendr-api", "extendr-engine", "extendr-macros"]
+members = ["extendr-api", "extendr-engine", "extendr-macros", "xtask"]
+
+[workspace.package]
+version = "0.4.0"
+authors = [
+    "andy-thomason <andy@andythomason.com>",
+    "Thomas Down",
+    "Mossa Merhi Reimert <mossa@sund.ku.dk>",
+    "Claus O. Wilke <wilke@austin.utexas.edu>",
+    "Hiroaki Yutani",
+    "Ilia A. Kosenkov <ilia.kosenkov@outlook.com>",
+    "Michael Milton <michael.r.milton@gmail.com>",
+]
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/extendr/extendr"
+rust-version = "1.60"
 
 [workspace.dependencies]
 libR-sys = "0.6.0"
