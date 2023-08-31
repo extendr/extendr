@@ -74,6 +74,8 @@ impl<T: Debug + 'static> DerefMut for ExternalPtr<T> {
     }
 }
 
+struct ExternalData(Box<dyn Any>);
+
 impl<T: Any + Debug> ExternalPtr<T> {
     /// Construct an external pointer object from any type T.
     /// In this case, the R object owns the data and will drop the Rust object
@@ -85,7 +87,7 @@ impl<T: Any + Debug> ExternalPtr<T> {
         use std::ffi::c_void;
         unsafe {
             // This allocates some memory for our object and moves the object into it.
-            let v: Box<dyn Any> = Box::new(val);
+            let v = ExternalData(Box::new(val));
 
             // This constructs an external pointer to our boxed data.
             // into_raw() converts the box to a malloced pointer.
@@ -100,7 +102,7 @@ impl<T: Any + Debug> ExternalPtr<T> {
                     let ptr = R_ExternalPtrAddr(x);
                     // Convert the pointer to a box and drop it implictly.
                     // This frees up the memory we have used and calls the "T::drop" method if there is one.
-                    drop(Box::from_raw(ptr as *mut Box<dyn Any>));
+                    drop(Box::from_raw(ptr as *mut ExternalData));
 
                     // Now set the pointer in ExternalPTR to C `NULL`
                     R_ClearExternalPtr(x);
@@ -134,9 +136,9 @@ impl<T: Any + Debug> ExternalPtr<T> {
     /// Normally, we will use Deref to do this.
     pub fn addr(&self) -> &T {
         unsafe {
-            let ptr = R_ExternalPtrAddr(self.robj.get()) as *const Box<dyn Any>;
+            let ptr = R_ExternalPtrAddr(self.robj.get()) as *const ExternalData;
             let ptr_ref = &*ptr;
-            let ptr_ref_downcast = ptr_ref.downcast_ref::<T>().unwrap();
+            let ptr_ref_downcast = ptr_ref.0.downcast_ref::<T>().unwrap();
             ptr_ref_downcast
         }
     }
@@ -145,9 +147,9 @@ impl<T: Any + Debug> ExternalPtr<T> {
     /// Normally, we will use DerefMut to do this.
     pub fn addr_mut(&mut self) -> &mut T {
         unsafe {
-            let ptr = R_ExternalPtrAddr(self.robj.get()) as *mut Box<dyn Any>;
+            let ptr = R_ExternalPtrAddr(self.robj.get()) as *mut ExternalData;
             let ptr_ref = &mut *ptr;
-            let ptr_ref_downcast = ptr_ref.downcast_mut::<T>().unwrap();
+            let ptr_ref_downcast = ptr_ref.0.downcast_mut::<T>().unwrap();
             ptr_ref_downcast
         }
     }
@@ -161,9 +163,9 @@ impl<T: Any + Debug> TryFrom<&Robj> for ExternalPtr<T> {
             return Err(Error::ExpectedExternalPtr(robj.clone()));
         }
         let is_type = unsafe {
-            let external_ptr = R_ExternalPtrAddr(robj.get()) as *mut Box<dyn Any>;
-            let is_type: &Box<dyn Any> = external_ptr.as_ref().unwrap();
-            let is_type = is_type.downcast_ref::<T>();
+            let external_ptr = R_ExternalPtrAddr(robj.get()) as *const ExternalData;
+            let is_type = &*external_ptr;
+            let is_type = is_type.0.downcast_ref::<T>();
             is_type.is_some()
         };
         if is_type {
