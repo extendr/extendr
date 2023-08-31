@@ -845,7 +845,6 @@ pub trait Attributes: Types + Length {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///
     ///    let mut robj = r!("hello").set_attrib(sym!(xyz), 1)?;
     ///    assert_eq!(robj.get_attrib(sym!(xyz)), Some(r!(1)));
     /// }

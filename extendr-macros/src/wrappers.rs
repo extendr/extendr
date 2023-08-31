@@ -10,6 +10,7 @@ pub struct ExtendrOptions {
     pub use_try_from: bool,
     pub r_name: Option<String>,
     pub mod_name: Option<String>,
+    pub use_rng: bool,
 }
 
 // Generate wrappers for a specific function.
@@ -100,12 +101,31 @@ pub fn make_function_wrappers(
     //     }
     // }
     // ```
-    //
+    let rng_start = opts
+        .use_rng
+        .then(|| {
+            quote!(unsafe {
+                libR_sys::GetRNGstate();
+            })
+        })
+        .unwrap_or_default();
+    let rng_end = opts
+        .use_rng
+        .then(|| {
+            quote!(unsafe {
+                libR_sys::PutRNGstate();
+            })
+        })
+        .unwrap_or_default();
     wrappers.push(parse_quote!(
         #[no_mangle]
         #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
         pub extern "C" fn #wrap_name(#formal_args) -> extendr_api::SEXP {
             use extendr_api::robj::*;
+
+            // pull RNG state before evaluation
+            #rng_start
+
             let wrap_result_state: std::result::Result<
                 std::result::Result<Robj, extendr_api::Error>,
                 Box<dyn std::any::Any + Send>
@@ -115,9 +135,11 @@ pub fn make_function_wrappers(
                     Ok(extendr_api::Robj::from(#call_name(#actual_args)))
                 })
             };
+
+            // return RNG state back to r after evaluation
+            #rng_end
+
             // any obj created in above unsafe scope, which are not moved into wrap_result_state are now dropped
-
-
             match wrap_result_state {
                 Ok(Ok(zz)) => {
                     return unsafe { zz.get() };
