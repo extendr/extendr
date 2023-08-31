@@ -141,25 +141,8 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
         // Output conversion function for this type.
         impl From<#self_ty> for Robj {
             fn from(value: #self_ty) -> Self {
-                unsafe {
-                    let ptr = Box::into_raw(Box::new(value));
-                    let res = Robj::make_external_ptr(ptr, Robj::from(()));
-                    res.set_attrib(class_symbol(), #self_ty_name).unwrap();
-                    res.register_c_finalizer(Some(#finalizer_name));
-                    res
-                }
-            }
-        }
-
-        // Function to free memory for this type.
-        extern "C" fn #finalizer_name (sexp: extendr_api::SEXP) {
-            unsafe {
-                let robj = extendr_api::robj::Robj::from_sexp(sexp);
-                if robj.check_external_ptr_type::<#self_ty>() {
-                    //eprintln!("finalize {}", #self_ty_name);
-                    let ptr = robj.external_ptr_addr::<#self_ty>();
-                    drop(Box::from_raw(ptr));
-                }
+                let external_ptr = ExternalPtr::new(value);
+                external_ptr.into()
             }
         }
 
