@@ -121,12 +121,12 @@ impl<T: Any + Debug> ExternalPtr<T> {
 
     /// Get the "tag" of an external pointer. This is the type name in the common case.
     pub fn tag(&self) -> Robj {
-        unsafe { new_owned(R_ExternalPtrTag(self.robj.get())) }
+        unsafe { Robj::from_sexp(R_ExternalPtrTag(self.robj.get())) }
     }
 
     /// Get the "protected" field of an external pointer. This is NULL in the common case.
     pub fn protected(&self) -> Robj {
-        unsafe { new_owned(R_ExternalPtrProtected(self.robj.get())) }
+        unsafe { Robj::from_sexp(R_ExternalPtrProtected(self.robj.get())) }
     }
 
     /// Get the "address" field of an external pointer.

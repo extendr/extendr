@@ -702,7 +702,7 @@ impl Device {
 
     /// Screen capture. Returns an integer matrix representing pixels if it is able.
     pub fn capture(&self) -> Robj {
-        unsafe { new_owned(GECap(self.inner())) }
+        unsafe { Robj::from_sexp(GECap(self.inner())) }
     }
 
     /// Draw a bitmap.
