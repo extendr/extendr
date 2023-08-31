@@ -111,15 +111,9 @@ impl<T: Any + Debug> ExternalPtr<T> {
             extern "C" fn finalizer<T: 'static>(x: SEXP) {
                 unsafe {
                     let ptr = R_ExternalPtrAddr(x);
-                    let boxed = Box::from_raw(ptr as *mut ExternalType);
-                    // let boxed_ref = boxed.inner.downcast_ref::<T>().unwrap();
-
-                    // Free the `tag`, which is the type-name
-                    R_SetExternalPtrTag(x, R_NilValue);
-
                     // Convert the pointer to a box and drop it implictly.
                     // This frees up the memory we have used and calls the "T::drop" method if there is one.
-                    drop(boxed);
+                    drop(Box::from_raw(ptr as *mut ExternalType));
 
                     // Now set the pointer in ExternalPTR to C `NULL`
                     R_ClearExternalPtr(x);
