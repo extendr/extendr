@@ -1027,6 +1027,7 @@ pub trait Attributes: Types + Length {
 impl Attributes for Robj {}
 
 #[doc(hidden)]
+#[deprecated = "is exactly like Robj::from_sexp"]
 pub unsafe fn new_owned(sexp: SEXP) -> Robj {
     single_threaded(|| {
         ownership::protect(sexp);
