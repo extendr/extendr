@@ -135,7 +135,7 @@ impl<T: Any + Debug> ExternalPtr<T> {
     pub fn addr(&self) -> &T {
         unsafe {
             let ptr = R_ExternalPtrAddr(self.robj.get()) as *const Box<dyn Any>;
-            let ptr_ref: &Box<dyn Any> = ptr.as_ref().unwrap();
+            let ptr_ref = &*ptr;
             let ptr_ref_downcast = ptr_ref.downcast_ref::<T>().unwrap();
             ptr_ref_downcast
         }
@@ -146,9 +146,9 @@ impl<T: Any + Debug> ExternalPtr<T> {
     pub fn addr_mut(&mut self) -> &mut T {
         unsafe {
             let ptr = R_ExternalPtrAddr(self.robj.get()) as *mut Box<dyn Any>;
-            let ref_mut_ptr: &mut Box<dyn Any> = ptr.as_mut().unwrap();
-            let ref_mut_ptr_downcast: &mut Box<T> = ref_mut_ptr.downcast_mut().unwrap();
-            ref_mut_ptr_downcast.as_mut()
+            let ptr_ref = &mut *ptr;
+            let ptr_ref_downcast = ptr_ref.downcast_mut::<T>().unwrap();
+            ptr_ref_downcast
         }
     }
 }
