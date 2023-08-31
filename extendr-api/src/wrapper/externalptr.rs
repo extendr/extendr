@@ -169,6 +169,45 @@ impl<T: Any + Debug> ExternalPtr<T> {
     }
 }
 
+impl<T: 'static> ExternalPtr<T>
+where
+    T: Debug,
+{
+    pub fn try_get_from_robj(robj: &Robj) -> std::result::Result<&T, String> {
+        if !robj.is_external_pointer() {
+            return Err("expected `ExternalPtr`".into());
+        }
+        use std::ptr::addr_of;
+        let external_ptr = single_threaded(|| unsafe { R_ExternalPtrAddr(robj.get()) });
+        let type_id = unsafe { *addr_of!((&*(external_ptr as *const ExternalData<()>)).type_id) };
+        if type_id != TypeId::of::<T>() {
+            return Err(format!(
+                "expected `T` to be of type {}",
+                std::any::type_name::<T>()
+            ));
+        }
+        let external_ptr = external_ptr as *const ExternalData<T>;
+        Ok(unsafe { &(*external_ptr).data })
+    }
+
+    pub fn try_get_mut_from_robj(robj: &mut Robj) -> std::result::Result<&mut T, String> {
+        if !robj.is_external_pointer() {
+            return Err("expected `ExternalPtr`".into());
+        }
+        use std::ptr::addr_of;
+        let external_ptr = single_threaded(|| unsafe { R_ExternalPtrAddr(robj.get()) });
+        let type_id = unsafe { *addr_of!((&*(external_ptr as *const ExternalData<()>)).type_id) };
+        if type_id != TypeId::of::<T>() {
+            return Err(format!(
+                "expected `T` to be of type {}",
+                std::any::type_name::<T>()
+            ));
+        }
+        let external_ptr = external_ptr as *mut ExternalData<T>;
+        Ok(unsafe { &mut (*external_ptr).data })
+    }
+}
+
 impl<T: Any + Debug> TryFrom<&Robj> for ExternalPtr<T> {
     type Error = Error;
 
