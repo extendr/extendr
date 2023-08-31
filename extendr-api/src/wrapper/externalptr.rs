@@ -101,8 +101,7 @@ impl<T: Any + Debug> ExternalPtr<T> {
 
             // This constructs an external pointer to our boxed data.
             // into_raw() converts the box to a malloced pointer.
-            let v = Box::new(v);
-            let ptr = Box::into_raw(v);
+            let ptr = Box::into_raw(Box::new(v));
             let external_ptr = R_MakeExternalPtr(ptr as *mut c_void, R_NilValue, R_NilValue);
 
             // ensure that this is protected
