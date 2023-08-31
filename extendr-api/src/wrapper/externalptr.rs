@@ -122,6 +122,8 @@ impl<T: Any + Debug> ExternalPtr<T> {
             }));
             extern "C" fn finalizer<T>(x: SEXP) {
                 unsafe {
+                    /// Free the `tag` which is the type name
+                    R_SetExternalPtrTag(x, R_NilValue);
                     let ptr = R_ExternalPtrAddr(x) as *mut ExternalData<T>;
 
                     // Convert the pointer to a box and drop it implictly.
