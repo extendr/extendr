@@ -269,9 +269,6 @@ where
     Robj: AsTypedSlice<'a, T>,
 {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        match RArray::try_from(robj) {
-            Ok(x) => Ok(x),
-            _ => Err("Expected a matrix."),
-        }
+        RArray::try_from(robj).or_else(|_| Err("Expected a matrix."))
     }
 }
