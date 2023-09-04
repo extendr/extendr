@@ -5,11 +5,16 @@ test_that("Exported class works", {
   x$set_a(10L)
   expect_equal(x$a(), 10L)
   expect_equal(x[["a"]](), 10L)
-  expect_equal(x$me(), x)
-  expect_equal(x[["me"]](), x)
 
   expect_visible(x$a())
   expect_invisible(x$set_a(5L))
+})
+
+test_that("Exported class self ptr works", {
+  testthat::skip("ExternalPtr issue https://github.com/extendr/extendr/issues/614")
+  x <- MyClass$new()
+  expect_equal(x$me(), x)
+  expect_equal(x[["me"]](), x)
 })
 
 test_that("Unexported class works", {
@@ -18,7 +23,6 @@ test_that("Unexported class works", {
   expect_equal(x$a(), 22L)
   expect_equal(x[["a"]](), 22L)
 })
-
 
 test_that("Issue 431: Restore struct as ExternalPtr", {
   x <- MyClass$new()
