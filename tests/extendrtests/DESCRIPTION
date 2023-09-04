@@ -20,9 +20,11 @@ Imports:
 Suggests:
     brio,
     patrick,
+    processx,
     rmarkdown,
     stringi,
     testthat,
     vctrs,
     lobstr
-Config/rextendr/version: 0.3.0
+Config/testthat/edition: 3
+Config/rextendr/version: 0.3.1.9000
