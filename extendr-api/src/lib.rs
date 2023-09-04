@@ -294,26 +294,26 @@
 //! In R:
 //!
 //! ```ignore
-//! #default result_panic feature
+//! # default result_panic feature
 //! oups(1)
 //! > ... long panic traceback from rust printed to stderr
 //!
-//! #result_list feature
-//! lst <-oups(1)
+//! # result_list feature
+//! lst <- oups(1)
 //! print(lst)
-//! > list(ok=NULL, err="I did it again")
+//! > list(ok = NULL, err = "I did it again")
 //!
-//! #result_condition feature
-//! cnd = oups(1)
+//! # result_condition feature
+//! cnd <- oups(1)
 //! print(cnd)
 //! > <error: extendr_error>
 //! print(cnd$value)
 //! > "I did it again"
 //!
-//! #handling example for result_condition
-//! oups_handled = function(a) {
-//!   val_or_err = oups(1)  
-//!   if(inherits(val_or_err,"extendr_error")) stop(val_or_err)
+//! # handling example for result_condition
+//! oups_handled <- function(a) {
+//!   val_or_err <- oups(1)  
+//!   if (inherits(val_or_err, "extendr_error")) stop(val_or_err)
 //!   val_or_err
 //! }
 //!
