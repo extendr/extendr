@@ -1,6 +1,6 @@
 Package: extendrtests
 Title: Integration Tests for Calling Extendr from an R Package
-Version: 0.2.1
+Version: 0.2.2
 Authors@R: c(
     person("Andy", "Thomason", , "andy@andythomason.com", c("aut")),
     person("Claus O.", "Wilke", , "wilke@austin.utexas.edu", c("aut", "cre"),
