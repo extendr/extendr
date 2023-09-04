@@ -8,5 +8,5 @@ skip_if_no_cargo_expand <- function() {
     error = function(e) list(status = 1, stderr = "")
   )
   condition <- (result$status == 0) && (!nzchar(result$stderr))
-  testthat::skip_if(condition, "cargo expand not available")
+  skip_if_not(condition, "cargo expand not available")
 }
