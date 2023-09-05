@@ -59,6 +59,7 @@ where
 
     /// Make a new RArray type.
     /// This function inserts a dim attribute to the Robj.
+    /// Will return an Error if the product of the dimensions is not equal to the slice length.
     pub fn from_slice<P>(slice: P, dims: D) -> Result<Self>
     where
         P: AsRef<[T]>,
@@ -71,11 +72,7 @@ where
 
         let prod = dims_ref.iter().product::<usize>();
         if prod != robj.len() {
-            return Err(Error::Other(format!(
-                "The vector length ({}) does not match the length implied by the dimensions ({})",
-                slice_ref.len(),
-                prod
-            )));
+            return Err(Error::DimensionMismatch(slice_ref.len(), prod));
         }
 
         let robj = robj
@@ -309,6 +306,11 @@ mod tests {
 
             // Since RMatrix are only 2D, creating an RMatrix of other dimensions should result in a compile error.
             // RMatrix::from_slice([1,2,3,4,5,6,7,8], [2, 2, 2]);
+
+            // Create an RArray and error.
+            let slice = [1,2,3,4];
+            let dim = [2,3];
+            assert!(RArray::from_slice(slice, dim).is_err());
         }
     }
 

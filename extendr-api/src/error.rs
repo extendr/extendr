@@ -76,6 +76,7 @@ pub enum Error {
     TypeMismatch(Robj),
     NamespaceNotFound(Robj),
     NoGraphicsDevices(Robj),
+    DimensionMismatch(usize, usize),
 
     ExpectedExternalPtrType(Robj, String),
     Other(String),
@@ -162,6 +163,9 @@ impl std::fmt::Display for Error {
                 write!(f, "Incorrect external pointer type {}", type_name)
             }
             Error::NoGraphicsDevices(_robj) => write!(f, "No graphics devices active."),
+            Error::DimensionMismatch(vec_len, dim_len) => {
+                write!(f, "The slice length ({}) does not match the length implied by the dimensions ({})", vec_len, dim_len)
+            }
             Error::Other(str) => write!(f, "{}", str),
 
             #[cfg(feature = "ndarray")]

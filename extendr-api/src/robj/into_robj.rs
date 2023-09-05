@@ -629,11 +629,7 @@ pub trait RobjItertools: Iterator {
         let dims_ref = dims.as_ref();
         let prod = dims_ref.iter().product::<usize>();
         if prod != vector.len() {
-            return Err(Error::Other(format!(
-                "The vector length ({}) does not match the length implied by the dimensions ({})",
-                vector.len(),
-                prod
-            )));
+            return Err(Error::DimensionMismatch(vector.len(), prod));
         }
         let robj = vector.set_attrib(
             wrapper::symbol::dim_symbol(),
