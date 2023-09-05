@@ -277,6 +277,7 @@ mod tests {
     #[test]
     fn from_slice() {
         test! {
+            // Create 2D RArray.
             let slice = [1,2,3,4,5,6];
             let dim = [2,3];
             let array = RArray::from_slice(slice, dim).unwrap();
@@ -286,21 +287,53 @@ mod tests {
             assert!(robj.is_array());
             assert!(robj.is_matrix());
             assert!(RArray::<i32, Integers>::try_from(robj).is_ok());
+
+            // Create 1D RArray.
+            let slice = [1,2,3];
+            let dim = [3];
+            let array = RArray::from_slice(slice, dim).unwrap();
+            let dim = array.dim().clone();
+            let robj = r!(array);
+            assert_eq!(dim, [3]);
+            assert!(robj.is_array());
+            assert!(RArray::<i32, Integers>::try_from(robj).is_ok());
+
+            // Create 2D RMatrix.
+            let matrix = RMatrix::from_slice([1,2,3,4,5,6], [3, 2]);
+            let robj = r!(matrix);
+            assert!(robj.is_array());
+            assert_eq!(robj.is_matrix(), true);
+            assert_eq!(robj.nrows(), 3);
+            assert_eq!(robj.ncols(), 2);
+            assert!(RMatrix::<i32>::try_from(robj).is_ok());
+
+            // Since RMatrix are only 2D, creating an RMatrix of other dimensions should result in a compile error.
+            // RMatrix::from_slice([1,2,3,4,5,6,7,8], [2, 2, 2]);
         }
     }
 
     #[test]
     fn try_from_rarray() {
         test! {
-            let slice = [1,2,3,4,5,6];
-            let dim = [2,3];
+            let slice = [1,2,3,4,5,6,7,8,9,10,11,12];
+            let dim = [2, 2, 3];
             let array = RArray::from_slice(slice, dim).unwrap();
             let robj = r!(array);
             let rarray = RArray::<i32, Integers>::try_from(robj).unwrap();
             let new_dim = rarray.dim();
             assert_eq!(new_dim[0].inner(), 2);
-            assert_eq!(new_dim[1].inner(), 3);
-            assert_eq!(new_dim.len(), 2);
+            assert_eq!(new_dim[1].inner(), 2);
+            assert_eq!(new_dim[2].inner(), 3);
+            assert_eq!(new_dim.len(), 3);
+
+            let slice = [1,2,3,4,5,6];
+            let dim = [2,3];
+            let array = RMatrix::from_slice(slice, dim).unwrap();
+            let robj = r!(array);
+            let rarray = RMatrix::<i32>::try_from(robj).unwrap();
+            let rarray_dim = rarray.dim();
+            assert_eq!(rarray_dim[0], 2);
+            assert_eq!(rarray_dim.len(), 2);
         }
     }
 }
