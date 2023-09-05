@@ -61,8 +61,8 @@ jobs:
         shell: pwsh
 
     steps:
-      - uses: actions/checkout@v3
-
+      - uses: actions/checkout@v4
+      
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@master
         with:
@@ -173,7 +173,7 @@ jobs:
 
       # c.f. https://github.com/actions/checkout#checkout-multiple-repos-side-by-side
       - name: Obtain 'rextendr'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: extendr/rextendr
           path: ./tests/rextendr
@@ -307,7 +307,7 @@ jobs:
         shell: pwsh
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@master

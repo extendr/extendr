@@ -496,9 +496,9 @@ impl Altrep {
             }
 
             let ptr: *mut StateType = Box::into_raw(Box::new(state));
-            let tag = r!(());
-            let prot = r!(());
-            let state = R_MakeExternalPtr(ptr as *mut c_void, tag.get(), prot.get());
+            let tag = R_NilValue;
+            let prot = R_NilValue;
+            let state = R_MakeExternalPtr(ptr as *mut c_void, tag, prot);
             R_RegisterCFinalizer(state, Some(finalizer::<StateType>));
 
             let class_ptr = R_altrep_class_t { ptr: class.get() };
@@ -599,7 +599,9 @@ impl Altrep {
             pvec: c_int,
             func: Option<unsafe extern "C" fn(arg1: SEXP, arg2: c_int, arg3: c_int, arg4: c_int)>,
         ) -> Rboolean {
-            u32::from(Altrep::get_state::<StateType>(x).inspect(pre, deep == 1, pvec))
+            Altrep::get_state::<StateType>(x)
+                .inspect(pre, deep == 1, pvec)
+                .into()
         }
 
         unsafe extern "C" fn altrep_Length<StateType: AltrepImpl + 'static>(x: SEXP) -> R_xlen_t {

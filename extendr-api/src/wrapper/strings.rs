@@ -106,19 +106,14 @@ impl Strings {
 impl<T: AsRef<str>> FromIterator<T> for Strings {
     /// Convert an iterator to a Strings object.
     fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
+        let iter_collect: Vec<_> = iter.into_iter().collect();
+        let len = iter_collect.len();
+
+        let mut robj = Strings::alloc_vector(STRSXP, len);
         crate::single_threaded(|| unsafe {
-            let values: Vec<SEXP> = iter
-                .into_iter()
-                .map(|s| Rf_protect(str_to_character(s.as_ref())))
-                .collect();
-
-            let len = values.len();
-            let robj = Robj::alloc_vector(STRSXP, len);
-            for (i, v) in values.into_iter().enumerate() {
-                SET_STRING_ELT(robj.get(), i as isize, v);
+            for (i, v) in iter_collect.into_iter().enumerate() {
+                SET_STRING_ELT(robj.get(), i as isize, str_to_character(v.as_ref()));
             }
-            Rf_unprotect(len as i32);
-
             Strings { robj }
         })
     }
