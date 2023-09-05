@@ -122,11 +122,6 @@ leak_positive_control <- function(x) invisible(.Call(wrap__leak_positive_control
 
 leak_negative_control <- function(x) invisible(.Call(wrap__leak_negative_control, x))
 
-#' @export
-new_usize <- function(robj) .Call(wrap__new_usize, robj)
-
-print_vec_usize <- function(x) invisible(.Call(wrap__print_vec_usize, x))
-
 #' Class for testing (exported)
 #' @examples
 #' x <- MyClass$new()
