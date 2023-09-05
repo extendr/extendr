@@ -5,6 +5,7 @@ test_that("Macro expansion of lib.rs", {
     args = c("expand", "--manifest-path", "../../src/rust/Cargo.toml"),
     error_on_status = FALSE
   )
+  stop(c(rprojroot::find_package_root_file("DESCRIPTION"), getwd(), dir()))
   stop(c(expansion$stdout, expansion$stderr))
   expect_snapshot_output(cat(expansion$stdout), cran = TRUE)
 })
