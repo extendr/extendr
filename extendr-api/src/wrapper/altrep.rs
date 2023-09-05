@@ -458,7 +458,7 @@ pub trait AltStringImpl {
 #[cfg(use_r_altlist)]
 pub trait AltListImpl {
     /// Get a single element from this vector
-    // a single element of a list can be any Robj
+    /// a single element of a list can be any Robj
     fn elt(&self, _index: usize) -> Robj;
 
     /// Set a single element in this list.
