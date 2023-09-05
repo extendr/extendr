@@ -5,6 +5,7 @@
     use std::prelude::rust_2021::*;
     #[macro_use]
     extern crate std;
+    MODIFIED SHOULD FAIL TEST
     use extendr_api::{graphics::*, prelude::*};
     mod submodule {
         use extendr_api::prelude::*;
