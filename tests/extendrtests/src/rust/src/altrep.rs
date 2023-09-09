@@ -1,5 +1,61 @@
 use extendr_api::prelude::*;
 
+// struct contains an inner vector of Option<usize>
+#[derive(Debug, Clone)]
+pub struct VecUsize(pub Vec<Option<usize>>);
+
+impl AltrepImpl for VecUsize {
+    fn length(&self) -> usize {
+        self.0.len()
+    }
+}
+
+#[cfg(use_r_altlist)]
+// we need to be able to return an Robj of this type so
+// we add an empty extendr macro above the impl
+#[extendr]
+impl VecUsize {}
+
+impl AltListImpl for VecUsize {
+    fn elt(&self, index: usize) -> Robj {
+        self.into_robj()
+    }
+}
+
+#[cfg(use_r_altlist)]
+#[extendr]
+/// Create an ALTLIST usize vector
+///
+/// @param robj an integer vector
+///
+/// The object is `Vec<Option<usize>>` represented as an ALTLIST
+fn new_usize(robj: Integers) -> Altrep {
+    let x = robj
+        .iter()
+        .map(|x| match &x {
+            _ if x.is_na() => None,
+            _ if x.inner() < 0 => None,
+            _ => Some(x.inner() as usize),
+        })
+        .collect();
+
+    // we can't return the object as is, it needs to
+    // be converted to an altrep object
+    let obj = VecUsize(x);
+    // this provides a hidden class to the altrep object for the package extendrtests
+    let class = Altrep::make_altlist_class::<VecUsize>("li", "mypkg");
+
+    // create an altrep object from the class
+    Altrep::from_state_and_class(obj, class, false)
+}
+
+#[cfg(not(use_r_altlist))]
+#[extendr]
+/// Dummy implementation for R < 4.3
+fn new_usize(robj: Integers) -> Robj {
+    extendr_api::nil_value()
+}
+
 #[derive(Debug, Clone)]
 struct StringInts {
     len: usize,
@@ -49,8 +105,8 @@ impl AltIntegerImpl for MyCompactIntRange {
     }
 }
 
-/// Test ALTINTEGER support
 #[extendr]
+/// Test ALTINTEGER support
 fn tst_altinteger() -> Altrep {
     let mystate = MyCompactIntRange {
         start: 0,
@@ -59,11 +115,12 @@ fn tst_altinteger() -> Altrep {
         missing_index: usize::MAX,
     };
     let class = Altrep::make_altinteger_class::<MyCompactIntRange>("cir", "mypkg");
-    Altrep::from_state_and_class(mystate, class, false)
+    Altrep::from_state_and_class(mystate, class.clone(), false)
 }
 
 extendr_module! {
     mod altrep;
+    fn new_usize;
     fn tst_altstring;
     fn tst_altinteger;
 }
