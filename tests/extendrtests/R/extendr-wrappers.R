@@ -122,6 +122,19 @@ leak_positive_control <- function(x) invisible(.Call(wrap__leak_positive_control
 
 leak_negative_control <- function(x) invisible(.Call(wrap__leak_negative_control, x))
 
+#' Create an ALTLIST usize vector
+#' 
+#' @param robj an integer vector 
+#' 
+#' The object is `Vec<Option<usize>>` represented as an ALTLIST
+new_usize <- function(robj) .Call(wrap__new_usize, robj)
+
+#' Test ALTSTRING representation
+tst_altstring <- function() .Call(wrap__tst_altstring)
+
+#' Test ALTINTEGER support
+tst_altinteger <- function() .Call(wrap__tst_altinteger)
+
 #' Class for testing (exported)
 #' @examples
 #' x <- MyClass$new()

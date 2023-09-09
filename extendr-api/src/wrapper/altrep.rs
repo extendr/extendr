@@ -540,7 +540,11 @@ impl Altrep {
     #[allow(dead_code)]
     pub(crate) fn get_state_mut<StateType>(x: SEXP) -> &'static mut StateType {
         unsafe {
-            let state_ptr = R_ExternalPtrAddr(R_altrep_data1(x));
+            let sexp = R_altrep_data1(x);
+            if TYPEOF(sexp) as u32 != libR_sys::EXTPTRSXP {
+                panic!("This isn't an external pointer! (type {})", TYPEOF(sexp));
+            };
+            let state_ptr = R_ExternalPtrAddr(sexp);
             &mut *(state_ptr as *mut StateType)
         }
     }

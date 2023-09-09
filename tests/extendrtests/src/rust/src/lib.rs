@@ -12,7 +12,7 @@ mod raw_identifiers;
 
 mod memory_leaks;
 
-// mod altrep;
+mod altrep;
 
 // Return string `"Hello world!"` to R.
 #[extendr]
@@ -365,7 +365,7 @@ extendr_module! {
     use optional_either;
     use raw_identifiers;
     use memory_leaks;
-    // use altrep;
+    use altrep;
 }
 
 

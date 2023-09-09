@@ -11,17 +11,14 @@
 # })
 # 
 
-# Results in the same panic 
-# test_that("ALTINTEGER creation works", {
-#   x <- tst_altinteger()
-#   expect_true(is.integer(x))
-#   expect_length(x, 10) 
-# })
-# 
+test_that("ALTINTEGER creation works", {
+  x <- tst_altinteger()
+  expect_true(is.integer(x))
+  expect_length(x, 10) 
+})
 
-# Results in a memory leak test failure
-# test_that("ALTSTRING creation works", {
-#   x <- tst_altstring()
-#   expect_true(is.character(x))
-#   expect_length(x, 10)
-# })
+test_that("ALTSTRING creation works", {
+  x <- tst_altstring()
+  expect_true(is.character(x))
+  expect_length(x, 10)
+})
