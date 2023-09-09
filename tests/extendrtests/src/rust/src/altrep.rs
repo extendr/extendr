@@ -16,6 +16,7 @@ impl AltrepImpl for VecUsize {
 #[extendr]
 impl VecUsize {}
 
+#[cfg(use_r_altlist)]
 impl AltListImpl for VecUsize {
     fn elt(&self, index: usize) -> Robj {
         self.into_robj()
