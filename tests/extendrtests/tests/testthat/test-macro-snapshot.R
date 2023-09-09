@@ -1,6 +1,10 @@
 test_that("Macro expansion of lib.rs", {
   skip_if_no_cargo_expand()
 
+  # Since, ALTLIST is available only since R 4.3, the expanded codes don't match
+  # between R < 4.3 and R >= 4.3. 
+  skip_if(packageVersion("base") < "4.3")
+  
   # Define a custom criterion for identifying the presence of a folder named '00_pkg_src'
   contains_extendtests <- rprojroot::has_dir("00_pkg_src")
 
