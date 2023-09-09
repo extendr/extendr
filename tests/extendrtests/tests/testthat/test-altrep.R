@@ -1,6 +1,6 @@
 test_that("ALTLIST creation works", {
   # ALTLIST is available only since R 4.3
-  skip_if(R.Version() < "4.3")
+  skip_if(packageVersion("base") < "4.3")
   
   x <- new_usize(c(1L, NA, 99L))
   expect_true(is.list(x))
