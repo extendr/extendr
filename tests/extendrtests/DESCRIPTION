@@ -1,6 +1,6 @@
 Package: extendrtests
 Title: Integration Tests for Calling Extendr from an R Package
-Version: 0.2.1
+Version: 0.2.2
 Authors@R: c(
     person("Andy", "Thomason", , "andy@andythomason.com", c("aut")),
     person("Claus O.", "Wilke", , "wilke@austin.utexas.edu", c("aut", "cre"),
@@ -20,9 +20,12 @@ Imports:
 Suggests:
     brio,
     patrick,
+    processx,
     rmarkdown,
     stringi,
     testthat,
     vctrs,
-    lobstr
-Config/rextendr/version: 0.3.0
+    lobstr,
+    rprojroot
+Config/testthat/edition: 3
+Config/rextendr/version: 0.3.1.9000
