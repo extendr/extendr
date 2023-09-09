@@ -16,6 +16,10 @@ crate-type = ["staticlib"]
 [dependencies]
 extendr-api = { version = "*", features = ["graphics", "ndarray", "either"] }
 
+# TODO: I couldn't find any nice way to add the condition based on the R version
+# except for using libR-sys just for "DEP_R_*" envvars.
+libR-sys = "*"
+
 [patch.crates-io]
 ## This is configured to work with RStudio features.
 ## Replace by absolute path to simplify testing.

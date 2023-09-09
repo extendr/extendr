@@ -14,6 +14,8 @@ mod memory_leaks;
 
 mod altrep;
 
+mod altlist;
+
 // Return string `"Hello world!"` to R.
 #[extendr]
 fn hello_world() -> &'static str {
@@ -366,6 +368,5 @@ extendr_module! {
     use raw_identifiers;
     use memory_leaks;
     use altrep;
+    use altlist;
 }
-
-
