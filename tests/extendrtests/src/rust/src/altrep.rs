@@ -29,7 +29,6 @@ impl AltListImpl for VecUsize {
 /// @param robj an integer vector 
 /// 
 /// The object is `Vec<Option<usize>>` represented as an ALTLIST
-/// @export
 fn new_usize(robj: Integers) -> Altrep {
     let x = robj
         .iter()
@@ -73,7 +72,6 @@ impl AltStringImpl for StringInts {
 
 #[extendr]
 /// Test ALTSTRING representation
-/// @export
 fn tst_altstring() -> Altrep {
     let mystate = StringInts { len: 10 };
     let class = Altrep::make_altstring_class::<StringInts>("si", "mypkg");
@@ -106,17 +104,16 @@ impl AltIntegerImpl for MyCompactIntRange {
 }
 
 
-#[extendr]
 /// Test ALTINTEGER support
-/// @export
+#[extendr]
 fn tst_altinteger() -> Altrep {
     let mystate = MyCompactIntRange { start: 0, len: 10, step: 1, missing_index: usize::MAX };
     let class = Altrep::make_altinteger_class::<MyCompactIntRange>("cir", "mypkg");
-    Altrep::from_state_and_class(mystate, class.clone(), false)
+    Altrep::from_state_and_class(mystate, class, false)
 }
 
 extendr_module! {
-    mod altlist;
+    mod altrep;
     fn new_usize;
     fn tst_altstring;
     fn tst_altinteger;
