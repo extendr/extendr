@@ -1589,7 +1589,7 @@
             <span class="kw">use </span>std::os::raw::c_void;
 
             <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>finalizer&lt;StateType: <span class="lifetime">&#39;static</span>&gt;(x: SEXP) {
-                <span class="kw">let </span>state = Altrep::get_state_mut::&lt;StateType&gt;(x);
+                <span class="kw">let </span>state = R_ExternalPtrAddr(x);
                 <span class="kw">let </span>ptr = state <span class="kw">as </span><span class="kw-2">*mut </span>StateType;
                 drop(Box::from_raw(ptr));
             }
