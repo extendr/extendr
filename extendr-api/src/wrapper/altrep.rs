@@ -500,7 +500,7 @@ impl Altrep {
             use std::os::raw::c_void;
 
             unsafe extern "C" fn finalizer<StateType: 'static>(x: SEXP) {
-                let state = Altrep::get_state_mut::<StateType>(x);
+                let state = R_ExternalPtrAddr(x);
                 let ptr = state as *mut StateType;
                 drop(Box::from_raw(ptr));
             }
