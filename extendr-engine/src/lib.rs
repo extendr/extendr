@@ -30,6 +30,11 @@ pub fn start_r() {
                 std::env::set_var("R_HOME", env!("R_HOME"));
             }
 
+            // Has R been started before? Or by some other process?
+            if !libR_sys::R_NilValue.is_null() {
+                return;
+            }
+
             // Due to Rf_initEmbeddedR using __libc_stack_end
             // We can't call Rf_initEmbeddedR.
             // Instead we must follow rustr's example and call the parts.
@@ -73,6 +78,8 @@ pub fn with_r(f: impl FnOnce()) {
 
 #[cfg(test)]
 mod tests {
+    use std::ffi::CString;
+
     use super::*;
 
     #[test]
@@ -86,5 +93,22 @@ mod tests {
         // Ending the interpreter is bad if we are running multiple threads.
         // So avoid doing this in tests.
         //end_r();
+    }
+
+    #[test]
+    fn test_cleanup_of_r() {
+        unsafe {
+            dbg!(libR_sys::R_GlobalEnv.is_null());
+            dbg!(libR_sys::R_NilValue.is_null());
+        }
+        with_r(|| unsafe {
+            dbg!(libR_sys::R_GlobalEnv.is_null());
+            dbg!(libR_sys::R_NilValue.is_null());
+            let cmd = CString::new("Sys.getpid()").unwrap();
+            let pid = libR_sys::R_ParseString(cmd.as_ptr());
+            let s = Rf_eval(pid, R_GlobalEnv);
+            dbg!(pid, TYPEOF(pid), TYPEOF(s), *s, *INTEGER(s));
+            // std::thread::sleep(std::time::Duration::from_secs(25));
+        });
     }
 }
