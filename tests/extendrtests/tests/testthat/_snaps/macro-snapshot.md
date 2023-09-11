@@ -2,7 +2,6 @@
 
     Code
       cat(result$stdout)
-      THIS TRIGGERS FAILURE
     Output
       #![feature(prelude_import)]
       #[prelude_import]
@@ -2092,6 +2091,485 @@
           #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
           pub extern "C" fn R_init_memory_leaks_extendr(info: *mut extendr_api::DllInfo) {
               unsafe { extendr_api::register_call_methods(info, get_memory_leaks_metadata()) };
+          }
+      }
+      mod altrep {
+          use extendr_api::prelude::*;
+          pub struct VecUsize(pub Vec<Option<usize>>);
+          #[automatically_derived]
+          impl ::core::fmt::Debug for VecUsize {
+              fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                  ::core::fmt::Formatter::debug_tuple_field1_finish(f, "VecUsize", &&self.0)
+              }
+          }
+          #[automatically_derived]
+          impl ::core::clone::Clone for VecUsize {
+              #[inline]
+              fn clone(&self) -> VecUsize {
+                  VecUsize(::core::clone::Clone::clone(&self.0))
+              }
+          }
+          impl AltrepImpl for VecUsize {
+              fn length(&self) -> usize {
+                  self.0.len()
+              }
+          }
+          #[cfg(use_r_altlist)]
+          impl VecUsize {}
+          impl<'a> extendr_api::FromRobj<'a> for &VecUsize {
+              fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+                  if robj.check_external_ptr_type::<VecUsize>() {
+                      #[allow(clippy::transmute_ptr_to_ref)]
+                      Ok(unsafe { std::mem::transmute(robj.external_ptr_addr::<VecUsize>()) })
+                  } else {
+                      Err("expected VecUsize")
+                  }
+              }
+          }
+          impl<'a> extendr_api::FromRobj<'a> for &mut VecUsize {
+              fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+                  if robj.check_external_ptr_type::<VecUsize>() {
+                      #[allow(clippy::transmute_ptr_to_ref)]
+                      Ok(unsafe { std::mem::transmute(robj.external_ptr_addr::<VecUsize>()) })
+                  } else {
+                      Err("expected VecUsize")
+                  }
+              }
+          }
+          impl From<VecUsize> for Robj {
+              fn from(value: VecUsize) -> Self {
+                  unsafe {
+                      let ptr = Box::into_raw(Box::new(value));
+                      let res = Robj::make_external_ptr(ptr, Robj::from(()));
+                      res.set_attrib(class_symbol(), "VecUsize").unwrap();
+                      res.register_c_finalizer(Some(__finalize__VecUsize));
+                      res
+                  }
+              }
+          }
+          impl<'a> From<&'a VecUsize> for Robj {
+              fn from(value: &'a VecUsize) -> Self {
+                  unsafe {
+                      let ptr = Box::into_raw(Box::new(value));
+                      let res = Robj::make_external_ptr(ptr, Robj::from(()));
+                      res.set_attrib(class_symbol(), "VecUsize").unwrap();
+                      res.register_c_finalizer(Some(__finalize__VecUsize));
+                      res
+                  }
+              }
+          }
+          extern "C" fn __finalize__VecUsize(sexp: extendr_api::SEXP) {
+              unsafe {
+                  let robj = extendr_api::robj::Robj::from_sexp(sexp);
+                  if robj.check_external_ptr_type::<VecUsize>() {
+                      let ptr = robj.external_ptr_addr::<VecUsize>();
+                      drop(Box::from_raw(ptr));
+                  }
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__VecUsize(impls: &mut Vec<extendr_api::metadata::Impl>) {
+              let mut methods = Vec::new();
+              impls
+                  .push(extendr_api::metadata::Impl {
+                      doc: "",
+                      name: "VecUsize",
+                      methods,
+                  });
+          }
+          #[cfg(use_r_altlist)]
+          impl AltListImpl for VecUsize {
+              fn elt(&self, index: usize) -> Robj {
+                  self.into_robj()
+              }
+          }
+          #[cfg(use_r_altlist)]
+          fn new_usize(robj: Integers) -> Altrep {
+              let x = robj
+                  .iter()
+                  .map(|x| match &x {
+                      _ if x.is_na() => None,
+                      _ if x.inner() < 0 => None,
+                      _ => Some(x.inner() as usize),
+                  })
+                  .collect();
+              let obj = VecUsize(x);
+              let class = Altrep::make_altlist_class::<VecUsize>("li", "mypkg");
+              Altrep::from_state_and_class(obj, class, false)
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__new_usize(robj: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _robj_robj = extendr_api::robj::Robj::from_sexp(robj);
+                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
+                      Ok(
+                          extendr_api::Robj::from(
+                              new_usize(<Integers>::from_robj(&_robj_robj)?),
+                          ),
+                      )
+                  })
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}\0", "new_usize"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || ::core::panicking::panic("explicit panic"),
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__new_usize(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "robj",
+                          arg_type: "Integers",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "new_usize",
+                      r_name: "new_usize",
+                      mod_name: "new_usize",
+                      args: args,
+                      return_type: "Altrep",
+                      func_ptr: wrap__new_usize as *const u8,
+                      hidden: false,
+                  })
+          }
+          struct StringInts {
+              len: usize,
+          }
+          #[automatically_derived]
+          impl ::core::fmt::Debug for StringInts {
+              fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                  ::core::fmt::Formatter::debug_struct_field1_finish(
+                      f,
+                      "StringInts",
+                      "len",
+                      &&self.len,
+                  )
+              }
+          }
+          #[automatically_derived]
+          impl ::core::clone::Clone for StringInts {
+              #[inline]
+              fn clone(&self) -> StringInts {
+                  StringInts {
+                      len: ::core::clone::Clone::clone(&self.len),
+                  }
+              }
+          }
+          impl AltrepImpl for StringInts {
+              fn length(&self) -> usize {
+                  self.len as usize
+              }
+          }
+          impl AltStringImpl for StringInts {
+              fn elt(&self, index: usize) -> Rstr {
+                  {
+                      let res = ::alloc::fmt::format(format_args!("{0}", index));
+                      res
+                  }
+                      .into()
+              }
+          }
+          fn tst_altstring() -> Altrep {
+              let mystate = StringInts { len: 10 };
+              let class = Altrep::make_altstring_class::<StringInts>("si", "mypkg");
+              Altrep::from_state_and_class(mystate, class, false)
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__tst_altstring() -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
+                      Ok(extendr_api::Robj::from(tst_altstring()))
+                  })
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}\0", "tst_altstring"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || ::core::panicking::panic("explicit panic"),
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__tst_altstring(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = ::alloc::vec::Vec::new();
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "tst_altstring",
+                      r_name: "tst_altstring",
+                      mod_name: "tst_altstring",
+                      args: args,
+                      return_type: "Altrep",
+                      func_ptr: wrap__tst_altstring as *const u8,
+                      hidden: false,
+                  })
+          }
+          struct MyCompactIntRange {
+              start: i32,
+              len: i32,
+              step: i32,
+              missing_index: usize,
+          }
+          #[automatically_derived]
+          impl ::core::fmt::Debug for MyCompactIntRange {
+              fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                  ::core::fmt::Formatter::debug_struct_field4_finish(
+                      f,
+                      "MyCompactIntRange",
+                      "start",
+                      &self.start,
+                      "len",
+                      &self.len,
+                      "step",
+                      &self.step,
+                      "missing_index",
+                      &&self.missing_index,
+                  )
+              }
+          }
+          #[automatically_derived]
+          impl ::core::clone::Clone for MyCompactIntRange {
+              #[inline]
+              fn clone(&self) -> MyCompactIntRange {
+                  MyCompactIntRange {
+                      start: ::core::clone::Clone::clone(&self.start),
+                      len: ::core::clone::Clone::clone(&self.len),
+                      step: ::core::clone::Clone::clone(&self.step),
+                      missing_index: ::core::clone::Clone::clone(&self.missing_index),
+                  }
+              }
+          }
+          impl AltrepImpl for MyCompactIntRange {
+              fn length(&self) -> usize {
+                  self.len as usize
+              }
+          }
+          impl AltIntegerImpl for MyCompactIntRange {
+              fn elt(&self, index: usize) -> Rint {
+                  if index == self.missing_index {
+                      Rint::na()
+                  } else {
+                      Rint::new(self.start + self.step * index as i32)
+                  }
+              }
+          }
+          fn tst_altinteger() -> Altrep {
+              let mystate = MyCompactIntRange {
+                  start: 0,
+                  len: 10,
+                  step: 1,
+                  missing_index: usize::MAX,
+              };
+              let class = Altrep::make_altinteger_class::<MyCompactIntRange>("cir", "mypkg");
+              Altrep::from_state_and_class(mystate, class.clone(), false)
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__tst_altinteger() -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
+                      Ok(extendr_api::Robj::from(tst_altinteger()))
+                  })
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}\0", "tst_altinteger"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || ::core::panicking::panic("explicit panic"),
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__tst_altinteger(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = ::alloc::vec::Vec::new();
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "tst_altinteger",
+                      r_name: "tst_altinteger",
+                      mod_name: "tst_altinteger",
+                      args: args,
+                      return_type: "Altrep",
+                      func_ptr: wrap__tst_altinteger as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub fn get_altrep_metadata() -> extendr_api::metadata::Metadata {
+              let mut functions = Vec::new();
+              let mut impls = Vec::new();
+              meta__new_usize(&mut functions);
+              meta__tst_altstring(&mut functions);
+              meta__tst_altinteger(&mut functions);
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Metadata access function.",
+                      rust_name: "get_altrep_metadata",
+                      mod_name: "get_altrep_metadata",
+                      r_name: "get_altrep_metadata",
+                      args: Vec::new(),
+                      return_type: "Metadata",
+                      func_ptr: wrap__get_altrep_metadata as *const u8,
+                      hidden: true,
+                  });
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Wrapper generator.",
+                      rust_name: "make_altrep_wrappers",
+                      mod_name: "make_altrep_wrappers",
+                      r_name: "make_altrep_wrappers",
+                      args: <[_]>::into_vec(
+                          #[rustc_box]
+                          ::alloc::boxed::Box::new([
+                              extendr_api::metadata::Arg {
+                                  name: "use_symbols",
+                                  arg_type: "bool",
+                                  default: None,
+                              },
+                              extendr_api::metadata::Arg {
+                                  name: "package_name",
+                                  arg_type: "&str",
+                                  default: None,
+                              },
+                          ]),
+                      ),
+                      return_type: "String",
+                      func_ptr: wrap__make_altrep_wrappers as *const u8,
+                      hidden: true,
+                  });
+              extendr_api::metadata::Metadata {
+                  name: "altrep",
+                  functions,
+                  impls,
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub extern "C" fn wrap__get_altrep_metadata() -> extendr_api::SEXP {
+              use extendr_api::GetSexp;
+              unsafe { extendr_api::Robj::from(get_altrep_metadata()).get() }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__make_altrep_wrappers(
+              use_symbols_sexp: extendr_api::SEXP,
+              package_name_sexp: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              unsafe {
+                  use extendr_api::robj::*;
+                  use extendr_api::GetSexp;
+                  let robj = Robj::from_sexp(use_symbols_sexp);
+                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
+                  let robj = Robj::from_sexp(package_name_sexp);
+                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
+                  extendr_api::Robj::from(
+                          get_altrep_metadata()
+                              .make_r_wrappers(use_symbols, package_name)
+                              .unwrap(),
+                      )
+                      .get()
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn R_init_altrep_extendr(info: *mut extendr_api::DllInfo) {
+              unsafe { extendr_api::register_call_methods(info, get_altrep_metadata()) };
           }
       }
       fn hello_world() -> &'static str {
@@ -5126,11 +5604,13 @@
           functions.extend(optional_either::get_optional_either_metadata().functions);
           functions.extend(raw_identifiers::get_raw_identifiers_metadata().functions);
           functions.extend(memory_leaks::get_memory_leaks_metadata().functions);
+          functions.extend(altrep::get_altrep_metadata().functions);
           impls.extend(submodule::get_submodule_metadata().impls);
           impls.extend(optional_ndarray::get_optional_ndarray_metadata().impls);
           impls.extend(optional_either::get_optional_either_metadata().impls);
           impls.extend(raw_identifiers::get_raw_identifiers_metadata().impls);
           impls.extend(memory_leaks::get_memory_leaks_metadata().impls);
+          impls.extend(altrep::get_altrep_metadata().impls);
           functions
               .push(extendr_api::metadata::Func {
                   doc: "Metadata access function.",

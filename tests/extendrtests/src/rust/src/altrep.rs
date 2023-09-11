@@ -1,7 +1,6 @@
 use extendr_api::prelude::*;
-use extendr_api::AltListImpl;
 
-// struct contains an inner vector of Option<usize> 
+// struct contains an inner vector of Option<usize>
 #[derive(Debug, Clone)]
 pub struct VecUsize(pub Vec<Option<usize>>);
 
@@ -11,25 +10,21 @@ impl AltrepImpl for VecUsize {
     }
 }
 
-// we need to be able to return an Robj of this type so 
+#[cfg(use_r_altlist)]
+// we need to be able to return an Robj of this type so
 // we add an empty extendr macro above the impl
 #[extendr]
 impl VecUsize {}
 
+#[cfg(use_r_altlist)]
 impl AltListImpl for VecUsize {
     fn elt(&self, index: usize) -> Robj {
         self.into_robj()
     }
 }
 
-
+#[cfg(use_r_altlist)]
 #[extendr]
-/// Create an ALTLIST usize vector
-/// 
-/// @param robj an integer vector 
-/// 
-/// The object is `Vec<Option<usize>>` represented as an ALTLIST
-/// @export
 fn new_usize(robj: Integers) -> Altrep {
     let x = robj
         .iter()
@@ -39,7 +34,7 @@ fn new_usize(robj: Integers) -> Altrep {
             _ => Some(x.inner() as usize),
         })
         .collect();
-    
+
     // we can't return the object as is, it needs to
     // be converted to an altrep object
     let obj = VecUsize(x);
@@ -50,12 +45,15 @@ fn new_usize(robj: Integers) -> Altrep {
     Altrep::from_state_and_class(obj, class, false)
 }
 
-
-
+#[cfg(not(use_r_altlist))]
+#[extendr]
+fn new_usize(robj: Integers) -> Robj {
+    extendr_api::nil_value()
+}
 
 #[derive(Debug, Clone)]
 struct StringInts {
-    len: usize
+    len: usize,
 }
 
 impl AltrepImpl for StringInts {
@@ -70,23 +68,19 @@ impl AltStringImpl for StringInts {
     }
 }
 
-
 #[extendr]
-/// Test ALTSTRING representation
-/// @export
 fn tst_altstring() -> Altrep {
     let mystate = StringInts { len: 10 };
     let class = Altrep::make_altstring_class::<StringInts>("si", "mypkg");
     Altrep::from_state_and_class(mystate, class, false)
 }
 
-
 #[derive(Debug, Clone)]
 struct MyCompactIntRange {
     start: i32,
     len: i32,
     step: i32,
-    missing_index: usize,  // For testing NA
+    missing_index: usize, // For testing NA
 }
 
 impl AltrepImpl for MyCompactIntRange {
@@ -105,18 +99,20 @@ impl AltIntegerImpl for MyCompactIntRange {
     }
 }
 
-
 #[extendr]
-/// Test ALTINTEGER support
-/// @export
 fn tst_altinteger() -> Altrep {
-    let mystate = MyCompactIntRange { start: 0, len: 10, step: 1, missing_index: usize::MAX };
+    let mystate = MyCompactIntRange {
+        start: 0,
+        len: 10,
+        step: 1,
+        missing_index: usize::MAX,
+    };
     let class = Altrep::make_altinteger_class::<MyCompactIntRange>("cir", "mypkg");
     Altrep::from_state_and_class(mystate, class.clone(), false)
 }
 
 extendr_module! {
-    mod altlist;
+    mod altrep;
     fn new_usize;
     fn tst_altstring;
     fn tst_altinteger;

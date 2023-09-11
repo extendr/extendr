@@ -500,7 +500,7 @@ impl Altrep {
             use std::os::raw::c_void;
 
             unsafe extern "C" fn finalizer<StateType: 'static>(x: SEXP) {
-                let state = Altrep::get_state_mut::<StateType>(x);
+                let state = R_ExternalPtrAddr(x);
                 let ptr = state as *mut StateType;
                 drop(Box::from_raw(ptr));
             }
@@ -509,7 +509,10 @@ impl Altrep {
             let tag = R_NilValue;
             let prot = R_NilValue;
             let state = R_MakeExternalPtr(ptr as *mut c_void, tag, prot);
-            R_RegisterCFinalizer(state, Some(finalizer::<StateType>));
+
+            // Use R_RegisterCFinalizerEx() and set onexit to 1 (TRUE) to invoke
+            // the finalizer on a shutdown of the R session as well.
+            R_RegisterCFinalizerEx(state, Some(finalizer::<StateType>), 1);
 
             let class_ptr = R_altrep_class_t { ptr: class.get() };
             let sexp = R_new_altrep(class_ptr, state, R_NilValue);
