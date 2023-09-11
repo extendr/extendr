@@ -30,6 +30,11 @@ pub fn start_r() {
                 std::env::set_var("R_HOME", env!("R_HOME"));
             }
 
+            // Has R been started before? Or by some other process?
+            if !libR_sys::R_NilValue.is_null() {
+                return;
+            }
+
             // Due to Rf_initEmbeddedR using __libc_stack_end
             // We can't call Rf_initEmbeddedR.
             // Instead we must follow rustr's example and call the parts.
