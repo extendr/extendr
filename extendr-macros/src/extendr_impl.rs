@@ -161,12 +161,12 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
                     }
 
                     // Free the `tag`, which is the type-name
-                    R_SetExternalPtrTag(robj.get(), R_NilValue);
+                    libR_sys::R_SetExternalPtrTag(robj.get(), libR_sys::R_NilValue);
 
                     drop(Box::from_raw(ptr));
 
                     // Now set the pointer in ExternalPTR to C `NULL`
-                    R_ClearExternalPtr(x);
+                    libR_sys::R_ClearExternalPtr(x);
                 }
             }
         }
