@@ -845,7 +845,6 @@ pub trait Attributes: Types + Length {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///
     ///    let mut robj = r!("hello").set_attrib(sym!(xyz), 1)?;
     ///    assert_eq!(robj.get_attrib(sym!(xyz)), Some(r!(1)));
     /// }
@@ -1026,14 +1025,6 @@ pub trait Attributes: Types + Length {
 }
 
 impl Attributes for Robj {}
-
-#[doc(hidden)]
-pub unsafe fn new_owned(sexp: SEXP) -> Robj {
-    single_threaded(|| {
-        ownership::protect(sexp);
-        Robj { inner: sexp }
-    })
-}
 
 /// Compare equality with integer slices.
 impl PartialEq<[i32]> for Robj {
