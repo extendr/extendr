@@ -156,7 +156,7 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
                 if robj.check_external_ptr_type::<#self_ty>() {
                     //eprintln!("finalize {}", #self_ty_name);
                     let ptr = robj.external_ptr_addr::<#self_ty>();
-                    if !ptr.is_null() {
+                    if ptr.is_null() {
                         return;
                     }
 

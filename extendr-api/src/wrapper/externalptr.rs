@@ -93,7 +93,7 @@ impl<T: Any + Debug> ExternalPtr<T> {
             extern "C" fn finalizer<T>(x: SEXP) {
                 unsafe {
                     let ptr = R_ExternalPtrAddr(x);
-                    if !ptr.is_null() {
+                    if ptr.is_null() {
                         return;
                     }
                     let ptr = ptr as *mut T;
