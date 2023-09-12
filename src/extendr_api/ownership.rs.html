@@ -334,8 +334,6 @@
 <a href="#334" id="334">334</a>
 <a href="#335" id="335">335</a>
 <a href="#336" id="336">336</a>
-<a href="#337" id="337">337</a>
-<a href="#338" id="338">338</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Maintain ownership of R objects.
 //!
 //! This provides the functions protect() and unprotect()
@@ -346,7 +344,7 @@
 //!
 //! This module exports two functions, protect(sexp) and unprotect(sexp).
 
-</span><span class="kw">use </span>lazy_static::lazy_static;
+</span><span class="kw">use </span>once_cell::sync::Lazy;
 <span class="kw">use </span>std::collections::hash_map::{Entry, HashMap};
 <span class="kw">use </span>std::sync::Mutex;
 
@@ -355,9 +353,7 @@
     Rf_unprotect, LENGTH, SET_VECTOR_ELT, SEXP, VECSXP, VECTOR_ELT,
 };
 
-<span class="macro">lazy_static! </span>{
-    <span class="kw">static </span><span class="kw-2">ref </span>OWNERSHIP: Mutex&lt;Ownership&gt; = Mutex::new(Ownership::new());
-}
+<span class="kw">static </span>OWNERSHIP: Lazy&lt;Mutex&lt;Ownership&gt;&gt; = Lazy::new(|| Mutex::new(Ownership::new()));
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe fn </span>protect(sexp: SEXP) {
     <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">&quot;protect failed&quot;</span>);

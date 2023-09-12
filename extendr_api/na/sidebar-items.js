@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["EXTENDR_NA_STRING"],"trait":["CanBeNA"]};
+window.SIDEBAR_ITEMS = {"static":["EXTENDR_NA_STRING"],"trait":["CanBeNA"]};

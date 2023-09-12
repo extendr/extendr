@@ -79,32 +79,28 @@
 <a href="#79" id="79">79</a>
 <a href="#80" id="80">80</a>
 <a href="#81" id="81">81</a>
-<a href="#82" id="82">82</a>
-<a href="#83" id="83">83</a>
-</pre></div><pre class="rust"><code><span class="kw">use </span>lazy_static::lazy_static;
-<span class="kw">use </span>libR_sys::{R_IsNA, R_NaReal};
+</pre></div><pre class="rust"><code><span class="kw">use </span>libR_sys::{R_IsNA, R_NaReal};
+<span class="kw">use </span>once_cell::sync::Lazy;
 <span class="kw">use </span>std::alloc::{<span class="self">self</span>, Layout};
 
 <span class="comment">// To make sure this &quot;NA&quot; is allocated at a different place than any other &quot;NA&quot;
 // strings (so that it can be used as a sentinel value), we allocate it by
 // ourselves.
-</span><span class="macro">lazy_static! </span>{
-    <span class="kw">static </span><span class="kw-2">ref </span>EXTENDR_NA_STRING: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str = <span class="kw">unsafe </span>{
-        <span class="comment">// Layout::array() can fail when the size exceeds `isize::MAX`, but we
-        // only need 2 here, so it&#39;s safe to unwrap().
-        </span><span class="kw">let </span>layout = Layout::array::&lt;u8&gt;(<span class="number">2</span>).unwrap();
+</span><span class="kw">static </span>EXTENDR_NA_STRING: Lazy&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt; = Lazy::new(|| <span class="kw">unsafe </span>{
+    <span class="comment">// Layout::array() can fail when the size exceeds `isize::MAX`, but we
+    // only need 2 here, so it&#39;s safe to unwrap().
+    </span><span class="kw">let </span>layout = Layout::array::&lt;u8&gt;(<span class="number">2</span>).unwrap();
 
-        <span class="comment">// We allocate and never free it because we need this pointer to be
-        // alive until the program ends.
-        </span><span class="kw">let </span>ptr = alloc::alloc(layout);
+    <span class="comment">// We allocate and never free it because we need this pointer to be
+    // alive until the program ends.
+    </span><span class="kw">let </span>ptr = alloc::alloc(layout);
 
-        <span class="kw">let </span>v: <span class="kw-2">&amp;mut </span>[u8] = std::slice::from_raw_parts_mut(ptr, <span class="number">2</span>);
-        v[<span class="number">0</span>] = <span class="string">b&#39;N&#39;</span>;
-        v[<span class="number">1</span>] = <span class="string">b&#39;A&#39;</span>;
+    <span class="kw">let </span>v: <span class="kw-2">&amp;mut </span>[u8] = std::slice::from_raw_parts_mut(ptr, <span class="number">2</span>);
+    v[<span class="number">0</span>] = <span class="string">b&#39;N&#39;</span>;
+    v[<span class="number">1</span>] = <span class="string">b&#39;A&#39;</span>;
 
-        std::str::from_utf8_unchecked(v)
-    };
-}
+    std::str::from_utf8_unchecked(v)
+});
 
 <span class="doccomment">/// Return true if this primitive is `NA`.
 </span><span class="kw">pub trait </span>CanBeNA {
