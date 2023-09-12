@@ -53,7 +53,7 @@ pub fn start_r() {
 
 /// Close down the R interpreter. Note you won't be able to
 /// Restart it, so use with care or not at all.
-pub fn end_r() {
+fn end_r() {
     unsafe {
         //Rf_endEmbeddedR(0);
         R_RunExitFinalizers();
