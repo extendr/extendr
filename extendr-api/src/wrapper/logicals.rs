@@ -110,7 +110,7 @@ mod tests {
 impl Logicals {
     pub fn set_elt(&mut self, index: usize, val: Rbool) {
         unsafe {
-            SET_INTEGER_ELT(self.get(), index as R_xlen_t, val.inner());
+            SET_LOGICAL_ELT(self.get(), index as R_xlen_t, val.inner());
         }
     }
 }
