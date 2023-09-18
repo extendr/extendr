@@ -165,7 +165,7 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
         // Function to free memory for this type.
         extern "C" fn #finalizer_name (sexp: extendr_api::SEXP) {
             unsafe {
-                let robj = extendr_api::robj::Robj::from_sexp(sexp);
+                let robj = extendr_api::robj::Robj::from_protected_sexp(sexp);
                 if robj.check_external_ptr_type::<#self_ty>() {
                     //eprintln!("finalize {}", #self_ty_name);
                     let ptr = robj.external_ptr_addr::<#self_ty>();

@@ -110,11 +110,16 @@ pub use rinternals::Rinternals;
 ///
 pub struct Robj {
     inner: SEXP,
+    protect: bool,
 }
 
 impl Clone for Robj {
     fn clone(&self) -> Self {
-        unsafe { Robj::from_sexp(self.get()) }
+        if self.protect {
+            unsafe { Robj::from_sexp(self.get()) }
+        } else {
+            unsafe { Robj::from_protected_sexp(self.get()) }
+        }
     }
 }
 
@@ -216,8 +221,15 @@ impl Robj {
     pub fn from_sexp(sexp: SEXP) -> Self {
         single_threaded(|| {
             unsafe { ownership::protect(sexp) };
-            Robj { inner: sexp }
-        })
+        });
+        Self::from_protected_sexp(sexp)
+    }
+
+    pub fn from_protected_sexp(sexp: SEXP) -> Self {
+        Robj {
+            inner: sexp,
+            protect: true,
+        }
     }
 
     /// A ref of an robj can be constructed from a ref to a SEXP
@@ -1078,6 +1090,11 @@ pub(crate) unsafe fn to_str<'a>(ptr: *const u8) -> &'a str {
 /// Release any owned objects.
 impl Drop for Robj {
     fn drop(&mut self) {
+        // Do nothing if it's not protected on extendr's side.
+        if !self.protect {
+            return;
+        }
+
         unsafe {
             ownership::unprotect(self.inner);
         }

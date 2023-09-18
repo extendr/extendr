@@ -333,13 +333,13 @@ fn translate_to_robj(input: &FnArg) -> syn::Stmt {
             let pat = &pattype.pat.as_ref();
             if let syn::Pat::Ident(ref ident) = pat {
                 let varname = format_ident!("_{}_robj", ident.ident);
-                parse_quote! { let #varname = extendr_api::robj::Robj::from_sexp(#pat); }
+                parse_quote! { let #varname = extendr_api::robj::Robj::from_protected_sexp(#pat); }
             } else {
                 panic!("expect identifier as arg name")
             }
         }
         FnArg::Receiver(_) => {
-            parse_quote! { let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self); }
+            parse_quote! { let mut _self_robj = extendr_api::robj::Robj::from_protected_sexp(_self); }
         }
     }
 }

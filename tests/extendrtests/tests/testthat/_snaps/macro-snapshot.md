@@ -194,8 +194,8 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
-                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  let mut _self_robj = extendr_api::robj::Robj::from_protected_sexp(_self);
+                  let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
                   std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                       Ok(
                           extendr_api::Robj::from(
@@ -278,7 +278,7 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+                  let mut _self_robj = extendr_api::robj::Robj::from_protected_sexp(_self);
                   std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                       Ok(
                           extendr_api::Robj::from(
@@ -356,7 +356,7 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+                  let mut _self_robj = extendr_api::robj::Robj::from_protected_sexp(_self);
                   std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                       Ok(
                           extendr_api::Robj::from(
@@ -472,7 +472,7 @@
           }
           extern "C" fn __finalize__MySubmoduleClass(sexp: extendr_api::SEXP) {
               unsafe {
-                  let robj = extendr_api::robj::Robj::from_sexp(sexp);
+                  let robj = extendr_api::robj::Robj::from_protected_sexp(sexp);
                   if robj.check_external_ptr_type::<MySubmoduleClass>() {
                       let ptr = robj.external_ptr_addr::<MySubmoduleClass>();
                       drop(Box::from_raw(ptr));
@@ -686,7 +686,7 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  let _a_robj = extendr_api::robj::Robj::from_sexp(a);
+                  let _a_robj = extendr_api::robj::Robj::from_protected_sexp(a);
                   std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                       Ok(extendr_api::Robj::from(euclidean_dist(_a_robj.try_into()?)))
                   })
@@ -873,7 +873,7 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  let _input_robj = extendr_api::robj::Robj::from_sexp(input);
+                  let _input_robj = extendr_api::robj::Robj::from_protected_sexp(input);
                   std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                       Ok(extendr_api::Robj::from(type_aware_sum(_input_robj.try_into()?)))
                   })
@@ -1036,7 +1036,7 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  let _type_robj = extendr_api::robj::Robj::from_sexp(r#type);
+                  let _type_robj = extendr_api::robj::Robj::from_protected_sexp(r#type);
                   std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                       Ok(
                           extendr_api::Robj::from(
@@ -1184,7 +1184,7 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  let _type_robj = extendr_api::robj::Robj::from_sexp(r#type);
+                  let _type_robj = extendr_api::robj::Robj::from_protected_sexp(r#type);
                   std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                       Ok(extendr_api::Robj::from(r#false(_type_robj.try_into()?)))
                   })
@@ -1345,7 +1345,7 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
                   std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                       Ok(
                           extendr_api::Robj::from(
@@ -1426,7 +1426,7 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
                   std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                       Ok(
                           extendr_api::Robj::from(
@@ -1508,8 +1508,8 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  let __y_robj = extendr_api::robj::Robj::from_sexp(_y);
-                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  let __y_robj = extendr_api::robj::Robj::from_protected_sexp(_y);
+                  let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
                   std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                       Ok(
                           extendr_api::Robj::from(
@@ -1601,8 +1601,8 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  let __y_robj = extendr_api::robj::Robj::from_sexp(_y);
-                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  let __y_robj = extendr_api::robj::Robj::from_protected_sexp(_y);
+                  let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
                   std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                       Ok(
                           extendr_api::Robj::from(
@@ -1694,7 +1694,7 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
                   std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                       Ok(
                           extendr_api::Robj::from(
@@ -1775,7 +1775,7 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
                   std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                       Ok(
                           extendr_api::Robj::from(
@@ -1856,7 +1856,7 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
                   std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                       Ok(
                           extendr_api::Robj::from(
@@ -1937,7 +1937,7 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
                   std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                       Ok(
                           extendr_api::Robj::from(
@@ -2160,7 +2160,7 @@
           }
           extern "C" fn __finalize__VecUsize(sexp: extendr_api::SEXP) {
               unsafe {
-                  let robj = extendr_api::robj::Robj::from_sexp(sexp);
+                  let robj = extendr_api::robj::Robj::from_protected_sexp(sexp);
                   if robj.check_external_ptr_type::<VecUsize>() {
                       let ptr = robj.external_ptr_addr::<VecUsize>();
                       drop(Box::from_raw(ptr));
@@ -2205,7 +2205,7 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  let _robj_robj = extendr_api::robj::Robj::from_sexp(robj);
+                  let _robj_robj = extendr_api::robj::Robj::from_protected_sexp(robj);
                   std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                       Ok(
                           extendr_api::Robj::from(
@@ -2705,7 +2705,7 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+              let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(extendr_api::Robj::from(double_scalar(<f64>::from_robj(&_x_robj)?)))
               })
@@ -2777,7 +2777,7 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+              let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(extendr_api::Robj::from(int_scalar(<i32>::from_robj(&_x_robj)?)))
               })
@@ -2849,7 +2849,7 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+              let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(extendr_api::Robj::from(bool_scalar(<bool>::from_robj(&_x_robj)?)))
               })
@@ -2921,7 +2921,7 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+              let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(extendr_api::Robj::from(char_scalar(<String>::from_robj(&_x_robj)?)))
               })
@@ -2993,7 +2993,7 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+              let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(extendr_api::Robj::from(char_vec(<Vec<String>>::from_robj(&_x_robj)?)))
               })
@@ -3065,7 +3065,7 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+              let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(extendr_api::Robj::from(double_vec(<Vec<f64>>::from_robj(&_x_robj)?)))
               })
@@ -3261,7 +3261,7 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+              let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(extendr_api::Robj::from(check_rfloat_na(_x_robj.try_into()?)))
               })
@@ -3333,7 +3333,7 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+              let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(extendr_api::Robj::from(check_rint_na(_x_robj.try_into()?)))
               })
@@ -3405,7 +3405,7 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+              let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(extendr_api::Robj::from(try_double_vec(_x_robj.try_into()?)))
               })
@@ -3480,8 +3480,8 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-              let _i_robj = extendr_api::robj::Robj::from_sexp(i);
+              let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
+              let _i_robj = extendr_api::robj::Robj::from_protected_sexp(i);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(
                       extendr_api::Robj::from(
@@ -3565,8 +3565,8 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-              let _i_robj = extendr_api::robj::Robj::from_sexp(i);
+              let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
+              let _i_robj = extendr_api::robj::Robj::from_protected_sexp(i);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(
                       extendr_api::Robj::from(
@@ -3650,8 +3650,8 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-              let _i_robj = extendr_api::robj::Robj::from_sexp(i);
+              let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
+              let _i_robj = extendr_api::robj::Robj::from_protected_sexp(i);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(
                       extendr_api::Robj::from(
@@ -3736,7 +3736,7 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let _input_robj = extendr_api::robj::Robj::from_sexp(input);
+              let _input_robj = extendr_api::robj::Robj::from_protected_sexp(input);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(extendr_api::Robj::from(doubles_square(_input_robj.try_into()?)))
               })
@@ -3812,7 +3812,7 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let _input_robj = extendr_api::robj::Robj::from_sexp(input);
+              let _input_robj = extendr_api::robj::Robj::from_protected_sexp(input);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(extendr_api::Robj::from(complexes_square(_input_robj.try_into()?)))
               })
@@ -3888,7 +3888,7 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let _input_robj = extendr_api::robj::Robj::from_sexp(input);
+              let _input_robj = extendr_api::robj::Robj::from_protected_sexp(input);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(extendr_api::Robj::from(integers_square(_input_robj.try_into()?)))
               })
@@ -3964,7 +3964,7 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let _input_robj = extendr_api::robj::Robj::from_sexp(input);
+              let _input_robj = extendr_api::robj::Robj::from_protected_sexp(input);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(extendr_api::Robj::from(logicals_not(_input_robj.try_into()?)))
               })
@@ -4036,7 +4036,7 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+              let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(extendr_api::Robj::from(check_default(_x_robj.try_into()?)))
               })
@@ -4116,8 +4116,8 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let __x_robj = extendr_api::robj::Robj::from_sexp(_x);
-              let __y_robj = extendr_api::robj::Robj::from_sexp(_y);
+              let __x_robj = extendr_api::robj::Robj::from_protected_sexp(_x);
+              let __y_robj = extendr_api::robj::Robj::from_protected_sexp(_y);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(
                       extendr_api::Robj::from(
@@ -4330,7 +4330,7 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+              let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(extendr_api::Robj::from(get_default_value(<i32>::from_robj(&_x_robj)?)))
               })
@@ -4402,7 +4402,7 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+              let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(extendr_api::Robj::from(add_5_if_not_null(_x_robj.try_into()?)))
               })
@@ -4584,8 +4584,8 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
-              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+              let mut _self_robj = extendr_api::robj::Robj::from_protected_sexp(_self);
+              let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(
                       extendr_api::Robj::from(
@@ -4664,7 +4664,7 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+              let mut _self_robj = extendr_api::robj::Robj::from_protected_sexp(_self);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(
                       extendr_api::Robj::from(
@@ -4737,7 +4737,7 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+              let mut _self_robj = extendr_api::robj::Robj::from_protected_sexp(_self);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(
                       extendr_api::Robj::from(
@@ -4812,7 +4812,7 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let _robj_robj = extendr_api::robj::Robj::from_sexp(robj);
+              let _robj_robj = extendr_api::robj::Robj::from_protected_sexp(robj);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(
                       extendr_api::Robj::from(
@@ -4887,7 +4887,7 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+              let _x_robj = extendr_api::robj::Robj::from_protected_sexp(x);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(
                       extendr_api::Robj::from(
@@ -4996,7 +4996,7 @@
       }
       extern "C" fn __finalize__MyClass(sexp: extendr_api::SEXP) {
           unsafe {
-              let robj = extendr_api::robj::Robj::from_sexp(sexp);
+              let robj = extendr_api::robj::Robj::from_protected_sexp(sexp);
               if robj.check_external_ptr_type::<MyClass>() {
                   let ptr = robj.external_ptr_addr::<MyClass>();
                   drop(Box::from_raw(ptr));
@@ -5110,7 +5110,7 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+              let mut _self_robj = extendr_api::robj::Robj::from_protected_sexp(_self);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(
                       extendr_api::Robj::from(
@@ -5220,7 +5220,7 @@
       }
       extern "C" fn __finalize____MyClass(sexp: extendr_api::SEXP) {
           unsafe {
-              let robj = extendr_api::robj::Robj::from_sexp(sexp);
+              let robj = extendr_api::robj::Robj::from_protected_sexp(sexp);
               if robj.check_external_ptr_type::<__MyClass>() {
                   let ptr = robj.external_ptr_addr::<__MyClass>();
                   drop(Box::from_raw(ptr));
@@ -5342,7 +5342,7 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+              let mut _self_robj = extendr_api::robj::Robj::from_protected_sexp(_self);
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(
                       extendr_api::Robj::from(
@@ -5458,7 +5458,7 @@
       }
       extern "C" fn __finalize__MyClassUnexported(sexp: extendr_api::SEXP) {
           unsafe {
-              let robj = extendr_api::robj::Robj::from_sexp(sexp);
+              let robj = extendr_api::robj::Robj::from_protected_sexp(sexp);
               if robj.check_external_ptr_type::<MyClassUnexported>() {
                   let ptr = robj.external_ptr_addr::<MyClassUnexported>();
                   drop(Box::from_raw(ptr));
@@ -5499,7 +5499,9 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              let _welcome_message_robj = extendr_api::robj::Robj::from_sexp(welcome_message);
+              let _welcome_message_robj = extendr_api::robj::Robj::from_protected_sexp(
+                  welcome_message,
+              );
               std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
                   Ok(
                       extendr_api::Robj::from(
