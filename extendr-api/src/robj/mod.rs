@@ -222,13 +222,16 @@ impl Robj {
         single_threaded(|| {
             unsafe { ownership::protect(sexp) };
         });
-        Self::from_protected_sexp(sexp)
+        Robj {
+            inner: sexp,
+            protect: true,
+        }
     }
 
     pub fn from_protected_sexp(sexp: SEXP) -> Self {
         Robj {
             inner: sexp,
-            protect: true,
+            protect: false,
         }
     }
 
