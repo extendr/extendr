@@ -621,7 +621,7 @@ pub fn sxp_to_rtype(sxptype: i32) -> Rtype {
     }
 }
 
-const PRINTF_NO_FMT_CSTRING: &[i8] = &[37, 115, 0]; // same as "%s\0"
+const PRINTF_NO_FMT_CSTRING: &[std::os::raw::c_char] = &[37, 115, 0]; // same as "%s\0"
 #[doc(hidden)]
 pub fn print_r_output<T: Into<Vec<u8>>>(s: T) {
     let cs = CString::new(s).expect("NulError");
