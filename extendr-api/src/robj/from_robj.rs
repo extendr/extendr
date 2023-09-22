@@ -1,5 +1,4 @@
 use super::*;
-use crate::wrapper::matrix::MatrixConversions;
 
 /// Trait used for incomming parameter conversion.
 pub trait FromRobj<'a>: Sized {
@@ -264,28 +263,12 @@ where
     }
 }
 
-// Matrix input parameters.
-impl<'a, T: 'a> FromRobj<'a> for RArray<T, [usize; 2]>
+// RMatrix input parameters.
+impl<'a, T: 'a> FromRobj<'a> for RMatrix<T>
 where
     Robj: AsTypedSlice<'a, T>,
 {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        match robj.as_matrix() {
-            Some(x) => Ok(x),
-            _ => Err("Expected a matrix."),
-        }
-    }
-}
-
-// Matrix input parameters.
-impl<'a, T: 'a> FromRobj<'a> for RMatrix3D<T>
-where
-    Robj: AsTypedSlice<'a, T>,
-{
-    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        match robj.as_matrix3d() {
-            Some(x) => Ok(x),
-            _ => Err("Expected a matrix."),
-        }
+        RArray::try_from(robj).or_else(|_| Err("Expected a matrix."))
     }
 }

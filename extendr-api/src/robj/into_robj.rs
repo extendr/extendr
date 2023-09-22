@@ -618,35 +618,24 @@ pub trait RobjItertools: Iterator {
     /// # Arguments
     ///
     /// * `dims` - an array containing the length of each dimension
-    fn collect_rarray<'a, const LEN: usize>(
-        self,
-        dims: [usize; LEN],
-    ) -> Result<RArray<Self::Item, [usize; LEN]>>
+    fn collect_rarray<'a, D>(self, dims: D) -> Result<RArray<Self::Item, D>>
     where
-        Self: Iterator,
-        Self: Sized,
-        Self::Item: ToVectorValue,
+        D: AsRef<[usize]> + 'a,
+        Self: Iterator + Sized,
+        Self::Item: ToVectorValue + 'a + Clone,
         Robj: AsTypedSlice<'a, Self::Item>,
-        Self::Item: 'a,
     {
         let vector = self.collect_robj();
-        let prod = dims.iter().product::<usize>();
+        let dims_ref = dims.as_ref();
+        let prod = dims_ref.iter().product::<usize>();
         if prod != vector.len() {
-            return Err(Error::Other(format!(
-                "The vector length ({}) does not match the length implied by the dimensions ({})",
-                vector.len(),
-                prod
-            )));
+            return Err(Error::DimensionMismatch(vector.len(), prod));
         }
-        let mut robj =
-            vector.set_attrib(wrapper::symbol::dim_symbol(), dims.iter().collect_robj())?;
-        let data = robj
-            .as_typed_slice_mut()
-            .ok_or(Error::Other(
-                "Unknown error in converting to slice".to_string(),
-            ))?
-            .as_mut_ptr();
-        Ok(RArray::from_parts(robj, data, dims))
+        let robj = vector.set_attrib(
+            wrapper::symbol::dim_symbol(),
+            dims_ref.iter().collect_robj(),
+        )?;
+        Ok(RArray::new(robj, dims))
     }
 }
 

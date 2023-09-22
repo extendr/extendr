@@ -6,6 +6,7 @@ use crate::*;
 use libR_sys::*;
 
 pub mod altrep;
+pub mod array;
 pub mod complexes;
 pub mod dataframe;
 pub mod doubles;
@@ -18,7 +19,6 @@ pub mod lang;
 pub mod list;
 pub mod logicals;
 mod macros;
-pub mod matrix;
 pub mod nullable;
 pub mod pairlist;
 pub mod primitive;
@@ -36,6 +36,7 @@ pub use altrep::{
     AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,
     AltrepImpl,
 };
+pub use array::{RArray, RMatrix};
 pub use complexes::Complexes;
 pub use dataframe::{Dataframe, IntoDataFrameRow};
 pub use doubles::Doubles;
@@ -47,7 +48,6 @@ pub use integers::Integers;
 pub use lang::Language;
 pub use list::{FromList, List, ListIter};
 pub use logicals::Logicals;
-pub use matrix::{MatrixConversions, RArray, RColumn, RMatrix, RMatrix3D};
 pub use nullable::Nullable;
 pub use pairlist::{Pairlist, PairlistIter};
 pub use primitive::Primitive;
