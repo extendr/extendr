@@ -889,8 +889,9 @@ pub trait Attributes: Types + Length {
 
     /// Set the names attribute from a string iterator.
     ///
-    /// Returns Error::NamesLengthMismatch if the length of the names does
+    /// Returns `Error::NamesLengthMismatch` if the length of the names does
     /// not match the length of the object.
+    ///
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {

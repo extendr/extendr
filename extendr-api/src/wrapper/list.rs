@@ -98,7 +98,7 @@ impl List {
     }
 
     /// Build a list using separate names and values iterators.
-    /// Used internally by the list! macro.
+    /// Used internally by the `list!` macro.
     pub fn from_names_and_values<N, V>(names: N, values: V) -> Result<Self>
     where
         N: IntoIterator,
