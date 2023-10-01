@@ -94,9 +94,15 @@ impl<T: Any + Debug> ExternalPtr<T> {
                 unsafe {
                     let ptr = R_ExternalPtrAddr(x) as *mut T;
 
+                    // Free the `tag`, which is the type-name
+                    R_SetExternalPtrTag(x, R_NilValue);
+
                     // Convert the pointer to a box and drop it implictly.
                     // This frees up the memory we have used and calls the "T::drop" method if there is one.
                     drop(Box::from_raw(ptr));
+
+                    // Now set the pointer in ExternalPTR to C `NULL`
+                    R_ClearExternalPtr(x);
                 }
             }
 
@@ -115,12 +121,12 @@ impl<T: Any + Debug> ExternalPtr<T> {
 
     /// Get the "tag" of an external pointer. This is the type name in the common case.
     pub fn tag(&self) -> Robj {
-        unsafe { new_owned(R_ExternalPtrTag(self.robj.get())) }
+        unsafe { Robj::from_sexp(R_ExternalPtrTag(self.robj.get())) }
     }
 
     /// Get the "protected" field of an external pointer. This is NULL in the common case.
     pub fn protected(&self) -> Robj {
-        unsafe { new_owned(R_ExternalPtrProtected(self.robj.get())) }
+        unsafe { Robj::from_sexp(R_ExternalPtrProtected(self.robj.get())) }
     }
 
     /// Get the "address" field of an external pointer.

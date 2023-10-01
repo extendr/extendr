@@ -294,26 +294,26 @@
 //! In R:
 //!
 //! ```ignore
-//! #default result_panic feature
+//! # default result_panic feature
 //! oups(1)
 //! > ... long panic traceback from rust printed to stderr
 //!
-//! #result_list feature
-//! lst <-oups(1)
+//! # result_list feature
+//! lst <- oups(1)
 //! print(lst)
-//! > list(ok=NULL, err="I did it again")
+//! > list(ok = NULL, err = "I did it again")
 //!
-//! #result_condition feature
-//! cnd = oups(1)
+//! # result_condition feature
+//! cnd <- oups(1)
 //! print(cnd)
 //! > <error: extendr_error>
 //! print(cnd$value)
 //! > "I did it again"
 //!
-//! #handling example for result_condition
-//! oups_handled = function(a) {
-//!   val_or_err = oups(1)  
-//!   if(inherits(val_or_err,"extendr_error")) stop(val_or_err)
+//! # handling example for result_condition
+//! oups_handled <- function(a) {
+//!   val_or_err <- oups(1)  
+//!   if (inherits(val_or_err, "extendr_error")) stop(val_or_err)
 //!   val_or_err
 //! }
 //!
@@ -621,7 +621,7 @@ pub fn sxp_to_rtype(sxptype: i32) -> Rtype {
     }
 }
 
-const PRINTF_NO_FMT_CSTRING: &'static [i8] = &[37, 115, 0]; // same as "%s\0"
+const PRINTF_NO_FMT_CSTRING: &[std::os::raw::c_char] = &[37, 115, 0]; // same as "%s\0"
 #[doc(hidden)]
 pub fn print_r_output<T: Into<Vec<u8>>>(s: T) {
     let cs = CString::new(s).expect("NulError");
@@ -960,8 +960,8 @@ mod tests {
     fn test_na_str() {
         assert_ne!(<&str>::na().as_ptr(), "NA".as_ptr());
         assert_eq!(<&str>::na(), "NA");
-        assert_eq!("NA".is_na(), false);
-        assert_eq!(<&str>::na().is_na(), true);
+        assert!(!"NA".is_na());
+        assert!(<&str>::na().is_na());
     }
 
     #[test]

@@ -93,7 +93,7 @@ impl Environment {
     pub fn envflags(&self) -> i32 {
         unsafe {
             let sexp = self.robj.get();
-            ENVFLAGS(sexp) as i32
+            ENVFLAGS(sexp)
         }
     }
 

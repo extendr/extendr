@@ -1,27 +1,25 @@
-use lazy_static::lazy_static;
 use libR_sys::{R_IsNA, R_NaReal};
+use once_cell::sync::Lazy;
 use std::alloc::{self, Layout};
 
 // To make sure this "NA" is allocated at a different place than any other "NA"
 // strings (so that it can be used as a sentinel value), we allocate it by
 // ourselves.
-lazy_static! {
-    static ref EXTENDR_NA_STRING: &'static str = unsafe {
-        // Layout::array() can fail when the size exceeds `isize::MAX`, but we
-        // only need 2 here, so it's safe to unwrap().
-        let layout = Layout::array::<u8>(2).unwrap();
+static EXTENDR_NA_STRING: Lazy<&'static str> = Lazy::new(|| unsafe {
+    // Layout::array() can fail when the size exceeds `isize::MAX`, but we
+    // only need 2 here, so it's safe to unwrap().
+    let layout = Layout::array::<u8>(2).unwrap();
 
-        // We allocate and never free it because we need this pointer to be
-        // alive until the program ends.
-        let ptr = alloc::alloc(layout);
+    // We allocate and never free it because we need this pointer to be
+    // alive until the program ends.
+    let ptr = alloc::alloc(layout);
 
-        let v: &mut [u8] = std::slice::from_raw_parts_mut(ptr, 2);
-        v[0] = b'N';
-        v[1] = b'A';
+    let v: &mut [u8] = std::slice::from_raw_parts_mut(ptr, 2);
+    v[0] = b'N';
+    v[1] = b'A';
 
-        std::str::from_utf8_unchecked(v)
-    };
-}
+    std::str::from_utf8_unchecked(v)
+});
 
 /// Return true if this primitive is `NA`.
 pub trait CanBeNA {

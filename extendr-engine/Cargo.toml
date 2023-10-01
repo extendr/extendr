@@ -16,6 +16,7 @@ repository = "https://github.com/extendr/extendr"
 
 [dependencies]
 libR-sys = "0.6.0"
+ctor = "0.2.4"
 
 [features]
 default = []

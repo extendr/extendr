@@ -181,7 +181,7 @@ impl From<Error> for Robj {
 }
 impl From<Error> for String {
     fn from(res: Error) -> Self {
-        res.to_string().into()
+        res.to_string()
     }
 }
 
@@ -383,7 +383,7 @@ impl ToVectorValue for u8 {
     }
 
     fn to_raw(&self) -> u8 {
-        *self as u8
+        *self
     }
 }
 
@@ -393,7 +393,7 @@ impl ToVectorValue for &u8 {
     }
 
     fn to_raw(&self) -> u8 {
-        **self as u8
+        **self
     }
 }
 
@@ -665,38 +665,6 @@ where
     }
 }
 
-// We would love to do a blanket IntoIterator impl.
-// But the matching rules would clash with the above.
-macro_rules! impl_from_iter {
-    ($t: ty) => {
-        impl<'a, T> From<$t> for Robj
-        where
-            Self: 'a,
-            T: Clone + 'a,
-            T: ToVectorValue,
-        {
-            fn from(val: $t) -> Self {
-                val.iter().cloned().collect_robj()
-            }
-        }
-    };
-}
-
-macro_rules! impl_from_into_iter {
-    ($t: ty) => {
-        impl<'a, T> From<$t> for Robj
-        where
-            Self: 'a,
-            T: 'a,
-            &'a T: ToVectorValue,
-        {
-            fn from(val: $t) -> Self {
-                val.into_iter().collect_robj()
-            }
-        }
-    };
-}
-
 macro_rules! impl_from_as_iterator {
     ($t: ty) => {
         impl<T> From<$t> for Robj
@@ -723,30 +691,60 @@ macro_rules! impl_from_as_iterator {
 //     }
 // } //
 
-// Template constants are still unstable in rust.
-impl_from_iter! {[T; 1]}
-impl_from_iter! {[T; 2]}
-impl_from_iter! {[T; 3]}
-impl_from_iter! {[T; 4]}
-impl_from_iter! {[T; 5]}
-impl_from_iter! {[T; 6]}
-impl_from_iter! {[T; 7]}
-impl_from_iter! {[T; 8]}
-impl_from_iter! {[T; 9]}
-impl_from_iter! {[T; 10]}
-impl_from_iter! {[T; 11]}
-impl_from_iter! {[T; 12]}
-impl_from_iter! {[T; 13]}
-impl_from_iter! {[T; 14]}
-impl_from_iter! {[T; 15]}
-impl_from_iter! {[T; 16]}
-impl_from_iter! {[T; 17]}
-impl_from_iter! {[T; 18]}
-impl_from_iter! {[T; 19]}
-impl_from_iter! {Vec<T>}
-impl_from_iter! {&Vec<T>}
+impl<'a, T, const N: usize> From<[T; N]> for Robj
+where
+    Self: 'a,
+    T: ToVectorValue,
+{
+    fn from(val: [T; N]) -> Self {
+        fixed_size_collect(val.into_iter(), N)
+    }
+}
 
-impl_from_into_iter! {&'a [T]}
+impl<'a, T, const N: usize> From<&'a [T; N]> for Robj
+where
+    Self: 'a,
+    &'a T: ToVectorValue + 'a,
+{
+    fn from(val: &'a [T; N]) -> Self {
+        fixed_size_collect(val.into_iter(), N)
+    }
+}
+
+impl<'a, T, const N: usize> From<&'a mut [T; N]> for Robj
+where
+    Self: 'a,
+    &'a mut T: ToVectorValue + 'a,
+{
+    fn from(val: &'a mut [T; N]) -> Self {
+        fixed_size_collect(val.into_iter(), N)
+    }
+}
+
+impl<T: ToVectorValue + Clone> From<&Vec<T>> for Robj {
+    fn from(value: &Vec<T>) -> Self {
+        let len = value.len();
+        fixed_size_collect(value.iter().cloned(), len)
+    }
+}
+
+impl<T: ToVectorValue> From<Vec<T>> for Robj {
+    fn from(value: Vec<T>) -> Self {
+        let len = value.len();
+        fixed_size_collect(value.into_iter(), len)
+    }
+}
+
+impl<'a, T> From<&'a [T]> for Robj
+where
+    Self: 'a,
+    T: 'a,
+    &'a T: ToVectorValue,
+{
+    fn from(val: &'a [T]) -> Self {
+        val.into_iter().collect_robj()
+    }
+}
 
 impl_from_as_iterator! {Range<T>}
 impl_from_as_iterator! {RangeInclusive<T>}
@@ -811,7 +809,7 @@ mod test {
             let rmat = (1i32..=16).collect_rarray([3, 3]);
             assert!(rmat.is_err());
             let msg = rmat.unwrap_err().to_string();
-            assert!(msg.contains("9"));
+            assert!(msg.contains('9'));
             assert!(msg.contains("dimension"));
         }
     }
