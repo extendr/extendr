@@ -1083,6 +1083,7 @@
 <a href="#1083" id="1083">1083</a>
 <a href="#1084" id="1084">1084</a>
 <a href="#1085" id="1085">1085</a>
+<a href="#1086" id="1086">1086</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! R object handling.
 //!
 //! See. [Writing R Extensions](https://cran.r-project.org/doc/manuals/R-exts.html)
@@ -1974,8 +1975,9 @@
 
     <span class="doccomment">/// Set the names attribute from a string iterator.
     ///
-    /// Returns Error::NamesLengthMismatch if the length of the names does
+    /// Returns `Error::NamesLengthMismatch` if the length of the names does
     /// not match the length of the object.
+    ///
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
