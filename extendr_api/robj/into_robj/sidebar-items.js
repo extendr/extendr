@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["fixed_size_collect","str_to_character"],"macro":["impl_complex_tvv","impl_from_as_iterator","impl_integer_tvv","impl_real_tvv","impl_str_tvv"],"trait":["IntoRobj","RobjItertools","ToVectorValue"]};
+window.SIDEBAR_ITEMS = {"fn":["fixed_size_collect","str_to_character"],"macro":["impl_complex_tvv","impl_from_as_iterator","impl_integer_tvv","impl_real_tvv","impl_str_tvv"],"mod":["repeat_into_robj"],"trait":["IntoRobj","RobjItertools","ToVectorValue"]};
