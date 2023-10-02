@@ -2,8 +2,8 @@ use super::*;
 use crate::scalar::Scalar;
 use crate::single_threaded;
 
-mod repeat_into_robj;
 mod nonzero_into_robj;
+mod repeat_into_robj;
 
 pub(crate) fn str_to_character(s: &str) -> SEXP {
     unsafe {
