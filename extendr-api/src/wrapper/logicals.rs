@@ -92,7 +92,6 @@ impl TryFrom<Vec<bool>> for Logicals {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use crate::prelude::*;
