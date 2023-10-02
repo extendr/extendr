@@ -10,7 +10,7 @@
 - `use_rng` option for the `extendr` attribute macro, which enables the use of
 random number sampling methods from R, e.g. `#[extendr(use_rng = true)` [[#476]](https://github.com/extendr/extendr/pull/476)
 - `[T; N]` conversions to `Robj` [[#594]](https://github.com/extendr/extendr/pull/594/)
-- `Rstr` can be constructed from `Option<String>` now [[#630]](https://github.com/extendr/extendr/pull/630)
+- `Rstr` can now be constructed from `Option<String>`  [[#630]](https://github.com/extendr/extendr/pull/630)
 
 ### Fixed
 
