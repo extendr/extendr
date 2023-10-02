@@ -41,6 +41,9 @@ pub use super::wrapper::{
     AltrepImpl, RArray, RColumn, RMatrix, RMatrix3D,
 };
 
+#[cfg(use_r_altlist)]
+pub use super::wrapper::AltListImpl;
+
 pub use super::wrapper::s4::S4;
 
 pub use super::wrapper::{Conversions, MatrixConversions};

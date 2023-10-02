@@ -272,7 +272,9 @@ pub trait Rinternals: Types + Conversions {
 
     #[doc(hidden)]
     unsafe fn register_c_finalizer(&self, func: R_CFinalizer_t) {
-        single_threaded(|| R_RegisterCFinalizer(self.get(), func));
+        // Use R_RegisterCFinalizerEx() and set onexit to 1 (TRUE) to invoke the
+        // finalizer on a shutdown of the R session as well.
+        single_threaded(|| R_RegisterCFinalizerEx(self.get(), func, 1));
     }
 
     /// Copy a vector and resize it.
@@ -469,6 +471,12 @@ pub trait Rinternals: Types + Conversions {
     /// Returns `true` if this is an integer ALTREP object.
     fn is_altstring(&self) -> bool {
         unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == STRSXP as i32 }
+    }
+
+    /// Returns `true` if this is an integer ALTREP object.
+    #[cfg(use_r_altlist)]
+    fn is_altlist(&self) -> bool {
+        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == VECSXP as i32 }
     }
 
     /// Generate a text representation of this object.

@@ -10,7 +10,7 @@ use std::convert::Infallible;
 pub fn unwrap_or_throw<T>(r: std::result::Result<T, &'static str>) -> T {
     match r {
         Err(e) => {
-            throw_r_error(e.to_string());
+            throw_r_error(e);
         }
         Ok(v) => v,
     }
