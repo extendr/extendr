@@ -12,6 +12,7 @@ random number sampling methods from R, e.g. `#[extendr(use_rng = true)` [[#476]]
 - `[T; N]` conversions to `Robj` [[#594]](https://github.com/extendr/extendr/pull/594/)
 - `ToVectorValue` for `Rfloat`, `Rint` and `Rbool` [[#593]](https://github.com/extendr/extendr/pull/593)
 - `TryFrom<_>` on `Vec<_>` for `Integers` (`i32`), `Complexes` (`c64`), `Doubles` (`f64`), and `Logicals` (`bool` / `i32`). [[#593]](https://github.com/extendr/extendr/pull/593)
+- `Rstr` can now be constructed from `Option<String>`  [[#630]](https://github.com/extendr/extendr/pull/630)
 
 ### Fixed
 
