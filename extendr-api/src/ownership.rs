@@ -1,12 +1,12 @@
 //! Maintain ownership of R objects.
 //!
-//! This provides the functions protect() and unprotect()
+//! This provides the functions [protect] and [unprotect].
 //! A single preserved vector holds ownership of all protected objects.
 //!
 //! Objects are reference counted, so multiple calls are possible,
-//! unlike R_PreserveObject.
+//! unlike `R_PreserveObject`.
 //!
-//! This module exports two functions, protect(sexp) and unprotect(sexp).
+//! This module exports two functions, `protect(sexp)` and `unprotect(sexp)`.
 
 use once_cell::sync::Lazy;
 use std::collections::hash_map::{Entry, HashMap};
