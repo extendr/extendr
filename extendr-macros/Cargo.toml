@@ -25,3 +25,4 @@ proc-macro2 = { version = "1.0" }
 [dev-dependencies]
 extendr-api = { path = "../extendr-api" }
 extendr-engine = { path = "../extendr-engine" }
+libR-sys = { workspace = true }

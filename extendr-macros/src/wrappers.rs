@@ -10,6 +10,7 @@ pub struct ExtendrOptions {
     pub use_try_from: bool,
     pub r_name: Option<String>,
     pub mod_name: Option<String>,
+    pub use_rng: bool,
 }
 
 // Generate wrappers for a specific function.
@@ -100,12 +101,31 @@ pub fn make_function_wrappers(
     //     }
     // }
     // ```
-    //
+    let rng_start = opts
+        .use_rng
+        .then(|| {
+            quote!(unsafe {
+                libR_sys::GetRNGstate();
+            })
+        })
+        .unwrap_or_default();
+    let rng_end = opts
+        .use_rng
+        .then(|| {
+            quote!(unsafe {
+                libR_sys::PutRNGstate();
+            })
+        })
+        .unwrap_or_default();
     wrappers.push(parse_quote!(
         #[no_mangle]
         #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
         pub extern "C" fn #wrap_name(#formal_args) -> extendr_api::SEXP {
             use extendr_api::robj::*;
+
+            // pull RNG state before evaluation
+            #rng_start
+
             let wrap_result_state: std::result::Result<
                 std::result::Result<Robj, extendr_api::Error>,
                 Box<dyn std::any::Any + Send>
@@ -115,9 +135,11 @@ pub fn make_function_wrappers(
                     Ok(extendr_api::Robj::from(#call_name(#actual_args)))
                 })
             };
+
+            // return RNG state back to r after evaluation
+            #rng_end
+
             // any obj created in above unsafe scope, which are not moved into wrap_result_state are now dropped
-
-
             match wrap_result_state {
                 Ok(Ok(zz)) => {
                     return unsafe { zz.get() };
@@ -248,7 +270,7 @@ pub fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> FnArg {
         // function argument.
         FnArg::Typed(ref pattype) => {
             let pat = &pattype.pat.as_ref();
-            return parse_quote! { #pat : extendr_api::SEXP };
+            parse_quote! { #pat : extendr_api::SEXP }
         }
         // &self
         FnArg::Receiver(ref reciever) => {
@@ -258,7 +280,7 @@ pub fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> FnArg {
             if self_ty.is_none() {
                 panic!("found &self in non-impl function - have you missed the #[extendr] before the impl?");
             }
-            return parse_quote! { _self : extendr_api::SEXP };
+            parse_quote! { _self : extendr_api::SEXP }
         }
     }
 }
@@ -277,13 +299,13 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> Expr {
             } else {
                 quote!(None)
             };
-            return parse_quote! {
+            parse_quote! {
                 extendr_api::metadata::Arg {
                     name: #name_string,
                     arg_type: #type_string,
                     default: #default
                 }
-            };
+            }
         }
         // &self
         FnArg::Receiver(ref reciever) => {
@@ -294,13 +316,13 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> Expr {
                 panic!("found &self in non-impl function - have you missed the #[extendr] before the impl?");
             }
             let type_string = type_name(self_ty.unwrap());
-            return parse_quote! {
+            parse_quote! {
                 extendr_api::metadata::Arg {
                     name: "self",
                     arg_type: #type_string,
                     default: None
                 }
-            };
+            }
         }
     }
 }
@@ -313,13 +335,13 @@ fn translate_to_robj(input: &FnArg) -> syn::Stmt {
             let pat = &pattype.pat.as_ref();
             if let syn::Pat::Ident(ref ident) = pat {
                 let varname = format_ident!("_{}_robj", ident.ident);
-                parse_quote! { let #varname = extendr_api::new_owned(#pat); }
+                parse_quote! { let #varname = extendr_api::robj::Robj::from_sexp(#pat); }
             } else {
                 panic!("expect identifier as arg name")
             }
         }
         FnArg::Receiver(_) => {
-            parse_quote! { let mut _self_robj = extendr_api::new_owned(_self); }
+            parse_quote! { let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self); }
         }
     }
 }

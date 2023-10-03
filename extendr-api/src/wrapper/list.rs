@@ -98,7 +98,7 @@ impl List {
     }
 
     /// Build a list using separate names and values iterators.
-    /// Used internally by the list! macro.
+    /// Used internally by the `list!` macro.
     pub fn from_names_and_values<N, V>(names: N, values: V) -> Result<Self>
     where
         N: IntoIterator,
@@ -378,20 +378,22 @@ impl<T: AsRef<str>> KeyValue for (T, Robj) {
 }
 
 impl<T: Into<Robj>> FromIterator<T> for List {
-    /// Convert an iterator to a List object.
+    /// Convert an iterator to a `List` object.
     fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
-        crate::single_threaded(|| unsafe {
-            let values: Vec<SEXP> = iter
-                .into_iter()
-                .map(|s| Rf_protect(s.into().get()))
-                .collect();
+        let iter_collect: Vec<_> = iter.into_iter().collect();
+        let len = iter_collect.len();
 
-            let len = values.len();
+        crate::single_threaded(|| unsafe {
             let robj = Robj::alloc_vector(VECSXP, len);
-            for (i, v) in values.into_iter().enumerate() {
-                SET_VECTOR_ELT(robj.get(), i as isize, v);
+            for (i, v) in iter_collect.into_iter().enumerate() {
+                // We don't PROTECT each element here, as they will be immediately
+                // placed into a list which will protect them:
+                // https://cran.r-project.org/doc/manuals/R-exts.html#Garbage-Collection
+                // note: Currently, `Robj` automatically registers `v` by the
+                // `ownership`-module, making it protected, even though it isn't necessary to do so.
+                let item: Robj = v.into();
+                SET_VECTOR_ELT(robj.get(), i as isize, item.get());
             }
-            Rf_unprotect(len as i32);
 
             List { robj }
         })

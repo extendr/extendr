@@ -90,3 +90,28 @@ impl std::fmt::Debug for Doubles {
         }
     }
 }
+
+impl TryFrom<Vec<f64>> for Doubles {
+    type Error = Error;
+
+    fn try_from(value: Vec<f64>) -> std::result::Result<Self, Self::Error> {
+        Ok(Self {
+            robj: <Robj>::try_from(value)?,
+        })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_vec_f64_doubles_conversion() {
+        test! {
+            let test_vec = vec![0., 1., std::f64::consts::PI, -1.];
+            let test_doubles: Doubles = test_vec.clone().try_into().unwrap();
+            let test_doubles_slice = test_doubles.robj.as_real_slice().unwrap();
+            assert_eq!(test_doubles_slice, test_vec);
+        }
+    }
+}

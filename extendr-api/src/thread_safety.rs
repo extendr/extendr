@@ -130,8 +130,8 @@ where
         let x = false;
         let fun = std::mem::transmute(fun_ptr);
         let cleanfun = std::mem::transmute(clean_ptr);
-        let data = std::mem::transmute(&f);
-        let cleandata = std::mem::transmute(&x);
+        let data = &f as *const _ as _;
+        let cleandata = &x as *const _ as _;
         let cont = R_MakeUnwindCont();
         Rf_protect(cont);
 

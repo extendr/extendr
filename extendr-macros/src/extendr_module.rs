@@ -101,10 +101,10 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
             unsafe {
                 use extendr_api::robj::*;
                 use extendr_api::GetSexp;
-                let robj = new_owned(use_symbols_sexp);
+                let robj = Robj::from_sexp(use_symbols_sexp);
                 let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
 
-                let robj = new_owned(package_name_sexp);
+                let robj = Robj::from_sexp(package_name_sexp);
                 let package_name: &str = <&str>::from_robj(&robj).unwrap();
 
                 extendr_api::Robj::from(
