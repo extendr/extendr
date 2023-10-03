@@ -10,13 +10,13 @@ thread_local! {
     static THREAD_ID: u32 = NEXT_THREAD_ID.fetch_add(1, Ordering::SeqCst);
 }
 
-// Get an integer 1.. for each thread that calls this.
+// Get an integer `1..` for each thread that calls this.
 pub fn this_thread_id() -> u32 {
     THREAD_ID.with(|&v| v)
 }
 
 /// Run a function single threaded.
-/// Note: This will fail badly if the called function panics or calls RF_error.
+/// Note: This will fail badly if the called function panics or calls `Rf_error`.
 ///
 /// ```
 /// use extendr_api::prelude::*;
@@ -91,7 +91,7 @@ pub fn throw_r_error<S: AsRef<str>>(s: S) -> ! {
     };
 }
 
-/// Wrap an R function such as Rf_findFunction and convert errors and panics into results.
+/// Wrap an R function such as `Rf_findFunction` and convert errors and panics into results.
 /// ```ignore
 /// use extendr_api::prelude::*;
 /// test! {
