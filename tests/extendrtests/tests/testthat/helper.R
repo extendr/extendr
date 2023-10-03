@@ -27,7 +27,7 @@ skip_if_on_nightly <- function() {
       pattern = "nightly"
     )
   } else {
-    condition <- FALSE
+    condition <- TRUE # rustup failed, something is fishy
   }
 
   skip_if(isTRUE(condition), "`nightly` toolchain")
