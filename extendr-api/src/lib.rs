@@ -388,7 +388,7 @@ pub use na::*;
 pub use rmacros::*;
 pub use robj::*;
 pub use thread_safety::{
-    catch_r_error, handle_panic, single_threaded, this_thread_id, throw_r_error,
+    catch_r_error, handle_panic, single_threaded, throw_r_error,
 };
 pub use wrapper::*;
 
