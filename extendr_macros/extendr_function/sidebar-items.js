@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["extendr_function","parse_options"]};
+window.SIDEBAR_ITEMS = {"fn":["extendr_function"]};

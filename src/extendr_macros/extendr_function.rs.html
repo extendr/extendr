@@ -67,25 +67,15 @@
 <a href="#67" id="67">67</a>
 <a href="#68" id="68">68</a>
 <a href="#69" id="69">69</a>
-<a href="#70" id="70">70</a>
-<a href="#71" id="71">71</a>
-<a href="#72" id="72">72</a>
-<a href="#73" id="73">73</a>
-<a href="#74" id="74">74</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::wrappers;
 <span class="kw">use </span>proc_macro::TokenStream;
 <span class="kw">use </span>quote::quote;
-<span class="kw">use </span>syn::ItemFn;
+<span class="kw">use </span>syn::{meta::ParseNestedMeta, ItemFn, Lit, LitBool};
 
 <span class="doccomment">/// Generate bindings for a single function.
-</span><span class="kw">pub fn </span>extendr_function(args: Vec&lt;syn::NestedMeta&gt;, <span class="kw-2">mut </span>func: ItemFn) -&gt; TokenStream {
-    <span class="kw">let </span><span class="kw-2">mut </span>opts = wrappers::ExtendrOptions::default();
-
-    <span class="kw">for </span>arg <span class="kw">in </span><span class="kw-2">&amp;</span>args {
-        parse_options(<span class="kw-2">&amp;mut </span>opts, arg);
-    }
+</span><span class="kw">pub fn </span>extendr_function(<span class="kw-2">mut </span>func: ItemFn, opts: <span class="kw-2">&amp;</span>wrappers::ExtendrOptions) -&gt; TokenStream {
     <span class="kw">let </span><span class="kw-2">mut </span>wrappers: Vec&lt;ItemFn&gt; = Vec::new();
-    wrappers::make_function_wrappers(<span class="kw-2">&amp;</span>opts, <span class="kw-2">&amp;mut </span>wrappers, <span class="string">&quot;&quot;</span>, <span class="kw-2">&amp;</span>func.attrs, <span class="kw-2">&amp;mut </span>func.sig, <span class="prelude-val">None</span>);
+    wrappers::make_function_wrappers(opts, <span class="kw-2">&amp;mut </span>wrappers, <span class="string">&quot;&quot;</span>, <span class="kw-2">&amp;</span>func.attrs, <span class="kw-2">&amp;mut </span>func.sig, <span class="prelude-val">None</span>);
 
     TokenStream::from(<span class="macro">quote! </span>{
         #func
@@ -94,56 +84,56 @@
     })
 }
 
-<span class="doccomment">/// Parse a set of attribute arguments for `#[extendr(opts...)]`
-///
-/// Supported options:
-///
-/// - `use_try_from = bool` which uses `TryFrom&lt;Robj&gt;` for argument conversions.
-/// - `r_name = &quot;name&quot;` which specifies the name of the wrapper on the R-side.
-/// - `use_rng = bool` ensures the RNG-state is pulled and pushed
-///
-</span><span class="kw">pub fn </span>parse_options(opts: <span class="kw-2">&amp;mut </span>wrappers::ExtendrOptions, arg: <span class="kw-2">&amp;</span>syn::NestedMeta) {
-    <span class="kw">use </span>syn::{Lit, LitBool, Meta, MetaNameValue, NestedMeta};
+<span class="kw">impl </span>wrappers::ExtendrOptions {
+    <span class="doccomment">/// Parse a set of attribute arguments for `#[extendr(opts...)]`
+    ///
+    /// Supported options:
+    ///
+    /// - `use_try_from = bool` which uses `TryFrom&lt;Robj&gt;` for argument conversions.
+    /// - `r_name = &quot;name&quot;` which specifies the name of the wrapper on the R-side.
+    /// - `use_rng = bool` ensures the RNG-state is pulled and pushed
+    ///
+    </span><span class="kw">pub fn </span>parse(<span class="kw-2">&amp;mut </span><span class="self">self</span>, meta: ParseNestedMeta) -&gt; syn::parse::Result&lt;()&gt; {
+        <span class="kw">fn </span>help_message() -&gt; ! {
+            <span class="macro">panic!</span>(<span class="string">&quot;expected #[extendr(use_try_from = bool, r_name = \&quot;name\&quot;, mod_name = \&quot;r_mod_name\&quot;, use_rng = bool)]&quot;</span>);
+        }
 
-    <span class="kw">fn </span>help_message() -&gt; ! {
-        <span class="macro">panic!</span>(<span class="string">&quot;expected #[extendr(use_try_from = bool, r_name = \&quot;name\&quot;, mod_name = \&quot;r_mod_name\&quot;, use_rng = bool)]&quot;</span>);
-    }
+        <span class="kw">let </span>value = <span class="kw">match </span>meta.value() {
+            <span class="prelude-val">Ok</span>(value) =&gt; value,
+            <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; help_message(),
+        };
 
-    <span class="kw">match </span>arg {
-        NestedMeta::Meta(Meta::NameValue(MetaNameValue {
-            <span class="kw-2">ref </span>path,
-            eq_token: <span class="kw">_</span>,
-            lit,
-        })) =&gt; {
-            <span class="kw">if </span>path.is_ident(<span class="string">&quot;use_try_from&quot;</span>) {
-                <span class="kw">if let </span>Lit::Bool(LitBool { value, .. }) = lit {
-                    opts.use_try_from = <span class="kw-2">*</span>value;
-                } <span class="kw">else </span>{
-                    help_message();
-                }
-            } <span class="kw">else if </span>path.is_ident(<span class="string">&quot;r_name&quot;</span>) {
-                <span class="kw">if let </span>Lit::Str(litstr) = lit {
-                    opts.r_name = <span class="prelude-val">Some</span>(litstr.value());
-                } <span class="kw">else </span>{
-                    help_message();
-                }
-            } <span class="kw">else if </span>path.is_ident(<span class="string">&quot;mod_name&quot;</span>) {
-                <span class="kw">if let </span>Lit::Str(litstr) = lit {
-                    opts.mod_name = <span class="prelude-val">Some</span>(litstr.value());
-                } <span class="kw">else </span>{
-                    help_message();
-                }
-            } <span class="kw">else if </span>path.is_ident(<span class="string">&quot;use_rng&quot;</span>) {
-                <span class="kw">if let </span>Lit::Bool(LitBool { value, .. }) = lit {
-                    opts.use_rng = <span class="kw-2">*</span>value;
-                } <span class="kw">else </span>{
-                    help_message();
-                }
+        <span class="kw">if </span>meta.path.is_ident(<span class="string">&quot;use_try_from&quot;</span>) {
+            <span class="kw">if let </span><span class="prelude-val">Ok</span>(LitBool { value, .. }) = value.parse() {
+                <span class="self">self</span>.use_try_from = value;
+                <span class="prelude-val">Ok</span>(())
             } <span class="kw">else </span>{
                 help_message();
             }
+        } <span class="kw">else if </span>meta.path.is_ident(<span class="string">&quot;r_name&quot;</span>) {
+            <span class="kw">if let </span><span class="prelude-val">Ok</span>(Lit::Str(litstr)) = value.parse() {
+                <span class="self">self</span>.r_name = <span class="prelude-val">Some</span>(litstr.value());
+                <span class="prelude-val">Ok</span>(())
+            } <span class="kw">else </span>{
+                help_message();
+            }
+        } <span class="kw">else if </span>meta.path.is_ident(<span class="string">&quot;mod_name&quot;</span>) {
+            <span class="kw">if let </span><span class="prelude-val">Ok</span>(Lit::Str(litstr)) = value.parse() {
+                <span class="self">self</span>.mod_name = <span class="prelude-val">Some</span>(litstr.value());
+                <span class="prelude-val">Ok</span>(())
+            } <span class="kw">else </span>{
+                help_message();
+            }
+        } <span class="kw">else if </span>meta.path.is_ident(<span class="string">&quot;use_rng&quot;</span>) {
+            <span class="kw">if let </span><span class="prelude-val">Ok</span>(LitBool { value, .. }) = value.parse() {
+                <span class="self">self</span>.use_rng = value;
+                <span class="prelude-val">Ok</span>(())
+            } <span class="kw">else </span>{
+                help_message();
+            }
+        } <span class="kw">else </span>{
+            help_message();
         }
-        <span class="kw">_ </span>=&gt; help_message(),
     }
 }
 </code></pre></div></section></main></body></html>

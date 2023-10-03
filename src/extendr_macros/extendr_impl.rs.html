@@ -276,7 +276,7 @@
     // ```
     </span><span class="kw">let </span><span class="kw-2">mut </span>wrappers: Vec&lt;ItemFn&gt; = Vec::new();
     <span class="kw">for </span>impl_item <span class="kw">in </span><span class="kw-2">&amp;mut </span>item_impl.items {
-        <span class="kw">if let </span>syn::ImplItem::Method(<span class="kw-2">ref mut </span>method) = impl_item {
+        <span class="kw">if let </span>syn::ImplItem::Fn(<span class="kw-2">ref mut </span>method) = impl_item {
             method_meta_names.push(<span class="macro">format_ident!</span>(
                 <span class="string">&quot;{}{}__{}&quot;</span>,
                 wrappers::META_PREFIX,

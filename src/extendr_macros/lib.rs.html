@@ -265,6 +265,10 @@
 <a href="#265" id="265">265</a>
 <a href="#266" id="266">266</a>
 <a href="#267" id="267">267</a>
+<a href="#268" id="268">268</a>
+<a href="#269" id="269">269</a>
+<a href="#270" id="270">270</a>
+<a href="#271" id="271">271</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//!
 //! Macros for generating wrappers for rust functions.
 
@@ -340,9 +344,13 @@
 
 <span class="attr">#[proc_macro_attribute]
 </span><span class="kw">pub fn </span>extendr(attr: TokenStream, item: TokenStream) -&gt; TokenStream {
-    <span class="kw">let </span>args = <span class="macro">parse_macro_input!</span>(attr <span class="kw">as </span>syn::AttributeArgs);
+    <span class="kw">let </span><span class="kw-2">mut </span>opts = wrappers::ExtendrOptions::default();
+
+    <span class="kw">let </span>extendr_opts_parser = syn::meta::parser(|meta| opts.parse(meta));
+    <span class="macro">parse_macro_input!</span>(attr with extendr_opts_parser);
+
     <span class="kw">match </span><span class="macro">parse_macro_input!</span>(item <span class="kw">as </span>Item) {
-        Item::Fn(func) =&gt; extendr_function::extendr_function(args, func),
+        Item::Fn(func) =&gt; extendr_function::extendr_function(func, <span class="kw-2">&amp;</span>opts),
         Item::Impl(item_impl) =&gt; extendr_impl::extendr_impl(item_impl),
         other_item =&gt; TokenStream::from(<span class="macro">quote! </span>{#other_item}),
     }

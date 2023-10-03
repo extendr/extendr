@@ -403,9 +403,16 @@
 <a href="#403" id="403">403</a>
 <a href="#404" id="404">404</a>
 <a href="#405" id="405">405</a>
+<a href="#406" id="406">406</a>
+<a href="#407" id="407">407</a>
+<a href="#408" id="408">408</a>
+<a href="#409" id="409">409</a>
+<a href="#410" id="410">410</a>
+<a href="#411" id="411">411</a>
+<a href="#412" id="412">412</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>proc_macro2::Ident;
 <span class="kw">use </span>quote::{format_ident, quote};
-<span class="kw">use </span>syn::{parse_quote, punctuated::Punctuated, Expr, FnArg, ItemFn, Token, Type};
+<span class="kw">use </span>syn::{parse_quote, punctuated::Punctuated, Expr, ExprLit, FnArg, ItemFn, Token, Type};
 
 <span class="kw">pub const </span>META_PREFIX: <span class="kw-2">&amp;</span>str = <span class="string">&quot;meta__&quot;</span>;
 <span class="kw">pub const </span>WRAP_PREFIX: <span class="kw-2">&amp;</span>str = <span class="string">&quot;wrap__&quot;</span>;
@@ -598,18 +605,20 @@
 </span><span class="kw">pub fn </span>get_doc_string(attrs: <span class="kw-2">&amp;</span>[syn::Attribute]) -&gt; String {
     <span class="kw">let </span><span class="kw-2">mut </span>res = String::new();
     <span class="kw">for </span>attr <span class="kw">in </span>attrs {
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(id) = attr.path.get_ident() {
-            <span class="kw">if </span><span class="kw-2">*</span>id != <span class="string">&quot;doc&quot; </span>{
-                <span class="kw">continue</span>;
-            }
+        <span class="kw">if </span>!attr.path().is_ident(<span class="string">&quot;doc&quot;</span>) {
+            <span class="kw">continue</span>;
+        }
 
-            <span class="kw">if let </span><span class="prelude-val">Ok</span>(syn::Meta::NameValue(nv)) = attr.parse_meta() {
-                <span class="kw">if let </span>syn::Lit::Str(litstr) = nv.lit {
-                    <span class="kw">if </span>!res.is_empty() {
-                        res.push(<span class="string">&#39;\n&#39;</span>);
-                    }
-                    res.push_str(<span class="kw-2">&amp;</span>litstr.value());
+        <span class="kw">if let </span>syn::Meta::NameValue(<span class="kw-2">ref </span>nv) = attr.meta {
+            <span class="kw">if let </span>Expr::Lit(ExprLit {
+                lit: syn::Lit::Str(<span class="kw-2">ref </span>litstr),
+                ..
+            }) = nv.value
+            {
+                <span class="kw">if </span>!res.is_empty() {
+                    res.push(<span class="string">&#39;\n&#39;</span>);
                 }
+                res.push_str(<span class="kw-2">&amp;</span>litstr.value());
             }
         }
     }
@@ -781,15 +790,20 @@
 </span><span class="kw">fn </span>get_named_lit(attrs: <span class="kw-2">&amp;mut </span>Vec&lt;syn::Attribute&gt;, name: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>new_attrs = Vec::new();
     <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="prelude-val">None</span>;
-    <span class="lifetime">&#39;f</span>: <span class="kw">for </span>a <span class="kw">in </span>attrs.drain(<span class="number">0</span>..) {
-        <span class="kw">if let </span><span class="prelude-val">Ok</span>(syn::Meta::NameValue(nv)) = a.parse_meta() {
+    <span class="kw">for </span>a <span class="kw">in </span>attrs.drain(<span class="number">0</span>..) {
+        <span class="kw">if let </span>syn::Meta::NameValue(<span class="kw-2">ref </span>nv) = a.meta {
             <span class="kw">if </span>nv.path.is_ident(name) {
-                <span class="kw">if let </span>syn::Lit::Str(litstr) = nv.lit {
+                <span class="kw">if let </span>Expr::Lit(ExprLit {
+                    lit: syn::Lit::Str(<span class="kw-2">ref </span>litstr),
+                    ..
+                }) = nv.value
+                {
                     res = <span class="prelude-val">Some</span>(litstr.value());
-                    <span class="kw">continue </span><span class="lifetime">&#39;f</span>;
+                    <span class="kw">continue</span>;
                 }
             }
         }
+
         new_attrs.push(a);
     }
     <span class="kw-2">*</span>attrs = new_attrs;
