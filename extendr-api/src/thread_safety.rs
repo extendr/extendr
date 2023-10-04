@@ -2,18 +2,39 @@
 
 use crate::*;
 use once_cell::sync::Lazy;
-use parking_lot::ReentrantMutex;
-use std::sync::Arc;
+use std::cell::RefCell;
+use std::sync::Mutex;
 
-static LOCK: Lazy<Arc<ReentrantMutex<()>>> = Lazy::new(|| Arc::new(ReentrantMutex::new(())));
+static R_API_LOCK: Lazy<Mutex<()>> = Lazy::new(|| Default::default());
+
+thread_local! {
+    static THREAD_HAS_LOCK: RefCell<bool> = RefCell::new(false);
+}
 
 pub fn single_threaded<F, R>(f: F) -> R
 where
     F: FnOnce() -> R,
 {
-    let guard = LOCK.lock();
+    // let already_has_lock = THREAD_HAS_LOCK.with(|flag| *flag.borrow());
+    let has_lock = THREAD_HAS_LOCK.with_borrow(|x| *x);
+
+    // acquire R-API lock
+    let _guard = if !has_lock {
+        Some(R_API_LOCK.lock().unwrap())
+    } else {
+        None
+    };
+
+    // this thread now has the lock
+    THREAD_HAS_LOCK.with_borrow_mut(|x| *x = true);
+
     let result = f();
-    drop(guard);
+
+    // release the R-API lock
+    if _guard.is_some() {
+        THREAD_HAS_LOCK.with_borrow_mut(|x| *x = false);
+    }
+
     result
 }
 
