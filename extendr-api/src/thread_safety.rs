@@ -5,12 +5,20 @@ use once_cell::sync::Lazy;
 use std::cell::RefCell;
 use std::sync::Mutex;
 
+/// A global lock, that should represent the global lock on the R-API.
+/// It is not tied to an actual instance of R.
 static R_API_LOCK: Lazy<Mutex<()>> = Lazy::new(|| Default::default());
 
 thread_local! {
     static THREAD_HAS_LOCK: RefCell<bool> = RefCell::new(false);
 }
 
+/// Run `f` while ensuring that `f` runs in a single-threaded manner.
+/// 
+/// This is intended for single-threaded access of the R's C-API.
+/// It is possible to have nested calls of `single_threaded` without deadlocking.
+/// 
+/// Note: This will fail badly if the called function `f` panics or calls `Rf_error`.
 pub fn single_threaded<F, R>(f: F) -> R
 where
     F: FnOnce() -> R,
