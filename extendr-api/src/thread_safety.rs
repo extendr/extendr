@@ -1,16 +1,15 @@
 //! Provide limited protection for multithreaded access to the R API.
 
 use crate::*;
-use once_cell::sync::Lazy;
-use std::cell::RefCell;
+use std::cell::Cell;
 use std::sync::Mutex;
 
 /// A global lock, that should represent the global lock on the R-API.
 /// It is not tied to an actual instance of R.
-static R_API_LOCK: Lazy<Mutex<()>> = Lazy::new(|| Default::default());
+static R_API_LOCK: Mutex<()> = Mutex::new(());
 
 thread_local! {
-    static THREAD_HAS_LOCK: RefCell<bool> = RefCell::new(false);
+    static THREAD_HAS_LOCK: Cell<bool> = Cell::new(false);
 }
 
 /// Run `f` while ensuring that `f` runs in a single-threaded manner.
@@ -23,8 +22,7 @@ pub fn single_threaded<F, R>(f: F) -> R
 where
     F: FnOnce() -> R,
 {
-    // let already_has_lock = THREAD_HAS_LOCK.with(|flag| *flag.borrow());
-    let has_lock = THREAD_HAS_LOCK.with(|x| *x.borrow());
+    let has_lock = THREAD_HAS_LOCK.with(|x| x.get());
 
     // acquire R-API lock
     let _guard = if !has_lock {
@@ -34,13 +32,13 @@ where
     };
 
     // this thread now has the lock
-    THREAD_HAS_LOCK.with(|x| x.replace(true));
+    THREAD_HAS_LOCK.with(|x| x.set(true));
 
     let result = f();
 
     // release the R-API lock
     if _guard.is_some() {
-        THREAD_HAS_LOCK.with(|x| x.replace(false));
+        THREAD_HAS_LOCK.with(|x| x.set(false));
     }
 
     result
