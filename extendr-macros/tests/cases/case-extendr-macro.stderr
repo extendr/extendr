@@ -1,0 +1,37 @@
+error: Unexpected key
+ --> tests/cases/case-extendr-macro.rs:3:11
+  |
+3 | #[extendr(foo = true)]
+  |           ^^^
+
+error: unexpected end of input, `use_try_from` must be `true` or `false`
+ --> tests/cases/case-extendr-macro.rs:6:1
+  |
+6 | #[extendr(use_try_from = 1)]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: this error originates in the attribute macro `extendr` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: unexpected end of input, `r_name` must be a string literal
+ --> tests/cases/case-extendr-macro.rs:9:1
+  |
+9 | #[extendr(r_name = 1)]
+  | ^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: this error originates in the attribute macro `extendr` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: unexpected end of input, `mod_name` must be a string literal
+  --> tests/cases/case-extendr-macro.rs:12:1
+   |
+12 | #[extendr(mod_name = 1)]
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: this error originates in the attribute macro `extendr` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: unexpected end of input, `use_rng` must be `true` or `false`
+  --> tests/cases/case-extendr-macro.rs:15:1
+   |
+15 | #[extendr(use_rng = 1)]
+   | ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: this error originates in the attribute macro `extendr` (in Nightly builds, run with -Z macro-backtrace for more info)
