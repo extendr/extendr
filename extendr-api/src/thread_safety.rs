@@ -14,10 +14,10 @@ thread_local! {
 }
 
 /// Run `f` while ensuring that `f` runs in a single-threaded manner.
-/// 
+///
 /// This is intended for single-threaded access of the R's C-API.
 /// It is possible to have nested calls of `single_threaded` without deadlocking.
-/// 
+///
 /// Note: This will fail badly if the called function `f` panics or calls `Rf_error`.
 pub fn single_threaded<F, R>(f: F) -> R
 where
