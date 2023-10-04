@@ -16,7 +16,7 @@ where
     F: FnOnce() -> R,
 {
     // let already_has_lock = THREAD_HAS_LOCK.with(|flag| *flag.borrow());
-    let has_lock = THREAD_HAS_LOCK.with_borrow(|x| *x);
+    let has_lock = THREAD_HAS_LOCK.with(|x| *x.borrow());
 
     // acquire R-API lock
     let _guard = if !has_lock {
@@ -26,13 +26,13 @@ where
     };
 
     // this thread now has the lock
-    THREAD_HAS_LOCK.with_borrow_mut(|x| *x = true);
+    THREAD_HAS_LOCK.with(|x| x.replace(true));
 
     let result = f();
 
     // release the R-API lock
     if _guard.is_some() {
-        THREAD_HAS_LOCK.with_borrow_mut(|x| *x = false);
+        THREAD_HAS_LOCK.with(|x| x.replace(false));
     }
 
     result
