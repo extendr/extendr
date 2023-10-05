@@ -15,7 +15,7 @@ fn test_parse_eval_string() {
         // let bad = Rf_protect(R_ParseEvalString(bad_code.as_ptr(), R_GlobalEnv));
         let bad = Rf_protect(R_ParseEvalString(bad_code.as_ptr(), R_NilValue));
         Rf_PrintValue(bad);
-        println!("Did we get here?");
+        // println!("Did we get here?");
         Rf_unprotect(1);
     });
 }
