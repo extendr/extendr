@@ -33,4 +33,3 @@ jobs:
         run: |
           . ./ci-cargo.ps1
           ci-cargo msrv --path extendr-api/ verify -ActionName "Verify Rust MSRV"
-
