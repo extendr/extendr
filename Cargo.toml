@@ -1,12 +1,12 @@
 [workspace]
 resolver = "2"
-package.version = "0.4.0"
+package.version = "0.6.0"
 
 members = ["extendr-api", "extendr-engine", "extendr-macros"]
 
 [workspace.dependencies]
 # On releasing a new version, you have to bump this version as well.
-extendr-macros = { path = "./extendr-macros", version = "0.4.0" }
+extendr-macros = { path = "./extendr-macros", version = "0.6.0" }
 
 libR-sys = "0.6.0"
 
