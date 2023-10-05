@@ -23,6 +23,10 @@ permissions:
 
 jobs:
   test-min-rust-version:
+    # PowerShell core is available on all platforms and can be used to unify scripts
+    defaults:
+      run:
+        shell: pwsh
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
