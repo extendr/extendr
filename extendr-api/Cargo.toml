@@ -14,7 +14,7 @@ edition = "2021"
 description = "Safe and user friendly bindings to the R programming language."
 license = "MIT"
 repository = "https://github.com/extendr/extendr"
-rust-version = "1.60"
+rust-version = "1.64"
 
 [dependencies]
 libR-sys = { workspace = true }
