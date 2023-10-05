@@ -213,6 +213,18 @@ pub fn parse(code: &str) -> Result<Expressions> {
         let status_ptr = &mut status as *mut _;
         let codeobj: Robj = code.into();
         let parsed = Robj::from_sexp(R_ParseVector(codeobj.get(), -1, status_ptr, R_NilValue));
+        // TODO: Instead of doing this, use the information that is now
+        // in `status_ptr`, i.e. `*status_ptr`.
+        // pub const ParseStatus_PARSE_NULL: ParseStatus = 0;
+        // pub const ParseStatus_PARSE_OK: ParseStatus = 1;
+        // pub const ParseStatus_PARSE_INCOMPLETE: ParseStatus = 2;
+        // pub const ParseStatus_PARSE_ERROR: ParseStatus = 3;
+        // pub const ParseStatus_PARSE_EOF: ParseStatus = 4;
+        // "PARSE_NULL will not be returned by R_ParseVector"
+        //
+        // OR use `R_ParseEvalString` directly.
+        //
+        //
         match status {
             ParseStatus::PARSE_OK => parsed.try_into(),
             _ => Err(Error::ParseError(code.into())),
