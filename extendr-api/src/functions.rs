@@ -179,7 +179,9 @@ pub fn nil_value() -> Robj {
 }
 
 /// ".Generic"
-pub fn dot_generic() -> Robj { unsafe { Robj::from_sexp(R_dot_Generic) }}
+pub fn dot_generic() -> Robj {
+    unsafe { Robj::from_sexp(R_dot_Generic) }
+}
 
 /// NA_STRING as a CHARSXP
 pub fn na_string() -> Robj {
