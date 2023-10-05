@@ -16,7 +16,6 @@ authors = [
     "Ilia A. Kosenkov <ilia.kosenkov@outlook.com>",
     "Michael Milton <michael.r.milton@gmail.com>",
 ]
-rust-version = "1.64"
 edition = "2021"
 
 [workspace.dependencies]

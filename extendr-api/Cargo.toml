@@ -6,7 +6,9 @@ authors.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
-rust-version.workspace = true
+
+# Note: it seems cargo-msrv doesn't support rust-version.workspace = true.
+rust-version = "1.64"
 
 [dependencies]
 libR-sys = { workspace = true }
