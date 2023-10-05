@@ -30,4 +30,7 @@ jobs:
         with:
           crate: cargo-msrv
       - name: Verify minimum rust version
-        run: cargo-msrv --path extendr-api/ verify
+        run: |
+          . ./ci-cargo.ps1
+          ci-cargo msrv --path extendr-api/ verify -ActionName "Verify Rust MSRV"
+
