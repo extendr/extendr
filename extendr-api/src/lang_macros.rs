@@ -2,7 +2,6 @@
 //!
 
 use libR_sys::*;
-//use crate::robj::*;
 use crate::robj::GetSexp;
 use crate::robj::Robj;
 use crate::single_threaded;
