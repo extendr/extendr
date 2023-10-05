@@ -1,6 +1,6 @@
 [package]
 name = "extendr-macros"
-version = "0.4.0"
+version.workspace = true
 authors = [
     "andy-thomason <andy@andythomason.com>",
     "Thomas Down",

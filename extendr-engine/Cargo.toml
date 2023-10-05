@@ -1,6 +1,6 @@
 [package]
 name = "extendr-engine"
-version = "0.4.0"
+version.workspace = true
 authors = [
     "andy-thomason <andy@andythomason.com>",
     "Thomas Down",
@@ -15,7 +15,7 @@ license = "MIT"
 repository = "https://github.com/extendr/extendr"
 
 [dependencies]
-libR-sys = "0.6.0"
+libR-sys = { workspace = true }
 ctor = "0.2.4"
 
 [features]
