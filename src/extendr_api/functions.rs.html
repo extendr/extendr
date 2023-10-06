@@ -480,12 +480,12 @@
     <span class="kw">unsafe </span>{ Robj::from_sexp(R_NilValue) }
 }
 
-<span class="comment">/* fix version issues.
-/// &quot;.Generic&quot;
-pub fn dot_Generic() -&gt; Robj { unsafe { Robj::from_sexp(R_dot_Generic) }}
-*/
+<span class="doccomment">/// &quot;.Generic&quot;
+</span><span class="kw">pub fn </span>dot_generic() -&gt; Robj {
+    <span class="kw">unsafe </span>{ Robj::from_sexp(R_dot_Generic) }
+}
 
-</span><span class="doccomment">/// NA_STRING as a CHARSXP
+<span class="doccomment">/// NA_STRING as a CHARSXP
 </span><span class="kw">pub fn </span>na_string() -&gt; Robj {
     <span class="kw">unsafe </span>{ Robj::from_sexp(R_NaString) }
 }
