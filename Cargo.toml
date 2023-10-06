@@ -19,7 +19,7 @@ authors = [
 edition = "2021"
 
 [workspace.dependencies]
-# When update extendr's version, this version also needs to be updated
+# When updating extendr's version, this version also needs to be updated
 extendr-macros = { path = "./extendr-macros", version = "0.6.0" }
 
 libR-sys = "0.6.0"
