@@ -141,7 +141,7 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
             fn from(value: #self_ty) -> Self {
                 unsafe {
                     let ptr = Box::into_raw(Box::new(value));
-                    let res = Robj::make_external_ptr(ptr, Robj::from(()));
+                    let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
                     res.set_attrib(class_symbol(), #self_ty_name).unwrap();
                     res.register_c_finalizer(Some(#finalizer_name));
                     res
@@ -154,7 +154,7 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
             fn from(value: &'a #self_ty) -> Self {
                 unsafe {
                     let ptr = Box::into_raw(Box::new(value));
-                    let res = Robj::make_external_ptr(ptr, Robj::from(()));
+                    let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
                     res.set_attrib(class_symbol(), #self_ty_name).unwrap();
                     res.register_c_finalizer(Some(#finalizer_name));
                     res

@@ -72,8 +72,8 @@ where
 {
     single_threaded(|| unsafe {
         let values = values.into_iter();
-        let res = Robj::alloc_vector(sexptype, values.len());
-        let sexp = res.get();
+        let mut res = Robj::alloc_vector(sexptype, values.len());
+        let sexp = res.get_mut();
         for (i, val) in values.enumerate() {
             SET_VECTOR_ELT(sexp, i as R_xlen_t, val.into().get());
         }
@@ -139,6 +139,10 @@ macro_rules! make_getsexp {
         $($impl)* GetSexp for $typename {
             unsafe fn get(&self) -> SEXP {
                 self.robj.get()
+            }
+
+            unsafe fn get_mut(&mut self) -> SEXP {
+                self.robj.get_mut()
             }
 
             fn as_robj(&self) -> &Robj {

@@ -83,7 +83,7 @@ impl Environment {
     /// Set the enclosing (parent) environment.
     pub fn set_parent(&mut self, parent: Environment) -> &mut Self {
         single_threaded(|| unsafe {
-            let sexp = self.robj.get();
+            let sexp = self.robj.get_mut();
             SET_ENCLOS(sexp, parent.robj.get());
         });
         self
@@ -100,7 +100,7 @@ impl Environment {
     /// Set the environment flags.
     pub fn set_envflags(&mut self, flags: i32) -> &mut Self {
         unsafe {
-            let sexp = self.robj.get();
+            let sexp = self.robj.get_mut();
             SET_ENVFLAGS(sexp, flags)
         }
         self

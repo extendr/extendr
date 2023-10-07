@@ -45,7 +45,7 @@ impl Logicals {
 impl Logicals {
     pub fn set_elt(&mut self, index: usize, val: Rbool) {
         unsafe {
-            SET_INTEGER_ELT(self.get(), index as R_xlen_t, val.inner());
+            SET_INTEGER_ELT(self.get_mut(), index as R_xlen_t, val.inner());
         }
     }
 }
@@ -66,7 +66,7 @@ impl DerefMut for Logicals {
     /// Treat Logicals as if it is a mutable slice, like `Vec<Rint>`
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
-            let ptr = DATAPTR(self.get()) as *mut Rbool;
+            let ptr = DATAPTR(self.get_mut()) as *mut Rbool;
             std::slice::from_raw_parts_mut(ptr, self.len())
         }
     }
