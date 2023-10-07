@@ -58,10 +58,9 @@ pub use strings::Strings;
 pub use symbol::Symbol;
 
 pub(crate) fn make_symbol(name: &str) -> SEXP {
-    let mut bytes = Vec::with_capacity(name.len() + 1);
-    bytes.extend(name.bytes());
-    bytes.push(0);
-    unsafe { Rf_install(bytes.as_ptr() as *const ::std::os::raw::c_char) }
+    // cannot link to `Rf_installNoTrChar` because it is not present in `libR.so`
+    // unsafe { libR_sys::Rf_installNoTrChar(str_to_character(name)) }
+    unsafe { libR_sys::Rf_installTrChar(str_to_character(name)) }
 }
 
 pub(crate) fn make_vector<T>(sexptype: u32, values: T) -> Robj
