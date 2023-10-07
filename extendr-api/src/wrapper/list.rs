@@ -267,9 +267,7 @@ impl Iterator for ListIter {
         if i >= self.len {
             None
         } else {
-            Some(unsafe {
-                Robj::from_sexp(single_threaded(|| VECTOR_ELT(self.robj.get(), i as isize)))
-            })
+            Some(unsafe { Robj::from_sexp(VECTOR_ELT(self.robj.get(), i as isize)) })
         }
     }
 

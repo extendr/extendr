@@ -580,7 +580,7 @@ impl Robj {
     /// }
     /// ```
     pub fn as_str<'a>(&self) -> Option<&'a str> {
-        single_threaded(|| unsafe {
+        unsafe {
             match self.sexptype() {
                 STRSXP => {
                     if self.len() != 1 {
@@ -593,7 +593,7 @@ impl Robj {
                 // SYMSXP => Some(to_str(R_CHAR(PRINTNAME(self.get())) as *const u8)),
                 _ => None,
             }
-        })
+        }
     }
 
     /// Get a scalar integer.
