@@ -104,17 +104,17 @@ pub fn make_function_wrappers(
     let rng_start = opts
         .use_rng
         .then(|| {
-            quote!(unsafe {
+            quote!(single_threaded(|| unsafe {
                 libR_sys::GetRNGstate();
-            })
+            });)
         })
         .unwrap_or_default();
     let rng_end = opts
         .use_rng
         .then(|| {
-            quote!(unsafe {
+            quote!(single_threaded(|| unsafe {
                 libR_sys::PutRNGstate();
-            })
+            });)
         })
         .unwrap_or_default();
     wrappers.push(parse_quote!(

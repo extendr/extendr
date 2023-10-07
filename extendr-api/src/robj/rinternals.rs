@@ -77,7 +77,7 @@ pub trait Rinternals: Types + Conversions {
 
     /// Convert to a string vector.
     fn as_character_vector(&self) -> Robj {
-        unsafe { Robj::from_sexp(Rf_asChar(self.get())) }
+        single_threaded(|| unsafe { Robj::from_sexp(Rf_asChar(self.get())) })
     }
 
     /// Convert to vectors of many kinds.
