@@ -17,8 +17,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     //TODO: Add option for `--no-build-vignettes`
 
-    let rcmdcheck_extendrtests =
-        cmd!(shell, "R CMD check --no-manual --as-cran --force-multiarch tests/extendrtests").run()?;
+    let rcmdcheck_extendrtests = cmd!(
+        shell,
+        "R CMD check --no-manual --as-cran --force-multiarch tests/extendrtests"
+    )
+    .run()?;
 
     let fmt_check = cmd!(shell, "cargo fmt -- --check").run()?;
 
