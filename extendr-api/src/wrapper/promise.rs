@@ -18,14 +18,14 @@ impl Promise {
     /// }
     /// ```
     pub fn from_parts(code: Robj, environment: Environment) -> Result<Self> {
-        unsafe {
+        single_threaded(|| unsafe {
             let sexp = Rf_allocSExp(PROMSXP);
             let robj = Robj::from_sexp(sexp);
             SET_PRCODE(sexp, code.get());
             SET_PRENV(sexp, environment.robj.get());
             SET_PRVALUE(sexp, R_UnboundValue);
             Ok(Promise { robj })
-        }
+        })
     }
 
     /// Get the code to be executed from the promise.

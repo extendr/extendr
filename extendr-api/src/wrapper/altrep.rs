@@ -59,12 +59,12 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
     ) -> Robj {
         let res = Self::unserialize(class, state);
         if !res.is_null() {
-            unsafe {
+            single_threaded(|| unsafe {
                 let val = res.get();
                 SET_ATTRIB(val, attributes.get());
                 SET_OBJECT(val, obj_flags);
                 SETLEVELS(val, levels);
-            }
+            })
         }
         res
     }
@@ -116,7 +116,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
     /// Get the data pointer for this vector, possibly expanding the
     /// compact representation into a full R vector.
     fn dataptr(x: SEXP, _writeable: bool) -> *mut u8 {
-        unsafe {
+        single_threaded(|| unsafe {
             let data2 = R_altrep_data2(x);
             if data2 == R_NilValue || TYPEOF(data2) != TYPEOF(x) {
                 let data2 = manifest(x);
@@ -125,7 +125,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
             } else {
                 DATAPTR(data2) as *mut u8
             }
-        }
+        })
     }
 
     /// Get the data pointer for this vector, returning NULL
@@ -152,7 +152,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
 // Manifest a vector by storing the "elt" values to memory.
 // Return the new vector.
 fn manifest(x: SEXP) -> SEXP {
-    unsafe {
+    single_threaded(|| unsafe {
         Rf_protect(x);
         let len = XLENGTH_EX(x);
         let data2 = Rf_allocVector(TYPEOF(x) as u32, len as R_xlen_t);
@@ -177,7 +177,7 @@ fn manifest(x: SEXP) -> SEXP {
         };
         Rf_unprotect(2);
         data2
-    }
+    })
 }
 
 pub trait AltIntegerImpl: AltrepImpl {
@@ -488,7 +488,7 @@ impl Altrep {
 
     /// Safely implement ALTREP_CLASS.
     pub fn class(&self) -> Robj {
-        unsafe { Robj::from_sexp(ALTREP_CLASS(self.robj.get())) }
+        single_threaded(|| unsafe { Robj::from_sexp(ALTREP_CLASS(self.robj.get())) })
     }
 
     pub fn from_state_and_class<StateType: 'static>(
