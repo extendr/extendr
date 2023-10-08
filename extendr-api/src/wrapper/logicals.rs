@@ -44,9 +44,9 @@ impl Logicals {
 // TODO: this should be a trait.
 impl Logicals {
     pub fn set_elt(&mut self, index: usize, val: Rbool) {
-        unsafe {
+        single_threaded(|| unsafe {
             SET_INTEGER_ELT(self.get(), index as R_xlen_t, val.inner());
-        }
+        })
     }
 }
 

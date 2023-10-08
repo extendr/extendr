@@ -116,10 +116,10 @@ pub fn empty_env() -> Environment {
 /// ```
 #[cfg(use_r_newenv)]
 pub fn new_env(parent: Environment, hash: bool, capacity: i32) -> Environment {
-    unsafe {
+    single_threaded(|| unsafe {
         let env = R_NewEnv(parent.robj.get(), hash as i32, capacity);
         Robj::from_sexp(env).try_into().unwrap()
-    }
+    })
 }
 
 // R_NewEnv is available as of R 4.1.0. For the older version, we call an R function `new.env()`.

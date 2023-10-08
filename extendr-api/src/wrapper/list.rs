@@ -165,14 +165,14 @@ impl List {
 
     /// Set an element in the list.
     pub fn set_elt(&mut self, i: usize, value: Robj) -> Result<()> {
-        unsafe {
+        single_threaded(|| unsafe {
             if i >= self.robj.len() {
                 Err(Error::OutOfRange(self.robj.clone()))
             } else {
                 SET_VECTOR_ELT(self.robj.get(), i as R_xlen_t, value.get());
                 Ok(())
             }
-        }
+        })
     }
 
     /// Convert a List into a HashMap, consuming the list.

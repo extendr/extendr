@@ -53,9 +53,9 @@ impl Doubles {
 // TODO: this should be a trait.
 impl Doubles {
     pub fn set_elt(&mut self, index: usize, val: Rfloat) {
-        unsafe {
+        single_threaded(|| unsafe {
             SET_REAL_ELT(self.get(), index as R_xlen_t, val.inner());
-        }
+        })
     }
 }
 
