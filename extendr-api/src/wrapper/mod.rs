@@ -58,9 +58,8 @@ pub use strings::Strings;
 pub use symbol::Symbol;
 
 pub(crate) fn make_symbol(name: &str) -> SEXP {
-    // cannot link to `Rf_installNoTrChar` because it is not present in `libR.so`
-    // unsafe { libR_sys::Rf_installNoTrChar(str_to_character(name)) }
-    unsafe { libR_sys::Rf_installTrChar(str_to_character(name)) }
+    let name = CString::new(name).unwrap();
+    unsafe { libR_sys::Rf_install(name.as_ptr()) }
 }
 
 pub(crate) fn make_vector<T>(sexptype: u32, values: T) -> Robj
