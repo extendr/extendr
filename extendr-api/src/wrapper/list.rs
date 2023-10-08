@@ -98,7 +98,7 @@ impl List {
     }
 
     /// Build a list using separate names and values iterators.
-    /// Used internally by the list! macro.
+    /// Used internally by the `list!` macro.
     pub fn from_names_and_values<N, V>(names: N, values: V) -> Result<Self>
     where
         N: IntoIterator,
@@ -165,14 +165,14 @@ impl List {
 
     /// Set an element in the list.
     pub fn set_elt(&mut self, i: usize, value: Robj) -> Result<()> {
-        unsafe {
+        single_threaded(|| unsafe {
             if i >= self.robj.len() {
                 Err(Error::OutOfRange(self.robj.clone()))
             } else {
                 SET_VECTOR_ELT(self.robj.get(), i as R_xlen_t, value.get());
                 Ok(())
             }
-        }
+        })
     }
 
     /// Convert a List into a HashMap, consuming the list.

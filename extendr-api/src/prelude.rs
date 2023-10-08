@@ -41,6 +41,9 @@ pub use super::wrapper::{
     AltrepImpl, RArray, RColumn, RMatrix, RMatrix3D,
 };
 
+#[cfg(use_r_altlist)]
+pub use super::wrapper::AltListImpl;
+
 pub use super::wrapper::s4::S4;
 
 pub use super::wrapper::{Conversions, MatrixConversions};
@@ -65,8 +68,6 @@ pub use extendr_macros::{call, extendr, extendr_module, pairlist, IntoDataFrameR
 pub use super::iter::StrIter;
 
 pub use std::convert::{TryFrom, TryInto};
-
-pub use std::ops::Index;
 
 pub use super::scalar::*;
 

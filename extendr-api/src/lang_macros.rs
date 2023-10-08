@@ -59,9 +59,11 @@ pub unsafe fn append_with_name(tail: SEXP, obj: Robj, name: &str) -> SEXP {
 
 #[doc(hidden)]
 pub unsafe fn append(tail: SEXP, obj: Robj) -> SEXP {
-    let cons = Rf_cons(obj.get(), R_NilValue);
-    SETCDR(tail, cons);
-    cons
+    single_threaded(|| {
+        let cons = Rf_cons(obj.get(), R_NilValue);
+        SETCDR(tail, cons);
+        cons
+    })
 }
 
 #[doc(hidden)]

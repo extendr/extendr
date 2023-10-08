@@ -61,10 +61,20 @@ impl From<&str> for Rstr {
     }
 }
 
+impl From<Option<String>> for Rstr {
+    fn from(value: Option<String>) -> Self {
+        if let Some(string) = value {
+            Self::from(string)
+        } else {
+            Self { robj: na_string() }
+        }
+    }
+}
+
 impl Deref for Rstr {
     type Target = str;
 
-    /// Treat Rstr like &str.
+    /// Treat `Rstr` like `&str`.
     fn deref(&self) -> &Self::Target {
         self.as_str()
     }

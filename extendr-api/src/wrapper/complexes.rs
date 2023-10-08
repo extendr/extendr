@@ -78,3 +78,28 @@ impl std::fmt::Debug for Complexes {
         }
     }
 }
+
+impl TryFrom<Vec<c64>> for Complexes {
+    type Error = Error;
+
+    fn try_from(value: Vec<c64>) -> std::result::Result<Self, Self::Error> {
+        Ok(Self {
+            robj: <Robj>::try_from(value)?,
+        })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_try_from_vec_c64_conversion() {
+        test! {
+            let vec = vec![c64::new(0., 0.), c64::new(1., 1.), c64::new(0., 1.)];
+            let vec_rob: Complexes = vec.clone().try_into().unwrap();
+            let vec_rob_slice: &[c64] = vec_rob.robj.as_typed_slice().unwrap();
+            assert_eq!(vec_rob_slice, vec.as_slice());
+        }
+    }
+}

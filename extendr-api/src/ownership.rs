@@ -8,7 +8,7 @@
 //!
 //! This module exports two functions, protect(sexp) and unprotect(sexp).
 
-use lazy_static::lazy_static;
+use once_cell::sync::Lazy;
 use std::collections::hash_map::{Entry, HashMap};
 use std::sync::Mutex;
 
@@ -17,9 +17,7 @@ use libR_sys::{
     Rf_unprotect, LENGTH, SET_VECTOR_ELT, SEXP, VECSXP, VECTOR_ELT,
 };
 
-lazy_static! {
-    static ref OWNERSHIP: Mutex<Ownership> = Mutex::new(Ownership::new());
-}
+static OWNERSHIP: Lazy<Mutex<Ownership>> = Lazy::new(|| Mutex::new(Ownership::new()));
 
 pub(crate) unsafe fn protect(sexp: SEXP) {
     let mut own = OWNERSHIP.lock().expect("protect failed");

@@ -59,12 +59,12 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
     ) -> Robj {
         let res = Self::unserialize(class, state);
         if !res.is_null() {
-            unsafe {
+            single_threaded(|| unsafe {
                 let val = res.get();
                 SET_ATTRIB(val, attributes.get());
                 SET_OBJECT(val, obj_flags);
                 SETLEVELS(val, levels);
-            }
+            })
         }
         res
     }
@@ -116,7 +116,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
     /// Get the data pointer for this vector, possibly expanding the
     /// compact representation into a full R vector.
     fn dataptr(x: SEXP, _writeable: bool) -> *mut u8 {
-        unsafe {
+        single_threaded(|| unsafe {
             let data2 = R_altrep_data2(x);
             if data2 == R_NilValue || TYPEOF(data2) != TYPEOF(x) {
                 let data2 = manifest(x);
@@ -125,7 +125,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
             } else {
                 DATAPTR(data2) as *mut u8
             }
-        }
+        })
     }
 
     /// Get the data pointer for this vector, returning NULL
@@ -152,7 +152,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
 // Manifest a vector by storing the "elt" values to memory.
 // Return the new vector.
 fn manifest(x: SEXP) -> SEXP {
-    unsafe {
+    single_threaded(|| unsafe {
         Rf_protect(x);
         let len = XLENGTH_EX(x);
         let data2 = Rf_allocVector(TYPEOF(x) as u32, len as R_xlen_t);
@@ -177,7 +177,7 @@ fn manifest(x: SEXP) -> SEXP {
         };
         Rf_unprotect(2);
         data2
-    }
+    })
 }
 
 pub trait AltIntegerImpl: AltrepImpl {
@@ -455,6 +455,16 @@ pub trait AltStringImpl {
     }
 }
 
+#[cfg(use_r_altlist)]
+pub trait AltListImpl {
+    /// Get a single element from this vector
+    /// a single element of a list can be any Robj
+    fn elt(&self, _index: usize) -> Robj;
+
+    /// Set a single element in this list.
+    fn set_elt(&mut self, _index: usize, _value: Robj) {}
+}
+
 impl Altrep {
     /// Safely implement R_altrep_data1, R_altrep_data2.
     /// When implementing Altrep classes, this gets the metadata.
@@ -478,7 +488,7 @@ impl Altrep {
 
     /// Safely implement ALTREP_CLASS.
     pub fn class(&self) -> Robj {
-        unsafe { Robj::from_sexp(ALTREP_CLASS(self.robj.get())) }
+        single_threaded(|| unsafe { Robj::from_sexp(ALTREP_CLASS(self.robj.get())) })
     }
 
     pub fn from_state_and_class<StateType: 'static>(
@@ -490,7 +500,7 @@ impl Altrep {
             use std::os::raw::c_void;
 
             unsafe extern "C" fn finalizer<StateType: 'static>(x: SEXP) {
-                let state = Altrep::get_state_mut::<StateType>(x);
+                let state = R_ExternalPtrAddr(x);
                 let ptr = state as *mut StateType;
                 drop(Box::from_raw(ptr));
             }
@@ -499,7 +509,10 @@ impl Altrep {
             let tag = R_NilValue;
             let prot = R_NilValue;
             let state = R_MakeExternalPtr(ptr as *mut c_void, tag, prot);
-            R_RegisterCFinalizer(state, Some(finalizer::<StateType>));
+
+            // Use R_RegisterCFinalizerEx() and set onexit to 1 (TRUE) to invoke
+            // the finalizer on a shutdown of the R session as well.
+            R_RegisterCFinalizerEx(state, Some(finalizer::<StateType>), 1);
 
             let class_ptr = R_altrep_class_t { ptr: class.get() };
             let sexp = R_new_altrep(class_ptr, state, R_NilValue);
@@ -656,6 +669,10 @@ impl Altrep {
                 }
                 Rtype::Strings => {
                     R_make_altstring_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
+                }
+                #[cfg(use_r_altlist)]
+                Rtype::List => {
+                    R_make_altlist_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
                 }
                 _ => panic!("expected Altvec compatible type"),
             };
@@ -956,7 +973,7 @@ impl Altrep {
         })
     }
 
-    /// Make a complex ALTREP class that can be used to make vectors.
+    /// Make a string ALTREP class that can be used to make vectors.
     pub fn make_altstring_class<StateType: AltrepImpl + AltStringImpl + 'static>(
         name: &str,
         base: &str,
@@ -1001,6 +1018,39 @@ impl Altrep {
             R_set_altstring_Is_sorted_method(class_ptr, Some(altstring_Is_sorted::<StateType>));
             R_set_altstring_No_NA_method(class_ptr, Some(altstring_No_NA::<StateType>));
 
+            class
+        })
+    }
+
+    #[cfg(use_r_altlist)]
+    pub fn make_altlist_class<StateType: AltrepImpl + AltListImpl + 'static>(
+        name: &str,
+        base: &str,
+    ) -> Robj {
+        #![allow(non_snake_case)]
+
+        single_threaded(|| unsafe {
+            let class = Altrep::altrep_class::<StateType>(Rtype::List, name, base);
+            let class_ptr = R_altrep_class_t { ptr: class.get() };
+
+            unsafe extern "C" fn altlist_Elt<StateType: AltListImpl + 'static>(
+                x: SEXP,
+                i: R_xlen_t,
+            ) -> SEXP {
+                Altrep::get_state::<StateType>(x).elt(i as usize).get()
+            }
+
+            unsafe extern "C" fn altlist_Set_elt<StateType: AltListImpl + 'static>(
+                x: SEXP,
+                i: R_xlen_t,
+                v: SEXP,
+            ) {
+                Altrep::get_state_mut::<StateType>(x)
+                    .set_elt(i as usize, Robj::from_sexp(v).try_into().unwrap())
+            }
+
+            R_set_altlist_Elt_method(class_ptr, Some(altlist_Elt::<StateType>));
+            R_set_altlist_Set_elt_method(class_ptr, Some(altlist_Set_elt::<StateType>));
             class
         })
     }

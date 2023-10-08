@@ -53,7 +53,7 @@ pub fn start_r() {
 
 /// Close down the R interpreter. Note you won't be able to
 /// Restart it, so use with care or not at all.
-pub fn end_r() {
+fn end_r() {
     unsafe {
         //Rf_endEmbeddedR(0);
         R_RunExitFinalizers();
@@ -69,6 +69,13 @@ pub fn with_r(f: impl FnOnce()) {
     f();
     // For compatibility with `test!` in `extendr-api/src/rmacros.rs`, there
     // is no `end_r()` call here.
+}
+
+#[ctor::dtor]
+fn shutdown_r() {
+    if START_R.is_completed() {
+        end_r();
+    }
 }
 
 #[cfg(test)]

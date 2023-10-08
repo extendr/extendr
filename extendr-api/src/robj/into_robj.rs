@@ -2,6 +2,8 @@ use super::*;
 use crate::scalar::Scalar;
 use crate::single_threaded;
 
+mod repeat_into_robj;
+
 pub(crate) fn str_to_character(s: &str) -> SEXP {
     unsafe {
         if s.is_na() {
@@ -761,23 +763,24 @@ impl From<Vec<Rstr>> for Robj {
     }
 }
 
-impl From<Vec<Rint>> for Robj {
-    /// Convert a vector of Rint into integers.
-    fn from(val: Vec<Rint>) -> Self {
-        Integers::from_values(val.into_iter()).into()
-    }
-}
-
-impl From<Vec<Rfloat>> for Robj {
-    /// Convert a vector of Rfloat into doubles.
-    fn from(val: Vec<Rfloat>) -> Self {
-        Doubles::from_values(val.into_iter()).into()
-    }
-}
-
 #[cfg(test)]
 mod test {
     use super::*;
+
+    #[test]
+    fn test_vec_rint_to_robj() {
+        test! {
+            let int_vec = vec![3,4,0,-2];
+            let int_vec_robj: Robj = int_vec.clone().into();
+            // unsafe { libR_sys::Rf_PrintValue(int_vec_robj.get())}
+            assert_eq!(int_vec_robj.as_integer_slice().unwrap(), &int_vec);
+
+            let rint_vec = vec![Rint::new(3), Rint::new(4), Rint::new(0), Rint::new(-2)];
+            let rint_vec_robj: Robj = rint_vec.into();
+            // unsafe { libR_sys::Rf_PrintValue(rint_vec_robj.get())}
+            assert_eq!(rint_vec_robj.as_integer_slice().unwrap(), &int_vec);
+        }
+    }
 
     #[test]
     fn test_collect_rarray_matrix() {
