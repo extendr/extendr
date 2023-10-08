@@ -82,7 +82,7 @@ impl<T: Any + Debug> ExternalPtr<T> {
     /// An ExternalPtr behaves like a Box except that the information is
     /// tracked by a R object.
     pub fn new(val: T) -> Self {
-        unsafe {
+        single_threaded(|| unsafe {
             // This allocates some memory for our object and moves the object into it.
             let boxed = Box::new(val);
 
@@ -114,7 +114,7 @@ impl<T: Any + Debug> ExternalPtr<T> {
                 robj,
                 marker: std::marker::PhantomData,
             }
-        }
+        })
     }
 
     // TODO: make a constructor for references?

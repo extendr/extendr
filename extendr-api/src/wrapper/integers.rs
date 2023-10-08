@@ -53,9 +53,9 @@ impl Integers {
 // TODO: this should be a trait.
 impl Integers {
     pub fn set_elt(&mut self, index: usize, val: Rint) {
-        unsafe {
+        single_threaded(|| unsafe {
             SET_INTEGER_ELT(self.get(), index as R_xlen_t, val.inner());
-        }
+        })
     }
 }
 

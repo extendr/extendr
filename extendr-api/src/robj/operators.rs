@@ -101,10 +101,10 @@ pub trait Operators: Rinternals {
     /// ```
     fn call(&self, args: Pairlist) -> Result<Robj> {
         if self.is_function() {
-            unsafe {
+            single_threaded(|| unsafe {
                 let call = Robj::from_sexp(Rf_lcons(self.get(), args.get()));
                 call.eval()
-            }
+            })
         } else {
             Err(Error::ExpectedFunction(self.as_robj().clone()))
         }
