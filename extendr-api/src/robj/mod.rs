@@ -586,7 +586,9 @@ impl Robj {
                     if self.len() != 1 {
                         None
                     } else {
-                        Some(to_str(R_CHAR(STRING_ELT(self.get(), 0)) as *const u8))
+                        std::ffi::CStr::from_ptr(R_CHAR(STRING_ELT(self.get(), 0)))
+                            .to_str()
+                            .ok()
                     }
                 }
                 // CHARSXP => Some(to_str(R_CHAR(self.get()) as *const u8)),
@@ -1060,20 +1062,6 @@ impl PartialEq<Robj> for Robj {
             R_compute_identical(self.get(), rhs.get(), 16) != 0
         }
     }
-}
-
-// Internal utf8 to str conversion.
-// Lets not worry about non-ascii/unicode strings for now (or ever).
-pub(crate) unsafe fn to_str<'a>(ptr: *const u8) -> &'a str {
-    let mut len = 0;
-    loop {
-        if *ptr.offset(len) == 0 {
-            break;
-        }
-        len += 1;
-    }
-    let slice = std::slice::from_raw_parts(ptr, len as usize);
-    std::str::from_utf8_unchecked(slice)
 }
 
 /// Release any owned objects.

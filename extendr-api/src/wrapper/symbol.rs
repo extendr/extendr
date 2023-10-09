@@ -54,7 +54,9 @@ impl Symbol {
             let sexp = self.robj.get();
             let printname = PRINTNAME(sexp);
             assert!(TYPEOF(printname) as u32 == CHARSXP);
-            to_str(R_CHAR(printname) as *const u8)
+            std::ffi::CStr::from_ptr(R_CHAR(printname))
+                .to_str()
+                .unwrap()
         }
     }
 }
