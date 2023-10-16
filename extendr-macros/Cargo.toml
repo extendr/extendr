@@ -1,18 +1,11 @@
 [package]
 name = "extendr-macros"
-version = "0.6.0"
-authors = [
-    "andy-thomason <andy@andythomason.com>",
-    "Thomas Down",
-    "Mossa Merhi Reimert <mossa@sund.ku.dk>",
-    "Claus O. Wilke <wilke@austin.utexas.edu>",
-    "Hiroaki Yutani",
-    "Ilia A. Kosenkov <ilia.kosenkov@outlook.com>",
-]
-edition = "2021"
 description = "Generate bindings from R to Rust."
-license = "MIT"
-repository = "https://github.com/extendr/extendr"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
 
 [lib]
 proc_macro = true
