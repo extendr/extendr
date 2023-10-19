@@ -4,39 +4,71 @@ use std::path::Path;
 use toml_edit::{Document, InlineTable, Value};
 use xshell::Shell;
 
+const RUST_FOLDER_PATH: &str = "tests/extendrtests/src/rust";
+const R_FOLDER_PATH: &str = "tests/extendrtests";
+const CARGO_TOML: &str = "Cargo.toml";
+
 pub(crate) fn run(shell: &Shell) -> Result<(), Box<dyn Error>> {
-    // {
-    //     let _ = shell.push_dir(shell.current_dir().join("tests").join("extendrtests"));
-    //     let extendrtests = cmd!(shell, "R -e \"devtools::test()\" ").run()?;
-    // }
+    let _document_handle = swap_extendr_api_path(&shell)?;
 
-    {
-        let _rust_folder = shell.push_dir("tests/extendrtests/src/rust");
+    run_tests(&shell)?;
 
-        let (original_cargo_toml, is_crlf) = read_file_with_line_ending(&shell, "Cargo.toml")?;
+    Ok(())
+}
 
-        let original_cargo_toml: Document = original_cargo_toml.parse()?;
+#[derive(Debug, Clone)]
+struct DocumentHandle<'a> {
+    document: Document,
+    is_crlf: bool,
+    shell: &'a Shell,
+}
 
-        let mut cargo_toml = original_cargo_toml.clone();
-
-        let extendr_api_entry = get_extendr_api_entry(&mut cargo_toml)
-            .ok_or("`extendr-api` not found in Cargo.toml")?;
-
-        let mut replacement = InlineTable::new();
-        let item = Value::from(
-            shell
-                .current_dir()
-                .into_os_string()
-                .to_string_lossy()
-                .to_string()
-                .replace("\\", "/"),
-        );
-        replacement.entry("path").or_insert(item);
-        *extendr_api_entry = Value::InlineTable(replacement);
-
-        write_file_preserve_line_ending(&shell, "Cargo.toml", &cargo_toml, is_crlf)?;
+impl<'a> Drop for DocumentHandle<'a> {
+    fn drop(&mut self) {
+        let _rust_folder = self.shell.push_dir(RUST_FOLDER_PATH);
+        write_file_preserve_line_ending(&self.shell, CARGO_TOML, &self.document, self.is_crlf)
+            .expect("Failed to restore Cargo.toml");
     }
-    unreachable!("devtools::test()")
+}
+
+fn run_tests(shell: &Shell) -> Result<(), Box<dyn Error>> {
+    let _r_path = shell.push_dir(R_FOLDER_PATH);
+    shell
+        .cmd("Rscript")
+        .arg("-e")
+        .arg("devtools::test()")
+        .run()?;
+
+    Ok(())
+}
+
+fn swap_extendr_api_path(shell: &Shell) -> Result<DocumentHandle, Box<dyn Error>> {
+    let current_path = shell.current_dir();
+    let _rust_folder = shell.push_dir(RUST_FOLDER_PATH);
+
+    let (original_cargo_toml, is_crlf) = read_file_with_line_ending(&shell, CARGO_TOML)?;
+
+    let original_cargo_toml: Document = original_cargo_toml.parse()?;
+
+    let mut cargo_toml = original_cargo_toml.clone();
+
+    let extendr_api_entry =
+        get_extendr_api_entry(&mut cargo_toml).ok_or("`extendr-api` not found in Cargo.toml")?;
+
+    let mut replacement = InlineTable::new();
+    let item = Value::from(format!(
+        "{}/extendr-api",
+        current_path.to_string_lossy().replace("\\", "/")
+    ));
+    replacement.entry("path").or_insert(item);
+    *extendr_api_entry = Value::InlineTable(replacement);
+
+    write_file_preserve_line_ending(&shell, CARGO_TOML, &cargo_toml, is_crlf)?;
+    Ok(DocumentHandle {
+        document: original_cargo_toml,
+        is_crlf,
+        shell,
+    })
 }
 
 fn get_extendr_api_entry(document: &mut Document) -> Option<&mut Value> {
