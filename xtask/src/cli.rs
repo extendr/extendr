@@ -13,9 +13,9 @@ pub(crate) enum Commands {
     CheckFmt,
     #[command(about = "Run R CMD check on {extendrtests}")]
     RCmdCheck(RCmdCheckArg),
-    #[command(about = "Generate docs")]
+    #[command(about = "Generate documentation for all features")]
     Doc,
-    #[command(about = "???")]
+    #[command(about = "Check that the specified rust-version is MSRV")]
     Msrv,
     #[command(about = "Run devtools::test() on {extendrtests}")]
     DevtoolsTest,
