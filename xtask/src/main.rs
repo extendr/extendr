@@ -1,8 +1,8 @@
+use crate::cli::RCmdCheckArg;
+
 use std::path::PathBuf;
 
 use xshell::Shell;
-
-use crate::cli::RCmdCheckArg;
 
 mod cli;
 mod commands;
@@ -19,9 +19,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .canonicalize()?,
     );
 
-    dbg!(&shell.current_dir());
-
-    dbg! {&cli};
+    // dbg!(&shell.current_dir());
+    // dbg! {&cli};
 
     let result = match cli.command {
         cli::Commands::CheckFmt => commands::cargo_fmt_check::run(&shell)?,
