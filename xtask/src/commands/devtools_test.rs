@@ -1,17 +1,17 @@
 use std::error::Error;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 use toml_edit::{Document, InlineTable, Value};
-use xshell::Shell;
+use xshell::{cmd, Shell};
 
 const RUST_FOLDER_PATH: &str = "tests/extendrtests/src/rust";
 const R_FOLDER_PATH: &str = "tests/extendrtests";
 const CARGO_TOML: &str = "Cargo.toml";
 
 pub(crate) fn run(shell: &Shell) -> Result<(), Box<dyn Error>> {
-    let _document_handle = swap_extendr_api_path(&shell)?;
+    let _document_handle = swap_extendr_api_path(shell)?;
 
-    run_tests(&shell)?;
+    run_tests(shell)?;
 
     Ok(())
 }
@@ -26,18 +26,14 @@ struct DocumentHandle<'a> {
 impl<'a> Drop for DocumentHandle<'a> {
     fn drop(&mut self) {
         let _rust_folder = self.shell.push_dir(RUST_FOLDER_PATH);
-        write_file_preserve_line_ending(&self.shell, CARGO_TOML, &self.document, self.is_crlf)
+        write_file_preserve_line_ending(self.shell, CARGO_TOML, &self.document, self.is_crlf)
             .expect("Failed to restore Cargo.toml");
     }
 }
 
 fn run_tests(shell: &Shell) -> Result<(), Box<dyn Error>> {
     let _r_path = shell.push_dir(R_FOLDER_PATH);
-    shell
-        .cmd("Rscript")
-        .arg("-e")
-        .arg("devtools::test()")
-        .run()?;
+    cmd!(shell, "Rscript -e devtools::test()").run()?;
 
     Ok(())
 }
@@ -46,7 +42,7 @@ fn swap_extendr_api_path(shell: &Shell) -> Result<DocumentHandle, Box<dyn Error>
     let current_path = shell.current_dir();
     let _rust_folder = shell.push_dir(RUST_FOLDER_PATH);
 
-    let (original_cargo_toml, is_crlf) = read_file_with_line_ending(&shell, CARGO_TOML)?;
+    let (original_cargo_toml, is_crlf) = read_file_with_line_ending(shell, CARGO_TOML)?;
 
     let original_cargo_toml: Document = original_cargo_toml.parse()?;
 
@@ -61,7 +57,7 @@ fn swap_extendr_api_path(shell: &Shell) -> Result<DocumentHandle, Box<dyn Error>
     replacement.entry("path").or_insert(item);
     *extendr_api_entry = Value::InlineTable(replacement);
 
-    write_file_preserve_line_ending(&shell, CARGO_TOML, &cargo_toml, is_crlf)?;
+    write_file_preserve_line_ending(shell, CARGO_TOML, &cargo_toml, is_crlf)?;
     Ok(DocumentHandle {
         document: original_cargo_toml,
         is_crlf,
@@ -69,10 +65,10 @@ fn swap_extendr_api_path(shell: &Shell) -> Result<DocumentHandle, Box<dyn Error>
     })
 }
 
-fn get_replacement_path(path: &PathBuf) -> String {
+fn get_replacement_path(path: &Path) -> String {
     let path = path.to_string_lossy();
     let path = if cfg!(target_os = "windows") && path.starts_with(r"\\?\") {
-        path[4..].replace("\\", "/")
+        path[4..].replace('\\', "/")
     } else {
         path.to_string()
     };
@@ -106,7 +102,7 @@ fn write_file_preserve_line_ending<P: AsRef<Path>>(
 ) -> Result<(), Box<dyn Error>> {
     let mut file_contents = contents.to_string();
     if is_crlf {
-        file_contents = file_contents.replace("\n", "\r\n");
+        file_contents = file_contents.replace('\n', "\r\n");
     }
     shell.write_file(path, file_contents)?;
     Ok(())
