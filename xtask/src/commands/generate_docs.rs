@@ -1,11 +1,10 @@
-use xshell::{Error, Shell};
+use xshell::{Error, Shell, cmd};
 
-pub(crate) fn run(_shell: &Shell) -> Result<(), Error> {
-    // let generate_docs = cmd!(
-    //     shell,
-    //     "cargo doc --workspace --no-deps --document-private-items --features full-functionality"
-    // )
-    unimplemented!(
+pub(crate) fn run(shell: &Shell) -> Result<(), Error> {
+    let _generate_docs = cmd!(
+        shell,
         "cargo doc --workspace --no-deps --document-private-items --features full-functionality"
-    )
+    ).run()?;
+
+    Ok(())
 }
