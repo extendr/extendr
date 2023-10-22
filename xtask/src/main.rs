@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use xshell::Shell;
 
 use crate::cli::RCmdCheckArg;
@@ -9,9 +11,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = cli::parse();
     let shell = Shell::new()?;
 
-    // xtask
-    // shell.change_dir(std::env::var("CARGO_MANIFEST_DIR")?);
-    // dbg!(&shell.current_dir());
+    let path: PathBuf = std::env::var("CARGO_MANIFEST_DIR")?.parse()?;
+
+    shell.change_dir(
+        path.parent()
+            .ok_or("Failed to get parent dir")?
+            .canonicalize()?,
+    );
+
+    dbg!(&shell.current_dir());
+
     dbg! {&cli};
 
     let result = match cli.command {

@@ -13,4 +13,5 @@ publish = false
 
 [dependencies]
 clap = { version = "4.4.6", features = ["derive"] }
+toml_edit = "0.20.2"
 xshell = "*"
