@@ -19,7 +19,25 @@ license = "MIT"
 repository = "https://github.com/extendr/extendr"
 rust-version = "1.60"
 
+[workspace.package]
+version = "0.6.0"
+repository = "https://github.com/extendr/extendr"
+license = "MIT"
+authors = [
+    "andy-thomason <andy@andythomason.com>",
+    "Thomas Down",
+    "Mossa Merhi Reimert <mossa@sund.ku.dk>",
+    "Claus O. Wilke <wilke@austin.utexas.edu>",
+    "Hiroaki Yutani",
+    "Ilia A. Kosenkov <ilia.kosenkov@outlook.com>",
+    "Michael Milton <michael.r.milton@gmail.com>",
+]
+edition = "2021"
+
 [workspace.dependencies]
+# When updating extendr's version, this version also needs to be updated
+extendr-macros = { path = "./extendr-macros", version = "0.6.0" }
+
 libR-sys = "0.6.0"
 
 [patch.crates-io]

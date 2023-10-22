@@ -1,21 +1,14 @@
 [package]
 name = "extendr-engine"
-version = "0.6.0"
-authors = [
-    "andy-thomason <andy@andythomason.com>",
-    "Thomas Down",
-    "Mossa Merhi Reimert <mossa@sund.ku.dk>",
-    "Claus O. Wilke <wilke@austin.utexas.edu>",
-    "Hiroaki Yutani",
-    "Ilia A. Kosenkov <ilia.kosenkov@outlook.com>",
-]
-edition = "2021"
 description = "Safe and user friendly bindings to the R programming language."
-license = "MIT"
-repository = "https://github.com/extendr/extendr"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
 
 [dependencies]
-libR-sys = "0.6.0"
+libR-sys = { workspace = true }
 ctor = "0.2.4"
 
 [features]
