@@ -1,5 +1,5 @@
 use std::error::Error;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use toml_edit::{Document, InlineTable, Value};
 use xshell::Shell;
@@ -56,10 +56,8 @@ fn swap_extendr_api_path(shell: &Shell) -> Result<DocumentHandle, Box<dyn Error>
         get_extendr_api_entry(&mut cargo_toml).ok_or("`extendr-api` not found in Cargo.toml")?;
 
     let mut replacement = InlineTable::new();
-    let item = Value::from(format!(
-        "{}/extendr-api",
-        current_path.to_string_lossy().replace("\\", "/")
-    ));
+
+    let item = Value::from(get_replacement_path(&current_path));
     replacement.entry("path").or_insert(item);
     *extendr_api_entry = Value::InlineTable(replacement);
 
@@ -69,6 +67,17 @@ fn swap_extendr_api_path(shell: &Shell) -> Result<DocumentHandle, Box<dyn Error>
         is_crlf,
         shell,
     })
+}
+
+fn get_replacement_path(path: &PathBuf) -> String {
+    let path = path.to_string_lossy();
+    let path = if cfg!(target_os = "windows") && path.starts_with(r"\\?\") {
+        path[4..].replace("\\", "/")
+    } else {
+        path.to_string()
+    };
+
+    format!("{}/extendr-api", path)
 }
 
 fn get_extendr_api_entry(document: &mut Document) -> Option<&mut Value> {
