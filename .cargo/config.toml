@@ -1,3 +1,2 @@
-
 [alias]
-xtask = "run --package xtask --"
+extendr = "run --package xtask --"

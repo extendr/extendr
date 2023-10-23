@@ -5,10 +5,10 @@ one can use this tool. In the future, `xtask` will be renamed `ci`, when it can
 perform all the tasks, that our custom CI scripts can do at the moment.
 
 ```shell
-cargo xtask CMD
+cargo extendr CMD
 ```
 
-Running `cargo xtask --help` yields:
+Running `cargo extendr --help` yields:
 
 ```shell
 Facilitates extendr-developer tasks through `cargo`
@@ -59,7 +59,7 @@ use the embedded `extendr/libR-sys`.
 
 ### Copy R-headers
 
-Copy R's C-headers to the current `extendr`-directory. 
+Copy R's C-headers to the current `extendr`-directory.
 
 This helps with researching specific things, and mainly interesting for developers.
 
