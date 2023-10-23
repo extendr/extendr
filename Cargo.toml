@@ -1,12 +1,10 @@
 [workspace]
 resolver = "2"
 
-members = ["extendr-api", "extendr-engine", "extendr-macros"]
+members = ["extendr-api", "extendr-engine", "extendr-macros", "xtask"]
 
 [workspace.package]
 version = "0.6.0"
-repository = "https://github.com/extendr/extendr"
-license = "MIT"
 authors = [
     "andy-thomason <andy@andythomason.com>",
     "Thomas Down",
@@ -17,6 +15,9 @@ authors = [
     "Michael Milton <michael.r.milton@gmail.com>",
 ]
 edition = "2021"
+license = "MIT"
+repository = "https://github.com/extendr/extendr"
+rust-version = "1.60"
 
 [workspace.dependencies]
 # When updating extendr's version, this version also needs to be updated
