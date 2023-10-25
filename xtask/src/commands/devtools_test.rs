@@ -18,15 +18,15 @@ pub(crate) fn run(shell: &Shell) -> Result<(), Box<dyn Error>> {
 
 #[derive(Debug, Clone)]
 struct DocumentHandle<'a> {
-    document: Document,
-    is_crlf: bool,
+    document: Vec<u8>,
     shell: &'a Shell,
 }
 
 impl<'a> Drop for DocumentHandle<'a> {
     fn drop(&mut self) {
         let _rust_folder = self.shell.push_dir(RUST_FOLDER_PATH);
-        write_file_preserve_line_ending(self.shell, CARGO_TOML, &self.document, self.is_crlf)
+        self.shell
+            .write_file(CARGO_TOML, &self.document)
             .expect("Failed to restore Cargo.toml");
     }
 }
@@ -42,9 +42,9 @@ fn swap_extendr_api_path(shell: &Shell) -> Result<DocumentHandle, Box<dyn Error>
     let current_path = shell.current_dir();
     let _rust_folder = shell.push_dir(RUST_FOLDER_PATH);
 
-    let (original_cargo_toml, is_crlf) = read_file_with_line_ending(shell, CARGO_TOML)?;
+    let original_cargo_toml_bytes = read_file_with_line_ending(shell, CARGO_TOML)?;
 
-    let original_cargo_toml: Document = original_cargo_toml.parse()?;
+    let original_cargo_toml: Document = std::str::from_utf8(&original_cargo_toml_bytes)?.parse()?;
 
     let mut cargo_toml = original_cargo_toml.clone();
 
@@ -57,10 +57,9 @@ fn swap_extendr_api_path(shell: &Shell) -> Result<DocumentHandle, Box<dyn Error>
     replacement.entry("path").or_insert(item);
     *extendr_api_entry = Value::InlineTable(replacement);
 
-    write_file_preserve_line_ending(shell, CARGO_TOML, &cargo_toml, is_crlf)?;
+    shell.write_file(CARGO_TOML, cargo_toml.to_string())?;
     Ok(DocumentHandle {
-        document: original_cargo_toml,
-        is_crlf,
+        document: original_cargo_toml_bytes,
         shell,
     })
 }
@@ -87,23 +86,7 @@ fn get_extendr_api_entry(document: &mut Document) -> Option<&mut Value> {
 fn read_file_with_line_ending<P: AsRef<Path>>(
     shell: &Shell,
     path: P,
-) -> Result<(String, bool), Box<dyn Error>> {
+) -> Result<Vec<u8>, Box<dyn Error>> {
     let file_contents = shell.read_binary_file(path)?;
-    let file_contents = String::from_utf8(file_contents)?;
-    let is_crlf = file_contents.contains("\r\n");
-    Ok((file_contents, is_crlf))
-}
-
-fn write_file_preserve_line_ending<P: AsRef<Path>>(
-    shell: &Shell,
-    path: P,
-    contents: &Document,
-    is_crlf: bool,
-) -> Result<(), Box<dyn Error>> {
-    let mut file_contents = contents.to_string();
-    if is_crlf {
-        file_contents = file_contents.replace('\n', "\r\n");
-    }
-    shell.write_file(path, file_contents)?;
-    Ok(())
+    Ok(file_contents)
 }
