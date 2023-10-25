@@ -1,9 +1,8 @@
 use std::error::Error;
 
-use crate::extendrtests::with_absolute_path::swap_extendr_api_path;
 use xshell::{cmd, Shell};
 
-const R_FOLDER_PATH: &str = "tests/extendrtests";
+use crate::extendrtests::with_absolute_path::{swap_extendr_api_path, R_FOLDER_PATH};
 
 pub(crate) fn run(shell: &Shell) -> Result<(), Box<dyn Error>> {
     let _document_handle = swap_extendr_api_path(shell)?;

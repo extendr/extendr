@@ -4,6 +4,8 @@ use std::path::Path;
 use toml_edit::{Document, InlineTable, Value};
 use xshell::Shell;
 
+pub(crate) const R_FOLDER_PATH: &str = "tests/extendrtests";
+
 const RUST_FOLDER_PATH: &str = "tests/extendrtests/src/rust";
 const CARGO_TOML: &str = "Cargo.toml";
 
