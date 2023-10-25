@@ -6,6 +6,7 @@ use xshell::Shell;
 
 mod cli;
 mod commands;
+mod extendrtests;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = cli::parse();
