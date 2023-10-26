@@ -1,3 +1,3 @@
 (function() {var implementors = {
-"extendr_api":[["impl&lt;'a&gt; <a class=\"trait\" href=\"https://docs.rs/serde/1.0.189/serde/ser/trait.SerializeMap.html\" title=\"trait serde::ser::SerializeMap\">SerializeMap</a> for <a class=\"struct\" href=\"extendr_api/serializer/struct.SerializeMap.html\" title=\"struct extendr_api::serializer::SerializeMap\">SerializeMap</a>&lt;'a&gt;"]]
+"extendr_api":[["impl&lt;'a&gt; <a class=\"trait\" href=\"https://docs.rs/serde/1.0.190/serde/ser/trait.SerializeMap.html\" title=\"trait serde::ser::SerializeMap\">SerializeMap</a> for <a class=\"struct\" href=\"extendr_api/serializer/struct.SerializeMap.html\" title=\"struct extendr_api::serializer::SerializeMap\">SerializeMap</a>&lt;'a&gt;"]]
 };if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

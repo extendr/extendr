@@ -1,0 +1,3 @@
+(function() {var implementors = {
+"xtask":[["impl Args for <a class=\"struct\" href=\"xtask/cli/struct.RCmdCheckArg.html\" title=\"struct xtask::cli::RCmdCheckArg\">RCmdCheckArg</a>"],["impl Args for <a class=\"struct\" href=\"xtask/cli/struct.Cli.html\" title=\"struct xtask::cli::Cli\">Cli</a>"]]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

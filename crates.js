@@ -1,1 +1,1 @@
-window.ALL_CRATES = ["extendr_api","extendr_engine","extendr_macros"];
+window.ALL_CRATES = ["extendr_api","extendr_engine","extendr_macros","xtask"];
