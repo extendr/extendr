@@ -29,6 +29,10 @@ impl<T: Debug + 'static> robj::GetSexp for ExternalPtr<T> {
         self.robj.get()
     }
 
+    unsafe fn get_mut(&mut self) -> SEXP {
+        self.robj.get_mut()
+    }
+
     /// Get a reference to a Robj for this type.
     fn as_robj(&self) -> &Robj {
         &self.robj

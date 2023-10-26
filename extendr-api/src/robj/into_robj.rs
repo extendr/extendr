@@ -631,7 +631,7 @@ pub trait RobjItertools: Iterator {
         Robj: AsTypedSlice<'a, Self::Item>,
         Self::Item: 'a,
     {
-        let vector = self.collect_robj();
+        let mut vector = self.collect_robj();
         let prod = dims.iter().product::<usize>();
         if prod != vector.len() {
             return Err(Error::Other(format!(

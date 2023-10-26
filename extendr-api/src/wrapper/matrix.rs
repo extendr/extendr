@@ -108,7 +108,7 @@ where
 {
     /// Make a new column type.
     pub fn new_column<F: FnMut(usize) -> T>(nrows: usize, f: F) -> Self {
-        let robj = (0..nrows).map(f).collect_robj();
+        let mut robj = (0..nrows).map(f).collect_robj();
         let dim = [nrows];
         let mut robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
         let slice = robj.as_typed_slice_mut().unwrap();
@@ -142,7 +142,7 @@ where
         ncols: usize,
         f: F,
     ) -> Self {
-        let robj = (0..ncols)
+        let mut robj = (0..ncols)
             .flat_map(|c| {
                 let mut g = f.clone();
                 (0..nrows).map(move |r| g(r, c))
@@ -175,7 +175,7 @@ where
         nmatrix: usize,
         f: F,
     ) -> Self {
-        let robj = (0..nmatrix)
+        let mut robj = (0..nmatrix)
             .flat_map(|m| {
                 let h = f.clone();
                 (0..ncols).flat_map(move |c| {

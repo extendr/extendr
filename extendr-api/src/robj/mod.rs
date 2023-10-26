@@ -132,6 +132,8 @@ pub trait GetSexp {
     /// Access to a raw SEXP pointer can cause undefined behaviour and is not thread safe.
     unsafe fn get(&self) -> SEXP;
 
+    unsafe fn get_mut(&mut self) -> SEXP;
+
     /// Get a reference to a Robj for this type.
     fn as_robj(&self) -> &Robj;
 
@@ -141,6 +143,10 @@ pub trait GetSexp {
 
 impl GetSexp for Robj {
     unsafe fn get(&self) -> SEXP {
+        self.inner
+    }
+
+    unsafe fn get_mut(&mut self) -> SEXP {
         self.inner
     }
 
@@ -175,7 +181,7 @@ pub trait Slices: GetSexp {
     /// Not all obejects (especially not list and strings) support this.
     unsafe fn as_typed_slice_raw_mut<T>(&mut self) -> &mut [T] {
         let len = XLENGTH(self.get()) as usize;
-        let data = DATAPTR(self.get()) as *mut T;
+        let data = DATAPTR(self.get_mut()) as *mut T;
         std::slice::from_raw_parts_mut(data, len)
     }
 }
@@ -849,7 +855,7 @@ pub trait Attributes: Types + Length {
     ///    assert_eq!(robj.get_attrib(sym!(xyz)), Some(r!(1)));
     /// }
     /// ```
-    fn set_attrib<N, V>(&self, name: N, value: V) -> Result<Robj>
+    fn set_attrib<N, V>(&mut self, name: N, value: V) -> Result<Robj>
     where
         N: Into<Robj>,
         V: Into<Robj>,
@@ -857,7 +863,7 @@ pub trait Attributes: Types + Length {
         let name = name.into();
         let value = value.into();
         unsafe {
-            let sexp = self.get();
+            let sexp = self.get_mut();
             single_threaded(|| {
                 catch_r_error(|| Rf_setAttrib(sexp, name.get(), value.get()))
                     .map(|_| Robj::from_sexp(sexp))
@@ -981,7 +987,7 @@ pub trait Attributes: Types + Length {
     ///     assert_eq!(obj.inherits("a"), true);
     /// }
     /// ```
-    fn set_class<T>(&self, class: T) -> Result<Robj>
+    fn set_class<T>(&mut self, class: T) -> Result<Robj>
     where
         T: IntoIterator,
         T::IntoIter: ExactSizeIterator,
