@@ -23,8 +23,7 @@ fn run_r_cmd_check(shell: &Shell, no_build_vignettes: bool) -> Result<(), Box<dy
         .cmd("Rscript")
         .arg("-e")
         .arg(format!(
-            "rcmdcheck::rcmdcheck(args = {}, error_on = 'warning')",
-            args
+            "rcmdcheck::rcmdcheck(args = {args}, error_on = 'warning')"
         ))
         .run()?;
 
