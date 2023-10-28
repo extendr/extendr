@@ -15,10 +15,10 @@ pub(crate) enum RCmdCheckErrorOn {
 impl RCmdCheckErrorOn {
     fn get_error_on(&self) -> &'static str {
         match self {
-            RCmdCheckErrorOn::Never => "never",
-            RCmdCheckErrorOn::Note => "note",
-            RCmdCheckErrorOn::Warning => "warning",
-            RCmdCheckErrorOn::Error => "error",
+            RCmdCheckErrorOn::Never => "'never'",
+            RCmdCheckErrorOn::Note => "'note'",
+            RCmdCheckErrorOn::Warning => "'warning'",
+            RCmdCheckErrorOn::Error => "'error'",
         }
     }
 }
@@ -51,7 +51,7 @@ fn run_r_cmd_check(
         .cmd("Rscript")
         .arg("-e")
         .arg(format!(
-            "rcmdcheck::rcmdcheck(args = {args}, error_on = '{error_on}')"
+            "rcmdcheck::rcmdcheck(args = {args}, error_on = {error_on})"
         ))
         .run()?;
 
