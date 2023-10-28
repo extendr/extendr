@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"constant":["CARGO_TOML","RUST_FOLDER_PATH","R_FOLDER_PATH"],"fn":["get_extendr_api_entry","get_replacement_path","read_file_with_line_ending","run","run_tests","swap_extendr_api_path","write_file_preserve_line_ending"],"struct":["DocumentHandle"]};
+window.SIDEBAR_ITEMS = {"fn":["run","run_tests"]};

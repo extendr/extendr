@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["with_absolute_path"]};
