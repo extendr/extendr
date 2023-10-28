@@ -1,4 +1,8 @@
-use clap::{Args, Parser, Subcommand, ValueEnum};
+use clap::{Parser, Subcommand};
+
+use crate::cli::r_cmd_check::RCmdCheckArg;
+
+mod r_cmd_check;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -19,22 +23,6 @@ pub(crate) enum Commands {
     Msrv,
     #[command(about = "Run devtools::test() on {extendrtests}")]
     DevtoolsTest,
-}
-
-#[derive(Args, Debug)]
-pub(crate) struct RCmdCheckArg {
-    #[arg(long, default_value = "false", help = "Passed to R CMD check")]
-    pub(crate) no_build_vignettes: bool,
-    #[arg(long, short, default_value = "warning", help = "Passed to R CMD check")]
-    pub(crate) error_on: ErrorOn,
-}
-
-#[derive(ValueEnum, Debug, Clone, Copy, Eq, PartialEq)]
-pub(crate) enum ErrorOn {
-    Never,
-    Note,
-    Warning,
-    Error,
 }
 
 pub(crate) fn parse() -> Cli {
