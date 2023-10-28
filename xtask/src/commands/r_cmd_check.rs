@@ -13,7 +13,7 @@ pub(crate) enum RCmdCheckErrorOn {
 }
 
 impl RCmdCheckErrorOn {
-    fn into_arg(&self) -> &'static str {
+    fn get_error_on(&self) -> &'static str {
         match self {
             RCmdCheckErrorOn::Never => "never",
             RCmdCheckErrorOn::Note => "note",
@@ -46,7 +46,7 @@ fn run_r_cmd_check(
 
     let args = format!("c({0})", args.join(", "));
 
-    let error_on = error_on.into_arg();
+    let error_on = error_on.get_error_on();
     shell
         .cmd("Rscript")
         .arg("-e")

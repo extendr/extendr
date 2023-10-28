@@ -20,8 +20,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .canonicalize()?,
     );
 
-    dbg! {&cli};
-
     match cli.command {
         cli::Commands::CheckFmt => commands::cargo_fmt_check::run(&shell)?,
         cli::Commands::RCmdCheck(RCmdCheckArg {
