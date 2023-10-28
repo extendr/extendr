@@ -2,7 +2,7 @@ use clap::{Parser, Subcommand};
 
 use crate::cli::r_cmd_check::RCmdCheckArg;
 
-mod r_cmd_check;
+pub(crate) mod r_cmd_check;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]

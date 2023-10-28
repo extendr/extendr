@@ -1,3 +1,4 @@
+use crate::commands::r_cmd_check::RCmdCheckErrorOn;
 use clap::{Args, ValueEnum};
 
 #[derive(Args, Debug)]
@@ -14,4 +15,15 @@ pub(crate) enum ErrorOn {
     Note,
     Warning,
     Error,
+}
+
+impl Into<RCmdCheckErrorOn> for ErrorOn {
+    fn into(self) -> RCmdCheckErrorOn {
+        match self {
+            ErrorOn::Never => RCmdCheckErrorOn::Never,
+            ErrorOn::Note => RCmdCheckErrorOn::Note,
+            ErrorOn::Warning => RCmdCheckErrorOn::Warning,
+            ErrorOn::Error => RCmdCheckErrorOn::Error,
+        }
+    }
 }

@@ -4,7 +4,19 @@ use xshell::Shell;
 
 use crate::extendrtests::with_absolute_path::{swap_extendr_api_path, R_FOLDER_PATH};
 
-pub(crate) fn run(shell: &Shell, no_build_vignettes: bool) -> Result<(), Box<dyn Error>> {
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
+pub(crate) enum RCmdCheckErrorOn {
+    Never,
+    Note,
+    Warning,
+    Error,
+}
+
+pub(crate) fn run(
+    shell: &Shell,
+    no_build_vignettes: bool,
+    error_on: RCmdCheckErrorOn,
+) -> Result<(), Box<dyn Error>> {
     let _document_handle = swap_extendr_api_path(shell)?;
 
     run_r_cmd_check(shell, no_build_vignettes)
