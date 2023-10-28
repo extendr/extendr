@@ -1,4 +1,4 @@
-use clap::{Args, Parser, Subcommand};
+use clap::{Args, Parser, Subcommand, ValueEnum};
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -25,6 +25,16 @@ pub(crate) enum Commands {
 pub(crate) struct RCmdCheckArg {
     #[arg(long, default_value = "false", help = "Passed to R CMD check")]
     pub(crate) no_build_vignettes: bool,
+    #[arg(long, short, default_value = "warning", help = "Passed to R CMD check")]
+    pub(crate) error_on: ErrorOn,
+}
+
+#[derive(ValueEnum, Debug, Clone, Copy, Eq, PartialEq)]
+pub(crate) enum ErrorOn {
+    Never,
+    Note,
+    Warning,
+    Error,
 }
 
 pub(crate) fn parse() -> Cli {
