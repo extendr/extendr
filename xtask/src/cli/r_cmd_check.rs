@@ -5,7 +5,7 @@ use clap::{Args, ValueEnum};
 pub(crate) struct RCmdCheckArg {
     #[arg(long, default_value = "false", help = "Passed to R CMD check")]
     pub(crate) no_build_vignettes: bool,
-    #[arg(long, short, default_value = "warning", help = "Passed to R CMD check")]
+    #[arg(long, default_value = "warning", help = "Passed to R CMD check")]
     pub(crate) error_on: ErrorOn,
 }
 

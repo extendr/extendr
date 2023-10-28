@@ -12,6 +12,17 @@ pub(crate) enum RCmdCheckErrorOn {
     Error,
 }
 
+impl RCmdCheckErrorOn {
+    fn into_arg(&self) -> &'static str {
+        match self {
+            RCmdCheckErrorOn::Never => "never",
+            RCmdCheckErrorOn::Note => "note",
+            RCmdCheckErrorOn::Warning => "warning",
+            RCmdCheckErrorOn::Error => "error",
+        }
+    }
+}
+
 pub(crate) fn run(
     shell: &Shell,
     no_build_vignettes: bool,
@@ -19,10 +30,14 @@ pub(crate) fn run(
 ) -> Result<(), Box<dyn Error>> {
     let _document_handle = swap_extendr_api_path(shell)?;
 
-    run_r_cmd_check(shell, no_build_vignettes)
+    run_r_cmd_check(shell, no_build_vignettes, error_on)
 }
 
-fn run_r_cmd_check(shell: &Shell, no_build_vignettes: bool) -> Result<(), Box<dyn Error>> {
+fn run_r_cmd_check(
+    shell: &Shell,
+    no_build_vignettes: bool,
+    error_on: RCmdCheckErrorOn,
+) -> Result<(), Box<dyn Error>> {
     let _r_path = shell.push_dir(R_FOLDER_PATH);
     let mut args = vec!["'--as-cran'", "'--no-manual'"];
     if no_build_vignettes {
@@ -31,11 +46,12 @@ fn run_r_cmd_check(shell: &Shell, no_build_vignettes: bool) -> Result<(), Box<dy
 
     let args = format!("c({0})", args.join(", "));
 
+    let error_on = error_on.into_arg();
     shell
         .cmd("Rscript")
         .arg("-e")
         .arg(format!(
-            "rcmdcheck::rcmdcheck(args = {args}, error_on = 'warning')"
+            "rcmdcheck::rcmdcheck(args = {args}, error_on = '{error_on}')"
         ))
         .run()?;
 
