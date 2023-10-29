@@ -32,7 +32,7 @@ impl From<()> for Robj {
 ///
 /// Panics if there is an error.
 ///
-/// To use the `?`-operator, an extendr-function must return either [`extendr_api::result::Result`] or [`std::result::Result`].
+/// To use the `?`-operator, an extendr-function must return either [`extendr_api::error::Result`] or [`std::result::Result`].
 /// Use of `panic!` in extendr is discouraged due to memory leakage.
 ///
 /// Alternative behaviors enabled by feature toggles:
@@ -54,6 +54,8 @@ impl From<()> for Robj {
 ///     assert_eq!(r!(my_func()), r!(1.0));
 /// }
 /// ```
+///
+/// [`extendr_api::error::Result`]: crate::error::Result
 #[cfg(not(any(feature = "result_list", feature = "result_condition")))]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
@@ -116,9 +118,9 @@ where
     }
 }
 
-/// Convert a Result to an R `List` with an `ok` and `err` elements.
+/// Convert a `Result` to an R `List` with an `ok` and `err` elements.
 /// This allows using `?` operator in functions
-/// and returning [`std::result::Result`] or [`extendr_api::result::Result`]
+/// and returning [`std::result::Result`] or [`extendr_api::error::Result`]
 /// without panicking on `Err`.
 ///
 ///
@@ -147,8 +149,9 @@ where
 ///         ).unwrap()
 ///     );
 /// }
-///
 /// ```
+///
+/// [`extendr_api::error::Result`]: crate::error::Result
 #[cfg(feature = "result_list")]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
