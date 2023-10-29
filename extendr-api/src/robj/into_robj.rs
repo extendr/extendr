@@ -110,8 +110,6 @@ where
         match res {
             Ok(x) => x.into(),
             Err(x) => { list!(message = "extendr_err", value = x.into()) }
-                // // can only imagine this would ever fail due to memory allocation error, but then panicking is the right choice
-                // .expect("internal error: failed to create an R list")
                 .set_class(["extendr_error", "error", "condition"])
                 .expect("internal error: failed to set class"),
         }
@@ -170,8 +168,6 @@ where
                 list!(ok = NULL, err = err_robj)
             }
         }
-        // can only imagine this would ever fail due to memory allocation error, but then panicking is the right choice
-        // .expect("Internal error: failed to create an R list")
         .set_class(&["extendr_result"])
         .expect("Internal error: failed to set class")
         .into()
