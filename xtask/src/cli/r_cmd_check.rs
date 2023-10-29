@@ -12,7 +12,7 @@ pub(crate) struct RCmdCheckArg {
         help = "Determines which R CMD check errors to fail on"
     )]
     pub(crate) error_on: ErrorOn,
-    #[arg(long, help = "If not specified, temp dir is used")]
+    #[arg(long, help = "Defaults to a temporary directory")]
     pub(crate) check_dir: Option<String>,
 }
 
