@@ -1,5 +1,8 @@
 use std::error::Error;
+use std::path;
+use std::path::{Path, PathBuf};
 
+use crate::extendrtests::path_helper::RCompatiblePath;
 use xshell::Shell;
 
 use crate::extendrtests::with_absolute_path::{swap_extendr_api_path, R_FOLDER_PATH};
@@ -23,11 +26,28 @@ impl RCmdCheckErrorOn {
     }
 }
 
-pub(crate) fn run(
+pub(crate) fn run<P: AsRef<Path>>(
     shell: &Shell,
     no_build_vignettes: bool,
     error_on: RCmdCheckErrorOn,
+    check_dir: Option<String>,
+    initial_path: P,
 ) -> Result<(), Box<dyn Error>> {
+    if let Some(check_dir) = check_dir {
+        let mut path = PathBuf::from(check_dir);
+        if !path.is_absolute() {
+            let str_rep = path.to_string_lossy();
+            if str_rep.starts_with("./") {
+                path = PathBuf::from(str_rep.trim_start_matches("./"));
+            } else if str_rep.starts_with(r".\\") {
+                path = PathBuf::from(str_rep.trim_start_matches(r".\\"));
+            }
+            path = initial_path.as_ref().canonicalize()?.join(path);
+        }
+        let path = path.adjust_for_r();
+        dbg! {&path};
+    }
+
     let _document_handle = swap_extendr_api_path(shell)?;
 
     run_r_cmd_check(shell, no_build_vignettes, error_on)

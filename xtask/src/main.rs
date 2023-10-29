@@ -25,8 +25,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         cli::Commands::RCmdCheck(RCmdCheckArg {
             no_build_vignettes,
             error_on,
-            ..
-        }) => commands::r_cmd_check::run(&shell, no_build_vignettes, error_on.into())?,
+            check_dir,
+        }) => commands::r_cmd_check::run(
+            &shell,
+            no_build_vignettes,
+            error_on.into(),
+            check_dir,
+            original_path,
+        )?,
         cli::Commands::Doc => commands::generate_docs::run(&shell)?,
         cli::Commands::Msrv => commands::cargo_msrv::run(&shell)?,
         cli::Commands::DevtoolsTest => commands::devtools_test::run(&shell)?,

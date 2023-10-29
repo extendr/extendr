@@ -53,7 +53,7 @@ pub(crate) fn swap_extendr_api_path(shell: &Shell) -> Result<DocumentHandle, Box
 }
 
 fn get_replacement_path(path: &Path) -> String {
-    let path = path.canonicalize_for_r();
+    let path = path.adjust_for_r();
 
     format!("{path}/extendr-api")
 }

@@ -4,7 +4,7 @@ pub(crate) trait RCompatiblePath
 where
     Self: AsRef<Path>,
 {
-    fn canonicalize_for_r(&self) -> String {
+    fn adjust_for_r(&self) -> String {
         let path = self.as_ref().to_string_lossy();
         if cfg!(target_os = "windows") && path.starts_with(r"\\?\") {
             path[4..].replace('\\', "/")
