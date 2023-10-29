@@ -28,15 +28,15 @@ impl From<()> for Robj {
     }
 }
 
-/// Convert a Result to an Robj.
+/// Convert a [`Result`] to an [`Robj`].
 ///
 /// Panics if there is an error.
 ///
-/// To use the ?-operator, an extendr-function must return either extendr_api::result::Result<T> or `std::result::Result<T,E>`.
-/// Use of panic! in extendr is discouraged due to memory leakage.
+/// To use the `?`-operator, an extendr-function must return either [`extendr_api::result::Result`] or [`std::result::Result`].
+/// Use of `panic!` in extendr is discouraged due to memory leakage.
 ///
 /// Alternative behaviors enabled by feature toggles:
-/// extendr-api supports different conversions from `Result<T,E>` into `Robj`.
+/// extendr-api supports different conversions from [`Result<T,E>`] into `Robj`.
 /// Below, `x_ok` represents an R variable on R side which was returned from rust via `T::into_robj()` or similar.
 /// Likewise, `x_err` was returned to R side from rust via `E::into_robj()` or similar.
 /// extendr-api
@@ -65,11 +65,11 @@ where
     }
 }
 
-/// Convert a Result to an Robj. Return either Ok value or Err value wrapped in an
-/// error condition. This allows using ? operator in functions
-/// and returning [Result<T>] without panicking on Err. T must implement IntoRobj.
+/// Convert a [`Result`] to an [`Robj`]. Return either `Ok` value or `Err` value wrapped in an
+/// error condition. This allows using `?` operator in functions
+/// and returning [`Result<T>`] without panicking on `Err`. `T` must implement [`IntoRobj`].
 ///
-/// Returns Ok value as is. Returns Err wrapped in an R error condition. The Err is placed in
+/// Returns `Ok` value as is. Returns `Err` wrapped in an R error condition. The `Err` is placed in
 /// $value field of the condition, and its message is set to 'extendr_err'
 /// ```
 /// use extendr_api::prelude::*;
@@ -104,11 +104,12 @@ where
     E: Into<Robj>,
 {
     fn from(res: std::result::Result<T, E>) -> Self {
+        use crate as extendr_api;
         match res {
             Ok(x) => x.into(),
-            Err(x) => { list!(message = "extendr_err", value = x) }
-                // can only imagine this would ever fail due to memory allocation error, but then panicking is the right choice
-                .expect("internal error: failed to create an R list")
+            Err(x) => { list!(message = "extendr_err", value = x.into()) }
+                // // can only imagine this would ever fail due to memory allocation error, but then panicking is the right choice
+                // .expect("internal error: failed to create an R list")
                 .set_class(["extendr_error", "error", "condition"])
                 .expect("internal error: failed to set class"),
         }
@@ -116,9 +117,9 @@ where
 }
 
 /// Convert a Result to an R `List` with an `ok` and `err` elements.
-/// This allows using ? operator in functions
-/// and returning [std::result::Result<T,E> or extendr_api::result::Result<T>]
-/// without panicking on Err.
+/// This allows using `?` operator in functions
+/// and returning [`std::result::Result`] or [`extendr_api::result::Result`]
+/// without panicking on `Err`.
 ///
 ///
 /// ```
