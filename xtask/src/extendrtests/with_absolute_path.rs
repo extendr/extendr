@@ -4,6 +4,8 @@ use std::path::Path;
 use toml_edit::{Document, InlineTable, Value};
 use xshell::Shell;
 
+use crate::extendrtests::path_helper::RCompatiblePath;
+
 pub(crate) const R_FOLDER_PATH: &str = "tests/extendrtests";
 
 const RUST_FOLDER_PATH: &str = "tests/extendrtests/src/rust";
@@ -51,14 +53,9 @@ pub(crate) fn swap_extendr_api_path(shell: &Shell) -> Result<DocumentHandle, Box
 }
 
 fn get_replacement_path(path: &Path) -> String {
-    let path = path.to_string_lossy();
-    let path = if cfg!(target_os = "windows") && path.starts_with(r"\\?\") {
-        path[4..].replace('\\', "/")
-    } else {
-        path.to_string()
-    };
+    let path = path.canonicalize_for_r();
 
-    format!("{}/extendr-api", path)
+    format!("{path}/extendr-api")
 }
 
 fn get_extendr_api_entry(document: &mut Document) -> Option<&mut Value> {

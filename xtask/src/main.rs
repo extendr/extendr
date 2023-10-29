@@ -11,6 +11,7 @@ mod extendrtests;
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = cli::parse();
     let shell = Shell::new()?;
+    let original_path = shell.current_dir();
 
     let path: PathBuf = std::env::var("CARGO_MANIFEST_DIR")?.parse()?;
 
@@ -19,7 +20,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .ok_or("Failed to get parent dir")?
             .canonicalize()?,
     );
-
     match cli.command {
         cli::Commands::CheckFmt => commands::cargo_fmt_check::run(&shell)?,
         cli::Commands::RCmdCheck(RCmdCheckArg {
