@@ -1,12 +1,19 @@
-use crate::commands::r_cmd_check::RCmdCheckErrorOn;
 use clap::{Args, ValueEnum};
+
+use crate::commands::r_cmd_check::RCmdCheckErrorOn;
 
 #[derive(Args, Debug)]
 pub(crate) struct RCmdCheckArg {
     #[arg(long, default_value = "false", help = "Passed to R CMD check")]
     pub(crate) no_build_vignettes: bool,
-    #[arg(long, default_value = "warning", help = "Passed to R CMD check")]
+    #[arg(
+        long,
+        default_value = "warning",
+        help = "Determines which R CMD check errors to fail on"
+    )]
     pub(crate) error_on: ErrorOn,
+    #[arg(long, help = "If not specified, temp dir is used")]
+    pub(crate) check_dir: Option<String>,
 }
 
 #[derive(ValueEnum, Debug, Clone, Copy, Eq, PartialEq)]
