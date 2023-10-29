@@ -155,10 +155,11 @@ where
     E: Into<Robj>,
 {
     fn from(res: std::result::Result<T, E>) -> Self {
+        use crate as extendr_api;
         match res {
-            Ok(x) => list!(ok = x, err = NULL),
+            Ok(x) => list!(ok = x.into(), err = NULL),
             Err(x) => {
-                let err_robj = x.into_robj();
+                let err_robj = x.into();
                 if err_robj.is_null() {
                     panic!("Internal error: result_list not allowed to return NULL as err-value")
                 }
@@ -166,7 +167,7 @@ where
             }
         }
         // can only imagine this would ever fail due to memory allocation error, but then panicking is the right choice
-        .expect("Internal error: failed to create an R list")
+        // .expect("Internal error: failed to create an R list")
         .set_class(&["extendr_result"])
         .expect("Internal error: failed to set class")
         .into()
