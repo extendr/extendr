@@ -1,10 +1,9 @@
 use std::error::Error;
-use std::path;
 use std::path::{Path, PathBuf};
 
-use crate::extendrtests::path_helper::RCompatiblePath;
 use xshell::Shell;
 
+use crate::extendrtests::path_helper::RCompatiblePath;
 use crate::extendrtests::with_absolute_path::{swap_extendr_api_path, R_FOLDER_PATH};
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
@@ -33,30 +32,38 @@ pub(crate) fn run<P: AsRef<Path>>(
     check_dir: Option<String>,
     initial_path: P,
 ) -> Result<(), Box<dyn Error>> {
-    if let Some(check_dir) = check_dir {
-        let mut path = PathBuf::from(check_dir);
-        if !path.is_absolute() {
-            let str_rep = path.to_string_lossy();
-            if str_rep.starts_with("./") {
-                path = PathBuf::from(str_rep.trim_start_matches("./"));
-            } else if str_rep.starts_with(r".\\") {
-                path = PathBuf::from(str_rep.trim_start_matches(r".\\"));
-            }
-            path = initial_path.as_ref().canonicalize()?.join(path);
-        }
-        let path = path.adjust_for_r();
-        dbg! {&path};
-    }
+    let check_dir = match check_dir {
+        Some(cd) => Some(construct_check_dir_path(cd, initial_path)?),
+        _ => None,
+    };
 
     let _document_handle = swap_extendr_api_path(shell)?;
 
-    run_r_cmd_check(shell, no_build_vignettes, error_on)
+    run_r_cmd_check(shell, no_build_vignettes, error_on, check_dir)
+}
+
+fn construct_check_dir_path<S: AsRef<str>, P: AsRef<Path>>(
+    check_dir: S,
+    initial_path: P,
+) -> Result<String, Box<dyn Error>> {
+    let mut path = PathBuf::from(check_dir.as_ref());
+    if !path.is_absolute() {
+        let str_rep = path.to_string_lossy();
+        if str_rep.starts_with("./") {
+            path = PathBuf::from(str_rep.trim_start_matches("./"));
+        } else if str_rep.starts_with(r".\\") {
+            path = PathBuf::from(str_rep.trim_start_matches(r".\\"));
+        }
+        path = initial_path.as_ref().canonicalize()?.join(path);
+    }
+    Ok(path.adjust_for_r())
 }
 
 fn run_r_cmd_check(
     shell: &Shell,
     no_build_vignettes: bool,
     error_on: RCmdCheckErrorOn,
+    check_dir: Option<String>,
 ) -> Result<(), Box<dyn Error>> {
     let _r_path = shell.push_dir(R_FOLDER_PATH);
     let mut args = vec!["'--as-cran'", "'--no-manual'"];
@@ -67,11 +74,16 @@ fn run_r_cmd_check(
     let args = format!("c({0})", args.join(", "));
 
     let error_on = error_on.get_error_on();
+
+    let check_dir = match check_dir {
+        Some(cd) => format!("'{}'", cd),
+        _ => "NULL".to_string(),
+    };
     shell
         .cmd("Rscript")
         .arg("-e")
         .arg(format!(
-            "rcmdcheck::rcmdcheck(args = {args}, error_on = {error_on})"
+            "rcmdcheck::rcmdcheck(args = {args}, error_on = {error_on}, check_dir = {check_dir})"
         ))
         .run()?;
 
