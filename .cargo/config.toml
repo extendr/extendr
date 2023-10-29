@@ -1,2 +1,19 @@
+[build]
+target = "x86_64-pc-windows-gnu"
+
 [alias]
 extendr = "run --package xtask --"
+
+# linker = "x86_64-w64-mingw32.static.posix-ld.exe"
+# linker = "gcc"
+# linker = "x86_64-w64-mingw32.static.posix-ar.exe"
+# -C link-arg=--no-gcc_eh
+# rustflags = ["-C", "link-arg=-LC:/users/minin/scoop/apps/rtools/current/x86_64-w64-mingw32.static.posix/bin/../lib/gcc/x86_64-w64-mingw32.static.posix/12.3.0"]
+[target.x86_64-pc-windows-gnu]
+linker = "x86_64-w64-mingw32.static.posix-gcc.exe"
+ar = "x86_64-w64-mingw32.static.posix-ar.exe"
+rustflags = [
+    "-C", "link-arg=-fuse-ld=lld",
+    "-C", "link-arg=-LC:/Users/minin/scoop/persist/rustup/.rustup/toolchains/stable-x86_64-pc-windows-gnu/lib/rustlib/x86_64-pc-windows-gnu/lib/self-contained",
+    # "-C", "link-arg=-L${RUSTUP_HOME}/toolchains/stable-x86_64-pc-windows-gnu/lib/rustlib/x86_64-pc-windows-gnu/lib/self-contained",
+]
