@@ -802,7 +802,7 @@ make_typed_slice!(Rcomplex, COMPLEX, CPLXSXP);
 /// These are helper functions which give access to common properties of R objects.
 #[allow(non_snake_case)]
 pub trait Attributes: Types + Length {
-    /// Get a specific attribute as a borrowed robj if it exists.
+    /// Get a specific attribute as a borrowed `Robj` if it exists.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -821,6 +821,7 @@ pub trait Attributes: Types + Length {
         if self.sexptype() == CHARSXP {
             None
         } else {
+            // FIXME: this attribute does not need protection
             let res = unsafe { Robj::from_sexp(Rf_getAttrib(self.get(), name.get())) };
             if res.is_null() {
                 None
@@ -844,7 +845,7 @@ pub trait Attributes: Types + Length {
         }
     }
 
-    /// Set a specific attribute and return the object.
+    /// Set a specific attribute in-place and return the object.
     ///
     /// Note that some combinations of attributes are illegal and this will
     /// return an error.
@@ -866,6 +867,9 @@ pub trait Attributes: Types + Length {
             let sexp = self.get_mut();
             single_threaded(|| {
                 catch_r_error(|| Rf_setAttrib(sexp, name.get(), value.get()))
+                    // FIXME: there is no reason to re-wrap this, as this mutates
+                    // the input `self`, and returns another pointer to the same
+                    // object
                     .map(|_| Robj::from_sexp(sexp))
             })
         }
@@ -975,8 +979,8 @@ pub trait Attributes: Types + Length {
         }
     }
 
-    /// Set the class attribute from a string iterator, returning
-    /// a new object.
+    /// Set the class attribute from a string iterator, and returns the same
+    /// object.
     ///
     /// May return an error for some class names.
     /// ```
