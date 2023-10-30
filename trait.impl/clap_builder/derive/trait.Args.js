@@ -1,3 +1,3 @@
 (function() {var implementors = {
-"xtask":[["impl Args for <a class=\"struct\" href=\"xtask/cli/struct.Cli.html\" title=\"struct xtask::cli::Cli\">Cli</a>"],["impl Args for <a class=\"struct\" href=\"xtask/cli/r_cmd_check/struct.RCmdCheckArg.html\" title=\"struct xtask::cli::r_cmd_check::RCmdCheckArg\">RCmdCheckArg</a>"]]
+"xtask":[["impl Args for <a class=\"struct\" href=\"xtask/cli/r_cmd_check/struct.RCmdCheckArg.html\" title=\"struct xtask::cli::r_cmd_check::RCmdCheckArg\">RCmdCheckArg</a>"],["impl Args for <a class=\"struct\" href=\"xtask/cli/struct.Cli.html\" title=\"struct xtask::cli::Cli\">Cli</a>"]]
 };if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
