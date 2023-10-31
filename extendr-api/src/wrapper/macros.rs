@@ -9,7 +9,6 @@ macro_rules! gen_vector_wrapper_impl {
         doc_name: $doc_name : ident,
         altrep_constructor: $altrep_constructor : ident,
     ) => {
-        
         impl Default for $type {
             fn default() -> Self {
                 $type::new(0)
