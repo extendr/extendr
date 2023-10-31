@@ -29,11 +29,9 @@ pub struct RArray<T, D> {
     /// Owning Robj (probably should be a Pin).
     robj: Robj,
 
-    /// Slice of the data references the Robj.
-    data: *mut T,
-
     /// Dimensions of the array.
     dim: D,
+    _data: std::marker::PhantomData<T>,
 }
 
 pub type RColumn<T> = RArray<T, [usize; 1]>;
@@ -131,14 +129,27 @@ impl<T> Offset<[usize; 3]> for RArray<T, [usize; 3]> {
     }
 }
 
-impl<T, D> RArray<T, D> {
-    pub fn from_parts(robj: Robj, data: *mut T, dim: D) -> Self {
-        Self { robj, data, dim }
+impl<'a, T, D> RArray<T, D>
+where
+    T: 'a,
+    Robj: AsTypedSlice<'a, T>,
+{
+    pub fn from_parts(robj: Robj, dim: D) -> Self {
+        Self {
+            robj,
+            dim,
+            _data: std::marker::PhantomData,
+        }
     }
 
-    /// Get the underlying data fro this array.
-    pub fn data(&self) -> &[T] {
-        unsafe { std::slice::from_raw_parts(self.data, self.robj.len()) }
+    /// Returns a flat representation of the array in col-major.
+    pub fn data(&self) -> &'a [T] {
+        self.as_typed_slice().unwrap()
+    }
+
+    /// Returns a flat mutable representation of the array in col-major.
+    pub fn data_mut(&mut self) -> &'a mut [T] {
+        self.as_typed_slice_mut().unwrap()
     }
 
     /// Get the dimensions for this array.
@@ -155,10 +166,8 @@ where
     pub fn new_column<F: FnMut(usize) -> T>(nrows: usize, f: F) -> Self {
         let mut robj = (0..nrows).map(f).collect_robj();
         let dim = [nrows];
-        let mut robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
-        let slice = robj.as_typed_slice_mut().unwrap();
-        let data = slice.as_mut_ptr();
-        RArray::from_parts(robj, data, dim)
+        let robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
+        RArray::from_parts(robj, dim)
     }
 
     /// Get the number of rows.
@@ -194,9 +203,8 @@ where
             })
             .collect_robj();
         let dim = [nrows, ncols];
-        let mut robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
-        let data = robj.as_typed_slice_mut().unwrap().as_mut_ptr();
-        RArray::from_parts(robj, data, dim)
+        let robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
+        RArray::from_parts(robj, dim)
     }
 
     /// Get the number of rows.
@@ -230,9 +238,8 @@ where
             })
             .collect_robj();
         let dim = [nrows, ncols, nmatrix];
-        let mut robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
-        let data = robj.as_typed_slice_mut().unwrap().as_mut_ptr();
-        RArray::from_parts(robj, data, dim)
+        let robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
+        RArray::from_parts(robj, dim)
     }
 
     /// Get the number of rows.
@@ -258,8 +265,9 @@ where
     type Error = Error;
 
     fn try_from(mut robj: Robj) -> Result<Self> {
-        if let Some(slice) = robj.as_typed_slice_mut() {
-            Ok(RArray::from_parts(robj, slice.as_mut_ptr(), [slice.len()]))
+        if let Some(_slice) = robj.as_typed_slice_mut() {
+            let len = robj.len();
+            Ok(RArray::from_parts(robj, [len]))
         } else {
             Err(Error::ExpectedVector(robj))
         }
@@ -275,17 +283,13 @@ where
     fn try_from(mut robj: Robj) -> Result<Self> {
         if !robj.is_matrix() {
             Err(Error::ExpectedMatrix(robj))
-        } else if let Some(slice) = robj.as_typed_slice_mut() {
+        } else if let Some(_slice) = robj.as_typed_slice_mut() {
             if let Some(dim) = robj.dim() {
                 let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
                 if dim.len() != 2 {
                     Err(Error::ExpectedMatrix(robj))
                 } else {
-                    Ok(RArray::from_parts(
-                        robj,
-                        slice.as_mut_ptr(),
-                        [dim[0], dim[1]],
-                    ))
+                    Ok(RArray::from_parts(robj, [dim[0], dim[1]]))
                 }
             } else {
                 Err(Error::ExpectedMatrix(robj))
@@ -303,17 +307,13 @@ where
     type Error = Error;
 
     fn try_from(mut robj: Robj) -> Result<Self> {
-        if let Some(slice) = robj.as_typed_slice_mut() {
+        if let Some(_slice) = robj.as_typed_slice_mut() {
             if let Some(dim) = robj.dim() {
                 if dim.len() != 3 {
                     Err(Error::ExpectedMatrix3D(robj))
                 } else {
                     let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
-                    Ok(RArray::from_parts(
-                        robj,
-                        slice.as_mut_ptr(),
-                        [dim[0], dim[1], dim[2]],
-                    ))
+                    Ok(RArray::from_parts(robj, [dim[0], dim[1], dim[2]]))
                 }
             } else {
                 Err(Error::ExpectedMatrix3D(robj))
@@ -356,7 +356,11 @@ pub trait MatrixConversions: GetSexp {
 
 impl MatrixConversions for Robj {}
 
-impl<T> Index<[usize; 2]> for RArray<T, [usize; 2]> {
+impl<'a, T> Index<[usize; 2]> for RArray<T, [usize; 2]>
+where
+    T: 'a,
+    robj::Robj: robj::AsTypedSlice<'a, T>,
+{
     type Output = T;
 
     /// Zero-based indexing in row, column order.
@@ -374,11 +378,21 @@ impl<T> Index<[usize; 2]> for RArray<T, [usize; 2]> {
     /// }
     /// ```
     fn index(&self, index: [usize; 2]) -> &Self::Output {
-        unsafe { self.data.add(self.offset(index)).as_ref().unwrap() }
+        unsafe {
+            self.data()
+                .as_ptr()
+                .add(self.offset(index))
+                .as_ref()
+                .unwrap()
+        }
     }
 }
 
-impl<T> IndexMut<[usize; 2]> for RArray<T, [usize; 2]> {
+impl<'a, T> IndexMut<[usize; 2]> for RArray<T, [usize; 2]>
+where
+    T: 'a,
+    robj::Robj: robj::AsTypedSlice<'a, T>,
+{
     /// Zero-based mutable indexing in row, column order.
     ///
     /// Panics if out of bounds.
@@ -394,7 +408,13 @@ impl<T> IndexMut<[usize; 2]> for RArray<T, [usize; 2]> {
     /// }
     /// ```
     fn index_mut(&mut self, index: [usize; 2]) -> &mut Self::Output {
-        unsafe { self.data.add(self.offset(index)).as_mut().unwrap() }
+        unsafe {
+            self.data_mut()
+                .as_mut_ptr()
+                .add(self.offset(index))
+                .as_mut()
+                .unwrap()
+        }
     }
 }
 
