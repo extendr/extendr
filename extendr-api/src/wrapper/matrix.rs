@@ -40,6 +40,25 @@ pub type RColumn<T> = RArray<T, [usize; 1]>;
 pub type RMatrix<T> = RArray<T, [usize; 2]>;
 pub type RMatrix3D<T> = RArray<T, [usize; 3]>;
 
+impl<'a, T> RMatrix<T>
+where
+    T::ScalarType: ToVectorValue,
+    // Robj: AsTypedSlice<'a, T::ScalarType>
+    Robj: AsTypedSlice<'a, T>,
+    T: RTypeAssoc + 'a,
+{
+    pub fn new(nrow: usize, ncol: usize) -> Self {
+        let sexptype = T::ScalarType::sexptype();
+        let matrix = Robj::alloc_matrix(sexptype, nrow as _, ncol as _);
+        // todo!()
+        // this is pretty much the same?
+        let mut robj = matrix;
+        let slice = robj.as_typed_slice_mut().unwrap();
+        let data = slice.as_mut_ptr();
+        RArray::from_parts(robj, data, [nrow, ncol])
+    }
+}
+
 const BASE: usize = 0;
 
 trait Offset<D> {
