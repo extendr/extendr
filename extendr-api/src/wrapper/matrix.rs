@@ -392,8 +392,9 @@ mod tests {
 
     #[test]
     fn test_empty_matrix_new() {
-        let m: RMatrix<Rint> = RMatrix::new(10, 2);
+        let m: RMatrix<Rbyte> = RMatrix::new(10, 2);
         let m: RMatrix<Rbool> = RMatrix::new(10, 2);
+        let m: RMatrix<Rint> = RMatrix::new(10, 2);
         let m: RMatrix<Rfloat> = RMatrix::new(10, 2);
         let m: RMatrix<Rcplx> = RMatrix::new(10, 2);
     }
