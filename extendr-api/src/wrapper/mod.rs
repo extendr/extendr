@@ -57,19 +57,6 @@ pub use s4::S4;
 pub use strings::Strings;
 pub use symbol::Symbol;
 
-pub trait RTypeAssoc {
-    // vector_type: Integers, // Implements for
-    type VectorType;
-    // scalar_type: Rint,     // Element type
-    type ScalarType;
-    // primitive_type: i32,   // Raw element type
-    type PrimitiveType;
-    // r_prefix: INTEGER,     // `R` functions prefix
-    // SEXP: INTSXP,          // `SEXP`
-    // doc_name: integer,     // Singular type name used in docs
-    // altrep_constructor: make_altinteger_from_iterator,
-}
-
 pub(crate) fn make_symbol(name: &str) -> SEXP {
     let name = CString::new(name).unwrap();
     unsafe { libR_sys::Rf_install(name.as_ptr()) }
