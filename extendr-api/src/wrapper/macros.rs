@@ -9,16 +9,7 @@ macro_rules! gen_vector_wrapper_impl {
         doc_name: $doc_name : ident,
         altrep_constructor: $altrep_constructor : ident,
     ) => {
-
-        impl RTypeAssoc for $scalar_type {
-            // vector_type: Integers, // Implements for
-            type VectorType = $type;
-            // scalar_type: Rint,     // Element type
-            type ScalarType = $scalar_type;
-            // primitive_type: i32,   // Raw element type
-            type PrimitiveType = $primitive_type;
-        }
-
+        
         impl Default for $type {
             fn default() -> Self {
                 $type::new(0)

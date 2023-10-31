@@ -42,13 +42,11 @@ pub type RMatrix3D<T> = RArray<T, [usize; 3]>;
 
 impl<'a, T> RMatrix<T>
 where
-    T::ScalarType: ToVectorValue,
-    // Robj: AsTypedSlice<'a, T::ScalarType>
+    T: ToVectorValue + 'a,
     Robj: AsTypedSlice<'a, T>,
-    T: RTypeAssoc + 'a,
 {
     pub fn new(nrow: usize, ncol: usize) -> Self {
-        let sexptype = T::ScalarType::sexptype();
+        let sexptype = T::sexptype();
         let matrix = Robj::alloc_matrix(sexptype, nrow as _, ncol as _);
         // todo!()
         // this is pretty much the same?
@@ -388,7 +386,17 @@ impl<T, D> DerefMut for RArray<T, D> {
 
 #[cfg(test)]
 mod tests {
+    use prelude::{Rint, Rfloat, Rcplx};
+
     use super::*;
+
+    #[test]
+    fn test_empty_matrix_new() {
+        let m: RMatrix<Rint> = RMatrix::new(10, 2);
+        let m: RMatrix<Rbool> = RMatrix::new(10, 2);
+        let m: RMatrix<Rfloat> = RMatrix::new(10, 2);
+        let m: RMatrix<Rcplx> = RMatrix::new(10, 2);
+    }
 
     #[test]
     fn matrix_ops() {
