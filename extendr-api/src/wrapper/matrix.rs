@@ -45,6 +45,8 @@ where
     T: ToVectorValue + 'a,
     Robj: AsTypedSlice<'a, T>,
 {
+    /// Returns an [`RMatrix`] with dimensions according to `nrow` and `ncol`,
+    /// with arbitrary entries.
     pub fn new(nrow: usize, ncol: usize) -> Self {
         let sexptype = T::sexptype();
         let matrix = Robj::alloc_matrix(sexptype, nrow as _, ncol as _);
@@ -54,6 +56,32 @@ where
         let slice = robj.as_typed_slice_mut().unwrap();
         let data = slice.as_mut_ptr();
         RArray::from_parts(robj, data, [nrow, ncol])
+    }
+}
+
+impl<'a, T> RMatrix<T>
+where
+    T: ToVectorValue + 'a + CanBeNA,
+    Robj: AsTypedSlice<'a, T>,
+{
+    /// Returns an [`RMatrix`] with dimensions according to `nrow` and `ncol`,
+    /// with all entries set to `NA`.
+    ///
+    /// Note that since `RAW` cannot represent `NA` in R,
+    /// then this isn't implemented for [`Rbyte`]
+    pub fn new_with_na(nrow: usize, ncol: usize) -> Self {
+        let mut matrix = Self::new(nrow, ncol);
+        if nrow != 0 || ncol != 0 {
+            // matrix.data_mut().iter_mut().for_each(|x| {
+            matrix
+                .as_typed_slice_mut()
+                .unwrap()
+                .iter_mut()
+                .for_each(|x| {
+                    *x = T::na();
+                });
+        }
+        matrix
     }
 }
 
@@ -392,11 +420,30 @@ mod tests {
 
     #[test]
     fn test_empty_matrix_new() {
-        let m: RMatrix<Rbyte> = RMatrix::new(10, 2);
+        dbg!("print like R");
+        with_r(|| {
+            let m: RMatrix<Rbyte> = RMatrix::new(10, 2); // possible!
+            unsafe { Rf_PrintValue(m.get()) };
         let m: RMatrix<Rbool> = RMatrix::new(10, 2);
+            unsafe { Rf_PrintValue(m.get()) };
         let m: RMatrix<Rint> = RMatrix::new(10, 2);
+            unsafe { Rf_PrintValue(m.get()) };
         let m: RMatrix<Rfloat> = RMatrix::new(10, 2);
+            unsafe { Rf_PrintValue(m.get()) };
         let m: RMatrix<Rcplx> = RMatrix::new(10, 2);
+            unsafe { Rf_PrintValue(m.get()) };
+
+            // let m: RMatrix<Rbyte> = RMatrix::new_with_na(10, 2); // not possible!
+            unsafe { Rf_PrintValue(m.get()) };
+            let m: RMatrix<Rbool> = RMatrix::new_with_na(10, 2);
+            unsafe { Rf_PrintValue(m.get()) };
+            let m: RMatrix<Rint> = RMatrix::new_with_na(10, 2);
+            unsafe { Rf_PrintValue(m.get()) };
+            let m: RMatrix<Rfloat> = RMatrix::new_with_na(10, 2);
+            unsafe { Rf_PrintValue(m.get()) };
+            let m: RMatrix<Rcplx> = RMatrix::new_with_na(10, 2);
+            unsafe { Rf_PrintValue(m.get()) };
+        });
     }
 
     #[test]
