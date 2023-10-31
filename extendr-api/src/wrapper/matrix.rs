@@ -50,7 +50,6 @@ where
     pub fn new(nrow: usize, ncol: usize) -> Self {
         let sexptype = T::sexptype();
         let matrix = Robj::alloc_matrix(sexptype, nrow as _, ncol as _);
-        // todo!()
         // this is pretty much the same?
         let mut robj = matrix;
         let slice = robj.as_typed_slice_mut().unwrap();
@@ -425,13 +424,13 @@ mod tests {
         with_r(|| {
             let m: RMatrix<Rbyte> = RMatrix::new(10, 2); // possible!
             unsafe { Rf_PrintValue(m.get()) };
-        let m: RMatrix<Rbool> = RMatrix::new(10, 2);
+            let m: RMatrix<Rbool> = RMatrix::new(10, 2);
             unsafe { Rf_PrintValue(m.get()) };
-        let m: RMatrix<Rint> = RMatrix::new(10, 2);
+            let m: RMatrix<Rint> = RMatrix::new(10, 2);
             unsafe { Rf_PrintValue(m.get()) };
-        let m: RMatrix<Rfloat> = RMatrix::new(10, 2);
+            let m: RMatrix<Rfloat> = RMatrix::new(10, 2);
             unsafe { Rf_PrintValue(m.get()) };
-        let m: RMatrix<Rcplx> = RMatrix::new(10, 2);
+            let m: RMatrix<Rcplx> = RMatrix::new(10, 2);
             unsafe { Rf_PrintValue(m.get()) };
 
             // let m: RMatrix<Rbyte> = RMatrix::new_with_na(10, 2); // not possible!
