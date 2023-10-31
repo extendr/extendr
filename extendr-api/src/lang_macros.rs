@@ -1,11 +1,10 @@
 //! Argument parsing and checking.
 //!
 
-use libR_sys::*;
-//use crate::robj::*;
 use crate::robj::GetSexp;
 use crate::robj::Robj;
 use crate::single_threaded;
+use libR_sys::*;
 
 /// Convert a list of tokens to an array of tuples.
 #[doc(hidden)]
