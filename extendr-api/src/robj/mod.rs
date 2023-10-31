@@ -776,7 +776,7 @@ macro_rules! make_typed_slice {
                 match self.sexptype() {
                     $( $sexp )|* => {
                         unsafe {
-                            let ptr = $fn(self.get()) as *mut $type;
+                            let ptr = $fn(self.get_mut()) as *mut $type;
                             Some(std::slice::from_raw_parts_mut(ptr, self.len()))
                         }
                     }
