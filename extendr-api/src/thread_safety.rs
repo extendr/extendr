@@ -150,7 +150,6 @@ mod tests {
     /// followed by a "It is fine..." after 7sec (from start).
     ///
     /// To see the expected effect, then remove `single_threaded` calls.
-    /// `
     #[test]
     #[ignore]
     fn test_panic_in_rust() {
