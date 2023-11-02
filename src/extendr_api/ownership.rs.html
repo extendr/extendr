@@ -336,13 +336,13 @@
 <a href="#336" id="336">336</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Maintain ownership of R objects.
 //!
-//! This provides the functions protect() and unprotect()
+//! This provides the functions [protect] and [unprotect].
 //! A single preserved vector holds ownership of all protected objects.
 //!
 //! Objects are reference counted, so multiple calls are possible,
-//! unlike R_PreserveObject.
+//! unlike `R_PreserveObject`.
 //!
-//! This module exports two functions, protect(sexp) and unprotect(sexp).
+//! This module exports two functions, `protect(sexp)` and `unprotect(sexp)`.
 
 </span><span class="kw">use </span>once_cell::sync::Lazy;
 <span class="kw">use </span>std::collections::hash_map::{Entry, HashMap};

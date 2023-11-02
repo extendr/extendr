@@ -127,94 +127,50 @@
 <a href="#127" id="127">127</a>
 <a href="#128" id="128">128</a>
 <a href="#129" id="129">129</a>
-<a href="#130" id="130">130</a>
-<a href="#131" id="131">131</a>
-<a href="#132" id="132">132</a>
-<a href="#133" id="133">133</a>
-<a href="#134" id="134">134</a>
-<a href="#135" id="135">135</a>
-<a href="#136" id="136">136</a>
-<a href="#137" id="137">137</a>
-<a href="#138" id="138">138</a>
-<a href="#139" id="139">139</a>
-<a href="#140" id="140">140</a>
-<a href="#141" id="141">141</a>
-<a href="#142" id="142">142</a>
-<a href="#143" id="143">143</a>
-<a href="#144" id="144">144</a>
-<a href="#145" id="145">145</a>
-<a href="#146" id="146">146</a>
-<a href="#147" id="147">147</a>
-<a href="#148" id="148">148</a>
-<a href="#149" id="149">149</a>
-<a href="#150" id="150">150</a>
-<a href="#151" id="151">151</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Provide limited protection for multithreaded access to the R API.
 
 </span><span class="kw">use crate</span>::<span class="kw-2">*</span>;
-<span class="kw">use </span>std::sync::atomic::{AtomicU32, Ordering};
+<span class="kw">use </span>std::cell::Cell;
+<span class="kw">use </span>std::sync::Mutex;
 
-<span class="kw">static </span>OWNER_THREAD: AtomicU32 = AtomicU32::new(<span class="number">0</span>);
-<span class="kw">static </span>NEXT_THREAD_ID: AtomicU32 = AtomicU32::new(<span class="number">1</span>);
+<span class="doccomment">/// A global lock, that should represent the global lock on the R-API.
+/// It is not tied to an actual instance of R.
+</span><span class="kw">static </span>R_API_LOCK: Mutex&lt;()&gt; = Mutex::new(());
 
 <span class="macro">thread_local! </span>{
-    <span class="kw">static </span>THREAD_ID: u32 = NEXT_THREAD_ID.fetch_add(<span class="number">1</span>, Ordering::SeqCst);
+    <span class="kw">static </span>THREAD_HAS_LOCK: Cell&lt;bool&gt; = Cell::new(<span class="bool-val">false</span>);
 }
 
-<span class="comment">// Get an integer 1.. for each thread that calls this.
-</span><span class="kw">pub fn </span>this_thread_id() -&gt; u32 {
-    THREAD_ID.with(|<span class="kw-2">&amp;</span>v| v)
-}
-
-<span class="doccomment">/// Run a function single threaded.
-/// Note: This will fail badly if the called function panics or calls RF_error.
+<span class="doccomment">/// Run `f` while ensuring that `f` runs in a single-threaded manner.
 ///
-/// ```
-/// use extendr_api::prelude::*;
-/// use std::sync::atomic::{AtomicU32, Ordering};
-/// static GLOBAL_THREAD_COUNT: AtomicU32 = AtomicU32::new(0);
+/// This is intended for single-threaded access of the R&#39;s C-API.
+/// It is possible to have nested calls of `single_threaded` without deadlocking.
 ///
-/// let threads : Vec&lt;_&gt; = (0..100).map(|_| {
-///    std::thread::spawn(move|| {
-///       single_threaded(|| {
-///         // check that we are single threaded.
-///         let old_thread_count = GLOBAL_THREAD_COUNT.fetch_add(1, Ordering::AcqRel);
-///         assert_eq!(old_thread_count, 0);
-///         std::thread::sleep(std::time::Duration::from_millis(1));
-///         GLOBAL_THREAD_COUNT.fetch_sub(1, Ordering::AcqRel);
-///         // recursive calls are ok.
-///         assert_eq!(single_threaded(|| {
-///           1
-///         }), 1);    
-///       })
-///    })
-/// }).collect();
-/// ```
+/// Note: This will fail badly if the called function `f` panics or calls `Rf_error`.
 </span><span class="kw">pub fn </span>single_threaded&lt;F, R&gt;(f: F) -&gt; R
 <span class="kw">where
     </span>F: FnOnce() -&gt; R,
 {
-    <span class="kw">let </span>id = this_thread_id();
-    <span class="kw">let </span>old_id = OWNER_THREAD.load(Ordering::Acquire);
+    <span class="kw">let </span>has_lock = THREAD_HAS_LOCK.with(|x| x.get());
 
-    <span class="kw">if </span>old_id != id {
-        <span class="comment">// wait for OWNER_THREAD to become 0 and put us as the owner.
-        </span><span class="kw">while </span>OWNER_THREAD
-            .compare_exchange(<span class="number">0</span>, id, Ordering::Acquire, Ordering::Relaxed)
-            .is_err()
-        {
-            std::thread::sleep(std::time::Duration::from_millis(<span class="number">1</span>));
-        }
+    <span class="comment">// acquire R-API lock
+    </span><span class="kw">let </span>_guard = <span class="kw">if </span>!has_lock {
+        <span class="prelude-val">Some</span>(R_API_LOCK.lock().unwrap())
+    } <span class="kw">else </span>{
+        <span class="prelude-val">None
+    </span>};
+
+    <span class="comment">// this thread now has the lock
+    </span>THREAD_HAS_LOCK.with(|x| x.set(<span class="bool-val">true</span>));
+
+    <span class="kw">let </span>result = f();
+
+    <span class="comment">// release the R-API lock
+    </span><span class="kw">if </span>_guard.is_some() {
+        THREAD_HAS_LOCK.with(|x| x.set(<span class="bool-val">false</span>));
     }
 
-    <span class="kw">let </span>res = f();
-
-    <span class="kw">if </span>old_id != id {
-        <span class="comment">// release the lock and signal waiting threads.
-        </span>OWNER_THREAD.store(<span class="number">0</span>, Ordering::Release);
-    }
-
-    res
+    result
 }
 
 <span class="doccomment">/// This function is used by the wrapper logic to catch
@@ -245,7 +201,7 @@
     };
 }
 
-<span class="doccomment">/// Wrap an R function such as Rf_findFunction and convert errors and panics into results.
+<span class="doccomment">/// Wrap an R function such as `Rf_findFunction` and convert errors and panics into results.
 /// ```ignore
 /// use extendr_api::prelude::*;
 /// test! {

@@ -117,15 +117,13 @@
 <a href="#117" id="117">117</a>
 <a href="#118" id="118">118</a>
 <a href="#119" id="119">119</a>
-<a href="#120" id="120">120</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Argument parsing and checking.
 //!
 
-</span><span class="kw">use </span>libR_sys::<span class="kw-2">*</span>;
-<span class="comment">//use crate::robj::*;
 </span><span class="kw">use </span><span class="kw">crate</span>::robj::GetSexp;
 <span class="kw">use </span><span class="kw">crate</span>::robj::Robj;
 <span class="kw">use </span><span class="kw">crate</span>::single_threaded;
+<span class="kw">use </span>libR_sys::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// Convert a list of tokens to an array of tuples.
 </span><span class="attr">#[doc(hidden)]
