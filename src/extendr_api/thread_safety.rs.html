@@ -146,6 +146,9 @@
 <a href="#146" id="146">146</a>
 <a href="#147" id="147">147</a>
 <a href="#148" id="148">148</a>
+<a href="#149" id="149">149</a>
+<a href="#150" id="150">150</a>
+<a href="#151" id="151">151</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Provide limited protection for multithreaded access to the R API.
 
 </span><span class="kw">use crate</span>::<span class="kw-2">*</span>;
@@ -225,7 +228,10 @@
 {
     <span class="kw">match </span>std::panic::catch_unwind(f) {
         <span class="prelude-val">Ok</span>(res) =&gt; res,
-        <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="kw">unsafe </span>{ libR_sys::Rf_error(err_str.as_ptr() <span class="kw">as </span><span class="kw-2">*const </span>std::os::raw::c_char) },
+        <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {
+            <span class="kw">let </span>err_str = CString::new(err_str).unwrap();
+            <span class="kw">unsafe </span>{ libR_sys::Rf_error(err_str.as_ptr()) }
+        }
     }
 }
 

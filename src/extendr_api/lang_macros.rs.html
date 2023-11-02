@@ -118,15 +118,6 @@
 <a href="#118" id="118">118</a>
 <a href="#119" id="119">119</a>
 <a href="#120" id="120">120</a>
-<a href="#121" id="121">121</a>
-<a href="#122" id="122">122</a>
-<a href="#123" id="123">123</a>
-<a href="#124" id="124">124</a>
-<a href="#125" id="125">125</a>
-<a href="#126" id="126">126</a>
-<a href="#127" id="127">127</a>
-<a href="#128" id="128">128</a>
-<a href="#129" id="129">129</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Argument parsing and checking.
 //!
 
@@ -174,13 +165,8 @@
 <span class="attr">#[doc(hidden)]
 </span><span class="kw">pub unsafe fn </span>append_with_name(tail: SEXP, obj: Robj, name: <span class="kw-2">&amp;</span>str) -&gt; SEXP {
     single_threaded(|| {
-        <span class="kw">let </span><span class="kw-2">mut </span>name = Vec::from(name.as_bytes());
-        name.push(<span class="number">0</span>);
         <span class="kw">let </span>cons = Rf_cons(obj.get(), R_NilValue);
-        SET_TAG(
-            cons,
-            Rf_install(name.as_ptr() <span class="kw">as </span><span class="kw-2">*const </span>std::os::raw::c_char),
-        );
+        SET_TAG(cons, <span class="kw">crate</span>::make_symbol(name));
         SETCDR(tail, cons);
         cons
     })
@@ -197,11 +183,7 @@
 
 <span class="attr">#[doc(hidden)]
 </span><span class="kw">pub unsafe fn </span>make_lang(sym: <span class="kw-2">&amp;</span>str) -&gt; Robj {
-    <span class="kw">let </span><span class="kw-2">mut </span>name = Vec::from(sym.as_bytes());
-    name.push(<span class="number">0</span>);
-    <span class="kw">let </span>sexp =
-        single_threaded(|| Rf_lang1(Rf_install(name.as_ptr() <span class="kw">as </span><span class="kw-2">*const </span>std::os::raw::c_char)));
-    Robj::from_sexp(sexp)
+    Robj::from_sexp(single_threaded(|| Rf_lang1(<span class="kw">crate</span>::make_symbol(sym))))
 }
 
 <span class="doccomment">/// Convert a list of tokens to an array of tuples.

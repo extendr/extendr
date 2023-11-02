@@ -411,8 +411,6 @@
 <a href="#411" id="411">411</a>
 <a href="#412" id="412">412</a>
 <a href="#413" id="413">413</a>
-<a href="#414" id="414">414</a>
-<a href="#415" id="415">415</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Wrappers are lightweight proxies for references to R datatypes.
 //! They do not contain an Robj (see array.rs for an example of this).
 
@@ -473,10 +471,8 @@
 <span class="kw">pub use </span>symbol::Symbol;
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>make_symbol(name: <span class="kw-2">&amp;</span>str) -&gt; SEXP {
-    <span class="kw">let </span><span class="kw-2">mut </span>bytes = Vec::with_capacity(name.len() + <span class="number">1</span>);
-    bytes.extend(name.bytes());
-    bytes.push(<span class="number">0</span>);
-    <span class="kw">unsafe </span>{ Rf_install(bytes.as_ptr() <span class="kw">as </span><span class="kw-2">*const </span>::std::os::raw::c_char) }
+    <span class="kw">let </span>name = CString::new(name).unwrap();
+    <span class="kw">unsafe </span>{ libR_sys::Rf_install(name.as_ptr()) }
 }
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>make_vector&lt;T&gt;(sexptype: u32, values: T) -&gt; Robj
