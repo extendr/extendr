@@ -26,7 +26,15 @@ where
 
     // acquire R-API lock
     let _guard = if !has_lock {
-        Some(R_API_LOCK.lock().unwrap())
+        match R_API_LOCK.lock() {
+            ok @ Ok(_) => ok.ok(),
+            Err(poison) => {
+                // previous thread crashed, this thread should have the lock
+                let _lock = poison.into_inner();
+                THREAD_HAS_LOCK.with(|x| x.set(true));
+                None
+            }
+        }
     } else {
         None
     };
@@ -123,4 +131,53 @@ where
         Rf_unprotect(1);
         res
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use std::{
+        thread::{scope, sleep},
+        time::Duration,
+    };
+
+    use super::*;
+
+    /// Run this test by "hand". It has sleeps in it, so it is costly.
+    /// The idea is to see Alive every 1sec, then a panic after 4sec,
+    /// followed by a "It is fine..." after 7sec (from start).
+    ///
+    /// To see the expected effect, then remove `single_threaded` calls.
+    /// `
+    #[test]
+    #[ignore]
+    fn test_panic_in_rust() {
+        // sleep(Duration::from_secs(1));
+        println!("Started");
+        scope(|s| {
+            let a = s.spawn(|| {
+                for _ in 0..10 {
+                    sleep(Duration::from_secs(1));
+                    single_threaded(|| println!("Alive!"));
+                }
+                true
+            });
+            let b = s.spawn(|| {
+                sleep(Duration::from_secs(4));
+                single_threaded(|| {
+                    println!("Boom!");
+                    panic!("secondary thread panicked");
+                });
+            });
+            let c = s.spawn(|| {
+                sleep(Duration::from_secs(7));
+                single_threaded(|| println!("It is fine..."));
+                true
+            });
+            let a = a.join().unwrap();
+            let _ = b.join().unwrap_err();
+            let c = c.join().unwrap();
+            assert_eq!(a, true);
+            assert_eq!(c, true);
+        });
+    }
 }
