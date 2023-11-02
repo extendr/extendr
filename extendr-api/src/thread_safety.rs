@@ -27,7 +27,7 @@ where
     // acquire R-API lock
     let _guard = if !has_lock {
         match R_API_LOCK.lock() {
-            ok @ Ok(_) => ok.ok(),
+            Ok(_) => Some(()),
             Err(poison) => {
                 // previous thread crashed, this thread should have the lock
                 let _lock = poison.into_inner();
@@ -63,7 +63,10 @@ where
 {
     match std::panic::catch_unwind(f) {
         Ok(res) => res,
-        Err(_) => unsafe { libR_sys::Rf_error(err_str.as_ptr() as *const std::os::raw::c_char) },
+        Err(_) => {
+            let err_str = CString::new(err_str).unwrap();
+            unsafe { libR_sys::Rf_error(err_str.as_ptr()) }
+        }
     }
 }
 

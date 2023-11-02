@@ -58,10 +58,8 @@ pub use strings::Strings;
 pub use symbol::Symbol;
 
 pub(crate) fn make_symbol(name: &str) -> SEXP {
-    let mut bytes = Vec::with_capacity(name.len() + 1);
-    bytes.extend(name.bytes());
-    bytes.push(0);
-    unsafe { Rf_install(bytes.as_ptr() as *const ::std::os::raw::c_char) }
+    let name = CString::new(name).unwrap();
+    unsafe { libR_sys::Rf_install(name.as_ptr()) }
 }
 
 pub(crate) fn make_vector<T>(sexptype: u32, values: T) -> Robj
