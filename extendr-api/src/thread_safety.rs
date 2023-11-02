@@ -77,7 +77,10 @@ where
 {
     match std::panic::catch_unwind(f) {
         Ok(res) => res,
-        Err(_) => unsafe { libR_sys::Rf_error(err_str.as_ptr() as *const std::os::raw::c_char) },
+        Err(_) => {
+            let err_str = CString::new(err_str).unwrap();
+            unsafe { libR_sys::Rf_error(err_str.as_ptr()) }
+        }
     }
 }
 
