@@ -361,6 +361,12 @@ impl<T, D> Deref for RArray<T, D> {
     }
 }
 
+impl<T, D> DerefMut for RArray<T, D> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.robj
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
