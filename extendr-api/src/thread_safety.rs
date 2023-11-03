@@ -26,15 +26,7 @@ where
 
     // acquire R-API lock
     let _guard = if !has_lock {
-        match R_API_LOCK.lock() {
-            Ok(_) => Some(()),
-            Err(poison) => {
-                // previous thread crashed, this thread should have the lock
-                let _lock = poison.into_inner();
-                THREAD_HAS_LOCK.with(|x| x.set(true));
-                None
-            }
-        }
+        Some(R_API_LOCK.lock().unwrap())
     } else {
         None
     };
