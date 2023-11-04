@@ -83,7 +83,7 @@ impl Iterator for StrIter {
     }
 
     fn next(&mut self) -> Option<Self::Item> {
-        unsafe {
+        single_threaded(|| unsafe {
             let i = self.i;
             self.i += 1;
             let vector = self.vector.get();
@@ -99,7 +99,7 @@ impl Iterator for StrIter {
             } else {
                 None
             }
-        }
+        })
     }
 
     fn nth(&mut self, n: usize) -> Option<Self::Item> {
