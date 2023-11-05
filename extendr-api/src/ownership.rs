@@ -238,26 +238,26 @@ impl Ownership {
     // Check the consistency of the model.
     #[allow(dead_code)]
     unsafe fn check_objects(&mut self) {
-            let preservation_sexp = self.preservation.inner();
-            assert_eq!(self.max_index, LENGTH(preservation_sexp) as usize);
+        let preservation_sexp = self.preservation.inner();
+        assert_eq!(self.max_index, LENGTH(preservation_sexp) as usize);
 
-            // println!("\ncheck");
+        // println!("\ncheck");
 
-            for (addr, object) in self.objects.iter() {
-                assert!(object.index < self.max_index);
-                let elt = VECTOR_ELT(preservation_sexp, object.index as R_xlen_t);
-                // println!(
-                //     "refcount={:?} index={:?} elt={:?}",
-                //     object.refcount, object.index, elt
-                // );
-                if object.refcount != 0 {
-                    // A non-zero refcount implies the object is in the vector.
-                    assert_eq!(elt, addr.inner());
-                } else {
-                    // A zero refcount implies the object is NULL in the vector.
-                    assert_eq!(elt, R_NilValue);
-                }
+        for (addr, object) in self.objects.iter() {
+            assert!(object.index < self.max_index);
+            let elt = VECTOR_ELT(preservation_sexp, object.index as R_xlen_t);
+            // println!(
+            //     "refcount={:?} index={:?} elt={:?}",
+            //     object.refcount, object.index, elt
+            // );
+            if object.refcount != 0 {
+                // A non-zero refcount implies the object is in the vector.
+                assert_eq!(elt, addr.inner());
+            } else {
+                // A zero refcount implies the object is NULL in the vector.
+                assert_eq!(elt, R_NilValue);
             }
+        }
 
         // println!("check 2");
         for i in 0..self.max_index {
