@@ -39,6 +39,10 @@ pub use operators::Operators;
 pub use operators::*;
 pub use rinternals::Rinternals;
 
+/// These are permanent r-objects, thus they do not need protection.
+const PERMANENT: once_cell::sync::Lazy<[SEXP; 1]> =
+    once_cell::sync::Lazy::new(|| unsafe { [R_NilValue] });
+
 /// Wrapper for an R S-expression pointer (SEXP).
 ///
 /// Create R objects from rust types and iterators:
@@ -221,7 +225,9 @@ impl Length for Robj {}
 impl Robj {
     pub fn from_sexp(sexp: SEXP) -> Self {
         single_threaded(|| {
-            unsafe { ownership::protect(sexp) };
+            if !PERMANENT.contains(&sexp) {
+                unsafe { ownership::protect(sexp) };
+            }
             Robj { inner: sexp }
         })
     }
@@ -1090,7 +1096,9 @@ pub(crate) unsafe fn to_str<'a>(ptr: *const u8) -> &'a str {
 impl Drop for Robj {
     fn drop(&mut self) {
         unsafe {
-            ownership::unprotect(self.inner);
+            if !PERMANENT.contains(&self.inner) {
+                ownership::unprotect(self.inner);
+            }
         }
     }
 }
