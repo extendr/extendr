@@ -17,6 +17,52 @@ use libR_sys::{
     Rf_unprotect, LENGTH, SET_VECTOR_ELT, SEXP, VECSXP, VECTOR_ELT,
 };
 
+mod send_sexp {
+    //! Provide a wrapper around R's pointer type `SEXP` that is `Send`.
+    //!
+    //! This can lead to soundness issues, therefore accessing the `SEXP` has
+    //! to happen through the unsafe methods [`SendSEXP::inner`] and [`SendSEXP::set_inner`].
+    //!
+    use libR_sys::SEXP;
+
+    #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+    pub struct SendSEXP(SEXP);
+
+    impl From<SEXP> for SendSEXP {
+        fn from(value: SEXP) -> Self {
+            Self(value)
+        }
+    }
+
+    unsafe impl Send for SendSEXP {}
+
+    impl SendSEXP {
+        pub unsafe fn inner(&self) -> SEXP {
+            self.0
+        }
+
+        pub unsafe fn set_inner(&mut self, value: SEXP) {
+            self.0 = value;
+        }
+    }
+
+    // impl std::ops::Deref for SendSEXP {
+    //     type Target = SEXP;
+
+    //     fn deref(&self) -> &Self::Target {
+    //         &self.0
+    //     }
+    // }
+
+    // impl std::ops::DerefMut for SendSEXP {
+    //     fn deref_mut(&mut self) -> &mut Self::Target {
+    //         &mut self.0
+    //     }
+    // }
+}
+
+use self::send_sexp::SendSEXP;
+
 static OWNERSHIP: Lazy<Mutex<Ownership>> = Lazy::new(|| Mutex::new(Ownership::new()));
 
 pub(crate) unsafe fn protect(sexp: SEXP) {
@@ -32,15 +78,17 @@ pub(crate) unsafe fn unprotect(sexp: SEXP) {
 pub const INITIAL_PRESERVATION_SIZE: usize = 100000;
 pub const EXTRA_PRESERVATION_SIZE: usize = 100000;
 
+#[derive(Debug)]
 struct Object {
     refcount: usize,
     index: usize,
 }
 
 // A reference counted object with an index in the preservation vector.
+#[derive(Debug)]
 struct Ownership {
     // A growable vector containing all owned objects.
-    preservation: usize,
+    preservation: SendSEXP,
 
     // An incrementing count of objects through the vector.
     cur_index: usize,
@@ -49,7 +97,7 @@ struct Ownership {
     max_index: usize,
 
     // A hash map from SEXP address to object.
-    objects: HashMap<usize, Object>,
+    objects: HashMap<SendSEXP, Object>,
 }
 
 impl Ownership {
@@ -58,7 +106,7 @@ impl Ownership {
             let preservation = Rf_allocVector(VECSXP, INITIAL_PRESERVATION_SIZE as R_xlen_t);
             R_PreserveObject(preservation);
             Ownership {
-                preservation: preservation as usize,
+                preservation: preservation.into(),
                 cur_index: 0,
                 max_index: INITIAL_PRESERVATION_SIZE,
                 objects: HashMap::with_capacity(INITIAL_PRESERVATION_SIZE),
@@ -73,7 +121,7 @@ impl Ownership {
             self.garbage_collect();
         }
 
-        let sexp_usize = sexp as usize;
+        let sexp_usize = sexp.into();
         let Ownership {
             ref mut preservation,
             ref mut cur_index,
@@ -82,7 +130,7 @@ impl Ownership {
         } = *self;
 
         let mut entry = objects.entry(sexp_usize);
-        let preservation_sexp = *preservation as SEXP;
+        let preservation_sexp = preservation.inner();
         match entry {
             Entry::Occupied(ref mut occupied) => {
                 if occupied.get().refcount == 0 {
@@ -105,13 +153,13 @@ impl Ownership {
     }
 
     pub unsafe fn unprotect(&mut self, sexp: SEXP) {
-        let sexp_usize = sexp as usize;
+        let sexp_usize = sexp.into();
         let Ownership {
             preservation,
             cur_index: _,
             max_index: _,
             ref mut objects,
-        } = *self;
+        } = self;
 
         let mut entry = objects.entry(sexp_usize);
         match entry {
@@ -125,7 +173,7 @@ impl Ownership {
                         // Clear the preservation vector, but keep the hash table entry.
                         // It is hard to clear the hash table entry here because we don't
                         // have a ref to objects anymore and it is faster to clear them up en-masse.
-                        let preservation_sexp = preservation as SEXP;
+                        let preservation_sexp = preservation.inner();
                         SET_VECTOR_ELT(preservation_sexp, object.index as R_xlen_t, R_NilValue);
                     }
                 }
@@ -145,7 +193,7 @@ impl Ownership {
             ref mut objects,
         } = *self;
 
-        let sexp_usize = sexp as usize;
+        let sexp_usize = sexp.into();
         let mut entry = objects.entry(sexp_usize);
         match entry {
             Entry::Occupied(ref mut occupied) => occupied.get().refcount,
@@ -159,7 +207,7 @@ impl Ownership {
         let new_size = self.cur_index * 2 + EXTRA_PRESERVATION_SIZE;
         let new_sexp = Rf_allocVector(VECSXP, new_size as R_xlen_t);
         R_PreserveObject(new_sexp);
-        let old_sexp = self.preservation as SEXP;
+        let old_sexp = self.preservation.inner();
 
         let mut new_objects = HashMap::with_capacity(new_size);
 
@@ -167,9 +215,9 @@ impl Ownership {
         let mut j = 0;
         for (addr, object) in self.objects.iter() {
             if object.refcount != 0 {
-                SET_VECTOR_ELT(new_sexp, j as R_xlen_t, *addr as SEXP);
+                SET_VECTOR_ELT(new_sexp, j as R_xlen_t, addr.inner());
                 new_objects.insert(
-                    *addr,
+                    addr.clone(),
                     Object {
                         refcount: object.refcount,
                         index: j,
@@ -181,7 +229,7 @@ impl Ownership {
         // println!("j={}", j);
 
         R_ReleaseObject(old_sexp);
-        self.preservation = new_sexp as usize;
+        self.preservation.set_inner(new_sexp);
         self.cur_index = j;
         self.max_index = new_size;
         self.objects = new_objects;
@@ -190,26 +238,26 @@ impl Ownership {
     // Check the consistency of the model.
     #[allow(dead_code)]
     unsafe fn check_objects(&mut self) {
-        let preservation_sexp = self.preservation as SEXP;
-        assert_eq!(self.max_index, LENGTH(preservation_sexp) as usize);
+            let preservation_sexp = self.preservation.inner();
+            assert_eq!(self.max_index, LENGTH(preservation_sexp) as usize);
 
-        // println!("\ncheck");
+            // println!("\ncheck");
 
-        for (addr, object) in self.objects.iter() {
-            assert!(object.index < self.max_index);
-            let elt = VECTOR_ELT(preservation_sexp, object.index as R_xlen_t);
-            // println!(
-            //     "refcount={:?} index={:?} elt={:?}",
-            //     object.refcount, object.index, elt
-            // );
-            if object.refcount != 0 {
-                // A non-zero refcount implies the object is in the vector.
-                assert_eq!(elt, *addr as SEXP);
-            } else {
-                // A zero refcount implies the object is NULL in the vector.
-                assert_eq!(elt, R_NilValue);
+            for (addr, object) in self.objects.iter() {
+                assert!(object.index < self.max_index);
+                let elt = VECTOR_ELT(preservation_sexp, object.index as R_xlen_t);
+                // println!(
+                //     "refcount={:?} index={:?} elt={:?}",
+                //     object.refcount, object.index, elt
+                // );
+                if object.refcount != 0 {
+                    // A non-zero refcount implies the object is in the vector.
+                    assert_eq!(elt, addr.inner());
+                } else {
+                    // A zero refcount implies the object is NULL in the vector.
+                    assert_eq!(elt, R_NilValue);
+                }
             }
-        }
 
         // println!("check 2");
         for i in 0..self.max_index {
