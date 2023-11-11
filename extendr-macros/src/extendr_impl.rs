@@ -36,22 +36,34 @@ use crate::wrappers;
 ///     fn aux_func;
 /// }
 /// ```
-pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
+pub fn extendr_impl(mut item_impl: ItemImpl) -> syn::Result<TokenStream> {
     // Only `impl name { }` allowed
     if item_impl.defaultness.is_some() {
-        return quote! { compile_error!("default not allowed in #[extendr] impl"); }.into();
+        return Err(syn::Error::new_spanned(
+            item_impl,
+            "default not allowed in #[extendr] impl",
+        ));
     }
 
     if item_impl.unsafety.is_some() {
-        return quote! { compile_error!("unsafe not allowed in #[extendr] impl"); }.into();
+        return Err(syn::Error::new_spanned(
+            item_impl,
+            "unsafe not allowed in #[extendr] impl",
+        ));
     }
 
     if item_impl.generics.const_params().count() != 0 {
-        return quote! { compile_error!("const params not allowed in #[extendr] impl"); }.into();
+        return Err(syn::Error::new_spanned(
+            item_impl,
+            "const params not allowed in #[extendr] impl",
+        ));
     }
 
     if item_impl.generics.type_params().count() != 0 {
-        return quote! { compile_error!("type params not allowed in #[extendr] impl"); }.into();
+        return Err(syn::Error::new_spanned(
+            item_impl,
+            "type params not allowed in #[extendr] impl",
+        ));
     }
 
     // if item_impl.generics.lifetimes().count() != 0 {
@@ -59,7 +71,10 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
     // }
 
     if item_impl.generics.where_clause.is_some() {
-        return quote! { compile_error!("where clause not allowed in #[extendr] impl"); }.into();
+        return Err(syn::Error::new_spanned(
+            item_impl,
+            "where clause not allowed in #[extendr] impl",
+        ));
     }
 
     let opts = wrappers::ExtendrOptions::default();
@@ -97,7 +112,7 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
                 &method.attrs,
                 &mut method.sig,
                 Some(self_ty),
-            );
+            )?;
         }
     }
 
@@ -187,7 +202,7 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> TokenStream {
     });
 
     //eprintln!("{}", expanded);
-    expanded
+    Ok(expanded)
 }
 
 // This structure contains parameters parsed from the #[extendr_module] definition.

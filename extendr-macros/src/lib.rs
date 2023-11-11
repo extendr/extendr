@@ -80,7 +80,10 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
 
     match parse_macro_input!(item as Item) {
         Item::Fn(func) => extendr_function::extendr_function(func, &opts),
-        Item::Impl(item_impl) => extendr_impl::extendr_impl(item_impl),
+        Item::Impl(item_impl) => match extendr_impl::extendr_impl(item_impl) {
+            Ok(result) => result,
+            Err(e) => e.into_compile_error().into(),
+        },
         other_item => TokenStream::from(quote! {#other_item}),
     }
 }
