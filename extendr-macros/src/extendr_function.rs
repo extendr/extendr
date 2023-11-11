@@ -6,7 +6,12 @@ use syn::{meta::ParseNestedMeta, ItemFn, Lit, LitBool};
 /// Generate bindings for a single function.
 pub fn extendr_function(mut func: ItemFn, opts: &wrappers::ExtendrOptions) -> TokenStream {
     let mut wrappers: Vec<ItemFn> = Vec::new();
-    wrappers::make_function_wrappers(opts, &mut wrappers, "", &func.attrs, &mut func.sig, None);
+
+    let res =
+        wrappers::make_function_wrappers(opts, &mut wrappers, "", &func.attrs, &mut func.sig, None);
+    if let Err(e) = res {
+        return e.into_compile_error().into();
+    };
 
     TokenStream::from(quote! {
         #func
