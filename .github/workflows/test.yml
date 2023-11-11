@@ -26,20 +26,20 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: windows-latest, r: 'release', rust-version: 'stable-msvc', rtools-version: '43'}
-          - {os: windows-latest, r: 'devel',   rust-version: 'stable-msvc', rtools-version: '43'}
-          - {os: windows-latest, r: 'oldrel',  rust-version: 'stable-msvc', rtools-version: '42'}
+          - { os: windows-latest, r: 'release', rust-version: 'stable-msvc', rtools-version: '43' }
+          - { os: windows-latest, r: 'devel',   rust-version: 'stable-msvc', rtools-version: '43' }
+          - { os: windows-latest, r: 'oldrel',  rust-version: 'stable-msvc', rtools-version: '42' }
 
-          - {os: macOS-latest,   r: 'release', rust-version: 'stable'}
+          - { os: macOS-latest,   r: 'release', rust-version: 'stable' }
           # - {os: macOS-latest,   r: 'release', rust-version: 'nightly'}
           # - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
           # - {os: macOS-latest,   r: 'oldrel', rust-version: 'stable'}
 
-          - {os: ubuntu-latest,   r: 'release', rust-version: 'stable', check_fmt: true}
-          - {os: ubuntu-latest,   r: 'release', rust-version: 'nightly'}
+          - { os: ubuntu-latest,   r: 'release', rust-version: 'stable', check_fmt: true }
+          - { os: ubuntu-latest,   r: 'release', rust-version: 'nightly' }
           # R-devel requires LD_LIBRARY_PATH
-          - {os: ubuntu-latest,   r: 'devel',   rust-version: 'stable'}
-          - {os: ubuntu-latest,   r: 'oldrel',  rust-version: 'stable'}
+          - { os: ubuntu-latest,   r: 'devel',   rust-version: 'stable' }
+          - { os: ubuntu-latest,   r: 'oldrel',  rust-version: 'stable' }
 
 
 
@@ -136,7 +136,7 @@ jobs:
           [env]
           LIBRARY_PATH = "${pwd_slash}/libgcc_mock"
           "@ | Out-File -FilePath .cargo/config.toml -Encoding utf8 -Append ;
-        env: 
+        env:
           RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
 
       # This is required for ubuntu r-devel
@@ -190,21 +190,8 @@ jobs:
         with:
           cache-version: 4
           working-directory: tests/rextendr
-
-      # Regex is used to inject absolute path into Cargo.toml
-      - name: Configure R for integration testing
-        run: |
-          api_path <- normalizePath(file.path(getwd(), "extendr-api"), winslash = "/")
-          toml_path <- file.path(getwd(), "tests", "extendrtests", "src", "rust", "Cargo.toml")
-          lines <- readLines(toml_path)
-          lines <- gsub(
-            "(^\\s*extendr-api\\s*=\\s*\\{\\s*path\\s*=\\s*\")(.*?)(\"\\s*\\})",
-            paste0("\\1", api_path, "\\3"),
-            lines
-          )
-          writeLines(lines, toml_path)
-        shell: Rscript {0}
-
+      
+      
       # TODO: allow warnings on oldrel (cf., https://stat.ethz.ch/pipermail/r-package-devel/2023q2/009229.html)
       - name: Check R version
         id: error-on
@@ -217,17 +204,9 @@ jobs:
           }
         shell: Rscript {0}
 
-      # Windows: modified PATH will launch 32-bit Rscript if the build targets only i686/i386, so no conflict will arise
-      # Rust pseudo multi-targeting: R CMD CHECK receives an extra argument '--no-multiarch' if BUILD_TARGETS is not 'default' and does not contain any commas
-      # To enable RStudio support, extendrtests should be installable from 'extendr/tests/extendrtests',
-      # for this work directory should be modified and then reverted back
-      - name: Run R intergration tests using {extendrtests}
-        uses: r-lib/actions/check-r-package@v2
-        with:
-          args: 'c("--no-manual", "--as-cran", "--force-multiarch")'
-          working-directory: 'tests/extendrtests'
-          check-dir: '"extendrtests_check"'
-          error-on: '"${{ steps.error-on.outputs.level }}"'
+      - name: Run R integration tests using {extendrtests} and `cargo extendr r-cmd-check`
+        run: |
+          cargo extendr r-cmd-check --error-on ${{ steps.error-on.outputs.level }} --check-dir extendrtests_check
 
       # With https://github.com/extendr/rextendr/pull/31
       # rextendr can be configured using environment variables.
@@ -283,20 +262,20 @@ jobs:
     runs-on: ${{ matrix.config.os }}
 
     name: ${{ matrix.config.os }} w/ bindgen (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }} ${{join(matrix.config.rust-targets, ',')}})
-            
+    
     strategy:
       fail-fast: false
       matrix:
         config:
-          - {os: ubuntu-latest,  r: 'devel',   rust-version: 'stable'}
-          - {os: macOS-latest,   r: 'devel',   rust-version: 'stable'}
-          - {os: windows-latest, r: 'release', rust-version: 'stable-msvc',  rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '43'}
-          - {os: windows-latest, r: 'devel',   rust-version: 'stable-msvc',  rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '43'}
+          - { os: ubuntu-latest,  r: 'devel',   rust-version: 'stable' }
+          - { os: macOS-latest,   r: 'devel',   rust-version: 'stable' }
+          - { os: windows-latest, r: 'release', rust-version: 'stable-msvc',  rust-targets: [ 'x86_64-pc-windows-gnu' ], rtools-version: '43' }
+          - { os: windows-latest, r: 'devel',   rust-version: 'stable-msvc',  rust-targets: [ 'x86_64-pc-windows-gnu' ], rtools-version: '43' }
           # When the MSVC target is used, since it's cross-compilation from MSVC
           # to GNU, the doc tests are usually skipped. Adding `-Zdoctest-xcompile`
           # lets the doctests run, which accordingly require the nightly toolchain.
-          - {os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '43', extra-args: ['-Zdoctest-xcompile']}
-          - {os: windows-latest, r: 'oldrel',  rust-version: 'nightly-msvc', rust-targets: ['x86_64-pc-windows-gnu'], rtools-version: '42', extra-args: ['-Zdoctest-xcompile']}
+          - { os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: [ 'x86_64-pc-windows-gnu' ], rtools-version: '43', extra-args: [ '-Zdoctest-xcompile' ] }
+          - { os: windows-latest, r: 'oldrel',  rust-version: 'nightly-msvc', rust-targets: [ 'x86_64-pc-windows-gnu' ], rtools-version: '42', extra-args: [ '-Zdoctest-xcompile' ] }
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -423,11 +402,11 @@ jobs:
             }
 
             ci-cargo +$toolchain build --manifest-path extendr-api/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) -ActionName "Build extendr-api for $toolchain/$target"
-         
+          
             ci-cargo +$toolchain build --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) -ActionName "Build extendr-engine for $toolchain/$target"
-            
+          
           }
-        env: 
+        env:
           BUILD_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
           RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
 
@@ -455,11 +434,11 @@ jobs:
             ci-cargo +$toolchain test graphics_tests:: --manifest-path extendr-api/Cargo.toml --features tests-graphics $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture --test-threads=1 -ActionName "Test extendr-api \w graphics for $target target"
 
             ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests-minimal $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-api \w tests-minimal for $target target"
-                      
+          
             ci-cargo +$toolchain test --manifest-path extendr-macros/Cargo.toml  $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-macros for $target target"
-            
+          
           }
-        env: 
+        env:
           BUILD_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
           RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
           EXTRA_ARGS: ${{ join(matrix.config.extra-args, ',') }}

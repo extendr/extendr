@@ -1,4 +1,4 @@
-# extendr - A safe and user friendly R extension interface using Rust.
+# extendr - A safe and user friendly R extension interface using Rust
 
 [![Github Actions Build Status](https://github.com/extendr/extendr/workflows/Tests/badge.svg)](https://github.com/extendr/extendr/actions)
 [![Crates.io](https://img.shields.io/crates/v/extendr-api.svg)](https://crates.io/crates/extendr-api)
@@ -16,8 +16,9 @@ You will then be able to call R code from Rust.
 
 ```toml
 [dependencies]
-extendr-api = "0.2"
+extendr-api = "0.6"
 ```
+
 ## Installation - R
 
 There are two ways you can use the extendr API from R. First, you can use the [rextendr](https://extendr.github.io/rextendr/) package to call individual Rust functions from an R session. Second, you can write an R package that uses compiled Rust code, see the [helloextendr](https://github.com/extendr/helloextendr) repo for a minimal example.
@@ -84,7 +85,7 @@ Anyone who knows the R library should be able to write R extensions.
 
 Instead of wrapping R objects, we convert to Rust native objects
 on entry to a function. This makes the wrapped code clean and dependency
-free. The ultimate goal is to allow the wrapping of existing 
+free. The ultimate goal is to allow the wrapping of existing
 Rust libraries without markup, but in the meantime, the markup
 is as light as possible.
 
@@ -103,12 +104,14 @@ accidental segfaults and failures.
 ## extendr roadmap
 
 ### Basic
+
 - [x] Be able to build simple rust extensions for R.
 - [x] Wrap the R SEXP object safely (Robj)
 - [x] Iterator support for matrices and vectors.
 - [x] Class support.
 
 ### Documentation
+
 - [x] Begin documentation.
 - [ ] Begin book-form documentation.
 - [ ] Paper for Bioinformatics.
@@ -116,14 +119,17 @@ accidental segfaults and failures.
 - [ ] Publish Use R! series book.
 
 ### Automation
+
 - [x] Auto-generate binding wrappers.
 - [x] Auto-generate NAMESPACE and lib.R.
 
 ### Features
+
 - [x] Feature-gated support for ndarray.
 - [ ] Feature-gated support for rayon.
 
 ### R packages
+
 - [ ] Bindings for rust-bio
 
 ## Contributing

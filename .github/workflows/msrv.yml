@@ -23,6 +23,10 @@ permissions:
 
 jobs:
   test-min-rust-version:
+    # PowerShell core is available on all platforms and can be used to unify scripts
+    defaults:
+      run:
+        shell: pwsh
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -30,4 +34,6 @@ jobs:
         with:
           crate: cargo-msrv
       - name: Verify minimum rust version
-        run: cargo-msrv --path extendr-api/ verify
+        run: |
+          . ./ci-cargo.ps1
+          ci-cargo msrv --path extendr-api/ verify -ActionName "Verify Rust MSRV"

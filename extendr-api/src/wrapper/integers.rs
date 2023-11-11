@@ -53,9 +53,9 @@ impl Integers {
 // TODO: this should be a trait.
 impl Integers {
     pub fn set_elt(&mut self, index: usize, val: Rint) {
-        unsafe {
+        single_threaded(|| unsafe {
             SET_INTEGER_ELT(self.get(), index as R_xlen_t, val.inner());
-        }
+        })
     }
 }
 
@@ -75,7 +75,7 @@ impl DerefMut for Integers {
     /// Treat Integers as if it is a mutable slice, like `Vec<Rint>`
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
-            let ptr = DATAPTR(self.get()) as *mut Rint;
+            let ptr = DATAPTR(self.get_mut()) as *mut Rint;
             std::slice::from_raw_parts_mut(ptr, self.len())
         }
     }

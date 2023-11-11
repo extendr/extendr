@@ -29,6 +29,10 @@ impl<T: Debug + 'static> robj::GetSexp for ExternalPtr<T> {
         self.robj.get()
     }
 
+    unsafe fn get_mut(&mut self) -> SEXP {
+        self.robj.get_mut()
+    }
+
     /// Get a reference to a Robj for this type.
     fn as_robj(&self) -> &Robj {
         &self.robj
@@ -82,7 +86,7 @@ impl<T: Any + Debug> ExternalPtr<T> {
     /// An ExternalPtr behaves like a Box except that the information is
     /// tracked by a R object.
     pub fn new(val: T) -> Self {
-        unsafe {
+        single_threaded(|| unsafe {
             // This allocates some memory for our object and moves the object into it.
             let boxed = Box::new(val);
 
@@ -114,7 +118,7 @@ impl<T: Any + Debug> ExternalPtr<T> {
                 robj,
                 marker: std::marker::PhantomData,
             }
-        }
+        })
     }
 
     // TODO: make a constructor for references?

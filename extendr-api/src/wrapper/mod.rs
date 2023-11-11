@@ -58,10 +58,8 @@ pub use strings::Strings;
 pub use symbol::Symbol;
 
 pub(crate) fn make_symbol(name: &str) -> SEXP {
-    let mut bytes = Vec::with_capacity(name.len() + 1);
-    bytes.extend(name.bytes());
-    bytes.push(0);
-    unsafe { Rf_install(bytes.as_ptr() as *const ::std::os::raw::c_char) }
+    let name = CString::new(name).unwrap();
+    unsafe { libR_sys::Rf_install(name.as_ptr()) }
 }
 
 pub(crate) fn make_vector<T>(sexptype: u32, values: T) -> Robj
@@ -72,8 +70,8 @@ where
 {
     single_threaded(|| unsafe {
         let values = values.into_iter();
-        let res = Robj::alloc_vector(sexptype, values.len());
-        let sexp = res.get();
+        let mut res = Robj::alloc_vector(sexptype, values.len());
+        let sexp = res.get_mut();
         for (i, val) in values.enumerate() {
             SET_VECTOR_ELT(sexp, i as R_xlen_t, val.into().get());
         }
@@ -139,6 +137,10 @@ macro_rules! make_getsexp {
         $($impl)* GetSexp for $typename {
             unsafe fn get(&self) -> SEXP {
                 self.robj.get()
+            }
+
+            unsafe fn get_mut(&mut self) -> SEXP {
+                self.robj.get_mut()
             }
 
             fn as_robj(&self) -> &Robj {

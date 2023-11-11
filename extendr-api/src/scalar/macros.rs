@@ -21,7 +21,7 @@
 /// - `impl Neg for Rint`
 /// - `impl Neg for &Rint`
 macro_rules! gen_unop {
-    ($type : tt, $opname : ident, $expr: expr, $docstring: expr) => {
+    ($type : ty, $opname : ident, $expr: expr, $docstring: expr) => {
         // The 'example usage' expands to...
         //
         // impl Neg for Rint {
@@ -287,7 +287,7 @@ macro_rules! gen_binop {
 /// - `impl AddAssign<i32> for &mut Rint`
 /// - `impl AddAssign<Rint> for Option<i32>`
 macro_rules! gen_binopassign {
-    ($type : tt, $type_prim : tt, $opname : ident, $expr: expr, $docstring: expr) => {
+    ($type : ty, $type_prim : ty, $opname : ident, $expr: expr, $docstring: expr) => {
         // The 'example usage' expands to...
         //
         // impl AddAssign<Rint> for Rint {
@@ -776,7 +776,7 @@ macro_rules! gen_partial_ord {
 /// gen_sum_iter!(Rint);
 /// ```
 macro_rules! gen_sum_iter {
-    ($type : tt) => {
+    ($type : ty) => {
         // The 'example usage' expands to...
         //
         // impl std::iter::Sum for $type {

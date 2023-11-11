@@ -452,7 +452,7 @@
               fn from(value: MySubmoduleClass) -> Self {
                   unsafe {
                       let ptr = Box::into_raw(Box::new(value));
-                      let res = Robj::make_external_ptr(ptr, Robj::from(()));
+                      let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
                       res.set_attrib(class_symbol(), "MySubmoduleClass").unwrap();
                       res.register_c_finalizer(Some(__finalize__MySubmoduleClass));
                       res
@@ -463,7 +463,7 @@
               fn from(value: &'a MySubmoduleClass) -> Self {
                   unsafe {
                       let ptr = Box::into_raw(Box::new(value));
-                      let res = Robj::make_external_ptr(ptr, Robj::from(()));
+                      let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
                       res.set_attrib(class_symbol(), "MySubmoduleClass").unwrap();
                       res.register_c_finalizer(Some(__finalize__MySubmoduleClass));
                       res
@@ -2140,7 +2140,7 @@
               fn from(value: VecUsize) -> Self {
                   unsafe {
                       let ptr = Box::into_raw(Box::new(value));
-                      let res = Robj::make_external_ptr(ptr, Robj::from(()));
+                      let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
                       res.set_attrib(class_symbol(), "VecUsize").unwrap();
                       res.register_c_finalizer(Some(__finalize__VecUsize));
                       res
@@ -2151,7 +2151,7 @@
               fn from(value: &'a VecUsize) -> Self {
                   unsafe {
                       let ptr = Box::into_raw(Box::new(value));
-                      let res = Robj::make_external_ptr(ptr, Robj::from(()));
+                      let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
                       res.set_attrib(class_symbol(), "VecUsize").unwrap();
                       res.register_c_finalizer(Some(__finalize__VecUsize));
                       res
@@ -4976,7 +4976,7 @@
           fn from(value: MyClass) -> Self {
               unsafe {
                   let ptr = Box::into_raw(Box::new(value));
-                  let res = Robj::make_external_ptr(ptr, Robj::from(()));
+                  let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
                   res.set_attrib(class_symbol(), "MyClass").unwrap();
                   res.register_c_finalizer(Some(__finalize__MyClass));
                   res
@@ -4987,7 +4987,7 @@
           fn from(value: &'a MyClass) -> Self {
               unsafe {
                   let ptr = Box::into_raw(Box::new(value));
-                  let res = Robj::make_external_ptr(ptr, Robj::from(()));
+                  let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
                   res.set_attrib(class_symbol(), "MyClass").unwrap();
                   res.register_c_finalizer(Some(__finalize__MyClass));
                   res
@@ -5200,7 +5200,7 @@
           fn from(value: __MyClass) -> Self {
               unsafe {
                   let ptr = Box::into_raw(Box::new(value));
-                  let res = Robj::make_external_ptr(ptr, Robj::from(()));
+                  let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
                   res.set_attrib(class_symbol(), "__MyClass").unwrap();
                   res.register_c_finalizer(Some(__finalize____MyClass));
                   res
@@ -5211,7 +5211,7 @@
           fn from(value: &'a __MyClass) -> Self {
               unsafe {
                   let ptr = Box::into_raw(Box::new(value));
-                  let res = Robj::make_external_ptr(ptr, Robj::from(()));
+                  let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
                   res.set_attrib(class_symbol(), "__MyClass").unwrap();
                   res.register_c_finalizer(Some(__finalize____MyClass));
                   res
@@ -5438,7 +5438,7 @@
           fn from(value: MyClassUnexported) -> Self {
               unsafe {
                   let ptr = Box::into_raw(Box::new(value));
-                  let res = Robj::make_external_ptr(ptr, Robj::from(()));
+                  let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
                   res.set_attrib(class_symbol(), "MyClassUnexported").unwrap();
                   res.register_c_finalizer(Some(__finalize__MyClassUnexported));
                   res
@@ -5449,7 +5449,7 @@
           fn from(value: &'a MyClassUnexported) -> Self {
               unsafe {
                   let ptr = Box::into_raw(Box::new(value));
-                  let res = Robj::make_external_ptr(ptr, Robj::from(()));
+                  let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
                   res.set_attrib(class_symbol(), "MyClassUnexported").unwrap();
                   res.register_c_finalizer(Some(__finalize__MyClassUnexported));
                   res
