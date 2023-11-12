@@ -17,16 +17,94 @@ use libR_sys::{
     Rf_unprotect, LENGTH, SET_VECTOR_ELT, SEXP, VECSXP, VECTOR_ELT,
 };
 
+use self::permanent_symbols::is_permanent;
+
+mod permanent_symbols {
+    use libR_sys::SEXP;
+    use libR_sys::*;
+    use once_cell::sync::Lazy;
+
+    static PERMANENT_R_SYMBOLS: Lazy<[SEXP; 53]> = Lazy::new(|| unsafe {
+        [
+            R_GlobalEnv,
+            R_EmptyEnv,
+            R_BaseEnv,
+            R_BaseNamespace,
+            R_NamespaceRegistry,
+            R_Srcref,
+            R_NilValue,
+            R_UnboundValue,
+            R_MissingArg,
+            R_InBCInterpreter,
+            R_CurrentExpression,
+            // this one isn't available in the DLL
+            // R_RestartToken,
+            R_AsCharacterSymbol,
+            R_AtsignSymbol,
+            R_baseSymbol,
+            R_BaseSymbol,
+            R_BraceSymbol,
+            R_Bracket2Symbol,
+            R_BracketSymbol,
+            R_ClassSymbol,
+            R_DeviceSymbol,
+            R_DimNamesSymbol,
+            R_DimSymbol,
+            R_DollarSymbol,
+            R_DotsSymbol,
+            R_DoubleColonSymbol,
+            R_DropSymbol,
+            R_EvalSymbol,
+            R_FunctionSymbol,
+            R_LastvalueSymbol,
+            R_LevelsSymbol,
+            R_ModeSymbol,
+            R_NaRmSymbol,
+            R_NameSymbol,
+            R_NamesSymbol,
+            R_NamespaceEnvSymbol,
+            R_PackageSymbol,
+            R_PreviousSymbol,
+            R_QuoteSymbol,
+            R_RowNamesSymbol,
+            R_SeedsSymbol,
+            R_SortListSymbol,
+            R_SourceSymbol,
+            R_SpecSymbol,
+            R_TripleColonSymbol,
+            R_TspSymbol,
+            R_dot_defined,
+            R_dot_Method,
+            R_dot_packageName,
+            R_dot_target,
+            R_dot_Generic,
+            R_NaString,
+            R_BlankString,
+            R_BlankScalarString,
+        ]
+    });
+
+    pub fn is_permanent(value: &SEXP) -> bool {
+        PERMANENT_R_SYMBOLS.contains(value)
+    }
+}
+
 static OWNERSHIP: Lazy<Mutex<Ownership>> = Lazy::new(|| Mutex::new(Ownership::new()));
 
 pub(crate) unsafe fn protect(sexp: SEXP) {
     let mut own = OWNERSHIP.lock().expect("protect failed");
-    own.protect(sexp);
+
+    if !is_permanent(&sexp) {
+        own.protect(sexp);
+    }
 }
 
 pub(crate) unsafe fn unprotect(sexp: SEXP) {
     let mut own = OWNERSHIP.lock().expect("unprotect failed");
-    own.unprotect(sexp);
+
+    if !is_permanent(&sexp) {
+        own.unprotect(sexp);
+    }
 }
 
 pub const INITIAL_PRESERVATION_SIZE: usize = 100000;
