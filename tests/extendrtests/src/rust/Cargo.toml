@@ -17,4 +17,4 @@ crate-type = ["staticlib"]
 
 [dependencies]
 extendr-api = { version = "*", features = ["graphics", "ndarray", "either"] }
-libR-sys = "0.6.0"
+libR-sys = "*"
