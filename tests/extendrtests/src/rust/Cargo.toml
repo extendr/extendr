@@ -18,3 +18,7 @@ crate-type = ["staticlib"]
 [dependencies]
 extendr-api = { version = "*", features = ["graphics", "ndarray", "either"] }
 libR-sys = "*"
+
+[patch.crates-io]
+# root is `tests/extendrtests/src/rust`
+extendr-api = { path = "C:/Users/minin/Documents/GitHub/extendr/extendr-api" }
