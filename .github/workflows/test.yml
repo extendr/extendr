@@ -321,14 +321,6 @@ jobs:
           use-public-rspm: true
           windows-path-include-mingw: false
 
-      - name: MINGW64
-        if: startsWith(runner.os, 'Windows')
-        uses: msys2/setup-msys2@v2
-        with:
-          msystem: mingw64
-          install: mingw-w64-x86_64-clang mingw-w64-x86_64-toolchain
-          release: false
-
       - name: Configure Windows
         if: startsWith(runner.os, 'Windows')
         run: |
