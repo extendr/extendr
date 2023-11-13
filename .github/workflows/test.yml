@@ -232,7 +232,7 @@ jobs:
                 "\" }"),
 
               # uncomment this line when we need to depend on the dev version of libR-sys
-              'libR-sys = { git = "https://github.com/extendr/libR-sys" }',
+              #'libR-sys = { git = "https://github.com/extendr/libR-sys" }',
 
               sep = ";")
           
