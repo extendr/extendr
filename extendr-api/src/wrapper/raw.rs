@@ -34,7 +34,7 @@ impl Raw {
     /// }
     /// ```
     pub fn from_bytes(bytes: &[u8]) -> Self {
-        single_threaded(|| unsafe {
+        unsafe {
             let sexp = Rf_allocVector(RAWSXP, bytes.len() as R_xlen_t);
             let robj = Robj::from_sexp(sexp);
             let ptr = RAW(sexp);
@@ -42,7 +42,7 @@ impl Raw {
                 *ptr.add(i) = v;
             }
             Raw { robj }
-        })
+        }
     }
 
     /// Get a slice of bytes from the Raw object.

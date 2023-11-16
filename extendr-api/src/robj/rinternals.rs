@@ -82,35 +82,33 @@ pub trait Rinternals: Types + Conversions {
 
     /// Convert to vectors of many kinds.
     fn coerce_vector(&self, sexptype: u32) -> Robj {
-        single_threaded(|| unsafe {
-            Robj::from_sexp(Rf_coerceVector(self.get(), sexptype as SEXPTYPE))
-        })
+        unsafe { Robj::from_sexp(Rf_coerceVector(self.get(), sexptype as SEXPTYPE)) }
     }
 
     /// Convert a pairlist (LISTSXP) to a vector list (VECSXP).
     fn pair_to_vector_list(&self) -> Robj {
-        single_threaded(|| unsafe { Robj::from_sexp(Rf_PairToVectorList(self.get())) })
+        unsafe { Robj::from_sexp(Rf_PairToVectorList(self.get())) }
     }
 
     /// Convert a vector list (VECSXP) to a pair list (LISTSXP)
     fn vector_to_pair_list(&self) -> Robj {
-        single_threaded(|| unsafe { Robj::from_sexp(Rf_VectorToPairList(self.get())) })
+        unsafe { Robj::from_sexp(Rf_VectorToPairList(self.get())) }
     }
 
     /// Convert a factor to a string vector.
     fn as_character_factor(&self) -> Robj {
-        single_threaded(|| unsafe { Robj::from_sexp(Rf_asCharacterFactor(self.get())) })
+        unsafe { Robj::from_sexp(Rf_asCharacterFactor(self.get())) }
     }
 
     /// Allocate a matrix object.
     fn alloc_matrix(sexptype: SEXPTYPE, rows: i32, cols: i32) -> Robj {
-        single_threaded(|| unsafe { Robj::from_sexp(Rf_allocMatrix(sexptype, rows, cols)) })
+        unsafe { Robj::from_sexp(Rf_allocMatrix(sexptype, rows, cols)) }
     }
 
     /// Do a deep copy of this object.
     /// Note that clone() only adds a reference.
     fn duplicate(&self) -> Robj {
-        single_threaded(|| unsafe { Robj::from_sexp(Rf_duplicate(self.get())) })
+        unsafe { Robj::from_sexp(Rf_duplicate(self.get())) }
     }
 
     /// Find a function in an environment ignoring other variables.
@@ -243,13 +241,13 @@ pub trait Rinternals: Types + Conversions {
     #[doc(hidden)]
     unsafe fn make_external_ptr<T>(p: *mut T, prot: Robj) -> Robj {
         let type_name: Robj = std::any::type_name::<T>().into();
-        Robj::from_sexp(single_threaded(|| {
+        Robj::from_sexp({
             R_MakeExternalPtr(
                 p as *mut ::std::os::raw::c_void,
                 type_name.get(),
                 prot.get(),
             )
-        }))
+        })
     }
 
     /// Internal function used to implement `#[extendr]` impl
@@ -274,7 +272,7 @@ pub trait Rinternals: Types + Conversions {
     unsafe fn register_c_finalizer(&self, func: R_CFinalizer_t) {
         // Use R_RegisterCFinalizerEx() and set onexit to 1 (TRUE) to invoke the
         // finalizer on a shutdown of the R session as well.
-        single_threaded(|| R_RegisterCFinalizerEx(self.get(), func, 1));
+        R_RegisterCFinalizerEx(self.get(), func, 1);
     }
 
     /// Copy a vector and resize it.
@@ -282,9 +280,10 @@ pub trait Rinternals: Types + Conversions {
     fn xlengthgets(&self, new_len: usize) -> Result<Robj> {
         unsafe {
             if self.is_vector() {
-                Ok(single_threaded(|| {
-                    Robj::from_sexp(Rf_xlengthgets(self.get(), new_len as R_xlen_t))
-                }))
+                Ok(Robj::from_sexp(Rf_xlengthgets(
+                    self.get(),
+                    new_len as R_xlen_t,
+                )))
             } else {
                 Err(Error::ExpectedVector(self.as_robj().clone()))
             }
@@ -293,12 +292,12 @@ pub trait Rinternals: Types + Conversions {
 
     /// Allocated an owned object of a certain type.
     fn alloc_vector(sexptype: u32, len: usize) -> Robj {
-        single_threaded(|| unsafe { Robj::from_sexp(Rf_allocVector(sexptype, len as R_xlen_t)) })
+        unsafe { Robj::from_sexp(Rf_allocVector(sexptype, len as R_xlen_t)) }
     }
 
     /// Return true if two arrays have identical dims.
     fn conformable(a: &Robj, b: &Robj) -> bool {
-        single_threaded(|| unsafe { Rf_conformable(a.get(), b.get()) != 0 })
+        unsafe { Rf_conformable(a.get(), b.get()) != 0 }
     }
 
     /// Return true if this is an array.

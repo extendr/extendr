@@ -59,12 +59,12 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
     ) -> Robj {
         let res = Self::unserialize(class, state);
         if !res.is_null() {
-            single_threaded(|| unsafe {
+            unsafe {
                 let val = res.get();
                 SET_ATTRIB(val, attributes.get());
                 SET_OBJECT(val, obj_flags);
                 SETLEVELS(val, levels);
-            })
+            }
         }
         res
     }
@@ -116,7 +116,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
     /// Get the data pointer for this vector, possibly expanding the
     /// compact representation into a full R vector.
     fn dataptr(x: SEXP, _writeable: bool) -> *mut u8 {
-        single_threaded(|| unsafe {
+        unsafe {
             let data2 = R_altrep_data2(x);
             if data2 == R_NilValue || TYPEOF(data2) != TYPEOF(x) {
                 let data2 = manifest(x);
@@ -125,7 +125,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
             } else {
                 DATAPTR(data2) as *mut u8
             }
-        })
+        }
     }
 
     /// Get the data pointer for this vector, returning NULL
@@ -152,7 +152,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
 // Manifest a vector by storing the "elt" values to memory.
 // Return the new vector.
 fn manifest(x: SEXP) -> SEXP {
-    single_threaded(|| unsafe {
+    unsafe {
         Rf_protect(x);
         let len = XLENGTH_EX(x);
         let data2 = Rf_allocVector(TYPEOF(x) as u32, len as R_xlen_t);
@@ -177,7 +177,7 @@ fn manifest(x: SEXP) -> SEXP {
         };
         Rf_unprotect(2);
         data2
-    })
+    }
 }
 
 pub trait AltIntegerImpl: AltrepImpl {
@@ -488,7 +488,7 @@ impl Altrep {
 
     /// Safely implement ALTREP_CLASS.
     pub fn class(&self) -> Robj {
-        single_threaded(|| unsafe { Robj::from_sexp(ALTREP_CLASS(self.robj.get())) })
+        unsafe { Robj::from_sexp(ALTREP_CLASS(self.robj.get())) }
     }
 
     pub fn from_state_and_class<StateType: 'static>(
@@ -496,7 +496,7 @@ impl Altrep {
         class: Robj,
         mutable: bool,
     ) -> Altrep {
-        single_threaded(|| unsafe {
+        unsafe {
             use std::os::raw::c_void;
 
             unsafe extern "C" fn finalizer<StateType: 'static>(x: SEXP) {
@@ -524,7 +524,7 @@ impl Altrep {
             Altrep {
                 robj: Robj::from_sexp(sexp),
             }
-        })
+        }
     }
 
     /// Return true if the ALTREP object has been manifested (copied into memory).
@@ -708,7 +708,7 @@ impl Altrep {
         #![allow(non_snake_case)]
         use std::os::raw::c_int;
 
-        single_threaded(|| unsafe {
+        unsafe {
             let class = Altrep::altrep_class::<StateType>(Rtype::Integers, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
@@ -771,7 +771,7 @@ impl Altrep {
             R_set_altinteger_Max_method(class_ptr, Some(altinteger_Max::<StateType>));
 
             class
-        })
+        }
     }
 
     /// Make a real ALTREP class that can be used to make vectors.
@@ -782,7 +782,7 @@ impl Altrep {
         #![allow(non_snake_case)]
         use std::os::raw::c_int;
 
-        single_threaded(|| unsafe {
+        unsafe {
             let class = Altrep::altrep_class::<StateType>(Rtype::Doubles, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
@@ -842,7 +842,7 @@ impl Altrep {
             R_set_altreal_Min_method(class_ptr, Some(altreal_Min::<StateType>));
             R_set_altreal_Max_method(class_ptr, Some(altreal_Max::<StateType>));
             class
-        })
+        }
     }
 
     /// Make a logical ALTREP class that can be used to make vectors.
@@ -853,7 +853,7 @@ impl Altrep {
         #![allow(non_snake_case)]
         use std::os::raw::c_int;
 
-        single_threaded(|| unsafe {
+        unsafe {
             let class = Altrep::altrep_class::<StateType>(Rtype::Logicals, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
@@ -900,7 +900,7 @@ impl Altrep {
             R_set_altlogical_Sum_method(class_ptr, Some(altlogical_Sum::<StateType>));
 
             class
-        })
+        }
     }
 
     /// Make a raw ALTREP class that can be used to make vectors.
@@ -910,7 +910,7 @@ impl Altrep {
     ) -> Robj {
         #![allow(non_snake_case)]
 
-        single_threaded(|| unsafe {
+        unsafe {
             let class = Altrep::altrep_class::<StateType>(Rtype::Raw, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
@@ -935,7 +935,7 @@ impl Altrep {
             R_set_altraw_Get_region_method(class_ptr, Some(altraw_Get_region::<StateType>));
 
             class
-        })
+        }
     }
 
     /// Make a complex ALTREP class that can be used to make vectors.
@@ -945,7 +945,7 @@ impl Altrep {
     ) -> Robj {
         #![allow(non_snake_case)]
 
-        single_threaded(|| unsafe {
+        unsafe {
             let class = Altrep::altrep_class::<StateType>(Rtype::Complexes, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
@@ -970,7 +970,7 @@ impl Altrep {
             R_set_altcomplex_Get_region_method(class_ptr, Some(altcomplex_Get_region::<StateType>));
 
             class
-        })
+        }
     }
 
     /// Make a string ALTREP class that can be used to make vectors.
@@ -981,7 +981,7 @@ impl Altrep {
         #![allow(non_snake_case)]
         use std::os::raw::c_int;
 
-        single_threaded(|| unsafe {
+        unsafe {
             let class = Altrep::altrep_class::<StateType>(Rtype::Strings, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
@@ -1019,7 +1019,7 @@ impl Altrep {
             R_set_altstring_No_NA_method(class_ptr, Some(altstring_No_NA::<StateType>));
 
             class
-        })
+        }
     }
 
     #[cfg(use_r_altlist)]
@@ -1029,7 +1029,7 @@ impl Altrep {
     ) -> Robj {
         #![allow(non_snake_case)]
 
-        single_threaded(|| unsafe {
+        unsafe {
             let class = Altrep::altrep_class::<StateType>(Rtype::List, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
@@ -1052,7 +1052,7 @@ impl Altrep {
             R_set_altlist_Elt_method(class_ptr, Some(altlist_Elt::<StateType>));
             R_set_altlist_Set_elt_method(class_ptr, Some(altlist_Set_elt::<StateType>));
             class
-        })
+        }
     }
 
     make_from_iterator!(

@@ -42,7 +42,7 @@ macro_rules! gen_vector_wrapper_impl {
                     V::IntoIter: ExactSizeIterator,
                     V::Item: Into<$scalar_type>,
                 {
-                    single_threaded(|| {
+                     {
                         let values: V::IntoIter = values.into_iter();
 
                         let mut robj = Robj::alloc_vector($sexp, values.len());
@@ -52,7 +52,7 @@ macro_rules! gen_vector_wrapper_impl {
                             *d = v.into();
                         }
                         Self { robj }
-                    })
+                    }
                 }
             }
 
@@ -66,15 +66,14 @@ macro_rules! gen_vector_wrapper_impl {
                     V::IntoIter: ExactSizeIterator + std::fmt::Debug + Clone + 'static + std::any::Any,
                     V::Item: Into<$scalar_type>,
                 {
-                    single_threaded(|| {
+                    {
                         let values: V::IntoIter = values.into_iter();
-
                         let robj =
                                   Altrep::$altrep_constructor(values)
                                 .try_into()
                                 .unwrap();
                         Self { robj }
-                    })
+                    }
                 }
             }
 

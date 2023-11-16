@@ -3,7 +3,6 @@
 
 use crate::robj::GetSexp;
 use crate::robj::Robj;
-use crate::single_threaded;
 use libR_sys::*;
 
 /// Convert a list of tokens to an array of tuples.
@@ -43,26 +42,26 @@ macro_rules! args {
 
 #[doc(hidden)]
 pub unsafe fn append_with_name(tail: SEXP, obj: Robj, name: &str) -> SEXP {
-    single_threaded(|| {
+    {
         let cons = Rf_cons(obj.get(), R_NilValue);
         SET_TAG(cons, crate::make_symbol(name));
         SETCDR(tail, cons);
         cons
-    })
+    }
 }
 
 #[doc(hidden)]
 pub unsafe fn append(tail: SEXP, obj: Robj) -> SEXP {
-    single_threaded(|| {
+    {
         let cons = Rf_cons(obj.get(), R_NilValue);
         SETCDR(tail, cons);
         cons
-    })
+    }
 }
 
 #[doc(hidden)]
 pub unsafe fn make_lang(sym: &str) -> Robj {
-    Robj::from_sexp(single_threaded(|| Rf_lang1(crate::make_symbol(sym))))
+    Robj::from_sexp(Rf_lang1(crate::make_symbol(sym)))
 }
 
 /// Convert a list of tokens to an array of tuples.

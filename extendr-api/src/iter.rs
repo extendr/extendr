@@ -57,7 +57,7 @@ impl StrIter {
 
 // Get a string reference from a CHARSXP
 fn str_from_strsxp<'a>(sexp: SEXP, index: isize) -> &'a str {
-    single_threaded(|| unsafe {
+    unsafe {
         if index < 0 || index >= Rf_xlength(sexp) {
             <&str>::na()
         } else {
@@ -72,7 +72,7 @@ fn str_from_strsxp<'a>(sexp: SEXP, index: isize) -> &'a str {
                 <&str>::na()
             }
         }
-    })
+    }
 }
 
 impl Iterator for StrIter {

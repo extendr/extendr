@@ -1,2 +1,5 @@
+[env]
+RUST_TEST_THREADS = "1"
+
 [alias]
 extendr = "run --package xtask --"
