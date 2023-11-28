@@ -21,4 +21,4 @@ libR-sys = "*"
 
 [patch.crates-io]
 # root is `tests/extendrtests/src/rust`
-extendr-api = { path = "C:/Users/minin/Documents/GitHub/extendr/extendr-api" }
+extendr-api = { path = "../../../../extendr-api/" }
