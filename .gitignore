@@ -33,5 +33,4 @@
 extendr.Rproj
 **/extendrtests.Rcheck/
 **/extendrtests_[0-9].[0-9].[0-9].tar.gz
-**/.cargo/*
 .vscode/settings.json
