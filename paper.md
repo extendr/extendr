@@ -21,11 +21,23 @@ Acknowledgement of any financial support.
 
 ------------------------------------------------------------------------
 
-## Statement of need
+## Statement of Need 
+
+One of the key strengths of the R programming language is its ability to integrate with other languages and tools. It does so through its C API as described in Writing R Extensions (cite). In 2006, the R package Rcpp was released on CRAN enabling R developers to build packages that harnessed the power of C++ (Rcpp Papercite). Since then, Rcpp has grown to be the most imported R package across the Comprehensive R Archive Network (CRAN) due to its use in low-level libraries that are used by the vast majority of R packages (cite cran page rank package? <https://github.com/andrie/pagerank>). In addition to Rcpp there are many other packages that enable cross-langauge communication. The package cpp11 provides similar bindings to R via C++ (CITE cpp11). Bindings to Java are provided by rJava, to JavaScript via V8, and to python via reticulate (CITE rjava, v8, reticulate)
+
+Today, we are seeing the proliferation of the Rust programming language. According to StackOverflow, Rust is the most admired programming language for many years running—and for good reason (<https://survey.stackoverflow.co/2023/>). Rust provides similar performance such as C and C++ while also being far more ergonomic (Nature, 2020, <https://www.nature.com/articles/d41586-020-03382-2>). But most importantly, Rust provides guarantees memory that make exceptionally safe. For all of these reasons and more, providing R package developers a way to integrate Rust and R is necessary for the continued growth of the R ecosystem.
+
+## 
+
+## Notes
 
 -   r is an interface langauge. it comes with a C api to build extensions
 
--   over a decade ago Rcpp was relesaed revoltionizing R package development making it easy to tap into high performance library from C++
+-   over a decade ago Rcpp was released revoltionizing R package development making it easy to tap into high performance library from C++
+
+    -   cpp11 is a fairly recent take on the same objective by the folks from the r-lib team
+
+    -   V8 is another take on interfacing with another language enabling R users to call javaScript via V8
 
 -   today we are seeing very fast growth in the adoption of Rust due to its ease of use, safety, and performance.
 
@@ -33,9 +45,27 @@ Acknowledgement of any financial support.
 
     -   PyO3 serves this role for the ptyhon ecosystem and has led to wildly successful libraries such as polars
 
--   extendr is a rust library that provides R package developers with a way to
+-   extendr is a rust library that provides R package developers with a way to create R packages that utilize the power and safety of Rust
 
-## Notes
+-   it creates bindings to R's C API via the low-level Rust crate libR-sys that supports extendr.
+
+-   extendr comes with a companion R package called {rextendr}
+
+    -   rextendr is a user friendly package that is used for creating the scaffolding of a rust-enabled R package
+
+    -   it documents Rust functions and creats wrappers to rust functions that are then exported to R via the `.Call()` function interface
+
+-   extendr works by creating a staticlib that is called by R
+
+-   extendr has already seen a fair amount of adoption in the R ecosystem. Notably it has been used to develop the R package {rpolars} which are R bindings to polars rust data frame library.
+
+    -   prqlr which are bindings to the prql crust compiler library that generates sql queries.
+
+    -   rsgeo are bindings to geo-rust geometry primitives and algorithms which are very performant
+
+-   extendr is extensible meaning that other rust-crates can be developed to integrate external rust libraries with extendr and thus R
+
+    -   a recent example is the arrow-extendr library crate which enables conversion from from R's arrow and nanoarrow R packages to Apache Arrow arrow-rs rust implementation.
 
 The R Project for Statistical Computing, referred to simply as R, has a long history of being an interface language.
 
