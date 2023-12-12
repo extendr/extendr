@@ -1,4 +1,16 @@
 //! S4 class support.
+//! 
+//! It is not possible to create an S4 class from R's C-API, and thus it is
+//! not possible to do so in Rust. But an S4 class can be instantiated.
+//! 
+//! Thus, the S4 class definition must be evaluated prior to using [`S4::new`].
+//! Conveniently, to inline the defintion of an S4 class with R, one can
+//! use [`S4::set_class`].
+//! 
+//! Ideally, in an R-package setting, there will be no calls to `set_class`,
+//! and the definition of an S4-class will be present in the `/R` folder.
+//! 
+//! 
 
 use super::*;
 
