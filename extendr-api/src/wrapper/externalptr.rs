@@ -1,5 +1,4 @@
 use super::*;
-use std::any::Any;
 use std::fmt::Debug;
 
 /// Wrapper for creating R objects containing any Rust object.
@@ -16,7 +15,7 @@ use std::fmt::Debug;
 /// ```
 ///
 #[derive(PartialEq, Clone)]
-pub struct ExternalPtr<T: Debug + 'static> {
+pub struct ExternalPtr<T> {
     /// This is the contained Robj.
     pub(crate) robj: Robj,
 
@@ -24,7 +23,7 @@ pub struct ExternalPtr<T: Debug + 'static> {
     marker: std::marker::PhantomData<T>,
 }
 
-impl<T: Debug + 'static> robj::GetSexp for ExternalPtr<T> {
+impl<T> robj::GetSexp for ExternalPtr<T> {
     unsafe fn get(&self) -> SEXP {
         self.robj.get()
     }
@@ -45,24 +44,24 @@ impl<T: Debug + 'static> robj::GetSexp for ExternalPtr<T> {
 }
 
 /// len() and is_empty()
-impl<T: Debug + 'static> Length for ExternalPtr<T> {}
+impl<T> Length for ExternalPtr<T> {}
 
 /// rtype() and rany()
-impl<T: Debug + 'static> Types for ExternalPtr<T> {}
+impl<T> Types for ExternalPtr<T> {}
 
 /// as_*()
-impl<T: Debug + 'static> Conversions for ExternalPtr<T> {}
+impl<T> Conversions for ExternalPtr<T> {}
 
 /// find_var() etc.
-impl<T: Debug + 'static> Rinternals for ExternalPtr<T> {}
+impl<T> Rinternals for ExternalPtr<T> {}
 
 /// as_typed_slice_raw() etc.
-impl<T: Debug + 'static> Slices for ExternalPtr<T> {}
+impl<T> Slices for ExternalPtr<T> {}
 
 /// dollar() etc.
-impl<T: Debug + 'static> Operators for ExternalPtr<T> {}
+impl<T> Operators for ExternalPtr<T> {}
 
-impl<T: Debug + 'static> Deref for ExternalPtr<T> {
+impl<T> Deref for ExternalPtr<T> {
     type Target = T;
 
     /// This allows us to treat the Robj as if it is the type T.
@@ -71,14 +70,14 @@ impl<T: Debug + 'static> Deref for ExternalPtr<T> {
     }
 }
 
-impl<T: Debug + 'static> DerefMut for ExternalPtr<T> {
+impl<T> DerefMut for ExternalPtr<T> {
     /// This allows us to treat the Robj as if it is the mutable type T.
     fn deref_mut(&mut self) -> &mut Self::Target {
         self.addr_mut()
     }
 }
 
-impl<T: Any + Debug> ExternalPtr<T> {
+impl<T> ExternalPtr<T> {
     /// Construct an external pointer object from any type T.
     /// In this case, the R object owns the data and will drop the Rust object
     /// when the last reference is removed via register_c_finalizer.
@@ -152,7 +151,7 @@ impl<T: Any + Debug> ExternalPtr<T> {
     }
 }
 
-impl<T: Any + Debug> TryFrom<&Robj> for ExternalPtr<T> {
+impl<T> TryFrom<&Robj> for ExternalPtr<T> {
     type Error = Error;
 
     fn try_from(robj: &Robj) -> Result<Self> {
@@ -174,7 +173,7 @@ impl<T: Any + Debug> TryFrom<&Robj> for ExternalPtr<T> {
     }
 }
 
-impl<T: Any + Debug> TryFrom<Robj> for ExternalPtr<T> {
+impl<T> TryFrom<Robj> for ExternalPtr<T> {
     type Error = Error;
 
     fn try_from(robj: Robj) -> Result<Self> {
@@ -182,13 +181,13 @@ impl<T: Any + Debug> TryFrom<Robj> for ExternalPtr<T> {
     }
 }
 
-impl<T: Any + Debug> From<ExternalPtr<T>> for Robj {
+impl<T> From<ExternalPtr<T>> for Robj {
     fn from(val: ExternalPtr<T>) -> Self {
         val.robj
     }
 }
 
-impl<T: Debug + 'static> std::fmt::Debug for ExternalPtr<T> {
+impl<T: Debug> std::fmt::Debug for ExternalPtr<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         (&**self as &T).fmt(f)
     }
