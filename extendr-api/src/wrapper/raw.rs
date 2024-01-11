@@ -18,6 +18,14 @@ pub struct Raw {
 
 impl Raw {
     /// Create a new Raw object of length `len`.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let bytes = Raw::new(42);
+    ///     assert_eq!(bytes.len(), 42);
+    ///     assert_eq!(bytes.as_slice(),  &(0..42).map(|_| 0u8).collect::<Vec<_>>());
+    /// }
+    /// ```
     pub fn new(len: usize) -> Raw {
         let mut robj = Robj::alloc_vector(RAWSXP, len);
         let slice = robj.as_raw_slice_mut().unwrap();
@@ -28,9 +36,9 @@ impl Raw {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let bytes = r!(Raw::from_bytes(&[1, 2, 3]));
+    ///     let bytes = Raw::from_bytes(&[1, 2, 3]);
     ///     assert_eq!(bytes.len(), 3);
-    ///     assert_eq!(bytes.as_raw(), Some(Raw::from_bytes(&[1, 2, 3])));
+    ///     assert_eq!(bytes.as_slice(), &[1, 2, 3]);
     /// }
     /// ```
     pub fn from_bytes(bytes: &[u8]) -> Self {
