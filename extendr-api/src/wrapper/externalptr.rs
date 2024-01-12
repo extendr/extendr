@@ -187,7 +187,7 @@ impl<T> From<ExternalPtr<T>> for Robj {
     }
 }
 
-impl<T: Debug> std::fmt::Debug for ExternalPtr<T> {
+impl<T: Debug> Debug for ExternalPtr<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         (&**self as &T).fmt(f)
     }
