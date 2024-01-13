@@ -16,33 +16,37 @@ pub struct Raw {
     pub(crate) robj: Robj,
 }
 
+fn init_raw<F: FnOnce(&mut [u8])>(len: usize, filler: F) -> Raw {
+    let mut robj = Robj::alloc_vector(RAWSXP, len);
+    let slice = robj.as_raw_slice_mut().unwrap();
+    filler(slice);
+    Raw { robj }
+}
+
 impl Raw {
     /// Create a new Raw object of length `len`.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let bytes = Raw::new(42);
+    ///     assert_eq!(bytes.len(), 42);
+    ///     assert_eq!(bytes.as_slice(),  &(0..42).map(|_| 0u8).collect::<Vec<_>>());
+    /// }
+    /// ```
     pub fn new(len: usize) -> Raw {
-        let mut robj = Robj::alloc_vector(RAWSXP, len);
-        let slice = robj.as_raw_slice_mut().unwrap();
-        slice.iter_mut().for_each(|v| *v = 0);
-        Raw { robj }
+        init_raw(len, |slice| slice.fill(0))
     }
 
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let bytes = r!(Raw::from_bytes(&[1, 2, 3]));
+    ///     let bytes = Raw::from_bytes(&[1, 2, 3]);
     ///     assert_eq!(bytes.len(), 3);
-    ///     assert_eq!(bytes.as_raw(), Some(Raw::from_bytes(&[1, 2, 3])));
+    ///     assert_eq!(bytes.as_slice(), &[1, 2, 3]);
     /// }
     /// ```
     pub fn from_bytes(bytes: &[u8]) -> Self {
-        single_threaded(|| unsafe {
-            let sexp = Rf_allocVector(RAWSXP, bytes.len() as R_xlen_t);
-            let robj = Robj::from_sexp(sexp);
-            let ptr = RAW(sexp);
-            for (i, &v) in bytes.iter().enumerate() {
-                *ptr.add(i) = v;
-            }
-            Raw { robj }
-        })
+        init_raw(bytes.len(), |slice| slice.copy_from_slice(bytes))
     }
 
     /// Get a slice of bytes from the Raw object.
