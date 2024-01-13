@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/robj/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-9ee3a5e31a2afa3e.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (2b603f95a 2023-11-12)" data-channel="nightly" data-search-js="search-8fbf244ebcf71464.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-9dd44ab47b99a0fb.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../extendr_api/index.html"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="extendr_api"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/robj/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-4e54bb2b497cc83f.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (62d7ed4a6 2024-01-11)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../extendr_api/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1160,7 +1162,7 @@
 ///     assert_eq!(a, b);
 ///
 ///     // Create a named list
-///     let a = list!(a = 1, b = &quot;x&quot;);
+///     let a = list!(a = 1, b = "x");
 ///     assert_eq!(a.len(), 2);
 ///
 ///     // Use an iterator (like 1:10)
@@ -1190,11 +1192,11 @@
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let abc = list!(a = 1, b = &quot;x&quot;, c = vec![1, 2]);
+///     let abc = list!(a = 1, b = "x", c = vec![1, 2]);
 ///     let names : Vec&lt;_&gt; = abc.names().unwrap().collect();
 ///     let names_and_values : Vec&lt;_&gt; = abc.as_list().unwrap().iter().collect();
-///     assert_eq!(names, vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);
-///     assert_eq!(names_and_values, vec![(&quot;a&quot;, r!(1)), (&quot;b&quot;, r!(&quot;x&quot;)), (&quot;c&quot;, r!(vec![1, 2]))]);
+///     assert_eq!(names, vec!["a", "b", "c"]);
+///     assert_eq!(names_and_values, vec![("a", r!(1)), ("b", r!("x")), ("c", r!(vec![1, 2]))]);
 /// }
 /// ```
 ///
@@ -1256,7 +1258,7 @@
 }
 
 <span class="kw">pub trait </span>Slices: GetSexp {
-    <span class="doccomment">/// Get an immutable slice to this object&#39;s data.
+    <span class="doccomment">/// Get an immutable slice to this object's data.
     ///
     /// # Safety
     ///
@@ -1268,7 +1270,7 @@
         std::slice::from_raw_parts(data, len)
     }
 
-    <span class="doccomment">/// Get a mutable slice to this object&#39;s data.
+    <span class="doccomment">/// Get a mutable slice to this object's data.
     ///
     /// # Safety
     ///
@@ -1342,19 +1344,19 @@
     /// test! {
     ///     assert_eq!(r!(NULL).rtype(), Rtype::Null);
     ///     assert_eq!(sym!(xyz).rtype(), Rtype::Symbol);
-    ///     assert_eq!(r!(Pairlist::from_pairs(vec![(&quot;a&quot;, r!(1))])).rtype(), Rtype::Pairlist);
-    ///     assert_eq!(R!(&quot;function() {}&quot;)?.rtype(), Rtype::Function);
+    ///     assert_eq!(r!(Pairlist::from_pairs(vec![("a", r!(1))])).rtype(), Rtype::Pairlist);
+    ///     assert_eq!(R!("function() {}")?.rtype(), Rtype::Function);
     ///     assert_eq!(Environment::new_with_parent(global_env()).rtype(), Rtype::Environment);
-    ///     assert_eq!(lang!(&quot;+&quot;, 1, 2).rtype(), Rtype::Language);
-    ///     assert_eq!(r!(Primitive::from_string(&quot;if&quot;)).rtype(), Rtype::Special);
-    ///     assert_eq!(r!(Primitive::from_string(&quot;+&quot;)).rtype(), Rtype::Builtin);
-    ///     assert_eq!(r!(Rstr::from_string(&quot;hello&quot;)).rtype(), Rtype::Rstr);
+    ///     assert_eq!(lang!("+", 1, 2).rtype(), Rtype::Language);
+    ///     assert_eq!(r!(Primitive::from_string("if")).rtype(), Rtype::Special);
+    ///     assert_eq!(r!(Primitive::from_string("+")).rtype(), Rtype::Builtin);
+    ///     assert_eq!(r!(Rstr::from_string("hello")).rtype(), Rtype::Rstr);
     ///     assert_eq!(r!(TRUE).rtype(), Rtype::Logicals);
     ///     assert_eq!(r!(1).rtype(), Rtype::Integers);
     ///     assert_eq!(r!(1.0).rtype(), Rtype::Doubles);
-    ///     assert_eq!(r!(&quot;1&quot;).rtype(), Rtype::Strings);
+    ///     assert_eq!(r!("1").rtype(), Rtype::Strings);
     ///     assert_eq!(r!(List::from_values(&amp;[1, 2])).rtype(), Rtype::List);
-    ///     assert_eq!(parse(&quot;x + y&quot;)?.rtype(), Rtype::Expressions);
+    ///     assert_eq!(parse("x + y")?.rtype(), Rtype::Expressions);
     ///     assert_eq!(r!(Raw::from_bytes(&amp;[1_u8, 2, 3])).rtype(), Rtype::Raw);
     /// }
     /// ```
@@ -1463,7 +1465,7 @@
     /// assert_eq!(robj.as_integer_slice().unwrap(), [1, 2, 3]);
     /// }
     /// ```
-    </span><span class="kw">pub fn </span>as_integer_slice&lt;<span class="lifetime">&#39;a</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[i32]&gt; {
+    </span><span class="kw">pub fn </span>as_integer_slice&lt;<span class="lifetime">'a</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[i32]&gt; {
         <span class="self">self</span>.as_typed_slice()
     }
 
@@ -1534,7 +1536,7 @@
 
     <span class="doccomment">/// Get a read-only reference to the content of a double vector.
     /// Note: the slice may contain NaN or NA values.
-    /// We may introduce a &quot;Real&quot; type to handle this like the Rbool type.
+    /// We may introduce a "Real" type to handle this like the Rbool type.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -1645,8 +1647,8 @@
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let robj1 = Robj::from(&quot;xyz&quot;);
-    ///    assert_eq!(robj1.as_string_vector(), Some(vec![&quot;xyz&quot;.to_string()]));
+    ///    let robj1 = Robj::from("xyz");
+    ///    assert_eq!(robj1.as_string_vector(), Some(vec!["xyz".to_string()]));
     ///    let robj2 = Robj::from(1);
     ///    assert_eq!(robj2.as_string_vector(), None);
     /// }
@@ -1661,8 +1663,8 @@
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let robj1 = Robj::from(&quot;xyz&quot;);
-    ///    assert_eq!(robj1.as_str_vector(), Some(vec![&quot;xyz&quot;]));
+    ///    let robj1 = Robj::from("xyz");
+    ///    assert_eq!(robj1.as_str_vector(), Some(vec!["xyz"]));
     ///    let robj2 = Robj::from(1);
     ///    assert_eq!(robj2.as_str_vector(), None);
     /// }
@@ -1675,13 +1677,13 @@
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let robj1 = Robj::from(&quot;xyz&quot;);
+    ///    let robj1 = Robj::from("xyz");
     ///    let robj2 = Robj::from(1);
-    ///    assert_eq!(robj1.as_str(), Some(&quot;xyz&quot;));
+    ///    assert_eq!(robj1.as_str(), Some("xyz"));
     ///    assert_eq!(robj2.as_str(), None);
     /// }
     /// ```
-    </span><span class="kw">pub fn </span>as_str&lt;<span class="lifetime">&#39;a</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt; {
+    </span><span class="kw">pub fn </span>as_str&lt;<span class="lifetime">'a</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>str&gt; {
         <span class="kw">unsafe </span>{
             <span class="kw">match </span><span class="self">self</span>.sexptype() {
                 STRSXP =&gt; {
@@ -1702,7 +1704,7 @@
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let robj1 = Robj::from(&quot;xyz&quot;);
+    ///    let robj1 = Robj::from("xyz");
     ///    let robj2 = Robj::from(1);
     ///    let robj3 = Robj::from(NA_INTEGER);
     ///    assert_eq!(robj1.as_integer(), None);
@@ -1781,7 +1783,7 @@
     /// use extendr_api::prelude::*;
     /// test! {
     ///
-    ///    let add = lang!(&quot;+&quot;, 1, 2);
+    ///    let add = lang!("+", 1, 2);
     ///    assert_eq!(add.eval().unwrap(), r!(3));
     /// }
     /// ```
@@ -1794,7 +1796,7 @@
     /// use extendr_api::prelude::*;
     /// test! {
     ///
-    ///    let add = lang!(&quot;+&quot;, 1, 2);
+    ///    let add = lang!("+", 1, 2);
     ///    assert_eq!(add.eval_with_env(&amp;global_env()).unwrap(), r!(3));
     /// }
     /// ```
@@ -1814,7 +1816,7 @@
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let bad = lang!(&quot;imnotavalidfunctioninR&quot;, 1, 2);
+    ///    let bad = lang!("imnotavalidfunctioninR", 1, 2);
     ///    assert_eq!(bad.eval_blind(), r!(NULL));
     /// }
     /// ```
@@ -1831,20 +1833,20 @@
 <span class="kw">impl </span>Eval <span class="kw">for </span>Robj {}
 
 <span class="doccomment">/// Generic access to typed slices in an Robj.
-</span><span class="kw">pub trait </span>AsTypedSlice&lt;<span class="lifetime">&#39;a</span>, T&gt;
+</span><span class="kw">pub trait </span>AsTypedSlice&lt;<span class="lifetime">'a</span>, T&gt;
 <span class="kw">where
-    </span><span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
+    </span><span class="self">Self</span>: <span class="lifetime">'a</span>,
 {
-    <span class="kw">fn </span>as_typed_slice(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[T]&gt;
+    <span class="kw">fn </span>as_typed_slice(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[T]&gt;
     <span class="kw">where
-        </span><span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
+        </span><span class="self">Self</span>: <span class="lifetime">'a</span>,
     {
         <span class="prelude-val">None
     </span>}
 
-    <span class="kw">fn </span>as_typed_slice_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>[T]&gt;
+    <span class="kw">fn </span>as_typed_slice_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>[T]&gt;
     <span class="kw">where
-        </span><span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
+        </span><span class="self">Self</span>: <span class="lifetime">'a</span>,
     {
         <span class="prelude-val">None
     </span>}
@@ -1852,11 +1854,11 @@
 
 <span class="macro">macro_rules! </span>make_typed_slice {
     (<span class="macro-nonterminal">$</span><span class="kw">type</span>: <span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$</span><span class="kw">fn</span>: <span class="macro-nonterminal">tt</span>, $(<span class="macro-nonterminal">$sexp</span>: tt),* ) =&gt; {
-        <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; AsTypedSlice&lt;<span class="lifetime">&#39;a</span>, <span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">Robj
+        <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; AsTypedSlice&lt;<span class="lifetime">'a</span>, <span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">Robj
         </span><span class="kw">where
-            </span><span class="self">Self </span>: <span class="lifetime">&#39;a</span>,
+            </span><span class="self">Self </span>: <span class="lifetime">'a</span>,
         {
-            <span class="kw">fn </span>as_typed_slice(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[<span class="macro-nonterminal">$</span><span class="kw">type</span>]&gt; {
+            <span class="kw">fn </span>as_typed_slice(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[<span class="macro-nonterminal">$</span><span class="kw">type</span>]&gt; {
                 <span class="kw">match </span><span class="macro-nonterminal">self</span>.sexptype() {
                     $( <span class="macro-nonterminal">$sexp </span>)|* =&gt; {
                         <span class="kw">unsafe </span>{
@@ -1868,7 +1870,7 @@
                 </span>}
             }
 
-            <span class="kw">fn </span>as_typed_slice_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>[<span class="macro-nonterminal">$</span><span class="kw">type</span>]&gt; {
+            <span class="kw">fn </span>as_typed_slice_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>[<span class="macro-nonterminal">$</span><span class="kw">type</span>]&gt; {
                 <span class="kw">match </span><span class="macro-nonterminal">self</span>.sexptype() {
                     $( <span class="macro-nonterminal">$sexp </span>)|* =&gt; {
                         <span class="kw">unsafe </span>{
@@ -1903,15 +1905,15 @@
     /// use extendr_api::prelude::*;
     /// test! {
     ///
-    ///    let mut robj = r!(&quot;hello&quot;);
+    ///    let mut robj = r!("hello");
     ///    robj.set_attrib(sym!(xyz), 1);
     ///    assert_eq!(robj.get_attrib(sym!(xyz)), Some(r!(1)));
     /// }
     /// ```
-    </span><span class="kw">fn </span>get_attrib&lt;<span class="lifetime">&#39;a</span>, N&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, name: N) -&gt; <span class="prelude-ty">Option</span>&lt;Robj&gt;
+    </span><span class="kw">fn </span>get_attrib&lt;<span class="lifetime">'a</span>, N&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, name: N) -&gt; <span class="prelude-ty">Option</span>&lt;Robj&gt;
     <span class="kw">where
-        </span><span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
-        Robj: From&lt;N&gt; + <span class="lifetime">&#39;a</span>,
+        </span><span class="self">Self</span>: <span class="lifetime">'a</span>,
+        Robj: From&lt;N&gt; + <span class="lifetime">'a</span>,
     {
         <span class="kw">let </span>name = Robj::from(name);
         <span class="kw">if </span><span class="self">self</span>.sexptype() == CHARSXP {
@@ -1928,10 +1930,10 @@
     }
 
     <span class="doccomment">/// Return true if an attribute exists.
-    </span><span class="kw">fn </span>has_attrib&lt;<span class="lifetime">&#39;a</span>, N&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, name: N) -&gt; bool
+    </span><span class="kw">fn </span>has_attrib&lt;<span class="lifetime">'a</span>, N&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, name: N) -&gt; bool
     <span class="kw">where
-        </span><span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
-        Robj: From&lt;N&gt; + <span class="lifetime">&#39;a</span>,
+        </span><span class="self">Self</span>: <span class="lifetime">'a</span>,
+        Robj: From&lt;N&gt; + <span class="lifetime">'a</span>,
     {
         <span class="kw">let </span>name = Robj::from(name);
         <span class="kw">if </span><span class="self">self</span>.sexptype() == CHARSXP {
@@ -1948,7 +1950,7 @@
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let mut robj = r!(&quot;hello&quot;).set_attrib(sym!(xyz), 1)?;
+    ///    let mut robj = r!("hello").set_attrib(sym!(xyz), 1)?;
     ///    assert_eq!(robj.get_attrib(sym!(xyz)), Some(r!(1)));
     /// }
     /// ```
@@ -1977,7 +1979,7 @@
     /// test! {
     ///    let list = list!(a = 1, b = 2, c = 3);
     ///    let names : Vec&lt;_&gt; = list.names().unwrap().collect();
-    ///    assert_eq!(names, vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);
+    ///    assert_eq!(names, vec!["a", "b", "c"]);
     /// }
     /// ```
     </span><span class="kw">fn </span>names(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;StrIter&gt; {
@@ -2001,9 +2003,9 @@
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let mut obj = r!([1, 2, 3]).set_names(&amp;[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]).unwrap();
-    ///     assert_eq!(obj.names().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);
-    ///     assert_eq!(r!([1, 2, 3]).set_names(&amp;[&quot;a&quot;, &quot;b&quot;]), Err(Error::NamesLengthMismatch(r!([&quot;a&quot;, &quot;b&quot;]))));
+    ///     let mut obj = r!([1, 2, 3]).set_names(&amp;["a", "b", "c"]).unwrap();
+    ///     assert_eq!(obj.names().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec!["a", "b", "c"]);
+    ///     assert_eq!(r!([1, 2, 3]).set_names(&amp;["a", "b"]), Err(Error::NamesLengthMismatch(r!(["a", "b"]))));
     /// }
     /// ```
     </span><span class="kw">fn </span>set_names&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, names: T) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt;
@@ -2028,7 +2030,7 @@
     /// use extendr_api::prelude::*;
     /// test! {
     ///
-    ///    let array = R!(r#&quot;array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c(&quot;x&quot;, &quot;y&quot;), c(&quot;a&quot;,&quot;b&quot;)))&quot;#).unwrap();
+    ///    let array = R!(r#"array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c("x", "y"), c("a","b")))"#).unwrap();
     ///    let dim : Vec&lt;_&gt; = array.dim().unwrap().iter().collect();
     ///    assert_eq!(dim, vec![2, 2]);
     /// }
@@ -2045,9 +2047,9 @@
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let array = R!(r#&quot;array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c(&quot;x&quot;, &quot;y&quot;), c(&quot;a&quot;,&quot;b&quot;)))&quot;#).unwrap();
+    ///    let array = R!(r#"array(data = c(1, 2, 3, 4), dim = c(2, 2), dimnames = list(c("x", "y"), c("a","b")))"#).unwrap();
     ///    let names : Vec&lt;_&gt; = array.dimnames().unwrap().collect();
-    ///    assert_eq!(names, vec![r!([&quot;x&quot;, &quot;y&quot;]), r!([&quot;a&quot;, &quot;b&quot;])]);
+    ///    assert_eq!(names, vec![r!(["x", "y"]), r!(["a", "b"])]);
     /// }
     /// ```
     </span><span class="kw">fn </span>dimnames(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;ListIter&gt; {
@@ -2062,9 +2064,9 @@
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let formula = R!(&quot;y ~ A * x + b&quot;).unwrap();
+    ///    let formula = R!("y ~ A * x + b").unwrap();
     ///    let class : Vec&lt;_&gt; = formula.class().unwrap().collect();
-    ///    assert_eq!(class, [&quot;formula&quot;]);
+    ///    assert_eq!(class, ["formula"]);
     /// }
     /// ```
     </span><span class="kw">fn </span>class(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;StrIter&gt; {
@@ -2082,9 +2084,9 @@
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let mut obj = r!([1, 2, 3]).set_class(&amp;[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;])?;
-    ///     assert_eq!(obj.class().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);
-    ///     assert_eq!(obj.inherits(&quot;a&quot;), true);
+    ///     let mut obj = r!([1, 2, 3]).set_class(&amp;["a", "b", "c"])?;
+    ///     assert_eq!(obj.class().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec!["a", "b", "c"]);
+    ///     assert_eq!(obj.inherits("a"), true);
     /// }
     /// ```
     </span><span class="kw">fn </span>set_class&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, class: T) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt;
@@ -2101,8 +2103,8 @@
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let formula = R!(&quot;y ~ A * x + b&quot;).unwrap();
-    ///    assert_eq!(formula.inherits(&quot;formula&quot;), true);
+    ///    let formula = R!("y ~ A * x + b").unwrap();
+    ///    assert_eq!(formula.inherits("formula"), true);
     /// }
     /// ```
     </span><span class="kw">fn </span>inherits(<span class="kw-2">&amp;</span><span class="self">self</span>, classname: <span class="kw-2">&amp;</span>str) -&gt; bool {
@@ -2117,9 +2119,9 @@
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let factor = factor!(vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);
+    ///    let factor = factor!(vec!["abcd", "def", "fg", "fg"]);
     ///    let levels : Vec&lt;_&gt; = factor.levels().unwrap().collect();
-    ///    assert_eq!(levels, vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;]);
+    ///    assert_eq!(levels, vec!["abcd", "def", "fg"]);
     /// }
     /// ```
     </span><span class="kw">fn </span>levels(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;StrIter&gt; {
@@ -2170,7 +2172,7 @@
 
 <span class="comment">// Internal utf8 to str conversion.
 // Lets not worry about non-ascii/unicode strings for now (or ever).
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe fn </span>to_str&lt;<span class="lifetime">&#39;a</span>&gt;(ptr: <span class="kw-2">*const </span>u8) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe fn </span>to_str&lt;<span class="lifetime">'a</span>&gt;(ptr: <span class="kw-2">*const </span>u8) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'a </span>str {
     <span class="kw">let </span><span class="kw-2">mut </span>len = <span class="number">0</span>;
     <span class="kw">loop </span>{
         <span class="kw">if </span><span class="kw-2">*</span>ptr.offset(len) == <span class="number">0 </span>{

@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/symbol.rs`."><title>symbol.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-9ee3a5e31a2afa3e.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (2b603f95a 2023-11-12)" data-channel="nightly" data-search-js="search-8fbf244ebcf71464.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-9dd44ab47b99a0fb.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../extendr_api/index.html"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="extendr_api"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/symbol.rs`."><title>symbol.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-4e54bb2b497cc83f.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (62d7ed4a6 2024-01-11)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../extendr_api/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -268,8 +270,8 @@
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let chr = r!(Symbol::from_string(&quot;xyz&quot;));
-///     assert_eq!(chr.as_symbol().unwrap().as_str(), &quot;xyz&quot;);
+///     let chr = r!(Symbol::from_string("xyz"));
+///     assert_eq!(chr.as_symbol().unwrap().as_str(), "xyz");
 /// }
 /// ```
 ///
@@ -284,7 +286,7 @@
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let chr = r!(Symbol::from_string(&quot;xyz&quot;));
+    ///     let chr = r!(Symbol::from_string("xyz"));
     ///     assert_eq!(chr, sym!(xyz));
     /// }
     /// ```
@@ -309,7 +311,7 @@
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     assert_eq!(sym!(xyz).as_symbol().unwrap().as_str(), &quot;xyz&quot;);
+    ///     assert_eq!(sym!(xyz).as_symbol().unwrap().as_str(), "xyz");
     /// }
     /// ```
     </span><span class="kw">pub fn </span>as_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>str {
@@ -339,144 +341,144 @@
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_MissingArg) }
 }
 
-<span class="doccomment">/// &quot;base&quot;
+<span class="doccomment">/// "base"
 </span><span class="kw">pub fn </span>base_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_BaseSymbol) }
 }
 
-<span class="doccomment">/// &quot;{&quot;
+<span class="doccomment">/// "{"
 </span><span class="kw">pub fn </span>brace_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_BraceSymbol) }
 }
 
-<span class="doccomment">/// &quot;[[&quot;
+<span class="doccomment">/// "[["
 </span><span class="kw">pub fn </span>bracket_2_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_Bracket2Symbol) }
 }
 
-<span class="doccomment">/// &quot;[&quot;
+<span class="doccomment">/// "["
 </span><span class="kw">pub fn </span>bracket_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_BracketSymbol) }
 }
 
-<span class="doccomment">/// &quot;class&quot;
+<span class="doccomment">/// "class"
 </span><span class="kw">pub fn </span>class_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_ClassSymbol) }
 }
 
-<span class="doccomment">/// &quot;.Device&quot;
+<span class="doccomment">/// ".Device"
 </span><span class="kw">pub fn </span>device_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_DeviceSymbol) }
 }
 
-<span class="doccomment">/// &quot;dimnames&quot;
+<span class="doccomment">/// "dimnames"
 </span><span class="kw">pub fn </span>dimnames_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_DimNamesSymbol) }
 }
 
-<span class="doccomment">/// &quot;dim&quot;
+<span class="doccomment">/// "dim"
 </span><span class="kw">pub fn </span>dim_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_DimSymbol) }
 }
 
-<span class="doccomment">/// &quot;$&quot;
+<span class="doccomment">/// "$"
 </span><span class="kw">pub fn </span>dollar_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_DollarSymbol) }
 }
 
-<span class="doccomment">/// &quot;...&quot;
+<span class="doccomment">/// "..."
 </span><span class="kw">pub fn </span>dots_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_DotsSymbol) }
 }
-<span class="comment">//     pub fn drop_symbol() -&gt; Symbol { unsafe { Symbol::from_sexp(R_DropSymbol) }}&quot;drop&quot;
+<span class="comment">//     pub fn drop_symbol() -&gt; Symbol { unsafe { Symbol::from_sexp(R_DropSymbol) }}"drop"
 
-</span><span class="doccomment">/// &quot;::&quot;
+</span><span class="doccomment">/// "::"
 </span><span class="kw">pub fn </span>double_colon_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_DoubleColonSymbol) }
 }
 
-<span class="doccomment">/// &quot;.Last.value&quot;
+<span class="doccomment">/// ".Last.value"
 </span><span class="kw">pub fn </span>lastvalue_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_LastvalueSymbol) }
 }
-<span class="doccomment">/// &quot;levels&quot;
+<span class="doccomment">/// "levels"
 </span><span class="kw">pub fn </span>levels_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_LevelsSymbol) }
 }
-<span class="doccomment">/// &quot;mode&quot;
+<span class="doccomment">/// "mode"
 </span><span class="kw">pub fn </span>mode_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_ModeSymbol) }
 }
-<span class="doccomment">/// &quot;na.rm&quot;
+<span class="doccomment">/// "na.rm"
 </span><span class="kw">pub fn </span>na_rm_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_NaRmSymbol) }
 }
-<span class="doccomment">/// &quot;name&quot;
+<span class="doccomment">/// "name"
 </span><span class="kw">pub fn </span>name_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_NameSymbol) }
 }
-<span class="doccomment">/// &quot;names&quot;
+<span class="doccomment">/// "names"
 </span><span class="kw">pub fn </span>names_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_NamesSymbol) }
 }
-<span class="doccomment">/// _NAMESPACE__.&quot;
+<span class="doccomment">/// _NAMESPACE__."
 </span><span class="kw">pub fn </span>namespace_env_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_NamespaceEnvSymbol) }
 }
-<span class="doccomment">/// &quot;package&quot;
+<span class="doccomment">/// "package"
 </span><span class="kw">pub fn </span>package_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_PackageSymbol) }
 }
-<span class="doccomment">/// &quot;previous&quot;
+<span class="doccomment">/// "previous"
 </span><span class="kw">pub fn </span>previous_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_PreviousSymbol) }
 }
-<span class="doccomment">/// &quot;quote&quot;
+<span class="doccomment">/// "quote"
 </span><span class="kw">pub fn </span>quote_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_QuoteSymbol) }
 }
-<span class="doccomment">/// &quot;row.names&quot;
+<span class="doccomment">/// "row.names"
 </span><span class="kw">pub fn </span>row_names_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_RowNamesSymbol) }
 }
-<span class="doccomment">/// &quot;.Random.seed&quot;
+<span class="doccomment">/// ".Random.seed"
 </span><span class="kw">pub fn </span>seeds_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_SeedsSymbol) }
 }
-<span class="doccomment">/// &quot;sort.list&quot;
+<span class="doccomment">/// "sort.list"
 </span><span class="kw">pub fn </span>sort_list_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_SortListSymbol) }
 }
-<span class="doccomment">/// &quot;source&quot;
+<span class="doccomment">/// "source"
 </span><span class="kw">pub fn </span>source_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_SourceSymbol) }
 }
-<span class="doccomment">/// &quot;spec&quot;
+<span class="doccomment">/// "spec"
 </span><span class="kw">pub fn </span>spec_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_SpecSymbol) }
 }
-<span class="doccomment">/// &quot;tsp&quot;
+<span class="doccomment">/// "tsp"
 </span><span class="kw">pub fn </span>tsp_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_TspSymbol) }
 }
-<span class="doccomment">/// &quot;:::&quot;
+<span class="doccomment">/// ":::"
 </span><span class="kw">pub fn </span>triple_colon_symbol() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_TripleColonSymbol) }
 }
-<span class="doccomment">/// &quot;.defined&quot;
+<span class="doccomment">/// ".defined"
 </span><span class="kw">pub fn </span>dot_defined() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_dot_defined) }
 }
-<span class="doccomment">/// &quot;.Method&quot;
+<span class="doccomment">/// ".Method"
 </span><span class="kw">pub fn </span>dot_method() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_dot_Method) }
 }
-<span class="doccomment">/// &quot;packageName&quot;
+<span class="doccomment">/// "packageName"
 </span><span class="kw">pub fn </span>dot_package_name() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_dot_packageName) }
 }
 
-<span class="doccomment">/// &quot;.target&quot;
+<span class="doccomment">/// ".target"
 </span><span class="kw">pub fn </span>dot_target() -&gt; Symbol {
     <span class="kw">unsafe </span>{ Symbol::from_sexp(R_dot_target) }
 }

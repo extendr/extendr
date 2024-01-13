@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `xtask/src/commands/r_cmd_check.rs`."><title>r_cmd_check.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-9ee3a5e31a2afa3e.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="xtask" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (2b603f95a 2023-11-12)" data-channel="nightly" data-search-js="search-8fbf244ebcf71464.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-9dd44ab47b99a0fb.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `xtask/src/commands/r_cmd_check.rs`."><title>r_cmd_check.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-4e54bb2b497cc83f.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="xtask" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (62d7ed4a6 2024-01-11)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../xtask/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -106,12 +108,12 @@
 }
 
 <span class="kw">impl </span>RCmdCheckErrorOn {
-    <span class="kw">fn </span>get_error_on(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str {
+    <span class="kw">fn </span>get_error_on(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str {
         <span class="kw">match </span><span class="self">self </span>{
-            RCmdCheckErrorOn::Never =&gt; <span class="string">&quot;&#39;never&#39;&quot;</span>,
-            RCmdCheckErrorOn::Note =&gt; <span class="string">&quot;&#39;note&#39;&quot;</span>,
-            RCmdCheckErrorOn::Warning =&gt; <span class="string">&quot;&#39;warning&#39;&quot;</span>,
-            RCmdCheckErrorOn::Error =&gt; <span class="string">&quot;&#39;error&#39;&quot;</span>,
+            RCmdCheckErrorOn::Never =&gt; <span class="string">"'never'"</span>,
+            RCmdCheckErrorOn::Note =&gt; <span class="string">"'note'"</span>,
+            RCmdCheckErrorOn::Warning =&gt; <span class="string">"'warning'"</span>,
+            RCmdCheckErrorOn::Error =&gt; <span class="string">"'error'"</span>,
         }
     }
 }
@@ -140,10 +142,10 @@
     <span class="kw">let </span><span class="kw-2">mut </span>path = PathBuf::from(check_dir.as_ref());
     <span class="kw">if </span>!path.is_absolute() {
         <span class="kw">let </span>str_rep = path.to_string_lossy();
-        <span class="kw">if </span>str_rep.starts_with(<span class="string">&quot;./&quot;</span>) {
-            path = PathBuf::from(str_rep.trim_start_matches(<span class="string">&quot;./&quot;</span>));
-        } <span class="kw">else if </span>str_rep.starts_with(<span class="string">r&quot;.\\&quot;</span>) {
-            path = PathBuf::from(str_rep.trim_start_matches(<span class="string">r&quot;.\\&quot;</span>));
+        <span class="kw">if </span>str_rep.starts_with(<span class="string">"./"</span>) {
+            path = PathBuf::from(str_rep.trim_start_matches(<span class="string">"./"</span>));
+        } <span class="kw">else if </span>str_rep.starts_with(<span class="string">r".\\"</span>) {
+            path = PathBuf::from(str_rep.trim_start_matches(<span class="string">r".\\"</span>));
         }
         path = initial_path.as_ref().canonicalize()<span class="question-mark">?</span>.join(path);
     }
@@ -157,24 +159,24 @@
     check_dir: <span class="prelude-ty">Option</span>&lt;String&gt;,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;(), Box&lt;<span class="kw">dyn </span>Error&gt;&gt; {
     <span class="kw">let </span>_r_path = shell.push_dir(R_FOLDER_PATH);
-    <span class="kw">let </span><span class="kw-2">mut </span>args = <span class="macro">vec!</span>[<span class="string">&quot;&#39;--as-cran&#39;&quot;</span>, <span class="string">&quot;&#39;--no-manual&#39;&quot;</span>];
+    <span class="kw">let </span><span class="kw-2">mut </span>args = <span class="macro">vec!</span>[<span class="string">"'--as-cran'"</span>, <span class="string">"'--no-manual'"</span>];
     <span class="kw">if </span>no_build_vignettes {
-        args.push(<span class="string">&quot;&#39;--no-build-vignettes&#39;&quot;</span>);
+        args.push(<span class="string">"'--no-build-vignettes'"</span>);
     }
 
-    <span class="kw">let </span>args = <span class="macro">format!</span>(<span class="string">&quot;c({0})&quot;</span>, args.join(<span class="string">&quot;, &quot;</span>));
+    <span class="kw">let </span>args = <span class="macro">format!</span>(<span class="string">"c({0})"</span>, args.join(<span class="string">", "</span>));
 
     <span class="kw">let </span>error_on = error_on.get_error_on();
 
     <span class="kw">let </span>check_dir = <span class="kw">match </span>check_dir {
-        <span class="prelude-val">Some</span>(cd) =&gt; <span class="macro">format!</span>(<span class="string">&quot;&#39;{}&#39;&quot;</span>, cd),
-        <span class="kw">_ </span>=&gt; <span class="string">&quot;NULL&quot;</span>.to_string(),
+        <span class="prelude-val">Some</span>(cd) =&gt; <span class="macro">format!</span>(<span class="string">"'{}'"</span>, cd),
+        <span class="kw">_ </span>=&gt; <span class="string">"NULL"</span>.to_string(),
     };
     shell
-        .cmd(<span class="string">&quot;Rscript&quot;</span>)
-        .arg(<span class="string">&quot;-e&quot;</span>)
+        .cmd(<span class="string">"Rscript"</span>)
+        .arg(<span class="string">"-e"</span>)
         .arg(<span class="macro">format!</span>(
-            <span class="string">&quot;rcmdcheck::rcmdcheck(args = {args}, error_on = {error_on}, check_dir = {check_dir})&quot;
+            <span class="string">"rcmdcheck::rcmdcheck(args = {args}, error_on = {error_on}, check_dir = {check_dir})"
         </span>))
         .run()<span class="question-mark">?</span>;
 

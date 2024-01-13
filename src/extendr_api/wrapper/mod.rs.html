@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-9ee3a5e31a2afa3e.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (2b603f95a 2023-11-12)" data-channel="nightly" data-search-js="search-8fbf244ebcf71464.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-9dd44ab47b99a0fb.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../extendr_api/index.html"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="extendr_api"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/mod.rs`."><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-4e54bb2b497cc83f.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (62d7ed4a6 2024-01-11)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../extendr_api/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -494,8 +496,8 @@
 
 <span class="macro">macro_rules! </span>make_conversions {
     (<span class="macro-nonterminal">$typename</span>: ident, <span class="macro-nonterminal">$errname</span>: ident, <span class="macro-nonterminal">$isfunc</span>: ident, <span class="macro-nonterminal">$errstr</span>: expr) =&gt; {
-        <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; FromRobj&lt;<span class="lifetime">&#39;a</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$typename </span>{
-            <span class="kw">fn </span>from_robj(robj: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Robj) -&gt; std::result::Result&lt;<span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt; {
+        <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; FromRobj&lt;<span class="lifetime">'a</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$typename </span>{
+            <span class="kw">fn </span>from_robj(robj: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Robj) -&gt; std::result::Result&lt;<span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt; {
                 <span class="kw">if let </span><span class="prelude-val">Ok</span>(f) = <span class="macro-nonterminal">$typename::try_from</span>(robj.clone()) {
                     <span class="prelude-val">Ok</span>(f)
                 } <span class="kw">else </span>{
@@ -587,69 +589,69 @@
     };
 }
 
-<span class="macro">make_conversions!</span>(Pairlist, ExpectedPairlist, is_pairlist, <span class="string">&quot;Not a pairlist&quot;</span>);
+<span class="macro">make_conversions!</span>(Pairlist, ExpectedPairlist, is_pairlist, <span class="string">"Not a pairlist"</span>);
 
 <span class="macro">make_conversions!</span>(
     Function,
     ExpectedFunction,
     is_function,
-    <span class="string">&quot;Not a function or primitive.&quot;
+    <span class="string">"Not a function or primitive."
 </span>);
 
-<span class="macro">make_conversions!</span>(Raw, ExpectedRaw, is_raw, <span class="string">&quot;Not a raw object&quot;</span>);
+<span class="macro">make_conversions!</span>(Raw, ExpectedRaw, is_raw, <span class="string">"Not a raw object"</span>);
 
-<span class="macro">make_conversions!</span>(Rstr, ExpectedRstr, is_char, <span class="string">&quot;Not a character object&quot;</span>);
+<span class="macro">make_conversions!</span>(Rstr, ExpectedRstr, is_char, <span class="string">"Not a character object"</span>);
 
 <span class="macro">make_conversions!</span>(
     Environment,
     ExpectedEnvironment,
     is_environment,
-    <span class="string">&quot;Not an Environment&quot;
+    <span class="string">"Not an Environment"
 </span>);
 
-<span class="macro">make_conversions!</span>(List, ExpectedList, is_list, <span class="string">&quot;Not a List&quot;</span>);
+<span class="macro">make_conversions!</span>(List, ExpectedList, is_list, <span class="string">"Not a List"</span>);
 
 <span class="macro">make_conversions!</span>(
     Expressions,
     ExpectedExpression,
     is_expressions,
-    <span class="string">&quot;Not an Expression&quot;
+    <span class="string">"Not an Expression"
 </span>);
 
 <span class="macro">make_conversions!</span>(
     Language,
     ExpectedLanguage,
     is_language,
-    <span class="string">&quot;Not a Language object&quot;
+    <span class="string">"Not a Language object"
 </span>);
 
-<span class="macro">make_conversions!</span>(Symbol, ExpectedSymbol, is_symbol, <span class="string">&quot;Not a Symbol object&quot;</span>);
+<span class="macro">make_conversions!</span>(Symbol, ExpectedSymbol, is_symbol, <span class="string">"Not a Symbol object"</span>);
 
 <span class="macro">make_conversions!</span>(
     Primitive,
     ExpectedPrimitive,
     is_primitive,
-    <span class="string">&quot;Not a Primitive object&quot;
+    <span class="string">"Not a Primitive object"
 </span>);
 
-<span class="macro">make_conversions!</span>(Promise, ExpectedPromise, is_promise, <span class="string">&quot;Not a Promise object&quot;</span>);
+<span class="macro">make_conversions!</span>(Promise, ExpectedPromise, is_promise, <span class="string">"Not a Promise object"</span>);
 
-<span class="macro">make_conversions!</span>(Altrep, ExpectedAltrep, is_altrep, <span class="string">&quot;Not an Altrep type&quot;</span>);
+<span class="macro">make_conversions!</span>(Altrep, ExpectedAltrep, is_altrep, <span class="string">"Not an Altrep type"</span>);
 
-<span class="macro">make_conversions!</span>(S4, ExpectedS4, is_s4, <span class="string">&quot;Not a S4 type&quot;</span>);
+<span class="macro">make_conversions!</span>(S4, ExpectedS4, is_s4, <span class="string">"Not a S4 type"</span>);
 
-<span class="macro">make_conversions!</span>(Integers, ExpectedInteger, is_integer, <span class="string">&quot;Not an integer type&quot;</span>);
-<span class="macro">make_conversions!</span>(Logicals, ExpectedLogical, is_logical, <span class="string">&quot;Not a logical type&quot;</span>);
-<span class="macro">make_conversions!</span>(Doubles, ExpectedReal, is_real, <span class="string">&quot;Not a floating point type&quot;</span>);
+<span class="macro">make_conversions!</span>(Integers, ExpectedInteger, is_integer, <span class="string">"Not an integer type"</span>);
+<span class="macro">make_conversions!</span>(Logicals, ExpectedLogical, is_logical, <span class="string">"Not a logical type"</span>);
+<span class="macro">make_conversions!</span>(Doubles, ExpectedReal, is_real, <span class="string">"Not a floating point type"</span>);
 <span class="macro">make_conversions!</span>(
     Complexes,
     ExpectedComplex,
     is_complex,
-    <span class="string">&quot;Not a complex number or vector&quot;
+    <span class="string">"Not a complex number or vector"
 </span>);
-<span class="comment">// make_conversions!(Function, ExpectedFunction, is_function, &quot;Not a function&quot;);
+<span class="comment">// make_conversions!(Function, ExpectedFunction, is_function, "Not a function");
 
-</span><span class="macro">make_conversions!</span>(Strings, ExpectedString, is_string, <span class="string">&quot;Not a string vector&quot;</span>);
+</span><span class="macro">make_conversions!</span>(Strings, ExpectedString, is_string, <span class="string">"Not a string vector"</span>);
 
 <span class="macro">make_getsexp!</span>(Dataframe&lt;T&gt;, <span class="kw">impl</span>&lt;T&gt;);
 
@@ -667,7 +669,7 @@
     /// use extendr_api::prelude::*;
     /// test! {
     ///     let fred = sym!(fred);
-    ///     assert_eq!(fred.as_symbol(), Some(Symbol::from_string(&quot;fred&quot;)));
+    ///     assert_eq!(fred.as_symbol(), Some(Symbol::from_string("fred")));
     /// }
     /// ```
     </span><span class="kw">fn </span>as_symbol(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Symbol&gt; {
@@ -678,8 +680,8 @@
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let fred = r!(Rstr::from_string(&quot;fred&quot;));
-    ///     assert_eq!(fred.as_char(), Some(Rstr::from_string(&quot;fred&quot;)));
+    ///     let fred = r!(Rstr::from_string("fred"));
+    ///     assert_eq!(fred.as_char(), Some(Rstr::from_string("fred")));
     /// }
     /// ```
     </span><span class="kw">fn </span>as_char(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Rstr&gt; {
@@ -703,7 +705,7 @@
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let call_to_xyz = r!(Language::from_values(&amp;[r!(Symbol::from_string(&quot;xyz&quot;)), r!(1), r!(2)]));
+    ///     let call_to_xyz = r!(Language::from_values(&amp;[r!(Symbol::from_string("xyz")), r!(1), r!(2)]));
     ///     assert_eq!(call_to_xyz.is_language(), true);
     ///     assert_eq!(call_to_xyz.len(), 3);
     /// }
@@ -716,7 +718,7 @@
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let names_and_values = vec![(&quot;a&quot;, r!(1)), (&quot;b&quot;, r!(2)), (&quot;&quot;, r!(3))];
+    ///     let names_and_values = vec![("a", r!(1)), ("b", r!(2)), ("", r!(3))];
     ///     let pairlist = Pairlist::from_pairs(names_and_values);
     ///     let robj = r!(pairlist.clone());
     ///     assert_eq!(robj.as_pairlist().unwrap(), pairlist);
@@ -755,7 +757,7 @@
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let names_and_values = (0..100).map(|i| (format!(&quot;n{}&quot;, i), i));
+    ///     let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
     ///     let env = Environment::from_pairs(global_env(), names_and_values);
     ///     let expr = env.clone();
     ///     assert_eq!(expr.len(), 100);
@@ -771,8 +773,8 @@
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let func = R!(&quot;function(a,b) a + b&quot;).unwrap();
-    ///     println!(&quot;{:?}&quot;, func.as_function());
+    ///     let func = R!("function(a,b) a + b").unwrap();
+    ///     println!("{:?}", func.as_function());
     /// }
     /// ```
     </span><span class="kw">fn </span>as_function(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Function&gt; {
@@ -798,7 +800,7 @@
 {
     <span class="kw">fn </span>sym_pair(<span class="self">self</span>) -&gt; (<span class="prelude-ty">Option</span>&lt;Robj&gt;, Robj) {
         <span class="kw">let </span>val = <span class="self">self</span>.<span class="number">0</span>.as_ref();
-        <span class="comment">// &quot;&quot; represents the absense of the name
+        <span class="comment">// "" represents the absense of the name
         </span><span class="kw">let </span>nm = <span class="kw">if </span>val.is_empty() {
             <span class="prelude-val">None
         </span>} <span class="kw">else </span>{

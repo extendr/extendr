@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["Raw"]};
+window.SIDEBAR_ITEMS = {"fn":["init_raw"],"struct":["Raw"]};

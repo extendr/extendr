@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-9ee3a5e31a2afa3e.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (2b603f95a 2023-11-12)" data-channel="nightly" data-search-js="search-8fbf244ebcf71464.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-9dd44ab47b99a0fb.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../extendr_api/index.html"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="extendr_api"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-4e54bb2b497cc83f.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (62d7ed4a6 2024-01-11)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../extendr_api/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1069,9 +1071,9 @@
 //! ```
 //! use extendr_api::prelude::*;
 //! test! {
-//!     // An R object with a single string &quot;hello&quot;
-//!     let character = r!(&quot;hello&quot;);
-//!     let character = r!([&quot;hello&quot;, &quot;goodbye&quot;]);
+//!     // An R object with a single string "hello"
+//!     let character = r!("hello");
+//!     let character = r!(["hello", "goodbye"]);
 //!    
 //!     // An R integer object with a single number 1L.
 //!     // Note that in Rust, 1 is an integer and 1.0 is a real.
@@ -1087,15 +1089,15 @@
 //!     let real_vector = r!(vec![1.0, 2.0]);
 //!    
 //!     // An R function object.
-//!     let function = R!(&quot;function(x, y) { x + y }&quot;)?;
+//!     let function = R!("function(x, y) { x + y }")?;
 //!    
 //!     // A named list using the list! macro.
 //!     let list = list!(a = 1, b = 2);
 //!    
 //!     // An unnamed list (of R objects) using the List wrapper.
 //!     let list = r!(List::from_values(vec![1, 2, 3]));
-//!     let list = r!(List::from_values(vec![&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]));
-//!     let list = r!(List::from_values(&amp;[r!(&quot;a&quot;), r!(1), r!(2.0)]));
+//!     let list = r!(List::from_values(vec!["a", "b", "c"]));
+//!     let list = r!(List::from_values(&amp;[r!("a"), r!(1), r!(2.0)]));
 //!
 //!     // A symbol
 //!     let sym = sym!(wombat);
@@ -1112,16 +1114,16 @@
 //! test! {
 //!     // 1 ..= 100 is the same as 1:100
 //!     let res = r!(1 ..= 100);
-//!     assert_eq!(res, R!(&quot;1:100&quot;)?);
+//!     assert_eq!(res, R!("1:100")?);
 //!    
 //!     // Rust arrays are zero-indexed so it is more common to use 0 .. 100.
 //!     let res = r!(0 .. 100);
 //!     assert_eq!(res.len(), 100);
 //!    
 //!     // Using map is a super fast way to generate vectors.
-//!     let iter = (0..3).map(|i| format!(&quot;fred{}&quot;, i));
+//!     let iter = (0..3).map(|i| format!("fred{}", i));
 //!     let character = iter.collect_robj();
-//!     assert_eq!(character, r!([&quot;fred0&quot;, &quot;fred1&quot;, &quot;fred2&quot;]));
+//!     assert_eq!(character, r!(["fred0", "fred1", "fred2"]));
 //! }
 //! ```
 //!
@@ -1132,7 +1134,7 @@
 //! use extendr_api::prelude::*;
 //! test! {
 //!     let vals = r!([1.0, 2.0]);
-//!     let slice = vals.as_real_slice().ok_or(&quot;expected slice&quot;)?;
+//!     let slice = vals.as_real_slice().ok_or("expected slice")?;
 //!     let one = slice[0];
 //!     let two = slice[1];
 //!     // let error = slice[2];
@@ -1154,8 +1156,8 @@
 //!     assert_eq!(vals.slice(1..=2)?, r!([1.0, 2.0]));
 //!    
 //!     // $ operator, returns an object
-//!     let list = list!(a = 1.0, b = &quot;xyz&quot;);
-//!     assert_eq!(list.dollar(&quot;a&quot;)?, r!(1.0));
+//!     let list = list!(a = 1.0, b = "xyz");
+//!     assert_eq!(list.dollar("a")?, r!(1.0));
 //! }
 //! ```
 //!
@@ -1166,28 +1168,28 @@
 //! ```
 //! use extendr_api::prelude::*;
 //! test! {
-//!     // The text &quot;1 + 1&quot; is parsed as R source code.
+//!     // The text "1 + 1" is parsed as R source code.
 //!     // The result is 1.0 + 1.0 in Rust.
-//!     assert_eq!(R!(&quot;1 + 1&quot;)?, r!(2.0));
+//!     assert_eq!(R!("1 + 1")?, r!(2.0));
 //!
 //!     let a = 1.0;
-//!     assert_eq!(R!(&quot;1 + {{a}}&quot;)?, r!(2.0));
+//!     assert_eq!(R!("1 + {{a}}")?, r!(2.0));
 //!
-//!     assert_eq!(R!(r&quot;
+//!     assert_eq!(R!(r"
 //!         x &lt;- {{ a }}
 //!         x + 1
-//!     &quot;)?, r!(2.0));
+//!     ")?, r!(2.0));
 //!
-//!     assert_eq!(R!(r#&quot;
-//!         x &lt;- &quot;hello&quot;
+//!     assert_eq!(R!(r#"
+//!         x &lt;- "hello"
 //!         x
-//!     &quot;#)?, r!(&quot;hello&quot;));
+//!     "#)?, r!("hello"));
 //!
 //!     // Use the R meaning of {{ }} and do not expand.
-//!     assert_eq!(Rraw!(r&quot;
+//!     assert_eq!(Rraw!(r"
 //!         x &lt;- {{ 1 }}
 //!         x + 1
-//!     &quot;)?, r!(2.0));
+//!     ")?, r!(2.0));
 //! }
 //! ```
 //!
@@ -1196,7 +1198,7 @@
 //! ```
 //! use extendr_api::prelude::*;
 //! test! {
-//!     // The text &quot;1.0+1.0&quot; is parsed as Rust source code.
+//!     // The text "1.0+1.0" is parsed as Rust source code.
 //!     let one = 1.0;
 //!     assert_eq!(r!(one+1.0), r!(2.0));
 //! }
@@ -1208,25 +1210,25 @@
 //! test! {
 //!
 //!     // As one R! macro call
-//!     let confint1 = R!(&quot;confint(lm(weight ~ group - 1, PlantGrowth))&quot;)?;
+//!     let confint1 = R!("confint(lm(weight ~ group - 1, PlantGrowth))")?;
 //!    
 //!     // As many parameterized calls.
-//!     let formula = lang!(&quot;~&quot;, sym!(weight), lang!(&quot;-&quot;, sym!(group), 1.0)).set_class([&quot;formula&quot;])?;
+//!     let formula = lang!("~", sym!(weight), lang!("-", sym!(group), 1.0)).set_class(["formula"])?;
 //!     let plant_growth = global!(PlantGrowth)?;
-//!     let model = call!(&quot;lm&quot;, formula, plant_growth)?;
-//!     let confint2 = call!(&quot;confint&quot;, model)?;
+//!     let model = call!("lm", formula, plant_growth)?;
+//!     let confint2 = call!("confint", model)?;
 //!    
 //!     assert_eq!(confint1.as_real_vector(), confint2.as_real_vector());
 //! }
 //! ```
 //!
-//! Rust has a concept of &quot;Owned&quot; and &quot;Borrowed&quot; objects.
+//! Rust has a concept of "Owned" and "Borrowed" objects.
 //!
 //! Owned objects, such as [Vec] and [String] allocate memory
 //! which is released when the object lifetime ends.
 //!
 //! Borrowed objects such as &amp;[i32] and &amp;str are just pointers
-//! to annother object&#39;s memory and can&#39;t live longer than the
+//! to annother object's memory and can't live longer than the
 //! object they reference.
 //!
 //! Borrowed objects are much faster than owned objects and use less
@@ -1238,12 +1240,12 @@
 //! ```
 //! use extendr_api::prelude::*;
 //! test! {
-//!     // robj is an &quot;Owned&quot; object that controls the memory allocated.
+//!     // robj is an "Owned" object that controls the memory allocated.
 //!     let robj = r!([1, 2, 3]);
 //!    
-//!     // Here slice is a &quot;borrowed&quot; reference to the bytes in robj.
+//!     // Here slice is a "borrowed" reference to the bytes in robj.
 //!     // and cannot live longer than robj.
-//!     let slice = robj.as_integer_slice().ok_or(&quot;expected slice&quot;)?;
+//!     let slice = robj.as_integer_slice().ok_or("expected slice")?;
 //!     assert_eq!(slice.len(), 3);
 //! }
 //! ```
@@ -1258,7 +1260,7 @@
 //!
 //! #[extendr]
 //! fn things() -&gt;  Strings {
-//!     Strings::from_values(vec![&quot;Test&quot;, &quot;this&quot;])
+//!     Strings::from_values(vec!["Test", "this"])
 //! }
 //!
 //! // define exports using extendr_module
@@ -1275,7 +1277,7 @@
 //!
 //!     #[test]
 //!     fn test_simple_function() {
-//!         assert_eq!(things().elt(0), &quot;Test&quot;)
+//!         assert_eq!(things().elt(0), "Test")
 //!     }
 //! }
 //! ```
@@ -1307,7 +1309,7 @@
 //! // simple function always returning an Err string
 //! #[extendr]
 //! fn oups(a: i32) -&gt; std::result::Result&lt;i32, String&gt; {
-//!     Err(&quot;I did it again&quot;.to_string())
+//!     Err("I did it again".to_string())
 //! }
 //!
 //! // define exports using extendr_module
@@ -1328,19 +1330,19 @@
 //! # result_list feature
 //! lst &lt;- oups(1)
 //! print(lst)
-//! &gt; list(ok = NULL, err = &quot;I did it again&quot;)
+//! &gt; list(ok = NULL, err = "I did it again")
 //!
 //! # result_condition feature
 //! cnd &lt;- oups(1)
 //! print(cnd)
 //! &gt; &lt;error: extendr_error&gt;
 //! print(cnd$value)
-//! &gt; &quot;I did it again&quot;
+//! &gt; "I did it again"
 //!
 //! # handling example for result_condition
 //! oups_handled &lt;- function(a) {
 //!   val_or_err &lt;- oups(1)  
-//!   if (inherits(val_or_err, &quot;extendr_error&quot;)) stop(val_or_err)
+//!   if (inherits(val_or_err, "extendr_error")) stop(val_or_err)
 //!   val_or_err
 //! }
 //!
@@ -1350,21 +1352,21 @@
 //!
 //! extendr-api has some optional features behind these feature gates:
 //!
-//! - `ndarray`: provides the conversion between R&#39;s matrices and [ndarray](https://docs.rs/ndarray/latest/ndarray/).
-//! - `num-complex`: provides the conversion between R&#39;s complex numbers and [num-complex](https://docs.rs/num-complex/latest/num_complex/).
+//! - `ndarray`: provides the conversion between R's matrices and [ndarray](https://docs.rs/ndarray/latest/ndarray/).
+//! - `num-complex`: provides the conversion between R's complex numbers and [num-complex](https://docs.rs/num-complex/latest/num_complex/).
 //! - `serde`: provides the [Serde](https://serde.rs/) support.
 //! - `graphics`: provides the functionality to control or implement graphics devices.
 //!
 //! extendr-api supports three ways of returning a Result&lt;T,E&gt; to R. Only one behavior feature can be enabled at a time.
 //! - `result_panic`: Default behavior, return `Ok` as is, panic! on any `Err`
 //!
-//! Default behavior can be overridden by specifying `extend_api` features, i.e. `extendr-api = {..., default-features = false, features= [&quot;result_condition&quot;]}`
+//! Default behavior can be overridden by specifying `extend_api` features, i.e. `extendr-api = {..., default-features = false, features= ["result_condition"]}`
 //! These features are experimental and are subject to change.
 //! - `result_list`: return `Ok` as `list(ok=?, err=NULL)` or `Err` `list(ok=NULL, err=?)`
 //! - `result_condition`: return `Ok` as is or `Err` as $value in an R error condition.
 
 </span><span class="attr">#![doc(
-    html_logo_url = <span class="string">&quot;https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png&quot;
+    html_logo_url = <span class="string">"https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png"
 </span>)]
 
 </span><span class="kw">pub mod </span>error;
@@ -1377,13 +1379,13 @@
 <span class="kw">pub mod </span>prelude;
 <span class="kw">pub mod </span>rmacros;
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;serde&quot;</span>)]
+<span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
 </span><span class="kw">pub mod </span>serializer;
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;serde&quot;</span>)]
+<span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
 </span><span class="kw">pub mod </span>deserializer;
 
-<span class="attr">#[cfg(feature = <span class="string">&quot;graphics&quot;</span>)]
+<span class="attr">#[cfg(feature = <span class="string">"graphics"</span>)]
 </span><span class="kw">pub mod </span>graphics;
 
 <span class="kw">pub mod </span>robj;
@@ -1489,13 +1491,13 @@
     <span class="kw">let </span><span class="kw-2">mut </span>rmethods = Vec::new();
     <span class="kw">let </span><span class="kw-2">mut </span>cstrings = Vec::new();
     <span class="kw">for </span>func <span class="kw">in </span>metadata.functions {
-        <span class="kw">let </span>wrapped_name = <span class="macro">format!</span>(<span class="string">&quot;wrap__{}&quot;</span>, func.mod_name);
+        <span class="kw">let </span>wrapped_name = <span class="macro">format!</span>(<span class="string">"wrap__{}"</span>, func.mod_name);
         make_method_def(<span class="kw-2">&amp;mut </span>cstrings, <span class="kw-2">&amp;mut </span>rmethods, <span class="kw-2">&amp;</span>func, wrapped_name.as_str());
     }
 
     <span class="kw">for </span>imp <span class="kw">in </span>metadata.impls {
         <span class="kw">for </span>func <span class="kw">in </span>imp.methods {
-            <span class="kw">let </span>wrapped_name = <span class="macro">format!</span>(<span class="string">&quot;wrap__{}__{}&quot;</span>, imp.name, func.mod_name);
+            <span class="kw">let </span>wrapped_name = <span class="macro">format!</span>(<span class="string">"wrap__{}__{}"</span>, imp.name, func.mod_name);
             make_method_def(<span class="kw-2">&amp;mut </span>cstrings, <span class="kw-2">&amp;mut </span>rmethods, <span class="kw-2">&amp;</span>func, wrapped_name.as_str());
         }
     }
@@ -1553,35 +1555,35 @@
 </span><span class="comment">// Todo: convert all Robj types to wrappers.
 // Note: this only works if the wrappers are all just SEXPs.
 </span><span class="attr">#[derive(Debug, PartialEq)]
-</span><span class="kw">pub enum </span>Rany&lt;<span class="lifetime">&#39;a</span>&gt; {
-    Null(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Robj),               <span class="comment">// NILSXP
-    </span>Symbol(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Symbol),           <span class="comment">// SYMSXP
-    </span>Pairlist(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Pairlist),       <span class="comment">// LISTSXP
-    </span>Function(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Function),       <span class="comment">// CLOSXP
-    </span>Environment(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Environment), <span class="comment">// ENVSXP
-    </span>Promise(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Promise),         <span class="comment">// PROMSXP
-    </span>Language(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Language),       <span class="comment">// LANGSXP
-    </span>Special(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Primitive),       <span class="comment">// SPECIALSXP
-    </span>Builtin(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Primitive),       <span class="comment">// BUILTINSXP
-    </span>Rstr(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Rstr),               <span class="comment">// CHARSXP
-    </span>Logicals(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Logicals),       <span class="comment">// LGLSXP
-    </span>Integers(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Integers),       <span class="comment">// INTSXP
-    </span>Doubles(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Doubles),         <span class="comment">// REALSXP
-    </span>Complexes(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Complexes),     <span class="comment">// CPLXSXP
-    </span>Strings(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Strings),         <span class="comment">// STRSXP
-    </span>Dot(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Robj),                <span class="comment">// DOTSXP
-    </span>Any(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Robj),                <span class="comment">// ANYSXP
-    </span>List(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>List),               <span class="comment">// VECSXP
-    </span>Expressions(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Expressions), <span class="comment">// EXPRSXP
-    </span>Bytecode(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Robj),           <span class="comment">// BCODESXP
-    </span>ExternalPtr(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Robj),        <span class="comment">// EXTPTRSXP
-    </span>WeakRef(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Robj),            <span class="comment">// WEAKREFSXP
-    </span>Raw(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Raw),                 <span class="comment">// RAWSXP
-    </span>S4(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>S4),                   <span class="comment">// S4SXP
-    </span>Unknown(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Robj),
+</span><span class="kw">pub enum </span>Rany&lt;<span class="lifetime">'a</span>&gt; {
+    Null(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Robj),               <span class="comment">// NILSXP
+    </span>Symbol(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Symbol),           <span class="comment">// SYMSXP
+    </span>Pairlist(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Pairlist),       <span class="comment">// LISTSXP
+    </span>Function(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Function),       <span class="comment">// CLOSXP
+    </span>Environment(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Environment), <span class="comment">// ENVSXP
+    </span>Promise(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Promise),         <span class="comment">// PROMSXP
+    </span>Language(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Language),       <span class="comment">// LANGSXP
+    </span>Special(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Primitive),       <span class="comment">// SPECIALSXP
+    </span>Builtin(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Primitive),       <span class="comment">// BUILTINSXP
+    </span>Rstr(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Rstr),               <span class="comment">// CHARSXP
+    </span>Logicals(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Logicals),       <span class="comment">// LGLSXP
+    </span>Integers(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Integers),       <span class="comment">// INTSXP
+    </span>Doubles(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Doubles),         <span class="comment">// REALSXP
+    </span>Complexes(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Complexes),     <span class="comment">// CPLXSXP
+    </span>Strings(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Strings),         <span class="comment">// STRSXP
+    </span>Dot(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Robj),                <span class="comment">// DOTSXP
+    </span>Any(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Robj),                <span class="comment">// ANYSXP
+    </span>List(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>List),               <span class="comment">// VECSXP
+    </span>Expressions(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Expressions), <span class="comment">// EXPRSXP
+    </span>Bytecode(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Robj),           <span class="comment">// BCODESXP
+    </span>ExternalPtr(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Robj),        <span class="comment">// EXTPTRSXP
+    </span>WeakRef(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Robj),            <span class="comment">// WEAKREFSXP
+    </span>Raw(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Raw),                 <span class="comment">// RAWSXP
+    </span>S4(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>S4),                   <span class="comment">// S4SXP
+    </span>Unknown(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Robj),
 }
 
-<span class="doccomment">/// Convert extendr&#39;s Rtype to R&#39;s SEXPTYPE.
+<span class="doccomment">/// Convert extendr's Rtype to R's SEXPTYPE.
 /// Panics if the type is Unknown.
 </span><span class="kw">pub fn </span>rtype_to_sxp(rtype: Rtype) -&gt; i32 {
     <span class="kw">use </span>Rtype::<span class="kw-2">*</span>;
@@ -1610,11 +1612,11 @@
         WeakRef =&gt; WEAKREFSXP,
         Raw =&gt; RAWSXP,
         S4 =&gt; S4SXP,
-        Unknown =&gt; <span class="macro">panic!</span>(<span class="string">&quot;attempt to use Unknown Rtype&quot;</span>),
+        Unknown =&gt; <span class="macro">panic!</span>(<span class="string">"attempt to use Unknown Rtype"</span>),
     }) <span class="kw">as </span>i32
 }
 
-<span class="doccomment">/// Convert R&#39;s SEXPTYPE to extendr&#39;s Rtype.
+<span class="doccomment">/// Convert R's SEXPTYPE to extendr's Rtype.
 </span><span class="kw">pub fn </span>sxp_to_rtype(sxptype: i32) -&gt; Rtype {
     <span class="kw">use </span>Rtype::<span class="kw-2">*</span>;
     <span class="kw">match </span>sxptype <span class="kw">as </span>u32 {
@@ -1646,10 +1648,10 @@
     }
 }
 
-<span class="kw">const </span>PRINTF_NO_FMT_CSTRING: <span class="kw-2">&amp;</span>[std::os::raw::c_char] = <span class="kw-2">&amp;</span>[<span class="number">37</span>, <span class="number">115</span>, <span class="number">0</span>]; <span class="comment">// same as &quot;%s\0&quot;
+<span class="kw">const </span>PRINTF_NO_FMT_CSTRING: <span class="kw-2">&amp;</span>[std::os::raw::c_char] = <span class="kw-2">&amp;</span>[<span class="number">37</span>, <span class="number">115</span>, <span class="number">0</span>]; <span class="comment">// same as "%s\0"
 </span><span class="attr">#[doc(hidden)]
 </span><span class="kw">pub fn </span>print_r_output&lt;T: Into&lt;Vec&lt;u8&gt;&gt;&gt;(s: T) {
-    <span class="kw">let </span>cs = CString::new(s).expect(<span class="string">&quot;NulError&quot;</span>);
+    <span class="kw">let </span>cs = CString::new(s).expect(<span class="string">"NulError"</span>);
     <span class="kw">unsafe </span>{
         Rprintf(PRINTF_NO_FMT_CSTRING.as_ptr(), cs.as_ptr());
     }
@@ -1657,7 +1659,7 @@
 
 <span class="attr">#[doc(hidden)]
 </span><span class="kw">pub fn </span>print_r_error&lt;T: Into&lt;Vec&lt;u8&gt;&gt;&gt;(s: T) {
-    <span class="kw">let </span>cs = CString::new(s).expect(<span class="string">&quot;NulError&quot;</span>);
+    <span class="kw">let </span>cs = CString::new(s).expect(<span class="string">"NulError"</span>);
     <span class="kw">unsafe </span>{
         REprintf(PRINTF_NO_FMT_CSTRING.as_ptr(), cs.as_ptr());
     }
@@ -1692,8 +1694,8 @@
 
     <span class="attr">#[extendr]
     </span><span class="kw">pub fn </span>strtypes(a: <span class="kw-2">&amp;</span>str, b: String) {
-        <span class="macro">assert_eq!</span>(a, <span class="string">&quot;abc&quot;</span>);
-        <span class="macro">assert_eq!</span>(b, <span class="string">&quot;def&quot;</span>);
+        <span class="macro">assert_eq!</span>(a, <span class="string">"abc"</span>);
+        <span class="macro">assert_eq!</span>(b, <span class="string">"def"</span>);
     }
 
     <span class="attr">#[extendr]
@@ -1806,7 +1808,7 @@
     </span><span class="kw">impl </span>Person {
         <span class="kw">fn </span>new() -&gt; <span class="self">Self </span>{
             <span class="self">Self </span>{
-                name: <span class="string">&quot;&quot;</span>.to_string(),
+                name: <span class="string">""</span>.to_string(),
             }
         }
 
@@ -1866,7 +1868,7 @@
                 );
                 wrap__floattypes(Robj::from(<span class="number">1.</span>).get(), Robj::from(<span class="number">2.</span>).get());
                 wrap__floattypes(Robj::from(<span class="number">1</span>).get(), Robj::from(<span class="number">2</span>).get());
-                wrap__strtypes(Robj::from(<span class="string">&quot;abc&quot;</span>).get(), Robj::from(<span class="string">&quot;def&quot;</span>).get());
+                wrap__strtypes(Robj::from(<span class="string">"abc"</span>).get(), Robj::from(<span class="string">"def"</span>).get());
                 wrap__vectortypes(
                     Robj::from(<span class="kw-2">&amp;</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>] <span class="kw">as </span><span class="kw-2">&amp;</span>[i32]).get(),
                     Robj::from(<span class="kw-2">&amp;</span>[<span class="number">4.</span>, <span class="number">5.</span>, <span class="number">6.</span>] <span class="kw">as </span><span class="kw-2">&amp;</span>[f64]).get(),
@@ -1894,11 +1896,11 @@
     </span><span class="kw">fn </span>class_wrapper_test() {
         <span class="macro">test! </span>{
             <span class="kw">let </span><span class="kw-2">mut </span>person = Person::new();
-            person.set_name(<span class="string">&quot;fred&quot;</span>);
+            person.set_name(<span class="string">"fred"</span>);
             <span class="kw">let </span>robj = <span class="macro">r!</span>(person);
             <span class="macro">assert_eq!</span>(robj.check_external_ptr_type::&lt;Person&gt;(), <span class="bool-val">true</span>);
             <span class="kw">let </span>person2 = &lt;<span class="kw-2">&amp;</span>Person&gt;::from_robj(<span class="kw-2">&amp;</span>robj).unwrap();
-            <span class="macro">assert_eq!</span>(person2.name(), <span class="string">&quot;fred&quot;</span>);
+            <span class="macro">assert_eq!</span>(person2.name(), <span class="string">"fred"</span>);
         }
     }
 
@@ -1962,30 +1964,30 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>r_output_test() {
         <span class="comment">// R equivalent
-        // &gt; txt_con &lt;- textConnection(&quot;test_con&quot;, open = &quot;w&quot;)
+        // &gt; txt_con &lt;- textConnection("test_con", open = "w")
         // &gt; sink(txt_con)
-        // &gt; cat(&quot;Hello world&quot;)
+        // &gt; cat("Hello world")
         // &gt; sink()
         // &gt; close(txt_con)
-        // &gt; expect_equal(test_con, &quot;Hello world&quot;)
+        // &gt; expect_equal(test_con, "Hello world")
         //
 
         </span><span class="macro">test! </span>{
-            <span class="kw">let </span>txt_con = <span class="macro">R!</span>(<span class="string">r#&quot;textConnection(&quot;test_con&quot;, open = &quot;w&quot;)&quot;#</span>).unwrap();
-            <span class="macro">call!</span>(<span class="string">&quot;sink&quot;</span>, <span class="kw-2">&amp;</span>txt_con).unwrap();
-            <span class="macro">rprintln!</span>(<span class="string">&quot;Hello world %%!&quot;</span>); <span class="comment">//%% checks printf formatting is off, yields one % if on
-            </span><span class="macro">call!</span>(<span class="string">&quot;sink&quot;</span>).unwrap();
-            <span class="macro">call!</span>(<span class="string">&quot;close&quot;</span>, <span class="kw-2">&amp;</span>txt_con).unwrap();
-            <span class="kw">let </span>result = <span class="macro">R!</span>(<span class="string">&quot;test_con&quot;</span>).unwrap();
-            <span class="macro">assert_eq!</span>(result, <span class="macro">r!</span>(<span class="string">&quot;Hello world %%!&quot;</span>));
+            <span class="kw">let </span>txt_con = <span class="macro">R!</span>(<span class="string">r#"textConnection("test_con", open = "w")"#</span>).unwrap();
+            <span class="macro">call!</span>(<span class="string">"sink"</span>, <span class="kw-2">&amp;</span>txt_con).unwrap();
+            <span class="macro">rprintln!</span>(<span class="string">"Hello world %%!"</span>); <span class="comment">//%% checks printf formatting is off, yields one % if on
+            </span><span class="macro">call!</span>(<span class="string">"sink"</span>).unwrap();
+            <span class="macro">call!</span>(<span class="string">"close"</span>, <span class="kw-2">&amp;</span>txt_con).unwrap();
+            <span class="kw">let </span>result = <span class="macro">R!</span>(<span class="string">"test_con"</span>).unwrap();
+            <span class="macro">assert_eq!</span>(result, <span class="macro">r!</span>(<span class="string">"Hello world %%!"</span>));
         }
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_na_str() {
-        <span class="macro">assert_ne!</span>(&lt;<span class="kw-2">&amp;</span>str&gt;::na().as_ptr(), <span class="string">&quot;NA&quot;</span>.as_ptr());
-        <span class="macro">assert_eq!</span>(&lt;<span class="kw-2">&amp;</span>str&gt;::na(), <span class="string">&quot;NA&quot;</span>);
-        <span class="macro">assert!</span>(!<span class="string">&quot;NA&quot;</span>.is_na());
+        <span class="macro">assert_ne!</span>(&lt;<span class="kw-2">&amp;</span>str&gt;::na().as_ptr(), <span class="string">"NA"</span>.as_ptr());
+        <span class="macro">assert_eq!</span>(&lt;<span class="kw-2">&amp;</span>str&gt;::na(), <span class="string">"NA"</span>);
+        <span class="macro">assert!</span>(!<span class="string">"NA"</span>.is_na());
         <span class="macro">assert!</span>(&lt;<span class="kw-2">&amp;</span>str&gt;::na().is_na());
     }
 
@@ -1994,19 +1996,19 @@
         <span class="macro">test! </span>{
             <span class="comment">// Rust interface.
             </span><span class="kw">let </span>metadata = get_my_module_metadata();
-            <span class="macro">assert_eq!</span>(metadata.functions[<span class="number">0</span>].doc, <span class="string">&quot; comment #1\n comment #2\n\n        comment #3\n        comment #4\n    *\n aux_func doc comment.&quot;</span>);
-            <span class="macro">assert_eq!</span>(metadata.functions[<span class="number">0</span>].rust_name, <span class="string">&quot;aux_func&quot;</span>);
-            <span class="macro">assert_eq!</span>(metadata.functions[<span class="number">0</span>].mod_name, <span class="string">&quot;aux_func&quot;</span>);
-            <span class="macro">assert_eq!</span>(metadata.functions[<span class="number">0</span>].r_name, <span class="string">&quot;aux_func&quot;</span>);
-            <span class="macro">assert_eq!</span>(metadata.functions[<span class="number">0</span>].args[<span class="number">0</span>].name, <span class="string">&quot;_person&quot;</span>);
-            <span class="macro">assert_eq!</span>(metadata.functions[<span class="number">1</span>].rust_name, <span class="string">&quot;get_my_module_metadata&quot;</span>);
-            <span class="macro">assert_eq!</span>(metadata.impls[<span class="number">0</span>].name, <span class="string">&quot;Person&quot;</span>);
+            <span class="macro">assert_eq!</span>(metadata.functions[<span class="number">0</span>].doc, <span class="string">" comment #1\n comment #2\n\n        comment #3\n        comment #4\n    *\n aux_func doc comment."</span>);
+            <span class="macro">assert_eq!</span>(metadata.functions[<span class="number">0</span>].rust_name, <span class="string">"aux_func"</span>);
+            <span class="macro">assert_eq!</span>(metadata.functions[<span class="number">0</span>].mod_name, <span class="string">"aux_func"</span>);
+            <span class="macro">assert_eq!</span>(metadata.functions[<span class="number">0</span>].r_name, <span class="string">"aux_func"</span>);
+            <span class="macro">assert_eq!</span>(metadata.functions[<span class="number">0</span>].args[<span class="number">0</span>].name, <span class="string">"_person"</span>);
+            <span class="macro">assert_eq!</span>(metadata.functions[<span class="number">1</span>].rust_name, <span class="string">"get_my_module_metadata"</span>);
+            <span class="macro">assert_eq!</span>(metadata.impls[<span class="number">0</span>].name, <span class="string">"Person"</span>);
             <span class="macro">assert_eq!</span>(metadata.impls[<span class="number">0</span>].methods.len(), <span class="number">3</span>);
 
             <span class="comment">// R interface
             </span><span class="kw">let </span>robj = Robj::from_sexp(wrap__get_my_module_metadata());
-            <span class="kw">let </span>functions = robj.dollar(<span class="string">&quot;functions&quot;</span>).unwrap();
-            <span class="kw">let </span>impls = robj.dollar(<span class="string">&quot;impls&quot;</span>).unwrap();
+            <span class="kw">let </span>functions = robj.dollar(<span class="string">"functions"</span>).unwrap();
+            <span class="kw">let </span>impls = robj.dollar(<span class="string">"impls"</span>).unwrap();
             <span class="macro">assert_eq!</span>(functions.len(), <span class="number">3</span>);
             <span class="macro">assert_eq!</span>(impls.len(), <span class="number">1</span>);
         }
@@ -2015,11 +2017,11 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>pairlist_macro_works() {
         <span class="macro">test! </span>{
-            <span class="macro">assert_eq!</span>(<span class="macro">pairlist!</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>), Pairlist::from_pairs(<span class="kw-2">&amp;</span>[(<span class="string">&quot;&quot;</span>, <span class="number">1</span>), (<span class="string">&quot;&quot;</span>, <span class="number">2</span>), (<span class="string">&quot;&quot;</span>, <span class="number">3</span>)]));
-            <span class="macro">assert_eq!</span>(<span class="macro">pairlist!</span>(a=<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>), Pairlist::from_pairs(<span class="kw-2">&amp;</span>[(<span class="string">&quot;a&quot;</span>, <span class="number">1</span>), (<span class="string">&quot;&quot;</span>, <span class="number">2</span>), (<span class="string">&quot;&quot;</span>, <span class="number">3</span>)]));
-            <span class="macro">assert_eq!</span>(<span class="macro">pairlist!</span>(<span class="number">1</span>, b=<span class="number">2</span>, <span class="number">3</span>), Pairlist::from_pairs(<span class="kw-2">&amp;</span>[(<span class="string">&quot;&quot;</span>, <span class="number">1</span>), (<span class="string">&quot;b&quot;</span>, <span class="number">2</span>), (<span class="string">&quot;&quot;</span>, <span class="number">3</span>)]));
-            <span class="macro">assert_eq!</span>(<span class="macro">pairlist!</span>(a=<span class="number">1</span>, b=<span class="number">2</span>, c=<span class="number">3</span>), Pairlist::from_pairs(<span class="kw-2">&amp;</span>[(<span class="string">&quot;a&quot;</span>, <span class="number">1</span>), (<span class="string">&quot;b&quot;</span>, <span class="number">2</span>), (<span class="string">&quot;c&quot;</span>, <span class="number">3</span>)]));
-            <span class="macro">assert_eq!</span>(<span class="macro">pairlist!</span>(a=NULL), Pairlist::from_pairs(<span class="kw-2">&amp;</span>[(<span class="string">&quot;a&quot;</span>, ())]));
+            <span class="macro">assert_eq!</span>(<span class="macro">pairlist!</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>), Pairlist::from_pairs(<span class="kw-2">&amp;</span>[(<span class="string">""</span>, <span class="number">1</span>), (<span class="string">""</span>, <span class="number">2</span>), (<span class="string">""</span>, <span class="number">3</span>)]));
+            <span class="macro">assert_eq!</span>(<span class="macro">pairlist!</span>(a=<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>), Pairlist::from_pairs(<span class="kw-2">&amp;</span>[(<span class="string">"a"</span>, <span class="number">1</span>), (<span class="string">""</span>, <span class="number">2</span>), (<span class="string">""</span>, <span class="number">3</span>)]));
+            <span class="macro">assert_eq!</span>(<span class="macro">pairlist!</span>(<span class="number">1</span>, b=<span class="number">2</span>, <span class="number">3</span>), Pairlist::from_pairs(<span class="kw-2">&amp;</span>[(<span class="string">""</span>, <span class="number">1</span>), (<span class="string">"b"</span>, <span class="number">2</span>), (<span class="string">""</span>, <span class="number">3</span>)]));
+            <span class="macro">assert_eq!</span>(<span class="macro">pairlist!</span>(a=<span class="number">1</span>, b=<span class="number">2</span>, c=<span class="number">3</span>), Pairlist::from_pairs(<span class="kw-2">&amp;</span>[(<span class="string">"a"</span>, <span class="number">1</span>), (<span class="string">"b"</span>, <span class="number">2</span>), (<span class="string">"c"</span>, <span class="number">3</span>)]));
+            <span class="macro">assert_eq!</span>(<span class="macro">pairlist!</span>(a=NULL), Pairlist::from_pairs(<span class="kw-2">&amp;</span>[(<span class="string">"a"</span>, ())]));
             <span class="macro">assert_eq!</span>(<span class="macro">pairlist!</span>(), Pairlist::from(()));
         }
     }
@@ -2027,28 +2029,28 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>big_r_macro_works() {
         <span class="macro">test! </span>{
-            <span class="macro">assert_eq!</span>(<span class="macro">R!</span>(<span class="string">&quot;1&quot;</span>)<span class="question-mark">?</span>, <span class="macro">r!</span>(<span class="number">1.0</span>));
-            <span class="macro">assert_eq!</span>(<span class="macro">R!</span>(<span class="string">r&quot;1&quot;</span>)<span class="question-mark">?</span>, <span class="macro">r!</span>(<span class="number">1.0</span>));
-            <span class="macro">assert_eq!</span>(<span class="macro">R!</span>(<span class="string">r&quot;
+            <span class="macro">assert_eq!</span>(<span class="macro">R!</span>(<span class="string">"1"</span>)<span class="question-mark">?</span>, <span class="macro">r!</span>(<span class="number">1.0</span>));
+            <span class="macro">assert_eq!</span>(<span class="macro">R!</span>(<span class="string">r"1"</span>)<span class="question-mark">?</span>, <span class="macro">r!</span>(<span class="number">1.0</span>));
+            <span class="macro">assert_eq!</span>(<span class="macro">R!</span>(<span class="string">r"
                 x &lt;- 1
                 x
-            &quot;</span>)<span class="question-mark">?</span>, <span class="macro">r!</span>(<span class="number">1.0</span>));
-            <span class="macro">assert_eq!</span>(<span class="macro">R!</span>(<span class="string">r&quot;
+            "</span>)<span class="question-mark">?</span>, <span class="macro">r!</span>(<span class="number">1.0</span>));
+            <span class="macro">assert_eq!</span>(<span class="macro">R!</span>(<span class="string">r"
                 x &lt;- {{ 1.0 }}
                 x
-            &quot;</span>)<span class="question-mark">?</span>, <span class="macro">r!</span>(<span class="number">1.0</span>));
-            <span class="macro">assert_eq!</span>(<span class="macro">R!</span>(<span class="string">r&quot;
+            "</span>)<span class="question-mark">?</span>, <span class="macro">r!</span>(<span class="number">1.0</span>));
+            <span class="macro">assert_eq!</span>(<span class="macro">R!</span>(<span class="string">r"
                 x &lt;- {{ (0..4).collect_robj() }}
                 x
-            &quot;</span>)<span class="question-mark">?</span>, <span class="macro">r!</span>([<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]));
-            <span class="macro">assert_eq!</span>(<span class="macro">R!</span>(<span class="string">r#&quot;
-                x &lt;- &quot;hello&quot;
+            "</span>)<span class="question-mark">?</span>, <span class="macro">r!</span>([<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]));
+            <span class="macro">assert_eq!</span>(<span class="macro">R!</span>(<span class="string">r#"
+                x &lt;- "hello"
                 x
-            &quot;#</span>)<span class="question-mark">?</span>, <span class="macro">r!</span>(<span class="string">&quot;hello&quot;</span>));
-            <span class="macro">assert_eq!</span>(<span class="macro">Rraw!</span>(<span class="string">r&quot;
+            "#</span>)<span class="question-mark">?</span>, <span class="macro">r!</span>(<span class="string">"hello"</span>));
+            <span class="macro">assert_eq!</span>(<span class="macro">Rraw!</span>(<span class="string">r"
                 x &lt;- {{ 1 }}
                 x
-            &quot;</span>)<span class="question-mark">?</span>, <span class="macro">r!</span>(<span class="number">1.0</span>));
+            "</span>)<span class="question-mark">?</span>, <span class="macro">r!</span>(<span class="number">1.0</span>));
         }
     }
 }

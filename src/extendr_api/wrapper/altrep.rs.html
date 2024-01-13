@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/altrep.rs`."><title>altrep.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-9ee3a5e31a2afa3e.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (2b603f95a 2023-11-12)" data-channel="nightly" data-search-js="search-8fbf244ebcf71464.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-9dd44ab47b99a0fb.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../extendr_api/index.html"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="extendr_api"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/altrep.rs`."><title>altrep.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-4e54bb2b497cc83f.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (62d7ed4a6 2024-01-11)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../extendr_api/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1098,7 +1100,7 @@
     (<span class="macro-nonterminal">$fn_name </span>: ident, <span class="macro-nonterminal">$make_class </span>: ident, <span class="macro-nonterminal">$</span><span class="kw">impl </span>: <span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$scalar_type </span>: ident, <span class="macro-nonterminal">$prim_type </span>: ty) =&gt; {
         <span class="kw">pub fn </span><span class="macro-nonterminal">$fn_name</span>&lt;Iter&gt;(iter: Iter) -&gt; Altrep
         <span class="kw">where
-            </span>Iter: ExactSizeIterator + std::fmt::Debug + Clone + <span class="lifetime">&#39;static </span>+ std::any::Any,
+            </span>Iter: ExactSizeIterator + std::fmt::Debug + Clone + <span class="lifetime">'static </span>+ std::any::Any,
             Iter::Item: Into&lt;<span class="macro-nonterminal">$scalar_type</span>&gt;,
         {
             <span class="kw">impl</span>&lt;Iter: ExactSizeIterator + std::fmt::Debug + Clone&gt; <span class="macro-nonterminal">$</span><span class="kw">impl for </span><span class="macro-nonterminal">Iter
@@ -1125,7 +1127,7 @@
                 }
             }
 
-            <span class="kw">let </span>class = Altrep::<span class="macro-nonterminal">$make_class</span>::&lt;Iter&gt;(std::any::type_name::&lt;Iter&gt;(), <span class="string">&quot;extendr&quot;</span>);
+            <span class="kw">let </span>class = Altrep::<span class="macro-nonterminal">$make_class</span>::&lt;Iter&gt;(std::any::type_name::&lt;Iter&gt;(), <span class="string">"extendr"</span>);
             <span class="kw">let </span>robj: Robj = Altrep::from_state_and_class(iter, class, <span class="bool-val">false</span>).into();
             Altrep { robj }
         }
@@ -1197,7 +1199,7 @@
         _deep: bool,
         _pvec: i32, <span class="comment">// _inspect_subtree: fn(robj: Robj, pre: i32, deep: i32, pvec: i32),
     </span>) -&gt; bool {
-        <span class="macro">rprintln!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="self">self</span>);
+        <span class="macro">rprintln!</span>(<span class="string">"{:?}"</span>, <span class="self">self</span>);
         <span class="bool-val">true
     </span>}
 
@@ -1241,7 +1243,7 @@
     }
 }
 
-<span class="comment">// Manifest a vector by storing the &quot;elt&quot; values to memory.
+<span class="comment">// Manifest a vector by storing the "elt" values to memory.
 // Return the new vector.
 </span><span class="kw">fn </span>manifest(x: SEXP) -&gt; SEXP {
     single_threaded(|| <span class="kw">unsafe </span>{
@@ -1265,7 +1267,7 @@
             CPLXSXP =&gt; {
                 COMPLEX_GET_REGION(x, <span class="number">0</span>, len <span class="kw">as </span>R_xlen_t, COMPLEX(data2));
             }
-            <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">&quot;unsupported ALTREP type.&quot;</span>),
+            <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">"unsupported ALTREP type."</span>),
         };
         Rf_unprotect(<span class="number">2</span>);
         data2
@@ -1583,7 +1585,7 @@
         single_threaded(|| <span class="kw">unsafe </span>{ Robj::from_sexp(ALTREP_CLASS(<span class="self">self</span>.robj.get())) })
     }
 
-    <span class="kw">pub fn </span>from_state_and_class&lt;StateType: <span class="lifetime">&#39;static</span>&gt;(
+    <span class="kw">pub fn </span>from_state_and_class&lt;StateType: <span class="lifetime">'static</span>&gt;(
         state: StateType,
         class: Robj,
         mutable: bool,
@@ -1591,7 +1593,7 @@
         single_threaded(|| <span class="kw">unsafe </span>{
             <span class="kw">use </span>std::os::raw::c_void;
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>finalizer&lt;StateType: <span class="lifetime">&#39;static</span>&gt;(x: SEXP) {
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>finalizer&lt;StateType: <span class="lifetime">'static</span>&gt;(x: SEXP) {
                 <span class="kw">let </span>state = R_ExternalPtrAddr(x);
                 <span class="kw">let </span>ptr = state <span class="kw">as </span><span class="kw-2">*mut </span>StateType;
                 drop(Box::from_raw(ptr));
@@ -1625,7 +1627,7 @@
     }
 
     <span class="attr">#[allow(dead_code)]
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_state&lt;StateType&gt;(x: SEXP) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>StateType {
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_state&lt;StateType&gt;(x: SEXP) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'static </span>StateType {
         <span class="kw">unsafe </span>{
             <span class="kw">let </span>state_ptr = R_ExternalPtrAddr(R_altrep_data1(x));
             <span class="kw-2">&amp;*</span>(state_ptr <span class="kw">as </span><span class="kw-2">*const </span>StateType)
@@ -1633,20 +1635,20 @@
     }
 
     <span class="attr">#[allow(dead_code)]
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_state_mut&lt;StateType&gt;(x: SEXP) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span><span class="kw-2">mut </span>StateType {
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_state_mut&lt;StateType&gt;(x: SEXP) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'static </span><span class="kw-2">mut </span>StateType {
         <span class="kw">unsafe </span>{
             <span class="kw">let </span>state_ptr = R_ExternalPtrAddr(R_altrep_data1(x));
             <span class="kw-2">&amp;mut *</span>(state_ptr <span class="kw">as </span><span class="kw-2">*mut </span>StateType)
         }
     }
 
-    <span class="kw">fn </span>altrep_class&lt;StateType: AltrepImpl + <span class="lifetime">&#39;static</span>&gt;(ty: Rtype, name: <span class="kw-2">&amp;</span>str, base: <span class="kw-2">&amp;</span>str) -&gt; Robj {
+    <span class="kw">fn </span>altrep_class&lt;StateType: AltrepImpl + <span class="lifetime">'static</span>&gt;(ty: Rtype, name: <span class="kw-2">&amp;</span>str, base: <span class="kw-2">&amp;</span>str) -&gt; Robj {
         <span class="attr">#![allow(non_snake_case)]
         #![allow(unused_variables)]
         </span><span class="kw">use </span>std::os::raw::c_int;
         <span class="kw">use </span>std::os::raw::c_void;
 
-        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altrep_UnserializeEX&lt;StateType: AltrepImpl&gt;(
+        <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altrep_UnserializeEX&lt;StateType: AltrepImpl&gt;(
             class: SEXP,
             state: SEXP,
             attr: SEXP,
@@ -1663,70 +1665,70 @@
             .get()
         }
 
-        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altrep_Unserialize&lt;StateType: AltrepImpl + <span class="lifetime">&#39;static</span>&gt;(
+        <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altrep_Unserialize&lt;StateType: AltrepImpl + <span class="lifetime">'static</span>&gt;(
             class: SEXP,
             state: SEXP,
         ) -&gt; SEXP {
             &lt;StateType&gt;::unserialize(Robj::from_sexp(class), Robj::from_sexp(state)).get()
         }
 
-        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altrep_Serialized_state&lt;StateType: AltrepImpl + <span class="lifetime">&#39;static</span>&gt;(
+        <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altrep_Serialized_state&lt;StateType: AltrepImpl + <span class="lifetime">'static</span>&gt;(
             x: SEXP,
         ) -&gt; SEXP {
             &lt;StateType&gt;::serialized_state(x).get()
         }
 
-        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altrep_Coerce&lt;StateType: AltrepImpl + <span class="lifetime">&#39;static</span>&gt;(
+        <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altrep_Coerce&lt;StateType: AltrepImpl + <span class="lifetime">'static</span>&gt;(
             x: SEXP,
             ty: c_int,
         ) -&gt; SEXP {
             &lt;StateType&gt;::coerce(x, sxp_to_rtype(ty)).get()
         }
 
-        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altrep_Duplicate&lt;StateType: AltrepImpl + <span class="lifetime">&#39;static</span>&gt;(
+        <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altrep_Duplicate&lt;StateType: AltrepImpl + <span class="lifetime">'static</span>&gt;(
             x: SEXP,
             deep: Rboolean,
         ) -&gt; SEXP {
             &lt;StateType&gt;::duplicate(x, deep == <span class="number">1</span>).get()
         }
 
-        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altrep_DuplicateEX&lt;StateType: AltrepImpl + <span class="lifetime">&#39;static</span>&gt;(
+        <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altrep_DuplicateEX&lt;StateType: AltrepImpl + <span class="lifetime">'static</span>&gt;(
             x: SEXP,
             deep: Rboolean,
         ) -&gt; SEXP {
             &lt;StateType&gt;::duplicate_ex(x, deep == <span class="number">1</span>).get()
         }
 
-        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altrep_Inspect&lt;StateType: AltrepImpl + <span class="lifetime">&#39;static</span>&gt;(
+        <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altrep_Inspect&lt;StateType: AltrepImpl + <span class="lifetime">'static</span>&gt;(
             x: SEXP,
             pre: c_int,
             deep: c_int,
             pvec: c_int,
-            func: <span class="prelude-ty">Option</span>&lt;<span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn</span>(arg1: SEXP, arg2: c_int, arg3: c_int, arg4: c_int)&gt;,
+            func: <span class="prelude-ty">Option</span>&lt;<span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn</span>(arg1: SEXP, arg2: c_int, arg3: c_int, arg4: c_int)&gt;,
         ) -&gt; Rboolean {
             Altrep::get_state::&lt;StateType&gt;(x)
                 .inspect(pre, deep == <span class="number">1</span>, pvec)
                 .into()
         }
 
-        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altrep_Length&lt;StateType: AltrepImpl + <span class="lifetime">&#39;static</span>&gt;(x: SEXP) -&gt; R_xlen_t {
+        <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altrep_Length&lt;StateType: AltrepImpl + <span class="lifetime">'static</span>&gt;(x: SEXP) -&gt; R_xlen_t {
             Altrep::get_state::&lt;StateType&gt;(x).length() <span class="kw">as </span>R_xlen_t
         }
 
-        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altvec_Dataptr&lt;StateType: AltrepImpl + <span class="lifetime">&#39;static</span>&gt;(
+        <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altvec_Dataptr&lt;StateType: AltrepImpl + <span class="lifetime">'static</span>&gt;(
             x: SEXP,
             writeable: Rboolean,
         ) -&gt; <span class="kw-2">*mut </span>c_void {
             &lt;StateType&gt;::dataptr(x, writeable != <span class="number">0</span>) <span class="kw">as </span><span class="kw-2">*mut </span>c_void
         }
 
-        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altvec_Dataptr_or_null&lt;StateType: AltrepImpl + <span class="lifetime">&#39;static</span>&gt;(
+        <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altvec_Dataptr_or_null&lt;StateType: AltrepImpl + <span class="lifetime">'static</span>&gt;(
             x: SEXP,
         ) -&gt; <span class="kw-2">*const </span>c_void {
             &lt;StateType&gt;::dataptr_or_null(x) <span class="kw">as </span><span class="kw-2">*mut </span>c_void
         }
 
-        <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altvec_Extract_subset&lt;StateType: AltrepImpl + <span class="lifetime">&#39;static</span>&gt;(
+        <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altvec_Extract_subset&lt;StateType: AltrepImpl + <span class="lifetime">'static</span>&gt;(
             x: SEXP,
             indx: SEXP,
             call: SEXP,
@@ -1766,7 +1768,7 @@
                 </span>Rtype::List =&gt; {
                     R_make_altlist_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
                 }
-                <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">&quot;expected Altvec compatible type&quot;</span>),
+                <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">"expected Altvec compatible type"</span>),
             };
 
             R_set_altrep_UnserializeEX_method(class_ptr, <span class="prelude-val">Some</span>(altrep_UnserializeEX::&lt;StateType&gt;));
@@ -1793,7 +1795,7 @@
     }
 
     <span class="doccomment">/// Make an integer ALTREP class that can be used to make vectors.
-    </span><span class="kw">pub fn </span>make_altinteger_class&lt;StateType: AltrepImpl + AltIntegerImpl + <span class="lifetime">&#39;static</span>&gt;(
+    </span><span class="kw">pub fn </span>make_altinteger_class&lt;StateType: AltrepImpl + AltIntegerImpl + <span class="lifetime">'static</span>&gt;(
         name: <span class="kw-2">&amp;</span>str,
         base: <span class="kw-2">&amp;</span>str,
     ) -&gt; Robj {
@@ -1804,14 +1806,14 @@
             <span class="kw">let </span>class = Altrep::altrep_class::&lt;StateType&gt;(Rtype::Integers, name, base);
             <span class="kw">let </span>class_ptr = R_altrep_class_t { ptr: class.get() };
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altinteger_Elt&lt;StateType: AltIntegerImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altinteger_Elt&lt;StateType: AltIntegerImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 i: R_xlen_t,
             ) -&gt; c_int {
                 Altrep::get_state::&lt;StateType&gt;(x).elt(i <span class="kw">as </span>usize).inner() <span class="kw">as </span>c_int
             }
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altinteger_Get_region&lt;StateType: AltIntegerImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altinteger_Get_region&lt;StateType: AltIntegerImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 i: R_xlen_t,
                 n: R_xlen_t,
@@ -1821,33 +1823,33 @@
                 Altrep::get_state::&lt;StateType&gt;(x).get_region(i <span class="kw">as </span>usize, slice) <span class="kw">as </span>R_xlen_t
             }
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altinteger_Is_sorted&lt;StateType: AltIntegerImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altinteger_Is_sorted&lt;StateType: AltIntegerImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
             ) -&gt; c_int {
                 Altrep::get_state::&lt;StateType&gt;(x).is_sorted().inner() <span class="kw">as </span>c_int
             }
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altinteger_No_NA&lt;StateType: AltIntegerImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altinteger_No_NA&lt;StateType: AltIntegerImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
             ) -&gt; c_int {
                 i32::from(Altrep::get_state::&lt;StateType&gt;(x).no_na())
             }
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altinteger_Sum&lt;StateType: AltIntegerImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altinteger_Sum&lt;StateType: AltIntegerImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 narm: Rboolean,
             ) -&gt; SEXP {
                 Altrep::get_state::&lt;StateType&gt;(x).sum(narm == <span class="number">1</span>).get()
             }
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altinteger_Min&lt;StateType: AltIntegerImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altinteger_Min&lt;StateType: AltIntegerImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 narm: Rboolean,
             ) -&gt; SEXP {
                 Altrep::get_state::&lt;StateType&gt;(x).min(narm == <span class="number">1</span>).get()
             }
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altinteger_Max&lt;StateType: AltIntegerImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altinteger_Max&lt;StateType: AltIntegerImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 narm: Rboolean,
             ) -&gt; SEXP {
@@ -1867,7 +1869,7 @@
     }
 
     <span class="doccomment">/// Make a real ALTREP class that can be used to make vectors.
-    </span><span class="kw">pub fn </span>make_altreal_class&lt;StateType: AltrepImpl + AltRealImpl + <span class="lifetime">&#39;static</span>&gt;(
+    </span><span class="kw">pub fn </span>make_altreal_class&lt;StateType: AltrepImpl + AltRealImpl + <span class="lifetime">'static</span>&gt;(
         name: <span class="kw-2">&amp;</span>str,
         base: <span class="kw-2">&amp;</span>str,
     ) -&gt; Robj {
@@ -1878,14 +1880,14 @@
             <span class="kw">let </span>class = Altrep::altrep_class::&lt;StateType&gt;(Rtype::Doubles, name, base);
             <span class="kw">let </span>class_ptr = R_altrep_class_t { ptr: class.get() };
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altreal_Elt&lt;StateType: AltRealImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altreal_Elt&lt;StateType: AltRealImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 i: R_xlen_t,
             ) -&gt; f64 {
                 Altrep::get_state::&lt;StateType&gt;(x).elt(i <span class="kw">as </span>usize).inner()
             }
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altreal_Get_region&lt;StateType: AltRealImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altreal_Get_region&lt;StateType: AltRealImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 i: R_xlen_t,
                 n: R_xlen_t,
@@ -1895,31 +1897,31 @@
                 Altrep::get_state::&lt;StateType&gt;(x).get_region(i <span class="kw">as </span>usize, slice) <span class="kw">as </span>R_xlen_t
             }
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altreal_Is_sorted&lt;StateType: AltRealImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altreal_Is_sorted&lt;StateType: AltRealImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
             ) -&gt; c_int {
                 Altrep::get_state::&lt;StateType&gt;(x).is_sorted().inner() <span class="kw">as </span>c_int
             }
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altreal_No_NA&lt;StateType: AltRealImpl + <span class="lifetime">&#39;static</span>&gt;(x: SEXP) -&gt; c_int {
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altreal_No_NA&lt;StateType: AltRealImpl + <span class="lifetime">'static</span>&gt;(x: SEXP) -&gt; c_int {
                 i32::from(Altrep::get_state::&lt;StateType&gt;(x).no_na())
             }
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altreal_Sum&lt;StateType: AltRealImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altreal_Sum&lt;StateType: AltRealImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 narm: Rboolean,
             ) -&gt; SEXP {
                 Altrep::get_state::&lt;StateType&gt;(x).sum(narm == <span class="number">1</span>).get()
             }
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altreal_Min&lt;StateType: AltRealImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altreal_Min&lt;StateType: AltRealImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 narm: Rboolean,
             ) -&gt; SEXP {
                 Altrep::get_state::&lt;StateType&gt;(x).min(narm == <span class="number">1</span>).get()
             }
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altreal_Max&lt;StateType: AltRealImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altreal_Max&lt;StateType: AltRealImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 narm: Rboolean,
             ) -&gt; SEXP {
@@ -1938,7 +1940,7 @@
     }
 
     <span class="doccomment">/// Make a logical ALTREP class that can be used to make vectors.
-    </span><span class="kw">pub fn </span>make_altlogical_class&lt;StateType: AltrepImpl + AltLogicalImpl + <span class="lifetime">&#39;static</span>&gt;(
+    </span><span class="kw">pub fn </span>make_altlogical_class&lt;StateType: AltrepImpl + AltLogicalImpl + <span class="lifetime">'static</span>&gt;(
         name: <span class="kw-2">&amp;</span>str,
         base: <span class="kw-2">&amp;</span>str,
     ) -&gt; Robj {
@@ -1949,14 +1951,14 @@
             <span class="kw">let </span>class = Altrep::altrep_class::&lt;StateType&gt;(Rtype::Logicals, name, base);
             <span class="kw">let </span>class_ptr = R_altrep_class_t { ptr: class.get() };
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altlogical_Elt&lt;StateType: AltLogicalImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altlogical_Elt&lt;StateType: AltLogicalImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 i: R_xlen_t,
             ) -&gt; c_int {
                 Altrep::get_state::&lt;StateType&gt;(x).elt(i <span class="kw">as </span>usize).inner() <span class="kw">as </span>c_int
             }
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altlogical_Get_region&lt;StateType: AltLogicalImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altlogical_Get_region&lt;StateType: AltLogicalImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 i: R_xlen_t,
                 n: R_xlen_t,
@@ -1966,19 +1968,19 @@
                 Altrep::get_state::&lt;StateType&gt;(x).get_region(i <span class="kw">as </span>usize, slice) <span class="kw">as </span>R_xlen_t
             }
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altlogical_Is_sorted&lt;StateType: AltLogicalImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altlogical_Is_sorted&lt;StateType: AltLogicalImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
             ) -&gt; c_int {
                 Altrep::get_state::&lt;StateType&gt;(x).is_sorted().inner() <span class="kw">as </span>c_int
             }
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altlogical_No_NA&lt;StateType: AltLogicalImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altlogical_No_NA&lt;StateType: AltLogicalImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
             ) -&gt; c_int {
                 i32::from(Altrep::get_state::&lt;StateType&gt;(x).no_na())
             }
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altlogical_Sum&lt;StateType: AltLogicalImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altlogical_Sum&lt;StateType: AltLogicalImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 narm: Rboolean,
             ) -&gt; SEXP {
@@ -1996,7 +1998,7 @@
     }
 
     <span class="doccomment">/// Make a raw ALTREP class that can be used to make vectors.
-    </span><span class="kw">pub fn </span>make_altraw_class&lt;StateType: AltrepImpl + AltRawImpl + <span class="lifetime">&#39;static</span>&gt;(
+    </span><span class="kw">pub fn </span>make_altraw_class&lt;StateType: AltrepImpl + AltRawImpl + <span class="lifetime">'static</span>&gt;(
         name: <span class="kw-2">&amp;</span>str,
         base: <span class="kw-2">&amp;</span>str,
     ) -&gt; Robj {
@@ -2006,14 +2008,14 @@
             <span class="kw">let </span>class = Altrep::altrep_class::&lt;StateType&gt;(Rtype::Raw, name, base);
             <span class="kw">let </span>class_ptr = R_altrep_class_t { ptr: class.get() };
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altraw_Elt&lt;StateType: AltRawImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altraw_Elt&lt;StateType: AltRawImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 i: R_xlen_t,
             ) -&gt; Rbyte {
                 Altrep::get_state::&lt;StateType&gt;(x).elt(i <span class="kw">as </span>usize) <span class="kw">as </span>Rbyte
             }
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altraw_Get_region&lt;StateType: AltRawImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altraw_Get_region&lt;StateType: AltRawImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 i: R_xlen_t,
                 n: R_xlen_t,
@@ -2031,7 +2033,7 @@
     }
 
     <span class="doccomment">/// Make a complex ALTREP class that can be used to make vectors.
-    </span><span class="kw">pub fn </span>make_altcomplex_class&lt;StateType: AltrepImpl + AltComplexImpl + <span class="lifetime">&#39;static</span>&gt;(
+    </span><span class="kw">pub fn </span>make_altcomplex_class&lt;StateType: AltrepImpl + AltComplexImpl + <span class="lifetime">'static</span>&gt;(
         name: <span class="kw-2">&amp;</span>str,
         base: <span class="kw-2">&amp;</span>str,
     ) -&gt; Robj {
@@ -2041,14 +2043,14 @@
             <span class="kw">let </span>class = Altrep::altrep_class::&lt;StateType&gt;(Rtype::Complexes, name, base);
             <span class="kw">let </span>class_ptr = R_altrep_class_t { ptr: class.get() };
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altcomplex_Elt&lt;StateType: AltComplexImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altcomplex_Elt&lt;StateType: AltComplexImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 i: R_xlen_t,
             ) -&gt; Rcomplex {
                 std::mem::transmute(Altrep::get_state::&lt;StateType&gt;(x).elt(i <span class="kw">as </span>usize))
             }
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altcomplex_Get_region&lt;StateType: AltComplexImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altcomplex_Get_region&lt;StateType: AltComplexImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 i: R_xlen_t,
                 n: R_xlen_t,
@@ -2066,7 +2068,7 @@
     }
 
     <span class="doccomment">/// Make a string ALTREP class that can be used to make vectors.
-    </span><span class="kw">pub fn </span>make_altstring_class&lt;StateType: AltrepImpl + AltStringImpl + <span class="lifetime">&#39;static</span>&gt;(
+    </span><span class="kw">pub fn </span>make_altstring_class&lt;StateType: AltrepImpl + AltStringImpl + <span class="lifetime">'static</span>&gt;(
         name: <span class="kw-2">&amp;</span>str,
         base: <span class="kw-2">&amp;</span>str,
     ) -&gt; Robj {
@@ -2077,14 +2079,14 @@
             <span class="kw">let </span>class = Altrep::altrep_class::&lt;StateType&gt;(Rtype::Strings, name, base);
             <span class="kw">let </span>class_ptr = R_altrep_class_t { ptr: class.get() };
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altstring_Elt&lt;StateType: AltStringImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altstring_Elt&lt;StateType: AltStringImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 i: R_xlen_t,
             ) -&gt; SEXP {
                 Altrep::get_state::&lt;StateType&gt;(x).elt(i <span class="kw">as </span>usize).get()
             }
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altstring_Set_elt&lt;StateType: AltStringImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altstring_Set_elt&lt;StateType: AltStringImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 i: R_xlen_t,
                 v: SEXP,
@@ -2093,13 +2095,13 @@
                     .set_elt(i <span class="kw">as </span>usize, Robj::from_sexp(v).try_into().unwrap())
             }
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altstring_Is_sorted&lt;StateType: AltStringImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altstring_Is_sorted&lt;StateType: AltStringImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
             ) -&gt; c_int {
                 Altrep::get_state::&lt;StateType&gt;(x).is_sorted().inner() <span class="kw">as </span>c_int
             }
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altstring_No_NA&lt;StateType: AltStringImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altstring_No_NA&lt;StateType: AltStringImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
             ) -&gt; c_int {
                 i32::from(Altrep::get_state::&lt;StateType&gt;(x).no_na())
@@ -2115,7 +2117,7 @@
     }
 
     <span class="attr">#[cfg(use_r_altlist)]
-    </span><span class="kw">pub fn </span>make_altlist_class&lt;StateType: AltrepImpl + AltListImpl + <span class="lifetime">&#39;static</span>&gt;(
+    </span><span class="kw">pub fn </span>make_altlist_class&lt;StateType: AltrepImpl + AltListImpl + <span class="lifetime">'static</span>&gt;(
         name: <span class="kw-2">&amp;</span>str,
         base: <span class="kw-2">&amp;</span>str,
     ) -&gt; Robj {
@@ -2125,14 +2127,14 @@
             <span class="kw">let </span>class = Altrep::altrep_class::&lt;StateType&gt;(Rtype::List, name, base);
             <span class="kw">let </span>class_ptr = R_altrep_class_t { ptr: class.get() };
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altlist_Elt&lt;StateType: AltListImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altlist_Elt&lt;StateType: AltListImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 i: R_xlen_t,
             ) -&gt; SEXP {
                 Altrep::get_state::&lt;StateType&gt;(x).elt(i <span class="kw">as </span>usize).get()
             }
 
-            <span class="kw">unsafe extern </span><span class="string">&quot;C&quot; </span><span class="kw">fn </span>altlist_Set_elt&lt;StateType: AltListImpl + <span class="lifetime">&#39;static</span>&gt;(
+            <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altlist_Set_elt&lt;StateType: AltListImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 i: R_xlen_t,
                 v: SEXP,

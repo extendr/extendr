@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/ownership.rs`."><title>ownership.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-9ee3a5e31a2afa3e.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (2b603f95a 2023-11-12)" data-channel="nightly" data-search-js="search-8fbf244ebcf71464.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-9dd44ab47b99a0fb.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../extendr_api/index.html"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="extendr_api"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/ownership.rs`."><title>ownership.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-4e54bb2b497cc83f.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (62d7ed4a6 2024-01-11)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../extendr_api/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -356,12 +358,12 @@
 <span class="kw">static </span>OWNERSHIP: Lazy&lt;Mutex&lt;Ownership&gt;&gt; = Lazy::new(|| Mutex::new(Ownership::new()));
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe fn </span>protect(sexp: SEXP) {
-    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">&quot;protect failed&quot;</span>);
+    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">"protect failed"</span>);
     own.protect(sexp);
 }
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe fn </span>unprotect(sexp: SEXP) {
-    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">&quot;unprotect failed&quot;</span>);
+    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">"unprotect failed"</span>);
     own.unprotect(sexp);
 }
 
@@ -454,12 +456,12 @@
             Entry::Occupied(<span class="kw-2">ref mut </span>occupied) =&gt; {
                 <span class="kw">let </span>object = occupied.get_mut();
                 <span class="kw">if </span>object.refcount == <span class="number">0 </span>{
-                    <span class="macro">panic!</span>(<span class="string">&quot;Attempt to unprotect an already unprotected object.&quot;</span>)
+                    <span class="macro">panic!</span>(<span class="string">"Attempt to unprotect an already unprotected object."</span>)
                 } <span class="kw">else </span>{
                     object.refcount -= <span class="number">1</span>;
                     <span class="kw">if </span>object.refcount == <span class="number">0 </span>{
                         <span class="comment">// Clear the preservation vector, but keep the hash table entry.
-                        // It is hard to clear the hash table entry here because we don&#39;t
+                        // It is hard to clear the hash table entry here because we don't
                         // have a ref to objects anymore and it is faster to clear them up en-masse.
                         </span><span class="kw">let </span>preservation_sexp = preservation <span class="kw">as </span>SEXP;
                         SET_VECTOR_ELT(preservation_sexp, object.index <span class="kw">as </span>R_xlen_t, R_NilValue);
@@ -467,7 +469,7 @@
                 }
             }
             Entry::Vacant(<span class="kw">_</span>) =&gt; {
-                <span class="macro">panic!</span>(<span class="string">&quot;Attempt to unprotect a never protected object.&quot;</span>)
+                <span class="macro">panic!</span>(<span class="string">"Attempt to unprotect a never protected object."</span>)
             }
         }
     }
@@ -491,7 +493,7 @@
 
     <span class="comment">// Garbage collect the tracking structures.
     </span><span class="kw">unsafe fn </span>garbage_collect(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
-        <span class="comment">// println!(&quot;garbage_collect {} {}&quot;, self.cur_index, self.max_index);
+        <span class="comment">// println!("garbage_collect {} {}", self.cur_index, self.max_index);
         </span><span class="kw">let </span>new_size = <span class="self">self</span>.cur_index * <span class="number">2 </span>+ EXTRA_PRESERVATION_SIZE;
         <span class="kw">let </span>new_sexp = Rf_allocVector(VECSXP, new_size <span class="kw">as </span>R_xlen_t);
         R_PreserveObject(new_sexp);
@@ -514,7 +516,7 @@
                 j += <span class="number">1</span>;
             }
         }
-        <span class="comment">// println!(&quot;j={}&quot;, j);
+        <span class="comment">// println!("j={}", j);
 
         </span>R_ReleaseObject(old_sexp);
         <span class="self">self</span>.preservation = new_sexp <span class="kw">as </span>usize;
@@ -529,13 +531,13 @@
         <span class="kw">let </span>preservation_sexp = <span class="self">self</span>.preservation <span class="kw">as </span>SEXP;
         <span class="macro">assert_eq!</span>(<span class="self">self</span>.max_index, LENGTH(preservation_sexp) <span class="kw">as </span>usize);
 
-        <span class="comment">// println!(&quot;\ncheck&quot;);
+        <span class="comment">// println!("\ncheck");
 
         </span><span class="kw">for </span>(addr, object) <span class="kw">in </span><span class="self">self</span>.objects.iter() {
             <span class="macro">assert!</span>(object.index &lt; <span class="self">self</span>.max_index);
             <span class="kw">let </span>elt = VECTOR_ELT(preservation_sexp, object.index <span class="kw">as </span>R_xlen_t);
             <span class="comment">// println!(
-            //     &quot;refcount={:?} index={:?} elt={:?}&quot;,
+            //     "refcount={:?} index={:?} elt={:?}",
             //     object.refcount, object.index, elt
             // );
             </span><span class="kw">if </span>object.refcount != <span class="number">0 </span>{
@@ -547,7 +549,7 @@
             }
         }
 
-        <span class="comment">// println!(&quot;check 2&quot;);
+        <span class="comment">// println!("check 2");
         </span><span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..<span class="self">self</span>.max_index {
             <span class="kw">let </span>elt = VECTOR_ELT(preservation_sexp, i <span class="kw">as </span>R_xlen_t);
             <span class="kw">if </span>elt == R_NilValue {
@@ -556,7 +558,7 @@
                 <span class="macro">assert!</span>(<span class="self">self</span>.ref_count(elt) != <span class="number">0</span>);
             }
         }
-        <span class="comment">// println!(&quot;/check&quot;);
+        <span class="comment">// println!("/check");
     </span>}
 }
 
@@ -571,7 +573,7 @@
         <span class="macro">test! </span>{
             single_threaded(|| <span class="kw">unsafe </span>{
                 {
-                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">&quot;lock failed&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">"lock failed"</span>);
                     own.check_objects();
                 }
 
@@ -579,7 +581,7 @@
                 <span class="kw">let </span>sexp2 = Rf_protect(Rf_ScalarInteger(<span class="number">2</span>));
                 protect(sexp1);
                 {
-                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">&quot;lock failed&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">"lock failed"</span>);
                     own.check_objects();
                     <span class="macro">assert_eq!</span>(own.ref_count(sexp1), <span class="number">1</span>);
                     <span class="macro">assert_eq!</span>(own.ref_count(sexp2), <span class="number">0</span>);
@@ -587,7 +589,7 @@
 
                 protect(sexp1);
                 {
-                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">&quot;lock failed&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">"lock failed"</span>);
                     own.check_objects();
                     <span class="macro">assert_eq!</span>(own.ref_count(sexp1), <span class="number">2</span>);
                     <span class="macro">assert_eq!</span>(own.ref_count(sexp2), <span class="number">0</span>);
@@ -595,7 +597,7 @@
 
                 unprotect(sexp1);
                 {
-                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">&quot;lock failed&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">"lock failed"</span>);
                     own.check_objects();
                     <span class="macro">assert_eq!</span>(own.ref_count(sexp1), <span class="number">1</span>);
                     <span class="macro">assert_eq!</span>(own.ref_count(sexp2), <span class="number">0</span>);
@@ -603,7 +605,7 @@
 
                 unprotect(sexp1);
                 {
-                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">&quot;lock failed&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">"lock failed"</span>);
                     own.check_objects();
                     <span class="macro">assert_eq!</span>(own.ref_count(sexp1), <span class="number">0</span>);
                     <span class="macro">assert_eq!</span>(own.ref_count(sexp2), <span class="number">0</span>);
@@ -611,7 +613,7 @@
 
                 protect(sexp2);
                 {
-                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">&quot;lock failed&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">"lock failed"</span>);
                     own.check_objects();
                     <span class="macro">assert_eq!</span>(own.ref_count(sexp1), <span class="number">0</span>);
                     <span class="macro">assert_eq!</span>(own.ref_count(sexp2), <span class="number">1</span>);
@@ -619,7 +621,7 @@
 
                 protect(sexp1);
                 {
-                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">&quot;lock failed&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">"lock failed"</span>);
                     own.check_objects();
                     <span class="macro">assert_eq!</span>(own.ref_count(sexp1), <span class="number">1</span>);
                     <span class="macro">assert_eq!</span>(own.ref_count(sexp2), <span class="number">1</span>);
@@ -634,7 +636,7 @@
         <span class="macro">test! </span>{
             single_threaded(|| <span class="kw">unsafe </span>{
                 {
-                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">&quot;protect failed&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">"protect failed"</span>);
                     own.check_objects();
                 }
 
@@ -659,7 +661,7 @@
                 }
 
                 {
-                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">&quot;protect failed&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>own = OWNERSHIP.lock().expect(<span class="string">"protect failed"</span>);
                     own.check_objects();
                     own.garbage_collect();
                     own.check_objects();

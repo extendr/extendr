@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-macros/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-9ee3a5e31a2afa3e.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (2b603f95a 2023-11-12)" data-channel="nightly" data-search-js="search-8fbf244ebcf71464.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-9dd44ab47b99a0fb.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-macros/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-4e54bb2b497cc83f.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (62d7ed4a6 2024-01-11)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../extendr_macros/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -279,8 +281,8 @@
 //
 // ```ignore
 // #[extendr]
-// fn hello() -&gt; &amp;&#39;static str {
-//     &quot;hello&quot;
+// fn hello() -&gt; &amp;'static str {
+//     "hello"
 // }
 // ```
 //
@@ -296,7 +298,7 @@
 // ```ignore
 // #[no_mangle]
 // #[allow(non_snake_case)]
-// pub extern &quot;C&quot; fn R_init_hello_extendr(info: *mut extendr_api::DllInfo) {
+// pub extern "C" fn R_init_hello_extendr(info: *mut extendr_api::DllInfo) {
 //     let mut call_methods = Vec::new();
 //     init__hello(info, &amp;mut call_methods);
 //     unsafe { extendr_api::register_call_methods(info, call_methods.as_ref()) };
@@ -310,7 +312,7 @@
 // #[allow(non_snake_case)]
 // fn init__hello(info: *mut extendr_api::DllInfo, call_methods: &amp;mut Vec&lt;extendr_api::CallMethod&gt;) {
 //     call_methods.push(extendr_api::CallMethod {
-//         call_symbol: std::ffi::CString::new(&quot;wrap__hello&quot;).unwrap(),
+//         call_symbol: std::ffi::CString::new("wrap__hello").unwrap(),
 //         func_ptr: wrap__hello as *const u8,
 //         num_args: 0i32,
 //     })
@@ -371,7 +373,7 @@
 /// ```ignore
 /// #[no_mangle]
 /// #[allow(non_snake_case)]
-/// pub extern &quot;C&quot; fn R_init_hello_extendr(info: *mut extendr_api::DllInfo) {
+/// pub extern "C" fn R_init_hello_extendr(info: *mut extendr_api::DllInfo) {
 ///     let mut call_methods = Vec::new();
 ///     init__hello(info, &amp;mut call_methods);
 ///     unsafe { extendr_api::register_call_methods(info, call_methods.as_ref()) };
@@ -384,7 +386,7 @@
 
 <span class="doccomment">/// Create a Pairlist R object from a list of name-value pairs.
 /// ```ignore
-///     assert_eq!(pairlist!(a=1, 2, 3), Pairlist::from_pairs(&amp;[(&quot;a&quot;, 1), (&quot;&quot;, 2), (&quot;&quot;, 3)]));
+///     assert_eq!(pairlist!(a=1, 2, 3), Pairlist::from_pairs(&amp;[("a", 1), ("", 2), ("", 3)]));
 /// ```
 </span><span class="attr">#[proc_macro]
 </span><span class="kw">pub fn </span>pairlist(item: TokenStream) -&gt; TokenStream {
@@ -393,7 +395,7 @@
 
 <span class="doccomment">/// Create a List R object from a list of name-value pairs.
 /// ```ignore
-///     assert_eq!(list!(a=1, 2, 3), List::from_pairs(&amp;[(&quot;a&quot;, 1), (&quot;&quot;, 2), (&quot;&quot;, 3)]));
+///     assert_eq!(list!(a=1, 2, 3), List::from_pairs(&amp;[("a", 1), ("", 2), ("", 3)]));
 /// ```
 </span><span class="attr">#[proc_macro]
 </span><span class="kw">pub fn </span>list(item: TokenStream) -&gt; TokenStream {
@@ -405,8 +407,8 @@
 /// some shortcuts for simple expessions, for example by caching symbols and constant values.
 ///
 /// ```ignore
-///     assert_eq!(call!(&quot;`+`&quot;, 1, 2), r!(3));
-///     assert_eq!(call!(&quot;list&quot;, 1, 2), r!([r!(1), r!(2)]));
+///     assert_eq!(call!("`+`", 1, 2), r!(3));
+///     assert_eq!(call!("list", 1, 2), r!([r!(1), r!(2)]));
 /// ```
 </span><span class="attr">#[proc_macro]
 </span><span class="kw">pub fn </span>call(item: TokenStream) -&gt; TokenStream {
@@ -416,11 +418,11 @@
 <span class="doccomment">/// Execute R code by parsing and evaluating tokens.
 ///
 /// ```ignore
-///     R!(&quot;c(1, 2, 3)&quot;);
-///     R!(&quot;{{(0..3).collect_robj()}} + 1&quot;);
-///     R!(r#&quot;
-///       print(&quot;hello&quot;)
-///     &quot;#);
+///     R!("c(1, 2, 3)");
+///     R!("{{(0..3).collect_robj()}} + 1");
+///     R!(r#"
+///       print("hello")
+///     "#);
 /// ```
 </span><span class="attr">#[proc_macro]
 #[allow(non_snake_case)]
@@ -433,12 +435,12 @@
 ///
 /// ```ignore
 /// // c.f. https://dplyr.tidyverse.org/articles/programming.html
-/// Rraw!(r#&quot;
+/// Rraw!(r#"
 /// var_summary &lt;- function(data, var) {
 ///   data %&gt;%
 ///     summarise(n = n(), min = min({{ var }}), max = max({{ var }}))
 /// }
-/// &quot;#)
+/// "#)
 /// ```
 </span><span class="attr">#[proc_macro]
 #[allow(non_snake_case)]
@@ -466,8 +468,8 @@
 ///     a: u64,
 ///     b: String
 /// }
-/// let native_foo = Foo { a: 5, b: &quot;bar&quot;.into() };
-/// let foo_from_list: Foo = R!(&quot;list(a = 5, b = &#39;bar&#39;)&quot;)?.try_into()?;
+/// let native_foo = Foo { a: 5, b: "bar".into() };
+/// let foo_from_list: Foo = R!("list(a = 5, b = 'bar')")?.try_into()?;
 /// assert_eq!(native_foo, foo_from_list);
 /// # }
 /// # Ok::&lt;(), extendr_api::Error&gt;(())
@@ -498,9 +500,9 @@
 /// }
 /// let converted: Robj = Foo {
 ///     a: 5,
-///     b: String::from(&quot;bar&quot;)
+///     b: String::from("bar")
 /// }.into();
-/// assert_eq!(converted, R!(r&quot;list(a=5, b=&#39;bar&#39;)&quot;)?);
+/// assert_eq!(converted, R!(r"list(a=5, b='bar')")?);
 /// # }
 /// # Ok::&lt;(), extendr_api::Error&gt;(())
 /// ```
@@ -508,7 +510,7 @@
 /// Note, the `From&lt;Struct&gt; for Robj` behaviour is different from what is obtained by applying the standard `#[extendr]` macro
 /// to an `impl` block. The `#[extendr]` behaviour returns to R a **pointer** to Rust memory, and generates wrapper functions for calling
 /// Rust functions on that pointer. The implementation from `#[derive(IntoRobj)]` actually converts the Rust structure
-/// into a native R list, which allows manipulation and access to internal fields, but it&#39;s a one-way conversion,
+/// into a native R list, which allows manipulation and access to internal fields, but it's a one-way conversion,
 /// and converting it back to Rust will produce a copy of the original struct.
 </span><span class="attr">#[proc_macro_derive(IntoRobj)]
 </span><span class="kw">pub fn </span>derive_into_robj(item: TokenStream) -&gt; TokenStream {
@@ -528,12 +530,12 @@
 ///     y: String,
 /// }
 ///
-/// let v = vec![MyStruct { x: 0, y: &quot;abc&quot;.into() }, MyStruct { x: 1, y: &quot;xyz&quot;.into() }];
+/// let v = vec![MyStruct { x: 0, y: "abc".into() }, MyStruct { x: 1, y: "xyz".into() }];
 /// let df = v.into_dataframe()?;
 ///
-/// assert!(df.inherits(&quot;data.frame&quot;));
+/// assert!(df.inherits("data.frame"));
 /// assert_eq!(df[0], r!([0, 1]));
-/// assert_eq!(df[1], r!([&quot;abc&quot;, &quot;xyz&quot;]));
+/// assert_eq!(df[1], r!(["abc", "xyz"]));
 /// ```
 
 </span><span class="attr">#[proc_macro_derive(IntoDataFrameRow)]

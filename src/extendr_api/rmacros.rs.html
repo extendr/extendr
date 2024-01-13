@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/rmacros.rs`."><title>rmacros.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-9ee3a5e31a2afa3e.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (2b603f95a 2023-11-12)" data-channel="nightly" data-search-js="search-8fbf244ebcf71464.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-9dd44ab47b99a0fb.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../extendr_api/index.html"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="extendr_api"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/rmacros.rs`."><title>rmacros.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-4e54bb2b497cc83f.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (62d7ed4a6 2024-01-11)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../extendr_api/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -255,7 +257,7 @@
 <span class="doccomment">/// Get a local variable from the calling function
 /// or a global variable if no such variable exists.
 ///
-/// Variables with embedded &quot;.&quot; may not work.
+/// Variables with embedded "." may not work.
 </span><span class="comment">/*
 TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
       test outside of R process, so this doc test is disabled for now. See #211
@@ -277,11 +279,11 @@ TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
 
 <span class="doccomment">/// Get a global variable.
 ///
-/// Variables with embedded &quot;.&quot; may not work.
+/// Variables with embedded "." may not work.
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///      // The &quot;iris&quot; dataset is a dataframe.
+///      // The "iris" dataset is a dataframe.
 ///      assert_eq!(global!(iris)?.is_frame(), true);
 /// }
 /// ```
@@ -300,7 +302,7 @@ TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
 /// test! {
 ///
 /// let wombat = sym!(wombat);
-/// assert_eq!(wombat, r!(Symbol::from_string(&quot;wombat&quot;)));
+/// assert_eq!(wombat, r!(Symbol::from_string("wombat")));
 /// }
 /// ```
 </span><span class="attr">#[macro_export]
@@ -317,8 +319,8 @@ TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
 /// use extendr_api::prelude::*;
 /// test! {
 ///     let mydata = data_frame!(x=1, y=2);
-///     assert_eq!(mydata.inherits(&quot;data.frame&quot;), true);
-///     //assert_eq!(mydata, r!(List::from_pairs(vec![(&quot;x&quot;, r!(1)), (&quot;y&quot;, r!(2))])).set_class(&amp;[&quot;data.frame&quot;])?);
+///     assert_eq!(mydata.inherits("data.frame"), true);
+///     //assert_eq!(mydata, r!(List::from_pairs(vec![("x", r!(1)), ("y", r!(2))])).set_class(&amp;["data.frame"])?);
 /// }
 /// ```
 ///
@@ -326,10 +328,10 @@ TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
 </span><span class="attr">#[macro_export]
 </span><span class="macro">macro_rules! </span>data_frame {
     () =&gt; {
-        <span class="macro">call!</span>(<span class="string">&quot;data.frame&quot;</span>).unwrap()
+        <span class="macro">call!</span>(<span class="string">"data.frame"</span>).unwrap()
     };
     ($(<span class="macro-nonterminal">$rest</span>: tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">call!</span>(<span class="string">&quot;data.frame&quot;</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>).unwrap()
+        <span class="macro">call!</span>(<span class="string">"data.frame"</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>).unwrap()
     };
 }
 
@@ -339,10 +341,10 @@ TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let factor = factor!(vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);
-///     assert_eq!(factor.levels().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;]);
+///     let factor = factor!(vec!["abcd", "def", "fg", "fg"]);
+///     assert_eq!(factor.levels().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec!["abcd", "def", "fg"]);
 ///     assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);
-///     assert_eq!(factor.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec![&quot;abcd&quot;, &quot;def&quot;, &quot;fg&quot;, &quot;fg&quot;]);
+///     assert_eq!(factor.as_str_iter().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec!["abcd", "def", "fg", "fg"]);
 /// }
 /// ```
 ///
@@ -350,7 +352,7 @@ TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
 </span><span class="attr">#[macro_export]
 </span><span class="macro">macro_rules! </span>factor {
     ($(<span class="macro-nonterminal">$rest</span>: tt)<span class="kw-2">*</span>) =&gt; {
-        <span class="macro">call!</span>(<span class="string">&quot;factor&quot;</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>).unwrap()
+        <span class="macro">call!</span>(<span class="string">"factor"</span>, $(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>).unwrap()
     };
 }
 
@@ -374,11 +376,11 @@ TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
 </span><span class="attr">#[macro_export]
 </span><span class="macro">macro_rules! </span>rprintln {
     () =&gt; {
-        print_r_output(<span class="string">&quot;\n&quot;</span>);
+        print_r_output(<span class="string">"\n"</span>);
     };
     ($(<span class="macro-nonterminal">$rest</span>: tt)<span class="kw-2">*</span>) =&gt; {
         print_r_output(<span class="macro">format!</span>($(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>));
-        print_r_output(<span class="string">&quot;\n&quot;</span>);
+        print_r_output(<span class="string">"\n"</span>);
     };
 }
 
@@ -396,11 +398,11 @@ TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
 </span><span class="attr">#[macro_export]
 </span><span class="macro">macro_rules! </span>reprintln {
     () =&gt; {
-        print_r_error(<span class="string">&quot;\n&quot;</span>);
+        print_r_error(<span class="string">"\n"</span>);
     };
     ($(<span class="macro-nonterminal">$rest</span>: tt)<span class="kw-2">*</span>) =&gt; {
         print_r_error(<span class="macro">format!</span>($(<span class="macro-nonterminal">$rest</span>)<span class="kw-2">*</span>));
-        print_r_error(<span class="string">&quot;\n&quot;</span>);
+        print_r_error(<span class="string">"\n"</span>);
     };
 }
 
@@ -422,7 +424,7 @@ TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
         {
             <span class="kw">use </span>extendr_engine;
 
-            <span class="comment">// this helper function must reside in the macro so it doesn&#39;t get compiled
+            <span class="comment">// this helper function must reside in the macro so it doesn't get compiled
             // unless the macro actually gets used (e.g., in testing code)
             </span><span class="kw">fn </span>test&lt;F: FnOnce() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;&gt;(f: F) {
                 extendr_engine::start_r();

@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/matrix.rs`."><title>matrix.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-9ee3a5e31a2afa3e.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0-nightly (2b603f95a 2023-11-12)" data-channel="nightly" data-search-js="search-8fbf244ebcf71464.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-9dd44ab47b99a0fb.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../extendr_api/index.html"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="extendr_api"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/matrix.rs`."><title>matrix.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-4e54bb2b497cc83f.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (62d7ed4a6 2024-01-11)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../extendr_api/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -449,7 +451,7 @@
 ///     assert_eq!(robj.nrows(), 3);
 ///     assert_eq!(robj.ncols(), 2);
 ///
-///     let matrix2 : RMatrix&lt;f64&gt; = robj.as_matrix().ok_or(&quot;error&quot;)?;
+///     let matrix2 : RMatrix&lt;f64&gt; = robj.as_matrix().ok_or("error")?;
 ///     assert_eq!(matrix2.data().len(), 6);
 ///     assert_eq!(matrix2.nrows(), 3);
 ///     assert_eq!(matrix2.ncols(), 2);
@@ -482,7 +484,7 @@
     <span class="doccomment">/// Get the offset into the array for a given index.
     </span><span class="kw">fn </span>offset(<span class="kw-2">&amp;</span><span class="self">self</span>, index: [usize; <span class="number">1</span>]) -&gt; usize {
         <span class="kw">if </span>index[<span class="number">0</span>] - BASE &gt; <span class="self">self</span>.dim[<span class="number">0</span>] {
-            <span class="macro">panic!</span>(<span class="string">&quot;array index: row overflow&quot;</span>);
+            <span class="macro">panic!</span>(<span class="string">"array index: row overflow"</span>);
         }
         index[<span class="number">0</span>] - BASE
     }
@@ -492,10 +494,10 @@
     <span class="doccomment">/// Get the offset into the array for a given index.
     </span><span class="kw">fn </span>offset(<span class="kw-2">&amp;</span><span class="self">self</span>, index: [usize; <span class="number">2</span>]) -&gt; usize {
         <span class="kw">if </span>index[<span class="number">0</span>] - BASE &gt; <span class="self">self</span>.dim[<span class="number">0</span>] {
-            <span class="macro">panic!</span>(<span class="string">&quot;matrix index: row overflow&quot;</span>);
+            <span class="macro">panic!</span>(<span class="string">"matrix index: row overflow"</span>);
         }
         <span class="kw">if </span>index[<span class="number">1</span>] - BASE &gt; <span class="self">self</span>.dim[<span class="number">1</span>] {
-            <span class="macro">panic!</span>(<span class="string">&quot;matrix index: column overflow&quot;</span>);
+            <span class="macro">panic!</span>(<span class="string">"matrix index: column overflow"</span>);
         }
         (index[<span class="number">0</span>] - BASE) + <span class="self">self</span>.dim[<span class="number">0</span>] * (index[<span class="number">1</span>] - BASE)
     }
@@ -505,13 +507,13 @@
     <span class="doccomment">/// Get the offset into the array for a given index.
     </span><span class="kw">fn </span>offset(<span class="kw-2">&amp;</span><span class="self">self</span>, index: [usize; <span class="number">3</span>]) -&gt; usize {
         <span class="kw">if </span>index[<span class="number">0</span>] - BASE &gt; <span class="self">self</span>.dim[<span class="number">0</span>] {
-            <span class="macro">panic!</span>(<span class="string">&quot;RMatrix3D index: row overflow&quot;</span>);
+            <span class="macro">panic!</span>(<span class="string">"RMatrix3D index: row overflow"</span>);
         }
         <span class="kw">if </span>index[<span class="number">1</span>] - BASE &gt; <span class="self">self</span>.dim[<span class="number">1</span>] {
-            <span class="macro">panic!</span>(<span class="string">&quot;RMatrix3D index: column overflow&quot;</span>);
+            <span class="macro">panic!</span>(<span class="string">"RMatrix3D index: column overflow"</span>);
         }
         <span class="kw">if </span>index[<span class="number">2</span>] - BASE &gt; <span class="self">self</span>.dim[<span class="number">2</span>] {
-            <span class="macro">panic!</span>(<span class="string">&quot;RMatrix3D index: submatrix overflow&quot;</span>);
+            <span class="macro">panic!</span>(<span class="string">"RMatrix3D index: submatrix overflow"</span>);
         }
         (index[<span class="number">0</span>] - BASE) + <span class="self">self</span>.dim[<span class="number">0</span>] * (index[<span class="number">1</span>] - BASE + <span class="self">self</span>.dim[<span class="number">1</span>] * (index[<span class="number">2</span>] - BASE))
     }
@@ -533,9 +535,9 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, T: ToVectorValue + <span class="lifetime">&#39;a</span>&gt; RColumn&lt;T&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, T: ToVectorValue + <span class="lifetime">'a</span>&gt; RColumn&lt;T&gt;
 <span class="kw">where
-    </span>Robj: AsTypedSlice&lt;<span class="lifetime">&#39;a</span>, T&gt;,
+    </span>Robj: AsTypedSlice&lt;<span class="lifetime">'a</span>, T&gt;,
 {
     <span class="doccomment">/// Make a new column type.
     </span><span class="kw">pub fn </span>new_column&lt;F: FnMut(usize) -&gt; T&gt;(nrows: usize, f: F) -&gt; <span class="self">Self </span>{
@@ -553,9 +555,9 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, T: ToVectorValue + <span class="lifetime">&#39;a</span>&gt; RMatrix&lt;T&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, T: ToVectorValue + <span class="lifetime">'a</span>&gt; RMatrix&lt;T&gt;
 <span class="kw">where
-    </span>Robj: AsTypedSlice&lt;<span class="lifetime">&#39;a</span>, T&gt;,
+    </span>Robj: AsTypedSlice&lt;<span class="lifetime">'a</span>, T&gt;,
 {
     <span class="doccomment">/// Create a new matrix wrapper.
     ///
@@ -596,9 +598,9 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, T: ToVectorValue + <span class="lifetime">&#39;a</span>&gt; RMatrix3D&lt;T&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, T: ToVectorValue + <span class="lifetime">'a</span>&gt; RMatrix3D&lt;T&gt;
 <span class="kw">where
-    </span>Robj: AsTypedSlice&lt;<span class="lifetime">&#39;a</span>, T&gt;,
+    </span>Robj: AsTypedSlice&lt;<span class="lifetime">'a</span>, T&gt;,
 {
     <span class="kw">pub fn </span>new_matrix3d&lt;F: Clone + FnMut(usize, usize, usize) -&gt; T&gt;(
         nrows: usize,
@@ -637,9 +639,9 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, T: <span class="lifetime">&#39;a</span>&gt; TryFrom&lt;Robj&gt; <span class="kw">for </span>RColumn&lt;T&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, T: <span class="lifetime">'a</span>&gt; TryFrom&lt;Robj&gt; <span class="kw">for </span>RColumn&lt;T&gt;
 <span class="kw">where
-    </span>Robj: AsTypedSlice&lt;<span class="lifetime">&#39;a</span>, T&gt;,
+    </span>Robj: AsTypedSlice&lt;<span class="lifetime">'a</span>, T&gt;,
 {
     <span class="kw">type </span>Error = Error;
 
@@ -652,9 +654,9 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, T: <span class="lifetime">&#39;a</span>&gt; TryFrom&lt;Robj&gt; <span class="kw">for </span>RMatrix&lt;T&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, T: <span class="lifetime">'a</span>&gt; TryFrom&lt;Robj&gt; <span class="kw">for </span>RMatrix&lt;T&gt;
 <span class="kw">where
-    </span>Robj: AsTypedSlice&lt;<span class="lifetime">&#39;a</span>, T&gt;,
+    </span>Robj: AsTypedSlice&lt;<span class="lifetime">'a</span>, T&gt;,
 {
     <span class="kw">type </span>Error = Error;
 
@@ -682,9 +684,9 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, T: <span class="lifetime">&#39;a</span>&gt; TryFrom&lt;Robj&gt; <span class="kw">for </span>RMatrix3D&lt;T&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, T: <span class="lifetime">'a</span>&gt; TryFrom&lt;Robj&gt; <span class="kw">for </span>RMatrix3D&lt;T&gt;
 <span class="kw">where
-    </span>Robj: AsTypedSlice&lt;<span class="lifetime">&#39;a</span>, T&gt;,
+    </span>Robj: AsTypedSlice&lt;<span class="lifetime">'a</span>, T&gt;,
 {
     <span class="kw">type </span>Error = Error;
 
@@ -718,23 +720,23 @@
 }
 
 <span class="kw">pub trait </span>MatrixConversions: GetSexp {
-    <span class="kw">fn </span>as_column&lt;<span class="lifetime">&#39;a</span>, E: <span class="lifetime">&#39;a</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;RColumn&lt;E&gt;&gt;
+    <span class="kw">fn </span>as_column&lt;<span class="lifetime">'a</span>, E: <span class="lifetime">'a</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;RColumn&lt;E&gt;&gt;
     <span class="kw">where
-        </span>Robj: AsTypedSlice&lt;<span class="lifetime">&#39;a</span>, E&gt;,
+        </span>Robj: AsTypedSlice&lt;<span class="lifetime">'a</span>, E&gt;,
     {
         &lt;RColumn&lt;E&gt;&gt;::try_from(<span class="self">self</span>.as_robj().clone()).ok()
     }
 
-    <span class="kw">fn </span>as_matrix&lt;<span class="lifetime">&#39;a</span>, E: <span class="lifetime">&#39;a</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;RMatrix&lt;E&gt;&gt;
+    <span class="kw">fn </span>as_matrix&lt;<span class="lifetime">'a</span>, E: <span class="lifetime">'a</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;RMatrix&lt;E&gt;&gt;
     <span class="kw">where
-        </span>Robj: AsTypedSlice&lt;<span class="lifetime">&#39;a</span>, E&gt;,
+        </span>Robj: AsTypedSlice&lt;<span class="lifetime">'a</span>, E&gt;,
     {
         &lt;RMatrix&lt;E&gt;&gt;::try_from(<span class="self">self</span>.as_robj().clone()).ok()
     }
 
-    <span class="kw">fn </span>as_matrix3d&lt;<span class="lifetime">&#39;a</span>, E: <span class="lifetime">&#39;a</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;RMatrix3D&lt;E&gt;&gt;
+    <span class="kw">fn </span>as_matrix3d&lt;<span class="lifetime">'a</span>, E: <span class="lifetime">'a</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;RMatrix3D&lt;E&gt;&gt;
     <span class="kw">where
-        </span>Robj: AsTypedSlice&lt;<span class="lifetime">&#39;a</span>, E&gt;,
+        </span>Robj: AsTypedSlice&lt;<span class="lifetime">'a</span>, E&gt;,
     {
         &lt;RMatrix3D&lt;E&gt;&gt;::try_from(<span class="self">self</span>.as_robj().clone()).ok()
     }
@@ -810,7 +812,7 @@
             <span class="macro">assert_eq!</span>(robj.is_vector(), <span class="bool-val">true</span>);
             <span class="macro">assert_eq!</span>(robj.nrows(), <span class="number">3</span>);
 
-            <span class="kw">let </span>vector2 : RColumn&lt;f64&gt; = robj.as_column().ok_or(<span class="string">&quot;expected array&quot;</span>)<span class="question-mark">?</span>;
+            <span class="kw">let </span>vector2 : RColumn&lt;f64&gt; = robj.as_column().ok_or(<span class="string">"expected array"</span>)<span class="question-mark">?</span>;
             <span class="macro">assert_eq!</span>(vector2.data().len(), <span class="number">3</span>);
             <span class="macro">assert_eq!</span>(vector2.nrows(), <span class="number">3</span>);
 
@@ -821,7 +823,7 @@
             <span class="macro">assert_eq!</span>(robj.is_matrix(), <span class="bool-val">true</span>);
             <span class="macro">assert_eq!</span>(robj.nrows(), <span class="number">3</span>);
             <span class="macro">assert_eq!</span>(robj.ncols(), <span class="number">2</span>);
-            <span class="kw">let </span>matrix2 : RMatrix&lt;f64&gt; = robj.as_matrix().ok_or(<span class="string">&quot;expected matrix&quot;</span>)<span class="question-mark">?</span>;
+            <span class="kw">let </span>matrix2 : RMatrix&lt;f64&gt; = robj.as_matrix().ok_or(<span class="string">"expected matrix"</span>)<span class="question-mark">?</span>;
             <span class="macro">assert_eq!</span>(matrix2.data().len(), <span class="number">6</span>);
             <span class="macro">assert_eq!</span>(matrix2.nrows(), <span class="number">3</span>);
             <span class="macro">assert_eq!</span>(matrix2.ncols(), <span class="number">2</span>);
@@ -833,7 +835,7 @@
             <span class="macro">assert_eq!</span>(robj.is_array(), <span class="bool-val">true</span>);
             <span class="macro">assert_eq!</span>(robj.nrows(), <span class="number">2</span>);
             <span class="macro">assert_eq!</span>(robj.ncols(), <span class="number">2</span>);
-            <span class="kw">let </span>array2 : RMatrix3D&lt;f64&gt; = robj.as_matrix3d().ok_or(<span class="string">&quot;expected matrix3d&quot;</span>)<span class="question-mark">?</span>;
+            <span class="kw">let </span>array2 : RMatrix3D&lt;f64&gt; = robj.as_matrix3d().ok_or(<span class="string">"expected matrix3d"</span>)<span class="question-mark">?</span>;
             <span class="macro">assert_eq!</span>(array2.data().len(), <span class="number">8</span>);
             <span class="macro">assert_eq!</span>(array2.nrows(), <span class="number">2</span>);
             <span class="macro">assert_eq!</span>(array2.ncols(), <span class="number">2</span>);
