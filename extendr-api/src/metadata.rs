@@ -352,7 +352,6 @@ impl Metadata {
         )?;
 
         if use_symbols {
-            writeln!(w, "#' @docType package")?;
             writeln!(w, "#' @usage NULL")?;
             writeln!(w, "#' @useDynLib {}, .registration = TRUE", package_name)?;
             writeln!(w, "NULL")?;

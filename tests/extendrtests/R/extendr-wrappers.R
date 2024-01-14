@@ -6,7 +6,6 @@
 # This file was created with the following call:
 #   .Call("wrap__make_extendrtests_wrappers", use_symbols = TRUE, package_name = "extendrtests")
 
-#' @docType package
 #' @usage NULL
 #' @useDynLib extendrtests, .registration = TRUE
 NULL
