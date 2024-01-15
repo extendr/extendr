@@ -73,32 +73,6 @@ where
 ///
 /// Returns `Ok` value as is. Returns `Err` wrapped in an R error condition. The `Err` is placed in
 /// $value field of the condition, and its message is set to 'extendr_err'
-/// ```
-/// use extendr_api::prelude::*;
-/// fn my_func() -> Result<f64> {
-///     Ok(1.0)
-/// }
-///
-/// test! {
-///     assert_eq!(r!(my_func()), r!(1.0));
-/// }
-///
-/// //ok and err type is any IntoRobj
-/// fn my_err_f() -> std::result::Result<f64, f64> {
-///     Err(42.0) // return err float
-/// }
-///
-/// test! {
-///     assert_eq!(
-///         r!(my_err_f()),
-///         R!(
-/// "structure(list(message = 'extendr_err',
-/// value = 42.0), class = c('extendr_error', 'error', 'condition'))"
-///         ).unwrap()
-///     );
-/// }
-///
-/// ```
 #[cfg(all(feature = "result_condition", not(feature = "result_list")))]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
@@ -120,34 +94,6 @@ where
 /// This allows using `?` operator in functions
 /// and returning [`std::result::Result`] or [`extendr_api::error::Result`]
 /// without panicking on `Err`.
-///
-///
-/// ```
-/// use extendr_api::prelude::*;
-/// fn my_err_f() -> std::result::Result<f64, String> {
-///     Err("We have water in the engine room!".to_string())
-/// }
-/// fn my_ok_f() -> std::result::Result<f64, String> {
-///     Ok(123.123)
-/// }
-///
-/// test! {
-///     assert_eq!(
-///         r!(my_err_f()),
-///         R!("x=list(ok=NULL, err='We have water in the engine room!')
-///             class(x)='extendr_result'
-///             x"
-///         ).unwrap()
-///     );
-///     assert_eq!(
-///         r!(my_ok_f()),
-///         R!("x = list(ok=123.123, err=NULL)
-///             class(x)='extendr_result'
-///             x"
-///         ).unwrap()
-///     );
-/// }
-/// ```
 ///
 /// [`extendr_api::error::Result`]: crate::error::Result
 #[cfg(feature = "result_list")]
@@ -824,6 +770,55 @@ mod test {
             let msg = rmat.unwrap_err().to_string();
             assert!(msg.contains("27"));
             assert!(msg.contains("dimension"));
+        }
+    }
+
+    #[test]
+    #[cfg(all(feature = "result_condition", not(feature = "result_list")))]
+    fn test_result_condition() {
+        use crate::prelude::*;
+        fn my_err_f() -> std::result::Result<f64, f64> {
+            Err(42.0) // return err float
+        }
+
+        test! {
+                  assert_eq!(
+                    r!(my_err_f()),
+                    R!(
+        "structure(list(message = 'extendr_err',
+        value = 42.0), class = c('extendr_error', 'error', 'condition'))"
+                    ).unwrap()
+                );
+            }
+    }
+
+    #[test]
+    #[cfg(feature = "result_list")]
+    fn test_result_list() {
+        use crate::prelude::*;
+        fn my_err_f() -> std::result::Result<f64, String> {
+            Err("We have water in the engine room!".to_string())
+        }
+
+        fn my_ok_f() -> std::result::Result<f64, String> {
+            Ok(123.123)
+        }
+
+        test! {
+            assert_eq!(
+                r!(my_err_f()),
+                R!("x=list(ok=NULL, err='We have water in the engine room!')
+                    class(x)='extendr_result'
+                    x"
+                ).unwrap()
+            );
+            assert_eq!(
+                r!(my_ok_f()),
+                R!("x = list(ok=123.123, err=NULL)
+                    class(x)='extendr_result'
+                    x"
+                ).unwrap()
+            );
         }
     }
 }
