@@ -1,11 +1,10 @@
 //! Argument parsing and checking.
 //!
 
-use libR_sys::*;
-//use crate::robj::*;
 use crate::robj::GetSexp;
 use crate::robj::Robj;
 use crate::single_threaded;
+use libR_sys::*;
 
 /// Convert a list of tokens to an array of tuples.
 #[doc(hidden)]
@@ -45,13 +44,8 @@ macro_rules! args {
 #[doc(hidden)]
 pub unsafe fn append_with_name(tail: SEXP, obj: Robj, name: &str) -> SEXP {
     single_threaded(|| {
-        let mut name = Vec::from(name.as_bytes());
-        name.push(0);
         let cons = Rf_cons(obj.get(), R_NilValue);
-        SET_TAG(
-            cons,
-            Rf_install(name.as_ptr() as *const std::os::raw::c_char),
-        );
+        SET_TAG(cons, crate::make_symbol(name));
         SETCDR(tail, cons);
         cons
     })
@@ -68,11 +62,7 @@ pub unsafe fn append(tail: SEXP, obj: Robj) -> SEXP {
 
 #[doc(hidden)]
 pub unsafe fn make_lang(sym: &str) -> Robj {
-    let mut name = Vec::from(sym.as_bytes());
-    name.push(0);
-    let sexp =
-        single_threaded(|| Rf_lang1(Rf_install(name.as_ptr() as *const std::os::raw::c_char)));
-    Robj::from_sexp(sexp)
+    Robj::from_sexp(single_threaded(|| Rf_lang1(crate::make_symbol(sym))))
 }
 
 /// Convert a list of tokens to an array of tuples.

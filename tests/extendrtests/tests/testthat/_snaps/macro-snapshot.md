@@ -47,7 +47,15 @@
                       };
                       extendr_api::handle_panic(
                           err_string.as_str(),
-                          || ::core::panicking::panic("explicit panic"),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
                       );
                   }
               }
@@ -89,6 +97,7 @@
           }
           #[automatically_derived]
           impl ::core::fmt::Debug for MySubmoduleClass {
+              #[inline]
               fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
                   ::core::fmt::Formatter::debug_struct_field1_finish(
                       f,
@@ -155,7 +164,15 @@
                       };
                       extendr_api::handle_panic(
                           err_string.as_str(),
-                          || ::core::panicking::panic("explicit panic"),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
                       );
                   }
               }
@@ -226,7 +243,15 @@
                       };
                       extendr_api::handle_panic(
                           err_string.as_str(),
-                          || ::core::panicking::panic("explicit panic"),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
                       );
                   }
               }
@@ -309,7 +334,15 @@
                       };
                       extendr_api::handle_panic(
                           err_string.as_str(),
-                          || ::core::panicking::panic("explicit panic"),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
                       );
                   }
               }
@@ -387,7 +420,15 @@
                       };
                       extendr_api::handle_panic(
                           err_string.as_str(),
-                          || ::core::panicking::panic("explicit panic"),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
                       );
                   }
               }
@@ -710,7 +751,15 @@
                       };
                       extendr_api::handle_panic(
                           err_string.as_str(),
-                          || ::core::panicking::panic("explicit panic"),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
                       );
                   }
               }
@@ -897,7 +946,15 @@
                       };
                       extendr_api::handle_panic(
                           err_string.as_str(),
-                          || ::core::panicking::panic("explicit panic"),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
                       );
                   }
               }
@@ -1067,7 +1124,15 @@
                       };
                       extendr_api::handle_panic(
                           err_string.as_str(),
-                          || ::core::panicking::panic("explicit panic"),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
                       );
                   }
               }
@@ -1141,7 +1206,15 @@
                       };
                       extendr_api::handle_panic(
                           err_string.as_str(),
-                          || ::core::panicking::panic("explicit panic"),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
                       );
                   }
               }
@@ -1208,7 +1281,15 @@
                       };
                       extendr_api::handle_panic(
                           err_string.as_str(),
-                          || ::core::panicking::panic("explicit panic"),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
                       );
                   }
               }
@@ -1376,7 +1457,15 @@
                       };
                       extendr_api::handle_panic(
                           err_string.as_str(),
-                          || ::core::panicking::panic("explicit panic"),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
                       );
                   }
               }
@@ -1457,7 +1546,15 @@
                       };
                       extendr_api::handle_panic(
                           err_string.as_str(),
-                          || ::core::panicking::panic("explicit panic"),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
                       );
                   }
               }
@@ -1543,7 +1640,15 @@
                       };
                       extendr_api::handle_panic(
                           err_string.as_str(),
-                          || ::core::panicking::panic("explicit panic"),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
                       );
                   }
               }
@@ -1636,7 +1741,15 @@
                       };
                       extendr_api::handle_panic(
                           err_string.as_str(),
-                          || ::core::panicking::panic("explicit panic"),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
                       );
                   }
               }
@@ -1725,7 +1838,15 @@
                       };
                       extendr_api::handle_panic(
                           err_string.as_str(),
-                          || ::core::panicking::panic("explicit panic"),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
                       );
                   }
               }
@@ -1806,7 +1927,15 @@
                       };
                       extendr_api::handle_panic(
                           err_string.as_str(),
-                          || ::core::panicking::panic("explicit panic"),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
                       );
                   }
               }
@@ -1887,7 +2016,15 @@
                       };
                       extendr_api::handle_panic(
                           err_string.as_str(),
-                          || ::core::panicking::panic("explicit panic"),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
                       );
                   }
               }
@@ -1968,7 +2105,15 @@
                       };
                       extendr_api::handle_panic(
                           err_string.as_str(),
-                          || ::core::panicking::panic("explicit panic"),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
                       );
                   }
               }
@@ -2098,6 +2243,7 @@
           pub struct VecUsize(pub Vec<Option<usize>>);
           #[automatically_derived]
           impl ::core::fmt::Debug for VecUsize {
+              #[inline]
               fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
                   ::core::fmt::Formatter::debug_tuple_field1_finish(f, "VecUsize", &&self.0)
               }
@@ -2233,7 +2379,15 @@
                       };
                       extendr_api::handle_panic(
                           err_string.as_str(),
-                          || ::core::panicking::panic("explicit panic"),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
                       );
                   }
               }
@@ -2275,6 +2429,7 @@
           }
           #[automatically_derived]
           impl ::core::fmt::Debug for StringInts {
+              #[inline]
               fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
                   ::core::fmt::Formatter::debug_struct_field1_finish(
                       f,
@@ -2343,7 +2498,15 @@
                       };
                       extendr_api::handle_panic(
                           err_string.as_str(),
-                          || ::core::panicking::panic("explicit panic"),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
                       );
                   }
               }
@@ -2379,6 +2542,7 @@
           }
           #[automatically_derived]
           impl ::core::fmt::Debug for MyCompactIntRange {
+              #[inline]
               fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
                   ::core::fmt::Formatter::debug_struct_field4_finish(
                       f,
@@ -2461,7 +2625,15 @@
                       };
                       extendr_api::handle_panic(
                           err_string.as_str(),
-                          || ::core::panicking::panic("explicit panic"),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
                       );
                   }
               }
@@ -2606,7 +2778,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -2666,7 +2846,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -2729,7 +2917,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -2801,7 +2997,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -2873,7 +3077,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -2945,7 +3157,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -3017,7 +3237,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -3089,7 +3317,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -3160,7 +3396,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -3222,7 +3466,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -3285,7 +3537,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -3357,7 +3617,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -3429,7 +3697,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -3509,7 +3785,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -3594,7 +3878,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -3679,7 +3971,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -3760,7 +4060,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -3836,7 +4144,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -3912,7 +4228,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -3988,7 +4312,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -4060,7 +4392,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -4148,7 +4488,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -4229,7 +4577,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -4291,7 +4647,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -4354,7 +4718,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -4426,7 +4798,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -4477,6 +4857,7 @@
       }
       #[automatically_derived]
       impl ::core::fmt::Debug for MyClass {
+          #[inline]
           fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
               ::core::fmt::Formatter::debug_struct_field1_finish(f, "MyClass", "a", &&self.a)
           }
@@ -4545,7 +4926,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -4614,7 +5003,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -4692,7 +5089,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -4765,7 +5170,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -4840,7 +5253,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -4915,7 +5336,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -5029,6 +5458,7 @@
       }
       #[automatically_derived]
       impl ::core::fmt::Debug for __MyClass {
+          #[inline]
           fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
               ::core::fmt::Formatter::write_str(f, "__MyClass")
           }
@@ -5072,7 +5502,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -5139,7 +5577,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -5253,6 +5699,7 @@
       }
       #[automatically_derived]
       impl ::core::fmt::Debug for MyClassUnexported {
+          #[inline]
           fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
               ::core::fmt::Formatter::debug_struct_field1_finish(
                   f,
@@ -5304,7 +5751,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -5373,7 +5828,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }
@@ -5527,7 +5990,15 @@
                   };
                   extendr_api::handle_panic(
                       err_string.as_str(),
-                      || ::core::panicking::panic("explicit panic"),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
                   );
               }
           }

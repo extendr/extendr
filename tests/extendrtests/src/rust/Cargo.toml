@@ -1,14 +1,16 @@
 [workspace]
+resolver = "2"
 
 [package]
 name = "extendrtests"
-version = "0.2.2"
+version = "0.6.0"
 authors = [
     "andy-thomason <andy@andythomason.com>",
     "Claus O. Wilke <wilke@austin.utexas.edu>",
     "Ilia Kosenkov <ilia.kosenkov@outlook.com",
 ]
 edition = "2021"
+publish = false
 
 [lib]
 crate-type = ["staticlib"]

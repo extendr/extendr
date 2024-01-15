@@ -53,9 +53,7 @@ pub use super::robj::{
     RobjItertools, Slices, Types,
 };
 
-pub use super::thread_safety::{
-    catch_r_error, handle_panic, single_threaded, this_thread_id, throw_r_error,
-};
+pub use super::thread_safety::{catch_r_error, handle_panic, single_threaded, throw_r_error};
 
 pub use super::wrapper::{
     Complexes, Dataframe, Doubles, EnvIter, Environment, Expressions, ExternalPtr, FromList,
