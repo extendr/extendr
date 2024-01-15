@@ -730,7 +730,6 @@ mod test {
     }
 
     #[test]
-    #[cfg(all(not(feature = "result_condition"), not(feature = "result_list")))]
     fn test_collect_rarray_matrix() {
         test! {
             // Check that collect_rarray works the same as R's matrix() function
@@ -741,7 +740,6 @@ mod test {
     }
 
     #[test]
-    #[cfg(all(not(feature = "result_condition"), not(feature = "result_list")))]
     fn test_collect_rarray_tensor() {
         test! {
             // Check that collect_rarray works the same as R's array() function
