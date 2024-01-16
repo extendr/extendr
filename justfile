@@ -1,11 +1,28 @@
+# system requirement: 
+# See https://just.systems/man/en/chapter_5.html or 
+# ```
+# scoop install just
+# or
+# cargo install just
+# ```
 # just: https://github.com/casey/just
+set shell := ["cmd.exe", "/c"]
 
 default:
     @just --list
 
-build-paper: docker run --env JOURNAL=joss  --volume $pwd/:/data openjournals/inara
+# Install dependencies necessary for building the paper
+install-paper:
+    cargo install watchexec-cli
 
-# install via `cargo install watchexec-cli --force`
-watch-paper: watchexec -w paper.md -w paper.bib #STILL MISSING build command
+# Build the paper using docker image
+build-paper: 
+    docker run --env JOURNAL=joss  --volume %cd%/:/data openjournals/inara
 
-clean-paper: docker rm openjournals/inara
+# Continuously build paper if paper.[md|bib] is changed
+watch-paper: 
+    @watchexec -w paper.md -w paper.bib "just build-paper"
+
+# Remove the openjournals/inara image from docker
+uninstall-paper: 
+    docker rm openjournals/inara
