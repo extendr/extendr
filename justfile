@@ -6,7 +6,8 @@
 # cargo install just
 # ```
 # just: https://github.com/casey/just
-set shell := ["cmd.exe", "/c"]
+
+set windows-shell := ["cmd.exe", "/c"]
 
 default:
     @just --list
