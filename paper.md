@@ -1,8 +1,19 @@
 ---
 title: "extendr"
+tags:
+  - R
+  - Rust
+  - FFI
+  - bindings
 subtitle: "extending the R language with the power of Rust"
 authors:
   - name: Mossa Merhi Reimert
+  - affiliation: 1
+affiliations:
+  - name: Section of Animal Welfare and Disease Control, Department of Veterinary and Animal Sciences, Universit of Copenhagen, Denmark
+  - index: 1
+date: \today
+
 format:
   pdf:
     documentclass: scrartcl
@@ -122,7 +133,6 @@ related software Rcpp, cpp11,
 - prqlr
 
 - rsgeo
-
 
 ## References
 
