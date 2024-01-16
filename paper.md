@@ -1,10 +1,12 @@
 ---
-title: extendr
-subtitle: extending the R langauge with the power of Rust
+title: "extendr"
+subtitle: "extending the R language with the power of Rust"
+authors:
+  - name: Mossa Merhi Reimert
 format:
   pdf:
     documentclass: scrartcl
-    papersize: letter
+    papersize: a4paper
 ---
 
 ## Statement of Need
@@ -52,11 +54,11 @@ extendr utilizes R's C API via the libR-sys library crate. libR-sys utilizes the
 
 ## Case studies
 
--   rpolars
+- rpolars
 
--   prqlr
+- prqlr
 
--   rsgeo
+- rsgeo
 
 ## Related work
 
@@ -64,84 +66,75 @@ Integration of Rust and R has been explored in other libraries. The `roxido` lib
 
 ## Notes
 
--   r is an interface langauge. it comes with a C api to build extensions
+- r is an interface langauge. it comes with a C api to build extensions
 
--   over a decade ago Rcpp was released revoltionizing R package development making it easy to tap into high performance library from C++
+- over a decade ago Rcpp was released revoltionizing R package development making it easy to tap into high performance library from C++
 
-    -   cpp11 is a fairly recent take on the same objective by the folks from the r-lib team
+  - cpp11 is a fairly recent take on the same objective by the folks from the r-lib team
 
-    -   V8 is another take on interfacing with another language enabling R users to call javaScript via V8
+  - V8 is another take on interfacing with another language enabling R users to call javaScript via V8
 
--   today we are seeing very fast growth in the adoption of Rust due to its ease of use, safety, and performance.
+- today we are seeing very fast growth in the adoption of Rust due to its ease of use, safety, and performance.
 
--   to ensure that the R ecosystem can stay on op of the maturing data science ecosystem, we need to be able to tap into Rust libraries and make bindings to them in R
+- to ensure that the R ecosystem can stay on op of the maturing data science ecosystem, we need to be able to tap into Rust libraries and make bindings to them in R
 
-    -   PyO3 serves this role for the ptyhon ecosystem and has led to wildly successful libraries such as polars
+  - PyO3 serves this role for the ptyhon ecosystem and has led to wildly successful libraries such as polars
 
--   extendr is a rust library that provides R package developers with a way to create R packages that utilize the power and safety of Rust
+- extendr is a rust library that provides R package developers with a way to create R packages that utilize the power and safety of Rust
 
--   it creates bindings to R's C API via the low-level Rust crate libR-sys that supports extendr.
+- it creates bindings to R's C API via the low-level Rust crate libR-sys that supports extendr.
 
--   extendr comes with a companion R package called {rextendr}
+- extendr comes with a companion R package called {rextendr}
 
-    -   rextendr is a user friendly package that is used for creating the scaffolding of a rust-enabled R package
+  - rextendr is a user friendly package that is used for creating the scaffolding of a rust-enabled R package
 
-    -   it documents Rust functions and creats wrappers to rust functions that are then exported to R via the `.Call()` function interface
+  - it documents Rust functions and creats wrappers to rust functions that are then exported to R via the `.Call()` function interface
 
--   extendr works by creating a staticlib that is called by R
+- extendr works by creating a staticlib that is called by R
 
--   extendr has already seen a fair amount of adoption in the R ecosystem. Notably it has been used to develop the R package {rpolars} which are R bindings to polars rust data frame library.
+- extendr has already seen a fair amount of adoption in the R ecosystem. Notably it has been used to develop the R package {rpolars} which are R bindings to polars rust data frame library.
 
-    -   prqlr which are bindings to the prql crust compiler library that generates sql queries.
+  - prqlr which are bindings to the prql crust compiler library that generates sql queries.
 
-    -   rsgeo are bindings to geo-rust geometry primitives and algorithms which are very performant
+  - rsgeo are bindings to geo-rust geometry primitives and algorithms which are very performant
 
--   extendr is extensible meaning that other rust-crates can be developed to integrate external rust libraries with extendr and thus R
+- extendr is extensible meaning that other rust-crates can be developed to integrate external rust libraries with extendr and thus R
 
-    -   a recent example is the arrow-extendr library crate which enables conversion from from R's arrow and nanoarrow R packages to Apache Arrow arrow-rs rust implementation.
+  - a recent example is the arrow-extendr library crate which enables conversion from from R's arrow and nanoarrow R packages to Apache Arrow arrow-rs rust implementation.
 
 The R Project for Statistical Computing, referred to simply as R, has a long history of being an interface language.
 
--   "Writing R extensions" discusses in detail how to create a new interface between an external library or language and R's C API.
+- "Writing R extensions" discusses in detail how to create a new interface between an external library or language and R's C API.
 
--   R's C API is one of the reasons why it is such language. Rcpp's in 2011 (cite)
+- R's C API is one of the reasons why it is such language. Rcpp's in 2011 (cite)
 
-<!-- -->
+- extendr started as an R-consortium funded project by Andy Thomason.
+- interfaces with R's C API
 
--   extendr started as an R-consortium funded project by Andy Thomason.
--   interfaces with R's C API
-
-https://www.r-consortium.org/all-projects/awarded-projects/2021-group-1#extendr+-+rust+extensions+for+r.
+<https://www.r-consortium.org/all-projects/awarded-projects/2021-group-1#extendr+-+rust+extensions+for+r>.
 
 related software Rcpp, cpp11,
 
-## 
-
 ## Adoption in the R ecosystem
 
--   rpolars
+- rpolars
 
--   prqlr
+- prqlr
 
--   rsgeo
+- rsgeo
 
--   
 
 ## References
 
--   v8 (javascript bindings): https://github.com/jeroen/V8
+- v8 (javascript bindings): <https://github.com/jeroen/V8>
 
-<!-- -->
+- Rcpp: <https://www.jstatsoft.org/article/view/v040i08>
 
--   Rcpp: https://www.jstatsoft.org/article/view/v040i08
+- cpp11: <https://cpp11.r-lib.org/articles/internals.html>
 
-<!-- -->
+- writing R extensions <https://cran.r-project.org/doc/manuals/R-exts.html>
 
--   cpp11: https://cpp11.r-lib.org/articles/internals.html
-
--   writing R extensions <https://cran.r-project.org/doc/manuals/R-exts.html>
-
--   <https://raw.githubusercontent.com/dbdahl/cargo-framework/main/cargo/inst/doc/Writing_R_Extensions_in_Rust.pdf>
+- <https://raw.githubusercontent.com/dbdahl/cargo-framework/main/cargo/inst/doc/Writing_R_Extensions_in_Rust.pdf>
 
 ## Requirements from JOSS
 
