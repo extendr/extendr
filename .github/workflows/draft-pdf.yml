@@ -21,3 +21,13 @@ jobs:
           # PDF. Note, this should be the same directory as the input
           # paper.md
           path: paper.pdf
+      - name: Commit paper to repository
+        run: |
+          if git status --porcelain | grep -q "paper.pdf"; then
+            git config user.name github-actions
+            git config user.email github-actions@github.com
+            git add paper.pdf
+            git commit -m "Generated paper.pdf"
+            git push
+          fi
+        
