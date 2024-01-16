@@ -16,7 +16,7 @@ default:
 install-paper:
     cargo install watchexec-cli
 
-# Build the paper using docker image
+# Build the paper using docker
 build-paper: 
     docker run --env JOURNAL=joss  --volume %cd%/:/data openjournals/inara
 
@@ -25,5 +25,6 @@ watch-paper:
     @watchexec -w paper.md -w paper.bib "just build-paper"
 
 # Remove the openjournals/inara image from docker
+[confirm("This will delete openjournals/inara image from your machine.")]
 uninstall-paper: 
     docker rm openjournals/inara
