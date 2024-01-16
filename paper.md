@@ -13,6 +13,7 @@ affiliations:
   - name: "Section of Animal Welfare and Disease Control, Department of Veterinary and Animal Sciences, University of Copenhagen, Denmark"
     index: 1
 date: \today
+bibliography: paper.bib
 format:
   pdf:
     documentclass: scrartcl
@@ -21,9 +22,9 @@ format:
 
 ## Statement of Need
 
-One of the key strengths of the R programming language is its ability to integrate with other languages and tools. It does so through its C API as described in Writing R Extensions (cite). In 2006, the R package Rcpp was released on CRAN enabling R developers to build packages that harnessed the power of C++ (Rcpp Papercite). Since then, Rcpp has grown to be the most imported R package across the Comprehensive R Archive Network (CRAN) due to its use in low-level libraries that are used by the vast majority of R packages (cite cran page rank package? <https://github.com/andrie/pagerank>). In addition to Rcpp there are many other packages that enable cross-langauge communication. The package cpp11 provides similar bindings to R via C++ (CITE cpp11). Bindings to Java are provided by rJava, to JavaScript via V8, and to python via reticulate (CITE rjava, v8, reticulate).
+One of the key strengths of the R programming language is its ability to integrate with other languages and tools. It does so through its C API as described in Writing R Extensions [@r_cite]. In 2006, the R package Rcpp was released on CRAN enabling R developers to build packages that harnessed the power of C++ (Rcpp [@rcpp_cran]). Since then, Rcpp has grown to be the most imported R package across the Comprehensive R Archive Network (CRAN) due to its use in low-level libraries that are used by the vast majority of R packages ([@vriesAndriePagerank2021]). In addition to Rcpp there are many other packages that enable cross-langauge communication. The package cpp11 provides similar bindings to R via C++ ([@cpp11]). Bindings to Java are provided by rJava, to JavaScript via V8, and to python via reticulate (CITE [@rJava], [@v8_cran], [@reticulate_cran]).
 
-Today, we are seeing the proliferation of the Rust programming language. According to StackOverflow, Rust is the most admired programming language for many years running—and for good reason (<https://survey.stackoverflow.co/2023/>). Rust provides similar performance such as C and C++ while also being far more ergonomic (Nature, 2020, <https://www.nature.com/articles/d41586-020-03382-2>). But most importantly, Rust provides guarantees memory that make exceptionally safe. For all of these reasons and more, providing R package developers a way to integrate Rust and R is necessary for the continued growth of the R ecosystem. The extendr Rust library and its companion R package {rextendr} make the process of marrying R and Rust simple.
+Today, we are seeing the proliferation of the Rust programming language. According to StackOverflow, Rust is the most admired programming language for many years running—and for good reason (<https://survey.stackoverflow.co/2023/>). Rust provides similar performance such as C and C++ while also being far more ergonomic ([@perkelWhyScientistsAre2020]). But most importantly, Rust provides guarantees memory that make exceptionally safe. For all of these reasons and more, providing R package developers a way to integrate Rust and R is necessary for the continued growth of the R ecosystem. The extendr Rust library and its companion R package `{rextendr}` make the process of marrying R and Rust simple.
 
 ## Implementation
 
@@ -116,7 +117,7 @@ The R Project for Statistical Computing, referred to simply as R, has a long his
 
 - "Writing R extensions" discusses in detail how to create a new interface between an external library or language and R's C API.
 
-- R's C API is one of the reasons why it is such language. Rcpp's in 2011 (cite)
+- R's C API is one of the reasons why it is such language. Rcpp's in 2011 [@rcpp_jss]
 
 - extendr started as an R-consortium funded project by Andy Thomason.
 - interfaces with R's C API
@@ -124,6 +125,8 @@ The R Project for Statistical Computing, referred to simply as R, has a long his
 <https://www.r-consortium.org/all-projects/awarded-projects/2021-group-1#extendr+-+rust+extensions+for+r>.
 
 related software Rcpp, cpp11,
+
+[@cargo_cran]
 
 ## Adoption in the R ecosystem
 
@@ -160,3 +163,5 @@ A list of key references, including to other software addressing related needs. 
 Mention (if applicable) a representative set of past or ongoing research projects using the software and recent scholarly publications enabled by it.
 
 Acknowledgement of any financial support.
+
+# References
