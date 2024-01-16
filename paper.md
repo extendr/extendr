@@ -10,9 +10,19 @@ authors:
   - name: "Mossa Merhi Reimert"
     orcid: 0009-0007-9297-1523
     affiliation: 1
+  - name: Josiah D. Parry
+    orcid: 0000-0001-9910-865X
+  - name: Claus O. Wilke
+    orcid: 0000-0002-7470-9261
+    affiliation: 2
+  - name: Ilia Kosenkov
+    orcid: 0000-0001-5563-7840
+  - name: Andy Thomason
 affiliations:
   - name: "Section of Animal Welfare and Disease Control, Department of Veterinary and Animal Sciences, University of Copenhagen, Denmark"
     index: 1
+  - name: "The University of Texas at Austin, Texas"
+    index: 2
 date: \today
 bibliography: paper.bib
 format:
