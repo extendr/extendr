@@ -1001,7 +1001,8 @@ pub trait Attributes: Types + Length {
         self.set_attrib(wrapper::symbol::class_symbol(), iter.collect_robj())
     }
 
-    /// Return true if this class inherits this class.
+    /// Return true if this object has this class attribute.
+    /// Implicit classes are not supported.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
