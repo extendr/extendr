@@ -24,7 +24,7 @@ build-paper:
 [macos, linux, unix]
 build-paper:
     docker run \
-        --volume $PWD/paper:/data \
+        --volume $PWD:/data \
         --user $(id -u):$(id -g) \
         --env JOURNAL=joss \
         openjournals/inara
