@@ -17,8 +17,17 @@ install-paper:
     cargo install watchexec-cli
 
 # Build the paper using docker
+[windows]
 build-paper: 
     docker run --env JOURNAL=joss  --volume %cd%/:/data openjournals/inara
+
+[macos, linux, unix]
+build-paper:
+    docker run \
+        --volume $PWD/paper:/data \
+        --user $(id -u):$(id -g) \
+        --env JOURNAL=joss \
+        openjournals/inara
 
 # Continuously build paper if paper.[md|bib] is changed
 watch-paper: 
