@@ -155,10 +155,12 @@ However, CRAN have many rules for publishing packages in general, e.g. number
 of threads that a package uses at build & testing must not exceed 2.
 
 Uniquely, Rust has a package manager, which means that R packages have 3rd party
-dependencies external to R and CRAN. These must be vendored. Since Fortran[^fortran_pkg_mgr]/C/C++ do not have official package managers. In `rextendr::` ...
-<!-- TODO: please contribute to this bit @JosiahParry -->
+dependencies external to R and CRAN. These must be vendored ensure package stability (https://cran.r-project.org/web/packages/rust/index.html). <!-- Since Fortran[^fortran_pkg_mgr]/C/C++ do not have official package managers. consider deleteing--> rextendr provides utility functions ensure extendr-based packages are CRAN compliant. `rextendr::use_cran_defaults()` and `rextendr::vendor_pkgs()` will ensure dependencies are built entirely offline and from vendored sources.
 
+<!-- 
+JP: Fortran package management might be out of scope
 [^fortran_pkg_mgr]: Fortran Package Manager is a community-driven project in alpha release as of this writing.
+-->
 
 <!-- Today, we are seeing the proliferation of the Rust programming language. According to StackOverflow, Rust is the most admired programming language for many years running—and for good reason (<https://survey.stackoverflow.co/2023/>). Rust provides similar performance such as C and C++ while also being far more ergonomic ([@perkelWhyScientistsAre2020]). But most importantly, Rust provides guarantees memory that make exceptionally safe. For all of these reasons and more, providing R package developers a way to integrate Rust and R is necessary for the continued growth of the R ecosystem. The extendr Rust library and its companion R package `{rextendr}` make the process of marrying R and Rust simple. -->
 
@@ -173,7 +175,7 @@ python (via [`py-polars`](https://github.com/pola-rs/polars/tree/main/py-polars)
 
 An example of scientific computing enabled by extendr is [`changeforest`](https://github.com/mlondschien/changeforest/tree/main) [@JMLR:v24:22-0512].
 
-[`rsgeo`](https://cran.r-project.org/web/packages/rsgeo/index.html) are bindings to [`geo-rust`](https://crates.io/crates/geo) geometry primitives and algorithms which are very performant. `rsgeo` is similar to the 
+[`rsgeo`](https://cran.r-project.org/web/packages/rsgeo/index.html) provides bindings to [`geo-rust`](https://crates.io/crates/geo) geometric primitives and algorithms which are very performant. `rsgeo` is most similar to `geos` [@geos_cran] which provides bindings to the GEOS C library.
 <!-- TODO -->
 
 
