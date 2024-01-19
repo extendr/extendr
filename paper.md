@@ -61,7 +61,29 @@ for integrating to external languages.
 
 Thus extendr provides an emulation of the R data model within Rust, integration
 of Rust tooling in the R-package build systems, a rust developer experience in
-R, and tooling for preparing publishing of Rust-powered R-packages to CRAN.
+R, and functions for preparing publishing of Rust-powered R-packages to CRAN.
+
+For scientific computing, Rust has been used to write software to aid in
+scientific tooling, that is on-par or even surpassing state-of-the-art.
+For instance, [`gifski`](https://crates.io/crates/gifski) is a high-performance
+GIF encoder, which is made acessible in R through a binding R-package [@gifski_cran].
+These bindings are written by hand. These tools enables better support for
+making animations in R, and they are minimally scoped, thus it is feasible to write explicit
+bindings for R. But for scientists, that now uses Rust as a computing platform,
+there is a growing need for automated tooling.
+
+<!-- addition maybe?? [@rust_bio] -->
+An example of this is agent-based modelling in epidemiology. There are many
+off the shelf frameworks to write a particular model or scenario. However,
+each setting differ, and custom agent-based models are increasingly desired.
+Rust is a great candidate to write such models [@eval_rust_for_custom_abm],
+[@epirust_paper]. For modelling African Swine Fever within wild boar using Rust,
+there is [SwiFCo-rs](https://ecoepi.eu/ASFWB/), see [@forth_african_2022-1].
+These models are large and continuously updated and amended.
+And R is more ubiqutious in epidemiological modelling than Rust, and thus
+having an automated binding tooling for accessing such code-bases, is where
+extendr fulfills an unmet need.
+<!-- Another example of rust-based disease spread model [@rust_disease_spread_model_indsci_sim] -->
 
 A webpage with an overview of the extendr-packages, and access to comprehensive
 API documentation is provided at [extendr.github.io](https://extendr.github.io/).
@@ -228,8 +250,8 @@ The CRAN published R-package [`rsgeo`](https://cran.r-project.org/web/packages/r
 Project lead Andy Thomason received a grant from the R-consortium
 [@consortiumConsortiumFundedProject2023].
 
-We would like to acknowledge Jeroen Ooms for his [hellorust](https://github.com/r-rust/hellorust) [@hellorust_cran], and continuous maintenance of this manual embedding of Rust in R proof of concept project.
+We would like to acknowledge Jeroen Ooms for his [hellorust](https://github.com/r-rust/hellorust) [@hellorust_cran], and continuous maintenance of a hand-written embedding of Rust in R example project.
 Their [github.com/r-rust](https://github.com/r-rust) contains several examples
-of hand-crafted bindings to Rust packages for R.
+of hand-crafted bindings to Rust packages for R, such as `gifski` [@gifski_cran].
 
 # References
