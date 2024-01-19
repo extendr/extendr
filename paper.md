@@ -32,6 +32,40 @@ bibliography: paper.bib
 
 # Summary
 
+For many Scientists, Statistician, and Data Scientists, the programming language R is
+irreplaceble. R is an interpreted programming language that aims towards statistical software,
+and visualisations. It offers support on many platforms, the official interpretor is
+written in C, and it is a WebAssembly version called [webR](https://docs.r-wasm.org/webr/latest/).
+
+R's ecosystem contains many packages, primarily written by research scientists,
+specialists and professionals, where packages fall between long-standing and
+robust solutions, and cutting-edge research software. While a dynamic typed,
+interpreted language lends itself towards the non-programmer crowd, there is
+a need for performant, maintainable, and versatile qualities. This is achievable
+for the R community, by having extensibility as a core feature of the language.
+
+Natively, R provide binding capabilities to Fortran, C and C++, mainly through
+its C-API, and also providing integrated tooling for working with other programming
+languages in R. On top of official support, there are many community-driven
+efforts to offer binding to R, from many languages like Julia, Python, Java,
+JavaScript, etc. The official R-package repository CRAN[^CRAN] hosts several packages.
+
+[^CRAN]: Comprehensive R Archive Network
+
+extendr offers a binding project aiming to bring Rust to the R ecosystem. This
+is accomplished by providing an opinionated, ergonomics-focused, and rich
+suite of software packages in order to facilitate R-users' developer experience with Rust.
+There is a community-expectation that R is the front-end to working with other
+languages, as well as a tradition for providing automated tooling for scaffolding / boilerplate
+for integrating to external languages.
+
+Thus extendr provides an emulation of the R data model within Rust, integration
+of Rust tooling in the R-package build systems, a rust developer experience in
+R, and tooling for preparing publishing of Rust-powered R-packages to CRAN.
+
+A webpage with an overview of the extendr-packages, and access to comprehensive
+API documentation is provided at [extendr.github.io](https://extendr.github.io/).
+
 # Statement of Need
 
 R is a programming language geared towards statistical software and visualisations.
@@ -68,7 +102,7 @@ Lastly, an R-package `rextendr`, which is R users developer environment for Rust
 
 # Getting Started
 
-First, ensure that Rust is installed, by following [Install Rust on rust-lang.org](https://www.rust-lang.org/tools/install). Then in an R terminal,
+First, ensure that Rust is installed, by following [Install Rust](https://www.rust-lang.org/tools/install). Then in an R terminal,
 
 ```r
 install.packages("rextendr") 
@@ -160,87 +194,32 @@ However, CRAN have many rules for publishing packages in general, e.g. number
 of threads that a package uses at build & testing must not exceed 2.
 
 Uniquely, Rust has a package manager, which means that R packages have 3rd party
-dependencies external to R and CRAN. These must be vendored ensure package stability (<https://cran.r-project.org/web/packages/rust/index.html>). rextendr provides utility functions ensure extendr-based packages are CRAN compliant. `rextendr::use_cran_defaults()` and `rextendr::vendor_pkgs()` will ensure dependencies are built entirely offline and from vendored sources.
-
-<!-- Today, we are seeing the proliferation of the Rust programming language. According to StackOverflow, Rust is the most admired programming language for many years running—and for good reason (<https://survey.stackoverflow.co/2023/>). Rust provides similar performance such as C and C++ while also being far more ergonomic ([@perkelWhyScientistsAre2020]). But most importantly, Rust provides guarantees memory that make exceptionally safe. For all of these reasons and more, providing R package developers a way to integrate Rust and R is necessary for the continued growth of the R ecosystem. The extendr Rust library and its companion R package `{rextendr}` make the process of marrying R and Rust simple. -->
-
-<!-- ## Implementation
-
-extendr utilizes R's C API via the libR-sys library crate. libR-sys utilizes the Rust library bindgen to automatically create foreign function interface (FFI) bindings for all major distributions (<https://github.com/rust-lang/rust-bindgen>). The bindings provided by libR-sys create Rust representations of the structs defined in R's C API. On top of these exceptionally low-level bindings, extendr is built. extendr defines a number of user friendly Rust structs that can be be passed directly to and from R and Rust. -->
+dependencies external to R and CRAN. These must be vendored ensure package stability (see ["Using Rust in CRAN packages
+"](https://cran.r-project.org/web/packages/using_rust.html)). rextendr provides utility functions ensure extendr-based packages are CRAN compliant. `rextendr::use_cran_defaults()` and `rextendr::vendor_pkgs()` will ensure dependencies are built entirely offline and from vendored sources.
 
 # Related work & prior art
 
 There are other software packages providing bindings to R and Rust. There's
 `roxido` / [`cargo`](https://github.com/dbdahl/cargo-framework) Rust crate and R-package resp. And an offshoot of extendr,
 [savvy](https://github.com/yutannihilation/savvy). They differ to extendr, in
-that extendr aims to provide an opinionated API, with a lot of focus on an
-ergonomic API design.
+that extendr aims to provide an opinionated API, with a focus on an
+ergonomic API design. While extendr provides many of the features that Rcpp offers,
+its architecture is inspired by cpp11. Other scientific computing communities
+are also introducing Rust as a plug-in, with Python it is [PyO3](https://github.com/PyO3/pyo3),
+and Julia has [jlrs](https://github.com/Taaitaaiger/jlrs).
 
 # extendr packages in the R ecosystem
 
 The rust-based DataFrame library [Polars](https://pola.rs/) has bindings to
 python (via [`py-polars`](https://github.com/pola-rs/polars/tree/main/py-polars)) and to R via [`rpolars`](https://github.com/pola-rs/r-polars), where the latter is built with extendr.
 
-An example of scientific computing enabled by extendr is [`changeforest`](https://github.com/mlondschien/changeforest/tree/main) [@JMLR:v24:22-0512].
+An example of scientific computing enabled by extendr is package [`changeforest`](https://github.com/mlondschien/changeforest/tree/main), and accompanying publication [@JMLR:v24:22-0512].
 
-[`rsgeo`](https://cran.r-project.org/web/packages/rsgeo/index.html) provides bindings to [`geo-rust`](https://crates.io/crates/geo) geometric primitives and algorithms which are very performant. `rsgeo` is most similar to `geos` [@geos_cran] which provides bindings to the GEOS C library.
-
-<!-- - today we are seeing very fast growth in the adoption of Rust due to its ease of use, safety, and performance. -->
-
-<!-- - to ensure that the R ecosystem can stay on op of the maturing data science ecosystem, we need to be able to tap into Rust libraries and make bindings to them in R -->
-
-  <!-- - PyO3 serves this role for the python ecosystem and has led to wildly successful libraries such as polars -->
-
-<!-- - extendr is a rust library that provides R package developers with a way to create R packages that utilize the power and safety of Rust -->
-
-<!-- - it creates bindings to R's C API via the low-level Rust crate libR-sys that supports extendr. -->
-
-<!-- - extendr comes with a companion R package called {rextendr} -->
-
-  <!-- - rextendr is a user friendly package that is used for creating the scaffolding of a rust-enabled R package -->
-
-  <!-- - it documents Rust functions and creats wrappers to rust functions that are then exported to R via the `.Call()` function interface -->
-
-<!-- - extendr works by creating a staticlib that is called by R -->
-
-<!-- - extendr has already seen a fair amount of adoption in the R ecosystem. Notably it has been used to develop the R package {rpolars} which are R bindings to polars rust data frame library. -->
+The CRAN published R-package [`rsgeo`](https://cran.r-project.org/web/packages/rsgeo/index.html) provides bindings to [`geo-rust`](https://crates.io/crates/geo) geometric primitives and algorithms which are very performant. `rsgeo` is most similar to `geos` [@geos_cran] which provides bindings to the GEOS C library.
 
   <!-- - prqlr which are bindings to the prql crust compiler library that generates sql queries. -->
 
   <!-- - rsgeo are bindings to geo-rust geometry primitives and algorithms which are very performant -->
-
-<!-- - extendr is extensible meaning that other rust-crates can be developed to integrate external rust libraries with extendr and thus R -->
-
-<!-- - a recent example is the arrow-extendr library crate which enables conversion from from R's arrow and nanoarrow R packages to Apache Arrow arrow-rs rust implementation. -->
-
-<!-- The R Project for Statistical Computing, referred to simply as R, has a long history of being an interface language. -->
-
-<!-- - "Writing R extensions" discusses in detail how to create a new interface between an external library or language and R's C API. -->
-
-<!-- - R's C API is one of the reasons why it is such language. Rcpp's in 2011 [@rcpp_jss] -->
-
-<!-- - extendr started as an R-consortium funded project by Andy Thomason. -->
-<!-- - interfaces with R's C API -->
-
-<!-- <https://www.r-consortium.org/all-projects/awarded-projects/2021-group-1#extendr+-+rust+extensions+for+r>. -->
-
-<!-- related software Rcpp, cpp11, -->
-
-<!-- Acknowledge [hellorust](https://github.com/r-rust/hellorust) [@hellorust_cran] -->
-
-<!-- ## Requirements from JOSS -->
-
-<!-- Your paper should include: -->
-
-<!-- A list of the authors of the software and their affiliations, using the correct format (see the example below). -->
-
-<!-- A summary describing the high-level functionality and purpose of the software for a diverse, non-specialist audience. -->
-
-<!-- A Statement of need section that clearly illustrates the research purpose of the software and places it in the context of related work. -->
-
-<!-- A list of key references, including to other software addressing related needs. Note that the references should include full names of venues, e.g., journals and conferences, not abbreviations only understood in the context of a specific discipline. -->
-
-<!-- Mention (if applicable) a representative set of past or ongoing research projects using the software and recent scholarly publications enabled by it. -->
 
 ## Acknowledgements
 
