@@ -242,7 +242,7 @@ and Julia has [jlrs](https://github.com/Taaitaaiger/jlrs).
 # extendr packages in the R ecosystem
 
 The rust-based DataFrame library [Polars](https://pola.rs/) has bindings to
-python (via [`py-polars`](https://github.com/pola-rs/polars/tree/main/py-polars)) and to R via [`rpolars`](https://github.com/pola-rs/r-polars), where the latter is built with extendr.
+python (via [`py-polars`](https://github.com/pola-rs/polars/tree/main/py-polars)) and to R via [`polars`](https://github.com/pola-rs/r-polars), where the latter is built with extendr.
 
 An example of scientific work enabled by extendr is the package [`changeforest`](https://github.com/mlondschien/changeforest/tree/main), and accompanying publication [@JMLR:v24:22-0512].
 
