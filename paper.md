@@ -126,7 +126,20 @@ an R data model in Rust, and embedding of R interpreter in Rust (for testing pur
 <!-- These crates provide an R data model in Rust, embedding of R in Rust code. -->
 Lastly, extendr provides a R-based Rust developer environment through an R-package `rextendr`.
 
-# Getting Started
+# Features
+
+Features that extendr aims towards
+
+- Integrate R's data model within Rust through `extendr-api`
+- Auto-generate R wrappers for embedded Rust code, via `extendr-macros`
+- Embed R inside of Rust for use in unit-testing, integration testing, etc. through `extendr-engine`
+- Integrate Rust's packaging in R and its package build system, see `rextendr`
+- Tools to help adhere to CRAN's extensive rules for publishing Rust-powered R-packages
+
+API documentation for all the extendr packages are available at [extendr.github.io](https://extendr.github.io/),
+and the repositories for extendr-packages are under GitHub organisation [github.com/extendr](https://github.com/extendr/).
+
+## Getting Started
 
 First, ensure that Rust is installed, by following [Install Rust](https://www.rust-lang.org/tools/install). Then in an R terminal,
 
@@ -149,19 +162,6 @@ To refresh the wrappers generated, use `rextendr::document()`, as this augments
 a call to `devtools::document()`.
 
 <!-- Rust project is in `exampleRustRpkg/src/rust/`. -->
-
-# Features
-
-Features that extendr aims towards
-
-- Integrate R's data model within Rust through `extendr-api`
-- Auto-generate R wrappers for embedded Rust code, via `extendr-macros`
-- Embed R inside of Rust for use in unit-testing, integration testing, etc. through `extendr-engine`
-- Integrate Rust's packaging in R and its package build system, see `rextendr`
-- Tools to help adhere to CRAN's extensive rules for publishing Rust-powered R-packages
-
-API documentation for all the extendr packages are available at [extendr.github.io](https://extendr.github.io/),
-and the repositories for extendr-packages are under GitHub organisation [github.com/extendr](https://github.com/extendr/).
 
 <!-- `rextendr` also have `rust_source` and `rust_function` equivalent to `Rcpp`'s functions, where arbitrary rust code can be evaluated, and the result is relayed back to R. -->
 
@@ -215,6 +215,8 @@ process of an R-package with the embedded Rust binary.
 <!-- Actually, we _could_ do a little better job with that, but this
   part is very sparsely documented by R-core...
  -->
+
+<!-- TODO: add rust_siterep? it is really useful and in spirit of the whole thing -->
 
 ## Publishing rust-powered R-packages
 
