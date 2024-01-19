@@ -824,10 +824,6 @@
 <a href="#822" id="822">822</a>
 <a href="#823" id="823">823</a>
 <a href="#824" id="824">824</a>
-<a href="#825" id="825">825</a>
-<a href="#826" id="826">826</a>
-<a href="#827" id="827">827</a>
-<a href="#828" id="828">828</a>
 </pre></div><pre class="rust"><code><span class="kw">use super</span>::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::scalar::Scalar;
 <span class="kw">use </span><span class="kw">crate</span>::single_threaded;
@@ -858,15 +854,15 @@
     }
 }
 
-<span class="doccomment">/// Convert a Result to an Robj.
+<span class="doccomment">/// Convert a [`Result`] to an [`Robj`].
 ///
 /// Panics if there is an error.
 ///
-/// To use the ?-operator, an extendr-function must return either extendr_api::result::Result&lt;T&gt; or `std::result::Result&lt;T,E&gt;`.
-/// Use of panic! in extendr is discouraged due to memory leakage.
+/// To use the `?`-operator, an extendr-function must return either [`extendr_api::error::Result`] or [`std::result::Result`].
+/// Use of `panic!` in extendr is discouraged due to memory leakage.
 ///
 /// Alternative behaviors enabled by feature toggles:
-/// extendr-api supports different conversions from `Result&lt;T,E&gt;` into `Robj`.
+/// extendr-api supports different conversions from [`Result&lt;T,E&gt;`] into `Robj`.
 /// Below, `x_ok` represents an R variable on R side which was returned from rust via `T::into_robj()` or similar.
 /// Likewise, `x_err` was returned to R side from rust via `E::into_robj()` or similar.
 /// extendr-api
@@ -884,6 +880,8 @@
 ///     assert_eq!(r!(my_func()), r!(1.0));
 /// }
 /// ```
+///
+/// [`extendr_api::error::Result`]: crate::error::Result
 </span><span class="attr">#[cfg(not(any(feature = <span class="string">"result_list"</span>, feature = <span class="string">"result_condition"</span>)))]
 </span><span class="kw">impl</span>&lt;T, E&gt; From&lt;std::result::Result&lt;T, E&gt;&gt; <span class="kw">for </span>Robj
 <span class="kw">where
@@ -895,38 +893,12 @@
     }
 }
 
-<span class="doccomment">/// Convert a Result to an Robj. Return either Ok value or Err value wrapped in an
-/// error condition. This allows using ? operator in functions
-/// and returning [Result&lt;T&gt;] without panicking on Err. T must implement IntoRobj.
+<span class="doccomment">/// Convert a [`Result`] to an [`Robj`]. Return either `Ok` value or `Err` value wrapped in an
+/// error condition. This allows using `?` operator in functions
+/// and returning [`Result&lt;T&gt;`] without panicking on `Err`. `T` must implement [`IntoRobj`].
 ///
-/// Returns Ok value as is. Returns Err wrapped in an R error condition. The Err is placed in
+/// Returns `Ok` value as is. Returns `Err` wrapped in an R error condition. The `Err` is placed in
 /// $value field of the condition, and its message is set to 'extendr_err'
-/// ```
-/// use extendr_api::prelude::*;
-/// fn my_func() -&gt; Result&lt;f64&gt; {
-///     Ok(1.0)
-/// }
-///
-/// test! {
-///     assert_eq!(r!(my_func()), r!(1.0));
-/// }
-///
-/// //ok and err type is any IntoRobj
-/// fn my_err_f() -&gt; std::result::Result&lt;f64, f64&gt; {
-///     Err(42.0) // return err float
-/// }
-///
-/// test! {
-///     assert_eq!(
-///         r!(my_err_f()),
-///         R!(
-/// "structure(list(message = 'extendr_err',
-/// value = 42.0), class = c('extendr_error', 'error', 'condition'))"
-///         ).unwrap()
-///     );
-/// }
-///
-/// ```
 </span><span class="attr">#[cfg(all(feature = <span class="string">"result_condition"</span>, not(feature = <span class="string">"result_list"</span>)))]
 </span><span class="kw">impl</span>&lt;T, E&gt; From&lt;std::result::Result&lt;T, E&gt;&gt; <span class="kw">for </span>Robj
 <span class="kw">where
@@ -934,50 +906,22 @@
     E: Into&lt;Robj&gt;,
 {
     <span class="kw">fn </span>from(res: std::result::Result&lt;T, E&gt;) -&gt; <span class="self">Self </span>{
+        <span class="kw">use crate as </span>extendr_api;
         <span class="kw">match </span>res {
             <span class="prelude-val">Ok</span>(x) =&gt; x.into(),
-            <span class="prelude-val">Err</span>(x) =&gt; { <span class="macro">list!</span>(message = <span class="string">"extendr_err"</span>, value = x) }
-                <span class="comment">// can only imagine this would ever fail due to memory allocation error, but then panicking is the right choice
-                </span>.expect(<span class="string">"internal error: failed to create an R list"</span>)
+            <span class="prelude-val">Err</span>(x) =&gt; { <span class="macro">list!</span>(message = <span class="string">"extendr_err"</span>, value = x.into()) }
                 .set_class([<span class="string">"extendr_error"</span>, <span class="string">"error"</span>, <span class="string">"condition"</span>])
                 .expect(<span class="string">"internal error: failed to set class"</span>),
         }
     }
 }
 
-<span class="doccomment">/// Convert a Result to an R `List` with an `ok` and `err` elements.
-/// This allows using ? operator in functions
-/// and returning [std::result::Result&lt;T,E&gt; or extendr_api::result::Result&lt;T&gt;]
-/// without panicking on Err.
+<span class="doccomment">/// Convert a `Result` to an R `List` with an `ok` and `err` elements.
+/// This allows using `?` operator in functions
+/// and returning [`std::result::Result`] or [`extendr_api::error::Result`]
+/// without panicking on `Err`.
 ///
-///
-/// ```
-/// use extendr_api::prelude::*;
-/// fn my_err_f() -&gt; std::result::Result&lt;f64, String&gt; {
-///     Err("We have water in the engine room!".to_string())
-/// }
-/// fn my_ok_f() -&gt; std::result::Result&lt;f64, String&gt; {
-///     Ok(123.123)
-/// }
-///
-/// test! {
-///     assert_eq!(
-///         r!(my_err_f()),
-///         R!("x=list(ok=NULL, err='We have water in the engine room!')
-///             class(x)='extendr_result'
-///             x"
-///         ).unwrap()
-///     );
-///     assert_eq!(
-///         r!(my_ok_f()),
-///         R!("x = list(ok=123.123, err=NULL)
-///             class(x)='extendr_result'
-///             x"
-///         ).unwrap()
-///     );
-/// }
-///
-/// ```
+/// [`extendr_api::error::Result`]: crate::error::Result
 </span><span class="attr">#[cfg(feature = <span class="string">"result_list"</span>)]
 </span><span class="kw">impl</span>&lt;T, E&gt; From&lt;std::result::Result&lt;T, E&gt;&gt; <span class="kw">for </span>Robj
 <span class="kw">where
@@ -985,18 +929,17 @@
     E: Into&lt;Robj&gt;,
 {
     <span class="kw">fn </span>from(res: std::result::Result&lt;T, E&gt;) -&gt; <span class="self">Self </span>{
+        <span class="kw">use crate as </span>extendr_api;
         <span class="kw">match </span>res {
-            <span class="prelude-val">Ok</span>(x) =&gt; <span class="macro">list!</span>(ok = x, err = NULL),
+            <span class="prelude-val">Ok</span>(x) =&gt; <span class="macro">list!</span>(ok = x.into(), err = NULL),
             <span class="prelude-val">Err</span>(x) =&gt; {
-                <span class="kw">let </span>err_robj = x.into_robj();
+                <span class="kw">let </span>err_robj = x.into();
                 <span class="kw">if </span>err_robj.is_null() {
                     <span class="macro">panic!</span>(<span class="string">"Internal error: result_list not allowed to return NULL as err-value"</span>)
                 }
                 <span class="macro">list!</span>(ok = NULL, err = err_robj)
             }
         }
-        <span class="comment">// can only imagine this would ever fail due to memory allocation error, but then panicking is the right choice
-        </span>.expect(<span class="string">"Internal error: failed to create an R list"</span>)
         .set_class(<span class="kw-2">&amp;</span>[<span class="string">"extendr_result"</span>])
         .expect(<span class="string">"Internal error: failed to set class"</span>)
         .into()
@@ -1653,6 +1596,55 @@
             <span class="kw">let </span>msg = rmat.unwrap_err().to_string();
             <span class="macro">assert!</span>(msg.contains(<span class="string">"27"</span>));
             <span class="macro">assert!</span>(msg.contains(<span class="string">"dimension"</span>));
+        }
+    }
+
+    <span class="attr">#[test]
+    #[cfg(all(feature = <span class="string">"result_condition"</span>, not(feature = <span class="string">"result_list"</span>)))]
+    </span><span class="kw">fn </span>test_result_condition() {
+        <span class="kw">use </span><span class="kw">crate</span>::prelude::<span class="kw-2">*</span>;
+        <span class="kw">fn </span>my_err_f() -&gt; std::result::Result&lt;f64, f64&gt; {
+            <span class="prelude-val">Err</span>(<span class="number">42.0</span>) <span class="comment">// return err float
+        </span>}
+
+        <span class="macro">test! </span>{
+                  <span class="macro">assert_eq!</span>(
+                    <span class="macro">r!</span>(my_err_f()),
+                    <span class="macro">R!</span>(
+        <span class="string">"structure(list(message = 'extendr_err',
+        value = 42.0), class = c('extendr_error', 'error', 'condition'))"
+                    </span>).unwrap()
+                );
+            }
+    }
+
+    <span class="attr">#[test]
+    #[cfg(feature = <span class="string">"result_list"</span>)]
+    </span><span class="kw">fn </span>test_result_list() {
+        <span class="kw">use </span><span class="kw">crate</span>::prelude::<span class="kw-2">*</span>;
+        <span class="kw">fn </span>my_err_f() -&gt; std::result::Result&lt;f64, String&gt; {
+            <span class="prelude-val">Err</span>(<span class="string">"We have water in the engine room!"</span>.to_string())
+        }
+
+        <span class="kw">fn </span>my_ok_f() -&gt; std::result::Result&lt;f64, String&gt; {
+            <span class="prelude-val">Ok</span>(<span class="number">123.123</span>)
+        }
+
+        <span class="macro">test! </span>{
+            <span class="macro">assert_eq!</span>(
+                <span class="macro">r!</span>(my_err_f()),
+                <span class="macro">R!</span>(<span class="string">"x=list(ok=NULL, err='We have water in the engine room!')
+                    class(x)='extendr_result'
+                    x"
+                </span>).unwrap()
+            );
+            <span class="macro">assert_eq!</span>(
+                <span class="macro">r!</span>(my_ok_f()),
+                <span class="macro">R!</span>(<span class="string">"x = list(ok=123.123, err=NULL)
+                    class(x)='extendr_result'
+                    x"
+                </span>).unwrap()
+            );
         }
     }
 }
