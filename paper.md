@@ -33,26 +33,26 @@ bibliography: paper.bib
 # Summary
 
 For many Scientists, Statisticians, and Data Scientists, the programming language R is
-irreplaceble. R is an interpreted programming language that aims towards statistical software,
-and visualisations. It offers support on many platforms, the official interpretor is
-written in C, and it is a WebAssembly version called [webR](https://docs.r-wasm.org/webr/latest/).
+irreplaceable. R is an interpreted programming language that aims towards statistical software,
+and visualisations. It offers support on many platforms, the official interpreter is
+written in C, and there is WebAssembly support by [webR](https://docs.r-wasm.org/webr/latest/).
 
 R's ecosystem contains many packages, primarily written by research scientists,
 specialists and professionals, where packages fall between long-standing and
-robust solutions, and cutting-edge research software. While a dynamic typed,
+robust solutions, and cutting-edge research software. While a dynamically typed,
 interpreted language lends itself towards the non-programmer crowd, there is
 a need for performant, maintainable, and versatile qualities. This is achievable
 for the R community, by having extensibility as a core feature of the language.
 
-Natively, R provide binding capabilities to Fortran, C and C++, mainly through
-its C-API, and also providing integrated tooling for working with other programming
-languages in R. On top of official support, there are many community-driven
-efforts to offer binding to R, from many languages like Julia, Python, Java,
-JavaScript, etc. The official R-package repository CRAN[^CRAN] hosts several packages.
+Natively, R provides tools to compile and embed Fortran, C, and C++ code. The
+binding happens through R's C-API. The official R-package repository CRAN[^CRAN] hosts
+several community-driven
+efforts for providing bindings to R, from many languages like Julia, Python, Java,
+JavaScript, etc.
 
 [^CRAN]: Comprehensive R Archive Network
 
-extendr offers a binding project aiming to bring Rust to the R ecosystem. This
+extendr offers a project aimed at (automatic) binding of Rust to the R ecosystem. This
 is accomplished by providing an opinionated, ergonomics-focused, and rich
 suite of software packages in order to facilitate R-users' developer experience with Rust.
 There is a community-expectation that R is the front-end to working with other
@@ -63,64 +63,68 @@ Thus extendr provides an emulation of the R data model within Rust, integration
 of Rust tooling in the R-package build systems, a rust developer experience in
 R, and functions for preparing publishing of Rust-powered R-packages to CRAN.
 
-For scientific computing, Rust has been used to write software to aid in
-scientific tooling, that is on-par or even surpassing state-of-the-art.
-For instance, [`gifski`](https://crates.io/crates/gifski) is a high-performance
-GIF encoder, which is made acessible in R through a binding R-package [@gifski_cran].
-These bindings are written by hand. These tools enables better support for
-making animations in R, and they are minimally scoped, thus it is feasible to write explicit
-bindings for R. But for scientists, that now uses Rust as a computing platform,
-there is a growing need for automated tooling.
-
-<!-- addition maybe?? [@rust_bio] -->
-An example of this is agent-based modelling in epidemiology. There are many
-off the shelf frameworks to write a particular model or scenario. However,
-each setting differ, and custom agent-based models are increasingly desired.
-Rust is a great candidate to write such models [@eval_rust_for_custom_abm],
-[@epirust_paper]. For modelling African Swine Fever within wild boar using Rust,
-there is [SwiFCo-rs](https://ecoepi.eu/ASFWB/), see [@forth_african_2022-1].
-These models are large and continuously updated and amended.
-And R is more ubiqutious in epidemiological modelling than Rust, and thus
-having an automated binding tooling for accessing such code-bases, is where
-extendr fulfills an unmet need.
-<!-- Another example of rust-based disease spread model [@rust_disease_spread_model_indsci_sim] -->
-
 A webpage with an overview of the extendr-packages, and access to comprehensive
 API documentation is provided at [extendr.github.io](https://extendr.github.io/).
 
 # Statement of Need
 
-R is a programming language geared towards statistical software and visualisations.
+R is a programming language aimed towards statistical software and visualisations.
 From its inception, R was meant to be extended, providing tools for building
 dynamic libraries in Fortran/C/C++ natively. On Windows, the R-project provides
-a toolchain Rtools, which bundles developer environment for Fortran, C and C++.
+a toolchain, Rtools, which bundles a developer environment for Fortran, C and C++.
 In Extending R [@chambers2017extending], a book written by an R-core member,
  interfacing with Python, Julia and C++ is described. R provides a C-API by default,
 together with command line utilities to compile dynamic libraries for use in R.
 The R-project provides documentation for developing extensions in [R-internals](https://cran.r-project.org/doc/manuals/R-ints.html)
 and [R-extenstions](https://cran.r-project.org/doc/manuals/R-exts.html).
 
-There are several R packages that facilitates binding to various programming languages,
+There are several R packages that facilitate binding to various programming languages,
 Rcpp [@rcpp_cran] and cpp11 [@cpp11] for C++, Java via rJava [@rJava], Python
 with `reticulate` [@reticulate_cran], and JavaScript on the V8 runtime and the
 V8 R-package [@v8_cran]. These packages aim to provide R users a developer environment
 for their respective languages, auto-generate boilerplate, etc.
+<!-- extendr follows suit with Rust and R -->
 
 In order to have reasonable performance in R, package developers need to
 embed extension code in their packages. This is partially why Rcpp is used
 by the majority of packages on CRAN (through other dependencies), the official R-package repository for R [@vriesAndriePagerank2021].
 However, performance is not the only virtue that
-Scientists require in a compiled language, and Rust has other features that
-scientists with ever growing computational needs, have gravitated towards [@perkelWhyScientistsAre2020]. For instance, Rust uses declarative memory management,
-i.e. there are compile-time gurantees for memory safety. Note that memory leaks
-is not considered memory unsafe, as yielding data from Rust to R, is considered
+scientists require in a compiled language, and Rust has other features that
+scientists with ever growing computational needs have gravitated towards [@perkelWhyScientistsAre2020]. For instance, Rust uses declarative memory management,
+i.e. there are compile-time guarantees for memory safety. Note that memory leaks
+are not considered unsafe, as yielding data from Rust to R is considered
 leaking memory.
 
+For scientific computing, Rust has been used to write software to aid in
+scientific tooling that is on-par or even surpassing state-of-the-art.
+For instance, [`gifski`](https://crates.io/crates/gifski) is a high-performance
+GIF encoder, which is made accessible in R through a binding R-package [@gifski_cran].
+These bindings are written by hand. `gifski` enables better support for
+making animations in R, and they are minimally scoped, thus it is feasible to write explicit
+bindings for R. But for scientists, that now use Rust as a computing platform,
+there is a growing need for automated tooling.
+
+<!-- addition maybe?? [@rust_bio] -->
+An example of this is agent-based modelling in epidemiology. There are many
+off the shelf frameworks to write a particular model or scenario. However,
+each setting differs, and custom agent-based models are increasingly desired.
+Rust is a great candidate to write such models [@eval_rust_for_custom_abm],
+[@epirust_paper]. For modelling African Swine Fever within wild boar using Rust,
+there is [SwiFCo-rs](https://ecoepi.eu/ASFWB/), see [@forth_african_2022-1].
+These models are large and continuously updated and amended.
+As R is more ubiquitous in epidemiological modelling than Rust,
+having an automated binding tooling for accessing such code-bases is desireable.
+This is what extendr provides to the R ecosystem.
+<!-- Another example of rust-based disease spread model [@rust_disease_spread_model_indsci_sim] -->
+
 Extendr is a suite of software packages, comparable to Rcpp and cpp11.
-Includes `libR-sys` which is a crate
-providing Rust bindings to R's C-API. Then the main three crates are `extendr-api`, `extendr-engine`,
-and `extendr-macros`. These crates provide an R data model in Rust, embedding of R in Rust code.
-Lastly, an R-package `rextendr`, which is R users developer environment for Rust.
+It includes `libR-sys` which is a crate
+providing Rust bindings to R's C-API.
+The main three crates are `extendr-macros`, `extendr-api`, and `extendr-engine`.
+These crates are responsible for providing a automatic wrapper generation,
+an R data model in Rust, and embedding of R interpreter in Rust (for testing purposes) resp.
+<!-- These crates provide an R data model in Rust, embedding of R in Rust code. -->
+Lastly, extendr provides a R-based Rust developer environment through an R-package `rextendr`.
 
 # Getting Started
 
