@@ -86,7 +86,7 @@ jobs:
           r-version: ${{ matrix.config.r }}
           rtools-version: ${{ matrix.config.rtools-version }}
           # TODO: enable RSPM when all the packages are available
-          use-public-rspm: false
+          use-public-rspm: true
 
       - name: Set up Pandoc
         uses: r-lib/actions/setup-pandoc@v2
