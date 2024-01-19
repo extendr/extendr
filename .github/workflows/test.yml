@@ -426,7 +426,9 @@ jobs:
             ci-cargo +$toolchain test graphics_tests:: --manifest-path extendr-api/Cargo.toml --features tests-graphics $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture --test-threads=1 -ActionName "Test extendr-api \w graphics for $target target"
 
             ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests-minimal $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-api \w tests-minimal for $target target"
-          
+            ci-cargo +$toolchain test test_result_list --manifest-path extendr-api/Cargo.toml --features tests-minimal,result_list $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-api \w tests-minimal for $target target with `result_list` feature"
+            ci-cargo +$toolchain test test_result_condition --manifest-path extendr-api/Cargo.toml --features tests-minimal,result_condition $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-api \w tests-minimal for $target target with `result_condition` feature"
+                      
             ci-cargo +$toolchain test --manifest-path extendr-macros/Cargo.toml  $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-macros for $target target"
           
           }

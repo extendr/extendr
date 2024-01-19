@@ -28,15 +28,15 @@ impl From<()> for Robj {
     }
 }
 
-/// Convert a Result to an Robj.
+/// Convert a [`Result`] to an [`Robj`].
 ///
 /// Panics if there is an error.
 ///
-/// To use the ?-operator, an extendr-function must return either extendr_api::result::Result<T> or `std::result::Result<T,E>`.
-/// Use of panic! in extendr is discouraged due to memory leakage.
+/// To use the `?`-operator, an extendr-function must return either [`extendr_api::error::Result`] or [`std::result::Result`].
+/// Use of `panic!` in extendr is discouraged due to memory leakage.
 ///
 /// Alternative behaviors enabled by feature toggles:
-/// extendr-api supports different conversions from `Result<T,E>` into `Robj`.
+/// extendr-api supports different conversions from [`Result<T,E>`] into `Robj`.
 /// Below, `x_ok` represents an R variable on R side which was returned from rust via `T::into_robj()` or similar.
 /// Likewise, `x_err` was returned to R side from rust via `E::into_robj()` or similar.
 /// extendr-api
@@ -54,6 +54,8 @@ impl From<()> for Robj {
 ///     assert_eq!(r!(my_func()), r!(1.0));
 /// }
 /// ```
+///
+/// [`extendr_api::error::Result`]: crate::error::Result
 #[cfg(not(any(feature = "result_list", feature = "result_condition")))]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
@@ -65,38 +67,12 @@ where
     }
 }
 
-/// Convert a Result to an Robj. Return either Ok value or Err value wrapped in an
-/// error condition. This allows using ? operator in functions
-/// and returning [Result<T>] without panicking on Err. T must implement IntoRobj.
+/// Convert a [`Result`] to an [`Robj`]. Return either `Ok` value or `Err` value wrapped in an
+/// error condition. This allows using `?` operator in functions
+/// and returning [`Result<T>`] without panicking on `Err`. `T` must implement [`IntoRobj`].
 ///
-/// Returns Ok value as is. Returns Err wrapped in an R error condition. The Err is placed in
+/// Returns `Ok` value as is. Returns `Err` wrapped in an R error condition. The `Err` is placed in
 /// $value field of the condition, and its message is set to 'extendr_err'
-/// ```
-/// use extendr_api::prelude::*;
-/// fn my_func() -> Result<f64> {
-///     Ok(1.0)
-/// }
-///
-/// test! {
-///     assert_eq!(r!(my_func()), r!(1.0));
-/// }
-///
-/// //ok and err type is any IntoRobj
-/// fn my_err_f() -> std::result::Result<f64, f64> {
-///     Err(42.0) // return err float
-/// }
-///
-/// test! {
-///     assert_eq!(
-///         r!(my_err_f()),
-///         R!(
-/// "structure(list(message = 'extendr_err',
-/// value = 42.0), class = c('extendr_error', 'error', 'condition'))"
-///         ).unwrap()
-///     );
-/// }
-///
-/// ```
 #[cfg(all(feature = "result_condition", not(feature = "result_list")))]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
@@ -104,50 +80,22 @@ where
     E: Into<Robj>,
 {
     fn from(res: std::result::Result<T, E>) -> Self {
+        use crate as extendr_api;
         match res {
             Ok(x) => x.into(),
-            Err(x) => { list!(message = "extendr_err", value = x) }
-                // can only imagine this would ever fail due to memory allocation error, but then panicking is the right choice
-                .expect("internal error: failed to create an R list")
+            Err(x) => { list!(message = "extendr_err", value = x.into()) }
                 .set_class(["extendr_error", "error", "condition"])
                 .expect("internal error: failed to set class"),
         }
     }
 }
 
-/// Convert a Result to an R `List` with an `ok` and `err` elements.
-/// This allows using ? operator in functions
-/// and returning [std::result::Result<T,E> or extendr_api::result::Result<T>]
-/// without panicking on Err.
+/// Convert a `Result` to an R `List` with an `ok` and `err` elements.
+/// This allows using `?` operator in functions
+/// and returning [`std::result::Result`] or [`extendr_api::error::Result`]
+/// without panicking on `Err`.
 ///
-///
-/// ```
-/// use extendr_api::prelude::*;
-/// fn my_err_f() -> std::result::Result<f64, String> {
-///     Err("We have water in the engine room!".to_string())
-/// }
-/// fn my_ok_f() -> std::result::Result<f64, String> {
-///     Ok(123.123)
-/// }
-///
-/// test! {
-///     assert_eq!(
-///         r!(my_err_f()),
-///         R!("x=list(ok=NULL, err='We have water in the engine room!')
-///             class(x)='extendr_result'
-///             x"
-///         ).unwrap()
-///     );
-///     assert_eq!(
-///         r!(my_ok_f()),
-///         R!("x = list(ok=123.123, err=NULL)
-///             class(x)='extendr_result'
-///             x"
-///         ).unwrap()
-///     );
-/// }
-///
-/// ```
+/// [`extendr_api::error::Result`]: crate::error::Result
 #[cfg(feature = "result_list")]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
@@ -155,18 +103,17 @@ where
     E: Into<Robj>,
 {
     fn from(res: std::result::Result<T, E>) -> Self {
+        use crate as extendr_api;
         match res {
-            Ok(x) => list!(ok = x, err = NULL),
+            Ok(x) => list!(ok = x.into(), err = NULL),
             Err(x) => {
-                let err_robj = x.into_robj();
+                let err_robj = x.into();
                 if err_robj.is_null() {
                     panic!("Internal error: result_list not allowed to return NULL as err-value")
                 }
                 list!(ok = NULL, err = err_robj)
             }
         }
-        // can only imagine this would ever fail due to memory allocation error, but then panicking is the right choice
-        .expect("Internal error: failed to create an R list")
         .set_class(&["extendr_result"])
         .expect("Internal error: failed to set class")
         .into()
@@ -823,6 +770,55 @@ mod test {
             let msg = rmat.unwrap_err().to_string();
             assert!(msg.contains("27"));
             assert!(msg.contains("dimension"));
+        }
+    }
+
+    #[test]
+    #[cfg(all(feature = "result_condition", not(feature = "result_list")))]
+    fn test_result_condition() {
+        use crate::prelude::*;
+        fn my_err_f() -> std::result::Result<f64, f64> {
+            Err(42.0) // return err float
+        }
+
+        test! {
+                  assert_eq!(
+                    r!(my_err_f()),
+                    R!(
+        "structure(list(message = 'extendr_err',
+        value = 42.0), class = c('extendr_error', 'error', 'condition'))"
+                    ).unwrap()
+                );
+            }
+    }
+
+    #[test]
+    #[cfg(feature = "result_list")]
+    fn test_result_list() {
+        use crate::prelude::*;
+        fn my_err_f() -> std::result::Result<f64, String> {
+            Err("We have water in the engine room!".to_string())
+        }
+
+        fn my_ok_f() -> std::result::Result<f64, String> {
+            Ok(123.123)
+        }
+
+        test! {
+            assert_eq!(
+                r!(my_err_f()),
+                R!("x=list(ok=NULL, err='We have water in the engine room!')
+                    class(x)='extendr_result'
+                    x"
+                ).unwrap()
+            );
+            assert_eq!(
+                r!(my_ok_f()),
+                R!("x = list(ok=123.123, err=NULL)
+                    class(x)='extendr_result'
+                    x"
+                ).unwrap()
+            );
         }
     }
 }
