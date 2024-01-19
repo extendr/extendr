@@ -32,7 +32,7 @@ bibliography: paper.bib
 
 # Summary
 
-For many Scientists, Statistician, and Data Scientists, the programming language R is
+For many Scientists, Statisticians, and Data Scientists, the programming language R is
 irreplaceble. R is an interpreted programming language that aims towards statistical software,
 and visualisations. It offers support on many platforms, the official interpretor is
 written in C, and it is a WebAssembly version called [webR](https://docs.r-wasm.org/webr/latest/).
