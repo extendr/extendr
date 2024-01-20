@@ -12,57 +12,68 @@ authors:
     affiliation: 1
   - name: Josiah D. Parry
     orcid: 0000-0001-9910-865X
-    affiliation: 3
+    affiliation: 2
   - name: Claus O. Wilke
     orcid: 0000-0002-7470-9261
-    affiliation: 2
+    affiliation: 3
   - name: Ilia Kosenkov
     orcid: 0000-0001-5563-7840
+    affiliation: 4
   - name: Andy Thomason
+    affiliation: 5
 affiliations:
   - name: "Section of Animal Welfare and Disease Control, Department of Veterinary and Animal Sciences, University of Copenhagen, Denmark"
     index: 1
-  - name: "The University of Texas at Austin, Texas"
-    index: 2
   - name: "Environmental Systems Research Institute (Esri), Redlands, CA, USA"
+    index: 2
+  - name: "The University of Texas at Austin, Texas"
     index: 3
+  - name: "MISSING AFFILIATION"
+    index: 4
+  - name: "MISSING AFFILIATION"
+    index: 5
 date: \today
 bibliography: paper.bib
 ---
 
 # Summary
 
-For many Scientists, Statisticians, and Data Scientists, the programming language R is
-irreplaceable. R is an interpreted programming language that aims towards statistical software,
-and visualisations. It offers support on many platforms, the official interpreter is
-written in C, and there is WebAssembly support by [webR](https://docs.r-wasm.org/webr/latest/).
+The programming language [Rust](https://www.rust-lang.org) continues to gain popularity with
+developers due to a strong emphasis on safety, performance and productivity<!--- would be good to include a reference here but not essential --->.
+As a general-purpose, low-level programming language, Rust has a wide variety of potential uses
+in both commercial and research applications where performance is important. Commercial examples
+include web development and game development, and in the research domain Rust is increasingly being
+applied to agent-based disease models [@eval_rust_for_custom_abm, @epirust_paper]. However, typical
+workflows in research domains including disease modelling are typically based on a higher-level
+programming language, due to lower barriers to usage and therefore wider adoption within these
+communities compared to low-level languages such as C++ and Rust.
 
-R's ecosystem contains many packages, primarily written by research scientists,
-specialists and professionals, where packages fall between long-standing and
-robust solutions, and cutting-edge research software. While a dynamically typed,
-interpreted language lends itself towards the non-programmer crowd, there is
-a need for performant, maintainable, and versatile qualities. This is achievable
-for the R community, by having extensibility as a core feature of the language.
-
-Natively, R provides tools to compile and embed Fortran, C, and C++ code. The
-binding happens through R's C-API. The official R-package repository CRAN[^CRAN] hosts
-several community-driven
-efforts for providing bindings to R, from many languages like Julia, Python, Java,
-JavaScript, etc.
+The statistical programming language [R](https://www.r-project.org) is one of the most widely used
+high-level languages in research<!--- again, it would be good to include a reference here but not essential --->.
+R is supported on a wide range of platforms, the official interpreter is
+written in C, and there is WebAssembly support by [webR](https://docs.r-wasm.org/webr/latest/)<!-- is this relevant about webassembley? If not, remove -->. One of the reasons for the popularity of R is an ecosystem of packages hosted at CRAN[^CRAN; https://cran.r-project.org], which are primarily written by research scientists,
+specialists and professionals. These packages provide both long-standing and
+robust solutions to established problems as well as cutting-edge research software.
 
 [^CRAN]: Comprehensive R Archive Network
 
-extendr offers a project aimed at (automatic) binding of Rust to the R ecosystem. This
-is accomplished by providing an opinionated, ergonomics-focused, and rich
-suite of software packages in order to facilitate R-users' developer experience with Rust.
-There is a community-expectation that R is the front-end to working with other
-languages, as well as a tradition for providing automated tooling for scaffolding / boilerplate
-for integrating to external languages.
+As a dynamically typed
+interpreted language R is accessible to non-programmers, but fexibility and performance is
+also made available to more experienced programmers by having extensibility as a core feature of the language.
+Natively, R provides tools to compile and embed Fortran, C, and C++ code, with binding
+through R's C-API. CRAN hosts several community-driven
+efforts for providing bindings to R, from many languages like Julia, Python, Java,
+JavaScript, etc. However, there is currently no solution providing binding of Rust to R.
 
-Thus extendr provides an emulation of the R data model within Rust, integration
+This paper introduces the extendr package, which is a project aimed at (automatic) binding of Rust to the R ecosystem. This
+is accomplished by providing an opinionated, ergonomics-focused, and rich
+suite of software packages in order to facilitate the use of Rust code within R packages.
+<!-- Repitition:  There is a community expectation that R is the front-end to working with other
+languages, as well as a tradition for providing automated tooling for scaffolding / boilerplate
+for integrating to external languages.-->
+This is achived by providing an emulation of the R data model within Rust, integration
 of Rust tooling in the R-package build systems, a rust developer experience in
 R, and functions for preparing publishing of Rust-powered R-packages to CRAN.
-
 A webpage with an overview of the extendr-packages, and access to comprehensive
 API documentation is provided at [extendr.github.io](https://extendr.github.io/).
 
