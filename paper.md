@@ -5,7 +5,7 @@ tags:
   - Rust
   - FFI
   - bindings
-subtitle: "R extensions in Rusts"
+subtitle: "interfacing Rust code within R packages"<!-- the previous subtitle had a typo, and didn't read very well anyway-->
 authors:
   - name: "Mossa Merhi Reimert"
     orcid: 0009-0007-9297-1523
@@ -76,6 +76,9 @@ of Rust tooling in the R-package build systems, a rust developer experience in
 R, and functions for preparing publishing of Rust-powered R-packages to CRAN.
 A webpage with an overview of the extendr-packages, and access to comprehensive
 API documentation is provided at [extendr.github.io](https://extendr.github.io/).
+
+<!-- I got this far and then realised that the summary and statement of need sections need re-shuffling to
+avoid overlap/repetition.  Also the summary is too heavy on introduction and too light on what extendr actually does -->
 
 # Statement of Need
 
