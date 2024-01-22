@@ -27,7 +27,7 @@ affiliations:
     index: 1
   - name: "Environmental Systems Research Institute (Esri), Redlands, CA, USA"
     index: 2
-  - name: "The University of Texas at Austin, Texas"
+  - name: "Department of Integrative Biology, The University of Texas at Austin, Austin, TX, USA"
     index: 3
   - name: "MISSING AFFILIATION"
     index: 4
@@ -40,7 +40,7 @@ bibliography: paper.bib
 # Summary
 
 The programming language [Rust](https://www.rust-lang.org) continues to gain popularity with
-developers due to a strong emphasis on safety, performance and productivity [@perkelWhyScientistsAre2020].
+developers due to a strong emphasis on safety, performance, and productivity [@perkelWhyScientistsAre2020].
 As a general-purpose, low-level programming language, Rust has a wide variety of potential uses
 in both commercial and research applications where performance is important. Commercial examples
 include web development and game development, and in the research domain Rust is increasingly being
@@ -48,11 +48,11 @@ used in a wide range of contexts including change point detection [@JMLR:v24:22-
 GIF encoding [@gifski_cran], and agent-based models of disease spread [@eval_rust_for_custom_abm; @epirust_paper; @forth_african_2022-1].
 <!-- Other references/examples of Rust usage in research would be useful! -->
 
-However, typical workflows in research domains including disease modelling are typically based on a higher-level
-programming language, due to lower barriers to usage and therefore wider adoption within these
+However, typical workflows in research domains including disease modelling are frequently based on higher-level
+programming languages, due to lower barriers to usage and therefore wider adoption within these
 communities compared to low-level languages such as C++ and Rust. The statistical programming language
 [R](https://www.r-project.org) is one of the most widely used
-high-level languages in research. R's official interpreter is written in C, and provides a C-API as well as
+high-level languages in research. R's official interpreter is written in C, and it provides a C-API as well as
 tools for building dynamic libraries in Fortran/C/C++ natively.
 <!-- On Windows, the R-project provides
 a toolchain, Rtools, which bundles a developer environment for Fortran, C and C++. -->
@@ -63,10 +63,10 @@ such as Python and Julia.
 
 A strength of R is the ecosystem of packages hosted at [CRAN](https://cran.r-project.org),
 which are primarily written by research scientists,
-specialists and professionals. An important use case is as a front-end to working with other
+specialists, and professionals. An important use case is as a front-end to working with other
 languages, for which automated tooling providing scaffolding / boilerplate code for integrating external languages
 are widely used. For example, embedding C++ code is a good way to resolve performance bottlenecks
-within R packages, and can be easily accomplished using cpp11 [@cpp11] and Rcpp [@rcpp_jss].
+within R packages, and it can be easily accomplished using cpp11 [@cpp11] and Rcpp [@rcpp_jss].
 Rust has similar performance to C++ but also has other beneficial features such as declarative memory management,
 providing compile-time guarantees for memory safety without the need for a garbage collector.
 <!-- Rust and R also share support for WebAssembly [webR](https://docs.r-wasm.org/webr/latest/). -->
@@ -253,6 +253,8 @@ Project lead Andy Thomason received a grant from the R-consortium
 [@consortiumConsortiumFundedProject2023].
 
 Mossa Merhi Reimert received funding from the Danish Food and Veterinary Administration for his PhD project.
+
+Claus O. Wilke acknowledges funding from The University of Texas at Austin (Reeder Centennial Fellowship in Systematic and Evolutionary Biology, Blumberg Centennial Professor in Molecular Evolution).
 
 The authors acknowledge the assistance of Matt Denwood and Maya Gussmann with writing this article.
 
