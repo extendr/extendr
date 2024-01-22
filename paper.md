@@ -79,7 +79,7 @@ in a similar manner to that provided by Rcpp for C++.
 This paper introduces a collection of four Rust crates and an R package that collectively make up the extendr project.
 The goal of this project is to provide (automatic) binding of Rust to R, using an opinionated and
 ergonomics-focused suite of tools that facilitate the use of Rust code within R packages.
-This is achived by providing an emulation of the R data model within Rust, integration
+This is achieved by providing an emulation of the R data model within Rust, integration
 of Rust tooling in the R-package build systems, a rust developer experience in
 R, and functions for preparing publishing of Rust-powered R-packages to CRAN.
 A webpage with an overview of the extendr crates/packages and access to comprehensive
@@ -128,7 +128,7 @@ for interfacing Rust to R that is comparable in scope to the R/C++ interfaces pr
 It consists of the following components:
 
 - extendr-api: a Rust crate integrating R's data model in Rust, which underlies the functionality of extendr
-- extendr-macros: a Rust crate responsbile for auto-generating R wrappers for embedding Rust within R code
+- extendr-macros: a Rust crate responsible for auto-generating R wrappers for embedding Rust within R code
 - extendr-engine: a Rust crate that enables launching R sessions from within Rust code, similar to `RInside` [@rinside_cran]
 - rextendr: an R package that simplifies the process of embedding Rust code within an R package, including helping the user to adhere to CRAN rules for publishing Rust-powered R packages
 - libR-sys: a Rust crate providing auto-generated Rust bindings to R's C-API
@@ -175,7 +175,7 @@ it with `#[extendr]` will add a callable C-function in R, that converts the
 custom data types into `SEXP` types.
 
 The `rextendr` package also provides R-level functions `rust_source`, which allows
-abitrary Rust code to be evaluated returning the last value in the block, and
+arbitrary Rust code to be evaluated returning the last value in the block, and
 `rust_function`, which compiles, wraps and returns arbitrary Rust functions as
 callable R functions. These two functions are very similar in scope to the
 `evalCpp` and `cppFunction` functions provided by Rcpp, and are very versatile,
