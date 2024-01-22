@@ -39,74 +39,48 @@ bibliography: paper.bib
 # Summary
 
 The programming language [Rust](https://www.rust-lang.org) continues to gain popularity with
-developers due to a strong emphasis on safety, performance and productivity<!--- would be good to include a reference here but not essential --->.
+developers due to a strong emphasis on safety, performance and productivity [@perkelWhyScientistsAre2020].
 As a general-purpose, low-level programming language, Rust has a wide variety of potential uses
 in both commercial and research applications where performance is important. Commercial examples
 include web development and game development, and in the research domain Rust is increasingly being
-applied to agent-based disease models [@eval_rust_for_custom_abm, @epirust_paper]. However, typical
-workflows in research domains including disease modelling are typically based on a higher-level
+used in a wide range of contexts including change point detection [@JMLR:v24:22-0512], high-performance
+GIF encoding [@gifski_cran], and agent-based models of disease spread [@eval_rust_for_custom_abm; @epirust_paper; @forth_african_2022-1]. 
+<!-- Other references/examples of Rust usage in research would be useful! -->
+
+However, typical workflows in research domains including disease modelling are typically based on a higher-level
 programming language, due to lower barriers to usage and therefore wider adoption within these
-communities compared to low-level languages such as C++ and Rust.
+communities compared to low-level languages such as C++ and Rust. The statistical programming language [R](https://www.r-project.org) is one of the most widely used
+high-level languages in research. R's official interpreter is written in C, and provides a C-API as well as 
+tools for building dynamic libraries in Fortran/C/C++ natively.
+<!-- On Windows, the R-project provides
+a toolchain, Rtools, which bundles a developer environment for Fortran, C and C++. -->
+<!-- The R-project provides documentation for developing extensions in [R-internals](https://cran.r-project.org/doc/manuals/R-ints.html)
+and [R-extenstions](https://cran.r-project.org/doc/manuals/R-exts.html). -->
+The Extending R book [@chambers2017extending] also describes interfacing with other languages
+such as Python and Julia. 
 
-For scientific computing, Rust has been used to write software to aid in
-scientific tooling that is on-par or even surpassing state-of-the-art.
-For instance, [`gifski`](https://crates.io/crates/gifski) is a high-performance
-GIF encoder
-
-The statistical programming language [R](https://www.r-project.org) is one of the most widely used
-high-level languages in research<!--- again, it would be good to include a reference here but not essential --->.
-R is supported on a wide range of platforms, the official interpreter is
-written in C, and there is WebAssembly support by [webR](https://docs.r-wasm.org/webr/latest/)<!-- is this relevant about webassembley? If not, remove -->. One of the reasons for the popularity of R is an ecosystem of packages hosted at CRAN[^CRAN; https://cran.r-project.org], which are primarily written by research scientists,
-specialists and professionals. These packages provide both long-standing and
-robust solutions to established problems as well as cutting-edge research software.
+A strength of R is the ecosystem of packages hosted at CRAN[^CRAN; https://cran.r-project.org], which are primarily written by research scientists,
+specialists and professionals. An important use case is as a front-end to working with other
+languages, for which automated tooling providing scaffolding / boilerplate code for integrating external languages
+are widely used. For example, embedding C++ code within packages is highly beneficial for performance reasons,
+and can be easily accomplished using cpp11 [@cpp11] and Rcpp [@rcpp_jss]. 
+Rust has similar performance to C++ but also has other beneficial features such as declarative memory management,
+providing compile-time guarantees for memory safety without the need for a garbage collector. 
+<!-- Rust and R also share support for WebAssembly [webR](https://docs.r-wasm.org/webr/latest/). -->
+However, to the authors' knowledge there is currently no fully featured mechanism for integrating Rust within an R package
+in a similar manner to that provided by Rcpp for C++.
 
 [^CRAN]: Comprehensive R Archive Network
 
-
-R is a programming language aimed towards statistical software and visualisations.
-From its inception, R was meant to be extended, providing tools for building
-dynamic libraries in Fortran/C/C++ natively. On Windows, the R-project provides
-a toolchain, Rtools, which bundles a developer environment for Fortran, C and C++.
-In Extending R [@chambers2017extending], a book written by an R-core member,
- interfacing with Python, Julia and C++ is described. R provides a C-API by default,
-together with command line utilities to compile dynamic libraries for use in R.
-The R-project provides documentation for developing extensions in [R-internals](https://cran.r-project.org/doc/manuals/R-ints.html)
-and [R-extenstions](https://cran.r-project.org/doc/manuals/R-exts.html).
-
-
-In order to have reasonable performance in R, package developers need to
-embed extension code in their packages. This is partially why Rcpp is used
-by the majority of packages on CRAN (through other dependencies), the official R-package repository for R [@vriesAndriePagerank2021].
-However, performance is not the only virtue that
-scientists require in a compiled language, and Rust has other features that
-scientists with ever growing computational needs have gravitated towards [@perkelWhyScientistsAre2020]. For instance, Rust uses declarative memory management,
-i.e. there are compile-time guarantees for memory safety. Note that memory leaks
-are not considered unsafe, as yielding data from Rust to R is considered
-leaking memory.
-
-An example of this is agent-based modelling in epidemiology. There are many
-off the shelf frameworks to write a particular model or scenario. However,
-each setting differs, and custom agent-based models are increasingly desired.
-Rust is a great candidate to write such models [@eval_rust_for_custom_abm],
-[@epirust_paper]. For modelling African Swine Fever within wild boar using Rust,
-there is [SwiFCo-rs](https://ecoepi.eu/ASFWB/), see [@forth_african_2022-1].
-These models are large and continuously updated and amended.
-
-
-This paper introduces the extendr package, which is a project aimed at (automatic) binding of Rust to the R ecosystem. This
-is accomplished by providing an opinionated, ergonomics-focused, and rich
-suite of software packages in order to facilitate the use of Rust code within R packages.
-<!-- Repitition:  There is a community expectation that R is the front-end to working with other
-languages, as well as a tradition for providing automated tooling for scaffolding / boilerplate
-for integrating to external languages.-->
+This paper introduces a collection of software packages that collectively make up the extendr project.
+The goal of this project is to provide (automatic) binding of Rust to R, using an opinionated and 
+ergonomics-focused suite of tools that facilitate the use of Rust code within R packages.
 This is achived by providing an emulation of the R data model within Rust, integration
 of Rust tooling in the R-package build systems, a rust developer experience in
 R, and functions for preparing publishing of Rust-powered R-packages to CRAN.
 A webpage with an overview of the extendr-packages, and access to comprehensive
 API documentation is provided at [extendr.github.io](https://extendr.github.io/).
 
-<!-- I got this far and then realised that the summary and statement of need sections need re-shuffling to
-avoid overlap/repetition.  Also the summary is too heavy on introduction and too light on what extendr actually does -->
 
 # Statement of Need
 
@@ -149,7 +123,7 @@ and Julia has [jlrs](https://github.com/Taaitaaiger/jlrs).
 The rust-based DataFrame library [Polars](https://pola.rs/) has bindings to
 python (via [`py-polars`](https://github.com/pola-rs/polars/tree/main/py-polars)) and to R via [`polars`](https://github.com/pola-rs/r-polars), where the latter is built with extendr.
 
-An example of scientific work enabled by extendr is the package [`changeforest`](https://github.com/mlondschien/changeforest/tree/main), and accompanying publication [@JMLR:v24:22-0512].
+An example of scientific work enabled by extendr is the package [`changeforest`](https://github.com/mlondschien/changeforest/), and accompanying publication [@JMLR:v24:22-0512].
 
 The CRAN published R-package [`rsgeo`](https://cran.r-project.org/web/packages/rsgeo/index.html) provides bindings to [`geo-rust`](https://crates.io/crates/geo) geometric primitives and algorithms which are very performant. `rsgeo` is most similar to `geos` [@geos_cran] which provides bindings to the GEOS C library.
 
