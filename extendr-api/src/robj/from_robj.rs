@@ -289,3 +289,34 @@ where
         }
     }
 }
+
+#[cfg(feature = "faer-core")]
+impl<'a> FromRobj<'a> for Mat<f64> {
+    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+        if robj.is_matrix() {
+            if let Some(dim) = robj.dim() {
+                let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
+
+                if dim.len() != 2 {
+                    return Err("could not convert to matrix");
+                }
+
+                if let Some(slice) = robj.as_real_slice() {
+                    let fmat =
+                        faer_core::mat::from_column_major_slice::<f64>(&slice, dim[0], dim[1]);
+                    Ok(fmat)
+                } else if let Some(slice) = robj.as_integer_slice() {
+                    let fmat =
+                        Mat::<f64>::from_fn(dim[0], dim[1], |i, j| slice[i + j * dim[0]] as f64);
+                    Ok(fmat)
+                } else {
+                    Err("could not convert to matrix")
+                }
+            } else {
+                Err("could not convert to matrix")
+            }
+        } else {
+            Err("R object is not a matrix")
+        }
+    }
+}

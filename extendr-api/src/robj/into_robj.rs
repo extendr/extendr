@@ -710,6 +710,16 @@ impl From<Vec<Rstr>> for Robj {
     }
 }
 
+#[cfg(feature = "faer-core")]
+impl From<Mat<f64>> for Robj {
+    /// Convert a faer Mat<f64> into Robj.
+    fn from(mat: Mat<f64>) -> Self {
+        self.col_chunks(1)
+            .flat_map(|c| c.row_chunks(1).map(|r| r.read(0, 0)))
+            .collect_robj()
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
