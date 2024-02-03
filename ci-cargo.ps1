@@ -22,9 +22,9 @@ function ci-cargo {
         if ($ActionName -ne $null -and $ActionName -ne "") {
             $ActionName = "'$ActionName': "
         }
-        $err_msg = "$($ActionName)cargo failed with code $LASTEXITCODE (args: $CargoArgs)"
-        Write-Output "::error::$err_msg"
-        Write-Error -Message "$err_msg" -ErrorAction Stop
+        $errMsg = "$($ActionName)cargo failed with code $LASTEXITCODE (args: $CargoArgs)"
+        Write-Output "::error::$errMsg"
+        Write-Error -Message "$errMsg" -ErrorAction Stop
     }
     finally {
         Write-Output "::endgroup::"
