@@ -11,6 +11,7 @@ function ci-cargo {
 
     try {
         Write-Output "::group::$ActionName"
+        $CargoArgs = $CargoArgs | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
         Write-Output "Running cargo $CargoArgs"
         cargo $CargoArgs
         if ($LASTEXITCODE -ne 0) {
