@@ -9,11 +9,11 @@ function ci-cargo {
     )
 
 
-    try {    
-        echo "::group::$ActionName"
-        echo "Running cargo $CargoArgs"
+    try {
+        Write-Output "::group::$ActionName"
+        Write-Output "Running cargo $CargoArgs"
         cargo $CargoArgs
-        if($LASTEXITCODE -ne  0) {
+        if ($LASTEXITCODE -ne 0) {
             throw $LASTEXITCODE
         }
     }
@@ -22,11 +22,11 @@ function ci-cargo {
             $ActionName = "'$ActionName': "
         }
         $err_msg = "$($ActionName)cargo failed with code $LASTEXITCODE (args: $CargoArgs)"
-        echo "::error::$err_msg"
-        Write-Error -Message "$err_msg" -ErrorAction Stop 
+        Write-Output "::error::$err_msg"
+        Write-Error -Message "$err_msg" -ErrorAction Stop
     }
     finally {
-        echo "::endgroup::"
+        Write-Output "::endgroup::"
     }
 
     <#
