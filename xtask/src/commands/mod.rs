@@ -1,3 +1,4 @@
+pub(crate) mod cargo_fmt;
 pub(crate) mod cargo_fmt_check;
 pub(crate) mod cargo_msrv;
 pub(crate) mod devtools_test;

@@ -15,6 +15,8 @@ pub(crate) struct Cli {
 pub(crate) enum Commands {
     #[command(about = "Run cargo fmt on extendr")]
     CheckFmt,
+    #[command(about = "Run `cargo fmt` on extendr crates")]
+    Fmt,
     #[command(about = "Run R CMD check on {extendrtests}")]
     RCmdCheck(RCmdCheckArg),
     #[command(about = "Generate documentation for all features")]

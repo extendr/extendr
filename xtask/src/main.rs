@@ -21,6 +21,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .canonicalize()?,
     );
     match cli.command {
+        cli::Commands::Fmt => commands::cargo_fmt::run(&shell)?,
         cli::Commands::CheckFmt => commands::cargo_fmt_check::run(&shell)?,
         cli::Commands::RCmdCheck(RCmdCheckArg {
             no_build_vignettes,
