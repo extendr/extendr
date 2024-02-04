@@ -53,72 +53,59 @@ used in a wide range of contexts including change point detection [@JMLR:v24:22-
 GIF encoding [@gifski_cran], and agent-based models of disease spread [@eval_rust_for_custom_abm; @epirust_paper; @forth_african_2022-1].
 <!-- Other references/examples of Rust usage in research would be useful! -->
 
-However, typical workflows in research domains including disease modelling are frequently based on higher-level
-programming languages, due to lower barriers to usage and therefore wider adoption within these
-communities compared to low-level languages such as C++ and Rust. The statistical programming language
-[R](https://www.r-project.org) is one of the most widely used
-high-level languages in research. R's official interpreter is written in C, and it provides a C-API as well as
+However, typical workflows in research domains, such as disease modelling, often rely on higher-level programming languages due to lower entry barriers. 
+This results in broader adoption within scientific communities, compared to the use of low-level languages like C++ and Rust.
+The statistical programming language[R]( https://www.r-project.org) is one of the most widely used
+high-level languages in research. R's official interpreter is written in C, and it provides a C API as well as
 tools for building dynamic libraries in Fortran/C/C++ natively.
 <!-- On Windows, the R-project provides
 a toolchain, Rtools, which bundles a developer environment for Fortran, C and C++. -->
 <!-- The R-project provides documentation for developing extensions in [R-internals](https://cran.r-project.org/doc/manuals/R-ints.html)
 and [R-extenstions](https://cran.r-project.org/doc/manuals/R-exts.html). -->
-The Extending R book [@chambers2017extending] also describes interfacing with other languages
+The 'Extending R' book [@chambers2017extending] also describes interfacing with other languages
 such as Python and Julia.
+<!--Java?-->
 
-A strength of R is the ecosystem of packages hosted at [CRAN](https://cran.r-project.org),
-which are primarily written by research scientists,
-specialists, and professionals. An important use case is as a front-end to working with other
-languages, for which automated tooling providing scaffolding / boilerplate code for integrating external languages
-are widely used. For example, embedding C++ code is a good way to resolve performance bottlenecks
-within R packages, and it can be easily accomplished using cpp11 [@cpp11] and Rcpp [@rcpp_jss].
-Rust has similar performance to C++ but also has other beneficial features such as declarative memory management,
-providing compile-time guarantees for memory safety without the need for a garbage collector.
+The strength of R is its ecosystem of packages, the vast majority of which are available from [CRAN](https://cran.r-project.org).
+They are primarily written by research scientists, specialists, and professionals. 
+Another important use case of R packages is being a front-end for other languages.
+Automated toolings that provide scaffolding and boilerplate code are widely used to simplify cross-language integration.
+For example, embedding C++ code is a good way to resolve performance bottlenecks within R packages, and it can be easily accomplished using cpp11 [@cpp11] or Rcpp [@rcpp_jss].
+Rust demonstrates similar performance to C++, but it also offers other beneficial features such as declarative memory management, and compile-time guarantees for memory safety in the absence of a garbage collector.
 <!-- Rust and R also share support for WebAssembly [webR](https://docs.r-wasm.org/webr/latest/). -->
-We note that other scientific computing communities
-have introduced plug-ins for Rust, including Python via [PyO3](https://github.com/PyO3/pyo3),
+We note that other scientific computing communities have already introduced plug-ins for Rust, including Python via [PyO3](https://github.com/PyO3/pyo3),
 and Julia via [jlrs](https://github.com/Taaitaaiger/jlrs).
-However, to the authors' knowledge there is currently no fully featured mechanism for integrating Rust within an R package
-in a similar manner to that provided by Rcpp for C++.
 
-This paper introduces a collection of four Rust crates and an R package that collectively make up the extendr project.
-The goal of this project is to provide (automatic) binding of Rust to R, using an opinionated and
-ergonomics-focused suite of tools that facilitate the use of Rust code within R packages.
-This is achieved by providing an emulation of the R data model within Rust, integration
-of Rust tooling in the R-package build systems, a rust developer experience in
-R, and functions for preparing publishing of Rust-powered R-packages to CRAN.
-A webpage with an overview of the extendr crates/packages and access to comprehensive
-API documentation is provided at [extendr.github.io](https://extendr.github.io/).
+This paper introduces a collection of four Rust crates and an R package that collectively make up the 'extendr' project.
+The goal of this project is to provide (automatic) binding of Rust to R, using an opinionated and ergonomics-focused suite of tools that facilitate the use of Rust code within R packages.
+This is achieved by offering emulation of the R data model within Rust, integration 
+of Rust tooling in the R-package build systems, a Rust developer experience in
+R, and functions for preparing Rust-powered R-packages for submission to CRAN.
+An overview of the 'extendr' crates and packages as well as comprehensive API documentation is available at [extendr.github.io](https://extendr.github.io/).
 
 # Statement of Need
 
-R provides tools to compile and embed Fortran, C, and C++ code, with binding
-through R's C-API. However, these raw bindings are not easy for users to navigate, so
-frameworks to facilitate interfacing other languages to R are extremely popular, for example
-Rcpp [@rcpp_cran] and cpp11 [@cpp11] for C++, Java via rJava [@rJava], Python
-with `reticulate` [@reticulate_cran], and JavaScript on the V8 runtime and the
-V8 R-package [@v8_cran]. In contrast, bindings between Rust and R, such as
-[`gifski`](https://crates.io/crates/gifski) [@gifski_cran],
-are currently mostly written by hand.
+R provides tools for compiling and embedding Fortran, C, and C++ code, with binding through R's C-API. However, these raw bindings are not easy for users to navigate.
+This makes frameworks facilitating interfacing other languages to R extremely popular.
+Rcpp [@rcpp_cran] and cpp11 [@cpp11] for C++, Java via rJava [@rJava], Python with `reticulate` [@reticulate_cran], and JavaScript on the V8 runtime and the
+V8 R-package [@v8_cran] are among the most used.
+In contrast, bindings between Rust and R, such as [`gifski`](https://crates.io/crates/gifski) [@gifski_cran], are currently mostly written by hand.
 
-We note that there are other software packages providing bindings between R and Rust. The
-Rust crate / R-package resp `roxido` / [`cargo`](https://github.com/dbdahl/cargo-framework)
-provides a mechanism of embedding Rust code within R packages.
+<!--This contradicts the statement above that we do not know other bindings provider-->
+We note that there exist other software packages providing bindings between R and Rust. 
+The Rust crate / R-package `roxido` / [`cargo`](https://github.com/dbdahl/cargo-framework) provides a mechanism for embedding Rust code within R packages.
 <!-- Looks like this should be cited:  David B. Dahl (2021), Writing R Extensions in Rust, arXiv:2108.07179 [cs.PL], URL https://arxiv.org/abs/2108.07179. -->
-The [savvy](https://github.com/yutannihilation/savvy) interface was also written as a
-simplified offshoot of extendr. However, these implementations differ to extendr in
-that extendr aims to provide an opinionated API, with a focus on an
+The [savvy](https://github.com/yutannihilation/savvy) interface represents a distilled byproduct of 'extendr'. 
+However, these implementations differ from 'extendr' in that 'extendr' aims at providing an opinionated API, with a focus on an
 ergonomic API design inspired by features from Rcpp and cpp11.
 
-There are a number of existing examples of projects using extendr. The DataFrame library
-[Polars](https://pola.rs/) has bindings to python (via [`py-polars`](https://github.com/pola-rs/polars/tree/main/py-polars))
+Several existing projects already utilize 'extendr'. 
+The DataFrame library [Polars](https://pola.rs/) has bindings to python (via [`py-polars`](https://github.com/pola-rs/polars/tree/main/py-polars))
 and to R via [`polars`](https://github.com/pola-rs/r-polars), where the latter is built with extendr.
-The CRAN package [`rsgeo`](https://cran.r-project.org/web/packages/rsgeo/) provides
-bindings to [`geo-rust`](https://crates.io/crates/geo), to allow R users to take advantage of
-highly performant geometric primitives and algorithms in Rust.
+The CRAN package [`rsgeo`](https://cran.r-project.org/web/packages/rsgeo/) provides bindings to [`geo-rust`](https://crates.io/crates/geo), allowing R users to take advantage of
+highly performant geometric primitives and algorithms written and optimized in Rust.
 <!-- Are there preferred citation methods for rsgeo? -->
-A further example of scientific work enabled by extendr is the [`changeforest`](https://github.com/mlondschien/changeforest/)
-package [@JMLR:v24:22-0512].
+Another example of scientific work enabled by 'extendr' is the [`changeforest`](https://github.com/mlondschien/changeforest/) package [@JMLR:v24:22-0512].
 
   <!-- - prqlr which are bindings to the prql crust compiler library that generates sql queries. -->
 
