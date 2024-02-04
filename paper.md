@@ -70,7 +70,6 @@ Rust demonstrates similar performance to C++, but it also offers other beneficia
 <!-- Rust and R also share support for WebAssembly [webR](https://docs.r-wasm.org/webr/latest/). -->
 We note that other scientific computing communities have already introduced plug-ins for Rust, including Python via [PyO3](https://github.com/PyO3/pyo3),
 and Julia via [jlrs](https://github.com/Taaitaaiger/jlrs).
-However, to the authors' knowledge, there currently is no fully featured mechanism for integrating Rust within an R package like that provided by Rcpp for C++.
 
 This paper introduces a collection of four Rust crates and an R package that collectively make up the 'extendr' project.
 The goal of this project is to provide (automatic) binding of Rust to R, using an opinionated and ergonomics-focused suite of tools that facilitate the use of Rust code within R packages.
