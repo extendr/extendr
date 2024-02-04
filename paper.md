@@ -22,6 +22,9 @@ authors:
     affiliation: 4
   - name: Andy Thomason
     affiliation: 5
+  - name: Michael Milton
+    orcid: 0000-0002-8965-2595
+    affiliation: 6
 affiliations:
   - name: "Section of Animal Welfare and Disease Control, Department of Veterinary and Animal Sciences, University of Copenhagen, Denmark"
     index: 1
@@ -33,6 +36,8 @@ affiliations:
     index: 4
   - name: "MISSING AFFILIATION"
     index: 5
+  - name: "Walter and Eliza Hall Institute of Medical Research"
+    index: 6
 date: \today
 bibliography: paper.bib
 ---
