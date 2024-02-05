@@ -25,9 +25,10 @@ authors:
     affiliation: 3
   - name: Ilia Kosenkov
     orcid: 0000-0001-5563-7840
+    affiliation: 6
   - name: Michael Milton
     orcid: 0000-0002-8965-2595
-    affiliation: 6
+    affiliation: 4
   - name: Andy Thomason
     affiliation: 5
 affiliations:
@@ -37,9 +38,11 @@ affiliations:
     index: 2
   - name: "Department of Integrative Biology, The University of Texas at Austin, Austin, TX, USA"
     index: 3
+  - name: "Walter and Eliza Hall Institute of Medical Research"
+    index: 4
   - name: "Atomic Increment Ltd."
     index: 5
-  - name: "Walter and Eliza Hall Institute of Medical Research"
+  - name: "None"
     index: 6
 date: \today
 bibliography: paper.bib
