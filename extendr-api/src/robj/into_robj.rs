@@ -711,10 +711,10 @@ impl From<Vec<Rstr>> for Robj {
 }
 
 #[cfg(feature = "faer-core")]
-impl From<Mat<f64>> for Robj {
+impl From<faer_core::Mat<f64>> for Robj {
     /// Convert a faer Mat<f64> into Robj.
-    fn from(mat: Mat<f64>) -> Self {
-        self.col_chunks(1)
+    fn from(mat: faer_core::Mat<f64>) -> Self {
+        mat.col_chunks(1)
             .flat_map(|c| c.row_chunks(1).map(|r| r.read(0, 0)))
             .collect_robj()
     }
@@ -829,6 +829,23 @@ mod test {
                     x"
                 ).unwrap()
             );
+        }
+    }
+
+    #[test]
+    #[cfg(feature = "faer-core")]
+    fn test_faer_mat_to_robj() {
+        use faer_core::mat;
+        test! {
+            let vec: Vec<f64> = (1..13).map(f64::from).collect();
+            let a = mat![
+                [1.0, 5.0, 9.0],
+                [2.0, 6.0, 10.0],
+                [3.0, 7.0, 11.0],
+                [4.0, 8.0, 12.0f64],
+            ];
+            let robj: Robj = a.clone().into();
+            assert_eq!(robj.as_real_slice().expect("slice"), &vec);
         }
     }
 }
