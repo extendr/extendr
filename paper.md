@@ -14,12 +14,17 @@ authors:
   - name: Josiah D. Parry
     orcid: 0000-0001-9910-865X
     affiliation: 2
+  - name: Matt Denwood
+    orcid: 0000-0001-5212-4273
+    affiliation: 1
+  - name: Maya Katrin Gussmann
+    orcid: 0000-0001-5634-5903
+    affiliation: 1
   - name: Claus O. Wilke
     orcid: 0000-0002-7470-9261
     affiliation: 3
   - name: Ilia Kosenkov
     orcid: 0000-0001-5563-7840
-    affiliation: 4
   - name: Michael Milton
     orcid: 0000-0002-8965-2595
     affiliation: 6
