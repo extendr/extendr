@@ -291,8 +291,9 @@ where
 }
 
 #[cfg(feature = "faer-core")]
-impl<'a> FromRobj<'a> for Mat<f64> {
+impl<'a> FromRobj<'a> for faer_core::Mat<f64> {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+        use crate::scalar::Scalar;
         if robj.is_matrix() {
             if let Some(dim) = robj.dim() {
                 let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
@@ -304,10 +305,11 @@ impl<'a> FromRobj<'a> for Mat<f64> {
                 if let Some(slice) = robj.as_real_slice() {
                     let fmat =
                         faer_core::mat::from_column_major_slice::<f64>(&slice, dim[0], dim[1]);
-                    Ok(fmat)
+                    Ok(fmat.to_owned())
                 } else if let Some(slice) = robj.as_integer_slice() {
-                    let fmat =
-                        Mat::<f64>::from_fn(dim[0], dim[1], |i, j| slice[i + j * dim[0]] as f64);
+                    let fmat = faer_core::Mat::<f64>::from_fn(dim[0], dim[1], |i, j| {
+                        slice[i + j * dim[0]] as f64
+                    });
                     Ok(fmat)
                 } else {
                     Err("could not convert to matrix")
@@ -317,6 +319,30 @@ impl<'a> FromRobj<'a> for Mat<f64> {
             }
         } else {
             Err("R object is not a matrix")
+        }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    #[cfg(feature = "faer-core")]
+    fn test_robj_to_faer_mat() {
+        use faer_core::Mat;
+        test! {
+            let values = [
+                [1.0, 5.0, 9.0],
+                [2.0, 6.0, 10.0],
+                [3.0, 7.0, 11.0],
+                [4.0, 8.0, 12.0f64]
+            ];
+            let a = Mat::<f64>::from_fn(4, 3, |i, j| values[i][j] as f64);
+
+            let rmatrix = RMatrix::new_matrix(4, 3, |i, j| values[i][j]);
+            let b = Mat::<f64>::from_robj(&Robj::from(rmatrix));
+            assert_eq!(a, b.expect("matrix to be converted"));
         }
     }
 }
