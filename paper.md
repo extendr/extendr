@@ -251,8 +251,6 @@ Mossa Merhi Reimert received funding from the Danish Food and Veterinary Adminis
 
 Claus O. Wilke acknowledges funding from The University of Texas at Austin (Reeder Centennial Fellowship in Systematic and Evolutionary Biology, Blumberg Centennial Professor in Molecular Evolution).
 
-The authors acknowledge the assistance of Matt Denwood and Maya Gussmann with writing this article.
-
 We would like to acknowledge Jeroen Ooms for his [hellorust](https://github.com/r-rust/hellorust) [@hellorust_cran], and continuous maintenance of a hand-written embedding of Rust in an R proof-of-concept project.
 Their [github.com/r-rust](https://github.com/r-rust) contains several examples
 of hand-crafted bindings to Rust packages for R, such as `gifski` [@gifski_cran].
