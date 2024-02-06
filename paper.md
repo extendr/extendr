@@ -25,25 +25,25 @@ authors:
     affiliation: 3
   - name: Ilia Kosenkov
     orcid: 0000-0001-5563-7840
-    affiliation: 6
+    affiliation: 4
   - name: Michael Milton
     orcid: 0000-0002-8965-2595
-    affiliation: 4
+    affiliation: 5
   - name: Andy Thomason
     orcid: 0000-0001-8240-1614
-    affiliation: 5
+    affiliation: 6
 affiliations:
-  - name: "Section of Animal Welfare and Disease Control, Department of Veterinary and Animal Sciences, University of Copenhagen, Denmark"
+  - name: "Section for Animal Welfare and Disease Control, Department of Veterinary and Animal Sciences, University of Copenhagen, Denmark"
     index: 1
   - name: "Environmental Systems Research Institute (Esri), Redlands, CA, USA"
     index: 2
   - name: "Department of Integrative Biology, The University of Texas at Austin, Austin, TX, USA"
     index: 3
-  - name: "Walter and Eliza Hall Institute of Medical Research"
+  - name: "No affiliation"
     index: 4
-  - name: "Atomic Increment Ltd."
+  - name: "Walter and Eliza Hall Institute of Medical Research"
     index: 5
-  - name: "None"
+  - name: "Atomic Increment Ltd."
     index: 6
 date: \today
 bibliography: paper.bib
