@@ -189,6 +189,7 @@ the design principles of `rextendr`:
 
 ```r
 usethis::create_package("exampleRustRpkg")
+rextendr::use_extendr()
 ```
 
 Finally, the function `use_extendr` should be used to set up the necessary boilerplate for compiling
@@ -196,7 +197,6 @@ Rust code within an R package, and `document` used to refresh the R function wra
 a call to `devtools::document()`).
 
 ```r
-rextendr::use_extendr()
 rextendr::document()
 ```
 
