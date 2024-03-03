@@ -290,8 +290,8 @@ where
     }
 }
 
-#[cfg(feature = "faer-core")]
-impl<'a> FromRobj<'a> for faer_core::Mat<f64> {
+#[cfg(feature = "faer")]
+impl<'a> FromRobj<'a> for faer::Mat<f64> {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
         use crate::scalar::Scalar;
         if robj.is_matrix() {
@@ -303,11 +303,10 @@ impl<'a> FromRobj<'a> for faer_core::Mat<f64> {
                 }
 
                 if let Some(slice) = robj.as_real_slice() {
-                    let fmat =
-                        faer_core::mat::from_column_major_slice::<f64>(&slice, dim[0], dim[1]);
+                    let fmat = faer::mat::from_column_major_slice::<f64>(&slice, dim[0], dim[1]);
                     Ok(fmat.to_owned())
                 } else if let Some(slice) = robj.as_integer_slice() {
-                    let fmat = faer_core::Mat::<f64>::from_fn(dim[0], dim[1], |i, j| {
+                    let fmat = faer::Mat::<f64>::from_fn(dim[0], dim[1], |i, j| {
                         slice[i + j * dim[0]] as f64
                     });
                     Ok(fmat)
@@ -328,9 +327,9 @@ mod test {
     use super::*;
 
     #[test]
-    #[cfg(feature = "faer-core")]
+    #[cfg(feature = "faer")]
     fn test_robj_to_faer_mat() {
-        use faer_core::Mat;
+        use faer::Mat;
         test! {
             let values = [
                 [1.0, 5.0, 9.0],
