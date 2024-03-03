@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/robj/into_robj.rs`."><title>into_robj.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (c475e2303 2024-02-28)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/robj/into_robj.rs`."><title>into_robj.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (5119208fd 2024-03-02)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../extendr_api/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -1031,7 +1031,7 @@
     }
 }
 
-<span class="macro">macro_rules! </span>impl_real_tvv {
+<span class="macro">macro_rules!</span> impl_real_tvv {
     (<span class="macro-nonterminal">$t</span>: ty) =&gt; {
         <span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
             <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
@@ -1079,7 +1079,7 @@
 <span class="macro">impl_real_tvv!</span>(u64);
 <span class="macro">impl_real_tvv!</span>(usize);
 
-<span class="macro">macro_rules! </span>impl_complex_tvv {
+<span class="macro">macro_rules!</span> impl_complex_tvv {
     (<span class="macro-nonterminal">$t</span>: ty) =&gt; {
         <span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
             <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
@@ -1107,7 +1107,7 @@
 <span class="macro">impl_complex_tvv!</span>(Rcplx);
 <span class="macro">impl_complex_tvv!</span>((f64, f64));
 
-<span class="macro">macro_rules! </span>impl_integer_tvv {
+<span class="macro">macro_rules!</span> impl_integer_tvv {
     (<span class="macro-nonterminal">$t</span>: ty) =&gt; {
         <span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
             <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
@@ -1170,7 +1170,7 @@
     </span>}
 }
 
-<span class="macro">macro_rules! </span>impl_str_tvv {
+<span class="macro">macro_rules!</span> impl_str_tvv {
     (<span class="macro-nonterminal">$t</span>: ty) =&gt; {
         <span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
             <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
@@ -1217,8 +1217,8 @@
     };
 }
 
-<span class="macro">impl_str_tvv! </span>{<span class="kw-2">&amp;</span>str}
-<span class="macro">impl_str_tvv! </span>{String}
+<span class="macro">impl_str_tvv!</span> {<span class="kw-2">&amp;</span>str}
+<span class="macro">impl_str_tvv!</span> {String}
 
 <span class="kw">impl </span>ToVectorValue <span class="kw">for </span>bool {
     <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
@@ -1438,7 +1438,7 @@
     }
 }
 
-<span class="macro">macro_rules! </span>impl_from_as_iterator {
+<span class="macro">macro_rules!</span> impl_from_as_iterator {
     (<span class="macro-nonterminal">$t</span>: ty) =&gt; {
         <span class="kw">impl</span>&lt;T&gt; From&lt;<span class="macro-nonterminal">$t</span>&gt; <span class="kw">for </span>Robj
         <span class="kw">where
@@ -1519,8 +1519,8 @@
     }
 }
 
-<span class="macro">impl_from_as_iterator! </span>{Range&lt;T&gt;}
-<span class="macro">impl_from_as_iterator! </span>{RangeInclusive&lt;T&gt;}
+<span class="macro">impl_from_as_iterator!</span> {Range&lt;T&gt;}
+<span class="macro">impl_from_as_iterator!</span> {RangeInclusive&lt;T&gt;}
 
 <span class="kw">impl </span>From&lt;Vec&lt;Robj&gt;&gt; <span class="kw">for </span>Robj {
     <span class="doccomment">/// Convert a vector of Robj into a list.
@@ -1542,7 +1542,7 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_vec_rint_to_robj() {
-        <span class="macro">test! </span>{
+        <span class="macro">test!</span> {
             <span class="kw">let </span>int_vec = <span class="macro">vec!</span>[<span class="number">3</span>,<span class="number">4</span>,<span class="number">0</span>,-<span class="number">2</span>];
             <span class="kw">let </span>int_vec_robj: Robj = int_vec.clone().into();
             <span class="comment">// unsafe { libR_sys::Rf_PrintValue(int_vec_robj.get())}
@@ -1557,7 +1557,7 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_collect_rarray_matrix() {
-        <span class="macro">test! </span>{
+        <span class="macro">test!</span> {
             <span class="comment">// Check that collect_rarray works the same as R's matrix() function
             </span><span class="kw">let </span>rmat = (<span class="number">1i32</span>..=<span class="number">16</span>).collect_rarray([<span class="number">4</span>, <span class="number">4</span>]);
             <span class="macro">assert!</span>(rmat.is_ok());
@@ -1567,7 +1567,7 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_collect_rarray_tensor() {
-        <span class="macro">test! </span>{
+        <span class="macro">test!</span> {
             <span class="comment">// Check that collect_rarray works the same as R's array() function
             </span><span class="kw">let </span>rmat = (<span class="number">1i32</span>..=<span class="number">16</span>).collect_rarray([<span class="number">2</span>, <span class="number">4</span>, <span class="number">2</span>]);
             <span class="macro">assert!</span>(rmat.is_ok());
@@ -1577,7 +1577,7 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_collect_rarray_matrix_failure() {
-        <span class="macro">test! </span>{
+        <span class="macro">test!</span> {
             <span class="comment">// Check that collect_rarray fails when given an invalid shape
             </span><span class="kw">let </span>rmat = (<span class="number">1i32</span>..=<span class="number">16</span>).collect_rarray([<span class="number">3</span>, <span class="number">3</span>]);
             <span class="macro">assert!</span>(rmat.is_err());
@@ -1589,7 +1589,7 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_collect_tensor_failure() {
-        <span class="macro">test! </span>{
+        <span class="macro">test!</span> {
             <span class="comment">// Check that collect_rarray fails when given an invalid shape
             </span><span class="kw">let </span>rmat = (<span class="number">1i32</span>..=<span class="number">16</span>).collect_rarray([<span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>]);
             <span class="macro">assert!</span>(rmat.is_err());
@@ -1607,7 +1607,7 @@
             <span class="prelude-val">Err</span>(<span class="number">42.0</span>) <span class="comment">// return err float
         </span>}
 
-        <span class="macro">test! </span>{
+        <span class="macro">test!</span> {
                   <span class="macro">assert_eq!</span>(
                     <span class="macro">r!</span>(my_err_f()),
                     <span class="macro">R!</span>(
@@ -1630,7 +1630,7 @@
             <span class="prelude-val">Ok</span>(<span class="number">123.123</span>)
         }
 
-        <span class="macro">test! </span>{
+        <span class="macro">test!</span> {
             <span class="macro">assert_eq!</span>(
                 <span class="macro">r!</span>(my_err_f()),
                 <span class="macro">R!</span>(<span class="string">"x=list(ok=NULL, err='We have water in the engine room!')

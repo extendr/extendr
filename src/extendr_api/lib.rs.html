@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (c475e2303 2024-02-28)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0-nightly (5119208fd 2024-03-02)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../extendr_api/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -1834,7 +1834,7 @@
     </span><span class="kw">fn </span>aux_func(_person: <span class="kw-2">&amp;</span>Person) {}
 
     <span class="comment">// Macro to generate exports
-    </span><span class="macro">extendr_module! </span>{
+    </span><span class="macro">extendr_module!</span> {
         <span class="kw">mod </span>my_module;
         <span class="kw">fn </span>aux_func;
         <span class="kw">impl </span>Person;
@@ -1842,7 +1842,7 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>export_test() {
-        <span class="macro">test! </span>{
+        <span class="macro">test!</span> {
             <span class="kw">use super</span>::<span class="kw-2">*</span>;
             <span class="comment">// Call the exported functions through their generated C wrappers.
             </span><span class="kw">unsafe </span>{
@@ -1894,7 +1894,7 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>class_wrapper_test() {
-        <span class="macro">test! </span>{
+        <span class="macro">test!</span> {
             <span class="kw">let </span><span class="kw-2">mut </span>person = Person::new();
             person.set_name(<span class="string">"fred"</span>);
             <span class="kw">let </span>robj = <span class="macro">r!</span>(person);
@@ -1906,7 +1906,7 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>slice_test() {
-        <span class="macro">test! </span>{
+        <span class="macro">test!</span> {
             <span class="kw">unsafe </span>{
                 <span class="comment">// #[extendr]
                 // pub fn f64_slice(x: &amp;[f64]) -&gt; &amp;[f64] { x }
@@ -1972,7 +1972,7 @@
         // &gt; expect_equal(test_con, "Hello world")
         //
 
-        </span><span class="macro">test! </span>{
+        </span><span class="macro">test!</span> {
             <span class="kw">let </span>txt_con = <span class="macro">R!</span>(<span class="string">r#"textConnection("test_con", open = "w")"#</span>).unwrap();
             <span class="macro">call!</span>(<span class="string">"sink"</span>, <span class="kw-2">&amp;</span>txt_con).unwrap();
             <span class="macro">rprintln!</span>(<span class="string">"Hello world %%!"</span>); <span class="comment">//%% checks printf formatting is off, yields one % if on
@@ -1993,7 +1993,7 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>metadata_test() {
-        <span class="macro">test! </span>{
+        <span class="macro">test!</span> {
             <span class="comment">// Rust interface.
             </span><span class="kw">let </span>metadata = get_my_module_metadata();
             <span class="macro">assert_eq!</span>(metadata.functions[<span class="number">0</span>].doc, <span class="string">" comment #1\n comment #2\n\n        comment #3\n        comment #4\n    *\n aux_func doc comment."</span>);
@@ -2016,7 +2016,7 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>pairlist_macro_works() {
-        <span class="macro">test! </span>{
+        <span class="macro">test!</span> {
             <span class="macro">assert_eq!</span>(<span class="macro">pairlist!</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>), Pairlist::from_pairs(<span class="kw-2">&amp;</span>[(<span class="string">""</span>, <span class="number">1</span>), (<span class="string">""</span>, <span class="number">2</span>), (<span class="string">""</span>, <span class="number">3</span>)]));
             <span class="macro">assert_eq!</span>(<span class="macro">pairlist!</span>(a=<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>), Pairlist::from_pairs(<span class="kw-2">&amp;</span>[(<span class="string">"a"</span>, <span class="number">1</span>), (<span class="string">""</span>, <span class="number">2</span>), (<span class="string">""</span>, <span class="number">3</span>)]));
             <span class="macro">assert_eq!</span>(<span class="macro">pairlist!</span>(<span class="number">1</span>, b=<span class="number">2</span>, <span class="number">3</span>), Pairlist::from_pairs(<span class="kw-2">&amp;</span>[(<span class="string">""</span>, <span class="number">1</span>), (<span class="string">"b"</span>, <span class="number">2</span>), (<span class="string">""</span>, <span class="number">3</span>)]));
@@ -2028,7 +2028,7 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>big_r_macro_works() {
-        <span class="macro">test! </span>{
+        <span class="macro">test!</span> {
             <span class="macro">assert_eq!</span>(<span class="macro">R!</span>(<span class="string">"1"</span>)<span class="question-mark">?</span>, <span class="macro">r!</span>(<span class="number">1.0</span>));
             <span class="macro">assert_eq!</span>(<span class="macro">R!</span>(<span class="string">r"1"</span>)<span class="question-mark">?</span>, <span class="macro">r!</span>(<span class="number">1.0</span>));
             <span class="macro">assert_eq!</span>(<span class="macro">R!</span>(<span class="string">r"
