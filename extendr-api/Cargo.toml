@@ -20,7 +20,7 @@ libc = { version = "0.2", optional = true }
 ndarray = { version = "0.15.3", optional = true }
 num-complex = { version = "0.4", optional = true }
 serde = { version = "1.0", features = ["derive"], optional = true }
-faer-core = { version = "0.16.0", optional = true }
+faer = { version = "0.17.1", optional = true }
 
 [dev-dependencies]
 extendr-engine = { path = "../extendr-engine" }
@@ -34,7 +34,7 @@ rstest = "0.18.1"
 result_list = []
 result_condition = []
 
-# This dummy feature enables all features that increase the functionality of 
+# This dummy feature enables all features that increase the functionality of
 # extendr, via conversions or R features. Features that change behaviour
 # but do not add functionality (such as `libR-sys/use-bindgen`) are excluded
 full-functionality = ["graphics", "either", "ndarray", "num-complex", "serde"]

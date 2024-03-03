@@ -710,10 +710,10 @@ impl From<Vec<Rstr>> for Robj {
     }
 }
 
-#[cfg(feature = "faer-core")]
-impl From<faer_core::Mat<f64>> for Robj {
+#[cfg(feature = "faer")]
+impl From<faer::Mat<f64>> for Robj {
     /// Convert a faer Mat<f64> into Robj.
-    fn from(mat: faer_core::Mat<f64>) -> Self {
+    fn from(mat: faer::Mat<f64>) -> Self {
         mat.col_chunks(1)
             .flat_map(|c| c.row_chunks(1).map(|r| r.read(0, 0)))
             .collect_robj()
@@ -833,9 +833,9 @@ mod test {
     }
 
     #[test]
-    #[cfg(feature = "faer-core")]
+    #[cfg(feature = "faer")]
     fn test_faer_mat_to_robj() {
-        use faer_core::mat;
+        use faer::mat;
         test! {
             let vec: Vec<f64> = (1..13).map(f64::from).collect();
             let a = mat![
