@@ -5,3 +5,5 @@ A set of optional features and third-party crate integrations, usually hidden be
 pub mod either;
 #[cfg(feature = "ndarray")]
 pub mod ndarray;
+#[cfg(feature = "faer")]
+pub mod faer;
