@@ -102,10 +102,10 @@ impl TryFrom<&Robj> for Mat<f64> {
     }
 }
 
-impl<'a> TryFrom<&'a Robj> for MatRef<'a, f64> {
+impl<'a> TryFrom<&'_ Robj> for MatRef<'a, f64> {
     type Error = Error;
 
-    fn try_from(robj: &'a Robj) -> Result<Self> {
+    fn try_from(robj: &Robj) -> Result<Self> {
         if robj.is_matrix() {
             if let Some(dim) = robj.dim() {
                 let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
@@ -114,8 +114,8 @@ impl<'a> TryFrom<&'a Robj> for MatRef<'a, f64> {
                     return Err(Error::ExpectedMatrix(robj.clone()));
                 }
 
-                if let Some(slice) = robj.as_real_slice() {
-                    let fmat = mat::from_column_major_slice::<f64>(&slice, dim[0], dim[1]);
+                if let Some(slice) = robj.as_typed_slice() {
+                    let fmat = mat::from_column_major_slice::<f64>(slice, dim[0], dim[1]);
                     Ok(fmat)
                 } else {
                     Err(Error::ExpectedReal(robj.clone()))
@@ -137,16 +137,13 @@ impl TryFrom<Robj> for Mat<f64> {
     }
 }
 
-// impl<'a> TryFrom<Robj> for MatRef<'a, f64>
-// where
-//     Robj: 'a,
-// {
-//     type Error = crate::Error;
-//
-//     fn try_from(robj: Robj) -> Result<Self> {
-//         Self::try_from(&robj)
-//     }
-// }
+impl<'a> TryFrom<Robj> for MatRef<'a, f64> {
+    type Error = crate::Error;
+
+    fn try_from(robj: Robj) -> Result<Self> {
+        Self::try_from(&robj)
+    }
+}
 
 #[cfg(test)]
 mod test {
