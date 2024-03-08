@@ -35,8 +35,13 @@ impl<'a> FromRobj<'a> for Mat<f64> {
                     let fmat = mat::from_column_major_slice::<f64>(&slice, dim[0], dim[1]);
                     Ok(fmat.to_owned())
                 } else if let Some(slice) = robj.as_integer_slice() {
-                    let fmat =
-                        Mat::<f64>::from_fn(dim[0], dim[1], |i, j| slice[i + j * dim[0]] as f64);
+                    let fmat = Mat::<f64>::from_fn(dim[0], dim[1], |i, j| {
+                        if slice[i + j * dim[0]].is_na() {
+                            f64::NAN
+                        } else {
+                            slice[i + j * dim[0]] as f64
+                        }
+                    });
                     Ok(fmat)
                 } else {
                     Err("could not convert to matrix")

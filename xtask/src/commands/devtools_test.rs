@@ -14,6 +14,7 @@ pub(crate) fn run(shell: &Shell) -> Result<(), Box<dyn Error>> {
 
 fn run_tests(shell: &Shell) -> Result<(), Box<dyn Error>> {
     let _r_path = shell.push_dir(R_FOLDER_PATH);
+    cmd!(shell, "Rscript -e rextendr::document()").run()?;
     cmd!(shell, "Rscript -e devtools::test()").run()?;
 
     Ok(())
