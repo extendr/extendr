@@ -21,7 +21,7 @@ pub(crate) unsafe fn sexp_to_str(sexp: SEXP) -> &'static str {
     if sexp == R_NaString {
         <&str>::na()
     } else {
-        std::mem::transmute(to_str(R_CHAR(sexp) as *const u8))
+        std::ffi::CStr::from_ptr(R_CHAR(sexp)).to_str().unwrap()
     }
 }
 

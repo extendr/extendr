@@ -140,7 +140,9 @@ impl Iterator for PairlistIter {
                 if TYPEOF(tag) == SYMSXP as i32 {
                     let printname = PRINTNAME(tag);
                     assert!(TYPEOF(printname) as u32 == CHARSXP);
-                    let name = to_str(R_CHAR(printname) as *const u8);
+                    let name = std::ffi::CStr::from_ptr(R_CHAR(printname))
+                        .to_str()
+                        .unwrap();
                     Some((std::mem::transmute(name), value))
                 } else {
                     // empty string represents the absense of the name
