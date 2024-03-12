@@ -1,6 +1,8 @@
-//! Conversions to Robj
+//! Conversions to [`Robj`]
 
 use super::*;
+
+mod nonzero_try_from_robj;
 
 macro_rules! impl_try_from_scalar_integer {
     ($t:ty) => {
@@ -384,8 +386,9 @@ impl TryFrom<&Robj> for Rcplx {
     }
 }
 
-// Convert TryFrom<&Robj> into TryFrom<Robj>. Sadly, we are unable to make a blanket
-// conversion using GetSexp with the current version of Rust.
+// Convert `TryFrom<&Robj>` into TryFrom<Robj>. Sadly, we are unable to make a blanket
+// conversion using `GetSexp` with the current version of Rust.
+#[macro_export]
 macro_rules! impl_try_from_robj {
     ($($type : ty)*) => {
         $(

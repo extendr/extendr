@@ -77,6 +77,8 @@ pub enum Error {
     NamespaceNotFound(Robj),
     NoGraphicsDevices(Robj),
 
+    ExpectedNonZeroValue(Robj),
+
     ExpectedExternalPtrType(Robj, String),
     Other(String),
 
@@ -162,6 +164,9 @@ impl std::fmt::Display for Error {
                 write!(f, "Incorrect external pointer type {}", type_name)
             }
             Error::NoGraphicsDevices(_robj) => write!(f, "No graphics devices active."),
+
+            Error::ExpectedNonZeroValue(robj) => write!(f, "Provided value is zero: {robj:?}"),
+
             Error::Other(str) => write!(f, "{}", str),
 
             #[cfg(feature = "ndarray")]
