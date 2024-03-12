@@ -21,9 +21,16 @@ static EXTENDR_NA_STRING: Lazy<&'static str> = Lazy::new(|| unsafe {
     std::str::from_utf8_unchecked(v)
 });
 
-/// Return true if this primitive is `NA`.
+/// Trait signifying if a given scalar type may be represented as an `NA` vlaue
+/// in an R vector.
+///
+/// The `is_na_scalar` method is intended to be used on individual
+/// elements of a vector. It is not vectorized and will return `false` if the
+/// vector has a length greater than 1.
 pub trait CanBeNA {
+    /// Returns `true` if it is `NA`.
     fn is_na(&self) -> bool;
+    /// Returns the sentinel `NA` value for this type.
     fn na() -> Self;
 }
 

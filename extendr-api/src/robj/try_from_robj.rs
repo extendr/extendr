@@ -17,7 +17,7 @@ macro_rules! impl_try_from_scalar_integer {
                 };
 
                 // Check if the value is not a missing value
-                if robj.is_na() {
+                if robj.is_na_scalar() {
                     return Err(Error::MustNotBeNA(robj.clone()));
                 }
 
@@ -68,7 +68,7 @@ macro_rules! impl_try_from_scalar_real {
                 };
 
                 // Check if the value is not a missing value
-                if robj.is_na() {
+                if robj.is_na_scalar() {
                     return Err(Error::MustNotBeNA(robj.clone()));
                 }
 
@@ -107,7 +107,7 @@ impl TryFrom<&Robj> for bool {
     /// Convert an LGLSXP object into a boolean.
     /// NAs are not allowed.
     fn try_from(robj: &Robj) -> Result<Self> {
-        if robj.is_na() {
+        if robj.is_na_scalar() {
             Err(Error::MustNotBeNA(robj.clone()))
         } else {
             Ok(<Rbool>::try_from(robj)?.is_true())
@@ -121,7 +121,7 @@ impl TryFrom<&Robj> for &str {
     /// Convert a scalar STRSXP object into a string slice.
     /// NAs are not allowed.
     fn try_from(robj: &Robj) -> Result<Self> {
-        if robj.is_na() {
+        if robj.is_na_scalar() {
             return Err(Error::MustNotBeNA(robj.clone()));
         }
         match robj.len() {
@@ -360,7 +360,7 @@ impl TryFrom<&Robj> for Rcplx {
         };
 
         // Check if the value is not a missing value.
-        if robj.is_na() {
+        if robj.is_na_scalar() {
             return Ok(Rcplx::na());
         }
 
@@ -401,7 +401,7 @@ macro_rules! impl_try_from_robj {
                 type Error = Error;
 
                 fn try_from(robj: &Robj) -> Result<Self> {
-                    if robj.is_null() || robj.is_na() {
+                    if robj.is_null() || robj.is_na_scalar() {
                         Ok(None)
                     } else {
                         Ok(Some(<$type>::try_from(robj)?))
