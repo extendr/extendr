@@ -1,0 +1,99 @@
+error: Unexpected key
+ --> tests/cases/case-extendr-macro.rs:4:11
+  |
+4 | #[extendr(foo = true)]
+  |           ^^^
+
+error: unexpected end of input, `use_try_from` must be `true` or `false`
+ --> tests/cases/case-extendr-macro.rs:7:1
+  |
+7 | #[extendr(use_try_from = 1)]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: this error originates in the attribute macro `extendr` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: unexpected end of input, `r_name` must be a string literal
+  --> tests/cases/case-extendr-macro.rs:10:1
+   |
+10 | #[extendr(r_name = 1)]
+   | ^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: this error originates in the attribute macro `extendr` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: unexpected end of input, `mod_name` must be a string literal
+  --> tests/cases/case-extendr-macro.rs:13:1
+   |
+13 | #[extendr(mod_name = 1)]
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: this error originates in the attribute macro `extendr` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: unexpected end of input, `use_rng` must be `true` or `false`
+  --> tests/cases/case-extendr-macro.rs:16:1
+   |
+16 | #[extendr(use_rng = 1)]
+   | ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: this error originates in the attribute macro `extendr` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: expected &self or &mut self
+  --> tests/cases/case-extendr-macro.rs:25:20
+   |
+25 |     fn nonref_self(self) {}
+   |                    ^^^^
+
+error: found &self in non-impl function - have you missed the #[extendr] before the impl?
+  --> tests/cases/case-extendr-macro.rs:30:24
+   |
+30 |     fn misplaced_macro(&self) {}
+   |                        ^^^^^
+
+error: default not allowed in #[extendr] impl
+  --> tests/cases/case-extendr-macro.rs:34:1
+   |
+34 | default impl FooStruct {}
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: unsafe not allowed in #[extendr] impl
+  --> tests/cases/case-extendr-macro.rs:37:1
+   |
+37 | unsafe impl FooStruct {}
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: const params not allowed in #[extendr] impl
+  --> tests/cases/case-extendr-macro.rs:40:1
+   |
+40 | impl<const N: usize> FooStruct {}
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: type params not allowed in #[extendr] impl
+  --> tests/cases/case-extendr-macro.rs:47:1
+   |
+47 | impl<A> FooStructWithParam<A> {}
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: where clause not allowed in #[extendr] impl
+  --> tests/cases/case-extendr-macro.rs:50:1
+   |
+50 | impl FooStructWithParam<A> where A: usize {}
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: Only struct is supported
+  --> tests/cases/case-extendr-macro.rs:55:1
+   |
+55 | / enum FooEnum1 {
+56 | |     A,
+57 | |     B,
+58 | |     C,
+59 | | }
+   | |_^
+
+error: Only struct is supported
+  --> tests/cases/case-extendr-macro.rs:62:1
+   |
+62 | / enum FooEnum2 {
+63 | |     A,
+64 | |     B,
+65 | |     C,
+66 | | }
+   | |_^

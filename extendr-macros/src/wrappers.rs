@@ -21,7 +21,7 @@ pub fn make_function_wrappers(
     attrs: &[syn::Attribute],
     sig: &mut syn::Signature,
     self_ty: Option<&syn::Type>,
-) {
+) -> syn::Result<()> {
     let rust_name = sig.ident.clone();
 
     let r_name_str = if let Some(r_name) = opts.r_name.as_ref() {
@@ -72,12 +72,15 @@ pub fn make_function_wrappers(
         quote! { #rust_name }
     };
 
-    let formal_args: Punctuated<FnArg, Token![,]> = inputs
+    let formal_args = inputs
         .iter()
         .map(|input| translate_formal(input, self_ty))
-        .collect();
+        .collect::<syn::Result<Punctuated<FnArg, Token![,]>>>()?;
 
-    let convert_args: Vec<syn::Stmt> = inputs.iter().map(translate_to_robj).collect();
+    let convert_args: Vec<syn::Stmt> = inputs
+        .iter()
+        .map(translate_to_robj)
+        .collect::<syn::Result<Vec<syn::Stmt>>>()?;
 
     let actual_args: Punctuated<Expr, Token![,]> = inputs
         .iter()
@@ -87,7 +90,7 @@ pub fn make_function_wrappers(
     let meta_args: Vec<Expr> = inputs
         .iter_mut()
         .map(|input| translate_meta_arg(input, self_ty))
-        .collect();
+        .collect::<syn::Result<Vec<Expr>>>()?;
 
     // Generate wrappers for rust functions to be called from R.
     // Example:
@@ -187,6 +190,8 @@ pub fn make_function_wrappers(
             })
         }
     ));
+
+    Ok(())
 }
 
 // Extract doc strings from attributes.
@@ -265,28 +270,33 @@ pub fn type_name(type_: &Type) -> String {
 }
 
 // Generate a list of arguments for the wrapper. All arguments are SEXP for .Call in R.
-pub fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> FnArg {
+pub fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> syn::Result<FnArg> {
     match input {
         // function argument.
         FnArg::Typed(ref pattype) => {
             let pat = &pattype.pat.as_ref();
-            parse_quote! { #pat : extendr_api::SEXP }
+            Ok(parse_quote! { #pat : extendr_api::SEXP })
         }
         // &self
         FnArg::Receiver(ref reciever) => {
             if !reciever.attrs.is_empty() || reciever.reference.is_none() {
-                panic!("expected &self or &mut self");
+                return Err(syn::Error::new_spanned(
+                    input,
+                    "expected &self or &mut self",
+                ));
             }
             if self_ty.is_none() {
-                panic!("found &self in non-impl function - have you missed the #[extendr] before the impl?");
+                return Err(syn::Error::new_spanned(
+                    input,"found &self in non-impl function - have you missed the #[extendr] before the impl?"
+                ));
             }
-            parse_quote! { _self : extendr_api::SEXP }
+            Ok(parse_quote! { _self : extendr_api::SEXP })
         }
     }
 }
 
 // Generate code to make a metadata::Arg.
-fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> Expr {
+fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> syn::Result<Expr> {
     match input {
         // function argument.
         FnArg::Typed(ref mut pattype) => {
@@ -299,49 +309,59 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> Expr {
             } else {
                 quote!(None)
             };
-            parse_quote! {
+            Ok(parse_quote! {
                 extendr_api::metadata::Arg {
                     name: #name_string,
                     arg_type: #type_string,
                     default: #default
                 }
-            }
+            })
         }
         // &self
         FnArg::Receiver(ref reciever) => {
             if !reciever.attrs.is_empty() || reciever.reference.is_none() {
-                panic!("expected &self or &mut self");
+                return Err(syn::Error::new_spanned(
+                    input,
+                    "expected &self or &mut self",
+                ));
             }
             if self_ty.is_none() {
-                panic!("found &self in non-impl function - have you missed the #[extendr] before the impl?");
+                return Err(syn::Error::new_spanned(
+                    input,
+            "found &self in non-impl function - have you missed the #[extendr] before the impl?"
+        )
+    );
             }
             let type_string = type_name(self_ty.unwrap());
-            parse_quote! {
+            Ok(parse_quote! {
                 extendr_api::metadata::Arg {
                     name: "self",
                     arg_type: #type_string,
                     default: None
                 }
-            }
+            })
         }
     }
 }
 
 /// Convert `SEXP` arguments into `Robj`.
 /// This maintains the lifetime of references.
-fn translate_to_robj(input: &FnArg) -> syn::Stmt {
+fn translate_to_robj(input: &FnArg) -> syn::Result<syn::Stmt> {
     match input {
         FnArg::Typed(ref pattype) => {
             let pat = &pattype.pat.as_ref();
             if let syn::Pat::Ident(ref ident) = pat {
                 let varname = format_ident!("_{}_robj", ident.ident);
-                parse_quote! { let #varname = extendr_api::robj::Robj::from_sexp(#pat); }
+                Ok(parse_quote! { let #varname = extendr_api::robj::Robj::from_sexp(#pat); })
             } else {
-                panic!("expect identifier as arg name")
+                Err(syn::Error::new_spanned(
+                    input,
+                    "expect identifier as arg name",
+                ))
             }
         }
         FnArg::Receiver(_) => {
-            parse_quote! { let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self); }
+            Ok(parse_quote! { let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self); })
         }
     }
 }
