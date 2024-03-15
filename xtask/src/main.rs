@@ -38,7 +38,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         cli::Commands::Msrv => commands::cargo_msrv::run(&shell)?,
         cli::Commands::DevtoolsTest => commands::devtools_test::run(&shell)?,
         // TODO: Accept snapshots from command-line
-        // Rscript -e "testthat::snapshot_accept(path = 'tests/extendrtests/tests/testthat', 'macro-snapshot')" 
+        // Rscript -e "testthat::snapshot_accept(path = 'tests/extendrtests/tests/testthat', 'macro-snapshot')"
     };
 
     Ok(())
