@@ -27,6 +27,8 @@ pub(crate) enum Commands {
     Msrv,
     #[command(about = "Run devtools::test() on {extendrtests}")]
     DevtoolsTest(DevtoolsTestArg),
+    #[command(about = "Generate wrappers by `rextendr::document")]
+    Document,
 }
 
 pub(crate) fn parse() -> Cli {
