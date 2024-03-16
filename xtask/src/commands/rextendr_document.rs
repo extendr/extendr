@@ -1,15 +1,15 @@
 //! This invokes `rextendr::document()` within `tests/extendrtests`.
-//! 
+//!
 //! It uses the vendored `rextendr` in the repository as the source package.
-//! 
+//!
 //! 1. Ensure that `git submodule update --init` was invoked once, as to setup
 //! the vendored `rextendr` package.
 //! 2. `devtools` must be installed on system.
-//! 
-//! 
+//!
+//!
 //! The idea here is to be able to develop `rextendr` alongside `extendr`,
 //! as well as ease the development of extendr.
-//! 
+//!
 use std::error::Error;
 
 use crate::extendrtests::with_absolute_path::{swap_extendr_api_path, R_FOLDER_PATH};
