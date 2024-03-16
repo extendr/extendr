@@ -1,8 +1,10 @@
 use clap::{Parser, Subcommand};
 
-use crate::cli::r_cmd_check::RCmdCheckArg;
-
+pub(crate) mod devtools_test;
 pub(crate) mod r_cmd_check;
+
+use devtools_test::DevtoolsTestArg;
+use r_cmd_check::RCmdCheckArg;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -24,7 +26,7 @@ pub(crate) enum Commands {
     #[command(about = "Check that the specified rust-version is MSRV")]
     Msrv,
     #[command(about = "Run devtools::test() on {extendrtests}")]
-    DevtoolsTest,
+    DevtoolsTest(DevtoolsTestArg),
 }
 
 pub(crate) fn parse() -> Cli {
