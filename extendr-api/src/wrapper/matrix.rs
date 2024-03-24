@@ -46,7 +46,7 @@ where
     Robj: AsTypedSlice<'a, T>,
 {
     /// Returns an [`RMatrix`] with dimensions according to `nrow` and `ncol`,
-    /// with arbitrary entries. To allocate an empty matrix containing only `NA`
+    /// with arbitrary entries. To initialize a matrix containing only `NA`
     /// values, use [`RMatrix::new_with_na`].
     pub fn new(nrow: usize, ncol: usize) -> Self {
         let sexptype = T::sexptype();
