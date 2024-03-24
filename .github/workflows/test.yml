@@ -205,9 +205,15 @@ jobs:
         shell: Rscript {0}
 
       - name: Run R integration tests using {extendrtests} and `cargo extendr r-cmd-check`
+        id: id_cargo_r_cmd_check
         run: |
           cargo extendr r-cmd-check --error-on ${{ steps.error-on.outputs.level }} --check-dir extendrtests_check
-
+      - name: Upload results if it failed
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: "Results from r-cmd-check of {extendrtests}"
+          path: extendrtests_check
       # With https://github.com/extendr/rextendr/pull/31
       # rextendr can be configured using environment variables.
       # 'patch.crates_io' is used to point libraries to local copies of
