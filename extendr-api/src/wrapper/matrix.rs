@@ -46,7 +46,8 @@ where
     Robj: AsTypedSlice<'a, T>,
 {
     /// Returns an [`RMatrix`] with dimensions according to `nrow` and `ncol`,
-    /// with arbitrary entries.
+    /// with arbitrary entries. To allocate an empty matrix containing only `NA`
+    /// values, use [`RMatrix::new_with_na`].
     pub fn new(nrow: usize, ncol: usize) -> Self {
         let sexptype = T::sexptype();
         let matrix = Robj::alloc_matrix(sexptype, nrow as _, ncol as _);
@@ -66,8 +67,8 @@ where
     /// Returns an [`RMatrix`] with dimensions according to `nrow` and `ncol`,
     /// with all entries set to `NA`.
     ///
-    /// Note that since `RAW` cannot represent `NA` in R,
-    /// then this isn't implemented for [`Rbyte`]
+    /// Note that since [`Raw`] does not have an NA representation in R, 
+    /// this method is not implemented for [`Rbyte`].
     pub fn new_with_na(nrow: usize, ncol: usize) -> Self {
         let mut matrix = Self::new(nrow, ncol);
         if nrow != 0 || ncol != 0 {
@@ -76,7 +77,7 @@ where
                 .as_typed_slice_mut()
                 .unwrap()
                 .iter_mut()
-                .for_each(|x| {
+                .for_each(|x| { 
                     *x = T::na();
                 });
         }
