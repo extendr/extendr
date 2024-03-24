@@ -40,10 +40,10 @@ pub type RColumn<T> = RArray<T, [usize; 1]>;
 pub type RMatrix<T> = RArray<T, [usize; 2]>;
 pub type RMatrix3D<T> = RArray<T, [usize; 3]>;
 
-impl<'a, T> RMatrix<T>
+impl<T> RMatrix<T>
 where
-    T: ToVectorValue + 'a,
-    Robj: AsTypedSlice<'a, T>,
+    T: ToVectorValue,
+    Robj: for<'a> AsTypedSlice<'a, T>,
 {
     /// Returns an [`RMatrix`] with dimensions according to `nrow` and `ncol`,
     /// with arbitrary entries. To initialize a matrix containing only `NA`
@@ -59,10 +59,10 @@ where
     }
 }
 
-impl<'a, T> RMatrix<T>
+impl<T> RMatrix<T>
 where
-    T: ToVectorValue + 'a + CanBeNA,
-    Robj: AsTypedSlice<'a, T>,
+    T: ToVectorValue + CanBeNA,
+    Robj: for<'a> AsTypedSlice<'a, T>,
 {
     /// Returns an [`RMatrix`] with dimensions according to `nrow` and `ncol`,
     /// with all entries set to `NA`.
