@@ -27,10 +27,6 @@ impl<'a> FromRobj<'a> for Mat<f64> {
             if let Some(dim) = robj.dim() {
                 let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
 
-                if dim.len() != 2 {
-                    return Err("could not convert to matrix");
-                }
-
                 if let Some(slice) = robj.as_real_slice() {
                     let fmat = mat::from_column_major_slice::<f64>(&slice, dim[0], dim[1]);
                     Ok(fmat.to_owned())
@@ -61,10 +57,6 @@ impl<'a> FromRobj<'a> for MatRef<'a, f64> {
             if let Some(dim) = robj.dim() {
                 let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
 
-                if dim.len() != 2 {
-                    return Err("could not convert to matrix");
-                }
-
                 if let Some(slice) = robj.as_real_slice() {
                     let fmat = mat::from_column_major_slice::<f64>(&slice, dim[0], dim[1]);
                     Ok(fmat)
@@ -88,10 +80,6 @@ impl TryFrom<&Robj> for Mat<f64> {
             if let Some(dim) = robj.dim() {
                 let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
 
-                if dim.len() != 2 {
-                    return Err(Error::ExpectedMatrix(robj.clone()));
-                }
-
                 if let Some(slice) = robj.as_real_slice() {
                     let fmat = mat::from_column_major_slice::<f64>(&slice, dim[0], dim[1]);
                     Ok(fmat.to_owned())
@@ -114,10 +102,6 @@ impl<'a> TryFrom<&'_ Robj> for MatRef<'a, f64> {
         if robj.is_matrix() {
             if let Some(dim) = robj.dim() {
                 let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
-
-                if dim.len() != 2 {
-                    return Err(Error::ExpectedMatrix(robj.clone()));
-                }
 
                 if let Some(slice) = robj.as_typed_slice() {
                     let fmat = mat::from_column_major_slice::<f64>(slice, dim[0], dim[1]);
