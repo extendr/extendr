@@ -208,11 +208,11 @@ jobs:
         id: id_cargo_r_cmd_check
         run: |
           cargo extendr r-cmd-check --error-on ${{ steps.error-on.outputs.level }} --check-dir extendrtests_check
-      - name: Upload results if it failed
+      - name: Upload `check-dir` if r-cmd-check failed on `{extendrtests}`
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: "Results from r-cmd-check of {extendrtests}"
+          name: ${{ format('{0}-{1}-r{2}-rust-version{3}-{4}-results', runner.os, runner.arch, matrix.config.r, matrix.config.rust-version, matrix.config.id || strategy.job-index) }}
           path: extendrtests_check
       # With https://github.com/extendr/rextendr/pull/31
       # rextendr can be configured using environment variables.
