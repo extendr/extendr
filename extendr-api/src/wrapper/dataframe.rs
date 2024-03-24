@@ -62,3 +62,9 @@ where
         )
     }
 }
+
+impl<T> IntoRobj for Dataframe<T> {
+    fn into_robj(self) -> Robj {
+        self.robj
+    }
+}
