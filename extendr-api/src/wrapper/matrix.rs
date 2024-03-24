@@ -67,7 +67,7 @@ where
     /// Returns an [`RMatrix`] with dimensions according to `nrow` and `ncol`,
     /// with all entries set to `NA`.
     ///
-    /// Note that since [`Raw`] does not have an NA representation in R, 
+    /// Note that since [`Raw`] does not have an NA representation in R,
     /// this method is not implemented for [`Rbyte`].
     pub fn new_with_na(nrow: usize, ncol: usize) -> Self {
         let mut matrix = Self::new(nrow, ncol);
@@ -77,7 +77,7 @@ where
                 .as_typed_slice_mut()
                 .unwrap()
                 .iter_mut()
-                .for_each(|x| { 
+                .for_each(|x| {
                     *x = T::na();
                 });
         }
@@ -438,29 +438,16 @@ mod tests {
             // let m: RMatrix<Rbyte> = RMatrix::new_with_na(10, 2); // not possible!
             // unsafe { Rf_PrintValue(m.get()) };
             let m: RMatrix<Rbool> = RMatrix::new_with_na(10, 2);
-            assert_eq!(
-                R!("matrix(NA, 10, 2)").unwrap(),
-                m.into_robj()
-            );
+            assert_eq!(R!("matrix(NA, 10, 2)").unwrap(), m.into_robj());
 
             let m: RMatrix<Rint> = RMatrix::new_with_na(10, 2);
-            assert_eq!(
-                R!("matrix(NA_integer_, 10, 2)").unwrap(),
-                m.into_robj()
-            );
+            assert_eq!(R!("matrix(NA_integer_, 10, 2)").unwrap(), m.into_robj());
 
             let m: RMatrix<Rfloat> = RMatrix::new_with_na(10, 2);
-            assert_eq!(
-                R!("matrix(NA_real_, 10, 2)").unwrap(),
-                m.into_robj()
-            );
+            assert_eq!(R!("matrix(NA_real_, 10, 2)").unwrap(), m.into_robj());
 
             let m: RMatrix<Rcplx> = RMatrix::new_with_na(10, 2);
-            assert_eq!(
-                R!("matrix(NA_complex_, 10, 2)").unwrap(),
-                m.into_robj()
-            );
-            
+            assert_eq!(R!("matrix(NA_complex_, 10, 2)").unwrap(), m.into_robj());
         });
     }
 
