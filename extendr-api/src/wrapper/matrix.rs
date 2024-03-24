@@ -423,27 +423,44 @@ mod tests {
     fn test_empty_matrix_new() {
         dbg!("print like R");
         with_r(|| {
-            let m: RMatrix<Rbyte> = RMatrix::new(10, 2); // possible!
+            // These are arbitrarily filled. We cannot create assertions for them.
+            let m: RMatrix<Rbyte> = RMatrix::new(5, 2); // possible!
             unsafe { Rf_PrintValue(m.get()) };
-            let m: RMatrix<Rbool> = RMatrix::new(10, 2);
+            let m: RMatrix<Rbool> = RMatrix::new(5, 2);
             unsafe { Rf_PrintValue(m.get()) };
-            let m: RMatrix<Rint> = RMatrix::new(10, 2);
+            let m: RMatrix<Rint> = RMatrix::new(5, 2);
             unsafe { Rf_PrintValue(m.get()) };
-            let m: RMatrix<Rfloat> = RMatrix::new(10, 2);
+            let m: RMatrix<Rfloat> = RMatrix::new(5, 2);
             unsafe { Rf_PrintValue(m.get()) };
-            let m: RMatrix<Rcplx> = RMatrix::new(10, 2);
+            let m: RMatrix<Rcplx> = RMatrix::new(5, 2);
             unsafe { Rf_PrintValue(m.get()) };
 
             // let m: RMatrix<Rbyte> = RMatrix::new_with_na(10, 2); // not possible!
-            unsafe { Rf_PrintValue(m.get()) };
+            // unsafe { Rf_PrintValue(m.get()) };
             let m: RMatrix<Rbool> = RMatrix::new_with_na(10, 2);
-            unsafe { Rf_PrintValue(m.get()) };
+            assert_eq!(
+                R!("matrix(NA, 10, 2)").unwrap(),
+                m.into_robj()
+            );
+
             let m: RMatrix<Rint> = RMatrix::new_with_na(10, 2);
-            unsafe { Rf_PrintValue(m.get()) };
+            assert_eq!(
+                R!("matrix(NA_integer_, 10, 2)").unwrap(),
+                m.into_robj()
+            );
+
             let m: RMatrix<Rfloat> = RMatrix::new_with_na(10, 2);
-            unsafe { Rf_PrintValue(m.get()) };
+            assert_eq!(
+                R!("matrix(NA_real_, 10, 2)").unwrap(),
+                m.into_robj()
+            );
+
             let m: RMatrix<Rcplx> = RMatrix::new_with_na(10, 2);
-            unsafe { Rf_PrintValue(m.get()) };
+            assert_eq!(
+                R!("matrix(NA_complex_, 10, 2)").unwrap(),
+                m.into_robj()
+            );
+            
         });
     }
 
@@ -500,7 +517,7 @@ mod tests {
             vec![15.0, 16.0, 22.0, 3.0, 9.0].try_into().unwrap(),
         ];
         let (n_x, n_y) = (5, 5);
-        let matrix = RMatrix::new_matrix(n_x, n_y, |r, c| res[c][r]);
+        let _matrix = RMatrix::new_matrix(n_x, n_y, |r, c| res[c][r]);
 
         }
     }
