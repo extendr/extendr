@@ -9,7 +9,7 @@ test_that("[faer] Matrix of Reals with NA", {
 
 test_that("[faer] Dimensions are provided", {
     m <- matrix(1:9, ncol = 3)
-    m_faer <- faer_mat(m)
+    m_faer <- matrix(faer_mat(m), ncol = 3)
 
     expect_equal(nrow(m), nrow(m_faer))
     expect_equal(ncol(m), ncol(m_faer))
