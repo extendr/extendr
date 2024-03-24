@@ -23,51 +23,45 @@ impl From<MatRef<'_, f64>> for Robj {
 
 impl<'a> FromRobj<'a> for Mat<f64> {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if robj.is_matrix() {
-            if let Some(dim) = robj.dim() {
-                let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
+        if !robj.is_matrix() {
+            return Err("R object is not a matrix");
+        }
+        let dim = robj.dim().expect("robj should be a matrix");
+        let nrows = (*dim).first().expect("dimension must exist").inner() as usize;
+        let ncols = (*dim).last().expect("dimension must exist").inner() as usize;
 
-                if let Some(slice) = robj.as_real_slice() {
-                    let fmat = mat::from_column_major_slice::<f64>(&slice, dim[0], dim[1]);
-                    Ok(fmat.to_owned())
-                } else if let Some(slice) = robj.as_integer_slice() {
-                    let fmat = Mat::<f64>::from_fn(dim[0], dim[1], |i, j| {
-                        if slice[i + j * dim[0]].is_na() {
-                            f64::NAN
-                        } else {
-                            slice[i + j * dim[0]] as f64
-                        }
-                    });
-                    Ok(fmat)
+        if let Some(slice) = robj.as_real_slice() {
+            let fmat = mat::from_column_major_slice::<f64>(&slice, nrows, ncols);
+            Ok(fmat.to_owned())
+        } else if let Some(slice) = robj.as_integer_slice() {
+            let fmat = Mat::<f64>::from_fn(nrows, ncols, |i, j| {
+                if slice[i + j * nrows].is_na() {
+                    f64::NAN
                 } else {
-                    Err("could not convert to matrix")
+                    slice[i + j * nrows] as f64
                 }
-            } else {
-                Err("could not convert to matrix")
-            }
+            });
+            Ok(fmat)
         } else {
-            Err("R object is not a matrix")
+            Err("could not convert to matrix")
         }
     }
 }
 
 impl<'a> FromRobj<'a> for MatRef<'a, f64> {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if robj.is_matrix() {
-            if let Some(dim) = robj.dim() {
-                let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
+        if !robj.is_matrix() {
+            return Err("R object is not a matrix");
+        }
+        let dim = robj.dim().expect("robj should be a matrix");
+        let nrows = (*dim).first().expect("dimension must exist").inner() as usize;
+        let ncols = (*dim).last().expect("dimension must exist").inner() as usize;
 
-                if let Some(slice) = robj.as_real_slice() {
-                    let fmat = mat::from_column_major_slice::<f64>(&slice, dim[0], dim[1]);
-                    Ok(fmat)
-                } else {
-                    Err("could not convert to matrix")
-                }
-            } else {
-                Err("could not convert to matrix")
-            }
+        if let Some(slice) = robj.as_real_slice() {
+            let fmat = mat::from_column_major_slice::<f64>(&slice, nrows, ncols);
+            Ok(fmat)
         } else {
-            Err("R object is not a matrix")
+            Err("could not convert to matrix")
         }
     }
 }
@@ -76,21 +70,18 @@ impl TryFrom<&Robj> for Mat<f64> {
     type Error = Error;
 
     fn try_from(robj: &Robj) -> Result<Self> {
-        if robj.is_matrix() {
-            if let Some(dim) = robj.dim() {
-                let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
+        if !robj.is_matrix() {
+            return Err(Error::ExpectedMatrix(robj.clone()));
+        }
+        let dim = robj.dim().expect("robj should be a matrix");
+        let nrows = (*dim).first().expect("dimension must exist").inner() as usize;
+        let ncols = (*dim).last().expect("dimension must exist").inner() as usize;
 
-                if let Some(slice) = robj.as_real_slice() {
-                    let fmat = mat::from_column_major_slice::<f64>(&slice, dim[0], dim[1]);
-                    Ok(fmat.to_owned())
-                } else {
-                    Err(Error::ExpectedReal(robj.clone()))
-                }
-            } else {
-                Err(Error::ExpectedMatrix(robj.clone()))
-            }
+        if let Some(slice) = robj.as_typed_slice() {
+            let fmat = mat::from_column_major_slice::<f64>(slice, nrows, ncols);
+            Ok(fmat.to_owned())
         } else {
-            Err(Error::ExpectedMatrix(robj.clone()))
+            Err(Error::ExpectedReal(robj.clone()))
         }
     }
 }
@@ -99,21 +90,18 @@ impl<'a> TryFrom<&'_ Robj> for MatRef<'a, f64> {
     type Error = Error;
 
     fn try_from(robj: &Robj) -> Result<Self> {
-        if robj.is_matrix() {
-            if let Some(dim) = robj.dim() {
-                let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
+        if !robj.is_matrix() {
+            return Err(Error::ExpectedMatrix(robj.clone()));
+        }
+        let dim = robj.dim().expect("robj should be a matrix");
+        let nrows = (*dim).first().expect("dimension must exist").inner() as usize;
+        let ncols = (*dim).last().expect("dimension must exist").inner() as usize;
 
-                if let Some(slice) = robj.as_typed_slice() {
-                    let fmat = mat::from_column_major_slice::<f64>(slice, dim[0], dim[1]);
-                    Ok(fmat)
-                } else {
-                    Err(Error::ExpectedReal(robj.clone()))
-                }
-            } else {
-                Err(Error::ExpectedMatrix(robj.clone()))
-            }
+        if let Some(slice) = robj.as_typed_slice() {
+            let fmat = mat::from_column_major_slice::<f64>(slice, nrows, ncols);
+            Ok(fmat)
         } else {
-            Err(Error::ExpectedMatrix(robj.clone()))
+            Err(Error::ExpectedReal(robj.clone()))
         }
     }
 }
