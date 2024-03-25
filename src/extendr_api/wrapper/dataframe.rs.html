@@ -64,6 +64,12 @@
 <a href="#62" id="62">62</a>
 <a href="#63" id="63">63</a>
 <a href="#64" id="64">64</a>
+<a href="#65" id="65">65</a>
+<a href="#66" id="66">66</a>
+<a href="#67" id="67">67</a>
+<a href="#68" id="68">68</a>
+<a href="#69" id="69">69</a>
+<a href="#70" id="70">70</a>
 </pre></div><pre class="rust"><code><span class="kw">use super</span>::<span class="kw-2">*</span>;
 
 <span class="kw">pub trait </span>IntoDataFrameRow&lt;T&gt; {
@@ -126,6 +132,12 @@
                 .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()
                 .join(<span class="string">", "</span>)
         )
+    }
+}
+
+<span class="kw">impl</span>&lt;T&gt; IntoRobj <span class="kw">for </span>Dataframe&lt;T&gt; {
+    <span class="kw">fn </span>into_robj(<span class="self">self</span>) -&gt; Robj {
+        <span class="self">self</span>.robj
     }
 }
 </code></pre></div></section></main></body></html>
