@@ -4,6 +4,8 @@ mod submodule;
 
 mod optional_ndarray;
 
+mod optional_faer;
+
 mod graphic_device;
 
 mod optional_either;
@@ -362,6 +364,7 @@ extendr_module! {
 
     use submodule;
     use optional_ndarray;
+    use optional_faer;
     use optional_either;
     use raw_identifiers;
     use memory_leaks;
