@@ -40,6 +40,51 @@ pub type RColumn<T> = RArray<T, [usize; 1]>;
 pub type RMatrix<T> = RArray<T, [usize; 2]>;
 pub type RMatrix3D<T> = RArray<T, [usize; 3]>;
 
+impl<T> RMatrix<T>
+where
+    T: ToVectorValue,
+    Robj: for<'a> AsTypedSlice<'a, T>,
+{
+    /// Returns an [`RMatrix`] with dimensions according to `nrow` and `ncol`,
+    /// with arbitrary entries. To initialize a matrix containing only `NA`
+    /// values, use [`RMatrix::new_with_na`].
+    pub fn new(nrow: usize, ncol: usize) -> Self {
+        let sexptype = T::sexptype();
+        let matrix = Robj::alloc_matrix(sexptype, nrow as _, ncol as _);
+        // this is pretty much the same?
+        let mut robj = matrix;
+        let slice = robj.as_typed_slice_mut().unwrap();
+        let data = slice.as_mut_ptr();
+        RArray::from_parts(robj, data, [nrow, ncol])
+    }
+}
+
+impl<T> RMatrix<T>
+where
+    T: ToVectorValue + CanBeNA,
+    Robj: for<'a> AsTypedSlice<'a, T>,
+{
+    /// Returns an [`RMatrix`] with dimensions according to `nrow` and `ncol`,
+    /// with all entries set to `NA`.
+    ///
+    /// Note that since [`Raw`] does not have an NA representation in R,
+    /// this method is not implemented for [`Rbyte`].
+    pub fn new_with_na(nrow: usize, ncol: usize) -> Self {
+        let mut matrix = Self::new(nrow, ncol);
+        if nrow != 0 || ncol != 0 {
+            // matrix.data_mut().iter_mut().for_each(|x| {
+            matrix
+                .as_typed_slice_mut()
+                .unwrap()
+                .iter_mut()
+                .for_each(|x| {
+                    *x = T::na();
+                });
+        }
+        matrix
+    }
+}
+
 const BASE: usize = 0;
 
 trait Offset<D> {
@@ -369,7 +414,42 @@ impl<T, D> DerefMut for RArray<T, D> {
 
 #[cfg(test)]
 mod tests {
+    use extendr_engine::with_r;
+    use prelude::{Rcplx, Rfloat, Rint};
+
     use super::*;
+
+    #[test]
+    fn test_empty_matrix_new() {
+        dbg!("print like R");
+        with_r(|| {
+            // These are arbitrarily filled. We cannot create assertions for them.
+            let m: RMatrix<Rbyte> = RMatrix::new(5, 2); // possible!
+            unsafe { Rf_PrintValue(m.get()) };
+            let m: RMatrix<Rbool> = RMatrix::new(5, 2);
+            unsafe { Rf_PrintValue(m.get()) };
+            let m: RMatrix<Rint> = RMatrix::new(5, 2);
+            unsafe { Rf_PrintValue(m.get()) };
+            let m: RMatrix<Rfloat> = RMatrix::new(5, 2);
+            unsafe { Rf_PrintValue(m.get()) };
+            let m: RMatrix<Rcplx> = RMatrix::new(5, 2);
+            unsafe { Rf_PrintValue(m.get()) };
+
+            // let m: RMatrix<Rbyte> = RMatrix::new_with_na(10, 2); // not possible!
+            // unsafe { Rf_PrintValue(m.get()) };
+            let m: RMatrix<Rbool> = RMatrix::new_with_na(10, 2);
+            assert_eq!(R!("matrix(NA, 10, 2)").unwrap(), m.into_robj());
+
+            let m: RMatrix<Rint> = RMatrix::new_with_na(10, 2);
+            assert_eq!(R!("matrix(NA_integer_, 10, 2)").unwrap(), m.into_robj());
+
+            let m: RMatrix<Rfloat> = RMatrix::new_with_na(10, 2);
+            assert_eq!(R!("matrix(NA_real_, 10, 2)").unwrap(), m.into_robj());
+
+            let m: RMatrix<Rcplx> = RMatrix::new_with_na(10, 2);
+            assert_eq!(R!("matrix(NA_complex_, 10, 2)").unwrap(), m.into_robj());
+        });
+    }
 
     #[test]
     fn matrix_ops() {
@@ -424,7 +504,7 @@ mod tests {
             vec![15.0, 16.0, 22.0, 3.0, 9.0].try_into().unwrap(),
         ];
         let (n_x, n_y) = (5, 5);
-        let matrix = RMatrix::new_matrix(n_x, n_y, |r, c| res[c][r]);
+        let _matrix = RMatrix::new_matrix(n_x, n_y, |r, c| res[c][r]);
 
         }
     }
