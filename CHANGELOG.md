@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+## Added
+
+- `RArray::data_mut` provides a mutable slice to the underlying array data [[#657]](https://github.com/extendr/extendr/pull/657)
+
+## Changed
+
+- Potentially breaking: `RArray::from_parts` no longer requires a pointer to the underlying data vector [[#657]](https://github.com/extendr/extendr/pull/657)
+
 ## 0.6.0
 
 ### Added
