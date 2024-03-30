@@ -49,11 +49,7 @@ where
     pub fn new(nrow: usize, ncol: usize) -> Self {
         let sexptype = T::sexptype();
         let matrix = Robj::alloc_matrix(sexptype, nrow as _, ncol as _);
-        // this is pretty much the same?
-        let mut robj = matrix;
-        let slice = robj.as_typed_slice_mut().unwrap();
-        let data = slice.as_mut_ptr();
-        RArray::from_parts(robj, [nrow, ncol])
+        RArray::from_parts(matrix, [nrow, ncol])
     }
 }
 
