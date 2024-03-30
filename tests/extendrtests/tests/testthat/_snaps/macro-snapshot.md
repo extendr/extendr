@@ -41,7 +41,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}\0", "hello_submodule"),
+                              format_args!("user function panicked: {0}", "hello_submodule"),
                           );
                           res
                       };
@@ -158,7 +158,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}\0", "new"),
+                              format_args!("user function panicked: {0}", "new"),
                           );
                           res
                       };
@@ -237,7 +237,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}\0", "set_a"),
+                              format_args!("user function panicked: {0}", "set_a"),
                           );
                           res
                       };
@@ -328,7 +328,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}\0", "a"),
+                              format_args!("user function panicked: {0}", "a"),
                           );
                           res
                       };
@@ -414,7 +414,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}\0", "me"),
+                              format_args!("user function panicked: {0}", "me"),
                           );
                           res
                       };
@@ -745,7 +745,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}\0", "euclidean_dist"),
+                              format_args!("user function panicked: {0}", "euclidean_dist"),
                           );
                           res
                       };
@@ -940,7 +940,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}\0", "type_aware_sum"),
+                              format_args!("user function panicked: {0}", "type_aware_sum"),
                           );
                           res
                       };
@@ -1116,7 +1116,7 @@
                       let err_string = {
                           let res = ::alloc::fmt::format(
                               format_args!(
-                                  "user function panicked: {0}\0",
+                                  "user function panicked: {0}",
                                   "raw_identifier_in_fn_args",
                               ),
                           );
@@ -1200,7 +1200,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}\0", "r#true"),
+                              format_args!("user function panicked: {0}", "r#true"),
                           );
                           res
                       };
@@ -1275,7 +1275,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}\0", "r#false"),
+                              format_args!("user function panicked: {0}", "r#false"),
                           );
                           res
                       };
@@ -1449,7 +1449,7 @@
                       let err_string = {
                           let res = ::alloc::fmt::format(
                               format_args!(
-                                  "user function panicked: {0}\0",
+                                  "user function panicked: {0}",
                                   "leak_implicit_strings",
                               ),
                           );
@@ -1538,7 +1538,7 @@
                       let err_string = {
                           let res = ::alloc::fmt::format(
                               format_args!(
-                                  "user function panicked: {0}\0",
+                                  "user function panicked: {0}",
                                   "leak_implicit_doubles",
                               ),
                           );
@@ -1632,7 +1632,7 @@
                       let err_string = {
                           let res = ::alloc::fmt::format(
                               format_args!(
-                                  "user function panicked: {0}\0",
+                                  "user function panicked: {0}",
                                   "leak_arg2_try_implicit_strings",
                               ),
                           );
@@ -1733,7 +1733,7 @@
                       let err_string = {
                           let res = ::alloc::fmt::format(
                               format_args!(
-                                  "user function panicked: {0}\0",
+                                  "user function panicked: {0}",
                                   "leak_arg2_try_implicit_doubles",
                               ),
                           );
@@ -1830,7 +1830,7 @@
                       let err_string = {
                           let res = ::alloc::fmt::format(
                               format_args!(
-                                  "user function panicked: {0}\0",
+                                  "user function panicked: {0}",
                                   "leak_unwrap_strings",
                               ),
                           );
@@ -1919,7 +1919,7 @@
                       let err_string = {
                           let res = ::alloc::fmt::format(
                               format_args!(
-                                  "user function panicked: {0}\0",
+                                  "user function panicked: {0}",
                                   "leak_unwrap_doubles",
                               ),
                           );
@@ -2008,7 +2008,7 @@
                       let err_string = {
                           let res = ::alloc::fmt::format(
                               format_args!(
-                                  "user function panicked: {0}\0",
+                                  "user function panicked: {0}",
                                   "leak_positive_control",
                               ),
                           );
@@ -2097,7 +2097,7 @@
                       let err_string = {
                           let res = ::alloc::fmt::format(
                               format_args!(
-                                  "user function panicked: {0}\0",
+                                  "user function panicked: {0}",
                                   "leak_negative_control",
                               ),
                           );
@@ -2373,7 +2373,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}\0", "new_usize"),
+                              format_args!("user function panicked: {0}", "new_usize"),
                           );
                           res
                       };
@@ -2492,7 +2492,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}\0", "tst_altstring"),
+                              format_args!("user function panicked: {0}", "tst_altstring"),
                           );
                           res
                       };
@@ -2619,7 +2619,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}\0", "tst_altinteger"),
+                              format_args!("user function panicked: {0}", "tst_altinteger"),
                           );
                           res
                       };
@@ -2772,7 +2772,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "hello_world"),
+                          format_args!("user function panicked: {0}", "hello_world"),
                       );
                       res
                   };
@@ -2840,7 +2840,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "do_nothing"),
+                          format_args!("user function panicked: {0}", "do_nothing"),
                       );
                       res
                   };
@@ -2911,7 +2911,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "double_scalar"),
+                          format_args!("user function panicked: {0}", "double_scalar"),
                       );
                       res
                   };
@@ -2991,7 +2991,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "int_scalar"),
+                          format_args!("user function panicked: {0}", "int_scalar"),
                       );
                       res
                   };
@@ -3071,7 +3071,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "bool_scalar"),
+                          format_args!("user function panicked: {0}", "bool_scalar"),
                       );
                       res
                   };
@@ -3151,7 +3151,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "char_scalar"),
+                          format_args!("user function panicked: {0}", "char_scalar"),
                       );
                       res
                   };
@@ -3231,7 +3231,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "char_vec"),
+                          format_args!("user function panicked: {0}", "char_vec"),
                       );
                       res
                   };
@@ -3311,7 +3311,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "double_vec"),
+                          format_args!("user function panicked: {0}", "double_vec"),
                       );
                       res
                   };
@@ -3390,7 +3390,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "try_rfloat_na"),
+                          format_args!("user function panicked: {0}", "try_rfloat_na"),
                       );
                       res
                   };
@@ -3460,7 +3460,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "try_rint_na"),
+                          format_args!("user function panicked: {0}", "try_rint_na"),
                       );
                       res
                   };
@@ -3531,7 +3531,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "check_rfloat_na"),
+                          format_args!("user function panicked: {0}", "check_rfloat_na"),
                       );
                       res
                   };
@@ -3611,7 +3611,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "check_rint_na"),
+                          format_args!("user function panicked: {0}", "check_rint_na"),
                       );
                       res
                   };
@@ -3691,7 +3691,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "try_double_vec"),
+                          format_args!("user function panicked: {0}", "try_double_vec"),
                       );
                       res
                   };
@@ -3779,7 +3779,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "get_doubles_element"),
+                          format_args!("user function panicked: {0}", "get_doubles_element"),
                       );
                       res
                   };
@@ -3872,7 +3872,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "get_integers_element"),
+                          format_args!("user function panicked: {0}", "get_integers_element"),
                       );
                       res
                   };
@@ -3965,7 +3965,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "get_logicals_element"),
+                          format_args!("user function panicked: {0}", "get_logicals_element"),
                       );
                       res
                   };
@@ -4054,7 +4054,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "doubles_square"),
+                          format_args!("user function panicked: {0}", "doubles_square"),
                       );
                       res
                   };
@@ -4138,7 +4138,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "complexes_square"),
+                          format_args!("user function panicked: {0}", "complexes_square"),
                       );
                       res
                   };
@@ -4222,7 +4222,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "integers_square"),
+                          format_args!("user function panicked: {0}", "integers_square"),
                       );
                       res
                   };
@@ -4306,7 +4306,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "logicals_not"),
+                          format_args!("user function panicked: {0}", "logicals_not"),
                       );
                       res
                   };
@@ -4386,7 +4386,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "check_default"),
+                          format_args!("user function panicked: {0}", "check_default"),
                       );
                       res
                   };
@@ -4482,7 +4482,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "special_param_names"),
+                          format_args!("user function panicked: {0}", "special_param_names"),
                       );
                       res
                   };
@@ -4569,7 +4569,7 @@
                   let err_string = {
                       let res = ::alloc::fmt::format(
                           format_args!(
-                              "user function panicked: {0}\0",
+                              "user function panicked: {0}",
                               "__00__special_function_name",
                           ),
                       );
@@ -4641,7 +4641,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "test.rename.rlike"),
+                          format_args!("user function panicked: {0}", "test.rename.rlike"),
                       );
                       res
                   };
@@ -4712,7 +4712,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "get_default_value"),
+                          format_args!("user function panicked: {0}", "get_default_value"),
                       );
                       res
                   };
@@ -4792,7 +4792,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "add_5_if_not_null"),
+                          format_args!("user function panicked: {0}", "add_5_if_not_null"),
                       );
                       res
                   };
@@ -4920,7 +4920,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "new"),
+                          format_args!("user function panicked: {0}", "new"),
                       );
                       res
                   };
@@ -4997,7 +4997,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "set_a"),
+                          format_args!("user function panicked: {0}", "set_a"),
                       );
                       res
                   };
@@ -5083,7 +5083,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "a"),
+                          format_args!("user function panicked: {0}", "a"),
                       );
                       res
                   };
@@ -5164,7 +5164,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "me"),
+                          format_args!("user function panicked: {0}", "me"),
                       );
                       res
                   };
@@ -5247,7 +5247,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "restore_from_robj"),
+                          format_args!("user function panicked: {0}", "restore_from_robj"),
                       );
                       res
                   };
@@ -5330,7 +5330,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "get_default_value"),
+                          format_args!("user function panicked: {0}", "get_default_value"),
                       );
                       res
                   };
@@ -5496,7 +5496,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "new"),
+                          format_args!("user function panicked: {0}", "new"),
                       );
                       res
                   };
@@ -5571,7 +5571,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "__name_test"),
+                          format_args!("user function panicked: {0}", "__name_test"),
                       );
                       res
                   };
@@ -5745,7 +5745,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "new"),
+                          format_args!("user function panicked: {0}", "new"),
                       );
                       res
                   };
@@ -5822,7 +5822,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "a"),
+                          format_args!("user function panicked: {0}", "a"),
                       );
                       res
                   };
@@ -5984,7 +5984,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}\0", "my_device"),
+                          format_args!("user function panicked: {0}", "my_device"),
                       );
                       res
                   };
