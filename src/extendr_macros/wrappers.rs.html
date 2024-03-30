@@ -571,7 +571,7 @@
                     // included in panic. The advantage would be the panic cause could be included
                     // in the R terminal error message and not only via std-err.
                     // but it should be handled in a separate function and not in-lined here.
-                    </span><span class="kw">let </span>err_string = <span class="macro">format!</span>(<span class="string">"user function panicked: {}\0"</span>,#r_name_str);
+                    </span><span class="kw">let </span>err_string = <span class="macro">format!</span>(<span class="string">"user function panicked: {}"</span>,#r_name_str);
                     <span class="comment">// cannot use throw_r_error here for some reason.
                     // handle_panic() exports err string differently than throw_r_error.
                     </span>extendr_api::handle_panic(err_string.as_str(), || <span class="macro">panic!</span>());
