@@ -8,7 +8,7 @@
 
 ## Changed
 
-- `RArray::from_parts` no longer requires a pointer to the underlying data vector [[#657]](https://github.com/extendr/extendr/pull/657)
+- Potentially breaking: `RArray::from_parts` no longer requires a pointer to the underlying data vector [[#657]](https://github.com/extendr/extendr/pull/657)
 
 ## 0.6.0
 
