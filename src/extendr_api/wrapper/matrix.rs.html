@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/matrix.rs`."><title>matrix.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.79.0-nightly (0824b300e 2024-03-24)" data-channel="nightly" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/matrix.rs`."><title>matrix.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.79.0-nightly (c9f8f3438 2024-03-27)" data-channel="nightly" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../extendr_api/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -511,6 +511,26 @@
 <a href="#509" id="509">509</a>
 <a href="#510" id="510">510</a>
 <a href="#511" id="511">511</a>
+<a href="#512" id="512">512</a>
+<a href="#513" id="513">513</a>
+<a href="#514" id="514">514</a>
+<a href="#515" id="515">515</a>
+<a href="#516" id="516">516</a>
+<a href="#517" id="517">517</a>
+<a href="#518" id="518">518</a>
+<a href="#519" id="519">519</a>
+<a href="#520" id="520">520</a>
+<a href="#521" id="521">521</a>
+<a href="#522" id="522">522</a>
+<a href="#523" id="523">523</a>
+<a href="#524" id="524">524</a>
+<a href="#525" id="525">525</a>
+<a href="#526" id="526">526</a>
+<a href="#527" id="527">527</a>
+<a href="#528" id="528">528</a>
+<a href="#529" id="529">529</a>
+<a href="#530" id="530">530</a>
+<a href="#531" id="531">531</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Wrappers for matrices with deferred arithmetic.
 
 </span><span class="kw">use super</span>::<span class="kw-2">*</span>;
@@ -542,11 +562,9 @@
     <span class="doccomment">/// Owning Robj (probably should be a Pin).
     </span>robj: Robj,
 
-    <span class="doccomment">/// Slice of the data references the Robj.
-    </span>data: <span class="kw-2">*mut </span>T,
-
     <span class="doccomment">/// Dimensions of the array.
     </span>dim: D,
+    _data: std::marker::PhantomData&lt;T&gt;,
 }
 
 <span class="kw">pub type </span>RColumn&lt;T&gt; = RArray&lt;T, [usize; <span class="number">1</span>]&gt;;
@@ -568,7 +586,7 @@
         </span><span class="kw">let </span><span class="kw-2">mut </span>robj = matrix;
         <span class="kw">let </span>slice = robj.as_typed_slice_mut().unwrap();
         <span class="kw">let </span>data = slice.as_mut_ptr();
-        RArray::from_parts(robj, data, [nrow, ncol])
+        RArray::from_parts(robj, [nrow, ncol])
     }
 }
 
@@ -644,14 +662,27 @@
     }
 }
 
-<span class="kw">impl</span>&lt;T, D&gt; RArray&lt;T, D&gt; {
-    <span class="kw">pub fn </span>from_parts(robj: Robj, data: <span class="kw-2">*mut </span>T, dim: D) -&gt; <span class="self">Self </span>{
-        <span class="self">Self </span>{ robj, data, dim }
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, T, D&gt; RArray&lt;T, D&gt;
+<span class="kw">where
+    </span>T: <span class="lifetime">'a</span>,
+    Robj: AsTypedSlice&lt;<span class="lifetime">'a</span>, T&gt;,
+{
+    <span class="kw">pub fn </span>from_parts(robj: Robj, dim: D) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            robj,
+            dim,
+            _data: std::marker::PhantomData,
+        }
     }
 
-    <span class="doccomment">/// Get the underlying data fro this array.
-    </span><span class="kw">pub fn </span>data(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[T] {
-        <span class="kw">unsafe </span>{ std::slice::from_raw_parts(<span class="self">self</span>.data, <span class="self">self</span>.robj.len()) }
+    <span class="doccomment">/// Returns a flat representation of the array in col-major.
+    </span><span class="kw">pub fn </span>data(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[T] {
+        <span class="self">self</span>.as_typed_slice().unwrap()
+    }
+
+    <span class="doccomment">/// Returns a flat mutable representation of the array in col-major.
+    </span><span class="kw">pub fn </span>data_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>[T] {
+        <span class="self">self</span>.as_typed_slice_mut().unwrap()
     }
 
     <span class="doccomment">/// Get the dimensions for this array.
@@ -668,10 +699,8 @@
     </span><span class="kw">pub fn </span>new_column&lt;F: FnMut(usize) -&gt; T&gt;(nrows: usize, f: F) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span><span class="kw-2">mut </span>robj = (<span class="number">0</span>..nrows).map(f).collect_robj();
         <span class="kw">let </span>dim = [nrows];
-        <span class="kw">let </span><span class="kw-2">mut </span>robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
-        <span class="kw">let </span>slice = robj.as_typed_slice_mut().unwrap();
-        <span class="kw">let </span>data = slice.as_mut_ptr();
-        RArray::from_parts(robj, data, dim)
+        <span class="kw">let </span>robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
+        RArray::from_parts(robj, dim)
     }
 
     <span class="doccomment">/// Get the number of rows.
@@ -707,9 +736,8 @@
             })
             .collect_robj();
         <span class="kw">let </span>dim = [nrows, ncols];
-        <span class="kw">let </span><span class="kw-2">mut </span>robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
-        <span class="kw">let </span>data = robj.as_typed_slice_mut().unwrap().as_mut_ptr();
-        RArray::from_parts(robj, data, dim)
+        <span class="kw">let </span>robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
+        RArray::from_parts(robj, dim)
     }
 
     <span class="doccomment">/// Get the number of rows.
@@ -743,9 +771,8 @@
             })
             .collect_robj();
         <span class="kw">let </span>dim = [nrows, ncols, nmatrix];
-        <span class="kw">let </span><span class="kw-2">mut </span>robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
-        <span class="kw">let </span>data = robj.as_typed_slice_mut().unwrap().as_mut_ptr();
-        RArray::from_parts(robj, data, dim)
+        <span class="kw">let </span>robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
+        RArray::from_parts(robj, dim)
     }
 
     <span class="doccomment">/// Get the number of rows.
@@ -771,8 +798,9 @@
     <span class="kw">type </span>Error = Error;
 
     <span class="kw">fn </span>try_from(<span class="kw-2">mut </span>robj: Robj) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(slice) = robj.as_typed_slice_mut() {
-            <span class="prelude-val">Ok</span>(RArray::from_parts(robj, slice.as_mut_ptr(), [slice.len()]))
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(_slice) = robj.as_typed_slice_mut() {
+            <span class="kw">let </span>len = robj.len();
+            <span class="prelude-val">Ok</span>(RArray::from_parts(robj, [len]))
         } <span class="kw">else </span>{
             <span class="prelude-val">Err</span>(Error::ExpectedVector(robj))
         }
@@ -788,17 +816,13 @@
     <span class="kw">fn </span>try_from(<span class="kw-2">mut </span>robj: Robj) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         <span class="kw">if </span>!robj.is_matrix() {
             <span class="prelude-val">Err</span>(Error::ExpectedMatrix(robj))
-        } <span class="kw">else if let </span><span class="prelude-val">Some</span>(slice) = robj.as_typed_slice_mut() {
+        } <span class="kw">else if let </span><span class="prelude-val">Some</span>(_slice) = robj.as_typed_slice_mut() {
             <span class="kw">if let </span><span class="prelude-val">Some</span>(dim) = robj.dim() {
                 <span class="kw">let </span>dim: Vec&lt;<span class="kw">_</span>&gt; = dim.iter().map(|d| d.inner() <span class="kw">as </span>usize).collect();
                 <span class="kw">if </span>dim.len() != <span class="number">2 </span>{
                     <span class="prelude-val">Err</span>(Error::ExpectedMatrix(robj))
                 } <span class="kw">else </span>{
-                    <span class="prelude-val">Ok</span>(RArray::from_parts(
-                        robj,
-                        slice.as_mut_ptr(),
-                        [dim[<span class="number">0</span>], dim[<span class="number">1</span>]],
-                    ))
+                    <span class="prelude-val">Ok</span>(RArray::from_parts(robj, [dim[<span class="number">0</span>], dim[<span class="number">1</span>]]))
                 }
             } <span class="kw">else </span>{
                 <span class="prelude-val">Err</span>(Error::ExpectedMatrix(robj))
@@ -816,17 +840,13 @@
     <span class="kw">type </span>Error = Error;
 
     <span class="kw">fn </span>try_from(<span class="kw-2">mut </span>robj: Robj) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(slice) = robj.as_typed_slice_mut() {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(_slice) = robj.as_typed_slice_mut() {
             <span class="kw">if let </span><span class="prelude-val">Some</span>(dim) = robj.dim() {
                 <span class="kw">if </span>dim.len() != <span class="number">3 </span>{
                     <span class="prelude-val">Err</span>(Error::ExpectedMatrix3D(robj))
                 } <span class="kw">else </span>{
                     <span class="kw">let </span>dim: Vec&lt;<span class="kw">_</span>&gt; = dim.iter().map(|d| d.inner() <span class="kw">as </span>usize).collect();
-                    <span class="prelude-val">Ok</span>(RArray::from_parts(
-                        robj,
-                        slice.as_mut_ptr(),
-                        [dim[<span class="number">0</span>], dim[<span class="number">1</span>], dim[<span class="number">2</span>]],
-                    ))
+                    <span class="prelude-val">Ok</span>(RArray::from_parts(robj, [dim[<span class="number">0</span>], dim[<span class="number">1</span>], dim[<span class="number">2</span>]]))
                 }
             } <span class="kw">else </span>{
                 <span class="prelude-val">Err</span>(Error::ExpectedMatrix3D(robj))
@@ -869,7 +889,11 @@
 
 <span class="kw">impl </span>MatrixConversions <span class="kw">for </span>Robj {}
 
-<span class="kw">impl</span>&lt;T&gt; Index&lt;[usize; <span class="number">2</span>]&gt; <span class="kw">for </span>RArray&lt;T, [usize; <span class="number">2</span>]&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, T&gt; Index&lt;[usize; <span class="number">2</span>]&gt; <span class="kw">for </span>RArray&lt;T, [usize; <span class="number">2</span>]&gt;
+<span class="kw">where
+    </span>T: <span class="lifetime">'a</span>,
+    robj::Robj: robj::AsTypedSlice&lt;<span class="lifetime">'a</span>, T&gt;,
+{
     <span class="kw">type </span>Output = T;
 
     <span class="doccomment">/// Zero-based indexing in row, column order.
@@ -887,11 +911,21 @@
     /// }
     /// ```
     </span><span class="kw">fn </span>index(<span class="kw-2">&amp;</span><span class="self">self</span>, index: [usize; <span class="number">2</span>]) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Output {
-        <span class="kw">unsafe </span>{ <span class="self">self</span>.data.add(<span class="self">self</span>.offset(index)).as_ref().unwrap() }
+        <span class="kw">unsafe </span>{
+            <span class="self">self</span>.data()
+                .as_ptr()
+                .add(<span class="self">self</span>.offset(index))
+                .as_ref()
+                .unwrap()
+        }
     }
 }
 
-<span class="kw">impl</span>&lt;T&gt; IndexMut&lt;[usize; <span class="number">2</span>]&gt; <span class="kw">for </span>RArray&lt;T, [usize; <span class="number">2</span>]&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, T&gt; IndexMut&lt;[usize; <span class="number">2</span>]&gt; <span class="kw">for </span>RArray&lt;T, [usize; <span class="number">2</span>]&gt;
+<span class="kw">where
+    </span>T: <span class="lifetime">'a</span>,
+    robj::Robj: robj::AsTypedSlice&lt;<span class="lifetime">'a</span>, T&gt;,
+{
     <span class="doccomment">/// Zero-based mutable indexing in row, column order.
     ///
     /// Panics if out of bounds.
@@ -907,7 +941,13 @@
     /// }
     /// ```
     </span><span class="kw">fn </span>index_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>, index: [usize; <span class="number">2</span>]) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Output {
-        <span class="kw">unsafe </span>{ <span class="self">self</span>.data.add(<span class="self">self</span>.offset(index)).as_mut().unwrap() }
+        <span class="kw">unsafe </span>{
+            <span class="self">self</span>.data_mut()
+                .as_mut_ptr()
+                .add(<span class="self">self</span>.offset(index))
+                .as_mut()
+                .unwrap()
+        }
     }
 }
 
