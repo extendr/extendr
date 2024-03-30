@@ -527,10 +527,6 @@
 <a href="#525" id="525">525</a>
 <a href="#526" id="526">526</a>
 <a href="#527" id="527">527</a>
-<a href="#528" id="528">528</a>
-<a href="#529" id="529">529</a>
-<a href="#530" id="530">530</a>
-<a href="#531" id="531">531</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Wrappers for matrices with deferred arithmetic.
 
 </span><span class="kw">use super</span>::<span class="kw-2">*</span>;
@@ -582,11 +578,7 @@
     </span><span class="kw">pub fn </span>new(nrow: usize, ncol: usize) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>sexptype = T::sexptype();
         <span class="kw">let </span>matrix = Robj::alloc_matrix(sexptype, nrow <span class="kw">as _</span>, ncol <span class="kw">as _</span>);
-        <span class="comment">// this is pretty much the same?
-        </span><span class="kw">let </span><span class="kw-2">mut </span>robj = matrix;
-        <span class="kw">let </span>slice = robj.as_typed_slice_mut().unwrap();
-        <span class="kw">let </span>data = slice.as_mut_ptr();
-        RArray::from_parts(robj, [nrow, ncol])
+        RArray::from_parts(matrix, [nrow, ncol])
     }
 }
 
