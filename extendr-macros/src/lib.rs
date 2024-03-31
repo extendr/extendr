@@ -80,7 +80,10 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
 
     match parse_macro_input!(item as Item) {
         Item::Fn(func) => extendr_function::extendr_function(func, &opts),
-        Item::Impl(item_impl) => extendr_impl::extendr_impl(item_impl),
+        Item::Impl(item_impl) => match extendr_impl::extendr_impl(item_impl) {
+            Ok(result) => result,
+            Err(e) => e.into_compile_error().into(),
+        },
         other_item => TokenStream::from(quote! {#other_item}),
     }
 }
@@ -203,7 +206,10 @@ pub fn Rraw(item: TokenStream) -> TokenStream {
 /// ```
 #[proc_macro_derive(TryFromRobj)]
 pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
-    list_struct::derive_try_from_robj(item)
+    match list_struct::derive_try_from_robj(item) {
+        Ok(result) => result,
+        Err(e) => e.into_compile_error().into(),
+    }
 }
 
 /// Derives an implementation of `From<Struct> for Robj` and `From<&Struct> for Robj` on this struct.
@@ -241,7 +247,10 @@ pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
 /// and converting it back to Rust will produce a copy of the original struct.
 #[proc_macro_derive(IntoRobj)]
 pub fn derive_into_robj(item: TokenStream) -> TokenStream {
-    list_struct::derive_into_robj(item)
+    match list_struct::derive_into_robj(item) {
+        Ok(result) => result,
+        Err(e) => e.into_compile_error().into(),
+    }
 }
 
 /// Enable the construction of dataframes from arrays of structures.

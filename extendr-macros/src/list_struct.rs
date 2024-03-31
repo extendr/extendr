@@ -1,19 +1,18 @@
 use proc_macro::TokenStream;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
-use syn::{parse_macro_input, Data, DeriveInput};
+use syn::{Data, DeriveInput};
 
 /// Implementation of the TryFromRobj macro. Refer to the documentation there
-pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
+pub fn derive_try_from_robj(item: TokenStream) -> syn::parse::Result<TokenStream> {
     // Parse the tokens into a Struct
-    let ast: DeriveInput = parse_macro_input!(item as DeriveInput);
-    let struct_name = ast.ident;
-    let inside;
-    if let Data::Struct(inner) = ast.data {
-        inside = inner;
+    let ast = syn::parse::<DeriveInput>(item)?;
+    let inside = if let Data::Struct(inner) = ast.data {
+        inner
     } else {
-        panic!("This is a derive macro, only use it on a struct")
+        return Err(syn::Error::new_spanned(ast, "Only struct is supported"));
     };
+    let struct_name = ast.ident;
 
     // Iterate each struct field and capture a conversion from Robj for each field
     let mut tokens = Vec::<TokenStream2>::with_capacity(inside.fields.len());
@@ -27,7 +26,7 @@ pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
     }
 
     // Emit the conversion trait impl
-    TokenStream::from(quote!(
+    Ok(TokenStream::from(quote!(
         impl std::convert::TryFrom<&Robj> for #struct_name {
             type Error = extendr_api::Error;
 
@@ -47,20 +46,19 @@ pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
                 })
             }
         }
-    ))
+    )))
 }
 
 /// Implementation of the IntoRobj macro. Refer to the documentation there
-pub fn derive_into_robj(item: TokenStream) -> TokenStream {
+pub fn derive_into_robj(item: TokenStream) -> syn::parse::Result<TokenStream> {
     // Parse the tokens into a Struct
-    let ast: DeriveInput = parse_macro_input!(item as DeriveInput);
-    let struct_name = ast.ident;
-    let inside;
-    if let Data::Struct(inner) = ast.data {
-        inside = inner;
+    let ast = syn::parse::<DeriveInput>(item)?;
+    let inside = if let Data::Struct(inner) = ast.data {
+        inner
     } else {
-        panic!("This is a derive macro, only use it on a struct")
+        return Err(syn::Error::new_spanned(ast, "Only struct is supported"));
     };
+    let struct_name = ast.ident;
 
     // Iterate each struct field and capture a token that creates a KeyValue pair (tuple) for
     // each field
@@ -75,7 +73,7 @@ pub fn derive_into_robj(item: TokenStream) -> TokenStream {
     }
 
     // The only thing we emit from this macro is the conversion trait impl
-    TokenStream::from(quote!(
+    Ok(TokenStream::from(quote!(
         impl std::convert::From<&#struct_name> for Robj {
             fn from(value: &#struct_name) -> Self {
                 extendr_api::List::from_pairs([#(#tokens),*]).into()
@@ -86,5 +84,5 @@ pub fn derive_into_robj(item: TokenStream) -> TokenStream {
                 extendr_api::List::from_pairs([#(#tokens),*]).into()
             }
         }
-    ))
+    )))
 }
