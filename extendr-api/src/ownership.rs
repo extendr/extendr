@@ -69,7 +69,7 @@ pub(crate) unsafe fn unprotect(sexp: SEXP) {
 pub const INITIAL_PRESERVATION_SIZE: usize = 100000;
 pub const EXTRA_PRESERVATION_SIZE: usize = 100000;
 
-// `Object` is a manual refernce counting mechanism that is used for each SEXP.
+// `Object` is a manual reference counting mechanism that is used for each SEXP.
 // `refcount` is the number of times the SEXP is accessed.
 // `index` is the index of the SEXP in the preservation vector.
 #[derive(Debug)]
@@ -146,7 +146,10 @@ impl Ownership {
         // Because the Ownership object already protects an SEXP in the `preservation` field.
         // The new `sexp` is inserted into the preservation list via `SET_VECTOR_ELT` below.
         // If list is protected then so are all of its elements.
-        // "Protecting an R object automatically protects all the R objects pointed to in the corresponding SEXPREC, for example all elements of a protected list are automatically protected." 5.9.1
+        // 
+        // > Protecting an R object automatically protects all the R objects 
+        // > pointed to in the corresponding SEXPREC, for example all elements
+        // > of a protected list are automatically protected." 5.9.1
         Rf_protect(sexp);
 
         if self.cur_index == self.max_index {
