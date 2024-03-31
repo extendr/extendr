@@ -45,20 +45,6 @@ mod send_sexp {
             self.0 = value;
         }
     }
-
-    // impl std::ops::Deref for SendSEXP {
-    //     type Target = SEXP;
-
-    //     fn deref(&self) -> &Self::Target {
-    //         &self.0
-    //     }
-    // }
-
-    // impl std::ops::DerefMut for SendSEXP {
-    //     fn deref_mut(&mut self) -> &mut Self::Target {
-    //         &mut self.0
-    //     }
-    // }
 }
 
 use self::send_sexp::SendSEXP;
