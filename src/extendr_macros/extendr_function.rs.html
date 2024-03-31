@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-macros/src/extendr_function.rs`."><title>extendr_function.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.79.0-nightly (c9f8f3438 2024-03-27)" data-channel="nightly" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-macros/src/extendr_function.rs`."><title>extendr_function.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.79.0-nightly (8df7e723e 2024-03-30)" data-channel="nightly" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../extendr_macros/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -69,6 +69,12 @@
 <a href="#67" id="67">67</a>
 <a href="#68" id="68">68</a>
 <a href="#69" id="69">69</a>
+<a href="#70" id="70">70</a>
+<a href="#71" id="71">71</a>
+<a href="#72" id="72">72</a>
+<a href="#73" id="73">73</a>
+<a href="#74" id="74">74</a>
+<a href="#75" id="75">75</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::wrappers;
 <span class="kw">use </span>proc_macro::TokenStream;
 <span class="kw">use </span>quote::quote;
@@ -77,7 +83,12 @@
 <span class="doccomment">/// Generate bindings for a single function.
 </span><span class="kw">pub fn </span>extendr_function(<span class="kw-2">mut </span>func: ItemFn, opts: <span class="kw-2">&amp;</span>wrappers::ExtendrOptions) -&gt; TokenStream {
     <span class="kw">let </span><span class="kw-2">mut </span>wrappers: Vec&lt;ItemFn&gt; = Vec::new();
-    wrappers::make_function_wrappers(opts, <span class="kw-2">&amp;mut </span>wrappers, <span class="string">""</span>, <span class="kw-2">&amp;</span>func.attrs, <span class="kw-2">&amp;mut </span>func.sig, <span class="prelude-val">None</span>);
+
+    <span class="kw">let </span>res =
+        wrappers::make_function_wrappers(opts, <span class="kw-2">&amp;mut </span>wrappers, <span class="string">""</span>, <span class="kw-2">&amp;</span>func.attrs, <span class="kw-2">&amp;mut </span>func.sig, <span class="prelude-val">None</span>);
+    <span class="kw">if let </span><span class="prelude-val">Err</span>(e) = res {
+        <span class="kw">return </span>e.into_compile_error().into();
+    };
 
     TokenStream::from(<span class="macro">quote!</span> {
         #func
@@ -96,45 +107,46 @@
     /// - `use_rng = bool` ensures the RNG-state is pulled and pushed
     ///
     </span><span class="kw">pub fn </span>parse(<span class="kw-2">&amp;mut </span><span class="self">self</span>, meta: ParseNestedMeta) -&gt; syn::parse::Result&lt;()&gt; {
-        <span class="kw">fn </span>help_message() -&gt; ! {
-            <span class="macro">panic!</span>(<span class="string">"expected #[extendr(use_try_from = bool, r_name = \"name\", mod_name = \"r_mod_name\", use_rng = bool)]"</span>);
-        }
+        <span class="kw">let </span>value = meta.value()<span class="question-mark">?</span>;
+        <span class="kw">let </span>path = meta
+            .path
+            .get_ident()
+            .ok_or(meta.error(<span class="string">"Unexpected syntax"</span>))<span class="question-mark">?</span>;
 
-        <span class="kw">let </span>value = <span class="kw">match </span>meta.value() {
-            <span class="prelude-val">Ok</span>(value) =&gt; value,
-            <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; help_message(),
-        };
-
-        <span class="kw">if </span>meta.path.is_ident(<span class="string">"use_try_from"</span>) {
-            <span class="kw">if let </span><span class="prelude-val">Ok</span>(LitBool { value, .. }) = value.parse() {
-                <span class="self">self</span>.use_try_from = value;
-                <span class="prelude-val">Ok</span>(())
-            } <span class="kw">else </span>{
-                help_message();
+        <span class="kw">match </span>path.to_string().as_str() {
+            <span class="string">"use_try_from" </span>=&gt; {
+                <span class="kw">if let </span><span class="prelude-val">Ok</span>(LitBool { value, .. }) = value.parse() {
+                    <span class="self">self</span>.use_try_from = value;
+                    <span class="prelude-val">Ok</span>(())
+                } <span class="kw">else </span>{
+                    <span class="prelude-val">Err</span>(value.error(<span class="string">"`use_try_from` must be `true` or `false`"</span>))
+                }
             }
-        } <span class="kw">else if </span>meta.path.is_ident(<span class="string">"r_name"</span>) {
-            <span class="kw">if let </span><span class="prelude-val">Ok</span>(Lit::Str(litstr)) = value.parse() {
-                <span class="self">self</span>.r_name = <span class="prelude-val">Some</span>(litstr.value());
-                <span class="prelude-val">Ok</span>(())
-            } <span class="kw">else </span>{
-                help_message();
+            <span class="string">"r_name" </span>=&gt; {
+                <span class="kw">if let </span><span class="prelude-val">Ok</span>(Lit::Str(litstr)) = value.parse() {
+                    <span class="self">self</span>.r_name = <span class="prelude-val">Some</span>(litstr.value());
+                    <span class="prelude-val">Ok</span>(())
+                } <span class="kw">else </span>{
+                    <span class="prelude-val">Err</span>(value.error(<span class="string">"`r_name` must be a string literal"</span>))
+                }
             }
-        } <span class="kw">else if </span>meta.path.is_ident(<span class="string">"mod_name"</span>) {
-            <span class="kw">if let </span><span class="prelude-val">Ok</span>(Lit::Str(litstr)) = value.parse() {
-                <span class="self">self</span>.mod_name = <span class="prelude-val">Some</span>(litstr.value());
-                <span class="prelude-val">Ok</span>(())
-            } <span class="kw">else </span>{
-                help_message();
+            <span class="string">"mod_name" </span>=&gt; {
+                <span class="kw">if let </span><span class="prelude-val">Ok</span>(Lit::Str(litstr)) = value.parse() {
+                    <span class="self">self</span>.mod_name = <span class="prelude-val">Some</span>(litstr.value());
+                    <span class="prelude-val">Ok</span>(())
+                } <span class="kw">else </span>{
+                    <span class="prelude-val">Err</span>(value.error(<span class="string">"`mod_name` must be a string literal"</span>))
+                }
             }
-        } <span class="kw">else if </span>meta.path.is_ident(<span class="string">"use_rng"</span>) {
-            <span class="kw">if let </span><span class="prelude-val">Ok</span>(LitBool { value, .. }) = value.parse() {
-                <span class="self">self</span>.use_rng = value;
-                <span class="prelude-val">Ok</span>(())
-            } <span class="kw">else </span>{
-                help_message();
+            <span class="string">"use_rng" </span>=&gt; {
+                <span class="kw">if let </span><span class="prelude-val">Ok</span>(LitBool { value, .. }) = value.parse() {
+                    <span class="self">self</span>.use_rng = value;
+                    <span class="prelude-val">Ok</span>(())
+                } <span class="kw">else </span>{
+                    <span class="prelude-val">Err</span>(value.error(<span class="string">"`use_rng` must be `true` or `false`"</span>))
+                }
             }
-        } <span class="kw">else </span>{
-            help_message();
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(syn::Error::new_spanned(meta.path, <span class="string">"Unexpected key"</span>)),
         }
     }
 }
