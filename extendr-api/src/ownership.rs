@@ -146,8 +146,8 @@ impl Ownership {
         // Because the Ownership object already protects an SEXP in the `preservation` field.
         // The new `sexp` is inserted into the preservation list via `SET_VECTOR_ELT` below.
         // If list is protected then so are all of its elements.
-        // 
-        // > Protecting an R object automatically protects all the R objects 
+        //
+        // > Protecting an R object automatically protects all the R objects
         // > pointed to in the corresponding SEXPREC, for example all elements
         // > of a protected list are automatically protected." 5.9.1
         Rf_protect(sexp);
