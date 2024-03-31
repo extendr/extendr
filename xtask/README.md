@@ -17,10 +17,12 @@ Usage: xtask <COMMAND>
 
 Commands:
   check-fmt      Run cargo fmt on extendr
+  fmt            Run `cargo fmt` on extendr crates
   r-cmd-check    Run R CMD check on {extendrtests}
   doc            Generate documentation for all features
   msrv           Check that the specified rust-version is MSRV
   devtools-test  Run devtools::test() on {extendrtests}
+  document       Generate wrappers by `rextendr::document`
   help           Print this message or the help of the given subcommand(s)
 
 Options:
@@ -35,9 +37,9 @@ Let's describe some of the features listed above.
 This checks if the rust code follows the specified `rustfmt`. It does not
 format the code. In order to do so, please run `cargo fmt`.
 
-## `devtools-test`
+## `fmt`
 
-This performs `devtools::test()` in R, within the R-package `tests/extendrtests`.
+This command calls `cargo fmt` in the workspace, and ensures that `cargo fmt` is called within `tests/extendrtests/src/rust` aswell.
 
 ## `r-cmd-check`
 
@@ -47,6 +49,19 @@ Runs `R CMD check` tests in `tests/extendrtests`.
 
 Generates documentation as seen on [/extendr.github.io](https://extendr.github.io/extendr/extendr_api/), meaning it will enable feature `full-functionality`,
 which includes all the optional dependencies, plus all the additive features.
+
+## `msrv`
+
+Performs Minimum Supported Rust Version (MSRV) check in the repo.
+
+## `devtools-test`
+
+This performs `devtools::test()` in R, within the R-package `tests/extendrtests`. If this call results in messages about updating
+macro snapshots, one may run `cargo extendr devtools-test -a` to accept the newly generated snapshots.
+
+## `document`
+
+Use `cargo extendr document` to regenerate the wrappers for the integration-test package `tests/extendrtests`. This invokes `rextendr::document()`.
 
 ## TODO
 
