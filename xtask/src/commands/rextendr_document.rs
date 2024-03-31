@@ -24,18 +24,30 @@ pub(crate) fn run(shell: &Shell) -> Result<(), Box<dyn Error>> {
 fn run_rextendr_document(shell: &Shell) -> Result<(), Box<dyn Error>> {
     let _r_path = shell.push_dir(R_FOLDER_PATH);
 
-    //FIXME: check if `../../rextendr` is available, and report back
-    // if it is not, then it is due to lack of `git submodule update --init`
-    // which should be
-    //FIXME: test if `devtools` is available, and report back if not
+    let rextendr_submodule = std::path::Path::new(".../../rextendr");
+    let rextendr_submodule = matches!(rextendr_submodule.try_exists(), Ok(true));
+    if rextendr_submodule {
+        cmd!(shell, "Rscript")
+            .args([
+                "-e",
+                r#"requireNamespace("devtools")"#,
+                "-e",
+                r#"devtools::load_all("../../rextendr")"#,
+                "-e",
+                r#"rextendr::document()"#,
+            ])
+            .run()?;
+    } else {
+        // check if rextendr is installed and use that instead
+        cmd!(shell, "Rscript")
+            .args([
+                "-e",
+                r#"requireNamespace("rextendr")"#,
+                "-e",
+                r#"rextendr::document()"#,
+            ])
+            .run()?;
+    }
 
-    cmd!(shell, "Rscript")
-        .args([
-            "-e",
-            r#"devtools::load_all("../../rextendr")"#,
-            "-e",
-            r#"rextendr::document()"#,
-        ])
-        .run()?;
     Ok(())
 }

@@ -47,15 +47,18 @@ pub(crate) fn swap_extendr_api_path(shell: &Shell) -> Result<DocumentMutHandle, 
     *extendr_api_entry = Value::InlineTable(replacement);
 
     #[allow(non_snake_case)]
-    let libR_sys_entry =
-        get_libR_sys_entry(&mut cargo_toml).ok_or("`libR-sys` not found in Cargo.toml")?;
+    let libR_sys_entry = get_libR_sys_entry(&mut cargo_toml);
+    #[allow(non_snake_case)]
+    if let Some(libR_sys_entry) = libR_sys_entry {
+        let mut replacement = InlineTable::new();
+        if let Some(replacement_path) = get_replacement_path_libR_sys(&current_path) {
+            let item = Value::from(replacement_path);
+            replacement.entry("path").or_insert(item);
+            *libR_sys_entry = Value::InlineTable(replacement);
+        }
+    }
 
-    let mut replacement = InlineTable::new();
-
-    let item = Value::from(get_replacement_path_libR_sys(&current_path));
-    replacement.entry("path").or_insert(item);
-    *libR_sys_entry = Value::InlineTable(replacement);
-
+    // save altered paths
     shell.write_file(CARGO_TOML, cargo_toml.to_string())?;
     Ok(DocumentMutHandle {
         document: original_cargo_toml_bytes,
@@ -70,10 +73,12 @@ fn get_replacement_path_extendr_api(path: &Path) -> String {
 }
 
 #[allow(non_snake_case)]
-fn get_replacement_path_libR_sys(path: &Path) -> String {
+fn get_replacement_path_libR_sys(path: &Path) -> Option<String> {
     let path = path.adjust_for_r();
-
-    format!("{path}/libR-sys")
+    #[allow(non_snake_case)]
+    let libR_sys_path = format!("{path}/libR-sys");
+    let valid_path = std::path::Path::new(&libR_sys_path);
+    matches!(valid_path.try_exists(), Ok(true)).then_some(libR_sys_path)
 }
 
 fn get_extendr_api_entry(document: &mut DocumentMut) -> Option<&mut Value> {
