@@ -25,6 +25,7 @@ mod send_sexp {
     //!
     use libR_sys::SEXP;
 
+    /// A wrapper around R's pointer type `SEXP` that is `Send`.
     #[derive(Debug, Clone, PartialEq, Eq, Hash)]
     pub struct SendSEXP(SEXP);
 
@@ -34,13 +35,17 @@ mod send_sexp {
         }
     }
 
+    // Allows SendSEXP to be sent between threads even though unsafe
+    // Requires that the SEXP is not accessed concurrently.
     unsafe impl Send for SendSEXP {}
 
     impl SendSEXP {
+        /// Get the inner `SEXP`
         pub unsafe fn inner(&self) -> SEXP {
             self.0
         }
 
+        /// Set the inner `SEXP` as another `SEXP`
         pub unsafe fn set_inner(&mut self, value: SEXP) {
             self.0 = value;
         }
@@ -64,6 +69,9 @@ pub(crate) unsafe fn unprotect(sexp: SEXP) {
 pub const INITIAL_PRESERVATION_SIZE: usize = 100000;
 pub const EXTRA_PRESERVATION_SIZE: usize = 100000;
 
+// `Object` is a manual refernce counting mechanism that is used for each SEXP.
+// `refcount` is the number of times the SEXP is accessed.
+// `index` is the index of the SEXP in the preservation vector.
 #[derive(Debug)]
 struct Object {
     refcount: usize,
@@ -100,7 +108,45 @@ impl Ownership {
         }
     }
 
+    // Garbage collect the tracking structures.
+    unsafe fn garbage_collect(&mut self) {
+        // println!("garbage_collect {} {}", self.cur_index, self.max_index);
+        let new_size = self.cur_index * 2 + EXTRA_PRESERVATION_SIZE;
+        let new_sexp = Rf_allocVector(VECSXP, new_size as R_xlen_t);
+        R_PreserveObject(new_sexp);
+        let old_sexp = self.preservation.inner();
+
+        let mut new_objects = HashMap::with_capacity(new_size);
+
+        // copy non-null elements to new vector and hashmap.
+        let mut j = 0;
+        for (addr, object) in self.objects.iter() {
+            if object.refcount != 0 {
+                SET_VECTOR_ELT(new_sexp, j as R_xlen_t, addr.inner());
+                new_objects.insert(
+                    addr.clone(),
+                    Object {
+                        refcount: object.refcount,
+                        index: j,
+                    },
+                );
+                j += 1;
+            }
+        }
+
+        R_ReleaseObject(old_sexp);
+        self.preservation.set_inner(new_sexp);
+        self.cur_index = j;
+        self.max_index = new_size;
+        self.objects = new_objects;
+    }
+
     unsafe fn protect(&mut self, sexp: SEXP) {
+        // This protects the SEXP. Is this necessary?
+        // Because the Ownership object already protects an SEXP in the `preservation` field.
+        // The new `sexp` is inserted into the preservation list via `SET_VECTOR_ELT` below.
+        // If list is protected then so are all of its elements.
+        // "Protecting an R object automatically protects all the R objects pointed to in the corresponding SEXPREC, for example all elements of a protected list are automatically protected." 5.9.1
         Rf_protect(sexp);
 
         if self.cur_index == self.max_index {
@@ -187,40 +233,6 @@ impl Ownership {
         }
     }
 
-    // Garbage collect the tracking structures.
-    unsafe fn garbage_collect(&mut self) {
-        // println!("garbage_collect {} {}", self.cur_index, self.max_index);
-        let new_size = self.cur_index * 2 + EXTRA_PRESERVATION_SIZE;
-        let new_sexp = Rf_allocVector(VECSXP, new_size as R_xlen_t);
-        R_PreserveObject(new_sexp);
-        let old_sexp = self.preservation.inner();
-
-        let mut new_objects = HashMap::with_capacity(new_size);
-
-        // copy non-null elements to new vector and hashmap.
-        let mut j = 0;
-        for (addr, object) in self.objects.iter() {
-            if object.refcount != 0 {
-                SET_VECTOR_ELT(new_sexp, j as R_xlen_t, addr.inner());
-                new_objects.insert(
-                    addr.clone(),
-                    Object {
-                        refcount: object.refcount,
-                        index: j,
-                    },
-                );
-                j += 1;
-            }
-        }
-        // println!("j={}", j);
-
-        R_ReleaseObject(old_sexp);
-        self.preservation.set_inner(new_sexp);
-        self.cur_index = j;
-        self.max_index = new_size;
-        self.objects = new_objects;
-    }
-
     // Check the consistency of the model.
     #[allow(dead_code)]
     unsafe fn check_objects(&mut self) {
@@ -262,7 +274,7 @@ impl Ownership {
 mod test {
     use super::*;
     use crate::*;
-    use libR_sys::{Rf_ScalarInteger, Rf_protect, Rf_unprotect};
+    use libR_sys::{Rf_ScalarInteger, Rf_protect};
 
     #[test]
     fn basic_test() {
