@@ -4,9 +4,9 @@ use clap::Args;
 pub(crate) struct DevtoolsTestArg {
     #[arg(
         long,
-        short = 'a',
+        short,
         default_value = "false",
         help = "Accept newly generated macro-snapshots"
     )]
-    pub(crate) snapshot_accept: bool,
+    pub(crate) accept_snapshot: bool,
 }

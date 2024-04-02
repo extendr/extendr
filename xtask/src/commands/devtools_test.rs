@@ -17,7 +17,7 @@ pub(crate) fn run(shell: &Shell, args: DevtoolsTestArg) -> Result<(), Box<dyn Er
 
 fn run_tests(shell: &Shell, args: DevtoolsTestArg) -> Result<(), Box<dyn Error>> {
     let _r_path = shell.push_dir(R_FOLDER_PATH);
-    if args.snapshot_accept {
+    if args.accept_snapshot {
         cmd!(
             shell,
             "Rscript -e testthat::snapshot_accept(\"macro-snapshot\")"
