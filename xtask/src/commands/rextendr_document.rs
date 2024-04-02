@@ -27,6 +27,7 @@ fn run_rextendr_document(shell: &Shell) -> Result<(), Box<dyn Error>> {
     let rextendr_submodule = std::path::Path::new(".../../rextendr");
     let rextendr_submodule = matches!(rextendr_submodule.try_exists(), Ok(true));
     if rextendr_submodule {
+        println!("Loading vendored `{{rextendr}}`");
         cmd!(shell, "Rscript")
             .args([
                 "-e",
@@ -39,6 +40,7 @@ fn run_rextendr_document(shell: &Shell) -> Result<(), Box<dyn Error>> {
             .run()?;
     } else {
         // check if rextendr is installed and use that instead
+        println!("Using installed `{{rextendr}}`");
         cmd!(shell, "Rscript")
             .args([
                 "-e",
