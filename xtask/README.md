@@ -39,7 +39,7 @@ format the code. In order to do so, please run `cargo fmt`.
 
 ## `fmt`
 
-This command calls `cargo fmt` in the workspace, and ensures that `cargo fmt` is called within `tests/extendrtests/src/rust` aswell.
+This command calls `cargo fmt` within the workspace, ensuring that the contents of `tests/extendrtests/src/rust` folder are formatted as well.
 
 ## `r-cmd-check`
 
