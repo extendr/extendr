@@ -22,7 +22,7 @@ Commands:
   doc            Generate documentation for all features
   msrv           Check that the specified rust-version is MSRV
   devtools-test  Run devtools::test() on {extendrtests}
-  document       Generate wrappers by `rextendr::document`
+  document       Generate wrappers with `rextendr::document()`
   help           Print this message or the help of the given subcommand(s)
 
 Options:
