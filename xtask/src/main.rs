@@ -21,6 +21,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .canonicalize()?,
     );
     match cli.command {
+        cli::Commands::Fmt => commands::cargo_fmt::run(&shell)?,
         cli::Commands::CheckFmt => commands::cargo_fmt_check::run(&shell)?,
         cli::Commands::RCmdCheck(RCmdCheckArg {
             no_build_vignettes,
@@ -35,7 +36,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         )?,
         cli::Commands::Doc => commands::generate_docs::run(&shell)?,
         cli::Commands::Msrv => commands::cargo_msrv::run(&shell)?,
-        cli::Commands::DevtoolsTest => commands::devtools_test::run(&shell)?,
+        cli::Commands::DevtoolsTest(args) => commands::devtools_test::run(&shell, args)?,
+        cli::Commands::Document => commands::rextendr_document::run(&shell)?,
     };
 
     Ok(())

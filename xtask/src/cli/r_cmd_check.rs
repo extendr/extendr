@@ -24,9 +24,9 @@ pub(crate) enum ErrorOn {
     Error,
 }
 
-impl Into<RCmdCheckErrorOn> for ErrorOn {
-    fn into(self) -> RCmdCheckErrorOn {
-        match self {
+impl From<ErrorOn> for RCmdCheckErrorOn {
+    fn from(val: ErrorOn) -> Self {
+        match val {
             ErrorOn::Never => RCmdCheckErrorOn::Never,
             ErrorOn::Note => RCmdCheckErrorOn::Note,
             ErrorOn::Warning => RCmdCheckErrorOn::Warning,
