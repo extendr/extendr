@@ -361,7 +361,7 @@ impl<'de> Deserializer<'de> for &'de Robj {
     where
         V: Visitor<'de>,
     {
-        visitor.visit_i128(i64::try_from(self.clone())? as i128)
+        visitor.visit_i128(i64::try_from(self.clone())?.try_into()?)
     }
 
     fn deserialize_u8<V>(self, visitor: V) -> Result<V::Value>
@@ -396,7 +396,7 @@ impl<'de> Deserializer<'de> for &'de Robj {
     where
         V: Visitor<'de>,
     {
-        visitor.visit_u128(u64::try_from(self.clone())? as u128)
+        visitor.visit_u128(u64::try_from(self.clone())?.try_into()?)
     }
 
     fn deserialize_f32<V>(self, visitor: V) -> Result<V::Value>
@@ -725,10 +725,9 @@ impl<'de> Visitor<'de> for RobjVisitor {
     where
         E: serde::de::Error,
     {
-        if v > i32::MIN as i64 && v <= i32::MAX as i64 {
-            Ok((v as i32).into())
-        } else {
-            Ok((v as f64).into())
+        match i32::try_from(v) {
+            Ok(x) => x,
+            Err(_) => f64::try_from(v)?
         }
     }
 
@@ -736,10 +735,9 @@ impl<'de> Visitor<'de> for RobjVisitor {
     where
         E: serde::de::Error,
     {
-        if v <= i32::MAX as u64 {
-            Ok((v as i32).into())
-        } else {
-            Ok((v as f64).into())
+        match i32::try_from(v) {
+            Ok(x) => x,
+            Err(_) => f64::try_from(v)?
         }
     }
 
@@ -853,10 +851,9 @@ impl<'de> Visitor<'de> for IntegersVisitor {
     where
         E: serde::de::Error,
     {
-        if v > i32::MIN as i64 && v <= i32::MAX as i64 {
-            Ok(Integers::from_values([v as i32]))
-        } else {
-            Err(serde::de::Error::custom("out of range for Integers"))
+        match i32::try_from(v) {
+            Ok(x) => Integers::from_values(x),
+            Err(_) => Err(serde::de::Error::custom("out of range for Integers"))
         }
     }
 
@@ -864,10 +861,9 @@ impl<'de> Visitor<'de> for IntegersVisitor {
     where
         E: serde::de::Error,
     {
-        if v <= i32::MAX as u64 {
-            Ok(Integers::from_values([v as i32]))
-        } else {
-            Err(serde::de::Error::custom("out of range for Integers"))
+        match i32::try_from(v) {
+            Ok(x) => Integers::from_values(x),
+            Err(_) => Err(serde::de::Error::custom("out of range for Integers"))
         }
     }
 
@@ -926,14 +922,14 @@ impl<'de> Visitor<'de> for DoublesVisitor {
     where
         E: serde::de::Error,
     {
-        Ok(Doubles::from_values([v as f64]))
+        Ok(Doubles::from_values([f64::try_from(v).unwrap()]))
     }
 
     fn visit_u64<E>(self, v: u64) -> std::result::Result<Self::Value, E>
     where
         E: serde::de::Error,
     {
-        Ok(Doubles::from_values([v as f64]))
+        Ok(Doubles::from_values([f64::try_from(v).unwrap()]))
     }
 
     fn visit_f64<E>(self, v: f64) -> std::result::Result<Self::Value, E>

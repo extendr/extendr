@@ -372,7 +372,7 @@ impl TryFrom<&Robj> for Rcplx {
         // Any integer (32 bit) can be represented as f64,
         // this always works.
         if let Some(v) = robj.as_integer() {
-            return Ok(Rcplx::from(v as f64));
+            return Ok(Rcplx::from(f64::from(v)));
         }
 
         // Complex slices return their first element.

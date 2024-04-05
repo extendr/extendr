@@ -12,7 +12,7 @@ impl Color {
         let red = (hex >> 16) & 0xff;
         let green = (hex >> 8) & 0xff;
         let blue = hex & 0xff;
-        Color(red as i32 | (green as i32) << 8 | (blue as i32) << 16 | 0xff << 24)
+        Color(i32::from(red) | i32::from(green) << 8 | i32::from(blue) << 16 | 0xff << 24)
     }
 
     /// Generate a color from a 3 digit CSS-like hex number.
@@ -21,17 +21,17 @@ impl Color {
         let red = ((hex >> 8) & 0xf) * 0xff / 0x0f;
         let green = ((hex >> 4) & 0xf) * 0xff / 0x0f;
         let blue = (hex & 0xf) * 0xff / 0x0f;
-        Color(red as i32 | (green as i32) << 8 | (blue as i32) << 16 | 0xff << 24)
+        Color(i32::from(red) | i32::from(green) << 8 | i32::from(blue) << 16 | 0xff << 24)
     }
 
     /// Generate a color from rgb components (0-255).
     pub fn rgb(red: u8, green: u8, blue: u8) -> Color {
-        Color(red as i32 | (green as i32) << 8 | (blue as i32) << 16 | 0xff << 24)
+        Color(i32::from(red) | i32::from(green) << 8 | i32::from(blue) << 16 | 0xff << 24)
     }
 
     /// Generate a color from rgba components (0-255).
     pub fn rgba(red: u8, green: u8, blue: u8, alpha: u8) -> Color {
-        Color(red as i32 | (green as i32) << 8 | (blue as i32) << 16 | (alpha as i32) << 24)
+        Color(i32::from(red) | i32::from(green) << 8 | i32::from(blue) << 16 | i32::from(alpha) << 24)
     }
 }
 

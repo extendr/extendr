@@ -272,7 +272,7 @@ impl Context {
                 .fontfamily
                 .iter_mut()
                 .zip(b"Helvetica".iter())
-                .for_each(|(d, s)| *d = *s as i8);
+                .for_each(|(d, s)| *d = i8::try_from(*s).unwrap());
 
             Self {
                 context,
@@ -389,7 +389,7 @@ impl Context {
         }
 
         for (i, b) in fontfamily.bytes().enumerate().take(maxlen) {
-            self.context.fontfamily[i] = b as std::os::raw::c_char;
+            self.context.fontfamily[i] = std::os::raw::c_char::try_from(b).unwrap();
         }
         self
     }
@@ -581,7 +581,7 @@ impl Device {
         let yptr = y.as_mut_slice().as_mut_ptr();
         unsafe {
             GEPolyline(
-                x.len() as std::os::raw::c_int,
+                std::os::raw::c_int::try_from(x.len()).unwrap(),
                 xptr,
                 yptr,
                 gc.context(),
@@ -599,7 +599,7 @@ impl Device {
         let yptr = y.as_mut_slice().as_mut_ptr();
         unsafe {
             GEPolygon(
-                x.len() as std::os::raw::c_int,
+                std::os::raw::c_int::try_from(x.len()).unwrap(),
                 xptr,
                 yptr,
                 gc.context(),
@@ -691,7 +691,7 @@ impl Device {
             GEPath(
                 xptr,
                 yptr,
-                nper.len() as std::os::raw::c_int,
+                std::os::raw::c_int::try_from(nper.len()).unwrap(),
                 nperptr,
                 if winding { 1 } else { 0 },
                 gc.context(),
@@ -722,8 +722,8 @@ impl Device {
         let h = pixels.len() / w;
         unsafe {
             let raster = pixels.as_ptr() as *mut u32;
-            let w = w as i32;
-            let h = h as i32;
+            let w = i32::try_from(w).unwrap();
+            let h = i32::try_from(h).unwrap();
             let interpolate = if interpolate { 1 } else { 0 };
             GERaster(
                 raster,
@@ -788,7 +788,7 @@ impl Device {
                 width: 0.0,
             };
             GEMetricInfo(
-                c as i32,
+                i32::try_from(c).unwrap(),
                 gc.context(),
                 &mut res.ascent as *mut f64,
                 &mut res.descent as *mut f64,

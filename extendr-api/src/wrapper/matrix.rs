@@ -281,7 +281,7 @@ where
             Err(Error::ExpectedMatrix(robj))
         } else if let Some(_slice) = robj.as_typed_slice_mut() {
             if let Some(dim) = robj.dim() {
-                let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
+                let dim: Vec<_> = dim.iter().map(|d| usize::try_from(d.inner()).unwrap()).collect();
                 if dim.len() != 2 {
                     Err(Error::ExpectedMatrix(robj))
                 } else {
@@ -308,7 +308,7 @@ where
                 if dim.len() != 3 {
                     Err(Error::ExpectedMatrix3D(robj))
                 } else {
-                    let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
+                    let dim: Vec<_> = dim.iter().map(|d| usize::try_from(d.inner()).unwrap()).collect();
                     Ok(RArray::from_parts(robj, [dim[0], dim[1], dim[2]]))
                 }
             } else {

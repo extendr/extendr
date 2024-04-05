@@ -73,7 +73,7 @@ where
         let mut res = Robj::alloc_vector(sexptype, values.len());
         let sexp = res.get_mut();
         for (i, val) in values.enumerate() {
-            SET_VECTOR_ELT(sexp, i as R_xlen_t, val.into().get());
+            SET_VECTOR_ELT(sexp, R_xlen_t::try_from(i).unwrap(), val.into().get());
         }
         res
     })

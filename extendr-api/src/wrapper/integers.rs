@@ -35,7 +35,7 @@ impl Integers {
     pub fn get_region(&self, index: usize, dest: &mut [Rint]) -> usize {
         unsafe {
             let ptr: *mut i32 = dest.as_mut_ptr() as *mut i32;
-            INTEGER_GET_REGION(self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr) as usize
+            INTEGER_GET_REGION(self.get(), R_xlen_t::try_from(index).unwrap(), R_xlen_t::try_from(dest.len()).unwrap(), ptr).try_into().unwrap()
         }
     }
 
@@ -54,7 +54,7 @@ impl Integers {
 impl Integers {
     pub fn set_elt(&mut self, index: usize, val: Rint) {
         single_threaded(|| unsafe {
-            SET_INTEGER_ELT(self.get(), index as R_xlen_t, val.inner());
+            SET_INTEGER_ELT(self.get(), R_xlen_t::try_from(index).unwrap(), val.inner());
         })
     }
 }

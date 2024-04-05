@@ -451,7 +451,7 @@ unsafe fn make_method_def(
     rmethods.push(libR_sys::R_CallMethodDef {
         name: cstrings.last().unwrap().as_ptr(),
         fun: Some(std::mem::transmute(func.func_ptr)),
-        numArgs: func.args.len() as i32,
+        numArgs: func.args.len().try_into().unwrap(),
     });
 }
 
@@ -584,13 +584,13 @@ pub fn rtype_to_sxp(rtype: Rtype) -> i32 {
         Raw => RAWSXP,
         S4 => S4SXP,
         Unknown => panic!("attempt to use Unknown Rtype"),
-    }) as i32
+    }).try_into().unwrap()
 }
 
 /// Convert R's SEXPTYPE to extendr's Rtype.
 pub fn sxp_to_rtype(sxptype: i32) -> Rtype {
     use Rtype::*;
-    match sxptype as u32 {
+    match u32::try_from(sxptype).unwrap() {
         NILSXP => Null,
         SYMSXP => Symbol,
         LISTSXP => Pairlist,
@@ -841,8 +841,8 @@ mod tests {
                 wrap__floattypes(Robj::from(1).get(), Robj::from(2).get());
                 wrap__strtypes(Robj::from("abc").get(), Robj::from("def").get());
                 wrap__vectortypes(
-                    Robj::from(&[1, 2, 3] as &[i32]).get(),
-                    Robj::from(&[4., 5., 6.] as &[f64]).get(),
+                    Robj::from(&[1_i32, 2_i32, 3_i32]).get(),
+                    Robj::from(&[4_f64, 5_f64, 6_f64]).get(),
                 );
                 wrap__robjtype(Robj::from(1).get());
 

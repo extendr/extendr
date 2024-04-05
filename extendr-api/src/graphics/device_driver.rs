@@ -470,7 +470,7 @@ pub trait DeviceDriver: std::marker::Sized {
         ) {
             let nper = slice::from_raw_parts(nper, npoly as _);
             // TODO: This isn't very efficient as we need to iterate over nper at least twice.
-            let n = nper.iter().sum::<i32>() as usize;
+            let n = usize::try_from(nper.iter().sum::<i32>()).unwrap();
             let x = slice::from_raw_parts(x, n as _).iter();
             let y = slice::from_raw_parts(y, n as _).iter();
             // TODO: does this map has some overhead? If so, maybe we should change the interface?

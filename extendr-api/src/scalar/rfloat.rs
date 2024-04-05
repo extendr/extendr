@@ -165,7 +165,7 @@ gen_unop!(Rfloat, Neg, |lhs: f64| Some(-lhs), "Negate a Rfloat value.");
 
 impl From<i32> for Rfloat {
     fn from(value: i32) -> Self {
-        Rfloat::from(value as f64)
+        Rfloat::from(f64::from(value))
     }
 }
 
@@ -203,7 +203,7 @@ impl TryFrom<&Robj> for Rfloat {
         // Any integer (32 bit) can be represented as f64,
         // this always works.
         if let Some(v) = robj.as_integer() {
-            return Ok(Rfloat::from(v as f64));
+            return Ok(Rfloat::from(f64::from(v)));
         }
 
         Err(Error::ExpectedNumeric(robj.clone()))

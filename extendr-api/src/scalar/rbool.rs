@@ -56,7 +56,7 @@ impl Rbool {
 
     /// Convert this construct a `Rbool` from a rust boolean.
     pub fn from_bool(val: bool) -> Self {
-        Rbool(val as i32)
+        Rbool(i32::from(val))
     }
 }
 

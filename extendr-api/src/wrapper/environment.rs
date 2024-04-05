@@ -38,7 +38,7 @@ impl Environment {
             new_env(parent, false, 0)
         } else {
             // Hashed environment for larger hashmaps.
-            new_env(parent, true, capacity as i32 * 2 + 1)
+            new_env(parent, true, i32::try_from(capacity).unwrap() * 2 + 1)
         }
     }
 

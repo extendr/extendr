@@ -35,7 +35,7 @@ impl Doubles {
     pub fn get_region(&self, index: usize, dest: &mut [Rfloat]) -> usize {
         unsafe {
             let ptr: *mut f64 = dest.as_mut_ptr() as *mut f64;
-            REAL_GET_REGION(self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr) as usize
+            REAL_GET_REGION(self.get(), R_xlen_t::try_from(index).unwrap(), R_xlen_t::try_from(dest.len()).unwrap(), ptr).try_into().unwrap()
         }
     }
 
@@ -54,7 +54,7 @@ impl Doubles {
 impl Doubles {
     pub fn set_elt(&mut self, index: usize, val: Rfloat) {
         single_threaded(|| unsafe {
-            SET_REAL_ELT(self.get_mut(), index as R_xlen_t, val.inner());
+            SET_REAL_ELT(self.get_mut(), R_xlen_t::try_from(index).unwrap(), val.inner());
         })
     }
 }

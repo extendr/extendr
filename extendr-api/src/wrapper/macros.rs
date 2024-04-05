@@ -96,7 +96,7 @@ macro_rules! gen_vector_wrapper_impl {
                     if(index >= self.len()) {
                         <$scalar_type>::na()
                     } else {
-                        unsafe { [<$r_prefix _ELT>](self.get(), index as R_xlen_t).into() }
+                        unsafe { [<$r_prefix _ELT>](self.get(), R_xlen_t::try_from(index).unwrap()).into() }
                     }
                 }
             }
