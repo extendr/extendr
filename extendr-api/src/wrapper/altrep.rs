@@ -565,8 +565,8 @@ impl Altrep {
                 Robj::from_sexp(class),
                 Robj::from_sexp(state),
                 Robj::from_sexp(attr),
-                i32::try_from(objf).unwrap(),
-                i32::try_from(levs).unwrap(),
+                objf,
+                levs,
             )
             .get()
         }
@@ -716,7 +716,7 @@ impl Altrep {
                 x: SEXP,
                 i: R_xlen_t,
             ) -> c_int {
-                Altrep::get_state::<StateType>(x).elt(usize::try_from(i).unwrap()).inner().try_into().unwrap()
+                Altrep::get_state::<StateType>(x).elt(usize::try_from(i).unwrap()).inner()
             }
 
             unsafe extern "C" fn altinteger_Get_region<StateType: AltIntegerImpl + 'static>(
@@ -732,7 +732,7 @@ impl Altrep {
             unsafe extern "C" fn altinteger_Is_sorted<StateType: AltIntegerImpl + 'static>(
                 x: SEXP,
             ) -> c_int {
-                Altrep::get_state::<StateType>(x).is_sorted().inner().try_into().unwrap()
+                Altrep::get_state::<StateType>(x).is_sorted().inner()
             }
 
             unsafe extern "C" fn altinteger_No_NA<StateType: AltIntegerImpl + 'static>(
@@ -806,7 +806,7 @@ impl Altrep {
             unsafe extern "C" fn altreal_Is_sorted<StateType: AltRealImpl + 'static>(
                 x: SEXP,
             ) -> c_int {
-                Altrep::get_state::<StateType>(x).is_sorted().inner().try_into().unwrap()
+                Altrep::get_state::<StateType>(x).is_sorted().inner()
             }
 
             unsafe extern "C" fn altreal_No_NA<StateType: AltRealImpl + 'static>(x: SEXP) -> c_int {
@@ -861,7 +861,7 @@ impl Altrep {
                 x: SEXP,
                 i: R_xlen_t,
             ) -> c_int {
-                Altrep::get_state::<StateType>(x).elt(usize::try_from(i).unwrap()).inner().try_into().unwrap()
+                Altrep::get_state::<StateType>(x).elt(usize::try_from(i).unwrap()).inner()
             }
 
             unsafe extern "C" fn altlogical_Get_region<StateType: AltLogicalImpl + 'static>(
@@ -877,7 +877,7 @@ impl Altrep {
             unsafe extern "C" fn altlogical_Is_sorted<StateType: AltLogicalImpl + 'static>(
                 x: SEXP,
             ) -> c_int {
-                Altrep::get_state::<StateType>(x).is_sorted().inner().try_into().unwrap()
+                Altrep::get_state::<StateType>(x).is_sorted().inner()
             }
 
             unsafe extern "C" fn altlogical_No_NA<StateType: AltLogicalImpl + 'static>(
@@ -918,7 +918,7 @@ impl Altrep {
                 x: SEXP,
                 i: R_xlen_t,
             ) -> Rbyte {
-                Altrep::get_state::<StateType>(x).elt(usize::try_from(i).unwrap()).try_into().unwrap()
+                Altrep::get_state::<StateType>(x).elt(usize::try_from(i).unwrap())
             }
 
             unsafe extern "C" fn altraw_Get_region<StateType: AltRawImpl + 'static>(
@@ -1004,7 +1004,7 @@ impl Altrep {
             unsafe extern "C" fn altstring_Is_sorted<StateType: AltStringImpl + 'static>(
                 x: SEXP,
             ) -> c_int {
-                Altrep::get_state::<StateType>(x).is_sorted().inner().try_into().unwrap()
+                Altrep::get_state::<StateType>(x).is_sorted().inner()
             }
 
             unsafe extern "C" fn altstring_No_NA<StateType: AltStringImpl + 'static>(
@@ -1046,7 +1046,7 @@ impl Altrep {
                 v: SEXP,
             ) {
                 Altrep::get_state_mut::<StateType>(x)
-                    .set_elt(usize::try_from(i).unwrap(), Robj::from_sexp(v).try_into().unwrap())
+                    .set_elt(usize::try_from(i).unwrap(), Robj::from_sexp(v))
             }
 
             R_set_altlist_Elt_method(class_ptr, Some(altlist_Elt::<StateType>));
