@@ -190,7 +190,7 @@ pub trait AltIntegerImpl: AltrepImpl {
         for i in 0..len {
             let val = self.elt(i);
             if !val.is_na() {
-                tot += i64::try_from(val.inner()).unwrap();
+                tot += i64::from(val.inner());
                 min = min.min(val.inner());
                 max = max.max(val.inner());
                 nas += 1;
@@ -350,7 +350,7 @@ pub trait AltLogicalImpl: AltrepImpl {
         for i in 0..len {
             let val = self.elt(i);
             if !val.is_na() {
-                tot += i64::try_from(val.inner()).unwrap();
+                tot += i64::from(val.inner());
                 nas += 1;
             }
         }

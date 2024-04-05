@@ -117,7 +117,7 @@ pub fn empty_env() -> Environment {
 #[cfg(use_r_newenv)]
 pub fn new_env(parent: Environment, hash: bool, capacity: i32) -> Environment {
     single_threaded(|| unsafe {
-        let env = R_NewEnv(parent.robj.get(), i32::try_from(hash).unwrap(), capacity);
+        let env = R_NewEnv(parent.robj.get(), i32::from(hash), capacity);
         Robj::from_sexp(env).try_into().unwrap()
     })
 }
