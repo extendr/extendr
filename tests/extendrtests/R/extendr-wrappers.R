@@ -76,17 +76,45 @@ add_5_if_not_null <- function(x) .Call(wrap__add_5_if_not_null, x)
 #' @export
 my_device <- function(welcome_message) invisible(.Call(wrap__my_device, welcome_message))
 
-#' Return string `"Hello world!"` to R.
-#' @export
-hello_submodule <- function() .Call(wrap__hello_submodule)
+new_usize <- function(robj) .Call(wrap__new_usize, robj)
+
+tst_altstring <- function() .Call(wrap__tst_altstring)
+
+tst_altinteger <- function() .Call(wrap__tst_altinteger)
+
+test_derive_into_dataframe <- function() .Call(wrap__test_derive_into_dataframe)
+
+test_into_robj_dataframe <- function() .Call(wrap__test_into_robj_dataframe)
+
+use_dataframe_extptr <- function() .Call(wrap__use_dataframe_extptr)
+
+use_dataframe_extptr_robj <- function() .Call(wrap__use_dataframe_extptr_robj)
+
+dataframe_conversion <- function(`_data_frame`) .Call(wrap__dataframe_conversion, `_data_frame`)
+
+leak_implicit_strings <- function(x) .Call(wrap__leak_implicit_strings, x)
+
+leak_implicit_doubles <- function(x) .Call(wrap__leak_implicit_doubles, x)
+
+leak_arg2_try_implicit_strings <- function(`_y`, x) .Call(wrap__leak_arg2_try_implicit_strings, `_y`, x)
+
+leak_arg2_try_implicit_doubles <- function(`_y`, x) .Call(wrap__leak_arg2_try_implicit_doubles, `_y`, x)
+
+leak_unwrap_strings <- function(x) .Call(wrap__leak_unwrap_strings, x)
+
+leak_unwrap_doubles <- function(x) .Call(wrap__leak_unwrap_doubles, x)
+
+leak_positive_control <- function(x) invisible(.Call(wrap__leak_positive_control, x))
+
+leak_negative_control <- function(x) invisible(.Call(wrap__leak_negative_control, x))
+
+type_aware_sum <- function(input) .Call(wrap__type_aware_sum, input)
 
 #' Calculate Euclidean distance matrix
 #' Test case adopted from https://github.com/mikemahoney218/examplerust/blob/23d21b1ced4e24b7a7c00dd36290114dc1bbd113/src/rust/src/lib.rs#L5
 #' @param a : Matrix of real values or `NULL`
 #' @export
 euclidean_dist <- function(a) .Call(wrap__euclidean_dist, a)
-
-type_aware_sum <- function(input) .Call(wrap__type_aware_sum, input)
 
 #' Test raw identifiers (`r#`) in function arguments are parsed correctly.
 #' See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.
@@ -105,27 +133,9 @@ true <- function() .Call(wrap__true)
 #' @export
 false <- function(type) .Call(wrap__false, type)
 
-leak_implicit_strings <- function(x) .Call(wrap__leak_implicit_strings, x)
-
-leak_implicit_doubles <- function(x) .Call(wrap__leak_implicit_doubles, x)
-
-leak_arg2_try_implicit_strings <- function(`_y`, x) .Call(wrap__leak_arg2_try_implicit_strings, `_y`, x)
-
-leak_arg2_try_implicit_doubles <- function(`_y`, x) .Call(wrap__leak_arg2_try_implicit_doubles, `_y`, x)
-
-leak_unwrap_strings <- function(x) .Call(wrap__leak_unwrap_strings, x)
-
-leak_unwrap_doubles <- function(x) .Call(wrap__leak_unwrap_doubles, x)
-
-leak_positive_control <- function(x) invisible(.Call(wrap__leak_positive_control, x))
-
-leak_negative_control <- function(x) invisible(.Call(wrap__leak_negative_control, x))
-
-new_usize <- function(robj) .Call(wrap__new_usize, robj)
-
-tst_altstring <- function() .Call(wrap__tst_altstring)
-
-tst_altinteger <- function() .Call(wrap__tst_altinteger)
+#' Return string `"Hello world!"` to R.
+#' @export
+hello_submodule <- function() .Call(wrap__hello_submodule)
 
 #' Class for testing (exported)
 #' @examples
