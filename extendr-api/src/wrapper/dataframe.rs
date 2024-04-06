@@ -7,7 +7,19 @@ pub trait IntoDataFrameRow<T> {
 #[derive(PartialEq, Clone)]
 pub struct Dataframe<T> {
     pub(crate) robj: Robj,
-    marker: std::marker::PhantomData<T>,
+    _marker: std::marker::PhantomData<T>,
+}
+
+impl<T> FromRobj<'_> for Dataframe<T> {
+    fn from_robj(robj: &Robj) -> std::result::Result<Self, &'static str> {
+        if !(robj.is_list() && robj.inherits("data.frame")) {
+            return Err("expected a `data.frame`");
+        }
+        Ok(Dataframe {
+            robj: robj.clone(),
+            _marker: std::marker::PhantomData,
+        })
+    }
 }
 
 impl<T> std::convert::TryFrom<&Robj> for Dataframe<T> {
@@ -17,7 +29,7 @@ impl<T> std::convert::TryFrom<&Robj> for Dataframe<T> {
         if robj.is_list() && robj.inherits("data.frame") {
             Ok(Dataframe {
                 robj: robj.clone(),
-                marker: std::marker::PhantomData,
+                _marker: std::marker::PhantomData,
             })
         } else {
             Err(Error::ExpectedDataframe(robj.clone()))
@@ -66,5 +78,20 @@ where
 impl<T> IntoRobj for Dataframe<T> {
     fn into_robj(self) -> Robj {
         self.robj
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate as extendr_api;
+
+    #[derive(IntoDataFrameRow)]
+    struct Row {
+        name: u32,
+    }
+    #[extendr]
+    fn dataframe_conversion(data_frame: Dataframe<Row>) -> Robj {
+        vec![Row { name: 42 }].into_dataframe().unwrap().into_robj()
     }
 }
