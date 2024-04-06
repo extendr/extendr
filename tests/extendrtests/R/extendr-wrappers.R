@@ -196,7 +196,15 @@ MySubmoduleClass$set_a <- function(x) invisible(.Call(wrap__MySubmoduleClass__se
 
 MySubmoduleClass$a <- function() .Call(wrap__MySubmoduleClass__a, self)
 
-MySubmoduleClass$me <- function() .Call(wrap__MySubmoduleClass__me, self)
+MySubmoduleClass$me_owned <- function() .Call(wrap__MySubmoduleClass__me_owned, self)
+
+MySubmoduleClass$me_ref <- function() .Call(wrap__MySubmoduleClass__me_ref, self)
+
+MySubmoduleClass$me_mut <- function() .Call(wrap__MySubmoduleClass__me_mut, self)
+
+MySubmoduleClass$me_explicit_ref <- function() .Call(wrap__MySubmoduleClass__me_explicit_ref, self)
+
+MySubmoduleClass$me_explicit_mut <- function() .Call(wrap__MySubmoduleClass__me_explicit_mut, self)
 
 #' @rdname MySubmoduleClass
 #' @usage NULL

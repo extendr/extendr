@@ -6,7 +6,7 @@
 \alias{$.MySubmoduleClass}
 \title{Class for testing (exported)}
 \format{
-An object of class \code{environment} of length 4.
+An object of class \code{environment} of length 8.
 }
 \usage{
 MySubmoduleClass
