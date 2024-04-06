@@ -1,18 +1,13 @@
 use extendr_api::{graphics::*, prelude::*};
 
-mod submodule;
-
-mod optional_ndarray;
-
-mod graphic_device;
-
-mod optional_either;
-
-mod raw_identifiers;
-
-mod memory_leaks;
-
 mod altrep;
+mod dataframe;
+mod graphic_device;
+mod memory_leaks;
+mod optional_either;
+mod optional_ndarray;
+mod raw_identifiers;
+mod submodule;
 
 // Return string `"Hello world!"` to R.
 #[extendr]
@@ -360,10 +355,12 @@ extendr_module! {
 
     fn my_device;
 
-    use submodule;
-    use optional_ndarray;
-    use optional_either;
-    use raw_identifiers;
-    use memory_leaks;
     use altrep;
+    use dataframe;
+    use memory_leaks;
+    use optional_either;
+    use optional_ndarray;
+    use raw_identifiers;
+    use submodule;
+
 }

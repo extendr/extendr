@@ -51,3 +51,64 @@ fn test_into_robj_dataframe() {
 
     }
 }
+
+#[derive(IntoDataFrameRow)]
+struct Row {
+    name: u32,
+}
+
+#[extendr]
+fn dataframe_conversion(_data_frame: Dataframe<Row>) -> Robj {
+    vec![Row { name: 42 }].into_dataframe().unwrap().into_robj()
+}
+
+#[extendr(use_try_from = true)]
+fn dataframe_conversion_try_from(_data_frame: Dataframe<Row>) -> Robj {
+    vec![Row { name: 42 }].into_dataframe().unwrap().into_robj()
+}
+
+#[extendr]
+fn return_dataframe(_data_frame: Dataframe<Row>) -> Dataframe<Row> {
+    vec![Row { name: 42 }].into_dataframe().unwrap()
+}
+
+#[extendr(use_try_from = true)]
+fn return_dataframe_try_from(_data_frame: Dataframe<Row>) -> Dataframe<Row> {
+    vec![Row { name: 42 }].into_dataframe().unwrap()
+}
+
+#[test]
+fn test_storing_external_ptr_as_row() {
+    struct Row {
+        _id: u32,
+    }
+
+    #[extendr]
+    impl Row {}
+
+    #[extendr]
+    fn use_dataframe_exptr(data_frame: Dataframe<Row>) -> Dataframe<Row> {
+        data_frame
+    }
+}
+
+#[test]
+fn test_dataframe_row_and_externalptr() {
+    #[derive(IntoDataFrameRow)]
+    struct RowAndExptr {
+        id: u32,
+    }
+
+    #[extendr]
+    impl RowAndExptr {}
+
+    #[extendr]
+    fn use_dataframe_exptr2(data_frame: Dataframe<RowAndExptr>) -> Dataframe<RowAndExptr> {
+        data_frame
+    }
+
+    #[extendr(use_try_from = true)]
+    fn use_dataframe_exptr3(data_frame: Dataframe<RowAndExptr>) -> Dataframe<RowAndExptr> {
+        data_frame
+    }
+}
