@@ -18,7 +18,7 @@ impl<T> From<Dataframe<T>> for Robj {
 
 impl<T> FromRobj<'_> for Dataframe<T> {
     fn from_robj(robj: &Robj) -> std::result::Result<Self, &'static str> {
-        robj.try_into().map_err(|_| "expected a `data.frame`")
+        robj.try_into().or(Err("expected a `data.frame`"))
     }
 }
 
