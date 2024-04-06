@@ -10,6 +10,12 @@ pub struct Dataframe<T> {
     _marker: std::marker::PhantomData<T>,
 }
 
+impl<T> From<Dataframe<T>> for Robj {
+    fn from(value: Dataframe<T>) -> Self {
+        value.robj
+    }
+}
+
 impl<T> FromRobj<'_> for Dataframe<T> {
     fn from_robj(robj: &Robj) -> std::result::Result<Self, &'static str> {
         if !(robj.is_list() && robj.inherits("data.frame")) {
@@ -75,12 +81,6 @@ where
     }
 }
 
-impl<T> IntoRobj for Dataframe<T> {
-    fn into_robj(self) -> Robj {
-        self.robj
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -90,8 +90,25 @@ mod tests {
     struct Row {
         name: u32,
     }
+
     #[extendr]
-    fn dataframe_conversion(data_frame: Dataframe<Row>) -> Robj {
+    fn dataframe_conversion(_data_frame: Dataframe<Row>) -> Robj {
         vec![Row { name: 42 }].into_dataframe().unwrap().into_robj()
     }
+
+    #[extendr(use_try_from = true)]
+    fn dataframe_conversion_try_from(_data_frame: Dataframe<Row>) -> Robj {
+        vec![Row { name: 42 }].into_dataframe().unwrap().into_robj()
+    }
+
+    #[extendr]
+    fn return_dataframe(_data_frame: Dataframe<Row>) -> Dataframe<Row> {
+        vec![Row { name: 42 }].into_dataframe().unwrap()
+    }
+
+    #[extendr(use_try_from = true)]
+    fn return_dataframe_try_from(_data_frame: Dataframe<Row>) -> Dataframe<Row> {
+        vec![Row { name: 42 }].into_dataframe().unwrap()
+    }
+
 }
