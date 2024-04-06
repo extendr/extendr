@@ -1,3 +1,28 @@
+//! This is responsible for generating the C functions that act as wrappers of
+//! the exported Rust functions.
+//!
+//! extendr relies on the [`.Call`-interface](https://cran.r-project.org/doc/manuals/R-exts.html#Calling-_002eCall)
+//! In short, it is necessary the the signature of the C-function have [`SEXP`]
+//! as the type for return type, and argument types.
+//!
+//! For instance, if your function returns nothing, the return type is not
+//! allowed to be `void`, instead `SEXP` must be used, and one should return
+//! [`R_NilValue`].
+//!
+//! ## R wrappers
+//!
+//! Within R, you may call `rextendr::document()` to generate R functions,
+//! that use the `.Call`-interface, to call the wrapped Rust functions.
+//!
+//! You may also manually implement these wrappers, in order to do special
+//! type-checking, or other annotation, that could be more convenient to do
+//! on the R-side. The C-functions are named according to `"{WRAP_PREFIX}{prefix}{mod_name}"`.
+//! See [`WRAP_PREFIX`], and note that `prefix` is set specifically for methods in
+//! `extendr`-impl blocks, while for functions have no prefix.
+//!
+//! [`R_NilValue`]: ::libR_sys::R_NilValue
+//! [`SEXP`]: ::libR_sys::SEXP
+
 use proc_macro2::Ident;
 use quote::{format_ident, quote};
 use syn::{parse_quote, punctuated::Punctuated, Expr, ExprLit, FnArg, ItemFn, Token, Type};
@@ -50,7 +75,7 @@ pub fn make_function_wrappers(
 
     let call_name = if has_self {
         let is_mut = match inputs.iter().next() {
-            Some(FnArg::Receiver(ref reciever)) => reciever.mutability.is_some(),
+            Some(FnArg::Receiver(ref receiver)) => receiver.mutability.is_some(),
             _ => false,
         };
         if is_mut {
@@ -120,6 +145,48 @@ pub fn make_function_wrappers(
             });)
         })
         .unwrap_or_default();
+
+    // figure out if
+    // -> &Self
+    // -> &mut Self
+    // Or if instead of `Self` the type name is used directly
+    // -> &ImplType / &mut ImplType
+    let return_is_ref_self = {
+        match sig.output {
+            // matches -> () or no-return type
+            syn::ReturnType::Default => false,
+            // ignoring the `-> Self` or `-> ImplType`, as that is not a Reference-type
+            // matches -> &T or &mut T
+            syn::ReturnType::Type(_, ref return_type) => match return_type.as_ref() {
+                Type::Reference(ref reference_type) => {
+                    // checks if T is Self or explicit impl type name
+                    if let Type::Path(path) = reference_type.elem.as_ref() {
+                        let is_typename_impl_type = self_ty
+                            .map(|x| x == reference_type.elem.as_ref())
+                            .unwrap_or(false);
+                        path.path.is_ident("Self") || is_typename_impl_type
+                    } else {
+                        false
+                    }
+                }
+                _ => false,
+            },
+        }
+    };
+
+    let return_type_conversion = if return_is_ref_self {
+        // instead of converting &Self / &mut Self, pass on the passed
+        // ExternalPtr<Self>
+        quote!(
+            let _return_ref_to_self = #call_name(#actual_args);
+            //FIXME: find a less hardcoded way to write `_self_robj`
+            Ok(_self_robj)
+        )
+    } else {
+        quote!(Ok(extendr_api::Robj::from(#call_name(#actual_args))))
+    };
+
+    // TODO: the unsafe in here is unnecessary
     wrappers.push(parse_quote!(
         #[no_mangle]
         #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
@@ -135,7 +202,7 @@ pub fn make_function_wrappers(
             > = unsafe {
                 #( #convert_args )*
                 std::panic::catch_unwind(||-> std::result::Result<Robj, extendr_api::Error> {
-                    Ok(extendr_api::Robj::from(#call_name(#actual_args)))
+                    #return_type_conversion
                 })
             };
 
@@ -147,7 +214,7 @@ pub fn make_function_wrappers(
                 Ok(Ok(zz)) => {
                     return unsafe { zz.get() };
                 }
-                // any conversion error bubbled from #actual_args conversions of incomming args from R.
+                // any conversion error bubbled from #actual_args conversions of incoming args from R.
                 Ok(Err(conversion_err)) => {
                     let err_string = conversion_err.to_string();
                     drop(conversion_err); // try_from=true errors contain Robj, this must be dropped to not leak
@@ -241,7 +308,7 @@ pub fn mangled_type_name(type_: &Type) -> String {
     res
 }
 
-// Return a simplified type name that will be meaningful to R. Defaults to a digest.
+/// Return a simplified type name that will be meaningful to R. Defaults to a digest.
 // For example:
 // & Fred -> Fred
 // * Fred -> Fred
@@ -277,9 +344,9 @@ pub fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> syn::Resu
             let pat = &pattype.pat.as_ref();
             Ok(parse_quote! { #pat : extendr_api::SEXP })
         }
-        // &self
-        FnArg::Receiver(ref reciever) => {
-            if !reciever.attrs.is_empty() || reciever.reference.is_none() {
+        // &self / &mut self
+        FnArg::Receiver(ref receiver) => {
+            if !receiver.attrs.is_empty() || receiver.reference.is_none() {
                 return Err(syn::Error::new_spanned(
                     input,
                     "expected &self or &mut self",
@@ -318,8 +385,8 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> syn::Re
             })
         }
         // &self
-        FnArg::Receiver(ref reciever) => {
-            if !reciever.attrs.is_empty() || reciever.reference.is_none() {
+        FnArg::Receiver(ref receiver) => {
+            if !receiver.attrs.is_empty() || receiver.reference.is_none() {
                 return Err(syn::Error::new_spanned(
                     input,
                     "expected &self or &mut self",
@@ -346,6 +413,8 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> syn::Re
 
 /// Convert `SEXP` arguments into `Robj`.
 /// This maintains the lifetime of references.
+///
+/// These conversions are from R into Rust
 fn translate_to_robj(input: &FnArg) -> syn::Result<syn::Stmt> {
     match input {
         FnArg::Typed(ref pattype) => {

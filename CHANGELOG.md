@@ -2,13 +2,18 @@
 
 ## Unreleased
 
-## Added
+### Added
 
 - `RArray::data_mut` provides a mutable slice to the underlying array data [[#657]](https://github.com/extendr/extendr/pull/657)
 
-## Changed
+### Changed
 
 - Potentially breaking: `RArray::from_parts` no longer requires a pointer to the underlying data vector [[#657]](https://github.com/extendr/extendr/pull/657)
+
+### Fixed
+
+- returning `&Self` or `&mut Self` from a method in an `#[extendr]`-impl would
+result in unintended cloning  [[[#614](https://github.com/extendr/extendr/issues/614)]]
 
 ## 0.6.0
 

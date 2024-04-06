@@ -5,35 +5,104 @@ use syn::{ItemFn, ItemImpl};
 
 use crate::wrappers;
 
-/// Handle trait implementations.
+/// Make inherent implementations available to R
+///
+/// The extendr_impl function is used to make inherent implementations
+/// avaialble to R as an environment. By adding the [`extendr`] attribute
+/// macro to an `impl` block (supported with `enum`s and `struct`s), the
+/// methods in the impl block are made available as functions in an
+/// environment.
+///
+/// On the R side, an environment with the same name of the inherent
+/// implementation is created. The environment has functions within it
+/// that correspond to each method in the impl block. Note that in order
+/// for an impl block to be compatible with extendr (and thus R), its return
+/// type must be able to be returned to R. For example, any struct that might
+/// be returned must _also_ have an `#[extendr]` annotated impl block.
 ///
 /// Example:
 /// ```ignore
 /// use extendr_api::prelude::*;
-/// #[derive(Debug)]
+///
+/// // a struct that will be used internal the People struct
+/// #[derive(Clone, Debug, IntoDataFrameRow)]
 /// struct Person {
-///     pub name: String,
+///     name: String,
+///     age: i32,
 /// }
+///
+/// // This will collect people in the struct
 /// #[extendr]
-/// impl Person {
+/// #[derive(Clone, Debug)]
+/// struct People(Vec<Person>);
+///
+/// #[extendr]
+/// /// @export
+/// impl People {
+///
+///     // instantiate a new struct with an empty vector
 ///     fn new() -> Self {
-///         Self { name: "".to_string() }
+///         let vec: Vec<Person> = Vec::new();
+///         Self(vec)
 ///     }
-///     fn set_name(&mut self, name: &str) {
-///         self.name = name.to_string();
+///
+///     // add a person to the internal vector
+///     fn add_person(&mut self, name: &str, age: i32) -> &mut Self {
+///         let person = Person {
+///             name: String::from(name),
+///             age: age,
+///         };
+///
+///         self.0.push(person);
+///
+///         // return self
+///         self
 ///     }
-///     fn name(&self) -> &str {
-///         self.name.as_str()
+///     
+///     // Convert the struct into a data.frame
+///     fn into_df(&self) -> Robj {
+///         let df = self.0.clone().into_dataframe();
+///
+///         match df {
+///             Ok(df) => df.as_robj().clone(),
+///             Err(_) => data_frame!(),
+///         }
 ///     }
+///
+///     // add another `People` struct to self
+///     fn add_people(&mut self, others: &People) -> &mut Self {
+///         self.0.extend(others.0.clone().into_iter());
+///         self
+///     }
+///
+///     // create a function to print the self which can be called
+///     // from an R print method
+///     fn print_self(&self) -> String {
+///         format!("{:?}", self.0)
+///     }
+///
 /// }
-/// #[extendr]
-/// fn aux_func() {
-/// }
-/// // Macro to generate exports
+///
+/// // Macro to generate exports.
+/// // This ensures exported functions are registered with R.
+/// // See corresponding C code in `entrypoint.c`.
 /// extendr_module! {
-///     mod classes;
-///     impl Person;
-///     fn aux_func;
+///     mod testself;
+///     impl People;
+/// }
+/// ```
+///     
+/// **Known limitation**: if you return `&Self` or `&mut Self` or a reference
+/// to the same type, the resultant R object will _always_ be the original
+/// self. For example the below method **will not** return `other`.
+///
+/// ```ignore
+///  // This is not possible today
+/// #[extendr]
+/// impl People {
+///   fn return_other(&self, other: &'static T) -> &Self {
+///     other
+///   }
 /// }
 /// ```
 pub fn extendr_impl(mut item_impl: ItemImpl) -> syn::Result<TokenStream> {
