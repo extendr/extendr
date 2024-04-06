@@ -80,14 +80,26 @@ pub fn make_function_wrappers(
         };
         if is_mut {
             // eg. Person::name(&mut self)
-            quote! { extendr_api::unwrap_or_throw(
-                <&mut #self_ty>::from_robj(&_self_robj)
-            ).#rust_name }
+            if opts.use_try_from {
+                quote! { extendr_api::unwrap_or_throw_error(
+                    <&mut #self_ty>::try_from(&mut _self_robj)
+                ).#rust_name }
+            } else {
+                quote! { extendr_api::unwrap_or_throw(
+                    <&mut #self_ty>::from_robj(&_self_robj)
+                ).#rust_name }
+            }
         } else {
             // eg. Person::name(&self)
-            quote! { extendr_api::unwrap_or_throw(
-                <&#self_ty>::from_robj(&_self_robj)
-            ).#rust_name }
+            if opts.use_try_from {
+                quote! { extendr_api::unwrap_or_throw_error(
+                    <&#self_ty>::try_from(&_self_robj)
+                ).#rust_name }
+            } else {
+                quote! { extendr_api::unwrap_or_throw(
+                    <&#self_ty>::from_robj(&_self_robj)
+                ).#rust_name }
+            }
         }
     } else if let Some(ref self_ty) = &self_ty {
         // eg. Person::new()
@@ -201,9 +213,9 @@ pub fn make_function_wrappers(
                 Box<dyn std::any::Any + Send>
             > = unsafe {
                 #( #convert_args )*
-                std::panic::catch_unwind(||-> std::result::Result<Robj, extendr_api::Error> {
+                std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| -> std::result::Result<Robj, extendr_api::Error> {
                     #return_type_conversion
-                })
+                }))
             };
 
             // return RNG state back to r after evaluation

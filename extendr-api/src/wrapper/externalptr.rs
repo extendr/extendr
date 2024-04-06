@@ -16,12 +16,12 @@ use std::fmt::Debug;
 /// ```
 ///
 #[derive(PartialEq, Clone)]
-pub struct ExternalPtr<T: Debug + 'static> {
+pub struct ExternalPtr<T> {
     /// This is the contained Robj.
     pub(crate) robj: Robj,
 
     /// This is a zero-length object that holds the type of the object.
-    marker: std::marker::PhantomData<T>,
+    _marker: std::marker::PhantomData<T>,
 }
 
 impl<T: Debug + 'static> robj::GetSexp for ExternalPtr<T> {
@@ -116,7 +116,7 @@ impl<T: Any + Debug> ExternalPtr<T> {
             // Return an object in a wrapper.
             Self {
                 robj,
-                marker: std::marker::PhantomData,
+                _marker: std::marker::PhantomData,
             }
         })
     }
@@ -162,7 +162,7 @@ impl<T: Any + Debug> TryFrom<&Robj> for ExternalPtr<T> {
         } else if clone.check_external_ptr_type::<T>() {
             let res = ExternalPtr::<T> {
                 robj: clone,
-                marker: std::marker::PhantomData,
+                _marker: std::marker::PhantomData,
             };
             Ok(res)
         } else {

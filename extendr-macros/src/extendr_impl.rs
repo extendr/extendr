@@ -211,8 +211,11 @@ pub fn extendr_impl(mut item_impl: ItemImpl, opts: &ExtendrOptions) -> syn::Resu
             impl TryFrom<&Robj> for &#self_ty {
                 type Error = Error;
                 fn try_from(robj: &Robj) -> Result<Self> {
-                    let external_ptr: &ExternalPtr<#self_ty> = robj.try_into()?;
-                    external_ptr.as_ref().ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+                    use libR_sys::R_ExternalPtrAddr;
+                    unsafe {
+                        let ptr = R_ExternalPtrAddr(robj.get()).cast::<#self_ty>();
+                        ptr.as_ref().ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+                    }
                 }
             }
 
@@ -220,8 +223,11 @@ pub fn extendr_impl(mut item_impl: ItemImpl, opts: &ExtendrOptions) -> syn::Resu
             impl TryFrom<&mut Robj> for &mut #self_ty {
                 type Error = Error;
                 fn try_from(robj: &mut Robj) -> Result<Self> {
-                    let external_ptr: &mut ExternalPtr<#self_ty> = robj.try_into()?;
-                    external_ptr.as_mut().ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+                    use libR_sys::R_ExternalPtrAddr;
+                    unsafe {
+                        let ptr = R_ExternalPtrAddr(robj.get_mut()).cast::<#self_ty>();
+                        ptr.as_mut().ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+                    }
                 }
             }
         }
@@ -252,19 +258,6 @@ pub fn extendr_impl(mut item_impl: ItemImpl, opts: &ExtendrOptions) -> syn::Resu
             }
 
             // Output conversion function for this type.
-            impl From<#self_ty> for Robj {
-                fn from(value: #self_ty) -> Self {
-                    unsafe {
-                        let ptr = Box::into_raw(Box::new(value));
-                        let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
-                        res.set_attrib(class_symbol(), #self_ty_name).unwrap();
-                        res.register_c_finalizer(Some(#finalizer_name));
-                        res
-                    }
-                }
-            }
-
-            // Output conversion function for this type.
                 impl<'a> From<&'a #self_ty> for Robj {
                 fn from(value: &'a #self_ty) -> Self {
                     unsafe {
@@ -287,6 +280,19 @@ pub fn extendr_impl(mut item_impl: ItemImpl, opts: &ExtendrOptions) -> syn::Resu
         #( #wrappers )*
 
         #conversion_impls
+
+        // Output conversion function for this type.
+        impl From<#self_ty> for Robj {
+            fn from(value: #self_ty) -> Self {
+                unsafe {
+                    let ptr = Box::into_raw(Box::new(value));
+                    let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
+                    res.set_attrib(class_symbol(), #self_ty_name).unwrap();
+                    res.register_c_finalizer(Some(#finalizer_name));
+                    res
+                }
+            }
+        }
 
         // Function to free memory for this type.
         extern "C" fn #finalizer_name (sexp: extendr_api::SEXP) {
