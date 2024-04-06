@@ -11,7 +11,6 @@ test_that("Exported class works", {
 })
 
 test_that("Exported class self ptr works", {
-  skip("ExternalPtr issue https://github.com/extendr/extendr/issues/614")
   x <- MyClass$new()
   expect_equal(x$me(), x)
   expect_equal(x[["me"]](), x)
