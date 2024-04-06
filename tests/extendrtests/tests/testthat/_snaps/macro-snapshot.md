@@ -4267,6 +4267,7 @@
               let mut functions = Vec::new();
               let mut impls = Vec::new();
               meta__hello_submodule(&mut functions);
+              meta__MySubmoduleClass(&mut impls);
               meta__MySubmoduleClassTryFrom(&mut impls);
               functions
                   .push(extendr_api::metadata::Func {

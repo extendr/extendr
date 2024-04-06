@@ -71,7 +71,7 @@ impl MySubmoduleClass {
     }
 }
 
-// Class for testing
+// Class for testing (use-try-from)
 #[derive(Default, Debug, Clone, Copy)]
 struct MySubmoduleClassTryFrom {
     a: i32,
@@ -133,5 +133,6 @@ impl MySubmoduleClassTryFrom {
 extendr_module! {
     mod submodule;
     fn hello_submodule;
+    impl MySubmoduleClass;
     impl MySubmoduleClassTryFrom;
 }
