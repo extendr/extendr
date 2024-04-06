@@ -21,7 +21,7 @@ use crate::wrappers;
 /// be returned must _also_ have an `#[extendr]` annotated impl block.
 ///
 /// Example:
-/// ```
+/// ```ignore
 /// use extendr_api::prelude::*;
 ///
 /// // a struct that will be used internal the People struct
