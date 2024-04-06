@@ -10,7 +10,7 @@ use crate::wrappers;
 /// The extendr_impl function is used to make inherent implementations
 /// avaialble to R as an environment. By adding the [`extendr`] attribute
 /// macro to an `impl` block (supported with `enum`s and `struct`s), the
-/// methods in the imple block are made available as functions in an
+/// methods in the impl block are made available as functions in an
 /// environment.
 ///
 /// On the R side, an environment with the same name of the inherent
@@ -92,7 +92,7 @@ use crate::wrappers;
 /// }
 /// ```
 ///     
-/// **Known limitation**: if you return `&self` or `&mut Self` or a reference
+/// **Known limitation**: if you return `&Self` or `&mut Self` or a reference
 /// to the same type, the resultant R object will _always_ be the original
 /// self. For example the below method **will not** return `other`.
 ///
