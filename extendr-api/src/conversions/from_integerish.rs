@@ -58,28 +58,134 @@ impl_into_integerish!(f32, i8);
 impl_into_integerish!(f32, u8);
 
 #[cfg(test)]
-mod tests {
-    use crate::CanBeNA;
-    use crate::conversions::from_integerish::IntoIntegerish;
+mod try_into_integerish_tests {
+    mod f64_source {
+        use crate::CanBeNA;
+        use crate::conversions::from_integerish::{ConversionError, IntoIntegerish};
 
-    #[test]
-    fn try_into_integerish_overflow() {
-        let value: f64 = 1.000000020000001e200;
-        let int_value: Result<i128, _> = value.try_into_integerish();
-        dbg! { &int_value };
+        #[test]
+        fn large_value_overflow() {
+            let value: f64 = 1.000000020000001e200;
+            let int_value: Result<i128, _> = value.try_into_integerish();
+            assert_eq!(int_value, Err(ConversionError::Overflow))
+        }
+
+        #[test]
+        fn large_negative_value_underflow() {
+            let value: f64 = -1.000000020000001e200;
+            let int_value: Result<i128, _> = value.try_into_integerish();
+            assert_eq!(int_value, Err(ConversionError::Underflow))
+        }
+
+        #[test]
+        fn na_not_integerish() {
+            let value: f64 = f64::na();
+            let int_value: Result<i128, _> = value.try_into_integerish();
+            assert_eq!(int_value, Err(ConversionError::NotIntegerish))
+        }
+
+        #[test]
+        fn fractional_not_integerish() {
+            let value: f64 = 1.5;
+            let int_value: Result<i128, _> = value.try_into_integerish();
+            assert_eq!(int_value, Err(ConversionError::NotIntegerish))
+        }
+
+        #[test]
+        fn negative_fractional_not_integerish() {
+            let value: f64 = -1.5;
+            let int_value: Result<i128, _> = value.try_into_integerish();
+            assert_eq!(int_value, Err(ConversionError::NotIntegerish))
+        }
+
+        #[test]
+        fn small_integerish_negative_to_unsigned_underflow() {
+            let value: f64 = -1.0;
+            let int_value: Result<u128, _> = value.try_into_integerish();
+            assert_eq!(int_value, Err(ConversionError::Underflow))
+        }
+
+        #[test]
+        fn integerish_converts_successfully()
+        {
+            let value: f64 = 42.0;
+
+            assert_eq!(IntoIntegerish::<i128>::try_into_integerish(&value), Ok(42));
+            assert_eq!(IntoIntegerish::<i64>::try_into_integerish(&value), Ok(42));
+            assert_eq!(IntoIntegerish::<i32>::try_into_integerish(&value), Ok(42));
+            assert_eq!(IntoIntegerish::<i16>::try_into_integerish(&value), Ok(42));
+            assert_eq!(IntoIntegerish::<i8>::try_into_integerish(&value), Ok(42));
+
+            assert_eq!(IntoIntegerish::<u128>::try_into_integerish(&value), Ok(42));
+            assert_eq!(IntoIntegerish::<u64>::try_into_integerish(&value), Ok(42));
+            assert_eq!(IntoIntegerish::<u32>::try_into_integerish(&value), Ok(42));
+            assert_eq!(IntoIntegerish::<u16>::try_into_integerish(&value), Ok(42));
+            assert_eq!(IntoIntegerish::<u8>::try_into_integerish(&value), Ok(42));
+        }
     }
 
-    #[test]
-    fn try_into_integerish_underflow() {
-        let value: f64 = -1.000000020000001e200;
-        let int_value: Result<i128, _> = value.try_into_integerish();
-        dbg! { &int_value };
-    }
-    
-    #[test]
-    fn comp_test() {
-        let value: f64 = f64::na();
-        let int_value: Result<i64, _> = value.try_into_integerish();
-        dbg! { &int_value };
+    mod f32_source {
+        use crate::CanBeNA;
+        use crate::conversions::from_integerish::{ConversionError, IntoIntegerish};
+
+        #[test]
+        fn large_value_overflow() {
+            let value: f32 = 1.000000020000001e38;
+            let int_value: Result<i64, _> = value.try_into_integerish();
+            assert_eq!(int_value, Err(ConversionError::Overflow))
+        }
+
+        #[test]
+        fn large_negative_value_underflow() {
+            let value: f32 = -1.000000020000001e38;
+            let int_value: Result<i64, _> = value.try_into_integerish();
+            assert_eq!(int_value, Err(ConversionError::Underflow))
+        }
+
+        #[test]
+        fn na_not_integerish() {
+            let value: f32 = f64::na() as f32;
+            let int_value: Result<i64, _> = value.try_into_integerish();
+            assert_eq!(int_value, Err(ConversionError::NotIntegerish))
+        }
+
+        #[test]
+        fn fractional_not_integerish() {
+            let value: f32 = 1.5;
+            let int_value: Result<i64, _> = value.try_into_integerish();
+            assert_eq!(int_value, Err(ConversionError::NotIntegerish))
+        }
+
+        #[test]
+        fn small_integerish_negative_to_unsigned_underflow() {
+            let value: f32 = -1.0;
+            let int_value: Result<u64, _> = value.try_into_integerish();
+            assert_eq!(int_value, Err(ConversionError::Underflow))
+        }
+
+        #[test]
+        fn negative_fractional_not_integerish() {
+            let value: f32 = -1.5;
+            let int_value: Result<i64, _> = value.try_into_integerish();
+            assert_eq!(int_value, Err(ConversionError::NotIntegerish))
+        }
+
+        #[test]
+        fn integerish_converts_successfully()
+        {
+            let value: f32 = 42.0;
+
+            assert_eq!(IntoIntegerish::<i128>::try_into_integerish(&value), Ok(42));
+            assert_eq!(IntoIntegerish::<i64>::try_into_integerish(&value), Ok(42));
+            assert_eq!(IntoIntegerish::<i32>::try_into_integerish(&value), Ok(42));
+            assert_eq!(IntoIntegerish::<i16>::try_into_integerish(&value), Ok(42));
+            assert_eq!(IntoIntegerish::<i8>::try_into_integerish(&value), Ok(42));
+
+            assert_eq!(IntoIntegerish::<u128>::try_into_integerish(&value), Ok(42));
+            assert_eq!(IntoIntegerish::<u64>::try_into_integerish(&value), Ok(42));
+            assert_eq!(IntoIntegerish::<u32>::try_into_integerish(&value), Ok(42));
+            assert_eq!(IntoIntegerish::<u16>::try_into_integerish(&value), Ok(42));
+            assert_eq!(IntoIntegerish::<u8>::try_into_integerish(&value), Ok(42));
+        }
     }
 }
