@@ -4,7 +4,7 @@ pub trait IntoDataFrameRow<T> {
     fn into_dataframe(self) -> Result<Dataframe<T>>;
 }
 
-/// A representation of a typed data.frame
+/// A representation of a typed `data.frame`
 ///
 /// A `data.frame` can be created from Rust by using the [`IntoDataFrameRow`] trait
 /// which can be derived for a single `struct` that represents a single row.
