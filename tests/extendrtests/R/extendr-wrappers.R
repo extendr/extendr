@@ -86,12 +86,6 @@ test_derive_into_dataframe <- function() .Call(wrap__test_derive_into_dataframe)
 
 test_into_robj_dataframe <- function() .Call(wrap__test_into_robj_dataframe)
 
-use_dataframe_extptr <- function() .Call(wrap__use_dataframe_extptr)
-
-use_dataframe_extptr_robj <- function() .Call(wrap__use_dataframe_extptr_robj)
-
-dataframe_conversion <- function(`_data_frame`) .Call(wrap__dataframe_conversion, `_data_frame`)
-
 leak_implicit_strings <- function(x) .Call(wrap__leak_implicit_strings, x)
 
 leak_implicit_doubles <- function(x) .Call(wrap__leak_implicit_doubles, x)
