@@ -169,16 +169,16 @@ pub fn make_function_wrappers(
         }
     };
 
-    let return_type_conversion = if !return_is_ref_self {
-        quote!(Ok(extendr_api::Robj::from(#call_name(#actual_args))))
-    } else {
-        // instead of converting &Self / &mut Self, pass on the passed
+    let return_type_conversion = if return_is_ref_self {
+         // instead of converting &Self / &mut Self, pass on the passed
         // ExternalPtr<Self>
         quote!(
             let _return_ref_to_self = #call_name(#actual_args);
             //FIXME: find a less hardcoded way to write `_self_robj`
             Ok(_self_robj)
         )
+    } else {
+      quote!(Ok(extendr_api::Robj::from(#call_name(#actual_args))))
     };
 
     // TODO: the unsafe in here is unnecessary
