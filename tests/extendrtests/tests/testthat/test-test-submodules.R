@@ -4,6 +4,11 @@ test_that("Submodule functions can be called", {
 
 test_that("Classes defined in submodules also works", {
   x <- MySubmoduleClass$new()
+  x
+  # TODO: uncomment these pointer check tests when externalptr_address
+  # is implemented
+  # ptr <- \(xptr) Rcpp:::externalptr_address(xptr)
+  # xptr <- ptr(x)
   x$set_a(10)
   expect_equal(x$a(), 10)
 
