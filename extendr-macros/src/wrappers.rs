@@ -146,20 +146,25 @@ pub fn make_function_wrappers(
         })
         .unwrap_or_default();
 
-    // figure out if &Self / &mut Self / inside of impl block &ImplType / &mut ImplType is used!
+    // figure out if
+    // -> &Self
+    // -> &mut Self
+    // Or if instead of `Self` the type name is used directly
+    // -> &ImplType / &mut ImplType
     let return_is_ref_self = {
         match sig.output {
+            // matches -> () or no-return type
             syn::ReturnType::Default => false,
-             // matches `-> Self`
+            // ignoring the `-> Self` or `-> ImplType`, as that is not a Reference-type
+            // matches -> &T or &mut T
             syn::ReturnType::Type(_, ref return_type) => match return_type.as_ref() {
                 Type::Reference(ref reference_type) => {
-                    // Type::Path(type_path) => type_path.path.is_ident("Self"),
-                    // matches `-> &Self` / `-> &mut Self`
+                    // checks if T is Self or explicit impl type name
                     if let Type::Path(path) = reference_type.elem.as_ref() {
-                        path.path.is_ident("Self")
-                            || self_ty
-                                .map(|x| x == reference_type.elem.as_ref())
-                                .unwrap_or(false)
+                        let is_typename_impl_type = self_ty
+                            .map(|x| x == reference_type.elem.as_ref())
+                            .unwrap_or(false);
+                        path.path.is_ident("Self") || is_typename_impl_type
                     } else {
                         false
                     }
@@ -170,7 +175,7 @@ pub fn make_function_wrappers(
     };
 
     let return_type_conversion = if return_is_ref_self {
-         // instead of converting &Self / &mut Self, pass on the passed
+        // instead of converting &Self / &mut Self, pass on the passed
         // ExternalPtr<Self>
         quote!(
             let _return_ref_to_self = #call_name(#actual_args);
@@ -178,7 +183,7 @@ pub fn make_function_wrappers(
             Ok(_self_robj)
         )
     } else {
-      quote!(Ok(extendr_api::Robj::from(#call_name(#actual_args))))
+        quote!(Ok(extendr_api::Robj::from(#call_name(#actual_args))))
     };
 
     // TODO: the unsafe in here is unnecessary
