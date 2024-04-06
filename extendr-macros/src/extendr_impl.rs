@@ -3,7 +3,7 @@ use proc_macro::TokenStream;
 use quote::{format_ident, quote};
 use syn::{ItemFn, ItemImpl};
 
-use crate::wrappers;
+use crate::wrappers::{self, ExtendrOptions};
 
 /// Make inherent implementations available to R
 ///
@@ -105,7 +105,7 @@ use crate::wrappers;
 ///   }
 /// }
 /// ```
-pub fn extendr_impl(mut item_impl: ItemImpl) -> syn::Result<TokenStream> {
+pub fn extendr_impl(mut item_impl: ItemImpl, opts: &ExtendrOptions) -> syn::Result<TokenStream> {
     // Only `impl name { }` allowed
     if item_impl.defaultness.is_some() {
         return Err(syn::Error::new_spanned(
@@ -146,7 +146,6 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> syn::Result<TokenStream> {
         ));
     }
 
-    let opts = wrappers::ExtendrOptions::default();
     let self_ty = item_impl.self_ty.as_ref();
     let self_ty_name = wrappers::type_name(self_ty);
     let prefix = format!("{}__", self_ty_name);
@@ -175,7 +174,7 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> syn::Result<TokenStream> {
                 method.sig.ident
             ));
             wrappers::make_function_wrappers(
-                &opts,
+                opts,
                 &mut wrappers,
                 prefix.as_str(),
                 &method.attrs,
@@ -186,8 +185,99 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> syn::Result<TokenStream> {
     }
 
     let meta_name = format_ident!("{}{}", wrappers::META_PREFIX, self_ty_name);
-
     let finalizer_name = format_ident!("__finalize__{}", self_ty_name);
+
+    let conversion_impls = if opts.use_try_from {
+        quote! {
+            // Output conversion function for this type.
+
+            impl TryFrom<Robj> for &#self_ty {
+                type Error = Error;
+
+                fn try_from(robj: Robj) -> Result<Self> {
+                    Self::try_from(&robj)
+                }
+            }
+
+            impl TryFrom<Robj> for &mut #self_ty {
+                type Error = Error;
+
+                fn try_from(mut robj: Robj) -> Result<Self> {
+                    Self::try_from(&mut robj)
+                }
+            }
+
+            // Output conversion function for this type.
+            impl TryFrom<&Robj> for &#self_ty {
+                type Error = Error;
+                fn try_from(robj: &Robj) -> Result<Self> {
+                    let external_ptr: &ExternalPtr<#self_ty> = robj.try_into()?;
+                    external_ptr.as_ref().ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+                }
+            }
+
+            // Input conversion function for a mutable reference to this type.
+            impl TryFrom<&mut Robj> for &mut #self_ty {
+                type Error = Error;
+                fn try_from(robj: &mut Robj) -> Result<Self> {
+                    let external_ptr: &mut ExternalPtr<#self_ty> = robj.try_into()?;
+                    external_ptr.as_mut().ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+                }
+            }
+        }
+    } else {
+        quote! {
+            // Input conversion function for this type.
+            impl<'a> extendr_api::FromRobj<'a> for &#self_ty {
+                fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+                    if robj.check_external_ptr_type::<#self_ty>() {
+                        #[allow(clippy::transmute_ptr_to_ref)]
+                        Ok(unsafe { std::mem::transmute(robj.external_ptr_addr::<#self_ty>()) })
+                    } else {
+                        Err(concat!("expected ", #self_ty_name))
+                    }
+                }
+            }
+
+            // Input conversion function for a reference to this type.
+            impl<'a> extendr_api::FromRobj<'a> for &mut #self_ty {
+                fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+                    if robj.check_external_ptr_type::<#self_ty>() {
+                        #[allow(clippy::transmute_ptr_to_ref)]
+                        Ok(unsafe { std::mem::transmute(robj.external_ptr_addr::<#self_ty>()) })
+                    } else {
+                        Err(concat!("expected ", #self_ty_name))
+                    }
+                }
+            }
+
+            // Output conversion function for this type.
+            impl From<#self_ty> for Robj {
+                fn from(value: #self_ty) -> Self {
+                    unsafe {
+                        let ptr = Box::into_raw(Box::new(value));
+                        let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
+                        res.set_attrib(class_symbol(), #self_ty_name).unwrap();
+                        res.register_c_finalizer(Some(#finalizer_name));
+                        res
+                    }
+                }
+            }
+
+            // Output conversion function for this type.
+                impl<'a> From<&'a #self_ty> for Robj {
+                fn from(value: &'a #self_ty) -> Self {
+                    unsafe {
+                        let ptr = Box::into_raw(Box::new(value));
+                        let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
+                        res.set_attrib(class_symbol(), #self_ty_name).unwrap();
+                        res.register_c_finalizer(Some(#finalizer_name));
+                        res
+                    }
+                }
+            }
+        }
+    };
 
     let expanded = TokenStream::from(quote! {
         // The impl itself copied from the source.
@@ -196,55 +286,7 @@ pub fn extendr_impl(mut item_impl: ItemImpl) -> syn::Result<TokenStream> {
         // Function wrappers
         #( #wrappers )*
 
-        // Input conversion function for this type.
-        impl<'a> extendr_api::FromRobj<'a> for &#self_ty {
-            fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-                if robj.check_external_ptr_type::<#self_ty>() {
-                    #[allow(clippy::transmute_ptr_to_ref)]
-                    Ok(unsafe { std::mem::transmute(robj.external_ptr_addr::<#self_ty>()) })
-                } else {
-                    Err(concat!("expected ", #self_ty_name))
-                }
-            }
-        }
-
-        // Input conversion function for a reference to this type.
-        impl<'a> extendr_api::FromRobj<'a> for &mut #self_ty {
-            fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-                if robj.check_external_ptr_type::<#self_ty>() {
-                    #[allow(clippy::transmute_ptr_to_ref)]
-                    Ok(unsafe { std::mem::transmute(robj.external_ptr_addr::<#self_ty>()) })
-                } else {
-                    Err(concat!("expected ", #self_ty_name))
-                }
-            }
-        }
-
-        // Output conversion function for this type.
-        impl From<#self_ty> for Robj {
-            fn from(value: #self_ty) -> Self {
-                unsafe {
-                    let ptr = Box::into_raw(Box::new(value));
-                    let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
-                    res.set_attrib(class_symbol(), #self_ty_name).unwrap();
-                    res.register_c_finalizer(Some(#finalizer_name));
-                    res
-                }
-            }
-        }
-
-        // Output conversion function for this type.
-        impl<'a> From<&'a #self_ty> for Robj {
-            fn from(value: &'a #self_ty) -> Self {
-                unsafe {
-                    let ptr = Box::into_raw(Box::new(value));
-                    let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
-                    res.set_attrib(class_symbol(), #self_ty_name).unwrap();
-                    res.register_c_finalizer(Some(#finalizer_name));
-                    res
-                }
-            }
-        }
+        #conversion_impls
 
         // Function to free memory for this type.
         extern "C" fn #finalizer_name (sexp: extendr_api::SEXP) {
