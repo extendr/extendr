@@ -11,6 +11,11 @@ test_that("Classes defined in submodules also works", {
   expect_equal(x$me_mut(), x)
   expect_equal(x$me_explicit_ref(), x)
   expect_equal(x$me_explicit_mut(), x)
+
+  expect_identical(x$me_ref(), x)
+  expect_identical(x$me_mut(), x)
+  expect_identical(x$me_explicit_ref(), x)
+  expect_identical(x$me_explicit_mut(), x)
   # this "copies"
   expect_false(
     isTRUE(identical(x$me_owned(), x))
