@@ -18,13 +18,7 @@ impl<T> From<Dataframe<T>> for Robj {
 
 impl<T> FromRobj<'_> for Dataframe<T> {
     fn from_robj(robj: &Robj) -> std::result::Result<Self, &'static str> {
-        if !(robj.is_list() && robj.inherits("data.frame")) {
-            return Err("expected a `data.frame`");
-        }
-        Ok(Dataframe {
-            robj: robj.clone(),
-            _marker: std::marker::PhantomData,
-        })
+        robj.try_into().map_err(|_| "expected a `data.frame`")
     }
 }
 
@@ -32,14 +26,13 @@ impl<T> std::convert::TryFrom<&Robj> for Dataframe<T> {
     type Error = Error;
     fn try_from(robj: &Robj) -> Result<Self> {
         // TODO: check type using derived trait.
-        if robj.is_list() && robj.inherits("data.frame") {
-            Ok(Dataframe {
-                robj: robj.clone(),
-                _marker: std::marker::PhantomData,
-            })
-        } else {
-            Err(Error::ExpectedDataframe(robj.clone()))
+        if !(robj.is_list() && robj.inherits("data.frame")) {
+            return Err(Error::ExpectedDataframe(robj.clone()));
         }
+        Ok(Dataframe {
+            robj: robj.clone(),
+            _marker: std::marker::PhantomData,
+        })
     }
 }
 
@@ -78,36 +71,5 @@ where
                 .collect::<Vec<_>>()
                 .join(", ")
         )
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate as extendr_api;
-
-    #[derive(IntoDataFrameRow)]
-    struct Row {
-        name: u32,
-    }
-
-    #[extendr]
-    fn dataframe_conversion(_data_frame: Dataframe<Row>) -> Robj {
-        vec![Row { name: 42 }].into_dataframe().unwrap().into_robj()
-    }
-
-    #[extendr(use_try_from = true)]
-    fn dataframe_conversion_try_from(_data_frame: Dataframe<Row>) -> Robj {
-        vec![Row { name: 42 }].into_dataframe().unwrap().into_robj()
-    }
-
-    #[extendr]
-    fn return_dataframe(_data_frame: Dataframe<Row>) -> Dataframe<Row> {
-        vec![Row { name: 42 }].into_dataframe().unwrap()
-    }
-
-    #[extendr(use_try_from = true)]
-    fn return_dataframe_try_from(_data_frame: Dataframe<Row>) -> Dataframe<Row> {
-        vec![Row { name: 42 }].into_dataframe().unwrap()
     }
 }

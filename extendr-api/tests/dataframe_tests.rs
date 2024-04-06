@@ -52,10 +52,35 @@ fn test_into_robj_dataframe() {
     }
 }
 
+#[derive(IntoDataFrameRow)]
+struct Row {
+    name: u32,
+}
+
+#[extendr]
+fn dataframe_conversion(_data_frame: Dataframe<Row>) -> Robj {
+    vec![Row { name: 42 }].into_dataframe().unwrap().into_robj()
+}
+
+#[extendr(use_try_from = true)]
+fn dataframe_conversion_try_from(_data_frame: Dataframe<Row>) -> Robj {
+    vec![Row { name: 42 }].into_dataframe().unwrap().into_robj()
+}
+
+#[extendr]
+fn return_dataframe(_data_frame: Dataframe<Row>) -> Dataframe<Row> {
+    vec![Row { name: 42 }].into_dataframe().unwrap()
+}
+
+#[extendr(use_try_from = true)]
+fn return_dataframe_try_from(_data_frame: Dataframe<Row>) -> Dataframe<Row> {
+    vec![Row { name: 42 }].into_dataframe().unwrap()
+}
+
 #[test]
 fn test_storing_external_ptr_as_row() {
     struct Row {
-        id: u32,
+        _id: u32,
     }
 
     #[extendr]
