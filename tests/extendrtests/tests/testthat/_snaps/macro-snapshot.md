@@ -53,8 +53,8 @@
                   }
               }
           }
-          impl From<VecUsize> for Robj {
-              fn from(value: VecUsize) -> Self {
+          impl<'a> From<&'a VecUsize> for Robj {
+              fn from(value: &'a VecUsize) -> Self {
                   unsafe {
                       let ptr = Box::into_raw(Box::new(value));
                       let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
@@ -64,8 +64,8 @@
                   }
               }
           }
-          impl<'a> From<&'a VecUsize> for Robj {
-              fn from(value: &'a VecUsize) -> Self {
+          impl From<VecUsize> for Robj {
+              fn from(value: VecUsize) -> Self {
                   unsafe {
                       let ptr = Box::into_raw(Box::new(value));
                       let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
@@ -123,13 +123,18 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let _robj_robj = extendr_api::robj::Robj::from_sexp(robj);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(
-                          extendr_api::Robj::from(
-                              new_usize(<Integers>::from_robj(&_robj_robj)?),
-                          ),
-                      )
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  new_usize(<Integers>::from_robj(&_robj_robj)?),
+                              ),
+                          )
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -246,9 +251,12 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(extendr_api::Robj::from(tst_altstring()))
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(tst_altstring())) }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -373,9 +381,12 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(extendr_api::Robj::from(tst_altinteger()))
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(tst_altinteger())) }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -605,9 +616,12 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(extendr_api::Robj::from(test_derive_into_dataframe()))
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(test_derive_into_dataframe())) }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -693,9 +707,12 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(extendr_api::Robj::from(test_into_robj_dataframe()))
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(test_into_robj_dataframe())) }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -878,13 +895,18 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(
-                          extendr_api::Robj::from(
-                              leak_implicit_strings(<Strings>::from_robj(&_x_robj)?),
-                          ),
-                      )
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  leak_implicit_strings(<Strings>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -967,13 +989,18 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(
-                          extendr_api::Robj::from(
-                              leak_implicit_doubles(<Doubles>::from_robj(&_x_robj)?),
-                          ),
-                      )
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  leak_implicit_doubles(<Doubles>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -1058,16 +1085,21 @@
               > = unsafe {
                   let __y_robj = extendr_api::robj::Robj::from_sexp(_y);
                   let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(
-                          extendr_api::Robj::from(
-                              leak_arg2_try_implicit_strings(
-                                  __y_robj.try_into()?,
-                                  _x_robj.try_into()?,
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  leak_arg2_try_implicit_strings(
+                                      __y_robj.try_into()?,
+                                      _x_robj.try_into()?,
+                                  ),
                               ),
-                          ),
-                      )
-                  })
+                          )
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -1159,16 +1191,21 @@
               > = unsafe {
                   let __y_robj = extendr_api::robj::Robj::from_sexp(_y);
                   let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(
-                          extendr_api::Robj::from(
-                              leak_arg2_try_implicit_doubles(
-                                  __y_robj.try_into()?,
-                                  _x_robj.try_into()?,
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  leak_arg2_try_implicit_doubles(
+                                      __y_robj.try_into()?,
+                                      _x_robj.try_into()?,
+                                  ),
                               ),
-                          ),
-                      )
-                  })
+                          )
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -1259,13 +1296,18 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(
-                          extendr_api::Robj::from(
-                              leak_unwrap_strings(<Robj>::from_robj(&_x_robj)?),
-                          ),
-                      )
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  leak_unwrap_strings(<Robj>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -1348,13 +1390,18 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(
-                          extendr_api::Robj::from(
-                              leak_unwrap_doubles(<Robj>::from_robj(&_x_robj)?),
-                          ),
-                      )
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  leak_unwrap_doubles(<Robj>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -1437,13 +1484,18 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(
-                          extendr_api::Robj::from(
-                              leak_positive_control(<Robj>::from_robj(&_x_robj)?),
-                          ),
-                      )
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  leak_positive_control(<Robj>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -1526,13 +1578,18 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(
-                          extendr_api::Robj::from(
-                              leak_negative_control(<Robj>::from_robj(&_x_robj)?),
-                          ),
-                      )
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  leak_negative_control(<Robj>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -1708,9 +1765,14 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let _input_robj = extendr_api::robj::Robj::from_sexp(input);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(extendr_api::Robj::from(type_aware_sum(_input_robj.try_into()?)))
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(extendr_api::Robj::from(type_aware_sum(_input_robj.try_into()?)))
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -1971,9 +2033,12 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let _a_robj = extendr_api::robj::Robj::from_sexp(a);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(extendr_api::Robj::from(euclidean_dist(_a_robj.try_into()?)))
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(euclidean_dist(_a_robj.try_into()?))) }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -2142,13 +2207,18 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let _type_robj = extendr_api::robj::Robj::from_sexp(r#type);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(
-                          extendr_api::Robj::from(
-                              raw_identifier_in_fn_args(_type_robj.try_into()?),
-                          ),
-                      )
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  raw_identifier_in_fn_args(_type_robj.try_into()?),
+                              ),
+                          )
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -2231,9 +2301,12 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(extendr_api::Robj::from(r#true()))
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(r#true())) }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -2306,9 +2379,12 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let _type_robj = extendr_api::robj::Robj::from_sexp(r#type);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(extendr_api::Robj::from(r#false(_type_robj.try_into()?)))
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(r#false(_type_robj.try_into()?))) }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -8989,6 +9065,9 @@
           meta__MyClass(&mut impls);
           meta____MyClass(&mut impls);
           meta__MyClassUnexported(&mut impls);
+          meta__MyClassTryFrom(&mut impls);
+          meta____MyClassTryFrom(&mut impls);
+          meta__MyClassUnexportedTryFrom(&mut impls);
           functions.extend(altrep::get_altrep_metadata().functions);
           functions.extend(dataframe::get_dataframe_metadata().functions);
           functions.extend(memory_leaks::get_memory_leaks_metadata().functions);
