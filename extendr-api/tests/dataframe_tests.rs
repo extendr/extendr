@@ -51,3 +51,39 @@ fn test_into_robj_dataframe() {
 
     }
 }
+
+#[test]
+fn test_storing_external_ptr_as_row() {
+    struct Row {
+        id: u32,
+    }
+
+    #[extendr]
+    impl Row {}
+
+    #[extendr]
+    fn use_dataframe_exptr(data_frame: Dataframe<Row>) -> Dataframe<Row> {
+        data_frame
+    }
+}
+
+#[test]
+fn test_dataframe_row_and_externalptr() {
+    #[derive(IntoDataFrameRow)]
+    struct RowAndExptr {
+        id: u32,
+    }
+
+    #[extendr]
+    impl RowAndExptr {}
+
+    #[extendr]
+    fn use_dataframe_exptr2(data_frame: Dataframe<RowAndExptr>) -> Dataframe<RowAndExptr> {
+        data_frame
+    }
+
+    #[extendr(use_try_from = true)]
+    fn use_dataframe_exptr3(data_frame: Dataframe<RowAndExptr>) -> Dataframe<RowAndExptr> {
+        data_frame
+    }
+}
