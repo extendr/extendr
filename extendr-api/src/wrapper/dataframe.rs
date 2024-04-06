@@ -110,5 +110,4 @@ mod tests {
     fn return_dataframe_try_from(_data_frame: Dataframe<Row>) -> Dataframe<Row> {
         vec![Row { name: 42 }].into_dataframe().unwrap()
     }
-
 }
