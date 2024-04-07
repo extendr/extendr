@@ -726,9 +726,9 @@ impl<'de> Visitor<'de> for RobjVisitor {
         E: serde::de::Error,
     {
         if v > i64::from(i32::MIN) && v <= i64::from(i32::MAX) {
-            i32::try_from(v)
+            i32::try_from(v)?.try_into()
         } else {
-            f64::try_from(v)
+            f64::try_from(v)?.try_into()
         }
     }
 
@@ -737,9 +737,9 @@ impl<'de> Visitor<'de> for RobjVisitor {
         E: serde::de::Error,
     {
         if v <= u64::from(i32::MAX) {
-            i32::try_from(v)
+            i32::try_from(v)?.try_into()
         } else {
-            f64::try_from(v)
+            f64::try_from(v)?.try_into()
         }
     }
 
