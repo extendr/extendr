@@ -926,14 +926,14 @@ impl<'de> Visitor<'de> for DoublesVisitor {
     where
         E: serde::de::Error,
     {
-        Ok(Doubles::from_values([f64::try_from(v).unwrap()]))
+        Ok(Doubles::from_values([f64::try_from(v)?]))
     }
 
     fn visit_u64<E>(self, v: u64) -> std::result::Result<Self::Value, E>
     where
         E: serde::de::Error,
     {
-        Ok(Doubles::from_values([f64::try_from(v).unwrap()]))
+        Ok(Doubles::from_values([f64::try_from(v)?]))
     }
 
     fn visit_f64<E>(self, v: f64) -> std::result::Result<Self::Value, E>
