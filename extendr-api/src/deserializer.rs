@@ -725,9 +725,10 @@ impl<'de> Visitor<'de> for RobjVisitor {
     where
         E: serde::de::Error,
     {
-        match i32::try_from(v) {
-            Ok(x) => x,
-            Err(_) => f64::try_from(v)?
+        if v > i64::from(i32::MIN) && v <= i64::from(i32::MAX) {
+            i32::try_from(v)
+        } else {
+            f64::try_from(v)
         }
     }
 
@@ -735,9 +736,10 @@ impl<'de> Visitor<'de> for RobjVisitor {
     where
         E: serde::de::Error,
     {
-        match i32::try_from(v) {
-            Ok(x) => x,
-            Err(_) => f64::try_from(v)?
+        if v <= u64::from(i32::MAX) {
+            i32::try_from(v)
+        } else {
+            f64::try_from(v)
         }
     }
 
@@ -851,9 +853,10 @@ impl<'de> Visitor<'de> for IntegersVisitor {
     where
         E: serde::de::Error,
     {
-        match i32::try_from(v) {
-            Ok(x) => Integers::from_values(x),
-            Err(_) => Err(serde::de::Error::custom("out of range for Integers"))
+        if v > i64::from(i32::MIN) && v <= i64::from(i32::MAX) {
+            Ok(Integers::from_values([i32::try_from(v)?]))
+        } else {
+            Err(serde::de::Error::custom("out of range for Integers"))
         }
     }
 
@@ -861,9 +864,10 @@ impl<'de> Visitor<'de> for IntegersVisitor {
     where
         E: serde::de::Error,
     {
-        match i32::try_from(v) {
-            Ok(x) => Integers::from_values(x),
-            Err(_) => Err(serde::de::Error::custom("out of range for Integers"))
+        if v <= u64::from(i32::MAX) {
+            Ok(Integers::from_values([i32::try_from(v)?]))
+        } else {
+            Err(serde::de::Error::custom("out of range for Integers"))
         }
     }
 
