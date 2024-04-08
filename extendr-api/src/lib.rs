@@ -369,7 +369,7 @@ pub mod na;
 
 pub mod optional;
 
-pub (crate) mod conversions;
+pub(crate) mod conversions;
 
 pub use std::convert::{TryFrom, TryInto};
 pub use std::ops::Deref;

@@ -62,8 +62,8 @@ impl_into_integerish!(f64, u8);
 
 #[cfg(test)]
 mod try_into_int_tests {
-    use crate::CanBeNA;
     use crate::conversions::try_into_int::{ConversionError, FloatToInt};
+    use crate::CanBeNA;
 
     #[test]
     fn large_value_overflow() {
