@@ -185,6 +185,7 @@ impl TryFrom<&Robj> for Rint {
         // whole number). This needs to be down with `as`, as no
         // `TryFrom` is implemented for float types. `FloatToInt` trait
         // might eventually become available in future, though.
+        // TODO: Here as well
         if let Some(v) = robj.as_real() {
             let result = v as i32;
             if (result as f64 - v).abs() < f64::EPSILON {

@@ -1,9 +1,10 @@
 //! Error handling in Rust called from R.
 
-use crate::robj::Types;
-use crate::{throw_r_error, Robj};
-
 use std::convert::Infallible;
+
+use crate::{Robj, throw_r_error};
+use crate::conversions::try_into_int::ConversionError;
+use crate::robj::Types;
 
 /// Throw an R error if a result is an error.
 #[doc(hidden)]
@@ -80,6 +81,8 @@ pub enum Error {
     ExpectedExternalPtrType(Robj, String),
     ExpectedExternalNonNullPtr(Robj),
     Other(String),
+
+    Test(Robj, ConversionError),
 
     #[cfg(feature = "ndarray")]
     NDArrayShapeError(ndarray::ShapeError),
@@ -171,6 +174,15 @@ impl std::fmt::Display for Error {
             }
             Error::NoGraphicsDevices(_robj) => write!(f, "No graphics devices active."),
             Error::Other(str) => write!(f, "{}", str),
+
+            Error::Test(robj, conversion_error) => {
+                write!(
+                    f,
+                    "Failed to convert a float to a whole number: {:?}. Actual value received: {:?}",
+                    conversion_error,
+                    robj
+                )
+            }
 
             #[cfg(feature = "ndarray")]
             Error::NDArrayShapeError(shape_error) => {
