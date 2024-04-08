@@ -16,10 +16,10 @@ fn test_fn<'a, TFrom, TTo, FSlice, FValue>(
     get_slice: FSlice,
     get_value: FValue,
 ) -> Option<std::result::Result<TTo, &'static str>>
-    where
-        TFrom: CanBeNA + 'a,
-        FSlice: FnOnce(&'a Robj) -> Option<&'a [TFrom]>,
-        FValue: FnOnce(&'a TFrom) -> std::result::Result<TTo, &'static str>,
+where
+    TFrom: CanBeNA + 'a,
+    FSlice: FnOnce(&'a Robj) -> Option<&'a [TFrom]>,
+    FValue: FnOnce(&'a TFrom) -> std::result::Result<TTo, &'static str>,
 {
     if let Some(v) = get_slice(robj) {
         match v.len() {
@@ -67,8 +67,18 @@ macro_rules! impl_float_prim_from_robj {
     ($t: ty) => {
         impl<'a> FromRobj<'a> for $t {
             fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-                test_fn(robj, Robj::as_real_slice, |v: &f64| Ok(*v as Self))
-                    .unwrap_or_else(|| Err("Unable to convert R object to primitive"))
+                if let Some(from_real_value) =
+                    test_fn(robj, Robj::as_real_slice, |v: &f64| Ok(*v as Self))
+                {
+                    return from_real_value;
+                } else if let Some(from_int_value) =
+                    test_fn(robj, Robj::as_integer_slice, |v: &i32| Ok(*v as Self))
+                {
+                    return from_int_value;
+                }
+                {
+                    return Err("Unable to convert R object to primitive");
+                }
             }
         }
     };
