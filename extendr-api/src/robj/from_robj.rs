@@ -97,19 +97,12 @@ impl_float_prim_from_robj!(f64);
 
 impl<'a> FromRobj<'a> for bool {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if let Some(v) = robj.as_logical_slice() {
-            match v.len() {
-                0 => Err("Input must be of length 1. Vector of length zero given."),
-                1 => {
-                    if !v[0].is_na() {
-                        Ok(v[0].to_bool())
-                    } else {
-                        Err("Input must not be NA.")
-                    }
-                }
-                _ => Err("Input must be of length 1. Vector of length >1 given."),
-            }
-        } else {
+        if let Some(from_logical_value) =
+            test_fn(robj, Robj::as_logical_slice, |v: &Rbool| Ok(v.to_bool()))
+        {
+            return from_logical_value;
+        }
+        {
             Err("Not a logical object.")
         }
     }
