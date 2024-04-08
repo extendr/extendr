@@ -1,5 +1,7 @@
 //! Conversions to Robj
 
+use crate::conversions::try_into_int::FloatToInt;
+
 use super::*;
 
 macro_rules! impl_try_from_scalar_integer {
@@ -39,12 +41,7 @@ macro_rules! impl_try_from_scalar_integer {
                 // `TryFrom` is implemented for float types. `FloatToInt` trait
                 // might eventually become available in future, though.
                 if let Some(v) = robj.as_real() {
-                    let result = v as Self;
-                    if (result as f64 - v).abs() < f64::EPSILON {
-                        return Ok(result);
-                    } else {
-                        return Err(Error::ExpectedWholeNumber(robj.clone()));
-                    }
+                    return v.try_into_int().map_err(|conv_err| Error::Test(robj.clone(), conv_err));
                 }
 
                 Err(Error::ExpectedNumeric(robj.clone()))
