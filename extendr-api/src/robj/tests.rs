@@ -1,5 +1,6 @@
 use crate::scalar::*;
 use crate::*;
+use crate::conversions::try_into_int::ConversionError;
 
 #[test]
 fn test_from_robj() {
@@ -109,7 +110,7 @@ fn test_try_from_robj() {
 
         // conversion from non-integer-ish value to integer should fail
         let robj = Robj::from(1.5);
-        assert_eq!(<i32>::try_from(robj.clone()), Err(Error::ExpectedWholeNumber(robj)));
+        assert_eq!(<i32>::try_from(robj.clone()), Err(Error::ExpectedWholeNumber(robj, ConversionError::NotIntegerish)));
         // conversion from out-of-limit value should fail
         let robj = Robj::from(32768);
         assert_eq!(<i16>::try_from(robj.clone()), Err(Error::OutOfLimits(robj)));

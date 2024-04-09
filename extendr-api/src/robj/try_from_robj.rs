@@ -39,7 +39,7 @@ macro_rules! impl_try_from_scalar_integer {
                 // integer-like (i.e., an integer, or a float representing a
                 // whole number).
                 if let Some(v) = robj.as_real() {
-                    return v.try_into_int().map_err(|conv_err| Error::Test(robj.clone(), conv_err));
+                    return v.try_into_int().map_err(|conv_err| Error::ExpectedWholeNumber(robj.clone(), conv_err));
                 }
 
                 Err(Error::ExpectedNumeric(robj.clone()))

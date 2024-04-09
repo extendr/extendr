@@ -71,8 +71,8 @@ pub enum Error {
 
     OutOfRange(Robj),
     MustNotBeNA(Robj),
+    ExpectedWholeNumber(Robj, ConversionError),
     ExpectedNonZeroLength(Robj),
-    ExpectedWholeNumber(Robj),
     OutOfLimits(Robj),
     TypeMismatch(Robj),
     NamespaceNotFound(Robj),
@@ -82,7 +82,6 @@ pub enum Error {
     ExpectedExternalNonNullPtr(Robj),
     Other(String),
 
-    Test(Robj, ConversionError),
 
     #[cfg(feature = "ndarray")]
     NDArrayShapeError(ndarray::ShapeError),
@@ -151,13 +150,6 @@ impl std::fmt::Display for Error {
             Error::OutOfRange(_robj) => write!(f, "Out of range."),
             Error::MustNotBeNA(_robj) => write!(f, "Must not be NA."),
             Error::ExpectedNonZeroLength(_robj) => write!(f, "Expected non zero length"),
-            Error::ExpectedWholeNumber(robj) => {
-                write!(
-                    f,
-                    "Expected an integer or a float representing a whole number, got {:?}",
-                    robj
-                )
-            }
             Error::OutOfLimits(robj) => write!(f, "The value is too big: {:?}", robj),
             Error::TypeMismatch(_robj) => write!(f, "Type mismatch"),
 
@@ -175,7 +167,7 @@ impl std::fmt::Display for Error {
             Error::NoGraphicsDevices(_robj) => write!(f, "No graphics devices active."),
             Error::Other(str) => write!(f, "{}", str),
 
-            Error::Test(robj, conversion_error) => {
+            Error::ExpectedWholeNumber(robj, conversion_error) => {
                 write!(
                     f,
                     "Failed to convert a float to a whole number: {:?}. Actual value received: {:?}",
