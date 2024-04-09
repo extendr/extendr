@@ -37,9 +37,7 @@ macro_rules! impl_try_from_scalar_integer {
 
                 // If the conversion is float-to-int, check if the value is
                 // integer-like (i.e., an integer, or a float representing a
-                // whole number). This needs to be down with `as`, as no
-                // `TryFrom` is implemented for float types. `FloatToInt` trait
-                // might eventually become available in future, though.
+                // whole number).
                 if let Some(v) = robj.as_real() {
                     return v.try_into_int().map_err(|conv_err| Error::Test(robj.clone(), conv_err));
                 }
@@ -73,9 +71,11 @@ macro_rules! impl_try_from_scalar_real {
                 // SEXP is the corresponding type, so we cannot use as_real()
                 // directly on INTSXP.
                 if let Some(v) = robj.as_real() {
+                    // f64 to f32 and f64 to f64 is always safe.
                     return Ok(v as Self);
                 }
                 if let Some(v) = robj.as_integer() {
+                    // An i32 R integer can be represented exactly by f64, but might be truncated in f32.
                     return Ok(v as Self);
                 }
 
