@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-macros/src/wrappers.rs`."><title>wrappers.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.79.0-nightly (1684a753d 2024-04-01)" data-channel="nightly" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-macros/src/wrappers.rs`."><title>wrappers.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-9e1300b5663a8a03.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.79.0-nightly (ab5bda1aa 2024-04-08)" data-channel="nightly" data-search-js="search-ffac13a0df2b1870.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-e32f0c247825364d.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-c97aec732c613ca4.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-09095024cf37855e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../extendr_macros/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -432,7 +432,101 @@
 <a href="#430" id="430">430</a>
 <a href="#431" id="431">431</a>
 <a href="#432" id="432">432</a>
-</pre></div><pre class="rust"><code><span class="kw">use </span>proc_macro2::Ident;
+<a href="#433" id="433">433</a>
+<a href="#434" id="434">434</a>
+<a href="#435" id="435">435</a>
+<a href="#436" id="436">436</a>
+<a href="#437" id="437">437</a>
+<a href="#438" id="438">438</a>
+<a href="#439" id="439">439</a>
+<a href="#440" id="440">440</a>
+<a href="#441" id="441">441</a>
+<a href="#442" id="442">442</a>
+<a href="#443" id="443">443</a>
+<a href="#444" id="444">444</a>
+<a href="#445" id="445">445</a>
+<a href="#446" id="446">446</a>
+<a href="#447" id="447">447</a>
+<a href="#448" id="448">448</a>
+<a href="#449" id="449">449</a>
+<a href="#450" id="450">450</a>
+<a href="#451" id="451">451</a>
+<a href="#452" id="452">452</a>
+<a href="#453" id="453">453</a>
+<a href="#454" id="454">454</a>
+<a href="#455" id="455">455</a>
+<a href="#456" id="456">456</a>
+<a href="#457" id="457">457</a>
+<a href="#458" id="458">458</a>
+<a href="#459" id="459">459</a>
+<a href="#460" id="460">460</a>
+<a href="#461" id="461">461</a>
+<a href="#462" id="462">462</a>
+<a href="#463" id="463">463</a>
+<a href="#464" id="464">464</a>
+<a href="#465" id="465">465</a>
+<a href="#466" id="466">466</a>
+<a href="#467" id="467">467</a>
+<a href="#468" id="468">468</a>
+<a href="#469" id="469">469</a>
+<a href="#470" id="470">470</a>
+<a href="#471" id="471">471</a>
+<a href="#472" id="472">472</a>
+<a href="#473" id="473">473</a>
+<a href="#474" id="474">474</a>
+<a href="#475" id="475">475</a>
+<a href="#476" id="476">476</a>
+<a href="#477" id="477">477</a>
+<a href="#478" id="478">478</a>
+<a href="#479" id="479">479</a>
+<a href="#480" id="480">480</a>
+<a href="#481" id="481">481</a>
+<a href="#482" id="482">482</a>
+<a href="#483" id="483">483</a>
+<a href="#484" id="484">484</a>
+<a href="#485" id="485">485</a>
+<a href="#486" id="486">486</a>
+<a href="#487" id="487">487</a>
+<a href="#488" id="488">488</a>
+<a href="#489" id="489">489</a>
+<a href="#490" id="490">490</a>
+<a href="#491" id="491">491</a>
+<a href="#492" id="492">492</a>
+<a href="#493" id="493">493</a>
+<a href="#494" id="494">494</a>
+<a href="#495" id="495">495</a>
+<a href="#496" id="496">496</a>
+<a href="#497" id="497">497</a>
+<a href="#498" id="498">498</a>
+<a href="#499" id="499">499</a>
+<a href="#500" id="500">500</a>
+<a href="#501" id="501">501</a>
+</pre></div><pre class="rust"><code><span class="doccomment">//! This is responsible for generating the C functions that act as wrappers of
+//! the exported Rust functions.
+//!
+//! extendr relies on the [`.Call`-interface](https://cran.r-project.org/doc/manuals/R-exts.html#Calling-_002eCall)
+//! In short, it is necessary the the signature of the C-function have [`SEXP`]
+//! as the type for return type, and argument types.
+//!
+//! For instance, if your function returns nothing, the return type is not
+//! allowed to be `void`, instead `SEXP` must be used, and one should return
+//! [`R_NilValue`].
+//!
+//! ## R wrappers
+//!
+//! Within R, you may call `rextendr::document()` to generate R functions,
+//! that use the `.Call`-interface, to call the wrapped Rust functions.
+//!
+//! You may also manually implement these wrappers, in order to do special
+//! type-checking, or other annotation, that could be more convenient to do
+//! on the R-side. The C-functions are named according to `"{WRAP_PREFIX}{prefix}{mod_name}"`.
+//! See [`WRAP_PREFIX`], and note that `prefix` is set specifically for methods in
+//! `extendr`-impl blocks, while for functions have no prefix.
+//!
+//! [`R_NilValue`]: ::libR_sys::R_NilValue
+//! [`SEXP`]: ::libR_sys::SEXP
+
+</span><span class="kw">use </span>proc_macro2::Ident;
 <span class="kw">use </span>quote::{format_ident, quote};
 <span class="kw">use </span>syn::{parse_quote, punctuated::Punctuated, Expr, ExprLit, FnArg, ItemFn, Token, Type};
 
@@ -484,7 +578,7 @@
 
     <span class="kw">let </span>call_name = <span class="kw">if </span>has_self {
         <span class="kw">let </span>is_mut = <span class="kw">match </span>inputs.iter().next() {
-            <span class="prelude-val">Some</span>(FnArg::Receiver(<span class="kw-2">ref </span>reciever)) =&gt; reciever.mutability.is_some(),
+            <span class="prelude-val">Some</span>(FnArg::Receiver(<span class="kw-2">ref </span>receiver)) =&gt; receiver.mutability.is_some(),
             <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
         };
         <span class="kw">if </span>is_mut {
@@ -554,7 +648,49 @@
             });)
         })
         .unwrap_or_default();
-    wrappers.push(<span class="macro">parse_quote!</span>(
+
+    <span class="comment">// figure out if
+    // -&gt; &amp;Self
+    // -&gt; &amp;mut Self
+    // Or if instead of `Self` the type name is used directly
+    // -&gt; &amp;ImplType / &amp;mut ImplType
+    </span><span class="kw">let </span>return_is_ref_self = {
+        <span class="kw">match </span>sig.output {
+            <span class="comment">// matches -&gt; () or no-return type
+            </span>syn::ReturnType::Default =&gt; <span class="bool-val">false</span>,
+            <span class="comment">// ignoring the `-&gt; Self` or `-&gt; ImplType`, as that is not a Reference-type
+            // matches -&gt; &amp;T or &amp;mut T
+            </span>syn::ReturnType::Type(<span class="kw">_</span>, <span class="kw-2">ref </span>return_type) =&gt; <span class="kw">match </span>return_type.as_ref() {
+                Type::Reference(<span class="kw-2">ref </span>reference_type) =&gt; {
+                    <span class="comment">// checks if T is Self or explicit impl type name
+                    </span><span class="kw">if let </span>Type::Path(path) = reference_type.elem.as_ref() {
+                        <span class="kw">let </span>is_typename_impl_type = self_ty
+                            .map(|x| x == reference_type.elem.as_ref())
+                            .unwrap_or(<span class="bool-val">false</span>);
+                        path.path.is_ident(<span class="string">"Self"</span>) || is_typename_impl_type
+                    } <span class="kw">else </span>{
+                        <span class="bool-val">false
+                    </span>}
+                }
+                <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
+            },
+        }
+    };
+
+    <span class="kw">let </span>return_type_conversion = <span class="kw">if </span>return_is_ref_self {
+        <span class="comment">// instead of converting &amp;Self / &amp;mut Self, pass on the passed
+        // ExternalPtr&lt;Self&gt;
+        </span><span class="macro">quote!</span>(
+            <span class="kw">let </span>_return_ref_to_self = #call_name(#actual_args);
+            <span class="comment">//FIXME: find a less hardcoded way to write `_self_robj`
+            </span><span class="prelude-val">Ok</span>(_self_robj)
+        )
+    } <span class="kw">else </span>{
+        <span class="macro">quote!</span>(<span class="prelude-val">Ok</span>(extendr_api::Robj::from(#call_name(#actual_args))))
+    };
+
+    <span class="comment">// TODO: the unsafe in here is unnecessary
+    </span>wrappers.push(<span class="macro">parse_quote!</span>(
         <span class="attr">#[no_mangle]
         #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
         </span><span class="kw">pub extern </span><span class="string">"C" </span><span class="kw">fn </span>#wrap_name(#formal_args) -&gt; extendr_api::SEXP {
@@ -569,7 +705,7 @@
             &gt; = <span class="kw">unsafe </span>{
                 #( #convert_args )*
                 std::panic::catch_unwind(||-&gt; std::result::Result&lt;Robj, extendr_api::Error&gt; {
-                    <span class="prelude-val">Ok</span>(extendr_api::Robj::from(#call_name(#actual_args)))
+                    #return_type_conversion
                 })
             };
 
@@ -581,7 +717,7 @@
                 <span class="prelude-val">Ok</span>(<span class="prelude-val">Ok</span>(zz)) =&gt; {
                     <span class="kw">return unsafe </span>{ zz.get() };
                 }
-                <span class="comment">// any conversion error bubbled from #actual_args conversions of incomming args from R.
+                <span class="comment">// any conversion error bubbled from #actual_args conversions of incoming args from R.
                 </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Err</span>(conversion_err)) =&gt; {
                     <span class="kw">let </span>err_string = conversion_err.to_string();
                     drop(conversion_err); <span class="comment">// try_from=true errors contain Robj, this must be dropped to not leak
@@ -675,8 +811,8 @@
     res
 }
 
-<span class="comment">// Return a simplified type name that will be meaningful to R. Defaults to a digest.
-// For example:
+<span class="doccomment">/// Return a simplified type name that will be meaningful to R. Defaults to a digest.
+</span><span class="comment">// For example:
 // &amp; Fred -&gt; Fred
 // * Fred -&gt; Fred
 // &amp;&amp; Fred -&gt; Fred
@@ -711,9 +847,9 @@
             <span class="kw">let </span>pat = <span class="kw-2">&amp;</span>pattype.pat.as_ref();
             <span class="prelude-val">Ok</span>(<span class="macro">parse_quote!</span> { #pat : extendr_api::SEXP })
         }
-        <span class="comment">// &amp;self
-        </span>FnArg::Receiver(<span class="kw-2">ref </span>reciever) =&gt; {
-            <span class="kw">if </span>!reciever.attrs.is_empty() || reciever.reference.is_none() {
+        <span class="comment">// &amp;self / &amp;mut self
+        </span>FnArg::Receiver(<span class="kw-2">ref </span>receiver) =&gt; {
+            <span class="kw">if </span>!receiver.attrs.is_empty() || receiver.reference.is_none() {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new_spanned(
                     input,
                     <span class="string">"expected &amp;self or &amp;mut self"</span>,
@@ -752,8 +888,8 @@
             })
         }
         <span class="comment">// &amp;self
-        </span>FnArg::Receiver(<span class="kw-2">ref </span>reciever) =&gt; {
-            <span class="kw">if </span>!reciever.attrs.is_empty() || reciever.reference.is_none() {
+        </span>FnArg::Receiver(<span class="kw-2">ref </span>receiver) =&gt; {
+            <span class="kw">if </span>!receiver.attrs.is_empty() || receiver.reference.is_none() {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new_spanned(
                     input,
                     <span class="string">"expected &amp;self or &amp;mut self"</span>,
@@ -780,6 +916,8 @@
 
 <span class="doccomment">/// Convert `SEXP` arguments into `Robj`.
 /// This maintains the lifetime of references.
+///
+/// These conversions are from R into Rust
 </span><span class="kw">fn </span>translate_to_robj(input: <span class="kw-2">&amp;</span>FnArg) -&gt; syn::Result&lt;syn::Stmt&gt; {
     <span class="kw">match </span>input {
         FnArg::Typed(<span class="kw-2">ref </span>pattype) =&gt; {

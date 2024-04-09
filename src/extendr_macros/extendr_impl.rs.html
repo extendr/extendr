@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-macros/src/extendr_impl.rs`."><title>extendr_impl.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.79.0-nightly (1684a753d 2024-04-01)" data-channel="nightly" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-macros/src/extendr_impl.rs`."><title>extendr_impl.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-9e1300b5663a8a03.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.79.0-nightly (ab5bda1aa 2024-04-08)" data-channel="nightly" data-search-js="search-ffac13a0df2b1870.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-e32f0c247825364d.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-c97aec732c613ca4.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-09095024cf37855e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../extendr_macros/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -208,6 +208,75 @@
 <a href="#206" id="206">206</a>
 <a href="#207" id="207">207</a>
 <a href="#208" id="208">208</a>
+<a href="#209" id="209">209</a>
+<a href="#210" id="210">210</a>
+<a href="#211" id="211">211</a>
+<a href="#212" id="212">212</a>
+<a href="#213" id="213">213</a>
+<a href="#214" id="214">214</a>
+<a href="#215" id="215">215</a>
+<a href="#216" id="216">216</a>
+<a href="#217" id="217">217</a>
+<a href="#218" id="218">218</a>
+<a href="#219" id="219">219</a>
+<a href="#220" id="220">220</a>
+<a href="#221" id="221">221</a>
+<a href="#222" id="222">222</a>
+<a href="#223" id="223">223</a>
+<a href="#224" id="224">224</a>
+<a href="#225" id="225">225</a>
+<a href="#226" id="226">226</a>
+<a href="#227" id="227">227</a>
+<a href="#228" id="228">228</a>
+<a href="#229" id="229">229</a>
+<a href="#230" id="230">230</a>
+<a href="#231" id="231">231</a>
+<a href="#232" id="232">232</a>
+<a href="#233" id="233">233</a>
+<a href="#234" id="234">234</a>
+<a href="#235" id="235">235</a>
+<a href="#236" id="236">236</a>
+<a href="#237" id="237">237</a>
+<a href="#238" id="238">238</a>
+<a href="#239" id="239">239</a>
+<a href="#240" id="240">240</a>
+<a href="#241" id="241">241</a>
+<a href="#242" id="242">242</a>
+<a href="#243" id="243">243</a>
+<a href="#244" id="244">244</a>
+<a href="#245" id="245">245</a>
+<a href="#246" id="246">246</a>
+<a href="#247" id="247">247</a>
+<a href="#248" id="248">248</a>
+<a href="#249" id="249">249</a>
+<a href="#250" id="250">250</a>
+<a href="#251" id="251">251</a>
+<a href="#252" id="252">252</a>
+<a href="#253" id="253">253</a>
+<a href="#254" id="254">254</a>
+<a href="#255" id="255">255</a>
+<a href="#256" id="256">256</a>
+<a href="#257" id="257">257</a>
+<a href="#258" id="258">258</a>
+<a href="#259" id="259">259</a>
+<a href="#260" id="260">260</a>
+<a href="#261" id="261">261</a>
+<a href="#262" id="262">262</a>
+<a href="#263" id="263">263</a>
+<a href="#264" id="264">264</a>
+<a href="#265" id="265">265</a>
+<a href="#266" id="266">266</a>
+<a href="#267" id="267">267</a>
+<a href="#268" id="268">268</a>
+<a href="#269" id="269">269</a>
+<a href="#270" id="270">270</a>
+<a href="#271" id="271">271</a>
+<a href="#272" id="272">272</a>
+<a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
+<a href="#275" id="275">275</a>
+<a href="#276" id="276">276</a>
+<a href="#277" id="277">277</a>
 </pre></div><pre class="rust"><code><span class="kw">extern crate </span>proc_macro;
 <span class="kw">use </span>proc_macro::TokenStream;
 <span class="kw">use </span>quote::{format_ident, quote};
@@ -215,35 +284,104 @@
 
 <span class="kw">use </span><span class="kw">crate</span>::wrappers;
 
-<span class="doccomment">/// Handle trait implementations.
+<span class="doccomment">/// Make inherent implementations available to R
+///
+/// The extendr_impl function is used to make inherent implementations
+/// avaialble to R as an environment. By adding the [`extendr`] attribute
+/// macro to an `impl` block (supported with `enum`s and `struct`s), the
+/// methods in the impl block are made available as functions in an
+/// environment.
+///
+/// On the R side, an environment with the same name of the inherent
+/// implementation is created. The environment has functions within it
+/// that correspond to each method in the impl block. Note that in order
+/// for an impl block to be compatible with extendr (and thus R), its return
+/// type must be able to be returned to R. For example, any struct that might
+/// be returned must _also_ have an `#[extendr]` annotated impl block.
 ///
 /// Example:
 /// ```ignore
 /// use extendr_api::prelude::*;
-/// #[derive(Debug)]
+///
+/// // a struct that will be used internal the People struct
+/// #[derive(Clone, Debug, IntoDataFrameRow)]
 /// struct Person {
-///     pub name: String,
+///     name: String,
+///     age: i32,
 /// }
+///
+/// // This will collect people in the struct
 /// #[extendr]
-/// impl Person {
+/// #[derive(Clone, Debug)]
+/// struct People(Vec&lt;Person&gt;);
+///
+/// #[extendr]
+/// /// @export
+/// impl People {
+///
+///     // instantiate a new struct with an empty vector
 ///     fn new() -&gt; Self {
-///         Self { name: "".to_string() }
+///         let vec: Vec&lt;Person&gt; = Vec::new();
+///         Self(vec)
 ///     }
-///     fn set_name(&amp;mut self, name: &amp;str) {
-///         self.name = name.to_string();
+///
+///     // add a person to the internal vector
+///     fn add_person(&amp;mut self, name: &amp;str, age: i32) -&gt; &amp;mut Self {
+///         let person = Person {
+///             name: String::from(name),
+///             age: age,
+///         };
+///
+///         self.0.push(person);
+///
+///         // return self
+///         self
 ///     }
-///     fn name(&amp;self) -&gt; &amp;str {
-///         self.name.as_str()
+///     
+///     // Convert the struct into a data.frame
+///     fn into_df(&amp;self) -&gt; Robj {
+///         let df = self.0.clone().into_dataframe();
+///
+///         match df {
+///             Ok(df) =&gt; df.as_robj().clone(),
+///             Err(_) =&gt; data_frame!(),
+///         }
 ///     }
+///
+///     // add another `People` struct to self
+///     fn add_people(&amp;mut self, others: &amp;People) -&gt; &amp;mut Self {
+///         self.0.extend(others.0.clone().into_iter());
+///         self
+///     }
+///
+///     // create a function to print the self which can be called
+///     // from an R print method
+///     fn print_self(&amp;self) -&gt; String {
+///         format!("{:?}", self.0)
+///     }
+///
 /// }
-/// #[extendr]
-/// fn aux_func() {
-/// }
-/// // Macro to generate exports
+///
+/// // Macro to generate exports.
+/// // This ensures exported functions are registered with R.
+/// // See corresponding C code in `entrypoint.c`.
 /// extendr_module! {
-///     mod classes;
-///     impl Person;
-///     fn aux_func;
+///     mod testself;
+///     impl People;
+/// }
+/// ```
+///     
+/// **Known limitation**: if you return `&amp;Self` or `&amp;mut Self` or a reference
+/// to the same type, the resultant R object will _always_ be the original
+/// self. For example the below method **will not** return `other`.
+///
+/// ```ignore
+///  // This is not possible today
+/// #[extendr]
+/// impl People {
+///   fn return_other(&amp;self, other: &amp;'static T) -&gt; &amp;Self {
+///     other
+///   }
 /// }
 /// ```
 </span><span class="kw">pub fn </span>extendr_impl(<span class="kw-2">mut </span>item_impl: ItemImpl) -&gt; syn::Result&lt;TokenStream&gt; {
