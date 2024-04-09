@@ -1,6 +1,6 @@
+use crate::conversions::try_into_int::ConversionError;
 use crate::scalar::*;
 use crate::*;
-use crate::conversions::try_into_int::ConversionError;
 
 #[test]
 fn test_from_robj() {

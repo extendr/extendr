@@ -156,9 +156,8 @@ impl TryFrom<&Robj> for Rint {
     type Error = Error;
 
     fn try_from(robj: &Robj) -> Result<Self> {
-        let i32_val : Result<i32> = robj.try_into();
-        match i32_val
-        {
+        let i32_val: Result<i32> = robj.try_into();
+        match i32_val {
             Ok(v) => Ok(Rint::from(v)),
             // TODO: Currently this results in an extra protection of robj
             Err(Error::MustNotBeNA(_)) => Ok(Rint::na()),

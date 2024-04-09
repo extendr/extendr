@@ -82,7 +82,6 @@ pub enum Error {
     ExpectedExternalNonNullPtr(Robj),
     Other(String),
 
-
     #[cfg(feature = "ndarray")]
     NDArrayShapeError(ndarray::ShapeError),
 
