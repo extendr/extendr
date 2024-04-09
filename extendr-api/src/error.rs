@@ -2,9 +2,9 @@
 
 use std::convert::Infallible;
 
+use crate::{Robj, throw_r_error};
 use crate::conversions::try_into_int::ConversionError;
 use crate::robj::Types;
-use crate::{throw_r_error, Robj};
 
 /// Throw an R error if a result is an error.
 #[doc(hidden)]
@@ -169,7 +169,7 @@ impl std::fmt::Display for Error {
             Error::ExpectedWholeNumber(robj, conversion_error) => {
                 write!(
                     f,
-                    "Failed to convert a float to a whole number: {:?}. Actual value received: {:?}",
+                    "Failed to convert a float to a whole number: {}. Actual value received: {:?}",
                     conversion_error,
                     robj
                 )
