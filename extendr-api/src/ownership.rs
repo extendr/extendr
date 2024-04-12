@@ -55,7 +55,10 @@ struct Ownership {
 impl Ownership {
     fn new() -> Self {
         unsafe {
-            let preservation = Rf_allocVector(VECSXP, INITIAL_PRESERVATION_SIZE as R_xlen_t);
+            let preservation = Rf_allocVector(
+                VECSXP,
+                R_xlen_t::try_from(INITIAL_PRESERVATION_SIZE).unwrap(),
+            );
             R_PreserveObject(preservation);
             Ownership {
                 preservation: preservation as usize,
@@ -87,13 +90,17 @@ impl Ownership {
             Entry::Occupied(ref mut occupied) => {
                 if occupied.get().refcount == 0 {
                     // Address re-used - re-set the sexp.
-                    SET_VECTOR_ELT(preservation_sexp, occupied.get().index as R_xlen_t, sexp);
+                    SET_VECTOR_ELT(
+                        preservation_sexp,
+                        R_xlen_t::try_from(occupied.get().index).unwrap(),
+                        sexp,
+                    );
                 }
                 occupied.get_mut().refcount += 1;
             }
             Entry::Vacant(vacant) => {
                 let index = *cur_index;
-                SET_VECTOR_ELT(preservation_sexp, index as R_xlen_t, sexp);
+                SET_VECTOR_ELT(preservation_sexp, R_xlen_t::try_from(index).unwrap(), sexp);
                 *cur_index += 1;
                 assert!(index != *max_index);
                 let refcount = 1;
@@ -126,7 +133,11 @@ impl Ownership {
                         // It is hard to clear the hash table entry here because we don't
                         // have a ref to objects anymore and it is faster to clear them up en-masse.
                         let preservation_sexp = preservation as SEXP;
-                        SET_VECTOR_ELT(preservation_sexp, object.index as R_xlen_t, R_NilValue);
+                        SET_VECTOR_ELT(
+                            preservation_sexp,
+                            R_xlen_t::try_from(object.index).unwrap(),
+                            R_NilValue,
+                        );
                     }
                 }
             }
@@ -157,7 +168,7 @@ impl Ownership {
     unsafe fn garbage_collect(&mut self) {
         // println!("garbage_collect {} {}", self.cur_index, self.max_index);
         let new_size = self.cur_index * 2 + EXTRA_PRESERVATION_SIZE;
-        let new_sexp = Rf_allocVector(VECSXP, new_size as R_xlen_t);
+        let new_sexp = Rf_allocVector(VECSXP, R_xlen_t::try_from(new_size).unwrap());
         R_PreserveObject(new_sexp);
         let old_sexp = self.preservation as SEXP;
 
@@ -167,7 +178,7 @@ impl Ownership {
         let mut j = 0;
         for (addr, object) in self.objects.iter() {
             if object.refcount != 0 {
-                SET_VECTOR_ELT(new_sexp, j as R_xlen_t, *addr as SEXP);
+                SET_VECTOR_ELT(new_sexp, R_xlen_t::try_from(j).unwrap(), *addr as SEXP);
                 new_objects.insert(
                     *addr,
                     Object {
@@ -191,13 +202,16 @@ impl Ownership {
     #[allow(dead_code)]
     unsafe fn check_objects(&mut self) {
         let preservation_sexp = self.preservation as SEXP;
-        assert_eq!(self.max_index, LENGTH(preservation_sexp) as usize);
+        assert_eq!(
+            self.max_index,
+            usize::try_from(LENGTH(preservation_sexp)).unwrap()
+        );
 
         // println!("\ncheck");
 
         for (addr, object) in self.objects.iter() {
             assert!(object.index < self.max_index);
-            let elt = VECTOR_ELT(preservation_sexp, object.index as R_xlen_t);
+            let elt = VECTOR_ELT(preservation_sexp, R_xlen_t::try_from(object.index).unwrap());
             // println!(
             //     "refcount={:?} index={:?} elt={:?}",
             //     object.refcount, object.index, elt
@@ -213,7 +227,7 @@ impl Ownership {
 
         // println!("check 2");
         for i in 0..self.max_index {
-            let elt = VECTOR_ELT(preservation_sexp, i as R_xlen_t);
+            let elt = VECTOR_ELT(preservation_sexp, R_xlen_t::try_from(i).unwrap());
             if elt == R_NilValue {
                 assert_eq!(self.ref_count(elt), 0);
             } else {

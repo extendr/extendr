@@ -41,7 +41,8 @@ pub trait Load {
             arg3: ::std::os::raw::c_int,
         ) {
             let reader = &mut *((*arg1).data as *mut R);
-            let buf = std::slice::from_raw_parts_mut(arg2 as *mut u8, arg3 as usize);
+            let buf =
+                std::slice::from_raw_parts_mut(arg2 as *mut u8, usize::try_from(arg3).unwrap());
             reader.read_exact(buf).unwrap();
         }
 

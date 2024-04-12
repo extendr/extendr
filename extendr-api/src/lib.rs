@@ -451,7 +451,7 @@ unsafe fn make_method_def(
     rmethods.push(libR_sys::R_CallMethodDef {
         name: cstrings.last().unwrap().as_ptr(),
         fun: Some(std::mem::transmute(func.func_ptr)),
-        numArgs: func.args.len() as i32,
+        numArgs: i32::try_from(func.args.len()).unwrap(),
     });
 }
 
@@ -558,7 +558,7 @@ pub enum Rany<'a> {
 /// Panics if the type is Unknown.
 pub fn rtype_to_sxp(rtype: Rtype) -> i32 {
     use Rtype::*;
-    (match rtype {
+    i32::try_from(match rtype {
         Null => NILSXP,
         Symbol => SYMSXP,
         Pairlist => LISTSXP,
@@ -584,13 +584,14 @@ pub fn rtype_to_sxp(rtype: Rtype) -> i32 {
         Raw => RAWSXP,
         S4 => S4SXP,
         Unknown => panic!("attempt to use Unknown Rtype"),
-    }) as i32
+    })
+    .unwrap()
 }
 
 /// Convert R's SEXPTYPE to extendr's Rtype.
 pub fn sxp_to_rtype(sxptype: i32) -> Rtype {
     use Rtype::*;
-    match sxptype as u32 {
+    match u32::try_from(sxptype).unwrap() {
         NILSXP => Null,
         SYMSXP => Symbol,
         LISTSXP => Pairlist,

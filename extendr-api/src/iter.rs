@@ -64,9 +64,10 @@ fn str_from_strsxp<'a>(sexp: SEXP, index: isize) -> &'a str {
             let charsxp = STRING_ELT(sexp, index);
             if charsxp == R_NaString {
                 <&str>::na()
-            } else if TYPEOF(charsxp) == CHARSXP as i32 {
+            } else if TYPEOF(charsxp) == i32::try_from(CHARSXP).unwrap() {
                 let ptr = R_CHAR(charsxp) as *const u8;
-                let slice = std::slice::from_raw_parts(ptr, Rf_xlength(charsxp) as usize);
+                let slice =
+                    std::slice::from_raw_parts(ptr, usize::try_from(Rf_xlength(charsxp)).unwrap());
                 std::str::from_utf8_unchecked(slice)
             } else {
                 <&str>::na()
@@ -87,14 +88,16 @@ impl Iterator for StrIter {
             let i = self.i;
             self.i += 1;
             let vector = self.vector.get();
+            let vector_u32: u32 = TYPEOF(vector).try_into().unwrap();
             if i >= self.len {
                 None
-            } else if TYPEOF(vector) as u32 == STRSXP {
-                Some(str_from_strsxp(vector, i as isize))
-            } else if TYPEOF(vector) as u32 == INTSXP && TYPEOF(self.levels) as u32 == STRSXP {
-                let j = *(INTEGER(vector).add(i));
-                Some(str_from_strsxp(self.levels, j as isize - 1))
-            } else if TYPEOF(vector) as u32 == NILSXP {
+            } else if vector_u32 == STRSXP {
+                Some(str_from_strsxp(vector, isize::try_from(i).unwrap()))
+            } else if vector_u32 == INTSXP && u32::try_from(TYPEOF(self.levels)).unwrap() == STRSXP
+            {
+                let j: isize = (*(INTEGER(vector).add(i))).try_into().unwrap();
+                Some(str_from_strsxp(self.levels, j - 1))
+            } else if vector_u32 == NILSXP {
                 Some(<&str>::na())
             } else {
                 None

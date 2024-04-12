@@ -26,7 +26,7 @@ impl<W: Write> OutStream<W> {
     ) -> Box<OutStream<W>> {
         unsafe extern "C" fn outchar<W: Write>(arg1: R_outpstream_t, arg2: ::std::os::raw::c_int) {
             let writer = &mut *((*arg1).data as *mut W);
-            let b = [arg2 as u8];
+            let b = [u8::try_from(arg2).unwrap()];
             writer.write_all(&b).unwrap();
         }
 
@@ -36,7 +36,7 @@ impl<W: Write> OutStream<W> {
             arg3: ::std::os::raw::c_int,
         ) {
             let writer = &mut *((*arg1).data as *mut W);
-            let b = std::slice::from_raw_parts(arg2 as *mut u8, arg3 as usize);
+            let b = std::slice::from_raw_parts(arg2 as *mut u8, usize::try_from(arg3).unwrap());
             writer.write_all(b).unwrap();
         }
 

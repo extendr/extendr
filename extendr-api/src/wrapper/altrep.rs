@@ -155,9 +155,12 @@ fn manifest(x: SEXP) -> SEXP {
     single_threaded(|| unsafe {
         Rf_protect(x);
         let len = XLENGTH_EX(x);
-        let data2 = Rf_allocVector(TYPEOF(x) as u32, len as R_xlen_t);
+        let data2 = Rf_allocVector(
+            u32::try_from(TYPEOF(x)).unwrap(),
+            R_xlen_t::try_from(len).unwrap(),
+        );
         Rf_protect(data2);
-        match TYPEOF(x) as u32 {
+        match u32::try_from(TYPEOF(x)).unwrap() {
             INTSXP => {
                 INTEGER_GET_REGION(x, 0, len as R_xlen_t, INTEGER(data2));
             }
@@ -565,8 +568,8 @@ impl Altrep {
                 Robj::from_sexp(class),
                 Robj::from_sexp(state),
                 Robj::from_sexp(attr),
-                objf as i32,
-                levs as i32,
+                i32::try_from(objf).unwrap(),
+                i32::try_from(levs).unwrap(),
             )
             .get()
         }
@@ -618,7 +621,10 @@ impl Altrep {
         }
 
         unsafe extern "C" fn altrep_Length<StateType: AltrepImpl + 'static>(x: SEXP) -> R_xlen_t {
-            Altrep::get_state::<StateType>(x).length() as R_xlen_t
+            Altrep::get_state::<StateType>(x)
+                .length()
+                .try_into()
+                .unwrap()
         }
 
         unsafe extern "C" fn altvec_Dataptr<StateType: AltrepImpl + 'static>(
@@ -716,7 +722,9 @@ impl Altrep {
                 x: SEXP,
                 i: R_xlen_t,
             ) -> c_int {
-                Altrep::get_state::<StateType>(x).elt(i as usize).inner() as c_int
+                Altrep::get_state::<StateType>(x)
+                    .elt(usize::try_from(i).unwrap())
+                    .inner() as c_int
             }
 
             unsafe extern "C" fn altinteger_Get_region<StateType: AltIntegerImpl + 'static>(
@@ -725,8 +733,12 @@ impl Altrep {
                 n: R_xlen_t,
                 buf: *mut c_int,
             ) -> R_xlen_t {
-                let slice = std::slice::from_raw_parts_mut(buf as *mut Rint, n as usize);
-                Altrep::get_state::<StateType>(x).get_region(i as usize, slice) as R_xlen_t
+                let slice =
+                    std::slice::from_raw_parts_mut(buf as *mut Rint, usize::try_from(n).unwrap());
+                Altrep::get_state::<StateType>(x)
+                    .get_region(usize::try_from(i).unwrap(), slice)
+                    .try_into()
+                    .unwrap()
             }
 
             unsafe extern "C" fn altinteger_Is_sorted<StateType: AltIntegerImpl + 'static>(
@@ -790,7 +802,9 @@ impl Altrep {
                 x: SEXP,
                 i: R_xlen_t,
             ) -> f64 {
-                Altrep::get_state::<StateType>(x).elt(i as usize).inner()
+                Altrep::get_state::<StateType>(x)
+                    .elt(usize::try_from(i).unwrap())
+                    .inner()
             }
 
             unsafe extern "C" fn altreal_Get_region<StateType: AltRealImpl + 'static>(
@@ -799,8 +813,12 @@ impl Altrep {
                 n: R_xlen_t,
                 buf: *mut f64,
             ) -> R_xlen_t {
-                let slice = std::slice::from_raw_parts_mut(buf as *mut Rfloat, n as usize);
-                Altrep::get_state::<StateType>(x).get_region(i as usize, slice) as R_xlen_t
+                let slice =
+                    std::slice::from_raw_parts_mut(buf as *mut Rfloat, usize::try_from(n).unwrap());
+                Altrep::get_state::<StateType>(x)
+                    .get_region(usize::try_from(i).unwrap(), slice)
+                    .try_into()
+                    .unwrap()
             }
 
             unsafe extern "C" fn altreal_Is_sorted<StateType: AltRealImpl + 'static>(
@@ -861,7 +879,9 @@ impl Altrep {
                 x: SEXP,
                 i: R_xlen_t,
             ) -> c_int {
-                Altrep::get_state::<StateType>(x).elt(i as usize).inner() as c_int
+                Altrep::get_state::<StateType>(x)
+                    .elt(usize::try_from(i).unwrap())
+                    .inner() as c_int
             }
 
             unsafe extern "C" fn altlogical_Get_region<StateType: AltLogicalImpl + 'static>(
@@ -870,8 +890,12 @@ impl Altrep {
                 n: R_xlen_t,
                 buf: *mut c_int,
             ) -> R_xlen_t {
-                let slice = std::slice::from_raw_parts_mut(buf as *mut Rbool, n as usize);
-                Altrep::get_state::<StateType>(x).get_region(i as usize, slice) as R_xlen_t
+                let slice =
+                    std::slice::from_raw_parts_mut(buf as *mut Rbool, usize::try_from(n).unwrap());
+                Altrep::get_state::<StateType>(x)
+                    .get_region(usize::try_from(i).unwrap(), slice)
+                    .try_into()
+                    .unwrap()
             }
 
             unsafe extern "C" fn altlogical_Is_sorted<StateType: AltLogicalImpl + 'static>(
@@ -918,7 +942,7 @@ impl Altrep {
                 x: SEXP,
                 i: R_xlen_t,
             ) -> Rbyte {
-                Altrep::get_state::<StateType>(x).elt(i as usize) as Rbyte
+                Altrep::get_state::<StateType>(x).elt(usize::try_from(i).unwrap()) as Rbyte
             }
 
             unsafe extern "C" fn altraw_Get_region<StateType: AltRawImpl + 'static>(
@@ -927,8 +951,11 @@ impl Altrep {
                 n: R_xlen_t,
                 buf: *mut u8,
             ) -> R_xlen_t {
-                let slice = std::slice::from_raw_parts_mut(buf, n as usize);
-                Altrep::get_state::<StateType>(x).get_region(i as usize, slice) as R_xlen_t
+                let slice = std::slice::from_raw_parts_mut(buf, usize::try_from(n).unwrap());
+                Altrep::get_state::<StateType>(x)
+                    .get_region(usize::try_from(i).unwrap(), slice)
+                    .try_into()
+                    .unwrap()
             }
 
             R_set_altraw_Elt_method(class_ptr, Some(altraw_Elt::<StateType>));
@@ -953,7 +980,9 @@ impl Altrep {
                 x: SEXP,
                 i: R_xlen_t,
             ) -> Rcomplex {
-                std::mem::transmute(Altrep::get_state::<StateType>(x).elt(i as usize))
+                std::mem::transmute(
+                    Altrep::get_state::<StateType>(x).elt(usize::try_from(i).unwrap()),
+                )
             }
 
             unsafe extern "C" fn altcomplex_Get_region<StateType: AltComplexImpl + 'static>(
@@ -962,8 +991,12 @@ impl Altrep {
                 n: R_xlen_t,
                 buf: *mut Rcomplex,
             ) -> R_xlen_t {
-                let slice = std::slice::from_raw_parts_mut(buf as *mut Rcplx, n as usize);
-                Altrep::get_state::<StateType>(x).get_region(i as usize, slice) as R_xlen_t
+                let slice =
+                    std::slice::from_raw_parts_mut(buf as *mut Rcplx, usize::try_from(n).unwrap());
+                Altrep::get_state::<StateType>(x)
+                    .get_region(usize::try_from(i).unwrap(), slice)
+                    .try_into()
+                    .unwrap()
             }
 
             R_set_altcomplex_Elt_method(class_ptr, Some(altcomplex_Elt::<StateType>));
@@ -989,7 +1022,9 @@ impl Altrep {
                 x: SEXP,
                 i: R_xlen_t,
             ) -> SEXP {
-                Altrep::get_state::<StateType>(x).elt(i as usize).get()
+                Altrep::get_state::<StateType>(x)
+                    .elt(usize::try_from(i).unwrap())
+                    .get()
             }
 
             unsafe extern "C" fn altstring_Set_elt<StateType: AltStringImpl + 'static>(
@@ -997,8 +1032,10 @@ impl Altrep {
                 i: R_xlen_t,
                 v: SEXP,
             ) {
-                Altrep::get_state_mut::<StateType>(x)
-                    .set_elt(i as usize, Robj::from_sexp(v).try_into().unwrap())
+                Altrep::get_state_mut::<StateType>(x).set_elt(
+                    usize::try_from(i).unwrap(),
+                    Robj::from_sexp(v).try_into().unwrap(),
+                )
             }
 
             unsafe extern "C" fn altstring_Is_sorted<StateType: AltStringImpl + 'static>(
@@ -1037,7 +1074,9 @@ impl Altrep {
                 x: SEXP,
                 i: R_xlen_t,
             ) -> SEXP {
-                Altrep::get_state::<StateType>(x).elt(i as usize).get()
+                Altrep::get_state::<StateType>(x)
+                    .elt(usize::try_from(i).unwrap())
+                    .get()
             }
 
             unsafe extern "C" fn altlist_Set_elt<StateType: AltListImpl + 'static>(
@@ -1045,8 +1084,10 @@ impl Altrep {
                 i: R_xlen_t,
                 v: SEXP,
             ) {
-                Altrep::get_state_mut::<StateType>(x)
-                    .set_elt(i as usize, Robj::from_sexp(v).try_into().unwrap())
+                Altrep::get_state_mut::<StateType>(x).set_elt(
+                    usize::try_from(i).unwrap(),
+                    Robj::from_sexp(v).try_into().unwrap(),
+                )
             }
 
             R_set_altlist_Elt_method(class_ptr, Some(altlist_Elt::<StateType>));

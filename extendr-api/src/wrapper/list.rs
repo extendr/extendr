@@ -157,7 +157,7 @@ impl List {
             Err(Error::OutOfRange(self.robj.clone()))
         } else {
             unsafe {
-                let sexp = VECTOR_ELT(self.robj.get(), i as R_xlen_t);
+                let sexp = VECTOR_ELT(self.robj.get(), R_xlen_t::try_from(i).unwrap());
                 Ok(Robj::from_sexp(sexp))
             }
         }
@@ -169,7 +169,11 @@ impl List {
             if i >= self.robj.len() {
                 Err(Error::OutOfRange(self.robj.clone()))
             } else {
-                SET_VECTOR_ELT(self.robj.get_mut(), i as R_xlen_t, value.get());
+                SET_VECTOR_ELT(
+                    self.robj.get_mut(),
+                    R_xlen_t::try_from(i).unwrap(),
+                    value.get(),
+                );
                 Ok(())
             }
         })
@@ -267,7 +271,9 @@ impl Iterator for ListIter {
         if i >= self.len {
             None
         } else {
-            Some(unsafe { Robj::from_sexp(VECTOR_ELT(self.robj.get(), i as isize)) })
+            Some(unsafe {
+                Robj::from_sexp(VECTOR_ELT(self.robj.get(), isize::try_from(i).unwrap()))
+            })
         }
     }
 
@@ -392,7 +398,7 @@ impl<T: Into<Robj>> FromIterator<T> for List {
                 // note: Currently, `Robj` automatically registers `v` by the
                 // `ownership`-module, making it protected, even though it isn't necessary to do so.
                 let item: Robj = v.into();
-                SET_VECTOR_ELT(robj.get_mut(), i as isize, item.get());
+                SET_VECTOR_ELT(robj.get_mut(), isize::try_from(i).unwrap(), item.get());
             }
 
             List { robj }

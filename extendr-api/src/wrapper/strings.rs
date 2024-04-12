@@ -52,7 +52,7 @@ impl Strings {
             for (i, v) in values.into_iter().take(maxlen).enumerate() {
                 let v = v.as_ref();
                 let ch = str_to_character(v);
-                SET_STRING_ELT(sexp, i as R_xlen_t, ch);
+                SET_STRING_ELT(sexp, R_xlen_t::try_from(i).unwrap(), ch);
             }
             Self { robj }
         })
@@ -72,7 +72,7 @@ impl Strings {
         if i >= self.len() {
             Rstr::na()
         } else {
-            Robj::from_sexp(unsafe { STRING_ELT(self.get(), i as R_xlen_t) })
+            Robj::from_sexp(unsafe { STRING_ELT(self.get(), R_xlen_t::try_from(i).unwrap()) })
                 .try_into()
                 .unwrap()
         }
@@ -82,7 +82,7 @@ impl Strings {
     pub fn set_elt(&mut self, i: usize, e: Rstr) {
         single_threaded(|| unsafe {
             if i < self.len() {
-                SET_STRING_ELT(self.robj.get_mut(), i as isize, e.get());
+                SET_STRING_ELT(self.robj.get_mut(), isize::try_from(i).unwrap(), e.get());
             }
         });
     }
@@ -112,7 +112,11 @@ impl<T: AsRef<str>> FromIterator<T> for Strings {
         let mut robj = Strings::alloc_vector(STRSXP, len);
         crate::single_threaded(|| unsafe {
             for (i, v) in iter_collect.into_iter().enumerate() {
-                SET_STRING_ELT(robj.get_mut(), i as isize, str_to_character(v.as_ref()));
+                SET_STRING_ELT(
+                    robj.get_mut(),
+                    isize::try_from(i).unwrap(),
+                    str_to_character(v.as_ref()),
+                );
             }
             Strings { robj }
         })

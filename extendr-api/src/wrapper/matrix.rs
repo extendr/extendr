@@ -48,7 +48,11 @@ where
     /// values, use [`RMatrix::new_with_na`].
     pub fn new(nrow: usize, ncol: usize) -> Self {
         let sexptype = T::sexptype();
-        let matrix = Robj::alloc_matrix(sexptype, nrow as _, ncol as _);
+        let matrix = Robj::alloc_matrix(
+            sexptype,
+            i32::try_from(nrow).unwrap(),
+            i32::try_from(ncol).unwrap(),
+        );
         RArray::from_parts(matrix, [nrow, ncol])
     }
 }
@@ -281,7 +285,10 @@ where
             Err(Error::ExpectedMatrix(robj))
         } else if let Some(_slice) = robj.as_typed_slice_mut() {
             if let Some(dim) = robj.dim() {
-                let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
+                let dim: Vec<_> = dim
+                    .iter()
+                    .map(|d| usize::try_from(d.inner()).unwrap())
+                    .collect();
                 if dim.len() != 2 {
                     Err(Error::ExpectedMatrix(robj))
                 } else {
@@ -308,7 +315,10 @@ where
                 if dim.len() != 3 {
                     Err(Error::ExpectedMatrix3D(robj))
                 } else {
-                    let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
+                    let dim: Vec<_> = dim
+                        .iter()
+                        .map(|d| usize::try_from(d.inner()).unwrap())
+                        .collect();
                     Ok(RArray::from_parts(robj, [dim[0], dim[1], dim[2]]))
                 }
             } else {

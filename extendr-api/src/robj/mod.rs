@@ -167,7 +167,7 @@ pub trait Slices: GetSexp {
     /// Unless the type is correct, this will cause undefined behaviour.
     /// Creating this slice will also instatiate and Altrep objects.
     unsafe fn as_typed_slice_raw<T>(&self) -> &[T] {
-        let len = XLENGTH(self.get()) as usize;
+        let len = usize::try_from(XLENGTH(self.get())).unwrap();
         let data = DATAPTR_RO(self.get()) as *const T;
         std::slice::from_raw_parts(data, len)
     }
@@ -180,7 +180,7 @@ pub trait Slices: GetSexp {
     /// Creating this slice will also instatiate and Altrep objects.
     /// Not all obejects (especially not list and strings) support this.
     unsafe fn as_typed_slice_raw_mut<T>(&mut self) -> &mut [T] {
-        let len = XLENGTH(self.get()) as usize;
+        let len = usize::try_from(XLENGTH(self.get())).unwrap();
         let data = DATAPTR(self.get_mut()) as *mut T;
         std::slice::from_raw_parts_mut(data, len)
     }
@@ -199,7 +199,7 @@ pub trait Length: GetSexp {
     /// }
     /// ```
     fn len(&self) -> usize {
-        unsafe { Rf_xlength(self.get()) as usize }
+        unsafe { usize::try_from(Rf_xlength(self.get())).unwrap() }
     }
 
     /// Returns `true` if the `Robj` contains no elements.
@@ -237,7 +237,7 @@ pub trait Types: GetSexp {
     #[doc(hidden)]
     /// Get the XXXSXP type of the object.
     fn sexptype(&self) -> u32 {
-        unsafe { TYPEOF(self.get()) as u32 }
+        unsafe { u32::try_from(TYPEOF(self.get())).unwrap() }
     }
 
     /// Get the type of an R object.
@@ -1083,7 +1083,7 @@ pub(crate) unsafe fn to_str<'a>(ptr: *const u8) -> &'a str {
         }
         len += 1;
     }
-    let slice = std::slice::from_raw_parts(ptr, len as usize);
+    let slice = std::slice::from_raw_parts(ptr, usize::try_from(len).unwrap());
     std::str::from_utf8_unchecked(slice)
 }
 

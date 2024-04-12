@@ -12,7 +12,7 @@ pub(crate) fn str_to_character(s: &str) -> SEXP {
             single_threaded(|| {
                 Rf_mkCharLenCE(
                     s.as_ptr() as *const raw::c_char,
-                    s.len() as i32,
+                    i32::try_from(s.len()).unwrap(),
                     cetype_t_CE_UTF8,
                 )
             })
@@ -500,7 +500,7 @@ where
                 }
                 STRSXP => {
                     for (i, v) in iter.enumerate() {
-                        SET_STRING_ELT(sexp, i as isize, v.to_sexp());
+                        SET_STRING_ELT(sexp, isize::try_from(i).unwrap(), v.to_sexp());
                     }
                 }
                 RAWSXP => {

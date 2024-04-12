@@ -231,12 +231,12 @@ pub trait Rinternals: Types + Conversions {
 
     /// Number of columns of a matrix
     fn ncols(&self) -> usize {
-        unsafe { Rf_ncols(self.get()) as usize }
+        unsafe { usize::try_from(Rf_ncols(self.get())).unwrap() }
     }
 
     /// Number of rows of a matrix
     fn nrows(&self) -> usize {
-        unsafe { Rf_nrows(self.get()) as usize }
+        unsafe { usize::try_from(Rf_nrows(self.get())).unwrap() }
     }
 
     /// Internal function used to implement `#[extendr]` impl
@@ -283,7 +283,10 @@ pub trait Rinternals: Types + Conversions {
         unsafe {
             if self.is_vector() {
                 Ok(single_threaded(|| {
-                    Robj::from_sexp(Rf_xlengthgets(self.get(), new_len as R_xlen_t))
+                    Robj::from_sexp(Rf_xlengthgets(
+                        self.get(),
+                        R_xlen_t::try_from(new_len).unwrap(),
+                    ))
                 }))
             } else {
                 Err(Error::ExpectedVector(self.as_robj().clone()))
@@ -293,7 +296,9 @@ pub trait Rinternals: Types + Conversions {
 
     /// Allocated an owned object of a certain type.
     fn alloc_vector(sexptype: u32, len: usize) -> Robj {
-        single_threaded(|| unsafe { Robj::from_sexp(Rf_allocVector(sexptype, len as R_xlen_t)) })
+        single_threaded(|| unsafe {
+            Robj::from_sexp(Rf_allocVector(sexptype, R_xlen_t::try_from(len).unwrap()))
+        })
     }
 
     /// Return true if two arrays have identical dims.
@@ -450,33 +455,33 @@ pub trait Rinternals: Types + Conversions {
 
     /// Returns `true` if this is an integer ALTREP object.
     fn is_altinteger(&self) -> bool {
-        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == INTSXP as i32 }
+        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == i32::try_from(INTSXP).unwrap() }
     }
 
     /// Returns `true` if this is an real ALTREP object.
     fn is_altreal(&self) -> bool {
-        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == REALSXP as i32 }
+        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == i32::try_from(REALSXP).unwrap() }
     }
 
     /// Returns `true` if this is an logical ALTREP object.
     fn is_altlogical(&self) -> bool {
-        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == LGLSXP as i32 }
+        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == i32::try_from(LGLSXP).unwrap() }
     }
 
     /// Returns `true` if this is a raw ALTREP object.
     fn is_altraw(&self) -> bool {
-        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == RAWSXP as i32 }
+        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == i32::try_from(RAWSXP).unwrap() }
     }
 
     /// Returns `true` if this is an integer ALTREP object.
     fn is_altstring(&self) -> bool {
-        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == STRSXP as i32 }
+        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == i32::try_from(STRSXP).unwrap() }
     }
 
     /// Returns `true` if this is an integer ALTREP object.
     #[cfg(use_r_altlist)]
     fn is_altlist(&self) -> bool {
-        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == VECSXP as i32 }
+        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == i32::try_from(VECSXP).unwrap() }
     }
 
     /// Generate a text representation of this object.

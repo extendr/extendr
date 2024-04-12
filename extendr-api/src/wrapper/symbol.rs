@@ -35,7 +35,7 @@ impl Symbol {
     // Internal conversion for constant symbols.
     fn from_sexp(sexp: SEXP) -> Symbol {
         unsafe {
-            assert!(TYPEOF(sexp) == SYMSXP as i32);
+            assert!(TYPEOF(sexp) == i32::try_from(SYMSXP).unwrap());
         }
         Symbol {
             robj: Robj::from_sexp(sexp),
@@ -53,7 +53,7 @@ impl Symbol {
         unsafe {
             let sexp = self.robj.get();
             let printname = PRINTNAME(sexp);
-            assert!(TYPEOF(printname) as u32 == CHARSXP);
+            assert!(u32::try_from(TYPEOF(printname)).unwrap() == CHARSXP);
             to_str(R_CHAR(printname) as *const u8)
         }
     }
