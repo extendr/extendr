@@ -53,8 +53,8 @@
                   }
               }
           }
-          impl From<VecUsize> for Robj {
-              fn from(value: VecUsize) -> Self {
+          impl<'a> From<&'a VecUsize> for Robj {
+              fn from(value: &'a VecUsize) -> Self {
                   unsafe {
                       let ptr = Box::into_raw(Box::new(value));
                       let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
@@ -64,8 +64,8 @@
                   }
               }
           }
-          impl<'a> From<&'a VecUsize> for Robj {
-              fn from(value: &'a VecUsize) -> Self {
+          impl From<VecUsize> for Robj {
+              fn from(value: VecUsize) -> Self {
                   unsafe {
                       let ptr = Box::into_raw(Box::new(value));
                       let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
@@ -123,13 +123,18 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let _robj_robj = extendr_api::robj::Robj::from_sexp(robj);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(
-                          extendr_api::Robj::from(
-                              new_usize(<Integers>::from_robj(&_robj_robj)?),
-                          ),
-                      )
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  new_usize(<Integers>::from_robj(&_robj_robj)?),
+                              ),
+                          )
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -246,9 +251,12 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(extendr_api::Robj::from(tst_altstring()))
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(tst_altstring())) }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -373,9 +381,12 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(extendr_api::Robj::from(tst_altinteger()))
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(tst_altinteger())) }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -605,9 +616,12 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(extendr_api::Robj::from(test_derive_into_dataframe()))
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(test_derive_into_dataframe())) }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -693,9 +707,12 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(extendr_api::Robj::from(test_into_robj_dataframe()))
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(test_into_robj_dataframe())) }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -878,13 +895,18 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(
-                          extendr_api::Robj::from(
-                              leak_implicit_strings(<Strings>::from_robj(&_x_robj)?),
-                          ),
-                      )
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  leak_implicit_strings(<Strings>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -967,13 +989,18 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(
-                          extendr_api::Robj::from(
-                              leak_implicit_doubles(<Doubles>::from_robj(&_x_robj)?),
-                          ),
-                      )
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  leak_implicit_doubles(<Doubles>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -1058,16 +1085,21 @@
               > = unsafe {
                   let __y_robj = extendr_api::robj::Robj::from_sexp(_y);
                   let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(
-                          extendr_api::Robj::from(
-                              leak_arg2_try_implicit_strings(
-                                  __y_robj.try_into()?,
-                                  _x_robj.try_into()?,
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  leak_arg2_try_implicit_strings(
+                                      __y_robj.try_into()?,
+                                      _x_robj.try_into()?,
+                                  ),
                               ),
-                          ),
-                      )
-                  })
+                          )
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -1159,16 +1191,21 @@
               > = unsafe {
                   let __y_robj = extendr_api::robj::Robj::from_sexp(_y);
                   let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(
-                          extendr_api::Robj::from(
-                              leak_arg2_try_implicit_doubles(
-                                  __y_robj.try_into()?,
-                                  _x_robj.try_into()?,
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  leak_arg2_try_implicit_doubles(
+                                      __y_robj.try_into()?,
+                                      _x_robj.try_into()?,
+                                  ),
                               ),
-                          ),
-                      )
-                  })
+                          )
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -1259,13 +1296,18 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(
-                          extendr_api::Robj::from(
-                              leak_unwrap_strings(<Robj>::from_robj(&_x_robj)?),
-                          ),
-                      )
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  leak_unwrap_strings(<Robj>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -1348,13 +1390,18 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(
-                          extendr_api::Robj::from(
-                              leak_unwrap_doubles(<Robj>::from_robj(&_x_robj)?),
-                          ),
-                      )
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  leak_unwrap_doubles(<Robj>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -1437,13 +1484,18 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(
-                          extendr_api::Robj::from(
-                              leak_positive_control(<Robj>::from_robj(&_x_robj)?),
-                          ),
-                      )
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  leak_positive_control(<Robj>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -1526,13 +1578,18 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(
-                          extendr_api::Robj::from(
-                              leak_negative_control(<Robj>::from_robj(&_x_robj)?),
-                          ),
-                      )
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  leak_negative_control(<Robj>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -1708,9 +1765,14 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let _input_robj = extendr_api::robj::Robj::from_sexp(input);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(extendr_api::Robj::from(type_aware_sum(_input_robj.try_into()?)))
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(extendr_api::Robj::from(type_aware_sum(_input_robj.try_into()?)))
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -1971,9 +2033,12 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let _a_robj = extendr_api::robj::Robj::from_sexp(a);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(extendr_api::Robj::from(euclidean_dist(_a_robj.try_into()?)))
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(euclidean_dist(_a_robj.try_into()?))) }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -2142,13 +2207,18 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let _type_robj = extendr_api::robj::Robj::from_sexp(r#type);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(
-                          extendr_api::Robj::from(
-                              raw_identifier_in_fn_args(_type_robj.try_into()?),
-                          ),
-                      )
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  raw_identifier_in_fn_args(_type_robj.try_into()?),
+                              ),
+                          )
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -2231,9 +2301,12 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(extendr_api::Robj::from(r#true()))
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(r#true())) }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -2306,9 +2379,12 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let _type_robj = extendr_api::robj::Robj::from_sexp(r#type);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(extendr_api::Robj::from(r#false(_type_robj.try_into()?)))
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(r#false(_type_robj.try_into()?))) }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -2474,9 +2550,12 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(extendr_api::Robj::from(hello_submodule()))
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(hello_submodule())) }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -2617,9 +2696,12 @@
                   std::result::Result<Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(extendr_api::Robj::from(<MySubmoduleClass>::new()))
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(<MySubmoduleClass>::new())) }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -2689,16 +2771,21 @@
               > = unsafe {
                   let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
                   let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(
-                          extendr_api::Robj::from(
-                              extendr_api::unwrap_or_throw(
-                                      <&mut MySubmoduleClass>::from_robj(&_self_robj),
-                                  )
-                                  .set_a(<i32>::from_robj(&_x_robj)?),
-                          ),
-                      )
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  extendr_api::unwrap_or_throw(
+                                          <&mut MySubmoduleClass>::from_robj(&_self_robj),
+                                      )
+                                      .set_a(<i32>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -2780,16 +2867,21 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(
-                          extendr_api::Robj::from(
-                              extendr_api::unwrap_or_throw(
-                                      <&MySubmoduleClass>::from_robj(&_self_robj),
-                                  )
-                                  .a(),
-                          ),
-                      )
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  extendr_api::unwrap_or_throw(
+                                          <&MySubmoduleClass>::from_robj(&_self_robj),
+                                      )
+                                      .a(),
+                              ),
+                          )
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -2866,16 +2958,21 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      Ok(
-                          extendr_api::Robj::from(
-                              extendr_api::unwrap_or_throw(
-                                      <&MySubmoduleClass>::from_robj(&_self_robj),
-                                  )
-                                  .me_owned(),
-                          ),
-                      )
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  extendr_api::unwrap_or_throw(
+                                          <&MySubmoduleClass>::from_robj(&_self_robj),
+                                      )
+                                      .me_owned(),
+                              ),
+                          )
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -2954,13 +3051,18 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      let _return_ref_to_self = extendr_api::unwrap_or_throw(
-                              <&MySubmoduleClass>::from_robj(&_self_robj),
-                          )
-                          .me_ref();
-                      Ok(_self_robj)
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          let _return_ref_to_self = extendr_api::unwrap_or_throw(
+                                  <&MySubmoduleClass>::from_robj(&_self_robj),
+                              )
+                              .me_ref();
+                          Ok(_self_robj)
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -3037,13 +3139,18 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      let _return_ref_to_self = extendr_api::unwrap_or_throw(
-                              <&mut MySubmoduleClass>::from_robj(&_self_robj),
-                          )
-                          .me_mut();
-                      Ok(_self_robj)
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          let _return_ref_to_self = extendr_api::unwrap_or_throw(
+                                  <&mut MySubmoduleClass>::from_robj(&_self_robj),
+                              )
+                              .me_mut();
+                          Ok(_self_robj)
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -3120,13 +3227,18 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      let _return_ref_to_self = extendr_api::unwrap_or_throw(
-                              <&MySubmoduleClass>::from_robj(&_self_robj),
-                          )
-                          .me_explicit_ref();
-                      Ok(_self_robj)
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          let _return_ref_to_self = extendr_api::unwrap_or_throw(
+                                  <&MySubmoduleClass>::from_robj(&_self_robj),
+                              )
+                              .me_explicit_ref();
+                          Ok(_self_robj)
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -3205,13 +3317,18 @@
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
-                  std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                      let _return_ref_to_self = extendr_api::unwrap_or_throw(
-                              <&mut MySubmoduleClass>::from_robj(&_self_robj),
-                          )
-                          .me_explicit_mut();
-                      Ok(_self_robj)
-                  })
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          let _return_ref_to_self = extendr_api::unwrap_or_throw(
+                                  <&mut MySubmoduleClass>::from_robj(&_self_robj),
+                              )
+                              .me_explicit_mut();
+                          Ok(_self_robj)
+                      }),
+                  )
               };
               match wrap_result_state {
                   Ok(Ok(zz)) => {
@@ -3303,8 +3420,8 @@
                   }
               }
           }
-          impl From<MySubmoduleClass> for Robj {
-              fn from(value: MySubmoduleClass) -> Self {
+          impl<'a> From<&'a MySubmoduleClass> for Robj {
+              fn from(value: &'a MySubmoduleClass) -> Self {
                   unsafe {
                       let ptr = Box::into_raw(Box::new(value));
                       let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
@@ -3314,8 +3431,8 @@
                   }
               }
           }
-          impl<'a> From<&'a MySubmoduleClass> for Robj {
-              fn from(value: &'a MySubmoduleClass) -> Self {
+          impl From<MySubmoduleClass> for Robj {
+              fn from(value: MySubmoduleClass) -> Self {
                   unsafe {
                       let ptr = Box::into_raw(Box::new(value));
                       let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
@@ -3352,6 +3469,874 @@
                       methods,
                   });
           }
+          struct MySubmoduleClassTryFrom {
+              a: i32,
+          }
+          #[automatically_derived]
+          impl ::core::default::Default for MySubmoduleClassTryFrom {
+              #[inline]
+              fn default() -> MySubmoduleClassTryFrom {
+                  MySubmoduleClassTryFrom {
+                      a: ::core::default::Default::default(),
+                  }
+              }
+          }
+          #[automatically_derived]
+          impl ::core::fmt::Debug for MySubmoduleClassTryFrom {
+              #[inline]
+              fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                  ::core::fmt::Formatter::debug_struct_field1_finish(
+                      f,
+                      "MySubmoduleClassTryFrom",
+                      "a",
+                      &&self.a,
+                  )
+              }
+          }
+          #[automatically_derived]
+          impl ::core::clone::Clone for MySubmoduleClassTryFrom {
+              #[inline]
+              fn clone(&self) -> MySubmoduleClassTryFrom {
+                  let _: ::core::clone::AssertParamIsClone<i32>;
+                  *self
+              }
+          }
+          #[automatically_derived]
+          impl ::core::marker::Copy for MySubmoduleClassTryFrom {}
+          /// Class for testing (exported)
+          /// @examples
+          /// x <- MySubmoduleClassTryFrom$new()
+          /// x$a()
+          /// x$set_a(10)
+          /// x$a()
+          /// @export
+          impl MySubmoduleClassTryFrom {
+              /// Method for making a new object.
+              fn new() -> Self {
+                  Self { a: 0 }
+              }
+              /// Method for setting stuff.
+              /// @param x a number
+              fn set_a(&mut self, x: i32) {
+                  self.a = x;
+              }
+              /// Method for getting stuff.
+              fn a(&self) -> i32 {
+                  self.a
+              }
+              /// Method for getting one's (by way of a copy) self.
+              fn me_owned(&self) -> Self {
+                  *self
+              }
+              /// Method for getting one's (ref) self.
+              fn me_ref(&self) -> &Self {
+                  self
+              }
+              /// Method for getting one's (ref mut) self.
+              fn me_mut(&mut self) -> &mut Self {
+                  self
+              }
+              /// Method for getting one's ref (explicit) self.
+              fn me_explicit_ref(&self) -> &MySubmoduleClassTryFrom {
+                  self
+              }
+              /// Method for getting one's ref mut (explicit) self.
+              fn me_explicit_mut(&mut self) -> &mut MySubmoduleClassTryFrom {
+                  self
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__MySubmoduleClassTryFrom__new() -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(<MySubmoduleClassTryFrom>::new())) }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "new"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__MySubmoduleClassTryFrom__new(
+              metadata: &mut Vec<extendr_api::metadata::Func>,
+          ) {
+              let mut args = ::alloc::vec::Vec::new();
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: " Method for making a new object.",
+                      rust_name: "new",
+                      r_name: "new",
+                      mod_name: "new",
+                      args: args,
+                      return_type: "Self",
+                      func_ptr: wrap__MySubmoduleClassTryFrom__new as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__MySubmoduleClassTryFrom__set_a(
+              _self: extendr_api::SEXP,
+              x: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  extendr_api::unwrap_or_throw_error(
+                                          <&mut MySubmoduleClassTryFrom>::try_from(&mut _self_robj),
+                                      )
+                                      .set_a(_x_robj.try_into()?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "set_a"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__MySubmoduleClassTryFrom__set_a(
+              metadata: &mut Vec<extendr_api::metadata::Func>,
+          ) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "self",
+                          arg_type: "MySubmoduleClassTryFrom",
+                          default: None,
+                      },
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "i32",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: " Method for setting stuff.\n @param x a number",
+                      rust_name: "set_a",
+                      r_name: "set_a",
+                      mod_name: "set_a",
+                      args: args,
+                      return_type: "()",
+                      func_ptr: wrap__MySubmoduleClassTryFrom__set_a as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__MySubmoduleClassTryFrom__a(
+              _self: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  extendr_api::unwrap_or_throw_error(
+                                          <&MySubmoduleClassTryFrom>::try_from(&_self_robj),
+                                      )
+                                      .a(),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "a"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__MySubmoduleClassTryFrom__a(
+              metadata: &mut Vec<extendr_api::metadata::Func>,
+          ) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "self",
+                          arg_type: "MySubmoduleClassTryFrom",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: " Method for getting stuff.",
+                      rust_name: "a",
+                      r_name: "a",
+                      mod_name: "a",
+                      args: args,
+                      return_type: "i32",
+                      func_ptr: wrap__MySubmoduleClassTryFrom__a as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__MySubmoduleClassTryFrom__me_owned(
+              _self: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  extendr_api::unwrap_or_throw_error(
+                                          <&MySubmoduleClassTryFrom>::try_from(&_self_robj),
+                                      )
+                                      .me_owned(),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "me_owned"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__MySubmoduleClassTryFrom__me_owned(
+              metadata: &mut Vec<extendr_api::metadata::Func>,
+          ) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "self",
+                          arg_type: "MySubmoduleClassTryFrom",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: " Method for getting one's (by way of a copy) self.",
+                      rust_name: "me_owned",
+                      r_name: "me_owned",
+                      mod_name: "me_owned",
+                      args: args,
+                      return_type: "Self",
+                      func_ptr: wrap__MySubmoduleClassTryFrom__me_owned as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__MySubmoduleClassTryFrom__me_ref(
+              _self: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          let _return_ref_to_self = extendr_api::unwrap_or_throw_error(
+                                  <&MySubmoduleClassTryFrom>::try_from(&_self_robj),
+                              )
+                              .me_ref();
+                          Ok(_self_robj)
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "me_ref"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__MySubmoduleClassTryFrom__me_ref(
+              metadata: &mut Vec<extendr_api::metadata::Func>,
+          ) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "self",
+                          arg_type: "MySubmoduleClassTryFrom",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: " Method for getting one's (ref) self.",
+                      rust_name: "me_ref",
+                      r_name: "me_ref",
+                      mod_name: "me_ref",
+                      args: args,
+                      return_type: "Self",
+                      func_ptr: wrap__MySubmoduleClassTryFrom__me_ref as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__MySubmoduleClassTryFrom__me_mut(
+              _self: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          let _return_ref_to_self = extendr_api::unwrap_or_throw_error(
+                                  <&mut MySubmoduleClassTryFrom>::try_from(&mut _self_robj),
+                              )
+                              .me_mut();
+                          Ok(_self_robj)
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "me_mut"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__MySubmoduleClassTryFrom__me_mut(
+              metadata: &mut Vec<extendr_api::metadata::Func>,
+          ) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "self",
+                          arg_type: "MySubmoduleClassTryFrom",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: " Method for getting one's (ref mut) self.",
+                      rust_name: "me_mut",
+                      r_name: "me_mut",
+                      mod_name: "me_mut",
+                      args: args,
+                      return_type: "Self",
+                      func_ptr: wrap__MySubmoduleClassTryFrom__me_mut as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__MySubmoduleClassTryFrom__me_explicit_ref(
+              _self: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          let _return_ref_to_self = extendr_api::unwrap_or_throw_error(
+                                  <&MySubmoduleClassTryFrom>::try_from(&_self_robj),
+                              )
+                              .me_explicit_ref();
+                          Ok(_self_robj)
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "me_explicit_ref"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__MySubmoduleClassTryFrom__me_explicit_ref(
+              metadata: &mut Vec<extendr_api::metadata::Func>,
+          ) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "self",
+                          arg_type: "MySubmoduleClassTryFrom",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: " Method for getting one's ref (explicit) self.",
+                      rust_name: "me_explicit_ref",
+                      r_name: "me_explicit_ref",
+                      mod_name: "me_explicit_ref",
+                      args: args,
+                      return_type: "MySubmoduleClassTryFrom",
+                      func_ptr: wrap__MySubmoduleClassTryFrom__me_explicit_ref as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__MySubmoduleClassTryFrom__me_explicit_mut(
+              _self: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          let _return_ref_to_self = extendr_api::unwrap_or_throw_error(
+                                  <&mut MySubmoduleClassTryFrom>::try_from(&mut _self_robj),
+                              )
+                              .me_explicit_mut();
+                          Ok(_self_robj)
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "me_explicit_mut"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__MySubmoduleClassTryFrom__me_explicit_mut(
+              metadata: &mut Vec<extendr_api::metadata::Func>,
+          ) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "self",
+                          arg_type: "MySubmoduleClassTryFrom",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: " Method for getting one's ref mut (explicit) self.",
+                      rust_name: "me_explicit_mut",
+                      r_name: "me_explicit_mut",
+                      mod_name: "me_explicit_mut",
+                      args: args,
+                      return_type: "MySubmoduleClassTryFrom",
+                      func_ptr: wrap__MySubmoduleClassTryFrom__me_explicit_mut as *const u8,
+                      hidden: false,
+                  })
+          }
+          impl TryFrom<Robj> for &MySubmoduleClassTryFrom {
+              type Error = Error;
+              fn try_from(robj: Robj) -> Result<Self> {
+                  Self::try_from(&robj)
+              }
+          }
+          impl TryFrom<Robj> for &mut MySubmoduleClassTryFrom {
+              type Error = Error;
+              fn try_from(mut robj: Robj) -> Result<Self> {
+                  Self::try_from(&mut robj)
+              }
+          }
+          impl TryFrom<&Robj> for &MySubmoduleClassTryFrom {
+              type Error = Error;
+              fn try_from(robj: &Robj) -> Result<Self> {
+                  use libR_sys::R_ExternalPtrAddr;
+                  unsafe {
+                      let ptr = R_ExternalPtrAddr(robj.get())
+                          .cast::<MySubmoduleClassTryFrom>();
+                      ptr.as_ref()
+                          .ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+                  }
+              }
+          }
+          impl TryFrom<&mut Robj> for &mut MySubmoduleClassTryFrom {
+              type Error = Error;
+              fn try_from(robj: &mut Robj) -> Result<Self> {
+                  use libR_sys::R_ExternalPtrAddr;
+                  unsafe {
+                      let ptr = R_ExternalPtrAddr(robj.get_mut())
+                          .cast::<MySubmoduleClassTryFrom>();
+                      ptr.as_mut()
+                          .ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+                  }
+              }
+          }
+          impl From<MySubmoduleClassTryFrom> for Robj {
+              fn from(value: MySubmoduleClassTryFrom) -> Self {
+                  unsafe {
+                      let ptr = Box::into_raw(Box::new(value));
+                      let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
+                      res.set_attrib(class_symbol(), "MySubmoduleClassTryFrom").unwrap();
+                      res.register_c_finalizer(Some(__finalize__MySubmoduleClassTryFrom));
+                      res
+                  }
+              }
+          }
+          extern "C" fn __finalize__MySubmoduleClassTryFrom(sexp: extendr_api::SEXP) {
+              unsafe {
+                  let robj = extendr_api::robj::Robj::from_sexp(sexp);
+                  if robj.check_external_ptr_type::<MySubmoduleClassTryFrom>() {
+                      let ptr = robj.external_ptr_addr::<MySubmoduleClassTryFrom>();
+                      drop(Box::from_raw(ptr));
+                  }
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__MySubmoduleClassTryFrom(impls: &mut Vec<extendr_api::metadata::Impl>) {
+              let mut methods = Vec::new();
+              meta__MySubmoduleClassTryFrom__new(&mut methods);
+              meta__MySubmoduleClassTryFrom__set_a(&mut methods);
+              meta__MySubmoduleClassTryFrom__a(&mut methods);
+              meta__MySubmoduleClassTryFrom__me_owned(&mut methods);
+              meta__MySubmoduleClassTryFrom__me_ref(&mut methods);
+              meta__MySubmoduleClassTryFrom__me_mut(&mut methods);
+              meta__MySubmoduleClassTryFrom__me_explicit_ref(&mut methods);
+              meta__MySubmoduleClassTryFrom__me_explicit_mut(&mut methods);
+              impls
+                  .push(extendr_api::metadata::Impl {
+                      doc: " Class for testing (exported)\n @examples\n x <- MySubmoduleClassTryFrom$new()\n x$a()\n x$set_a(10)\n x$a()\n @export",
+                      name: "MySubmoduleClassTryFrom",
+                      methods,
+                  });
+          }
           #[no_mangle]
           #[allow(non_snake_case)]
           pub fn get_submodule_metadata() -> extendr_api::metadata::Metadata {
@@ -3359,6 +4344,7 @@
               let mut impls = Vec::new();
               meta__hello_submodule(&mut functions);
               meta__MySubmoduleClass(&mut impls);
+              meta__MySubmoduleClassTryFrom(&mut impls);
               functions
                   .push(extendr_api::metadata::Func {
                       doc: "Metadata access function.",
@@ -3445,9 +4431,12 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(hello_world()))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(hello_world())) }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -3513,9 +4502,12 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(do_nothing()))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(do_nothing())) }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -3584,9 +4576,14 @@
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(double_scalar(<f64>::from_robj(&_x_robj)?)))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > {
+                      Ok(extendr_api::Robj::from(double_scalar(<f64>::from_robj(&_x_robj)?)))
+                  }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -3664,9 +4661,12 @@
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(int_scalar(<i32>::from_robj(&_x_robj)?)))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(int_scalar(<i32>::from_robj(&_x_robj)?))) }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -3744,9 +4744,12 @@
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(bool_scalar(<bool>::from_robj(&_x_robj)?)))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(bool_scalar(<bool>::from_robj(&_x_robj)?))) }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -3824,9 +4827,14 @@
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(char_scalar(<String>::from_robj(&_x_robj)?)))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > {
+                      Ok(extendr_api::Robj::from(char_scalar(<String>::from_robj(&_x_robj)?)))
+                  }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -3904,9 +4912,18 @@
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(char_vec(<Vec<String>>::from_robj(&_x_robj)?)))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > {
+                      Ok(
+                          extendr_api::Robj::from(
+                              char_vec(<Vec<String>>::from_robj(&_x_robj)?),
+                          ),
+                      )
+                  }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -3984,9 +5001,14 @@
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(double_vec(<Vec<f64>>::from_robj(&_x_robj)?)))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > {
+                      Ok(extendr_api::Robj::from(double_vec(<Vec<f64>>::from_robj(&_x_robj)?)))
+                  }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -4063,9 +5085,12 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(try_rfloat_na()))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(try_rfloat_na())) }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -4133,9 +5158,12 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(try_rint_na()))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(try_rint_na())) }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -4204,9 +5232,12 @@
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(check_rfloat_na(_x_robj.try_into()?)))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(check_rfloat_na(_x_robj.try_into()?))) }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -4284,9 +5315,12 @@
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(check_rint_na(_x_robj.try_into()?)))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(check_rint_na(_x_robj.try_into()?))) }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -4364,9 +5398,12 @@
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(try_double_vec(_x_robj.try_into()?)))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(try_double_vec(_x_robj.try_into()?))) }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -4448,13 +5485,18 @@
           > = unsafe {
               let _x_robj = extendr_api::robj::Robj::from_sexp(x);
               let _i_robj = extendr_api::robj::Robj::from_sexp(i);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(
-                      extendr_api::Robj::from(
-                          get_doubles_element(_x_robj.try_into()?, _i_robj.try_into()?),
-                      ),
-                  )
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > {
+                      Ok(
+                          extendr_api::Robj::from(
+                              get_doubles_element(_x_robj.try_into()?, _i_robj.try_into()?),
+                          ),
+                      )
+                  }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -4541,13 +5583,18 @@
           > = unsafe {
               let _x_robj = extendr_api::robj::Robj::from_sexp(x);
               let _i_robj = extendr_api::robj::Robj::from_sexp(i);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(
-                      extendr_api::Robj::from(
-                          get_integers_element(_x_robj.try_into()?, _i_robj.try_into()?),
-                      ),
-                  )
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > {
+                      Ok(
+                          extendr_api::Robj::from(
+                              get_integers_element(_x_robj.try_into()?, _i_robj.try_into()?),
+                          ),
+                      )
+                  }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -4634,13 +5681,18 @@
           > = unsafe {
               let _x_robj = extendr_api::robj::Robj::from_sexp(x);
               let _i_robj = extendr_api::robj::Robj::from_sexp(i);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(
-                      extendr_api::Robj::from(
-                          get_logicals_element(_x_robj.try_into()?, _i_robj.try_into()?),
-                      ),
-                  )
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > {
+                      Ok(
+                          extendr_api::Robj::from(
+                              get_logicals_element(_x_robj.try_into()?, _i_robj.try_into()?),
+                          ),
+                      )
+                  }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -4727,9 +5779,12 @@
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               let _input_robj = extendr_api::robj::Robj::from_sexp(input);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(doubles_square(_input_robj.try_into()?)))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(doubles_square(_input_robj.try_into()?))) }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -4811,9 +5866,12 @@
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               let _input_robj = extendr_api::robj::Robj::from_sexp(input);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(complexes_square(_input_robj.try_into()?)))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(complexes_square(_input_robj.try_into()?))) }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -4895,9 +5953,12 @@
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               let _input_robj = extendr_api::robj::Robj::from_sexp(input);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(integers_square(_input_robj.try_into()?)))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(integers_square(_input_robj.try_into()?))) }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -4979,9 +6040,12 @@
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               let _input_robj = extendr_api::robj::Robj::from_sexp(input);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(logicals_not(_input_robj.try_into()?)))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(logicals_not(_input_robj.try_into()?))) }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -5059,9 +6123,12 @@
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(check_default(_x_robj.try_into()?)))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(check_default(_x_robj.try_into()?))) }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -5148,16 +6215,21 @@
           > = unsafe {
               let __x_robj = extendr_api::robj::Robj::from_sexp(_x);
               let __y_robj = extendr_api::robj::Robj::from_sexp(_y);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(
-                      extendr_api::Robj::from(
-                          special_param_names(
-                              <i32>::from_robj(&__x_robj)?,
-                              <i32>::from_robj(&__y_robj)?,
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > {
+                      Ok(
+                          extendr_api::Robj::from(
+                              special_param_names(
+                                  <i32>::from_robj(&__x_robj)?,
+                                  <i32>::from_robj(&__y_robj)?,
+                              ),
                           ),
-                      ),
-                  )
-              })
+                      )
+                  }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -5241,9 +6313,12 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(__00__special_function_name()))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(__00__special_function_name())) }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -5314,9 +6389,12 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(test_rename()))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(test_rename())) }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -5385,9 +6463,18 @@
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(get_default_value(<i32>::from_robj(&_x_robj)?)))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > {
+                      Ok(
+                          extendr_api::Robj::from(
+                              get_default_value(<i32>::from_robj(&_x_robj)?),
+                          ),
+                      )
+                  }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -5465,9 +6552,12 @@
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(add_5_if_not_null(_x_robj.try_into()?)))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(add_5_if_not_null(_x_robj.try_into()?))) }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -5593,9 +6683,12 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(<MyClass>::new()))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(<MyClass>::new())) }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -5665,14 +6758,21 @@
           > = unsafe {
               let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
               let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(
-                      extendr_api::Robj::from(
-                          extendr_api::unwrap_or_throw(<&mut MyClass>::from_robj(&_self_robj))
-                              .set_a(<i32>::from_robj(&_x_robj)?),
-                      ),
-                  )
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > {
+                      Ok(
+                          extendr_api::Robj::from(
+                              extendr_api::unwrap_or_throw(
+                                      <&mut MyClass>::from_robj(&_self_robj),
+                                  )
+                                  .set_a(<i32>::from_robj(&_x_robj)?),
+                          ),
+                      )
+                  }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -5752,13 +6852,19 @@
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(
-                      extendr_api::Robj::from(
-                          extendr_api::unwrap_or_throw(<&MyClass>::from_robj(&_self_robj)).a(),
-                      ),
-                  )
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > {
+                      Ok(
+                          extendr_api::Robj::from(
+                              extendr_api::unwrap_or_throw(<&MyClass>::from_robj(&_self_robj))
+                                  .a(),
+                          ),
+                      )
+                  }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -5833,13 +6939,18 @@
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  let _return_ref_to_self = extendr_api::unwrap_or_throw(
-                          <&MyClass>::from_robj(&_self_robj),
-                      )
-                      .me();
-                  Ok(_self_robj)
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > {
+                      let _return_ref_to_self = extendr_api::unwrap_or_throw(
+                              <&MyClass>::from_robj(&_self_robj),
+                          )
+                          .me();
+                      Ok(_self_robj)
+                  }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -5916,13 +7027,18 @@
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               let _robj_robj = extendr_api::robj::Robj::from_sexp(robj);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(
-                      extendr_api::Robj::from(
-                          <MyClass>::restore_from_robj(<Robj>::from_robj(&_robj_robj)?),
-                      ),
-                  )
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > {
+                      Ok(
+                          extendr_api::Robj::from(
+                              <MyClass>::restore_from_robj(<Robj>::from_robj(&_robj_robj)?),
+                          ),
+                      )
+                  }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -5999,13 +7115,18 @@
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(
-                      extendr_api::Robj::from(
-                          <MyClass>::get_default_value(<i32>::from_robj(&_x_robj)?),
-                      ),
-                  )
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > {
+                      Ok(
+                          extendr_api::Robj::from(
+                              <MyClass>::get_default_value(<i32>::from_robj(&_x_robj)?),
+                          ),
+                      )
+                  }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -6091,8 +7212,8 @@
               }
           }
       }
-      impl From<MyClass> for Robj {
-          fn from(value: MyClass) -> Self {
+      impl<'a> From<&'a MyClass> for Robj {
+          fn from(value: &'a MyClass) -> Self {
               unsafe {
                   let ptr = Box::into_raw(Box::new(value));
                   let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
@@ -6102,8 +7223,8 @@
               }
           }
       }
-      impl<'a> From<&'a MyClass> for Robj {
-          fn from(value: &'a MyClass) -> Self {
+      impl From<MyClass> for Robj {
+          fn from(value: MyClass) -> Self {
               unsafe {
                   let ptr = Box::into_raw(Box::new(value));
                   let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
@@ -6138,6 +7259,658 @@
                   methods,
               });
       }
+      struct MyClassTryFrom {
+          a: i32,
+      }
+      #[automatically_derived]
+      impl ::core::default::Default for MyClassTryFrom {
+          #[inline]
+          fn default() -> MyClassTryFrom {
+              MyClassTryFrom {
+                  a: ::core::default::Default::default(),
+              }
+          }
+      }
+      #[automatically_derived]
+      impl ::core::fmt::Debug for MyClassTryFrom {
+          #[inline]
+          fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+              ::core::fmt::Formatter::debug_struct_field1_finish(
+                  f,
+                  "MyClassTryFrom",
+                  "a",
+                  &&self.a,
+              )
+          }
+      }
+      /// Class for testing (exported)
+      /// @examples
+      /// x <- MyClass$new()
+      /// x$a()
+      /// x$set_a(10)
+      /// x$a()
+      /// @export
+      impl MyClassTryFrom {
+          /// Method for making a new object.
+          fn new() -> Self {
+              Self { a: 0 }
+          }
+          /// Method for setting stuff.
+          /// @param x a number
+          fn set_a(&mut self, x: i32) {
+              self.a = x;
+          }
+          /// Method for getting stuff.
+          fn a(&self) -> i32 {
+              self.a
+          }
+          /// Method for getting one's self.
+          fn me(&self) -> &Self {
+              self
+          }
+          fn restore_from_robj(robj: Robj) -> Self {
+              let res: ExternalPtr<MyClassTryFrom> = robj.try_into().unwrap();
+              Self { a: res.a }
+          }
+          fn get_default_value(x: i32) -> i32 {
+              x
+          }
+      }
+      #[no_mangle]
+      #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+      pub extern "C" fn wrap__MyClassTryFrom__new() -> extendr_api::SEXP {
+          use extendr_api::robj::*;
+          let wrap_result_state: std::result::Result<
+              std::result::Result<Robj, extendr_api::Error>,
+              Box<dyn std::any::Any + Send>,
+          > = unsafe {
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(<MyClassTryFrom>::new())) }),
+              )
+          };
+          match wrap_result_state {
+              Ok(Ok(zz)) => {
+                  return unsafe { zz.get() };
+              }
+              Ok(Err(conversion_err)) => {
+                  let err_string = conversion_err.to_string();
+                  drop(conversion_err);
+                  extendr_api::throw_r_error(&err_string);
+              }
+              Err(unwind_err) => {
+                  drop(unwind_err);
+                  let err_string = {
+                      let res = ::alloc::fmt::format(
+                          format_args!("user function panicked: {0}", "new"),
+                      );
+                      res
+                  };
+                  extendr_api::handle_panic(
+                      err_string.as_str(),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
+                  );
+              }
+          }
+          {
+              ::core::panicking::panic_fmt(
+                  format_args!(
+                      "internal error: entered unreachable code: {0}",
+                      format_args!("internal extendr error, this should never happen."),
+                  ),
+              );
+          }
+      }
+      #[allow(non_snake_case)]
+      fn meta__MyClassTryFrom__new(metadata: &mut Vec<extendr_api::metadata::Func>) {
+          let mut args = ::alloc::vec::Vec::new();
+          metadata
+              .push(extendr_api::metadata::Func {
+                  doc: " Method for making a new object.",
+                  rust_name: "new",
+                  r_name: "new",
+                  mod_name: "new",
+                  args: args,
+                  return_type: "Self",
+                  func_ptr: wrap__MyClassTryFrom__new as *const u8,
+                  hidden: false,
+              })
+      }
+      #[no_mangle]
+      #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+      pub extern "C" fn wrap__MyClassTryFrom__set_a(
+          _self: extendr_api::SEXP,
+          x: extendr_api::SEXP,
+      ) -> extendr_api::SEXP {
+          use extendr_api::robj::*;
+          let wrap_result_state: std::result::Result<
+              std::result::Result<Robj, extendr_api::Error>,
+              Box<dyn std::any::Any + Send>,
+          > = unsafe {
+              let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > {
+                      Ok(
+                          extendr_api::Robj::from(
+                              extendr_api::unwrap_or_throw_error(
+                                      <&mut MyClassTryFrom>::try_from(&mut _self_robj),
+                                  )
+                                  .set_a(_x_robj.try_into()?),
+                          ),
+                      )
+                  }),
+              )
+          };
+          match wrap_result_state {
+              Ok(Ok(zz)) => {
+                  return unsafe { zz.get() };
+              }
+              Ok(Err(conversion_err)) => {
+                  let err_string = conversion_err.to_string();
+                  drop(conversion_err);
+                  extendr_api::throw_r_error(&err_string);
+              }
+              Err(unwind_err) => {
+                  drop(unwind_err);
+                  let err_string = {
+                      let res = ::alloc::fmt::format(
+                          format_args!("user function panicked: {0}", "set_a"),
+                      );
+                      res
+                  };
+                  extendr_api::handle_panic(
+                      err_string.as_str(),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
+                  );
+              }
+          }
+          {
+              ::core::panicking::panic_fmt(
+                  format_args!(
+                      "internal error: entered unreachable code: {0}",
+                      format_args!("internal extendr error, this should never happen."),
+                  ),
+              );
+          }
+      }
+      #[allow(non_snake_case)]
+      fn meta__MyClassTryFrom__set_a(metadata: &mut Vec<extendr_api::metadata::Func>) {
+          let mut args = <[_]>::into_vec(
+              #[rustc_box]
+              ::alloc::boxed::Box::new([
+                  extendr_api::metadata::Arg {
+                      name: "self",
+                      arg_type: "MyClassTryFrom",
+                      default: None,
+                  },
+                  extendr_api::metadata::Arg {
+                      name: "x",
+                      arg_type: "i32",
+                      default: None,
+                  },
+              ]),
+          );
+          metadata
+              .push(extendr_api::metadata::Func {
+                  doc: " Method for setting stuff.\n @param x a number",
+                  rust_name: "set_a",
+                  r_name: "set_a",
+                  mod_name: "set_a",
+                  args: args,
+                  return_type: "()",
+                  func_ptr: wrap__MyClassTryFrom__set_a as *const u8,
+                  hidden: false,
+              })
+      }
+      #[no_mangle]
+      #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+      pub extern "C" fn wrap__MyClassTryFrom__a(
+          _self: extendr_api::SEXP,
+      ) -> extendr_api::SEXP {
+          use extendr_api::robj::*;
+          let wrap_result_state: std::result::Result<
+              std::result::Result<Robj, extendr_api::Error>,
+              Box<dyn std::any::Any + Send>,
+          > = unsafe {
+              let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > {
+                      Ok(
+                          extendr_api::Robj::from(
+                              extendr_api::unwrap_or_throw_error(
+                                      <&MyClassTryFrom>::try_from(&_self_robj),
+                                  )
+                                  .a(),
+                          ),
+                      )
+                  }),
+              )
+          };
+          match wrap_result_state {
+              Ok(Ok(zz)) => {
+                  return unsafe { zz.get() };
+              }
+              Ok(Err(conversion_err)) => {
+                  let err_string = conversion_err.to_string();
+                  drop(conversion_err);
+                  extendr_api::throw_r_error(&err_string);
+              }
+              Err(unwind_err) => {
+                  drop(unwind_err);
+                  let err_string = {
+                      let res = ::alloc::fmt::format(
+                          format_args!("user function panicked: {0}", "a"),
+                      );
+                      res
+                  };
+                  extendr_api::handle_panic(
+                      err_string.as_str(),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
+                  );
+              }
+          }
+          {
+              ::core::panicking::panic_fmt(
+                  format_args!(
+                      "internal error: entered unreachable code: {0}",
+                      format_args!("internal extendr error, this should never happen."),
+                  ),
+              );
+          }
+      }
+      #[allow(non_snake_case)]
+      fn meta__MyClassTryFrom__a(metadata: &mut Vec<extendr_api::metadata::Func>) {
+          let mut args = <[_]>::into_vec(
+              #[rustc_box]
+              ::alloc::boxed::Box::new([
+                  extendr_api::metadata::Arg {
+                      name: "self",
+                      arg_type: "MyClassTryFrom",
+                      default: None,
+                  },
+              ]),
+          );
+          metadata
+              .push(extendr_api::metadata::Func {
+                  doc: " Method for getting stuff.",
+                  rust_name: "a",
+                  r_name: "a",
+                  mod_name: "a",
+                  args: args,
+                  return_type: "i32",
+                  func_ptr: wrap__MyClassTryFrom__a as *const u8,
+                  hidden: false,
+              })
+      }
+      #[no_mangle]
+      #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+      pub extern "C" fn wrap__MyClassTryFrom__me(
+          _self: extendr_api::SEXP,
+      ) -> extendr_api::SEXP {
+          use extendr_api::robj::*;
+          let wrap_result_state: std::result::Result<
+              std::result::Result<Robj, extendr_api::Error>,
+              Box<dyn std::any::Any + Send>,
+          > = unsafe {
+              let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > {
+                      let _return_ref_to_self = extendr_api::unwrap_or_throw_error(
+                              <&MyClassTryFrom>::try_from(&_self_robj),
+                          )
+                          .me();
+                      Ok(_self_robj)
+                  }),
+              )
+          };
+          match wrap_result_state {
+              Ok(Ok(zz)) => {
+                  return unsafe { zz.get() };
+              }
+              Ok(Err(conversion_err)) => {
+                  let err_string = conversion_err.to_string();
+                  drop(conversion_err);
+                  extendr_api::throw_r_error(&err_string);
+              }
+              Err(unwind_err) => {
+                  drop(unwind_err);
+                  let err_string = {
+                      let res = ::alloc::fmt::format(
+                          format_args!("user function panicked: {0}", "me"),
+                      );
+                      res
+                  };
+                  extendr_api::handle_panic(
+                      err_string.as_str(),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
+                  );
+              }
+          }
+          {
+              ::core::panicking::panic_fmt(
+                  format_args!(
+                      "internal error: entered unreachable code: {0}",
+                      format_args!("internal extendr error, this should never happen."),
+                  ),
+              );
+          }
+      }
+      #[allow(non_snake_case)]
+      fn meta__MyClassTryFrom__me(metadata: &mut Vec<extendr_api::metadata::Func>) {
+          let mut args = <[_]>::into_vec(
+              #[rustc_box]
+              ::alloc::boxed::Box::new([
+                  extendr_api::metadata::Arg {
+                      name: "self",
+                      arg_type: "MyClassTryFrom",
+                      default: None,
+                  },
+              ]),
+          );
+          metadata
+              .push(extendr_api::metadata::Func {
+                  doc: " Method for getting one's self.",
+                  rust_name: "me",
+                  r_name: "me",
+                  mod_name: "me",
+                  args: args,
+                  return_type: "Self",
+                  func_ptr: wrap__MyClassTryFrom__me as *const u8,
+                  hidden: false,
+              })
+      }
+      #[no_mangle]
+      #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+      pub extern "C" fn wrap__MyClassTryFrom__restore_from_robj(
+          robj: extendr_api::SEXP,
+      ) -> extendr_api::SEXP {
+          use extendr_api::robj::*;
+          let wrap_result_state: std::result::Result<
+              std::result::Result<Robj, extendr_api::Error>,
+              Box<dyn std::any::Any + Send>,
+          > = unsafe {
+              let _robj_robj = extendr_api::robj::Robj::from_sexp(robj);
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > {
+                      Ok(
+                          extendr_api::Robj::from(
+                              <MyClassTryFrom>::restore_from_robj(_robj_robj.try_into()?),
+                          ),
+                      )
+                  }),
+              )
+          };
+          match wrap_result_state {
+              Ok(Ok(zz)) => {
+                  return unsafe { zz.get() };
+              }
+              Ok(Err(conversion_err)) => {
+                  let err_string = conversion_err.to_string();
+                  drop(conversion_err);
+                  extendr_api::throw_r_error(&err_string);
+              }
+              Err(unwind_err) => {
+                  drop(unwind_err);
+                  let err_string = {
+                      let res = ::alloc::fmt::format(
+                          format_args!("user function panicked: {0}", "restore_from_robj"),
+                      );
+                      res
+                  };
+                  extendr_api::handle_panic(
+                      err_string.as_str(),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
+                  );
+              }
+          }
+          {
+              ::core::panicking::panic_fmt(
+                  format_args!(
+                      "internal error: entered unreachable code: {0}",
+                      format_args!("internal extendr error, this should never happen."),
+                  ),
+              );
+          }
+      }
+      #[allow(non_snake_case)]
+      fn meta__MyClassTryFrom__restore_from_robj(
+          metadata: &mut Vec<extendr_api::metadata::Func>,
+      ) {
+          let mut args = <[_]>::into_vec(
+              #[rustc_box]
+              ::alloc::boxed::Box::new([
+                  extendr_api::metadata::Arg {
+                      name: "robj",
+                      arg_type: "Robj",
+                      default: None,
+                  },
+              ]),
+          );
+          metadata
+              .push(extendr_api::metadata::Func {
+                  doc: "",
+                  rust_name: "restore_from_robj",
+                  r_name: "restore_from_robj",
+                  mod_name: "restore_from_robj",
+                  args: args,
+                  return_type: "Self",
+                  func_ptr: wrap__MyClassTryFrom__restore_from_robj as *const u8,
+                  hidden: false,
+              })
+      }
+      #[no_mangle]
+      #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+      pub extern "C" fn wrap__MyClassTryFrom__get_default_value(
+          x: extendr_api::SEXP,
+      ) -> extendr_api::SEXP {
+          use extendr_api::robj::*;
+          let wrap_result_state: std::result::Result<
+              std::result::Result<Robj, extendr_api::Error>,
+              Box<dyn std::any::Any + Send>,
+          > = unsafe {
+              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > {
+                      Ok(
+                          extendr_api::Robj::from(
+                              <MyClassTryFrom>::get_default_value(_x_robj.try_into()?),
+                          ),
+                      )
+                  }),
+              )
+          };
+          match wrap_result_state {
+              Ok(Ok(zz)) => {
+                  return unsafe { zz.get() };
+              }
+              Ok(Err(conversion_err)) => {
+                  let err_string = conversion_err.to_string();
+                  drop(conversion_err);
+                  extendr_api::throw_r_error(&err_string);
+              }
+              Err(unwind_err) => {
+                  drop(unwind_err);
+                  let err_string = {
+                      let res = ::alloc::fmt::format(
+                          format_args!("user function panicked: {0}", "get_default_value"),
+                      );
+                      res
+                  };
+                  extendr_api::handle_panic(
+                      err_string.as_str(),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
+                  );
+              }
+          }
+          {
+              ::core::panicking::panic_fmt(
+                  format_args!(
+                      "internal error: entered unreachable code: {0}",
+                      format_args!("internal extendr error, this should never happen."),
+                  ),
+              );
+          }
+      }
+      #[allow(non_snake_case)]
+      fn meta__MyClassTryFrom__get_default_value(
+          metadata: &mut Vec<extendr_api::metadata::Func>,
+      ) {
+          let mut args = <[_]>::into_vec(
+              #[rustc_box]
+              ::alloc::boxed::Box::new([
+                  extendr_api::metadata::Arg {
+                      name: "x",
+                      arg_type: "i32",
+                      default: Some("42"),
+                  },
+              ]),
+          );
+          metadata
+              .push(extendr_api::metadata::Func {
+                  doc: "",
+                  rust_name: "get_default_value",
+                  r_name: "get_default_value",
+                  mod_name: "get_default_value",
+                  args: args,
+                  return_type: "i32",
+                  func_ptr: wrap__MyClassTryFrom__get_default_value as *const u8,
+                  hidden: false,
+              })
+      }
+      impl TryFrom<Robj> for &MyClassTryFrom {
+          type Error = Error;
+          fn try_from(robj: Robj) -> Result<Self> {
+              Self::try_from(&robj)
+          }
+      }
+      impl TryFrom<Robj> for &mut MyClassTryFrom {
+          type Error = Error;
+          fn try_from(mut robj: Robj) -> Result<Self> {
+              Self::try_from(&mut robj)
+          }
+      }
+      impl TryFrom<&Robj> for &MyClassTryFrom {
+          type Error = Error;
+          fn try_from(robj: &Robj) -> Result<Self> {
+              use libR_sys::R_ExternalPtrAddr;
+              unsafe {
+                  let ptr = R_ExternalPtrAddr(robj.get()).cast::<MyClassTryFrom>();
+                  ptr.as_ref().ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+              }
+          }
+      }
+      impl TryFrom<&mut Robj> for &mut MyClassTryFrom {
+          type Error = Error;
+          fn try_from(robj: &mut Robj) -> Result<Self> {
+              use libR_sys::R_ExternalPtrAddr;
+              unsafe {
+                  let ptr = R_ExternalPtrAddr(robj.get_mut()).cast::<MyClassTryFrom>();
+                  ptr.as_mut().ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+              }
+          }
+      }
+      impl From<MyClassTryFrom> for Robj {
+          fn from(value: MyClassTryFrom) -> Self {
+              unsafe {
+                  let ptr = Box::into_raw(Box::new(value));
+                  let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
+                  res.set_attrib(class_symbol(), "MyClassTryFrom").unwrap();
+                  res.register_c_finalizer(Some(__finalize__MyClassTryFrom));
+                  res
+              }
+          }
+      }
+      extern "C" fn __finalize__MyClassTryFrom(sexp: extendr_api::SEXP) {
+          unsafe {
+              let robj = extendr_api::robj::Robj::from_sexp(sexp);
+              if robj.check_external_ptr_type::<MyClassTryFrom>() {
+                  let ptr = robj.external_ptr_addr::<MyClassTryFrom>();
+                  drop(Box::from_raw(ptr));
+              }
+          }
+      }
+      #[allow(non_snake_case)]
+      fn meta__MyClassTryFrom(impls: &mut Vec<extendr_api::metadata::Impl>) {
+          let mut methods = Vec::new();
+          meta__MyClassTryFrom__new(&mut methods);
+          meta__MyClassTryFrom__set_a(&mut methods);
+          meta__MyClassTryFrom__a(&mut methods);
+          meta__MyClassTryFrom__me(&mut methods);
+          meta__MyClassTryFrom__restore_from_robj(&mut methods);
+          meta__MyClassTryFrom__get_default_value(&mut methods);
+          impls
+              .push(extendr_api::metadata::Impl {
+                  doc: " Class for testing (exported)\n @examples\n x <- MyClass$new()\n x$a()\n x$set_a(10)\n x$a()\n @export",
+                  name: "MyClassTryFrom",
+                  methods,
+              });
+      }
       struct __MyClass {}
       #[automatically_derived]
       impl ::core::default::Default for __MyClass {
@@ -6169,9 +7942,12 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(<__MyClass>::new()))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(<__MyClass>::new())) }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -6239,14 +8015,21 @@
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(
-                      extendr_api::Robj::from(
-                          extendr_api::unwrap_or_throw(<&__MyClass>::from_robj(&_self_robj))
-                              .__name_test(),
-                      ),
-                  )
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > {
+                      Ok(
+                          extendr_api::Robj::from(
+                              extendr_api::unwrap_or_throw(
+                                      <&__MyClass>::from_robj(&_self_robj),
+                                  )
+                                  .__name_test(),
+                          ),
+                      )
+                  }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -6332,8 +8115,8 @@
               }
           }
       }
-      impl From<__MyClass> for Robj {
-          fn from(value: __MyClass) -> Self {
+      impl<'a> From<&'a __MyClass> for Robj {
+          fn from(value: &'a __MyClass) -> Self {
               unsafe {
                   let ptr = Box::into_raw(Box::new(value));
                   let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
@@ -6343,8 +8126,8 @@
               }
           }
       }
-      impl<'a> From<&'a __MyClass> for Robj {
-          fn from(value: &'a __MyClass) -> Self {
+      impl From<__MyClass> for Robj {
+          fn from(value: __MyClass) -> Self {
               unsafe {
                   let ptr = Box::into_raw(Box::new(value));
                   let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
@@ -6372,6 +8155,254 @@
               .push(extendr_api::metadata::Impl {
                   doc: "",
                   name: "__MyClass",
+                  methods,
+              });
+      }
+      struct __MyClassTryFrom {}
+      #[automatically_derived]
+      impl ::core::default::Default for __MyClassTryFrom {
+          #[inline]
+          fn default() -> __MyClassTryFrom {
+              __MyClassTryFrom {}
+          }
+      }
+      #[automatically_derived]
+      impl ::core::fmt::Debug for __MyClassTryFrom {
+          #[inline]
+          fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+              ::core::fmt::Formatter::write_str(f, "__MyClassTryFrom")
+          }
+      }
+      impl __MyClassTryFrom {
+          /// Method for making a new object.
+          fn new() -> Self {
+              Self {}
+          }
+          /// Method with special name unsupported by R
+          fn __name_test(&self) {}
+      }
+      #[no_mangle]
+      #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+      pub extern "C" fn wrap____MyClassTryFrom__new() -> extendr_api::SEXP {
+          use extendr_api::robj::*;
+          let wrap_result_state: std::result::Result<
+              std::result::Result<Robj, extendr_api::Error>,
+              Box<dyn std::any::Any + Send>,
+          > = unsafe {
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(<__MyClassTryFrom>::new())) }),
+              )
+          };
+          match wrap_result_state {
+              Ok(Ok(zz)) => {
+                  return unsafe { zz.get() };
+              }
+              Ok(Err(conversion_err)) => {
+                  let err_string = conversion_err.to_string();
+                  drop(conversion_err);
+                  extendr_api::throw_r_error(&err_string);
+              }
+              Err(unwind_err) => {
+                  drop(unwind_err);
+                  let err_string = {
+                      let res = ::alloc::fmt::format(
+                          format_args!("user function panicked: {0}", "new"),
+                      );
+                      res
+                  };
+                  extendr_api::handle_panic(
+                      err_string.as_str(),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
+                  );
+              }
+          }
+          {
+              ::core::panicking::panic_fmt(
+                  format_args!(
+                      "internal error: entered unreachable code: {0}",
+                      format_args!("internal extendr error, this should never happen."),
+                  ),
+              );
+          }
+      }
+      #[allow(non_snake_case)]
+      fn meta____MyClassTryFrom__new(metadata: &mut Vec<extendr_api::metadata::Func>) {
+          let mut args = ::alloc::vec::Vec::new();
+          metadata
+              .push(extendr_api::metadata::Func {
+                  doc: " Method for making a new object.",
+                  rust_name: "new",
+                  r_name: "new",
+                  mod_name: "new",
+                  args: args,
+                  return_type: "Self",
+                  func_ptr: wrap____MyClassTryFrom__new as *const u8,
+                  hidden: false,
+              })
+      }
+      #[no_mangle]
+      #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+      pub extern "C" fn wrap____MyClassTryFrom____name_test(
+          _self: extendr_api::SEXP,
+      ) -> extendr_api::SEXP {
+          use extendr_api::robj::*;
+          let wrap_result_state: std::result::Result<
+              std::result::Result<Robj, extendr_api::Error>,
+              Box<dyn std::any::Any + Send>,
+          > = unsafe {
+              let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > {
+                      Ok(
+                          extendr_api::Robj::from(
+                              extendr_api::unwrap_or_throw_error(
+                                      <&__MyClassTryFrom>::try_from(&_self_robj),
+                                  )
+                                  .__name_test(),
+                          ),
+                      )
+                  }),
+              )
+          };
+          match wrap_result_state {
+              Ok(Ok(zz)) => {
+                  return unsafe { zz.get() };
+              }
+              Ok(Err(conversion_err)) => {
+                  let err_string = conversion_err.to_string();
+                  drop(conversion_err);
+                  extendr_api::throw_r_error(&err_string);
+              }
+              Err(unwind_err) => {
+                  drop(unwind_err);
+                  let err_string = {
+                      let res = ::alloc::fmt::format(
+                          format_args!("user function panicked: {0}", "__name_test"),
+                      );
+                      res
+                  };
+                  extendr_api::handle_panic(
+                      err_string.as_str(),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
+                  );
+              }
+          }
+          {
+              ::core::panicking::panic_fmt(
+                  format_args!(
+                      "internal error: entered unreachable code: {0}",
+                      format_args!("internal extendr error, this should never happen."),
+                  ),
+              );
+          }
+      }
+      #[allow(non_snake_case)]
+      fn meta____MyClassTryFrom____name_test(metadata: &mut Vec<extendr_api::metadata::Func>) {
+          let mut args = <[_]>::into_vec(
+              #[rustc_box]
+              ::alloc::boxed::Box::new([
+                  extendr_api::metadata::Arg {
+                      name: "self",
+                      arg_type: "__MyClassTryFrom",
+                      default: None,
+                  },
+              ]),
+          );
+          metadata
+              .push(extendr_api::metadata::Func {
+                  doc: " Method with special name unsupported by R",
+                  rust_name: "__name_test",
+                  r_name: "__name_test",
+                  mod_name: "__name_test",
+                  args: args,
+                  return_type: "()",
+                  func_ptr: wrap____MyClassTryFrom____name_test as *const u8,
+                  hidden: false,
+              })
+      }
+      impl TryFrom<Robj> for &__MyClassTryFrom {
+          type Error = Error;
+          fn try_from(robj: Robj) -> Result<Self> {
+              Self::try_from(&robj)
+          }
+      }
+      impl TryFrom<Robj> for &mut __MyClassTryFrom {
+          type Error = Error;
+          fn try_from(mut robj: Robj) -> Result<Self> {
+              Self::try_from(&mut robj)
+          }
+      }
+      impl TryFrom<&Robj> for &__MyClassTryFrom {
+          type Error = Error;
+          fn try_from(robj: &Robj) -> Result<Self> {
+              use libR_sys::R_ExternalPtrAddr;
+              unsafe {
+                  let ptr = R_ExternalPtrAddr(robj.get()).cast::<__MyClassTryFrom>();
+                  ptr.as_ref().ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+              }
+          }
+      }
+      impl TryFrom<&mut Robj> for &mut __MyClassTryFrom {
+          type Error = Error;
+          fn try_from(robj: &mut Robj) -> Result<Self> {
+              use libR_sys::R_ExternalPtrAddr;
+              unsafe {
+                  let ptr = R_ExternalPtrAddr(robj.get_mut()).cast::<__MyClassTryFrom>();
+                  ptr.as_mut().ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+              }
+          }
+      }
+      impl From<__MyClassTryFrom> for Robj {
+          fn from(value: __MyClassTryFrom) -> Self {
+              unsafe {
+                  let ptr = Box::into_raw(Box::new(value));
+                  let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
+                  res.set_attrib(class_symbol(), "__MyClassTryFrom").unwrap();
+                  res.register_c_finalizer(Some(__finalize____MyClassTryFrom));
+                  res
+              }
+          }
+      }
+      extern "C" fn __finalize____MyClassTryFrom(sexp: extendr_api::SEXP) {
+          unsafe {
+              let robj = extendr_api::robj::Robj::from_sexp(sexp);
+              if robj.check_external_ptr_type::<__MyClassTryFrom>() {
+                  let ptr = robj.external_ptr_addr::<__MyClassTryFrom>();
+                  drop(Box::from_raw(ptr));
+              }
+          }
+      }
+      #[allow(non_snake_case)]
+      fn meta____MyClassTryFrom(impls: &mut Vec<extendr_api::metadata::Impl>) {
+          let mut methods = Vec::new();
+          meta____MyClassTryFrom__new(&mut methods);
+          meta____MyClassTryFrom____name_test(&mut methods);
+          impls
+              .push(extendr_api::metadata::Impl {
+                  doc: "",
+                  name: "__MyClassTryFrom",
                   methods,
               });
       }
@@ -6418,9 +8449,12 @@
               std::result::Result<Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(extendr_api::Robj::from(<MyClassUnexported>::new()))
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(<MyClassUnexported>::new())) }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -6488,16 +8522,21 @@
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(
-                      extendr_api::Robj::from(
-                          extendr_api::unwrap_or_throw(
-                                  <&MyClassUnexported>::from_robj(&_self_robj),
-                              )
-                              .a(),
-                      ),
-                  )
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > {
+                      Ok(
+                          extendr_api::Robj::from(
+                              extendr_api::unwrap_or_throw(
+                                      <&MyClassUnexported>::from_robj(&_self_robj),
+                                  )
+                                  .a(),
+                          ),
+                      )
+                  }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -6587,8 +8626,8 @@
               }
           }
       }
-      impl From<MyClassUnexported> for Robj {
-          fn from(value: MyClassUnexported) -> Self {
+      impl<'a> From<&'a MyClassUnexported> for Robj {
+          fn from(value: &'a MyClassUnexported) -> Self {
               unsafe {
                   let ptr = Box::into_raw(Box::new(value));
                   let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
@@ -6598,8 +8637,8 @@
               }
           }
       }
-      impl<'a> From<&'a MyClassUnexported> for Robj {
-          fn from(value: &'a MyClassUnexported) -> Self {
+      impl From<MyClassUnexported> for Robj {
+          fn from(value: MyClassUnexported) -> Self {
               unsafe {
                   let ptr = Box::into_raw(Box::new(value));
                   let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
@@ -6630,6 +8669,267 @@
                   methods,
               });
       }
+      struct MyClassUnexportedTryFrom {
+          a: i32,
+      }
+      #[automatically_derived]
+      impl ::core::default::Default for MyClassUnexportedTryFrom {
+          #[inline]
+          fn default() -> MyClassUnexportedTryFrom {
+              MyClassUnexportedTryFrom {
+                  a: ::core::default::Default::default(),
+              }
+          }
+      }
+      #[automatically_derived]
+      impl ::core::fmt::Debug for MyClassUnexportedTryFrom {
+          #[inline]
+          fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+              ::core::fmt::Formatter::debug_struct_field1_finish(
+                  f,
+                  "MyClassUnexportedTryFrom",
+                  "a",
+                  &&self.a,
+              )
+          }
+      }
+      /// Class for testing (unexported)
+      impl MyClassUnexportedTryFrom {
+          /// Method for making a new object.
+          fn new() -> Self {
+              Self { a: 22 }
+          }
+          /// Method for getting stuff.
+          fn a(&self) -> i32 {
+              self.a
+          }
+      }
+      #[no_mangle]
+      #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+      pub extern "C" fn wrap__MyClassUnexportedTryFrom__new() -> extendr_api::SEXP {
+          use extendr_api::robj::*;
+          let wrap_result_state: std::result::Result<
+              std::result::Result<Robj, extendr_api::Error>,
+              Box<dyn std::any::Any + Send>,
+          > = unsafe {
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(<MyClassUnexportedTryFrom>::new())) }),
+              )
+          };
+          match wrap_result_state {
+              Ok(Ok(zz)) => {
+                  return unsafe { zz.get() };
+              }
+              Ok(Err(conversion_err)) => {
+                  let err_string = conversion_err.to_string();
+                  drop(conversion_err);
+                  extendr_api::throw_r_error(&err_string);
+              }
+              Err(unwind_err) => {
+                  drop(unwind_err);
+                  let err_string = {
+                      let res = ::alloc::fmt::format(
+                          format_args!("user function panicked: {0}", "new"),
+                      );
+                      res
+                  };
+                  extendr_api::handle_panic(
+                      err_string.as_str(),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
+                  );
+              }
+          }
+          {
+              ::core::panicking::panic_fmt(
+                  format_args!(
+                      "internal error: entered unreachable code: {0}",
+                      format_args!("internal extendr error, this should never happen."),
+                  ),
+              );
+          }
+      }
+      #[allow(non_snake_case)]
+      fn meta__MyClassUnexportedTryFrom__new(metadata: &mut Vec<extendr_api::metadata::Func>) {
+          let mut args = ::alloc::vec::Vec::new();
+          metadata
+              .push(extendr_api::metadata::Func {
+                  doc: " Method for making a new object.",
+                  rust_name: "new",
+                  r_name: "new",
+                  mod_name: "new",
+                  args: args,
+                  return_type: "Self",
+                  func_ptr: wrap__MyClassUnexportedTryFrom__new as *const u8,
+                  hidden: false,
+              })
+      }
+      #[no_mangle]
+      #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+      pub extern "C" fn wrap__MyClassUnexportedTryFrom__a(
+          _self: extendr_api::SEXP,
+      ) -> extendr_api::SEXP {
+          use extendr_api::robj::*;
+          let wrap_result_state: std::result::Result<
+              std::result::Result<Robj, extendr_api::Error>,
+              Box<dyn std::any::Any + Send>,
+          > = unsafe {
+              let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > {
+                      Ok(
+                          extendr_api::Robj::from(
+                              extendr_api::unwrap_or_throw_error(
+                                      <&MyClassUnexportedTryFrom>::try_from(&_self_robj),
+                                  )
+                                  .a(),
+                          ),
+                      )
+                  }),
+              )
+          };
+          match wrap_result_state {
+              Ok(Ok(zz)) => {
+                  return unsafe { zz.get() };
+              }
+              Ok(Err(conversion_err)) => {
+                  let err_string = conversion_err.to_string();
+                  drop(conversion_err);
+                  extendr_api::throw_r_error(&err_string);
+              }
+              Err(unwind_err) => {
+                  drop(unwind_err);
+                  let err_string = {
+                      let res = ::alloc::fmt::format(
+                          format_args!("user function panicked: {0}", "a"),
+                      );
+                      res
+                  };
+                  extendr_api::handle_panic(
+                      err_string.as_str(),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
+                  );
+              }
+          }
+          {
+              ::core::panicking::panic_fmt(
+                  format_args!(
+                      "internal error: entered unreachable code: {0}",
+                      format_args!("internal extendr error, this should never happen."),
+                  ),
+              );
+          }
+      }
+      #[allow(non_snake_case)]
+      fn meta__MyClassUnexportedTryFrom__a(metadata: &mut Vec<extendr_api::metadata::Func>) {
+          let mut args = <[_]>::into_vec(
+              #[rustc_box]
+              ::alloc::boxed::Box::new([
+                  extendr_api::metadata::Arg {
+                      name: "self",
+                      arg_type: "MyClassUnexportedTryFrom",
+                      default: None,
+                  },
+              ]),
+          );
+          metadata
+              .push(extendr_api::metadata::Func {
+                  doc: " Method for getting stuff.",
+                  rust_name: "a",
+                  r_name: "a",
+                  mod_name: "a",
+                  args: args,
+                  return_type: "i32",
+                  func_ptr: wrap__MyClassUnexportedTryFrom__a as *const u8,
+                  hidden: false,
+              })
+      }
+      impl TryFrom<Robj> for &MyClassUnexportedTryFrom {
+          type Error = Error;
+          fn try_from(robj: Robj) -> Result<Self> {
+              Self::try_from(&robj)
+          }
+      }
+      impl TryFrom<Robj> for &mut MyClassUnexportedTryFrom {
+          type Error = Error;
+          fn try_from(mut robj: Robj) -> Result<Self> {
+              Self::try_from(&mut robj)
+          }
+      }
+      impl TryFrom<&Robj> for &MyClassUnexportedTryFrom {
+          type Error = Error;
+          fn try_from(robj: &Robj) -> Result<Self> {
+              use libR_sys::R_ExternalPtrAddr;
+              unsafe {
+                  let ptr = R_ExternalPtrAddr(robj.get()).cast::<MyClassUnexportedTryFrom>();
+                  ptr.as_ref().ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+              }
+          }
+      }
+      impl TryFrom<&mut Robj> for &mut MyClassUnexportedTryFrom {
+          type Error = Error;
+          fn try_from(robj: &mut Robj) -> Result<Self> {
+              use libR_sys::R_ExternalPtrAddr;
+              unsafe {
+                  let ptr = R_ExternalPtrAddr(robj.get_mut())
+                      .cast::<MyClassUnexportedTryFrom>();
+                  ptr.as_mut().ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+              }
+          }
+      }
+      impl From<MyClassUnexportedTryFrom> for Robj {
+          fn from(value: MyClassUnexportedTryFrom) -> Self {
+              unsafe {
+                  let ptr = Box::into_raw(Box::new(value));
+                  let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
+                  res.set_attrib(class_symbol(), "MyClassUnexportedTryFrom").unwrap();
+                  res.register_c_finalizer(Some(__finalize__MyClassUnexportedTryFrom));
+                  res
+              }
+          }
+      }
+      extern "C" fn __finalize__MyClassUnexportedTryFrom(sexp: extendr_api::SEXP) {
+          unsafe {
+              let robj = extendr_api::robj::Robj::from_sexp(sexp);
+              if robj.check_external_ptr_type::<MyClassUnexportedTryFrom>() {
+                  let ptr = robj.external_ptr_addr::<MyClassUnexportedTryFrom>();
+                  drop(Box::from_raw(ptr));
+              }
+          }
+      }
+      #[allow(non_snake_case)]
+      fn meta__MyClassUnexportedTryFrom(impls: &mut Vec<extendr_api::metadata::Impl>) {
+          let mut methods = Vec::new();
+          meta__MyClassUnexportedTryFrom__new(&mut methods);
+          meta__MyClassUnexportedTryFrom__a(&mut methods);
+          impls
+              .push(extendr_api::metadata::Impl {
+                  doc: " Class for testing (unexported)",
+                  name: "MyClassUnexportedTryFrom",
+                  methods,
+              });
+      }
       /// Create a new device.
       ///
       /// @param welcome_message A warm message to welcome you.
@@ -6653,13 +8953,18 @@
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               let _welcome_message_robj = extendr_api::robj::Robj::from_sexp(welcome_message);
-              std::panic::catch_unwind(|| -> std::result::Result<Robj, extendr_api::Error> {
-                  Ok(
-                      extendr_api::Robj::from(
-                          my_device(<String>::from_robj(&_welcome_message_robj)?),
-                      ),
-                  )
-              })
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > {
+                      Ok(
+                          extendr_api::Robj::from(
+                              my_device(<String>::from_robj(&_welcome_message_robj)?),
+                          ),
+                      )
+                  }),
+              )
           };
           match wrap_result_state {
               Ok(Ok(zz)) => {
@@ -6760,6 +9065,9 @@
           meta__MyClass(&mut impls);
           meta____MyClass(&mut impls);
           meta__MyClassUnexported(&mut impls);
+          meta__MyClassTryFrom(&mut impls);
+          meta____MyClassTryFrom(&mut impls);
+          meta__MyClassUnexportedTryFrom(&mut impls);
           functions.extend(altrep::get_altrep_metadata().functions);
           functions.extend(dataframe::get_dataframe_metadata().functions);
           functions.extend(memory_leaks::get_memory_leaks_metadata().functions);

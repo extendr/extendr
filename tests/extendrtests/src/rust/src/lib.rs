@@ -255,6 +255,53 @@ impl MyClass {
         x
     }
 }
+// Class for testing
+#[derive(Default, Debug)]
+struct MyClassTryFrom {
+    a: i32,
+}
+
+/// Class for testing (exported)
+/// @examples
+/// x <- MyClass$new()
+/// x$a()
+/// x$set_a(10)
+/// x$a()
+/// @export
+#[extendr(use_try_from = true)]
+impl MyClassTryFrom {
+    /// Method for making a new object.
+    fn new() -> Self {
+        Self { a: 0 }
+    }
+
+    /// Method for setting stuff.
+    /// @param x a number
+    fn set_a(&mut self, x: i32) {
+        self.a = x;
+    }
+
+    /// Method for getting stuff.
+    fn a(&self) -> i32 {
+        self.a
+    }
+
+    /// Method for getting one's self.
+    fn me(&self) -> &Self {
+        self
+    }
+
+    // https://github.com/extendr/extendr/issues/431
+    fn restore_from_robj(robj: Robj) -> Self {
+        let res: ExternalPtr<MyClassTryFrom> = robj.try_into().unwrap();
+        Self { a: res.a }
+    }
+
+    // https://github.com/extendr/extendr/issues/435
+    fn get_default_value(#[default = "42"] x: i32) -> i32 {
+        x
+    }
+}
 
 // Class for testing special names
 #[derive(Default, Debug)]
@@ -272,6 +319,22 @@ impl __MyClass {
     fn __name_test(&self) {}
 }
 
+// Class for testing special names
+#[derive(Default, Debug)]
+struct __MyClassTryFrom {}
+
+// Class for testing special names
+// Unexported because of documentation conflict
+#[extendr(use_try_from = true)]
+impl __MyClassTryFrom {
+    /// Method for making a new object.
+    fn new() -> Self {
+        Self {}
+    }
+    /// Method with special name unsupported by R
+    fn __name_test(&self) {}
+}
+
 // Class for testing (unexported)
 #[derive(Default, Debug)]
 struct MyClassUnexported {
@@ -281,6 +344,26 @@ struct MyClassUnexported {
 /// Class for testing (unexported)
 #[extendr]
 impl MyClassUnexported {
+    /// Method for making a new object.
+    fn new() -> Self {
+        Self { a: 22 }
+    }
+
+    /// Method for getting stuff.
+    fn a(&self) -> i32 {
+        self.a
+    }
+}
+
+// Class for testing (unexported)
+#[derive(Default, Debug)]
+struct MyClassUnexportedTryFrom {
+    a: i32,
+}
+
+/// Class for testing (unexported)
+#[extendr(use_try_from = true)]
+impl MyClassUnexportedTryFrom {
     /// Method for making a new object.
     fn new() -> Self {
         Self { a: 22 }
@@ -352,6 +435,10 @@ extendr_module! {
     impl MyClass;
     impl __MyClass;
     impl MyClassUnexported;
+
+    impl MyClassTryFrom;
+    impl __MyClassTryFrom;
+    impl MyClassUnexportedTryFrom;
 
     fn my_device;
 

@@ -187,6 +187,60 @@ MyClassUnexported$a <- function() .Call(wrap__MyClassUnexported__a, self)
 
 #' Class for testing (exported)
 #' @examples
+#' x <- MyClass$new()
+#' x$a()
+#' x$set_a(10)
+#' x$a()
+#' @export
+MyClassTryFrom <- new.env(parent = emptyenv())
+
+MyClassTryFrom$new <- function() .Call(wrap__MyClassTryFrom__new)
+
+MyClassTryFrom$set_a <- function(x) invisible(.Call(wrap__MyClassTryFrom__set_a, self, x))
+
+MyClassTryFrom$a <- function() .Call(wrap__MyClassTryFrom__a, self)
+
+MyClassTryFrom$me <- function() .Call(wrap__MyClassTryFrom__me, self)
+
+MyClassTryFrom$restore_from_robj <- function(robj) .Call(wrap__MyClassTryFrom__restore_from_robj, robj)
+
+MyClassTryFrom$get_default_value <- function(x = 42) .Call(wrap__MyClassTryFrom__get_default_value, x)
+
+#' @rdname MyClassTryFrom
+#' @usage NULL
+#' @export
+`$.MyClassTryFrom` <- function (self, name) { func <- MyClassTryFrom[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.MyClassTryFrom` <- `$.MyClassTryFrom`
+
+`__MyClassTryFrom` <- new.env(parent = emptyenv())
+
+`__MyClassTryFrom`$new <- function() .Call(wrap____MyClassTryFrom__new)
+
+`__MyClassTryFrom`$`__name_test` <- function() invisible(.Call(wrap____MyClassTryFrom____name_test, self))
+
+#' @export
+`$.__MyClassTryFrom` <- function (self, name) { func <- `__MyClassTryFrom`[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.__MyClassTryFrom` <- `$.__MyClassTryFrom`
+
+#' Class for testing (unexported)
+MyClassUnexportedTryFrom <- new.env(parent = emptyenv())
+
+MyClassUnexportedTryFrom$new <- function() .Call(wrap__MyClassUnexportedTryFrom__new)
+
+MyClassUnexportedTryFrom$a <- function() .Call(wrap__MyClassUnexportedTryFrom__a, self)
+
+#' @export
+`$.MyClassUnexportedTryFrom` <- function (self, name) { func <- MyClassUnexportedTryFrom[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.MyClassUnexportedTryFrom` <- `$.MyClassUnexportedTryFrom`
+
+#' Class for testing (exported)
+#' @examples
 #' x <- MySubmoduleClass$new()
 #' x$a()
 #' x$set_a(10)
@@ -217,6 +271,39 @@ MySubmoduleClass$me_explicit_mut <- function() .Call(wrap__MySubmoduleClass__me_
 
 #' @export
 `[[.MySubmoduleClass` <- `$.MySubmoduleClass`
+
+#' Class for testing (exported)
+#' @examples
+#' x <- MySubmoduleClassTryFrom$new()
+#' x$a()
+#' x$set_a(10)
+#' x$a()
+#' @export
+MySubmoduleClassTryFrom <- new.env(parent = emptyenv())
+
+MySubmoduleClassTryFrom$new <- function() .Call(wrap__MySubmoduleClassTryFrom__new)
+
+MySubmoduleClassTryFrom$set_a <- function(x) invisible(.Call(wrap__MySubmoduleClassTryFrom__set_a, self, x))
+
+MySubmoduleClassTryFrom$a <- function() .Call(wrap__MySubmoduleClassTryFrom__a, self)
+
+MySubmoduleClassTryFrom$me_owned <- function() .Call(wrap__MySubmoduleClassTryFrom__me_owned, self)
+
+MySubmoduleClassTryFrom$me_ref <- function() .Call(wrap__MySubmoduleClassTryFrom__me_ref, self)
+
+MySubmoduleClassTryFrom$me_mut <- function() .Call(wrap__MySubmoduleClassTryFrom__me_mut, self)
+
+MySubmoduleClassTryFrom$me_explicit_ref <- function() .Call(wrap__MySubmoduleClassTryFrom__me_explicit_ref, self)
+
+MySubmoduleClassTryFrom$me_explicit_mut <- function() .Call(wrap__MySubmoduleClassTryFrom__me_explicit_mut, self)
+
+#' @rdname MySubmoduleClassTryFrom
+#' @usage NULL
+#' @export
+`$.MySubmoduleClassTryFrom` <- function (self, name) { func <- MySubmoduleClassTryFrom[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.MySubmoduleClassTryFrom` <- `$.MySubmoduleClassTryFrom`
 
 
 # nolint end

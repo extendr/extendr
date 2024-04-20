@@ -4,6 +4,9 @@
 
 ### Added
 
+- Adds `TryFrom<Robj>` and `<TryFrom<&Robj>` for `impl` blocks marked with `#[extendr]` macro allowing falliable conversion to `&Self` `&mut Self` 
+- Adds `From<T> for Robj` for impl blocks marked with `#[extendr]` macro
+- The new `ExpectedExternalNonNullPtr` error variant provides a more informative error when a null pointer is accessed
 - `RArray::data_mut` provides a mutable slice to the underlying array data [[#657]](https://github.com/extendr/extendr/pull/657)
 
 ### Changed

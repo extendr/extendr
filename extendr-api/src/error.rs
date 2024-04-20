@@ -78,6 +78,7 @@ pub enum Error {
     NoGraphicsDevices(Robj),
 
     ExpectedExternalPtrType(Robj, String),
+    ExpectedExternalNonNullPtr(Robj),
     Other(String),
 
     #[cfg(feature = "ndarray")]
@@ -160,6 +161,13 @@ impl std::fmt::Display for Error {
             Error::NamespaceNotFound(robj) => write!(f, "Namespace {:?} not found", robj),
             Error::ExpectedExternalPtrType(_robj, type_name) => {
                 write!(f, "Incorrect external pointer type {}", type_name)
+            }
+            Error::ExpectedExternalNonNullPtr(robj) => {
+                write!(
+                    f,
+                    "expected non-null pointer in externalptr, instead {:?}",
+                    robj
+                )
             }
             Error::NoGraphicsDevices(_robj) => write!(f, "No graphics devices active."),
             Error::Other(str) => write!(f, "{}", str),
