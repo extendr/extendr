@@ -21,7 +21,7 @@ mod send_sexp {
     //! Provide a wrapper around R's pointer type `SEXP` that is `Send`.
     //!
     //! This can lead to soundness issues, therefore accessing the `SEXP` has
-    //! to happen through the unsafe methods [`SendSEXP::inner`] and [`SendSEXP::set_inner`].
+    //! to happen through the unsafe method [`SendSEXP::inner`].
     //!
     use libR_sys::SEXP;
 
@@ -43,11 +43,6 @@ mod send_sexp {
         /// Get the inner `SEXP`
         pub unsafe fn inner(&self) -> SEXP {
             self.0
-        }
-
-        /// Set the inner `SEXP` as another `SEXP`
-        pub unsafe fn set_inner(&mut self, value: SEXP) {
-            self.0 = value;
         }
     }
 }
