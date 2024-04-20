@@ -150,7 +150,7 @@ impl Ownership {
             self.garbage_collect();
         }
 
-        let sexp_usize = sexp.into();
+        let send_sexp = sexp.into();
         let Ownership {
             ref mut preservation,
             ref mut cur_index,
@@ -158,7 +158,7 @@ impl Ownership {
             ref mut objects,
         } = *self;
 
-        let mut entry = objects.entry(sexp_usize);
+        let mut entry = objects.entry(send_sexp);
         let preservation_sexp = preservation.inner();
         match entry {
             Entry::Occupied(ref mut occupied) => {
