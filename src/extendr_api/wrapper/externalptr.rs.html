@@ -211,12 +211,12 @@
 /// ```
 ///
 </span><span class="attr">#[derive(PartialEq, Clone)]
-</span><span class="kw">pub struct </span>ExternalPtr&lt;T: Debug + <span class="lifetime">'static</span>&gt; {
+</span><span class="kw">pub struct </span>ExternalPtr&lt;T&gt; {
     <span class="doccomment">/// This is the contained Robj.
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) robj: Robj,
 
     <span class="doccomment">/// This is a zero-length object that holds the type of the object.
-    </span>marker: std::marker::PhantomData&lt;T&gt;,
+    </span>_marker: std::marker::PhantomData&lt;T&gt;,
 }
 
 <span class="kw">impl</span>&lt;T: Debug + <span class="lifetime">'static</span>&gt; robj::GetSexp <span class="kw">for </span>ExternalPtr&lt;T&gt; {
@@ -311,7 +311,7 @@
             <span class="comment">// Return an object in a wrapper.
             </span><span class="self">Self </span>{
                 robj,
-                marker: std::marker::PhantomData,
+                _marker: std::marker::PhantomData,
             }
         })
     }
@@ -357,7 +357,7 @@
         } <span class="kw">else if </span>clone.check_external_ptr_type::&lt;T&gt;() {
             <span class="kw">let </span>res = ExternalPtr::&lt;T&gt; {
                 robj: clone,
-                marker: std::marker::PhantomData,
+                _marker: std::marker::PhantomData,
             };
             <span class="prelude-val">Ok</span>(res)
         } <span class="kw">else </span>{
