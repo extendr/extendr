@@ -17,6 +17,38 @@ use libR_sys::{
     Rf_unprotect, LENGTH, SET_VECTOR_ELT, SEXP, SEXPTYPE, VECTOR_ELT,
 };
 
+mod send_sexp {
+    //! Provide a wrapper around R's pointer type `SEXP` that is `Send`.
+    //!
+    //! This can lead to soundness issues, therefore accessing the `SEXP` has
+    //! to happen through the unsafe method [`SendSEXP::inner`].
+    //!
+    use libR_sys::SEXP;
+
+    /// A wrapper around R's pointer type `SEXP` that is `Send`.
+    #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+    pub struct SendSEXP(SEXP);
+
+    impl From<SEXP> for SendSEXP {
+        fn from(value: SEXP) -> Self {
+            Self(value)
+        }
+    }
+
+    // Allows SendSEXP to be sent between threads even though unsafe
+    // Requires that the SEXP is not accessed concurrently.
+    unsafe impl Send for SendSEXP {}
+
+    impl SendSEXP {
+        /// Get the inner `SEXP`
+        pub unsafe fn inner(&self) -> SEXP {
+            self.0
+        }
+    }
+}
+
+use self::send_sexp::SendSEXP;
+
 static OWNERSHIP: Lazy<Mutex<Ownership>> = Lazy::new(|| Mutex::new(Ownership::new()));
 
 pub(crate) unsafe fn protect(sexp: SEXP) {
@@ -32,15 +64,20 @@ pub(crate) unsafe fn unprotect(sexp: SEXP) {
 pub const INITIAL_PRESERVATION_SIZE: usize = 100000;
 pub const EXTRA_PRESERVATION_SIZE: usize = 100000;
 
+// `Object` is a manual reference counting mechanism that is used for each SEXP.
+// `refcount` is the number of times the SEXP is accessed.
+// `index` is the index of the SEXP in the preservation vector.
+#[derive(Debug)]
 struct Object {
     refcount: usize,
     index: usize,
 }
 
 // A reference counted object with an index in the preservation vector.
+#[derive(Debug)]
 struct Ownership {
     // A growable vector containing all owned objects.
-    preservation: usize,
+    preservation: SendSEXP,
 
     // An incrementing count of objects through the vector.
     cur_index: usize,
@@ -49,7 +86,7 @@ struct Ownership {
     max_index: usize,
 
     // A hash map from SEXP address to object.
-    objects: HashMap<usize, Object>,
+    objects: HashMap<SendSEXP, Object>,
 }
 
 impl Ownership {
@@ -59,7 +96,7 @@ impl Ownership {
                 Rf_allocVector(SEXPTYPE::VECSXP, INITIAL_PRESERVATION_SIZE as R_xlen_t);
             R_PreserveObject(preservation);
             Ownership {
-                preservation: preservation as usize,
+                preservation: preservation.into(),
                 cur_index: 0,
                 max_index: INITIAL_PRESERVATION_SIZE,
                 objects: HashMap::with_capacity(INITIAL_PRESERVATION_SIZE),
@@ -100,13 +137,21 @@ impl Ownership {
     }
 
     unsafe fn protect(&mut self, sexp: SEXP) {
+        // This protects the SEXP. Is this necessary?
+        // Because the Ownership object already protects an SEXP in the `preservation` field.
+        // The new `sexp` is inserted into the preservation list via `SET_VECTOR_ELT` below.
+        // If list is protected then so are all of its elements.
+        //
+        // > Protecting an R object automatically protects all the R objects
+        // > pointed to in the corresponding SEXPREC, for example all elements
+        // > of a protected list are automatically protected." 5.9.1
         Rf_protect(sexp);
 
         if self.cur_index == self.max_index {
             self.garbage_collect();
         }
 
-        let sexp_usize = sexp as usize;
+        let send_sexp = sexp.into();
         let Ownership {
             ref mut preservation,
             ref mut cur_index,
@@ -114,8 +159,8 @@ impl Ownership {
             ref mut objects,
         } = *self;
 
-        let mut entry = objects.entry(sexp_usize);
-        let preservation_sexp = *preservation as SEXP;
+        let mut entry = objects.entry(send_sexp);
+        let preservation_sexp = preservation.inner();
         match entry {
             Entry::Occupied(ref mut occupied) => {
                 if occupied.get().refcount == 0 {
@@ -138,15 +183,15 @@ impl Ownership {
     }
 
     pub unsafe fn unprotect(&mut self, sexp: SEXP) {
-        let sexp_usize = sexp as usize;
+        let send_sexp = sexp.into();
         let Ownership {
             preservation,
             cur_index: _,
             max_index: _,
             ref mut objects,
-        } = *self;
+        } = self;
 
-        let mut entry = objects.entry(sexp_usize);
+        let mut entry = objects.entry(send_sexp);
         match entry {
             Entry::Occupied(ref mut occupied) => {
                 let object = occupied.get_mut();
@@ -158,7 +203,7 @@ impl Ownership {
                         // Clear the preservation vector, but keep the hash table entry.
                         // It is hard to clear the hash table entry here because we don't
                         // have a ref to objects anymore and it is faster to clear them up en-masse.
-                        let preservation_sexp = preservation as SEXP;
+                        let preservation_sexp = preservation.inner();
                         SET_VECTOR_ELT(preservation_sexp, object.index as R_xlen_t, R_NilValue);
                     }
                 }
@@ -178,8 +223,7 @@ impl Ownership {
             ref mut objects,
         } = *self;
 
-        let sexp_usize = sexp as usize;
-        let mut entry = objects.entry(sexp_usize);
+        let mut entry = objects.entry(sexp.into());
         match entry {
             Entry::Occupied(ref mut occupied) => occupied.get().refcount,
             Entry::Vacant(_) => 0,
@@ -189,7 +233,7 @@ impl Ownership {
     // Check the consistency of the model.
     #[allow(dead_code)]
     unsafe fn check_objects(&mut self) {
-        let preservation_sexp = self.preservation as SEXP;
+        let preservation_sexp = self.preservation.inner();
         assert_eq!(self.max_index, LENGTH(preservation_sexp) as usize);
 
         // println!("\ncheck");
@@ -203,7 +247,7 @@ impl Ownership {
             // );
             if object.refcount != 0 {
                 // A non-zero refcount implies the object is in the vector.
-                assert_eq!(elt, *addr as SEXP);
+                assert_eq!(elt, addr.inner());
             } else {
                 // A zero refcount implies the object is NULL in the vector.
                 assert_eq!(elt, R_NilValue);
@@ -227,7 +271,7 @@ impl Ownership {
 mod test {
     use super::*;
     use crate::*;
-    use libR_sys::{Rf_ScalarInteger, Rf_protect, Rf_unprotect};
+    use libR_sys::{Rf_ScalarInteger, Rf_protect};
 
     #[test]
     fn basic_test() {
