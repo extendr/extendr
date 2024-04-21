@@ -173,7 +173,10 @@ fn manifest(x: SEXP) -> SEXP {
             CPLXSXP => {
                 COMPLEX_GET_REGION(x, 0, len as R_xlen_t, COMPLEX(data2));
             }
-            _ => panic!("unsupported ALTREP type."),
+            _ => {
+                Rf_unprotect(2);
+                panic!("unsupported ALTREP type.")
+            }
         };
         Rf_unprotect(2);
         data2
