@@ -179,22 +179,22 @@ pub enum FontFace {
     Symbol,
 }
 
-impl LineEnd {
-    fn to_u32(&self) -> u32 {
-        match self {
-            Self::Round => 1,
-            Self::Butt => 2,
-            Self::Square => 3,
+impl From<LineEnd> for R_GE_lineend {
+    fn from(value: LineEnd) -> Self {
+        match value {
+            LineEnd::Round => Self::GE_ROUND_CAP,
+            LineEnd::Butt => Self::GE_BUTT_CAP,
+            LineEnd::Square => Self::GE_SQUARE_CAP,
         }
     }
 }
 
-impl LineJoin {
-    fn to_u32(&self) -> u32 {
-        match self {
-            Self::Round => 1,
-            Self::Mitre => 2,
-            Self::Bevel => 3,
+impl From<LineJoin> for R_GE_linejoin {
+    fn from(value: LineJoin) -> Self {
+        match value {
+            LineJoin::Round => Self::GE_ROUND_JOIN,
+            LineJoin::Mitre => Self::GE_MITRE_JOIN,
+            LineJoin::Bevel => Self::GE_BEVEL_JOIN,
         }
     }
 }
@@ -227,10 +227,10 @@ impl FontFace {
 
 fn unit_to_ge(unit: Unit) -> GEUnit {
     match unit {
-        Unit::Device => GEUnit_GE_DEVICE,
-        Unit::Normalized => GEUnit_GE_NDC,
-        Unit::Inches => GEUnit_GE_INCHES,
-        Unit::CM => GEUnit_GE_CM,
+        Unit::Device => GEUnit::GE_DEVICE,
+        Unit::Normalized => GEUnit::GE_NDC,
+        Unit::Inches => GEUnit::GE_INCHES,
+        Unit::CM => GEUnit::GE_CM,
     }
 }
 
@@ -255,8 +255,8 @@ impl Context {
                 gamma: 1.0,
                 lwd: 1.0,
                 lty: 0,
-                lend: R_GE_lineend_GE_ROUND_CAP,
-                ljoin: R_GE_linejoin_GE_ROUND_JOIN,
+                lend: R_GE_lineend::GE_ROUND_CAP,
+                ljoin: R_GE_linejoin::GE_ROUND_JOIN,
                 lmitre: 10.0,
                 cex: 1.0,
                 ps: 14.0,
@@ -330,7 +330,7 @@ impl Context {
     ///   LineEnd::SquareCap
     /// ```
     pub fn line_end(&mut self, lend: LineEnd) -> &mut Self {
-        self.context.lend = lend.to_u32();
+        self.context.lend = lend.into();
         self
     }
 
@@ -341,7 +341,7 @@ impl Context {
     ///   LineJoin::BevelJoin
     /// ```
     pub fn line_join(&mut self, ljoin: LineJoin) -> &mut Self {
-        self.context.ljoin = ljoin.to_u32();
+        self.context.ljoin = ljoin.into();
         self
     }
 
@@ -693,7 +693,7 @@ impl Device {
                 yptr,
                 nper.len() as std::os::raw::c_int,
                 nperptr,
-                if winding { 1 } else { 0 },
+                winding.into(),
                 gc.context(),
                 self.inner(),
             )
@@ -724,7 +724,7 @@ impl Device {
             let raster = pixels.as_ptr() as *mut u32;
             let w = w as i32;
             let h = h as i32;
-            let interpolate = if interpolate { 1 } else { 0 };
+            let interpolate = interpolate.into();
             GERaster(
                 raster,
                 w,
@@ -755,7 +755,7 @@ impl Device {
             let (x, y) = gc.t(pos);
             let (xc, yc) = gc.trel(center);
             let text = std::ffi::CString::new(text.as_ref()).unwrap();
-            let enc = cetype_t_CE_UTF8;
+            let enc = cetype_t::CE_UTF8;
             GEText(
                 x,
                 y,
@@ -802,21 +802,21 @@ impl Device {
     /// Get the width of a unicode string.
     pub fn text_width<T: AsRef<str>>(&self, text: T, gc: &Context) -> f64 {
         let text = std::ffi::CString::new(text.as_ref()).unwrap();
-        let enc = cetype_t_CE_UTF8;
+        let enc = cetype_t::CE_UTF8;
         unsafe { gc.its(GEStrWidth(text.as_ptr(), enc, gc.context(), self.inner())) }
     }
 
     /// Get the height of a unicode string.
     pub fn text_height<T: AsRef<str>>(&self, text: T, gc: &Context) -> f64 {
         let text = std::ffi::CString::new(text.as_ref()).unwrap();
-        let enc = cetype_t_CE_UTF8;
+        let enc = cetype_t::CE_UTF8;
         unsafe { gc.its(GEStrHeight(text.as_ptr(), enc, gc.context(), self.inner())) }
     }
 
     /// Get the metrics for a unicode string.
     pub fn text_metric<T: AsRef<str>>(&self, text: T, gc: &Context) -> TextMetric {
         let text = std::ffi::CString::new(text.as_ref()).unwrap();
-        let enc = cetype_t_CE_UTF8;
+        let enc = cetype_t::CE_UTF8;
         unsafe {
             let mut res = TextMetric {
                 ascent: 0.0,

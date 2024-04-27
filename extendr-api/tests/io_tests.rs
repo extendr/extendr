@@ -5,11 +5,11 @@ fn test_save() {
     use extendr_api::{io::PstreamFormat, io::Save, test, Result, Robj};
     test! {
         let mut w = Vec::new();
-        Robj::from(1).to_writer(&mut w, PstreamFormat::AsciiFormat, 3, None)?;
+        Robj::from(1).to_writer(&mut w, PstreamFormat::R_pstream_ascii_format, 3, None)?;
         assert!(w[0] == b'A');
 
         let mut w = Vec::new();
-        Robj::from(1).to_writer(&mut w, PstreamFormat::BinaryFormat, 3, None)?;
+        Robj::from(1).to_writer(&mut w, PstreamFormat::R_pstream_binary_format, 3, None)?;
         assert!(w[0] == b'B');
 
         // let path : std::path::PathBuf = "/tmp/1".into();
@@ -40,7 +40,7 @@ UTF-8
 
         let mut c = std::io::Cursor::new(text);
 
-        let res = Robj::from_reader(&mut c, PstreamFormat::AsciiFormat, None);
+        let res = Robj::from_reader(&mut c, PstreamFormat::R_pstream_ascii_format, None);
         assert_eq!(res, Ok(Robj::from(1_i32)));
     }
 }

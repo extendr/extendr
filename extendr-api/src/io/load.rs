@@ -58,7 +58,7 @@ pub trait Load {
         // pub type R_inpstream_t = *mut R_inpstream_st;
         let mut state = R_inpstream_st {
             data,
-            type_: format as R_pstream_format_t,
+            type_: format,
             InChar: Some(inchar::<R>),
             InBytes: Some(inbytes::<R>),
             InPersistHookFunc: hook_func,
