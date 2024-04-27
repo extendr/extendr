@@ -288,7 +288,10 @@ pub trait Types: GetSexp {
             EXTPTRSXP => Rtype::ExternalPtr,
             WEAKREFSXP => Rtype::WeakRef,
             RAWSXP => Rtype::Raw,
+            #[cfg(not(use_objsxp))]
             S4SXP => Rtype::S4,
+            #[cfg(use_objsxp)]
+            OBJSXP => Rtype::S4,
             _ => Rtype::Unknown,
         }
     }
@@ -320,7 +323,10 @@ pub trait Types: GetSexp {
                 EXTPTRSXP => Rany::ExternalPtr(std::mem::transmute(self.as_robj())),
                 WEAKREFSXP => Rany::WeakRef(std::mem::transmute(self.as_robj())),
                 RAWSXP => Rany::Raw(std::mem::transmute(self.as_robj())),
+                #[cfg(not(use_objsxp))]
                 S4SXP => Rany::S4(std::mem::transmute(self.as_robj())),
+                #[cfg(use_objsxp)]
+                OBJSXP => Rany::S4(std::mem::transmute(self.as_robj())),
                 _ => Rany::Unknown(std::mem::transmute(self.as_robj())),
             }
         }

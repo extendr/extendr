@@ -583,7 +583,10 @@ pub fn rtype_to_sxp(rtype: Rtype) -> SEXPTYPE {
         ExternalPtr => EXTPTRSXP,
         WeakRef => WEAKREFSXP,
         Raw => RAWSXP,
+        #[cfg(not(use_objsxp))]
         S4 => S4SXP,
+        #[cfg(use_objsxp)]
+        S4 => OBJSXP,
         Unknown => panic!("attempt to use Unknown Rtype"),
     }
 }
@@ -616,7 +619,10 @@ pub fn sxp_to_rtype(sxptype: SEXPTYPE) -> Rtype {
         EXTPTRSXP => ExternalPtr,
         WEAKREFSXP => WeakRef,
         RAWSXP => Raw,
+        #[cfg(not(use_objsxp))]
         S4SXP => S4,
+        #[cfg(use_objsxp)]
+        OBJSXP => S4,
         _ => Unknown,
     }
 }
