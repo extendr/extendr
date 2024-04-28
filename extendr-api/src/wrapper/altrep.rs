@@ -654,29 +654,24 @@ impl Altrep {
             let csname = std::ffi::CString::new(name).unwrap();
             let csbase = std::ffi::CString::new(base).unwrap();
 
+            let dll_info = libR_sys::R_getEmbeddingDllInfo();
             let class_ptr = match ty {
                 Rtype::Integers => {
-                    R_make_altinteger_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
+                    R_make_altinteger_class(csname.as_ptr(), csbase.as_ptr(), dll_info)
                 }
-                Rtype::Doubles => {
-                    R_make_altreal_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
-                }
+                Rtype::Doubles => R_make_altreal_class(csname.as_ptr(), csbase.as_ptr(), dll_info),
                 Rtype::Logicals => {
-                    R_make_altlogical_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
+                    R_make_altlogical_class(csname.as_ptr(), csbase.as_ptr(), dll_info)
                 }
-                Rtype::Raw => {
-                    R_make_altraw_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
-                }
+                Rtype::Raw => R_make_altraw_class(csname.as_ptr(), csbase.as_ptr(), dll_info),
                 Rtype::Complexes => {
-                    R_make_altcomplex_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
+                    R_make_altcomplex_class(csname.as_ptr(), csbase.as_ptr(), dll_info)
                 }
                 Rtype::Strings => {
-                    R_make_altstring_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
+                    R_make_altstring_class(csname.as_ptr(), csbase.as_ptr(), dll_info)
                 }
                 #[cfg(use_r_altlist)]
-                Rtype::List => {
-                    R_make_altlist_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
-                }
+                Rtype::List => R_make_altlist_class(csname.as_ptr(), csbase.as_ptr(), dll_info),
                 _ => panic!("expected Altvec compatible type"),
             };
 
