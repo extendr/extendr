@@ -71,6 +71,19 @@ use proc_macro::TokenStream;
 use quote::quote;
 use syn::{parse_macro_input, Item};
 
+/// The `#[extendr]`-macro may be placed on three items
+///
+/// - `fn` for wrapped rust-functions, see [`extendr-fn`]
+/// - `impl`-blocks, see [`extendr-impl`]
+/// - Rust `enum`s as R factors, see [`extendr-enum`]
+///
+/// [`extendr-fn`]: extendr-macros/extendr_function/fn.extendr_function.html
+/// [`extendr-impl`]: extendr_impl/fn.extendr_impl.html
+/// [`extendr-enum`]: extendr_enum/fn.extendr_enum.html
+///
+/// There is also [extendr_module!], which is used for defining what rust
+/// wrapped items should be visible to the surrounding R-package.
+/// 
 #[proc_macro_attribute]
 pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
     let mut opts = wrappers::ExtendrOptions::default();
@@ -134,7 +147,7 @@ pub fn list(item: TokenStream) -> TokenStream {
 
 /// Call a function or primitive defined by a text expression with arbitrary parameters.
 /// This currently works by parsing and evaluating the string in R, but will probably acquire
-/// some shortcuts for simple expessions, for example by caching symbols and constant values.
+/// some shortcuts for simple expressions, for example by caching symbols and constant values.
 ///
 /// ```ignore
 ///     assert_eq!(call!("`+`", 1, 2), r!(3));
@@ -204,6 +217,10 @@ pub fn Rraw(item: TokenStream) -> TokenStream {
 /// # }
 /// # Ok::<(), extendr_api::Error>(())
 /// ```
+///
+/// See [`IntoRobj`] for converting arbitrary Rust types into R type by using
+/// R's list / `List`.
+///
 #[proc_macro_derive(TryFromRobj)]
 pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
     match list_struct::derive_try_from_robj(item) {
@@ -239,7 +256,13 @@ pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
 /// # }
 /// # Ok::<(), extendr_api::Error>(())
 /// ```
+/// 
+/// See [`TryFromRobj`] for a `derive`-macro in the other direction, i.e.
+/// instantiation of a rust type, by an R list with fields corresponding to
+/// said type.
+/// 
 /// # Details
+/// 
 /// Note, the `From<Struct> for Robj` behaviour is different from what is obtained by applying the standard `#[extendr]` macro
 /// to an `impl` block. The `#[extendr]` behaviour returns to R a **pointer** to Rust memory, and generates wrapper functions for calling
 /// Rust functions on that pointer. The implementation from `#[derive(IntoRobj)]` actually converts the Rust structure
@@ -273,7 +296,6 @@ pub fn derive_into_robj(item: TokenStream) -> TokenStream {
 /// assert_eq!(df[0], r!([0, 1]));
 /// assert_eq!(df[1], r!(["abc", "xyz"]));
 /// ```
-
 #[proc_macro_derive(IntoDataFrameRow)]
 pub fn derive_into_dataframe(item: TokenStream) -> TokenStream {
     dataframe::derive_into_dataframe(item)

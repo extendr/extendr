@@ -1,5 +1,18 @@
+//! This provides an abstraction for R's `data.frame`-constructor in Rust.
+//! For a given `struct` say `CustomRow`, one may implement or derive [`IntoDataFrameRow`],
+//! thus being able to convert `Vec<CustomRow>` to an instance of `Dataframe<CustomRow>`,
+//! see [`Dataframe`].
+//!
+//!
+//! [`IntoDataFrameRow`]: ::extendr_macros::IntoDataFrameRow
+//! 
 use super::*;
 
+/// A trait to convert a collection of `IntoDataFrameRow` into
+/// [`Dataframe`]. Typical usage involves using the derive-macro [`IntoDataFrameRow`]
+/// on a struct, which would generate `impl IntoDataframe<T> for Vec<T>`.
+///
+/// [`IntoDataFrameRow`]: ::extendr_macros::IntoDataFrameRow
 pub trait IntoDataFrameRow<T> {
     fn into_dataframe(self) -> Result<Dataframe<T>>;
 }
