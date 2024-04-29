@@ -20,6 +20,7 @@ libc = { version = "0.2", optional = true }
 ndarray = { version = "0.15.3", optional = true }
 num-complex = { version = "0.4", optional = true }
 serde = { version = "1.0", features = ["derive"], optional = true }
+bytemuck = { version = "1.15.0", features = ["min_const_generics", "derive", "must_cast"] }
 
 [dev-dependencies]
 extendr-engine = { path = "../extendr-engine" }
