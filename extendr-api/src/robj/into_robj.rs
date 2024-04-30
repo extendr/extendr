@@ -141,6 +141,10 @@ impl From<&Robj> for Robj {
     }
 }
 
+/// This is an extension trait to provide a convenience method `into_robj()`.
+///
+/// Defer to `From<T> for Robj`-impls if you have custom types.
+///
 pub trait IntoRobj {
     fn into_robj(self) -> Robj;
 }

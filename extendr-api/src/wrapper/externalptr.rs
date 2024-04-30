@@ -1,3 +1,14 @@
+//! `ExternalPtr` is a way to leak Rust allocated data to R, forego deallocation
+//! to R and its GC strategy.
+//!
+//! An `ExternalPtr` encompasses three values, an owned pointer to the Rust
+//! type, a `tag` and a `prot`. Tag is a helpful naming of the type, but
+//! it doesn't offer any solid type-checking capability. And `prot` is meant
+//! to be R values, that are supposed to be kept together with the `ExternalPtr`.
+//!
+//! Neither `tag` nor `prot` are attributes, therefore to use `ExternalPtr` as
+//! a class in R, you must decorate it with a class-attribute manually.
+//!
 use super::*;
 use std::any::Any;
 use std::fmt::Debug;

@@ -22,7 +22,7 @@ where
     Ok(t)
 }
 
-// Allow errors to popagate to extendr errors.
+// Allow errors to propagate to extendr errors.
 impl serde::de::Error for Error {
     fn custom<T>(msg: T) -> Self
     where

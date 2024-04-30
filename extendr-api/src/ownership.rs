@@ -1,6 +1,6 @@
 //! Maintain ownership of R objects.
 //!
-//! This provides the functions [protect] and [unprotect].
+//! This provides the functions `protect` and `unprotect`.
 //! A single preserved vector holds ownership of all protected objects.
 //!
 //! Objects are reference counted, so multiple calls are possible,
