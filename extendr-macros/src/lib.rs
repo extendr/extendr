@@ -83,7 +83,7 @@ use syn::{parse_macro_input, Item};
 ///
 /// There is also [extendr_module!], which is used for defining what rust
 /// wrapped items should be visible to the surrounding R-package.
-/// 
+///
 #[proc_macro_attribute]
 pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
     let mut opts = wrappers::ExtendrOptions::default();
@@ -256,13 +256,13 @@ pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
 /// # }
 /// # Ok::<(), extendr_api::Error>(())
 /// ```
-/// 
+///
 /// See [`TryFromRobj`] for a `derive`-macro in the other direction, i.e.
 /// instantiation of a rust type, by an R list with fields corresponding to
 /// said type.
-/// 
+///
 /// # Details
-/// 
+///
 /// Note, the `From<Struct> for Robj` behaviour is different from what is obtained by applying the standard `#[extendr]` macro
 /// to an `impl` block. The `#[extendr]` behaviour returns to R a **pointer** to Rust memory, and generates wrapper functions for calling
 /// Rust functions on that pointer. The implementation from `#[derive(IntoRobj)]` actually converts the Rust structure

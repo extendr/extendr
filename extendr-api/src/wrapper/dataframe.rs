@@ -5,7 +5,7 @@
 //!
 //!
 //! [`IntoDataFrameRow`]: ::extendr_macros::IntoDataFrameRow
-//! 
+//!
 use super::*;
 
 /// A trait to convert a collection of `IntoDataFrameRow` into
