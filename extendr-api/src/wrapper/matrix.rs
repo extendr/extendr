@@ -162,7 +162,7 @@ where
     pub fn new_column<F: FnMut(usize) -> T>(nrows: usize, f: F) -> Self {
         let mut robj = (0..nrows).map(f).collect_robj();
         let dim = [nrows];
-        let robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
+        robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
         RArray::from_parts(robj, dim)
     }
 
@@ -199,7 +199,7 @@ where
             })
             .collect_robj();
         let dim = [nrows, ncols];
-        let robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
+        robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
         RArray::from_parts(robj, dim)
     }
 
@@ -234,7 +234,7 @@ where
             })
             .collect_robj();
         let dim = [nrows, ncols, nmatrix];
-        let robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
+        robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
         RArray::from_parts(robj, dim)
     }
 

@@ -856,7 +856,7 @@ pub trait Attributes: Types + Length {
     ///    assert_eq!(robj.get_attrib(sym!(xyz)), Some(r!(1)));
     /// }
     /// ```
-    fn set_attrib<N, V>(&mut self, name: N, value: V) -> Result<Robj>
+    fn set_attrib<N, V>(&mut self, name: N, value: V) -> Result<&mut Self>
     where
         N: Into<Robj>,
         V: Into<Robj>,
@@ -865,13 +865,10 @@ pub trait Attributes: Types + Length {
         let value = value.into();
         unsafe {
             let sexp = self.get_mut();
-            single_threaded(|| {
-                catch_r_error(|| Rf_setAttrib(sexp, name.get(), value.get()))
-                    // FIXME: there is no reason to re-wrap this, as this mutates
-                    // the input `self`, and returns another pointer to the same
-                    // object
-                    .map(|_| Robj::from_sexp(sexp))
-            })
+            let result =
+                single_threaded(|| catch_r_error(|| Rf_setAttrib(sexp, name.get(), value.get())));
+            let result = result.map(|_| self);
+            result
         }
     }
 
@@ -910,7 +907,7 @@ pub trait Attributes: Types + Length {
     ///     assert_eq!(r!([1, 2, 3]).set_names(&["a", "b"]), Err(Error::NamesLengthMismatch(r!(["a", "b"]))));
     /// }
     /// ```
-    fn set_names<T>(&mut self, names: T) -> Result<Robj>
+    fn set_names<T>(&mut self, names: T) -> Result<&mut Self>
     where
         T: IntoIterator,
         T::IntoIter: ExactSizeIterator,
@@ -991,7 +988,7 @@ pub trait Attributes: Types + Length {
     ///     assert_eq!(obj.inherits("a"), true);
     /// }
     /// ```
-    fn set_class<T>(&mut self, class: T) -> Result<Robj>
+    fn set_class<T>(&mut self, class: T) -> Result<&mut Self>
     where
         T: IntoIterator,
         T::IntoIter: ExactSizeIterator,

@@ -591,11 +591,11 @@ pub trait RobjItertools: Iterator {
                 prod
             )));
         }
-        let robj = vector.set_attrib(wrapper::symbol::dim_symbol(), dims.iter().collect_robj())?;
-        let _data = robj.as_typed_slice().ok_or(Error::Other(
+        vector.set_attrib(wrapper::symbol::dim_symbol(), dims.iter().collect_robj())?;
+        let _data = vector.as_typed_slice().ok_or(Error::Other(
             "Unknown error in converting to slice".to_string(),
         ))?;
-        Ok(RArray::from_parts(robj, dims))
+        Ok(RArray::from_parts(vector, dims))
     }
 }
 
