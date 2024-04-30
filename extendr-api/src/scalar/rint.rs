@@ -164,7 +164,7 @@ impl TryFrom<&Robj> for Rint {
         };
 
         // Check if the value is not a missing value
-        if robj.is_na() {
+        if robj.is_na_scalar() {
             return Ok(Rint::na());
         }
 

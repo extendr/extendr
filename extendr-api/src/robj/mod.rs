@@ -328,19 +328,23 @@ pub trait Types: GetSexp {
 impl Types for Robj {}
 
 impl Robj {
-    /// Is this object is an `NA` scalar?
-    /// Works for character, integer and numeric types.
+    /// Returns `true` if the underlying vector is of length one, and the
+    /// scalar value is `NA`, otherwise `false`.
+    ///
+    /// While this is to be used on vectors, it is not vectorised, and will
+    /// return `false` for any vector of length greater than one.
     ///
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
+    ///     assert_eq!(r!(NA_INTEGER).is_na_scalar(), true);
+    ///     assert_eq!(r!(NA_REAL).is_na_scalar(), true);
+    ///     assert_eq!(r!(NA_STRING).is_na_scalar(), true);
     ///
-    /// assert_eq!(r!(NA_INTEGER).is_na(), true);
-    /// assert_eq!(r!(NA_REAL).is_na(), true);
-    /// assert_eq!(r!(NA_STRING).is_na(), true);
+    ///     assert_eq!(r!(c(NA_INTEGER, NA_INTEGER)).is_na_scalar(), false);
     /// }
     /// ```
-    pub fn is_na(&self) -> bool {
+    pub fn is_na_scalar(&self) -> bool {
         if self.len() != 1 {
             false
         } else {
