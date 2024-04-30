@@ -241,7 +241,7 @@
     </span>_marker: std::marker::PhantomData&lt;T&gt;,
 }
 
-<span class="kw">impl</span>&lt;T: Debug + <span class="lifetime">'static</span>&gt; robj::GetSexp <span class="kw">for </span>ExternalPtr&lt;T&gt; {
+<span class="kw">impl</span>&lt;T&gt; robj::GetSexp <span class="kw">for </span>ExternalPtr&lt;T&gt; {
     <span class="kw">unsafe fn </span>get(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SEXP {
         <span class="self">self</span>.robj.get()
     }
@@ -262,24 +262,24 @@
 }
 
 <span class="doccomment">/// len() and is_empty()
-</span><span class="kw">impl</span>&lt;T: Debug + <span class="lifetime">'static</span>&gt; Length <span class="kw">for </span>ExternalPtr&lt;T&gt; {}
+</span><span class="kw">impl</span>&lt;T&gt; Length <span class="kw">for </span>ExternalPtr&lt;T&gt; {}
 
 <span class="doccomment">/// rtype() and rany()
-</span><span class="kw">impl</span>&lt;T: Debug + <span class="lifetime">'static</span>&gt; Types <span class="kw">for </span>ExternalPtr&lt;T&gt; {}
+</span><span class="kw">impl</span>&lt;T&gt; Types <span class="kw">for </span>ExternalPtr&lt;T&gt; {}
 
 <span class="doccomment">/// as_*()
-</span><span class="kw">impl</span>&lt;T: Debug + <span class="lifetime">'static</span>&gt; Conversions <span class="kw">for </span>ExternalPtr&lt;T&gt; {}
+</span><span class="kw">impl</span>&lt;T&gt; Conversions <span class="kw">for </span>ExternalPtr&lt;T&gt; {}
 
 <span class="doccomment">/// find_var() etc.
-</span><span class="kw">impl</span>&lt;T: Debug + <span class="lifetime">'static</span>&gt; Rinternals <span class="kw">for </span>ExternalPtr&lt;T&gt; {}
+</span><span class="kw">impl</span>&lt;T&gt; Rinternals <span class="kw">for </span>ExternalPtr&lt;T&gt; {}
 
 <span class="doccomment">/// as_typed_slice_raw() etc.
-</span><span class="kw">impl</span>&lt;T: Debug + <span class="lifetime">'static</span>&gt; Slices <span class="kw">for </span>ExternalPtr&lt;T&gt; {}
+</span><span class="kw">impl</span>&lt;T&gt; Slices <span class="kw">for </span>ExternalPtr&lt;T&gt; {}
 
 <span class="doccomment">/// dollar() etc.
-</span><span class="kw">impl</span>&lt;T: Debug + <span class="lifetime">'static</span>&gt; Operators <span class="kw">for </span>ExternalPtr&lt;T&gt; {}
+</span><span class="kw">impl</span>&lt;T&gt; Operators <span class="kw">for </span>ExternalPtr&lt;T&gt; {}
 
-<span class="kw">impl</span>&lt;T: Debug + <span class="lifetime">'static</span>&gt; Deref <span class="kw">for </span>ExternalPtr&lt;T&gt; {
+<span class="kw">impl</span>&lt;T&gt; Deref <span class="kw">for </span>ExternalPtr&lt;T&gt; {
     <span class="kw">type </span>Target = T;
 
     <span class="doccomment">/// This allows us to treat the Robj as if it is the type T.
@@ -288,14 +288,14 @@
     }
 }
 
-<span class="kw">impl</span>&lt;T: Debug + <span class="lifetime">'static</span>&gt; DerefMut <span class="kw">for </span>ExternalPtr&lt;T&gt; {
+<span class="kw">impl</span>&lt;T&gt; DerefMut <span class="kw">for </span>ExternalPtr&lt;T&gt; {
     <span class="doccomment">/// This allows us to treat the Robj as if it is the mutable type T.
     </span><span class="kw">fn </span>deref_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Target {
         <span class="self">self</span>.addr_mut()
     }
 }
 
-<span class="kw">impl</span>&lt;T: Any + Debug&gt; ExternalPtr&lt;T&gt; {
+<span class="kw">impl</span>&lt;T&gt; ExternalPtr&lt;T&gt; {
     <span class="doccomment">/// Construct an external pointer object from any type T.
     /// In this case, the R object owns the data and will drop the Rust object
     /// when the last reference is removed via register_c_finalizer.
@@ -369,7 +369,7 @@
     }
 }
 
-<span class="kw">impl</span>&lt;T: Any + Debug&gt; TryFrom&lt;<span class="kw-2">&amp;</span>Robj&gt; <span class="kw">for </span>ExternalPtr&lt;T&gt; {
+<span class="kw">impl</span>&lt;T&gt; TryFrom&lt;<span class="kw-2">&amp;</span>Robj&gt; <span class="kw">for </span>ExternalPtr&lt;T&gt; {
     <span class="kw">type </span>Error = Error;
 
     <span class="kw">fn </span>try_from(robj: <span class="kw-2">&amp;</span>Robj) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
@@ -391,7 +391,7 @@
     }
 }
 
-<span class="kw">impl</span>&lt;T: Any + Debug&gt; TryFrom&lt;Robj&gt; <span class="kw">for </span>ExternalPtr&lt;T&gt; {
+<span class="kw">impl</span>&lt;T&gt; TryFrom&lt;Robj&gt; <span class="kw">for </span>ExternalPtr&lt;T&gt; {
     <span class="kw">type </span>Error = Error;
 
     <span class="kw">fn </span>try_from(robj: Robj) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
@@ -399,13 +399,13 @@
     }
 }
 
-<span class="kw">impl</span>&lt;T: Any + Debug&gt; From&lt;ExternalPtr&lt;T&gt;&gt; <span class="kw">for </span>Robj {
+<span class="kw">impl</span>&lt;T&gt; From&lt;ExternalPtr&lt;T&gt;&gt; <span class="kw">for </span>Robj {
     <span class="kw">fn </span>from(val: ExternalPtr&lt;T&gt;) -&gt; <span class="self">Self </span>{
         val.robj
     }
 }
 
-<span class="kw">impl</span>&lt;T: Debug + <span class="lifetime">'static</span>&gt; std::fmt::Debug <span class="kw">for </span>ExternalPtr&lt;T&gt; {
+<span class="kw">impl</span>&lt;T: Debug&gt; std::fmt::Debug <span class="kw">for </span>ExternalPtr&lt;T&gt; {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
         (<span class="kw-2">&amp;**</span><span class="self">self </span><span class="kw">as </span><span class="kw-2">&amp;</span>T).fmt(f)
     }
