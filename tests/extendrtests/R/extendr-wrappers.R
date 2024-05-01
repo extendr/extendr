@@ -82,6 +82,7 @@ tst_altstring <- function() .Call(wrap__tst_altstring)
 
 tst_altinteger <- function() .Call(wrap__tst_altinteger)
 
+#' Adds an attribute to a vector of doubles
 #' @export
 dbls_named <- function(x) .Call(wrap__dbls_named, x)
 

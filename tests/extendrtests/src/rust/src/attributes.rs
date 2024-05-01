@@ -1,5 +1,6 @@
 use extendr_api::prelude::*;
 
+/// Adds an attribute to a vector of doubles
 /// @export
 #[extendr]
 fn dbls_named(x: Doubles) -> Doubles {
