@@ -31,7 +31,7 @@ fn strings_named(x: Strings) -> Strings {
 #[extendr]
 fn list_named(x: List, nms: Strings) -> List {
     let mut x = x;
-    x.set_attrib("names", nms);
+    let _ = x.set_attrib("names", nms);
     x
 }
 
