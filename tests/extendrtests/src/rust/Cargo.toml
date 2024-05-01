@@ -26,7 +26,7 @@ libR-sys = "*"
 ## This is configured to work with RStudio features.
 ## Replace by absolute path to simplify testing.
 ## CI overrides this path.
-extendr-api = { path = "../../../../extendr-api" }
+extendr-api = { path = "../../../../../../../extendr/extendr-api" }
 ## This allows to run `rcmdcheck` from `./tests/extendrtests/`
 # extendr-api = { path = "../../../../../../../../../extendr/extendr-api"}
 
