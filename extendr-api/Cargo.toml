@@ -37,7 +37,7 @@ result_condition = []
 # This dummy feature enables all features that increase the functionality of
 # extendr, via conversions or R features. Features that change behaviour
 # but do not add functionality (such as `libR-sys/use-bindgen`) are excluded
-full-functionality = ["graphics", "either", "ndarray", "num-complex", "serde"]
+full-functionality = ["graphics", "either", "ndarray", "faer", "num-complex", "serde"]
 
 # libc is needed to allocate a DevDesc (c.f., https://bugs.r-project.org/show_bug.cgi?id=18292)
 graphics = ["libc"]
@@ -47,7 +47,7 @@ tests-minimal = ["libR-sys/use-bindgen"]
 
 # All features to test except for graphics; graphics tests are currently unstable
 # and require --test-threads=1, so we decided to exclude it from here (c.f. #378).
-tests = ["tests-minimal", "ndarray", "serde", "num-complex", "either"]
+tests = ["tests-minimal", "ndarray", "faer", "serde", "num-complex", "either"]
 
 tests-graphics = ["tests-minimal", "graphics"]
 
