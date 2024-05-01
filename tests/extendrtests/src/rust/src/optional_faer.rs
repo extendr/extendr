@@ -1,15 +1,6 @@
 use extendr_api::prelude::*;
 use faer::{Mat, MatRef};
 
-//#[extendr]
-//fn faer_mat(x: Robj) -> Nullable<Robj> {
-//    let m = Mat::<f64>::from_robj(&x);
-//    match m {
-//        Ok(m) => Nullable::NotNull(m.into_robj()),
-//        Err(_) => Nullable::Null
-//    }
-//}
-
 #[extendr]
 fn mat_to_mat(x: Mat<f64>) -> Mat<f64> {
     x
@@ -50,7 +41,6 @@ fn matref_to_mat(x: MatRef<'_, f64>) -> Robj {
 // Macro to generate exports
 extendr_module! {
     mod optional_faer;
-    //fn faer_mat;
     fn mat_to_mat;
     fn mat_to_rmat;
     fn mat_to_robj;

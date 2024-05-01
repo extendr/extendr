@@ -71,11 +71,13 @@ impl TryFrom<&Robj> for Mat<f64> {
         let rmat = &RMatrix::<f64>::from_robj(robj)?;
         let nrow = rmat.nrows();
         let ncol = rmat.ncols();
-        let slice = rmat
-            .as_real_slice()
-            .expect("RMatrix should be double values");
-        let fmat = Mat::from_fn(nrow, ncol, |i, j| slice[i + j * nrow]);
-        Ok(fmat)
+
+        if let Some(slice) = robj.as_real_slice() {
+            let fmat = Mat::from_fn(nrow, ncol, |i, j| slice[i + j * nrow]);
+            Ok(fmat)
+        } else {
+            Err(Error::ExpectedReal(robj.clone()))
+        }
     }
 }
 
@@ -83,12 +85,9 @@ impl<'a> TryFrom<&'_ Robj> for MatRef<'a, f64> {
     type Error = Error;
 
     fn try_from(robj: &Robj) -> Result<Self> {
-        if !robj.is_matrix() {
-            return Err(Error::ExpectedMatrix(robj.clone()));
-        }
-        let dim = robj.dim().expect("robj should be a matrix");
-        let nrows = (*dim).first().expect("dimension must exist").inner() as usize;
-        let ncols = (*dim).last().expect("dimension must exist").inner() as usize;
+        let rmat = &RMatrix::<f64>::from_robj(robj)?;
+        let nrows = rmat.nrows();
+        let ncols = rmat.ncols();
 
         if let Some(slice) = robj.as_typed_slice() {
             let fmat = mat::from_column_major_slice::<f64>(slice, nrows, ncols);
@@ -102,14 +101,14 @@ impl<'a> TryFrom<&'_ Robj> for MatRef<'a, f64> {
 impl FromRobj<'_> for Mat<f64> {
     fn from_robj(robj: &'_ Robj) -> std::result::Result<Self, &'static str> {
         robj.try_into()
-            .map_err(|_| "unable to convert value from R object")
+            .map_err(|_| "unable to convert R object to Mat<f64>")
     }
 }
 
 impl<'a> FromRobj<'_> for MatRef<'a, f64> {
     fn from_robj(robj: &'_ Robj) -> std::result::Result<Self, &'static str> {
         robj.try_into()
-            .map_err(|_| "unable to convert value from R object")
+            .map_err(|_| "unable to convert R object to MatRef<'_, f64>")
     }
 }
 
@@ -126,6 +125,15 @@ impl<'a> TryFrom<Robj> for MatRef<'a, f64> {
 
     fn try_from(robj: Robj) -> Result<Self> {
         Self::try_from(&robj)
+    }
+}
+
+impl From<RMatrix<i32>> for Mat<f64> {
+    fn from(value: RMatrix<i32>) -> Self {
+        let nrow = value.nrows();
+        let ncol = value.ncols();
+        let slice = value.as_integer_slice().expect("RMatrix should be integers");
+        Mat::from_fn(nrow, ncol, |i, j| slice[i + j * nrow] as f64)
     }
 }
 
@@ -247,6 +255,23 @@ mod test {
             let rmatrix = RMatrix::new_matrix(4, 3, |i, j| values[i][j]);
             let robj = Robj::from(rmatrix);
             let b = MatRef::<f64>::try_from(&robj);
+            assert_eq!(a, b.expect("matrix to be converted"));
+        }
+    }
+
+    #[test]
+    fn test_int_rmatrix_to_faer_mat() {
+        test! {
+            let values = [
+                [1, 5, 9],
+                [2, 6, 10],
+                [3, 7, 11],
+                [4, 8, 12]
+            ];
+            let a = Mat::<f64>::from_fn(4, 3, |i, j| values[i][j] as f64);
+
+            let rmatrix = RMatrix::new_matrix(4, 3, |i, j| values[i][j]);
+            let b = Mat::<f64>::try_from(rmatrix);
             assert_eq!(a, b.expect("matrix to be converted"));
         }
     }
