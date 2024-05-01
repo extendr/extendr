@@ -1,17 +1,14 @@
 use extendr_api::{graphics::*, prelude::*};
 
 mod submodule;
-
+mod altrep;
+mod dataframe;
 mod optional_ndarray;
-
 mod optional_faer;
-
+mod optional_either;
 mod graphic_device;
 mod memory_leaks;
-mod optional_either;
-mod optional_ndarray;
 mod raw_identifiers;
-mod submodule;
 
 // Return string `"Hello world!"` to R.
 #[extendr]
