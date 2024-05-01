@@ -54,12 +54,12 @@ impl From<RMatrix<f64>> for Mat<f64> {
     }
 }
 
-impl From<&RMatrix<f64>> for MatRef<'_, f64> {
+impl<'a> From<&'_ RMatrix<f64>> for MatRef<'a, f64> {
     fn from(value: &RMatrix<f64>) -> Self {
         let nrow = value.nrows();
         let ncol = value.ncols();
-        let slice = value.as_real_slice().expect("RMatrix should be doubles");
-        let mat_ref = faer::mat::from_column_major_slice::<f64>(&slice, nrow, ncol);
+        let slice = value.as_typed_slice().expect("RMatrix should be doubles");
+        let mat_ref = faer::mat::from_column_major_slice::<f64>(slice, nrow, ncol);
         mat_ref
     }
 }
@@ -121,7 +121,7 @@ mod test {
     use faer::{mat, Mat, MatRef};
 
     #[test]
-    fn test_robj_to_faer_mat() {
+    fn test_rmatrix_to_faer_mat() {
         test! {
             let values = [
                 [1.0, 5.0, 9.0],
@@ -132,13 +132,13 @@ mod test {
             let a = Mat::<f64>::from_fn(4, 3, |i, j| values[i][j] as f64);
 
             let rmatrix = RMatrix::new_matrix(4, 3, |i, j| values[i][j]);
-            // let b = Mat::<f64>::from_robj(&Robj::from(rmatrix));
-            // assert_eq!(a, b.expect("matrix to be converted"));
+            let b = Mat::<f64>::try_from(rmatrix);
+            assert_eq!(a, b.expect("matrix to be converted"));
         }
     }
 
     #[test]
-    fn test_robj_to_faer_mat_with_nan() {
+    fn test_rmatrix_to_faer_mat_with_nan() {
         test! {
             let values = [
                 [1.0, 5.0, 9.0],
@@ -148,13 +148,13 @@ mod test {
             ];
 
             let rmatrix = RMatrix::new_matrix(4, 3, |i, j| values[i][j]);
-            // let b = Mat::<f64>::from_robj(&Robj::from(rmatrix));
-            // assert!(b.expect("matrix to be converted").read(3, 0).is_nan());
+            let b = Mat::<f64>::try_from(rmatrix);
+            assert!(b.expect("matrix to be converted").read(3, 0).is_nan());
         }
     }
 
     #[test]
-    fn test_robj_to_faer_mat_ref() {
+    fn test_rmatrix_to_faer_mat_ref() {
         test! {
             let values = [
                 [1.0, 5.0, 9.0],
@@ -166,14 +166,13 @@ mod test {
             let a = mat.as_ref();
 
             let rmatrix = RMatrix::new_matrix(4, 3, |i, j| values[i][j]);
-            let robj = Robj::from(rmatrix);
-            // let b = MatRef::<f64>::from_robj(&robj);
-            // assert_eq!(a, b.expect("matrix to be converted"));
+            let b = MatRef::<f64>::try_from(&rmatrix);
+            assert_eq!(a, b.expect("matrix to be converted"));
         }
     }
 
     #[test]
-    fn test_faer_mat_to_robj() {
+    fn test_faer_mat_to_rmatrix() {
         test! {
             let vec: Vec<f64> = (1..13).map(f64::from).collect();
             let a = mat![
@@ -182,13 +181,13 @@ mod test {
                 [3.0, 7.0, 11.0],
                 [4.0, 8.0, 12.0f64],
             ];
-            let robj: Robj = a.clone().into();
-            assert_eq!(robj.as_real_slice().expect("slice"), &vec);
+            let rmatrix: RMatrix<f64> = a.into();
+            assert_eq!(rmatrix.as_real_slice().expect("slice"), &vec);
         }
     }
 
     #[test]
-    fn test_faer_mat_ref_to_robj() {
+    fn test_faer_mat_ref_to_rmatrix() {
         test! {
             let vec: Vec<f64> = (1..13).map(f64::from).collect();
             let a = mat![
@@ -197,8 +196,8 @@ mod test {
                 [3.0, 7.0, 11.0],
                 [4.0, 8.0, 12.0f64],
             ];
-            let robj: Robj = a.clone().as_ref().into();
-            assert_eq!(robj.as_real_slice().expect("slice"), &vec);
+            let rmatrix: RMatrix<f64> = a.as_ref().into();
+            assert_eq!(rmatrix.as_real_slice().expect("slice"), &vec);
         }
     }
 
