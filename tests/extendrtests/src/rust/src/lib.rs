@@ -449,7 +449,6 @@ extendr_module! {
     use optional_either;
     use optional_ndarray;
     use optional_faer;
-    use optional_either;
     use raw_identifiers;
     use submodule;
 
