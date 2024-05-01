@@ -9789,7 +9789,6 @@
           functions.extend(optional_either::get_optional_either_metadata().functions);
           functions.extend(optional_ndarray::get_optional_ndarray_metadata().functions);
           functions.extend(optional_faer::get_optional_faer_metadata().functions);
-          functions.extend(optional_either::get_optional_either_metadata().functions);
           functions.extend(raw_identifiers::get_raw_identifiers_metadata().functions);
           functions.extend(submodule::get_submodule_metadata().functions);
           impls.extend(altrep::get_altrep_metadata().impls);
@@ -9798,7 +9797,6 @@
           impls.extend(optional_either::get_optional_either_metadata().impls);
           impls.extend(optional_ndarray::get_optional_ndarray_metadata().impls);
           impls.extend(optional_faer::get_optional_faer_metadata().impls);
-          impls.extend(optional_either::get_optional_either_metadata().impls);
           impls.extend(raw_identifiers::get_raw_identifiers_metadata().impls);
           impls.extend(submodule::get_submodule_metadata().impls);
           functions
