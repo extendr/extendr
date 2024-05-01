@@ -49,6 +49,7 @@ fn matref_to_mat(x: MatRef<'_, f64>) -> Robj {
 
 // Macro to generate exports
 extendr_module! {
+    mod optional_faer;
     //fn faer_mat;
     fn mat_to_mat;
     fn mat_to_rmat;
@@ -57,6 +58,4 @@ extendr_module! {
     fn rmat_to_mat;
     fn robj_to_mat;
     fn matref_to_mat;
-
-    mod optional_faer;
 }

@@ -9,2532 +9,6 @@
       #[macro_use]
       extern crate std;
       use extendr_api::{graphics::*, prelude::*};
-      mod altrep {
-          use extendr_api::prelude::*;
-          pub struct VecUsize(pub Vec<Option<usize>>);
-          #[automatically_derived]
-          impl ::core::fmt::Debug for VecUsize {
-              #[inline]
-              fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
-                  ::core::fmt::Formatter::debug_tuple_field1_finish(f, "VecUsize", &&self.0)
-              }
-          }
-          #[automatically_derived]
-          impl ::core::clone::Clone for VecUsize {
-              #[inline]
-              fn clone(&self) -> VecUsize {
-                  VecUsize(::core::clone::Clone::clone(&self.0))
-              }
-          }
-          impl AltrepImpl for VecUsize {
-              fn length(&self) -> usize {
-                  self.0.len()
-              }
-          }
-          #[cfg(use_r_altlist)]
-          impl VecUsize {}
-          impl<'a> extendr_api::FromRobj<'a> for &VecUsize {
-              fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-                  if robj.check_external_ptr_type::<VecUsize>() {
-                      #[allow(clippy::transmute_ptr_to_ref)]
-                      Ok(unsafe { std::mem::transmute(robj.external_ptr_addr::<VecUsize>()) })
-                  } else {
-                      Err("expected VecUsize")
-                  }
-              }
-          }
-          impl<'a> extendr_api::FromRobj<'a> for &mut VecUsize {
-              fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-                  if robj.check_external_ptr_type::<VecUsize>() {
-                      #[allow(clippy::transmute_ptr_to_ref)]
-                      Ok(unsafe { std::mem::transmute(robj.external_ptr_addr::<VecUsize>()) })
-                  } else {
-                      Err("expected VecUsize")
-                  }
-              }
-          }
-          impl<'a> From<&'a VecUsize> for Robj {
-              fn from(value: &'a VecUsize) -> Self {
-                  unsafe {
-                      let ptr = Box::into_raw(Box::new(value));
-                      let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
-                      res.set_attrib(class_symbol(), "VecUsize").unwrap();
-                      res.register_c_finalizer(Some(__finalize__VecUsize));
-                      res
-                  }
-              }
-          }
-          impl From<VecUsize> for Robj {
-              fn from(value: VecUsize) -> Self {
-                  unsafe {
-                      let ptr = Box::into_raw(Box::new(value));
-                      let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
-                      res.set_attrib(class_symbol(), "VecUsize").unwrap();
-                      res.register_c_finalizer(Some(__finalize__VecUsize));
-                      res
-                  }
-              }
-          }
-          extern "C" fn __finalize__VecUsize(sexp: extendr_api::SEXP) {
-              unsafe {
-                  let robj = extendr_api::robj::Robj::from_sexp(sexp);
-                  if robj.check_external_ptr_type::<VecUsize>() {
-                      let ptr = robj.external_ptr_addr::<VecUsize>();
-                      drop(Box::from_raw(ptr));
-                  }
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__VecUsize(impls: &mut Vec<extendr_api::metadata::Impl>) {
-              let mut methods = Vec::new();
-              impls
-                  .push(extendr_api::metadata::Impl {
-                      doc: "",
-                      name: "VecUsize",
-                      methods,
-                  });
-          }
-          #[cfg(use_r_altlist)]
-          impl AltListImpl for VecUsize {
-              fn elt(&self, index: usize) -> Robj {
-                  self.into_robj()
-              }
-          }
-          #[cfg(use_r_altlist)]
-          fn new_usize(robj: Integers) -> Altrep {
-              let x = robj
-                  .iter()
-                  .map(|x| match &x {
-                      _ if x.is_na() => None,
-                      _ if x.inner() < 0 => None,
-                      _ => Some(x.inner() as usize),
-                  })
-                  .collect();
-              let obj = VecUsize(x);
-              let class = Altrep::make_altlist_class::<VecUsize>("li", "mypkg");
-              Altrep::from_state_and_class(obj, class, false)
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__new_usize(robj: extendr_api::SEXP) -> extendr_api::SEXP {
-              use extendr_api::robj::*;
-              let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
-                  Box<dyn std::any::Any + Send>,
-              > = unsafe {
-                  let _robj_robj = extendr_api::robj::Robj::from_sexp(robj);
-                  std::panic::catch_unwind(
-                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
-                          Robj,
-                          extendr_api::Error,
-                      > {
-                          Ok(
-                              extendr_api::Robj::from(
-                                  new_usize(<Integers>::from_robj(&_robj_robj)?),
-                              ),
-                          )
-                      }),
-                  )
-              };
-              match wrap_result_state {
-                  Ok(Ok(zz)) => {
-                      return unsafe { zz.get() };
-                  }
-                  Ok(Err(conversion_err)) => {
-                      let err_string = conversion_err.to_string();
-                      drop(conversion_err);
-                      extendr_api::throw_r_error(&err_string);
-                  }
-                  Err(unwind_err) => {
-                      drop(unwind_err);
-                      let err_string = {
-                          let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "new_usize"),
-                          );
-                          res
-                      };
-                      extendr_api::handle_panic(
-                          err_string.as_str(),
-                          || {
-                              #[cold]
-                              #[track_caller]
-                              #[inline(never)]
-                              const fn panic_cold_explicit() -> ! {
-                                  ::core::panicking::panic_explicit()
-                              }
-                              panic_cold_explicit();
-                          },
-                      );
-                  }
-              }
-              {
-                  ::core::panicking::panic_fmt(
-                      format_args!(
-                          "internal error: entered unreachable code: {0}",
-                          format_args!("internal extendr error, this should never happen."),
-                      ),
-                  );
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__new_usize(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "robj",
-                          arg_type: "Integers",
-                          default: None,
-                      },
-                  ]),
-              );
-              metadata
-                  .push(extendr_api::metadata::Func {
-                      doc: "",
-                      rust_name: "new_usize",
-                      r_name: "new_usize",
-                      mod_name: "new_usize",
-                      args: args,
-                      return_type: "Altrep",
-                      func_ptr: wrap__new_usize as *const u8,
-                      hidden: false,
-                  })
-          }
-          struct StringInts {
-              len: usize,
-          }
-          #[automatically_derived]
-          impl ::core::fmt::Debug for StringInts {
-              #[inline]
-              fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
-                  ::core::fmt::Formatter::debug_struct_field1_finish(
-                      f,
-                      "StringInts",
-                      "len",
-                      &&self.len,
-                  )
-              }
-          }
-          #[automatically_derived]
-          impl ::core::clone::Clone for StringInts {
-              #[inline]
-              fn clone(&self) -> StringInts {
-                  StringInts {
-                      len: ::core::clone::Clone::clone(&self.len),
-                  }
-              }
-          }
-          impl AltrepImpl for StringInts {
-              fn length(&self) -> usize {
-                  self.len as usize
-              }
-          }
-          impl AltStringImpl for StringInts {
-              fn elt(&self, index: usize) -> Rstr {
-                  {
-                      let res = ::alloc::fmt::format(format_args!("{0}", index));
-                      res
-                  }
-                      .into()
-              }
-          }
-          fn tst_altstring() -> Altrep {
-              let mystate = StringInts { len: 10 };
-              let class = Altrep::make_altstring_class::<StringInts>("si", "mypkg");
-              Altrep::from_state_and_class(mystate, class, false)
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__tst_altstring() -> extendr_api::SEXP {
-              use extendr_api::robj::*;
-              let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
-                  Box<dyn std::any::Any + Send>,
-              > = unsafe {
-                  std::panic::catch_unwind(
-                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
-                          Robj,
-                          extendr_api::Error,
-                      > { Ok(extendr_api::Robj::from(tst_altstring())) }),
-                  )
-              };
-              match wrap_result_state {
-                  Ok(Ok(zz)) => {
-                      return unsafe { zz.get() };
-                  }
-                  Ok(Err(conversion_err)) => {
-                      let err_string = conversion_err.to_string();
-                      drop(conversion_err);
-                      extendr_api::throw_r_error(&err_string);
-                  }
-                  Err(unwind_err) => {
-                      drop(unwind_err);
-                      let err_string = {
-                          let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "tst_altstring"),
-                          );
-                          res
-                      };
-                      extendr_api::handle_panic(
-                          err_string.as_str(),
-                          || {
-                              #[cold]
-                              #[track_caller]
-                              #[inline(never)]
-                              const fn panic_cold_explicit() -> ! {
-                                  ::core::panicking::panic_explicit()
-                              }
-                              panic_cold_explicit();
-                          },
-                      );
-                  }
-              }
-              {
-                  ::core::panicking::panic_fmt(
-                      format_args!(
-                          "internal error: entered unreachable code: {0}",
-                          format_args!("internal extendr error, this should never happen."),
-                      ),
-                  );
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__tst_altstring(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = ::alloc::vec::Vec::new();
-              metadata
-                  .push(extendr_api::metadata::Func {
-                      doc: "",
-                      rust_name: "tst_altstring",
-                      r_name: "tst_altstring",
-                      mod_name: "tst_altstring",
-                      args: args,
-                      return_type: "Altrep",
-                      func_ptr: wrap__tst_altstring as *const u8,
-                      hidden: false,
-                  })
-          }
-          struct MyCompactIntRange {
-              start: i32,
-              len: i32,
-              step: i32,
-              missing_index: usize,
-          }
-          #[automatically_derived]
-          impl ::core::fmt::Debug for MyCompactIntRange {
-              #[inline]
-              fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
-                  ::core::fmt::Formatter::debug_struct_field4_finish(
-                      f,
-                      "MyCompactIntRange",
-                      "start",
-                      &self.start,
-                      "len",
-                      &self.len,
-                      "step",
-                      &self.step,
-                      "missing_index",
-                      &&self.missing_index,
-                  )
-              }
-          }
-          #[automatically_derived]
-          impl ::core::clone::Clone for MyCompactIntRange {
-              #[inline]
-              fn clone(&self) -> MyCompactIntRange {
-                  MyCompactIntRange {
-                      start: ::core::clone::Clone::clone(&self.start),
-                      len: ::core::clone::Clone::clone(&self.len),
-                      step: ::core::clone::Clone::clone(&self.step),
-                      missing_index: ::core::clone::Clone::clone(&self.missing_index),
-                  }
-              }
-          }
-          impl AltrepImpl for MyCompactIntRange {
-              fn length(&self) -> usize {
-                  self.len as usize
-              }
-          }
-          impl AltIntegerImpl for MyCompactIntRange {
-              fn elt(&self, index: usize) -> Rint {
-                  if index == self.missing_index {
-                      Rint::na()
-                  } else {
-                      Rint::new(self.start + self.step * index as i32)
-                  }
-              }
-          }
-          fn tst_altinteger() -> Altrep {
-              let mystate = MyCompactIntRange {
-                  start: 0,
-                  len: 10,
-                  step: 1,
-                  missing_index: usize::MAX,
-              };
-              let class = Altrep::make_altinteger_class::<MyCompactIntRange>("cir", "mypkg");
-              Altrep::from_state_and_class(mystate, class.clone(), false)
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__tst_altinteger() -> extendr_api::SEXP {
-              use extendr_api::robj::*;
-              let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
-                  Box<dyn std::any::Any + Send>,
-              > = unsafe {
-                  std::panic::catch_unwind(
-                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
-                          Robj,
-                          extendr_api::Error,
-                      > { Ok(extendr_api::Robj::from(tst_altinteger())) }),
-                  )
-              };
-              match wrap_result_state {
-                  Ok(Ok(zz)) => {
-                      return unsafe { zz.get() };
-                  }
-                  Ok(Err(conversion_err)) => {
-                      let err_string = conversion_err.to_string();
-                      drop(conversion_err);
-                      extendr_api::throw_r_error(&err_string);
-                  }
-                  Err(unwind_err) => {
-                      drop(unwind_err);
-                      let err_string = {
-                          let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "tst_altinteger"),
-                          );
-                          res
-                      };
-                      extendr_api::handle_panic(
-                          err_string.as_str(),
-                          || {
-                              #[cold]
-                              #[track_caller]
-                              #[inline(never)]
-                              const fn panic_cold_explicit() -> ! {
-                                  ::core::panicking::panic_explicit()
-                              }
-                              panic_cold_explicit();
-                          },
-                      );
-                  }
-              }
-              {
-                  ::core::panicking::panic_fmt(
-                      format_args!(
-                          "internal error: entered unreachable code: {0}",
-                          format_args!("internal extendr error, this should never happen."),
-                      ),
-                  );
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__tst_altinteger(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = ::alloc::vec::Vec::new();
-              metadata
-                  .push(extendr_api::metadata::Func {
-                      doc: "",
-                      rust_name: "tst_altinteger",
-                      r_name: "tst_altinteger",
-                      mod_name: "tst_altinteger",
-                      args: args,
-                      return_type: "Altrep",
-                      func_ptr: wrap__tst_altinteger as *const u8,
-                      hidden: false,
-                  })
-          }
-          #[no_mangle]
-          #[allow(non_snake_case)]
-          pub fn get_altrep_metadata() -> extendr_api::metadata::Metadata {
-              let mut functions = Vec::new();
-              let mut impls = Vec::new();
-              meta__new_usize(&mut functions);
-              meta__tst_altstring(&mut functions);
-              meta__tst_altinteger(&mut functions);
-              functions
-                  .push(extendr_api::metadata::Func {
-                      doc: "Metadata access function.",
-                      rust_name: "get_altrep_metadata",
-                      mod_name: "get_altrep_metadata",
-                      r_name: "get_altrep_metadata",
-                      args: Vec::new(),
-                      return_type: "Metadata",
-                      func_ptr: wrap__get_altrep_metadata as *const u8,
-                      hidden: true,
-                  });
-              functions
-                  .push(extendr_api::metadata::Func {
-                      doc: "Wrapper generator.",
-                      rust_name: "make_altrep_wrappers",
-                      mod_name: "make_altrep_wrappers",
-                      r_name: "make_altrep_wrappers",
-                      args: <[_]>::into_vec(
-                          #[rustc_box]
-                          ::alloc::boxed::Box::new([
-                              extendr_api::metadata::Arg {
-                                  name: "use_symbols",
-                                  arg_type: "bool",
-                                  default: None,
-                              },
-                              extendr_api::metadata::Arg {
-                                  name: "package_name",
-                                  arg_type: "&str",
-                                  default: None,
-                              },
-                          ]),
-                      ),
-                      return_type: "String",
-                      func_ptr: wrap__make_altrep_wrappers as *const u8,
-                      hidden: true,
-                  });
-              extendr_api::metadata::Metadata {
-                  name: "altrep",
-                  functions,
-                  impls,
-              }
-          }
-          #[no_mangle]
-          #[allow(non_snake_case)]
-          pub extern "C" fn wrap__get_altrep_metadata() -> extendr_api::SEXP {
-              use extendr_api::GetSexp;
-              unsafe { extendr_api::Robj::from(get_altrep_metadata()).get() }
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__make_altrep_wrappers(
-              use_symbols_sexp: extendr_api::SEXP,
-              package_name_sexp: extendr_api::SEXP,
-          ) -> extendr_api::SEXP {
-              unsafe {
-                  use extendr_api::robj::*;
-                  use extendr_api::GetSexp;
-                  let robj = Robj::from_sexp(use_symbols_sexp);
-                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
-                  let robj = Robj::from_sexp(package_name_sexp);
-                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
-                  extendr_api::Robj::from(
-                          get_altrep_metadata()
-                              .make_r_wrappers(use_symbols, package_name)
-                              .unwrap(),
-                      )
-                      .get()
-              }
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn R_init_altrep_extendr(info: *mut extendr_api::DllInfo) {
-              unsafe { extendr_api::register_call_methods(info, get_altrep_metadata()) };
-          }
-      }
-      mod dataframe {
-          use extendr_api::prelude::*;
-          struct MyStruct {
-              x: Rint,
-              y: Rstr,
-          }
-          #[automatically_derived]
-          impl ::core::fmt::Debug for MyStruct {
-              #[inline]
-              fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
-                  ::core::fmt::Formatter::debug_struct_field2_finish(
-                      f,
-                      "MyStruct",
-                      "x",
-                      &self.x,
-                      "y",
-                      &&self.y,
-                  )
-              }
-          }
-          impl IntoDataFrameRow<MyStruct> for Vec<MyStruct> {
-              fn into_dataframe(self) -> Result<Dataframe<MyStruct>> {
-                  let mut x = Vec::with_capacity(self.len());
-                  let mut y = Vec::with_capacity(self.len());
-                  for val in self {
-                      x.push(val.x);
-                      y.push(val.y);
-                  }
-                  let caller = eval_string("data.frame")?;
-                  let res = caller
-                      .call(
-                          Pairlist::from_pairs(
-                              &[
-                                  ("x", extendr_api::robj::Robj::from(x)),
-                                  ("y", extendr_api::robj::Robj::from(y)),
-                              ],
-                          ),
-                      )?;
-                  res.try_into()
-              }
-          }
-          impl<I> IntoDataFrameRow<MyStruct> for (I,)
-          where
-              I: ExactSizeIterator<Item = MyStruct>,
-          {
-              /// Thanks to RFC 2451, we need to wrap a generic iterator in a tuple!
-              fn into_dataframe(self) -> Result<Dataframe<MyStruct>> {
-                  let mut x = Vec::with_capacity(self.0.len());
-                  let mut y = Vec::with_capacity(self.0.len());
-                  for val in self.0 {
-                      x.push(val.x);
-                      y.push(val.y);
-                  }
-                  let caller = eval_string("data.frame")?;
-                  let res = caller
-                      .call(
-                          Pairlist::from_pairs(
-                              &[
-                                  ("x", extendr_api::robj::Robj::from(x)),
-                                  ("y", extendr_api::robj::Robj::from(y)),
-                              ],
-                          ),
-                      )?;
-                  res.try_into()
-              }
-          }
-          fn test_derive_into_dataframe() -> Dataframe<MyStruct> {
-              let v = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      MyStruct {
-                          x: 0.into(),
-                          y: "abc".into(),
-                      },
-                      MyStruct {
-                          x: 1.into(),
-                          y: "xyz".into(),
-                      },
-                  ]),
-              );
-              v.into_dataframe().unwrap()
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__test_derive_into_dataframe() -> extendr_api::SEXP {
-              use extendr_api::robj::*;
-              let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
-                  Box<dyn std::any::Any + Send>,
-              > = unsafe {
-                  std::panic::catch_unwind(
-                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
-                          Robj,
-                          extendr_api::Error,
-                      > { Ok(extendr_api::Robj::from(test_derive_into_dataframe())) }),
-                  )
-              };
-              match wrap_result_state {
-                  Ok(Ok(zz)) => {
-                      return unsafe { zz.get() };
-                  }
-                  Ok(Err(conversion_err)) => {
-                      let err_string = conversion_err.to_string();
-                      drop(conversion_err);
-                      extendr_api::throw_r_error(&err_string);
-                  }
-                  Err(unwind_err) => {
-                      drop(unwind_err);
-                      let err_string = {
-                          let res = ::alloc::fmt::format(
-                              format_args!(
-                                  "user function panicked: {0}",
-                                  "test_derive_into_dataframe",
-                              ),
-                          );
-                          res
-                      };
-                      extendr_api::handle_panic(
-                          err_string.as_str(),
-                          || {
-                              #[cold]
-                              #[track_caller]
-                              #[inline(never)]
-                              const fn panic_cold_explicit() -> ! {
-                                  ::core::panicking::panic_explicit()
-                              }
-                              panic_cold_explicit();
-                          },
-                      );
-                  }
-              }
-              {
-                  ::core::panicking::panic_fmt(
-                      format_args!(
-                          "internal error: entered unreachable code: {0}",
-                          format_args!("internal extendr error, this should never happen."),
-                      ),
-                  );
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__test_derive_into_dataframe(
-              metadata: &mut Vec<extendr_api::metadata::Func>,
-          ) {
-              let mut args = ::alloc::vec::Vec::new();
-              metadata
-                  .push(extendr_api::metadata::Func {
-                      doc: "",
-                      rust_name: "test_derive_into_dataframe",
-                      r_name: "test_derive_into_dataframe",
-                      mod_name: "test_derive_into_dataframe",
-                      args: args,
-                      return_type: "Dataframe",
-                      func_ptr: wrap__test_derive_into_dataframe as *const u8,
-                      hidden: false,
-                  })
-          }
-          fn test_into_robj_dataframe() -> Robj {
-              let v = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      MyStruct {
-                          x: 0.into(),
-                          y: "abc".into(),
-                      },
-                      MyStruct {
-                          x: 1.into(),
-                          y: "xyz".into(),
-                      },
-                  ]),
-              );
-              v.into_dataframe().unwrap().into_robj()
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__test_into_robj_dataframe() -> extendr_api::SEXP {
-              use extendr_api::robj::*;
-              let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
-                  Box<dyn std::any::Any + Send>,
-              > = unsafe {
-                  std::panic::catch_unwind(
-                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
-                          Robj,
-                          extendr_api::Error,
-                      > { Ok(extendr_api::Robj::from(test_into_robj_dataframe())) }),
-                  )
-              };
-              match wrap_result_state {
-                  Ok(Ok(zz)) => {
-                      return unsafe { zz.get() };
-                  }
-                  Ok(Err(conversion_err)) => {
-                      let err_string = conversion_err.to_string();
-                      drop(conversion_err);
-                      extendr_api::throw_r_error(&err_string);
-                  }
-                  Err(unwind_err) => {
-                      drop(unwind_err);
-                      let err_string = {
-                          let res = ::alloc::fmt::format(
-                              format_args!(
-                                  "user function panicked: {0}",
-                                  "test_into_robj_dataframe",
-                              ),
-                          );
-                          res
-                      };
-                      extendr_api::handle_panic(
-                          err_string.as_str(),
-                          || {
-                              #[cold]
-                              #[track_caller]
-                              #[inline(never)]
-                              const fn panic_cold_explicit() -> ! {
-                                  ::core::panicking::panic_explicit()
-                              }
-                              panic_cold_explicit();
-                          },
-                      );
-                  }
-              }
-              {
-                  ::core::panicking::panic_fmt(
-                      format_args!(
-                          "internal error: entered unreachable code: {0}",
-                          format_args!("internal extendr error, this should never happen."),
-                      ),
-                  );
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__test_into_robj_dataframe(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = ::alloc::vec::Vec::new();
-              metadata
-                  .push(extendr_api::metadata::Func {
-                      doc: "",
-                      rust_name: "test_into_robj_dataframe",
-                      r_name: "test_into_robj_dataframe",
-                      mod_name: "test_into_robj_dataframe",
-                      args: args,
-                      return_type: "Robj",
-                      func_ptr: wrap__test_into_robj_dataframe as *const u8,
-                      hidden: false,
-                  })
-          }
-          #[no_mangle]
-          #[allow(non_snake_case)]
-          pub fn get_dataframe_metadata() -> extendr_api::metadata::Metadata {
-              let mut functions = Vec::new();
-              let mut impls = Vec::new();
-              meta__test_derive_into_dataframe(&mut functions);
-              meta__test_into_robj_dataframe(&mut functions);
-              functions
-                  .push(extendr_api::metadata::Func {
-                      doc: "Metadata access function.",
-                      rust_name: "get_dataframe_metadata",
-                      mod_name: "get_dataframe_metadata",
-                      r_name: "get_dataframe_metadata",
-                      args: Vec::new(),
-                      return_type: "Metadata",
-                      func_ptr: wrap__get_dataframe_metadata as *const u8,
-                      hidden: true,
-                  });
-              functions
-                  .push(extendr_api::metadata::Func {
-                      doc: "Wrapper generator.",
-                      rust_name: "make_dataframe_wrappers",
-                      mod_name: "make_dataframe_wrappers",
-                      r_name: "make_dataframe_wrappers",
-                      args: <[_]>::into_vec(
-                          #[rustc_box]
-                          ::alloc::boxed::Box::new([
-                              extendr_api::metadata::Arg {
-                                  name: "use_symbols",
-                                  arg_type: "bool",
-                                  default: None,
-                              },
-                              extendr_api::metadata::Arg {
-                                  name: "package_name",
-                                  arg_type: "&str",
-                                  default: None,
-                              },
-                          ]),
-                      ),
-                      return_type: "String",
-                      func_ptr: wrap__make_dataframe_wrappers as *const u8,
-                      hidden: true,
-                  });
-              extendr_api::metadata::Metadata {
-                  name: "dataframe",
-                  functions,
-                  impls,
-              }
-          }
-          #[no_mangle]
-          #[allow(non_snake_case)]
-          pub extern "C" fn wrap__get_dataframe_metadata() -> extendr_api::SEXP {
-              use extendr_api::GetSexp;
-              unsafe { extendr_api::Robj::from(get_dataframe_metadata()).get() }
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__make_dataframe_wrappers(
-              use_symbols_sexp: extendr_api::SEXP,
-              package_name_sexp: extendr_api::SEXP,
-          ) -> extendr_api::SEXP {
-              unsafe {
-                  use extendr_api::robj::*;
-                  use extendr_api::GetSexp;
-                  let robj = Robj::from_sexp(use_symbols_sexp);
-                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
-                  let robj = Robj::from_sexp(package_name_sexp);
-                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
-                  extendr_api::Robj::from(
-                          get_dataframe_metadata()
-                              .make_r_wrappers(use_symbols, package_name)
-                              .unwrap(),
-                      )
-                      .get()
-              }
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn R_init_dataframe_extendr(info: *mut extendr_api::DllInfo) {
-              unsafe { extendr_api::register_call_methods(info, get_dataframe_metadata()) };
-          }
-      }
-      mod graphic_device {
-          use extendr_api::{graphics::*, prelude::*};
-          pub(crate) struct MyDevice<'a> {
-              pub(crate) welcome_message: &'a str,
-          }
-          impl<'a> DeviceDriver for MyDevice<'a> {
-              fn activate(&mut self, _dd: DevDesc) {
-                  let welcome_message = self.welcome_message;
-                  print_r_output({
-                      let res = ::alloc::fmt::format(
-                          format_args!("message from device: {0}", welcome_message),
-                      );
-                      res
-                  });
-                  print_r_output("\n");
-              }
-              fn close(&mut self, _dd: DevDesc) {
-                  print_r_output({
-                      let res = ::alloc::fmt::format(format_args!("good bye..."));
-                      res
-                  });
-                  print_r_output("\n");
-              }
-          }
-      }
-      mod memory_leaks {
-          use extendr_api::prelude::*;
-          fn leak_implicit_strings(x: Strings) -> String {
-              x.len().to_string()
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__leak_implicit_strings(
-              x: extendr_api::SEXP,
-          ) -> extendr_api::SEXP {
-              use extendr_api::robj::*;
-              let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
-                  Box<dyn std::any::Any + Send>,
-              > = unsafe {
-                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(
-                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
-                          Robj,
-                          extendr_api::Error,
-                      > {
-                          Ok(
-                              extendr_api::Robj::from(
-                                  leak_implicit_strings(<Strings>::from_robj(&_x_robj)?),
-                              ),
-                          )
-                      }),
-                  )
-              };
-              match wrap_result_state {
-                  Ok(Ok(zz)) => {
-                      return unsafe { zz.get() };
-                  }
-                  Ok(Err(conversion_err)) => {
-                      let err_string = conversion_err.to_string();
-                      drop(conversion_err);
-                      extendr_api::throw_r_error(&err_string);
-                  }
-                  Err(unwind_err) => {
-                      drop(unwind_err);
-                      let err_string = {
-                          let res = ::alloc::fmt::format(
-                              format_args!(
-                                  "user function panicked: {0}",
-                                  "leak_implicit_strings",
-                              ),
-                          );
-                          res
-                      };
-                      extendr_api::handle_panic(
-                          err_string.as_str(),
-                          || {
-                              #[cold]
-                              #[track_caller]
-                              #[inline(never)]
-                              const fn panic_cold_explicit() -> ! {
-                                  ::core::panicking::panic_explicit()
-                              }
-                              panic_cold_explicit();
-                          },
-                      );
-                  }
-              }
-              {
-                  ::core::panicking::panic_fmt(
-                      format_args!(
-                          "internal error: entered unreachable code: {0}",
-                          format_args!("internal extendr error, this should never happen."),
-                      ),
-                  );
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__leak_implicit_strings(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "Strings",
-                          default: None,
-                      },
-                  ]),
-              );
-              metadata
-                  .push(extendr_api::metadata::Func {
-                      doc: "",
-                      rust_name: "leak_implicit_strings",
-                      r_name: "leak_implicit_strings",
-                      mod_name: "leak_implicit_strings",
-                      args: args,
-                      return_type: "String",
-                      func_ptr: wrap__leak_implicit_strings as *const u8,
-                      hidden: false,
-                  })
-          }
-          fn leak_implicit_doubles(x: Doubles) -> String {
-              x.len().to_string()
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__leak_implicit_doubles(
-              x: extendr_api::SEXP,
-          ) -> extendr_api::SEXP {
-              use extendr_api::robj::*;
-              let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
-                  Box<dyn std::any::Any + Send>,
-              > = unsafe {
-                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(
-                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
-                          Robj,
-                          extendr_api::Error,
-                      > {
-                          Ok(
-                              extendr_api::Robj::from(
-                                  leak_implicit_doubles(<Doubles>::from_robj(&_x_robj)?),
-                              ),
-                          )
-                      }),
-                  )
-              };
-              match wrap_result_state {
-                  Ok(Ok(zz)) => {
-                      return unsafe { zz.get() };
-                  }
-                  Ok(Err(conversion_err)) => {
-                      let err_string = conversion_err.to_string();
-                      drop(conversion_err);
-                      extendr_api::throw_r_error(&err_string);
-                  }
-                  Err(unwind_err) => {
-                      drop(unwind_err);
-                      let err_string = {
-                          let res = ::alloc::fmt::format(
-                              format_args!(
-                                  "user function panicked: {0}",
-                                  "leak_implicit_doubles",
-                              ),
-                          );
-                          res
-                      };
-                      extendr_api::handle_panic(
-                          err_string.as_str(),
-                          || {
-                              #[cold]
-                              #[track_caller]
-                              #[inline(never)]
-                              const fn panic_cold_explicit() -> ! {
-                                  ::core::panicking::panic_explicit()
-                              }
-                              panic_cold_explicit();
-                          },
-                      );
-                  }
-              }
-              {
-                  ::core::panicking::panic_fmt(
-                      format_args!(
-                          "internal error: entered unreachable code: {0}",
-                          format_args!("internal extendr error, this should never happen."),
-                      ),
-                  );
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__leak_implicit_doubles(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "Doubles",
-                          default: None,
-                      },
-                  ]),
-              );
-              metadata
-                  .push(extendr_api::metadata::Func {
-                      doc: "",
-                      rust_name: "leak_implicit_doubles",
-                      r_name: "leak_implicit_doubles",
-                      mod_name: "leak_implicit_doubles",
-                      args: args,
-                      return_type: "String",
-                      func_ptr: wrap__leak_implicit_doubles as *const u8,
-                      hidden: false,
-                  })
-          }
-          fn leak_arg2_try_implicit_strings(_y: Doubles, x: Strings) -> String {
-              x.len().to_string()
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__leak_arg2_try_implicit_strings(
-              _y: extendr_api::SEXP,
-              x: extendr_api::SEXP,
-          ) -> extendr_api::SEXP {
-              use extendr_api::robj::*;
-              let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
-                  Box<dyn std::any::Any + Send>,
-              > = unsafe {
-                  let __y_robj = extendr_api::robj::Robj::from_sexp(_y);
-                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(
-                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
-                          Robj,
-                          extendr_api::Error,
-                      > {
-                          Ok(
-                              extendr_api::Robj::from(
-                                  leak_arg2_try_implicit_strings(
-                                      __y_robj.try_into()?,
-                                      _x_robj.try_into()?,
-                                  ),
-                              ),
-                          )
-                      }),
-                  )
-              };
-              match wrap_result_state {
-                  Ok(Ok(zz)) => {
-                      return unsafe { zz.get() };
-                  }
-                  Ok(Err(conversion_err)) => {
-                      let err_string = conversion_err.to_string();
-                      drop(conversion_err);
-                      extendr_api::throw_r_error(&err_string);
-                  }
-                  Err(unwind_err) => {
-                      drop(unwind_err);
-                      let err_string = {
-                          let res = ::alloc::fmt::format(
-                              format_args!(
-                                  "user function panicked: {0}",
-                                  "leak_arg2_try_implicit_strings",
-                              ),
-                          );
-                          res
-                      };
-                      extendr_api::handle_panic(
-                          err_string.as_str(),
-                          || {
-                              #[cold]
-                              #[track_caller]
-                              #[inline(never)]
-                              const fn panic_cold_explicit() -> ! {
-                                  ::core::panicking::panic_explicit()
-                              }
-                              panic_cold_explicit();
-                          },
-                      );
-                  }
-              }
-              {
-                  ::core::panicking::panic_fmt(
-                      format_args!(
-                          "internal error: entered unreachable code: {0}",
-                          format_args!("internal extendr error, this should never happen."),
-                      ),
-                  );
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__leak_arg2_try_implicit_strings(
-              metadata: &mut Vec<extendr_api::metadata::Func>,
-          ) {
-              let mut args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "_y",
-                          arg_type: "Doubles",
-                          default: None,
-                      },
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "Strings",
-                          default: None,
-                      },
-                  ]),
-              );
-              metadata
-                  .push(extendr_api::metadata::Func {
-                      doc: "",
-                      rust_name: "leak_arg2_try_implicit_strings",
-                      r_name: "leak_arg2_try_implicit_strings",
-                      mod_name: "leak_arg2_try_implicit_strings",
-                      args: args,
-                      return_type: "String",
-                      func_ptr: wrap__leak_arg2_try_implicit_strings as *const u8,
-                      hidden: false,
-                  })
-          }
-          fn leak_arg2_try_implicit_doubles(_y: Doubles, x: Doubles) -> String {
-              x.len().to_string()
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__leak_arg2_try_implicit_doubles(
-              _y: extendr_api::SEXP,
-              x: extendr_api::SEXP,
-          ) -> extendr_api::SEXP {
-              use extendr_api::robj::*;
-              let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
-                  Box<dyn std::any::Any + Send>,
-              > = unsafe {
-                  let __y_robj = extendr_api::robj::Robj::from_sexp(_y);
-                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(
-                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
-                          Robj,
-                          extendr_api::Error,
-                      > {
-                          Ok(
-                              extendr_api::Robj::from(
-                                  leak_arg2_try_implicit_doubles(
-                                      __y_robj.try_into()?,
-                                      _x_robj.try_into()?,
-                                  ),
-                              ),
-                          )
-                      }),
-                  )
-              };
-              match wrap_result_state {
-                  Ok(Ok(zz)) => {
-                      return unsafe { zz.get() };
-                  }
-                  Ok(Err(conversion_err)) => {
-                      let err_string = conversion_err.to_string();
-                      drop(conversion_err);
-                      extendr_api::throw_r_error(&err_string);
-                  }
-                  Err(unwind_err) => {
-                      drop(unwind_err);
-                      let err_string = {
-                          let res = ::alloc::fmt::format(
-                              format_args!(
-                                  "user function panicked: {0}",
-                                  "leak_arg2_try_implicit_doubles",
-                              ),
-                          );
-                          res
-                      };
-                      extendr_api::handle_panic(
-                          err_string.as_str(),
-                          || {
-                              #[cold]
-                              #[track_caller]
-                              #[inline(never)]
-                              const fn panic_cold_explicit() -> ! {
-                                  ::core::panicking::panic_explicit()
-                              }
-                              panic_cold_explicit();
-                          },
-                      );
-                  }
-              }
-              {
-                  ::core::panicking::panic_fmt(
-                      format_args!(
-                          "internal error: entered unreachable code: {0}",
-                          format_args!("internal extendr error, this should never happen."),
-                      ),
-                  );
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__leak_arg2_try_implicit_doubles(
-              metadata: &mut Vec<extendr_api::metadata::Func>,
-          ) {
-              let mut args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "_y",
-                          arg_type: "Doubles",
-                          default: None,
-                      },
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "Doubles",
-                          default: None,
-                      },
-                  ]),
-              );
-              metadata
-                  .push(extendr_api::metadata::Func {
-                      doc: "",
-                      rust_name: "leak_arg2_try_implicit_doubles",
-                      r_name: "leak_arg2_try_implicit_doubles",
-                      mod_name: "leak_arg2_try_implicit_doubles",
-                      args: args,
-                      return_type: "String",
-                      func_ptr: wrap__leak_arg2_try_implicit_doubles as *const u8,
-                      hidden: false,
-                  })
-          }
-          fn leak_unwrap_strings(x: Robj) -> String {
-              let x = x.as_string_vector().ok_or("ERROR").unwrap();
-              x.len().to_string()
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__leak_unwrap_strings(
-              x: extendr_api::SEXP,
-          ) -> extendr_api::SEXP {
-              use extendr_api::robj::*;
-              let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
-                  Box<dyn std::any::Any + Send>,
-              > = unsafe {
-                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(
-                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
-                          Robj,
-                          extendr_api::Error,
-                      > {
-                          Ok(
-                              extendr_api::Robj::from(
-                                  leak_unwrap_strings(<Robj>::from_robj(&_x_robj)?),
-                              ),
-                          )
-                      }),
-                  )
-              };
-              match wrap_result_state {
-                  Ok(Ok(zz)) => {
-                      return unsafe { zz.get() };
-                  }
-                  Ok(Err(conversion_err)) => {
-                      let err_string = conversion_err.to_string();
-                      drop(conversion_err);
-                      extendr_api::throw_r_error(&err_string);
-                  }
-                  Err(unwind_err) => {
-                      drop(unwind_err);
-                      let err_string = {
-                          let res = ::alloc::fmt::format(
-                              format_args!(
-                                  "user function panicked: {0}",
-                                  "leak_unwrap_strings",
-                              ),
-                          );
-                          res
-                      };
-                      extendr_api::handle_panic(
-                          err_string.as_str(),
-                          || {
-                              #[cold]
-                              #[track_caller]
-                              #[inline(never)]
-                              const fn panic_cold_explicit() -> ! {
-                                  ::core::panicking::panic_explicit()
-                              }
-                              panic_cold_explicit();
-                          },
-                      );
-                  }
-              }
-              {
-                  ::core::panicking::panic_fmt(
-                      format_args!(
-                          "internal error: entered unreachable code: {0}",
-                          format_args!("internal extendr error, this should never happen."),
-                      ),
-                  );
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__leak_unwrap_strings(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "Robj",
-                          default: None,
-                      },
-                  ]),
-              );
-              metadata
-                  .push(extendr_api::metadata::Func {
-                      doc: "",
-                      rust_name: "leak_unwrap_strings",
-                      r_name: "leak_unwrap_strings",
-                      mod_name: "leak_unwrap_strings",
-                      args: args,
-                      return_type: "String",
-                      func_ptr: wrap__leak_unwrap_strings as *const u8,
-                      hidden: false,
-                  })
-          }
-          fn leak_unwrap_doubles(x: Robj) -> String {
-              x.as_real_vector().ok_or("ERROR").unwrap().len().to_string()
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__leak_unwrap_doubles(
-              x: extendr_api::SEXP,
-          ) -> extendr_api::SEXP {
-              use extendr_api::robj::*;
-              let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
-                  Box<dyn std::any::Any + Send>,
-              > = unsafe {
-                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(
-                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
-                          Robj,
-                          extendr_api::Error,
-                      > {
-                          Ok(
-                              extendr_api::Robj::from(
-                                  leak_unwrap_doubles(<Robj>::from_robj(&_x_robj)?),
-                              ),
-                          )
-                      }),
-                  )
-              };
-              match wrap_result_state {
-                  Ok(Ok(zz)) => {
-                      return unsafe { zz.get() };
-                  }
-                  Ok(Err(conversion_err)) => {
-                      let err_string = conversion_err.to_string();
-                      drop(conversion_err);
-                      extendr_api::throw_r_error(&err_string);
-                  }
-                  Err(unwind_err) => {
-                      drop(unwind_err);
-                      let err_string = {
-                          let res = ::alloc::fmt::format(
-                              format_args!(
-                                  "user function panicked: {0}",
-                                  "leak_unwrap_doubles",
-                              ),
-                          );
-                          res
-                      };
-                      extendr_api::handle_panic(
-                          err_string.as_str(),
-                          || {
-                              #[cold]
-                              #[track_caller]
-                              #[inline(never)]
-                              const fn panic_cold_explicit() -> ! {
-                                  ::core::panicking::panic_explicit()
-                              }
-                              panic_cold_explicit();
-                          },
-                      );
-                  }
-              }
-              {
-                  ::core::panicking::panic_fmt(
-                      format_args!(
-                          "internal error: entered unreachable code: {0}",
-                          format_args!("internal extendr error, this should never happen."),
-                      ),
-                  );
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__leak_unwrap_doubles(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "Robj",
-                          default: None,
-                      },
-                  ]),
-              );
-              metadata
-                  .push(extendr_api::metadata::Func {
-                      doc: "",
-                      rust_name: "leak_unwrap_doubles",
-                      r_name: "leak_unwrap_doubles",
-                      mod_name: "leak_unwrap_doubles",
-                      args: args,
-                      return_type: "String",
-                      func_ptr: wrap__leak_unwrap_doubles as *const u8,
-                      hidden: false,
-                  })
-          }
-          fn leak_positive_control(x: Robj) {
-              std::mem::forget(x);
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__leak_positive_control(
-              x: extendr_api::SEXP,
-          ) -> extendr_api::SEXP {
-              use extendr_api::robj::*;
-              let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
-                  Box<dyn std::any::Any + Send>,
-              > = unsafe {
-                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(
-                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
-                          Robj,
-                          extendr_api::Error,
-                      > {
-                          Ok(
-                              extendr_api::Robj::from(
-                                  leak_positive_control(<Robj>::from_robj(&_x_robj)?),
-                              ),
-                          )
-                      }),
-                  )
-              };
-              match wrap_result_state {
-                  Ok(Ok(zz)) => {
-                      return unsafe { zz.get() };
-                  }
-                  Ok(Err(conversion_err)) => {
-                      let err_string = conversion_err.to_string();
-                      drop(conversion_err);
-                      extendr_api::throw_r_error(&err_string);
-                  }
-                  Err(unwind_err) => {
-                      drop(unwind_err);
-                      let err_string = {
-                          let res = ::alloc::fmt::format(
-                              format_args!(
-                                  "user function panicked: {0}",
-                                  "leak_positive_control",
-                              ),
-                          );
-                          res
-                      };
-                      extendr_api::handle_panic(
-                          err_string.as_str(),
-                          || {
-                              #[cold]
-                              #[track_caller]
-                              #[inline(never)]
-                              const fn panic_cold_explicit() -> ! {
-                                  ::core::panicking::panic_explicit()
-                              }
-                              panic_cold_explicit();
-                          },
-                      );
-                  }
-              }
-              {
-                  ::core::panicking::panic_fmt(
-                      format_args!(
-                          "internal error: entered unreachable code: {0}",
-                          format_args!("internal extendr error, this should never happen."),
-                      ),
-                  );
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__leak_positive_control(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "Robj",
-                          default: None,
-                      },
-                  ]),
-              );
-              metadata
-                  .push(extendr_api::metadata::Func {
-                      doc: "",
-                      rust_name: "leak_positive_control",
-                      r_name: "leak_positive_control",
-                      mod_name: "leak_positive_control",
-                      args: args,
-                      return_type: "()",
-                      func_ptr: wrap__leak_positive_control as *const u8,
-                      hidden: false,
-                  })
-          }
-          fn leak_negative_control(x: Robj) {
-              drop(x)
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__leak_negative_control(
-              x: extendr_api::SEXP,
-          ) -> extendr_api::SEXP {
-              use extendr_api::robj::*;
-              let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
-                  Box<dyn std::any::Any + Send>,
-              > = unsafe {
-                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-                  std::panic::catch_unwind(
-                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
-                          Robj,
-                          extendr_api::Error,
-                      > {
-                          Ok(
-                              extendr_api::Robj::from(
-                                  leak_negative_control(<Robj>::from_robj(&_x_robj)?),
-                              ),
-                          )
-                      }),
-                  )
-              };
-              match wrap_result_state {
-                  Ok(Ok(zz)) => {
-                      return unsafe { zz.get() };
-                  }
-                  Ok(Err(conversion_err)) => {
-                      let err_string = conversion_err.to_string();
-                      drop(conversion_err);
-                      extendr_api::throw_r_error(&err_string);
-                  }
-                  Err(unwind_err) => {
-                      drop(unwind_err);
-                      let err_string = {
-                          let res = ::alloc::fmt::format(
-                              format_args!(
-                                  "user function panicked: {0}",
-                                  "leak_negative_control",
-                              ),
-                          );
-                          res
-                      };
-                      extendr_api::handle_panic(
-                          err_string.as_str(),
-                          || {
-                              #[cold]
-                              #[track_caller]
-                              #[inline(never)]
-                              const fn panic_cold_explicit() -> ! {
-                                  ::core::panicking::panic_explicit()
-                              }
-                              panic_cold_explicit();
-                          },
-                      );
-                  }
-              }
-              {
-                  ::core::panicking::panic_fmt(
-                      format_args!(
-                          "internal error: entered unreachable code: {0}",
-                          format_args!("internal extendr error, this should never happen."),
-                      ),
-                  );
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__leak_negative_control(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "Robj",
-                          default: None,
-                      },
-                  ]),
-              );
-              metadata
-                  .push(extendr_api::metadata::Func {
-                      doc: "",
-                      rust_name: "leak_negative_control",
-                      r_name: "leak_negative_control",
-                      mod_name: "leak_negative_control",
-                      args: args,
-                      return_type: "()",
-                      func_ptr: wrap__leak_negative_control as *const u8,
-                      hidden: false,
-                  })
-          }
-          #[no_mangle]
-          #[allow(non_snake_case)]
-          pub fn get_memory_leaks_metadata() -> extendr_api::metadata::Metadata {
-              let mut functions = Vec::new();
-              let mut impls = Vec::new();
-              meta__leak_implicit_strings(&mut functions);
-              meta__leak_implicit_doubles(&mut functions);
-              meta__leak_arg2_try_implicit_strings(&mut functions);
-              meta__leak_arg2_try_implicit_doubles(&mut functions);
-              meta__leak_unwrap_strings(&mut functions);
-              meta__leak_unwrap_doubles(&mut functions);
-              meta__leak_positive_control(&mut functions);
-              meta__leak_negative_control(&mut functions);
-              functions
-                  .push(extendr_api::metadata::Func {
-                      doc: "Metadata access function.",
-                      rust_name: "get_memory_leaks_metadata",
-                      mod_name: "get_memory_leaks_metadata",
-                      r_name: "get_memory_leaks_metadata",
-                      args: Vec::new(),
-                      return_type: "Metadata",
-                      func_ptr: wrap__get_memory_leaks_metadata as *const u8,
-                      hidden: true,
-                  });
-              functions
-                  .push(extendr_api::metadata::Func {
-                      doc: "Wrapper generator.",
-                      rust_name: "make_memory_leaks_wrappers",
-                      mod_name: "make_memory_leaks_wrappers",
-                      r_name: "make_memory_leaks_wrappers",
-                      args: <[_]>::into_vec(
-                          #[rustc_box]
-                          ::alloc::boxed::Box::new([
-                              extendr_api::metadata::Arg {
-                                  name: "use_symbols",
-                                  arg_type: "bool",
-                                  default: None,
-                              },
-                              extendr_api::metadata::Arg {
-                                  name: "package_name",
-                                  arg_type: "&str",
-                                  default: None,
-                              },
-                          ]),
-                      ),
-                      return_type: "String",
-                      func_ptr: wrap__make_memory_leaks_wrappers as *const u8,
-                      hidden: true,
-                  });
-              extendr_api::metadata::Metadata {
-                  name: "memory_leaks",
-                  functions,
-                  impls,
-              }
-          }
-          #[no_mangle]
-          #[allow(non_snake_case)]
-          pub extern "C" fn wrap__get_memory_leaks_metadata() -> extendr_api::SEXP {
-              use extendr_api::GetSexp;
-              unsafe { extendr_api::Robj::from(get_memory_leaks_metadata()).get() }
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__make_memory_leaks_wrappers(
-              use_symbols_sexp: extendr_api::SEXP,
-              package_name_sexp: extendr_api::SEXP,
-          ) -> extendr_api::SEXP {
-              unsafe {
-                  use extendr_api::robj::*;
-                  use extendr_api::GetSexp;
-                  let robj = Robj::from_sexp(use_symbols_sexp);
-                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
-                  let robj = Robj::from_sexp(package_name_sexp);
-                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
-                  extendr_api::Robj::from(
-                          get_memory_leaks_metadata()
-                              .make_r_wrappers(use_symbols, package_name)
-                              .unwrap(),
-                      )
-                      .get()
-              }
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn R_init_memory_leaks_extendr(info: *mut extendr_api::DllInfo) {
-              unsafe { extendr_api::register_call_methods(info, get_memory_leaks_metadata()) };
-          }
-      }
-      mod optional_either {
-          use extendr_api::prelude::*;
-          fn type_aware_sum(input: Either<Integers, Doubles>) -> Either<Rint, Rfloat> {
-              match input {
-                  Left(left) => Left(left.iter().sum()),
-                  Right(right) => Right(right.iter().sum()),
-              }
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__type_aware_sum(
-              input: extendr_api::SEXP,
-          ) -> extendr_api::SEXP {
-              use extendr_api::robj::*;
-              let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
-                  Box<dyn std::any::Any + Send>,
-              > = unsafe {
-                  let _input_robj = extendr_api::robj::Robj::from_sexp(input);
-                  std::panic::catch_unwind(
-                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
-                          Robj,
-                          extendr_api::Error,
-                      > {
-                          Ok(extendr_api::Robj::from(type_aware_sum(_input_robj.try_into()?)))
-                      }),
-                  )
-              };
-              match wrap_result_state {
-                  Ok(Ok(zz)) => {
-                      return unsafe { zz.get() };
-                  }
-                  Ok(Err(conversion_err)) => {
-                      let err_string = conversion_err.to_string();
-                      drop(conversion_err);
-                      extendr_api::throw_r_error(&err_string);
-                  }
-                  Err(unwind_err) => {
-                      drop(unwind_err);
-                      let err_string = {
-                          let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "type_aware_sum"),
-                          );
-                          res
-                      };
-                      extendr_api::handle_panic(
-                          err_string.as_str(),
-                          || {
-                              #[cold]
-                              #[track_caller]
-                              #[inline(never)]
-                              const fn panic_cold_explicit() -> ! {
-                                  ::core::panicking::panic_explicit()
-                              }
-                              panic_cold_explicit();
-                          },
-                      );
-                  }
-              }
-              {
-                  ::core::panicking::panic_fmt(
-                      format_args!(
-                          "internal error: entered unreachable code: {0}",
-                          format_args!("internal extendr error, this should never happen."),
-                      ),
-                  );
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__type_aware_sum(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "input",
-                          arg_type: "Either",
-                          default: None,
-                      },
-                  ]),
-              );
-              metadata
-                  .push(extendr_api::metadata::Func {
-                      doc: "",
-                      rust_name: "type_aware_sum",
-                      r_name: "type_aware_sum",
-                      mod_name: "type_aware_sum",
-                      args: args,
-                      return_type: "Either",
-                      func_ptr: wrap__type_aware_sum as *const u8,
-                      hidden: false,
-                  })
-          }
-          #[no_mangle]
-          #[allow(non_snake_case)]
-          pub fn get_optional_either_metadata() -> extendr_api::metadata::Metadata {
-              let mut functions = Vec::new();
-              let mut impls = Vec::new();
-              meta__type_aware_sum(&mut functions);
-              functions
-                  .push(extendr_api::metadata::Func {
-                      doc: "Metadata access function.",
-                      rust_name: "get_optional_either_metadata",
-                      mod_name: "get_optional_either_metadata",
-                      r_name: "get_optional_either_metadata",
-                      args: Vec::new(),
-                      return_type: "Metadata",
-                      func_ptr: wrap__get_optional_either_metadata as *const u8,
-                      hidden: true,
-                  });
-              functions
-                  .push(extendr_api::metadata::Func {
-                      doc: "Wrapper generator.",
-                      rust_name: "make_optional_either_wrappers",
-                      mod_name: "make_optional_either_wrappers",
-                      r_name: "make_optional_either_wrappers",
-                      args: <[_]>::into_vec(
-                          #[rustc_box]
-                          ::alloc::boxed::Box::new([
-                              extendr_api::metadata::Arg {
-                                  name: "use_symbols",
-                                  arg_type: "bool",
-                                  default: None,
-                              },
-                              extendr_api::metadata::Arg {
-                                  name: "package_name",
-                                  arg_type: "&str",
-                                  default: None,
-                              },
-                          ]),
-                      ),
-                      return_type: "String",
-                      func_ptr: wrap__make_optional_either_wrappers as *const u8,
-                      hidden: true,
-                  });
-              extendr_api::metadata::Metadata {
-                  name: "optional_either",
-                  functions,
-                  impls,
-              }
-          }
-          #[no_mangle]
-          #[allow(non_snake_case)]
-          pub extern "C" fn wrap__get_optional_either_metadata() -> extendr_api::SEXP {
-              use extendr_api::GetSexp;
-              unsafe { extendr_api::Robj::from(get_optional_either_metadata()).get() }
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__make_optional_either_wrappers(
-              use_symbols_sexp: extendr_api::SEXP,
-              package_name_sexp: extendr_api::SEXP,
-          ) -> extendr_api::SEXP {
-              unsafe {
-                  use extendr_api::robj::*;
-                  use extendr_api::GetSexp;
-                  let robj = Robj::from_sexp(use_symbols_sexp);
-                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
-                  let robj = Robj::from_sexp(package_name_sexp);
-                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
-                  extendr_api::Robj::from(
-                          get_optional_either_metadata()
-                              .make_r_wrappers(use_symbols, package_name)
-                              .unwrap(),
-                      )
-                      .get()
-              }
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn R_init_optional_either_extendr(info: *mut extendr_api::DllInfo) {
-              unsafe {
-                  extendr_api::register_call_methods(info, get_optional_either_metadata())
-              };
-          }
-      }
-      mod optional_ndarray {
-          use extendr_api::prelude::*;
-          /// Calculate Euclidean distance matrix
-          /// Test case adopted from https://github.com/mikemahoney218/examplerust/blob/23d21b1ced4e24b7a7c00dd36290114dc1bbd113/src/rust/src/lib.rs#L5
-          /// @param a : Matrix of real values or `NULL`
-          /// @export
-          fn euclidean_dist(a: Nullable<ArrayView2<Rfloat>>) -> Nullable<Doubles> {
-              if let NotNull(a) = a {
-                  let nrow = a.nrows();
-                  let result = (0..(nrow - 1))
-                      .map(|x| {
-                          ((x + 1)..nrow)
-                              .map(move |y| {
-                                  let z = &a
-                                      .slice(
-                                          match x {
-                                              r => {
-                                                  match .. {
-                                                      r => {
-                                                          let in_dim = ::ndarray::SliceNextDim::next_in_dim(
-                                                              &r,
-                                                              ::ndarray::SliceNextDim::next_in_dim(
-                                                                  &r,
-                                                                  ::core::marker::PhantomData::<::ndarray::Ix0>,
-                                                              ),
-                                                          );
-                                                          let out_dim = ::ndarray::SliceNextDim::next_out_dim(
-                                                              &r,
-                                                              ::ndarray::SliceNextDim::next_out_dim(
-                                                                  &r,
-                                                                  ::core::marker::PhantomData::<::ndarray::Ix0>,
-                                                              ),
-                                                          );
-                                                          #[allow(unsafe_code)]
-                                                          unsafe {
-                                                              ::ndarray::SliceInfo::new_unchecked(
-                                                                  [
-                                                                      <::ndarray::SliceInfoElem as ::core::convert::From<
-                                                                          _,
-                                                                      >>::from(r),
-                                                                      <::ndarray::SliceInfoElem as ::core::convert::From<
-                                                                          _,
-                                                                      >>::from(r),
-                                                                  ],
-                                                                  in_dim,
-                                                                  out_dim,
-                                                              )
-                                                          }
-                                                      }
-                                                  }
-                                              }
-                                          },
-                                      )
-                                      - &a
-                                          .slice(
-                                              match y {
-                                                  r => {
-                                                      match .. {
-                                                          r => {
-                                                              let in_dim = ::ndarray::SliceNextDim::next_in_dim(
-                                                                  &r,
-                                                                  ::ndarray::SliceNextDim::next_in_dim(
-                                                                      &r,
-                                                                      ::core::marker::PhantomData::<::ndarray::Ix0>,
-                                                                  ),
-                                                              );
-                                                              let out_dim = ::ndarray::SliceNextDim::next_out_dim(
-                                                                  &r,
-                                                                  ::ndarray::SliceNextDim::next_out_dim(
-                                                                      &r,
-                                                                      ::core::marker::PhantomData::<::ndarray::Ix0>,
-                                                                  ),
-                                                              );
-                                                              #[allow(unsafe_code)]
-                                                              unsafe {
-                                                                  ::ndarray::SliceInfo::new_unchecked(
-                                                                      [
-                                                                          <::ndarray::SliceInfoElem as ::core::convert::From<
-                                                                              _,
-                                                                          >>::from(r),
-                                                                          <::ndarray::SliceInfoElem as ::core::convert::From<
-                                                                              _,
-                                                                          >>::from(r),
-                                                                      ],
-                                                                      in_dim,
-                                                                      out_dim,
-                                                                  )
-                                                              }
-                                                          }
-                                                      }
-                                                  }
-                                              },
-                                          );
-                                  (&z * &z).iter().sum::<Rfloat>().sqrt()
-                              })
-                      })
-                      .flatten()
-                      .collect();
-                  Nullable::NotNull(result)
-              } else {
-                  Nullable::Null
-              }
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__euclidean_dist(a: extendr_api::SEXP) -> extendr_api::SEXP {
-              use extendr_api::robj::*;
-              let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
-                  Box<dyn std::any::Any + Send>,
-              > = unsafe {
-                  let _a_robj = extendr_api::robj::Robj::from_sexp(a);
-                  std::panic::catch_unwind(
-                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
-                          Robj,
-                          extendr_api::Error,
-                      > { Ok(extendr_api::Robj::from(euclidean_dist(_a_robj.try_into()?))) }),
-                  )
-              };
-              match wrap_result_state {
-                  Ok(Ok(zz)) => {
-                      return unsafe { zz.get() };
-                  }
-                  Ok(Err(conversion_err)) => {
-                      let err_string = conversion_err.to_string();
-                      drop(conversion_err);
-                      extendr_api::throw_r_error(&err_string);
-                  }
-                  Err(unwind_err) => {
-                      drop(unwind_err);
-                      let err_string = {
-                          let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "euclidean_dist"),
-                          );
-                          res
-                      };
-                      extendr_api::handle_panic(
-                          err_string.as_str(),
-                          || {
-                              #[cold]
-                              #[track_caller]
-                              #[inline(never)]
-                              const fn panic_cold_explicit() -> ! {
-                                  ::core::panicking::panic_explicit()
-                              }
-                              panic_cold_explicit();
-                          },
-                      );
-                  }
-              }
-              {
-                  ::core::panicking::panic_fmt(
-                      format_args!(
-                          "internal error: entered unreachable code: {0}",
-                          format_args!("internal extendr error, this should never happen."),
-                      ),
-                  );
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__euclidean_dist(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "a",
-                          arg_type: "Nullable",
-                          default: None,
-                      },
-                  ]),
-              );
-              metadata
-                  .push(extendr_api::metadata::Func {
-                      doc: " Calculate Euclidean distance matrix\n Test case adopted from https://github.com/mikemahoney218/examplerust/blob/23d21b1ced4e24b7a7c00dd36290114dc1bbd113/src/rust/src/lib.rs#L5\n @param a : Matrix of real values or `NULL`\n @export",
-                      rust_name: "euclidean_dist",
-                      r_name: "euclidean_dist",
-                      mod_name: "euclidean_dist",
-                      args: args,
-                      return_type: "Nullable",
-                      func_ptr: wrap__euclidean_dist as *const u8,
-                      hidden: false,
-                  })
-          }
-          #[no_mangle]
-          #[allow(non_snake_case)]
-          pub fn get_optional_ndarray_metadata() -> extendr_api::metadata::Metadata {
-              let mut functions = Vec::new();
-              let mut impls = Vec::new();
-              meta__euclidean_dist(&mut functions);
-              functions
-                  .push(extendr_api::metadata::Func {
-                      doc: "Metadata access function.",
-                      rust_name: "get_optional_ndarray_metadata",
-                      mod_name: "get_optional_ndarray_metadata",
-                      r_name: "get_optional_ndarray_metadata",
-                      args: Vec::new(),
-                      return_type: "Metadata",
-                      func_ptr: wrap__get_optional_ndarray_metadata as *const u8,
-                      hidden: true,
-                  });
-              functions
-                  .push(extendr_api::metadata::Func {
-                      doc: "Wrapper generator.",
-                      rust_name: "make_optional_ndarray_wrappers",
-                      mod_name: "make_optional_ndarray_wrappers",
-                      r_name: "make_optional_ndarray_wrappers",
-                      args: <[_]>::into_vec(
-                          #[rustc_box]
-                          ::alloc::boxed::Box::new([
-                              extendr_api::metadata::Arg {
-                                  name: "use_symbols",
-                                  arg_type: "bool",
-                                  default: None,
-                              },
-                              extendr_api::metadata::Arg {
-                                  name: "package_name",
-                                  arg_type: "&str",
-                                  default: None,
-                              },
-                          ]),
-                      ),
-                      return_type: "String",
-                      func_ptr: wrap__make_optional_ndarray_wrappers as *const u8,
-                      hidden: true,
-                  });
-              extendr_api::metadata::Metadata {
-                  name: "optional_ndarray",
-                  functions,
-                  impls,
-              }
-          }
-          #[no_mangle]
-          #[allow(non_snake_case)]
-          pub extern "C" fn wrap__get_optional_ndarray_metadata() -> extendr_api::SEXP {
-              use extendr_api::GetSexp;
-              unsafe { extendr_api::Robj::from(get_optional_ndarray_metadata()).get() }
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__make_optional_ndarray_wrappers(
-              use_symbols_sexp: extendr_api::SEXP,
-              package_name_sexp: extendr_api::SEXP,
-          ) -> extendr_api::SEXP {
-              unsafe {
-                  use extendr_api::robj::*;
-                  use extendr_api::GetSexp;
-                  let robj = Robj::from_sexp(use_symbols_sexp);
-                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
-                  let robj = Robj::from_sexp(package_name_sexp);
-                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
-                  extendr_api::Robj::from(
-                          get_optional_ndarray_metadata()
-                              .make_r_wrappers(use_symbols, package_name)
-                              .unwrap(),
-                      )
-                      .get()
-              }
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn R_init_optional_ndarray_extendr(info: *mut extendr_api::DllInfo) {
-              unsafe {
-                  extendr_api::register_call_methods(info, get_optional_ndarray_metadata())
-              };
-          }
-      }
-      mod raw_identifiers {
-          use extendr_api::prelude::*;
-          /// Test raw identifiers (`r#`) in function arguments are parsed correctly.
-          /// See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.
-          /// @param type : i32 or `NULL`
-          /// @export
-          fn raw_identifier_in_fn_args(r#type: Nullable<i32>) -> Nullable<i32> {
-              r#type
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__raw_identifier_in_fn_args(
-              r#type: extendr_api::SEXP,
-          ) -> extendr_api::SEXP {
-              use extendr_api::robj::*;
-              let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
-                  Box<dyn std::any::Any + Send>,
-              > = unsafe {
-                  let _type_robj = extendr_api::robj::Robj::from_sexp(r#type);
-                  std::panic::catch_unwind(
-                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
-                          Robj,
-                          extendr_api::Error,
-                      > {
-                          Ok(
-                              extendr_api::Robj::from(
-                                  raw_identifier_in_fn_args(_type_robj.try_into()?),
-                              ),
-                          )
-                      }),
-                  )
-              };
-              match wrap_result_state {
-                  Ok(Ok(zz)) => {
-                      return unsafe { zz.get() };
-                  }
-                  Ok(Err(conversion_err)) => {
-                      let err_string = conversion_err.to_string();
-                      drop(conversion_err);
-                      extendr_api::throw_r_error(&err_string);
-                  }
-                  Err(unwind_err) => {
-                      drop(unwind_err);
-                      let err_string = {
-                          let res = ::alloc::fmt::format(
-                              format_args!(
-                                  "user function panicked: {0}",
-                                  "raw_identifier_in_fn_args",
-                              ),
-                          );
-                          res
-                      };
-                      extendr_api::handle_panic(
-                          err_string.as_str(),
-                          || {
-                              #[cold]
-                              #[track_caller]
-                              #[inline(never)]
-                              const fn panic_cold_explicit() -> ! {
-                                  ::core::panicking::panic_explicit()
-                              }
-                              panic_cold_explicit();
-                          },
-                      );
-                  }
-              }
-              {
-                  ::core::panicking::panic_fmt(
-                      format_args!(
-                          "internal error: entered unreachable code: {0}",
-                          format_args!("internal extendr error, this should never happen."),
-                      ),
-                  );
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__raw_identifier_in_fn_args(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "r#type",
-                          arg_type: "Nullable",
-                          default: Some("NULL"),
-                      },
-                  ]),
-              );
-              metadata
-                  .push(extendr_api::metadata::Func {
-                      doc: " Test raw identifiers (`r#`) in function arguments are parsed correctly.\n See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.\n @param type : i32 or `NULL`\n @export",
-                      rust_name: "raw_identifier_in_fn_args",
-                      r_name: "raw_identifier_in_fn_args",
-                      mod_name: "raw_identifier_in_fn_args",
-                      args: args,
-                      return_type: "Nullable",
-                      func_ptr: wrap__raw_identifier_in_fn_args as *const u8,
-                      hidden: false,
-                  })
-          }
-          /// Test raw identifiers (`r#`) as function names are parsed correctly.
-          /// See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.
-          /// @export
-          fn r#true() -> bool {
-              true
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__true() -> extendr_api::SEXP {
-              use extendr_api::robj::*;
-              let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
-                  Box<dyn std::any::Any + Send>,
-              > = unsafe {
-                  std::panic::catch_unwind(
-                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
-                          Robj,
-                          extendr_api::Error,
-                      > { Ok(extendr_api::Robj::from(r#true())) }),
-                  )
-              };
-              match wrap_result_state {
-                  Ok(Ok(zz)) => {
-                      return unsafe { zz.get() };
-                  }
-                  Ok(Err(conversion_err)) => {
-                      let err_string = conversion_err.to_string();
-                      drop(conversion_err);
-                      extendr_api::throw_r_error(&err_string);
-                  }
-                  Err(unwind_err) => {
-                      drop(unwind_err);
-                      let err_string = {
-                          let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "r#true"),
-                          );
-                          res
-                      };
-                      extendr_api::handle_panic(
-                          err_string.as_str(),
-                          || {
-                              #[cold]
-                              #[track_caller]
-                              #[inline(never)]
-                              const fn panic_cold_explicit() -> ! {
-                                  ::core::panicking::panic_explicit()
-                              }
-                              panic_cold_explicit();
-                          },
-                      );
-                  }
-              }
-              {
-                  ::core::panicking::panic_fmt(
-                      format_args!(
-                          "internal error: entered unreachable code: {0}",
-                          format_args!("internal extendr error, this should never happen."),
-                      ),
-                  );
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__true(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = ::alloc::vec::Vec::new();
-              metadata
-                  .push(extendr_api::metadata::Func {
-                      doc: " Test raw identifiers (`r#`) as function names are parsed correctly.\n See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.\n @export",
-                      rust_name: "r#true",
-                      r_name: "r#true",
-                      mod_name: "true",
-                      args: args,
-                      return_type: "bool",
-                      func_ptr: wrap__true as *const u8,
-                      hidden: false,
-                  })
-          }
-          /// Combine raw identifiers (`r#`) as a function name and in arguments are parsed correctly.
-          /// See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.
-          /// @param type : i32 or `NULL`
-          /// @export
-          fn r#false(r#type: bool) -> bool {
-              !r#type
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__false(r#type: extendr_api::SEXP) -> extendr_api::SEXP {
-              use extendr_api::robj::*;
-              let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
-                  Box<dyn std::any::Any + Send>,
-              > = unsafe {
-                  let _type_robj = extendr_api::robj::Robj::from_sexp(r#type);
-                  std::panic::catch_unwind(
-                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
-                          Robj,
-                          extendr_api::Error,
-                      > { Ok(extendr_api::Robj::from(r#false(_type_robj.try_into()?))) }),
-                  )
-              };
-              match wrap_result_state {
-                  Ok(Ok(zz)) => {
-                      return unsafe { zz.get() };
-                  }
-                  Ok(Err(conversion_err)) => {
-                      let err_string = conversion_err.to_string();
-                      drop(conversion_err);
-                      extendr_api::throw_r_error(&err_string);
-                  }
-                  Err(unwind_err) => {
-                      drop(unwind_err);
-                      let err_string = {
-                          let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "r#false"),
-                          );
-                          res
-                      };
-                      extendr_api::handle_panic(
-                          err_string.as_str(),
-                          || {
-                              #[cold]
-                              #[track_caller]
-                              #[inline(never)]
-                              const fn panic_cold_explicit() -> ! {
-                                  ::core::panicking::panic_explicit()
-                              }
-                              panic_cold_explicit();
-                          },
-                      );
-                  }
-              }
-              {
-                  ::core::panicking::panic_fmt(
-                      format_args!(
-                          "internal error: entered unreachable code: {0}",
-                          format_args!("internal extendr error, this should never happen."),
-                      ),
-                  );
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__false(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "r#type",
-                          arg_type: "bool",
-                          default: None,
-                      },
-                  ]),
-              );
-              metadata
-                  .push(extendr_api::metadata::Func {
-                      doc: " Combine raw identifiers (`r#`) as a function name and in arguments are parsed correctly.\n See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.\n @param type : i32 or `NULL`\n @export",
-                      rust_name: "r#false",
-                      r_name: "r#false",
-                      mod_name: "false",
-                      args: args,
-                      return_type: "bool",
-                      func_ptr: wrap__false as *const u8,
-                      hidden: false,
-                  })
-          }
-          #[no_mangle]
-          #[allow(non_snake_case)]
-          pub fn get_raw_identifiers_metadata() -> extendr_api::metadata::Metadata {
-              let mut functions = Vec::new();
-              let mut impls = Vec::new();
-              meta__raw_identifier_in_fn_args(&mut functions);
-              meta__true(&mut functions);
-              meta__false(&mut functions);
-              functions
-                  .push(extendr_api::metadata::Func {
-                      doc: "Metadata access function.",
-                      rust_name: "get_raw_identifiers_metadata",
-                      mod_name: "get_raw_identifiers_metadata",
-                      r_name: "get_raw_identifiers_metadata",
-                      args: Vec::new(),
-                      return_type: "Metadata",
-                      func_ptr: wrap__get_raw_identifiers_metadata as *const u8,
-                      hidden: true,
-                  });
-              functions
-                  .push(extendr_api::metadata::Func {
-                      doc: "Wrapper generator.",
-                      rust_name: "make_raw_identifiers_wrappers",
-                      mod_name: "make_raw_identifiers_wrappers",
-                      r_name: "make_raw_identifiers_wrappers",
-                      args: <[_]>::into_vec(
-                          #[rustc_box]
-                          ::alloc::boxed::Box::new([
-                              extendr_api::metadata::Arg {
-                                  name: "use_symbols",
-                                  arg_type: "bool",
-                                  default: None,
-                              },
-                              extendr_api::metadata::Arg {
-                                  name: "package_name",
-                                  arg_type: "&str",
-                                  default: None,
-                              },
-                          ]),
-                      ),
-                      return_type: "String",
-                      func_ptr: wrap__make_raw_identifiers_wrappers as *const u8,
-                      hidden: true,
-                  });
-              extendr_api::metadata::Metadata {
-                  name: "raw_identifiers",
-                  functions,
-                  impls,
-              }
-          }
-          #[no_mangle]
-          #[allow(non_snake_case)]
-          pub extern "C" fn wrap__get_raw_identifiers_metadata() -> extendr_api::SEXP {
-              use extendr_api::GetSexp;
-              unsafe { extendr_api::Robj::from(get_raw_identifiers_metadata()).get() }
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__make_raw_identifiers_wrappers(
-              use_symbols_sexp: extendr_api::SEXP,
-              package_name_sexp: extendr_api::SEXP,
-          ) -> extendr_api::SEXP {
-              unsafe {
-                  use extendr_api::robj::*;
-                  use extendr_api::GetSexp;
-                  let robj = Robj::from_sexp(use_symbols_sexp);
-                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
-                  let robj = Robj::from_sexp(package_name_sexp);
-                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
-                  extendr_api::Robj::from(
-                          get_raw_identifiers_metadata()
-                              .make_r_wrappers(use_symbols, package_name)
-                              .unwrap(),
-                      )
-                      .get()
-              }
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn R_init_raw_identifiers_extendr(info: *mut extendr_api::DllInfo) {
-              unsafe {
-                  extendr_api::register_call_methods(info, get_raw_identifiers_metadata())
-              };
-          }
-      }
       mod submodule {
           use extendr_api::prelude::*;
           /// Return string `"Hello world!"` to R.
@@ -4418,6 +1892,3247 @@
           #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
           pub extern "C" fn R_init_submodule_extendr(info: *mut extendr_api::DllInfo) {
               unsafe { extendr_api::register_call_methods(info, get_submodule_metadata()) };
+          }
+      }
+      mod altrep {
+          use extendr_api::prelude::*;
+          pub struct VecUsize(pub Vec<Option<usize>>);
+          #[automatically_derived]
+          impl ::core::fmt::Debug for VecUsize {
+              #[inline]
+              fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                  ::core::fmt::Formatter::debug_tuple_field1_finish(f, "VecUsize", &&self.0)
+              }
+          }
+          #[automatically_derived]
+          impl ::core::clone::Clone for VecUsize {
+              #[inline]
+              fn clone(&self) -> VecUsize {
+                  VecUsize(::core::clone::Clone::clone(&self.0))
+              }
+          }
+          impl AltrepImpl for VecUsize {
+              fn length(&self) -> usize {
+                  self.0.len()
+              }
+          }
+          #[cfg(use_r_altlist)]
+          impl VecUsize {}
+          impl<'a> extendr_api::FromRobj<'a> for &VecUsize {
+              fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+                  if robj.check_external_ptr_type::<VecUsize>() {
+                      #[allow(clippy::transmute_ptr_to_ref)]
+                      Ok(unsafe { std::mem::transmute(robj.external_ptr_addr::<VecUsize>()) })
+                  } else {
+                      Err("expected VecUsize")
+                  }
+              }
+          }
+          impl<'a> extendr_api::FromRobj<'a> for &mut VecUsize {
+              fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+                  if robj.check_external_ptr_type::<VecUsize>() {
+                      #[allow(clippy::transmute_ptr_to_ref)]
+                      Ok(unsafe { std::mem::transmute(robj.external_ptr_addr::<VecUsize>()) })
+                  } else {
+                      Err("expected VecUsize")
+                  }
+              }
+          }
+          impl<'a> From<&'a VecUsize> for Robj {
+              fn from(value: &'a VecUsize) -> Self {
+                  unsafe {
+                      let ptr = Box::into_raw(Box::new(value));
+                      let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
+                      res.set_attrib(class_symbol(), "VecUsize").unwrap();
+                      res.register_c_finalizer(Some(__finalize__VecUsize));
+                      res
+                  }
+              }
+          }
+          impl From<VecUsize> for Robj {
+              fn from(value: VecUsize) -> Self {
+                  unsafe {
+                      let ptr = Box::into_raw(Box::new(value));
+                      let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
+                      res.set_attrib(class_symbol(), "VecUsize").unwrap();
+                      res.register_c_finalizer(Some(__finalize__VecUsize));
+                      res
+                  }
+              }
+          }
+          extern "C" fn __finalize__VecUsize(sexp: extendr_api::SEXP) {
+              unsafe {
+                  let robj = extendr_api::robj::Robj::from_sexp(sexp);
+                  if robj.check_external_ptr_type::<VecUsize>() {
+                      let ptr = robj.external_ptr_addr::<VecUsize>();
+                      drop(Box::from_raw(ptr));
+                  }
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__VecUsize(impls: &mut Vec<extendr_api::metadata::Impl>) {
+              let mut methods = Vec::new();
+              impls
+                  .push(extendr_api::metadata::Impl {
+                      doc: "",
+                      name: "VecUsize",
+                      methods,
+                  });
+          }
+          #[cfg(use_r_altlist)]
+          impl AltListImpl for VecUsize {
+              fn elt(&self, index: usize) -> Robj {
+                  self.into_robj()
+              }
+          }
+          #[cfg(use_r_altlist)]
+          fn new_usize(robj: Integers) -> Altrep {
+              let x = robj
+                  .iter()
+                  .map(|x| match &x {
+                      _ if x.is_na() => None,
+                      _ if x.inner() < 0 => None,
+                      _ => Some(x.inner() as usize),
+                  })
+                  .collect();
+              let obj = VecUsize(x);
+              let class = Altrep::make_altlist_class::<VecUsize>("li", "mypkg");
+              Altrep::from_state_and_class(obj, class, false)
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__new_usize(robj: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _robj_robj = extendr_api::robj::Robj::from_sexp(robj);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  new_usize(<Integers>::from_robj(&_robj_robj)?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "new_usize"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__new_usize(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "robj",
+                          arg_type: "Integers",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "new_usize",
+                      r_name: "new_usize",
+                      mod_name: "new_usize",
+                      args: args,
+                      return_type: "Altrep",
+                      func_ptr: wrap__new_usize as *const u8,
+                      hidden: false,
+                  })
+          }
+          struct StringInts {
+              len: usize,
+          }
+          #[automatically_derived]
+          impl ::core::fmt::Debug for StringInts {
+              #[inline]
+              fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                  ::core::fmt::Formatter::debug_struct_field1_finish(
+                      f,
+                      "StringInts",
+                      "len",
+                      &&self.len,
+                  )
+              }
+          }
+          #[automatically_derived]
+          impl ::core::clone::Clone for StringInts {
+              #[inline]
+              fn clone(&self) -> StringInts {
+                  StringInts {
+                      len: ::core::clone::Clone::clone(&self.len),
+                  }
+              }
+          }
+          impl AltrepImpl for StringInts {
+              fn length(&self) -> usize {
+                  self.len as usize
+              }
+          }
+          impl AltStringImpl for StringInts {
+              fn elt(&self, index: usize) -> Rstr {
+                  {
+                      let res = ::alloc::fmt::format(format_args!("{0}", index));
+                      res
+                  }
+                      .into()
+              }
+          }
+          fn tst_altstring() -> Altrep {
+              let mystate = StringInts { len: 10 };
+              let class = Altrep::make_altstring_class::<StringInts>("si", "mypkg");
+              Altrep::from_state_and_class(mystate, class, false)
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__tst_altstring() -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(tst_altstring())) }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "tst_altstring"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__tst_altstring(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = ::alloc::vec::Vec::new();
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "tst_altstring",
+                      r_name: "tst_altstring",
+                      mod_name: "tst_altstring",
+                      args: args,
+                      return_type: "Altrep",
+                      func_ptr: wrap__tst_altstring as *const u8,
+                      hidden: false,
+                  })
+          }
+          struct MyCompactIntRange {
+              start: i32,
+              len: i32,
+              step: i32,
+              missing_index: usize,
+          }
+          #[automatically_derived]
+          impl ::core::fmt::Debug for MyCompactIntRange {
+              #[inline]
+              fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                  ::core::fmt::Formatter::debug_struct_field4_finish(
+                      f,
+                      "MyCompactIntRange",
+                      "start",
+                      &self.start,
+                      "len",
+                      &self.len,
+                      "step",
+                      &self.step,
+                      "missing_index",
+                      &&self.missing_index,
+                  )
+              }
+          }
+          #[automatically_derived]
+          impl ::core::clone::Clone for MyCompactIntRange {
+              #[inline]
+              fn clone(&self) -> MyCompactIntRange {
+                  MyCompactIntRange {
+                      start: ::core::clone::Clone::clone(&self.start),
+                      len: ::core::clone::Clone::clone(&self.len),
+                      step: ::core::clone::Clone::clone(&self.step),
+                      missing_index: ::core::clone::Clone::clone(&self.missing_index),
+                  }
+              }
+          }
+          impl AltrepImpl for MyCompactIntRange {
+              fn length(&self) -> usize {
+                  self.len as usize
+              }
+          }
+          impl AltIntegerImpl for MyCompactIntRange {
+              fn elt(&self, index: usize) -> Rint {
+                  if index == self.missing_index {
+                      Rint::na()
+                  } else {
+                      Rint::new(self.start + self.step * index as i32)
+                  }
+              }
+          }
+          fn tst_altinteger() -> Altrep {
+              let mystate = MyCompactIntRange {
+                  start: 0,
+                  len: 10,
+                  step: 1,
+                  missing_index: usize::MAX,
+              };
+              let class = Altrep::make_altinteger_class::<MyCompactIntRange>("cir", "mypkg");
+              Altrep::from_state_and_class(mystate, class.clone(), false)
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__tst_altinteger() -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(tst_altinteger())) }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "tst_altinteger"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__tst_altinteger(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = ::alloc::vec::Vec::new();
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "tst_altinteger",
+                      r_name: "tst_altinteger",
+                      mod_name: "tst_altinteger",
+                      args: args,
+                      return_type: "Altrep",
+                      func_ptr: wrap__tst_altinteger as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub fn get_altrep_metadata() -> extendr_api::metadata::Metadata {
+              let mut functions = Vec::new();
+              let mut impls = Vec::new();
+              meta__new_usize(&mut functions);
+              meta__tst_altstring(&mut functions);
+              meta__tst_altinteger(&mut functions);
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Metadata access function.",
+                      rust_name: "get_altrep_metadata",
+                      mod_name: "get_altrep_metadata",
+                      r_name: "get_altrep_metadata",
+                      args: Vec::new(),
+                      return_type: "Metadata",
+                      func_ptr: wrap__get_altrep_metadata as *const u8,
+                      hidden: true,
+                  });
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Wrapper generator.",
+                      rust_name: "make_altrep_wrappers",
+                      mod_name: "make_altrep_wrappers",
+                      r_name: "make_altrep_wrappers",
+                      args: <[_]>::into_vec(
+                          #[rustc_box]
+                          ::alloc::boxed::Box::new([
+                              extendr_api::metadata::Arg {
+                                  name: "use_symbols",
+                                  arg_type: "bool",
+                                  default: None,
+                              },
+                              extendr_api::metadata::Arg {
+                                  name: "package_name",
+                                  arg_type: "&str",
+                                  default: None,
+                              },
+                          ]),
+                      ),
+                      return_type: "String",
+                      func_ptr: wrap__make_altrep_wrappers as *const u8,
+                      hidden: true,
+                  });
+              extendr_api::metadata::Metadata {
+                  name: "altrep",
+                  functions,
+                  impls,
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub extern "C" fn wrap__get_altrep_metadata() -> extendr_api::SEXP {
+              use extendr_api::GetSexp;
+              unsafe { extendr_api::Robj::from(get_altrep_metadata()).get() }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__make_altrep_wrappers(
+              use_symbols_sexp: extendr_api::SEXP,
+              package_name_sexp: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              unsafe {
+                  use extendr_api::robj::*;
+                  use extendr_api::GetSexp;
+                  let robj = Robj::from_sexp(use_symbols_sexp);
+                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
+                  let robj = Robj::from_sexp(package_name_sexp);
+                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
+                  extendr_api::Robj::from(
+                          get_altrep_metadata()
+                              .make_r_wrappers(use_symbols, package_name)
+                              .unwrap(),
+                      )
+                      .get()
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn R_init_altrep_extendr(info: *mut extendr_api::DllInfo) {
+              unsafe { extendr_api::register_call_methods(info, get_altrep_metadata()) };
+          }
+      }
+      mod dataframe {
+          use extendr_api::prelude::*;
+          struct MyStruct {
+              x: Rint,
+              y: Rstr,
+          }
+          #[automatically_derived]
+          impl ::core::fmt::Debug for MyStruct {
+              #[inline]
+              fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                  ::core::fmt::Formatter::debug_struct_field2_finish(
+                      f,
+                      "MyStruct",
+                      "x",
+                      &self.x,
+                      "y",
+                      &&self.y,
+                  )
+              }
+          }
+          impl IntoDataFrameRow<MyStruct> for Vec<MyStruct> {
+              fn into_dataframe(self) -> Result<Dataframe<MyStruct>> {
+                  let mut x = Vec::with_capacity(self.len());
+                  let mut y = Vec::with_capacity(self.len());
+                  for val in self {
+                      x.push(val.x);
+                      y.push(val.y);
+                  }
+                  let caller = eval_string("data.frame")?;
+                  let res = caller
+                      .call(
+                          Pairlist::from_pairs(
+                              &[
+                                  ("x", extendr_api::robj::Robj::from(x)),
+                                  ("y", extendr_api::robj::Robj::from(y)),
+                              ],
+                          ),
+                      )?;
+                  res.try_into()
+              }
+          }
+          impl<I> IntoDataFrameRow<MyStruct> for (I,)
+          where
+              I: ExactSizeIterator<Item = MyStruct>,
+          {
+              /// Thanks to RFC 2451, we need to wrap a generic iterator in a tuple!
+              fn into_dataframe(self) -> Result<Dataframe<MyStruct>> {
+                  let mut x = Vec::with_capacity(self.0.len());
+                  let mut y = Vec::with_capacity(self.0.len());
+                  for val in self.0 {
+                      x.push(val.x);
+                      y.push(val.y);
+                  }
+                  let caller = eval_string("data.frame")?;
+                  let res = caller
+                      .call(
+                          Pairlist::from_pairs(
+                              &[
+                                  ("x", extendr_api::robj::Robj::from(x)),
+                                  ("y", extendr_api::robj::Robj::from(y)),
+                              ],
+                          ),
+                      )?;
+                  res.try_into()
+              }
+          }
+          fn test_derive_into_dataframe() -> Dataframe<MyStruct> {
+              let v = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      MyStruct {
+                          x: 0.into(),
+                          y: "abc".into(),
+                      },
+                      MyStruct {
+                          x: 1.into(),
+                          y: "xyz".into(),
+                      },
+                  ]),
+              );
+              v.into_dataframe().unwrap()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__test_derive_into_dataframe() -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(test_derive_into_dataframe())) }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "user function panicked: {0}",
+                                  "test_derive_into_dataframe",
+                              ),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__test_derive_into_dataframe(
+              metadata: &mut Vec<extendr_api::metadata::Func>,
+          ) {
+              let mut args = ::alloc::vec::Vec::new();
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "test_derive_into_dataframe",
+                      r_name: "test_derive_into_dataframe",
+                      mod_name: "test_derive_into_dataframe",
+                      args: args,
+                      return_type: "Dataframe",
+                      func_ptr: wrap__test_derive_into_dataframe as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn test_into_robj_dataframe() -> Robj {
+              let v = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      MyStruct {
+                          x: 0.into(),
+                          y: "abc".into(),
+                      },
+                      MyStruct {
+                          x: 1.into(),
+                          y: "xyz".into(),
+                      },
+                  ]),
+              );
+              v.into_dataframe().unwrap().into_robj()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__test_into_robj_dataframe() -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(test_into_robj_dataframe())) }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "user function panicked: {0}",
+                                  "test_into_robj_dataframe",
+                              ),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__test_into_robj_dataframe(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = ::alloc::vec::Vec::new();
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "test_into_robj_dataframe",
+                      r_name: "test_into_robj_dataframe",
+                      mod_name: "test_into_robj_dataframe",
+                      args: args,
+                      return_type: "Robj",
+                      func_ptr: wrap__test_into_robj_dataframe as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub fn get_dataframe_metadata() -> extendr_api::metadata::Metadata {
+              let mut functions = Vec::new();
+              let mut impls = Vec::new();
+              meta__test_derive_into_dataframe(&mut functions);
+              meta__test_into_robj_dataframe(&mut functions);
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Metadata access function.",
+                      rust_name: "get_dataframe_metadata",
+                      mod_name: "get_dataframe_metadata",
+                      r_name: "get_dataframe_metadata",
+                      args: Vec::new(),
+                      return_type: "Metadata",
+                      func_ptr: wrap__get_dataframe_metadata as *const u8,
+                      hidden: true,
+                  });
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Wrapper generator.",
+                      rust_name: "make_dataframe_wrappers",
+                      mod_name: "make_dataframe_wrappers",
+                      r_name: "make_dataframe_wrappers",
+                      args: <[_]>::into_vec(
+                          #[rustc_box]
+                          ::alloc::boxed::Box::new([
+                              extendr_api::metadata::Arg {
+                                  name: "use_symbols",
+                                  arg_type: "bool",
+                                  default: None,
+                              },
+                              extendr_api::metadata::Arg {
+                                  name: "package_name",
+                                  arg_type: "&str",
+                                  default: None,
+                              },
+                          ]),
+                      ),
+                      return_type: "String",
+                      func_ptr: wrap__make_dataframe_wrappers as *const u8,
+                      hidden: true,
+                  });
+              extendr_api::metadata::Metadata {
+                  name: "dataframe",
+                  functions,
+                  impls,
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub extern "C" fn wrap__get_dataframe_metadata() -> extendr_api::SEXP {
+              use extendr_api::GetSexp;
+              unsafe { extendr_api::Robj::from(get_dataframe_metadata()).get() }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__make_dataframe_wrappers(
+              use_symbols_sexp: extendr_api::SEXP,
+              package_name_sexp: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              unsafe {
+                  use extendr_api::robj::*;
+                  use extendr_api::GetSexp;
+                  let robj = Robj::from_sexp(use_symbols_sexp);
+                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
+                  let robj = Robj::from_sexp(package_name_sexp);
+                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
+                  extendr_api::Robj::from(
+                          get_dataframe_metadata()
+                              .make_r_wrappers(use_symbols, package_name)
+                              .unwrap(),
+                      )
+                      .get()
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn R_init_dataframe_extendr(info: *mut extendr_api::DllInfo) {
+              unsafe { extendr_api::register_call_methods(info, get_dataframe_metadata()) };
+          }
+      }
+      mod optional_ndarray {
+          use extendr_api::prelude::*;
+          /// Calculate Euclidean distance matrix
+          /// Test case adopted from https://github.com/mikemahoney218/examplerust/blob/23d21b1ced4e24b7a7c00dd36290114dc1bbd113/src/rust/src/lib.rs#L5
+          /// @param a : Matrix of real values or `NULL`
+          /// @export
+          fn euclidean_dist(a: Nullable<ArrayView2<Rfloat>>) -> Nullable<Doubles> {
+              if let NotNull(a) = a {
+                  let nrow = a.nrows();
+                  let result = (0..(nrow - 1))
+                      .map(|x| {
+                          ((x + 1)..nrow)
+                              .map(move |y| {
+                                  let z = &a
+                                      .slice(
+                                          match x {
+                                              r => {
+                                                  match .. {
+                                                      r => {
+                                                          let in_dim = ::ndarray::SliceNextDim::next_in_dim(
+                                                              &r,
+                                                              ::ndarray::SliceNextDim::next_in_dim(
+                                                                  &r,
+                                                                  ::core::marker::PhantomData::<::ndarray::Ix0>,
+                                                              ),
+                                                          );
+                                                          let out_dim = ::ndarray::SliceNextDim::next_out_dim(
+                                                              &r,
+                                                              ::ndarray::SliceNextDim::next_out_dim(
+                                                                  &r,
+                                                                  ::core::marker::PhantomData::<::ndarray::Ix0>,
+                                                              ),
+                                                          );
+                                                          #[allow(unsafe_code)]
+                                                          unsafe {
+                                                              ::ndarray::SliceInfo::new_unchecked(
+                                                                  [
+                                                                      <::ndarray::SliceInfoElem as ::core::convert::From<
+                                                                          _,
+                                                                      >>::from(r),
+                                                                      <::ndarray::SliceInfoElem as ::core::convert::From<
+                                                                          _,
+                                                                      >>::from(r),
+                                                                  ],
+                                                                  in_dim,
+                                                                  out_dim,
+                                                              )
+                                                          }
+                                                      }
+                                                  }
+                                              }
+                                          },
+                                      )
+                                      - &a
+                                          .slice(
+                                              match y {
+                                                  r => {
+                                                      match .. {
+                                                          r => {
+                                                              let in_dim = ::ndarray::SliceNextDim::next_in_dim(
+                                                                  &r,
+                                                                  ::ndarray::SliceNextDim::next_in_dim(
+                                                                      &r,
+                                                                      ::core::marker::PhantomData::<::ndarray::Ix0>,
+                                                                  ),
+                                                              );
+                                                              let out_dim = ::ndarray::SliceNextDim::next_out_dim(
+                                                                  &r,
+                                                                  ::ndarray::SliceNextDim::next_out_dim(
+                                                                      &r,
+                                                                      ::core::marker::PhantomData::<::ndarray::Ix0>,
+                                                                  ),
+                                                              );
+                                                              #[allow(unsafe_code)]
+                                                              unsafe {
+                                                                  ::ndarray::SliceInfo::new_unchecked(
+                                                                      [
+                                                                          <::ndarray::SliceInfoElem as ::core::convert::From<
+                                                                              _,
+                                                                          >>::from(r),
+                                                                          <::ndarray::SliceInfoElem as ::core::convert::From<
+                                                                              _,
+                                                                          >>::from(r),
+                                                                      ],
+                                                                      in_dim,
+                                                                      out_dim,
+                                                                  )
+                                                              }
+                                                          }
+                                                      }
+                                                  }
+                                              },
+                                          );
+                                  (&z * &z).iter().sum::<Rfloat>().sqrt()
+                              })
+                      })
+                      .flatten()
+                      .collect();
+                  Nullable::NotNull(result)
+              } else {
+                  Nullable::Null
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__euclidean_dist(a: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _a_robj = extendr_api::robj::Robj::from_sexp(a);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(euclidean_dist(_a_robj.try_into()?))) }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "euclidean_dist"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__euclidean_dist(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "a",
+                          arg_type: "Nullable",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: " Calculate Euclidean distance matrix\n Test case adopted from https://github.com/mikemahoney218/examplerust/blob/23d21b1ced4e24b7a7c00dd36290114dc1bbd113/src/rust/src/lib.rs#L5\n @param a : Matrix of real values or `NULL`\n @export",
+                      rust_name: "euclidean_dist",
+                      r_name: "euclidean_dist",
+                      mod_name: "euclidean_dist",
+                      args: args,
+                      return_type: "Nullable",
+                      func_ptr: wrap__euclidean_dist as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub fn get_optional_ndarray_metadata() -> extendr_api::metadata::Metadata {
+              let mut functions = Vec::new();
+              let mut impls = Vec::new();
+              meta__euclidean_dist(&mut functions);
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Metadata access function.",
+                      rust_name: "get_optional_ndarray_metadata",
+                      mod_name: "get_optional_ndarray_metadata",
+                      r_name: "get_optional_ndarray_metadata",
+                      args: Vec::new(),
+                      return_type: "Metadata",
+                      func_ptr: wrap__get_optional_ndarray_metadata as *const u8,
+                      hidden: true,
+                  });
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Wrapper generator.",
+                      rust_name: "make_optional_ndarray_wrappers",
+                      mod_name: "make_optional_ndarray_wrappers",
+                      r_name: "make_optional_ndarray_wrappers",
+                      args: <[_]>::into_vec(
+                          #[rustc_box]
+                          ::alloc::boxed::Box::new([
+                              extendr_api::metadata::Arg {
+                                  name: "use_symbols",
+                                  arg_type: "bool",
+                                  default: None,
+                              },
+                              extendr_api::metadata::Arg {
+                                  name: "package_name",
+                                  arg_type: "&str",
+                                  default: None,
+                              },
+                          ]),
+                      ),
+                      return_type: "String",
+                      func_ptr: wrap__make_optional_ndarray_wrappers as *const u8,
+                      hidden: true,
+                  });
+              extendr_api::metadata::Metadata {
+                  name: "optional_ndarray",
+                  functions,
+                  impls,
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub extern "C" fn wrap__get_optional_ndarray_metadata() -> extendr_api::SEXP {
+              use extendr_api::GetSexp;
+              unsafe { extendr_api::Robj::from(get_optional_ndarray_metadata()).get() }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__make_optional_ndarray_wrappers(
+              use_symbols_sexp: extendr_api::SEXP,
+              package_name_sexp: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              unsafe {
+                  use extendr_api::robj::*;
+                  use extendr_api::GetSexp;
+                  let robj = Robj::from_sexp(use_symbols_sexp);
+                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
+                  let robj = Robj::from_sexp(package_name_sexp);
+                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
+                  extendr_api::Robj::from(
+                          get_optional_ndarray_metadata()
+                              .make_r_wrappers(use_symbols, package_name)
+                              .unwrap(),
+                      )
+                      .get()
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn R_init_optional_ndarray_extendr(info: *mut extendr_api::DllInfo) {
+              unsafe {
+                  extendr_api::register_call_methods(info, get_optional_ndarray_metadata())
+              };
+          }
+      }
+      mod optional_faer {
+          use extendr_api::prelude::*;
+          use faer::{Mat, MatRef};
+          fn mat_to_mat(x: Mat<f64>) -> Mat<f64> {
+              x
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__mat_to_mat(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  mat_to_mat(<Mat<f64>>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "mat_to_mat"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__mat_to_mat(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "Mat",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "mat_to_mat",
+                      r_name: "mat_to_mat",
+                      mod_name: "mat_to_mat",
+                      args: args,
+                      return_type: "Mat",
+                      func_ptr: wrap__mat_to_mat as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn mat_to_rmat(x: Mat<f64>) -> RMatrix<f64> {
+              RMatrix::<f64>::from(x)
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__mat_to_rmat(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  mat_to_rmat(<Mat<f64>>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "mat_to_rmat"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__mat_to_rmat(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "Mat",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "mat_to_rmat",
+                      r_name: "mat_to_rmat",
+                      mod_name: "mat_to_rmat",
+                      args: args,
+                      return_type: "RMatrix",
+                      func_ptr: wrap__mat_to_rmat as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn mat_to_robj(x: Mat<f64>) -> Robj {
+              x.into_robj()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__mat_to_robj(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  mat_to_robj(<Mat<f64>>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "mat_to_robj"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__mat_to_robj(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "Mat",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "mat_to_robj",
+                      r_name: "mat_to_robj",
+                      mod_name: "mat_to_robj",
+                      args: args,
+                      return_type: "Robj",
+                      func_ptr: wrap__mat_to_robj as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn mat_to_rmatfloat(x: Mat<f64>) -> RMatrix<Rfloat> {
+              RMatrix::<Rfloat>::from(x)
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__mat_to_rmatfloat(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  mat_to_rmatfloat(<Mat<f64>>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "mat_to_rmatfloat"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__mat_to_rmatfloat(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "Mat",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "mat_to_rmatfloat",
+                      r_name: "mat_to_rmatfloat",
+                      mod_name: "mat_to_rmatfloat",
+                      args: args,
+                      return_type: "RMatrix",
+                      func_ptr: wrap__mat_to_rmatfloat as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn rmat_to_mat(x: RMatrix<f64>) -> Mat<f64> {
+              Mat::<f64>::from(x)
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__rmat_to_mat(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  rmat_to_mat(<RMatrix<f64>>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "rmat_to_mat"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__rmat_to_mat(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "RMatrix",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "rmat_to_mat",
+                      r_name: "rmat_to_mat",
+                      mod_name: "rmat_to_mat",
+                      args: args,
+                      return_type: "Mat",
+                      func_ptr: wrap__rmat_to_mat as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn robj_to_mat(x: Robj) -> Mat<f64> {
+              Mat::<f64>::try_from(x).unwrap()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__robj_to_mat(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  robj_to_mat(<Robj>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "robj_to_mat"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__robj_to_mat(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "Robj",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "robj_to_mat",
+                      r_name: "robj_to_mat",
+                      mod_name: "robj_to_mat",
+                      args: args,
+                      return_type: "Mat",
+                      func_ptr: wrap__robj_to_mat as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn matref_to_mat(x: MatRef<'_, f64>) -> Robj {
+              RMatrix::<f64>::from(x).into()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__matref_to_mat(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  matref_to_mat(<MatRef<'_, f64>>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "matref_to_mat"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__matref_to_mat(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "MatRef",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "matref_to_mat",
+                      r_name: "matref_to_mat",
+                      mod_name: "matref_to_mat",
+                      args: args,
+                      return_type: "Robj",
+                      func_ptr: wrap__matref_to_mat as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub fn get_optional_faer_metadata() -> extendr_api::metadata::Metadata {
+              let mut functions = Vec::new();
+              let mut impls = Vec::new();
+              meta__mat_to_mat(&mut functions);
+              meta__mat_to_rmat(&mut functions);
+              meta__mat_to_robj(&mut functions);
+              meta__mat_to_rmatfloat(&mut functions);
+              meta__rmat_to_mat(&mut functions);
+              meta__robj_to_mat(&mut functions);
+              meta__matref_to_mat(&mut functions);
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Metadata access function.",
+                      rust_name: "get_optional_faer_metadata",
+                      mod_name: "get_optional_faer_metadata",
+                      r_name: "get_optional_faer_metadata",
+                      args: Vec::new(),
+                      return_type: "Metadata",
+                      func_ptr: wrap__get_optional_faer_metadata as *const u8,
+                      hidden: true,
+                  });
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Wrapper generator.",
+                      rust_name: "make_optional_faer_wrappers",
+                      mod_name: "make_optional_faer_wrappers",
+                      r_name: "make_optional_faer_wrappers",
+                      args: <[_]>::into_vec(
+                          #[rustc_box]
+                          ::alloc::boxed::Box::new([
+                              extendr_api::metadata::Arg {
+                                  name: "use_symbols",
+                                  arg_type: "bool",
+                                  default: None,
+                              },
+                              extendr_api::metadata::Arg {
+                                  name: "package_name",
+                                  arg_type: "&str",
+                                  default: None,
+                              },
+                          ]),
+                      ),
+                      return_type: "String",
+                      func_ptr: wrap__make_optional_faer_wrappers as *const u8,
+                      hidden: true,
+                  });
+              extendr_api::metadata::Metadata {
+                  name: "optional_faer",
+                  functions,
+                  impls,
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub extern "C" fn wrap__get_optional_faer_metadata() -> extendr_api::SEXP {
+              use extendr_api::GetSexp;
+              unsafe { extendr_api::Robj::from(get_optional_faer_metadata()).get() }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__make_optional_faer_wrappers(
+              use_symbols_sexp: extendr_api::SEXP,
+              package_name_sexp: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              unsafe {
+                  use extendr_api::robj::*;
+                  use extendr_api::GetSexp;
+                  let robj = Robj::from_sexp(use_symbols_sexp);
+                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
+                  let robj = Robj::from_sexp(package_name_sexp);
+                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
+                  extendr_api::Robj::from(
+                          get_optional_faer_metadata()
+                              .make_r_wrappers(use_symbols, package_name)
+                              .unwrap(),
+                      )
+                      .get()
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn R_init_optional_faer_extendr(info: *mut extendr_api::DllInfo) {
+              unsafe {
+                  extendr_api::register_call_methods(info, get_optional_faer_metadata())
+              };
+          }
+      }
+      mod optional_either {
+          use extendr_api::prelude::*;
+          fn type_aware_sum(input: Either<Integers, Doubles>) -> Either<Rint, Rfloat> {
+              match input {
+                  Left(left) => Left(left.iter().sum()),
+                  Right(right) => Right(right.iter().sum()),
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__type_aware_sum(
+              input: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _input_robj = extendr_api::robj::Robj::from_sexp(input);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(extendr_api::Robj::from(type_aware_sum(_input_robj.try_into()?)))
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "type_aware_sum"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__type_aware_sum(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "input",
+                          arg_type: "Either",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "type_aware_sum",
+                      r_name: "type_aware_sum",
+                      mod_name: "type_aware_sum",
+                      args: args,
+                      return_type: "Either",
+                      func_ptr: wrap__type_aware_sum as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub fn get_optional_either_metadata() -> extendr_api::metadata::Metadata {
+              let mut functions = Vec::new();
+              let mut impls = Vec::new();
+              meta__type_aware_sum(&mut functions);
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Metadata access function.",
+                      rust_name: "get_optional_either_metadata",
+                      mod_name: "get_optional_either_metadata",
+                      r_name: "get_optional_either_metadata",
+                      args: Vec::new(),
+                      return_type: "Metadata",
+                      func_ptr: wrap__get_optional_either_metadata as *const u8,
+                      hidden: true,
+                  });
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Wrapper generator.",
+                      rust_name: "make_optional_either_wrappers",
+                      mod_name: "make_optional_either_wrappers",
+                      r_name: "make_optional_either_wrappers",
+                      args: <[_]>::into_vec(
+                          #[rustc_box]
+                          ::alloc::boxed::Box::new([
+                              extendr_api::metadata::Arg {
+                                  name: "use_symbols",
+                                  arg_type: "bool",
+                                  default: None,
+                              },
+                              extendr_api::metadata::Arg {
+                                  name: "package_name",
+                                  arg_type: "&str",
+                                  default: None,
+                              },
+                          ]),
+                      ),
+                      return_type: "String",
+                      func_ptr: wrap__make_optional_either_wrappers as *const u8,
+                      hidden: true,
+                  });
+              extendr_api::metadata::Metadata {
+                  name: "optional_either",
+                  functions,
+                  impls,
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub extern "C" fn wrap__get_optional_either_metadata() -> extendr_api::SEXP {
+              use extendr_api::GetSexp;
+              unsafe { extendr_api::Robj::from(get_optional_either_metadata()).get() }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__make_optional_either_wrappers(
+              use_symbols_sexp: extendr_api::SEXP,
+              package_name_sexp: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              unsafe {
+                  use extendr_api::robj::*;
+                  use extendr_api::GetSexp;
+                  let robj = Robj::from_sexp(use_symbols_sexp);
+                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
+                  let robj = Robj::from_sexp(package_name_sexp);
+                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
+                  extendr_api::Robj::from(
+                          get_optional_either_metadata()
+                              .make_r_wrappers(use_symbols, package_name)
+                              .unwrap(),
+                      )
+                      .get()
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn R_init_optional_either_extendr(info: *mut extendr_api::DllInfo) {
+              unsafe {
+                  extendr_api::register_call_methods(info, get_optional_either_metadata())
+              };
+          }
+      }
+      mod graphic_device {
+          use extendr_api::{graphics::*, prelude::*};
+          pub(crate) struct MyDevice<'a> {
+              pub(crate) welcome_message: &'a str,
+          }
+          impl<'a> DeviceDriver for MyDevice<'a> {
+              fn activate(&mut self, _dd: DevDesc) {
+                  let welcome_message = self.welcome_message;
+                  print_r_output({
+                      let res = ::alloc::fmt::format(
+                          format_args!("message from device: {0}", welcome_message),
+                      );
+                      res
+                  });
+                  print_r_output("\n");
+              }
+              fn close(&mut self, _dd: DevDesc) {
+                  print_r_output({
+                      let res = ::alloc::fmt::format(format_args!("good bye..."));
+                      res
+                  });
+                  print_r_output("\n");
+              }
+          }
+      }
+      mod memory_leaks {
+          use extendr_api::prelude::*;
+          fn leak_implicit_strings(x: Strings) -> String {
+              x.len().to_string()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__leak_implicit_strings(
+              x: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  leak_implicit_strings(<Strings>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "user function panicked: {0}",
+                                  "leak_implicit_strings",
+                              ),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__leak_implicit_strings(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "Strings",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "leak_implicit_strings",
+                      r_name: "leak_implicit_strings",
+                      mod_name: "leak_implicit_strings",
+                      args: args,
+                      return_type: "String",
+                      func_ptr: wrap__leak_implicit_strings as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn leak_implicit_doubles(x: Doubles) -> String {
+              x.len().to_string()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__leak_implicit_doubles(
+              x: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  leak_implicit_doubles(<Doubles>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "user function panicked: {0}",
+                                  "leak_implicit_doubles",
+                              ),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__leak_implicit_doubles(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "Doubles",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "leak_implicit_doubles",
+                      r_name: "leak_implicit_doubles",
+                      mod_name: "leak_implicit_doubles",
+                      args: args,
+                      return_type: "String",
+                      func_ptr: wrap__leak_implicit_doubles as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn leak_arg2_try_implicit_strings(_y: Doubles, x: Strings) -> String {
+              x.len().to_string()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__leak_arg2_try_implicit_strings(
+              _y: extendr_api::SEXP,
+              x: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let __y_robj = extendr_api::robj::Robj::from_sexp(_y);
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  leak_arg2_try_implicit_strings(
+                                      __y_robj.try_into()?,
+                                      _x_robj.try_into()?,
+                                  ),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "user function panicked: {0}",
+                                  "leak_arg2_try_implicit_strings",
+                              ),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__leak_arg2_try_implicit_strings(
+              metadata: &mut Vec<extendr_api::metadata::Func>,
+          ) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "_y",
+                          arg_type: "Doubles",
+                          default: None,
+                      },
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "Strings",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "leak_arg2_try_implicit_strings",
+                      r_name: "leak_arg2_try_implicit_strings",
+                      mod_name: "leak_arg2_try_implicit_strings",
+                      args: args,
+                      return_type: "String",
+                      func_ptr: wrap__leak_arg2_try_implicit_strings as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn leak_arg2_try_implicit_doubles(_y: Doubles, x: Doubles) -> String {
+              x.len().to_string()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__leak_arg2_try_implicit_doubles(
+              _y: extendr_api::SEXP,
+              x: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let __y_robj = extendr_api::robj::Robj::from_sexp(_y);
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  leak_arg2_try_implicit_doubles(
+                                      __y_robj.try_into()?,
+                                      _x_robj.try_into()?,
+                                  ),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "user function panicked: {0}",
+                                  "leak_arg2_try_implicit_doubles",
+                              ),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__leak_arg2_try_implicit_doubles(
+              metadata: &mut Vec<extendr_api::metadata::Func>,
+          ) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "_y",
+                          arg_type: "Doubles",
+                          default: None,
+                      },
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "Doubles",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "leak_arg2_try_implicit_doubles",
+                      r_name: "leak_arg2_try_implicit_doubles",
+                      mod_name: "leak_arg2_try_implicit_doubles",
+                      args: args,
+                      return_type: "String",
+                      func_ptr: wrap__leak_arg2_try_implicit_doubles as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn leak_unwrap_strings(x: Robj) -> String {
+              let x = x.as_string_vector().ok_or("ERROR").unwrap();
+              x.len().to_string()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__leak_unwrap_strings(
+              x: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  leak_unwrap_strings(<Robj>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "user function panicked: {0}",
+                                  "leak_unwrap_strings",
+                              ),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__leak_unwrap_strings(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "Robj",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "leak_unwrap_strings",
+                      r_name: "leak_unwrap_strings",
+                      mod_name: "leak_unwrap_strings",
+                      args: args,
+                      return_type: "String",
+                      func_ptr: wrap__leak_unwrap_strings as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn leak_unwrap_doubles(x: Robj) -> String {
+              x.as_real_vector().ok_or("ERROR").unwrap().len().to_string()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__leak_unwrap_doubles(
+              x: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  leak_unwrap_doubles(<Robj>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "user function panicked: {0}",
+                                  "leak_unwrap_doubles",
+                              ),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__leak_unwrap_doubles(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "Robj",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "leak_unwrap_doubles",
+                      r_name: "leak_unwrap_doubles",
+                      mod_name: "leak_unwrap_doubles",
+                      args: args,
+                      return_type: "String",
+                      func_ptr: wrap__leak_unwrap_doubles as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn leak_positive_control(x: Robj) {
+              std::mem::forget(x);
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__leak_positive_control(
+              x: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  leak_positive_control(<Robj>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "user function panicked: {0}",
+                                  "leak_positive_control",
+                              ),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__leak_positive_control(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "Robj",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "leak_positive_control",
+                      r_name: "leak_positive_control",
+                      mod_name: "leak_positive_control",
+                      args: args,
+                      return_type: "()",
+                      func_ptr: wrap__leak_positive_control as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn leak_negative_control(x: Robj) {
+              drop(x)
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__leak_negative_control(
+              x: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  leak_negative_control(<Robj>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "user function panicked: {0}",
+                                  "leak_negative_control",
+                              ),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__leak_negative_control(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "Robj",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "leak_negative_control",
+                      r_name: "leak_negative_control",
+                      mod_name: "leak_negative_control",
+                      args: args,
+                      return_type: "()",
+                      func_ptr: wrap__leak_negative_control as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub fn get_memory_leaks_metadata() -> extendr_api::metadata::Metadata {
+              let mut functions = Vec::new();
+              let mut impls = Vec::new();
+              meta__leak_implicit_strings(&mut functions);
+              meta__leak_implicit_doubles(&mut functions);
+              meta__leak_arg2_try_implicit_strings(&mut functions);
+              meta__leak_arg2_try_implicit_doubles(&mut functions);
+              meta__leak_unwrap_strings(&mut functions);
+              meta__leak_unwrap_doubles(&mut functions);
+              meta__leak_positive_control(&mut functions);
+              meta__leak_negative_control(&mut functions);
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Metadata access function.",
+                      rust_name: "get_memory_leaks_metadata",
+                      mod_name: "get_memory_leaks_metadata",
+                      r_name: "get_memory_leaks_metadata",
+                      args: Vec::new(),
+                      return_type: "Metadata",
+                      func_ptr: wrap__get_memory_leaks_metadata as *const u8,
+                      hidden: true,
+                  });
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Wrapper generator.",
+                      rust_name: "make_memory_leaks_wrappers",
+                      mod_name: "make_memory_leaks_wrappers",
+                      r_name: "make_memory_leaks_wrappers",
+                      args: <[_]>::into_vec(
+                          #[rustc_box]
+                          ::alloc::boxed::Box::new([
+                              extendr_api::metadata::Arg {
+                                  name: "use_symbols",
+                                  arg_type: "bool",
+                                  default: None,
+                              },
+                              extendr_api::metadata::Arg {
+                                  name: "package_name",
+                                  arg_type: "&str",
+                                  default: None,
+                              },
+                          ]),
+                      ),
+                      return_type: "String",
+                      func_ptr: wrap__make_memory_leaks_wrappers as *const u8,
+                      hidden: true,
+                  });
+              extendr_api::metadata::Metadata {
+                  name: "memory_leaks",
+                  functions,
+                  impls,
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub extern "C" fn wrap__get_memory_leaks_metadata() -> extendr_api::SEXP {
+              use extendr_api::GetSexp;
+              unsafe { extendr_api::Robj::from(get_memory_leaks_metadata()).get() }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__make_memory_leaks_wrappers(
+              use_symbols_sexp: extendr_api::SEXP,
+              package_name_sexp: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              unsafe {
+                  use extendr_api::robj::*;
+                  use extendr_api::GetSexp;
+                  let robj = Robj::from_sexp(use_symbols_sexp);
+                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
+                  let robj = Robj::from_sexp(package_name_sexp);
+                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
+                  extendr_api::Robj::from(
+                          get_memory_leaks_metadata()
+                              .make_r_wrappers(use_symbols, package_name)
+                              .unwrap(),
+                      )
+                      .get()
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn R_init_memory_leaks_extendr(info: *mut extendr_api::DllInfo) {
+              unsafe { extendr_api::register_call_methods(info, get_memory_leaks_metadata()) };
+          }
+      }
+      mod raw_identifiers {
+          use extendr_api::prelude::*;
+          /// Test raw identifiers (`r#`) in function arguments are parsed correctly.
+          /// See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.
+          /// @param type : i32 or `NULL`
+          /// @export
+          fn raw_identifier_in_fn_args(r#type: Nullable<i32>) -> Nullable<i32> {
+              r#type
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__raw_identifier_in_fn_args(
+              r#type: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _type_robj = extendr_api::robj::Robj::from_sexp(r#type);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  raw_identifier_in_fn_args(_type_robj.try_into()?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "user function panicked: {0}",
+                                  "raw_identifier_in_fn_args",
+                              ),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__raw_identifier_in_fn_args(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "r#type",
+                          arg_type: "Nullable",
+                          default: Some("NULL"),
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: " Test raw identifiers (`r#`) in function arguments are parsed correctly.\n See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.\n @param type : i32 or `NULL`\n @export",
+                      rust_name: "raw_identifier_in_fn_args",
+                      r_name: "raw_identifier_in_fn_args",
+                      mod_name: "raw_identifier_in_fn_args",
+                      args: args,
+                      return_type: "Nullable",
+                      func_ptr: wrap__raw_identifier_in_fn_args as *const u8,
+                      hidden: false,
+                  })
+          }
+          /// Test raw identifiers (`r#`) as function names are parsed correctly.
+          /// See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.
+          /// @export
+          fn r#true() -> bool {
+              true
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__true() -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(r#true())) }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "r#true"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__true(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = ::alloc::vec::Vec::new();
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: " Test raw identifiers (`r#`) as function names are parsed correctly.\n See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.\n @export",
+                      rust_name: "r#true",
+                      r_name: "r#true",
+                      mod_name: "true",
+                      args: args,
+                      return_type: "bool",
+                      func_ptr: wrap__true as *const u8,
+                      hidden: false,
+                  })
+          }
+          /// Combine raw identifiers (`r#`) as a function name and in arguments are parsed correctly.
+          /// See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.
+          /// @param type : i32 or `NULL`
+          /// @export
+          fn r#false(r#type: bool) -> bool {
+              !r#type
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__false(r#type: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _type_robj = extendr_api::robj::Robj::from_sexp(r#type);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(r#false(_type_robj.try_into()?))) }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "r#false"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__false(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "r#type",
+                          arg_type: "bool",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: " Combine raw identifiers (`r#`) as a function name and in arguments are parsed correctly.\n See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.\n @param type : i32 or `NULL`\n @export",
+                      rust_name: "r#false",
+                      r_name: "r#false",
+                      mod_name: "false",
+                      args: args,
+                      return_type: "bool",
+                      func_ptr: wrap__false as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub fn get_raw_identifiers_metadata() -> extendr_api::metadata::Metadata {
+              let mut functions = Vec::new();
+              let mut impls = Vec::new();
+              meta__raw_identifier_in_fn_args(&mut functions);
+              meta__true(&mut functions);
+              meta__false(&mut functions);
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Metadata access function.",
+                      rust_name: "get_raw_identifiers_metadata",
+                      mod_name: "get_raw_identifiers_metadata",
+                      r_name: "get_raw_identifiers_metadata",
+                      args: Vec::new(),
+                      return_type: "Metadata",
+                      func_ptr: wrap__get_raw_identifiers_metadata as *const u8,
+                      hidden: true,
+                  });
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Wrapper generator.",
+                      rust_name: "make_raw_identifiers_wrappers",
+                      mod_name: "make_raw_identifiers_wrappers",
+                      r_name: "make_raw_identifiers_wrappers",
+                      args: <[_]>::into_vec(
+                          #[rustc_box]
+                          ::alloc::boxed::Box::new([
+                              extendr_api::metadata::Arg {
+                                  name: "use_symbols",
+                                  arg_type: "bool",
+                                  default: None,
+                              },
+                              extendr_api::metadata::Arg {
+                                  name: "package_name",
+                                  arg_type: "&str",
+                                  default: None,
+                              },
+                          ]),
+                      ),
+                      return_type: "String",
+                      func_ptr: wrap__make_raw_identifiers_wrappers as *const u8,
+                      hidden: true,
+                  });
+              extendr_api::metadata::Metadata {
+                  name: "raw_identifiers",
+                  functions,
+                  impls,
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub extern "C" fn wrap__get_raw_identifiers_metadata() -> extendr_api::SEXP {
+              use extendr_api::GetSexp;
+              unsafe { extendr_api::Robj::from(get_raw_identifiers_metadata()).get() }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__make_raw_identifiers_wrappers(
+              use_symbols_sexp: extendr_api::SEXP,
+              package_name_sexp: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              unsafe {
+                  use extendr_api::robj::*;
+                  use extendr_api::GetSexp;
+                  let robj = Robj::from_sexp(use_symbols_sexp);
+                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
+                  let robj = Robj::from_sexp(package_name_sexp);
+                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
+                  extendr_api::Robj::from(
+                          get_raw_identifiers_metadata()
+                              .make_r_wrappers(use_symbols, package_name)
+                              .unwrap(),
+                      )
+                      .get()
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn R_init_raw_identifiers_extendr(info: *mut extendr_api::DllInfo) {
+              unsafe {
+                  extendr_api::register_call_methods(info, get_raw_identifiers_metadata())
+              };
           }
       }
       fn hello_world() -> &'static str {
@@ -9073,6 +9788,8 @@
           functions.extend(memory_leaks::get_memory_leaks_metadata().functions);
           functions.extend(optional_either::get_optional_either_metadata().functions);
           functions.extend(optional_ndarray::get_optional_ndarray_metadata().functions);
+          functions.extend(optional_faer::get_optional_faer_metadata().functions);
+          functions.extend(optional_either::get_optional_either_metadata().functions);
           functions.extend(raw_identifiers::get_raw_identifiers_metadata().functions);
           functions.extend(submodule::get_submodule_metadata().functions);
           impls.extend(altrep::get_altrep_metadata().impls);
@@ -9080,6 +9797,8 @@
           impls.extend(memory_leaks::get_memory_leaks_metadata().impls);
           impls.extend(optional_either::get_optional_either_metadata().impls);
           impls.extend(optional_ndarray::get_optional_ndarray_metadata().impls);
+          impls.extend(optional_faer::get_optional_faer_metadata().impls);
+          impls.extend(optional_either::get_optional_either_metadata().impls);
           impls.extend(raw_identifiers::get_raw_identifiers_metadata().impls);
           impls.extend(submodule::get_submodule_metadata().impls);
           functions
