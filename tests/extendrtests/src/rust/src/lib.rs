@@ -1,7 +1,11 @@
 use extendr_api::{graphics::*, prelude::*};
 
-mod altrep;
-mod dataframe;
+mod submodule;
+
+mod optional_ndarray;
+
+mod optional_faer;
+
 mod graphic_device;
 mod memory_leaks;
 mod optional_either;
@@ -447,6 +451,8 @@ extendr_module! {
     use memory_leaks;
     use optional_either;
     use optional_ndarray;
+    use optional_faer;
+    use optional_either;
     use raw_identifiers;
     use submodule;
 
