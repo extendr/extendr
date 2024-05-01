@@ -132,7 +132,9 @@ impl From<RMatrix<i32>> for Mat<f64> {
     fn from(value: RMatrix<i32>) -> Self {
         let nrow = value.nrows();
         let ncol = value.ncols();
-        let slice = value.as_integer_slice().expect("RMatrix should be integers");
+        let slice = value
+            .as_integer_slice()
+            .expect("RMatrix should be integers");
         Mat::from_fn(nrow, ncol, |i, j| slice[i + j * nrow] as f64)
     }
 }
