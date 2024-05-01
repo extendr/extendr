@@ -42,6 +42,7 @@ fn robj_to_mat(x: Robj) -> Mat<f64> {
 }
 
 // MatRef input
+#[extendr]
 fn matref_to_mat(x: MatRef<'_, f64>) -> Robj {
     RMatrix::<f64>::from(x).into()
 }
