@@ -124,8 +124,6 @@ robj_to_mat <- function(x) .Call(wrap__robj_to_mat, x)
 
 matref_to_mat <- function(x) .Call(wrap__matref_to_mat, x)
 
-type_aware_sum <- function(input) .Call(wrap__type_aware_sum, input)
-
 #' Test raw identifiers (`r#`) in function arguments are parsed correctly.
 #' See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.
 #' @param type : i32 or `NULL`
