@@ -82,6 +82,13 @@ tst_altstring <- function() .Call(wrap__tst_altstring)
 
 tst_altinteger <- function() .Call(wrap__tst_altinteger)
 
+#' @export
+dbls_named <- function(x) .Call(wrap__dbls_named, x)
+
+strings_named <- function(x) .Call(wrap__strings_named, x)
+
+list_named <- function(x, nms) .Call(wrap__list_named, x, nms)
+
 test_derive_into_dataframe <- function() .Call(wrap__test_derive_into_dataframe)
 
 test_into_robj_dataframe <- function() .Call(wrap__test_into_robj_dataframe)
