@@ -6,6 +6,9 @@
 \usage{
 dbls_named(x)
 }
+\arguments{
+\item{x}{Vector of doubles}
+}
 \description{
 Adds an attribute to a vector of doubles
 }
