@@ -13,7 +13,7 @@ impl From<Mat<f64>> for RMatrix<f64> {
 
 impl From<Mat<f64>> for Robj {
     fn from(value: Mat<f64>) -> Self {
-        RMatrix::<f64>::from(value).into_robj()
+        RMatrix::<f64>::from(value).into()
     }
 }
 
@@ -96,6 +96,20 @@ impl<'a> TryFrom<&'_ Robj> for MatRef<'a, f64> {
         } else {
             Err(Error::ExpectedReal(robj.clone()))
         }
+    }
+}
+
+impl FromRobj<'_> for Mat<f64> {
+    fn from_robj(robj: &'_ Robj) -> std::result::Result<Self, &'static str> {
+        robj.try_into()
+            .map_err(|_| "unable to convert value from R object")
+    }
+}
+
+impl<'a> FromRobj<'_> for MatRef<'a, f64> {
+    fn from_robj(robj: &'_ Robj) -> std::result::Result<Self, &'static str> {
+        robj.try_into()
+            .map_err(|_| "unable to convert value from R object")
     }
 }
 
