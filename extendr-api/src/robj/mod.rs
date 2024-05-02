@@ -799,7 +799,10 @@ make_typed_slice!(c64, COMPLEX, CPLXSXP);
 make_typed_slice!(Rcplx, COMPLEX, CPLXSXP);
 make_typed_slice!(Rcomplex, COMPLEX, CPLXSXP);
 
-/// These are helper functions which give access to common properties of R objects.
+/// Provides access to the attributes of an R object.
+///
+/// The `Attribute` trait provides a consistent interface to getting, setting, and checking for the presence of attributes in an R object.
+///
 #[allow(non_snake_case)]
 pub trait Attributes: Types + Length {
     /// Get a specific attribute as a borrowed `Robj` if it exists.
@@ -873,7 +876,7 @@ pub trait Attributes: Types + Length {
         }
     }
 
-    /// Get the names attribute as a string iterator if one exists.
+    /// Get the `names` attribute as a string iterator if one exists.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -890,12 +893,12 @@ pub trait Attributes: Types + Length {
         }
     }
 
-    /// Return true if this object has names.
+    /// Return true if this object has an attribute called `names`.
     fn has_names(&self) -> bool {
         self.has_attrib(wrapper::symbol::names_symbol())
     }
 
-    /// Set the names attribute from a string iterator.
+    /// Set the `names` attribute from a string iterator.
     ///
     /// Returns `Error::NamesLengthMismatch` if the length of the names does
     /// not match the length of the object.
@@ -926,7 +929,7 @@ pub trait Attributes: Types + Length {
         }
     }
 
-    /// Get the dim attribute as an integer iterator if one exists.
+    /// Get the `dim` attribute as an integer iterator if one exists.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -944,7 +947,7 @@ pub trait Attributes: Types + Length {
         }
     }
 
-    /// Get the dimnames attribute as a list iterator if one exists.
+    /// Get the `dimnames` attribute as a list iterator if one exists.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -961,7 +964,7 @@ pub trait Attributes: Types + Length {
         }
     }
 
-    /// Get the class attribute as a string iterator if one exists.
+    /// Get the `class` attribute as a string iterator if one exists.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -978,7 +981,7 @@ pub trait Attributes: Types + Length {
         }
     }
 
-    /// Set the class attribute from a string iterator, and returns the same
+    /// Set the `class` attribute from a string iterator, and return the same
     /// object.
     ///
     /// May return an error for some class names.
@@ -1018,7 +1021,7 @@ pub trait Attributes: Types + Length {
         }
     }
 
-    /// Get the levels attribute as a string iterator if one exists.
+    /// Get the `levels` attribute as a string iterator if one exists.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
