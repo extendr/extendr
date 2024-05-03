@@ -8,7 +8,7 @@
 - Adds `From<T> for Robj` for impl blocks marked with `#[extendr]` macro
 - The new `ExpectedExternalNonNullPtr` error variant provides a more informative error when a null pointer is accessed
 - `RArray::data_mut` provides a mutable slice to the underlying array data [[#657]](https://github.com/extendr/extendr/pull/657)
-- Implements the `Attributes` trait for all wrapper structs, allowing for easy access and setting of the attributes of an R object [[#745]](https://github.com/extendr/extendr/pull/745). This comes with breaking changes. See below.
+- Implements the `Attributes` trait for all R vector wrapper structs (e.g. `Integers` , `Doubles`, `Strings`, etc.), allowing for easy access and setting of the attributes of an R object [[#745]](https://github.com/extendr/extendr/pull/745). This comes with breaking changes. See below.
 
 ### Changed
 
