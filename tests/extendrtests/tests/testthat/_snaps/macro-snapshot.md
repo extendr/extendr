@@ -58,7 +58,7 @@
                   unsafe {
                       let ptr = Box::into_raw(Box::new(value));
                       let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
-                      res.set_attrib(class_symbol(), "VecUsize").unwrap();
+                      let res = res.set_attrib(class_symbol(), "VecUsize").unwrap();
                       res.register_c_finalizer(Some(__finalize__VecUsize));
                       res
                   }
@@ -69,7 +69,7 @@
                   unsafe {
                       let ptr = Box::into_raw(Box::new(value));
                       let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
-                      res.set_attrib(class_symbol(), "VecUsize").unwrap();
+                      let res = res.set_attrib(class_symbol(), "VecUsize").unwrap();
                       res.register_c_finalizer(Some(__finalize__VecUsize));
                       res
                   }
@@ -528,19 +528,9 @@
       }
       mod attributes {
           use extendr_api::prelude::*;
-          /// Adds an attribute to a vector of doubles
-          ///
-          /// @param x Vector of doubles
-          ///
-          /// @export
           fn dbls_named(x: Doubles) -> Doubles {
-              let mut x = x;
-              x.set_attrib(
-                      "names",
-                      x.iter().map(|xi| xi.inner().to_string()).collect::<Vec<_>>(),
-                  )
-                  .unwrap();
-              x
+              let names = x.iter().map(|xi| xi.inner().to_string()).collect::<Vec<_>>();
+              x.set_attrib("names", names).unwrap()
           }
           #[no_mangle]
           #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
@@ -618,7 +608,7 @@
               );
               metadata
                   .push(extendr_api::metadata::Func {
-                      doc: " Adds an attribute to a vector of doubles\n \n @param x Vector of doubles \n \n @export",
+                      doc: "",
                       rust_name: "dbls_named",
                       r_name: "dbls_named",
                       mod_name: "dbls_named",
@@ -629,13 +619,8 @@
                   })
           }
           fn strings_named(x: Strings) -> Strings {
-              let mut x = x;
-              x.set_attrib(
-                      "names",
-                      x.iter().map(|xi| xi.as_str().to_string()).collect::<Vec<_>>(),
-                  )
-                  .unwrap();
-              x
+              let names = x.iter().map(|xi| xi.as_str().to_string()).collect::<Vec<_>>();
+              x.set_attrib("names", names).unwrap()
           }
           #[no_mangle]
           #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
@@ -724,9 +709,7 @@
                   })
           }
           fn list_named(x: List, nms: Strings) -> List {
-              let mut x = x;
-              let _ = x.set_attrib("names", nms);
-              x
+              x.set_attrib("names", nms).unwrap()
           }
           #[no_mangle]
           #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
@@ -3808,7 +3791,7 @@
                   unsafe {
                       let ptr = Box::into_raw(Box::new(value));
                       let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
-                      res.set_attrib(class_symbol(), "MySubmoduleClass").unwrap();
+                      let res = res.set_attrib(class_symbol(), "MySubmoduleClass").unwrap();
                       res.register_c_finalizer(Some(__finalize__MySubmoduleClass));
                       res
                   }
@@ -3819,7 +3802,7 @@
                   unsafe {
                       let ptr = Box::into_raw(Box::new(value));
                       let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
-                      res.set_attrib(class_symbol(), "MySubmoduleClass").unwrap();
+                      let res = res.set_attrib(class_symbol(), "MySubmoduleClass").unwrap();
                       res.register_c_finalizer(Some(__finalize__MySubmoduleClass));
                       res
                   }
@@ -4687,7 +4670,9 @@
                   unsafe {
                       let ptr = Box::into_raw(Box::new(value));
                       let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
-                      res.set_attrib(class_symbol(), "MySubmoduleClassTryFrom").unwrap();
+                      let res = res
+                          .set_attrib(class_symbol(), "MySubmoduleClassTryFrom")
+                          .unwrap();
                       res.register_c_finalizer(Some(__finalize__MySubmoduleClassTryFrom));
                       res
                   }
@@ -7600,7 +7585,7 @@
               unsafe {
                   let ptr = Box::into_raw(Box::new(value));
                   let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
-                  res.set_attrib(class_symbol(), "MyClass").unwrap();
+                  let res = res.set_attrib(class_symbol(), "MyClass").unwrap();
                   res.register_c_finalizer(Some(__finalize__MyClass));
                   res
               }
@@ -7611,7 +7596,7 @@
               unsafe {
                   let ptr = Box::into_raw(Box::new(value));
                   let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
-                  res.set_attrib(class_symbol(), "MyClass").unwrap();
+                  let res = res.set_attrib(class_symbol(), "MyClass").unwrap();
                   res.register_c_finalizer(Some(__finalize__MyClass));
                   res
               }
@@ -8263,7 +8248,7 @@
               unsafe {
                   let ptr = Box::into_raw(Box::new(value));
                   let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
-                  res.set_attrib(class_symbol(), "MyClassTryFrom").unwrap();
+                  let res = res.set_attrib(class_symbol(), "MyClassTryFrom").unwrap();
                   res.register_c_finalizer(Some(__finalize__MyClassTryFrom));
                   res
               }
@@ -8503,7 +8488,7 @@
               unsafe {
                   let ptr = Box::into_raw(Box::new(value));
                   let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
-                  res.set_attrib(class_symbol(), "__MyClass").unwrap();
+                  let res = res.set_attrib(class_symbol(), "__MyClass").unwrap();
                   res.register_c_finalizer(Some(__finalize____MyClass));
                   res
               }
@@ -8514,7 +8499,7 @@
               unsafe {
                   let ptr = Box::into_raw(Box::new(value));
                   let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
-                  res.set_attrib(class_symbol(), "__MyClass").unwrap();
+                  let res = res.set_attrib(class_symbol(), "__MyClass").unwrap();
                   res.register_c_finalizer(Some(__finalize____MyClass));
                   res
               }
@@ -8762,7 +8747,7 @@
               unsafe {
                   let ptr = Box::into_raw(Box::new(value));
                   let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
-                  res.set_attrib(class_symbol(), "__MyClassTryFrom").unwrap();
+                  let res = res.set_attrib(class_symbol(), "__MyClassTryFrom").unwrap();
                   res.register_c_finalizer(Some(__finalize____MyClassTryFrom));
                   res
               }
@@ -9014,7 +8999,7 @@
               unsafe {
                   let ptr = Box::into_raw(Box::new(value));
                   let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
-                  res.set_attrib(class_symbol(), "MyClassUnexported").unwrap();
+                  let res = res.set_attrib(class_symbol(), "MyClassUnexported").unwrap();
                   res.register_c_finalizer(Some(__finalize__MyClassUnexported));
                   res
               }
@@ -9025,7 +9010,7 @@
               unsafe {
                   let ptr = Box::into_raw(Box::new(value));
                   let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
-                  res.set_attrib(class_symbol(), "MyClassUnexported").unwrap();
+                  let res = res.set_attrib(class_symbol(), "MyClassUnexported").unwrap();
                   res.register_c_finalizer(Some(__finalize__MyClassUnexported));
                   res
               }
@@ -9286,7 +9271,9 @@
               unsafe {
                   let ptr = Box::into_raw(Box::new(value));
                   let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
-                  res.set_attrib(class_symbol(), "MyClassUnexportedTryFrom").unwrap();
+                  let res = res
+                      .set_attrib(class_symbol(), "MyClassUnexportedTryFrom")
+                      .unwrap();
                   res.register_c_finalizer(Some(__finalize__MyClassUnexportedTryFrom));
                   res
               }

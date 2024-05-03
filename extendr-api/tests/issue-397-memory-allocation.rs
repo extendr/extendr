@@ -14,11 +14,11 @@ fn test_allocation() {
             assert_eq!(Some((ix + 1) as f64), v.as_real())
         }
 
-        let mut obj: Robj = List::from_names_and_values(&["A"], vec![data]).into();
-        obj.set_attrib(
+        let obj: Robj = List::from_names_and_values(&["A"], vec![data]).into();
+        let obj = obj.set_attrib(
             row_names_symbol(),
             (1i32..=COUNT as i32).collect_robj(),
         )?;
-        obj.set_class(&["data.frame"])?;
+        let _obj = obj.set_class(&["data.frame"])?;
     }
 }

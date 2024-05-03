@@ -62,8 +62,7 @@ impl List {
             names.push(pair.key());
             values.push(pair.value());
         }
-        let mut res = List::from_values(values);
-        res.as_robj_mut()
+        List::from_values(values)
             .set_names(names)
             .unwrap()
             .as_list()
@@ -92,9 +91,7 @@ impl List {
     where
         K: Into<String>,
     {
-        let mut res: Self = Self::from_values(val.values());
-        res.set_names(val.into_keys().map(|k| k.into()))?;
-        Ok(res)
+        Self::from_values(val.values()).set_names(val.into_keys().map(|k| k.into()))
     }
 
     /// Build a list using separate names and values iterators.
@@ -108,9 +105,7 @@ impl List {
         V::IntoIter: ExactSizeIterator,
         V::Item: Into<Robj>,
     {
-        let mut list = List::from_values(values);
-        list.set_names(names)?;
-        Ok(list)
+        List::from_values(values).set_names(names)
     }
 
     /// Return an iterator over the values of this list.

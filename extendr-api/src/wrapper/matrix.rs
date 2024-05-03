@@ -160,9 +160,9 @@ where
 {
     /// Make a new column type.
     pub fn new_column<F: FnMut(usize) -> T>(nrows: usize, f: F) -> Self {
-        let mut robj = (0..nrows).map(f).collect_robj();
+        let robj = (0..nrows).map(f).collect_robj();
         let dim = [nrows];
-        robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
+        let robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
         RArray::from_parts(robj, dim)
     }
 
@@ -192,14 +192,14 @@ where
         ncols: usize,
         f: F,
     ) -> Self {
-        let mut robj = (0..ncols)
+        let robj = (0..ncols)
             .flat_map(|c| {
                 let mut g = f.clone();
                 (0..nrows).map(move |r| g(r, c))
             })
             .collect_robj();
         let dim = [nrows, ncols];
-        robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
+        let robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
         RArray::from_parts(robj, dim)
     }
 
@@ -224,7 +224,7 @@ where
         nmatrix: usize,
         f: F,
     ) -> Self {
-        let mut robj = (0..nmatrix)
+        let robj = (0..nmatrix)
             .flat_map(|m| {
                 let h = f.clone();
                 (0..ncols).flat_map(move |c| {
@@ -234,7 +234,7 @@ where
             })
             .collect_robj();
         let dim = [nrows, ncols, nmatrix];
-        robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
+        let robj = robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
         RArray::from_parts(robj, dim)
     }
 

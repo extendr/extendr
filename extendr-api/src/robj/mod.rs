@@ -860,10 +860,11 @@ pub trait Attributes: Types + Length {
     ///    assert_eq!(robj.get_attrib(sym!(xyz)), Some(r!(1)));
     /// }
     /// ```
-    fn set_attrib<N, V>(&mut self, name: N, value: V) -> Result<&mut Self>
+    fn set_attrib<N, V>(mut self, name: N, value: V) -> Result<Self>
     where
         N: Into<Robj>,
         V: Into<Robj>,
+        Self: Sized,
     {
         let name = name.into();
         let value = value.into();
@@ -912,11 +913,12 @@ pub trait Attributes: Types + Length {
     ///     assert_eq!(r!([1, 2, 3]).set_names(&["a", "b"]), Err(Error::NamesLengthMismatch(r!(["a", "b"]))));
     /// }
     /// ```
-    fn set_names<T>(&mut self, names: T) -> Result<&mut Self>
+    fn set_names<T>(self, names: T) -> Result<Self>
     where
         T: IntoIterator,
         T::IntoIter: ExactSizeIterator,
         T::Item: ToVectorValue + AsRef<str>,
+        Self: Sized,
     {
         let iter = names.into_iter();
         let robj = iter.collect_robj();
@@ -994,11 +996,12 @@ pub trait Attributes: Types + Length {
     ///     assert_eq!(obj.inherits("a"), true);
     /// }
     /// ```
-    fn set_class<T>(&mut self, class: T) -> Result<&mut Self>
+    fn set_class<T>(self, class: T) -> Result<Self>
     where
         T: IntoIterator,
         T::IntoIter: ExactSizeIterator,
         T::Item: ToVectorValue + AsRef<str>,
+        Self: Sized,
     {
         let iter = class.into_iter();
         self.set_attrib(wrapper::symbol::class_symbol(), iter.collect_robj())

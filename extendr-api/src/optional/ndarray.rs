@@ -176,26 +176,25 @@ where
 
         // In general, transposing and then iterating an ndarray in C-order (`iter()`) is exactly
         // equivalent to iterating that same array in Fortan-order (which `ndarray` doesn't currently support)
-        let mut result = value
+        value
             .t()
             .iter()
             // Since we only have a reference, we have to copy all elements so that we can own the entire R array
             .copied()
-            .collect_robj();
-        result.set_attrib(
-            dim_symbol(),
-            value
-                .shape()
-                .iter()
-                .map(|x| i32::try_from(*x))
-                .collect::<std::result::Result<Vec<i32>, <i32 as TryFrom<usize>>::Error>>()
-                .map_err(|_err| {
-                    Error::Other(String::from(
-                        "One or more array dimensions were too large to be handled by R.",
-                    ))
-                })?,
-        )?;
-        Ok(result)
+            .collect_robj()
+            .set_attrib(
+                dim_symbol(),
+                value
+                    .shape()
+                    .iter()
+                    .map(|x| i32::try_from(*x))
+                    .collect::<std::result::Result<Vec<i32>, <i32 as TryFrom<usize>>::Error>>()
+                    .map_err(|_err| {
+                        Error::Other(String::from(
+                            "One or more array dimensions were too large to be handled by R.",
+                        ))
+                    })?,
+            )
     }
 }
 

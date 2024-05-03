@@ -2,36 +2,25 @@ use extendr_api::prelude::*;
 
 #[extendr]
 fn dbls_named(x: Doubles) -> Doubles {
-    let mut x = x;
-    x.set_attrib(
-        "names",
-        x.iter()
-            .map(|xi| xi.inner().to_string())
-            .collect::<Vec<_>>(),
-    )
-    .unwrap();
-
-    x
+    let names = x
+        .iter()
+        .map(|xi| xi.inner().to_string())
+        .collect::<Vec<_>>();
+    x.set_attrib("names", names).unwrap()
 }
 
 #[extendr]
 fn strings_named(x: Strings) -> Strings {
-    let mut x = x;
-    x.set_attrib(
-        "names",
-        x.iter()
-            .map(|xi| xi.as_str().to_string())
-            .collect::<Vec<_>>(),
-    )
-    .unwrap();
-    x
+    let names = x
+        .iter()
+        .map(|xi| xi.as_str().to_string())
+        .collect::<Vec<_>>();
+    x.set_attrib("names", names).unwrap()
 }
 
 #[extendr]
 fn list_named(x: List, nms: Strings) -> List {
-    let mut x = x;
-    let _ = x.set_attrib("names", nms);
-    x
+    x.set_attrib("names", nms).unwrap()
 }
 
 extendr_module! {

@@ -75,17 +75,16 @@ impl From<&Arg> for RArg {
 
 impl From<Arg> for Robj {
     fn from(val: Arg) -> Self {
-        let mut result = List::from_values(&[r!(val.name), r!(val.arg_type)]);
-        result
+        List::from_values(&[r!(val.name), r!(val.arg_type)])
+            .into_robj()
             .set_names(&["name", "arg_type"])
-            .expect("From<Arg> failed");
-        result.into()
+            .expect("From<Arg> failed")
     }
 }
 
 impl From<Func> for Robj {
     fn from(val: Func) -> Self {
-        let mut result = List::from_values(&[
+        List::from_values(&[
             r!(val.doc),
             r!(val.rust_name),
             r!(val.mod_name),
@@ -93,47 +92,44 @@ impl From<Func> for Robj {
             r!(List::from_values(val.args)),
             r!(val.return_type),
             r!(val.hidden),
-        ]);
-        result
-            .set_names(&[
-                "doc",
-                "rust_name",
-                "mod_name",
-                "r_name",
-                "args",
-                "return.type",
-                "hidden",
-            ])
-            .expect("From<Func> failed");
-        result.into()
+        ])
+        .into_robj()
+        .set_names(&[
+            "doc",
+            "rust_name",
+            "mod_name",
+            "r_name",
+            "args",
+            "return.type",
+            "hidden",
+        ])
+        .expect("From<Func> failed")
     }
 }
 
 impl From<Impl> for Robj {
     fn from(val: Impl) -> Self {
-        let mut result = List::from_values(&[
+        List::from_values(&[
             r!(val.doc),
             r!(val.name),
             r!(List::from_values(val.methods)),
-        ]);
-        result
-            .set_names(&["doc", "name", "methods"])
-            .expect("From<Impl> failed");
-        result.into()
+        ])
+        .into_robj()
+        .set_names(&["doc", "name", "methods"])
+        .expect("From<Impl> failed")
     }
 }
 
 impl From<Metadata> for Robj {
     fn from(val: Metadata) -> Self {
-        let mut result = List::from_values(&[
+        List::from_values(&[
             r!(val.name),
             r!(List::from_values(val.functions)),
             r!(List::from_values(val.impls)),
-        ]);
-        result
-            .set_names(&["name", "functions", "impls"])
-            .expect("From<Metadata> failed");
-        result.into()
+        ])
+        .into_robj()
+        .set_names(&["name", "functions", "impls"])
+        .expect("From<Metadata> failed")
     }
 }
 
