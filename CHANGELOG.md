@@ -4,6 +4,7 @@
 
 ### Added
 
+- New optional `faer` feature which enables conversion between `faer` matrix and `RMatrix<f64>` [[#706]](https://github.com/extendr/extendr/pull/706)
 - Adds `TryFrom<Robj>` and `<TryFrom<&Robj>` for `impl` blocks marked with `#[extendr]` macro allowing falliable conversion to `&Self` `&mut Self` 
 - Adds `From<T> for Robj` for impl blocks marked with `#[extendr]` macro
 - The new `ExpectedExternalNonNullPtr` error variant provides a more informative error when a null pointer is accessed
