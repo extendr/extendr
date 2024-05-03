@@ -1921,6 +1921,721 @@
               };
           }
       }
+      mod optional_faer {
+          use extendr_api::prelude::*;
+          use faer::{Mat, MatRef};
+          fn mat_to_mat(x: Mat<f64>) -> Mat<f64> {
+              x
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__mat_to_mat(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  mat_to_mat(<Mat<f64>>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "mat_to_mat"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__mat_to_mat(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "Mat",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "mat_to_mat",
+                      r_name: "mat_to_mat",
+                      mod_name: "mat_to_mat",
+                      args: args,
+                      return_type: "Mat",
+                      func_ptr: wrap__mat_to_mat as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn mat_to_rmat(x: Mat<f64>) -> RMatrix<f64> {
+              RMatrix::<f64>::from(x)
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__mat_to_rmat(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  mat_to_rmat(<Mat<f64>>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "mat_to_rmat"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__mat_to_rmat(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "Mat",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "mat_to_rmat",
+                      r_name: "mat_to_rmat",
+                      mod_name: "mat_to_rmat",
+                      args: args,
+                      return_type: "RMatrix",
+                      func_ptr: wrap__mat_to_rmat as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn mat_to_robj(x: Mat<f64>) -> Robj {
+              x.into_robj()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__mat_to_robj(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  mat_to_robj(<Mat<f64>>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "mat_to_robj"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__mat_to_robj(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "Mat",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "mat_to_robj",
+                      r_name: "mat_to_robj",
+                      mod_name: "mat_to_robj",
+                      args: args,
+                      return_type: "Robj",
+                      func_ptr: wrap__mat_to_robj as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn mat_to_rmatfloat(x: Mat<f64>) -> RMatrix<Rfloat> {
+              RMatrix::<Rfloat>::from(x)
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__mat_to_rmatfloat(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  mat_to_rmatfloat(<Mat<f64>>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "mat_to_rmatfloat"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__mat_to_rmatfloat(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "Mat",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "mat_to_rmatfloat",
+                      r_name: "mat_to_rmatfloat",
+                      mod_name: "mat_to_rmatfloat",
+                      args: args,
+                      return_type: "RMatrix",
+                      func_ptr: wrap__mat_to_rmatfloat as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn rmat_to_mat(x: RMatrix<f64>) -> Mat<f64> {
+              Mat::<f64>::from(x)
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__rmat_to_mat(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  rmat_to_mat(<RMatrix<f64>>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "rmat_to_mat"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__rmat_to_mat(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "RMatrix",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "rmat_to_mat",
+                      r_name: "rmat_to_mat",
+                      mod_name: "rmat_to_mat",
+                      args: args,
+                      return_type: "Mat",
+                      func_ptr: wrap__rmat_to_mat as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn robj_to_mat(x: Robj) -> Mat<f64> {
+              Mat::<f64>::try_from(x).unwrap()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__robj_to_mat(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  robj_to_mat(<Robj>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "robj_to_mat"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__robj_to_mat(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "Robj",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "robj_to_mat",
+                      r_name: "robj_to_mat",
+                      mod_name: "robj_to_mat",
+                      args: args,
+                      return_type: "Mat",
+                      func_ptr: wrap__robj_to_mat as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn matref_to_mat(x: MatRef<'_, f64>) -> Robj {
+              RMatrix::<f64>::from(x).into()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__matref_to_mat(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  matref_to_mat(<MatRef<'_, f64>>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "matref_to_mat"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__matref_to_mat(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "MatRef",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "matref_to_mat",
+                      r_name: "matref_to_mat",
+                      mod_name: "matref_to_mat",
+                      args: args,
+                      return_type: "Robj",
+                      func_ptr: wrap__matref_to_mat as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub fn get_optional_faer_metadata() -> extendr_api::metadata::Metadata {
+              let mut functions = Vec::new();
+              let mut impls = Vec::new();
+              meta__mat_to_mat(&mut functions);
+              meta__mat_to_rmat(&mut functions);
+              meta__mat_to_robj(&mut functions);
+              meta__mat_to_rmatfloat(&mut functions);
+              meta__rmat_to_mat(&mut functions);
+              meta__robj_to_mat(&mut functions);
+              meta__matref_to_mat(&mut functions);
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Metadata access function.",
+                      rust_name: "get_optional_faer_metadata",
+                      mod_name: "get_optional_faer_metadata",
+                      r_name: "get_optional_faer_metadata",
+                      args: Vec::new(),
+                      return_type: "Metadata",
+                      func_ptr: wrap__get_optional_faer_metadata as *const u8,
+                      hidden: true,
+                  });
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Wrapper generator.",
+                      rust_name: "make_optional_faer_wrappers",
+                      mod_name: "make_optional_faer_wrappers",
+                      r_name: "make_optional_faer_wrappers",
+                      args: <[_]>::into_vec(
+                          #[rustc_box]
+                          ::alloc::boxed::Box::new([
+                              extendr_api::metadata::Arg {
+                                  name: "use_symbols",
+                                  arg_type: "bool",
+                                  default: None,
+                              },
+                              extendr_api::metadata::Arg {
+                                  name: "package_name",
+                                  arg_type: "&str",
+                                  default: None,
+                              },
+                          ]),
+                      ),
+                      return_type: "String",
+                      func_ptr: wrap__make_optional_faer_wrappers as *const u8,
+                      hidden: true,
+                  });
+              extendr_api::metadata::Metadata {
+                  name: "optional_faer",
+                  functions,
+                  impls,
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub extern "C" fn wrap__get_optional_faer_metadata() -> extendr_api::SEXP {
+              use extendr_api::GetSexp;
+              unsafe { extendr_api::Robj::from(get_optional_faer_metadata()).get() }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__make_optional_faer_wrappers(
+              use_symbols_sexp: extendr_api::SEXP,
+              package_name_sexp: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              unsafe {
+                  use extendr_api::robj::*;
+                  use extendr_api::GetSexp;
+                  let robj = Robj::from_sexp(use_symbols_sexp);
+                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
+                  let robj = Robj::from_sexp(package_name_sexp);
+                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
+                  extendr_api::Robj::from(
+                          get_optional_faer_metadata()
+                              .make_r_wrappers(use_symbols, package_name)
+                              .unwrap(),
+                      )
+                      .get()
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn R_init_optional_faer_extendr(info: *mut extendr_api::DllInfo) {
+              unsafe {
+                  extendr_api::register_call_methods(info, get_optional_faer_metadata())
+              };
+          }
+      }
       mod optional_ndarray {
           use extendr_api::prelude::*;
           /// Calculate Euclidean distance matrix
@@ -9073,6 +9788,7 @@
           functions.extend(memory_leaks::get_memory_leaks_metadata().functions);
           functions.extend(optional_either::get_optional_either_metadata().functions);
           functions.extend(optional_ndarray::get_optional_ndarray_metadata().functions);
+          functions.extend(optional_faer::get_optional_faer_metadata().functions);
           functions.extend(raw_identifiers::get_raw_identifiers_metadata().functions);
           functions.extend(submodule::get_submodule_metadata().functions);
           impls.extend(altrep::get_altrep_metadata().impls);
@@ -9080,6 +9796,7 @@
           impls.extend(memory_leaks::get_memory_leaks_metadata().impls);
           impls.extend(optional_either::get_optional_either_metadata().impls);
           impls.extend(optional_ndarray::get_optional_ndarray_metadata().impls);
+          impls.extend(optional_faer::get_optional_faer_metadata().impls);
           impls.extend(raw_identifiers::get_raw_identifiers_metadata().impls);
           impls.extend(submodule::get_submodule_metadata().impls);
           functions

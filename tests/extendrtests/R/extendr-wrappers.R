@@ -110,6 +110,20 @@ type_aware_sum <- function(input) .Call(wrap__type_aware_sum, input)
 #' @export
 euclidean_dist <- function(a) .Call(wrap__euclidean_dist, a)
 
+mat_to_mat <- function(x) .Call(wrap__mat_to_mat, x)
+
+mat_to_rmat <- function(x) .Call(wrap__mat_to_rmat, x)
+
+mat_to_robj <- function(x) .Call(wrap__mat_to_robj, x)
+
+mat_to_rmatfloat <- function(x) .Call(wrap__mat_to_rmatfloat, x)
+
+rmat_to_mat <- function(x) .Call(wrap__rmat_to_mat, x)
+
+robj_to_mat <- function(x) .Call(wrap__robj_to_mat, x)
+
+matref_to_mat <- function(x) .Call(wrap__matref_to_mat, x)
+
 #' Test raw identifiers (`r#`) in function arguments are parsed correctly.
 #' See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.
 #' @param type : i32 or `NULL`

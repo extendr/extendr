@@ -5,6 +5,7 @@ mod dataframe;
 mod graphic_device;
 mod memory_leaks;
 mod optional_either;
+mod optional_faer;
 mod optional_ndarray;
 mod raw_identifiers;
 mod submodule;
@@ -447,6 +448,7 @@ extendr_module! {
     use memory_leaks;
     use optional_either;
     use optional_ndarray;
+    use optional_faer;
     use raw_identifiers;
     use submodule;
 
