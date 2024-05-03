@@ -528,11 +528,6 @@
       }
       mod attributes {
           use extendr_api::prelude::*;
-          /// Adds an attribute to a vector of doubles
-          ///
-          /// @param x Vector of doubles
-          ///
-          /// @export
           fn dbls_named(x: Doubles) -> Doubles {
               let mut x = x;
               x.set_attrib(
@@ -618,7 +613,7 @@
               );
               metadata
                   .push(extendr_api::metadata::Func {
-                      doc: " Adds an attribute to a vector of doubles\n \n @param x Vector of doubles \n \n @export",
+                      doc: "",
                       rust_name: "dbls_named",
                       r_name: "dbls_named",
                       mod_name: "dbls_named",
