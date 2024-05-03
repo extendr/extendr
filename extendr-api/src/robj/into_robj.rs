@@ -83,9 +83,12 @@ where
         use crate as extendr_api;
         match res {
             Ok(x) => x.into(),
-            Err(x) => { list!(message = "extendr_err", value = x.into()) }
-                .set_class(["extendr_error", "error", "condition"])
-                .expect("internal error: failed to set class"),
+            Err(x) => {
+                let mut err = list!(message = "extendr_err", value = x.into());
+                err.set_class(["extendr_error", "error", "condition"])
+                    .expect("internal error: failed to set class");
+                err.into()
+            }
         }
     }
 }
@@ -104,7 +107,7 @@ where
 {
     fn from(res: std::result::Result<T, E>) -> Self {
         use crate as extendr_api;
-        match res {
+        let mut result = match res {
             Ok(x) => list!(ok = x.into(), err = NULL),
             Err(x) => {
                 let err_robj = x.into();
@@ -113,10 +116,11 @@ where
                 }
                 list!(ok = NULL, err = err_robj)
             }
-        }
-        .set_class(&["extendr_result"])
-        .expect("Internal error: failed to set class")
-        .into()
+        };
+        result
+            .set_class(&["extendr_result"])
+            .expect("Internal error: failed to set class");
+        result.into()
     }
 }
 
@@ -591,11 +595,11 @@ pub trait RobjItertools: Iterator {
                 prod
             )));
         }
-        let robj = vector.set_attrib(wrapper::symbol::dim_symbol(), dims.iter().collect_robj())?;
-        let _data = robj.as_typed_slice().ok_or(Error::Other(
+        vector.set_attrib(wrapper::symbol::dim_symbol(), dims.iter().collect_robj())?;
+        let _data = vector.as_typed_slice().ok_or(Error::Other(
             "Unknown error in converting to slice".to_string(),
         ))?;
-        Ok(RArray::from_parts(robj, dims))
+        Ok(RArray::from_parts(vector, dims))
     }
 }
 

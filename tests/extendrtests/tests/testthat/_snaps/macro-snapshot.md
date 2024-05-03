@@ -526,6 +526,384 @@
               unsafe { extendr_api::register_call_methods(info, get_altrep_metadata()) };
           }
       }
+      mod attributes {
+          use extendr_api::prelude::*;
+          fn dbls_named(x: Doubles) -> Doubles {
+              let mut x = x;
+              x.set_attrib(
+                      "names",
+                      x.iter().map(|xi| xi.inner().to_string()).collect::<Vec<_>>(),
+                  )
+                  .unwrap();
+              x
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__dbls_named(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  dbls_named(<Doubles>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "dbls_named"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__dbls_named(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "Doubles",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "dbls_named",
+                      r_name: "dbls_named",
+                      mod_name: "dbls_named",
+                      args: args,
+                      return_type: "Doubles",
+                      func_ptr: wrap__dbls_named as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn strings_named(x: Strings) -> Strings {
+              let mut x = x;
+              x.set_attrib(
+                      "names",
+                      x.iter().map(|xi| xi.as_str().to_string()).collect::<Vec<_>>(),
+                  )
+                  .unwrap();
+              x
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__strings_named(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  strings_named(<Strings>::from_robj(&_x_robj)?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "strings_named"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__strings_named(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "Strings",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "strings_named",
+                      r_name: "strings_named",
+                      mod_name: "strings_named",
+                      args: args,
+                      return_type: "Strings",
+                      func_ptr: wrap__strings_named as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn list_named(x: List, nms: Strings) -> List {
+              let mut x = x;
+              let _ = x.set_attrib("names", nms);
+              x
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__list_named(
+              x: extendr_api::SEXP,
+              nms: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  let _nms_robj = extendr_api::robj::Robj::from_sexp(nms);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  list_named(
+                                      <List>::from_robj(&_x_robj)?,
+                                      <Strings>::from_robj(&_nms_robj)?,
+                                  ),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "list_named"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__list_named(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "List",
+                          default: None,
+                      },
+                      extendr_api::metadata::Arg {
+                          name: "nms",
+                          arg_type: "Strings",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "list_named",
+                      r_name: "list_named",
+                      mod_name: "list_named",
+                      args: args,
+                      return_type: "List",
+                      func_ptr: wrap__list_named as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub fn get_attributes_metadata() -> extendr_api::metadata::Metadata {
+              let mut functions = Vec::new();
+              let mut impls = Vec::new();
+              meta__dbls_named(&mut functions);
+              meta__strings_named(&mut functions);
+              meta__list_named(&mut functions);
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Metadata access function.",
+                      rust_name: "get_attributes_metadata",
+                      mod_name: "get_attributes_metadata",
+                      r_name: "get_attributes_metadata",
+                      args: Vec::new(),
+                      return_type: "Metadata",
+                      func_ptr: wrap__get_attributes_metadata as *const u8,
+                      hidden: true,
+                  });
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Wrapper generator.",
+                      rust_name: "make_attributes_wrappers",
+                      mod_name: "make_attributes_wrappers",
+                      r_name: "make_attributes_wrappers",
+                      args: <[_]>::into_vec(
+                          #[rustc_box]
+                          ::alloc::boxed::Box::new([
+                              extendr_api::metadata::Arg {
+                                  name: "use_symbols",
+                                  arg_type: "bool",
+                                  default: None,
+                              },
+                              extendr_api::metadata::Arg {
+                                  name: "package_name",
+                                  arg_type: "&str",
+                                  default: None,
+                              },
+                          ]),
+                      ),
+                      return_type: "String",
+                      func_ptr: wrap__make_attributes_wrappers as *const u8,
+                      hidden: true,
+                  });
+              extendr_api::metadata::Metadata {
+                  name: "attributes",
+                  functions,
+                  impls,
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub extern "C" fn wrap__get_attributes_metadata() -> extendr_api::SEXP {
+              use extendr_api::GetSexp;
+              unsafe { extendr_api::Robj::from(get_attributes_metadata()).get() }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__make_attributes_wrappers(
+              use_symbols_sexp: extendr_api::SEXP,
+              package_name_sexp: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              unsafe {
+                  use extendr_api::robj::*;
+                  use extendr_api::GetSexp;
+                  let robj = Robj::from_sexp(use_symbols_sexp);
+                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
+                  let robj = Robj::from_sexp(package_name_sexp);
+                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
+                  extendr_api::Robj::from(
+                          get_attributes_metadata()
+                              .make_r_wrappers(use_symbols, package_name)
+                              .unwrap(),
+                      )
+                      .get()
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn R_init_attributes_extendr(info: *mut extendr_api::DllInfo) {
+              unsafe { extendr_api::register_call_methods(info, get_attributes_metadata()) };
+          }
+      }
       mod dataframe {
           use extendr_api::prelude::*;
           struct MyStruct {
@@ -9784,6 +10162,7 @@
           meta____MyClassTryFrom(&mut impls);
           meta__MyClassUnexportedTryFrom(&mut impls);
           functions.extend(altrep::get_altrep_metadata().functions);
+          functions.extend(attributes::get_attributes_metadata().functions);
           functions.extend(dataframe::get_dataframe_metadata().functions);
           functions.extend(memory_leaks::get_memory_leaks_metadata().functions);
           functions.extend(optional_either::get_optional_either_metadata().functions);
@@ -9792,6 +10171,7 @@
           functions.extend(raw_identifiers::get_raw_identifiers_metadata().functions);
           functions.extend(submodule::get_submodule_metadata().functions);
           impls.extend(altrep::get_altrep_metadata().impls);
+          impls.extend(attributes::get_attributes_metadata().impls);
           impls.extend(dataframe::get_dataframe_metadata().impls);
           impls.extend(memory_leaks::get_memory_leaks_metadata().impls);
           impls.extend(optional_either::get_optional_either_metadata().impls);

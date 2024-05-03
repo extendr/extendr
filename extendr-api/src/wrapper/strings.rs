@@ -103,6 +103,8 @@ impl Strings {
     }
 }
 
+impl Attributes for Strings {}
+
 impl<T: AsRef<str>> FromIterator<T> for Strings {
     /// Convert an iterator to a Strings object.
     fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {

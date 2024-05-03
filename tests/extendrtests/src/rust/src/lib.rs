@@ -1,6 +1,7 @@
 use extendr_api::{graphics::*, prelude::*};
 
 mod altrep;
+mod attributes;
 mod dataframe;
 mod graphic_device;
 mod memory_leaks;
@@ -444,6 +445,7 @@ extendr_module! {
     fn my_device;
 
     use altrep;
+    use attributes;
     use dataframe;
     use memory_leaks;
     use optional_either;

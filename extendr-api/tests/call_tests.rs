@@ -7,7 +7,8 @@ fn formula_test() {
         let confint1 = R!("confint(lm(weight ~ group - 1, PlantGrowth))")?;
 
         // As many parameterized calls.
-        let formula = lang!("~", sym!(weight), lang!("-", sym!(group), 1.0)).set_class(["formula"])?;
+        let mut formula = lang!("~", sym!(weight), lang!("-", sym!(group), 1.0));
+        formula.set_class(["formula"])?;
         let plant_growth = global!(PlantGrowth)?;
         let model = call!("lm", formula, plant_growth)?;
         let confint2 = call!("confint", model)?;
