@@ -12,7 +12,7 @@
 
 ### Changed
 
-- Breaking: the `Attributes` trait now requires a mutable reference to `self`. [[#745]](https://github.com/extendr/extendr/pull/745). Previously `.set_attrib()` would modify an object in place without requiring a mutable reference. `.set_attrib()` still modifies the object in place, but requires a mutable reference to `self`. 
+- Breaking: the `Attributes` trait now returns a mutable reference to `Self`. [[#745]](https://github.com/extendr/extendr/pull/745). Previously `.set_attrib()` would modify an object in place, and then return an untyped owned pointer (Robj). Instead, now we return `&mut Self`.
 - Potentially breaking: `RArray::from_parts` no longer requires a pointer to the underlying data vector [[#657]](https://github.com/extendr/extendr/pull/657)
 
 
