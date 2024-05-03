@@ -810,8 +810,8 @@ pub trait Attributes: Types + Length {
     /// use extendr_api::prelude::*;
     /// test! {
     ///
-    ///    let mut robj = r!("hello");
-    ///    robj.set_attrib(sym!(xyz), 1);
+    ///    let robj = r!("hello");
+    ///    let robj = robj.set_attrib(sym!(xyz), 1)?;
     ///    assert_eq!(robj.get_attrib(sym!(xyz)), Some(r!(1)));
     /// }
     /// ```
@@ -855,8 +855,8 @@ pub trait Attributes: Types + Length {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let mut robj = r!("hello");
-    ///    robj.set_attrib(sym!(xyz), 1)?;
+    ///    let robj = r!("hello");
+    ///    let robj = robj.set_attrib(sym!(xyz), 1)?;
     ///    assert_eq!(robj.get_attrib(sym!(xyz)), Some(r!(1)));
     /// }
     /// ```
@@ -907,8 +907,8 @@ pub trait Attributes: Types + Length {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let mut obj = r!([1, 2, 3]);
-    ///     obj.set_names(&["a", "b", "c"]).unwrap();
+    ///     let obj = r!([1, 2, 3]);
+    ///     let obj = obj.set_names(&["a", "b", "c"]).unwrap();
     ///     assert_eq!(obj.names().unwrap().collect::<Vec<_>>(), vec!["a", "b", "c"]);
     ///     assert_eq!(r!([1, 2, 3]).set_names(&["a", "b"]), Err(Error::NamesLengthMismatch(r!(["a", "b"]))));
     /// }
@@ -990,8 +990,8 @@ pub trait Attributes: Types + Length {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let mut obj = r!([1, 2, 3]);
-    ///     obj.set_class(&["a", "b", "c"])?;
+    ///     let obj = r!([1, 2, 3]);
+    ///     let obj = obj.set_class(&["a", "b", "c"])?;
     ///     assert_eq!(obj.class().unwrap().collect::<Vec<_>>(), vec!["a", "b", "c"]);
     ///     assert_eq!(obj.inherits("a"), true);
     /// }
