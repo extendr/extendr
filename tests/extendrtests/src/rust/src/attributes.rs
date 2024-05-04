@@ -1,8 +1,7 @@
 use extendr_api::prelude::*;
 
 #[extendr]
-fn dbls_named(x: Doubles) -> Doubles {
-    let mut x = x;
+fn dbls_named(mut x: Doubles) -> Doubles {
     x.set_attrib(
         "names",
         x.iter()
@@ -15,8 +14,7 @@ fn dbls_named(x: Doubles) -> Doubles {
 }
 
 #[extendr]
-fn strings_named(x: Strings) -> Strings {
-    let mut x = x;
+fn strings_named(mut x: Strings) -> Strings {
     x.set_attrib(
         "names",
         x.iter()
@@ -28,8 +26,7 @@ fn strings_named(x: Strings) -> Strings {
 }
 
 #[extendr]
-fn list_named(x: List, nms: Strings) -> List {
-    let mut x = x;
+fn list_named(mut x: List, nms: Strings) -> List {
     let _ = x.set_attrib("names", nms);
     x
 }
