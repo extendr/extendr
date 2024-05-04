@@ -25,7 +25,7 @@ pub(crate) enum Commands {
     Doc,
     #[command(about = "Check that the specified rust-version is MSRV")]
     Msrv,
-    #[command(about = "Run devtools::test() on {extendrtests}")]
+    #[command(about = "Run devtools::test() on {extendrtests} and generate snapshots")]
     DevtoolsTest(DevtoolsTestArg),
     #[command(about = "Generate wrappers by `rextendr::document()`")]
     Document,
