@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/robj/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-b21aa549bf6d91ff.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0-nightly (a8a1d3a77 2024-04-29)" data-channel="nightly" data-search-js="search-bf21c90c8c1d92b1.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-e32f0c247825364d.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-09095024cf37855e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../extendr_api/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Type ‘S’ or ‘/’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings">Settings</a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/robj/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-b21aa549bf6d91ff.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0-nightly (9c9b56879 2024-05-05)" data-channel="nightly" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-e32f0c247825364d.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-09095024cf37855e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../extendr_api/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Type ‘S’ or ‘/’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings">Settings</a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1095,6 +1095,9 @@
 <a href="#1095" id="1095">1095</a>
 <a href="#1096" id="1096">1096</a>
 <a href="#1097" id="1097">1097</a>
+<a href="#1098" id="1098">1098</a>
+<a href="#1099" id="1099">1099</a>
+<a href="#1100" id="1100">1100</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! R object handling.
 //!
 //! See. [Writing R Extensions](https://cran.r-project.org/doc/manuals/R-exts.html)
@@ -1896,7 +1899,10 @@
 <span class="macro">make_typed_slice!</span>(Rcplx, COMPLEX, CPLXSXP);
 <span class="macro">make_typed_slice!</span>(Rcomplex, COMPLEX, CPLXSXP);
 
-<span class="doccomment">/// These are helper functions which give access to common properties of R objects.
+<span class="doccomment">/// Provides access to the attributes of an R object.
+///
+/// The `Attribute` trait provides a consistent interface to getting, setting, and checking for the presence of attributes in an R object.
+///
 </span><span class="attr">#[allow(non_snake_case)]
 </span><span class="kw">pub trait </span>Attributes: Types + Length {
     <span class="doccomment">/// Get a specific attribute as a borrowed `Robj` if it exists.
@@ -1949,11 +1955,12 @@
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let mut robj = r!("hello").set_attrib(sym!(xyz), 1)?;
+    ///    let mut robj = r!("hello");
+    ///    robj.set_attrib(sym!(xyz), 1)?;
     ///    assert_eq!(robj.get_attrib(sym!(xyz)), Some(r!(1)));
     /// }
     /// ```
-    </span><span class="kw">fn </span>set_attrib&lt;N, V&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, name: N, value: V) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt;
+    </span><span class="kw">fn </span>set_attrib&lt;N, V&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, name: N, value: V) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;
     <span class="kw">where
         </span>N: Into&lt;Robj&gt;,
         V: Into&lt;Robj&gt;,
@@ -1962,17 +1969,14 @@
         <span class="kw">let </span>value = value.into();
         <span class="kw">unsafe </span>{
             <span class="kw">let </span>sexp = <span class="self">self</span>.get_mut();
-            single_threaded(|| {
-                catch_r_error(|| Rf_setAttrib(sexp, name.get(), value.get()))
-                    <span class="comment">// FIXME: there is no reason to re-wrap this, as this mutates
-                    // the input `self`, and returns another pointer to the same
-                    // object
-                    </span>.map(|<span class="kw">_</span>| Robj::from_sexp(sexp))
-            })
+            <span class="kw">let </span>result =
+                single_threaded(|| catch_r_error(|| Rf_setAttrib(sexp, name.get(), value.get())));
+            <span class="kw">let </span>result = result.map(|<span class="kw">_</span>| <span class="self">self</span>);
+            result
         }
     }
 
-    <span class="doccomment">/// Get the names attribute as a string iterator if one exists.
+    <span class="doccomment">/// Get the `names` attribute as a string iterator if one exists.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -1989,12 +1993,12 @@
         </span>}
     }
 
-    <span class="doccomment">/// Return true if this object has names.
+    <span class="doccomment">/// Return true if this object has an attribute called `names`.
     </span><span class="kw">fn </span>has_names(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
         <span class="self">self</span>.has_attrib(wrapper::symbol::names_symbol())
     }
 
-    <span class="doccomment">/// Set the names attribute from a string iterator.
+    <span class="doccomment">/// Set the `names` attribute from a string iterator.
     ///
     /// Returns `Error::NamesLengthMismatch` if the length of the names does
     /// not match the length of the object.
@@ -2002,12 +2006,13 @@
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let mut obj = r!([1, 2, 3]).set_names(&amp;["a", "b", "c"]).unwrap();
+    ///     let mut obj = r!([1, 2, 3]);
+    ///     obj.set_names(&amp;["a", "b", "c"]).unwrap();
     ///     assert_eq!(obj.names().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec!["a", "b", "c"]);
     ///     assert_eq!(r!([1, 2, 3]).set_names(&amp;["a", "b"]), Err(Error::NamesLengthMismatch(r!(["a", "b"]))));
     /// }
     /// ```
-    </span><span class="kw">fn </span>set_names&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, names: T) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt;
+    </span><span class="kw">fn </span>set_names&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, names: T) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;
     <span class="kw">where
         </span>T: IntoIterator,
         T::IntoIter: ExactSizeIterator,
@@ -2024,7 +2029,7 @@
         }
     }
 
-    <span class="doccomment">/// Get the dim attribute as an integer iterator if one exists.
+    <span class="doccomment">/// Get the `dim` attribute as an integer iterator if one exists.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -2042,7 +2047,7 @@
         </span>}
     }
 
-    <span class="doccomment">/// Get the dimnames attribute as a list iterator if one exists.
+    <span class="doccomment">/// Get the `dimnames` attribute as a list iterator if one exists.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -2059,7 +2064,7 @@
         </span>}
     }
 
-    <span class="doccomment">/// Get the class attribute as a string iterator if one exists.
+    <span class="doccomment">/// Get the `class` attribute as a string iterator if one exists.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -2076,19 +2081,20 @@
         </span>}
     }
 
-    <span class="doccomment">/// Set the class attribute from a string iterator, and returns the same
+    <span class="doccomment">/// Set the `class` attribute from a string iterator, and return the same
     /// object.
     ///
     /// May return an error for some class names.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let mut obj = r!([1, 2, 3]).set_class(&amp;["a", "b", "c"])?;
+    ///     let mut obj = r!([1, 2, 3]);
+    ///     obj.set_class(&amp;["a", "b", "c"])?;
     ///     assert_eq!(obj.class().unwrap().collect::&lt;Vec&lt;_&gt;&gt;(), vec!["a", "b", "c"]);
     ///     assert_eq!(obj.inherits("a"), true);
     /// }
     /// ```
-    </span><span class="kw">fn </span>set_class&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, class: T) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt;
+    </span><span class="kw">fn </span>set_class&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, class: T) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;
     <span class="kw">where
         </span>T: IntoIterator,
         T::IntoIter: ExactSizeIterator,
@@ -2115,7 +2121,7 @@
         </span>}
     }
 
-    <span class="doccomment">/// Get the levels attribute as a string iterator if one exists.
+    <span class="doccomment">/// Get the `levels` attribute as a string iterator if one exists.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
