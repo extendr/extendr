@@ -354,6 +354,7 @@ pub fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> syn::Resu
         // function argument.
         FnArg::Typed(ref pattype) => {
             let pat = &pattype.pat.as_ref();
+            // ensure that `mut` in args are ignored in the wrapper
             let pat_ident = match pat {
                 syn::Pat::Ident(ref pat_ident) => &pat_ident.ident,
                 _ => {
@@ -363,7 +364,7 @@ pub fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> syn::Resu
                     ));
                 }
             };
-            Ok(parse_quote! { #pat_ident : extendr_api::SEXP })
+            Ok(parse_quote! { #pat_ident: extendr_api::SEXP })
         }
         // &self / &mut self
         FnArg::Receiver(ref receiver) => {
@@ -390,6 +391,8 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> syn::Re
         FnArg::Typed(ref mut pattype) => {
             let pat = pattype.pat.as_ref();
             let ty = pattype.ty.as_ref();
+            // here the argument name is extracted, without the `mut` keyword,
+            // ensuring the generated r-wrappers, can use these argument names
             let pat_ident = match pat {
                 syn::Pat::Ident(ref pat_ident) => &pat_ident.ident,
                 _ => {
