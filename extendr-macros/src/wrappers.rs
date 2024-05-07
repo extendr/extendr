@@ -354,13 +354,14 @@ pub fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> syn::Resu
         // function argument.
         FnArg::Typed(ref pattype) => {
             let pat = &pattype.pat.as_ref();
-            let pat_ident = if let syn::Pat::Ident(ref pat_ident) = pat {
-                &pat_ident.ident
-            } else {
-                return Err(syn::Error::new_spanned(
-                    input,
-                    "failed to translate name of argument",
-                ));
+            let pat_ident = match pat {
+                syn::Pat::Ident(ref pat_ident) => &pat_ident.ident,
+                _ => {
+                    return Err(syn::Error::new_spanned(
+                        input,
+                        "failed to translate name of argument",
+                    ));
+                }
             };
             Ok(parse_quote! { #pat_ident : extendr_api::SEXP })
         }
@@ -389,13 +390,14 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> syn::Re
         FnArg::Typed(ref mut pattype) => {
             let pat = pattype.pat.as_ref();
             let ty = pattype.ty.as_ref();
-            let pat_ident = if let syn::Pat::Ident(ref pat_ident) = pat {
-                &pat_ident.ident
-            } else {
-                return Err(syn::Error::new_spanned(
-                    input,
-                    "failed to translate name of argument",
-                ));
+            let pat_ident = match pat {
+                syn::Pat::Ident(ref pat_ident) => &pat_ident.ident,
+                _ => {
+                    return Err(syn::Error::new_spanned(
+                        input,
+                        "failed to translate name of argument",
+                    ));
+                }
             };
             let name_string = quote! { #pat_ident }.to_string();
             let type_string = type_name(ty);
