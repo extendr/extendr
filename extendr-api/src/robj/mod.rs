@@ -236,8 +236,8 @@ impl Robj {
 pub trait Types: GetSexp {
     #[doc(hidden)]
     /// Get the XXXSXP type of the object.
-    fn sexptype(&self) -> u32 {
-        unsafe { TYPEOF(self.get()) as u32 }
+    fn sexptype(&self) -> SEXPTYPE {
+        unsafe { TYPEOF(self.get()) }
     }
 
     /// Get the type of an R object.
@@ -263,6 +263,7 @@ pub trait Types: GetSexp {
     /// }
     /// ```
     fn rtype(&self) -> Rtype {
+        use SEXPTYPE::*;
         match self.sexptype() {
             NILSXP => Rtype::Null,
             SYMSXP => Rtype::Symbol,
@@ -287,12 +288,16 @@ pub trait Types: GetSexp {
             EXTPTRSXP => Rtype::ExternalPtr,
             WEAKREFSXP => Rtype::WeakRef,
             RAWSXP => Rtype::Raw,
+            #[cfg(not(use_objsxp))]
             S4SXP => Rtype::S4,
+            #[cfg(use_objsxp)]
+            OBJSXP => Rtype::S4,
             _ => Rtype::Unknown,
         }
     }
 
     fn as_any(&self) -> Rany {
+        use SEXPTYPE::*;
         unsafe {
             match self.sexptype() {
                 NILSXP => Rany::Null(std::mem::transmute(self.as_robj())),
@@ -318,7 +323,10 @@ pub trait Types: GetSexp {
                 EXTPTRSXP => Rany::ExternalPtr(std::mem::transmute(self.as_robj())),
                 WEAKREFSXP => Rany::WeakRef(std::mem::transmute(self.as_robj())),
                 RAWSXP => Rany::Raw(std::mem::transmute(self.as_robj())),
+                #[cfg(not(use_objsxp))]
                 S4SXP => Rany::S4(std::mem::transmute(self.as_robj())),
+                #[cfg(use_objsxp)]
+                OBJSXP => Rany::S4(std::mem::transmute(self.as_robj())),
                 _ => Rany::Unknown(std::mem::transmute(self.as_robj())),
             }
         }
@@ -346,6 +354,7 @@ impl Robj {
         } else {
             unsafe {
                 let sexp = self.get();
+                use SEXPTYPE::*;
                 match self.sexptype() {
                     STRSXP => STRING_ELT(sexp, 0) == libR_sys::R_NaString,
                     INTSXP => *(INTEGER(sexp)) == libR_sys::R_NaInt,
@@ -787,6 +796,7 @@ macro_rules! make_typed_slice {
     }
 }
 
+use SEXPTYPE::*;
 make_typed_slice!(Rbool, INTEGER, LGLSXP);
 make_typed_slice!(i32, INTEGER, INTSXP);
 make_typed_slice!(u32, INTEGER, INTSXP);
@@ -818,7 +828,7 @@ pub trait Attributes: Types + Length {
         Robj: From<N> + 'a,
     {
         let name = Robj::from(name);
-        if self.sexptype() == CHARSXP {
+        if self.sexptype() == SEXPTYPE::CHARSXP {
             None
         } else {
             // FIXME: this attribute does not need protection
@@ -838,7 +848,7 @@ pub trait Attributes: Types + Length {
         Robj: From<N> + 'a,
     {
         let name = Robj::from(name);
-        if self.sexptype() == CHARSXP {
+        if self.sexptype() == SEXPTYPE::CHARSXP {
             false
         } else {
             unsafe { Rf_getAttrib(self.get(), name.get()) != R_NilValue }
@@ -1068,7 +1078,7 @@ impl PartialEq<Robj> for Robj {
             }
 
             // see https://github.com/hadley/r-internals/blob/master/misc.md
-            R_compute_identical(self.get(), rhs.get(), 16) != 0
+            R_compute_identical(self.get(), rhs.get(), 16) != Rboolean::FALSE
         }
     }
 }

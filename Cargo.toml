@@ -17,13 +17,13 @@ authors = [
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/extendr/extendr"
-rust-version = "1.60"
+rust-version = "1.70"
 
 [workspace.dependencies]
 # When updating extendr's version, this version also needs to be updated
 extendr-macros = { path = "./extendr-macros", version = "0.6.0" }
 
-libR-sys = "0.6.0"
+libR-sys = "0.7.0"
 
 [patch.crates-io]
 # When uncommenting this, do not forget to uncomment the same line in

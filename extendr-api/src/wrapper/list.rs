@@ -25,7 +25,7 @@ impl List {
     /// }
     /// ```
     pub fn new(size: usize) -> Self {
-        let robj = Robj::alloc_vector(VECSXP, size);
+        let robj = Robj::alloc_vector(SEXPTYPE::VECSXP, size);
         Self { robj }
     }
 
@@ -45,7 +45,7 @@ impl List {
         V::Item: Into<Robj>,
     {
         Self {
-            robj: make_vector(VECSXP, values),
+            robj: make_vector(SEXPTYPE::VECSXP, values),
         }
     }
 
@@ -384,7 +384,7 @@ impl<T: Into<Robj>> FromIterator<T> for List {
         let len = iter_collect.len();
 
         crate::single_threaded(|| unsafe {
-            let mut robj = Robj::alloc_vector(VECSXP, len);
+            let mut robj = Robj::alloc_vector(SEXPTYPE::VECSXP, len);
             for (i, v) in iter_collect.into_iter().enumerate() {
                 // We don't PROTECT each element here, as they will be immediately
                 // placed into a list which will protect them:

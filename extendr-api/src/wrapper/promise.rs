@@ -19,7 +19,7 @@ impl Promise {
     /// ```
     pub fn from_parts(code: Robj, environment: Environment) -> Result<Self> {
         single_threaded(|| unsafe {
-            let sexp = Rf_allocSExp(PROMSXP);
+            let sexp = Rf_allocSExp(SEXPTYPE::PROMSXP);
             let robj = Robj::from_sexp(sexp);
             SET_PRCODE(sexp, code.get());
             SET_PRENV(sexp, environment.robj.get());

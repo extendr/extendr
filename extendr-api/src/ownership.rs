@@ -14,7 +14,7 @@ use std::sync::Mutex;
 
 use libR_sys::{
     R_NilValue, R_PreserveObject, R_ReleaseObject, R_xlen_t, Rf_allocVector, Rf_protect,
-    Rf_unprotect, LENGTH, SET_VECTOR_ELT, SEXP, VECSXP, VECTOR_ELT,
+    Rf_unprotect, LENGTH, SET_VECTOR_ELT, SEXP, SEXPTYPE, VECTOR_ELT,
 };
 
 static OWNERSHIP: Lazy<Mutex<Ownership>> = Lazy::new(|| Mutex::new(Ownership::new()));
@@ -55,7 +55,8 @@ struct Ownership {
 impl Ownership {
     fn new() -> Self {
         unsafe {
-            let preservation = Rf_allocVector(VECSXP, INITIAL_PRESERVATION_SIZE as R_xlen_t);
+            let preservation =
+                Rf_allocVector(SEXPTYPE::VECSXP, INITIAL_PRESERVATION_SIZE as R_xlen_t);
             R_PreserveObject(preservation);
             Ownership {
                 preservation: preservation as usize,
@@ -64,6 +65,38 @@ impl Ownership {
                 objects: HashMap::with_capacity(INITIAL_PRESERVATION_SIZE),
             }
         }
+    }
+
+    // Garbage collect the tracking structures.
+    unsafe fn garbage_collect(&mut self) {
+        let new_size = self.cur_index * 2 + EXTRA_PRESERVATION_SIZE;
+        let new_sexp = Rf_allocVector(SEXPTYPE::VECSXP, new_size as R_xlen_t);
+        R_PreserveObject(new_sexp);
+        let old_sexp = self.preservation.inner();
+
+        let mut new_objects = HashMap::with_capacity(new_size);
+
+        // copy non-null elements to new vector and hashmap.
+        let mut j = 0;
+        for (addr, object) in self.objects.iter() {
+            if object.refcount != 0 {
+                SET_VECTOR_ELT(new_sexp, j as R_xlen_t, addr.inner());
+                new_objects.insert(
+                    addr.clone(),
+                    Object {
+                        refcount: object.refcount,
+                        index: j,
+                    },
+                );
+                j += 1;
+            }
+        }
+
+        R_ReleaseObject(old_sexp);
+        self.preservation = (new_sexp).into();
+        self.cur_index = j;
+        self.max_index = new_size;
+        self.objects = new_objects;
     }
 
     unsafe fn protect(&mut self, sexp: SEXP) {
@@ -306,7 +339,7 @@ mod test {
                 let test_size = INITIAL_PRESERVATION_SIZE + EXTRA_PRESERVATION_SIZE * 5;
 
                 // Make some test objects.
-                let sexp_pres = Rf_allocVector(VECSXP, test_size as R_xlen_t);
+                let sexp_pres = Rf_allocVector(SEXPTYPE::VECSXP, test_size as R_xlen_t);
                 Rf_protect(sexp_pres);
 
                 let sexps = (0..test_size).map(|i| {

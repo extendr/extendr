@@ -27,7 +27,7 @@ impl Expressions {
         V::Item: Into<Robj>,
     {
         Self {
-            robj: make_vector(EXPRSXP, values),
+            robj: make_vector(SEXPTYPE::EXPRSXP, values),
         }
     }
 

@@ -17,7 +17,7 @@ pub struct Raw {
 }
 
 fn init_raw<F: FnOnce(&mut [u8])>(len: usize, filler: F) -> Raw {
-    let mut robj = Robj::alloc_vector(RAWSXP, len);
+    let mut robj = Robj::alloc_vector(SEXPTYPE::RAWSXP, len);
     let slice = robj.as_raw_slice_mut().unwrap();
     filler(slice);
     Raw { robj }

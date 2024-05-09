@@ -17,6 +17,7 @@ pub struct Complexes {
     pub(crate) robj: Robj,
 }
 
+use libR_sys::SEXPTYPE::CPLXSXP;
 crate::wrapper::macros::gen_vector_wrapper_impl!(
     vector_type: Complexes,
     scalar_type: Rcplx,

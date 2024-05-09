@@ -62,7 +62,7 @@ pub(crate) fn make_symbol(name: &str) -> SEXP {
     unsafe { libR_sys::Rf_install(name.as_ptr()) }
 }
 
-pub(crate) fn make_vector<T>(sexptype: u32, values: T) -> Robj
+pub(crate) fn make_vector<T>(sexptype: SEXPTYPE, values: T) -> Robj
 where
     T: IntoIterator,
     T::IntoIter: ExactSizeIterator,
