@@ -47,7 +47,7 @@ fn new_usize(robj: Integers) -> Altrep {
 
 #[cfg(not(use_r_altlist))]
 #[extendr]
-fn new_usize(robj: Integers) -> Robj {
+fn new_usize(_robj: Integers) -> Robj {
     extendr_api::nil_value()
 }
 

@@ -509,9 +509,9 @@
                   use extendr_api::robj::*;
                   use extendr_api::GetSexp;
                   let robj = Robj::from_sexp(use_symbols_sexp);
-                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
+                  let use_symbols: bool = <bool>::try_from(&robj).unwrap();
                   let robj = Robj::from_sexp(package_name_sexp);
-                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
+                  let package_name: &str = <&str>::try_from(&robj).unwrap();
                   extendr_api::Robj::from(
                           get_altrep_metadata()
                               .make_r_wrappers(use_symbols, package_name)
@@ -528,8 +528,7 @@
       }
       mod attributes {
           use extendr_api::prelude::*;
-          fn dbls_named(x: Doubles) -> Doubles {
-              let mut x = x;
+          fn dbls_named(mut x: Doubles) -> Doubles {
               x.set_attrib(
                       "names",
                       x.iter().map(|xi| xi.inner().to_string()).collect::<Vec<_>>(),
@@ -623,8 +622,7 @@
                       hidden: false,
                   })
           }
-          fn strings_named(x: Strings) -> Strings {
-              let mut x = x;
+          fn strings_named(mut x: Strings) -> Strings {
               x.set_attrib(
                       "names",
                       x.iter().map(|xi| xi.as_str().to_string()).collect::<Vec<_>>(),
@@ -718,8 +716,7 @@
                       hidden: false,
                   })
           }
-          fn list_named(x: List, nms: Strings) -> List {
-              let mut x = x;
+          fn list_named(mut x: List, nms: Strings) -> List {
               let _ = x.set_attrib("names", nms);
               x
           }
@@ -887,9 +884,9 @@
                   use extendr_api::robj::*;
                   use extendr_api::GetSexp;
                   let robj = Robj::from_sexp(use_symbols_sexp);
-                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
+                  let use_symbols: bool = <bool>::try_from(&robj).unwrap();
                   let robj = Robj::from_sexp(package_name_sexp);
-                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
+                  let package_name: &str = <&str>::try_from(&robj).unwrap();
                   extendr_api::Robj::from(
                           get_attributes_metadata()
                               .make_r_wrappers(use_symbols, package_name)
@@ -1215,9 +1212,9 @@
                   use extendr_api::robj::*;
                   use extendr_api::GetSexp;
                   let robj = Robj::from_sexp(use_symbols_sexp);
-                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
+                  let use_symbols: bool = <bool>::try_from(&robj).unwrap();
                   let robj = Robj::from_sexp(package_name_sexp);
-                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
+                  let package_name: &str = <&str>::try_from(&robj).unwrap();
                   extendr_api::Robj::from(
                           get_dataframe_metadata()
                               .make_r_wrappers(use_symbols, package_name)
@@ -2107,9 +2104,9 @@
                   use extendr_api::robj::*;
                   use extendr_api::GetSexp;
                   let robj = Robj::from_sexp(use_symbols_sexp);
-                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
+                  let use_symbols: bool = <bool>::try_from(&robj).unwrap();
                   let robj = Robj::from_sexp(package_name_sexp);
-                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
+                  let package_name: &str = <&str>::try_from(&robj).unwrap();
                   extendr_api::Robj::from(
                           get_memory_leaks_metadata()
                               .make_r_wrappers(use_symbols, package_name)
@@ -2280,9 +2277,9 @@
                   use extendr_api::robj::*;
                   use extendr_api::GetSexp;
                   let robj = Robj::from_sexp(use_symbols_sexp);
-                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
+                  let use_symbols: bool = <bool>::try_from(&robj).unwrap();
                   let robj = Robj::from_sexp(package_name_sexp);
-                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
+                  let package_name: &str = <&str>::try_from(&robj).unwrap();
                   extendr_api::Robj::from(
                           get_optional_either_metadata()
                               .make_r_wrappers(use_symbols, package_name)
@@ -2995,9 +2992,9 @@
                   use extendr_api::robj::*;
                   use extendr_api::GetSexp;
                   let robj = Robj::from_sexp(use_symbols_sexp);
-                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
+                  let use_symbols: bool = <bool>::try_from(&robj).unwrap();
                   let robj = Robj::from_sexp(package_name_sexp);
-                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
+                  let package_name: &str = <&str>::try_from(&robj).unwrap();
                   extendr_api::Robj::from(
                           get_optional_faer_metadata()
                               .make_r_wrappers(use_symbols, package_name)
@@ -3261,9 +3258,9 @@
                   use extendr_api::robj::*;
                   use extendr_api::GetSexp;
                   let robj = Robj::from_sexp(use_symbols_sexp);
-                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
+                  let use_symbols: bool = <bool>::try_from(&robj).unwrap();
                   let robj = Robj::from_sexp(package_name_sexp);
-                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
+                  let package_name: &str = <&str>::try_from(&robj).unwrap();
                   extendr_api::Robj::from(
                           get_optional_ndarray_metadata()
                               .make_r_wrappers(use_symbols, package_name)
@@ -3609,9 +3606,9 @@
                   use extendr_api::robj::*;
                   use extendr_api::GetSexp;
                   let robj = Robj::from_sexp(use_symbols_sexp);
-                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
+                  let use_symbols: bool = <bool>::try_from(&robj).unwrap();
                   let robj = Robj::from_sexp(package_name_sexp);
-                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
+                  let package_name: &str = <&str>::try_from(&robj).unwrap();
                   extendr_api::Robj::from(
                           get_raw_identifiers_metadata()
                               .make_r_wrappers(use_symbols, package_name)
@@ -5496,9 +5493,9 @@
                   use extendr_api::robj::*;
                   use extendr_api::GetSexp;
                   let robj = Robj::from_sexp(use_symbols_sexp);
-                  let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
+                  let use_symbols: bool = <bool>::try_from(&robj).unwrap();
                   let robj = Robj::from_sexp(package_name_sexp);
-                  let package_name: &str = <&str>::from_robj(&robj).unwrap();
+                  let package_name: &str = <&str>::try_from(&robj).unwrap();
                   extendr_api::Robj::from(
                           get_submodule_metadata()
                               .make_r_wrappers(use_symbols, package_name)
@@ -10237,9 +10234,9 @@
               use extendr_api::robj::*;
               use extendr_api::GetSexp;
               let robj = Robj::from_sexp(use_symbols_sexp);
-              let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
+              let use_symbols: bool = <bool>::try_from(&robj).unwrap();
               let robj = Robj::from_sexp(package_name_sexp);
-              let package_name: &str = <&str>::from_robj(&robj).unwrap();
+              let package_name: &str = <&str>::try_from(&robj).unwrap();
               extendr_api::Robj::from(
                       get_extendrtests_metadata()
                           .make_r_wrappers(use_symbols, package_name)

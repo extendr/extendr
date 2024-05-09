@@ -10,7 +10,6 @@
 //! a class in R, you must decorate it with a class-attribute manually.
 //!
 use super::*;
-use std::any::Any;
 use std::fmt::Debug;
 
 /// Wrapper for creating R objects containing any Rust object.

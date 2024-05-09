@@ -353,8 +353,10 @@ pub fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> syn::Resu
     match input {
         // function argument.
         FnArg::Typed(ref pattype) => {
-            let pat = &pattype.pat.as_ref();
-            Ok(parse_quote! { #pat : extendr_api::SEXP })
+            let pat = pattype.pat.as_ref();
+            // ensure that `mut` in args are ignored in the wrapper
+            let pat_ident = translate_only_alias(pat)?;
+            Ok(parse_quote! { #pat_ident: extendr_api::SEXP })
         }
         // &self / &mut self
         FnArg::Receiver(ref receiver) => {
@@ -374,6 +376,22 @@ pub fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> syn::Resu
     }
 }
 
+/// Returns only the alias from a function argument.
+///
+/// For example `mut x: Vec<i32>`, the alias is `x`, but the `mut` would still
+/// be present if only the `Ident` of `PatType` was used.
+fn translate_only_alias(pat: &syn::Pat) -> Result<&Ident, syn::Error> {
+    Ok(match pat {
+        syn::Pat::Ident(ref pat_ident) => &pat_ident.ident,
+        _ => {
+            return Err(syn::Error::new_spanned(
+                pat,
+                "failed to translate name of argument",
+            ));
+        }
+    })
+}
+
 // Generate code to make a metadata::Arg.
 fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> syn::Result<Expr> {
     match input {
@@ -381,7 +399,10 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> syn::Re
         FnArg::Typed(ref mut pattype) => {
             let pat = pattype.pat.as_ref();
             let ty = pattype.ty.as_ref();
-            let name_string = quote! { #pat }.to_string();
+            // here the argument name is extracted, without the `mut` keyword,
+            // ensuring the generated r-wrappers, can use these argument names
+            let pat_ident = translate_only_alias(pat)?;
+            let name_string = quote! { #pat_ident }.to_string();
             let type_string = type_name(ty);
             let default = if let Some(default) = get_named_lit(&mut pattype.attrs, "default") {
                 quote!(Some(#default))
@@ -433,7 +454,9 @@ fn translate_to_robj(input: &FnArg) -> syn::Result<syn::Stmt> {
             let pat = &pattype.pat.as_ref();
             if let syn::Pat::Ident(ref ident) = pat {
                 let varname = format_ident!("_{}_robj", ident.ident);
-                Ok(parse_quote! { let #varname = extendr_api::robj::Robj::from_sexp(#pat); })
+                let ident = &ident.ident;
+                // TODO: these do not need protection, as they come from R
+                Ok(parse_quote! { let #varname = extendr_api::robj::Robj::from_sexp(#ident); })
             } else {
                 Err(syn::Error::new_spanned(
                     input,
