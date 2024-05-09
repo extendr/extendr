@@ -13,7 +13,7 @@ pub(crate) fn str_to_character(s: &str) -> SEXP {
                 Rf_mkCharLenCE(
                     s.as_ptr() as *const raw::c_char,
                     s.len() as i32,
-                    cetype_t_CE_UTF8,
+                    cetype_t::CE_UTF8,
                 )
             })
         }
@@ -167,7 +167,7 @@ where
 /// to `collect_robj()`.
 pub trait ToVectorValue {
     fn sexptype() -> SEXPTYPE {
-        0
+        SEXPTYPE::NILSXP
     }
 
     fn to_real(&self) -> f64
@@ -217,7 +217,7 @@ macro_rules! impl_real_tvv {
     ($t: ty) => {
         impl ToVectorValue for $t {
             fn sexptype() -> SEXPTYPE {
-                REALSXP
+                SEXPTYPE::REALSXP
             }
 
             fn to_real(&self) -> f64 {
@@ -227,7 +227,7 @@ macro_rules! impl_real_tvv {
 
         impl ToVectorValue for &$t {
             fn sexptype() -> SEXPTYPE {
-                REALSXP
+                SEXPTYPE::REALSXP
             }
 
             fn to_real(&self) -> f64 {
@@ -237,7 +237,7 @@ macro_rules! impl_real_tvv {
 
         impl ToVectorValue for Option<$t> {
             fn sexptype() -> SEXPTYPE {
-                REALSXP
+                SEXPTYPE::REALSXP
             }
 
             fn to_real(&self) -> f64 {
@@ -265,7 +265,7 @@ macro_rules! impl_complex_tvv {
     ($t: ty) => {
         impl ToVectorValue for $t {
             fn sexptype() -> SEXPTYPE {
-                CPLXSXP
+                SEXPTYPE::CPLXSXP
             }
 
             fn to_complex(&self) -> Rcomplex {
@@ -275,7 +275,7 @@ macro_rules! impl_complex_tvv {
 
         impl ToVectorValue for &$t {
             fn sexptype() -> SEXPTYPE {
-                CPLXSXP
+                SEXPTYPE::CPLXSXP
             }
 
             fn to_complex(&self) -> Rcomplex {
@@ -293,7 +293,7 @@ macro_rules! impl_integer_tvv {
     ($t: ty) => {
         impl ToVectorValue for $t {
             fn sexptype() -> SEXPTYPE {
-                INTSXP
+                SEXPTYPE::INTSXP
             }
 
             fn to_integer(&self) -> i32 {
@@ -303,7 +303,7 @@ macro_rules! impl_integer_tvv {
 
         impl ToVectorValue for &$t {
             fn sexptype() -> SEXPTYPE {
-                INTSXP
+                SEXPTYPE::INTSXP
             }
 
             fn to_integer(&self) -> i32 {
@@ -313,7 +313,7 @@ macro_rules! impl_integer_tvv {
 
         impl ToVectorValue for Option<$t> {
             fn sexptype() -> SEXPTYPE {
-                INTSXP
+                SEXPTYPE::INTSXP
             }
 
             fn to_integer(&self) -> i32 {
@@ -334,7 +334,7 @@ impl_integer_tvv!(u16);
 
 impl ToVectorValue for u8 {
     fn sexptype() -> SEXPTYPE {
-        RAWSXP
+        SEXPTYPE::RAWSXP
     }
 
     fn to_raw(&self) -> u8 {
@@ -344,7 +344,7 @@ impl ToVectorValue for u8 {
 
 impl ToVectorValue for &u8 {
     fn sexptype() -> SEXPTYPE {
-        RAWSXP
+        SEXPTYPE::RAWSXP
     }
 
     fn to_raw(&self) -> u8 {
@@ -356,7 +356,7 @@ macro_rules! impl_str_tvv {
     ($t: ty) => {
         impl ToVectorValue for $t {
             fn sexptype() -> SEXPTYPE {
-                STRSXP
+                SEXPTYPE::STRSXP
             }
 
             fn to_sexp(&self) -> SEXP
@@ -369,7 +369,7 @@ macro_rules! impl_str_tvv {
 
         impl ToVectorValue for &$t {
             fn sexptype() -> SEXPTYPE {
-                STRSXP
+                SEXPTYPE::STRSXP
             }
 
             fn to_sexp(&self) -> SEXP
@@ -382,7 +382,7 @@ macro_rules! impl_str_tvv {
 
         impl ToVectorValue for Option<$t> {
             fn sexptype() -> SEXPTYPE {
-                STRSXP
+                SEXPTYPE::STRSXP
             }
 
             fn to_sexp(&self) -> SEXP
@@ -404,7 +404,7 @@ impl_str_tvv! {String}
 
 impl ToVectorValue for bool {
     fn sexptype() -> SEXPTYPE {
-        LGLSXP
+        SEXPTYPE::LGLSXP
     }
 
     fn to_logical(&self) -> i32
@@ -417,7 +417,7 @@ impl ToVectorValue for bool {
 
 impl ToVectorValue for &bool {
     fn sexptype() -> SEXPTYPE {
-        LGLSXP
+        SEXPTYPE::LGLSXP
     }
 
     fn to_logical(&self) -> i32
@@ -430,7 +430,7 @@ impl ToVectorValue for &bool {
 
 impl ToVectorValue for Rbool {
     fn sexptype() -> SEXPTYPE {
-        LGLSXP
+        SEXPTYPE::LGLSXP
     }
 
     fn to_logical(&self) -> i32
@@ -443,7 +443,7 @@ impl ToVectorValue for Rbool {
 
 impl ToVectorValue for &Rbool {
     fn sexptype() -> SEXPTYPE {
-        LGLSXP
+        SEXPTYPE::LGLSXP
     }
 
     fn to_logical(&self) -> i32
@@ -456,7 +456,7 @@ impl ToVectorValue for &Rbool {
 
 impl ToVectorValue for Option<bool> {
     fn sexptype() -> SEXPTYPE {
-        LGLSXP
+        SEXPTYPE::LGLSXP
     }
 
     fn to_logical(&self) -> i32 {
@@ -478,40 +478,40 @@ where
     single_threaded(|| unsafe {
         // Length of the vector is known in advance.
         let sexptype = I::Item::sexptype();
-        if sexptype != 0 {
+        if sexptype != SEXPTYPE::NILSXP {
             let res = Robj::alloc_vector(sexptype, len);
             let sexp = res.get();
             match sexptype {
-                REALSXP => {
+                SEXPTYPE::REALSXP => {
                     let ptr = REAL(sexp);
                     for (i, v) in iter.enumerate() {
                         *ptr.add(i) = v.to_real();
                     }
                 }
-                CPLXSXP => {
+                SEXPTYPE::CPLXSXP => {
                     let ptr = COMPLEX(sexp);
                     for (i, v) in iter.enumerate() {
                         *ptr.add(i) = v.to_complex();
                     }
                 }
-                INTSXP => {
+                SEXPTYPE::INTSXP => {
                     let ptr = INTEGER(sexp);
                     for (i, v) in iter.enumerate() {
                         *ptr.add(i) = v.to_integer();
                     }
                 }
-                LGLSXP => {
+                SEXPTYPE::LGLSXP => {
                     let ptr = LOGICAL(sexp);
                     for (i, v) in iter.enumerate() {
                         *ptr.add(i) = v.to_logical();
                     }
                 }
-                STRSXP => {
+                SEXPTYPE::STRSXP => {
                     for (i, v) in iter.enumerate() {
                         SET_STRING_ELT(sexp, i as isize, v.to_sexp());
                     }
                 }
-                RAWSXP => {
+                SEXPTYPE::RAWSXP => {
                     let ptr = RAW(sexp);
                     for (i, v) in iter.enumerate() {
                         *ptr.add(i) = v.to_raw();

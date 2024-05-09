@@ -25,7 +25,7 @@ impl Strings {
     /// }
     /// ```
     pub fn new(size: usize) -> Strings {
-        let robj = Robj::alloc_vector(STRSXP, size);
+        let robj = Robj::alloc_vector(SEXPTYPE::STRSXP, size);
         Self { robj }
     }
 
@@ -47,7 +47,7 @@ impl Strings {
         single_threaded(|| unsafe {
             let values = values.into_iter();
             let maxlen = values.len();
-            let mut robj = Robj::alloc_vector(STRSXP, maxlen);
+            let mut robj = Robj::alloc_vector(SEXPTYPE::STRSXP, maxlen);
             let sexp = robj.get_mut();
             for (i, v) in values.into_iter().take(maxlen).enumerate() {
                 let v = v.as_ref();
@@ -111,7 +111,7 @@ impl<T: AsRef<str>> FromIterator<T> for Strings {
         let iter_collect: Vec<_> = iter.into_iter().collect();
         let len = iter_collect.len();
 
-        let mut robj = Strings::alloc_vector(STRSXP, len);
+        let mut robj = Strings::alloc_vector(SEXPTYPE::STRSXP, len);
         crate::single_threaded(|| unsafe {
             for (i, v) in iter_collect.into_iter().enumerate() {
                 SET_STRING_ELT(robj.get_mut(), i as isize, str_to_character(v.as_ref()));

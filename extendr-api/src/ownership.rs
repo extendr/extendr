@@ -14,7 +14,7 @@ use std::sync::Mutex;
 
 use libR_sys::{
     R_NilValue, R_PreserveObject, R_ReleaseObject, R_xlen_t, Rf_allocVector, Rf_protect,
-    Rf_unprotect, LENGTH, SET_VECTOR_ELT, SEXP, VECSXP, VECTOR_ELT,
+    Rf_unprotect, LENGTH, SET_VECTOR_ELT, SEXP, SEXPTYPE, VECTOR_ELT,
 };
 
 mod send_sexp {
@@ -92,7 +92,8 @@ struct Ownership {
 impl Ownership {
     fn new() -> Self {
         unsafe {
-            let preservation = Rf_allocVector(VECSXP, INITIAL_PRESERVATION_SIZE as R_xlen_t);
+            let preservation =
+                Rf_allocVector(SEXPTYPE::VECSXP, INITIAL_PRESERVATION_SIZE as R_xlen_t);
             R_PreserveObject(preservation);
             Ownership {
                 preservation: preservation.into(),
@@ -106,7 +107,7 @@ impl Ownership {
     // Garbage collect the tracking structures.
     unsafe fn garbage_collect(&mut self) {
         let new_size = self.cur_index * 2 + EXTRA_PRESERVATION_SIZE;
-        let new_sexp = Rf_allocVector(VECSXP, new_size as R_xlen_t);
+        let new_sexp = Rf_allocVector(SEXPTYPE::VECSXP, new_size as R_xlen_t);
         R_PreserveObject(new_sexp);
         let old_sexp = self.preservation.inner();
 
@@ -348,7 +349,7 @@ mod test {
                 let test_size = INITIAL_PRESERVATION_SIZE + EXTRA_PRESERVATION_SIZE * 5;
 
                 // Make some test objects.
-                let sexp_pres = Rf_allocVector(VECSXP, test_size as R_xlen_t);
+                let sexp_pres = Rf_allocVector(SEXPTYPE::VECSXP, test_size as R_xlen_t);
                 Rf_protect(sexp_pres);
 
                 let sexps = (0..test_size).map(|i| {

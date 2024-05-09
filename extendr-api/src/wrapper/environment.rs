@@ -174,7 +174,7 @@ impl Environment {
                 Ok(Robj::from_sexp(Rf_findVarInFrame3(
                     self.get(),
                     key.get(),
-                    1,
+                    Rboolean::TRUE,
                 )))
             }
         } else {

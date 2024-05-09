@@ -21,6 +21,7 @@ pub struct Logicals {
     pub(crate) robj: Robj,
 }
 
+use SEXPTYPE::LGLSXP;
 crate::wrapper::macros::gen_vector_wrapper_impl!(
     vector_type: Logicals, // Implements for
     scalar_type: Rbool,    // Element type

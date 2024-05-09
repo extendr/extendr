@@ -489,8 +489,8 @@ pub unsafe fn register_call_methods(info: *mut libR_sys::DllInfo, metadata: Meta
     );
 
     // This seems to allow both symbols and strings,
-    libR_sys::R_useDynamicSymbols(info, 0);
-    libR_sys::R_forceSymbols(info, 0);
+    libR_sys::R_useDynamicSymbols(info, Rboolean::FALSE);
+    libR_sys::R_forceSymbols(info, Rboolean::FALSE);
 }
 
 /// Type of R objects used by [Robj::rtype].
@@ -557,9 +557,10 @@ pub enum Rany<'a> {
 
 /// Convert extendr's Rtype to R's SEXPTYPE.
 /// Panics if the type is Unknown.
-pub fn rtype_to_sxp(rtype: Rtype) -> i32 {
+pub fn rtype_to_sxp(rtype: Rtype) -> SEXPTYPE {
     use Rtype::*;
-    (match rtype {
+    use SEXPTYPE::*;
+    match rtype {
         Null => NILSXP,
         Symbol => SYMSXP,
         Pairlist => LISTSXP,
@@ -583,15 +584,19 @@ pub fn rtype_to_sxp(rtype: Rtype) -> i32 {
         ExternalPtr => EXTPTRSXP,
         WeakRef => WEAKREFSXP,
         Raw => RAWSXP,
+        #[cfg(not(use_objsxp))]
         S4 => S4SXP,
+        #[cfg(use_objsxp)]
+        S4 => OBJSXP,
         Unknown => panic!("attempt to use Unknown Rtype"),
-    }) as i32
+    }
 }
 
 /// Convert R's SEXPTYPE to extendr's Rtype.
-pub fn sxp_to_rtype(sxptype: i32) -> Rtype {
+pub fn sxp_to_rtype(sxptype: SEXPTYPE) -> Rtype {
     use Rtype::*;
-    match sxptype as u32 {
+    use SEXPTYPE::*;
+    match sxptype {
         NILSXP => Null,
         SYMSXP => Symbol,
         LISTSXP => Pairlist,
@@ -615,7 +620,10 @@ pub fn sxp_to_rtype(sxptype: i32) -> Rtype {
         EXTPTRSXP => ExternalPtr,
         WEAKREFSXP => WeakRef,
         RAWSXP => Raw,
+        #[cfg(not(use_objsxp))]
         S4SXP => S4,
+        #[cfg(use_objsxp)]
+        OBJSXP => S4,
         _ => Unknown,
     }
 }

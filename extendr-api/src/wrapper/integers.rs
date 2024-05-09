@@ -20,6 +20,7 @@ pub struct Integers {
     pub(crate) robj: Robj,
 }
 
+use libR_sys::SEXPTYPE::INTSXP;
 crate::wrapper::macros::gen_vector_wrapper_impl!(
     vector_type: Integers, // Implements for
     scalar_type: Rint,     // Element type

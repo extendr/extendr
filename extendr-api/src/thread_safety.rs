@@ -100,7 +100,7 @@ where
     }
 
     unsafe extern "C" fn do_cleanup(_: *mut raw::c_void, jump: Rboolean) {
-        if jump != 0 {
+        if jump != Rboolean::FALSE {
             panic!("R has thrown an error.");
         }
     }

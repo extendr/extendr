@@ -137,9 +137,9 @@ impl Iterator for PairlistIter {
                 let tag = TAG(sexp);
                 let value = Robj::from_sexp(CAR(sexp));
                 self.list_elem = CDR(sexp);
-                if TYPEOF(tag) == SYMSXP as i32 {
+                if TYPEOF(tag) == SEXPTYPE::SYMSXP {
                     let printname = PRINTNAME(tag);
-                    assert!(TYPEOF(printname) as u32 == CHARSXP);
+                    assert!(TYPEOF(printname) == SEXPTYPE::CHARSXP);
                     let name = to_str(R_CHAR(printname) as *const u8);
                     Some((std::mem::transmute(name), value))
                 } else {
