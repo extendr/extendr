@@ -156,7 +156,7 @@
     /// ```
     </span><span class="kw">pub fn </span>from_parts(formals: Pairlist, body: Language, env: Environment) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         single_threaded(|| <span class="kw">unsafe </span>{
-            <span class="kw">let </span>sexp = Rf_allocSExp(CLOSXP);
+            <span class="kw">let </span>sexp = Rf_allocSExp(SEXPTYPE::CLOSXP);
             <span class="kw">let </span>robj = Robj::from_sexp(sexp);
             SET_FORMALS(sexp, formals.get());
             SET_BODY(sexp, body.get());

@@ -494,8 +494,6 @@
 <a href="#494" id="494">494</a>
 <a href="#495" id="495">495</a>
 <a href="#496" id="496">496</a>
-<a href="#497" id="497">497</a>
-<a href="#498" id="498">498</a>
 </pre></div><pre class="rust"><code><span class="kw">use crate</span>::<span class="kw-2">*</span>;
 <span class="kw">use </span>std::os::raw;
 
@@ -505,57 +503,57 @@
 </span><span class="kw">pub trait </span>Rinternals: Types + Conversions {
     <span class="doccomment">/// Return true if this is the null object.
     </span><span class="kw">fn </span>is_null(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isNull(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isNull(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is a symbol.
     </span><span class="kw">fn </span>is_symbol(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isSymbol(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isSymbol(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is a boolean (logical) vector
     </span><span class="kw">fn </span>is_logical(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isLogical(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isLogical(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is a real (f64) vector.
     </span><span class="kw">fn </span>is_real(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isReal(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isReal(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is a complex vector.
     </span><span class="kw">fn </span>is_complex(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isComplex(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isComplex(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is an expression.
     </span><span class="kw">fn </span>is_expressions(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isExpression(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isExpression(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is an environment.
     </span><span class="kw">fn </span>is_environment(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isEnvironment(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isEnvironment(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is an environment.
     </span><span class="kw">fn </span>is_promise(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="self">self</span>.sexptype() == PROMSXP
+        <span class="self">self</span>.sexptype() == SEXPTYPE::PROMSXP
     }
 
     <span class="doccomment">/// Return true if this is a string.
     </span><span class="kw">fn </span>is_string(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isString(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isString(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is an object (ie. has a class attribute).
     </span><span class="kw">fn </span>is_object(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isObject(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isObject(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is a S4 object.
     </span><span class="kw">fn </span>is_s4(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isS4(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isS4(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is an expression.
@@ -579,10 +577,8 @@
     }
 
     <span class="doccomment">/// Convert to vectors of many kinds.
-    </span><span class="kw">fn </span>coerce_vector(<span class="kw-2">&amp;</span><span class="self">self</span>, sexptype: u32) -&gt; Robj {
-        single_threaded(|| <span class="kw">unsafe </span>{
-            Robj::from_sexp(Rf_coerceVector(<span class="self">self</span>.get(), sexptype <span class="kw">as </span>SEXPTYPE))
-        })
+    </span><span class="kw">fn </span>coerce_vector(<span class="kw-2">&amp;</span><span class="self">self</span>, sexptype: SEXPTYPE) -&gt; Robj {
+        single_threaded(|| <span class="kw">unsafe </span>{ Robj::from_sexp(Rf_coerceVector(<span class="self">self</span>.get(), sexptype)) })
     }
 
     <span class="doccomment">/// Convert a pairlist (LISTSXP) to a vector list (VECSXP).
@@ -772,7 +768,7 @@
     </span><span class="kw">unsafe fn </span>register_c_finalizer(<span class="kw-2">&amp;</span><span class="self">self</span>, func: R_CFinalizer_t) {
         <span class="comment">// Use R_RegisterCFinalizerEx() and set onexit to 1 (TRUE) to invoke the
         // finalizer on a shutdown of the R session as well.
-        </span>single_threaded(|| R_RegisterCFinalizerEx(<span class="self">self</span>.get(), func, <span class="number">1</span>));
+        </span>single_threaded(|| R_RegisterCFinalizerEx(<span class="self">self</span>.get(), func, Rboolean::TRUE));
     }
 
     <span class="doccomment">/// Copy a vector and resize it.
@@ -790,108 +786,108 @@
     }
 
     <span class="doccomment">/// Allocated an owned object of a certain type.
-    </span><span class="kw">fn </span>alloc_vector(sexptype: u32, len: usize) -&gt; Robj {
+    </span><span class="kw">fn </span>alloc_vector(sexptype: SEXPTYPE, len: usize) -&gt; Robj {
         single_threaded(|| <span class="kw">unsafe </span>{ Robj::from_sexp(Rf_allocVector(sexptype, len <span class="kw">as </span>R_xlen_t)) })
     }
 
     <span class="doccomment">/// Return true if two arrays have identical dims.
     </span><span class="kw">fn </span>conformable(a: <span class="kw-2">&amp;</span>Robj, b: <span class="kw-2">&amp;</span>Robj) -&gt; bool {
-        single_threaded(|| <span class="kw">unsafe </span>{ Rf_conformable(a.get(), b.get()) != <span class="number">0 </span>})
+        single_threaded(|| <span class="kw">unsafe </span>{ Rf_conformable(a.get(), b.get()).into() })
     }
 
     <span class="doccomment">/// Return true if this is an array.
     </span><span class="kw">fn </span>is_array(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isArray(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isArray(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is factor.
     </span><span class="kw">fn </span>is_factor(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isFactor(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isFactor(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is a data frame.
     </span><span class="kw">fn </span>is_frame(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isFrame(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isFrame(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is a function or a primitive (CLOSXP, BUILTINSXP or SPECIALSXP)
     </span><span class="kw">fn </span>is_function(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isFunction(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isFunction(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is an integer vector (INTSXP) but not a factor.
     </span><span class="kw">fn </span>is_integer(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isInteger(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isInteger(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is a language object (LANGSXP).
     </span><span class="kw">fn </span>is_language(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isLanguage(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isLanguage(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is NILSXP or LISTSXP.
     </span><span class="kw">fn </span>is_pairlist(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isList(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isList(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is a matrix.
     </span><span class="kw">fn </span>is_matrix(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isMatrix(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isMatrix(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is NILSXP or VECSXP.
     </span><span class="kw">fn </span>is_list(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isNewList(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isNewList(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is INTSXP, LGLSXP or REALSXP but not a factor.
     </span><span class="kw">fn </span>is_number(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isNumber(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isNumber(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is a primitive function BUILTINSXP, SPECIALSXP.
     </span><span class="kw">fn </span>is_primitive(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isPrimitive(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isPrimitive(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is a time series vector (see tsp).
     </span><span class="kw">fn </span>is_ts(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isTs(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isTs(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is a user defined binop.
     </span><span class="kw">fn </span>is_user_binop(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isUserBinop(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isUserBinop(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is a valid string.
     </span><span class="kw">fn </span>is_valid_string(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isValidString(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isValidString(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is a valid string.
     </span><span class="kw">fn </span>is_valid_string_f(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isValidStringF(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isValidStringF(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is a vector.
     </span><span class="kw">fn </span>is_vector(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isVector(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isVector(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is an atomic vector.
     </span><span class="kw">fn </span>is_vector_atomic(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isVectorAtomic(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isVectorAtomic(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is a vector list.
     </span><span class="kw">fn </span>is_vector_list(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isVectorList(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isVectorList(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is can be made into a vector.
     </span><span class="kw">fn </span>is_vectorizable(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ Rf_isVectorizable(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ Rf_isVectorizable(<span class="self">self</span>.get()).into() }
     }
 
     <span class="doccomment">/// Return true if this is RAWSXP.
@@ -908,7 +904,7 @@
     /// This is used to wrap R objects.
     </span><span class="attr">#[doc(hidden)]
     </span><span class="kw">fn </span>check_external_ptr_type&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">if </span><span class="self">self</span>.sexptype() == libR_sys::EXTPTRSXP {
+        <span class="kw">if </span><span class="self">self</span>.sexptype() == SEXPTYPE::EXTPTRSXP {
             <span class="kw">let </span>tag = <span class="kw">unsafe </span>{ <span class="self">self</span>.external_ptr_tag() };
             <span class="kw">if </span>tag.as_str() == <span class="prelude-val">Some</span>(std::any::type_name::&lt;T&gt;()) {
                 <span class="kw">return </span><span class="bool-val">true</span>;
@@ -926,7 +922,7 @@
     }
 
     <span class="kw">fn </span>is_package_env(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ R_IsPackageEnv(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ R_IsPackageEnv(<span class="self">self</span>.get()).into() }
     }
 
     <span class="kw">fn </span>package_env_name(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Robj {
@@ -934,7 +930,7 @@
     }
 
     <span class="kw">fn </span>is_namespace_env(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ R_IsNamespaceEnv(<span class="self">self</span>.get()) != <span class="number">0 </span>}
+        <span class="kw">unsafe </span>{ R_IsNamespaceEnv(<span class="self">self</span>.get()).into() }
     }
 
     <span class="kw">fn </span>namespace_env_spec(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Robj {
@@ -948,33 +944,33 @@
 
     <span class="doccomment">/// Returns `true` if this is an integer ALTREP object.
     </span><span class="kw">fn </span>is_altinteger(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ ALTREP(<span class="self">self</span>.get()) != <span class="number">0 </span>&amp;&amp; TYPEOF(<span class="self">self</span>.get()) == INTSXP <span class="kw">as </span>i32 }
+        <span class="kw">unsafe </span>{ ALTREP(<span class="self">self</span>.get()) != <span class="number">0 </span>&amp;&amp; TYPEOF(<span class="self">self</span>.get()) == SEXPTYPE::INTSXP }
     }
 
     <span class="doccomment">/// Returns `true` if this is an real ALTREP object.
     </span><span class="kw">fn </span>is_altreal(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ ALTREP(<span class="self">self</span>.get()) != <span class="number">0 </span>&amp;&amp; TYPEOF(<span class="self">self</span>.get()) == REALSXP <span class="kw">as </span>i32 }
+        <span class="kw">unsafe </span>{ ALTREP(<span class="self">self</span>.get()) != <span class="number">0 </span>&amp;&amp; TYPEOF(<span class="self">self</span>.get()) == SEXPTYPE::REALSXP }
     }
 
     <span class="doccomment">/// Returns `true` if this is an logical ALTREP object.
     </span><span class="kw">fn </span>is_altlogical(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ ALTREP(<span class="self">self</span>.get()) != <span class="number">0 </span>&amp;&amp; TYPEOF(<span class="self">self</span>.get()) == LGLSXP <span class="kw">as </span>i32 }
+        <span class="kw">unsafe </span>{ ALTREP(<span class="self">self</span>.get()) != <span class="number">0 </span>&amp;&amp; TYPEOF(<span class="self">self</span>.get()) == SEXPTYPE::LGLSXP }
     }
 
     <span class="doccomment">/// Returns `true` if this is a raw ALTREP object.
     </span><span class="kw">fn </span>is_altraw(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ ALTREP(<span class="self">self</span>.get()) != <span class="number">0 </span>&amp;&amp; TYPEOF(<span class="self">self</span>.get()) == RAWSXP <span class="kw">as </span>i32 }
+        <span class="kw">unsafe </span>{ ALTREP(<span class="self">self</span>.get()) != <span class="number">0 </span>&amp;&amp; TYPEOF(<span class="self">self</span>.get()) == SEXPTYPE::RAWSXP }
     }
 
     <span class="doccomment">/// Returns `true` if this is an integer ALTREP object.
     </span><span class="kw">fn </span>is_altstring(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ ALTREP(<span class="self">self</span>.get()) != <span class="number">0 </span>&amp;&amp; TYPEOF(<span class="self">self</span>.get()) == STRSXP <span class="kw">as </span>i32 }
+        <span class="kw">unsafe </span>{ ALTREP(<span class="self">self</span>.get()) != <span class="number">0 </span>&amp;&amp; TYPEOF(<span class="self">self</span>.get()) == SEXPTYPE::STRSXP }
     }
 
     <span class="doccomment">/// Returns `true` if this is an integer ALTREP object.
     </span><span class="attr">#[cfg(use_r_altlist)]
     </span><span class="kw">fn </span>is_altlist(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">unsafe </span>{ ALTREP(<span class="self">self</span>.get()) != <span class="number">0 </span>&amp;&amp; TYPEOF(<span class="self">self</span>.get()) == VECSXP <span class="kw">as </span>i32 }
+        <span class="kw">unsafe </span>{ ALTREP(<span class="self">self</span>.get()) != <span class="number">0 </span>&amp;&amp; TYPEOF(<span class="self">self</span>.get()) == SEXPTYPE::VECSXP }
     }
 
     <span class="doccomment">/// Generate a text representation of this object.

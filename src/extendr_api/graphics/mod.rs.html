@@ -1063,22 +1063,22 @@
     Symbol,
 }
 
-<span class="kw">impl </span>LineEnd {
-    <span class="kw">fn </span>to_u32(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
-        <span class="kw">match </span><span class="self">self </span>{
-            <span class="self">Self</span>::Round =&gt; <span class="number">1</span>,
-            <span class="self">Self</span>::Butt =&gt; <span class="number">2</span>,
-            <span class="self">Self</span>::Square =&gt; <span class="number">3</span>,
+<span class="kw">impl </span>From&lt;LineEnd&gt; <span class="kw">for </span>R_GE_lineend {
+    <span class="kw">fn </span>from(value: LineEnd) -&gt; <span class="self">Self </span>{
+        <span class="kw">match </span>value {
+            LineEnd::Round =&gt; <span class="self">Self</span>::GE_ROUND_CAP,
+            LineEnd::Butt =&gt; <span class="self">Self</span>::GE_BUTT_CAP,
+            LineEnd::Square =&gt; <span class="self">Self</span>::GE_SQUARE_CAP,
         }
     }
 }
 
-<span class="kw">impl </span>LineJoin {
-    <span class="kw">fn </span>to_u32(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
-        <span class="kw">match </span><span class="self">self </span>{
-            <span class="self">Self</span>::Round =&gt; <span class="number">1</span>,
-            <span class="self">Self</span>::Mitre =&gt; <span class="number">2</span>,
-            <span class="self">Self</span>::Bevel =&gt; <span class="number">3</span>,
+<span class="kw">impl </span>From&lt;LineJoin&gt; <span class="kw">for </span>R_GE_linejoin {
+    <span class="kw">fn </span>from(value: LineJoin) -&gt; <span class="self">Self </span>{
+        <span class="kw">match </span>value {
+            LineJoin::Round =&gt; <span class="self">Self</span>::GE_ROUND_JOIN,
+            LineJoin::Mitre =&gt; <span class="self">Self</span>::GE_MITRE_JOIN,
+            LineJoin::Bevel =&gt; <span class="self">Self</span>::GE_BEVEL_JOIN,
         }
     }
 }
@@ -1111,10 +1111,10 @@
 
 <span class="kw">fn </span>unit_to_ge(unit: Unit) -&gt; GEUnit {
     <span class="kw">match </span>unit {
-        Unit::Device =&gt; GEUnit_GE_DEVICE,
-        Unit::Normalized =&gt; GEUnit_GE_NDC,
-        Unit::Inches =&gt; GEUnit_GE_INCHES,
-        Unit::CM =&gt; GEUnit_GE_CM,
+        Unit::Device =&gt; GEUnit::GE_DEVICE,
+        Unit::Normalized =&gt; GEUnit::GE_NDC,
+        Unit::Inches =&gt; GEUnit::GE_INCHES,
+        Unit::CM =&gt; GEUnit::GE_CM,
     }
 }
 
@@ -1139,8 +1139,8 @@
                 gamma: <span class="number">1.0</span>,
                 lwd: <span class="number">1.0</span>,
                 lty: <span class="number">0</span>,
-                lend: R_GE_lineend_GE_ROUND_CAP,
-                ljoin: R_GE_linejoin_GE_ROUND_JOIN,
+                lend: R_GE_lineend::GE_ROUND_CAP,
+                ljoin: R_GE_linejoin::GE_ROUND_JOIN,
                 lmitre: <span class="number">10.0</span>,
                 cex: <span class="number">1.0</span>,
                 ps: <span class="number">14.0</span>,
@@ -1214,7 +1214,7 @@
     ///   LineEnd::SquareCap
     /// ```
     </span><span class="kw">pub fn </span>line_end(<span class="kw-2">&amp;mut </span><span class="self">self</span>, lend: LineEnd) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.context.lend = lend.to_u32();
+        <span class="self">self</span>.context.lend = lend.into();
         <span class="self">self
     </span>}
 
@@ -1225,7 +1225,7 @@
     ///   LineJoin::BevelJoin
     /// ```
     </span><span class="kw">pub fn </span>line_join(<span class="kw-2">&amp;mut </span><span class="self">self</span>, ljoin: LineJoin) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.context.ljoin = ljoin.to_u32();
+        <span class="self">self</span>.context.ljoin = ljoin.into();
         <span class="self">self
     </span>}
 
@@ -1577,7 +1577,7 @@
                 yptr,
                 nper.len() <span class="kw">as </span>std::os::raw::c_int,
                 nperptr,
-                <span class="kw">if </span>winding { <span class="number">1 </span>} <span class="kw">else </span>{ <span class="number">0 </span>},
+                winding.into(),
                 gc.context(),
                 <span class="self">self</span>.inner(),
             )
@@ -1608,7 +1608,7 @@
             <span class="kw">let </span>raster = pixels.as_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>u32;
             <span class="kw">let </span>w = w <span class="kw">as </span>i32;
             <span class="kw">let </span>h = h <span class="kw">as </span>i32;
-            <span class="kw">let </span>interpolate = <span class="kw">if </span>interpolate { <span class="number">1 </span>} <span class="kw">else </span>{ <span class="number">0 </span>};
+            <span class="kw">let </span>interpolate = interpolate.into();
             GERaster(
                 raster,
                 w,
@@ -1639,7 +1639,7 @@
             <span class="kw">let </span>(x, y) = gc.t(pos);
             <span class="kw">let </span>(xc, yc) = gc.trel(center);
             <span class="kw">let </span>text = std::ffi::CString::new(text.as_ref()).unwrap();
-            <span class="kw">let </span>enc = cetype_t_CE_UTF8;
+            <span class="kw">let </span>enc = cetype_t::CE_UTF8;
             GEText(
                 x,
                 y,
@@ -1686,21 +1686,21 @@
     <span class="doccomment">/// Get the width of a unicode string.
     </span><span class="kw">pub fn </span>text_width&lt;T: AsRef&lt;str&gt;&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, text: T, gc: <span class="kw-2">&amp;</span>Context) -&gt; f64 {
         <span class="kw">let </span>text = std::ffi::CString::new(text.as_ref()).unwrap();
-        <span class="kw">let </span>enc = cetype_t_CE_UTF8;
+        <span class="kw">let </span>enc = cetype_t::CE_UTF8;
         <span class="kw">unsafe </span>{ gc.its(GEStrWidth(text.as_ptr(), enc, gc.context(), <span class="self">self</span>.inner())) }
     }
 
     <span class="doccomment">/// Get the height of a unicode string.
     </span><span class="kw">pub fn </span>text_height&lt;T: AsRef&lt;str&gt;&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, text: T, gc: <span class="kw-2">&amp;</span>Context) -&gt; f64 {
         <span class="kw">let </span>text = std::ffi::CString::new(text.as_ref()).unwrap();
-        <span class="kw">let </span>enc = cetype_t_CE_UTF8;
+        <span class="kw">let </span>enc = cetype_t::CE_UTF8;
         <span class="kw">unsafe </span>{ gc.its(GEStrHeight(text.as_ptr(), enc, gc.context(), <span class="self">self</span>.inner())) }
     }
 
     <span class="doccomment">/// Get the metrics for a unicode string.
     </span><span class="kw">pub fn </span>text_metric&lt;T: AsRef&lt;str&gt;&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, text: T, gc: <span class="kw-2">&amp;</span>Context) -&gt; TextMetric {
         <span class="kw">let </span>text = std::ffi::CString::new(text.as_ref()).unwrap();
-        <span class="kw">let </span>enc = cetype_t_CE_UTF8;
+        <span class="kw">let </span>enc = cetype_t::CE_UTF8;
         <span class="kw">unsafe </span>{
             <span class="kw">let </span><span class="kw-2">mut </span>res = TextMetric {
                 ascent: <span class="number">0.0</span>,

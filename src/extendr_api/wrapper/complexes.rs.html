@@ -103,6 +103,7 @@
 <a href="#103" id="103">103</a>
 <a href="#104" id="104">104</a>
 <a href="#105" id="105">105</a>
+<a href="#106" id="106">106</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::scalar::{c64, Rcplx};
 <span class="kw">use super</span>::<span class="kw-2">*</span>;
 <span class="kw">use </span>std::iter::FromIterator;
@@ -122,6 +123,7 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) robj: Robj,
 }
 
+<span class="kw">use </span>libR_sys::SEXPTYPE::CPLXSXP;
 <span class="macro">crate::wrapper::macros::gen_vector_wrapper_impl!</span>(
     vector_type: Complexes,
     scalar_type: Rcplx,

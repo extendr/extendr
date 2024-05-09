@@ -465,7 +465,7 @@
     /// }
     /// ```
     </span><span class="kw">pub fn </span>new(size: usize) -&gt; <span class="self">Self </span>{
-        <span class="kw">let </span>robj = Robj::alloc_vector(VECSXP, size);
+        <span class="kw">let </span>robj = Robj::alloc_vector(SEXPTYPE::VECSXP, size);
         <span class="self">Self </span>{ robj }
     }
 
@@ -485,7 +485,7 @@
         V::Item: Into&lt;Robj&gt;,
     {
         <span class="self">Self </span>{
-            robj: make_vector(VECSXP, values),
+            robj: make_vector(SEXPTYPE::VECSXP, values),
         }
     }
 
@@ -824,7 +824,7 @@
         <span class="kw">let </span>len = iter_collect.len();
 
         <span class="kw">crate</span>::single_threaded(|| <span class="kw">unsafe </span>{
-            <span class="kw">let </span><span class="kw-2">mut </span>robj = Robj::alloc_vector(VECSXP, len);
+            <span class="kw">let </span><span class="kw-2">mut </span>robj = Robj::alloc_vector(SEXPTYPE::VECSXP, len);
             <span class="kw">for </span>(i, v) <span class="kw">in </span>iter_collect.into_iter().enumerate() {
                 <span class="comment">// We don't PROTECT each element here, as they will be immediately
                 // placed into a list which will protect them:

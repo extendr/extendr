@@ -166,6 +166,7 @@
 <a href="#166" id="166">166</a>
 <a href="#167" id="167">167</a>
 <a href="#168" id="168">168</a>
+<a href="#169" id="169">169</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::scalar::{Rbool, Scalar};
 <span class="kw">use super</span>::<span class="kw-2">*</span>;
 <span class="kw">use </span>std::iter::FromIterator;
@@ -189,6 +190,7 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) robj: Robj,
 }
 
+<span class="kw">use </span>SEXPTYPE::LGLSXP;
 <span class="macro">crate::wrapper::macros::gen_vector_wrapper_impl!</span>(
     vector_type: Logicals, <span class="comment">// Implements for
     </span>scalar_type: Rbool,    <span class="comment">// Element type

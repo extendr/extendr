@@ -1026,6 +1026,14 @@
 <a href="#1026" id="1026">1026</a>
 <a href="#1027" id="1027">1027</a>
 <a href="#1028" id="1028">1028</a>
+<a href="#1029" id="1029">1029</a>
+<a href="#1030" id="1030">1030</a>
+<a href="#1031" id="1031">1031</a>
+<a href="#1032" id="1032">1032</a>
+<a href="#1033" id="1033">1033</a>
+<a href="#1034" id="1034">1034</a>
+<a href="#1035" id="1035">1035</a>
+<a href="#1036" id="1036">1036</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//!
 //! A safe and user friendly R extension interface.
 //!
@@ -1517,8 +1525,8 @@
     );
 
     <span class="comment">// This seems to allow both symbols and strings,
-    </span>libR_sys::R_useDynamicSymbols(info, <span class="number">0</span>);
-    libR_sys::R_forceSymbols(info, <span class="number">0</span>);
+    </span>libR_sys::R_useDynamicSymbols(info, Rboolean::FALSE);
+    libR_sys::R_forceSymbols(info, Rboolean::FALSE);
 }
 
 <span class="doccomment">/// Type of R objects used by [Robj::rtype].
@@ -1585,9 +1593,10 @@
 
 <span class="doccomment">/// Convert extendr's Rtype to R's SEXPTYPE.
 /// Panics if the type is Unknown.
-</span><span class="kw">pub fn </span>rtype_to_sxp(rtype: Rtype) -&gt; i32 {
+</span><span class="kw">pub fn </span>rtype_to_sxp(rtype: Rtype) -&gt; SEXPTYPE {
     <span class="kw">use </span>Rtype::<span class="kw-2">*</span>;
-    (<span class="kw">match </span>rtype {
+    <span class="kw">use </span>SEXPTYPE::<span class="kw-2">*</span>;
+    <span class="kw">match </span>rtype {
         Null =&gt; NILSXP,
         Symbol =&gt; SYMSXP,
         Pairlist =&gt; LISTSXP,
@@ -1611,15 +1620,19 @@
         ExternalPtr =&gt; EXTPTRSXP,
         WeakRef =&gt; WEAKREFSXP,
         Raw =&gt; RAWSXP,
-        S4 =&gt; S4SXP,
+        <span class="attr">#[cfg(not(use_objsxp))]
+        </span>S4 =&gt; S4SXP,
+        <span class="attr">#[cfg(use_objsxp)]
+        </span>S4 =&gt; OBJSXP,
         Unknown =&gt; <span class="macro">panic!</span>(<span class="string">"attempt to use Unknown Rtype"</span>),
-    }) <span class="kw">as </span>i32
+    }
 }
 
 <span class="doccomment">/// Convert R's SEXPTYPE to extendr's Rtype.
-</span><span class="kw">pub fn </span>sxp_to_rtype(sxptype: i32) -&gt; Rtype {
+</span><span class="kw">pub fn </span>sxp_to_rtype(sxptype: SEXPTYPE) -&gt; Rtype {
     <span class="kw">use </span>Rtype::<span class="kw-2">*</span>;
-    <span class="kw">match </span>sxptype <span class="kw">as </span>u32 {
+    <span class="kw">use </span>SEXPTYPE::<span class="kw-2">*</span>;
+    <span class="kw">match </span>sxptype {
         NILSXP =&gt; Null,
         SYMSXP =&gt; Symbol,
         LISTSXP =&gt; Pairlist,
@@ -1643,7 +1656,10 @@
         EXTPTRSXP =&gt; ExternalPtr,
         WEAKREFSXP =&gt; WeakRef,
         RAWSXP =&gt; Raw,
-        S4SXP =&gt; S4,
+        <span class="attr">#[cfg(not(use_objsxp))]
+        </span>S4SXP =&gt; S4,
+        <span class="attr">#[cfg(use_objsxp)]
+        </span>OBJSXP =&gt; S4,
         <span class="kw">_ </span>=&gt; Unknown,
     }
 }

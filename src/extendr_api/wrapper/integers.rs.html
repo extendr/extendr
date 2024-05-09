@@ -175,6 +175,7 @@
 <a href="#175" id="175">175</a>
 <a href="#176" id="176">176</a>
 <a href="#177" id="177">177</a>
+<a href="#178" id="178">178</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::scalar::{Rint, Scalar};
 <span class="kw">use super</span>::<span class="kw-2">*</span>;
 <span class="kw">use </span>std::iter::FromIterator;
@@ -197,6 +198,7 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) robj: Robj,
 }
 
+<span class="kw">use </span>libR_sys::SEXPTYPE::INTSXP;
 <span class="macro">crate::wrapper::macros::gen_vector_wrapper_impl!</span>(
     vector_type: Integers, <span class="comment">// Implements for
     </span>scalar_type: Rint,     <span class="comment">// Element type

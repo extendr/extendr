@@ -475,7 +475,7 @@
     <span class="kw">unsafe </span>{ libR_sys::Rf_install(name.as_ptr()) }
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>make_vector&lt;T&gt;(sexptype: u32, values: T) -&gt; Robj
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>make_vector&lt;T&gt;(sexptype: SEXPTYPE, values: T) -&gt; Robj
 <span class="kw">where
     </span>T: IntoIterator,
     T::IntoIter: ExactSizeIterator,

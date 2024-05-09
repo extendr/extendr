@@ -353,9 +353,9 @@
                 <span class="kw">let </span>tag = TAG(sexp);
                 <span class="kw">let </span>value = Robj::from_sexp(CAR(sexp));
                 <span class="self">self</span>.list_elem = CDR(sexp);
-                <span class="kw">if </span>TYPEOF(tag) == SYMSXP <span class="kw">as </span>i32 {
+                <span class="kw">if </span>TYPEOF(tag) == SEXPTYPE::SYMSXP {
                     <span class="kw">let </span>printname = PRINTNAME(tag);
-                    <span class="macro">assert!</span>(TYPEOF(printname) <span class="kw">as </span>u32 == CHARSXP);
+                    <span class="macro">assert!</span>(TYPEOF(printname) == SEXPTYPE::CHARSXP);
                     <span class="kw">let </span>name = to_str(R_CHAR(printname) <span class="kw">as </span><span class="kw-2">*const </span>u8);
                     <span class="prelude-val">Some</span>((std::mem::transmute(name), value))
                 } <span class="kw">else </span>{

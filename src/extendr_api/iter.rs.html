@@ -197,6 +197,7 @@
 <a href="#197" id="197">197</a>
 <a href="#198" id="198">198</a>
 <a href="#199" id="199">199</a>
+<a href="#200" id="200">200</a>
 </pre></div><pre class="rust"><code><span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
 <span class="kw">use </span>wrapper::symbol::levels_symbol;
@@ -263,7 +264,7 @@
             <span class="kw">let </span>charsxp = STRING_ELT(sexp, index);
             <span class="kw">if </span>charsxp == R_NaString {
                 &lt;<span class="kw-2">&amp;</span>str&gt;::na()
-            } <span class="kw">else if </span>TYPEOF(charsxp) == CHARSXP <span class="kw">as </span>i32 {
+            } <span class="kw">else if </span>TYPEOF(charsxp) == SEXPTYPE::CHARSXP {
                 <span class="kw">let </span>ptr = R_CHAR(charsxp) <span class="kw">as </span><span class="kw-2">*const </span>u8;
                 <span class="kw">let </span>slice = std::slice::from_raw_parts(ptr, Rf_xlength(charsxp) <span class="kw">as </span>usize);
                 std::str::from_utf8_unchecked(slice)
@@ -288,12 +289,13 @@
             <span class="kw">let </span>vector = <span class="self">self</span>.vector.get();
             <span class="kw">if </span>i &gt;= <span class="self">self</span>.len {
                 <span class="prelude-val">None
-            </span>} <span class="kw">else if </span>TYPEOF(vector) <span class="kw">as </span>u32 == STRSXP {
+            </span>} <span class="kw">else if </span>TYPEOF(vector) == SEXPTYPE::STRSXP {
                 <span class="prelude-val">Some</span>(str_from_strsxp(vector, i <span class="kw">as </span>isize))
-            } <span class="kw">else if </span>TYPEOF(vector) <span class="kw">as </span>u32 == INTSXP &amp;&amp; TYPEOF(<span class="self">self</span>.levels) <span class="kw">as </span>u32 == STRSXP {
+            } <span class="kw">else if </span>TYPEOF(vector) == SEXPTYPE::INTSXP &amp;&amp; TYPEOF(<span class="self">self</span>.levels) == SEXPTYPE::STRSXP
+            {
                 <span class="kw">let </span>j = <span class="kw-2">*</span>(INTEGER(vector).add(i));
                 <span class="prelude-val">Some</span>(str_from_strsxp(<span class="self">self</span>.levels, j <span class="kw">as </span>isize - <span class="number">1</span>))
-            } <span class="kw">else if </span>TYPEOF(vector) <span class="kw">as </span>u32 == NILSXP {
+            } <span class="kw">else if </span>TYPEOF(vector) == SEXPTYPE::NILSXP {
                 <span class="prelude-val">Some</span>(&lt;<span class="kw-2">&amp;</span>str&gt;::na())
             } <span class="kw">else </span>{
                 <span class="prelude-val">None
@@ -366,7 +368,7 @@
         <span class="kw">let </span>i = <span class="number">0</span>;
         <span class="kw">let </span>len = <span class="self">self</span>.len();
         <span class="kw">match </span><span class="self">self</span>.sexptype() {
-            STRSXP =&gt; <span class="kw">unsafe </span>{
+            SEXPTYPE::STRSXP =&gt; <span class="kw">unsafe </span>{
                 <span class="prelude-val">Some</span>(StrIter {
                     vector: <span class="self">self</span>.as_robj().clone(),
                     i,
@@ -374,9 +376,9 @@
                     levels: R_NilValue,
                 })
             },
-            INTSXP =&gt; <span class="kw">unsafe </span>{
+            SEXPTYPE::INTSXP =&gt; <span class="kw">unsafe </span>{
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(levels) = <span class="self">self</span>.get_attrib(levels_symbol()) {
-                    <span class="kw">if </span><span class="self">self</span>.is_factor() &amp;&amp; levels.sexptype() == STRSXP {
+                    <span class="kw">if </span><span class="self">self</span>.is_factor() &amp;&amp; levels.sexptype() == SEXPTYPE::STRSXP {
                         <span class="prelude-val">Some</span>(StrIter {
                             vector: <span class="self">self</span>.as_robj().clone(),
                             i,

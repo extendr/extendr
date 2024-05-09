@@ -135,7 +135,7 @@
         // pub type R_inpstream_t = *mut R_inpstream_st;
         </span><span class="kw">let </span><span class="kw-2">mut </span>state = R_inpstream_st {
             data,
-            type_: format <span class="kw">as </span>R_pstream_format_t,
+            type_: format,
             InChar: <span class="prelude-val">Some</span>(inchar::&lt;R&gt;),
             InBytes: <span class="prelude-val">Some</span>(inbytes::&lt;R&gt;),
             InPersistHookFunc: hook_func,

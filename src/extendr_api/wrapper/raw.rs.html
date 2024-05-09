@@ -80,7 +80,7 @@
 }
 
 <span class="kw">fn </span>init_raw&lt;F: FnOnce(<span class="kw-2">&amp;mut </span>[u8])&gt;(len: usize, filler: F) -&gt; Raw {
-    <span class="kw">let </span><span class="kw-2">mut </span>robj = Robj::alloc_vector(RAWSXP, len);
+    <span class="kw">let </span><span class="kw-2">mut </span>robj = Robj::alloc_vector(SEXPTYPE::RAWSXP, len);
     <span class="kw">let </span>slice = robj.as_raw_slice_mut().unwrap();
     filler(slice);
     Raw { robj }

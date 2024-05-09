@@ -376,6 +376,7 @@
 <a href="#376" id="376">376</a>
 <a href="#377" id="377">377</a>
 <a href="#378" id="378">378</a>
+<a href="#379" id="379">379</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Maintain ownership of R objects.
 //!
 //! This provides the functions `protect` and `unprotect`.
@@ -392,7 +393,7 @@
 
 <span class="kw">use </span>libR_sys::{
     R_NilValue, R_PreserveObject, R_ReleaseObject, R_xlen_t, Rf_allocVector, Rf_protect,
-    Rf_unprotect, LENGTH, SET_VECTOR_ELT, SEXP, VECSXP, VECTOR_ELT,
+    Rf_unprotect, LENGTH, SET_VECTOR_ELT, SEXP, SEXPTYPE, VECTOR_ELT,
 };
 
 <span class="kw">mod </span>send_sexp {
@@ -470,7 +471,8 @@
 <span class="kw">impl </span>Ownership {
     <span class="kw">fn </span>new() -&gt; <span class="self">Self </span>{
         <span class="kw">unsafe </span>{
-            <span class="kw">let </span>preservation = Rf_allocVector(VECSXP, INITIAL_PRESERVATION_SIZE <span class="kw">as </span>R_xlen_t);
+            <span class="kw">let </span>preservation =
+                Rf_allocVector(SEXPTYPE::VECSXP, INITIAL_PRESERVATION_SIZE <span class="kw">as </span>R_xlen_t);
             R_PreserveObject(preservation);
             Ownership {
                 preservation: preservation.into(),
@@ -484,7 +486,7 @@
     <span class="comment">// Garbage collect the tracking structures.
     </span><span class="kw">unsafe fn </span>garbage_collect(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
         <span class="kw">let </span>new_size = <span class="self">self</span>.cur_index * <span class="number">2 </span>+ EXTRA_PRESERVATION_SIZE;
-        <span class="kw">let </span>new_sexp = Rf_allocVector(VECSXP, new_size <span class="kw">as </span>R_xlen_t);
+        <span class="kw">let </span>new_sexp = Rf_allocVector(SEXPTYPE::VECSXP, new_size <span class="kw">as </span>R_xlen_t);
         R_PreserveObject(new_sexp);
         <span class="kw">let </span>old_sexp = <span class="self">self</span>.preservation.inner();
 
@@ -726,7 +728,7 @@
                 </span><span class="kw">let </span>test_size = INITIAL_PRESERVATION_SIZE + EXTRA_PRESERVATION_SIZE * <span class="number">5</span>;
 
                 <span class="comment">// Make some test objects.
-                </span><span class="kw">let </span>sexp_pres = Rf_allocVector(VECSXP, test_size <span class="kw">as </span>R_xlen_t);
+                </span><span class="kw">let </span>sexp_pres = Rf_allocVector(SEXPTYPE::VECSXP, test_size <span class="kw">as </span>R_xlen_t);
                 Rf_protect(sexp_pres);
 
                 <span class="kw">let </span>sexps = (<span class="number">0</span>..test_size).map(|i| {

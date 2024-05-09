@@ -175,7 +175,7 @@
     /// }
     /// ```
     </span><span class="kw">pub fn </span>new(size: usize) -&gt; Strings {
-        <span class="kw">let </span>robj = Robj::alloc_vector(STRSXP, size);
+        <span class="kw">let </span>robj = Robj::alloc_vector(SEXPTYPE::STRSXP, size);
         <span class="self">Self </span>{ robj }
     }
 
@@ -197,7 +197,7 @@
         single_threaded(|| <span class="kw">unsafe </span>{
             <span class="kw">let </span>values = values.into_iter();
             <span class="kw">let </span>maxlen = values.len();
-            <span class="kw">let </span><span class="kw-2">mut </span>robj = Robj::alloc_vector(STRSXP, maxlen);
+            <span class="kw">let </span><span class="kw-2">mut </span>robj = Robj::alloc_vector(SEXPTYPE::STRSXP, maxlen);
             <span class="kw">let </span>sexp = robj.get_mut();
             <span class="kw">for </span>(i, v) <span class="kw">in </span>values.into_iter().take(maxlen).enumerate() {
                 <span class="kw">let </span>v = v.as_ref();
@@ -261,7 +261,7 @@
         <span class="kw">let </span>iter_collect: Vec&lt;<span class="kw">_</span>&gt; = iter.into_iter().collect();
         <span class="kw">let </span>len = iter_collect.len();
 
-        <span class="kw">let </span><span class="kw-2">mut </span>robj = Strings::alloc_vector(STRSXP, len);
+        <span class="kw">let </span><span class="kw-2">mut </span>robj = Strings::alloc_vector(SEXPTYPE::STRSXP, len);
         <span class="kw">crate</span>::single_threaded(|| <span class="kw">unsafe </span>{
             <span class="kw">for </span>(i, v) <span class="kw">in </span>iter_collect.into_iter().enumerate() {
                 SET_STRING_ELT(robj.get_mut(), i <span class="kw">as </span>isize, str_to_character(v.as_ref()));

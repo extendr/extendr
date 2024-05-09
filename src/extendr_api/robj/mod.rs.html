@@ -1098,6 +1098,16 @@
 <a href="#1098" id="1098">1098</a>
 <a href="#1099" id="1099">1099</a>
 <a href="#1100" id="1100">1100</a>
+<a href="#1101" id="1101">1101</a>
+<a href="#1102" id="1102">1102</a>
+<a href="#1103" id="1103">1103</a>
+<a href="#1104" id="1104">1104</a>
+<a href="#1105" id="1105">1105</a>
+<a href="#1106" id="1106">1106</a>
+<a href="#1107" id="1107">1107</a>
+<a href="#1108" id="1108">1108</a>
+<a href="#1109" id="1109">1109</a>
+<a href="#1110" id="1110">1110</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! R object handling.
 //!
 //! See. [Writing R Extensions](https://cran.r-project.org/doc/manuals/R-exts.html)
@@ -1336,8 +1346,8 @@
 <span class="kw">pub trait </span>Types: GetSexp {
     <span class="attr">#[doc(hidden)]
     </span><span class="doccomment">/// Get the XXXSXP type of the object.
-    </span><span class="kw">fn </span>sexptype(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
-        <span class="kw">unsafe </span>{ TYPEOF(<span class="self">self</span>.get()) <span class="kw">as </span>u32 }
+    </span><span class="kw">fn </span>sexptype(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SEXPTYPE {
+        <span class="kw">unsafe </span>{ TYPEOF(<span class="self">self</span>.get()) }
     }
 
     <span class="doccomment">/// Get the type of an R object.
@@ -1363,6 +1373,7 @@
     /// }
     /// ```
     </span><span class="kw">fn </span>rtype(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Rtype {
+        <span class="kw">use </span>SEXPTYPE::<span class="kw-2">*</span>;
         <span class="kw">match </span><span class="self">self</span>.sexptype() {
             NILSXP =&gt; Rtype::Null,
             SYMSXP =&gt; Rtype::Symbol,
@@ -1387,12 +1398,16 @@
             EXTPTRSXP =&gt; Rtype::ExternalPtr,
             WEAKREFSXP =&gt; Rtype::WeakRef,
             RAWSXP =&gt; Rtype::Raw,
-            S4SXP =&gt; Rtype::S4,
+            <span class="attr">#[cfg(not(use_objsxp))]
+            </span>S4SXP =&gt; Rtype::S4,
+            <span class="attr">#[cfg(use_objsxp)]
+            </span>OBJSXP =&gt; Rtype::S4,
             <span class="kw">_ </span>=&gt; Rtype::Unknown,
         }
     }
 
     <span class="kw">fn </span>as_any(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Rany {
+        <span class="kw">use </span>SEXPTYPE::<span class="kw-2">*</span>;
         <span class="kw">unsafe </span>{
             <span class="kw">match </span><span class="self">self</span>.sexptype() {
                 NILSXP =&gt; Rany::Null(std::mem::transmute(<span class="self">self</span>.as_robj())),
@@ -1418,7 +1433,10 @@
                 EXTPTRSXP =&gt; Rany::ExternalPtr(std::mem::transmute(<span class="self">self</span>.as_robj())),
                 WEAKREFSXP =&gt; Rany::WeakRef(std::mem::transmute(<span class="self">self</span>.as_robj())),
                 RAWSXP =&gt; Rany::Raw(std::mem::transmute(<span class="self">self</span>.as_robj())),
-                S4SXP =&gt; Rany::S4(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                <span class="attr">#[cfg(not(use_objsxp))]
+                </span>S4SXP =&gt; Rany::S4(std::mem::transmute(<span class="self">self</span>.as_robj())),
+                <span class="attr">#[cfg(use_objsxp)]
+                </span>OBJSXP =&gt; Rany::S4(std::mem::transmute(<span class="self">self</span>.as_robj())),
                 <span class="kw">_ </span>=&gt; Rany::Unknown(std::mem::transmute(<span class="self">self</span>.as_robj())),
             }
         }
@@ -1446,6 +1464,7 @@
         </span>} <span class="kw">else </span>{
             <span class="kw">unsafe </span>{
                 <span class="kw">let </span>sexp = <span class="self">self</span>.get();
+                <span class="kw">use </span>SEXPTYPE::<span class="kw-2">*</span>;
                 <span class="kw">match </span><span class="self">self</span>.sexptype() {
                     STRSXP =&gt; STRING_ELT(sexp, <span class="number">0</span>) == libR_sys::R_NaString,
                     INTSXP =&gt; <span class="kw-2">*</span>(INTEGER(sexp)) == libR_sys::R_NaInt,
@@ -1887,6 +1906,7 @@
     }
 }
 
+<span class="kw">use </span>SEXPTYPE::<span class="kw-2">*</span>;
 <span class="macro">make_typed_slice!</span>(Rbool, INTEGER, LGLSXP);
 <span class="macro">make_typed_slice!</span>(i32, INTEGER, INTSXP);
 <span class="macro">make_typed_slice!</span>(u32, INTEGER, INTSXP);
@@ -1921,7 +1941,7 @@
         Robj: From&lt;N&gt; + <span class="lifetime">'a</span>,
     {
         <span class="kw">let </span>name = Robj::from(name);
-        <span class="kw">if </span><span class="self">self</span>.sexptype() == CHARSXP {
+        <span class="kw">if </span><span class="self">self</span>.sexptype() == SEXPTYPE::CHARSXP {
             <span class="prelude-val">None
         </span>} <span class="kw">else </span>{
             <span class="comment">// FIXME: this attribute does not need protection
@@ -1941,7 +1961,7 @@
         Robj: From&lt;N&gt; + <span class="lifetime">'a</span>,
     {
         <span class="kw">let </span>name = Robj::from(name);
-        <span class="kw">if </span><span class="self">self</span>.sexptype() == CHARSXP {
+        <span class="kw">if </span><span class="self">self</span>.sexptype() == SEXPTYPE::CHARSXP {
             <span class="bool-val">false
         </span>} <span class="kw">else </span>{
             <span class="kw">unsafe </span>{ Rf_getAttrib(<span class="self">self</span>.get(), name.get()) != R_NilValue }
@@ -2171,8 +2191,8 @@
             }
 
             <span class="comment">// see https://github.com/hadley/r-internals/blob/master/misc.md
-            </span>R_compute_identical(<span class="self">self</span>.get(), rhs.get(), <span class="number">16</span>) != <span class="number">0
-        </span>}
+            </span>R_compute_identical(<span class="self">self</span>.get(), rhs.get(), <span class="number">16</span>) != Rboolean::FALSE
+        }
     }
 }
 

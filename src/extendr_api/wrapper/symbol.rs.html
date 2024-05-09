@@ -298,7 +298,7 @@
     <span class="comment">// Internal conversion for constant symbols.
     </span><span class="kw">fn </span>from_sexp(sexp: SEXP) -&gt; Symbol {
         <span class="kw">unsafe </span>{
-            <span class="macro">assert!</span>(TYPEOF(sexp) == SYMSXP <span class="kw">as </span>i32);
+            <span class="macro">assert!</span>(TYPEOF(sexp) == SEXPTYPE::SYMSXP);
         }
         Symbol {
             robj: Robj::from_sexp(sexp),
@@ -316,7 +316,7 @@
         <span class="kw">unsafe </span>{
             <span class="kw">let </span>sexp = <span class="self">self</span>.robj.get();
             <span class="kw">let </span>printname = PRINTNAME(sexp);
-            <span class="macro">assert!</span>(TYPEOF(printname) <span class="kw">as </span>u32 == CHARSXP);
+            <span class="macro">assert!</span>(TYPEOF(printname) == SEXPTYPE::CHARSXP);
             to_str(R_CHAR(printname) <span class="kw">as </span><span class="kw-2">*const </span>u8)
         }
     }

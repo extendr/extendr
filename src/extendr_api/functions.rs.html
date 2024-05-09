@@ -511,12 +511,12 @@
 </span><span class="kw">pub fn </span>parse(code: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Expressions&gt; {
     single_threaded(|| <span class="kw">unsafe </span>{
         <span class="kw">use </span>libR_sys::<span class="kw-2">*</span>;
-        <span class="kw">let </span><span class="kw-2">mut </span>status = <span class="number">0_u32</span>;
-        <span class="kw">let </span>status_ptr = <span class="kw-2">&amp;mut </span>status <span class="kw">as _</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>status = ParseStatus::PARSE_NULL;
+        <span class="kw">let </span>status_ptr = <span class="kw-2">&amp;mut </span>status <span class="kw">as </span><span class="kw-2">*mut </span><span class="kw">_</span>;
         <span class="kw">let </span>codeobj: Robj = code.into();
         <span class="kw">let </span>parsed = Robj::from_sexp(R_ParseVector(codeobj.get(), -<span class="number">1</span>, status_ptr, R_NilValue));
         <span class="kw">match </span>status {
-            <span class="number">1 </span>=&gt; parsed.try_into(),
+            ParseStatus::PARSE_OK =&gt; parsed.try_into(),
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(Error::ParseError(code.into())),
         }
     })

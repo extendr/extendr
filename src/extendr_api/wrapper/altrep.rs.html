@@ -1093,6 +1093,20 @@
 <a href="#1093" id="1093">1093</a>
 <a href="#1094" id="1094">1094</a>
 <a href="#1095" id="1095">1095</a>
+<a href="#1096" id="1096">1096</a>
+<a href="#1097" id="1097">1097</a>
+<a href="#1098" id="1098">1098</a>
+<a href="#1099" id="1099">1099</a>
+<a href="#1100" id="1100">1100</a>
+<a href="#1101" id="1101">1101</a>
+<a href="#1102" id="1102">1102</a>
+<a href="#1103" id="1103">1103</a>
+<a href="#1104" id="1104">1104</a>
+<a href="#1105" id="1105">1105</a>
+<a href="#1106" id="1106">1106</a>
+<a href="#1107" id="1107">1107</a>
+<a href="#1108" id="1108">1108</a>
+<a href="#1109" id="1109">1109</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>prelude::{Rbool, Rcplx, Rfloat, Rint, Scalar};
 
 <span class="kw">use super</span>::<span class="kw-2">*</span>;
@@ -1250,22 +1264,22 @@
     single_threaded(|| <span class="kw">unsafe </span>{
         Rf_protect(x);
         <span class="kw">let </span>len = XLENGTH_EX(x);
-        <span class="kw">let </span>data2 = Rf_allocVector(TYPEOF(x) <span class="kw">as </span>u32, len <span class="kw">as </span>R_xlen_t);
+        <span class="kw">let </span>data2 = Rf_allocVector(TYPEOF(x), len <span class="kw">as </span>R_xlen_t);
         Rf_protect(data2);
-        <span class="kw">match </span>TYPEOF(x) <span class="kw">as </span>u32 {
-            INTSXP =&gt; {
+        <span class="kw">match </span>TYPEOF(x) {
+            SEXPTYPE::INTSXP =&gt; {
                 INTEGER_GET_REGION(x, <span class="number">0</span>, len <span class="kw">as </span>R_xlen_t, INTEGER(data2));
             }
-            LGLSXP =&gt; {
+            SEXPTYPE::LGLSXP =&gt; {
                 LOGICAL_GET_REGION(x, <span class="number">0</span>, len <span class="kw">as </span>R_xlen_t, LOGICAL(data2));
             }
-            REALSXP =&gt; {
+            SEXPTYPE::REALSXP =&gt; {
                 REAL_GET_REGION(x, <span class="number">0</span>, len <span class="kw">as </span>R_xlen_t, REAL(data2));
             }
-            RAWSXP =&gt; {
+            SEXPTYPE::RAWSXP =&gt; {
                 RAW_GET_REGION(x, <span class="number">0</span>, len <span class="kw">as </span>R_xlen_t, RAW(data2));
             }
-            CPLXSXP =&gt; {
+            SEXPTYPE::CPLXSXP =&gt; {
                 COMPLEX_GET_REGION(x, <span class="number">0</span>, len <span class="kw">as </span>R_xlen_t, COMPLEX(data2));
             }
             <span class="kw">_ </span>=&gt; {
@@ -1610,7 +1624,7 @@
 
             <span class="comment">// Use R_RegisterCFinalizerEx() and set onexit to 1 (TRUE) to invoke
             // the finalizer on a shutdown of the R session as well.
-            </span>R_RegisterCFinalizerEx(state, <span class="prelude-val">Some</span>(finalizer::&lt;StateType&gt;), <span class="number">1</span>);
+            </span>R_RegisterCFinalizerEx(state, <span class="prelude-val">Some</span>(finalizer::&lt;StateType&gt;), Rboolean::TRUE);
 
             <span class="kw">let </span>class_ptr = R_altrep_class_t { ptr: class.get() };
             <span class="kw">let </span>sexp = R_new_altrep(class_ptr, state, R_NilValue);
@@ -1684,7 +1698,7 @@
 
         <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altrep_Coerce&lt;StateType: AltrepImpl + <span class="lifetime">'static</span>&gt;(
             x: SEXP,
-            ty: c_int,
+            ty: SEXPTYPE,
         ) -&gt; SEXP {
             &lt;StateType&gt;::coerce(x, sxp_to_rtype(ty)).get()
         }
@@ -1693,14 +1707,14 @@
             x: SEXP,
             deep: Rboolean,
         ) -&gt; SEXP {
-            &lt;StateType&gt;::duplicate(x, deep == <span class="number">1</span>).get()
+            &lt;StateType&gt;::duplicate(x, deep == Rboolean::TRUE).get()
         }
 
         <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altrep_DuplicateEX&lt;StateType: AltrepImpl + <span class="lifetime">'static</span>&gt;(
             x: SEXP,
             deep: Rboolean,
         ) -&gt; SEXP {
-            &lt;StateType&gt;::duplicate_ex(x, deep == <span class="number">1</span>).get()
+            &lt;StateType&gt;::duplicate_ex(x, deep == Rboolean::TRUE).get()
         }
 
         <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altrep_Inspect&lt;StateType: AltrepImpl + <span class="lifetime">'static</span>&gt;(
@@ -1723,7 +1737,7 @@
             x: SEXP,
             writeable: Rboolean,
         ) -&gt; <span class="kw-2">*mut </span>c_void {
-            &lt;StateType&gt;::dataptr(x, writeable != <span class="number">0</span>) <span class="kw">as </span><span class="kw-2">*mut </span>c_void
+            &lt;StateType&gt;::dataptr(x, writeable != Rboolean::FALSE) <span class="kw">as </span><span class="kw-2">*mut </span>c_void
         }
 
         <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altvec_Dataptr_or_null&lt;StateType: AltrepImpl + <span class="lifetime">'static</span>&gt;(
@@ -1843,21 +1857,27 @@
                 x: SEXP,
                 narm: Rboolean,
             ) -&gt; SEXP {
-                Altrep::get_state::&lt;StateType&gt;(x).sum(narm == <span class="number">1</span>).get()
+                Altrep::get_state::&lt;StateType&gt;(x)
+                    .sum(narm == Rboolean::TRUE)
+                    .get()
             }
 
             <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altinteger_Min&lt;StateType: AltIntegerImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 narm: Rboolean,
             ) -&gt; SEXP {
-                Altrep::get_state::&lt;StateType&gt;(x).min(narm == <span class="number">1</span>).get()
+                Altrep::get_state::&lt;StateType&gt;(x)
+                    .min(narm == Rboolean::TRUE)
+                    .get()
             }
 
             <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altinteger_Max&lt;StateType: AltIntegerImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 narm: Rboolean,
             ) -&gt; SEXP {
-                Altrep::get_state::&lt;StateType&gt;(x).max(narm == <span class="number">1</span>).get()
+                Altrep::get_state::&lt;StateType&gt;(x)
+                    .max(narm == Rboolean::TRUE)
+                    .get()
             }
 
             R_set_altinteger_Elt_method(class_ptr, <span class="prelude-val">Some</span>(altinteger_Elt::&lt;StateType&gt;));
@@ -1915,21 +1935,27 @@
                 x: SEXP,
                 narm: Rboolean,
             ) -&gt; SEXP {
-                Altrep::get_state::&lt;StateType&gt;(x).sum(narm == <span class="number">1</span>).get()
+                Altrep::get_state::&lt;StateType&gt;(x)
+                    .sum(narm == Rboolean::TRUE)
+                    .get()
             }
 
             <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altreal_Min&lt;StateType: AltRealImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 narm: Rboolean,
             ) -&gt; SEXP {
-                Altrep::get_state::&lt;StateType&gt;(x).min(narm == <span class="number">1</span>).get()
+                Altrep::get_state::&lt;StateType&gt;(x)
+                    .min(narm == Rboolean::TRUE)
+                    .get()
             }
 
             <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>altreal_Max&lt;StateType: AltRealImpl + <span class="lifetime">'static</span>&gt;(
                 x: SEXP,
                 narm: Rboolean,
             ) -&gt; SEXP {
-                Altrep::get_state::&lt;StateType&gt;(x).max(narm == <span class="number">1</span>).get()
+                Altrep::get_state::&lt;StateType&gt;(x)
+                    .max(narm == Rboolean::TRUE)
+                    .get()
             }
 
             R_set_altreal_Elt_method(class_ptr, <span class="prelude-val">Some</span>(altreal_Elt::&lt;StateType&gt;));
@@ -1988,7 +2014,9 @@
                 x: SEXP,
                 narm: Rboolean,
             ) -&gt; SEXP {
-                Altrep::get_state::&lt;StateType&gt;(x).sum(narm == <span class="number">1</span>).get()
+                Altrep::get_state::&lt;StateType&gt;(x)
+                    .sum(narm == Rboolean::TRUE)
+                    .get()
             }
 
             R_set_altlogical_Elt_method(class_ptr, <span class="prelude-val">Some</span>(altlogical_Elt::&lt;StateType&gt;));

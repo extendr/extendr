@@ -229,7 +229,7 @@
     }
 
     <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>do_cleanup(<span class="kw">_</span>: <span class="kw-2">*mut </span>raw::c_void, jump: Rboolean) {
-        <span class="kw">if </span>jump != <span class="number">0 </span>{
+        <span class="kw">if </span>jump != Rboolean::FALSE {
             <span class="macro">panic!</span>(<span class="string">"R has thrown an error."</span>);
         }
     }

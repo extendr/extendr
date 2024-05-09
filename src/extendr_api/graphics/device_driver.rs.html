@@ -926,14 +926,6 @@
 <a href="#926" id="926">926</a>
 <a href="#927" id="927">927</a>
 <a href="#928" id="928">928</a>
-<a href="#929" id="929">929</a>
-<a href="#930" id="930">930</a>
-<a href="#931" id="931">931</a>
-<a href="#932" id="932">932</a>
-<a href="#933" id="933">933</a>
-<a href="#934" id="934">934</a>
-<a href="#935" id="935">935</a>
-<a href="#936" id="936">936</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>core::slice;
 
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
@@ -1424,7 +1416,7 @@
 
             <span class="comment">// It seems `NA` is just treated as `true`. Probably it doesn't matter much here.
             // c.f. https://github.com/wch/r-source/blob/6b22b60126646714e0f25143ac679240be251dbe/src/library/grDevices/src/devPS.c#L4235
-            </span><span class="kw">let </span>winding = winding != <span class="number">0</span>;
+            </span><span class="kw">let </span>winding = winding != Rboolean::FALSE;
 
             data.path(coords, winding, <span class="kw-2">*</span>gc, <span class="kw-2">*</span>dd);
         }
@@ -1455,7 +1447,7 @@
                 rot,
                 <span class="comment">// It seems `NA` is just treated as `true`. Probably it doesn't matter much here.
                 // c.f. https://github.com/wch/r-source/blob/6b22b60126646714e0f25143ac679240be251dbe/src/library/grDevices/src/devPS.c#L4062
-                </span>interpolate != <span class="number">0</span>,
+                </span>interpolate != Rboolean::FALSE,
                 <span class="kw-2">*</span>gc,
                 <span class="kw-2">*</span>dd,
             );
@@ -1525,11 +1517,7 @@
             dd: pDevDesc,
         ) -&gt; Rboolean {
             <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
-            <span class="kw">if let </span><span class="prelude-val">Ok</span>(confirm) = data.new_frame_confirm(<span class="kw-2">*</span>dd).try_into() {
-                confirm
-            } <span class="kw">else </span>{
-                <span class="bool-val">false</span>.into()
-            }
+            data.new_frame_confirm(<span class="kw-2">*</span>dd).into()
         }
 
         <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>device_driver_holdflush&lt;T: DeviceDriver&gt;(
@@ -1546,11 +1534,7 @@
             dd: pDevDesc,
         ) -&gt; Rboolean {
             <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
-            <span class="kw">if let </span><span class="prelude-val">Ok</span>(success) = data.locator(x, y, <span class="kw-2">*</span>dd).try_into() {
-                success
-            } <span class="kw">else </span>{
-                <span class="bool-val">false</span>.into()
-            }
+            data.locator(x, y, <span class="kw-2">*</span>dd).into()
         }
 
         <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>device_driver_eventHelper&lt;T: DeviceDriver&gt;(dd: pDevDesc, code: c_int) {
@@ -1689,12 +1673,12 @@
             </span>(<span class="kw-2">*</span>p_dev_desc).gamma = <span class="number">1.0</span>;
 
             (<span class="kw-2">*</span>p_dev_desc).canClip = <span class="kw">match </span>&lt;T&gt;::CLIPPING_STRATEGY {
-                ClippingStrategy::Engine =&gt; <span class="number">0</span>,
-                <span class="kw">_ </span>=&gt; <span class="number">1</span>,
+                ClippingStrategy::Engine =&gt; Rboolean::FALSE,
+                <span class="kw">_ </span>=&gt; Rboolean::TRUE,
             };
 
             <span class="comment">// As described above, gamma is not supported.
-            </span>(<span class="kw-2">*</span>p_dev_desc).canChangeGamma = <span class="number">0</span>;
+            </span>(<span class="kw-2">*</span>p_dev_desc).canChangeGamma = Rboolean::FALSE;
 
             (<span class="kw-2">*</span>p_dev_desc).canHAdj = CanHAdjOption::VariableAdjustment <span class="kw">as _</span>;
 
@@ -1709,14 +1693,14 @@
             <span class="comment">// A raw pointer to the data specific to the device.
             </span>(<span class="kw-2">*</span>p_dev_desc).deviceSpecific = deviceSpecific;
 
-            (<span class="kw-2">*</span>p_dev_desc).displayListOn = <span class="kw">if </span>&lt;T&gt;::USE_PLOT_HISTORY { <span class="number">1 </span>} <span class="kw">else </span>{ <span class="number">0 </span>};
+            (<span class="kw-2">*</span>p_dev_desc).displayListOn = &lt;T&gt;::USE_PLOT_HISTORY.into();
 
             <span class="comment">// These are currently not used, so just set FALSE.
-            </span>(<span class="kw-2">*</span>p_dev_desc).canGenMouseDown = <span class="number">0</span>;
-            (<span class="kw-2">*</span>p_dev_desc).canGenMouseMove = <span class="number">0</span>;
-            (<span class="kw-2">*</span>p_dev_desc).canGenMouseUp = <span class="number">0</span>;
-            (<span class="kw-2">*</span>p_dev_desc).canGenKeybd = <span class="number">0</span>;
-            (<span class="kw-2">*</span>p_dev_desc).canGenIdle = <span class="number">0</span>;
+            </span>(<span class="kw-2">*</span>p_dev_desc).canGenMouseDown = Rboolean::FALSE;
+            (<span class="kw-2">*</span>p_dev_desc).canGenMouseMove = Rboolean::FALSE;
+            (<span class="kw-2">*</span>p_dev_desc).canGenMouseUp = Rboolean::FALSE;
+            (<span class="kw-2">*</span>p_dev_desc).canGenKeybd = Rboolean::FALSE;
+            (<span class="kw-2">*</span>p_dev_desc).canGenIdle = Rboolean::FALSE;
 
             <span class="comment">// The header file says:
             //
@@ -1724,7 +1708,7 @@
             //
             // It seems no implementation sets this, so this is probably what is
             // modified on the engine's side.
-            </span>(<span class="kw-2">*</span>p_dev_desc).gettingEvent = <span class="number">0</span>;
+            </span>(<span class="kw-2">*</span>p_dev_desc).gettingEvent = Rboolean::FALSE;
 
             (<span class="kw-2">*</span>p_dev_desc).activate = <span class="prelude-val">Some</span>(device_driver_activate::&lt;T&gt;);
             (<span class="kw-2">*</span>p_dev_desc).circle = <span class="prelude-val">Some</span>(device_driver_circle::&lt;T&gt;);
@@ -1765,7 +1749,7 @@
             (<span class="kw-2">*</span>p_dev_desc).newFrameConfirm = <span class="prelude-val">Some</span>(device_driver_new_frame_confirm::&lt;T&gt;);
 
             <span class="comment">// UTF-8 support
-            </span>(<span class="kw-2">*</span>p_dev_desc).hasTextUTF8 = <span class="kw">if </span>&lt;T&gt;::ACCEPT_UTF8_TEXT { <span class="number">1 </span>} <span class="kw">else </span>{ <span class="number">0 </span>};
+            </span>(<span class="kw-2">*</span>p_dev_desc).hasTextUTF8 = &lt;T&gt;::ACCEPT_UTF8_TEXT.into();
             (<span class="kw-2">*</span>p_dev_desc).textUTF8 = <span class="kw">if </span>&lt;T&gt;::ACCEPT_UTF8_TEXT {
                 <span class="prelude-val">Some</span>(device_driver_text::&lt;T&gt;)
             } <span class="kw">else </span>{
@@ -1776,7 +1760,7 @@
             } <span class="kw">else </span>{
                 <span class="prelude-val">None
             </span>};
-            (<span class="kw-2">*</span>p_dev_desc).wantSymbolUTF8 = <span class="kw">if </span>&lt;T&gt;::ACCEPT_UTF8_TEXT { <span class="number">1 </span>} <span class="kw">else </span>{ <span class="number">0 </span>};
+            (<span class="kw-2">*</span>p_dev_desc).wantSymbolUTF8 = &lt;T&gt;::ACCEPT_UTF8_TEXT.into();
 
             <span class="comment">// R internals says:
             //
@@ -1786,7 +1770,7 @@
             //
             // It seems this is used only by plot3d, so FALSE should be appropriate in
             // most of the cases.
-            </span>(<span class="kw-2">*</span>p_dev_desc).useRotatedTextInContour = <span class="number">0</span>;
+            </span>(<span class="kw-2">*</span>p_dev_desc).useRotatedTextInContour = Rboolean::FALSE;
 
             (<span class="kw-2">*</span>p_dev_desc).eventEnv = empty_env().get();
             (<span class="kw-2">*</span>p_dev_desc).eventHelper = <span class="prelude-val">Some</span>(device_driver_eventHelper::&lt;T&gt;);
@@ -1836,8 +1820,8 @@
                 (<span class="kw-2">*</span>p_dev_desc).deviceVersion = R_GE_definitions <span class="kw">as _</span>;
 
                 (<span class="kw-2">*</span>p_dev_desc).deviceClip = <span class="kw">match </span>&lt;T&gt;::CLIPPING_STRATEGY {
-                    ClippingStrategy::Device =&gt; <span class="number">1</span>,
-                    <span class="kw">_ </span>=&gt; <span class="number">0</span>,
+                    ClippingStrategy::Device =&gt; Rboolean::TRUE,
+                    <span class="kw">_ </span>=&gt; Rboolean::FALSE,
                 };
             }
 

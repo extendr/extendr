@@ -115,6 +115,7 @@
 <a href="#115" id="115">115</a>
 <a href="#116" id="116">116</a>
 <a href="#117" id="117">117</a>
+<a href="#118" id="118">118</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::scalar::{Rfloat, Scalar};
 <span class="kw">use super</span>::<span class="kw-2">*</span>;
 <span class="kw">use </span>std::iter::FromIterator;
@@ -137,6 +138,7 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) robj: Robj,
 }
 
+<span class="kw">use </span>libR_sys::SEXPTYPE::REALSXP;
 <span class="macro">crate::wrapper::macros::gen_vector_wrapper_impl!</span>(
     vector_type: Doubles,
     scalar_type: Rfloat,

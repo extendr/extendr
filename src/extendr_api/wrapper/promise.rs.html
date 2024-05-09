@@ -108,7 +108,7 @@
     /// ```
     </span><span class="kw">pub fn </span>from_parts(code: Robj, environment: Environment) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         single_threaded(|| <span class="kw">unsafe </span>{
-            <span class="kw">let </span>sexp = Rf_allocSExp(PROMSXP);
+            <span class="kw">let </span>sexp = Rf_allocSExp(SEXPTYPE::PROMSXP);
             <span class="kw">let </span>robj = Robj::from_sexp(sexp);
             SET_PRCODE(sexp, code.get());
             SET_PRENV(sexp, environment.robj.get());
