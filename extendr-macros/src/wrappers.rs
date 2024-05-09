@@ -353,17 +353,9 @@ pub fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> syn::Resu
     match input {
         // function argument.
         FnArg::Typed(ref pattype) => {
-            let pat = &pattype.pat.as_ref();
+            let pat = pattype.pat.as_ref();
             // ensure that `mut` in args are ignored in the wrapper
-            let pat_ident = match pat {
-                syn::Pat::Ident(ref pat_ident) => &pat_ident.ident,
-                _ => {
-                    return Err(syn::Error::new_spanned(
-                        input,
-                        "failed to translate name of argument",
-                    ));
-                }
-            };
+            let pat_ident = translate_only_alias(pat)?;
             Ok(parse_quote! { #pat_ident: extendr_api::SEXP })
         }
         // &self / &mut self
@@ -384,6 +376,22 @@ pub fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> syn::Resu
     }
 }
 
+/// Returns only the alias from a function argument.
+///
+/// For example `mut x: Vec<i32>`, the alias is `x`, but the `mut` would still
+/// be present if only the `Ident` of `PatType` was used.
+fn translate_only_alias(pat: &syn::Pat) -> Result<&Ident, syn::Error> {
+    Ok(match pat {
+        syn::Pat::Ident(ref pat_ident) => &pat_ident.ident,
+        _ => {
+            return Err(syn::Error::new_spanned(
+                pat,
+                "failed to translate name of argument",
+            ));
+        }
+    })
+}
+
 // Generate code to make a metadata::Arg.
 fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> syn::Result<Expr> {
     match input {
@@ -393,15 +401,7 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> syn::Re
             let ty = pattype.ty.as_ref();
             // here the argument name is extracted, without the `mut` keyword,
             // ensuring the generated r-wrappers, can use these argument names
-            let pat_ident = match pat {
-                syn::Pat::Ident(ref pat_ident) => &pat_ident.ident,
-                _ => {
-                    return Err(syn::Error::new_spanned(
-                        input,
-                        "failed to translate name of argument",
-                    ));
-                }
-            };
+            let pat_ident = translate_only_alias(pat)?;
             let name_string = quote! { #pat_ident }.to_string();
             let type_string = type_name(ty);
             let default = if let Some(default) = get_named_lit(&mut pattype.attrs, "default") {
