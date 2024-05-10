@@ -1,5 +1,12 @@
+use rstest::rstest;
+
 use crate::scalar::*;
 use crate::*;
+
+use std::num::{
+    NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8, NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8,
+    NonZeroUsize,
+};
 
 #[test]
 fn test_from_robj() {
@@ -92,21 +99,86 @@ fn test_from_robj() {
     }
 }
 
-#[test]
-fn test_try_from_robj() {
+#[rstest]
+#[case(true)]
+#[case(false)]
+// NOTE: `u8` is missing
+#[case(1_u16)]
+#[case(1_u32)]
+#[case(1_u64)]
+#[case(1_usize)]
+#[case(1_i8)]
+#[case(1_i16)]
+#[case(1_i32)]
+#[case(1_i64)]
+// NOTE: `isize` is missing
+#[case(0_f32)]
+#[case(0_f64)]
+#[case(1_f32)]
+#[case(1_f64)]
+fn test_round_trip_from_rust<T>(#[case] value: T)
+where
+    Robj: From<T>,
+    T: TryFrom<Robj>,
+    T: ToVectorValue,
+    T: Copy,
+    T: std::fmt::Debug + PartialEq,
+    <T as std::convert::TryFrom<robj::Robj>>::Error: std::fmt::Debug + PartialEq,
+{
     test! {
-        assert_eq!(<bool>::try_from(Robj::from(true)), Ok(true));
-        assert_eq!(<u8>::try_from(Robj::from(1)), Ok(1));
-        assert_eq!(<u16>::try_from(Robj::from(1)), Ok(1));
-        assert_eq!(<u32>::try_from(Robj::from(1)), Ok(1));
-        assert_eq!(<u64>::try_from(Robj::from(1)), Ok(1));
-        assert_eq!(<i8>::try_from(Robj::from(1)), Ok(1));
-        assert_eq!(<i16>::try_from(Robj::from(1)), Ok(1));
-        assert_eq!(<i32>::try_from(Robj::from(1)), Ok(1));
-        assert_eq!(<i64>::try_from(Robj::from(1)), Ok(1));
-        assert_eq!(<f32>::try_from(Robj::from(1)), Ok(1.));
-        assert_eq!(<f64>::try_from(Robj::from(1)), Ok(1.));
+        assert_eq!(TryFrom::try_from(Robj::from(value)), Ok(value));
+    }
+}
 
+#[rstest]
+// NOTE: `NonZeroU8` is missing
+#[case(NonZeroU16::new(1).unwrap())]
+#[case(NonZeroU32::new(1).unwrap())]
+#[case(NonZeroU64::new(1).unwrap())]
+#[case(NonZeroUsize::new(1).unwrap())]
+#[case(NonZeroI8::new(1).unwrap())]
+#[case(NonZeroI16::new(1).unwrap())]
+#[case(NonZeroI32::new(1).unwrap())]
+#[case(NonZeroI64::new(1).unwrap())]
+// NOTE: `NonZeroIsize` is missing
+fn test_nonzero_round_trip_from_robj<Value>(#[case] value: Value)
+where
+    Robj: From<Value>,
+    Value: TryFrom<Robj>,
+    Value: Copy + std::fmt::Debug + PartialEq,
+    <Value as std::convert::TryFrom<robj::Robj>>::Error: std::fmt::Debug + PartialEq,
+{
+    test! {
+        assert_eq!(Value::try_from(Robj::from(value)).ok(), Some(value));
+    }
+}
+
+#[rstest]
+#[case(NonZeroU8::new(1).unwrap())]
+#[case(NonZeroU8::new(1).unwrap())]
+#[case(NonZeroU16::new(1).unwrap())]
+#[case(NonZeroU32::new(1).unwrap())]
+#[case(NonZeroU64::new(1).unwrap())]
+#[case(NonZeroUsize::new(1).unwrap())]
+#[case(NonZeroI8::new(1).unwrap())]
+#[case(NonZeroI16::new(1).unwrap())]
+#[case(NonZeroI32::new(1).unwrap())]
+#[case(NonZeroI64::new(1).unwrap())]
+// NOTE: `NonZeroIsize` is missing
+fn test_try_from_robj_nonzero_fail_on_zero<Value>(#[case] _value: Value)
+where
+    Value: TryFrom<Robj>,
+    Value: Copy + std::fmt::Debug + PartialEq,
+    <Value as std::convert::TryFrom<robj::Robj>>::Error: std::fmt::Debug,
+{
+    test! {
+        assert!(Value::try_from(Robj::from(0_i32)).is_err());
+    }
+}
+
+#[test]
+fn test_try_from_robj_std() {
+    test! {
         // conversion from non-integer-ish value to integer should fail
         let robj = Robj::from(1.5);
         assert_eq!(<i32>::try_from(robj.clone()), Err(Error::ExpectedWholeNumber(robj)));

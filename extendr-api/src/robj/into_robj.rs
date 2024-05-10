@@ -2,6 +2,7 @@ use super::*;
 use crate::scalar::Scalar;
 use crate::single_threaded;
 
+mod nonzero_into_robj;
 mod repeat_into_robj;
 
 pub(crate) fn str_to_character(s: &str) -> SEXP {
@@ -163,7 +164,7 @@ where
 }
 
 /// `ToVectorValue` is a trait that allows many different types
-/// to be converted to vectors. It is used as a type parameter
+/// to be converted to R vectors. It is used as a type parameter
 /// to `collect_robj()`.
 pub trait ToVectorValue {
     fn sexptype() -> SEXPTYPE {
