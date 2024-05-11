@@ -99,10 +99,10 @@ fn run_r_cmd_check(
         .cmd("Rscript")
         .args([
             "-e",
-            r#"requireNamespace("devtools");\
-            requireNamespace("rcmdcheck");\
-            requireNamespace("patrick");\
-            requireNamespace("lobstr");\
+            r#"requireNamespace("devtools");
+            requireNamespace("rcmdcheck");
+            requireNamespace("patrick");
+            requireNamespace("lobstr");
             requireNamespace("rextendr")"#,
         ])
         .run()
