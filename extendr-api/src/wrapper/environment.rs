@@ -100,7 +100,7 @@ impl Environment {
 
     #[cfg(feature = "non-api")]
     /// Set the environment flags.
-    pub fn set_envflags(&mut self, flags: i32) -> &mut Self {
+    pub unsafe fn set_envflags(&mut self, flags: i32) -> &mut Self {
         single_threaded(|| unsafe {
             let sexp = self.robj.get_mut();
             SET_ENVFLAGS(sexp, flags);
