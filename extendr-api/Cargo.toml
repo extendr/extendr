@@ -39,6 +39,11 @@ result_condition = []
 # but do not add functionality (such as `libR-sys/use-bindgen`) are excluded
 full-functionality = ["graphics", "either", "ndarray", "faer", "num-complex", "serde"]
 
+# Parts of the R-API are locked behind non-API, as CRAN frowns upon the presence
+# of non-API items in packages. You may enable this feature, to generate
+# bindings to these non-API items, and their usage in extendr
+non-api = ["libR-sys/non-api"]
+
 # libc is needed to allocate a DevDesc (c.f., https://bugs.r-project.org/show_bug.cgi?id=18292)
 graphics = ["libc"]
 
