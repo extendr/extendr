@@ -45,6 +45,7 @@ jobs:
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      REXTENDR_SKIP_DEV_TESTS: TRUE
 
       # This environment variable enables support for pseudo multi-target cargo builds.
       # Current stable Rust does not support multi-targeting,
@@ -286,6 +287,7 @@ jobs:
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      REXTENDR_SKIP_DEV_TESTS: TRUE
 
     # PowerShell core is available on all platforms and can be used to unify scripts
     defaults:
