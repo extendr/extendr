@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["RCmdCheckErrorOn"],"fn":["construct_check_dir_path","run","run_r_cmd_check"]};
+window.SIDEBAR_ITEMS = {"enum":["RCmdCheckError","RCmdCheckErrorOn"],"fn":["construct_check_dir_path","run","run_r_cmd_check"]};
