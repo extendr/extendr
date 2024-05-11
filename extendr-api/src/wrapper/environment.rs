@@ -80,6 +80,7 @@ impl Environment {
         }
     }
 
+    #[cfg(feature = "non-api")]
     /// Set the enclosing (parent) environment.
     pub fn set_parent(&mut self, parent: Environment) -> &mut Self {
         single_threaded(|| unsafe {
@@ -97,8 +98,9 @@ impl Environment {
         }
     }
 
+    #[cfg(feature = "non-api")]
     /// Set the environment flags.
-    pub fn set_envflags(&mut self, flags: i32) -> &mut Self {
+    pub unsafe fn set_envflags(&mut self, flags: i32) -> &mut Self {
         single_threaded(|| unsafe {
             let sexp = self.robj.get_mut();
             SET_ENVFLAGS(sexp, flags);
