@@ -23,10 +23,11 @@ rust-version = "1.70"
 # When updating extendr's version, this version also needs to be updated
 extendr-macros = { path = "./extendr-macros", version = "0.6.0" }
 
-libR-sys = "0.7.0"
+# Set to crates version before release
+libR-sys = { git = "https://github.com/extendr/libR-sys" }
 
 [patch.crates-io]
 # When uncommenting this, do not forget to uncomment the same line in
 # ./tests/extendrtests/src/rust/Cargo.toml, and "Run R integration tests using
 # {rextendr}" on .github/workflows/test.yml !
-libR-sys = { git = "https://github.com/extendr/libR-sys" }
+# libR-sys = { git = "https://github.com/extendr/libR-sys" }
