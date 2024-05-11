@@ -103,7 +103,6 @@ fn run_r_cmd_check(
             requireNamespace("rcmdcheck");\
             requireNamespace("patrick");\
             requireNamespace("lobstr");\
-            requireNamespace("lobstrs");\
             requireNamespace("rextendr")"#,
         ])
         .run()
