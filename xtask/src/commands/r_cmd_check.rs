@@ -59,6 +59,21 @@ fn construct_check_dir_path<S: AsRef<str>, P: AsRef<Path>>(
     Ok(path.adjust_for_r())
 }
 
+#[derive(Debug)]
+enum RCmdCheckError {
+    MissingRPackages,
+}
+impl std::fmt::Display for RCmdCheckError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            RCmdCheckError::MissingRPackages => {
+                write!(f, "Missing required R-packages, please install them.")
+            }
+        }
+    }
+}
+impl Error for RCmdCheckError {}
+
 fn run_r_cmd_check(
     shell: &Shell,
     no_build_vignettes: bool,
@@ -79,6 +94,38 @@ fn run_r_cmd_check(
         Some(cd) => format!("'{}'", cd),
         _ => "NULL".to_string(),
     };
+
+    let has_prerequisites = shell
+        .cmd("Rscript")
+        .args([
+            "-e",
+            r#"requireNamespace("devtools");\
+            requireNamespace("rcmdcheck");\
+            requireNamespace("patrick");\
+            requireNamespace("lobstr");\
+            requireNamespace("lobstrs");\
+            requireNamespace("rextendr")"#,
+        ])
+        .run()
+        .is_ok();
+
+    if !has_prerequisites {
+        println!(
+            r#"R installation is missing necessary packages.
+RScript -e 'options(repos = list(CRAN="http://cran.rstudio.com/"))'
+        -e 'install.packages("devtools")'
+        -e 'install.packages("rcmdcheck")'
+        -e 'install.packages("patrick")'
+        -e 'install.packages("lobstr")'
+        -e 'install.packages("rextendr")'
+
+Alternatively, install development version on rextendr
+Rscript -e 'options(repos = list(CRAN="http://cran.rstudio.com/"))'
+        -e 'remotes::install_github("extendr/rextendr")'"#
+        );
+        return Err(RCmdCheckError::MissingRPackages.into());
+    }
+
     shell
         .cmd("Rscript")
         .arg("-e")
