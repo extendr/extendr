@@ -12,6 +12,26 @@ The wrapper scripts calling the Rust functions are located here:
 
 The test functions that verify that the wrapper and Rust functions work correctly are located here: <https://github.com/extendr/extendr/blob/master/tests/extendrtests/tests/testthat/test-wrappers.R>
 
+## Using local extendr packages
+
+While testing new features, you may want to explore these features using
+`rextendr::rust_function` / `rextendr::rust_source`, you may run this
+
+```r
+options(
+    rextendr.patch.crates_io =
+        list(
+            `extendr-api` = list(path = "extendr-api" |> normalizePath()),
+            `extendr-macros` = list(path = "extendr-macros" |> normalizePath()),
+            `extendr-engine` = list(path = "extendr-engine" |> normalizePath())
+            # uncomment this, if you have locally sourced libR-sys crate..
+            # ,`libR-sys` = list(path = "libR-sys" |> normalizePath())
+        )
+)
+```
+
+to ensure that the R-session knows about local extendr.
+
 ## Running tests locally
 
 The `Cargo.toml` file hard-codes the relative path of the `extendr` libraries. You can build and install `extendrtests` from RStudio as normal using the menu items in the "Build" menu. However, "Check" does not work. To check this project locally you need to run:
