@@ -19,7 +19,9 @@ fn test_debug() {
         assert_eq!(format!("{:?}", r), "base_env()");
         let r = Environment::new_with_parent(global_env());
         assert_eq!(format!("{:?}", r), "<environment>");
+        #[cfg(feature = "non-api")]
         let r = Promise::from_parts(r!(1), global_env())?;
+        #[cfg(feature = "non-api")]
         assert_eq!(format!("{:?}", r), "Promise { code: 1, environment: global_env() }");
         let r : Language = lang!("x").try_into()?;
         assert_eq!(format!("{:?}", r), "lang!(sym!(x))");

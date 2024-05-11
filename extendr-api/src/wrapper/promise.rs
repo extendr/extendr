@@ -17,6 +17,7 @@ impl Promise {
     ///     assert_eq!(promise.value(), r!(1));
     /// }
     /// ```
+    #[cfg(feature = "non-api")]
     pub fn from_parts(code: Robj, environment: Environment) -> Result<Self> {
         single_threaded(|| unsafe {
             let sexp = Rf_allocSExp(SEXPTYPE::PROMSXP);

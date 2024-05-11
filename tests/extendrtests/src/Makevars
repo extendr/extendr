@@ -8,7 +8,7 @@ all: C_clean
 $(SHLIB): $(STATLIB)
 
 $(STATLIB):
-	cargo build --lib --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) --color=always
+	cargo build --lib --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) --color=auto
 
 C_clean:
 	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS)

@@ -49,8 +49,9 @@ pub struct Altrep {
 /// Implement one or more of these methods to generate an Altrep class.
 /// This is likely to be unstable for a while.
 pub trait AltrepImpl: Clone + std::fmt::Debug {
+    #[cfg(feature = "non-api")]
     /// Constructor that is called when loading an Altrep object from a file.
-    fn unserialize_ex(
+    unsafe fn unserialize_ex(
         class: Robj,
         state: Robj,
         attributes: Robj,
@@ -554,6 +555,7 @@ impl Altrep {
         use std::os::raw::c_int;
         use std::os::raw::c_void;
 
+        #[cfg(feature = "non-api")]
         unsafe extern "C" fn altrep_UnserializeEX<StateType: AltrepImpl>(
             class: SEXP,
             state: SEXP,
@@ -677,6 +679,7 @@ impl Altrep {
                 _ => panic!("expected Altvec compatible type"),
             };
 
+            #[cfg(feature = "non-api")]
             R_set_altrep_UnserializeEX_method(class_ptr, Some(altrep_UnserializeEX::<StateType>));
             R_set_altrep_Unserialize_method(class_ptr, Some(altrep_Unserialize::<StateType>));
             R_set_altrep_Serialized_state_method(
