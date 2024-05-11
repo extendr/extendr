@@ -93,6 +93,12 @@ impl TryFrom<Vec<i32>> for Factors {
     }
 }
 
+impl AsStrIter for Factors {
+    fn as_str_iter(&self) -> Option<StrIter> {
+        self.robj.as_str_iter()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -111,6 +117,19 @@ mod tests {
                 "factors aren't strictly integers"
             );
             assert!(Factors::try_from(&a_factor).is_ok());
+        });
+    }
+    #[test]
+    fn test_factor_str_iter() {
+        extendr_engine::with_r(|| {
+            let a_factor = R!("iris$Species").unwrap();
+
+            let a_factor_str = a_factor.as_str_iter();
+            assert!(a_factor_str.is_some());
+
+            let a_factor_str = a_factor_str.unwrap();
+            let a_factor_str = a_factor_str.take(5).collect::<Vec<_>>();
+            rprintln!("{a_factor_str:?}");
         });
     }
 }
