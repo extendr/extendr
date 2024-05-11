@@ -247,7 +247,6 @@ jobs:
 
           github_env_file <- Sys.getenv("GITHUB_ENV")
           cat(patch.crates_io, file = github_env_file, append = TRUE)
-          cat("REXTENDR_SKIP_DEV_TESTS=TRUE", file = github_env_file, append = TRUE)
 
           cat("::endgroup::\n")
         shell: Rscript {0}
@@ -287,7 +286,6 @@ jobs:
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      REXTENDR_SKIP_DEV_TESTS: TRUE
 
     # PowerShell core is available on all platforms and can be used to unify scripts
     defaults:
