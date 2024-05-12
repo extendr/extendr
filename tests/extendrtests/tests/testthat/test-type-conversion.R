@@ -1,15 +1,15 @@
 test_that("From conversion of R types to Rust types and vice versa works", {
   expect_equal(double_scalar(.45), .45)
   expect_equal(double_scalar(15L), 15)
-  expect_error(double_scalar(TRUE), "unable to convert")
-  expect_error(double_scalar("abcxyz"), "unable to convert")
+  expect_error(double_scalar(TRUE), "Unable to convert R object to primitive")
+  expect_error(double_scalar("abcxyz"), "Unable to convert R object to primitive")
   expect_error(double_scalar(NA_real_), "Input must not be NA")
   expect_error(double_scalar(c(.45, .46)), "Input must be of length 1")
   
   expect_equal(int_scalar(15L), 15L)
-  expect_equal(int_scalar(4.4), 4L) # is this deliberate? seems dangerous
-  expect_error(int_scalar(TRUE), "unable to convert")
-  expect_error(int_scalar("abcxyz"), "unable to convert")
+  expect_error(int_scalar(4.4), "Input must be a whole integer") # is this deliberate? seems dangerous
+  expect_error(int_scalar(TRUE), "Unable to convert R object to primitive")
+  expect_error(int_scalar("abcxyz"), "Unable to convert R object to primitive")
   expect_error(int_scalar(NA_integer_), "Input must not be NA")
   expect_error(int_scalar(1L:5L), "Input must be of length 1")
   
