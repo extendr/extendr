@@ -27,6 +27,10 @@ macro_rules! impl_into_integerish {
     ($float_type:ty, $int_type:ty) => {
         impl FloatToInt<$int_type> for $float_type {
             fn try_into_int(&self) -> Result<$int_type, ConversionError> {
+                if *self == <$float_type>::default() {
+                    return Ok(<$int_type>::default());
+                }
+                
                 if !self.is_normal() {
                     return Err(ConversionError::NotIntegerish);
                 }
@@ -62,48 +66,66 @@ impl_into_integerish!(f64, u8);
 
 #[cfg(test)]
 mod try_into_int_tests {
+    use crate::{CanBeNA, Result, test};
     use crate::conversions::try_into_int::{ConversionError, FloatToInt};
-    use crate::CanBeNA;
+    type ConversionResult<T, E> = std::result::Result<T, E>;
+    
+    #[test]
+    fn test_exact_zero() {
+        let value = 0.0;
+        let int_value: ConversionResult<i32, _> = value.try_into_int();
+        assert_eq!(int_value, Ok(0));
+    }
+
+    #[test]
+    fn test_exact_negative_zero() {
+        let value = -0.0;
+        let int_value: ConversionResult<i32, _> = value.try_into_int();
+        assert_eq!(int_value, Ok(0));
+    }
 
     #[test]
     fn large_value_overflow() {
         let value: f64 = 1.000000020000001e200;
-        let int_value: Result<i32, _> = value.try_into_int();
+        let int_value: ConversionResult<i32, _> = value.try_into_int();
         assert_eq!(int_value, Err(ConversionError::Overflow))
     }
 
     #[test]
     fn large_negative_value_underflow() {
         let value: f64 = -1.000000020000001e200;
-        let int_value: Result<i32, _> = value.try_into_int();
+        let int_value: ConversionResult<i32, _> = value.try_into_int();
         assert_eq!(int_value, Err(ConversionError::Underflow))
     }
 
     #[test]
     fn na_not_integerish() {
-        let value: f64 = f64::na();
-        let int_value: Result<i32, _> = value.try_into_int();
-        assert_eq!(int_value, Err(ConversionError::NotIntegerish))
+        // NA-checks are unavailable unless R is set up
+        test! {
+            let value: f64 = f64::na();
+            let int_value: ConversionResult<i32, _> = value.try_into_int();
+            assert_eq!(int_value, Err(ConversionError::NotIntegerish));
+        }
     }
 
     #[test]
     fn fractional_not_integerish() {
         let value: f64 = 1.5;
-        let int_value: Result<i32, _> = value.try_into_int();
+        let int_value: ConversionResult<i32, _> = value.try_into_int();
         assert_eq!(int_value, Err(ConversionError::NotIntegerish))
     }
 
     #[test]
     fn negative_fractional_not_integerish() {
         let value: f64 = -1.5;
-        let int_value: Result<i32, _> = value.try_into_int();
+        let int_value: ConversionResult<i32, _> = value.try_into_int();
         assert_eq!(int_value, Err(ConversionError::NotIntegerish))
     }
 
     #[test]
     fn small_integerish_negative_to_unsigned_underflow() {
         let value: f64 = -1.0;
-        let int_value: Result<u32, _> = value.try_into_int();
+        let int_value: ConversionResult<u32, _> = value.try_into_int();
         assert_eq!(int_value, Err(ConversionError::Underflow))
     }
 
