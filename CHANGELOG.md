@@ -15,11 +15,14 @@
 
 ### Changed
 
-- Breaking: the `Attributes` trait now returns a mutable reference to `Self`. [[#745]](https://github.com/extendr/extendr/pull/745). Previously `.set_attrib()` would modify an object in place, and then return an untyped owned pointer (Robj). Instead, now we return `&mut Self`.
-- Potentially breaking: `RArray::from_parts` no longer requires a pointer to the underlying data vector [[#657]](https://github.com/extendr/extendr/pull/657)
-- Breaking change: In `AltRep` the `unserialize_ex`, `set_parent`, `set_envflags` are
+- [**Breaking change**]: the `Attributes` trait now returns a mutable reference
+  to `Self`. [[#745]](https://github.com/extendr/extendr/pull/745). Previously `.set_attrib()` would modify an object in
+  place, and then return an untyped owned pointer (Robj). Instead, now we return `&mut Self`.
+- [_Potentially breaking_]: `RArray::from_parts` no longer requires a pointer to the underlying data
+  vector [[#657]](https://github.com/extendr/extendr/pull/657)
+- [**Breaking change**]: In `AltRep` the `unserialize_ex`, `set_parent`, `set_envflags` are
 now hidden behind the feature flag `non-api`. Also, `Promise::from_parts` is marked as non-API.
-- Floating point numbers with decimal part can no longer be converted to integer types via
+- [**Breaking change**]: Floating point numbers with decimal part can no longer be converted to integer types via
   rounding [[#757]](https://github.com/extendr/extendr/pull/757)
 
 ### Fixed
