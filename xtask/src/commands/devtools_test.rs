@@ -4,7 +4,7 @@ use xshell::{cmd, Shell};
 
 use crate::{
     cli::devtools_test::DevtoolsTestArg,
-    extendrtests::with_absolute_path::{swap_extendr_api_path, R_FOLDER_PATH},
+    extendrtests::with_absolute_path::{R_FOLDER_PATH, swap_extendr_api_path},
 };
 
 pub(crate) fn run(shell: &Shell, args: DevtoolsTestArg) -> Result<(), Box<dyn Error>> {
@@ -24,7 +24,14 @@ fn run_tests(shell: &Shell, args: DevtoolsTestArg) -> Result<(), Box<dyn Error>>
         )
         .run()?;
     }
-    cmd!(shell, "Rscript -e devtools::test()").run()?;
+    if let Some(filter) = args.filter {
+        shell.cmd("Rscript")
+            .arg("-e")
+            .arg(format!("devtools::test(filter = \"{filter}\")"))
+            .run()?;
+    } else {
+        cmd!(shell, "Rscript -e devtools::test()").run()?;
+    }
 
     Ok(())
 }
