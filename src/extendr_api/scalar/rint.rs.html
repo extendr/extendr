@@ -176,38 +176,6 @@
 <a href="#176" id="176">176</a>
 <a href="#177" id="177">177</a>
 <a href="#178" id="178">178</a>
-<a href="#179" id="179">179</a>
-<a href="#180" id="180">180</a>
-<a href="#181" id="181">181</a>
-<a href="#182" id="182">182</a>
-<a href="#183" id="183">183</a>
-<a href="#184" id="184">184</a>
-<a href="#185" id="185">185</a>
-<a href="#186" id="186">186</a>
-<a href="#187" id="187">187</a>
-<a href="#188" id="188">188</a>
-<a href="#189" id="189">189</a>
-<a href="#190" id="190">190</a>
-<a href="#191" id="191">191</a>
-<a href="#192" id="192">192</a>
-<a href="#193" id="193">193</a>
-<a href="#194" id="194">194</a>
-<a href="#195" id="195">195</a>
-<a href="#196" id="196">196</a>
-<a href="#197" id="197">197</a>
-<a href="#198" id="198">198</a>
-<a href="#199" id="199">199</a>
-<a href="#200" id="200">200</a>
-<a href="#201" id="201">201</a>
-<a href="#202" id="202">202</a>
-<a href="#203" id="203">203</a>
-<a href="#204" id="204">204</a>
-<a href="#205" id="205">205</a>
-<a href="#206" id="206">206</a>
-<a href="#207" id="207">207</a>
-<a href="#208" id="208">208</a>
-<a href="#209" id="209">209</a>
-<a href="#210" id="210">210</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::scalar::macros::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::scalar::Scalar;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
@@ -366,45 +334,13 @@
     <span class="kw">type </span>Error = Error;
 
     <span class="kw">fn </span>try_from(robj: <span class="kw-2">&amp;</span>Robj) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
-        <span class="comment">// Check if the value is a scalar
-        </span><span class="kw">match </span>robj.len() {
-            <span class="number">0 </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::ExpectedNonZeroLength(robj.clone())),
-            <span class="number">1 </span>=&gt; {}
-            <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::ExpectedScalar(robj.clone())),
-        };
-
-        <span class="comment">// Check if the value is not a missing value
-        </span><span class="kw">if </span>robj.is_na() {
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(Rint::na());
+        <span class="kw">let </span>i32_val: <span class="prelude-ty">Result</span>&lt;i32&gt; = robj.try_into();
+        <span class="kw">match </span>i32_val {
+            <span class="prelude-val">Ok</span>(v) =&gt; <span class="prelude-val">Ok</span>(Rint::from(v)),
+            <span class="comment">// TODO: Currently this results in an extra protection of robj
+            </span><span class="prelude-val">Err</span>(Error::MustNotBeNA(<span class="kw">_</span>)) =&gt; <span class="prelude-val">Ok</span>(Rint::na()),
+            <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(e),
         }
-
-        <span class="comment">// If the conversion is int-to-int, check the limits. This
-        // needs to be done by `TryFrom` because the conversion by `as`
-        // is problematic when converting a negative value to unsigned
-        // integer types (e.g. `-1i32 as u8` becomes 255).
-        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(v) = robj.as_integer() {
-            <span class="kw">if let </span><span class="prelude-val">Ok</span>(v) = <span class="self">Self</span>::try_from(v) {
-                <span class="kw">return </span><span class="prelude-val">Ok</span>(v);
-            } <span class="kw">else </span>{
-                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::OutOfLimits(robj.clone()));
-            }
-        }
-
-        <span class="comment">// If the conversion is float-to-int, check if the value is
-        // integer-like (i.e., an integer, or a float representing a
-        // whole number). This needs to be down with `as`, as no
-        // `TryFrom` is implemented for float types. `FloatToInt` trait
-        // might eventually become available in future, though.
-        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(v) = robj.as_real() {
-            <span class="kw">let </span>result = v <span class="kw">as </span>i32;
-            <span class="kw">if </span>(result <span class="kw">as </span>f64 - v).abs() &lt; f64::EPSILON {
-                <span class="kw">return </span><span class="prelude-val">Ok</span>(Rint::from(result));
-            } <span class="kw">else </span>{
-                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::ExpectedWholeNumber(robj.clone()));
-            }
-        }
-
-        <span class="prelude-val">Err</span>(Error::ExpectedNumeric(robj.clone()))
     }
 }
 

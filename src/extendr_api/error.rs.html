@@ -233,12 +233,15 @@
 <a href="#233" id="233">233</a>
 <a href="#234" id="234">234</a>
 <a href="#235" id="235">235</a>
+<a href="#236" id="236">236</a>
+<a href="#237" id="237">237</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Error handling in Rust called from R.
 
-</span><span class="kw">use </span><span class="kw">crate</span>::robj::Types;
-<span class="kw">use crate</span>::{throw_r_error, Robj};
+</span><span class="kw">use </span>std::convert::Infallible;
 
-<span class="kw">use </span>std::convert::Infallible;
+<span class="kw">use </span><span class="kw">crate</span>::conversions::try_into_int::ConversionError;
+<span class="kw">use </span><span class="kw">crate</span>::robj::Types;
+<span class="kw">use crate</span>::{throw_r_error, Robj};
 
 <span class="doccomment">/// Throw an R error if a result is an error.
 </span><span class="attr">#[doc(hidden)]
@@ -305,8 +308,8 @@
 
     OutOfRange(Robj),
     MustNotBeNA(Robj),
+    ExpectedWholeNumber(Robj, ConversionError),
     ExpectedNonZeroLength(Robj),
-    ExpectedWholeNumber(Robj),
     OutOfLimits(Robj),
     TypeMismatch(Robj),
     NamespaceNotFound(Robj),
@@ -383,13 +386,6 @@
             Error::OutOfRange(_robj) =&gt; <span class="macro">write!</span>(f, <span class="string">"Out of range."</span>),
             Error::MustNotBeNA(_robj) =&gt; <span class="macro">write!</span>(f, <span class="string">"Must not be NA."</span>),
             Error::ExpectedNonZeroLength(_robj) =&gt; <span class="macro">write!</span>(f, <span class="string">"Expected non zero length"</span>),
-            Error::ExpectedWholeNumber(robj) =&gt; {
-                <span class="macro">write!</span>(
-                    f,
-                    <span class="string">"Expected an integer or a float representing a whole number, got {:?}"</span>,
-                    robj
-                )
-            }
             Error::OutOfLimits(robj) =&gt; <span class="macro">write!</span>(f, <span class="string">"The value is too big: {:?}"</span>, robj),
             Error::TypeMismatch(_robj) =&gt; <span class="macro">write!</span>(f, <span class="string">"Type mismatch"</span>),
 
@@ -406,6 +402,14 @@
             }
             Error::NoGraphicsDevices(_robj) =&gt; <span class="macro">write!</span>(f, <span class="string">"No graphics devices active."</span>),
             Error::Other(str) =&gt; <span class="macro">write!</span>(f, <span class="string">"{}"</span>, str),
+
+            Error::ExpectedWholeNumber(robj, conversion_error) =&gt; {
+                <span class="macro">write!</span>(
+                    f,
+                    <span class="string">"Failed to convert a float to a whole number: {}. Actual value received: {:?}"</span>,
+                    conversion_error, robj
+                )
+            }
 
             <span class="attr">#[cfg(feature = <span class="string">"ndarray"</span>)]
             </span>Error::NDArrayShapeError(shape_error) =&gt; {

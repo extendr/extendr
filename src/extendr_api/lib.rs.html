@@ -1034,6 +1034,7 @@
 <a href="#1034" id="1034">1034</a>
 <a href="#1035" id="1035">1035</a>
 <a href="#1036" id="1036">1036</a>
+<a href="#1037" id="1037">1037</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//!
 //! A safe and user friendly R extension interface.
 //!
@@ -1405,6 +1406,8 @@
 
 <span class="kw">pub mod </span>optional;
 
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>conversions;
+
 <span class="kw">pub use </span>std::convert::{TryFrom, TryInto};
 <span class="kw">pub use </span>std::ops::Deref;
 <span class="kw">pub use </span>std::ops::DerefMut;
@@ -1422,7 +1425,6 @@
 <span class="kw">pub use </span>functions::<span class="kw-2">*</span>;
 <span class="kw">pub use </span>lang_macros::<span class="kw-2">*</span>;
 <span class="kw">pub use </span>na::<span class="kw-2">*</span>;
-<span class="kw">pub use </span>rmacros::<span class="kw-2">*</span>;
 <span class="kw">pub use </span>robj::<span class="kw-2">*</span>;
 <span class="kw">pub use </span>thread_safety::{catch_r_error, handle_panic, single_threaded, throw_r_error};
 <span class="kw">pub use </span>wrapper::<span class="kw-2">*</span>;

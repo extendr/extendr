@@ -289,8 +289,42 @@
 <a href="#289" id="289">289</a>
 <a href="#290" id="290">290</a>
 <a href="#291" id="291">291</a>
-</pre></div><pre class="rust"><code><span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
+<a href="#299" id="299">299</a>
+<a href="#300" id="300">300</a>
+<a href="#301" id="301">301</a>
+<a href="#302" id="302">302</a>
+<a href="#303" id="303">303</a>
+<a href="#304" id="304">304</a>
+<a href="#305" id="305">305</a>
+<a href="#306" id="306">306</a>
+<a href="#307" id="307">307</a>
+<a href="#308" id="308">308</a>
+<a href="#309" id="309">309</a>
+<a href="#310" id="310">310</a>
+<a href="#311" id="311">311</a>
+<a href="#312" id="312">312</a>
+<a href="#313" id="313">313</a>
+<a href="#314" id="314">314</a>
+<a href="#315" id="315">315</a>
+<a href="#316" id="316">316</a>
+<a href="#317" id="317">317</a>
+<a href="#318" id="318">318</a>
+<a href="#319" id="319">319</a>
+<a href="#320" id="320">320</a>
+<a href="#321" id="321">321</a>
+<a href="#322" id="322">322</a>
+<a href="#323" id="323">323</a>
+</pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::conversions::try_into_int::FloatToInt;
 <span class="kw">use </span><span class="kw">crate</span>::wrapper::matrix::MatrixConversions;
+
+<span class="kw">use super</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// Trait used for incomming parameter conversion.
 </span><span class="kw">pub trait </span>FromRobj&lt;<span class="lifetime">'a</span>&gt;: Sized {
@@ -300,68 +334,98 @@
     }
 }
 
-<span class="macro">macro_rules!</span> impl_prim_from_robj {
+<span class="kw">fn </span>convert_scalar&lt;<span class="lifetime">'a</span>, TFrom, TTo, FSlice, FValue&gt;(
+    robj: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Robj,
+    get_slice: FSlice,
+    get_value: FValue,
+) -&gt; <span class="prelude-ty">Option</span>&lt;std::result::Result&lt;TTo, <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt;&gt;
+<span class="kw">where
+    </span>TFrom: CanBeNA + <span class="lifetime">'a</span>,
+    FSlice: FnOnce(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Robj) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[TFrom]&gt;,
+    FValue: FnOnce(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>TFrom) -&gt; std::result::Result&lt;TTo, <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt;,
+{
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = get_slice(robj) {
+        <span class="kw">match </span>v.len() {
+            <span class="number">0 </span>=&gt; <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(
+                <span class="string">"Input must be of length 1. Vector of length zero given."</span>,
+            )),
+            <span class="number">1 </span>=&gt; {
+                <span class="kw">if </span>!v[<span class="number">0</span>].is_na() {
+                    <span class="prelude-val">Some</span>(get_value(<span class="kw-2">&amp;</span>v[<span class="number">0</span>]))
+                } <span class="kw">else </span>{
+                    <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(<span class="string">"Input must not be NA."</span>))
+                }
+            }
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(<span class="string">"Input must be of length 1. Vector of length &gt;1 given."</span>)),
+        }
+    } <span class="kw">else </span>{
+        <span class="prelude-val">None
+    </span>}
+}
+
+<span class="macro">macro_rules!</span> impl_int_prim_from_robj {
     (<span class="macro-nonterminal">$t</span>: ty) =&gt; {
         <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; FromRobj&lt;<span class="lifetime">'a</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
             <span class="kw">fn </span>from_robj(robj: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Robj) -&gt; std::result::Result&lt;<span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt; {
-                <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = robj.as_integer_slice() {
-                    <span class="kw">match </span>v.len() {
-                        <span class="number">0 </span>=&gt; <span class="prelude-val">Err</span>(<span class="string">"Input must be of length 1. Vector of length zero given."</span>),
-                        <span class="number">1 </span>=&gt; {
-                            <span class="kw">if </span>!v[<span class="number">0</span>].is_na() {
-                                <span class="prelude-val">Ok</span>(v[<span class="number">0</span>] <span class="kw">as </span><span class="self">Self</span>)
-                            } <span class="kw">else </span>{
-                                <span class="prelude-val">Err</span>(<span class="string">"Input must not be NA."</span>)
-                            }
-                        }
-                        <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="string">"Input must be of length 1. Vector of length &gt;1 given."</span>),
-                    }
-                } <span class="kw">else if let </span><span class="prelude-val">Some</span>(v) = robj.as_real_slice() {
-                    <span class="kw">match </span>v.len() {
-                        <span class="number">0 </span>=&gt; <span class="prelude-val">Err</span>(<span class="string">"Input must be of length 1. Vector of length zero given."</span>),
-                        <span class="number">1 </span>=&gt; {
-                            <span class="kw">if </span>!v[<span class="number">0</span>].is_na() {
-                                <span class="prelude-val">Ok</span>(v[<span class="number">0</span>] <span class="kw">as </span><span class="self">Self</span>)
-                            } <span class="kw">else </span>{
-                                <span class="prelude-val">Err</span>(<span class="string">"Input must not be NA."</span>)
-                            }
-                        }
-                        <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="string">"Input must be of length 1. Vector of length &gt;1 given."</span>),
-                    }
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(from_int_value) =
+                    convert_scalar(robj, Robj::as_integer_slice, |v: <span class="kw-2">&amp;</span>i32| <span class="prelude-val">Ok</span>(<span class="kw-2">*</span>v <span class="kw">as </span><span class="self">Self</span>))
+                {
+                    <span class="kw">return </span>from_int_value;
+                } <span class="kw">else if let </span><span class="prelude-val">Some</span>(from_real_value) =
+                    convert_scalar(robj, Robj::as_real_slice, |v: <span class="kw-2">&amp;</span>f64| {
+                        v.try_into_int()
+                            .map_err(|<span class="kw">_</span>| <span class="string">"Input must be a whole integer."</span>)
+                    })
+                {
+                    <span class="kw">return </span>from_real_value;
                 } <span class="kw">else </span>{
-                    <span class="prelude-val">Err</span>(<span class="string">"unable to convert R object to primitive"</span>)
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"Unable to convert R object to primitive"</span>);
                 }
             }
         }
     };
 }
 
-<span class="macro">impl_prim_from_robj!</span>(u8);
-<span class="macro">impl_prim_from_robj!</span>(u16);
-<span class="macro">impl_prim_from_robj!</span>(u32);
-<span class="macro">impl_prim_from_robj!</span>(u64);
-<span class="macro">impl_prim_from_robj!</span>(i8);
-<span class="macro">impl_prim_from_robj!</span>(i16);
-<span class="macro">impl_prim_from_robj!</span>(i32);
-<span class="macro">impl_prim_from_robj!</span>(i64);
-<span class="macro">impl_prim_from_robj!</span>(f32);
-<span class="macro">impl_prim_from_robj!</span>(f64);
+<span class="macro">macro_rules!</span> impl_float_prim_from_robj {
+    (<span class="macro-nonterminal">$t</span>: ty) =&gt; {
+        <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; FromRobj&lt;<span class="lifetime">'a</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>from_robj(robj: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Robj) -&gt; std::result::Result&lt;<span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt; {
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(from_real_value) =
+                    convert_scalar(robj, Robj::as_real_slice, |v: <span class="kw-2">&amp;</span>f64| <span class="prelude-val">Ok</span>(<span class="kw-2">*</span>v <span class="kw">as </span><span class="self">Self</span>))
+                {
+                    <span class="kw">return </span>from_real_value;
+                } <span class="kw">else if let </span><span class="prelude-val">Some</span>(from_int_value) =
+                    convert_scalar(robj, Robj::as_integer_slice, |v: <span class="kw-2">&amp;</span>i32| <span class="prelude-val">Ok</span>(<span class="kw-2">*</span>v <span class="kw">as </span><span class="self">Self</span>))
+                {
+                    <span class="kw">return </span>from_int_value;
+                }
+                {
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"Unable to convert R object to primitive"</span>);
+                }
+            }
+        }
+    };
+}
+
+<span class="macro">impl_int_prim_from_robj!</span>(u8);
+<span class="macro">impl_int_prim_from_robj!</span>(u16);
+<span class="macro">impl_int_prim_from_robj!</span>(u32);
+<span class="macro">impl_int_prim_from_robj!</span>(u64);
+<span class="macro">impl_int_prim_from_robj!</span>(i8);
+<span class="macro">impl_int_prim_from_robj!</span>(i16);
+<span class="macro">impl_int_prim_from_robj!</span>(i32);
+<span class="macro">impl_int_prim_from_robj!</span>(i64);
+<span class="macro">impl_float_prim_from_robj!</span>(f32);
+<span class="macro">impl_float_prim_from_robj!</span>(f64);
 
 <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; FromRobj&lt;<span class="lifetime">'a</span>&gt; <span class="kw">for </span>bool {
     <span class="kw">fn </span>from_robj(robj: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Robj) -&gt; std::result::Result&lt;<span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt; {
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = robj.as_logical_slice() {
-            <span class="kw">match </span>v.len() {
-                <span class="number">0 </span>=&gt; <span class="prelude-val">Err</span>(<span class="string">"Input must be of length 1. Vector of length zero given."</span>),
-                <span class="number">1 </span>=&gt; {
-                    <span class="kw">if </span>!v[<span class="number">0</span>].is_na() {
-                        <span class="prelude-val">Ok</span>(v[<span class="number">0</span>].to_bool())
-                    } <span class="kw">else </span>{
-                        <span class="prelude-val">Err</span>(<span class="string">"Input must not be NA."</span>)
-                    }
-                }
-                <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="string">"Input must be of length 1. Vector of length &gt;1 given."</span>),
-            }
-        } <span class="kw">else </span>{
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(from_logical_value) =
+            convert_scalar(robj, Robj::as_logical_slice, |v: <span class="kw-2">&amp;</span>Rbool| <span class="prelude-val">Ok</span>(v.to_bool()))
+        {
+            <span class="kw">return </span>from_logical_value;
+        }
+        {
             <span class="prelude-val">Err</span>(<span class="string">"Not a logical object."</span>)
         }
     }

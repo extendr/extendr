@@ -203,23 +203,6 @@
 <a href="#203" id="203">203</a>
 <a href="#204" id="204">204</a>
 <a href="#205" id="205">205</a>
-<a href="#206" id="206">206</a>
-<a href="#207" id="207">207</a>
-<a href="#208" id="208">208</a>
-<a href="#209" id="209">209</a>
-<a href="#210" id="210">210</a>
-<a href="#211" id="211">211</a>
-<a href="#212" id="212">212</a>
-<a href="#213" id="213">213</a>
-<a href="#214" id="214">214</a>
-<a href="#215" id="215">215</a>
-<a href="#216" id="216">216</a>
-<a href="#217" id="217">217</a>
-<a href="#218" id="218">218</a>
-<a href="#219" id="219">219</a>
-<a href="#220" id="220">220</a>
-<a href="#221" id="221">221</a>
-<a href="#222" id="222">222</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::prelude::{Rint, Scalar};
 <span class="kw">use </span><span class="kw">crate</span>::scalar::macros::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
@@ -405,30 +388,13 @@
     <span class="kw">type </span>Error = Error;
 
     <span class="kw">fn </span>try_from(robj: <span class="kw-2">&amp;</span>Robj) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
-        <span class="comment">// Check if the value is a scalar
-        </span><span class="kw">match </span>robj.len() {
-            <span class="number">0 </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::ExpectedNonZeroLength(robj.clone())),
-            <span class="number">1 </span>=&gt; {}
-            <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::ExpectedScalar(robj.clone())),
-        };
-
-        <span class="comment">// Check if the value is not a missing value.
-        </span><span class="kw">if </span>robj.is_na() {
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(Rfloat::na());
+        <span class="kw">let </span>f64_val: <span class="prelude-ty">Result</span>&lt;f64&gt; = robj.try_into();
+        <span class="kw">match </span>f64_val {
+            <span class="prelude-val">Ok</span>(val) =&gt; <span class="prelude-val">Ok</span>(Rfloat::from(val)),
+            <span class="comment">// TODO: Currently this results in an extra protection of robj
+            </span><span class="prelude-val">Err</span>(Error::MustNotBeNA(<span class="kw">_</span>)) =&gt; <span class="prelude-val">Ok</span>(Rfloat::na()),
+            <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(e),
         }
-
-        <span class="comment">// This should always work, NA is handled above.
-        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(v) = robj.as_real() {
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(Rfloat::from(v));
-        }
-
-        <span class="comment">// Any integer (32 bit) can be represented as f64,
-        // this always works.
-        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(v) = robj.as_integer() {
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(Rfloat::from(v <span class="kw">as </span>f64));
-        }
-
-        <span class="prelude-val">Err</span>(Error::ExpectedNumeric(robj.clone()))
     }
 }
 
