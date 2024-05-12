@@ -11,7 +11,7 @@ pub trait FromRobj<'a>: Sized {
     }
 }
 
-fn test_fn<'a, TFrom, TTo, FSlice, FValue>(
+fn convert_scalar<'a, TFrom, TTo, FSlice, FValue>(
     robj: &'a Robj,
     get_slice: FSlice,
     get_value: FValue,
@@ -45,11 +45,11 @@ macro_rules! impl_int_prim_from_robj {
         impl<'a> FromRobj<'a> for $t {
             fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
                 if let Some(from_int_value) =
-                    test_fn(robj, Robj::as_integer_slice, |v: &i32| Ok(*v as Self))
+                    convert_scalar(robj, Robj::as_integer_slice, |v: &i32| Ok(*v as Self))
                 {
                     return from_int_value;
                 } else if let Some(from_real_value) =
-                    test_fn(robj, Robj::as_real_slice, |v: &f64| {
+                    convert_scalar(robj, Robj::as_real_slice, |v: &f64| {
                         v.try_into_int()
                             .map_err(|_| "Input must be a whole integer.")
                     })
@@ -68,11 +68,11 @@ macro_rules! impl_float_prim_from_robj {
         impl<'a> FromRobj<'a> for $t {
             fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
                 if let Some(from_real_value) =
-                    test_fn(robj, Robj::as_real_slice, |v: &f64| Ok(*v as Self))
+                    convert_scalar(robj, Robj::as_real_slice, |v: &f64| Ok(*v as Self))
                 {
                     return from_real_value;
                 } else if let Some(from_int_value) =
-                    test_fn(robj, Robj::as_integer_slice, |v: &i32| Ok(*v as Self))
+                    convert_scalar(robj, Robj::as_integer_slice, |v: &i32| Ok(*v as Self))
                 {
                     return from_int_value;
                 }
@@ -98,7 +98,7 @@ impl_float_prim_from_robj!(f64);
 impl<'a> FromRobj<'a> for bool {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
         if let Some(from_logical_value) =
-            test_fn(robj, Robj::as_logical_slice, |v: &Rbool| Ok(v.to_bool()))
+            convert_scalar(robj, Robj::as_logical_slice, |v: &Rbool| Ok(v.to_bool()))
         {
             return from_logical_value;
         }
