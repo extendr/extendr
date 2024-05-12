@@ -8,8 +8,6 @@ pub use super::{
     NA_REAL, NA_STRING, NULL, TRUE,
 };
 
-pub use super::na::*;
-
 pub use super::error::{Error, Result};
 
 pub use super::functions::{
@@ -70,8 +68,6 @@ pub use std::convert::{TryFrom, TryInto};
 pub use super::scalar::*;
 
 pub use super::Nullable::*;
-
-pub use super::optional::*;
 
 #[cfg(feature = "ndarray")]
 pub use ::ndarray::*;

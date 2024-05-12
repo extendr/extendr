@@ -6,6 +6,7 @@ use extendr_api::prelude::*;
 // #[extendr]
 fn protect_lim2(n: i32) -> List {
     #[derive(Debug)]
+    #[allow(dead_code)]
     struct PlzBreak(i32);
 
     let n = n as usize;

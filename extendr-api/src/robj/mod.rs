@@ -9,16 +9,23 @@
 //! * The interface should be friendly to R users without Rust experience.
 //!
 
-use libR_sys::*;
-use prelude::{c64, Rcplx};
-use std::os::raw;
-
-use crate::*;
-
-use crate::scalar::{Rbool, Rfloat, Rint};
 use std::collections::HashMap;
 use std::iter::IntoIterator;
 use std::ops::{Range, RangeInclusive};
+use std::os::raw;
+
+use libR_sys::*;
+use SEXPTYPE::*;
+
+pub use from_robj::*;
+pub use into_robj::*;
+pub use iter::*;
+pub use operators::Operators;
+use prelude::{c64, Rcplx};
+pub use rinternals::Rinternals;
+
+use crate::scalar::{Rbool, Rfloat, Rint};
+use crate::*;
 
 // deprecated
 mod from_robj;
@@ -31,13 +38,6 @@ mod try_from_robj;
 
 #[cfg(test)]
 mod tests;
-
-pub use from_robj::*;
-pub use into_robj::*;
-pub use iter::*;
-pub use operators::Operators;
-pub use operators::*;
-pub use rinternals::Rinternals;
 
 /// Wrapper for an R S-expression pointer (SEXP).
 ///
@@ -796,7 +796,6 @@ macro_rules! make_typed_slice {
     }
 }
 
-use SEXPTYPE::*;
 make_typed_slice!(Rbool, INTEGER, LGLSXP);
 make_typed_slice!(i32, INTEGER, INTSXP);
 make_typed_slice!(u32, INTEGER, INTSXP);

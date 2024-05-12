@@ -30,7 +30,7 @@ macro_rules! impl_into_integerish {
                 if *self == <$float_type>::default() {
                     return Ok(<$int_type>::default());
                 }
-                
+
                 if !self.is_normal() {
                     return Err(ConversionError::NotIntegerish);
                 }
@@ -66,10 +66,10 @@ impl_into_integerish!(f64, u8);
 
 #[cfg(test)]
 mod try_into_int_tests {
-    use crate::{CanBeNA, Result, test};
     use crate::conversions::try_into_int::{ConversionError, FloatToInt};
+    use crate::{test, CanBeNA, Result};
     type ConversionResult<T, E> = std::result::Result<T, E>;
-    
+
     #[test]
     fn test_exact_zero() {
         let value = 0.0;
