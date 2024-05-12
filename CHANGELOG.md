@@ -24,6 +24,8 @@ now hidden behind the feature flag `non-api`. Also, `Promise::from_parts` is mar
 
 - returning `&Self` or `&mut Self` from a method in an `#[extendr]`-impl would
 result in unintended cloning  [[[#614](https://github.com/extendr/extendr/issues/614)]]
+- `TryFrom<&Robj>` and `FromRobj` for integer scalars now correctly handles conversions
+  from `f64` [[#757]](https://github.com/extendr/extendr/pull/757)
 
 ## 0.6.0
 
