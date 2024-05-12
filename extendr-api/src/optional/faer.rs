@@ -1,7 +1,6 @@
 use faer::{mat, Mat, MatRef};
 
 use crate::scalar::Rfloat;
-use crate::scalar::Scalar;
 use crate::*;
 
 /// Convert a `faer::Mat<f64>` into an `RMatrix<f64>` which is not NA aware.

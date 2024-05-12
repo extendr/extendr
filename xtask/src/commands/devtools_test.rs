@@ -24,7 +24,15 @@ fn run_tests(shell: &Shell, args: DevtoolsTestArg) -> Result<(), Box<dyn Error>>
         )
         .run()?;
     }
-    cmd!(shell, "Rscript -e devtools::test()").run()?;
+    if let Some(filter) = args.filter {
+        shell
+            .cmd("Rscript")
+            .arg("-e")
+            .arg(format!("devtools::test(filter = \"{filter}\")"))
+            .run()?;
+    } else {
+        cmd!(shell, "Rscript -e devtools::test()").run()?;
+    }
 
     Ok(())
 }

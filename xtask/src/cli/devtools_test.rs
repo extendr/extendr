@@ -9,4 +9,7 @@ pub(crate) struct DevtoolsTestArg {
         help = "Accept newly generated macro-snapshots"
     )]
     pub(crate) accept_snapshot: bool,
+
+    #[arg(long, short, help = "Filter tests by name")]
+    pub(crate) filter: Option<String>,
 }

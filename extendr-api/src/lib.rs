@@ -369,6 +369,8 @@ pub mod na;
 
 pub mod optional;
 
+pub(crate) mod conversions;
+
 pub use std::convert::{TryFrom, TryInto};
 pub use std::ops::Deref;
 pub use std::ops::DerefMut;
@@ -386,7 +388,6 @@ pub use error::*;
 pub use functions::*;
 pub use lang_macros::*;
 pub use na::*;
-pub use rmacros::*;
 pub use robj::*;
 pub use thread_safety::{catch_r_error, handle_panic, single_threaded, throw_r_error};
 pub use wrapper::*;

@@ -1,5 +1,7 @@
-use super::*;
+use crate::conversions::try_into_int::FloatToInt;
 use crate::wrapper::matrix::MatrixConversions;
+
+use super::*;
 
 /// Trait used for incomming parameter conversion.
 pub trait FromRobj<'a>: Sized {
@@ -9,68 +11,98 @@ pub trait FromRobj<'a>: Sized {
     }
 }
 
-macro_rules! impl_prim_from_robj {
+fn convert_scalar<'a, TFrom, TTo, FSlice, FValue>(
+    robj: &'a Robj,
+    get_slice: FSlice,
+    get_value: FValue,
+) -> Option<std::result::Result<TTo, &'static str>>
+where
+    TFrom: CanBeNA + 'a,
+    FSlice: FnOnce(&'a Robj) -> Option<&'a [TFrom]>,
+    FValue: FnOnce(&'a TFrom) -> std::result::Result<TTo, &'static str>,
+{
+    if let Some(v) = get_slice(robj) {
+        match v.len() {
+            0 => Some(Err(
+                "Input must be of length 1. Vector of length zero given.",
+            )),
+            1 => {
+                if !v[0].is_na() {
+                    Some(get_value(&v[0]))
+                } else {
+                    Some(Err("Input must not be NA."))
+                }
+            }
+            _ => Some(Err("Input must be of length 1. Vector of length >1 given.")),
+        }
+    } else {
+        None
+    }
+}
+
+macro_rules! impl_int_prim_from_robj {
     ($t: ty) => {
         impl<'a> FromRobj<'a> for $t {
             fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-                if let Some(v) = robj.as_integer_slice() {
-                    match v.len() {
-                        0 => Err("Input must be of length 1. Vector of length zero given."),
-                        1 => {
-                            if !v[0].is_na() {
-                                Ok(v[0] as Self)
-                            } else {
-                                Err("Input must not be NA.")
-                            }
-                        }
-                        _ => Err("Input must be of length 1. Vector of length >1 given."),
-                    }
-                } else if let Some(v) = robj.as_real_slice() {
-                    match v.len() {
-                        0 => Err("Input must be of length 1. Vector of length zero given."),
-                        1 => {
-                            if !v[0].is_na() {
-                                Ok(v[0] as Self)
-                            } else {
-                                Err("Input must not be NA.")
-                            }
-                        }
-                        _ => Err("Input must be of length 1. Vector of length >1 given."),
-                    }
+                if let Some(from_int_value) =
+                    convert_scalar(robj, Robj::as_integer_slice, |v: &i32| Ok(*v as Self))
+                {
+                    return from_int_value;
+                } else if let Some(from_real_value) =
+                    convert_scalar(robj, Robj::as_real_slice, |v: &f64| {
+                        v.try_into_int()
+                            .map_err(|_| "Input must be a whole integer.")
+                    })
+                {
+                    return from_real_value;
                 } else {
-                    Err("unable to convert R object to primitive")
+                    return Err("Unable to convert R object to primitive");
                 }
             }
         }
     };
 }
 
-impl_prim_from_robj!(u8);
-impl_prim_from_robj!(u16);
-impl_prim_from_robj!(u32);
-impl_prim_from_robj!(u64);
-impl_prim_from_robj!(i8);
-impl_prim_from_robj!(i16);
-impl_prim_from_robj!(i32);
-impl_prim_from_robj!(i64);
-impl_prim_from_robj!(f32);
-impl_prim_from_robj!(f64);
+macro_rules! impl_float_prim_from_robj {
+    ($t: ty) => {
+        impl<'a> FromRobj<'a> for $t {
+            fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
+                if let Some(from_real_value) =
+                    convert_scalar(robj, Robj::as_real_slice, |v: &f64| Ok(*v as Self))
+                {
+                    return from_real_value;
+                } else if let Some(from_int_value) =
+                    convert_scalar(robj, Robj::as_integer_slice, |v: &i32| Ok(*v as Self))
+                {
+                    return from_int_value;
+                }
+                {
+                    return Err("Unable to convert R object to primitive");
+                }
+            }
+        }
+    };
+}
+
+impl_int_prim_from_robj!(u8);
+impl_int_prim_from_robj!(u16);
+impl_int_prim_from_robj!(u32);
+impl_int_prim_from_robj!(u64);
+impl_int_prim_from_robj!(i8);
+impl_int_prim_from_robj!(i16);
+impl_int_prim_from_robj!(i32);
+impl_int_prim_from_robj!(i64);
+impl_float_prim_from_robj!(f32);
+impl_float_prim_from_robj!(f64);
 
 impl<'a> FromRobj<'a> for bool {
     fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if let Some(v) = robj.as_logical_slice() {
-            match v.len() {
-                0 => Err("Input must be of length 1. Vector of length zero given."),
-                1 => {
-                    if !v[0].is_na() {
-                        Ok(v[0].to_bool())
-                    } else {
-                        Err("Input must not be NA.")
-                    }
-                }
-                _ => Err("Input must be of length 1. Vector of length >1 given."),
-            }
-        } else {
+        if let Some(from_logical_value) =
+            convert_scalar(robj, Robj::as_logical_slice, |v: &Rbool| Ok(v.to_bool()))
+        {
+            return from_logical_value;
+        }
+        {
             Err("Not a logical object.")
         }
     }
