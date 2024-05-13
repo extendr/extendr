@@ -17,7 +17,6 @@ use std::os::raw;
 use libR_sys::*;
 use SEXPTYPE::*;
 
-pub use from_robj::*;
 pub use into_robj::*;
 pub use iter::*;
 pub use operators::Operators;
@@ -26,10 +25,6 @@ pub use rinternals::Rinternals;
 
 use crate::scalar::{Rbool, Rfloat, Rint};
 use crate::*;
-
-use crate::scalar::{Rbool, Rfloat, Rint};
-use std::iter::IntoIterator;
-use std::ops::{Range, RangeInclusive};
 
 mod debug;
 mod into_robj;

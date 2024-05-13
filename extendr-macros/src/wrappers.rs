@@ -103,7 +103,7 @@ pub fn make_function_wrappers(
 
     let actual_args: Punctuated<Expr, Token![,]> = inputs
         .iter()
-        .filter_map(|input| translate_actual(opts, input))
+        .filter_map(|input| translate_actual(input))
         .collect();
 
     let meta_args: Vec<Expr> = inputs
@@ -453,11 +453,10 @@ fn translate_to_robj(input: &FnArg) -> syn::Result<syn::Stmt> {
 }
 
 // Generate actual argument list for the call (ie. a list of conversions).
-fn translate_actual(opts: &ExtendrOptions, input: &FnArg) -> Option<Expr> {
+fn translate_actual(input: &FnArg) -> Option<Expr> {
     match input {
         FnArg::Typed(ref pattype) => {
             let pat = &pattype.pat.as_ref();
-            let ty = &pattype.ty.as_ref();
             if let syn::Pat::Ident(ref ident) = pat {
                 let varname = format_ident!("_{}_robj", ident.ident);
                 Some(parse_quote! {
