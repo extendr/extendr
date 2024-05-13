@@ -61,20 +61,6 @@ use ndarray::{Data, ShapeBuilder};
 use crate::prelude::{c64, dim_symbol, Rcplx, Rfloat, Rint};
 use crate::*;
 
-impl<'a, T> FromRobj<'a> for ArrayView1<'a, T>
-where
-    Robj: AsTypedSlice<'a, T>,
-{
-    /// Convert an R object to a `ndarray` ArrayView1.
-    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if let Some(v) = robj.as_typed_slice() {
-            Ok(ArrayView1::<'a, T>::from(v))
-        } else {
-            Err("Not a vector of the correct type.")
-        }
-    }
-}
-
 macro_rules! make_array_view_1 {
     ($type: ty, $error_fn: expr) => {
         impl<'a> TryFrom<&'_ Robj> for ArrayView1<'a, $type> {
@@ -101,13 +87,6 @@ macro_rules! make_array_view_1 {
 
 macro_rules! make_array_view_2 {
     ($type: ty, $error_str: expr, $error_fn: expr) => {
-        impl<'a> FromRobj<'a> for ArrayView2<'a, $type> {
-            /// Convert an R object to a `ndarray` ArrayView2.
-            fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-                <ArrayView2<'a, $type>>::try_from(robj).map_err(|_| $error_str)
-            }
-        }
-
         impl<'a> TryFrom<&'_ Robj> for ArrayView2<'a, $type> {
             type Error = crate::Error;
             fn try_from(robj: &Robj) -> Result<Self> {

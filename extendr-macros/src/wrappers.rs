@@ -74,26 +74,14 @@ pub fn make_function_wrappers(
         };
         if is_mut {
             // eg. Person::name(&mut self)
-            if opts.use_try_from {
-                quote! { extendr_api::unwrap_or_throw_error(
-                    <&mut #self_ty>::try_from(&mut _self_robj)
-                ).#rust_name }
-            } else {
-                quote! { extendr_api::unwrap_or_throw(
-                    <&mut #self_ty>::from_robj(&_self_robj)
-                ).#rust_name }
-            }
+            quote! { extendr_api::unwrap_or_throw_error(
+                <&mut #self_ty>::try_from(&mut _self_robj)
+            ).#rust_name }
         } else {
             // eg. Person::name(&self)
-            if opts.use_try_from {
-                quote! { extendr_api::unwrap_or_throw_error(
-                    <&#self_ty>::try_from(&_self_robj)
-                ).#rust_name }
-            } else {
-                quote! { extendr_api::unwrap_or_throw(
-                    <&#self_ty>::from_robj(&_self_robj)
-                ).#rust_name }
-            }
+            quote! { extendr_api::unwrap_or_throw_error(
+                <&#self_ty>::try_from(&_self_robj)
+            ).#rust_name }
         }
     } else if let Some(ref self_ty) = &self_ty {
         // eg. Person::new()
@@ -472,13 +460,9 @@ fn translate_actual(opts: &ExtendrOptions, input: &FnArg) -> Option<Expr> {
             let ty = &pattype.ty.as_ref();
             if let syn::Pat::Ident(ref ident) = pat {
                 let varname = format_ident!("_{}_robj", ident.ident);
-                if opts.use_try_from {
-                    Some(parse_quote! {
-                        #varname.try_into()?
-                    })
-                } else {
-                    Some(parse_quote! { <#ty>::from_robj(&#varname)? })
-                }
+                Some(parse_quote! {
+                    #varname.try_into()?
+                })
             } else {
                 None
             }

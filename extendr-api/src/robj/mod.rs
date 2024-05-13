@@ -27,8 +27,9 @@ pub use rinternals::Rinternals;
 use crate::scalar::{Rbool, Rfloat, Rint};
 use crate::*;
 
-// deprecated
-mod from_robj;
+use crate::scalar::{Rbool, Rfloat, Rint};
+use std::iter::IntoIterator;
+use std::ops::{Range, RangeInclusive};
 
 mod debug;
 mod into_robj;

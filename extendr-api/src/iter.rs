@@ -136,6 +136,16 @@ impl_iter_debug!(PairlistIter);
 impl_iter_debug!(StrIter);
 impl_iter_debug!(EnvIter);
 
+impl TryFrom<&Robj> for StrIter {
+    type Error = Error;
+
+    fn try_from(value: &Robj) -> Result<Self> {
+        value
+            .as_str_iter()
+            .ok_or_else(|| Error::ExpectedString(value.clone()))
+    }
+}
+
 pub trait AsStrIter: GetSexp + Types + Length + Attributes + Rinternals {
     /// Get an iterator over a string vector.
     /// Returns None if the object is not a string vector

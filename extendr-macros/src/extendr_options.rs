@@ -1,12 +1,24 @@
 use syn::{meta::ParseNestedMeta, Lit, LitBool};
 
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub(crate) struct ExtendrOptions {
     #[deprecated]
     pub use_try_from: bool,
     pub r_name: Option<String>,
     pub mod_name: Option<String>,
     pub use_rng: bool,
+}
+
+impl Default for ExtendrOptions {
+    fn default() -> Self {
+        let use_try_from = true;
+        Self {
+            use_try_from,
+            r_name: Default::default(),
+            mod_name: Default::default(),
+            use_rng: Default::default(),
+        }
+    }
 }
 
 impl ExtendrOptions {

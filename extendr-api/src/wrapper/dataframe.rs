@@ -41,12 +41,6 @@ impl<T> From<Dataframe<T>> for Robj {
     }
 }
 
-impl<T> FromRobj<'_> for Dataframe<T> {
-    fn from_robj(robj: &Robj) -> std::result::Result<Self, &'static str> {
-        robj.try_into().or(Err("expected a `data.frame`"))
-    }
-}
-
 impl<T> std::convert::TryFrom<&Robj> for Dataframe<T> {
     type Error = Error;
     fn try_from(robj: &Robj) -> Result<Self> {

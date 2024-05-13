@@ -188,86 +188,45 @@ pub fn extendr_impl(mut item_impl: ItemImpl, opts: &ExtendrOptions) -> syn::Resu
     let meta_name = format_ident!("{}{}", wrappers::META_PREFIX, self_ty_name);
     let finalizer_name = format_ident!("__finalize__{}", self_ty_name);
 
-    let conversion_impls = if opts.use_try_from {
-        quote! {
-            // Output conversion function for this type.
+    let conversion_impls = quote! {
+        // Output conversion function for this type.
 
-            impl TryFrom<Robj> for &#self_ty {
-                type Error = Error;
+        impl TryFrom<Robj> for &#self_ty {
+            type Error = Error;
 
-                fn try_from(robj: Robj) -> Result<Self> {
-                    Self::try_from(&robj)
-                }
+            fn try_from(robj: Robj) -> Result<Self> {
+                Self::try_from(&robj)
             }
+        }
 
-            impl TryFrom<Robj> for &mut #self_ty {
-                type Error = Error;
+        impl TryFrom<Robj> for &mut #self_ty {
+            type Error = Error;
 
-                fn try_from(mut robj: Robj) -> Result<Self> {
-                    Self::try_from(&mut robj)
-                }
+            fn try_from(mut robj: Robj) -> Result<Self> {
+                Self::try_from(&mut robj)
             }
+        }
 
-            // Output conversion function for this type.
-            impl TryFrom<&Robj> for &#self_ty {
-                type Error = Error;
-                fn try_from(robj: &Robj) -> Result<Self> {
-                    use libR_sys::R_ExternalPtrAddr;
-                    unsafe {
-                        let ptr = R_ExternalPtrAddr(robj.get()).cast::<#self_ty>();
-                        ptr.as_ref().ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
-                    }
-                }
-            }
-
-            // Input conversion function for a mutable reference to this type.
-            impl TryFrom<&mut Robj> for &mut #self_ty {
-                type Error = Error;
-                fn try_from(robj: &mut Robj) -> Result<Self> {
-                    use libR_sys::R_ExternalPtrAddr;
-                    unsafe {
-                        let ptr = R_ExternalPtrAddr(robj.get_mut()).cast::<#self_ty>();
-                        ptr.as_mut().ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
-                    }
+        // Output conversion function for this type.
+        impl TryFrom<&Robj> for &#self_ty {
+            type Error = Error;
+            fn try_from(robj: &Robj) -> Result<Self> {
+                use libR_sys::R_ExternalPtrAddr;
+                unsafe {
+                    let ptr = R_ExternalPtrAddr(robj.get()).cast::<#self_ty>();
+                    ptr.as_ref().ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
                 }
             }
         }
-    } else {
-        quote! {
-            // Input conversion function for this type.
-            impl<'a> extendr_api::FromRobj<'a> for &#self_ty {
-                fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-                    if robj.check_external_ptr_type::<#self_ty>() {
-                        #[allow(clippy::transmute_ptr_to_ref)]
-                        Ok(unsafe { std::mem::transmute(robj.external_ptr_addr::<#self_ty>()) })
-                    } else {
-                        Err(concat!("expected ", #self_ty_name))
-                    }
-                }
-            }
 
-            // Input conversion function for a reference to this type.
-            impl<'a> extendr_api::FromRobj<'a> for &mut #self_ty {
-                fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-                    if robj.check_external_ptr_type::<#self_ty>() {
-                        #[allow(clippy::transmute_ptr_to_ref)]
-                        Ok(unsafe { std::mem::transmute(robj.external_ptr_addr::<#self_ty>()) })
-                    } else {
-                        Err(concat!("expected ", #self_ty_name))
-                    }
-                }
-            }
-
-            // Output conversion function for this type.
-                impl<'a> From<&'a #self_ty> for Robj {
-                fn from(value: &'a #self_ty) -> Self {
-                    unsafe {
-                        let ptr = Box::into_raw(Box::new(value));
-                        let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
-                        res.set_attrib(class_symbol(), #self_ty_name).unwrap();
-                        res.register_c_finalizer(Some(#finalizer_name));
-                        res
-                    }
+        // Input conversion function for a mutable reference to this type.
+        impl TryFrom<&mut Robj> for &mut #self_ty {
+            type Error = Error;
+            fn try_from(robj: &mut Robj) -> Result<Self> {
+                use libR_sys::R_ExternalPtrAddr;
+                unsafe {
+                    let ptr = R_ExternalPtrAddr(robj.get_mut()).cast::<#self_ty>();
+                    ptr.as_mut().ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
                 }
             }
         }

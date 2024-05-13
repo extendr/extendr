@@ -356,12 +356,6 @@ impl From<ListIter> for Robj {
     }
 }
 
-impl<'a> FromRobj<'a> for ListIter {
-    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        robj.as_list().map(|l| l.values()).ok_or("Not a list.")
-    }
-}
-
 // TODO: use Rstr or Sym instead of String.
 pub trait KeyValue {
     fn key(&self) -> String;

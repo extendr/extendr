@@ -67,7 +67,7 @@ impl TryFrom<&Robj> for Mat<f64> {
     type Error = Error;
 
     fn try_from(robj: &Robj) -> Result<Self> {
-        let rmat = &RMatrix::<f64>::from_robj(robj)?;
+        let rmat = &RMatrix::<f64>::try_from(robj)?;
         let nrow = rmat.nrows();
         let ncol = rmat.ncols();
 
@@ -84,7 +84,7 @@ impl<'a> TryFrom<&'_ Robj> for MatRef<'a, f64> {
     type Error = Error;
 
     fn try_from(robj: &Robj) -> Result<Self> {
-        let rmat = &RMatrix::<f64>::from_robj(robj)?;
+        let rmat = &RMatrix::<f64>::try_from(robj)?;
         let nrows = rmat.nrows();
         let ncols = rmat.ncols();
 
@@ -94,20 +94,6 @@ impl<'a> TryFrom<&'_ Robj> for MatRef<'a, f64> {
         } else {
             Err(Error::ExpectedReal(robj.clone()))
         }
-    }
-}
-
-impl FromRobj<'_> for Mat<f64> {
-    fn from_robj(robj: &'_ Robj) -> std::result::Result<Self, &'static str> {
-        robj.try_into()
-            .map_err(|_| "unable to convert R object to Mat<f64>")
-    }
-}
-
-impl<'a> FromRobj<'_> for MatRef<'a, f64> {
-    fn from_robj(robj: &'_ Robj) -> std::result::Result<Self, &'static str> {
-        robj.try_into()
-            .map_err(|_| "unable to convert R object to MatRef<'_, f64>")
     }
 }
 
