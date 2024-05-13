@@ -25,7 +25,7 @@
 now hidden behind the feature flag `non-api`. Also, `Promise::from_parts` is marked as non-API.
 - [**Breaking change**]: Floating point numbers with decimal part can no longer be converted to integer types via
   rounding [[#757]](https://github.com/extendr/extendr/pull/757)
-- You can no longer create an `Robj` from a reference `&T`, where `T` is an `extendr`-impl. [[#759]](https://github.com/extendr/extendr/pull/759)
+- [**Breaking change**]: You can no longer create an `Robj` from a reference `&T`, where `T` is an `extendr`-impl. [[#759]](https://github.com/extendr/extendr/pull/759)
 - [**Breaking change**]: You can no longer use `from_robj`, as the trait `FromRobj` as been removed. Instead, use `try_from`.
 - `#[extendr(use_try_from = true)` is now the default setting, therefore the option has `use_try_from` has been removed [[#759]](https://github.com/extendr/extendr/pull/759)
 
