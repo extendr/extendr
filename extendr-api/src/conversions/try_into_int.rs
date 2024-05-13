@@ -29,9 +29,11 @@ macro_rules! impl_into_integerish {
         impl FloatToInt<$int_type> for $float_type {
             fn try_into_int(&self) -> Result<$int_type, ConversionError> {
                 match self.classify() {
-                    FpCategory::Nan | FpCategory::Subnormal=> Err(ConversionError::NotIntegerish),
+                    FpCategory::Nan | FpCategory::Subnormal => Err(ConversionError::NotIntegerish),
                     FpCategory::Zero => Ok(<$int_type>::default()),
-                    FpCategory::Infinite if self.is_sign_positive() => Err(ConversionError::Overflow),
+                    FpCategory::Infinite if self.is_sign_positive() => {
+                        Err(ConversionError::Overflow)
+                    }
                     FpCategory::Infinite => Err(ConversionError::Underflow),
                     FpCategory::Normal => {
                         let truncated_value = self.trunc();
@@ -44,8 +46,8 @@ macro_rules! impl_into_integerish {
                         if !truncated_value.eq(self) {
                             return Err(ConversionError::NotIntegerish);
                         }
-                        return Ok(truncated_value as $int_type)
-                    },
+                        return Ok(truncated_value as $int_type);
+                    }
                 }
             }
         }
@@ -67,8 +69,8 @@ impl_into_integerish!(f64, u8);
 
 #[cfg(test)]
 mod try_into_int_tests {
-    use crate::{CanBeNA, Result, test};
     use crate::conversions::try_into_int::{ConversionError, FloatToInt};
+    use crate::{test, CanBeNA, Result};
 
     type ConversionResult<T, E> = std::result::Result<T, E>;
 
