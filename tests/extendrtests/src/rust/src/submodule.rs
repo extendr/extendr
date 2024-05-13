@@ -71,7 +71,6 @@ impl MySubmoduleClass {
     }
 }
 
-
 // Macro to generate exports
 extendr_module! {
     mod submodule;

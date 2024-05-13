@@ -106,7 +106,10 @@ use crate::wrappers;
 ///   }
 /// }
 /// ```
-pub(crate) fn extendr_impl(mut item_impl: ItemImpl, opts: &ExtendrOptions) -> syn::Result<TokenStream> {
+pub(crate) fn extendr_impl(
+    mut item_impl: ItemImpl,
+    opts: &ExtendrOptions,
+) -> syn::Result<TokenStream> {
     // Only `impl name { }` allowed
     if item_impl.defaultness.is_some() {
         return Err(syn::Error::new_spanned(

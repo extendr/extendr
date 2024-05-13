@@ -92,7 +92,6 @@ fn check_rint_na(x: Rint) -> bool {
 // TOD
 // Atomic types
 
-
 // Non-atomic types
 // TODO
 
@@ -182,10 +181,7 @@ fn special_param_names(_x: i32, _y: i32) -> i32 {
 #[allow(non_snake_case)]
 fn __00__special_function_name() {}
 
-#[extendr(
-    r_name = "test.rename.rlike",
-    mod_name = "test_rename_mymod"
-)]
+#[extendr(r_name = "test.rename.rlike", mod_name = "test_rename_mymod")]
 fn test_rename() -> i32 {
     1
 }

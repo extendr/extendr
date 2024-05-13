@@ -1,5 +1,5 @@
 /*!
-Enables support for the [`either`](https://docs.rs/either/latest/either/) crate, 
+Enables support for the [`either`](https://docs.rs/either/latest/either/) crate,
 to allow accepting and returning `Either<L, R>` values if both `L` and `R` are convertible to/from `Robj`.
 
 `either` crate support is currently available in the dev version of `extendr-api`

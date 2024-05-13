@@ -1,24 +1,10 @@
 use syn::{meta::ParseNestedMeta, Lit, LitBool};
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub(crate) struct ExtendrOptions {
-    #[deprecated]
-    pub use_try_from: bool,
     pub r_name: Option<String>,
     pub mod_name: Option<String>,
     pub use_rng: bool,
-}
-
-impl Default for ExtendrOptions {
-    fn default() -> Self {
-        let use_try_from = true;
-        Self {
-            use_try_from,
-            r_name: Default::default(),
-            mod_name: Default::default(),
-            use_rng: Default::default(),
-        }
-    }
 }
 
 impl ExtendrOptions {
@@ -26,7 +12,6 @@ impl ExtendrOptions {
     ///
     /// Supported options:
     ///
-    /// - `use_try_from = bool` which uses `TryFrom<Robj>` for argument conversions.
     /// - `r_name = "name"` which specifies the name of the wrapper on the R-side.
     /// - `use_rng = bool` ensures the RNG-state is pulled and pushed
     ///
@@ -38,14 +23,6 @@ impl ExtendrOptions {
             .ok_or(meta.error("Unexpected syntax"))?;
 
         match path.to_string().as_str() {
-            "use_try_from" => {
-                if let Ok(LitBool { value, .. }) = value.parse() {
-                    self.use_try_from = value;
-                    Ok(())
-                } else {
-                    Err(value.error("`use_try_from` must be `true` or `false`"))
-                }
-            }
             "r_name" => {
                 if let Ok(Lit::Str(litstr)) = value.parse() {
                     self.r_name = Some(litstr.value());

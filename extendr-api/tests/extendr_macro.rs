@@ -47,11 +47,7 @@ fn test_integers(val: Integers) -> Integers {
     val
 }
 
-#[extendr(
-    use_try_from = true,
-    r_name = "test.rename.rlike",
-    mod_name = "test_rename_mymod"
-)]
+#[extendr(r_name = "test.rename.rlike", mod_name = "test_rename_mymod")]
 fn test_rename() {}
 
 extendr_module! {
