@@ -4,7 +4,7 @@ use quote::quote;
 use syn::ItemFn;
 
 /// Generate bindings for a single function.
-pub fn extendr_function(mut func: ItemFn, opts: &ExtendrOptions) -> TokenStream {
+pub(crate) fn extendr_function(mut func: ItemFn, opts: &ExtendrOptions) -> TokenStream {
     let mut wrappers: Vec<ItemFn> = Vec::new();
 
     let res =

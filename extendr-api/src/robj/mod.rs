@@ -876,8 +876,7 @@ pub trait Attributes: Types + Length {
             let sexp = self.get_mut();
             let result =
                 single_threaded(|| catch_r_error(|| Rf_setAttrib(sexp, name.get(), value.get())));
-            let result = result.map(|_| self);
-            result
+            result.map(|_| self)
         }
     }
 

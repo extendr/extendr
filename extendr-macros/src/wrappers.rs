@@ -33,7 +33,7 @@ pub const META_PREFIX: &str = "meta__";
 pub const WRAP_PREFIX: &str = "wrap__";
 
 // Generate wrappers for a specific function.
-pub fn make_function_wrappers(
+pub(crate) fn make_function_wrappers(
     opts: &ExtendrOptions,
     wrappers: &mut Vec<ItemFn>,
     prefix: &str,
@@ -101,10 +101,8 @@ pub fn make_function_wrappers(
         .map(translate_to_robj)
         .collect::<syn::Result<Vec<syn::Stmt>>>()?;
 
-    let actual_args: Punctuated<Expr, Token![,]> = inputs
-        .iter()
-        .filter_map(|input| translate_actual(input))
-        .collect();
+    let actual_args: Punctuated<Expr, Token![,]> =
+        inputs.iter().filter_map(translate_actual).collect();
 
     let meta_args: Vec<Expr> = inputs
         .iter_mut()

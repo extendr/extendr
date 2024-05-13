@@ -96,9 +96,7 @@ impl TryFrom<Vec<i32>> for Integers {
     type Error = Error;
 
     fn try_from(value: Vec<i32>) -> std::result::Result<Self, Self::Error> {
-        Ok(Self {
-            robj: <Robj>::try_from(value)?,
-        })
+        Ok(Self { robj: value.into() })
     }
 }
 

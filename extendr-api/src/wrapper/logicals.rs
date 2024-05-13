@@ -87,9 +87,7 @@ impl TryFrom<Vec<bool>> for Logicals {
     type Error = Error;
 
     fn try_from(value: Vec<bool>) -> std::result::Result<Self, Self::Error> {
-        Ok(Self {
-            robj: <Robj>::try_from(value)?,
-        })
+        Ok(Self { robj: value.into() })
     }
 }
 
