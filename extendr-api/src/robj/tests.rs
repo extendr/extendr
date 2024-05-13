@@ -92,7 +92,7 @@ fn test_try_from() {
 }
 
 #[test]
-fn test_try_try_from() {
+fn test_try_from_robj() {
     test! {
         assert_eq!(<bool>::try_from(Robj::from(true)), Ok(true));
         assert_eq!(<u8>::try_from(Robj::from(1)), Ok(1));
