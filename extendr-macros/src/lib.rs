@@ -61,6 +61,7 @@ mod dataframe;
 mod extendr_function;
 mod extendr_impl;
 mod extendr_module;
+mod extendr_options;
 mod list;
 mod list_struct;
 mod pairlist;
@@ -86,7 +87,7 @@ use syn::{parse_macro_input, Item};
 ///
 #[proc_macro_attribute]
 pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
-    let mut opts = wrappers::ExtendrOptions::default();
+    let mut opts = extendr_options::ExtendrOptions::default();
 
     let extendr_opts_parser = syn::meta::parser(|meta| opts.parse(meta));
     parse_macro_input!(attr with extendr_opts_parser);

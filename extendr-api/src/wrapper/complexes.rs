@@ -84,9 +84,7 @@ impl TryFrom<Vec<c64>> for Complexes {
     type Error = Error;
 
     fn try_from(value: Vec<c64>) -> std::result::Result<Self, Self::Error> {
-        Ok(Self {
-            robj: <Robj>::try_from(value)?,
-        })
+        Ok(Self { robj: value.into() })
     }
 }
 

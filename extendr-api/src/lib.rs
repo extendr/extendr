@@ -880,7 +880,7 @@ mod tests {
             person.set_name("fred");
             let robj = r!(person);
             assert_eq!(robj.check_external_ptr_type::<Person>(), true);
-            let person2 = <&Person>::from_robj(&robj).unwrap();
+            let person2 = <&Person>::try_from(&robj).unwrap();
             assert_eq!(person2.name(), "fred");
         }
     }

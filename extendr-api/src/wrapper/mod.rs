@@ -81,16 +81,6 @@ where
 
 macro_rules! make_conversions {
     ($typename: ident, $errname: ident, $isfunc: ident, $errstr: expr) => {
-        impl<'a> FromRobj<'a> for $typename {
-            fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-                if let Ok(f) = $typename::try_from(robj.clone()) {
-                    Ok(f)
-                } else {
-                    Err($errstr)
-                }
-            }
-        }
-
         impl From<$typename> for Robj {
             /// Make an robj from a wrapper.
             fn from(val: $typename) -> Self {

@@ -12,6 +12,7 @@
 - Implements the `Attributes` trait for all R vector wrapper structs (e.g. `Integers` , `Doubles`, `Strings`, etc.), allowing for easy access and setting of the attributes of an R object [[#745]](https://github.com/extendr/extendr/pull/745). This comes with breaking changes. See below.
 - feature `non-api` that gives access to non-API items; Requires compile-time generation of bindings
 [[#754]](https://github.com/extendr/extendr/pull/754)
+- `TryFrom<&Robj>` for `StrIter`, `HashMap<K, Robj>` for `K = String` and `K = &str` [[#759]](https://github.com/extendr/extendr/pull/759)
 
 ### Changed
 
@@ -24,6 +25,9 @@
 now hidden behind the feature flag `non-api`. Also, `Promise::from_parts` is marked as non-API.
 - [**Breaking change**]: Floating point numbers with decimal part can no longer be converted to integer types via
   rounding [[#757]](https://github.com/extendr/extendr/pull/757)
+- [**Breaking change**]: You can no longer create an `Robj` from a reference `&T`, where `T` is an `extendr`-impl. [[#759]](https://github.com/extendr/extendr/pull/759)
+- [**Breaking change**]: You can no longer use `from_robj`, as the trait `FromRobj` as been removed. Instead, use `try_from`.
+- `#[extendr(use_try_from = true)` is now the default setting, therefore the option has `use_try_from` has been removed [[#759]](https://github.com/extendr/extendr/pull/759)
 
 ### Fixed
 

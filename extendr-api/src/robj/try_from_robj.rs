@@ -1,5 +1,11 @@
-//! Conversions to Robj
-
+//! There are various ways an [`Robj`] may be converted into different types `T`.
+//!
+//! This module defines these conversions on `&Robj`. Due to internal reference
+//! counting measure of [`ownership`]-module, it is cheaper to copy `&Robj`,
+//! than copying `Robj`, as the latter will incur an increase in reference counting.
+//!
+//!
+//! [`ownership`]: crate::ownership
 use crate::conversions::try_into_int::FloatToInt;
 
 use super::*;
@@ -69,9 +75,9 @@ macro_rules! impl_try_from_scalar_real {
                     return Err(Error::MustNotBeNA(robj.clone()));
                 }
 
-                // <Robj>::as_xxx() methods can work only when the underlying
-                // SEXP is the corresponding type, so we cannot use as_real()
-                // directly on INTSXP.
+                // `<Robj>::as_xxx()` methods can work only when the underlying
+                // `SEXP` is the corresponding type, so we cannot use `as_real()`
+                // directly on `INTSXP`.
                 if let Some(v) = robj.as_real() {
                     // f64 to f32 and f64 to f64 is always safe.
                     return Ok(v as Self);
@@ -425,7 +431,36 @@ impl_try_from_robj!(
     bool
     Rint Rfloat Rbool Rcplx
     f32 f64
+    Vec<String>
+    HashMap::<String, Robj> HashMap::<&str, Robj>
     Vec::<Rint> Vec::<Rfloat> Vec::<Rbool> Vec::<Rcplx> Vec::<u8> Vec::<i32> Vec::<f64>
     &[Rint] &[Rfloat] &[Rbool] &[Rcplx] &[u8] &[i32] &[f64]
     &str String
 );
+
+// NOTE: this is included for compatibility with previously defined `FromRobj`
+// One should prefer `List::from_hashmap` instead,
+// and this `impl` should be deprecated next.
+
+impl TryFrom<&Robj> for HashMap<String, Robj> {
+    type Error = Error;
+    fn try_from(robj: &Robj) -> Result<Self> {
+        Ok(robj
+            .as_list()
+            .map(|l| l.iter())
+            .ok_or_else(|| Error::ExpectedList(robj.clone()))?
+            .map(|(k, v)| (k.to_string(), v))
+            .collect::<HashMap<String, Robj>>())
+    }
+}
+
+impl TryFrom<&Robj> for HashMap<&str, Robj> {
+    type Error = Error;
+    fn try_from(robj: &Robj) -> Result<Self> {
+        Ok(robj
+            .as_list()
+            .map(|l| l.iter())
+            .ok_or_else(|| Error::ExpectedList(robj.clone()))?
+            .collect::<HashMap<&str, Robj>>())
+    }
+}

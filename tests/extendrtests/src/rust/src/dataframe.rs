@@ -63,7 +63,7 @@ fn test_into_robj_dataframe() -> Robj {
 // thats because issue https://github.com/extendr/extendr/issues/714
 // is not solved we would need an iterator for Dataframe<T> for it to
 // actually be useful
-// #[extendr(use_try_from = true)]
+// #[extendr]
 // fn dataframe_conversion_try_from(_data_frame: Dataframe<Row>) -> Robj {
 //     vec![Row { name: 42 }].into_dataframe().unwrap().into_robj()
 // }

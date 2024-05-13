@@ -17,7 +17,6 @@ use std::os::raw;
 use libR_sys::*;
 use SEXPTYPE::*;
 
-pub use from_robj::*;
 pub use into_robj::*;
 pub use iter::*;
 pub use operators::Operators;
@@ -26,9 +25,6 @@ pub use rinternals::Rinternals;
 
 use crate::scalar::{Rbool, Rfloat, Rint};
 use crate::*;
-
-// deprecated
-mod from_robj;
 
 mod debug;
 mod into_robj;
@@ -880,8 +876,7 @@ pub trait Attributes: Types + Length {
             let sexp = self.get_mut();
             let result =
                 single_threaded(|| catch_r_error(|| Rf_setAttrib(sexp, name.get(), value.get())));
-            let result = result.map(|_| self);
-            result
+            result.map(|_| self)
         }
     }
 

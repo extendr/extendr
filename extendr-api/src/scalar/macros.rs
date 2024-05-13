@@ -579,7 +579,7 @@ macro_rules! gen_trait_impl {
         // }
         impl Clone for $type {
             fn clone(&self) -> Self {
-                Self(self.0)
+                *self
             }
         }
 

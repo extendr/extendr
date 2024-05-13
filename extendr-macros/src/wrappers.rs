@@ -27,19 +27,13 @@ use proc_macro2::Ident;
 use quote::{format_ident, quote};
 use syn::{parse_quote, punctuated::Punctuated, Expr, ExprLit, FnArg, ItemFn, Token, Type};
 
+use crate::extendr_options::ExtendrOptions;
+
 pub const META_PREFIX: &str = "meta__";
 pub const WRAP_PREFIX: &str = "wrap__";
 
-#[derive(Debug, Default)]
-pub struct ExtendrOptions {
-    pub use_try_from: bool,
-    pub r_name: Option<String>,
-    pub mod_name: Option<String>,
-    pub use_rng: bool,
-}
-
 // Generate wrappers for a specific function.
-pub fn make_function_wrappers(
+pub(crate) fn make_function_wrappers(
     opts: &ExtendrOptions,
     wrappers: &mut Vec<ItemFn>,
     prefix: &str,
@@ -80,26 +74,14 @@ pub fn make_function_wrappers(
         };
         if is_mut {
             // eg. Person::name(&mut self)
-            if opts.use_try_from {
-                quote! { extendr_api::unwrap_or_throw_error(
-                    <&mut #self_ty>::try_from(&mut _self_robj)
-                ).#rust_name }
-            } else {
-                quote! { extendr_api::unwrap_or_throw(
-                    <&mut #self_ty>::from_robj(&_self_robj)
-                ).#rust_name }
-            }
+            quote! { extendr_api::unwrap_or_throw_error(
+                <&mut #self_ty>::try_from(&mut _self_robj)
+            ).#rust_name }
         } else {
             // eg. Person::name(&self)
-            if opts.use_try_from {
-                quote! { extendr_api::unwrap_or_throw_error(
-                    <&#self_ty>::try_from(&_self_robj)
-                ).#rust_name }
-            } else {
-                quote! { extendr_api::unwrap_or_throw(
-                    <&#self_ty>::from_robj(&_self_robj)
-                ).#rust_name }
-            }
+            quote! { extendr_api::unwrap_or_throw_error(
+                <&#self_ty>::try_from(&_self_robj)
+            ).#rust_name }
         }
     } else if let Some(ref self_ty) = &self_ty {
         // eg. Person::new()
@@ -119,10 +101,8 @@ pub fn make_function_wrappers(
         .map(translate_to_robj)
         .collect::<syn::Result<Vec<syn::Stmt>>>()?;
 
-    let actual_args: Punctuated<Expr, Token![,]> = inputs
-        .iter()
-        .filter_map(|input| translate_actual(opts, input))
-        .collect();
+    let actual_args: Punctuated<Expr, Token![,]> =
+        inputs.iter().filter_map(translate_actual).collect();
 
     let meta_args: Vec<Expr> = inputs
         .iter_mut()
@@ -471,20 +451,15 @@ fn translate_to_robj(input: &FnArg) -> syn::Result<syn::Stmt> {
 }
 
 // Generate actual argument list for the call (ie. a list of conversions).
-fn translate_actual(opts: &ExtendrOptions, input: &FnArg) -> Option<Expr> {
+fn translate_actual(input: &FnArg) -> Option<Expr> {
     match input {
         FnArg::Typed(ref pattype) => {
             let pat = &pattype.pat.as_ref();
-            let ty = &pattype.ty.as_ref();
             if let syn::Pat::Ident(ref ident) = pat {
                 let varname = format_ident!("_{}_robj", ident.ident);
-                if opts.use_try_from {
-                    Some(parse_quote! {
-                        #varname.try_into()?
-                    })
-                } else {
-                    Some(parse_quote! { <#ty>::from_robj(&#varname)? })
-                }
+                Some(parse_quote! {
+                    #varname.try_into()?
+                })
             } else {
                 None
             }

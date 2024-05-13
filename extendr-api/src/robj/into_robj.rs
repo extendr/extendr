@@ -575,7 +575,7 @@ pub trait RobjItertools: Iterator {
     /// # Arguments
     ///
     /// * `dims` - an array containing the length of each dimension
-    fn collect_rarray<'a, const LEN: usize>(
+    fn collect_rarray<const LEN: usize>(
         self,
         dims: [usize; LEN],
     ) -> Result<RArray<Self::Item, [usize; LEN]>>
@@ -583,8 +583,7 @@ pub trait RobjItertools: Iterator {
         Self: Iterator,
         Self: Sized,
         Self::Item: ToVectorValue,
-        Robj: AsTypedSlice<'a, Self::Item>,
-        Self::Item: 'a,
+        Robj: for<'a> AsTypedSlice<'a, Self::Item>,
     {
         let mut vector = self.collect_robj();
         let prod = dims.iter().product::<usize>();
@@ -658,7 +657,7 @@ where
     &'a T: ToVectorValue + 'a,
 {
     fn from(val: &'a [T; N]) -> Self {
-        fixed_size_collect(val.into_iter(), N)
+        fixed_size_collect(val.iter(), N)
     }
 }
 
@@ -668,7 +667,7 @@ where
     &'a mut T: ToVectorValue + 'a,
 {
     fn from(val: &'a mut [T; N]) -> Self {
-        fixed_size_collect(val.into_iter(), N)
+        fixed_size_collect(val.iter_mut(), N)
     }
 }
 
@@ -693,7 +692,7 @@ where
     &'a T: ToVectorValue,
 {
     fn from(val: &'a [T]) -> Self {
-        val.into_iter().collect_robj()
+        val.iter().collect_robj()
     }
 }
 
@@ -710,7 +709,7 @@ impl From<Vec<Robj>> for Robj {
 impl From<Vec<Rstr>> for Robj {
     /// Convert a vector of Rstr into strings.
     fn from(val: Vec<Rstr>) -> Self {
-        Strings::from_values(val.into_iter()).into()
+        Strings::from_values(val).into()
     }
 }
 
