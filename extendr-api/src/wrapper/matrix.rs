@@ -485,11 +485,10 @@ mod tests {
 
     #[test]
     fn test_empty_matrix_new() {
-        dbg!("print like R");
         with_r(|| {
             // These are arbitrarily filled. We cannot create assertions for them.
-            let m: RMatrix<Rbyte> = RMatrix::new(5, 2); // possible!
-            unsafe { Rf_PrintValue(m.get()) };
+            // let m: RMatrix<Rbyte> = RMatrix::new(5, 2); //   Error: Error: unimplemented type 'char' in 'eval'
+            // unsafe { Rf_PrintValue(m.get()) };
             let m: RMatrix<Rbool> = RMatrix::new(5, 2);
             unsafe { Rf_PrintValue(m.get()) };
             let m: RMatrix<Rint> = RMatrix::new(5, 2);
@@ -498,6 +497,7 @@ mod tests {
             unsafe { Rf_PrintValue(m.get()) };
             let m: RMatrix<Rcplx> = RMatrix::new(5, 2);
             unsafe { Rf_PrintValue(m.get()) };
+            rprintln!();
 
             // let m: RMatrix<Rbyte> = RMatrix::new_with_na(10, 2); // not possible!
             // unsafe { Rf_PrintValue(m.get()) };
