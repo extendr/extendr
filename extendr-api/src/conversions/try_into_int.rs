@@ -37,10 +37,12 @@ macro_rules! impl_into_integerish {
                     FpCategory::Infinite => Err(ConversionError::Underflow),
                     FpCategory::Normal => {
                         let truncated_value = self.trunc();
-                        if truncated_value < <$int_type>::MIN as $float_type {
+                        const MIN_VALUE: $float_type = <$int_type>::MIN as $float_type;
+                        if truncated_value < MIN_VALUE {
                             return Err(ConversionError::Underflow);
                         }
-                        if truncated_value > <$int_type>::MAX as $float_type {
+                        const MAX_VALUE: $float_type = <$int_type>::MAX as $float_type;
+                        if truncated_value > MAX_VALUE {
                             return Err(ConversionError::Overflow);
                         }
                         if !truncated_value.eq(self) {
