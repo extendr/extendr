@@ -177,6 +177,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: extendr/rextendr
+          ref: use_try_from
           path: ./tests/rextendr
 
       - name: Install dependencies for extendrtests and rcmdcheck
