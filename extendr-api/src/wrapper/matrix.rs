@@ -484,7 +484,6 @@ mod tests {
     use prelude::{Rcplx, Rfloat, Rint};
 
     #[test]
-    #[ignore]
     fn test_empty_matrix_new() {
         dbg!("print like R");
         with_r(|| {
