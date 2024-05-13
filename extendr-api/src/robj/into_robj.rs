@@ -575,7 +575,7 @@ pub trait RobjItertools: Iterator {
     /// # Arguments
     ///
     /// * `dims` - an array containing the length of each dimension
-    fn collect_rarray<'a, const LEN: usize>(
+    fn collect_rarray<const LEN: usize>(
         self,
         dims: [usize; LEN],
     ) -> Result<RArray<Self::Item, [usize; LEN]>>
@@ -583,8 +583,7 @@ pub trait RobjItertools: Iterator {
         Self: Iterator,
         Self: Sized,
         Self::Item: ToVectorValue,
-        Robj: AsTypedSlice<'a, Self::Item>,
-        Self::Item: 'a,
+        Robj: for<'a> AsTypedSlice<'a, Self::Item>,
     {
         let mut vector = self.collect_robj();
         let prod = dims.iter().product::<usize>();

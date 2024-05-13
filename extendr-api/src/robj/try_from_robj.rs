@@ -431,6 +431,7 @@ impl_try_from_robj!(
     bool
     Rint Rfloat Rbool Rcplx
     f32 f64
+    Vec<String>
     HashMap::<String, Robj> HashMap::<&str, Robj>
     Vec::<Rint> Vec::<Rfloat> Vec::<Rbool> Vec::<Rcplx> Vec::<u8> Vec::<i32> Vec::<f64>
     &[Rint] &[Rfloat] &[Rbool] &[Rcplx] &[u8] &[i32] &[f64]
