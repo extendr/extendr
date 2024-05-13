@@ -14,7 +14,17 @@ hello_world <- function() .Call(wrap__hello_world)
 
 do_nothing <- function() invisible(.Call(wrap__do_nothing))
 
-try_double_vec <- function(x) .Call(wrap__try_double_vec, x)
+double_scalar <- function(x) .Call(wrap__double_scalar, x)
+
+int_scalar <- function(x) .Call(wrap__int_scalar, x)
+
+bool_scalar <- function(x) .Call(wrap__bool_scalar, x)
+
+char_scalar <- function(x) .Call(wrap__char_scalar, x)
+
+char_vec <- function(x) .Call(wrap__char_vec, x)
+
+double_vec <- function(x) .Call(wrap__double_vec, x)
 
 get_doubles_element <- function(x, i) .Call(wrap__get_doubles_element, x, i)
 

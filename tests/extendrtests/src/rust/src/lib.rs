@@ -21,6 +21,51 @@ fn hello_world() -> &'static str {
 #[extendr]
 fn do_nothing() {}
 
+// TryFrom: conversions
+
+// Atomic types
+
+// Convert a double scalar to itself
+// x a number
+#[extendr]
+fn double_scalar(x: f64) -> f64 {
+    x
+}
+
+// Convert an int scalar to itself
+// x a number
+#[extendr]
+fn int_scalar(x: i32) -> i32 {
+    x
+}
+
+// Convert a bool scalar to itself
+// x a number
+#[extendr]
+fn bool_scalar(x: bool) -> bool {
+    x
+}
+
+// Convert a string to itself
+// x a string
+#[extendr]
+fn char_scalar(x: String) -> String {
+    x
+}
+
+// Convert a vector of strings to itself
+// x a vector of strings
+#[extendr]
+fn char_vec(x: Vec<String>) -> Vec<String> {
+    x
+}
+
+// Convert a numeric vector to itself
+// x a numeric vector
+#[extendr]
+fn double_vec(x: Vec<f64>) -> Vec<f64> {
+    x
+}
 
 // NA-related tests
 #[extendr]
@@ -44,18 +89,9 @@ fn check_rint_na(x: Rint) -> bool {
 }
 
 // Non-atomic types
-// TODO
-
-// TryFrom: conversions
-
+// TOD
 // Atomic types
 
-// Convert a vector of doubles to itself
-// x a vector of doubles
-#[extendr]
-fn try_double_vec(x: Vec<f64>) -> Vec<f64> {
-    x
-}
 
 // Non-atomic types
 // TODO
@@ -268,7 +304,13 @@ extendr_module! {
     fn hello_world;
     fn do_nothing;
 
-    fn try_double_vec;
+    fn double_scalar;
+    fn int_scalar;
+    fn bool_scalar;
+    fn char_scalar;
+
+    fn char_vec;
+    fn double_vec;
 
     fn get_doubles_element;
     fn get_integers_element;

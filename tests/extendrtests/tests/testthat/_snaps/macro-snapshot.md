@@ -4527,6 +4527,504 @@
                   hidden: false,
               })
       }
+      fn double_scalar(x: f64) -> f64 {
+          x
+      }
+      #[no_mangle]
+      #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+      pub extern "C" fn wrap__double_scalar(x: extendr_api::SEXP) -> extendr_api::SEXP {
+          use extendr_api::robj::*;
+          let wrap_result_state: std::result::Result<
+              std::result::Result<Robj, extendr_api::Error>,
+              Box<dyn std::any::Any + Send>,
+          > = unsafe {
+              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(double_scalar(_x_robj.try_into()?))) }),
+              )
+          };
+          match wrap_result_state {
+              Ok(Ok(zz)) => {
+                  return unsafe { zz.get() };
+              }
+              Ok(Err(conversion_err)) => {
+                  let err_string = conversion_err.to_string();
+                  drop(conversion_err);
+                  extendr_api::throw_r_error(&err_string);
+              }
+              Err(unwind_err) => {
+                  drop(unwind_err);
+                  let err_string = {
+                      let res = ::alloc::fmt::format(
+                          format_args!("user function panicked: {0}", "double_scalar"),
+                      );
+                      res
+                  };
+                  extendr_api::handle_panic(
+                      err_string.as_str(),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
+                  );
+              }
+          }
+          {
+              ::core::panicking::panic_fmt(
+                  format_args!(
+                      "internal error: entered unreachable code: {0}",
+                      format_args!("internal extendr error, this should never happen."),
+                  ),
+              );
+          }
+      }
+      #[allow(non_snake_case)]
+      fn meta__double_scalar(metadata: &mut Vec<extendr_api::metadata::Func>) {
+          let mut args = <[_]>::into_vec(
+              #[rustc_box]
+              ::alloc::boxed::Box::new([
+                  extendr_api::metadata::Arg {
+                      name: "x",
+                      arg_type: "f64",
+                      default: None,
+                  },
+              ]),
+          );
+          metadata
+              .push(extendr_api::metadata::Func {
+                  doc: "",
+                  rust_name: "double_scalar",
+                  r_name: "double_scalar",
+                  mod_name: "double_scalar",
+                  args: args,
+                  return_type: "f64",
+                  func_ptr: wrap__double_scalar as *const u8,
+                  hidden: false,
+              })
+      }
+      fn int_scalar(x: i32) -> i32 {
+          x
+      }
+      #[no_mangle]
+      #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+      pub extern "C" fn wrap__int_scalar(x: extendr_api::SEXP) -> extendr_api::SEXP {
+          use extendr_api::robj::*;
+          let wrap_result_state: std::result::Result<
+              std::result::Result<Robj, extendr_api::Error>,
+              Box<dyn std::any::Any + Send>,
+          > = unsafe {
+              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(int_scalar(_x_robj.try_into()?))) }),
+              )
+          };
+          match wrap_result_state {
+              Ok(Ok(zz)) => {
+                  return unsafe { zz.get() };
+              }
+              Ok(Err(conversion_err)) => {
+                  let err_string = conversion_err.to_string();
+                  drop(conversion_err);
+                  extendr_api::throw_r_error(&err_string);
+              }
+              Err(unwind_err) => {
+                  drop(unwind_err);
+                  let err_string = {
+                      let res = ::alloc::fmt::format(
+                          format_args!("user function panicked: {0}", "int_scalar"),
+                      );
+                      res
+                  };
+                  extendr_api::handle_panic(
+                      err_string.as_str(),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
+                  );
+              }
+          }
+          {
+              ::core::panicking::panic_fmt(
+                  format_args!(
+                      "internal error: entered unreachable code: {0}",
+                      format_args!("internal extendr error, this should never happen."),
+                  ),
+              );
+          }
+      }
+      #[allow(non_snake_case)]
+      fn meta__int_scalar(metadata: &mut Vec<extendr_api::metadata::Func>) {
+          let mut args = <[_]>::into_vec(
+              #[rustc_box]
+              ::alloc::boxed::Box::new([
+                  extendr_api::metadata::Arg {
+                      name: "x",
+                      arg_type: "i32",
+                      default: None,
+                  },
+              ]),
+          );
+          metadata
+              .push(extendr_api::metadata::Func {
+                  doc: "",
+                  rust_name: "int_scalar",
+                  r_name: "int_scalar",
+                  mod_name: "int_scalar",
+                  args: args,
+                  return_type: "i32",
+                  func_ptr: wrap__int_scalar as *const u8,
+                  hidden: false,
+              })
+      }
+      fn bool_scalar(x: bool) -> bool {
+          x
+      }
+      #[no_mangle]
+      #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+      pub extern "C" fn wrap__bool_scalar(x: extendr_api::SEXP) -> extendr_api::SEXP {
+          use extendr_api::robj::*;
+          let wrap_result_state: std::result::Result<
+              std::result::Result<Robj, extendr_api::Error>,
+              Box<dyn std::any::Any + Send>,
+          > = unsafe {
+              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(bool_scalar(_x_robj.try_into()?))) }),
+              )
+          };
+          match wrap_result_state {
+              Ok(Ok(zz)) => {
+                  return unsafe { zz.get() };
+              }
+              Ok(Err(conversion_err)) => {
+                  let err_string = conversion_err.to_string();
+                  drop(conversion_err);
+                  extendr_api::throw_r_error(&err_string);
+              }
+              Err(unwind_err) => {
+                  drop(unwind_err);
+                  let err_string = {
+                      let res = ::alloc::fmt::format(
+                          format_args!("user function panicked: {0}", "bool_scalar"),
+                      );
+                      res
+                  };
+                  extendr_api::handle_panic(
+                      err_string.as_str(),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
+                  );
+              }
+          }
+          {
+              ::core::panicking::panic_fmt(
+                  format_args!(
+                      "internal error: entered unreachable code: {0}",
+                      format_args!("internal extendr error, this should never happen."),
+                  ),
+              );
+          }
+      }
+      #[allow(non_snake_case)]
+      fn meta__bool_scalar(metadata: &mut Vec<extendr_api::metadata::Func>) {
+          let mut args = <[_]>::into_vec(
+              #[rustc_box]
+              ::alloc::boxed::Box::new([
+                  extendr_api::metadata::Arg {
+                      name: "x",
+                      arg_type: "bool",
+                      default: None,
+                  },
+              ]),
+          );
+          metadata
+              .push(extendr_api::metadata::Func {
+                  doc: "",
+                  rust_name: "bool_scalar",
+                  r_name: "bool_scalar",
+                  mod_name: "bool_scalar",
+                  args: args,
+                  return_type: "bool",
+                  func_ptr: wrap__bool_scalar as *const u8,
+                  hidden: false,
+              })
+      }
+      fn char_scalar(x: String) -> String {
+          x
+      }
+      #[no_mangle]
+      #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+      pub extern "C" fn wrap__char_scalar(x: extendr_api::SEXP) -> extendr_api::SEXP {
+          use extendr_api::robj::*;
+          let wrap_result_state: std::result::Result<
+              std::result::Result<Robj, extendr_api::Error>,
+              Box<dyn std::any::Any + Send>,
+          > = unsafe {
+              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(char_scalar(_x_robj.try_into()?))) }),
+              )
+          };
+          match wrap_result_state {
+              Ok(Ok(zz)) => {
+                  return unsafe { zz.get() };
+              }
+              Ok(Err(conversion_err)) => {
+                  let err_string = conversion_err.to_string();
+                  drop(conversion_err);
+                  extendr_api::throw_r_error(&err_string);
+              }
+              Err(unwind_err) => {
+                  drop(unwind_err);
+                  let err_string = {
+                      let res = ::alloc::fmt::format(
+                          format_args!("user function panicked: {0}", "char_scalar"),
+                      );
+                      res
+                  };
+                  extendr_api::handle_panic(
+                      err_string.as_str(),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
+                  );
+              }
+          }
+          {
+              ::core::panicking::panic_fmt(
+                  format_args!(
+                      "internal error: entered unreachable code: {0}",
+                      format_args!("internal extendr error, this should never happen."),
+                  ),
+              );
+          }
+      }
+      #[allow(non_snake_case)]
+      fn meta__char_scalar(metadata: &mut Vec<extendr_api::metadata::Func>) {
+          let mut args = <[_]>::into_vec(
+              #[rustc_box]
+              ::alloc::boxed::Box::new([
+                  extendr_api::metadata::Arg {
+                      name: "x",
+                      arg_type: "String",
+                      default: None,
+                  },
+              ]),
+          );
+          metadata
+              .push(extendr_api::metadata::Func {
+                  doc: "",
+                  rust_name: "char_scalar",
+                  r_name: "char_scalar",
+                  mod_name: "char_scalar",
+                  args: args,
+                  return_type: "String",
+                  func_ptr: wrap__char_scalar as *const u8,
+                  hidden: false,
+              })
+      }
+      fn char_vec(x: Vec<String>) -> Vec<String> {
+          x
+      }
+      #[no_mangle]
+      #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+      pub extern "C" fn wrap__char_vec(x: extendr_api::SEXP) -> extendr_api::SEXP {
+          use extendr_api::robj::*;
+          let wrap_result_state: std::result::Result<
+              std::result::Result<Robj, extendr_api::Error>,
+              Box<dyn std::any::Any + Send>,
+          > = unsafe {
+              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(char_vec(_x_robj.try_into()?))) }),
+              )
+          };
+          match wrap_result_state {
+              Ok(Ok(zz)) => {
+                  return unsafe { zz.get() };
+              }
+              Ok(Err(conversion_err)) => {
+                  let err_string = conversion_err.to_string();
+                  drop(conversion_err);
+                  extendr_api::throw_r_error(&err_string);
+              }
+              Err(unwind_err) => {
+                  drop(unwind_err);
+                  let err_string = {
+                      let res = ::alloc::fmt::format(
+                          format_args!("user function panicked: {0}", "char_vec"),
+                      );
+                      res
+                  };
+                  extendr_api::handle_panic(
+                      err_string.as_str(),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
+                  );
+              }
+          }
+          {
+              ::core::panicking::panic_fmt(
+                  format_args!(
+                      "internal error: entered unreachable code: {0}",
+                      format_args!("internal extendr error, this should never happen."),
+                  ),
+              );
+          }
+      }
+      #[allow(non_snake_case)]
+      fn meta__char_vec(metadata: &mut Vec<extendr_api::metadata::Func>) {
+          let mut args = <[_]>::into_vec(
+              #[rustc_box]
+              ::alloc::boxed::Box::new([
+                  extendr_api::metadata::Arg {
+                      name: "x",
+                      arg_type: "Vec",
+                      default: None,
+                  },
+              ]),
+          );
+          metadata
+              .push(extendr_api::metadata::Func {
+                  doc: "",
+                  rust_name: "char_vec",
+                  r_name: "char_vec",
+                  mod_name: "char_vec",
+                  args: args,
+                  return_type: "Vec",
+                  func_ptr: wrap__char_vec as *const u8,
+                  hidden: false,
+              })
+      }
+      fn double_vec(x: Vec<f64>) -> Vec<f64> {
+          x
+      }
+      #[no_mangle]
+      #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+      pub extern "C" fn wrap__double_vec(x: extendr_api::SEXP) -> extendr_api::SEXP {
+          use extendr_api::robj::*;
+          let wrap_result_state: std::result::Result<
+              std::result::Result<Robj, extendr_api::Error>,
+              Box<dyn std::any::Any + Send>,
+          > = unsafe {
+              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                      Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(double_vec(_x_robj.try_into()?))) }),
+              )
+          };
+          match wrap_result_state {
+              Ok(Ok(zz)) => {
+                  return unsafe { zz.get() };
+              }
+              Ok(Err(conversion_err)) => {
+                  let err_string = conversion_err.to_string();
+                  drop(conversion_err);
+                  extendr_api::throw_r_error(&err_string);
+              }
+              Err(unwind_err) => {
+                  drop(unwind_err);
+                  let err_string = {
+                      let res = ::alloc::fmt::format(
+                          format_args!("user function panicked: {0}", "double_vec"),
+                      );
+                      res
+                  };
+                  extendr_api::handle_panic(
+                      err_string.as_str(),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
+                  );
+              }
+          }
+          {
+              ::core::panicking::panic_fmt(
+                  format_args!(
+                      "internal error: entered unreachable code: {0}",
+                      format_args!("internal extendr error, this should never happen."),
+                  ),
+              );
+          }
+      }
+      #[allow(non_snake_case)]
+      fn meta__double_vec(metadata: &mut Vec<extendr_api::metadata::Func>) {
+          let mut args = <[_]>::into_vec(
+              #[rustc_box]
+              ::alloc::boxed::Box::new([
+                  extendr_api::metadata::Arg {
+                      name: "x",
+                      arg_type: "Vec",
+                      default: None,
+                  },
+              ]),
+          );
+          metadata
+              .push(extendr_api::metadata::Func {
+                  doc: "",
+                  rust_name: "double_vec",
+                  r_name: "double_vec",
+                  mod_name: "double_vec",
+                  args: args,
+                  return_type: "Vec",
+                  func_ptr: wrap__double_vec as *const u8,
+                  hidden: false,
+              })
+      }
       fn try_rfloat_na() -> Rfloat {
           Rfloat::na()
       }
@@ -4836,89 +5334,6 @@
                   args: args,
                   return_type: "bool",
                   func_ptr: wrap__check_rint_na as *const u8,
-                  hidden: false,
-              })
-      }
-      fn try_double_vec(x: Vec<f64>) -> Vec<f64> {
-          x
-      }
-      #[no_mangle]
-      #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-      pub extern "C" fn wrap__try_double_vec(x: extendr_api::SEXP) -> extendr_api::SEXP {
-          use extendr_api::robj::*;
-          let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
-              Box<dyn std::any::Any + Send>,
-          > = unsafe {
-              let _x_robj = extendr_api::robj::Robj::from_sexp(x);
-              std::panic::catch_unwind(
-                  std::panic::AssertUnwindSafe(|| -> std::result::Result<
-                      Robj,
-                      extendr_api::Error,
-                  > { Ok(extendr_api::Robj::from(try_double_vec(_x_robj.try_into()?))) }),
-              )
-          };
-          match wrap_result_state {
-              Ok(Ok(zz)) => {
-                  return unsafe { zz.get() };
-              }
-              Ok(Err(conversion_err)) => {
-                  let err_string = conversion_err.to_string();
-                  drop(conversion_err);
-                  extendr_api::throw_r_error(&err_string);
-              }
-              Err(unwind_err) => {
-                  drop(unwind_err);
-                  let err_string = {
-                      let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "try_double_vec"),
-                      );
-                      res
-                  };
-                  extendr_api::handle_panic(
-                      err_string.as_str(),
-                      || {
-                          #[cold]
-                          #[track_caller]
-                          #[inline(never)]
-                          const fn panic_cold_explicit() -> ! {
-                              ::core::panicking::panic_explicit()
-                          }
-                          panic_cold_explicit();
-                      },
-                  );
-              }
-          }
-          {
-              ::core::panicking::panic_fmt(
-                  format_args!(
-                      "internal error: entered unreachable code: {0}",
-                      format_args!("internal extendr error, this should never happen."),
-                  ),
-              );
-          }
-      }
-      #[allow(non_snake_case)]
-      fn meta__try_double_vec(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "x",
-                      arg_type: "Vec",
-                      default: None,
-                  },
-              ]),
-          );
-          metadata
-              .push(extendr_api::metadata::Func {
-                  doc: "",
-                  rust_name: "try_double_vec",
-                  r_name: "try_double_vec",
-                  mod_name: "try_double_vec",
-                  args: args,
-                  return_type: "Vec",
-                  func_ptr: wrap__try_double_vec as *const u8,
                   hidden: false,
               })
       }
@@ -7317,7 +7732,12 @@
           let mut impls = Vec::new();
           meta__hello_world(&mut functions);
           meta__do_nothing(&mut functions);
-          meta__try_double_vec(&mut functions);
+          meta__double_scalar(&mut functions);
+          meta__int_scalar(&mut functions);
+          meta__bool_scalar(&mut functions);
+          meta__char_scalar(&mut functions);
+          meta__char_vec(&mut functions);
+          meta__double_vec(&mut functions);
           meta__get_doubles_element(&mut functions);
           meta__get_integers_element(&mut functions);
           meta__get_logicals_element(&mut functions);
