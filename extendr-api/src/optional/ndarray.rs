@@ -196,7 +196,6 @@ where
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::FromRobj;
     use ndarray::array;
     use rstest::rstest;
 
@@ -232,19 +231,22 @@ mod test {
         "matrix(c(T, T, T, T, F, F, F, F), ncol=2, nrow=4)",
         <Array2<Rbool>>::from_shape_vec((4, 2).f(), vec![true.into(), true.into(), true.into(), true.into(), false.into(), false.into(), false.into(), false.into()]).unwrap()
     )]
-    fn test_from_robj<DataType, DimType>(
+    fn test_from_robj<DataType, DimType, Error>(
         #[case] left: &'static str,
         #[case] right: ArrayBase<DataType, DimType>,
     ) where
         DataType: Data,
-        for<'a> ArrayView<'a, <DataType as ndarray::RawData>::Elem, DimType>: FromRobj<'a>,
+        Error: std::fmt::Debug,
+        for<'a> ArrayView<'a, <DataType as ndarray::RawData>::Elem, DimType>:
+            TryFrom<&'a Robj, Error = Error>,
         DimType: Dimension,
         <DataType as ndarray::RawData>::Elem: PartialEq + std::fmt::Debug,
+        Error: std::fmt::Debug,
     {
         // Tests for the R → Rust conversion
         test! {
             let left_robj = eval_string(left).unwrap();
-            let left_array = <ArrayView<DataType::Elem, DimType>>::from_robj(&left_robj).unwrap();
+            let left_array = <ArrayView<DataType::Elem, DimType>>::try_from(&left_robj).unwrap();
             assert_eq!( left_array, right );
         }
     }
@@ -317,7 +319,7 @@ mod test {
             ];
             for rval in rvals {
                 let rval = rval.unwrap();
-                let rust_arr= <ArrayView2<i32>>::from_robj(&rval).unwrap();
+                let rust_arr= <ArrayView2<i32>>::try_from(&rval).unwrap();
                 let r_arr: Robj = (&rust_arr).try_into().unwrap();
                 assert_eq!(
                     rval,
