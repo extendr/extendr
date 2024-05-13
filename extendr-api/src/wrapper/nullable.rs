@@ -8,19 +8,19 @@ use super::*;
 ///
 ///     // Plain integer.
 ///     let s1 = r!(1);
-///     let n1 = <Nullable<i32>>::from_robj(&s1)?;
+///     let n1 = <Nullable<i32>>::try_from(&s1)?;
 ///     assert_eq!(n1, NotNull(1));
 ///
 ///     // NA integer - error.
 ///     let sna = r!(NA_INTEGER);
-///     assert_eq!(<Nullable<i32>>::from_robj(&sna).is_err(), true);
+///     assert_eq!(<Nullable<i32>>::try_from(&sna).is_err(), true);
 ///
 ///     // NA integer - option gives none.
-///     assert_eq!(<Nullable<Option<i32>>>::from_robj(&sna)?, NotNull(None));
+///     assert_eq!(<Nullable<Option<i32>>>::try_from(&sna)?, NotNull(None));
 ///
 ///     // NULL object.
 ///     let snull = r!(NULL);
-///     let nnull = <Nullable<i32>>::from_robj(&snull)?;
+///     let nnull = <Nullable<i32>>::try_from(&snull)?;
 ///     assert_eq!(nnull, Null);
 ///
 ///     assert_eq!(r!(Nullable::<i32>::Null), r!(NULL));

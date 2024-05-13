@@ -4,9 +4,6 @@ use extendr_macros::{IntoRobj, TryFromRobj};
 #[extendr(foo = true)]
 fn foo() {}
 
-#[extendr(use_try_from = 1)]
-fn foo() {}
-
 #[extendr(r_name = 1)]
 fn foo() {}
 
