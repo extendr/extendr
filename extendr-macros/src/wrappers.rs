@@ -27,16 +27,10 @@ use proc_macro2::Ident;
 use quote::{format_ident, quote};
 use syn::{parse_quote, punctuated::Punctuated, Expr, ExprLit, FnArg, ItemFn, Token, Type};
 
+use crate::extendr_options::ExtendrOptions;
+
 pub const META_PREFIX: &str = "meta__";
 pub const WRAP_PREFIX: &str = "wrap__";
-
-#[derive(Debug, Default)]
-pub struct ExtendrOptions {
-    pub use_try_from: bool,
-    pub r_name: Option<String>,
-    pub mod_name: Option<String>,
-    pub use_rng: bool,
-}
 
 // Generate wrappers for a specific function.
 pub fn make_function_wrappers(

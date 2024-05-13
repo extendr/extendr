@@ -3,7 +3,8 @@ use proc_macro::TokenStream;
 use quote::{format_ident, quote};
 use syn::{ItemFn, ItemImpl};
 
-use crate::wrappers::{self, ExtendrOptions};
+use crate::extendr_options::ExtendrOptions;
+use crate::wrappers;
 
 /// Make inherent implementations available to R
 ///
