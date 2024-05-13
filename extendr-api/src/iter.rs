@@ -136,6 +136,7 @@ impl_iter_debug!(PairlistIter);
 impl_iter_debug!(StrIter);
 impl_iter_debug!(EnvIter);
 
+// Lets us create a StrIter from an Robj, e.g. Strings or a factor
 impl TryFrom<&Robj> for StrIter {
     type Error = Error;
 
