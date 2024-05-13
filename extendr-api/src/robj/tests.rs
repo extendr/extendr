@@ -37,7 +37,6 @@ fn test_try_from() {
 
         use std::collections::HashMap;
         let list = eval_string("list(a = 1L, b = 2L)").unwrap();
-        // let list: List = list.try_into().unwrap();
         let hmap1 = [("a".into(), 1.into()), ("b".into(), 2.into())]
             .iter()
             .cloned()
