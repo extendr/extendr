@@ -1,4 +1,5 @@
 use std::fmt::{Debug, Display, Formatter};
+use std::num::FpCategory;
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub enum ConversionError {
@@ -27,25 +28,25 @@ macro_rules! impl_into_integerish {
     ($float_type:ty, $int_type:ty) => {
         impl FloatToInt<$int_type> for $float_type {
             fn try_into_int(&self) -> Result<$int_type, ConversionError> {
-                if *self == <$float_type>::default() {
-                    return Ok(<$int_type>::default());
+                match self.classify() {
+                    FpCategory::Nan | FpCategory::Subnormal=> Err(ConversionError::NotIntegerish),
+                    FpCategory::Zero => Ok(<$int_type>::default()),
+                    FpCategory::Infinite if self.is_sign_positive() => Err(ConversionError::Overflow),
+                    FpCategory::Infinite => Err(ConversionError::Underflow),
+                    FpCategory::Normal => {
+                        let truncated_value = self.trunc();
+                        if truncated_value < <$int_type>::MIN as $float_type {
+                            return Err(ConversionError::Underflow);
+                        }
+                        if truncated_value > <$int_type>::MAX as $float_type {
+                            return Err(ConversionError::Overflow);
+                        }
+                        if !truncated_value.eq(self) {
+                            return Err(ConversionError::NotIntegerish);
+                        }
+                        return Ok(truncated_value as $int_type)
+                    },
                 }
-
-                if !self.is_normal() {
-                    return Err(ConversionError::NotIntegerish);
-                }
-
-                let truncated_value = self.trunc();
-                if truncated_value < <$int_type>::MIN as $float_type {
-                    return Err(ConversionError::Underflow);
-                }
-                if truncated_value > <$int_type>::MAX as $float_type {
-                    return Err(ConversionError::Overflow);
-                }
-                if !truncated_value.eq(self) {
-                    return Err(ConversionError::NotIntegerish);
-                }
-                Ok(truncated_value as $int_type)
             }
         }
     };
@@ -66,8 +67,9 @@ impl_into_integerish!(f64, u8);
 
 #[cfg(test)]
 mod try_into_int_tests {
+    use crate::{CanBeNA, Result, test};
     use crate::conversions::try_into_int::{ConversionError, FloatToInt};
-    use crate::{test, CanBeNA, Result};
+
     type ConversionResult<T, E> = std::result::Result<T, E>;
 
     #[test]
