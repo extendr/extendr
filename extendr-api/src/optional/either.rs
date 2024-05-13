@@ -1,18 +1,19 @@
 /*!
-Enables support for the [`either`](https://docs.rs/either/latest/either/) crate, to allow accepting and returning `Either<L, R>` values if both `L` and `R` are convertible to/from `Robj`.
+Enables support for the [`either`](https://docs.rs/either/latest/either/) crate, 
+to allow accepting and returning `Either<L, R>` values if both `L` and `R` are convertible to/from `Robj`.
 
-`either` crate support is currently available in the dev version of `extendr-api` and requires enabling `either` feature:
+`either` crate support is currently available in the dev version of `extendr-api`
+and requires enabling `either` feature:
+
 ```toml
 [dependencies]
 extendr-api = { git = "https://github.com/extendr/extendr" , features = ["either"] }
 ```
 
-Accepting `Either<L, R>` as an input requires enabling the `extendr` option `use_try_from = TRUE`:
-
 ```rust
 use extendr_api::prelude::*;
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn accept_numeric(input : Either<Integers, Doubles>) {}
 ```
 
@@ -20,7 +21,7 @@ Here is an example of `either` usage -- a type-aware sum:
 ```rust
 use extendr_api::prelude::*;
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn type_aware_sum(input : Either<Integers, Doubles>) -> Either<Rint, Rfloat> {
     match input {
         Left(ints) => Left(ints.iter().sum::<Rint>()),

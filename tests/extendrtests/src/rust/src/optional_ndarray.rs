@@ -4,7 +4,7 @@ use extendr_api::prelude::*;
 /// Test case adopted from https://github.com/mikemahoney218/examplerust/blob/23d21b1ced4e24b7a7c00dd36290114dc1bbd113/src/rust/src/lib.rs#L5
 /// @param a : Matrix of real values or `NULL`
 /// @export
-#[extendr(use_try_from = true)]
+#[extendr]
 fn euclidean_dist(a: Nullable<ArrayView2<Rfloat>>) -> Nullable<Doubles> {
     if let NotNull(a) = a {
         let nrow = a.nrows();

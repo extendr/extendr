@@ -1,6 +1,6 @@
 use extendr_api::prelude::*;
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn type_aware_sum(input: Either<Integers, Doubles>) -> Either<Rint, Rfloat> {
     match input {
         Left(left) => Left(left.iter().sum()),

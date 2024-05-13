@@ -1,16 +1,16 @@
 use extendr_api::prelude::*;
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn test_i32(val: i32) -> i32 {
     val
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn test_i16(val: i16) -> i16 {
     val
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn test_option_i32(val: Option<i32>) -> i32 {
     if let Some(i) = val {
         i
@@ -19,7 +19,7 @@ fn test_option_i32(val: Option<i32>) -> i32 {
     }
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn test_option_f64(val: Option<f64>) -> f64 {
     if let Some(i) = val {
         i
@@ -28,7 +28,7 @@ fn test_option_f64(val: Option<f64>) -> f64 {
     }
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn test_option_i16(val: Option<i16>) -> i16 {
     if let Some(i) = val {
         i
@@ -37,12 +37,12 @@ fn test_option_i16(val: Option<i16>) -> i16 {
     }
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn test_rint(val: Rint) -> Rint {
     val
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn test_integers(val: Integers) -> Integers {
     val
 }
@@ -59,12 +59,12 @@ extendr_module! {
     fn test_rename_mymod;
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn test_integers2(val: Integers) -> Integers {
     val.iter().map(|i| i + 1).collect()
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn test_integers3(val: Integers) -> Rint {
     val.iter().sum()
 }
@@ -173,7 +173,7 @@ fn test_call_macro() {
     }
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn test_metadata_1(#[default = "NULL"] val: Robj) -> i32 {
     if val.is_null() {
         1
