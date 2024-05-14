@@ -592,21 +592,34 @@ impl Robj {
     ///    assert_eq!(robj1.as_str(), Some("xyz"));
     ///    assert_eq!(robj2.as_str(), None);
     /// }
-    /// ```
+    /// ```    
     pub fn as_str<'a>(&self) -> Option<&'a str> {
         unsafe {
-            match self.sexptype() {
+            let charsxp = match self.sexptype() {
                 STRSXP => {
+                    // only allows scalar strings
                     if self.len() != 1 {
-                        None
-                    } else {
-                        Some(to_str(R_CHAR(STRING_ELT(self.get(), 0)) as *const u8))
+                        return None;
                     }
+                    STRING_ELT(self.get(), 0)
                 }
-                // CHARSXP => Some(to_str(R_CHAR(self.get()) as *const u8)),
-                // SYMSXP => Some(to_str(R_CHAR(PRINTNAME(self.get())) as *const u8)),
-                _ => None,
+                CHARSXP => self.get(),
+                SYMSXP => PRINTNAME(self.get()),
+                _ => return None,
+            };
+
+            assert_eq!(TYPEOF(charsxp), SEXPTYPE::CHARSXP);
+
+            if charsxp == R_NaString {
+                return Some(<&str>::na());
             }
+            if charsxp == R_BlankString {
+                return Some("")
+            }
+
+            let length = Rf_xlength(charsxp);
+            let all_bytes = std::slice::from_raw_parts(R_CHAR(charsxp) as _, length as _);
+            Some(std::str::from_utf8_unchecked(all_bytes))
         }
     }
 
@@ -1081,20 +1094,6 @@ impl PartialEq<Robj> for Robj {
             R_compute_identical(self.get(), rhs.get(), 16) != Rboolean::FALSE
         }
     }
-}
-
-// Internal utf8 to str conversion.
-// Lets not worry about non-ascii/unicode strings for now (or ever).
-pub(crate) unsafe fn to_str<'a>(ptr: *const u8) -> &'a str {
-    let mut len = 0;
-    loop {
-        if *ptr.offset(len) == 0 {
-            break;
-        }
-        len += 1;
-    }
-    let slice = std::slice::from_raw_parts(ptr, len as usize);
-    std::str::from_utf8_unchecked(slice)
 }
 
 /// Release any owned objects.

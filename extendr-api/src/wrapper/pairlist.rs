@@ -139,9 +139,11 @@ impl Iterator for PairlistIter {
                 self.list_elem = CDR(sexp);
                 if TYPEOF(tag) == SEXPTYPE::SYMSXP {
                     let printname = PRINTNAME(tag);
-                    assert!(TYPEOF(printname) == SEXPTYPE::CHARSXP);
-                    let name = to_str(R_CHAR(printname) as *const u8);
-                    Some((std::mem::transmute(name), value))
+                    assert_eq!(TYPEOF(printname),  SEXPTYPE::CHARSXP); // printname is always a CHARSXP
+                    //TODO: use RawRobj here once it is a thing
+                    let length = Rf_xlength(printname);
+                    let all_bytes = std::slice::from_raw_parts(R_CHAR(printname) as _, length as _);
+                    Some((std::str::from_utf8_unchecked(all_bytes), value))
                 } else {
                     // empty string represents the absense of the name
                     Some(("", value))
