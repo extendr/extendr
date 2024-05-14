@@ -4,18 +4,22 @@ use crate::single_threaded;
 
 mod repeat_into_robj;
 
+/// Returns an `CHARSXP` based on the provided `&str`.
+///
+/// Note that R does string interning, thus repeated application of this
+/// function on the same string, will incur little computational cost.
+///
+/// Note, that you must protect the return value somehow.
 pub(crate) fn str_to_character(s: &str) -> SEXP {
     unsafe {
         if s.is_na() {
             R_NaString
+        } else if s.is_empty() {
+            R_BlankString
         } else {
             single_threaded(|| {
                 // this function embeds a terminating \nul
-                Rf_mkCharLenCE(
-                    s.as_ptr() as *const raw::c_char,
-                    s.len() as i32,
-                    cetype_t::CE_UTF8,
-                )
+                Rf_mkCharLenCE(s.as_ptr().cast(), s.len() as i32, cetype_t::CE_UTF8)
             })
         }
     }

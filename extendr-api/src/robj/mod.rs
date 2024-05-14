@@ -609,11 +609,11 @@ impl Robj {
             };
             if charsxp == R_NaString {
                 return Some(<&str>::na());
-            }
-            if charsxp == R_BlankString {
+            } else if charsxp == R_BlankString {
                 return Some("");
+            } else {
+                Some(rstr::charsxp_to_str(charsxp))
             }
-            Some(rstr::charsxp_to_str(charsxp))
         }
     }
 

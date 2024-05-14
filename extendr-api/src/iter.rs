@@ -56,20 +56,16 @@ impl StrIter {
 }
 
 // Get a string reference from a `CHARSXP`
-fn str_from_strsxp<'a>(sexp: SEXP, index: isize) -> &'a str {
+pub(crate) fn str_from_strsxp<'a>(sexp: SEXP, index: isize) -> &'a str {
     single_threaded(|| unsafe {
         let charsxp = STRING_ELT(sexp, index);
-        //TODO: this can be replaced with Robj::as_str, but it isn't
-        // because of the allocation-protection mechanism that would be
-        // unnecessary. Use when RawRobj is a thing
         if charsxp == R_NaString {
             return <&str>::na();
-        }
-        if charsxp == R_BlankString {
+        } else if charsxp == R_BlankString {
             return "";
+        } else {
+            rstr::charsxp_to_str(charsxp)
         }
-        // if `CHARSXP`, then length is number of non-null bytes.
-        rstr::charsxp_to_str(charsxp)
     })
 }
 
