@@ -614,7 +614,7 @@ impl Robj {
                 return Some(<&str>::na());
             }
             if charsxp == R_BlankString {
-                return Some("")
+                return Some("");
             }
 
             let length = Rf_xlength(charsxp);

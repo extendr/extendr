@@ -69,7 +69,7 @@ fn str_from_strsxp<'a>(sexp: SEXP, index: isize) -> &'a str {
             return "";
         }
         // if `CHARSXP`, then length is number of non-null bytes.
-        assert_eq!(TYPEOF(sexp), SEXPTYPE::CHARSXP);
+        assert_eq!(TYPEOF(charsxp), SEXPTYPE::CHARSXP);
         let length = Rf_xlength(charsxp);
         let all_bytes = std::slice::from_raw_parts(R_CHAR(charsxp) as _, length as _);
         std::str::from_utf8_unchecked(all_bytes)
@@ -92,8 +92,7 @@ impl Iterator for StrIter {
                 None
             } else if TYPEOF(vector) == SEXPTYPE::STRSXP {
                 Some(str_from_strsxp(vector, i as isize))
-            } else if TYPEOF(vector) == SEXPTYPE::INTSXP && TYPEOF(self.levels) == SEXPTYPE::STRSXP
-            {
+            } else if Rf_isFactor(vector).into() {
                 // factor support: factor is an integer, and we need
                 // the value of it, to retrieve the assigned label
                 let j = *(INTEGER(vector).add(i));
@@ -183,33 +182,39 @@ pub trait AsStrIter: GetSexp + Types + Length + Attributes + Rinternals {
     fn as_str_iter(&self) -> Option<StrIter> {
         let i = 0;
         let len = self.len();
-        match self.sexptype() {
-            SEXPTYPE::STRSXP => unsafe {
+        if self.sexptype() == SEXPTYPE::STRSXP {
+            return unsafe {
                 Some(StrIter {
                     vector: self.as_robj().clone(),
                     i,
                     len,
                     levels: R_NilValue,
                 })
-            },
-            SEXPTYPE::INTSXP => unsafe {
-                if let Some(levels) = self.get_attrib(levels_symbol()) {
-                    if self.is_factor() && levels.sexptype() == SEXPTYPE::STRSXP {
-                        Some(StrIter {
-                            vector: self.as_robj().clone(),
-                            i,
-                            len,
-                            levels: levels.get(),
-                        })
-                    } else {
-                        None
-                    }
-                } else {
-                    None
-                }
-            },
-            _ => None,
+            };
         }
+        if self.sexptype() == SEXPTYPE::CHARSXP {
+            let len = 1;
+            return unsafe {
+                Some(StrIter {
+                    vector: self.as_robj().clone(),
+                    i,
+                    len,
+                    levels: R_NilValue,
+                })
+            };
+        }
+        if self.is_factor() {
+            let levels = self.get_attrib(levels_symbol()).unwrap();
+            return unsafe {
+                Some(StrIter {
+                    vector: self.as_robj().clone(),
+                    i,
+                    len,
+                    levels: levels.get(),
+                })
+            };
+        }
+        None
     }
 }
 
