@@ -28,11 +28,7 @@ impl Rstr {
     /// Get the string from a character object.
     /// If the string is NA, then the special na_str() is returned.
     pub fn as_str(&self) -> &str {
-        if unsafe { self.robj.get() == R_NaString } {
-            <&str>::na()
-        } else {
-            self.into()
-        }
+        self.into()
     }
 }
 
