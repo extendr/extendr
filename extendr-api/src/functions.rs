@@ -56,7 +56,7 @@ pub fn global_function<K: Into<Robj>>(key: K) -> Result<Robj> {
 
 /// Find a namespace by name.
 ///
-/// See also [Robj::double_colon].
+/// See also [`Robj::double_colon`].
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
@@ -64,6 +64,7 @@ pub fn global_function<K: Into<Robj>>(key: K) -> Result<Robj> {
 ///    assert_eq!(find_namespace("stats").is_ok(), true);
 /// }
 /// ```
+/// [`Robj::double_colon`]: Operators::double_colon
 pub fn find_namespace<K: Into<Robj>>(key: K) -> Result<Environment> {
     let key = key.into();
     let res = single_threaded(|| call!(".getNamespace", key.clone()));
@@ -131,7 +132,7 @@ pub fn new_env(parent: Environment, hash: bool, capacity: i32) -> Environment {
         .unwrap()
 }
 
-/// The base environment; formerly R_NilValue
+/// The base environment; formerly `R_NilValue`
 ///
 /// ```
 /// use extendr_api::prelude::*;

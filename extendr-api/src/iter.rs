@@ -55,23 +55,24 @@ impl StrIter {
     }
 }
 
-// Get a string reference from a CHARSXP
+// Get a string reference from a `CHARSXP`
 fn str_from_strsxp<'a>(sexp: SEXP, index: isize) -> &'a str {
     single_threaded(|| unsafe {
-        if index < 0 || index >= Rf_xlength(sexp) {
-            <&str>::na()
-        } else {
-            let charsxp = STRING_ELT(sexp, index);
-            if charsxp == R_NaString {
-                <&str>::na()
-            } else if TYPEOF(charsxp) == SEXPTYPE::CHARSXP {
-                let ptr = R_CHAR(charsxp) as *const u8;
-                let slice = std::slice::from_raw_parts(ptr, Rf_xlength(charsxp) as usize);
-                std::str::from_utf8_unchecked(slice)
-            } else {
-                <&str>::na()
-            }
+        let charsxp = STRING_ELT(sexp, index);
+        //TODO: this can be replaced with Robj::as_str, but it isn't
+        // because of the allocation-protection mechanism that would be
+        // unnecessary. Use when RawRobj is a thing
+        if charsxp == R_NaString {
+            return <&str>::na();
         }
+        if charsxp == R_BlankString {
+            return "";
+        }
+        // if `CHARSXP`, then length is number of non-null bytes.
+        // assert_eq!(TYPEOF(sexp), CHARSXP);
+        let length = Rf_xlength(charsxp);
+        let all_bytes = std::slice::from_raw_parts(R_CHAR(charsxp) as _, length as _);
+        std::str::from_utf8_unchecked(all_bytes)
     })
 }
 
@@ -93,9 +94,13 @@ impl Iterator for StrIter {
                 Some(str_from_strsxp(vector, i as isize))
             } else if TYPEOF(vector) == SEXPTYPE::INTSXP && TYPEOF(self.levels) == SEXPTYPE::STRSXP
             {
+                // factor support: factor is an integer, and we need
+                // the value of it, to retrieve the assigned label
                 let j = *(INTEGER(vector).add(i));
+                // assert_eq!(TYPEOF(self.levels), STRSXP, "levels of a factor must always be a character-vector");
+                // assert_ne!(j, 0, "invalid factor, where level/label i 0-indexed");
                 Some(str_from_strsxp(self.levels, j as isize - 1))
-            } else if TYPEOF(vector) == SEXPTYPE::NILSXP {
+            } else if TYPEOF(vector) == SEXPTYPE::NILSXP || vector == R_NaString {
                 Some(<&str>::na())
             } else {
                 None
