@@ -607,19 +607,13 @@ impl Robj {
                 SYMSXP => PRINTNAME(self.get()),
                 _ => return None,
             };
-
-            assert_eq!(TYPEOF(charsxp), SEXPTYPE::CHARSXP);
-
             if charsxp == R_NaString {
                 return Some(<&str>::na());
             }
             if charsxp == R_BlankString {
                 return Some("");
             }
-
-            let length = Rf_xlength(charsxp);
-            let all_bytes = std::slice::from_raw_parts(R_CHAR(charsxp) as _, length as _);
-            Some(std::str::from_utf8_unchecked(all_bytes))
+            Some(rstr::charsxp_to_str(charsxp))
         }
     }
 

@@ -53,11 +53,7 @@ impl Symbol {
         unsafe {
             let sexp = self.robj.get();
             let printname = PRINTNAME(sexp);
-            //TODO: Use `RawRobj` when it is a thing
-            assert_eq!(TYPEOF(printname), SEXPTYPE::CHARSXP); // printname is always CHARSXP
-            let length = Rf_xlength(printname);
-            let all_bytes = std::slice::from_raw_parts(R_CHAR(printname) as _, length as _);
-            std::str::from_utf8_unchecked(all_bytes)
+            rstr::charsxp_to_str(printname)
         }
     }
 }

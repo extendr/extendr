@@ -16,6 +16,12 @@ use super::*;
 pub struct Rstr {
     pub(crate) robj: Robj,
 }
+pub(crate) unsafe fn charsxp_to_str(charsxp: SEXP) -> &'static str {
+    assert_eq!(TYPEOF(charsxp), SEXPTYPE::CHARSXP);
+    let length = Rf_xlength(charsxp);
+    let all_bytes = std::slice::from_raw_parts(R_CHAR(charsxp).cast(), length.try_into().unwrap());
+    std::str::from_utf8_unchecked(all_bytes)
+}
 
 impl Rstr {
     /// Make a character object from a string.
@@ -64,10 +70,7 @@ impl From<&Rstr> for &str {
                 return "";
             }
             // if `CHARSXP`, then length is number of non-null bytes.
-            assert_eq!(TYPEOF(sexp), SEXPTYPE::CHARSXP);
-            let length = Rf_xlength(sexp);
-            let all_bytes = std::slice::from_raw_parts(R_CHAR(sexp) as _, length as _);
-            std::str::from_utf8_unchecked(all_bytes)
+            rstr::charsxp_to_str(sexp)
         }
     }
 }

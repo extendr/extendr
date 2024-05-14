@@ -69,10 +69,7 @@ fn str_from_strsxp<'a>(sexp: SEXP, index: isize) -> &'a str {
             return "";
         }
         // if `CHARSXP`, then length is number of non-null bytes.
-        assert_eq!(TYPEOF(charsxp), SEXPTYPE::CHARSXP);
-        let length = Rf_xlength(charsxp);
-        let all_bytes = std::slice::from_raw_parts(R_CHAR(charsxp) as _, length as _);
-        std::str::from_utf8_unchecked(all_bytes)
+        rstr::charsxp_to_str(charsxp)
     })
 }
 
