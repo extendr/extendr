@@ -656,6 +656,7 @@ mod tests {
     use extendr_macros::pairlist;
 
     #[extendr]
+    #[allow(clippy::too_many_arguments)]
     pub fn inttypes(a: i8, b: u8, c: i16, d: u16, e: i32, f: u32, g: i64, h: u64) {
         assert_eq!(a, 1);
         assert_eq!(b, 2);
