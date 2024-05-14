@@ -21,7 +21,7 @@ faer = "0.18.0"
 
 # TODO: I couldn't find any nice way to add the condition based on the R version
 # except for using libR-sys just for "DEP_R_*" envvars.
-libR-sys = "*"
+libR-sys = "0.7.0"
 
 [patch.crates-io]
 ## This is configured to work with RStudio features.
