@@ -608,9 +608,9 @@ impl Robj {
                 _ => return None,
             };
             if charsxp == R_NaString {
-                return Some(<&str>::na());
+                Some(<&str>::na())
             } else if charsxp == R_BlankString {
-                return Some("");
+                Some("")
             } else {
                 Some(rstr::charsxp_to_str(charsxp))
             }

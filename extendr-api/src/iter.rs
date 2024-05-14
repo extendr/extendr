@@ -60,9 +60,9 @@ pub(crate) fn str_from_strsxp<'a>(sexp: SEXP, index: isize) -> &'a str {
     single_threaded(|| unsafe {
         let charsxp = STRING_ELT(sexp, index);
         if charsxp == R_NaString {
-            return <&str>::na();
+            <&str>::na()
         } else if charsxp == R_BlankString {
-            return "";
+            ""
         } else {
             rstr::charsxp_to_str(charsxp)
         }
@@ -177,38 +177,37 @@ pub trait AsStrIter: GetSexp + Types + Length + Attributes + Rinternals {
         let i = 0;
         let len = self.len();
         if self.sexptype() == SEXPTYPE::STRSXP {
-            return unsafe {
+            unsafe {
                 Some(StrIter {
                     vector: self.as_robj().clone(),
                     i,
                     len,
                     levels: R_NilValue,
                 })
-            };
-        }
-        if self.sexptype() == SEXPTYPE::CHARSXP {
+            }
+        } else if self.sexptype() == SEXPTYPE::CHARSXP {
             let len = 1;
-            return unsafe {
+            unsafe {
                 Some(StrIter {
                     vector: self.as_robj().clone(),
                     i,
                     len,
                     levels: R_NilValue,
                 })
-            };
-        }
-        if self.is_factor() {
+            }
+        } else if self.is_factor() {
             let levels = self.get_attrib(levels_symbol()).unwrap();
-            return unsafe {
+            unsafe {
                 Some(StrIter {
                     vector: self.as_robj().clone(),
                     i,
                     len,
                     levels: levels.get(),
                 })
-            };
+            }
+        } else {
+            None
         }
-        None
     }
 }
 
