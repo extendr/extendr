@@ -16,6 +16,10 @@ use super::*;
 pub struct Rstr {
     pub(crate) robj: Robj,
 }
+
+/// Returns a rust string-slice based on the provided `SEXP`, who is of type
+/// [`SEXPTYPE::CHARSXP`]. Note that the length of a `CHARSXP` is exactly
+/// the number of non-null bytes in said R character.
 pub(crate) unsafe fn charsxp_to_str(charsxp: SEXP) -> &'static str {
     assert_eq!(TYPEOF(charsxp), SEXPTYPE::CHARSXP);
     let length = Rf_xlength(charsxp);
