@@ -10,6 +10,7 @@ pub(crate) fn str_to_character(s: &str) -> SEXP {
             R_NaString
         } else {
             single_threaded(|| {
+                // this function embeds a terminating \nul
                 Rf_mkCharLenCE(
                     s.as_ptr() as *const raw::c_char,
                     s.len() as i32,

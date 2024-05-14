@@ -161,7 +161,7 @@ pub trait Slices: GetSexp {
     /// # Safety
     ///
     /// Unless the type is correct, this will cause undefined behaviour.
-    /// Creating this slice will also instatiate and Altrep objects.
+    /// Creating this slice will also instantiate an Altrep objects.
     unsafe fn as_typed_slice_raw<T>(&self) -> &[T] {
         let len = XLENGTH(self.get()) as usize;
         let data = DATAPTR_RO(self.get()) as *const T;
@@ -173,8 +173,8 @@ pub trait Slices: GetSexp {
     /// # Safety
     ///
     /// Unless the type is correct, this will cause undefined behaviour.
-    /// Creating this slice will also instatiate and Altrep objects.
-    /// Not all obejects (especially not list and strings) support this.
+    /// Creating this slice will also instantiate Altrep objects.
+    /// Not all objects (especially not list and strings) support this.
     unsafe fn as_typed_slice_raw_mut<T>(&mut self) -> &mut [T] {
         let len = XLENGTH(self.get()) as usize;
         let data = DATAPTR(self.get_mut()) as *mut T;
@@ -352,6 +352,9 @@ impl Robj {
                 let sexp = self.get();
                 use SEXPTYPE::*;
                 match self.sexptype() {
+                    // a character vector contains `CHARSXP`, and thus you
+                    // seldomly have `Robj`'s that are `CHARSXP` themselves
+                    CHARSXP => sexp == libR_sys::R_NaString,
                     STRSXP => STRING_ELT(sexp, 0) == libR_sys::R_NaString,
                     INTSXP => *(INTEGER(sexp)) == libR_sys::R_NaInt,
                     LGLSXP => *(LOGICAL(sexp)) == libR_sys::R_NaInt,
