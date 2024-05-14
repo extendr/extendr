@@ -4,6 +4,14 @@
 use super::scalar::{Rint, Scalar};
 use super::*;
 
+thread_local! {
+    #[allow(non_upper_case_globals)]
+    pub static R_FactorSymbol: once_cell::unsync::Lazy<SEXP> = once_cell::unsync::Lazy::new(||{
+        let factor_c_string = CString::new("factor").unwrap();
+        unsafe { libR_sys::Rf_install(factor_c_string.as_ptr()) }
+    });
+}
+
 #[derive(PartialEq, Clone)]
 pub struct Factors {
     pub(crate) robj: Robj,
