@@ -90,17 +90,18 @@ impl Iterator for StrIter {
             let vector = self.vector.get();
             if i >= self.len {
                 None
+            } else if TYPEOF(vector) == SEXPTYPE::NILSXP {
+                Some(<&str>::na())
             } else if TYPEOF(vector) == SEXPTYPE::STRSXP {
                 Some(str_from_strsxp(vector, i as isize))
             } else if Rf_isFactor(vector).into() {
                 // factor support: factor is an integer, and we need
                 // the value of it, to retrieve the assigned label
                 let j = *(INTEGER(vector).add(i));
+                let j = j.saturating_sub_unsigned(1) as _;
                 // assert_eq!(TYPEOF(self.levels), STRSXP, "levels of a factor must always be a character-vector");
                 // assert_ne!(j, 0, "invalid factor, where level/label i 0-indexed");
-                Some(str_from_strsxp(self.levels, j as isize - 1))
-            } else if TYPEOF(vector) == SEXPTYPE::NILSXP || vector == R_NaString {
-                Some(<&str>::na())
+                Some(str_from_strsxp(self.levels, j))
             } else {
                 None
             }
