@@ -66,15 +66,14 @@ impl From<&str> for Rstr {
 impl From<&Rstr> for &str {
     fn from(value: &Rstr) -> Self {
         unsafe {
-            let sexp = value.robj.get();
-            if sexp == R_NaString {
-                return Self::na();
+            let charsxp = value.robj.get();
+            if charsxp == R_NaString {
+                Self::na()
+            } else if charsxp == R_BlankString {
+                ""
+            } else {
+                rstr::charsxp_to_str(charsxp)
             }
-            if sexp == R_BlankString {
-                return "";
-            }
-            // if `CHARSXP`, then length is number of non-null bytes.
-            rstr::charsxp_to_str(sexp)
         }
     }
 }
