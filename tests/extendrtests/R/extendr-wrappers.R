@@ -228,6 +228,8 @@ MySubmoduleClass$max_ref <- function(other) .Call(wrap__MySubmoduleClass__max_re
 
 MySubmoduleClass$max_ref_offset <- function(other, `_offset`) .Call(wrap__MySubmoduleClass__max_ref_offset, self, other, `_offset`)
 
+MySubmoduleClass$max_ref2 <- function(other) .Call(wrap__MySubmoduleClass__max_ref2, self, other)
+
 #' @rdname MySubmoduleClass
 #' @usage NULL
 #' @export

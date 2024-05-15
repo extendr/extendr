@@ -37,4 +37,9 @@ test_that("Return the right externalptr", {
   x <- MySubmoduleClass$new()
   x$set_a(22)
   x$max_ref_offset(y, 30)
+
+  # check use of &Self as other
+  max_class <- x$max_ref2(y)
+  expect_identical(max_class, y)
+  expect_false(isTRUE(identical(x, max_class)))
 })

@@ -3515,6 +3515,9 @@
               ) -> &Self {
                   if self.a > other.a { self } else { other }
               }
+              fn max_ref2(&self, other: &'static Self) -> &Self {
+                  if self.a > other.a { self } else { other }
+              }
           }
           #[no_mangle]
           #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
@@ -4480,6 +4483,115 @@
                       hidden: false,
                   })
           }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__MySubmoduleClass__max_ref2(
+              _self: extendr_api::SEXP,
+              other: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+                  let _other_robj = extendr_api::robj::Robj::from_sexp(other);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          let return_ref_to_self = extendr_api::unwrap_or_throw_error(
+                                  <&MySubmoduleClass>::try_from(&_self_robj),
+                              )
+                              .max_ref2(_other_robj.try_into()?);
+                          if std::ptr::addr_eq(
+                              libR_sys::R_ExternalPtrAddr(_self),
+                              std::ptr::from_ref(return_ref_to_self),
+                          ) {
+                              return Ok(extendr_api::Robj::from_sexp(_self));
+                          }
+                          if std::ptr::addr_eq(
+                              libR_sys::R_ExternalPtrAddr(other),
+                              std::ptr::from_ref(return_ref_to_self),
+                          ) {
+                              return Ok(extendr_api::Robj::from_sexp(other));
+                          }
+                          Err(Error::ExpectedExternalPtrReference)
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("user function panicked: {0}", "max_ref2"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__MySubmoduleClass__max_ref2(
+              metadata: &mut Vec<extendr_api::metadata::Func>,
+          ) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "self",
+                          arg_type: "MySubmoduleClass",
+                          default: None,
+                      },
+                      extendr_api::metadata::Arg {
+                          name: "other",
+                          arg_type: "Self",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "max_ref2",
+                      r_name: "max_ref2",
+                      mod_name: "max_ref2",
+                      args: args,
+                      return_type: "Self",
+                      func_ptr: wrap__MySubmoduleClass__max_ref2 as *const u8,
+                      hidden: false,
+                  })
+          }
           impl TryFrom<Robj> for &MySubmoduleClass {
               type Error = Error;
               fn try_from(robj: Robj) -> Result<Self> {
@@ -4532,6 +4644,7 @@
               meta__MySubmoduleClass__me_explicit_mut(&mut methods);
               meta__MySubmoduleClass__max_ref(&mut methods);
               meta__MySubmoduleClass__max_ref_offset(&mut methods);
+              meta__MySubmoduleClass__max_ref2(&mut methods);
               impls
                   .push(extendr_api::metadata::Impl {
                       doc: " Class for testing (exported)\n @examples\n x <- MySubmoduleClass$new()\n x$a()\n x$set_a(10)\n x$a()\n @export",
