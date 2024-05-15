@@ -201,7 +201,9 @@ impl<T> TryFrom<&Robj> for &ExternalPtr<T> {
     type Error = Error;
 
     fn try_from(value: &Robj) -> Result<Self> {
-        //FIXME: add a check
+        if !value.is_external_pointer() {
+            return Err(Error::ExpectedExternalPtr(value.clone()));
+        }
         unsafe { Ok(std::mem::transmute(value)) }
     }
 }
@@ -213,7 +215,6 @@ impl<T> TryFrom<&mut Robj> for &mut ExternalPtr<T> {
         if !value.is_external_pointer() {
             return Err(Error::ExpectedExternalPtr(value.clone()));
         }
-        //FIXME:: add a check
         unsafe { Ok(std::mem::transmute(value)) }
     }
 }
