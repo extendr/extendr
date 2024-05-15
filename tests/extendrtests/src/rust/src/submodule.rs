@@ -69,6 +69,23 @@ impl MySubmoduleClass {
     fn me_explicit_mut(&mut self) -> &mut MySubmoduleClass {
         self
     }
+
+    // fn max_ref(&self, other: &Self) -> &Self {
+    fn max_ref(&self, other: &'static MySubmoduleClass) -> &Self {
+        if self.a > other.a {
+            self
+        } else {
+            other
+        }
+    }
+
+    fn max_ref_offset(&self, other: &'static MySubmoduleClass, _offset: i32) -> &Self {
+        if self.a > other.a {
+            self
+        } else {
+            other
+        }
+    }
 }
 
 // Macro to generate exports

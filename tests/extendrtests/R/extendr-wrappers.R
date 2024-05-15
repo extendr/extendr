@@ -224,6 +224,10 @@ MySubmoduleClass$me_explicit_ref <- function() .Call(wrap__MySubmoduleClass__me_
 
 MySubmoduleClass$me_explicit_mut <- function() .Call(wrap__MySubmoduleClass__me_explicit_mut, self)
 
+MySubmoduleClass$max_ref <- function(other) .Call(wrap__MySubmoduleClass__max_ref, self, other)
+
+MySubmoduleClass$max_ref_offset <- function(other, `_offset`) .Call(wrap__MySubmoduleClass__max_ref_offset, self, other, `_offset`)
+
 #' @rdname MySubmoduleClass
 #' @usage NULL
 #' @export
