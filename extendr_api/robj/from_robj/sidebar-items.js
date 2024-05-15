@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["convert_scalar"],"macro":["impl_float_prim_from_robj","impl_int_prim_from_robj","impl_iter_from_robj"],"trait":["FromRobj"]};

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-macros/src/wrappers.rs`."><title>wrappers.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0-nightly (ef0027897 2024-05-12)" data-channel="nightly" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-macros/src/wrappers.rs`."><title>wrappers.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0-nightly (8387315ab 2024-05-14)" data-channel="nightly" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -509,31 +509,6 @@
 <a href="#509" id="509">509</a>
 <a href="#510" id="510">510</a>
 <a href="#511" id="511">511</a>
-<a href="#512" id="512">512</a>
-<a href="#513" id="513">513</a>
-<a href="#514" id="514">514</a>
-<a href="#515" id="515">515</a>
-<a href="#516" id="516">516</a>
-<a href="#517" id="517">517</a>
-<a href="#518" id="518">518</a>
-<a href="#519" id="519">519</a>
-<a href="#520" id="520">520</a>
-<a href="#521" id="521">521</a>
-<a href="#522" id="522">522</a>
-<a href="#523" id="523">523</a>
-<a href="#524" id="524">524</a>
-<a href="#525" id="525">525</a>
-<a href="#526" id="526">526</a>
-<a href="#527" id="527">527</a>
-<a href="#528" id="528">528</a>
-<a href="#529" id="529">529</a>
-<a href="#530" id="530">530</a>
-<a href="#531" id="531">531</a>
-<a href="#532" id="532">532</a>
-<a href="#533" id="533">533</a>
-<a href="#534" id="534">534</a>
-<a href="#535" id="535">535</a>
-<a href="#536" id="536">536</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! This is responsible for generating the C functions that act as wrappers of
 //! the exported Rust functions.
 //!
@@ -563,19 +538,13 @@
 <span class="kw">use </span>quote::{format_ident, quote};
 <span class="kw">use </span>syn::{parse_quote, punctuated::Punctuated, Expr, ExprLit, FnArg, ItemFn, Token, Type};
 
+<span class="kw">use </span><span class="kw">crate</span>::extendr_options::ExtendrOptions;
+
 <span class="kw">pub const </span>META_PREFIX: <span class="kw-2">&amp;</span>str = <span class="string">"meta__"</span>;
 <span class="kw">pub const </span>WRAP_PREFIX: <span class="kw-2">&amp;</span>str = <span class="string">"wrap__"</span>;
 
-<span class="attr">#[derive(Debug, Default)]
-</span><span class="kw">pub struct </span>ExtendrOptions {
-    <span class="kw">pub </span>use_try_from: bool,
-    <span class="kw">pub </span>r_name: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    <span class="kw">pub </span>mod_name: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    <span class="kw">pub </span>use_rng: bool,
-}
-
 <span class="comment">// Generate wrappers for a specific function.
-</span><span class="kw">pub fn </span>make_function_wrappers(
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>make_function_wrappers(
     opts: <span class="kw-2">&amp;</span>ExtendrOptions,
     wrappers: <span class="kw-2">&amp;mut </span>Vec&lt;ItemFn&gt;,
     prefix: <span class="kw-2">&amp;</span>str,
@@ -616,26 +585,14 @@
         };
         <span class="kw">if </span>is_mut {
             <span class="comment">// eg. Person::name(&amp;mut self)
-            </span><span class="kw">if </span>opts.use_try_from {
-                <span class="macro">quote!</span> { extendr_api::unwrap_or_throw_error(
-                    &lt;<span class="kw-2">&amp;mut </span>#self_ty&gt;::try_from(<span class="kw-2">&amp;mut </span>_self_robj)
-                ).#rust_name }
-            } <span class="kw">else </span>{
-                <span class="macro">quote!</span> { extendr_api::unwrap_or_throw(
-                    &lt;<span class="kw-2">&amp;mut </span>#self_ty&gt;::from_robj(<span class="kw-2">&amp;</span>_self_robj)
-                ).#rust_name }
-            }
+            </span><span class="macro">quote!</span> { extendr_api::unwrap_or_throw_error(
+                &lt;<span class="kw-2">&amp;mut </span>#self_ty&gt;::try_from(<span class="kw-2">&amp;mut </span>_self_robj)
+            ).#rust_name }
         } <span class="kw">else </span>{
             <span class="comment">// eg. Person::name(&amp;self)
-            </span><span class="kw">if </span>opts.use_try_from {
-                <span class="macro">quote!</span> { extendr_api::unwrap_or_throw_error(
-                    &lt;<span class="kw-2">&amp;</span>#self_ty&gt;::try_from(<span class="kw-2">&amp;</span>_self_robj)
-                ).#rust_name }
-            } <span class="kw">else </span>{
-                <span class="macro">quote!</span> { extendr_api::unwrap_or_throw(
-                    &lt;<span class="kw-2">&amp;</span>#self_ty&gt;::from_robj(<span class="kw-2">&amp;</span>_self_robj)
-                ).#rust_name }
-            }
+            </span><span class="macro">quote!</span> { extendr_api::unwrap_or_throw_error(
+                &lt;<span class="kw-2">&amp;</span>#self_ty&gt;::try_from(<span class="kw-2">&amp;</span>_self_robj)
+            ).#rust_name }
         }
     } <span class="kw">else if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>self_ty) = <span class="kw-2">&amp;</span>self_ty {
         <span class="comment">// eg. Person::new()
@@ -655,10 +612,8 @@
         .map(translate_to_robj)
         .collect::&lt;syn::Result&lt;Vec&lt;syn::Stmt&gt;&gt;&gt;()<span class="question-mark">?</span>;
 
-    <span class="kw">let </span>actual_args: Punctuated&lt;Expr, <span class="macro">Token!</span>[,]&gt; = inputs
-        .iter()
-        .filter_map(|input| translate_actual(opts, input))
-        .collect();
+    <span class="kw">let </span>actual_args: Punctuated&lt;Expr, <span class="macro">Token!</span>[,]&gt; =
+        inputs.iter().filter_map(translate_actual).collect();
 
     <span class="kw">let </span>meta_args: Vec&lt;Expr&gt; = inputs
         .iter_mut()
@@ -1007,20 +962,15 @@
 }
 
 <span class="comment">// Generate actual argument list for the call (ie. a list of conversions).
-</span><span class="kw">fn </span>translate_actual(opts: <span class="kw-2">&amp;</span>ExtendrOptions, input: <span class="kw-2">&amp;</span>FnArg) -&gt; <span class="prelude-ty">Option</span>&lt;Expr&gt; {
+</span><span class="kw">fn </span>translate_actual(input: <span class="kw-2">&amp;</span>FnArg) -&gt; <span class="prelude-ty">Option</span>&lt;Expr&gt; {
     <span class="kw">match </span>input {
         FnArg::Typed(<span class="kw-2">ref </span>pattype) =&gt; {
             <span class="kw">let </span>pat = <span class="kw-2">&amp;</span>pattype.pat.as_ref();
-            <span class="kw">let </span>ty = <span class="kw-2">&amp;</span>pattype.ty.as_ref();
             <span class="kw">if let </span>syn::Pat::Ident(<span class="kw-2">ref </span>ident) = pat {
                 <span class="kw">let </span>varname = <span class="macro">format_ident!</span>(<span class="string">"_{}_robj"</span>, ident.ident);
-                <span class="kw">if </span>opts.use_try_from {
-                    <span class="prelude-val">Some</span>(<span class="macro">parse_quote!</span> {
-                        #varname.try_into()<span class="question-mark">?
-                    </span>})
-                } <span class="kw">else </span>{
-                    <span class="prelude-val">Some</span>(<span class="macro">parse_quote!</span> { &lt;#ty&gt;::from_robj(<span class="kw-2">&amp;</span>#varname)<span class="question-mark">? </span>})
-                }
+                <span class="prelude-val">Some</span>(<span class="macro">parse_quote!</span> {
+                    #varname.try_into()<span class="question-mark">?
+                </span>})
             } <span class="kw">else </span>{
                 <span class="prelude-val">None
             </span>}
