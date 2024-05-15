@@ -189,7 +189,6 @@ pub(crate) fn extendr_impl(
     }
 
     let meta_name = format_ident!("{}{}", wrappers::META_PREFIX, self_ty_name);
-    let finalizer_name = format_ident!("__finalize__{}", self_ty_name);
 
     let conversion_impls = quote! {
         // Output conversion function for this type.
@@ -214,10 +213,9 @@ pub(crate) fn extendr_impl(
         impl TryFrom<&Robj> for &#self_ty {
             type Error = Error;
             fn try_from(robj: &Robj) -> Result<Self> {
-                use libR_sys::R_ExternalPtrAddr;
                 unsafe {
-                    let ptr = R_ExternalPtrAddr(robj.get()).cast::<#self_ty>();
-                    ptr.as_ref().ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+                    let external_ptr: &ExternalPtr<#self_ty> = robj.try_into()?;
+                    external_ptr.try_addr()
                 }
             }
         }
@@ -226,10 +224,9 @@ pub(crate) fn extendr_impl(
         impl TryFrom<&mut Robj> for &mut #self_ty {
             type Error = Error;
             fn try_from(robj: &mut Robj) -> Result<Self> {
-                use libR_sys::R_ExternalPtrAddr;
                 unsafe {
-                    let ptr = R_ExternalPtrAddr(robj.get_mut()).cast::<#self_ty>();
-                    ptr.as_mut().ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+                    let external_ptr: &mut ExternalPtr<#self_ty> = robj.try_into()?;
+                    external_ptr.try_addr_mut()
                 }
             }
         }
@@ -248,23 +245,9 @@ pub(crate) fn extendr_impl(
         impl From<#self_ty> for Robj {
             fn from(value: #self_ty) -> Self {
                 unsafe {
-                    let ptr = Box::into_raw(Box::new(value));
-                    let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
+                    let mut res: ExternalPtr<#self_ty> = ExternalPtr::new(value);
                     res.set_attrib(class_symbol(), #self_ty_name).unwrap();
-                    res.register_c_finalizer(Some(#finalizer_name));
-                    res
-                }
-            }
-        }
-
-        // Function to free memory for this type.
-        extern "C" fn #finalizer_name (sexp: extendr_api::SEXP) {
-            unsafe {
-                let robj = extendr_api::robj::Robj::from_sexp(sexp);
-                if robj.check_external_ptr_type::<#self_ty>() {
-                    //eprintln!("finalize {}", #self_ty_name);
-                    let ptr = robj.external_ptr_addr::<#self_ty>();
-                    drop(Box::from_raw(ptr));
+                    res.into()
                 }
             }
         }

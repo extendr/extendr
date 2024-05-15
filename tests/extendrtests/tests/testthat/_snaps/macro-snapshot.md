@@ -48,42 +48,27 @@
           impl TryFrom<&Robj> for &VecUsize {
               type Error = Error;
               fn try_from(robj: &Robj) -> Result<Self> {
-                  use libR_sys::R_ExternalPtrAddr;
                   unsafe {
-                      let ptr = R_ExternalPtrAddr(robj.get()).cast::<VecUsize>();
-                      ptr.as_ref()
-                          .ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+                      let external_ptr: &ExternalPtr<VecUsize> = robj.try_into()?;
+                      external_ptr.try_addr()
                   }
               }
           }
           impl TryFrom<&mut Robj> for &mut VecUsize {
               type Error = Error;
               fn try_from(robj: &mut Robj) -> Result<Self> {
-                  use libR_sys::R_ExternalPtrAddr;
                   unsafe {
-                      let ptr = R_ExternalPtrAddr(robj.get_mut()).cast::<VecUsize>();
-                      ptr.as_mut()
-                          .ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+                      let external_ptr: &mut ExternalPtr<VecUsize> = robj.try_into()?;
+                      external_ptr.try_addr_mut()
                   }
               }
           }
           impl From<VecUsize> for Robj {
               fn from(value: VecUsize) -> Self {
                   unsafe {
-                      let ptr = Box::into_raw(Box::new(value));
-                      let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
+                      let mut res: ExternalPtr<VecUsize> = ExternalPtr::new(value);
                       res.set_attrib(class_symbol(), "VecUsize").unwrap();
-                      res.register_c_finalizer(Some(__finalize__VecUsize));
-                      res
-                  }
-              }
-          }
-          extern "C" fn __finalize__VecUsize(sexp: extendr_api::SEXP) {
-              unsafe {
-                  let robj = extendr_api::robj::Robj::from_sexp(sexp);
-                  if robj.check_external_ptr_type::<VecUsize>() {
-                      let ptr = robj.external_ptr_addr::<VecUsize>();
-                      drop(Box::from_raw(ptr));
+                      res.into()
                   }
               }
           }
@@ -4244,42 +4229,27 @@
           impl TryFrom<&Robj> for &MySubmoduleClass {
               type Error = Error;
               fn try_from(robj: &Robj) -> Result<Self> {
-                  use libR_sys::R_ExternalPtrAddr;
                   unsafe {
-                      let ptr = R_ExternalPtrAddr(robj.get()).cast::<MySubmoduleClass>();
-                      ptr.as_ref()
-                          .ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+                      let external_ptr: &ExternalPtr<MySubmoduleClass> = robj.try_into()?;
+                      external_ptr.try_addr()
                   }
               }
           }
           impl TryFrom<&mut Robj> for &mut MySubmoduleClass {
               type Error = Error;
               fn try_from(robj: &mut Robj) -> Result<Self> {
-                  use libR_sys::R_ExternalPtrAddr;
                   unsafe {
-                      let ptr = R_ExternalPtrAddr(robj.get_mut()).cast::<MySubmoduleClass>();
-                      ptr.as_mut()
-                          .ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+                      let external_ptr: &mut ExternalPtr<MySubmoduleClass> = robj.try_into()?;
+                      external_ptr.try_addr_mut()
                   }
               }
           }
           impl From<MySubmoduleClass> for Robj {
               fn from(value: MySubmoduleClass) -> Self {
                   unsafe {
-                      let ptr = Box::into_raw(Box::new(value));
-                      let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
+                      let mut res: ExternalPtr<MySubmoduleClass> = ExternalPtr::new(value);
                       res.set_attrib(class_symbol(), "MySubmoduleClass").unwrap();
-                      res.register_c_finalizer(Some(__finalize__MySubmoduleClass));
-                      res
-                  }
-              }
-          }
-          extern "C" fn __finalize__MySubmoduleClass(sexp: extendr_api::SEXP) {
-              unsafe {
-                  let robj = extendr_api::robj::Robj::from_sexp(sexp);
-                  if robj.check_external_ptr_type::<MySubmoduleClass>() {
-                      let ptr = robj.external_ptr_addr::<MySubmoduleClass>();
-                      drop(Box::from_raw(ptr));
+                      res.into()
                   }
               }
           }
@@ -7068,40 +7038,27 @@
       impl TryFrom<&Robj> for &MyClass {
           type Error = Error;
           fn try_from(robj: &Robj) -> Result<Self> {
-              use libR_sys::R_ExternalPtrAddr;
               unsafe {
-                  let ptr = R_ExternalPtrAddr(robj.get()).cast::<MyClass>();
-                  ptr.as_ref().ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+                  let external_ptr: &ExternalPtr<MyClass> = robj.try_into()?;
+                  external_ptr.try_addr()
               }
           }
       }
       impl TryFrom<&mut Robj> for &mut MyClass {
           type Error = Error;
           fn try_from(robj: &mut Robj) -> Result<Self> {
-              use libR_sys::R_ExternalPtrAddr;
               unsafe {
-                  let ptr = R_ExternalPtrAddr(robj.get_mut()).cast::<MyClass>();
-                  ptr.as_mut().ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+                  let external_ptr: &mut ExternalPtr<MyClass> = robj.try_into()?;
+                  external_ptr.try_addr_mut()
               }
           }
       }
       impl From<MyClass> for Robj {
           fn from(value: MyClass) -> Self {
               unsafe {
-                  let ptr = Box::into_raw(Box::new(value));
-                  let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
+                  let mut res: ExternalPtr<MyClass> = ExternalPtr::new(value);
                   res.set_attrib(class_symbol(), "MyClass").unwrap();
-                  res.register_c_finalizer(Some(__finalize__MyClass));
-                  res
-              }
-          }
-      }
-      extern "C" fn __finalize__MyClass(sexp: extendr_api::SEXP) {
-          unsafe {
-              let robj = extendr_api::robj::Robj::from_sexp(sexp);
-              if robj.check_external_ptr_type::<MyClass>() {
-                  let ptr = robj.external_ptr_addr::<MyClass>();
-                  drop(Box::from_raw(ptr));
+                  res.into()
               }
           }
       }
@@ -7320,40 +7277,27 @@
       impl TryFrom<&Robj> for &__MyClass {
           type Error = Error;
           fn try_from(robj: &Robj) -> Result<Self> {
-              use libR_sys::R_ExternalPtrAddr;
               unsafe {
-                  let ptr = R_ExternalPtrAddr(robj.get()).cast::<__MyClass>();
-                  ptr.as_ref().ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+                  let external_ptr: &ExternalPtr<__MyClass> = robj.try_into()?;
+                  external_ptr.try_addr()
               }
           }
       }
       impl TryFrom<&mut Robj> for &mut __MyClass {
           type Error = Error;
           fn try_from(robj: &mut Robj) -> Result<Self> {
-              use libR_sys::R_ExternalPtrAddr;
               unsafe {
-                  let ptr = R_ExternalPtrAddr(robj.get_mut()).cast::<__MyClass>();
-                  ptr.as_mut().ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+                  let external_ptr: &mut ExternalPtr<__MyClass> = robj.try_into()?;
+                  external_ptr.try_addr_mut()
               }
           }
       }
       impl From<__MyClass> for Robj {
           fn from(value: __MyClass) -> Self {
               unsafe {
-                  let ptr = Box::into_raw(Box::new(value));
-                  let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
+                  let mut res: ExternalPtr<__MyClass> = ExternalPtr::new(value);
                   res.set_attrib(class_symbol(), "__MyClass").unwrap();
-                  res.register_c_finalizer(Some(__finalize____MyClass));
-                  res
-              }
-          }
-      }
-      extern "C" fn __finalize____MyClass(sexp: extendr_api::SEXP) {
-          unsafe {
-              let robj = extendr_api::robj::Robj::from_sexp(sexp);
-              if robj.check_external_ptr_type::<__MyClass>() {
-                  let ptr = robj.external_ptr_addr::<__MyClass>();
-                  drop(Box::from_raw(ptr));
+                  res.into()
               }
           }
       }
@@ -7580,40 +7524,27 @@
       impl TryFrom<&Robj> for &MyClassUnexported {
           type Error = Error;
           fn try_from(robj: &Robj) -> Result<Self> {
-              use libR_sys::R_ExternalPtrAddr;
               unsafe {
-                  let ptr = R_ExternalPtrAddr(robj.get()).cast::<MyClassUnexported>();
-                  ptr.as_ref().ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+                  let external_ptr: &ExternalPtr<MyClassUnexported> = robj.try_into()?;
+                  external_ptr.try_addr()
               }
           }
       }
       impl TryFrom<&mut Robj> for &mut MyClassUnexported {
           type Error = Error;
           fn try_from(robj: &mut Robj) -> Result<Self> {
-              use libR_sys::R_ExternalPtrAddr;
               unsafe {
-                  let ptr = R_ExternalPtrAddr(robj.get_mut()).cast::<MyClassUnexported>();
-                  ptr.as_mut().ok_or_else(|| Error::ExpectedExternalNonNullPtr(robj.clone()))
+                  let external_ptr: &mut ExternalPtr<MyClassUnexported> = robj.try_into()?;
+                  external_ptr.try_addr_mut()
               }
           }
       }
       impl From<MyClassUnexported> for Robj {
           fn from(value: MyClassUnexported) -> Self {
               unsafe {
-                  let ptr = Box::into_raw(Box::new(value));
-                  let mut res = Robj::make_external_ptr(ptr, Robj::from(()));
+                  let mut res: ExternalPtr<MyClassUnexported> = ExternalPtr::new(value);
                   res.set_attrib(class_symbol(), "MyClassUnexported").unwrap();
-                  res.register_c_finalizer(Some(__finalize__MyClassUnexported));
-                  res
-              }
-          }
-      }
-      extern "C" fn __finalize__MyClassUnexported(sexp: extendr_api::SEXP) {
-          unsafe {
-              let robj = extendr_api::robj::Robj::from_sexp(sexp);
-              if robj.check_external_ptr_type::<MyClassUnexported>() {
-                  let ptr = robj.external_ptr_addr::<MyClassUnexported>();
-                  drop(Box::from_raw(ptr));
+                  res.into()
               }
           }
       }

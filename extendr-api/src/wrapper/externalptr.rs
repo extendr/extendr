@@ -24,7 +24,7 @@ use std::fmt::Debug;
 ///     assert_eq!(*extptr2, 1);
 /// }
 /// ```
-///
+#[repr(transparent)]
 #[derive(PartialEq, Clone)]
 pub struct ExternalPtr<T> {
     /// This is the contained Robj.
@@ -59,6 +59,9 @@ impl<T> Length for ExternalPtr<T> {}
 
 /// rtype() and rany()
 impl<T> Types for ExternalPtr<T> {}
+
+/// `set_attrib`
+impl<T> Attributes for ExternalPtr<T> {}
 
 /// as_*()
 impl<T> Conversions for ExternalPtr<T> {}
@@ -145,20 +148,73 @@ impl<T> ExternalPtr<T> {
 
     /// Get the "address" field of an external pointer.
     /// Normally, we will use Deref to do this.
-    pub fn addr<'a>(&self) -> &'a T {
+    ///
+    /// ## Panics
+    ///
+    /// When the underlying pointer is C `NULL`.
+    pub fn addr(&self) -> &T {
+        self.try_addr().unwrap()
+    }
+
+    /// Get the "address" field of an external pointer as a mutable reference.
+    /// Normally, we will use DerefMut to do this.
+    ///
+    /// ## Panics
+    ///
+    /// When the underlying pointer is C `NULL`.
+    pub fn addr_mut(&mut self) -> &mut T {
+        self.try_addr_mut().unwrap()
+    }
+    /// Get the "address" field of an external pointer.
+    /// Normally, we will use Deref to do this.
+    ///
+    /// ## Panics
+    ///
+    /// When the underlying pointer is C `NULL`.
+    pub fn try_addr(&self) -> Result<&T> {
         unsafe {
-            let ptr = R_ExternalPtrAddr(self.robj.get()) as *const T;
-            &*ptr as &'a T
+            R_ExternalPtrAddr(self.robj.get())
+                .cast::<T>()
+                .cast_const()
+                .as_ref()
+                .ok_or_else(|| Error::ExpectedExternalNonNullPtr(self.robj.clone()))
         }
     }
 
     /// Get the "address" field of an external pointer as a mutable reference.
     /// Normally, we will use DerefMut to do this.
-    pub fn addr_mut(&mut self) -> &mut T {
+    ///
+    /// ## Panics
+    ///
+    /// When the underlying pointer is C `NULL`.
+    pub fn try_addr_mut(&mut self) -> Result<&mut T> {
         unsafe {
-            let ptr = R_ExternalPtrAddr(self.robj.get()) as *mut T;
-            &mut *ptr as &mut T
+            R_ExternalPtrAddr(self.robj.get_mut())
+                .cast::<T>()
+                .as_mut()
+                .ok_or_else(|| Error::ExpectedExternalNonNullPtr(self.robj.clone()))
         }
+    }
+}
+
+impl<T> TryFrom<&Robj> for &ExternalPtr<T> {
+    type Error = Error;
+
+    fn try_from(value: &Robj) -> Result<Self> {
+        //FIXME: add a check
+        unsafe { Ok(std::mem::transmute(value)) }
+    }
+}
+
+impl<T> TryFrom<&mut Robj> for &mut ExternalPtr<T> {
+    type Error = Error;
+
+    fn try_from(value: &mut Robj) -> Result<Self> {
+        if !value.is_external_pointer() {
+            return Err(Error::ExpectedExternalPtr(value.clone()));
+        }
+        //FIXME:: add a check
+        unsafe { Ok(std::mem::transmute(value)) }
     }
 }
 
