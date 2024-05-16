@@ -59,7 +59,9 @@ impl StrIter {
 pub(crate) fn str_from_strsxp<'a>(sexp: SEXP, index: isize) -> &'a str {
     single_threaded(|| unsafe {
         let charsxp = STRING_ELT(sexp, index);
-        if charsxp == R_NaString {
+        if charsxp == R_NilValue {
+            panic!("out of bound error")
+        } else if charsxp == R_NaString {
             <&str>::na()
         } else if charsxp == R_BlankString {
             ""
@@ -212,3 +214,21 @@ pub trait AsStrIter: GetSexp + Types + Length + Attributes + Rinternals {
 }
 
 impl AsStrIter for Robj {}
+
+#[cfg(test)]
+mod tests {
+    use extendr_engine::with_r;
+
+    use super::*;
+
+    #[test]
+    fn string_elt_beyond_limit() {
+        with_r(|| unsafe {
+            let a = Rf_ScalarString(R_NaString);
+            Rf_PrintValue(STRING_ELT(a, 0));
+            Rf_PrintValue(STRING_ELT(a, 2));
+            let bad = STRING_ELT(a, 2);
+            dbg!(str_from_strsxp(a, 2));
+        });
+    }
+}
