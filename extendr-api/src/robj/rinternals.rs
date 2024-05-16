@@ -253,7 +253,7 @@ pub trait Rinternals: Types + Conversions {
     /// Internal function used to implement `#[extendr]` impl
     #[doc(hidden)]
     unsafe fn external_ptr_addr<T>(&self) -> *mut T {
-        R_ExternalPtrAddr(self.get()) as *mut T
+        R_ExternalPtrAddr(self.get()).cast()
     }
 
     /// Internal function used to implement `#[extendr]` impl
