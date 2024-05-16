@@ -93,7 +93,6 @@ impl MySubmoduleClass {
             other
         }
     }
-
 }
 
 // Macro to generate exports
