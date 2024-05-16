@@ -234,12 +234,4 @@ mod tests {
             assert_eq!(s2.len(), 1);
         });
     }
-
-    #[test]
-    fn feature() {
-        with_r(|| unsafe {
-            // let a = Rf_ScalarInteger(42);
-            // dbg!(INTEGER_ELT(a, 0), INTEGER_ELT(a, 1), INTEGER_ELT(a, 2));
-        });
-    }
 }
