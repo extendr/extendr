@@ -9,6 +9,14 @@
 //! Neither `tag` nor `prot` are attributes, therefore to use `ExternalPtr` as
 //! a class in R, you must decorate it with a class-attribute manually.
 //!
+//! **Beware**: Equality (by way of `PartialEq`) does not imply equality of value,
+//! but equality of pointer. Two objects stored as `ExternalPtr` may be equal
+//! in value, but be two distinct entities, with distinct pointers.
+//!
+//! Instead, rely on `AsRef` to make _by value_ comparison, e.g. to compare
+//! for equality of
+//! two instances of `ExternalPtr<T>` by value, `a.as_ref() == b.as_ref()`.
+//!
 use super::*;
 use std::fmt::Debug;
 
@@ -25,13 +33,31 @@ use std::fmt::Debug;
 /// }
 /// ```
 #[repr(transparent)]
-#[derive(PartialEq, Clone)]
 pub struct ExternalPtr<T> {
     /// This is the contained Robj.
     pub(crate) robj: Robj,
 
     /// This is a zero-length object that holds the type of the object.
     _marker: std::marker::PhantomData<T>,
+}
+
+/// Manual implementation of `PartialEq`, because the constraint `T: PartialEq`
+/// is not necessary.
+impl<T> PartialEq for ExternalPtr<T> {
+    fn eq(&self, other: &Self) -> bool {
+        //TODO: does R_compute_identical handle externalptr properly?
+        self.robj == other.robj && self._marker == other._marker
+    }
+}
+
+/// Manual implementation of `Clone` trait, because the assumed constraint `T: Clone` is not necessary.
+impl<T> Clone for ExternalPtr<T> {
+    fn clone(&self) -> Self {
+        Self {
+            robj: self.robj.clone(),
+            _marker: self._marker,
+        }
+    }
 }
 
 impl<T> robj::GetSexp for ExternalPtr<T> {
@@ -258,5 +284,75 @@ impl<T> From<ExternalPtr<T>> for Robj {
 impl<T: Debug> std::fmt::Debug for ExternalPtr<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         (&**self as &T).fmt(f)
+    }
+}
+
+impl<T> AsRef<T> for ExternalPtr<T> {
+    fn as_ref(&self) -> &T {
+        self.addr()
+    }
+}
+
+impl<T> AsMut<T> for ExternalPtr<T> {
+    fn as_mut(&mut self) -> &mut T {
+        self.addr_mut()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use extendr_engine::with_r;
+
+    #[test]
+    fn partial_eq_of_externalptr() {
+        #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
+        struct Wrapper(i32);
+
+        with_r(|| {
+            let a = Wrapper(42);
+            let b = Wrapper(42);
+            let a_externalptr = ExternalPtr::new(a);
+            let b_externalptr = ExternalPtr::new(b);
+
+            assert_eq!(a.0, b.0);
+            assert_eq!(a, b);
+            assert_eq!(&a, &b);
+            let a_ptr = std::ptr::addr_of!(a);
+            let b_ptr = std::ptr::addr_of!(b);
+            assert_ne!(
+                a_ptr, b_ptr,
+                "pointers has to be equal by address, not value"
+            );
+
+            assert_eq!(
+                a_externalptr.addr(),
+                b_externalptr.addr(),
+                "compare by value, because comparing by reference yields value comparison"
+            );
+            assert_ne!(
+                a_externalptr.robj, b_externalptr.robj,
+                "R only knows about the pointer, and not the pointee"
+            );
+            assert_ne!(
+                a_externalptr, b_externalptr,
+                "ExternalPtr acts exactly like a pointer"
+            );
+            assert_ne!(&a_externalptr, &b_externalptr,);
+            assert_eq!(
+                a_externalptr.as_ref(),
+                b_externalptr.as_ref(),
+                "_by reference_ works however"
+            );
+
+            // let us explore that further
+            let a_externalptr = ExternalPtr::new(Wrapper(50));
+            let b_externalptr = ExternalPtr::new(Wrapper(60));
+            assert!(a_externalptr.as_ref() <= b_externalptr.as_ref());
+            assert_eq!(
+                a_externalptr.as_ref().max(b_externalptr.as_ref()),
+                &Wrapper(60)
+            )
+        });
     }
 }
