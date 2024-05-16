@@ -86,16 +86,14 @@ impl Iterator for StrIter {
             } else if Rf_isFactor(vector).into() {
                 // factor support: factor is an integer, and we need
                 // the value of it, to retrieve the assigned label
-                let levels_len = Rf_xlength(self.levels);
-                let j = std::slice::from_raw_parts(INTEGER(self.levels), levels_len as _);
-                let j = j.get(i);
+                let j = std::slice::from_raw_parts(INTEGER(vector), self.len as _);
+                let j = j.get(i)?;
                 // assert_eq!(TYPEOF(self.levels), STRSXP, "levels of a factor must always be a character-vector");
                 // assert_ne!(j, 0, "invalid factor, where level/label i 0-indexed");
-                if let Some(&j) = j {
-                    str_from_strsxp(self.levels, j as _)
-                } else {
-                    None
-                }
+                let j = j
+                    .checked_sub(1)
+                    .expect("the factor integer had an invalid value in it");
+                str_from_strsxp(self.levels, j as _)
             } else {
                 None
             }
@@ -216,6 +214,7 @@ impl AsStrIter for Robj {}
 
 #[cfg(test)]
 mod tests {
+    use crate as extendr_api;
     use extendr_engine::with_r;
 
     use super::*;
@@ -225,13 +224,66 @@ mod tests {
         with_r(|| {
             let single_charsxp = blank_string();
             let s1: Vec<_> = single_charsxp.as_str_iter().unwrap().collect();
-            dbg!(&s1);
+            // dbg!(&s1);
             let single_charsxp = blank_scalar_string();
             let s2: Vec<_> = single_charsxp.as_str_iter().unwrap().collect();
-            dbg!(&s2);
+            // dbg!(&s2);
             assert_eq!(s1, s2);
             assert_eq!(s1.len(), 1);
             assert_eq!(s2.len(), 1);
         });
+    }
+
+    #[test]
+    fn feature() {
+        with_r(|| {
+            let obj = Robj::from(vec!["a", "b", "c"]);
+            assert_eq!(
+                obj.as_str_iter().unwrap().collect::<Vec<_>>(),
+                vec!["a", "b", "c"]
+            );
+
+            let factor = factor!(vec!["abcd", "def", "fg", "fg"]);
+            assert_eq!(
+                factor.levels().unwrap().collect::<Vec<_>>(),
+                vec!["abcd", "def", "fg"]
+            );
+            assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);
+            assert_eq!(
+                factor.as_str_iter().unwrap().collect::<Vec<_>>(),
+                vec!["abcd", "def", "fg", "fg"]
+            );
+            assert_eq!(
+                factor.as_str_iter().unwrap().collect::<Vec<_>>(),
+                vec!["abcd", "def", "fg", "fg"]
+            );
+
+            let obj = Robj::from(vec![Some("a"), Some("b"), None]);
+            assert_eq!(
+                obj.as_str_iter()
+                    .unwrap()
+                    .map(|s| s.is_na())
+                    .collect::<Vec<_>>(),
+                vec![false, false, true]
+            );
+
+            let obj = Robj::from(vec!["a", "b", <&str>::na()]);
+            assert_eq!(
+                obj.as_str_iter()
+                    .unwrap()
+                    .map(|s| s.is_na())
+                    .collect::<Vec<_>>(),
+                vec![false, false, true]
+            );
+
+            let obj = Robj::from(vec!["a", "b", "NA"]);
+            assert_eq!(
+                obj.as_str_iter()
+                    .unwrap()
+                    .map(|s| s.is_na())
+                    .collect::<Vec<_>>(),
+                vec![false, false, false]
+            );
+        })
     }
 }
