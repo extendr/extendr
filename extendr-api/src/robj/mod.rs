@@ -607,13 +607,7 @@ impl Robj {
                 SYMSXP => PRINTNAME(self.get()),
                 _ => return None,
             };
-            if charsxp == R_NaString {
-                Some(<&str>::na())
-            } else if charsxp == R_BlankString {
-                Some("")
-            } else {
-                Some(rstr::charsxp_to_str(charsxp))
-            }
+            rstr::charsxp_to_str(charsxp)
         }
     }
 

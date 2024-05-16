@@ -20,11 +20,20 @@ pub struct Rstr {
 /// Returns a rust string-slice based on the provided `SEXP`, who is of type
 /// [`SEXPTYPE::CHARSXP`]. Note that the length of a `CHARSXP` is exactly
 /// the number of non-null bytes in said R character.
-pub(crate) unsafe fn charsxp_to_str(charsxp: SEXP) -> &'static str {
+pub(crate) unsafe fn charsxp_to_str(charsxp: SEXP) -> Option<&'static str> {
     assert_eq!(TYPEOF(charsxp), SEXPTYPE::CHARSXP);
-    let length = Rf_xlength(charsxp);
-    let all_bytes = std::slice::from_raw_parts(R_CHAR(charsxp).cast(), length.try_into().unwrap());
-    std::str::from_utf8_unchecked(all_bytes)
+    if charsxp == R_NilValue {
+        None
+    } else if charsxp == R_NaString {
+        Some(<&str>::na())
+    } else if charsxp == R_BlankString {
+        Some("")
+    } else {
+        let length = Rf_xlength(charsxp);
+        let all_bytes =
+            std::slice::from_raw_parts(R_CHAR(charsxp).cast(), length.try_into().unwrap());
+        Some(std::str::from_utf8_unchecked(all_bytes))
+    }
 }
 
 impl Rstr {
@@ -67,13 +76,7 @@ impl From<&Rstr> for &str {
     fn from(value: &Rstr) -> Self {
         unsafe {
             let charsxp = value.robj.get();
-            if charsxp == R_NaString {
-                Self::na()
-            } else if charsxp == R_BlankString {
-                ""
-            } else {
-                rstr::charsxp_to_str(charsxp)
-            }
+            rstr::charsxp_to_str(charsxp).unwrap()
         }
     }
 }

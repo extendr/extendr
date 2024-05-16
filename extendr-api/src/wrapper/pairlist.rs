@@ -140,7 +140,7 @@ impl Iterator for PairlistIter {
                 if TYPEOF(tag) == SEXPTYPE::SYMSXP {
                     // printname is always a CHARSXP
                     let printname = PRINTNAME(tag);
-                    Some((rstr::charsxp_to_str(printname), value))
+                    rstr::charsxp_to_str(printname).map(|x| (x, value))
                 } else {
                     // empty string represents the absense of the name
                     Some(("", value))

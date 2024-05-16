@@ -56,18 +56,10 @@ impl StrIter {
 }
 
 // Get a string reference from a `CHARSXP`
-pub(crate) fn str_from_strsxp<'a>(sexp: SEXP, index: usize) -> &'a str {
+pub(crate) fn str_from_strsxp<'a>(sexp: SEXP, index: usize) -> Option<&'a str> {
     single_threaded(|| unsafe {
         let charsxp = STRING_ELT(sexp, index as _);
-        if charsxp == R_NilValue {
-            panic!("out of bound error")
-        } else if charsxp == R_NaString {
-            <&str>::na()
-        } else if charsxp == R_BlankString {
-            ""
-        } else {
-            rstr::charsxp_to_str(charsxp)
-        }
+        rstr::charsxp_to_str(charsxp)
     })
 }
 
@@ -86,25 +78,24 @@ impl Iterator for StrIter {
             if i >= self.len {
                 None
             } else if TYPEOF(vector) == SEXPTYPE::NILSXP {
-                Some(<&str>::na())
+                None
             } else if TYPEOF(vector) == SEXPTYPE::STRSXP {
-                Some(str_from_strsxp(vector, i))
+                str_from_strsxp(vector, i)
             } else if TYPEOF(vector) == SEXPTYPE::CHARSXP {
-                if vector == R_NaString {
-                    Some(<&str>::na())
-                } else if vector == R_BlankString {
-                    Some("")
-                } else {
-                    Some(rstr::charsxp_to_str(vector))
-                }
+                rstr::charsxp_to_str(vector)
             } else if Rf_isFactor(vector).into() {
                 // factor support: factor is an integer, and we need
                 // the value of it, to retrieve the assigned label
-                let j = *(INTEGER(vector).add(i));
-                let j = j.saturating_sub_unsigned(1) as _;
+                let levels_len = Rf_xlength(self.levels);
+                let j = std::slice::from_raw_parts(INTEGER(self.levels), levels_len as _);
+                let j = j.get(i);
                 // assert_eq!(TYPEOF(self.levels), STRSXP, "levels of a factor must always be a character-vector");
                 // assert_ne!(j, 0, "invalid factor, where level/label i 0-indexed");
-                Some(str_from_strsxp(self.levels, j))
+                if let Some(&j) = j {
+                    str_from_strsxp(self.levels, j as _)
+                } else {
+                    None
+                }
             } else {
                 None
             }
@@ -234,13 +225,21 @@ mod tests {
         with_r(|| {
             let single_charsxp = blank_string();
             let s1: Vec<_> = single_charsxp.as_str_iter().unwrap().collect();
-            // dbg!(s);
+            dbg!(&s1);
             let single_charsxp = blank_scalar_string();
             let s2: Vec<_> = single_charsxp.as_str_iter().unwrap().collect();
-            // dbg!(s);
+            dbg!(&s2);
             assert_eq!(s1, s2);
             assert_eq!(s1.len(), 1);
             assert_eq!(s2.len(), 1);
+        });
+    }
+
+    #[test]
+    fn feature() {
+        with_r(|| unsafe {
+            // let a = Rf_ScalarInteger(42);
+            // dbg!(INTEGER_ELT(a, 0), INTEGER_ELT(a, 1), INTEGER_ELT(a, 2));
         });
     }
 }

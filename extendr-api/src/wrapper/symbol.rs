@@ -53,7 +53,7 @@ impl Symbol {
         unsafe {
             let sexp = self.robj.get();
             let printname = PRINTNAME(sexp);
-            rstr::charsxp_to_str(printname)
+            rstr::charsxp_to_str(printname).unwrap()
         }
     }
 }
