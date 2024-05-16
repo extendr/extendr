@@ -56,9 +56,9 @@ impl StrIter {
 }
 
 // Get a string reference from a `CHARSXP`
-pub(crate) fn str_from_strsxp<'a>(sexp: SEXP, index: isize) -> &'a str {
+pub(crate) fn str_from_strsxp<'a>(sexp: SEXP, index: usize) -> &'a str {
     single_threaded(|| unsafe {
-        let charsxp = STRING_ELT(sexp, index);
+        let charsxp = STRING_ELT(sexp, index as _);
         if charsxp == R_NilValue {
             panic!("out of bound error")
         } else if charsxp == R_NaString {
@@ -88,7 +88,7 @@ impl Iterator for StrIter {
             } else if TYPEOF(vector) == SEXPTYPE::NILSXP {
                 Some(<&str>::na())
             } else if TYPEOF(vector) == SEXPTYPE::STRSXP {
-                Some(str_from_strsxp(vector, i as isize))
+                Some(str_from_strsxp(vector, i))
             } else if Rf_isFactor(vector).into() {
                 // factor support: factor is an integer, and we need
                 // the value of it, to retrieve the assigned label
@@ -227,8 +227,9 @@ mod tests {
             let a = Rf_ScalarString(R_NaString);
             Rf_PrintValue(STRING_ELT(a, 0));
             Rf_PrintValue(STRING_ELT(a, 2));
-            let bad = STRING_ELT(a, 2);
-            dbg!(str_from_strsxp(a, 2));
+            // Rf_PrintValue(STRING_ELT(a, -1)); // segfault
+            // let bad = STRING_ELT(a, 2);
+            // dbg!(str_from_strsxp(a, 2));
         });
     }
 }
