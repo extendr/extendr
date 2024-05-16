@@ -91,23 +91,27 @@ pub(crate) fn make_function_wrappers(
         quote! { #rust_name }
     };
 
+    // arguments for the wrapper with type being `SEXP`
     let formal_args = inputs
         .iter()
         .map(|input| translate_formal(input, self_ty))
         .collect::<syn::Result<Punctuated<FnArg, Token![,]>>>()?;
 
+    // exact the names of the arguments only (`mut` are ignored in `formal_args` already)
     let sexp_args = formal_args
         .clone()
         .into_iter()
         .map(|x| match x {
-            FnArg::Receiver(_) => todo!("receiver"),
+            // the wrapper doesn't use `self` arguments
+            FnArg::Receiver(_) => unreachable!(),
             FnArg::Typed(ref typed) => match typed.pat.as_ref() {
                 syn::Pat::Ident(ref pat_ident) => pat_ident.ident.clone(),
-                _ => todo!(),
+                _ => unreachable!(),
             },
         })
         .collect::<Vec<Ident>>();
 
+    //
     let convert_args: Vec<syn::Stmt> = inputs
         .iter()
         .map(translate_to_robj)
@@ -464,6 +468,7 @@ fn translate_to_robj(input: &FnArg) -> syn::Result<syn::Stmt> {
             }
         }
         FnArg::Receiver(_) => {
+            // this is `mut`, in case of a mutable reference
             Ok(parse_quote! { let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self); })
         }
     }
