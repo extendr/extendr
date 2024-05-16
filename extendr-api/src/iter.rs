@@ -89,6 +89,14 @@ impl Iterator for StrIter {
                 Some(<&str>::na())
             } else if TYPEOF(vector) == SEXPTYPE::STRSXP {
                 Some(str_from_strsxp(vector, i))
+            } else if TYPEOF(vector) == SEXPTYPE::CHARSXP {
+                if vector == R_NaString {
+                    Some(<&str>::na())
+                } else if vector == R_BlankString {
+                    Some("")
+                } else {
+                    Some(rstr::charsxp_to_str(vector))
+                }
             } else if Rf_isFactor(vector).into() {
                 // factor support: factor is an integer, and we need
                 // the value of it, to retrieve the assigned label
@@ -214,3 +222,25 @@ pub trait AsStrIter: GetSexp + Types + Length + Attributes + Rinternals {
 }
 
 impl AsStrIter for Robj {}
+
+#[cfg(test)]
+mod tests {
+    use extendr_engine::with_r;
+
+    use super::*;
+
+    #[test]
+    fn single_charsxp_iterator() {
+        with_r(|| {
+            let single_charsxp = blank_string();
+            let s1: Vec<_> = single_charsxp.as_str_iter().unwrap().collect();
+            // dbg!(s);
+            let single_charsxp = blank_scalar_string();
+            let s2: Vec<_> = single_charsxp.as_str_iter().unwrap().collect();
+            // dbg!(s);
+            assert_eq!(s1, s2);
+            assert_eq!(s1.len(), 1);
+            assert_eq!(s2.len(), 1);
+        });
+    }
+}
