@@ -248,21 +248,8 @@ impl<T> TryFrom<&Robj> for ExternalPtr<T> {
     type Error = Error;
 
     fn try_from(robj: &Robj) -> Result<Self> {
-        let clone = robj.clone();
-        if clone.rtype() != Rtype::ExternalPtr {
-            Err(Error::ExpectedExternalPtr(clone))
-        } else if clone.check_external_ptr_type::<T>() {
-            let res = ExternalPtr::<T> {
-                robj: clone,
-                _marker: std::marker::PhantomData,
-            };
-            Ok(res)
-        } else {
-            Err(Error::ExpectedExternalPtrType(
-                clone,
-                std::any::type_name::<T>().into(),
-            ))
-        }
+        let result: &Self = robj.try_into()?;
+        Ok(result.clone())
     }
 }
 
