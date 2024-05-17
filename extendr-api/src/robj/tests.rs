@@ -291,15 +291,11 @@ fn input_iterator_test() {
     }
 }
 
-
 #[test]
 fn as_typed_slice_u32() {
-    with_r(|| unsafe{
+    with_r(|| unsafe {
         let r = [-32, 3, i32::MAX].into_robj();
-        Rf_PrintValue(r.get());
-        dbg!(r.sexptype());
         let r_slice: Option<&[u32]> = r.as_typed_slice();
-        dbg!(r_slice);
         assert!(r_slice.is_none());
     });
 }
