@@ -760,7 +760,7 @@ where
 }
 
 macro_rules! make_typed_slice {
-    ($type: ty, $fn: ident, $($sexp: tt),* ) => {
+    ($type:tt, $fn:ident, $($sexp:ident),* ) => {
         impl<'a> AsTypedSlice<'a, $type> for Robj
         where
             Self : 'a,
@@ -769,8 +769,8 @@ macro_rules! make_typed_slice {
                 match self.sexptype() {
                     $( $sexp )|* => {
                         unsafe {
-                            make_typed_slice!(@handle_range $type, $fn, self);
-                            let ptr = $fn(self.get()) as *const $type;
+                            make_typed_slice!(@handle_range, $type, $fn, self);
+                            let ptr = $fn(self.get()).cast();
                             Some(std::slice::from_raw_parts(ptr, self.len()))
                         }
                     }
@@ -782,8 +782,8 @@ macro_rules! make_typed_slice {
                 match self.sexptype() {
                     $( $sexp )|* => {
                         unsafe {
-                            make_typed_slice!(@handle_range $type, $fn, self);
-                            let ptr = $fn(self.get_mut()) as *mut $type;
+                            make_typed_slice!(@handle_range, $type, $fn, self);
+                            let ptr = $fn(self.get_mut()).cast();
                             Some(std::slice::from_raw_parts_mut(ptr, self.len()))
                         }
                     }
@@ -792,24 +792,25 @@ macro_rules! make_typed_slice {
             }
         }
     };
-    (@handle_range u32, $fn: ident, $self:ident) => {
-        make_typed_slice!(@check_sign $fn, $self)
+    (@handle_range, u32, $fn:ident, $self:ident) => {
+        make_typed_slice!(@check_sign, $fn, $self)
     };
-    (@handle_range u64, $fn: ident, $self:ident) => {
-        make_typed_slice!(@check_sign $fn, $self)
+    (@handle_range, u64, $fn:ident, $self:ident) => {
+        make_typed_slice!(@check_sign, $fn, $self)
     };
-    (@handle_range u128, $fn: ident, $self:ident) => {
-        make_typed_slice!(@check_sign $fn, $self)
+    (@handle_range, u128, $fn:ident, $self:ident) => {
+        make_typed_slice!(@check_sign, $fn, $self)
     };
-    (@handle_range $type:ty, $fn:ident, $self:ident) => {
-        // do nothing
-    };
-    (@check_sign $fn:ident, $self:ident) => {
+    (@check_sign, $fn:ident, $self:ident) => {
+        // any non-negative i32 can fit in u32, u64, u128,
+        // so we check for that
         let original_ptr = $fn($self.get());
         let original_slice = std::slice::from_raw_parts(original_ptr, $self.len());
         let any_negative = original_slice.iter().any(|x| x.is_negative());
-        dbg!(any_negative);
         if any_negative { return None }
+    };
+    (@handle_range, $type:tt, $fn:ident, $self:ident) => {
+        // do nothing
     };
 }
 
