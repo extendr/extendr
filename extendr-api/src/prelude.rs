@@ -74,3 +74,7 @@ pub use ::ndarray::*;
 
 #[cfg(feature = "either")]
 pub use ::either::*;
+
+#[cfg(feature = "faer")]
+pub use ::faer::*;
+
