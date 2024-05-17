@@ -760,7 +760,7 @@ where
 }
 
 macro_rules! make_typed_slice {
-    ($type: ty, $fn: tt, $($sexp: tt),* ) => {
+    ($type: ty, $fn: ident, $($sexp: tt),* ) => {
         impl<'a> AsTypedSlice<'a, $type> for Robj
         where
             Self : 'a,
@@ -769,6 +769,7 @@ macro_rules! make_typed_slice {
                 match self.sexptype() {
                     $( $sexp )|* => {
                         unsafe {
+                            make_typed_slice!(@handle_range $type, $fn, self);
                             let ptr = $fn(self.get()) as *const $type;
                             Some(std::slice::from_raw_parts(ptr, self.len()))
                         }
@@ -789,12 +790,33 @@ macro_rules! make_typed_slice {
                 }
             }
         }
-    }
+    };
+    (@handle_range u32, $fn: ident, $self:ident) => {
+        make_typed_slice!(@check_sign $fn, $self)
+    };
+    (@handle_range u64, $fn: ident, $self:ident) => {
+        make_typed_slice!(@check_sign $fn, $self)
+    };
+    (@handle_range u128, $fn: ident, $self:ident) => {
+        make_typed_slice!(@check_sign $fn, $self)
+    };
+    (@handle_range $type:ty, $fn:ident, $self:ident) => {
+        // do nothing
+    };
+    (@check_sign $fn:ident, $self:ident) => {
+        let original_ptr = $fn($self.get());
+        let original_slice = std::slice::from_raw_parts_mut(original_ptr, $self.len());
+        let any_negative = original_slice.iter().any(|x| x.is_negative());
+        if any_negative { return None }
+    };
 }
 
 make_typed_slice!(Rbool, INTEGER, LGLSXP);
 make_typed_slice!(i32, INTEGER, INTSXP);
+// these unsigned conversions checks the range now
 make_typed_slice!(u32, INTEGER, INTSXP);
+make_typed_slice!(u64, INTEGER, INTSXP);
+make_typed_slice!(u128, INTEGER, INTSXP);
 make_typed_slice!(Rint, INTEGER, INTSXP);
 make_typed_slice!(f64, REAL, REALSXP);
 make_typed_slice!(Rfloat, REAL, REALSXP);

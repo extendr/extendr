@@ -2,7 +2,7 @@ use super::*;
 
 /// Wrapper for creating primitive objects.
 ///
-/// Make a primitive object, or NULL if not available.
+/// Make a primitive object, or `NULL` if not available.
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
