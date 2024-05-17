@@ -782,6 +782,7 @@ macro_rules! make_typed_slice {
                 match self.sexptype() {
                     $( $sexp )|* => {
                         unsafe {
+                            make_typed_slice!(@handle_range $type, $fn, self);
                             let ptr = $fn(self.get_mut()) as *mut $type;
                             Some(std::slice::from_raw_parts_mut(ptr, self.len()))
                         }
@@ -805,8 +806,9 @@ macro_rules! make_typed_slice {
     };
     (@check_sign $fn:ident, $self:ident) => {
         let original_ptr = $fn($self.get());
-        let original_slice = std::slice::from_raw_parts_mut(original_ptr, $self.len());
+        let original_slice = std::slice::from_raw_parts(original_ptr, $self.len());
         let any_negative = original_slice.iter().any(|x| x.is_negative());
+        dbg!(any_negative);
         if any_negative { return None }
     };
 }
