@@ -88,11 +88,9 @@ impl Iterator for StrIter {
                 // the value of it, to retrieve the assigned label
                 let j = std::slice::from_raw_parts(INTEGER(vector), self.len as _);
                 let j = j.get(i)?;
-                // assert_eq!(TYPEOF(self.levels), STRSXP, "levels of a factor must always be a character-vector");
-                // assert_ne!(j, 0, "invalid factor, where level/label i 0-indexed");
                 let j = j
                     .checked_sub(1)
-                    .expect("the factor integer had an invalid value in it");
+                    .expect("the factor integer has an invalid value in it");
                 str_from_strsxp(self.levels, j as _)
             } else {
                 None

@@ -352,14 +352,14 @@ impl Robj {
                 let sexp = self.get();
                 use SEXPTYPE::*;
                 match self.sexptype() {
-                    // a character vector contains `CHARSXP`, and thus you
-                    // seldomly have `Robj`'s that are `CHARSXP` themselves
-                    CHARSXP => sexp == libR_sys::R_NaString,
                     STRSXP => STRING_ELT(sexp, 0) == libR_sys::R_NaString,
                     INTSXP => *(INTEGER(sexp)) == libR_sys::R_NaInt,
                     LGLSXP => *(LOGICAL(sexp)) == libR_sys::R_NaInt,
                     REALSXP => R_IsNA(*(REAL(sexp))) != 0,
                     CPLXSXP => R_IsNA((*COMPLEX(sexp)).r) != 0,
+                    // a character vector contains `CHARSXP`, and thus you
+                    // seldomly have `Robj`'s that are `CHARSXP` themselves
+                    CHARSXP => sexp == libR_sys::R_NaString,
                     _ => false,
                 }
             }
