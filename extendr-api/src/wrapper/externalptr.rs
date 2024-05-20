@@ -45,7 +45,6 @@ pub struct ExternalPtr<T> {
 /// is not necessary.
 impl<T> PartialEq for ExternalPtr<T> {
     fn eq(&self, other: &Self) -> bool {
-        //TODO: does R_compute_identical handle externalptr properly?
         self.robj == other.robj && self._marker == other._marker
     }
 }
