@@ -769,7 +769,7 @@ macro_rules! make_typed_slice {
                 match self.sexptype() {
                     $( $sexp )|* => {
                         unsafe {
-                            let ptr = $fn(self.get()) as *const $type;
+                            let ptr = $fn(self.get()).cast();
                             Some(std::slice::from_raw_parts(ptr, self.len()))
                         }
                     }
@@ -781,7 +781,7 @@ macro_rules! make_typed_slice {
                 match self.sexptype() {
                     $( $sexp )|* => {
                         unsafe {
-                            let ptr = $fn(self.get_mut()) as *mut $type;
+                            let ptr = $fn(self.get_mut()).cast();
                             Some(std::slice::from_raw_parts_mut(ptr, self.len()))
                         }
                     }
@@ -794,7 +794,6 @@ macro_rules! make_typed_slice {
 
 make_typed_slice!(Rbool, INTEGER, LGLSXP);
 make_typed_slice!(i32, INTEGER, INTSXP);
-make_typed_slice!(u32, INTEGER, INTSXP);
 make_typed_slice!(Rint, INTEGER, INTSXP);
 make_typed_slice!(f64, REAL, REALSXP);
 make_typed_slice!(Rfloat, REAL, REALSXP);
@@ -803,6 +802,42 @@ make_typed_slice!(Rstr, STRING_PTR, STRSXP);
 make_typed_slice!(c64, COMPLEX, CPLXSXP);
 make_typed_slice!(Rcplx, COMPLEX, CPLXSXP);
 make_typed_slice!(Rcomplex, COMPLEX, CPLXSXP);
+
+macro_rules! make_typed_slice_unsigned_int {
+    ($type: ty, $fn: tt, $($sexp: tt),* ) => {
+        impl<'a> AsTypedSlice<'a, $type> for Robj
+        where
+            Self : 'a,
+        {
+            fn as_typed_slice(&self) -> Option<&'a [$type]> {
+                match self.sexptype() {
+                    $( $sexp )|* => {
+                        unsafe {
+                            // any non-negative i32 can fit in u32, u64, u128, etc.
+                            let original_ptr = $fn(self.get());
+                            let original_slice = std::slice::from_raw_parts(original_ptr, self.len());
+                            let any_negative = original_slice.iter().any(|x| x.is_negative());
+                            if any_negative { return None }
+                            // it is safe re-interpret the values
+                            let ptr = $fn(self.get()).cast();
+                            Some(std::slice::from_raw_parts(ptr, self.len()))
+                        }
+                    }
+                    _ => None
+                }
+            }
+            /// Mutable cannot safely be provided,
+            /// as writing numbers beyond `i32` is invalid
+            fn as_typed_slice_mut(&mut self) -> Option<&'a mut [$type]> {
+                None
+            }
+        }
+    }
+}
+
+make_typed_slice_unsigned_int!(u32, INTEGER, INTSXP);
+make_typed_slice_unsigned_int!(u64, INTEGER, INTSXP);
+make_typed_slice_unsigned_int!(u128, INTEGER, INTSXP);
 
 /// Provides access to the attributes of an R object.
 ///
