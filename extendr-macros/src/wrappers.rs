@@ -97,7 +97,7 @@ pub(crate) fn make_function_wrappers(
         .map(|input| translate_formal(input, self_ty))
         .collect::<syn::Result<Punctuated<FnArg, Token![,]>>>()?;
 
-    // exact the names of the arguments only (`mut` are ignored in `formal_args` already)
+    // extract the names of the arguments only (`mut` are ignored in `formal_args` already)
     let sexp_args = formal_args
         .clone()
         .into_iter()
@@ -111,7 +111,7 @@ pub(crate) fn make_function_wrappers(
         })
         .collect::<Vec<Ident>>();
 
-    //
+    // arguments from R (`SEXP`s) are converted to `Robj`
     let convert_args: Vec<syn::Stmt> = inputs
         .iter()
         .map(translate_to_robj)
@@ -190,7 +190,7 @@ pub(crate) fn make_function_wrappers(
 
             #(
             if std::ptr::addr_eq(
-                libR_sys::R_ExternalPtrAddr(#sexp_args),
+                extendr_api::R_ExternalPtrAddr(#sexp_args),
                 std::ptr::from_ref(return_ref_to_self)) {
                     return Ok(extendr_api::Robj::from_sexp(#sexp_args))
                 }

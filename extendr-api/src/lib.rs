@@ -422,8 +422,13 @@ pub const NA_LOGICAL: Rbool = Rbool::na_value();
 #[doc(hidden)]
 pub use std::collections::HashMap;
 
+/// This is needed for the generation of wrappers.
 #[doc(hidden)]
 pub use libR_sys::DllInfo;
+
+/// This is necessary for `#[extendr]`-impl
+#[doc(hidden)]
+pub use libR_sys::R_ExternalPtrAddr;
 
 #[doc(hidden)]
 pub use libR_sys::SEXP;

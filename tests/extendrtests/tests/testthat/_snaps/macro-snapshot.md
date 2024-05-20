@@ -3892,7 +3892,7 @@
                               )
                               .me_ref();
                           if std::ptr::addr_eq(
-                              libR_sys::R_ExternalPtrAddr(_self),
+                              extendr_api::R_ExternalPtrAddr(_self),
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(_self));
@@ -3986,7 +3986,7 @@
                               )
                               .me_mut();
                           if std::ptr::addr_eq(
-                              libR_sys::R_ExternalPtrAddr(_self),
+                              extendr_api::R_ExternalPtrAddr(_self),
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(_self));
@@ -4080,7 +4080,7 @@
                               )
                               .me_explicit_ref();
                           if std::ptr::addr_eq(
-                              libR_sys::R_ExternalPtrAddr(_self),
+                              extendr_api::R_ExternalPtrAddr(_self),
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(_self));
@@ -4176,7 +4176,7 @@
                               )
                               .me_explicit_mut();
                           if std::ptr::addr_eq(
-                              libR_sys::R_ExternalPtrAddr(_self),
+                              extendr_api::R_ExternalPtrAddr(_self),
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(_self));
@@ -4274,13 +4274,13 @@
                               )
                               .max_ref(_other_robj.try_into()?);
                           if std::ptr::addr_eq(
-                              libR_sys::R_ExternalPtrAddr(_self),
+                              extendr_api::R_ExternalPtrAddr(_self),
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(_self));
                           }
                           if std::ptr::addr_eq(
-                              libR_sys::R_ExternalPtrAddr(other),
+                              extendr_api::R_ExternalPtrAddr(other),
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(other));
@@ -4386,19 +4386,19 @@
                                   __offset_robj.try_into()?,
                               );
                           if std::ptr::addr_eq(
-                              libR_sys::R_ExternalPtrAddr(_self),
+                              extendr_api::R_ExternalPtrAddr(_self),
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(_self));
                           }
                           if std::ptr::addr_eq(
-                              libR_sys::R_ExternalPtrAddr(other),
+                              extendr_api::R_ExternalPtrAddr(other),
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(other));
                           }
                           if std::ptr::addr_eq(
-                              libR_sys::R_ExternalPtrAddr(_offset),
+                              extendr_api::R_ExternalPtrAddr(_offset),
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(_offset));
@@ -4506,13 +4506,13 @@
                               )
                               .max_ref2(_other_robj.try_into()?);
                           if std::ptr::addr_eq(
-                              libR_sys::R_ExternalPtrAddr(_self),
+                              extendr_api::R_ExternalPtrAddr(_self),
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(_self));
                           }
                           if std::ptr::addr_eq(
-                              libR_sys::R_ExternalPtrAddr(other),
+                              extendr_api::R_ExternalPtrAddr(other),
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(other));
@@ -7161,7 +7161,7 @@
                           )
                           .me();
                       if std::ptr::addr_eq(
-                          libR_sys::R_ExternalPtrAddr(_self),
+                          extendr_api::R_ExternalPtrAddr(_self),
                           std::ptr::from_ref(return_ref_to_self),
                       ) {
                           return Ok(extendr_api::Robj::from_sexp(_self));
