@@ -30,3 +30,13 @@ test_that("Issue 431: Restore struct as ExternalPtr", {
   y <- MyClass$restore_from_robj(x)
   expect_equal(x$a(), y$a())
 })
+
+test_that("Error nicely with null externalptr", {
+  x <- MyClass$new()
+  x$set_a(42L)
+  null_x <- new("externalptr") # no attributes, null-ptr
+  attributes(null_x) <- attributes(x)
+  expect_error(
+    null_x$set_a(44L)
+  )
+})
