@@ -30,9 +30,6 @@ mod ndarray_try_from_tests {
                  assert_eq!(mapped, expected);
              }
 
-              let view = <ArrayView2<u32>>::try_from(&robj)?;
-             assert_eq!(view.dim(), (4, 2));
-
              for (&mapped, expected) in view.iter().zip(1..=8) {
                  assert_eq!(mapped, expected);
              }
