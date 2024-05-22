@@ -1,13 +1,21 @@
+//!
+//! ## NOTE
+//!
+//! It is possible to return `Rstr` to R, but it is unusual to have
+//! a string object that isn't a `character()`-vector. Therefore, we
+//! adopt the convention, that `Robj::from` would wrap the single
+//! `Rstr`/`CHARSXP` in a character-vector.
+//!
 use super::*;
 
-/// Wrapper for creating CHARSXP objects.
+/// Wrapper for creating `CHARSXP` objects.
 /// These are used only as the contents of a character
 /// vector.
 ///
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let chr = r!(Rstr::from_string("xyz"));
+///     let chr = Rstr::from_string("xyz");
 ///     assert_eq!(chr.as_char().unwrap().as_str(), "xyz");
 /// }
 /// ```
@@ -126,5 +134,45 @@ impl CanBeNA for Rstr {
                 robj: Robj::from_sexp(R_NaString),
             }
         }
+    }
+}
+
+impl TryFrom<&Robj> for Rstr {
+    type Error = Error;
+
+    fn try_from(robj: &Robj) -> Result<Self> {
+        if robj.is_char() {
+            Ok(Rstr { robj: robj.clone() })
+        } else {
+            Err(Error::ExpectedRstr(robj.clone()))
+        }
+    }
+}
+
+impl TryFrom<Robj> for Rstr {
+    type Error = Error;
+
+    fn try_from(robj: Robj) -> Result<Self> {
+        <Rstr>::try_from(&robj)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use extendr_engine::with_r;
+
+    use super::*;
+
+    #[test]
+    fn doc_test() {
+        with_r(|| {
+            // chr is a CHARSXP
+            let chr = Rstr::from_string("xyz");
+            dbg!(chr.rtype(), chr.sexptype());
+            // chr here is a STRSXP
+            // let chr = r!(Rstr::from_string("xyz"));
+            // dbg!(chr.rtype(), chr.sexptype());
+            // assert_eq!(chr.as_char().unwrap().as_str(), "xyz");
+        });
     }
 }

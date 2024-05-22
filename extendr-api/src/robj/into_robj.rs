@@ -706,13 +706,6 @@ impl From<Vec<Robj>> for Robj {
     }
 }
 
-impl From<Vec<Rstr>> for Robj {
-    /// Convert a vector of Rstr into strings.
-    fn from(val: Vec<Rstr>) -> Self {
-        Strings::from_values(val).into()
-    }
-}
-
 #[cfg(test)]
 mod test {
     use super::*;

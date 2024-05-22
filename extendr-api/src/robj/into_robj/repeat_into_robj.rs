@@ -86,3 +86,49 @@ impl_synonym_type!(Rfloat, f64);
 impl_synonym_type!(&Rfloat, f64);
 impl_synonym_type!(Rint, i32);
 impl_synonym_type!(&Rint, i32);
+
+// since `Rstr` does not implement `Scalar` (due to lifetime conflicts), 
+// it requires manual implementation
+
+impl ToVectorValue for Rstr {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::STRSXP
+    }
+
+    fn to_sexp(&self) -> SEXP
+    where
+        Self: Sized,
+    {
+        unsafe { self.robj.get() }
+    }
+}
+
+impl ToVectorValue for &Rstr {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::STRSXP
+    }
+
+    fn to_sexp(&self) -> SEXP
+    where
+        Self: Sized,
+    {
+        unsafe { self.robj.get() }
+    }
+}
+
+impl ToVectorValue for Option<Rstr> {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::STRSXP
+    }
+
+    fn to_sexp(&self) -> SEXP
+    where
+        Self: Sized,
+    {
+        if let Some(s) = self {
+            unsafe { s.robj.get() }
+        } else {
+            unsafe { R_NaString }
+        }
+    }
+}
