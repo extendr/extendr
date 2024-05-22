@@ -66,13 +66,24 @@ where
     pub fn new_with_na(nrow: usize, ncol: usize) -> Self {
         let mut matrix = Self::new(nrow, ncol);
         if nrow != 0 || ncol != 0 {
-            matrix
-                .as_typed_slice_mut()
-                .unwrap()
-                .iter_mut()
-                .for_each(|x| {
-                    *x = T::na();
-                });
+            match matrix.sexptype() {
+                SEXPTYPE::STRSXP => unsafe {
+                    let na_value = R_NaString;
+                    let matrix_ptr = matrix.get_mut();
+                    for ij in 0..nrow * ncol {
+                        SET_STRING_ELT(matrix_ptr, ij as _, na_value);
+                    }
+                },
+                _ => {
+                    matrix
+                        .as_typed_slice_mut()
+                        .unwrap()
+                        .iter_mut()
+                        .for_each(|x| {
+                            *x = T::na();
+                        });
+                }
+            }
         }
         matrix
     }
@@ -497,6 +508,8 @@ mod tests {
             unsafe { Rf_PrintValue(m.get()) };
             let m: RMatrix<Rcplx> = RMatrix::new(5, 2);
             unsafe { Rf_PrintValue(m.get()) };
+            let m: RMatrix<Rstr> = RMatrix::new(5, 2);
+            unsafe { Rf_PrintValue(m.get()) };
             rprintln!();
 
             // let m: RMatrix<Rbyte> = RMatrix::new_with_na(10, 2); // not possible!
@@ -512,6 +525,11 @@ mod tests {
 
             let m: RMatrix<Rcplx> = RMatrix::new_with_na(10, 2);
             assert_eq!(R!("matrix(NA_complex_, 10, 2)").unwrap(), m.into_robj());
+
+            let na_matrix = R!("matrix(NA_character_, 10, 2)").unwrap();
+            unsafe { Rf_PrintValue(na_matrix.get()) };
+            let m: RMatrix<Rstr> = RMatrix::new_with_na(10, 2);
+            assert_eq!(R!("matrix(NA_character_, 10, 2)").unwrap(), m.into_robj());
         });
     }
 
