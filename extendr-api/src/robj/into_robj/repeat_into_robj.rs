@@ -87,7 +87,7 @@ impl_synonym_type!(&Rfloat, f64);
 impl_synonym_type!(Rint, i32);
 impl_synonym_type!(&Rint, i32);
 
-// since `Rstr` does not implement `Scalar` (due to lifetime conflicts), 
+// since `Rstr` does not implement `Scalar` (due to lifetime conflicts),
 // it requires manual implementation
 
 impl ToVectorValue for Rstr {
