@@ -248,19 +248,19 @@ pub trait Conversions: GetSexp {
     /// }
     /// ```
     fn as_symbol(&self) -> Option<Symbol> {
-        Symbol::try_from(self.as_robj().clone()).ok()
+        Symbol::try_from(self.as_robj()).ok()
     }
 
-    /// Convert a CHARSXP object to a Rstr wrapper.
+    /// Convert a `CHARSXP` object to a `Rstr` wrapper.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let fred = r!(Rstr::from_string("fred"));
+    ///     let fred = Rstr::from_string("fred");
     ///     assert_eq!(fred.as_char(), Some(Rstr::from_string("fred")));
     /// }
     /// ```
     fn as_char(&self) -> Option<Rstr> {
-        Rstr::try_from(self.as_robj().clone()).ok()
+        Rstr::try_from(self.as_robj()).ok()
     }
 
     /// Convert a raw object to a Rstr wrapper.
@@ -273,7 +273,7 @@ pub trait Conversions: GetSexp {
     /// }
     /// ```
     fn as_raw(&self) -> Option<Raw> {
-        Raw::try_from(self.as_robj().clone()).ok()
+        Raw::try_from(self.as_robj()).ok()
     }
 
     /// Convert a language object to a Language wrapper.
@@ -286,7 +286,7 @@ pub trait Conversions: GetSexp {
     /// }
     /// ```
     fn as_language(&self) -> Option<Language> {
-        Language::try_from(self.as_robj().clone()).ok()
+        Language::try_from(self.as_robj()).ok()
     }
 
     /// Convert a pair list object (LISTSXP) to a Pairlist wrapper.
@@ -300,7 +300,7 @@ pub trait Conversions: GetSexp {
     /// }
     /// ```
     fn as_pairlist(&self) -> Option<Pairlist> {
-        Pairlist::try_from(self.as_robj().clone()).ok()
+        Pairlist::try_from(self.as_robj()).ok()
     }
 
     /// Convert a list object (VECSXP) to a List wrapper.
@@ -312,7 +312,7 @@ pub trait Conversions: GetSexp {
     /// }
     /// ```
     fn as_list(&self) -> Option<List> {
-        List::try_from(self.as_robj().clone()).ok()
+        List::try_from(self.as_robj()).ok()
     }
 
     /// Convert an expression object (EXPRSXP) to a Expr wrapper.
@@ -325,7 +325,7 @@ pub trait Conversions: GetSexp {
     /// }
     /// ```
     fn as_expressions(&self) -> Option<Expressions> {
-        Expressions::try_from(self.as_robj().clone()).ok()
+        Expressions::try_from(self.as_robj()).ok()
     }
 
     /// Convert an environment object (ENVSXP) to a Env wrapper.
@@ -341,7 +341,7 @@ pub trait Conversions: GetSexp {
     /// }
     /// ```
     fn as_environment(&self) -> Option<Environment> {
-        Environment::try_from(self.as_robj().clone()).ok()
+        Environment::try_from(self.as_robj()).ok()
     }
 
     /// Convert a function object (CLOSXP) to a Function wrapper.
@@ -353,12 +353,12 @@ pub trait Conversions: GetSexp {
     /// }
     /// ```
     fn as_function(&self) -> Option<Function> {
-        Function::try_from(self.as_robj().clone()).ok()
+        Function::try_from(self.as_robj()).ok()
     }
 
     /// Get a wrapper for a promise.
     fn as_promise(&self) -> Option<Promise> {
-        Promise::try_from(self.as_robj().clone()).ok()
+        Promise::try_from(self.as_robj()).ok()
     }
 }
 
