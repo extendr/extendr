@@ -100,6 +100,30 @@ impl TryFrom<Vec<i32>> for Integers {
     }
 }
 
+impl Elt<Rint> for Integers {
+    fn set_elt(&mut self, index: usize, val: Rint) {
+        single_threaded(|| unsafe {
+            SET_INTEGER_ELT(self.get_mut(), index as R_xlen_t, val.inner());
+        })
+    }
+
+    fn elt(&self, index: usize) -> Rint {
+        unsafe { std::mem::transmute(INTEGER_ELT(self.robj.get(), index as _)) }
+    }
+}
+
+impl Elt<i32> for Integers {
+    fn set_elt(&mut self, index: usize, val: i32) {
+        single_threaded(|| unsafe {
+            SET_INTEGER_ELT(self.get_mut(), index as R_xlen_t, val);
+        })
+    }
+
+    fn elt(&self, index: usize) -> i32 {
+        unsafe { std::mem::transmute(INTEGER_ELT(self.robj.get(), index as _)) }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::prelude::*;

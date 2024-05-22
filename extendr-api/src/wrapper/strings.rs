@@ -67,26 +67,6 @@ impl Strings {
         }
     }
 
-    /// Get an element in a string vector.
-    pub fn elt(&self, i: usize) -> Rstr {
-        if i >= self.len() {
-            Rstr::na()
-        } else {
-            Robj::from_sexp(unsafe { STRING_ELT(self.get(), i as R_xlen_t) })
-                .try_into()
-                .unwrap()
-        }
-    }
-
-    /// Set a single element of this string vector.
-    pub fn set_elt(&mut self, i: usize, e: Rstr) {
-        single_threaded(|| unsafe {
-            if i < self.len() {
-                SET_STRING_ELT(self.robj.get_mut(), i as isize, e.get());
-            }
-        });
-    }
-
     /// Get an iterator for this string vector.
     pub fn iter(&self) -> impl Iterator<Item = &Rstr> {
         self.as_slice().iter()
@@ -100,6 +80,28 @@ impl Strings {
     /// Return `TRUE` if the vector has no `NA`s, `FALSE` if any, or `NA_BOOL` if unknown.
     pub fn no_na(&self) -> Rbool {
         unsafe { STRING_NO_NA(self.get()).into() }
+    }
+}
+
+impl Elt<Rstr> for Strings {
+    /// Get an element in a string vector.
+    fn elt(&self, i: usize) -> Rstr {
+        if i >= self.len() {
+            Rstr::na()
+        } else {
+            Robj::from_sexp(unsafe { STRING_ELT(self.get(), i as R_xlen_t) })
+                .try_into()
+                .unwrap()
+        }
+    }
+
+    /// Set a single element of this string vector.
+    fn set_elt(&mut self, i: usize, e: Rstr) {
+        single_threaded(|| unsafe {
+            if i < self.len() {
+                SET_STRING_ELT(self.robj.get_mut(), i as isize, e.get());
+            }
+        });
     }
 }
 

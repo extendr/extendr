@@ -51,12 +51,27 @@ impl Doubles {
     }
 }
 
-// TODO: this should be a trait.
-impl Doubles {
-    pub fn set_elt(&mut self, index: usize, val: Rfloat) {
+impl Elt<Rfloat> for Doubles {
+    fn set_elt(&mut self, index: usize, val: Rfloat) {
         single_threaded(|| unsafe {
             SET_REAL_ELT(self.get_mut(), index as R_xlen_t, val.inner());
         })
+    }
+
+    fn elt(&self, index: usize) -> Rfloat {
+        unsafe { std::mem::transmute(REAL_ELT(self.robj.get(), index as _)) }
+    }
+}
+
+impl Elt<f64> for Doubles {
+    fn set_elt(&mut self, index: usize, val: f64) {
+        single_threaded(|| unsafe {
+            SET_REAL_ELT(self.get_mut(), index as R_xlen_t, val);
+        })
+    }
+
+    fn elt(&self, index: usize) -> f64 {
+        unsafe { std::mem::transmute(REAL_ELT(self.robj.get(), index as _)) }
     }
 }
 

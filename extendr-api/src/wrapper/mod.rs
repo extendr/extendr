@@ -238,6 +238,11 @@ make_getsexp!(Dataframe<T>, impl<T>);
 //     }
 // }
 
+pub trait Elt<T> {
+    fn elt(&self, index: usize) -> T;
+    fn set_elt(&mut self, index: usize, val: T); //TODO: add this? -> Option<T>;
+}
+
 pub trait Conversions: GetSexp {
     /// Convert a symbol object to a Symbol wrapper.
     /// ```

@@ -38,15 +38,19 @@ impl Complexes {
     }
 }
 
-// There is no SET_COMPLEX_ELT
-//
-// impl Complexes {
-//     pub fn set_elt(&mut self, index: usize, val: Rcplx) {
-//         unsafe {
-//             SET_COMPLEX_ELT(self.get(), index as R_xlen_t, val.inner());
-//         }
-//     }
-// }
+impl Elt<Rcplx> for Complexes {
+    fn set_elt(&mut self, index: usize, val: Rcplx) {
+        single_threaded(|| unsafe {
+            SET_COMPLEX_ELT(self.get_mut(), index as R_xlen_t, std::mem::transmute(val));
+        })
+    }
+
+    fn elt(&self, index: usize) -> Rcplx {
+        unsafe { std::mem::transmute(COMPLEX_ELT(self.robj.get(), index as _)) }
+    }
+}
+
+//TODO: what's the pathway to implement the same for primitive type for this?
 
 impl Deref for Complexes {
     type Target = [Rcplx];

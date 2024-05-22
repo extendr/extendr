@@ -55,6 +55,30 @@ impl Raw {
     }
 }
 
+impl Elt<Rbyte> for Raw {
+    fn set_elt(&mut self, index: usize, val: Rbyte) {
+        single_threaded(|| unsafe {
+            SET_RAW_ELT(self.get_mut(), index as R_xlen_t, val);
+        })
+    }
+
+    fn elt(&self, index: usize) -> Rbyte {
+        unsafe { RAW_ELT(self.robj.get(), index as _) }
+    }
+}
+
+impl Elt<u8> for Doubles {
+    fn set_elt(&mut self, index: usize, val: u8) {
+        single_threaded(|| unsafe {
+            SET_RAW_ELT(self.get_mut(), index as R_xlen_t, val);
+        })
+    }
+
+    fn elt(&self, index: usize) -> u8 {
+        unsafe { RAW_ELT(self.robj.get(), index as _) }
+    }
+}
+
 impl std::fmt::Debug for Raw {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str("Raw")?;

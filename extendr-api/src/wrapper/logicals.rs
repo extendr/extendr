@@ -91,6 +91,30 @@ impl TryFrom<Vec<bool>> for Logicals {
     }
 }
 
+impl Elt<Rbool> for Logicals {
+    fn set_elt(&mut self, index: usize, val: Rbool) {
+        single_threaded(|| unsafe {
+            SET_LOGICAL_ELT(self.get_mut(), index as R_xlen_t, val.inner());
+        })
+    }
+
+    fn elt(&self, index: usize) -> Rbool {
+        unsafe { std::mem::transmute(LOGICAL_ELT(self.robj.get(), index as _)) }
+    }
+}
+
+impl Elt<i32> for Logicals {
+    fn set_elt(&mut self, index: usize, val: i32) {
+        single_threaded(|| unsafe {
+            SET_LOGICAL_ELT(self.get_mut(), index as R_xlen_t, val);
+        })
+    }
+
+    fn elt(&self, index: usize) -> i32 {
+        unsafe { std::mem::transmute(LOGICAL_ELT(self.robj.get(), index as _)) }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::prelude::*;
