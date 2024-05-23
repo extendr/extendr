@@ -803,41 +803,31 @@ make_typed_slice!(c64, COMPLEX, CPLXSXP);
 make_typed_slice!(Rcplx, COMPLEX, CPLXSXP);
 make_typed_slice!(Rcomplex, COMPLEX, CPLXSXP);
 
-macro_rules! make_typed_slice_unsigned_int {
-    ($type: ty, $fn: tt, $($sexp: tt),* ) => {
-        impl<'a> AsTypedSlice<'a, $type> for Robj
-        where
-            Self : 'a,
-        {
-            fn as_typed_slice(&self) -> Option<&'a [$type]> {
-                match self.sexptype() {
-                    $( $sexp )|* => {
-                        unsafe {
-                            // any non-negative i32 can fit in u32, u64, u128, etc.
-                            let original_ptr = $fn(self.get());
-                            let original_slice = std::slice::from_raw_parts(original_ptr, self.len());
-                            let any_negative = original_slice.iter().any(|x| x.is_negative());
-                            if any_negative { return None }
-                            // it is safe re-interpret the values
-                            let ptr = $fn(self.get()).cast();
-                            Some(std::slice::from_raw_parts(ptr, self.len()))
-                        }
-                    }
-                    _ => None
+impl<'a> AsTypedSlice<'a, u32> for Robj
+where
+    Self: 'a,
+{
+    fn as_typed_slice(&self) -> Option<&'a [u32]> {
+        match self.sexptype() {
+            INTSXP => unsafe {
+                let original_ptr = INTEGER(self.get());
+                let original_slice = std::slice::from_raw_parts(original_ptr, self.len());
+                let any_negative = original_slice.iter().any(|x| x.is_negative());
+                if any_negative {
+                    return None;
                 }
-            }
-            /// Mutable cannot safely be provided,
-            /// as writing numbers beyond `i32` is invalid
-            fn as_typed_slice_mut(&mut self) -> Option<&'a mut [$type]> {
-                None
-            }
+                let ptr = INTEGER(self.get()).cast();
+                Some(std::slice::from_raw_parts(ptr, self.len()))
+            },
+            _ => None,
         }
     }
+    /// Mutable cannot safely be provided
+    /// as writing numbers beyond `i32` is invalid
+    fn as_typed_slice_mut(&mut self) -> Option<&'a mut [u32]> {
+        None
+    }
 }
-
-make_typed_slice_unsigned_int!(u32, INTEGER, INTSXP);
-make_typed_slice_unsigned_int!(u64, INTEGER, INTSXP);
-make_typed_slice_unsigned_int!(u128, INTEGER, INTSXP);
 
 /// Provides access to the attributes of an R object.
 ///

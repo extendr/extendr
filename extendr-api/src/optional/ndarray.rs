@@ -117,20 +117,17 @@ macro_rules! make_array_view_2 {
 make_array_view_1!(Rbool, Error::ExpectedLogical);
 make_array_view_1!(Rint, Error::ExpectedInteger);
 make_array_view_1!(i32, Error::ExpectedInteger);
+make_array_view_1!(u32, Error::ExpectedInteger);
 make_array_view_1!(Rfloat, Error::ExpectedReal);
 make_array_view_1!(f64, Error::ExpectedReal);
 make_array_view_1!(Rcplx, Error::ExpectedComplex);
 make_array_view_1!(c64, Error::ExpectedComplex);
 make_array_view_1!(Rstr, Error::ExpectedString);
 
-// read-only
-make_array_view_1!(u32, Error::ExpectedInteger);
-make_array_view_1!(u64, Error::ExpectedInteger);
-make_array_view_1!(u128, Error::ExpectedInteger);
-
 make_array_view_2!(Rbool, "Not a logical matrix.", Error::ExpectedLogical);
 make_array_view_2!(Rint, "Not an integer matrix.", Error::ExpectedInteger);
 make_array_view_2!(i32, "Not an integer matrix.", Error::ExpectedInteger);
+make_array_view_2!(u32, "Not an integer matrix.", Error::ExpectedInteger);
 make_array_view_2!(Rfloat, "Not a floating point matrix.", Error::ExpectedReal);
 make_array_view_2!(f64, "Not a floating point matrix.", Error::ExpectedReal);
 make_array_view_2!(
@@ -140,11 +137,6 @@ make_array_view_2!(
 );
 make_array_view_2!(c64, "Not a complex number matrix.", Error::ExpectedComplex);
 make_array_view_2!(Rstr, "Not a string matrix.", Error::ExpectedString);
-
-// read-only
-make_array_view_2!(u32, "Not an integer matrix.", Error::ExpectedInteger);
-make_array_view_2!(u64, "Not an integer matrix.", Error::ExpectedInteger);
-make_array_view_2!(u128, "Not an integer matrix.", Error::ExpectedInteger);
 
 impl<A, S, D> TryFrom<&ArrayBase<S, D>> for Robj
 where
