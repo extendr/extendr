@@ -66,6 +66,7 @@ where
     pub fn new_with_na(nrow: usize, ncol: usize) -> Self {
         let mut matrix = Self::new(nrow, ncol);
         if nrow != 0 || ncol != 0 {
+            // FIXME: replace this with something that uses the `Elt`-interface
             match matrix.sexptype() {
                 SEXPTYPE::STRSXP => unsafe {
                     let na_value = R_NaString;
@@ -152,6 +153,8 @@ where
         self.as_typed_slice().unwrap()
     }
 
+    //FIXME: don't provide this for `Rstr` and friends
+
     /// Returns a flat, mutable representation of the array in col-major.
     pub fn data_mut(&mut self) -> &mut [T] {
         self.as_typed_slice_mut().unwrap()
@@ -170,6 +173,7 @@ where
 {
     /// Make a new column type.
     pub fn new_column<F: FnMut(usize) -> T>(nrows: usize, f: F) -> Self {
+        //FIXME: add a test with `Rstr`
         let mut robj = (0..nrows).map(f).collect_robj();
         let dim = [nrows];
         robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
@@ -203,6 +207,7 @@ where
         ncols: usize,
         f: F,
     ) -> Self {
+        //FIXME: use the set_elt-interface
         let mut robj = (0..ncols)
             .flat_map(|c| {
                 let mut g = f.clone();

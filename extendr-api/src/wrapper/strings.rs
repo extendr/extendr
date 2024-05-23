@@ -107,7 +107,6 @@ impl Elt<Rstr> for Strings {
 
 //TODO: implement Elt<&str> maybe?
 
-
 impl Attributes for Strings {}
 
 impl<T: AsRef<str>> FromIterator<T> for Strings {
