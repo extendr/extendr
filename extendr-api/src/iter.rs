@@ -86,12 +86,12 @@ impl Iterator for StrIter {
             } else if Rf_isFactor(vector).into() {
                 // factor support: factor is an integer, and we need
                 // the value of it, to retrieve the assigned label
-                let j = std::slice::from_raw_parts(INTEGER(vector), self.len as _);
-                let j = j.get(i)?;
-                let j = j
+                let level_index = std::slice::from_raw_parts(INTEGER(vector), self.len as _);
+                let level_index = level_index.get(i)?;
+                let level_index = level_index
                     .checked_sub(1)
                     .expect("the factor integer has an invalid value in it");
-                str_from_strsxp(self.levels, j as _)
+                str_from_strsxp(self.levels, level_index as _)
             } else {
                 None
             }
