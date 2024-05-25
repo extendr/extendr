@@ -53,8 +53,7 @@ impl Symbol {
         unsafe {
             let sexp = self.robj.get();
             let printname = PRINTNAME(sexp);
-            assert!(TYPEOF(printname) == SEXPTYPE::CHARSXP);
-            to_str(R_CHAR(printname) as *const u8)
+            rstr::charsxp_to_str(printname).unwrap()
         }
     }
 }

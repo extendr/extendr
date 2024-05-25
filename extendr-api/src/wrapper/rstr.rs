@@ -17,11 +17,22 @@ pub struct Rstr {
     pub(crate) robj: Robj,
 }
 
-pub(crate) unsafe fn sexp_to_str(sexp: SEXP) -> &'static str {
-    if sexp == R_NaString {
-        <&str>::na()
+/// Returns a rust string-slice based on the provided `SEXP`, which is of type
+/// [`SEXPTYPE::CHARSXP`]. Note that the length of a `CHARSXP` is exactly
+/// the number of non-null bytes in said R character.
+pub(crate) unsafe fn charsxp_to_str(charsxp: SEXP) -> Option<&'static str> {
+    assert_eq!(TYPEOF(charsxp), SEXPTYPE::CHARSXP);
+    if charsxp == R_NilValue {
+        None
+    } else if charsxp == R_NaString {
+        Some(<&str>::na())
+    } else if charsxp == R_BlankString {
+        Some("")
     } else {
-        std::mem::transmute(to_str(R_CHAR(sexp) as *const u8))
+        let length = Rf_xlength(charsxp);
+        let all_bytes =
+            std::slice::from_raw_parts(R_CHAR(charsxp).cast(), length.try_into().unwrap());
+        Some(std::str::from_utf8_unchecked(all_bytes))
     }
 }
 
@@ -36,7 +47,7 @@ impl Rstr {
     /// Get the string from a character object.
     /// If the string is NA, then the special na_str() is returned.
     pub fn as_str(&self) -> &str {
-        unsafe { sexp_to_str(self.robj.get()) }
+        self.into()
     }
 }
 
@@ -58,6 +69,15 @@ impl From<&str> for Rstr {
     /// Convert a string slice to a Rstr.
     fn from(s: &str) -> Self {
         Rstr::from_string(s)
+    }
+}
+
+impl From<&Rstr> for &str {
+    fn from(value: &Rstr) -> Self {
+        unsafe {
+            let charsxp = value.robj.get();
+            rstr::charsxp_to_str(charsxp).unwrap()
+        }
     }
 }
 

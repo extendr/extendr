@@ -138,10 +138,9 @@ impl Iterator for PairlistIter {
                 let value = Robj::from_sexp(CAR(sexp));
                 self.list_elem = CDR(sexp);
                 if TYPEOF(tag) == SEXPTYPE::SYMSXP {
+                    // printname is always a CHARSXP
                     let printname = PRINTNAME(tag);
-                    assert!(TYPEOF(printname) == SEXPTYPE::CHARSXP);
-                    let name = to_str(R_CHAR(printname) as *const u8);
-                    Some((std::mem::transmute(name), value))
+                    rstr::charsxp_to_str(printname).map(|x| (x, value))
                 } else {
                     // empty string represents the absense of the name
                     Some(("", value))

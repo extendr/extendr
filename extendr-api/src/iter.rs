@@ -55,23 +55,11 @@ impl StrIter {
     }
 }
 
-// Get a string reference from a CHARSXP
-fn str_from_strsxp<'a>(sexp: SEXP, index: isize) -> &'a str {
+// Get a string reference from a `CHARSXP`
+pub(crate) fn str_from_strsxp<'a>(sexp: SEXP, index: usize) -> Option<&'a str> {
     single_threaded(|| unsafe {
-        if index < 0 || index >= Rf_xlength(sexp) {
-            <&str>::na()
-        } else {
-            let charsxp = STRING_ELT(sexp, index);
-            if charsxp == R_NaString {
-                <&str>::na()
-            } else if TYPEOF(charsxp) == SEXPTYPE::CHARSXP {
-                let ptr = R_CHAR(charsxp) as *const u8;
-                let slice = std::slice::from_raw_parts(ptr, Rf_xlength(charsxp) as usize);
-                std::str::from_utf8_unchecked(slice)
-            } else {
-                <&str>::na()
-            }
-        }
+        let charsxp = STRING_ELT(sexp, index as _);
+        rstr::charsxp_to_str(charsxp)
     })
 }
 
@@ -89,14 +77,21 @@ impl Iterator for StrIter {
             let vector = self.vector.get();
             if i >= self.len {
                 None
-            } else if TYPEOF(vector) == SEXPTYPE::STRSXP {
-                Some(str_from_strsxp(vector, i as isize))
-            } else if TYPEOF(vector) == SEXPTYPE::INTSXP && TYPEOF(self.levels) == SEXPTYPE::STRSXP
-            {
-                let j = *(INTEGER(vector).add(i));
-                Some(str_from_strsxp(self.levels, j as isize - 1))
             } else if TYPEOF(vector) == SEXPTYPE::NILSXP {
-                Some(<&str>::na())
+                None
+            } else if TYPEOF(vector) == SEXPTYPE::STRSXP {
+                str_from_strsxp(vector, i)
+            } else if TYPEOF(vector) == SEXPTYPE::CHARSXP {
+                rstr::charsxp_to_str(vector)
+            } else if Rf_isFactor(vector).into() {
+                // factor support: factor is an integer, and we need
+                // the value of it, to retrieve the assigned label
+                let level_index = std::slice::from_raw_parts(INTEGER(vector), self.len as _);
+                let level_index = level_index.get(i)?;
+                let level_index = level_index
+                    .checked_sub(1)
+                    .expect("the factor integer has an invalid value in it");
+                str_from_strsxp(self.levels, level_index as _)
             } else {
                 None
             }
@@ -178,34 +173,62 @@ pub trait AsStrIter: GetSexp + Types + Length + Attributes + Rinternals {
     fn as_str_iter(&self) -> Option<StrIter> {
         let i = 0;
         let len = self.len();
-        match self.sexptype() {
-            SEXPTYPE::STRSXP => unsafe {
+        if self.sexptype() == SEXPTYPE::STRSXP {
+            unsafe {
                 Some(StrIter {
                     vector: self.as_robj().clone(),
                     i,
                     len,
                     levels: R_NilValue,
                 })
-            },
-            SEXPTYPE::INTSXP => unsafe {
-                if let Some(levels) = self.get_attrib(levels_symbol()) {
-                    if self.is_factor() && levels.sexptype() == SEXPTYPE::STRSXP {
-                        Some(StrIter {
-                            vector: self.as_robj().clone(),
-                            i,
-                            len,
-                            levels: levels.get(),
-                        })
-                    } else {
-                        None
-                    }
-                } else {
-                    None
-                }
-            },
-            _ => None,
+            }
+        } else if self.sexptype() == SEXPTYPE::CHARSXP {
+            let len = 1;
+            unsafe {
+                Some(StrIter {
+                    vector: self.as_robj().clone(),
+                    i,
+                    len,
+                    levels: R_NilValue,
+                })
+            }
+        } else if self.is_factor() {
+            let levels = self.get_attrib(levels_symbol()).unwrap();
+            unsafe {
+                Some(StrIter {
+                    vector: self.as_robj().clone(),
+                    i,
+                    len,
+                    levels: levels.get(),
+                })
+            }
+        } else {
+            None
         }
     }
 }
 
 impl AsStrIter for Robj {}
+
+#[cfg(test)]
+mod tests {
+    use crate as extendr_api;
+    use extendr_engine::with_r;
+
+    use super::*;
+
+    #[test]
+    fn single_charsxp_iterator() {
+        with_r(|| {
+            let single_charsxp = blank_string();
+            let s1: Vec<_> = single_charsxp.as_str_iter().unwrap().collect();
+            // dbg!(&s1);
+            let single_charsxp = blank_scalar_string();
+            let s2: Vec<_> = single_charsxp.as_str_iter().unwrap().collect();
+            // dbg!(&s2);
+            assert_eq!(s1, s2);
+            assert_eq!(s1.len(), 1);
+            assert_eq!(s2.len(), 1);
+        });
+    }
+}

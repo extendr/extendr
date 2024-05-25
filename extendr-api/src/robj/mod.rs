@@ -161,7 +161,7 @@ pub trait Slices: GetSexp {
     /// # Safety
     ///
     /// Unless the type is correct, this will cause undefined behaviour.
-    /// Creating this slice will also instatiate and Altrep objects.
+    /// Creating this slice will also instantiate an Altrep objects.
     unsafe fn as_typed_slice_raw<T>(&self) -> &[T] {
         let len = XLENGTH(self.get()) as usize;
         let data = DATAPTR_RO(self.get()) as *const T;
@@ -173,8 +173,8 @@ pub trait Slices: GetSexp {
     /// # Safety
     ///
     /// Unless the type is correct, this will cause undefined behaviour.
-    /// Creating this slice will also instatiate and Altrep objects.
-    /// Not all obejects (especially not list and strings) support this.
+    /// Creating this slice will also instantiate Altrep objects.
+    /// Not all objects (especially not list and strings) support this.
     unsafe fn as_typed_slice_raw_mut<T>(&mut self) -> &mut [T] {
         let len = XLENGTH(self.get()) as usize;
         let data = DATAPTR(self.get_mut()) as *mut T;
@@ -357,6 +357,9 @@ impl Robj {
                     LGLSXP => *(LOGICAL(sexp)) == libR_sys::R_NaInt,
                     REALSXP => R_IsNA(*(REAL(sexp))) != 0,
                     CPLXSXP => R_IsNA((*COMPLEX(sexp)).r) != 0,
+                    // a character vector contains `CHARSXP`, and thus you
+                    // seldom have `Robj`'s that are `CHARSXP` themselves
+                    CHARSXP => sexp == libR_sys::R_NaString,
                     _ => false,
                 }
             }
@@ -592,18 +595,19 @@ impl Robj {
     /// ```
     pub fn as_str<'a>(&self) -> Option<&'a str> {
         unsafe {
-            match self.sexptype() {
+            let charsxp = match self.sexptype() {
                 STRSXP => {
+                    // only allows scalar strings
                     if self.len() != 1 {
-                        None
-                    } else {
-                        Some(to_str(R_CHAR(STRING_ELT(self.get(), 0)) as *const u8))
+                        return None;
                     }
+                    STRING_ELT(self.get(), 0)
                 }
-                // CHARSXP => Some(to_str(R_CHAR(self.get()) as *const u8)),
-                // SYMSXP => Some(to_str(R_CHAR(PRINTNAME(self.get())) as *const u8)),
-                _ => None,
-            }
+                CHARSXP => self.get(),
+                SYMSXP => PRINTNAME(self.get()),
+                _ => return None,
+            };
+            rstr::charsxp_to_str(charsxp)
         }
     }
 
@@ -1078,20 +1082,6 @@ impl PartialEq<Robj> for Robj {
             R_compute_identical(self.get(), rhs.get(), 16) != Rboolean::FALSE
         }
     }
-}
-
-// Internal utf8 to str conversion.
-// Lets not worry about non-ascii/unicode strings for now (or ever).
-pub(crate) unsafe fn to_str<'a>(ptr: *const u8) -> &'a str {
-    let mut len = 0;
-    loop {
-        if *ptr.offset(len) == 0 {
-            break;
-        }
-        len += 1;
-    }
-    let slice = std::slice::from_raw_parts(ptr, len as usize);
-    std::str::from_utf8_unchecked(slice)
 }
 
 /// Release any owned objects.
