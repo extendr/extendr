@@ -303,32 +303,26 @@ mod tests {
     use super::*;
     use extendr_engine::with_r;
 
-    #[test]
-    fn partial_eq_of_externalptr() {
-        #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
-        struct Wrapper(i32);
+    #[derive(Debug)]
+    struct BareWrapper(i32);
 
+    #[test]
+    fn externalptr_is_ptr() {
         with_r(|| {
-            let a = Wrapper(42);
-            let b = Wrapper(42);
+            let a = BareWrapper(42);
+            let b = BareWrapper(42);
+            assert_eq!(a.0, b.0);
+
+            let a_ptr = std::ptr::addr_of!(a);
+            let b_ptr = std::ptr::addr_of!(b);
             let a_externalptr = ExternalPtr::new(a);
             let b_externalptr = ExternalPtr::new(b);
 
-            assert_eq!(a.0, b.0);
-            assert_eq!(a, b);
-            assert_eq!(&a, &b);
-            let a_ptr = std::ptr::addr_of!(a);
-            let b_ptr = std::ptr::addr_of!(b);
             assert_ne!(
                 a_ptr, b_ptr,
                 "pointers has to be equal by address, not value"
             );
 
-            assert_eq!(
-                a_externalptr.addr(),
-                b_externalptr.addr(),
-                "compare by value, because comparing by reference yields value comparison"
-            );
             assert_ne!(
                 a_externalptr.robj, b_externalptr.robj,
                 "R only knows about the pointer, and not the pointee"
@@ -338,13 +332,22 @@ mod tests {
                 "ExternalPtr acts exactly like a pointer"
             );
             assert_ne!(&a_externalptr, &b_externalptr,);
-            assert_eq!(
-                a_externalptr.as_ref(),
-                b_externalptr.as_ref(),
-                "_by reference_ works however"
-            );
+        });
+    }
 
-            // let us explore that further
+    #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
+    struct Wrapper(i32);
+    
+    #[test]
+    fn compare_externalptr_pointee() {
+        with_r(|| {
+            let a = Wrapper(42);
+            let b = Wrapper(42);
+            let a_externalptr = ExternalPtr::new(a);
+            let b_externalptr = ExternalPtr::new(b);
+            assert_eq!(a_externalptr.as_ref(), b_externalptr.as_ref());
+
+            // let's test more use of `PartialOrd` on `T`
             let a_externalptr = ExternalPtr::new(Wrapper(50));
             let b_externalptr = ExternalPtr::new(Wrapper(60));
             assert!(a_externalptr.as_ref() <= b_externalptr.as_ref());
