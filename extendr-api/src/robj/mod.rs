@@ -592,7 +592,7 @@ impl Robj {
     ///    assert_eq!(robj1.as_str(), Some("xyz"));
     ///    assert_eq!(robj2.as_str(), None);
     /// }
-    /// ```    
+    /// ```
     pub fn as_str<'a>(&self) -> Option<&'a str> {
         unsafe {
             let charsxp = match self.sexptype() {
